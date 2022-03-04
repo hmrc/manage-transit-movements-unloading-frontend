@@ -1,0 +1,61 @@
+{% extends "includes/layout.njk" %}
+
+{% from "govuk/components/back-link/macro.njk"        import govukBackLink %}
+{% from "macros/title.njk"                            import title %}
+{% from "govuk/components/button/macro.njk"           import govukButton %}
+{% from "govuk/components/summary-list/macro.njk"     import govukSummaryList %}
+
+{% block pageTitle %}
+  {{ title(messages("unloadingRemarksRejection.title")) }}
+{% endblock %}
+
+{% block mainContent %}
+
+  {{ govukBackLink({
+    text: messages("site.back")
+  }) }}
+
+  <div class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">
+          {{ messages("unloadingRemarksRejection.heading") }}
+        </h1>
+
+        {% for error in errors %}
+
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                {{ messages("unloadingRemarksRejection.errorCode") }}
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ error.errorType }}
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                {{ messages("unloadingRemarksRejection.pointer") }}
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ error.pointer }}
+              </dd>
+            </div>
+          </dl>
+
+        {% endfor %}
+
+        <p class="govuk-body">{{ messages("unloadingRemarksRejection.review") }}
+          <a class="govuk-link" href={{declareUnloadingRemarksUrl}} >{{ messages("unloadingRemarksRejection.newUnloadingRemarks") }}</a>.
+        </p>
+
+        <p class="govuk-body">{{ messages("unloadingRemarksRejection.youCan") }}
+          <a class="govuk-link" href={{contactUrl}} target="_blank" rel="noopener noreferrer">{{ messages("unloadingRemarksRejection.contact") }}</a>.
+        </p>
+
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

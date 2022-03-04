@@ -1,0 +1,45 @@
+{% extends "includes/layout.njk" %}
+
+{% from "macros/title.njk"                         import title %}
+
+
+
+{% block pageTitle %}
+  {{ title(messages("confirmation.title")) }}
+{% endblock %}
+
+{% block mainContent %}
+
+  <div class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+          <div class="govuk-panel govuk-panel--confirmation">
+              <h1 class="govuk-panel__title">
+                  {{ messages("confirmation.heading") }}
+              </h1>
+              <div class="govuk-panel__body">
+
+              {{ messages("confirmation.para")}}
+              <strong>{{mrn}}</strong>
+          </div>
+          </div>
+          <h2 class="govuk-heading-m">
+              {{ messages("confirmation.subHeading")}}
+          </h2>
+
+          <p class="govuk-body">
+              {{ messages("confirmation.para2")}}
+          </p>
+          <p class="govuk-body">
+          <a id="manage-transit-movements" href="{{ manageTransitMovementsUrl }}" class="govuk-link">
+              {{ messages("confirmation.linkText")}}</a>
+              {{ messages("confirmation.para3")}}
+          </p>
+
+
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

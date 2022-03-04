@@ -33,3 +33,8 @@ bin
 /*.ipr
 /.classpath
 *.iws
+.metals/
+.bloop/
+.vscode
+project/metals.sbt
+/.bsp/sbt.json

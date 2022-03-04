@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package forms.mappings
 
 import java.time.LocalDate
@@ -8,12 +24,13 @@ import play.api.data.format.Formatter
 import scala.util.{Failure, Success, Try}
 
 private[mappings] class LocalDateFormatter(
-                                            invalidKey: String,
-                                            allRequiredKey: String,
-                                            twoRequiredKey: String,
-                                            requiredKey: String,
-                                            args: Seq[String] = Seq.empty
-                                          ) extends Formatter[LocalDate] with Formatters {
+  invalidKey: String,
+  allRequiredKey: String,
+  twoRequiredKey: String,
+  requiredKey: String,
+  args: Seq[String] = Seq.empty
+) extends Formatter[LocalDate]
+    with Formatters {
 
   private val fieldKeys: List[String] = List("day", "month", "year")
 
@@ -35,10 +52,11 @@ private[mappings] class LocalDateFormatter(
     )
 
     for {
-      day   <- int.bind(s"$key.day", data).right
-      month <- int.bind(s"$key.month", data).right
-      year  <- int.bind(s"$key.year", data).right
+      day   <- int.bind(s"$key.day".replaceAll("\\s", ""), data).right
+      month <- int.bind(s"$key.month".replaceAll("\\s", ""), data).right
+      year  <- int.bind(s"$key.year".replaceAll("\\s", ""), data).right
       date  <- toDate(key, day, month, year).right
+
     } yield date
   }
 
@@ -46,7 +64,7 @@ private[mappings] class LocalDateFormatter(
 
     val fields = fieldKeys.map {
       field =>
-        field -> data.get(s"$key.$field").filter(_.nonEmpty)
+        field -> data.get(s"$key.$field").filter(_.nonEmpty).map(_.replaceAll("\\s", ""))
     }.toMap
 
     lazy val missingFields = fields
@@ -70,8 +88,8 @@ private[mappings] class LocalDateFormatter(
 
   override def unbind(key: String, value: LocalDate): Map[String, String] =
     Map(
-      s"$key.day" -> value.getDayOfMonth.toString,
-      s"$key.month" -> value.getMonthValue.toString,
-      s"$key.year" -> value.getYear.toString
+      s"$key.day"   -> value.getDayOfMonth.toString.replaceAll("\\s", ""),
+      s"$key.month" -> value.getMonthValue.toString.replaceAll("\\s", ""),
+      s"$key.year"  -> value.getYear.toString.replaceAll("\\s", "")
     )
 }

@@ -1,0 +1,24 @@
+{% extends "includes/layout.njk" %}
+
+{% from "macros/title.njk"                         import title %}
+
+{% block pageTitle %}
+  {{ title(messages("departureNotFound.title")) }}
+{% endblock %}
+
+{% block mainContent %}
+
+  <div class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">
+          {{ messages("departureNotFound.heading") }}
+        </h1>
+        <p class="govuk-body">{{ messages("departureNotFound.para1") }} {{departureId}}</p>
+
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
