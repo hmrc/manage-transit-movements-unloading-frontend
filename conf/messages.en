@@ -1,57 +1,247 @@
-service.name = manage-transit-movements-unloading-frontend
+site.day.capitalized = Day
+site.month.capitalized = Month
+site.year.capitalized = Year
 
 site.back = Back
-site.remove = Remove
-site.change = Change
+site.delete = Remove
+site.edit = Change
+site.delete.hidden = Change {0}
+site.edit.hidden = Change {0}
 site.no = No
 site.yes = Yes
 site.continue = Continue
-site.start = Start now
-site.startAgain = Start again
-site.signIn = Sign in
-site.govuk = GOV.UK
+site.confirmAndSend = Confirm and send
+site.service_name = Manage your transit movements
+site.textarea.char_limit = (Limit is {0} characters)
+site.title.suffix = - Manage your transit movements - GOV.UK
+site.youMust = You must
 
-date.day = Day
-date.month = Month
-date.year = Year
-
-timeout.title = You’re about to be signed out
-timeout.message = For security reasons, you will be signed out of this service in
-timeout.keepAlive = Stay signed in
-timeout.signOut = Sign out
-
-error.browser.title.prefix = Error:
-error.boolean = Please give an answer
-error.invalid_date = Give a correct date
-error.date.day_blank = Enter a day
-error.date.day_invalid = Give a correct day using numbers 1 to 31
-error.date.month_blank = Enter a month
-error.date.month_invalid = Give a correct month using numbers 1 to 12
-error.date.year_blank = Enter a year
-error.date.year_invalid = Give a correct year
-error.integer = Give an answer in whole numbers
-error.non_numeric = Give a value using only numbers
-error.number = Please enter a valid number
-error.required = Please enter a value
+error.title.prefix = Error:
 error.summary.title = There is a problem
 
-index.title = manage-transit-movements-unloading-frontend
-index.heading = manage-transit-movements-unloading-frontend
+footer.links.support_links = Support links
+footer.links.help = Help using GOV.UK
+footer.links.cookies = Cookies
+footer.links.accessibility = Accessibility statement
+footer.links.privacy = Privacy policy
+footer.links.terms = Terms and conditions
+
+language.cymraeg = Cymraeg
+language.change.cymraeg = Newid yr iaith i'r Gymraeg
+language.english = English
+language.change.english = Change the language to English
+language.switcher = Language switcher
+
+phaseBanner.1 = This is a new service – your
+phaseBanner.2 = feedback
+phaseBanner.3 = will help us to improve it.
+
+checkYourAnswers.title = Check your answers before sending these unloading remarks
+checkYourAnswers.heading = Check your answers before sending these unloading remarks
+
+checkYourAnswers.seals.subHeading = Check official customs seals
+checkYourAnswers.seals.checkYourAnswersLabel = Official customs seal numbers
+checkYourAnswers.subHeading = What you found when unloading
+
+checkYourAnswers.confirmation.heading = Now send your unloading remarks
+checkYourAnswers.confirmation.paragraph = By sending this you are confirming that the details you are providing are correct, to the best of your knowledge.
+checkYourAnswers.changeItems.hidden = answers
+checkYourAnswers.confirmation.heading = Now send your unloading remarks
+checkYourAnswers.confirmation.paragraph = By sending this you are confirming that the details you are providing are correct, to the best of your knowledge.
+
+index.title =  Manage your transit movements - GOV.UK
+index.heading = Manage transit movements
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
-checkYourAnswers.title = Check Your Answers
-checkYourAnswers.heading = Check Your Answers
+session_expired.title = For your security, we signed you out
+session_expired.heading = For your security, we signed you out
+session_expired.guidance = We did not save your answers.
+session_expired.button = Sign in
 
-journeyRecovery.continue.title = Sorry, there is a problem with the service
-journeyRecovery.continue.heading = Sorry, there is a problem with the service
-journeyRecovery.continue.guidance = [Add content to explain how to proceed.]
-journeyRecovery.startAgain.title = Sorry, there is a problem with the service
-journeyRecovery.startAgain.heading = Sorry, there is a problem with the service
-journeyRecovery.startAgain.guidance = [Add content to explain why the user needs to start again.]
+unauthorised.title = You cannot use this service
+unauthorised.heading = You cannot use this service
+unauthorised.paragraph1 = You must have an account with an activated EORI number.
+unauthorised.paragraph2 = If you are waiting for an EORI number to be activated, you can try to
+unauthorised.signIn = sign in to HMRC services
+unauthorised.again.later = again later.
 
-signedOut.title = For your security, we signed you out
-signedOut.heading = For your security, we signed you out
-signedOut.guidance = We did not save your answers.
+technicalDifficulties.title = Sorry, there is a problem with the service
+technicalDifficulties.heading = Sorry, there is a problem with the service
+technicalDifficulties.tryAgain = Try again later.
+technicalDifficulties.contact = You can
+technicalDifficulties.contact.link = contact the New Computerised Transit System helpdesk if you need to speak to someone about transit movements (opens in a new tab).
 
-unauthorised.title = You can’t access this service with this account
-unauthorised.heading = You can’t access this service with this account
+unloadingGuidance.title = Unload the goods before you send the unloading remarks
+unloadingGuidance.heading = Unload the goods before you send the unloading remarks
+unloadingGuidance.para = You can:
+unloadingGuidance.bullet1 = view and print the unloading permissions accompanying document
+unloadingGuidance.bullet2 = check that the unloaded goods match the information in the transit declaration for movement reference {0}
+unloadingGuidance.pdf = Download the Unloading Permission PDF
+
+dateGoodsUnloaded.title = When were the goods unloaded?
+dateGoodsUnloaded.heading = When were the goods unloaded?
+dateGoodsUnloaded.hint = For example, 14 1 2020.
+dateGoodsUnloaded.checkYourAnswersLabel = When were the goods unloaded?
+dateGoodsUnloaded.error.required.all = Enter the date when the goods were unloaded
+dateGoodsUnloaded.error.required.two = The date goods were unloaded must include {0} and {1}
+dateGoodsUnloaded.error.required = The date goods were unloaded must include {0}
+dateGoodsUnloaded.error.invalid = Enter a real date
+dateGoodsUnloaded.error.min.date = The date when the goods were unloaded must be on or after {0}
+dateGoodsUnloaded.error.max.date = The date when the goods were unloaded must be today or in the past
+dateGoodsUnloaded.visually.hidden = the date when the goods were unloaded
+
+vehicleNameRegistrationReference.title = What is the name, registration or reference of the new vehicle?
+vehicleNameRegistrationReference.heading = What is the name, registration or reference of the new vehicle?
+vehicleNameRegistrationReference.checkYourAnswersLabel = What is the name, registration or reference of the new vehicle?
+vehicleNameRegistrationReference.error.required = Enter the name, registration or reference of the vehicle
+vehicleNameRegistrationReference.error.length = The name, registration or reference of the new vehicle must be 27 characters or less
+vehicleNameRegistrationReference.error.invalid = The name, registration or reference of the new vehicle must only include letters a to z or numbers 0 to 9
+
+vehicleRegistrationCountry.title = Which country is the vehicle registered in?
+vehicleRegistrationCountry.heading = Which country is the vehicle registered in?
+vehicleRegistrationCountry.checkYourAnswersLabel = Which country is the vehicle registered in?
+vehicleRegistrationCountry.error.required = Enter which country the vehicle is registered in
+vehicleRegistrationCountry.error.length =  The country the vehicle is registered in must be 100 characters or less
+
+grossMassAmount.title = What is the new total gross mass in kilograms?
+grossMassAmount.heading = What is the new total gross mass in kilograms?
+grossMassAmount.checkYourAnswersLabel = What is the new total gross mass in kilograms?
+grossMassAmount.error.required = Enter the total gross mass in kilograms
+grossMassAmount.error.length = The total gross mass in kilograms must be 99999999999.999 or less
+grossMassAmount.error.characters = The total gross mass in kilograms must be 11 numbers or less and up to 3 decimal places, like 1000000.000
+
+newSealNumber.title = What is the new official customs seal number or mark?
+newSealNumber.heading = What is the new official customs seal number or mark?
+newSealNumber.checkYourAnswersLabel = What is the new official customs seal number or mark?
+newSealNumber.error.required = Enter the new official customs seal number or mark
+newSealNumber.error.length = The new official customs seal number must be 20 characters or less
+newSealNumber.error.characters = The new official customs seal number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks and spaces
+
+unloadingSummary.title = Check what you found against the transit declaration
+unloadingSummary.heading = Check what you found against the transit declaration
+unloadingSummary.addSeal.link.text = Add a new official customs seal number
+unloadingSummary.addComment.link.text = Add comment
+unloadingSummary.noSeals = There are no official customs seals.
+unloadingSummary.noSeals = There are no official customs seals.
+unloadingSummary.seals.subheading = Official customs seals
+
+vehicleUsed.title = Vehicle used
+changeVehicle.reference.label = Name, registration or reference
+changeVehicle.reference.change.hidden = name, registration or reference
+changeVehicle.registeredCountry.label = Registered
+changeVehicle.registeredCountry.change.hidden = registered
+
+changeSeal.title = Official customs seals
+changeSeal.sealList.label = Official customs seal {0}
+changeSeal.sealList.change.hidden = official customs seal {0} {1}
+changeSeal.sealList.remove.hidden = official customs seal {0} {1}
+
+changeItems.title = Items
+changeItems.grossMass.label = Total gross mass in kilograms
+changeItems.grossMass.change.hidden = total gross mass in kilograms
+
+changeItems.totalNumberOfItems.label = Total number of items
+changeItems.totalNumberOfItems.change.hidden = total number of items
+changeItems.totalNumberOfPackages.label = Total number of packages
+changeItems.totalNumberOfPackages.change.hidden = total number of packages
+
+changeItems.dateGoodsUnloaded.label = Unloading date
+
+changeItem.itemList.label = Item {0}
+changeItem.itemList.change.hidden = Item {0}
+changeItems.comments.label = Comments
+changeItems.comments.change.hidden = comments
+changeItems.comments.remove.hidden = comments
+
+canSealsBeRead.title = Can all of the official customs seal numbers or marks be read?
+canSealsBeRead.heading = Can all of the official customs seal numbers or marks be read?
+canSealsBeRead.checkYourAnswersLabel = Can all of the official customs seal numbers or marks be read?
+canSealsBeRead.error.required = Select yes if all of the official customs seals can be read
+
+areAnySealsBroken.title = Are any of the official customs seals broken?
+areAnySealsBroken.heading = Are any of the official customs seals broken?
+areAnySealsBroken.checkYourAnswersLabel = Are any of the official customs seals broken?
+areAnySealsBroken.error.required = Select yes if any of the official customs seals are broken
+
+anythingElseToReport.title = Is there anything else to report?
+anythingElseToReport.heading = Is there anything else to report?
+anythingElseToReport.checkYourAnswersLabel = Is there anything else to report?
+anythingElseToReport.error.required = Select yes if there is anything else to report
+
+confirmation.title = Unloading remarks sent
+confirmation.heading = Unloading remarks sent
+
+confirmation.para = for movement reference number
+confirmation.subHeading= What happens next
+confirmation.para2 = You must wait for the goods to be released.
+confirmation.linkText = Go to arrival notifications
+confirmation.para3 = to see the latest messages.
+
+
+changesToReport.title = What do you need to report?
+changesToReport.heading = What do you need to report?
+changesToReport.checkYourAnswersLabel = What do you need to report?
+changesToReport.error.required = Enter what you need to report
+changesToReport.error.length = What you need to report must be 350 characters or less
+changesToReport.error.invalid = What you need to report must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks and spaces
+
+confirmRemoveComments.title = Are you sure you want to remove your comments?
+confirmRemoveComments.heading = Are you sure you want to remove your comments?
+confirmRemoveComments.checkYourAnswersLabel = Are you sure you want to remove your comments?
+confirmRemoveComments.error.required = Select yes if you are sure you want to remove your comments
+
+confirmRemoveSeal.title = Are you sure you want to remove official customs seal?
+confirmRemoveSeal.heading = Are you sure you want to remove official customs seal {0}?
+confirmRemoveSeal.checkYourAnswersLabel = Are you sure you want to remove official customs seal {0}?
+confirmRemoveSeal.error.required = Select yes if you are sure you want to remove official customs seal {0}
+
+totalNumberOfItems.title = What is the new total number of items?
+totalNumberOfItems.heading = What is the new total number of items?
+totalNumberOfItems.checkYourAnswersLabel = What is the new total number of items?
+totalNumberOfItems.error.nonNumeric = Enter the new total number of items using numbers
+totalNumberOfItems.error.required = Enter the new total number of items
+totalNumberOfItems.error.wholeNumber = = Total number of items must only include numbers 0 to 9
+totalNumberOfItems.error.outOfRange = Total number of items must be 99999 or less
+
+totalNumberOfPackages.title = What is the new total number of packages?
+totalNumberOfPackages.heading =  What is the new total number of packages?
+totalNumberOfPackages.checkYourAnswersLabel =  What is the new total number of packages?
+totalNumberOfPackages.error.nonNumeric = Enter the new total number of packages using numbers
+totalNumberOfPackages.error.required = Enter the new total number of packages
+totalNumberOfPackages.error.wholeNumber = Total number of packages must only include numbers 0 to 9
+totalNumberOfPackages.error.outOfRange =  Total number of packages must be 9999999 or less
+
+unloadingRemarksRejection.title = There is a problem with these unloading remarks
+unloadingRemarksRejection.heading = There is a problem with these unloading remarks
+unloadingRemarksRejection.contact.message = If this information is correct, you will need to
+unloadingRemarksRejection.conflicting.information = There is conflicting information that must be fixed before you can continue.
+unloadingRemarksRejection.contact = contact the New Computerised Transit System helpdesk to fix this(opens in a new tab)
+unloadingRemarksRejection.create.unloadingRemarks = create new unloading remarks
+
+unloadingRemarksRejection.review = You must review the error and
+unloadingRemarksRejection.newUnloadingRemarks = send new unloading remarks with the right information
+unloadingRemarksRejection.youCan = You can
+unloadingRemarksRejection.contact = contact the New Computerised Transit System helpdesk if you need help understanding the error (opens in a new tab)
+
+
+unloadingRemarksRejection.errorCode = Error code
+unloadingRemarksRejection.pointer = Pointer
+unloadingRemarksRejection.originalAttributeValue = Attribute value
+
+pageNotFound.title = Page not found
+pageNotFound.heading = Page not found
+pageNotFound.paragraph1 = If you typed the web address, check it is correct.
+pageNotFound.paragraph2 = If you pasted the web address, check you copied the entire address.
+pageNotFound.paragraph3Start = If the web address is correct or you selected a link or button,
+pageNotFound.contactLink=contact the New Computerised Transit System(NCTS) helpdesk if you need to speak to someone about your transit movement (opens in a new tab)
+
+unauthorisedWithGroupAccess.title = You cannot use this service authorisation
+unauthorisedWithGroupAccess.heading = You cannot use this service
+unauthorisedWithGroupAccess.p = If you already have access, you must contact your group administrator to update your access rights.
+
+canNotSendUnloadingRemarks.title = You cannot send these unloading remarks
+canNotSendUnloadingRemarks.heading = You cannot send these unloading remarks
+canNotSendUnloadingRemarks.declarationNotFound = There is no departure declaration with these details.
+canNotSendUnloadingRemarks.message =  If you still need to send these unloading remarks, you must
+canNotSendUnloadingRemarks.contactLink = contact the New Computerised Transit System (NCTS) Helpdesk (opens in a new tab)
+canNotSendUnloadingRemarks.linkText = Back to arrival notification

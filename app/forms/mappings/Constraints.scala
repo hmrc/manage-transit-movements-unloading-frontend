@@ -1,8 +1,25 @@
+/*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package forms.mappings
 
 import java.time.LocalDate
-
 import play.api.data.validation.{Constraint, Invalid, Valid}
+
+import scala.util.matching.Regex
 
 trait Constraints {
 
@@ -18,7 +35,6 @@ trait Constraints {
   protected def minimumValue[A](minimum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
     Constraint {
       input =>
-
         import ev._
 
         if (input >= minimum) {
@@ -31,7 +47,6 @@ trait Constraints {
   protected def maximumValue[A](maximum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
     Constraint {
       input =>
-
         import ev._
 
         if (input <= maximum) {
@@ -44,7 +59,6 @@ trait Constraints {
   protected def inRange[A](minimum: A, maximum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
     Constraint {
       input =>
-
         import ev._
 
         if (input >= minimum && input <= maximum) {
@@ -60,6 +74,14 @@ trait Constraints {
         Valid
       case _ =>
         Invalid(errorKey, regex)
+    }
+
+  protected def regexp(regex: Regex, errorKey: String, args: Seq[Any]): Constraint[String] =
+    Constraint {
+      case str if str.matches(regex.pattern.pattern()) =>
+        Valid
+      case _ =>
+        Invalid(errorKey, args: _*)
     }
 
   protected def maxLength(maximum: Int, errorKey: String): Constraint[String] =

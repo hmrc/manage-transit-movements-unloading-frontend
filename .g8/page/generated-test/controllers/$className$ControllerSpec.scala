@@ -1,28 +1,43 @@
 package controllers
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
+import matchers.JsonMatchers
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{times, verify, when}
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.$className$View
+import play.twirl.api.Html
 
-class $className$ControllerSpec extends SpecBase {
+import scala.concurrent.Future
+
+class $className$ControllerSpec extends AppWithDefaultMockFixtures with MockitoSugar with JsonMatchers {
 
   "$className$ Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      when(mockRenderer.render(any(), any())(any()))
+        .thenReturn(Future.successful(Html("")))
 
-      running(application) {
-        val request = FakeRequest(GET, routes.$className$Controller.onPageLoad().url)
+      setExistingUserAnswers(emptyUserAnswers)
 
-        val result = route(application, request).value
+      val request = FakeRequest(GET, routes.$className$Controller.onPageLoad(mrn).url)
+      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+      val jsonCaptor = ArgumentCaptor.forClass(classOf[JsObject])
 
-        val view = application.injector.instanceOf[$className$View]
+      val result = route(app, request).value
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view()(request, messages(application)).toString
-      }
+      status(result) mustEqual OK
+
+      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+
+      val expectedJson = Json.obj("mrn" -> mrn)
+
+      templateCaptor.getValue mustEqual "$className;format="decap"$.njk"
+      jsonCaptor.getValue must containJson(expectedJson)
     }
   }
 }

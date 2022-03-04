@@ -14,7 +14,7 @@ class $className$Spec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf($className$.values.toSeq)
+      val gen = Gen.oneOf($className$.values)
 
       forAll(gen) {
         $className;format="decap"$ =>
@@ -36,7 +36,7 @@ class $className$Spec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
 
     "must serialise" in {
 
-      val gen = Gen.oneOf($className$.values.toSeq)
+      val gen = Gen.oneOf($className$.values)
 
       forAll(gen) {
         $className;format="decap"$ =>

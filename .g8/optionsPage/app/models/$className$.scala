@@ -1,8 +1,9 @@
 package models
 
+import play.api.data.Form
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
+import play.api.libs.json._
+import uk.gov.hmrc.viewmodels._
 
 sealed trait $className$
 
@@ -12,16 +13,19 @@ object $className$ extends Enumerable.Implicits {
   case object $option2key;format="Camel"$ extends WithName("$option2key;format="decap"$") with $className$
 
   val values: Seq[$className$] = Seq(
-    $option1key;format="Camel"$, $option2key;format="Camel"$
+    $option1key;format="Camel"$,
+    $option2key;format="Camel"$
   )
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
-    case (value, index) =>
-      RadioItem(
-        content = Text(messages(s"$className;format="decap"$.\${value.toString}")),
-        value   = Some(value.toString),
-        id      = Some(s"value_\$index")
-      )
+  def radios(form: Form[_])(implicit messages: Messages): Seq[Radios.Item] = {
+
+    val field = form("value")
+    val items = Seq(
+      Radios.Radio(msg"$className;format="decap"$.$option1key;format="decap"$", $option1key;format="Camel"$.toString),
+      Radios.Radio(msg"$className;format="decap"$.$option2key;format="decap"$", $option2key;format="Camel"$.toString)
+    )
+
+    Radios(field, items)
   }
 
   implicit val enumerable: Enumerable[$className$] =
