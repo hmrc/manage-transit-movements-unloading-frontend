@@ -28,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient, metricsService: MetricsService) {
 
   def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/countries-full-list"
+    val serviceUrl = s"${config.referenceDataUrl}/countries"
 
     metricsService.timeAsyncCall(Monitors.getCountryListMonitor) {
       http

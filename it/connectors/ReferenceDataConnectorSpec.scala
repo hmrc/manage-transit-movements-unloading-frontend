@@ -98,7 +98,7 @@ class ReferenceDataConnectorSpec
 
 object ReferenceDataConnectorSpec {
 
-  private val uri = "/transit-movements-trader-reference-data/countries-full-list"
+  private val uri = "/transit-movements-trader-reference-data/countries"
 
   private val countryListResponseJson: String =
     """
