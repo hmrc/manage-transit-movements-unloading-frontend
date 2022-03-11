@@ -16,21 +16,22 @@
 
 package models
 
-import java.time.LocalDateTime
-
 import derivable.Derivable
 import pages._
 import play.api.libs.json._
 import queries.Gettable
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
+import java.time.LocalDateTime
 import scala.util.{Failure, Success, Try}
 
-final case class UserAnswers(id: ArrivalId,
-                             mrn: MovementReferenceNumber,
-                             eoriNumber: EoriNumber,
-                             data: JsObject = Json.obj(),
-                             prepopulateData: JsObject = Json.obj(),
-                             lastUpdated: LocalDateTime = LocalDateTime.now
+final case class UserAnswers(
+  id: ArrivalId,
+  mrn: MovementReferenceNumber,
+  eoriNumber: EoriNumber,
+  data: JsObject = Json.obj(),
+  prepopulateData: JsObject = Json.obj(),
+  lastUpdated: LocalDateTime = LocalDateTime.now
 ) {
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
@@ -103,7 +104,7 @@ object UserAnswers {
         (__ \ "eoriNumber").read[EoriNumber] and
         (__ \ "data").read[JsObject] and
         (__ \ "autoData").read[JsObject] and
-        (__ \ "lastUpdated").read(MongoDateTimeFormats.localDateTimeRead)
+        (__ \ "lastUpdated").read(MongoJavatimeFormats.localDateTimeReads)
     )(UserAnswers.apply _)
   }
 
@@ -117,7 +118,9 @@ object UserAnswers {
         (__ \ "eoriNumber").write[EoriNumber] and
         (__ \ "data").write[JsObject] and
         (__ \ "autoData").write[JsObject] and
-        (__ \ "lastUpdated").write(MongoDateTimeFormats.localDateTimeWrite)
+        (__ \ "lastUpdated").write(MongoJavatimeFormats.localDateTimeWrites)
     )(unlift(UserAnswers.unapply))
   }
+
+  implicit lazy val format: Format[UserAnswers] = Format(reads, writes)
 }

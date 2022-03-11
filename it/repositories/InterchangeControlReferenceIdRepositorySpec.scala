@@ -17,88 +17,71 @@
 package repositories
 
 import models.messages.InterchangeControlReference
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import org.scalatestplus.mockito.MockitoSugar.mock
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
-import play.api.test.Helpers.running
-import reactivemongo.play.json.collection.Helpers.idWrites
-import reactivemongo.play.json.collection.JSONCollection
 import services.DateTimeService
-import services.mocks.MockDateTimeService
-
-import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
 class InterchangeControlReferenceIdRepositorySpec
   extends AnyFreeSpec
     with Matchers
-    with MongoSuite
     with ScalaFutures
     with BeforeAndAfterEach
+    with GuiceOneAppPerSuite
     with IntegrationPatience
-    with MockDateTimeService {
+    with DefaultPlayMongoRepositorySupport[InterchangeControlReference] {
 
-  private val appBuilder: GuiceApplicationBuilder = new GuiceApplicationBuilder()
+  private val mockTimeService: DateTimeService = mock[DateTimeService]
+
+  override protected def repository = new InterchangeControlReferenceIdRepository(mongoComponent, mockTimeService)
+
+  implicit override lazy val app: Application = new GuiceApplicationBuilder()
     .overrides(
       bind[DateTimeService].toInstance(mockTimeService)
     )
+    .build()
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    database.flatMap(_.drop()).futureValue
+    reset(mockTimeService)
   }
+
+  private val date: String = "20190101"
 
   "InterchangeControlReferenceIdRepository" - {
 
     "must generate correct InterchangeControlReference when no record exists within the database" in {
 
-      val app = appBuilder.build()
+      when(mockTimeService.dateFormatted).thenReturn(date)
 
-      running(app) {
-        mockDateFormatted("20190101")
+      val first = repository.nextInterchangeControlReferenceId().futureValue
 
-        val service: InterchangeControlReferenceIdRepository = app.injector.instanceOf[InterchangeControlReferenceIdRepository]
+      first mustBe InterchangeControlReference(date, 1)
 
-        val first = service.nextInterchangeControlReferenceId().futureValue
+      val second = repository.nextInterchangeControlReferenceId().futureValue
 
-        first mustBe InterchangeControlReference("20190101", 1)
-
-        val second = service.nextInterchangeControlReferenceId().futureValue
-
-        second mustBe InterchangeControlReference("20190101", 2)
-      }
+      second mustBe InterchangeControlReference(date, 2)
     }
 
     "must generate correct InterchangeControlReference when the collection already has a document in the database" in {
 
-      mockDateFormatted("20190101")
+      when(mockTimeService.dateFormatted).thenReturn(date)
 
-      database.flatMap {
-        db =>
-          db.collection[JSONCollection]("interchange-control-reference-ids")
-            .insert(ordered = false)
-            .one(
-              Json.obj(
-                "_id"        -> mockTimeService.dateFormatted,
-                "last-index" -> 1
-              ))
-      }.futureValue
+      insert(InterchangeControlReference(mockTimeService.dateFormatted, 1)).futureValue
 
-      val app = appBuilder.build()
+      val first  = repository.nextInterchangeControlReferenceId().futureValue
+      val second = repository.nextInterchangeControlReferenceId().futureValue
 
-      running(app) {
-        val service: InterchangeControlReferenceIdRepository = app.injector.instanceOf[InterchangeControlReferenceIdRepository]
-
-        val first = service.nextInterchangeControlReferenceId().futureValue
-        val second = service.nextInterchangeControlReferenceId().futureValue
-
-        first.index mustEqual 2
-        second.index mustEqual 3
-      }
+      first.index mustEqual 2
+      second.index mustEqual 3
     }
   }
-
 }
