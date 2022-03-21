@@ -17,63 +17,35 @@
 package repositories
 
 import com.google.inject.{Inject, Singleton}
+import com.mongodb.client.model.ReturnDocument
 import models.messages.InterchangeControlReference
-import play.api.libs.json.{Json, Reads}
-import play.modules.reactivemongo.ReactiveMongoApi
-import reactivemongo.api.WriteConcern
-import reactivemongo.play.json.collection.Helpers.idWrites
-import reactivemongo.play.json.collection._
+import org.mongodb.scala.model.{Filters, FindOneAndUpdateOptions, Updates}
 import services.DateTimeService
+import uk.gov.hmrc.mongo.MongoComponent
+import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
 class InterchangeControlReferenceIdRepository @Inject() (
-  mongo: ReactiveMongoApi,
+  mongoComponent: MongoComponent,
   dateTimeService: DateTimeService
-) {
-
-  private val lastIndexKey = "last-index"
-
-  private val collectionName: String = "interchange-control-reference-ids"
-
-  private val indexKeyReads: Reads[Int] = {
-    import play.api.libs.json._
-    (__ \ lastIndexKey).read[Int]
-  }
-
-  private def collection: Future[JSONCollection] =
-    mongo.database.map(_.collection[JSONCollection](collectionName))
+) extends PlayMongoRepository[InterchangeControlReference](
+      mongoComponent = mongoComponent,
+      collectionName = "interchange-control-reference-ids",
+      domainFormat = InterchangeControlReference.format,
+      indexes = Nil
+    ) {
 
   def nextInterchangeControlReferenceId(): Future[InterchangeControlReference] = {
 
-    val date = dateTimeService.dateFormatted
+    val filter = Filters.eq("_id", dateTimeService.dateFormatted)
 
-    val update = Json.obj(
-      "$inc" -> Json.obj(lastIndexKey -> 1)
-    )
+    val update = Updates.inc("last-index", 1)
 
-    val selector = Json.obj("_id" -> s"$date")
-
-    collection.flatMap {
-      _.findAndUpdate(
-        selector = selector,
-        update = update,
-        fetchNewObject = true,
-        upsert = true,
-        sort = None,
-        fields = None,
-        bypassDocumentValidation = false,
-        writeConcern = WriteConcern.Default,
-        maxTime = None,
-        collation = None,
-        arrayFilters = Nil
-      ).map(
-        _.result(indexKeyReads)
-          .map(InterchangeControlReference(date, _))
-          .getOrElse(throw new Exception(s"Unable to generate InterchangeControlReferenceId for: $date"))
-      )
-    }
+    collection
+      .findOneAndUpdate(filter, update, FindOneAndUpdateOptions().upsert(true).returnDocument(ReturnDocument.AFTER))
+      .toFuture()
   }
 }

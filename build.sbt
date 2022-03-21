@@ -73,8 +73,7 @@ lazy val testSettings: Seq[Def.Setting[_]] = Seq(
   fork := true,
   unmanagedResourceDirectories += baseDirectory.value / "test" / "resources",
   javaOptions ++= Seq(
-    "-Dconfig.resource=test.application.conf",
-    "-Dlogger.resource=logback-test.xml"
+    "-Dconfig.resource=test.application.conf"
   )
 )
 
@@ -87,7 +86,6 @@ lazy val itSettings = Defaults.itSettings ++ Seq(
   parallelExecution := false,
   fork              := true,
   javaOptions ++= Seq(
-    "-Dconfig.resource=it.application.conf",
-    "-Dlogger.resource=logback-it.xml"
+    "-Dconfig.resource=it.application.conf"
   )
 )

@@ -19,7 +19,6 @@ package config
 import com.google.inject.AbstractModule
 import connectors.{UnloadingConnector, UnloadingConnectorImpl}
 import controllers.actions._
-import repositories.{DefaultSessionRepository, SessionRepository}
 import services._
 
 import java.time.{Clock, ZoneOffset}
@@ -34,8 +33,6 @@ class Module extends AbstractModule {
 
     // For session based storage instead of cred based, change to SessionIdentifierAction
     bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction]).asEagerSingleton()
-
-    bind(classOf[SessionRepository]).to(classOf[DefaultSessionRepository]).asEagerSingleton()
 
     bind(classOf[UnloadingConnector]).to(classOf[UnloadingConnectorImpl]).asEagerSingleton()
 
