@@ -16,7 +16,7 @@ object AppDependencies {
     "org.webjars.npm"      % "govuk-frontend"                  % "3.14.0",
     "uk.gov.hmrc.webjars"  % "hmrc-frontend"                   % "3.1.1",
     "com.lucidchart"       %% "xtract"                         % "2.2.1",
-    "uk.gov.hmrc"          %% "play-frontend-hmrc"               % "3.8.0-play-28"
+    "uk.gov.hmrc"          %% "play-frontend-hmrc"             % "3.8.0-play-28"
   )
 
   val test: Seq[ModuleID] = Seq(
