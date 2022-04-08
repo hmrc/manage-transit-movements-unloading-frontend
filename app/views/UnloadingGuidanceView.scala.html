@@ -15,6 +15,7 @@
  *@
 
 @import views.html.components.Heading
+@import views.html.components.Button
 @import config.FrontendAppConfig
 
 @this(
@@ -24,7 +25,7 @@
         config: FrontendAppConfig
 )
 
-@(mrn: MovementReferenceNumber, pdfUrl: String)(implicit request: Request[_], messages: Messages)
+@(mrn: MovementReferenceNumber, pdfUrl: String, nextPageUrl: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("unloadingGuidance.title"),
@@ -40,4 +41,6 @@
     </ul>
 
     <p class="govuk-body"><a class="govuk-link" href=@pdfUrl>@messages("unloadingGuidance.pdf")</a></p>
+
+    @button(href = Some(nextPageUrl))
 }
