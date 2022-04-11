@@ -35,7 +35,7 @@ import scala.concurrent.Future
 
 abstract class SingleViewSpec(protected val viewUnderTest: String, hasSignOutLink: Boolean = true)
     extends SpecBase
-    with ViewSpecAssertions
+    with ViewSpecAssertionsNjk
     with NunjucksSupport
     with GuiceOneAppPerSuite {
 

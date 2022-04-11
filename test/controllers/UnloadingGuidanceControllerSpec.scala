@@ -18,45 +18,28 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import matchers.JsonMatchers
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-
-import scala.concurrent.Future
+import views.html.UnloadingGuidanceView
 
 class UnloadingGuidanceControllerSpec extends SpecBase with AppWithDefaultMockFixtures with JsonMatchers {
 
   "UnloadingGuidance Controller" - {
     "return OK and the correct view for a GET" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, routes.UnloadingGuidanceController.onPageLoad(arrivalId).url)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, routes.UnloadingGuidanceController.onPageLoad(arrivalId).url)
 
       val result = route(app, request).value
 
-      status(result) mustEqual OK
+      val view = app.injector.instanceOf[UnloadingGuidanceView]
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val pdfUrl = routes.UnloadingPermissionPDFController.getPDF(arrivalId).url
 
-      val expectedJson = Json.obj(
-        "mrn"         -> mrn,
-        "nextPageUrl" -> onwardRoute.url,
-        "arrivalId"   -> arrivalId,
-        "pdfUrl"      -> routes.UnloadingPermissionPDFController.getPDF(arrivalId).url
-      )
-
-      templateCaptor.getValue mustEqual "unloadingGuidance.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      status(result) mustBe OK
+      contentAsString(result) mustEqual view(mrn, pdfUrl, onwardRoute.url)(request, messages).toString
     }
   }
 }

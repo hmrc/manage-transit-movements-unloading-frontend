@@ -55,8 +55,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val loginHmrcServiceUrl: String = configuration.get[String]("urls.loginHmrcService")
 
   lazy val nctsEnquiriesUrl: String = configuration.get[String]("urls.nctsEnquiries")
-  lazy val timeoutSeconds: String   = configuration.get[String]("session.timeoutSeconds")
-  lazy val countdownSeconds: String = configuration.get[String]("session.countdownSeconds")
+  lazy val timeoutSeconds: Int      = configuration.get[Int]("session.timeoutSeconds")
+  lazy val countdownSeconds: Int    = configuration.get[Int]("session.countdownSeconds")
 
   private val manageTransitMovementsHost     = configuration.get[String]("manage-transit-movements-frontend.host")
   lazy val manageTransitMovementsUrl: String = s"$manageTransitMovementsHost/manage-transit-movements"
@@ -72,5 +72,4 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val languageTranslationEnabled: Boolean = configuration.get[Boolean]("microservice.services.features.welsh-translation")
 
   lazy val cacheTtl: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
-
 }

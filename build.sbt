@@ -29,10 +29,14 @@ lazy val root = (project in file("."))
     TwirlKeys.templateImports ++= Seq(
       "play.twirl.api.HtmlFormat",
       "play.twirl.api.HtmlFormat._",
-      "uk.gov.hmrc.play.views.html.helpers._",
-      "uk.gov.hmrc.play.views.html.layouts._",
+      "uk.gov.hmrc.govukfrontend.views.html.components._",
+      "uk.gov.hmrc.hmrcfrontend.views.html.components._",
+      "uk.gov.hmrc.hmrcfrontend.views.html.helpers._",
       "models.Mode",
-      "controllers.routes._"
+      "controllers.routes._",
+      "views.html.helper.CSPNonce",
+      "viewModels.{InputSize, LabelSize, LegendSize}",
+      "templates._"
     ),
     PlayKeys.playDefaultPort := 10123,
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*handlers.*;.*repositories.*;" +
@@ -49,12 +53,11 @@ lazy val root = (project in file("."))
       Resolver.jcenterRepo
     ),
     Concat.groups := Seq(
-      "javascripts/application.js" -> group(
-        Seq("lib/govuk-frontend/govuk/all.js", "lib/hmrc-frontend/hmrc/all.js", "javascripts/ctc.js")
-      )
+      "javascripts/application.js" -> group(Seq("javascripts/ctc.js", "javascripts/accessible-autocomplete.js", "javascripts/autocomplete.js"))
     ),
     uglifyCompressOptions      := Seq("unused=false", "dead_code=false", "warnings=false"),
-    pipelineStages in Assets   := Seq(concat, uglify),
+    pipelineStages in Assets := Seq(digest, concat, uglify),
+    includeFilter in uglify := GlobFilter("application.js"),
     useSuperShell in ThisBuild := false,
     scalafmtOnCompile in ThisBuild := true
   )
