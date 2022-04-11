@@ -24,7 +24,7 @@
 @(
         field: Field,
         legend: String,
-        legendClass: String = "govuk-fieldset__legend--l",
+        legendClass: String = "govuk-fieldset__legend--xl",
         hint: Option[String] = None,
         readerHint: Option[String] = None,
         link: Option[Link] = None,
@@ -47,21 +47,21 @@
         InputItem(
             classes = s"govuk-input--width-2 ${addErrorClass(field.error, "day")}",
             name = s"${field.id}.day",
-            label = Some(messages("date.day")),
+            label = Some(messages("date.day.capitalized")),
             value = field("day").value,
             id = s"${field.id}.day"
         ),
         InputItem(
             classes = s"govuk-input--width-2 ${addErrorClass(field.error, "month")}",
             name = s"${field.id}.month",
-            label = Some(messages("date.month")),
+            label = Some(messages("date.month.capitalized")),
             value = field("month").value,
             id = s"${field.id}.month"
         ),
         InputItem(
             classes = s"govuk-input--width-4 ${addErrorClass(field.error, "year")}",
             name = s"${field.id}.year",
-            label = Some(messages("date.year")),
+            label = Some(messages("date.year.capitalized")),
             value = field("year").value,
             id = s"${field.id}.year"
         )

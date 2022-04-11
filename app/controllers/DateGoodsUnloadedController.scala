@@ -30,6 +30,7 @@ import repositories.SessionRepository
 import services.UnloadingPermissionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{DateInput, NunjucksSupport}
+import views.html.DateGoodsUnloadedView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,7 +47,8 @@ class DateGoodsUnloadedController @Inject() (
   renderer: Renderer,
   unloadingPermissionService: UnloadingPermissionService,
   frontendAppConfig: FrontendAppConfig,
-  checkArrivalStatus: CheckArrivalStatusProvider
+  checkArrivalStatus: CheckArrivalStatusProvider,
+  view: DateGoodsUnloadedView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -66,16 +68,10 @@ class DateGoodsUnloadedController @Inject() (
                 case None        => form
               }
 
-              val viewModel = DateInput.localDate(preparedForm("value"))
+              val mrn = request.userAnswers.mrn
 
-              val json = Json.obj(
-                "form"        -> preparedForm,
-                "mrn"         -> request.userAnswers.mrn,
-                "date"        -> viewModel,
-                "onSubmitUrl" -> routes.DateGoodsUnloadedController.onSubmit(arrivalId, mode).url
-              )
+              Future.successful(Ok(view(mrn, arrivalId, mode, preparedForm)))
 
-              renderer.render("dateGoodsUnloaded.njk", json).map(Ok(_))
             case None =>
               val json = Json.obj("contactUrl" -> frontendAppConfig.nctsEnquiriesUrl)
 
@@ -96,16 +92,9 @@ class DateGoodsUnloadedController @Inject() (
                 .fold(
                   formWithErrors => {
 
-                    val viewModel = DateInput.localDate(formWithErrors("value"))
+                    val mrn = request.userAnswers.mrn
 
-                    val json = Json.obj(
-                      "form"        -> formWithErrors,
-                      "mrn"         -> request.userAnswers.mrn,
-                      "date"        -> viewModel,
-                      "onSubmitUrl" -> routes.DateGoodsUnloadedController.onSubmit(arrivalId, mode).url
-                    )
-
-                    renderer.render("dateGoodsUnloaded.njk", json).map(BadRequest(_))
+                    Future.successful(BadRequest(view(mrn, arrivalId, mode, formWithErrors)))
                   },
                   value =>
                     for {
