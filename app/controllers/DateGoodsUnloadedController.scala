@@ -58,7 +58,7 @@ class DateGoodsUnloadedController @Inject() (
     (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {
       implicit request =>
         unloadingPermissionService
-          .getUnloadingPermission(arrivalId)
+          .getUnloadingPermission(arrivalId) // TODO potentially move this to the action
           .flatMap {
             case Some(up) =>
               val form = formProvider(up.dateOfPreparation)
