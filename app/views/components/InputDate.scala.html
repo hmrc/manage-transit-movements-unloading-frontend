@@ -1,0 +1,71 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import utils.DateErrorFormatter._
+@import viewModels.Link
+
+@this(
+        govukDateInput: GovukDateInput
+)
+
+@(
+        field: Field,
+        legend: String,
+        legendClass: String = "govuk-fieldset__legend--xl",
+        hint: Option[String] = None,
+        readerHint: Option[String] = None,
+        link: Option[Link] = None,
+        legendAsHeading: Boolean = false,
+        extraText: Option[String] = None
+)(implicit messages: Messages)
+
+@govukDateInput(DateInput(
+    fieldset = Some(Fieldset(
+        legend = Some(
+            Legend(
+                content = Text(messages(legend)),
+                isPageHeading = legendAsHeading,
+                classes = legendClass
+            )
+        )
+    )),
+    id = field.id,
+    items = Seq(
+        InputItem(
+            classes = s"govuk-input--width-2 ${addErrorClass(field.error, "day")}",
+            name = s"${field.id}.day",
+            label = Some(messages("date.day.capitalized")),
+            value = field("day").value,
+            id = s"${field.id}.day"
+        ),
+        InputItem(
+            classes = s"govuk-input--width-2 ${addErrorClass(field.error, "month")}",
+            name = s"${field.id}.month",
+            label = Some(messages("date.month.capitalized")),
+            value = field("month").value,
+            id = s"${field.id}.month"
+        ),
+        InputItem(
+            classes = s"govuk-input--width-4 ${addErrorClass(field.error, "year")}",
+            name = s"${field.id}.year",
+            label = Some(messages("date.year.capitalized")),
+            value = field("year").value,
+            id = s"${field.id}.year"
+        )
+    ),
+    hint = hint.map(hint => Hint(content = Text(messages(hint)))),
+    errorMessage = field.error.map(err => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(err.message, formatArgs(err.args): _*))))
+))

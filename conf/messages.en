@@ -1,6 +1,11 @@
-site.day.capitalized = Day
-site.month.capitalized = Month
-site.year.capitalized = Year
+date.day.capitalized = Day
+date.month.capitalized = Month
+date.year.capitalized = Year
+
+date.day    = day
+date.month  = month
+date.year   = year
+
 
 site.back = Back
 site.delete = Remove
@@ -80,7 +85,7 @@ unloadingGuidance.pdf = Download the Unloading Permission PDF
 
 dateGoodsUnloaded.title = When were the goods unloaded?
 dateGoodsUnloaded.heading = When were the goods unloaded?
-dateGoodsUnloaded.hint = For example, 14 1 2020.
+dateGoodsUnloaded.hint = For example, 14 1 2020
 dateGoodsUnloaded.checkYourAnswersLabel = When were the goods unloaded?
 dateGoodsUnloaded.error.required.all = Enter the date when the goods were unloaded
 dateGoodsUnloaded.error.required.two = The date goods were unloaded must include {0} and {1}

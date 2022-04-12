@@ -35,6 +35,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import services.UnloadingPermissionService
 import uk.gov.hmrc.viewmodels.{DateInput, NunjucksSupport}
+import views.html.DateGoodsUnloadedView
 
 import java.time.{Clock, Instant, LocalDate, ZoneId}
 import scala.concurrent.Future
@@ -45,7 +46,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
   private val dateOfPreparation = LocalDate.now(stubClock)
   private val validAnswer       = dateOfPreparation
 
-  val unloadingPermission = UnloadingPermission(
+  private val unloadingPermission = UnloadingPermission(
     movementReferenceNumber = "19IT02110010007827",
     transportIdentity = None,
     transportCountry = None,
@@ -83,49 +84,35 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
       when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(Some(unloadingPermission)))
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val view = app.injector.instanceOf[DateGoodsUnloadedView]
 
-      val result = route(app, FakeRequest(GET, dateGoodsUnloadedRoute)).value
+      val request = FakeRequest(GET, dateGoodsUnloadedRoute)
 
-      status(result) mustEqual OK
+      val result = route(app, request).value
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val viewModel = DateInput.localDate(form("value"))
-
-      val expectedJson = Json.obj(
-        "form"        -> form,
-        "mrn"         -> mrn,
-        "date"        -> viewModel,
-        "onSubmitUrl" -> routes.DateGoodsUnloadedController.onSubmit(arrivalId, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual "dateGoodsUnloaded.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      status(result) mustBe OK
+      contentAsString(result) mustBe view(mrn, arrivalId, NormalMode, form)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
       when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(Some(unloadingPermission)))
 
       val userAnswers = emptyUserAnswers.set(DateGoodsUnloadedPage, validAnswer).success.value
+
       setExistingUserAnswers(userAnswers)
 
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val view = app.injector.instanceOf[DateGoodsUnloadedView]
 
-      val result = route(app, FakeRequest(GET, dateGoodsUnloadedRoute)).value
+      val request = FakeRequest(GET, dateGoodsUnloadedRoute)
 
-      status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val result = route(app, request).value
 
       val filledForm = form.bind(
         Map(
@@ -135,17 +122,8 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
         )
       )
 
-      val viewModel = DateInput.localDate(filledForm("value"))
-
-      val expectedJson = Json.obj(
-        "form"        -> filledForm,
-        "mrn"         -> mrn,
-        "date"        -> viewModel,
-        "onSubmitUrl" -> routes.DateGoodsUnloadedController.onSubmit(arrivalId, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual "dateGoodsUnloaded.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      status(result) mustEqual OK
+      contentAsString(result) mustBe view(mrn, arrivalId, NormalMode, filledForm)(request, messages).toString
     }
 
     "must return an Internal Server Error on a GET when date of preparation is not available" in {
@@ -186,6 +164,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
             "value.month" -> validAnswer.getMonthValue.toString,
             "value.year"  -> validAnswer.getYear.toString
           )
+
       val result = route(app, postRequest).value
 
       status(result) mustEqual SEE_OTHER
@@ -194,7 +173,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
       when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(Some(unloadingPermission)))
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -204,37 +183,25 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
         "value.month" -> "invalid value",
         "value.year"  -> "invalid value"
       )
+
+      val view = app.injector.instanceOf[DateGoodsUnloadedView]
+
       val request =
         FakeRequest(POST, dateGoodsUnloadedRoute)
           .withFormUrlEncodedBody(badSubmission.toSeq: _*)
 
       val boundForm = form.bind(badSubmission)
 
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val viewModel = DateInput.localDate(boundForm("value"))
-
-      val expectedJson = Json.obj(
-        "form"        -> boundForm,
-        "mrn"         -> mrn,
-        "date"        -> viewModel,
-        "onSubmitUrl" -> routes.DateGoodsUnloadedController.onSubmit(arrivalId, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual "dateGoodsUnloaded.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustBe view(mrn, arrivalId, NormalMode, boundForm)(request, messages).toString
     }
 
     "must return a Bad Request and errors when the date is before date of preparation" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
+
       when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(Some(unloadingPermission)))
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -252,26 +219,13 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       val boundForm = form.bind(badSubmission)
 
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val view = app.injector.instanceOf[DateGoodsUnloadedView]
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val viewModel = DateInput.localDate(boundForm("value"))
-
-      val expectedJson = Json.obj(
-        "form"        -> boundForm,
-        "mrn"         -> mrn,
-        "date"        -> viewModel,
-        "onSubmitUrl" -> routes.DateGoodsUnloadedController.onSubmit(arrivalId, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual "dateGoodsUnloaded.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustBe view(mrn, arrivalId, NormalMode, boundForm)(request, messages).toString
     }
 
     "must return an Internal Server Error when valid data is submitted but date of preparation is not available" in {
