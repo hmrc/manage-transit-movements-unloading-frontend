@@ -31,14 +31,6 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryAnythingElseToReportUserAnswersEntry: Arbitrary[(AnythingElseToReportPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[AnythingElseToReportPage.type]
-        value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
   implicit lazy val arbitraryAreAnySealsBrokenUserAnswersEntry: Arbitrary[(AreAnySealsBrokenPage.type, JsValue)] =
     Arbitrary {
       for {

@@ -63,11 +63,6 @@ POST       /:arrivalId/are-any-seals-broken                      controllers.Are
 GET        /:arrivalId/change-are-any-seals-broken                  controllers.AreAnySealsBrokenController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-are-any-seals-broken                 controllers.AreAnySealsBrokenController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/anything-else-to-report                  controllers.AnythingElseToReportController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/anything-else-to-report                     controllers.AnythingElseToReportController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-anything-else-to-report                controllers.AnythingElseToReportController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-anything-else-to-report                 controllers.AnythingElseToReportController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
-
 GET        /:arrivalId/confirmation                       controllers.ConfirmationController.onPageLoad(arrivalId: ArrivalId)
 
 GET        /:arrivalId/changes-to-report                        controllers.ChangesToReportController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
