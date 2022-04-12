@@ -18,55 +18,42 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.ConfirmRemoveCommentsFormProvider
-import matchers.JsonMatchers
 import models.NormalMode
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
-import play.api.libs.json.{JsObject, Json}
+import org.mockito.Mockito.when
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import views.html.ConfirmRemoveCommentsView
 
 import scala.concurrent.Future
 
-class ConfirmRemoveCommentsControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class ConfirmRemoveCommentsControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  val formProvider = new ConfirmRemoveCommentsFormProvider()
-  val form         = formProvider()
+  private val formProvider = new ConfirmRemoveCommentsFormProvider()
+  private val form         = formProvider()
+  private val mode         = NormalMode
 
-  lazy val confirmRemoveCommentsRoute = routes.ConfirmRemoveCommentsController.onPageLoad(arrivalId, NormalMode).url
+  lazy val confirmRemoveCommentsRoute = routes.ConfirmRemoveCommentsController.onPageLoad(arrivalId, mode).url
 
   "ConfirmRemoveComments Controller" - {
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, confirmRemoveCommentsRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, confirmRemoveCommentsRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = injector.instanceOf[ConfirmRemoveCommentsView]
 
-      val expectedJson = Json.obj(
-        "form"      -> form,
-        "mode"      -> NormalMode,
-        "mrn"       -> mrn,
-        "arrivalId" -> arrivalId,
-        "radios"    -> Radios.yesNo(form("value"))
-      )
+      status(result) mustEqual OK
 
-      templateCaptor.getValue mustEqual "confirmRemoveComments.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(form, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to the next page when true is submitted" in {
@@ -105,32 +92,20 @@ class ConfirmRemoveCommentsControllerSpec extends SpecBase with AppWithDefaultMo
 
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(POST, confirmRemoveCommentsRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm      = form.bind(Map("value" -> ""))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request   = FakeRequest(POST, confirmRemoveCommentsRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = injector.instanceOf[ConfirmRemoveCommentsView]
 
-      val expectedJson = Json.obj(
-        "form"      -> boundForm,
-        "mode"      -> NormalMode,
-        "mrn"       -> mrn,
-        "arrivalId" -> arrivalId,
-        "radios"    -> Radios.yesNo(boundForm("value"))
-      )
-
-      templateCaptor.getValue mustEqual "confirmRemoveComments.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(boundForm, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
