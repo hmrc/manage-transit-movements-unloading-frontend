@@ -25,20 +25,13 @@ import javax.inject.Inject
 class Actions @Inject() (
   identifierAction: IdentifierAction,
   dataRetrievalActionProvider: DataRetrievalActionProvider,
-  checkArrivalStatusProvider: CheckArrivalStatusProvider,
   dataRequiredAction: DataRequiredAction
 ) {
-
-  def getDataWithStatus(arrivalId: ArrivalId): ActionBuilder[OptionalDataRequest, AnyContent] =
-    identifierAction andThen checkArrivalStatusProvider(arrivalId) andThen dataRetrievalActionProvider(arrivalId)
 
   def getData(arrivalId: ArrivalId): ActionBuilder[OptionalDataRequest, AnyContent] =
     identifierAction andThen dataRetrievalActionProvider(arrivalId)
 
   def requireData(arrivalId: ArrivalId): ActionBuilder[DataRequest, AnyContent] =
     getData(arrivalId) andThen dataRequiredAction
-
-  def requireDataWithStatus(arrivalId: ArrivalId): ActionBuilder[DataRequest, AnyContent] =
-    getDataWithStatus(arrivalId) andThen dataRequiredAction
 
 }

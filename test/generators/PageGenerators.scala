@@ -37,9 +37,6 @@ trait PageGenerators {
   implicit lazy val arbitraryChangesToReportPage: Arbitrary[ChangesToReportPage.type] =
     Arbitrary(ChangesToReportPage)
 
-  implicit lazy val arbitraryAnythingElseToReportPage: Arbitrary[AnythingElseToReportPage.type] =
-    Arbitrary(AnythingElseToReportPage)
-
   implicit lazy val arbitraryAreAnySealsBrokenPage: Arbitrary[AreAnySealsBrokenPage.type] =
     Arbitrary(AreAnySealsBrokenPage)
 
