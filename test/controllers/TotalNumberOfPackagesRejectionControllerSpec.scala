@@ -16,8 +16,9 @@
 
 package controllers
 
+import java.time.LocalDate
+
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import config.FrontendAppConfig
 import forms.TotalNumberOfPackagesFormProvider
 import matchers.JsonMatchers
 import models.ErrorType.IncorrectValue
@@ -35,7 +36,6 @@ import play.twirl.api.Html
 import services.UnloadingRemarksRejectionService
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
 class TotalNumberOfPackagesRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
@@ -48,7 +48,6 @@ class TotalNumberOfPackagesRejectionControllerSpec extends SpecBase with AppWith
   lazy val totalNumberOfPackagesRoute = routes.TotalNumberOfPackagesRejectionController.onPageLoad(arrivalId).url
 
   private val mockRejectionService = mock[UnloadingRemarksRejectionService]
-  private val frontendAppConfig    = app.injector.instanceOf[FrontendAppConfig]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
