@@ -19,6 +19,7 @@ package controllers
 import config.FrontendAppConfig
 import connectors.UnloadingConnector
 import controllers.actions.IdentifierAction
+import handlers.ErrorHandler
 import javax.inject.Inject
 import models.ArrivalId
 import play.api.i18n.I18nSupport
@@ -32,11 +33,11 @@ class UnloadingPermissionPDFController @Inject() (identify: IdentifierAction,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   unloadingConnector: UnloadingConnector,
                                                   val renderer: Renderer,
-                                                  val appConfig: FrontendAppConfig
+                                                  val appConfig: FrontendAppConfig,
+                                                  errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with TechnicalDifficultiesPage {
+    with I18nSupport {
 
   def getPDF(arrivalId: ArrivalId): Action[AnyContent] = identify.async {
     implicit request =>
@@ -62,8 +63,7 @@ class UnloadingPermissionPDFController @Inject() (identify: IdentifierAction,
                     val headers = contentDisposition ++ contentType
 
                     Future.successful(Ok(result.bodyAsBytes.toArray).withHeaders(headers: _*))
-                  case _ =>
-                    renderTechnicalDifficultiesPage
+                  case _ => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
                 }
             }
         }

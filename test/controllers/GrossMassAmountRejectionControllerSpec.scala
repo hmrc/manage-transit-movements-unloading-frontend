@@ -16,8 +16,9 @@
 
 package controllers
 
+import java.time.LocalDate
+
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import config.FrontendAppConfig
 import forms.GrossMassAmountFormProvider
 import matchers.JsonMatchers
 import models.ErrorType.IncorrectValue
@@ -34,7 +35,6 @@ import play.twirl.api.Html
 import services.UnloadingRemarksRejectionService
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
 class GrossMassAmountRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
@@ -44,8 +44,7 @@ class GrossMassAmountRejectionControllerSpec extends SpecBase with AppWithDefaul
 
   lazy val grossMassAmountRejectionRoute = routes.GrossMassAmountRejectionController.onPageLoad(arrivalId).url
 
-  private val mockRejectionService                 = mock[UnloadingRemarksRejectionService]
-  private val frontendAppConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  private val mockRejectionService = mock[UnloadingRemarksRejectionService]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -89,23 +88,17 @@ class GrossMassAmountRejectionControllerSpec extends SpecBase with AppWithDefaul
 
     "must render the technical difficulties when there is no rejection message" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockRejectionService.getRejectedValueAsString(any(), any())(any())(any())).thenReturn(Future.successful(None))
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, grossMassAmountRejectionRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, grossMassAmountRejectionRoute)
 
-      val result       = route(app, request).value
-      val expectedJson = Json.obj("contactUrl" -> frontendAppConfig.nctsEnquiriesUrl)
+      val result = route(app, request).value
 
-      status(result) mustEqual INTERNAL_SERVER_ERROR
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      status(result) mustEqual SEE_OTHER
 
-      templateCaptor.getValue mustEqual "technicalDifficulties.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
     }
   }
 
@@ -132,7 +125,6 @@ class GrossMassAmountRejectionControllerSpec extends SpecBase with AppWithDefaul
 
   "must render the technical difficulties page when rejection message is None" in {
     checkArrivalStatus()
-    when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
     when(mockRejectionService.unloadingRemarksRejectionMessage(any())(any())).thenReturn(Future.successful(None))
     when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -141,16 +133,10 @@ class GrossMassAmountRejectionControllerSpec extends SpecBase with AppWithDefaul
     val request =
       FakeRequest(POST, grossMassAmountRejectionRoute)
         .withFormUrlEncodedBody(("value", "123456.123"))
-    val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-    val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
-    val result       = route(app, request).value
-    val expectedJson = Json.obj("contactUrl" -> frontendAppConfig.nctsEnquiriesUrl)
-
-    status(result) mustEqual INTERNAL_SERVER_ERROR
-    verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-    templateCaptor.getValue mustEqual "technicalDifficulties.njk"
-    jsonCaptor.getValue must containJson(expectedJson)
+    val result = route(app, request).value
+    status(result) mustEqual SEE_OTHER
+    redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
   }
 
   "must return a Bad Request and errors when invalid data is submitted" in {
