@@ -148,7 +148,6 @@ class DateGoodsUnloadedRejectionControllerSpec extends SpecBase with AppWithDefa
 
     "must return an Internal Server Error on a GET when date of preparation is not available" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockRejectionService.unloadingRemarksRejectionMessage(any())(any())).thenReturn(Future.successful(Some(unloadingRemarksRejectionMessage)))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
       when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(None))
@@ -157,18 +156,9 @@ class DateGoodsUnloadedRejectionControllerSpec extends SpecBase with AppWithDefa
 
       val result = route(app, FakeRequest(GET, dateGoodsUnloadedRoute)).value
 
-      status(result) mustEqual INTERNAL_SERVER_ERROR
+      status(result) mustEqual SEE_OTHER
 
-      val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-      val templateCaptor    = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor        = ArgumentCaptor.forClass(classOf[JsObject])
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual "technicalDifficulties.njk"
-
-      val expectedJson = Json.obj("contactUrl" -> frontendAppConfig.nctsEnquiriesUrl)
-      jsonCaptor.getValue must containJson(expectedJson)
+      redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
@@ -254,7 +244,6 @@ class DateGoodsUnloadedRejectionControllerSpec extends SpecBase with AppWithDefa
 
     "must return an Internal Server Error when valid data is submitted but date of preparation is not available" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockRejectionService.unloadingRemarksRejectionMessage(any())(any())).thenReturn(Future.successful(Some(unloadingRemarksRejectionMessage)))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
       when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(None))
@@ -274,18 +263,9 @@ class DateGoodsUnloadedRejectionControllerSpec extends SpecBase with AppWithDefa
 
       val result = route(app, postRequest).value
 
-      status(result) mustEqual INTERNAL_SERVER_ERROR
+      status(result) mustEqual SEE_OTHER
 
-      val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-      val templateCaptor    = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor        = ArgumentCaptor.forClass(classOf[JsObject])
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      templateCaptor.getValue mustEqual "technicalDifficulties.njk"
-
-      val expectedJson = Json.obj("contactUrl" -> frontendAppConfig.nctsEnquiriesUrl)
-      jsonCaptor.getValue must containJson(expectedJson)
+      redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
     }
   }
 }

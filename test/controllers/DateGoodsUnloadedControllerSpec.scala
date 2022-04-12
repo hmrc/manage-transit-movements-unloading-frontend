@@ -128,25 +128,17 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must return an Internal Server Error on a GET when date of preparation is not available" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(None))
 
       setExistingUserAnswers(emptyUserAnswers)
 
       val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-      val templateCaptor    = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor        = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(app, FakeRequest(GET, dateGoodsUnloadedRoute)).value
 
-      status(result) mustEqual INTERNAL_SERVER_ERROR
+      status(result) mustEqual SEE_OTHER
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj("contactUrl" -> frontendAppConfig.nctsEnquiriesUrl)
-
-      templateCaptor.getValue mustEqual "technicalDifficulties.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
 
     }
 
@@ -230,14 +222,11 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must return an Internal Server Error when valid data is submitted but date of preparation is not available" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(None))
 
       setExistingUserAnswers(emptyUserAnswers)
 
       val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-      val templateCaptor    = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor        = ArgumentCaptor.forClass(classOf[JsObject])
 
       val postRequest =
         FakeRequest(POST, dateGoodsUnloadedRoute)
@@ -248,12 +237,9 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
           )
       val result = route(app, postRequest).value
 
-      status(result) mustEqual INTERNAL_SERVER_ERROR
+      status(result) mustEqual SEE_OTHER
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj("contactUrl" -> frontendAppConfig.nctsEnquiriesUrl)
-      jsonCaptor.getValue must containJson(expectedJson)
+      redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
     }
   }
 }
