@@ -87,7 +87,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[CheckArrivalStatusProvider].toInstance(mockCheckArrivalStatusProvider),
         bind[SessionRepository].toInstance(mockSessionRepository),
         bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),
-        bind[MessagesApi].toInstance(Helpers.stubMessagesApi()),
         bind[Navigator].toInstance(fakeNavigator)
       )
 }

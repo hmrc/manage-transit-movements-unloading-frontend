@@ -65,7 +65,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
   "must render service name link in header" in {
     val link = getElementByClass(doc, "hmrc-header__service-name--linked")
     assertElementContainsText(link, "Manage your transit movements")
-    assertElementContainsHref(link, "http://localhost:10121/manage-transit-movements/arrival/movement-reference-number")
+    assertElementContainsHref(link, "http://localhost:10123/manage-transit-movements/unloading")
   }
 
   "must append service to feedback link" in {
@@ -85,7 +85,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
       .find(_.text() == "Accessibility statement")
       .get
 
-    getElementHref(link) must include("http://localhost:12346/accessibility-statement/manage-transit-movements?referrerUrl=")
+    getElementHref(link) must include("http://localhost:12346/accessibility-statement/manage-transit-movements-unloading?referrerUrl=")
   }
 
   "must not render language toggle" in {
