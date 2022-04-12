@@ -30,22 +30,21 @@
 @(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("areAnySealsBroken.title"),
+    title = messages("confirmRemoveComments.title"),
     showBackLink = true
 ) {
 
     @errorSummary(form.errors)
 
-
-    @formHelper(action = routes.AreAnySealsBrokenController.onSubmit(arrivalId, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.ConfirmRemoveCommentsController.onSubmit(arrivalId, mode), 'autoComplete -> "off") {
 
         @caption(mrn.toString)
 
-        @heading("areAnySealsBroken.heading")
+        @heading("confirmRemoveComments.heading")
 
         @inputYesNo(
             field = form("value"),
-            messageKeyPrefix = "areAnySealsBroken",
+            messageKeyPrefix = "confirmRemoveComments",
             legendIsHeading = false,
             legendIsVisible = false
         )

@@ -16,21 +16,21 @@
 
 package views
 
-import forms.AreAnySealsBrokenFormProvider
+import forms.ConfirmRemoveCommentsFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.AreAnySealsBrokenView
+import views.html.ConfirmRemoveCommentsView
 
-class AreAnySealsBrokenViewSpec extends YesNoViewBehaviours {
+class ConfirmRemoveCommentsViewSpec extends YesNoViewBehaviours {
 
-  override def form: Form[Boolean] = new AreAnySealsBrokenFormProvider()()
+  override def form: Form[Boolean] = new ConfirmRemoveCommentsFormProvider()()
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AreAnySealsBrokenView].apply(form, mrn, arrivalId, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[ConfirmRemoveCommentsView].apply(form, mrn, arrivalId, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "areAnySealsBroken"
+  override val prefix: String = "confirmRemoveComments"
 
   behave like pageWithBackLink
 
