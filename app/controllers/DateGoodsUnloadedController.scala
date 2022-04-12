@@ -29,7 +29,7 @@ import renderer.Renderer
 import repositories.SessionRepository
 import services.UnloadingPermissionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{DateInput, NunjucksSupport}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.DateGoodsUnloadedView
 
 import javax.inject.Inject

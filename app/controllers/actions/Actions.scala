@@ -14,17 +14,24 @@
  * limitations under the License.
  */
 
-package forms
+package controllers.actions
+
+import models.ArrivalId
+import models.requests.{DataRequest, OptionalDataRequest}
+import play.api.mvc.{ActionBuilder, AnyContent}
 
 import javax.inject.Inject
 
-import forms.mappings.Mappings
-import play.api.data.Form
+class Actions @Inject() (
+  identifierAction: IdentifierAction,
+  dataRetrievalActionProvider: DataRetrievalActionProvider,
+  dataRequiredAction: DataRequiredAction
+) {
 
-class AnythingElseToReportFormProvider @Inject() extends Mappings {
+  def getData(arrivalId: ArrivalId): ActionBuilder[OptionalDataRequest, AnyContent] =
+    identifierAction andThen dataRetrievalActionProvider(arrivalId)
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("anythingElseToReport.error.required")
-    )
+  def requireData(arrivalId: ArrivalId): ActionBuilder[DataRequest, AnyContent] =
+    getData(arrivalId) andThen dataRequiredAction
+
 }
