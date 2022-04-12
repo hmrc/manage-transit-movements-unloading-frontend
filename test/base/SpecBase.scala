@@ -26,6 +26,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.i18n.{Messages, MessagesApi}
+import play.api.inject.Injector
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -44,6 +45,8 @@ trait SpecBase
   val arrivalId: ArrivalId = ArrivalId(1)
 
   val configKey = "config"
+
+  def injector: Injector = app.injector
 
   val mrn: MovementReferenceNumber  = MovementReferenceNumber("19", "GB", "1234567890123")
   val eoriNumber: EoriNumber        = EoriNumber("id")

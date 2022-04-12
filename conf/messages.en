@@ -168,11 +168,6 @@ areAnySealsBroken.heading = Are any of the official customs seals broken?
 areAnySealsBroken.checkYourAnswersLabel = Are any of the official customs seals broken?
 areAnySealsBroken.error.required = Select yes if any of the official customs seals are broken
 
-anythingElseToReport.title = Is there anything else to report?
-anythingElseToReport.heading = Is there anything else to report?
-anythingElseToReport.checkYourAnswersLabel = Is there anything else to report?
-anythingElseToReport.error.required = Select yes if there is anything else to report
-
 confirmation.title = Unloading remarks sent
 confirmation.heading = Unloading remarks sent
 

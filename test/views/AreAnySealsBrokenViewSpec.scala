@@ -16,29 +16,27 @@
 
 package views
 
+import forms.AreAnySealsBrokenFormProvider
+import models.NormalMode
+import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.ViewBehaviours
-import views.html.TechnicalDifficultiesView
+import views.behaviours.YesNoViewBehaviours
+import views.html.AreAnySealsBrokenView
 
-class TechnicalDifficultiesViewSpec extends ViewBehaviours {
+class AreAnySealsBrokenViewSpec extends YesNoViewBehaviours {
 
-  private val contactUrl = "http://localhost:9250"
+  override def form: Form[Boolean] = new AreAnySealsBrokenFormProvider()()
 
-  override def view: HtmlFormat.Appendable =
-    injector.instanceOf[TechnicalDifficultiesView].apply()(fakeRequest, messages)
+  override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
+    injector.instanceOf[AreAnySealsBrokenView].apply(form, mrn, arrivalId, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "technicalDifficulties"
+  override val prefix: String = "areAnySealsBroken"
 
   behave like pageWithBackLink
 
   behave like pageWithHeading()
 
-  behave like pageWithContent("p", "Try again later.")
+  behave like pageWithRadioItems(legendIsHeading = false, None, legendIsVisible = false)
 
-  behave like pageWithPartialContent("p", "You can ")
-  behave like pageWithLink(
-    "contact",
-    "contact the New Computerised Transit System helpdesk if you need to speak to someone about transit movements (opens in a new tab).",
-    contactUrl
-  )
+  behave like pageWithSubmitButton("Continue")
 }

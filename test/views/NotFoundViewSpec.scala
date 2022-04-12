@@ -23,7 +23,7 @@ import views.html.NotFoundView
 class NotFoundViewSpec extends ViewBehaviours {
 
   override def view: HtmlFormat.Appendable =
-    app.injector.instanceOf[NotFoundView].apply()(fakeRequest, messages)
+    injector.instanceOf[NotFoundView].apply()(fakeRequest, messages)
 
   override val prefix: String = "pageNotFound"
 

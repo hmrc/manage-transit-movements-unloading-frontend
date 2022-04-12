@@ -35,7 +35,7 @@ class UnloadingGuidanceController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: UnloadingGuidanceView,
   checkArrivalStatus: CheckArrivalStatusProvider
-)() extends FrontendBaseController
+) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
