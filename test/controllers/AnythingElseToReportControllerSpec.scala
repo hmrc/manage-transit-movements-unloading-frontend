@@ -18,24 +18,21 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AnythingElseToReportFormProvider
-import matchers.JsonMatchers
 import models.NormalMode
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.when
 import pages.AnythingElseToReportPage
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import views.html.AnythingElseToReportView
 
 import scala.concurrent.Future
 
-class AnythingElseToReportControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class AnythingElseToReportControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   val formProvider = new AnythingElseToReportFormProvider()
   val form         = formProvider()
+  private val mode = NormalMode
 
   lazy val anythingElseToReportRoute = routes.AnythingElseToReportController.onPageLoad(arrivalId, NormalMode).url
 
@@ -43,63 +40,35 @@ class AnythingElseToReportControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, anythingElseToReportRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, anythingElseToReportRoute)
 
       val result = route(app, request).value
+      val view   = injector.instanceOf[AnythingElseToReportView]
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"      -> form,
-        "mode"      -> NormalMode,
-        "mrn"       -> mrn,
-        "arrivalId" -> arrivalId,
-        "radios"    -> Radios.yesNo(form("value"))
-      )
-
-      templateCaptor.getValue mustEqual "anythingElseToReport.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(form, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       val userAnswers = emptyUserAnswers.set(AnythingElseToReportPage, true).success.value
       setExistingUserAnswers(userAnswers)
-
-      val request        = FakeRequest(GET, anythingElseToReportRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(app, request).value
+      val request = FakeRequest(GET, anythingElseToReportRoute)
+      val result  = route(app, request).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
+      val view       = injector.instanceOf[AnythingElseToReportView]
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val expectedJson = Json.obj(
-        "form"      -> filledForm,
-        "mode"      -> NormalMode,
-        "arrivalId" -> arrivalId,
-        "mrn"       -> mrn,
-        "radios"    -> Radios.yesNo(filledForm("value"))
-      )
-
-      templateCaptor.getValue mustEqual "anythingElseToReport.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(filledForm, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -121,32 +90,19 @@ class AnythingElseToReportControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(POST, anythingElseToReportRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm      = form.bind(Map("value" -> ""))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(app, request).value
+      val request   = FakeRequest(POST, anythingElseToReportRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
+      val result    = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = injector.instanceOf[AnythingElseToReportView]
 
-      val expectedJson = Json.obj(
-        "form"      -> boundForm,
-        "mode"      -> NormalMode,
-        "mrn"       -> mrn,
-        "arrivalId" -> arrivalId,
-        "radios"    -> Radios.yesNo(boundForm("value"))
-      )
-
-      templateCaptor.getValue mustEqual "anythingElseToReport.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(boundForm, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

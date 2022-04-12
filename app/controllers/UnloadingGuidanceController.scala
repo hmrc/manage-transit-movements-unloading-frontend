@@ -26,7 +26,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.UnloadingGuidanceView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 class UnloadingGuidanceController @Inject() (
   override val messagesApi: MessagesApi,
@@ -37,8 +36,7 @@ class UnloadingGuidanceController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: UnloadingGuidanceView,
   checkArrivalStatus: CheckArrivalStatusProvider
-)(implicit ec: ExecutionContext)
-    extends FrontendBaseController
+) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
