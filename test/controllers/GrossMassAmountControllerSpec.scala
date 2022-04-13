@@ -18,84 +18,59 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.GrossMassAmountFormProvider
-import matchers.JsonMatchers
 import models.NormalMode
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.when
 import pages.GrossMassAmountPage
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.GrossMassAmountView
 
 import scala.concurrent.Future
 
-class GrossMassAmountControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class GrossMassAmountControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  val formProvider = new GrossMassAmountFormProvider()
-  val form         = formProvider()
-
-  lazy val grossMassAmountRoute = routes.GrossMassAmountController.onPageLoad(arrivalId, NormalMode).url
+  private val formProvider              = new GrossMassAmountFormProvider()
+  private val form                      = formProvider()
+  private val mode                      = NormalMode
+  private lazy val grossMassAmountRoute = routes.GrossMassAmountController.onPageLoad(arrivalId, mode).url
 
   "GrossMassAmount Controller" - {
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, grossMassAmountRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, grossMassAmountRoute)
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[GrossMassAmountView]
+
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"        -> form,
-        "mrn"         -> mrn,
-        "onSubmitUrl" -> routes.GrossMassAmountController.onSubmit(arrivalId, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual "grossMassAmount.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(form, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       val userAnswers = emptyUserAnswers.set(GrossMassAmountPage, "123456.123").success.value
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(GET, grossMassAmountRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, grossMassAmountRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
       val filledForm = form.bind(Map("value" -> "123456.123"))
 
-      val expectedJson = Json.obj(
-        "form"        -> filledForm,
-        "mrn"         -> mrn,
-        "onSubmitUrl" -> routes.GrossMassAmountController.onSubmit(arrivalId, NormalMode).url
-      )
+      val view = injector.instanceOf[GrossMassAmountView]
 
-      templateCaptor.getValue mustEqual "grossMassAmount.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(filledForm, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -116,30 +91,19 @@ class GrossMassAmountControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(POST, grossMassAmountRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm      = form.bind(Map("value" -> ""))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request   = FakeRequest(POST, grossMassAmountRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
+      val view = injector.instanceOf[GrossMassAmountView]
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"        -> boundForm,
-        "mrn"         -> mrn,
-        "onSubmitUrl" -> routes.GrossMassAmountController.onSubmit(arrivalId, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual "grossMassAmount.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(boundForm, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
