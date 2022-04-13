@@ -51,8 +51,6 @@ class AreAnySealsBrokenControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       val view = injector.instanceOf[AreAnySealsBrokenView]
 
-      status(result) mustEqual OK
-
       contentAsString(result) mustEqual
         view(form, mrn, arrivalId, mode)(request, messages).toString
     }

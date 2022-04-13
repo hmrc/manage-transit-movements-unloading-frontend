@@ -37,6 +37,8 @@ class DateGoodsUnloadedViewSpec extends SpecBase with DateInputViewBehaviour wit
 
   behave like pageWithBackLink()
 
+  behave like pageWithCaption(mrn.toString)
+
   behave like pageWithDateInput
 
 }

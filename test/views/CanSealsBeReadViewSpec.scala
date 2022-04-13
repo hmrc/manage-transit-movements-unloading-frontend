@@ -34,6 +34,8 @@ class CanSealsBeReadViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithBackLink
 
+  behave like pageWithCaption(mrn.toString)
+
   behave like pageWithHeading()
 
   behave like pageWithRadioItems()
