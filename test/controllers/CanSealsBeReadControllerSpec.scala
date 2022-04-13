@@ -18,25 +18,23 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.CanSealsBeReadFormProvider
-import matchers.JsonMatchers
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.CanSealsBeReadPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.CanSealsBeReadView
 
 import scala.concurrent.Future
 
-class CanSealsBeReadControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class CanSealsBeReadControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider = new CanSealsBeReadFormProvider()
   private val form         = formProvider()
   private val mode         = NormalMode
 
-  lazy val canSealsBeReadRoute = routes.CanSealsBeReadController.onPageLoad(arrivalId, NormalMode).url
+  private lazy val canSealsBeReadRoute = routes.CanSealsBeReadController.onPageLoad(arrivalId, NormalMode).url
 
   "CanSealsBeRead Controller" - {
 
