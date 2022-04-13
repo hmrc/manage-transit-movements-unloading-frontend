@@ -19,11 +19,12 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.DateGoodsUnloadedFormProvider
+import handlers.ErrorHandler
+import javax.inject.Inject
 import models.{ArrivalId, Mode}
 import navigation.NavigatorUnloadingPermission
 import pages.DateGoodsUnloadedPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import repositories.SessionRepository
@@ -32,7 +33,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.DateGoodsUnloadedView
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DateGoodsUnloadedController @Inject() (
@@ -48,6 +48,7 @@ class DateGoodsUnloadedController @Inject() (
   unloadingPermissionService: UnloadingPermissionService,
   frontendAppConfig: FrontendAppConfig,
   checkArrivalStatus: CheckArrivalStatusProvider,
+  errorHandler: ErrorHandler,
   view: DateGoodsUnloadedView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -73,9 +74,7 @@ class DateGoodsUnloadedController @Inject() (
               Future.successful(Ok(view(mrn, arrivalId, mode, preparedForm)))
 
             case None =>
-              val json = Json.obj("contactUrl" -> frontendAppConfig.nctsEnquiriesUrl)
-
-              renderer.render("technicalDifficulties.njk", json).map(InternalServerError(_))
+              errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
           }
 
     }
@@ -105,9 +104,7 @@ class DateGoodsUnloadedController @Inject() (
                 )
 
             case None =>
-              val json = Json.obj("contactUrl" -> frontendAppConfig.nctsEnquiriesUrl)
-
-              renderer.render("technicalDifficulties.njk", json).map(InternalServerError(_))
+              errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
           }
 
     }

@@ -19,6 +19,7 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.GrossMassAmountFormProvider
+import handlers.ErrorHandler
 import javax.inject.Inject
 import models.{ArrivalId, UserAnswers}
 import pages.GrossMassAmountPage
@@ -43,12 +44,12 @@ class GrossMassAmountRejectionController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   val renderer: Renderer,
   val appConfig: FrontendAppConfig,
-  checkArrivalStatus: CheckArrivalStatusProvider
+  checkArrivalStatus: CheckArrivalStatusProvider,
+  errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
-    with NunjucksSupport
-    with TechnicalDifficultiesPage {
+    with NunjucksSupport {
 
   private val form = formProvider()
 
@@ -61,7 +62,7 @@ class GrossMassAmountRejectionController @Inject() (
             "onSubmitUrl" -> routes.GrossMassAmountRejectionController.onSubmit(arrivalId).url
           )
           renderer.render("grossMassAmount.njk", json).map(Ok(_))
-        case None => renderTechnicalDifficultiesPage
+        case None => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
       }
   }
 
@@ -88,7 +89,7 @@ class GrossMassAmountRejectionController @Inject() (
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId))
 
-              case _ => renderTechnicalDifficultiesPage
+              case _ => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
             }
         )
   }

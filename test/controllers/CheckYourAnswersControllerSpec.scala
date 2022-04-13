@@ -21,8 +21,6 @@ import java.time.LocalDate
 import audit.services.AuditEventSubmissionService
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import cats.data.NonEmptyList
-import config.FrontendAppConfig
-import matchers.JsonMatchers.containJson
 import models.{TraderAtDestination, UnloadingPermission}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -30,7 +28,7 @@ import org.mockito.Mockito.{reset, times, verify, when}
 import play.api.http.Status.ACCEPTED
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.JsObject
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
@@ -118,21 +116,15 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
         checkArrivalStatus()
         when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(None))
 
-        when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
-
         setExistingUserAnswers(emptyUserAnswers)
 
         val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(arrivalId).url)
 
         val result = route(app, request).value
 
-        val templateCaptor = ArgumentCaptor.forClass(classOf[String])
+        status(result) mustEqual SEE_OTHER
 
-        status(result) mustEqual BAD_REQUEST
-
-        verify(mockRenderer, times(1)).render(templateCaptor.capture(), any())(any())
-
-        templateCaptor.getValue mustEqual "badRequest.njk"
+        redirectLocation(result).value mustEqual routes.ErrorController.badRequest().url
       }
 
     }
@@ -156,11 +148,8 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
         redirectLocation(result).value mustEqual routes.ConfirmationController.onPageLoad(arrivalId).url
       }
 
-      "render the Technical Difficulties page on failed submission (invalid response code)" in {
+      "render the Bad Request page on failed submission (invalid response code)" in {
         checkArrivalStatus()
-        when(mockRenderer.render(any(), any())(any()))
-          .thenReturn(Future.successful(Html("")))
-        val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -168,29 +157,20 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
         when(mockUnloadingRemarksService.submit(any(), any(), any())(any())).thenReturn(Future.successful(Some(BAD_REQUEST)))
 
-        val request        = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit(arrivalId).url)
-        val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-        val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+        val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit(arrivalId).url)
 
         val result = route(app, request).value
 
-        status(result) mustEqual INTERNAL_SERVER_ERROR
+        status(result) mustEqual SEE_OTHER
 
-        verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-        val expectedJson = Json.obj("contactUrl" -> frontendAppConfig.nctsEnquiriesUrl)
-
-        templateCaptor.getValue mustEqual "technicalDifficulties.njk"
-        jsonCaptor.getValue must containJson(expectedJson)
+        redirectLocation(result).value mustEqual routes.ErrorController.badRequest().url
       }
 
-      "return UNAUTHORIZED when backend returns 401" in {
+      "return Bad Request when backend returns 401" in {
         checkArrivalStatus()
         setExistingUserAnswers(emptyUserAnswers)
 
         when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(Some(unloadingPermission)))
-
-        when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
         when(mockUnloadingRemarksService.submit(any(), any(), any())(any())).thenReturn(Future.successful(Some(UNAUTHORIZED)))
 
@@ -198,14 +178,14 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
         val result = route(app, request).value
 
-        status(result) mustEqual UNAUTHORIZED
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual routes.ErrorController.badRequest().url
       }
 
-      "return INTERNAL_SERVER_ERROR on internal failure" in {
+      "return Technical Difficulties page on internal failure" in {
         checkArrivalStatus()
         setExistingUserAnswers(emptyUserAnswers)
-
-        when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
         when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(Some(unloadingPermission)))
 
@@ -215,14 +195,14 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
         val result = route(app, request).value
 
-        status(result) mustEqual INTERNAL_SERVER_ERROR
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
       }
 
-      "return INTERNAL_SERVER_ERROR when UnloadingPermission can't be retrieved" in {
+      "return Technical Difficulties page when UnloadingPermission can't be retrieved" in {
         checkArrivalStatus()
         setExistingUserAnswers(emptyUserAnswers)
-
-        when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
         when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(None))
 
@@ -230,7 +210,9 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
         val result = route(app, request).value
 
-        status(result) mustEqual INTERNAL_SERVER_ERROR
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
       }
     }
   }

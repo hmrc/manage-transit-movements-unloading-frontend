@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 trait DateInputViewBehaviour extends QuestionViewBehaviours[LocalDate] {
 
-  def pageWithDateInput =
+  def pageWithDateInput() =
     "page with date input" - {
       "when rendered" - {
 

@@ -19,7 +19,6 @@ package controllers
 import java.time.LocalDate
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import config.FrontendAppConfig
 import forms.TotalNumberOfItemsFormProvider
 import matchers.JsonMatchers
 import models.ErrorType.IncorrectValue
@@ -49,7 +48,6 @@ class TotalNumberOfItemsRejectionControllerSpec extends SpecBase with AppWithDef
   lazy val totalNumberOfItemsRoute = routes.TotalNumberOfItemsRejectionController.onPageLoad(arrivalId).url
 
   private val mockRejectionService = mock[UnloadingRemarksRejectionService]
-  private val frontendAppConfig    = app.injector.instanceOf[FrontendAppConfig]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -61,7 +59,7 @@ class TotalNumberOfItemsRejectionControllerSpec extends SpecBase with AppWithDef
       .guiceApplicationBuilder()
       .overrides(bind[UnloadingRemarksRejectionService].toInstance(mockRejectionService))
 
-  "TotalNumberOfItems Controller" - {
+  "TotalNumberOfItems Rejection Controller" - {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
@@ -93,24 +91,17 @@ class TotalNumberOfItemsRejectionControllerSpec extends SpecBase with AppWithDef
 
     "must render the Technical Difficulties page when get rejected value is None" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockRejectionService.getRejectedValueAsInt(any(), any())(any())(any())).thenReturn(Future.successful(None))
 
       val userAnswers = emptyUserAnswers.set(TotalNumberOfItemsPage, validAnswer).success.value
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(GET, totalNumberOfItemsRoute)
-      val result         = route(app, request).value
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, totalNumberOfItemsRoute)
+      val result  = route(app, request).value
 
-      status(result) mustEqual INTERNAL_SERVER_ERROR
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      status(result) mustEqual SEE_OTHER
 
-      val expectedJson = Json.obj("contactUrl" -> frontendAppConfig.nctsEnquiriesUrl)
-
-      templateCaptor.getValue mustEqual "technicalDifficulties.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -164,7 +155,6 @@ class TotalNumberOfItemsRejectionControllerSpec extends SpecBase with AppWithDef
 
     "must render Technical Difficulties when there is no rejection message on submission" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockRejectionService.unloadingRemarksRejectionMessage(any())(any())).thenReturn(Future.successful(None))
 
       setNoExistingUserAnswers()
@@ -172,18 +162,12 @@ class TotalNumberOfItemsRejectionControllerSpec extends SpecBase with AppWithDef
       val request =
         FakeRequest(POST, totalNumberOfItemsRoute)
           .withFormUrlEncodedBody(("value", validAnswer.toString))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
       val result = route(app, request).value
 
-      status(result) mustEqual INTERNAL_SERVER_ERROR
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      status(result) mustEqual SEE_OTHER
 
-      val expectedJson = Json.obj("contactUrl" -> frontendAppConfig.nctsEnquiriesUrl)
-
-      templateCaptor.getValue mustEqual "technicalDifficulties.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
     }
   }
 }

@@ -18,18 +18,17 @@ package controllers
 
 import controllers.actions._
 import forms.CanSealsBeReadFormProvider
-import javax.inject.Inject
 import models.{ArrivalId, Mode}
 import navigation.Navigator
 import pages.CanSealsBeReadPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.CanSealsBeReadView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CanSealsBeReadController @Inject() (
@@ -41,8 +40,8 @@ class CanSealsBeReadController @Inject() (
   requireData: DataRequiredAction,
   formProvider: CanSealsBeReadFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer,
-  checkArrivalStatus: CheckArrivalStatusProvider
+  checkArrivalStatus: CheckArrivalStatusProvider,
+  view: CanSealsBeReadView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -51,22 +50,14 @@ class CanSealsBeReadController @Inject() (
   private val form = formProvider()
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {
+    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData) {
       implicit request =>
         val preparedForm = request.userAnswers.get(CanSealsBeReadPage) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
 
-        val json = Json.obj(
-          "form"      -> preparedForm,
-          "mode"      -> mode,
-          "mrn"       -> request.userAnswers.mrn,
-          "arrivalId" -> arrivalId,
-          "radios"    -> Radios.yesNo(preparedForm("value"))
-        )
-
-        renderer.render("canSealsBeRead.njk", json).map(Ok(_))
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode))
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
@@ -75,18 +66,7 @@ class CanSealsBeReadController @Inject() (
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => {
-
-              val json = Json.obj(
-                "form"      -> formWithErrors,
-                "mode"      -> mode,
-                "mrn"       -> request.userAnswers.mrn,
-                "arrivalId" -> arrivalId,
-                "radios"    -> Radios.yesNo(formWithErrors("value"))
-              )
-
-              renderer.render("canSealsBeRead.njk", json).map(BadRequest(_))
-            },
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(CanSealsBeReadPage, value))

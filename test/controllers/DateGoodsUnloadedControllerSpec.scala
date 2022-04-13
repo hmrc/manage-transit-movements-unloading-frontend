@@ -16,28 +16,25 @@
 
 package controllers
 
+import java.time.{Clock, Instant, LocalDate, ZoneId}
+
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import cats.data.NonEmptyList
-import config.FrontendAppConfig
 import forms.DateGoodsUnloadedFormProvider
 import matchers.JsonMatchers
 import models.{NormalMode, TraderAtDestination, UnloadingPermission}
 import navigation.{FakeUnloadingPermissionNavigator, NavigatorUnloadingPermission}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito.{reset, when}
 import pages.DateGoodsUnloadedPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.UnloadingPermissionService
-import uk.gov.hmrc.viewmodels.{DateInput, NunjucksSupport}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.DateGoodsUnloadedView
 
-import java.time.{Clock, Instant, LocalDate, ZoneId}
 import scala.concurrent.Future
 
 class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
@@ -128,25 +125,15 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must return an Internal Server Error on a GET when date of preparation is not available" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(None))
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-      val templateCaptor    = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor        = ArgumentCaptor.forClass(classOf[JsObject])
-
       val result = route(app, FakeRequest(GET, dateGoodsUnloadedRoute)).value
 
-      status(result) mustEqual INTERNAL_SERVER_ERROR
+      status(result) mustEqual SEE_OTHER
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj("contactUrl" -> frontendAppConfig.nctsEnquiriesUrl)
-
-      templateCaptor.getValue mustEqual "technicalDifficulties.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
 
     }
 
@@ -230,14 +217,9 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must return an Internal Server Error when valid data is submitted but date of preparation is not available" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(None))
 
       setExistingUserAnswers(emptyUserAnswers)
-
-      val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-      val templateCaptor    = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor        = ArgumentCaptor.forClass(classOf[JsObject])
 
       val postRequest =
         FakeRequest(POST, dateGoodsUnloadedRoute)
@@ -248,12 +230,9 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
           )
       val result = route(app, postRequest).value
 
-      status(result) mustEqual INTERNAL_SERVER_ERROR
+      status(result) mustEqual SEE_OTHER
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj("contactUrl" -> frontendAppConfig.nctsEnquiriesUrl)
-      jsonCaptor.getValue must containJson(expectedJson)
+      redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
     }
   }
 }

@@ -17,6 +17,7 @@
 package controllers
 
 import controllers.actions._
+import javax.inject.Inject
 import models.{ArrivalId, Mode}
 import navigation.Navigator
 import pages.UnloadingGuidancePage
@@ -24,8 +25,6 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.UnloadingGuidanceView
-
-import javax.inject.Inject
 
 class UnloadingGuidanceController @Inject() (
   override val messagesApi: MessagesApi,

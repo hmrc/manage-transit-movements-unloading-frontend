@@ -18,23 +18,18 @@ package controllers
 
 import akka.util.ByteString
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import config.FrontendAppConfig
 import connectors.UnloadingConnector
 import generators.Generators
-import matchers.JsonMatchers.containJson
 import models.ArrivalId
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, Json}
 import play.api.libs.ws.ahc.AhcWSResponse
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 
 import scala.concurrent.Future
 
@@ -42,7 +37,6 @@ class UnloadingPermissionPDFControllerSpec extends SpecBase with AppWithDefaultM
 
   private val wsResponse: AhcWSResponse = mock[AhcWSResponse]
   val mockUnloadingConnector            = mock[UnloadingConnector]
-  private val frontendAppConfig         = app.injector.instanceOf[FrontendAppConfig]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -104,9 +98,6 @@ class UnloadingPermissionPDFControllerSpec extends SpecBase with AppWithDefaultM
       }
 
       "must render the TechnicalDifficulties page if connector returns error" in {
-        when(mockRenderer.render(any(), any())(any()))
-          .thenReturn(Future.successful(Html("")))
-
         val genErrorResponseCode = Gen.oneOf(300, 500).sample.value
 
         when(wsResponse.status) thenReturn genErrorResponseCode
@@ -120,18 +111,12 @@ class UnloadingPermissionPDFControllerSpec extends SpecBase with AppWithDefaultM
 
         val request = FakeRequest(GET, routes.UnloadingPermissionPDFController.getPDF(arrivalId).url)
           .withSession(("authToken" -> "BearerToken"))
-        val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-        val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
 
         val result = route(app, request).value
 
-        status(result) mustEqual INTERNAL_SERVER_ERROR
-        verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+        status(result) mustEqual SEE_OTHER
 
-        val expectedJson = Json.obj("contactUrl" -> frontendAppConfig.nctsEnquiriesUrl)
-
-        templateCaptor.getValue mustEqual "technicalDifficulties.njk"
-        jsonCaptor.getValue must containJson(expectedJson)
+        redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
       }
     }
   }

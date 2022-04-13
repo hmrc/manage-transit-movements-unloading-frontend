@@ -20,22 +20,21 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.CanSealsBeReadFormProvider
 import matchers.JsonMatchers
 import models.NormalMode
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.when
 import pages.CanSealsBeReadPage
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.CanSealsBeReadView
 
 import scala.concurrent.Future
 
 class CanSealsBeReadControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
 
-  val formProvider = new CanSealsBeReadFormProvider()
-  val form         = formProvider()
+  private val formProvider = new CanSealsBeReadFormProvider()
+  private val form         = formProvider()
+  private val mode         = NormalMode
 
   lazy val canSealsBeReadRoute = routes.CanSealsBeReadController.onPageLoad(arrivalId, NormalMode).url
 
@@ -45,63 +44,36 @@ class CanSealsBeReadControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       checkArrivalStatus()
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, canSealsBeReadRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, canSealsBeReadRoute)
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[CanSealsBeReadView]
+
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"      -> form,
-        "mode"      -> NormalMode,
-        "mrn"       -> mrn,
-        "arrivalId" -> arrivalId,
-        "radios"    -> Radios.yesNo(form("value"))
-      )
-
-      templateCaptor.getValue mustEqual "canSealsBeRead.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual view(form, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       val userAnswers = emptyUserAnswers.set(CanSealsBeReadPage, true).success.value
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(GET, canSealsBeReadRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, canSealsBeReadRoute)
 
       val result = route(app, request).value
 
-      status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val expectedJson = Json.obj(
-        "form"      -> filledForm,
-        "mode"      -> NormalMode,
-        "mrn"       -> mrn,
-        "arrivalId" -> arrivalId,
-        "radios"    -> Radios.yesNo(filledForm("value"))
-      )
+      val view = injector.instanceOf[CanSealsBeReadView]
 
-      templateCaptor.getValue mustEqual "canSealsBeRead.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual view(filledForm, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -124,32 +96,19 @@ class CanSealsBeReadControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(POST, canSealsBeReadRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm      = form.bind(Map("value" -> ""))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request   = FakeRequest(POST, canSealsBeReadRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[CanSealsBeReadView]
+
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"      -> boundForm,
-        "mode"      -> NormalMode,
-        "mrn"       -> mrn,
-        "arrivalId" -> arrivalId,
-        "radios"    -> Radios.yesNo(boundForm("value"))
-      )
-
-      templateCaptor.getValue mustEqual "canSealsBeRead.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual view(boundForm, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

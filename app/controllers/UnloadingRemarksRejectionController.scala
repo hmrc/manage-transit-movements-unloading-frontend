@@ -18,6 +18,7 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
+import handlers.ErrorHandler
 import javax.inject.Inject
 import logging.Logging
 import models.ArrivalId
@@ -36,12 +37,12 @@ class UnloadingRemarksRejectionController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   val renderer: Renderer,
   val appConfig: FrontendAppConfig,
-  service: UnloadingRemarksRejectionService
+  service: UnloadingRemarksRejectionService,
+  errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
-    with Logging
-    with TechnicalDifficultiesPage {
+    with Logging {
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = identify.async {
     implicit request =>
@@ -51,11 +52,11 @@ class UnloadingRemarksRejectionController @Inject() (
             case Some(viewModel) => renderer.render(viewModel.page, viewModel.json).map(Ok(_))
             case _ =>
               logger.debug(s"Couldn't build a UnloadingRemarksRejectionViewModel for arrival: $arrivalId")
-              renderTechnicalDifficultiesPage
+              errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
           }
         case _ =>
           logger.error(s"Failed to pull back a rejection message for arrival: $arrivalId")
-          renderTechnicalDifficultiesPage
+          errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
       }
   }
 }

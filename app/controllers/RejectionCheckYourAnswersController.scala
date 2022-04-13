@@ -27,6 +27,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import services.UnloadingRemarksService
+import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import viewModels.RejectionCheckYourAnswersViewModel
@@ -50,7 +51,7 @@ class RejectionCheckYourAnswersController @Inject() (
     extends FrontendBaseController
     with I18nSupport
     with NunjucksSupport
-    with TechnicalDifficultiesPage {
+    with HttpErrorFunctions {
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
     (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {
@@ -72,11 +73,11 @@ class RejectionCheckYourAnswersController @Inject() (
         unloadingRemarksService.resubmit(arrivalId, request.userAnswers) flatMap {
           case Some(status) =>
             status match {
-              case ACCEPTED =>
+              case status if is2xx(status) =>
                 auditEventSubmissionService.auditUnloadingRemarks(request.userAnswers, "resubmitUnloadingRemarks")
                 Future.successful(Redirect(routes.ConfirmationController.onPageLoad(arrivalId)))
-              case UNAUTHORIZED => errorHandler.onClientError(request, UNAUTHORIZED)
-              case _            => renderTechnicalDifficultiesPage
+              case status if is4xx(status) => errorHandler.onClientError(request, status)
+              case _                       => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
             }
           case None => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
         }

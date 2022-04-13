@@ -19,6 +19,7 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.VehicleNameRegistrationReferenceFormProvider
+import handlers.ErrorHandler
 import javax.inject.Inject
 import models.requests.IdentifierRequest
 import models.{ArrivalId, UserAnswers}
@@ -44,12 +45,12 @@ class VehicleNameRegistrationRejectionController @Inject() (
   rejectionService: UnloadingRemarksRejectionService,
   val renderer: Renderer,
   val appConfig: FrontendAppConfig,
-  checkArrivalStatus: CheckArrivalStatusProvider
+  checkArrivalStatus: CheckArrivalStatusProvider,
+  errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
-    with NunjucksSupport
-    with TechnicalDifficultiesPage {
+    with NunjucksSupport {
 
   private val form = formProvider()
 
@@ -62,7 +63,7 @@ class VehicleNameRegistrationRejectionController @Inject() (
             "onSubmitUrl" -> routes.VehicleNameRegistrationRejectionController.onSubmit(arrivalId).url
           )
           renderer.render("vehicleNameRegistrationReference.njk", json).map(Ok(_))
-        case None => renderTechnicalDifficultiesPage
+        case None => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
       }
   }
 
@@ -87,7 +88,7 @@ class VehicleNameRegistrationRejectionController @Inject() (
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId))
 
-              case _ => renderTechnicalDifficultiesPage
+              case _ => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
             }
         )
   }

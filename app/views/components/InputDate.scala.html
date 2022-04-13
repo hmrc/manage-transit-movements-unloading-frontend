@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import utils.DateErrorFormatter._
 @import viewModels.Link
 
 @this(
@@ -45,21 +44,21 @@
     id = field.id,
     items = Seq(
         InputItem(
-            classes = s"govuk-input--width-2 ${addErrorClass(field.error, "day")}",
+            classes = s"govuk-input--width-2",
             name = s"${field.id}.day",
             label = Some(messages("date.day.capitalized")),
             value = field("day").value,
             id = s"${field.id}.day"
         ),
         InputItem(
-            classes = s"govuk-input--width-2 ${addErrorClass(field.error, "month")}",
+            classes = s"govuk-input--width-2",
             name = s"${field.id}.month",
             label = Some(messages("date.month.capitalized")),
             value = field("month").value,
             id = s"${field.id}.month"
         ),
         InputItem(
-            classes = s"govuk-input--width-4 ${addErrorClass(field.error, "year")}",
+            classes = s"govuk-input--width-4",
             name = s"${field.id}.year",
             label = Some(messages("date.year.capitalized")),
             value = field("year").value,
@@ -67,5 +66,5 @@
         )
     ),
     hint = hint.map(hint => Hint(content = Text(messages(hint)))),
-    errorMessage = field.error.map(err => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(err.message, formatArgs(err.args): _*))))
+    errorMessage = field.error.map(err => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(err.message, err.args: _*))))
 ))
