@@ -26,6 +26,7 @@ import org.scalacheck.{Arbitrary, Gen, Shrink}
 trait Generators extends UserAnswersGenerator with PageGenerators with ModelGenerators with UserAnswersEntryGenerators {
 
   implicit val dontShrink: Shrink[String] = Shrink.shrinkAny
+  private val maxListLength               = 10
 
   def genIntersperseString(gen: Gen[String], value: String, frequencyV: Int = 1, frequencyN: Int = 10): Gen[String] = {
 
@@ -121,7 +122,13 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     }
   }
 
-  def listWithMaxLength[A](maxLength: Int)(implicit a: Arbitrary[A]): Gen[List[A]] =
+//  def listWithMaxLength[A](maxLength: Int)(implicit a: Arbitrary[A]): Gen[List[A]] =
+//    for {
+//      length <- choose(1, maxLength)
+//      seq    <- listOfN(length, arbitrary[A])
+//    } yield seq
+
+  def listWithMaxLength[A](maxLength: Int = maxListLength)(implicit a: Arbitrary[A]): Gen[List[A]] =
     for {
       length <- choose(1, maxLength)
       seq    <- listOfN(length, arbitrary[A])
