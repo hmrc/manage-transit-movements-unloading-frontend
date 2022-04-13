@@ -20,6 +20,8 @@ import cats.data.OptionT
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.DateGoodsUnloadedFormProvider
+import handlers.ErrorHandler
+import javax.inject.Inject
 import models.{ArrivalId, UserAnswers}
 import navigation.NavigatorUnloadingPermission
 import pages.DateGoodsUnloadedPage
@@ -32,7 +34,6 @@ import services.{UnloadingPermissionService, UnloadingRemarksRejectionService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.{DateInput, NunjucksSupport}
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DateGoodsUnloadedRejectionController @Inject() (
@@ -47,6 +48,7 @@ class DateGoodsUnloadedRejectionController @Inject() (
   renderer: Renderer,
   unloadingPermissionService: UnloadingPermissionService,
   frontendAppConfig: FrontendAppConfig,
+  errorHandler: ErrorHandler,
   checkArrivalStatus: CheckArrivalStatusProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -72,9 +74,7 @@ class DateGoodsUnloadedRejectionController @Inject() (
         )
 
       }).foldF {
-        val json = Json.obj("contactUrl" -> frontendAppConfig.nctsEnquiriesUrl)
-
-        renderer.render("technicalDifficulties.njk", json).map(InternalServerError(_))
+        errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
       }(
         json => renderer.render("dateGoodsUnloaded.njk", json).map(Ok(_))
       )
@@ -111,9 +111,7 @@ class DateGoodsUnloadedRejectionController @Inject() (
 
           }
         )).getOrElse {
-        val json = Json.obj("contactUrl" -> frontendAppConfig.nctsEnquiriesUrl)
-
-        renderer.render("technicalDifficulties.njk", json).map(InternalServerError(_))
+        errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
       }.flatten
 
   }

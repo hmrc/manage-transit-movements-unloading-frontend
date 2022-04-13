@@ -82,29 +82,28 @@ class RejectionCheckYourAnswersControllerSpec extends SpecBase with AppWithDefau
       redirectLocation(result).value mustEqual routes.ConfirmationController.onPageLoad(arrivalId).url
     }
 
-    "return UNAUTHORIZED when backend returns 401" in {
+    "return BadRequest when backend returns 401" in {
       checkArrivalStatus()
       val userAnswers = emptyUserAnswers.set(VehicleNameRegistrationReferencePage, "updatedValue").success.value
 
       setExistingUserAnswers(userAnswers)
 
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockUnloadingRemarksService.resubmit(any(), any())(any())).thenReturn(Future.successful(Some(UNAUTHORIZED)))
 
       val request = FakeRequest(POST, routes.RejectionCheckYourAnswersController.onSubmit(arrivalId).url)
 
       val result = route(app, request).value
 
-      status(result) mustEqual UNAUTHORIZED
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.ErrorController.badRequest().url
     }
 
-    "return INTERNAL_SERVER_ERROR on internal failure" in {
+    "return Technical Difficulties on internal failure" in {
       checkArrivalStatus()
       val userAnswers = emptyUserAnswers.set(VehicleNameRegistrationReferencePage, "updatedValue").success.value
 
       setExistingUserAnswers(userAnswers)
-
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
 
       when(mockUnloadingRemarksService.resubmit(any(), any())(any())).thenReturn(Future.successful(None))
 
@@ -112,7 +111,9 @@ class RejectionCheckYourAnswersControllerSpec extends SpecBase with AppWithDefau
 
       val result = route(app, request).value
 
-      status(result) mustEqual INTERNAL_SERVER_ERROR
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
     }
   }
 }

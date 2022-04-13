@@ -34,6 +34,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val showPhaseBanner: Boolean        = configuration.get[Boolean]("banners.showPhase")
   val userResearchUrl: String         = configuration.get[String]("urls.userResearch")
   val showUserResearchBanner: Boolean = configuration.get[Boolean]("banners.showUserResearch")
+  lazy val nctsHelpdeskUrl: String    = configuration.get[String]("urls.nctsHelpdesk")
 
   val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
 
