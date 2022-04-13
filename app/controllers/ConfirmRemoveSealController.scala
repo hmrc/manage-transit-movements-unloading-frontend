@@ -18,21 +18,16 @@ package controllers
 
 import controllers.actions._
 import forms.ConfirmRemoveSealFormProvider
-import models.requests.DataRequest
+import javax.inject.Inject
 import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
 import pages.{ConfirmRemoveSealPage, NewSealNumberPage}
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import play.twirl.api.Html
-import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import views.html.ConfirmRemoveSealView
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmRemoveSealController @Inject() (
@@ -44,38 +39,23 @@ class ConfirmRemoveSealController @Inject() (
   requireData: DataRequiredAction,
   formProvider: ConfirmRemoveSealFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer,
+  view: ConfirmRemoveSealView,
   checkArrivalStatus: CheckArrivalStatusProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {
+    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData) {
       implicit request =>
         request.userAnswers.get(NewSealNumberPage(index)) match {
           case Some(seal) =>
             val form = formProvider(seal)
-            renderedPage(mode, form, seal, index).map(Ok(_))
+            Ok(view(form, request.userAnswers.mrn, arrivalId, index, seal, mode))
 
-          case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+          case _ => Redirect(routes.SessionExpiredController.onPageLoad())
         }
     }
-
-  private def renderedPage(mode: Mode, form: Form[Boolean], seal: String, index: Index)(implicit request: DataRequest[AnyContent]): Future[Html] = {
-    val json = Json.obj(
-      "form"            -> form,
-      "mode"            -> mode,
-      "mrn"             -> request.userAnswers.mrn,
-      "arrivalId"       -> request.userAnswers.id,
-      "sealDescription" -> seal,
-      "radios"          -> Radios.yesNo(form("value")),
-      "index"           -> index.display
-    )
-
-    renderer.render("confirmRemoveSeal.njk", json)
-  }
 
   def onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] =
     (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {
@@ -85,7 +65,7 @@ class ConfirmRemoveSealController @Inject() (
             formProvider(seal)
               .bindFromRequest()
               .fold(
-                formWithErrors => renderedPage(mode, formWithErrors, seal, index).map(BadRequest(_)),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, seal, mode))),
                 value =>
                   if (value) {
                     for {

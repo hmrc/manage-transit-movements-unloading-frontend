@@ -16,65 +16,41 @@
 
 package controllers.actions
 
-import config.FrontendAppConfig
 import connectors.UnloadingConnector
+import controllers.routes
 import models.ArrivalId
 import models.ArrivalStatus.OtherStatus
 import models.requests.IdentifierRequest
 import models.response.ResponseArrival
-import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.mvc.{ActionFilter, Result}
-import renderer.Renderer
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckArrivalStatusProvider @Inject() (unloadingConnector: UnloadingConnector, renderer: Renderer, appConfig: FrontendAppConfig)(implicit
+class CheckArrivalStatusProvider @Inject() (unloadingConnector: UnloadingConnector)(implicit
   ec: ExecutionContext
 ) {
 
   def apply(arrivalId: ArrivalId): ActionFilter[IdentifierRequest] =
-    new ArrivalStatusAction(arrivalId, unloadingConnector, renderer, appConfig)
-
+    new ArrivalStatusAction(arrivalId, unloadingConnector)
 }
 
 class ArrivalStatusAction(
   arrivalId: ArrivalId,
-  unloadingConnector: UnloadingConnector,
-  renderer: Renderer,
-  appConfig: FrontendAppConfig
+  unloadingConnector: UnloadingConnector
 )(implicit protected val executionContext: ExecutionContext)
     extends ActionFilter[IdentifierRequest] {
 
   override protected def filter[A](request: IdentifierRequest[A]): Future[Option[Result]] = {
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-    unloadingConnector.getArrival(arrivalId).flatMap {
-      case Some(ResponseArrival(_, OtherStatus)) =>
-        renderer
-          .render("canNotSendUnloadingRemarks.njk",
-                  Json.obj(
-                    "arrivalNotifications" -> s"${appConfig.arrivalNotificationsUrl}"
-                  )
-          )(request)
-          .map(
-            html => Option(BadRequest(html))
-          )
-      case Some(_) => Future.successful(None)
-      case None =>
-        renderer
-          .render("canNotSendUnloadingRemarks.njk",
-                  Json.obj(
-                    "arrivalNotifications" -> s"${appConfig.arrivalNotificationsUrl}"
-                  )
-          )(request)
-          .map(
-            html => Option(NotFound(html))
-          )
 
+    unloadingConnector.getArrival(arrivalId).map {
+      case Some(ResponseArrival(_, OtherStatus)) => Some(Redirect(routes.CannotSendUnloadingRemarksController.badRequest()))
+      case Some(_)                               => None
+      case None                                  => Some(Redirect(routes.CannotSendUnloadingRemarksController.notFound()))
     }
   }
 }

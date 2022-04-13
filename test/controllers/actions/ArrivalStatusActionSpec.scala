@@ -17,22 +17,20 @@
 package controllers.actions
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import config.FrontendAppConfig
 import connectors.UnloadingConnector
+import controllers.routes
 import models.requests.IdentifierRequest
 import models.response.ResponseArrival
 import models.{ArrivalId, ArrivalStatus, EoriNumber}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
-import org.mockito.{ArgumentCaptor, Mockito}
+import org.mockito.Mockito
+import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
-import play.api.libs.json.JsObject
 import play.api.mvc.Results._
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import renderer.Renderer
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -41,10 +39,6 @@ import scala.concurrent.Future
 class ArrivalStatusActionSpec extends SpecBase with BeforeAndAfterEach with AppWithDefaultMockFixtures with NunjucksSupport {
 
   val mockConnector: UnloadingConnector = mock[UnloadingConnector]
-
-  private val frontendAppConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-
-  val renderer: Renderer = app.injector.instanceOf[Renderer]
 
   override def beforeEach: Unit = {
     super.beforeEach
@@ -76,7 +70,7 @@ class ArrivalStatusActionSpec extends SpecBase with BeforeAndAfterEach with AppW
 
           when(mockConnector.getArrival(any())(any())).thenReturn(Future.successful(Some(mockArrivalResponse)))
 
-          val checkArrivalStatusProvider = (new CheckArrivalStatusProvider(mockConnector, renderer, frontendAppConfig)(implicitly))(ArrivalId(1))
+          val checkArrivalStatusProvider = (new CheckArrivalStatusProvider(mockConnector)(implicitly))(ArrivalId(1))
 
           val testRequest = IdentifierRequest(FakeRequest(GET, "/"), EoriNumber("eori"))
 
@@ -94,47 +88,26 @@ class ArrivalStatusActionSpec extends SpecBase with BeforeAndAfterEach with AppW
         ArrivalId(1),
         ArrivalStatus.OtherStatus
       )
-
-    when(mockRenderer.render(any(), any())(any()))
-      .thenReturn(Future.successful(Html("")))
-
     when(mockConnector.getArrival(any())(any())).thenReturn(Future.successful(Some(mockArrivalResponse)))
 
-    val checkArrivalStatusProvider = (new CheckArrivalStatusProvider(mockConnector, renderer, frontendAppConfig)(implicitly))(ArrivalId(1))
+    val checkArrivalStatusProvider = (new CheckArrivalStatusProvider(mockConnector)(implicitly))(ArrivalId(1))
+    val testRequest                = IdentifierRequest(FakeRequest(GET, "/"), EoriNumber("eori"))
+    val result: Future[Result]     = checkArrivalStatusProvider.invokeBlock(testRequest, fakeOkResult)
 
-    val testRequest = IdentifierRequest(FakeRequest(GET, "/"), EoriNumber("eori"))
-
-    val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-    val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-    val result: Future[Result] = checkArrivalStatusProvider.invokeBlock(testRequest, fakeOkResult)
-
-    status(result) mustEqual BAD_REQUEST
-    verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-    contentAsString(result) must not be "fake ok result value"
-    templateCaptor.getValue mustEqual "canNotSendUnloadingRemarks.njk"
+    status(result) mustEqual SEE_OTHER
+    redirectLocation(result).value mustEqual routes.CannotSendUnloadingRemarksController.badRequest().url
   }
 
   "will get a 404 and will load the departure not found page when the departure record is not found" in {
 
-    when(mockRenderer.render(any(), any())(any()))
-      .thenReturn(Future.successful(Html("")))
-
     when(mockConnector.getArrival(any())(any())).thenReturn(Future.successful(None))
 
-    val checkArrivalStatusProvider = (new CheckArrivalStatusProvider(mockConnector, renderer, frontendAppConfig)(implicitly))(ArrivalId(1))
+    val checkArrivalStatusProvider = (new CheckArrivalStatusProvider(mockConnector)(implicitly))(ArrivalId(1))
+    val testRequest                = IdentifierRequest(FakeRequest(GET, "/"), EoriNumber("eori"))
+    val result: Future[Result]     = checkArrivalStatusProvider.invokeBlock(testRequest, fakeOkResult)
 
-    val testRequest = IdentifierRequest(FakeRequest(GET, "/"), EoriNumber("eori"))
-
-    val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-    val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-    val result: Future[Result] = checkArrivalStatusProvider.invokeBlock(testRequest, fakeOkResult)
-
-    status(result) mustEqual NOT_FOUND
-    verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-    contentAsString(result) must not be "fake ok result value"
-    templateCaptor.getValue mustEqual "canNotSendUnloadingRemarks.njk"
+    status(result) mustEqual SEE_OTHER
+    redirectLocation(result).value mustEqual routes.CannotSendUnloadingRemarksController.notFound().url
   }
 
 }

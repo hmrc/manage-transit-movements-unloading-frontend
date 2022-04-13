@@ -16,29 +16,28 @@
 
 package views
 
-import forms.AreAnySealsBrokenFormProvider
-import models.NormalMode
+import forms.ConfirmRemoveSealFormProvider
+import models.{Index, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.AreAnySealsBrokenView
+import views.html.ConfirmRemoveSealView
 
-class AreAnySealsBrokenViewSpec extends YesNoViewBehaviours {
+class ConfirmRemoveSealViewSpec extends YesNoViewBehaviours {
 
-  override def form: Form[Boolean] = new AreAnySealsBrokenFormProvider()()
+  private val sealDescription      = "sealDescription"
+  override def form: Form[Boolean] = new ConfirmRemoveSealFormProvider()(sealDescription)
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AreAnySealsBrokenView].apply(form, mrn, arrivalId, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[ConfirmRemoveSealView].apply(form, mrn, arrivalId, Index(1), sealDescription, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "areAnySealsBroken"
+  override val prefix: String = "confirmRemoveSeal"
 
   behave like pageWithBackLink
 
   behave like pageWithCaption(mrn.toString)
 
-  behave like pageWithHeading()
-
-  behave like pageWithRadioItems()
+  behave like pageWithRadioItems(args = List(sealDescription))
 
   behave like pageWithSubmitButton("Continue")
 }
