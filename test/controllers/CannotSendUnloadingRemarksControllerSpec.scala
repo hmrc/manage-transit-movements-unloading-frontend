@@ -25,17 +25,32 @@ class CannotSendUnloadingRemarksControllerSpec extends SpecBase with AppWithDefa
 
   "CannotSendUnloadingRemarks Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return not found and the correct view for a GET" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, routes.CannotSendUnloadingRemarksController.onPageLoad().url)
+      val request = FakeRequest(GET, routes.CannotSendUnloadingRemarksController.notFound().url)
 
       val result = route(app, request).value
 
       val view = injector.instanceOf[CannotSendUnloadingRemarksView]
 
-      status(result) mustEqual OK
+      status(result) mustEqual NOT_FOUND
+
+      contentAsString(result) mustEqual view()(request, messages).toString
+    }
+
+    "must return bad request and the correct view for a GET" in {
+
+      setNoExistingUserAnswers()
+
+      val request = FakeRequest(GET, routes.CannotSendUnloadingRemarksController.badRequest().url)
+
+      val result = route(app, request).value
+
+      val view = injector.instanceOf[CannotSendUnloadingRemarksView]
+
+      status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual view()(request, messages).toString
     }

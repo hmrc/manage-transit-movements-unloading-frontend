@@ -28,8 +28,13 @@ class CannotSendUnloadingRemarksController @Inject() (
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = Action {
+  def notFound(): Action[AnyContent] = Action {
     implicit request =>
-      Ok(view())
+      NotFound(view())
+  }
+
+  def badRequest(): Action[AnyContent] = Action {
+    implicit request =>
+      BadRequest(view())
   }
 }

@@ -26,7 +26,6 @@ import play.api.mvc.Results._
 import play.api.mvc.{ActionFilter, Result}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -47,12 +46,11 @@ class ArrivalStatusAction(
   override protected def filter[A](request: IdentifierRequest[A]): Future[Option[Result]] = {
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-    unloadingConnector.getArrival(arrivalId).flatMap {
-      case Some(ResponseArrival(_, OtherStatus)) =>
-        Future.successful(Some(Redirect(routes.CannotSendUnloadingRemarksController.onPageLoad())))
-      case Some(_) => Future.successful(None)
-      case None    => Future.successful(Some(Redirect(routes.CannotSendUnloadingRemarksController.onPageLoad())))
 
+    unloadingConnector.getArrival(arrivalId).map {
+      case Some(ResponseArrival(_, OtherStatus)) => Some(Redirect(routes.CannotSendUnloadingRemarksController.badRequest()))
+      case Some(_)                               => None
+      case None                                  => Some(Redirect(routes.CannotSendUnloadingRemarksController.notFound()))
     }
   }
 }

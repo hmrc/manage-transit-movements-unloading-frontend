@@ -95,7 +95,7 @@ class ArrivalStatusActionSpec extends SpecBase with BeforeAndAfterEach with AppW
     val result: Future[Result]     = checkArrivalStatusProvider.invokeBlock(testRequest, fakeOkResult)
 
     status(result) mustEqual SEE_OTHER
-    redirectLocation(result).value mustEqual routes.CannotSendUnloadingRemarksController.onPageLoad().url
+    redirectLocation(result).value mustEqual routes.CannotSendUnloadingRemarksController.badRequest().url
   }
 
   "will get a 404 and will load the departure not found page when the departure record is not found" in {
@@ -107,7 +107,7 @@ class ArrivalStatusActionSpec extends SpecBase with BeforeAndAfterEach with AppW
     val result: Future[Result]     = checkArrivalStatusProvider.invokeBlock(testRequest, fakeOkResult)
 
     status(result) mustEqual SEE_OTHER
-    redirectLocation(result).value mustEqual routes.CannotSendUnloadingRemarksController.onPageLoad().url
+    redirectLocation(result).value mustEqual routes.CannotSendUnloadingRemarksController.notFound().url
   }
 
 }
