@@ -21,6 +21,7 @@ import models.NormalMode
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
 import views.html.TotalNumberOfItemsView
 
@@ -41,7 +42,7 @@ class TotalNumberOfItemsViewSpec extends InputTextViewBehaviours[Int] {
 
   behave like pageWithoutHint
 
-  behave like pageWithInputText()
+  behave like pageWithInputText(Some(InputSize.Width10))
 
   behave like pageWithSubmitButton("Continue")
 }
