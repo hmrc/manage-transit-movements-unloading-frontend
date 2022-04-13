@@ -20,19 +20,17 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.VehicleNameRegistrationReferenceFormProvider
 import handlers.ErrorHandler
-import javax.inject.Inject
 import models.requests.IdentifierRequest
 import models.{ArrivalId, UserAnswers}
 import pages.VehicleNameRegistrationReferencePage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import repositories.SessionRepository
 import services.UnloadingRemarksRejectionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.VehicleNameRegistrationRejectionView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class VehicleNameRegistrationRejectionController @Inject() (
@@ -43,28 +41,23 @@ class VehicleNameRegistrationRejectionController @Inject() (
   getData: DataRetrievalActionProvider,
   val controllerComponents: MessagesControllerComponents,
   rejectionService: UnloadingRemarksRejectionService,
-  val renderer: Renderer,
+  view: VehicleNameRegistrationRejectionView,
   val appConfig: FrontendAppConfig,
   checkArrivalStatus: CheckArrivalStatusProvider,
   errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
   private val form = formProvider()
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId)).async {
     implicit request =>
       rejectionService.getRejectedValueAsString(arrivalId, request.userAnswers)(VehicleNameRegistrationReferencePage) flatMap {
-        case Some(originalAttrValue) =>
-          val json = Json.obj(
-            "form"        -> form.fill(originalAttrValue),
-            "onSubmitUrl" -> routes.VehicleNameRegistrationRejectionController.onSubmit(arrivalId).url
-          )
-          renderer.render("vehicleNameRegistrationReference.njk", json).map(Ok(_))
-        case None => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
+        case Some(originalAttrValue) => Future.successful(Ok(view(form.fill(originalAttrValue), arrivalId)))
+        case None                    => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
       }
+
   }
 
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = identify.async {
@@ -72,13 +65,7 @@ class VehicleNameRegistrationRejectionController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => {
-            val json = Json.obj(
-              "form"        -> formWithErrors,
-              "onSubmitUrl" -> routes.VehicleNameRegistrationRejectionController.onSubmit(arrivalId).url
-            )
-            renderer.render("vehicleNameRegistrationReference.njk", json).map(BadRequest(_))
-          },
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId))),
           value =>
             rejectionService.unloadingRemarksRejectionMessage(arrivalId) flatMap {
               case Some(rejectionMessage) =>
