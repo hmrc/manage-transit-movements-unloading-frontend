@@ -17,24 +17,15 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import matchers.JsonMatchers
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
+import views.html.UnauthorisedView
 
-import scala.concurrent.Future
-
-class UnauthorisedControllerSpec extends SpecBase with AppWithDefaultMockFixtures with JsonMatchers {
+class UnauthorisedControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   "Unauthorised Controller" - {
 
     "must return OK and the correct view for a GET" in {
-
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       setNoExistingUserAnswers()
 
@@ -42,13 +33,11 @@ class UnauthorisedControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[UnauthorisedView]
+
       status(result) mustEqual OK
 
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), any())(any())
-
-      templateCaptor.getValue mustEqual "unauthorised.njk"
+      contentAsString(result) mustEqual view()(request, messages).toString
     }
   }
 }
