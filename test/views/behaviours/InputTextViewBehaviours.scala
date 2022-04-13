@@ -50,7 +50,7 @@ trait InputTextViewBehaviours[T] extends QuestionViewBehaviours[T] with Generato
             case Some(suffixText) =>
               val suffixElement = getElementByClass(doc, "govuk-input__suffix")
               assertElementContainsText(suffixElement, suffixText)
-            case None => assert(getElementsByClass(doc, "govuk-input__suffix").size() == 0)
+            case None => assert(getElementsByClass(doc, "govuk-input__suffix").isEmpty)
           }
         }
 
