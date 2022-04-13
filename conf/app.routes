@@ -12,7 +12,7 @@ GET        /error/bad-request                                      controllers.E
 GET        /error/not-found                                        controllers.ErrorController.notFound()
 GET        /error/technical-difficulties                           controllers.ErrorController.technicalDifficulties()
 GET        /error/internal-server-error                            controllers.ErrorController.internalServerError()
-
+GET        /error/cannot-send-unloading-remarks                    controllers.CannotSendUnloadingRemarksController.onPageLoad()
 
 GET        /:arrivalId/check-your-answers                          controllers.CheckYourAnswersController.onPageLoad(arrivalId: ArrivalId)
 POST       /:arrivalId/check-your-answers                          controllers.CheckYourAnswersController.onSubmit(arrivalId: ArrivalId)

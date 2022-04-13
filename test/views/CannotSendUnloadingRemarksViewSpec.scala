@@ -17,17 +17,14 @@
 package views
 
 import generators.MessagesModelGenerators
-import models.FunctionalError
 import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
 import views.html.CannotSendUnloadingRemarksView
 
 class CannotSendUnloadingRemarksViewSpec extends ViewBehaviours with MessagesModelGenerators {
 
-  private val functionalErrors: Seq[FunctionalError] = listWithMaxLength[FunctionalError](6)(arbitraryRejectionError).sample.value
-
   override def view: HtmlFormat.Appendable =
-    injector.instanceOf[CannotSendUnloadingRemarksView].apply(functionalErrors)(fakeRequest, messages)
+    injector.instanceOf[CannotSendUnloadingRemarksView].apply()(fakeRequest, messages)
 
   override val prefix: String = "cannotSendUnloadingRemarks"
 
