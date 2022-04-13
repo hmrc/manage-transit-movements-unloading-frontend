@@ -18,6 +18,7 @@ package controllers
 
 import controllers.actions._
 import forms.TotalNumberOfItemsFormProvider
+
 import javax.inject.Inject
 import models.{ArrivalId, Mode}
 import navigation.Navigator
@@ -29,6 +30,7 @@ import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.TotalNumberOfItemsView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,7 +43,7 @@ class TotalNumberOfItemsController @Inject() (
   requireData: DataRequiredAction,
   formProvider: TotalNumberOfItemsFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer,
+  view: TotalNumberOfItemsView,
   checkArrivalStatus: CheckArrivalStatusProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -51,20 +53,13 @@ class TotalNumberOfItemsController @Inject() (
   private val form = formProvider()
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {
+    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData) {
       implicit request =>
         val preparedForm = request.userAnswers.get(TotalNumberOfItemsPage) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
-
-        val json = Json.obj(
-          "form"        -> preparedForm,
-          "mrn"         -> request.userAnswers.mrn,
-          "onSubmitUrl" -> routes.TotalNumberOfItemsController.onSubmit(arrivalId, mode).url
-        )
-
-        renderer.render("totalNumberOfItems.njk", json).map(Ok(_))
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode))
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
@@ -73,16 +68,7 @@ class TotalNumberOfItemsController @Inject() (
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => {
-
-              val json = Json.obj(
-                "form"        -> formWithErrors,
-                "mrn"         -> request.userAnswers.mrn,
-                "onSubmitUrl" -> routes.TotalNumberOfItemsController.onSubmit(arrivalId, mode).url
-              )
-
-              renderer.render("totalNumberOfItems.njk", json).map(BadRequest(_))
-            },
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(TotalNumberOfItemsPage, value))

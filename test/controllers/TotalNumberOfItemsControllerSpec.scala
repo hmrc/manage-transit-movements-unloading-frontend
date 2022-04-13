@@ -18,7 +18,6 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.TotalNumberOfItemsFormProvider
-import matchers.JsonMatchers
 import models.NormalMode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -28,16 +27,16 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.TotalNumberOfItemsView
 
 import scala.concurrent.Future
 
-class TotalNumberOfItemsControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class TotalNumberOfItemsControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  val formProvider = new TotalNumberOfItemsFormProvider()
-  val form         = formProvider()
-
-  val validAnswer = 1
+  private val formProvider = new TotalNumberOfItemsFormProvider()
+  private val form         = formProvider()
+  private val mode         = NormalMode
+  val validAnswer          = 1
 
   lazy val totalNumberOfItemsRoute = routes.TotalNumberOfItemsController.onPageLoad(arrivalId, NormalMode).url
 
@@ -45,59 +44,36 @@ class TotalNumberOfItemsControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, totalNumberOfItemsRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(app, request).value
+      val request = FakeRequest(GET, totalNumberOfItemsRoute)
+      val result  = route(app, request).value
+      val view    = injector.instanceOf[TotalNumberOfItemsView]
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"        -> form,
-        "mrn"         -> mrn,
-        "onSubmitUrl" -> routes.TotalNumberOfItemsController.onSubmit(arrivalId, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual "totalNumberOfItems.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(form, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       val userAnswers = emptyUserAnswers.set(TotalNumberOfItemsPage, validAnswer).success.value
+
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(GET, totalNumberOfItemsRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(app, request).value
+      val request = FakeRequest(GET, totalNumberOfItemsRoute)
+      val view    = injector.instanceOf[TotalNumberOfItemsView]
+      val result  = route(app, request).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
       val filledForm = form.bind(Map("value" -> validAnswer.toString))
 
-      val expectedJson = Json.obj(
-        "form"        -> filledForm,
-        "mrn"         -> mrn,
-        "onSubmitUrl" -> routes.TotalNumberOfItemsController.onSubmit(arrivalId, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual "totalNumberOfItems.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(filledForm, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -119,30 +95,18 @@ class TotalNumberOfItemsControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(POST, totalNumberOfItemsRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm      = form.bind(Map("value" -> "invalid value"))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(app, request).value
+      val request   = FakeRequest(POST, totalNumberOfItemsRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val view      = injector.instanceOf[TotalNumberOfItemsView]
+      val result    = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"        -> boundForm,
-        "mrn"         -> mrn,
-        "onSubmitUrl" -> routes.TotalNumberOfItemsController.onSubmit(arrivalId, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual "totalNumberOfItems.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(boundForm, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
