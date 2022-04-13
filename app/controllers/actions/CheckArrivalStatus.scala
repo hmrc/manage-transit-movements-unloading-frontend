@@ -55,7 +55,7 @@ class ArrivalStatusAction(
     unloadingConnector.getArrival(arrivalId).flatMap {
       case Some(ResponseArrival(_, OtherStatus)) =>
         renderer
-          .render("canNotSendUnloadingRemarks.njk",
+          .render("CannotSendUnloadingRemarksView",
                   Json.obj(
                     "arrivalNotifications" -> s"${appConfig.arrivalNotificationsUrl}"
                   )
@@ -66,7 +66,7 @@ class ArrivalStatusAction(
       case Some(_) => Future.successful(None)
       case None =>
         renderer
-          .render("canNotSendUnloadingRemarks.njk",
+          .render("CannotSendUnloadingRemarksView",
                   Json.obj(
                     "arrivalNotifications" -> s"${appConfig.arrivalNotificationsUrl}"
                   )

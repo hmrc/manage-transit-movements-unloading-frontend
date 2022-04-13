@@ -112,7 +112,7 @@ class ArrivalStatusActionSpec extends SpecBase with BeforeAndAfterEach with AppW
     status(result) mustEqual BAD_REQUEST
     verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
     contentAsString(result) must not be "fake ok result value"
-    templateCaptor.getValue mustEqual "canNotSendUnloadingRemarks.njk"
+    templateCaptor.getValue mustEqual "CannotSendUnloadingRemarksView"
   }
 
   "will get a 404 and will load the departure not found page when the departure record is not found" in {
@@ -134,7 +134,7 @@ class ArrivalStatusActionSpec extends SpecBase with BeforeAndAfterEach with AppW
     status(result) mustEqual NOT_FOUND
     verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
     contentAsString(result) must not be "fake ok result value"
-    templateCaptor.getValue mustEqual "canNotSendUnloadingRemarks.njk"
+    templateCaptor.getValue mustEqual "CannotSendUnloadingRemarksView"
   }
 
 }

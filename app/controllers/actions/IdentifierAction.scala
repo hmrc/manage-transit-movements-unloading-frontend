@@ -92,7 +92,7 @@ class AuthenticatedIdentifierAction @Inject() (
         } yield newGroupEnrolment || legacyGroupEnrolment
 
         hasGroupEnrolment flatMap {
-          case true  => renderer.render("unauthorisedWithGroupAccess.njk").map(Unauthorized(_))
+          case true  => renderer.render("unauthorisedWithGroupAccessView").map(Unauthorized(_))
           case false => Future.successful(Redirect(config.eccEnrolmentSplashPage))
         }
       case _ => Future.successful(Redirect(config.eccEnrolmentSplashPage))
