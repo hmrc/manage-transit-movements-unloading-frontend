@@ -18,30 +18,28 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NewSealNumberFormProvider
-import matchers.JsonMatchers
 import models.{Index, MovementReferenceNumber, NormalMode, UserAnswers}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito.{reset, when}
 import pages.NewSealNumberPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.UnloadingPermissionService
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.NewSealNumberView
 
 import scala.concurrent.Future
 
-class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  val formProvider = new NewSealNumberFormProvider()
-  val form         = formProvider()
-  val index        = Index(0)
+  private val formProvider = new NewSealNumberFormProvider()
+  private val form         = formProvider()
+  private val index        = Index(0)
+  private val mode         = NormalMode
 
-  lazy val newSealNumberRoute = routes.NewSealNumberController.onPageLoad(arrivalId, index, NormalMode).url
+  lazy val newSealNumberRoute = routes.NewSealNumberController.onPageLoad(arrivalId, index, mode).url
 
   private def mockUnloadingPermissionService = mock[UnloadingPermissionService]
 
@@ -59,64 +57,40 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, newSealNumberRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, newSealNumberRoute)
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[NewSealNumberView]
+
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"      -> form,
-        "mrn"       -> mrn,
-        "arrivalId" -> arrivalId,
-        "mode"      -> NormalMode,
-        "index"     -> index.display
-      )
-
-      templateCaptor.getValue mustEqual "newSealNumber.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(form, mrn, arrivalId, index, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       val userAnswers = emptyUserAnswers.set(NewSealNumberPage(index), "answer").success.value
 
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(GET, newSealNumberRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, newSealNumberRoute)
 
       val result = route(app, request).value
 
-      status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
       val filledForm = form.bind(Map("value" -> "answer"))
 
-      val expectedJson = Json.obj(
-        "form"      -> filledForm,
-        "mrn"       -> mrn,
-        "arrivalId" -> arrivalId,
-        "mode"      -> NormalMode,
-        "index"     -> index.display
-      )
+      val view = injector.instanceOf[NewSealNumberView]
 
-      templateCaptor.getValue mustEqual "newSealNumber.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, mrn, arrivalId, index, mode)(request, messages).toString
     }
 
     "onSubmit" - {
@@ -142,8 +116,6 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
       "must return a Bad Request and errors when invalid data is submitted" in {
         checkArrivalStatus()
-        when(mockRenderer.render(any(), any())(any()))
-          .thenReturn(Future.successful(Html("")))
 
         when(mockUnloadingPermissionService.convertSeals(any())(any(), any()))
           .thenReturn(Future.successful(Some(emptyUserAnswers)))
@@ -151,27 +123,17 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
         val userAnswers = emptyUserAnswers.set(NewSealNumberPage(index), "answer").success.value
         setExistingUserAnswers(userAnswers)
 
-        val request        = FakeRequest(POST, newSealNumberRoute).withFormUrlEncodedBody(("value", ""))
-        val boundForm      = form.bind(Map("value" -> ""))
-        val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-        val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+        val request   = FakeRequest(POST, newSealNumberRoute).withFormUrlEncodedBody(("value", ""))
+        val boundForm = form.bind(Map("value" -> ""))
 
         val result = route(app, request).value
 
         status(result) mustEqual BAD_REQUEST
 
-        verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+        val view = injector.instanceOf[NewSealNumberView]
 
-        val expectedJson = Json.obj(
-          "form"      -> boundForm,
-          "mrn"       -> mrn,
-          "arrivalId" -> arrivalId,
-          "mode"      -> NormalMode,
-          "index"     -> index.display
-        )
-
-        templateCaptor.getValue mustEqual "newSealNumber.njk"
-        jsonCaptor.getValue must containJson(expectedJson)
+        contentAsString(result) mustEqual
+          view(boundForm, mrn, arrivalId, index, mode)(request, messages).toString
       }
 
       "must redirect to Session Expired for a GET if no existing data is found" in {

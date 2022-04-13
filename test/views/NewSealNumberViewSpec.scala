@@ -16,27 +16,33 @@
 
 package views
 
-import forms.ConfirmRemoveCommentsFormProvider
-import models.NormalMode
+import forms.NewSealNumberFormProvider
+import models.{Index, NormalMode}
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.YesNoViewBehaviours
-import views.html.ConfirmRemoveCommentsView
+import views.behaviours.InputTextViewBehaviours
+import views.html.NewSealNumberView
 
-class ConfirmRemoveCommentsViewSpec extends YesNoViewBehaviours {
+class NewSealNumberViewSpec extends InputTextViewBehaviours[String] {
 
-  override def form: Form[Boolean] = new ConfirmRemoveCommentsFormProvider()()
+  override def form: Form[String] = new NewSealNumberFormProvider()()
+  private val index: Index        = Index(0)
 
-  override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[ConfirmRemoveCommentsView].apply(form, mrn, arrivalId, NormalMode)(fakeRequest, messages)
+  override def applyView(form: Form[String]): HtmlFormat.Appendable =
+    injector.instanceOf[NewSealNumberView].apply(form, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "confirmRemoveComments"
+  override val prefix: String = "newSealNumber"
+
+  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
   behave like pageWithBackLink
 
   behave like pageWithHeading()
 
-  behave like pageWithRadioItems()
+  behave like pageWithoutHint
+
+  behave like pageWithInputText()
 
   behave like pageWithSubmitButton("Continue")
 }
