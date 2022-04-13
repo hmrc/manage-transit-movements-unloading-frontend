@@ -26,7 +26,7 @@ trait InputTextViewBehaviours[T] extends QuestionViewBehaviours[T] with Generato
   implicit val arbitraryT: Arbitrary[T]
   private lazy val validValue: T = arbitrary[T].sample.value
 
-  def pageWithInputText(inputFieldClassSize: Option[InputSize] = None): Unit =
+  def pageWithInputText(inputFieldClassSize: Option[InputSize] = None, suffix: Option[String] = None): Unit =
     "page with an input text field" - {
       "when rendered" - {
 
@@ -42,6 +42,15 @@ trait InputTextViewBehaviours[T] extends QuestionViewBehaviours[T] with Generato
           inputFieldClassSize match {
             case Some(sizeClass) => assert(getElementById(doc, "value").hasClass(sizeClass.className))
             case None            => assert(getElementById(doc, "value").classNames().size == 1)
+          }
+        }
+
+        "must render the correct suffix" in {
+          suffix match {
+            case Some(suffixText) =>
+              val suffixElement = getElementByClass(doc, "govuk-input__suffix")
+              assertElementContainsText(suffixElement, suffixText)
+            case None => assert(getElementsByClass(doc, "govuk-input__suffix").size() == 0)
           }
         }
 

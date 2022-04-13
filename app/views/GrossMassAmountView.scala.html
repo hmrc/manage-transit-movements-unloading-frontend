@@ -42,7 +42,8 @@
         @inputText(
             field = form("value"),
             label = messages("grossMassAmount.heading"),
-            inputClass = InputSize.Width10
+            inputClass = InputSize.Width10,
+            suffix = Some("kg"),
         )
 
         @button(attributes = Map("id" -> "submit"))

@@ -21,6 +21,9 @@ import org.jsoup.select.Elements
 
 trait ViewSpecGetters {
 
+  def getElementsByClass(doc: Document, className: String): Elements =
+    doc.select(s".$className")
+
   def getElementByClass(doc: Document, className: String): Element =
     getElementBySelector(doc, s".$className")
 
