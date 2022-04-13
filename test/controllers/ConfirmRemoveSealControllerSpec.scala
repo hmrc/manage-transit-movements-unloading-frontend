@@ -18,60 +18,43 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.ConfirmRemoveSealFormProvider
-import matchers.JsonMatchers
 import models.{Index, NormalMode}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.when
 import pages.NewSealNumberPage
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.{NunjucksSupport, Radios}
+import views.html.ConfirmRemoveSealView
 
 import scala.concurrent.Future
 
-class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  val formProvider = new ConfirmRemoveSealFormProvider()
-  val form         = formProvider("seal 1")
-  val index: Index = Index(0)
-
-  lazy val confirmRemoveSealRoute = routes.ConfirmRemoveSealController.onPageLoad(arrivalId, index, NormalMode).url
+  private val formProvider                = new ConfirmRemoveSealFormProvider()
+  private val form                        = formProvider("seal 1")
+  private val index: Index                = Index(0)
+  private val mode                        = NormalMode
+  private val sealDescription             = "seal 1"
+  private lazy val confirmRemoveSealRoute = routes.ConfirmRemoveSealController.onPageLoad(arrivalId, index, mode).url
 
   "ConfirmRemoveSeal Controller" - {
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
-      val userAnswers = emptyUserAnswers.set(NewSealNumberPage(index), "seal 1").success.value
+      val userAnswers = emptyUserAnswers.set(NewSealNumberPage(index), sealDescription).success.value
 
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(GET, confirmRemoveSealRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, confirmRemoveSealRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual OK
+      val view = injector.instanceOf[ConfirmRemoveSealView]
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"      -> form,
-        "mode"      -> NormalMode,
-        "mrn"       -> mrn,
-        "arrivalId" -> arrivalId,
-        "radios"    -> Radios.yesNo(form("value")),
-        "index"     -> index.display
-      )
-
-      templateCaptor.getValue mustEqual "confirmRemoveSeal.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(form, mrn, arrivalId, index, sealDescription, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -95,35 +78,22 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       val userAnswers = emptyUserAnswers.set(NewSealNumberPage(index), "seal 1").success.value
 
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(POST, confirmRemoveSealRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm      = form.bind(Map("value" -> ""))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request   = FakeRequest(POST, confirmRemoveSealRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = injector.instanceOf[ConfirmRemoveSealView]
 
-      val expectedJson = Json.obj(
-        "form"      -> boundForm,
-        "mode"      -> NormalMode,
-        "mrn"       -> mrn,
-        "arrivalId" -> arrivalId,
-        "radios"    -> Radios.yesNo(boundForm("value")),
-        "index"     -> index.display
-      )
-
-      templateCaptor.getValue mustEqual "confirmRemoveSeal.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(boundForm, mrn, arrivalId, index, sealDescription, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
