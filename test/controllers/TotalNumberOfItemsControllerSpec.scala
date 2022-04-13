@@ -19,14 +19,11 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.TotalNumberOfItemsFormProvider
 import models.NormalMode
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.when
 import pages.TotalNumberOfItemsPage
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import views.html.TotalNumberOfItemsView
 
 import scala.concurrent.Future
@@ -54,7 +51,7 @@ class TotalNumberOfItemsControllerSpec extends SpecBase with AppWithDefaultMockF
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, mode)(request, messages).toString
+        view(form, arrivalId, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -73,7 +70,7 @@ class TotalNumberOfItemsControllerSpec extends SpecBase with AppWithDefaultMockF
       val filledForm = form.bind(Map("value" -> validAnswer.toString))
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, mode)(request, messages).toString
+        view(filledForm, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -106,7 +103,7 @@ class TotalNumberOfItemsControllerSpec extends SpecBase with AppWithDefaultMockF
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, arrivalId, mode)(request, messages).toString
+        view(boundForm, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

@@ -30,7 +30,7 @@ class TotalNumberOfItemsViewSpec extends InputTextViewBehaviours[Int] {
   override def form: Form[Int] = new TotalNumberOfItemsFormProvider()()
 
   override def applyView(form: Form[Int]): HtmlFormat.Appendable =
-    injector.instanceOf[TotalNumberOfItemsView].apply(form, mrn, arrivalId, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[TotalNumberOfItemsView].apply(form, arrivalId, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "totalNumberOfItems"
 

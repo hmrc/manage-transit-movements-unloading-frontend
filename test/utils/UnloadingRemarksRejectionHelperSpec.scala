@@ -18,6 +18,7 @@ package utils
 
 import base.SpecBase
 import controllers.routes
+import models.NormalMode
 import org.scalacheck.Arbitrary.arbitrary
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
@@ -26,6 +27,7 @@ import java.time.LocalDate
 
 class UnloadingRemarksRejectionHelperSpec extends SpecBase {
 
+  private val mode = NormalMode
   "must return summary list row" - {
 
     "when .vehicleNameRegistrationReference" in {
@@ -79,7 +81,7 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase {
         str =>
           val userAnswers = emptyUserAnswers
           val helper      = new UnloadingRemarksRejectionHelper
-          val result      = helper.totalNumberOfItems(userAnswers.id, str)
+          val result      = helper.totalNumberOfItems(userAnswers.id, str, mode)
 
           result mustEqual Row(
             key = Key(msg"changeItems.totalNumberOfItems.label"),

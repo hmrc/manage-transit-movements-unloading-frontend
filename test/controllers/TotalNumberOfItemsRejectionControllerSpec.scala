@@ -16,38 +16,31 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.TotalNumberOfItemsFormProvider
-import matchers.JsonMatchers
 import models.ErrorType.IncorrectValue
-import models.{DefaultPointer, FunctionalError, UnloadingRemarksRejectionMessage}
-import org.mockito.ArgumentCaptor
+import models.{DefaultPointer, FunctionalError, NormalMode, UnloadingRemarksRejectionMessage}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito.{reset, when}
 import pages.TotalNumberOfItemsPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.UnloadingRemarksRejectionService
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.TotalNumberOfItemsView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
-class TotalNumberOfItemsRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class TotalNumberOfItemsRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  val formProvider = new TotalNumberOfItemsFormProvider()
-  val form         = formProvider()
-
-  val validAnswer = 1
-
-  lazy val totalNumberOfItemsRoute = routes.TotalNumberOfItemsRejectionController.onPageLoad(arrivalId).url
-
-  private val mockRejectionService = mock[UnloadingRemarksRejectionService]
+  private val formProvider                 = new TotalNumberOfItemsFormProvider()
+  private val form                         = formProvider()
+  private val validAnswer                  = 1
+  private val mode                         = NormalMode
+  lazy val totalNumberOfItemsRoute: String = routes.TotalNumberOfItemsRejectionController.onPageLoad(arrivalId).url
+  private val mockRejectionService         = mock[UnloadingRemarksRejectionService]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -63,30 +56,21 @@ class TotalNumberOfItemsRejectionControllerSpec extends SpecBase with AppWithDef
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
+
       when(mockRejectionService.getRejectedValueAsInt(any(), any())(any())(any())).thenReturn(Future.successful(Some(validAnswer)))
 
       setNoExistingUserAnswers()
 
-      val request        = FakeRequest(GET, totalNumberOfItemsRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-      val result         = route(app, request).value
+      val request = FakeRequest(GET, totalNumberOfItemsRoute)
+      val view    = injector.instanceOf[TotalNumberOfItemsView]
+      val result  = route(app, request).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
       val filledForm = form.bind(Map("value" -> validAnswer.toString))
 
-      val expectedJson = Json.obj(
-        "form"        -> filledForm,
-        "onSubmitUrl" -> routes.TotalNumberOfItemsRejectionController.onSubmit(arrivalId).url
-      )
-
-      templateCaptor.getValue mustEqual "totalNumberOfItems.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) must contain
+      view(filledForm, arrivalId, mode)(request, messages).toString
     }
 
     "must render the Technical Difficulties page when get rejected value is None" in {
@@ -115,9 +99,8 @@ class TotalNumberOfItemsRejectionControllerSpec extends SpecBase with AppWithDef
 
       setNoExistingUserAnswers()
 
-      val request =
-        FakeRequest(POST, totalNumberOfItemsRoute)
-          .withFormUrlEncodedBody(("value", validAnswer.toString))
+      val request = FakeRequest(POST, totalNumberOfItemsRoute)
+        .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(app, request).value
 
@@ -128,29 +111,18 @@ class TotalNumberOfItemsRejectionControllerSpec extends SpecBase with AppWithDef
 
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(POST, totalNumberOfItemsRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm      = form.bind(Map("value" -> "invalid value"))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(app, request).value
+      val request   = FakeRequest(POST, totalNumberOfItemsRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val result    = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = injector.instanceOf[TotalNumberOfItemsView]
 
-      val expectedJson = Json.obj(
-        "form"        -> boundForm,
-        "onSubmitUrl" -> routes.TotalNumberOfItemsRejectionController.onSubmit(arrivalId).url
-      )
-
-      templateCaptor.getValue mustEqual "totalNumberOfItems.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual view(boundForm, arrivalId, mode)(request, messages).toString
     }
 
     "must render Technical Difficulties when there is no rejection message on submission" in {

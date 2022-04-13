@@ -63,7 +63,7 @@ object UnloadingRemarksRejectionViewModel {
         error.pointer match {
           case NumberOfPackagesPointer    => Some(cyaHelper.totalNumberOfPackages(arrivalId, originalValue))
           case VehicleRegistrationPointer => Some(cyaHelper.vehicleNameRegistrationReference(arrivalId, originalValue))
-          case NumberOfItemsPointer       => Some(cyaHelper.totalNumberOfItems(arrivalId, originalValue))
+          case NumberOfItemsPointer       => Some(cyaHelper.totalNumberOfItems(arrivalId, originalValue, NormalMode))
           case GrossMassPointer           => Some(cyaHelper.grossMassAmount(arrivalId, originalValue))
           case UnloadingDatePointer =>
             getDate(originalValue) map (

@@ -88,10 +88,10 @@ POST       /:arrivalId/total-number-of-items                  controllers.TotalN
 GET        /:arrivalId/change-total-number-of-items           controllers.TotalNumberOfItemsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-total-number-of-items           controllers.TotalNumberOfItemsController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/total-number-of-packages                  controllers.TotalNumberOfPackagesController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/total-number-of-packages                    controllers.TotalNumberOfPackagesController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-total-number-of-packages                          controllers.TotalNumberOfPackagesController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-total-number-of-packages                          controllers.TotalNumberOfPackagesController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+GET        /:arrivalId/total-number-of-packages                             controllers.TotalNumberOfPackagesController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/total-number-of-packages                             controllers.TotalNumberOfPackagesController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-total-number-of-packages                      controllers.TotalNumberOfPackagesController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-total-number-of-packages                      controllers.TotalNumberOfPackagesController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
 GET        /:arrivalId/unloading-rejection                                  controllers.UnloadingRemarksRejectionController.onPageLoad(arrivalId: ArrivalId)
 
@@ -101,8 +101,8 @@ POST       /:arrivalId/vehicle-name-registration-rejection                  cont
 GET        /:arrivalId/total-number-of-packages-rejection                   controllers.TotalNumberOfPackagesRejectionController.onPageLoad(arrivalId: ArrivalId)
 POST       /:arrivalId/total-number-of-packages-rejection                   controllers.TotalNumberOfPackagesRejectionController.onSubmit(arrivalId: ArrivalId)
 
-GET        /:arrivalId/total-number-of-items-rejection                      controllers.TotalNumberOfItemsRejectionController.onPageLoad(arrivalId: ArrivalId)
-POST       /:arrivalId/total-number-of-items-rejection                      controllers.TotalNumberOfItemsRejectionController.onSubmit(arrivalId: ArrivalId)
+GET        /:arrivalId/total-number-of-items-rejection                      controllers.TotalNumberOfItemsRejectionController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/total-number-of-items-rejection                      controllers.TotalNumberOfItemsRejectionController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
 
 GET        /:arrivalId/gross-mass-amount-rejection                          controllers.GrossMassAmountRejectionController.onPageLoad(arrivalId: ArrivalId)
 POST       /:arrivalId/gross-mass-amount-rejection                          controllers.GrossMassAmountRejectionController.onSubmit(arrivalId: ArrivalId)
