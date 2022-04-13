@@ -20,19 +20,17 @@ import controllers.actions._
 import derivable.DeriveNumberOfSeals
 import forms.NewSealNumberFormProvider
 import handlers.ErrorHandler
-import javax.inject.Inject
 import models.{ArrivalId, Index, Mode, UserAnswers}
 import navigation.Navigator
 import pages.NewSealNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import repositories.SessionRepository
 import services.UnloadingPermissionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.NewSealNumberView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class NewSealNumberController @Inject() (
@@ -44,34 +42,25 @@ class NewSealNumberController @Inject() (
   requireData: DataRequiredAction,
   formProvider: NewSealNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer,
+  view: NewSealNumberView,
   unloadingPermissionService: UnloadingPermissionService,
   errorHandler: ErrorHandler,
   checkArrivalStatus: CheckArrivalStatusProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
   private val form = formProvider()
 
   def onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {
+    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData) {
       implicit request =>
         val preparedForm = request.userAnswers.get(NewSealNumberPage(index)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
 
-        val json = Json.obj(
-          "form"      -> preparedForm,
-          "mrn"       -> request.userAnswers.mrn,
-          "arrivalId" -> arrivalId,
-          "mode"      -> mode,
-          "index"     -> index.display
-        )
-
-        renderer.render("newSealNumber.njk", json).map(Ok(_))
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, index, mode))
     }
 
   def onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] =
@@ -87,17 +76,7 @@ class NewSealNumberController @Inject() (
             form
               .bindFromRequest()
               .fold(
-                formWithErrors => {
-                  val json = Json.obj(
-                    "form"      -> formWithErrors,
-                    "mrn"       -> request.userAnswers.mrn,
-                    "arrivalId" -> arrivalId,
-                    "mode"      -> mode,
-                    "index"     -> index.display
-                  )
-
-                  renderer.render("newSealNumber.njk", json).map(BadRequest(_))
-                },
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, mode))),
                 value =>
                   for {
                     updatedAnswers <- Future.fromTry(ua.set(NewSealNumberPage(index), value))
