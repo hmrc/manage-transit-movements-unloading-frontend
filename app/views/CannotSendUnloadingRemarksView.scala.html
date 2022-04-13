@@ -19,23 +19,22 @@
 @import controllers.routes._
 
 @this(
-mainTemplate: MainTemplate,
-heading: Heading,
-govukSummaryList: GovukSummaryList,
-config: FrontendAppConfig
-)
+     mainTemplate: MainTemplate,
+     heading: Heading,
+     govukSummaryList: GovukSummaryList,
+     config: FrontendAppConfig
+     )
 
 @(errors: Seq[FunctionalError])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-title = messages("cannotSendUnloadingRemarks.title"),
-showBackLink = true
-) {
+            title = messages("cannotSendUnloadingRemarks.title"),
+            showBackLink = true
+            ){
 
 @heading("cannotSendUnloadingRemarks.heading")
 
+          <p class="govuk-body">@messages("cannotSendUnloadingRemarks.message") <a class="govuk-link" href=@config.nctsEnquiriesUrl target="_blank" rel="noreferrer noopener" id ="contact">@messages("cannotSendUnloadingRemarks.contactLink")</a>.</p>
 
-<p class="govuk-body">@messages("cannotSendUnloadingRemarks.message") <a class="govuk-link" href=@config.nctsEnquiriesUrl target="_blank" rel="noreferrer noopener" id ="contact">@messages("cannotSendUnloadingRemarks.contactLink")</a>.</p>
-
-<a class="govuk-link" href=@config.arrivalNotificationsUrl target="_blank" rel="noreferrer noopener" id ="contactText">@messages("cannotSendUnloadingRemarks.linkText")</a>.
+          <a class="govuk-link govuk-body" href=@config.arrivalNotificationsUrl target="_blank"  id ="contactText">@messages("cannotSendUnloadingRemarks.linkText")</a>.
 }
