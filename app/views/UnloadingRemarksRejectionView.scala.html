@@ -16,21 +16,29 @@
 
 @import views.html.components.Heading
 @import config.FrontendAppConfig
-@import viewModels.sections.Section
+@import viewModels.sections.SummarySection
 
 @this(
     mainTemplate: MainTemplate,
     heading: Heading,
-    config: FrontendAppConfig
+    config: FrontendAppConfig,
+    govukSummaryList: GovukSummaryList
 )
 
-@(arrivalId: ArrivalId, section: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(arrivalId: ArrivalId, sections: Seq[SummarySection])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("unloadingRemarksRejection.title"),
     showBackLink = true
 ) {
     @heading("unloadingRemarksRejection.heading")
+
+    @for(section <- sections) {
+        @section.sectionTitle.map { title =>
+            <h2 class="govuk-heading-m">@title</h2>
+        }
+        @govukSummaryList(SummaryList(section.rows))
+    }
 
     <p class="govuk-body">@messages("unloadingRemarksRejection.review")
         <a class="govuk-link" href=@routes.IndexController.onPageLoad(arrivalId).url id="review">@messages("unloadingRemarksRejection.newUnloadingRemarks")</a>.

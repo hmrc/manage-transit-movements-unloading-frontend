@@ -20,16 +20,18 @@ import java.time.LocalDate
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.MessagesModelGenerators
-import models.{FunctionalError, UnloadingRemarksRejectionMessage}
+import models.ErrorType.{IncorrectValue, NotSupportedPosition}
+import models.{DefaultPointer, FunctionalError, NumberOfPackagesPointer, UnloadingRemarksRejectionMessage, VehicleRegistrationPointer}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
-import org.scalacheck.Arbitrary.arbitrary
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.UnloadingRemarksRejectionService
-import viewModels.sections.Section
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryListRow, Value, _}
+import viewModels.sections.SummarySection
 import views.html.{UnloadingRemarksMultipleErrorsRejectionView, UnloadingRemarksRejectionView}
 
 import scala.concurrent.Future
@@ -37,6 +39,29 @@ import scala.concurrent.Future
 class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators {
 
   private val mockUnloadingRemarksRejectionService = mock[UnloadingRemarksRejectionService]
+
+  private val originalVehicalValue    = "origValue"
+  private val vehicleFunctionalError  = FunctionalError(IncorrectValue, VehicleRegistrationPointer, Some("R206"), Some(originalVehicalValue))
+  private val originalPackagesValue   = "origValue"
+  private val packagesFunctionalError = FunctionalError(IncorrectValue, NumberOfPackagesPointer, Some("R206"), Some(originalPackagesValue))
+  private val defaultFunctionalError  = FunctionalError(NotSupportedPosition, DefaultPointer("error here"), Some("R206"), Some(originalPackagesValue))
+
+  private val packagesSummaryListRow = SummaryListRow(
+    key = "Total number of packages".toKey,
+    value = Value(originalPackagesValue.toText),
+    actions = Some(
+      Actions(
+        "",
+        Seq(
+          ActionItem(
+            content = "Change".toText,
+            href = s"/manage-transit-movements/unloading/${arrivalId.toString}/total-number-of-packages-rejection",
+            visuallyHiddenText = Some("Change Total number of packages")
+          )
+        )
+      )
+    )
+  )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -50,11 +75,8 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
 
   "UnloadingRemarksRejection Controller" - {
 
-    "return OK and the single error rejection view for a GET when unloading rejection message returns a Some" in {
-
-      val functionalError = arbitrary[FunctionalError](arbitraryRejectionErrorNonDefaultPointer).sample.value
-
-      val errors: Seq[FunctionalError] = Seq(functionalError)
+    "return OK and the single error rejection view when unloading a single rejection" in {
+      val errors: Seq[FunctionalError] = Seq(packagesFunctionalError)
 
       when(mockUnloadingRemarksRejectionService.unloadingRemarksRejectionMessage(any())(any()))
         .thenReturn(Future.successful(Some(UnloadingRemarksRejectionMessage(mrn, LocalDate.now, None, errors))))
@@ -67,7 +89,7 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
 
       val view = injector.instanceOf[UnloadingRemarksRejectionView]
 
-      val expectedSection: Seq[Section] = Nil
+      val expectedSection: Seq[SummarySection] = Seq(SummarySection(Seq(packagesSummaryListRow)))
 
       status(result) mustEqual OK
 
@@ -75,9 +97,7 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
     }
 
     "return OK and the multiple error rejection view for a GET when unloading rejection message returns Some" in {
-      val functionalError = arbitrary[FunctionalError](arbitraryRejectionError).sample.value
-
-      val errors = Seq(functionalError, functionalError)
+      val errors = Seq(packagesFunctionalError, vehicleFunctionalError)
 
       when(mockUnloadingRemarksRejectionService.unloadingRemarksRejectionMessage(any())(any()))
         .thenReturn(Future.successful(Some(UnloadingRemarksRejectionMessage(mrn, LocalDate.now, None, errors))))
@@ -92,6 +112,77 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual view(arrivalId, errors)(request, messages).toString
+    }
+
+    "return OK and the multiple error rejection view when unloading rejection message has an unrecognised pointer" in {
+      val errors = Seq(defaultFunctionalError)
+
+      when(mockUnloadingRemarksRejectionService.unloadingRemarksRejectionMessage(any())(any()))
+        .thenReturn(Future.successful(Some(UnloadingRemarksRejectionMessage(mrn, LocalDate.now, None, errors))))
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(GET, routes.UnloadingRemarksRejectionController.onPageLoad(arrivalId).url)
+
+      val result = route(app, request).value
+      val view   = injector.instanceOf[UnloadingRemarksMultipleErrorsRejectionView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual view(arrivalId, errors)(request, messages).toString
+    }
+
+    "return OK and the multiple error rejection view when unloading rejection message has multiple unrecognised pointers" in {
+      val errors = Seq(defaultFunctionalError, defaultFunctionalError)
+
+      when(mockUnloadingRemarksRejectionService.unloadingRemarksRejectionMessage(any())(any()))
+        .thenReturn(Future.successful(Some(UnloadingRemarksRejectionMessage(mrn, LocalDate.now, None, errors))))
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(GET, routes.UnloadingRemarksRejectionController.onPageLoad(arrivalId).url)
+
+      val result = route(app, request).value
+      val view   = injector.instanceOf[UnloadingRemarksMultipleErrorsRejectionView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual view(arrivalId, errors)(request, messages).toString
+    }
+
+    "return OK and the multiple error rejection view when we have an unknown error with no original value" in {
+      val errors = Seq(defaultFunctionalError.copy(originalAttributeValue = None))
+
+      when(mockUnloadingRemarksRejectionService.unloadingRemarksRejectionMessage(any())(any()))
+        .thenReturn(Future.successful(Some(UnloadingRemarksRejectionMessage(mrn, LocalDate.now, None, errors))))
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(GET, routes.UnloadingRemarksRejectionController.onPageLoad(arrivalId).url)
+
+      val result = route(app, request).value
+      val view   = injector.instanceOf[UnloadingRemarksMultipleErrorsRejectionView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual view(arrivalId, errors)(request, messages).toString
+    }
+
+    "render 'Technical difficulties' page when a known error pointer has no original value" in {
+      val errors = Seq(packagesFunctionalError.copy(originalAttributeValue = None))
+
+      when(mockUnloadingRemarksRejectionService.unloadingRemarksRejectionMessage(any())(any()))
+        .thenReturn(Future.successful(Some(UnloadingRemarksRejectionMessage(mrn, LocalDate.now, None, errors))))
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(GET, routes.UnloadingRemarksRejectionController.onPageLoad(arrivalId).url)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
     }
 
     "render 'Technical difficulties' page when unloading rejection message's has no errors" in {

@@ -16,79 +16,105 @@
 
 package utils
 
+import java.time.LocalDate
+
 import controllers.routes
 import models.ArrivalId
-import uk.gov.hmrc.viewmodels.MessageInterpolators
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
-import uk.gov.hmrc.viewmodels.Text.Literal
-
-import java.time.LocalDate
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
 class UnloadingRemarksRejectionHelper {
 
-  def vehicleNameRegistrationReference(arrivalId: ArrivalId, value: String): Row =
-    Row(
-      key = Key(msg"changeVehicle.reference.label"),
-      value = Value(lit"$value"),
-      actions = List(
-        Action(
-          content = msg"site.edit",
-          href = routes.VehicleNameRegistrationRejectionController.onPageLoad(arrivalId).url,
-          visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"changeVehicle.reference.label")),
-          attributes = Map("id" -> "change-vehicle-registration-rejection")
+  def vehicleNameRegistrationReference(arrivalId: ArrivalId, value: String)(implicit messages: Messages): SummaryListRow =
+    SummaryListRow(
+      key = messages("changeVehicle.reference.label").toKey,
+      value = Value(value.toText),
+      actions = Some(
+        Actions(
+          "",
+          Seq(
+            ActionItem(
+              content = messages("site.edit").toText,
+              href = routes.VehicleNameRegistrationRejectionController.onPageLoad(arrivalId).url,
+              visuallyHiddenText = Some(messages("site.edit.hidden", messages("changeVehicle.reference.label"))),
+              attributes = Map("id" -> "change-vehicle-registration-rejection")
+            )
+          )
         )
       )
     )
 
-  def totalNumberOfPackages(arrivalId: ArrivalId, value: String): Row =
-    Row(
-      key = Key(msg"changeItems.totalNumberOfPackages.label"),
-      value = Value(lit"$value"),
-      actions = List(
-        Action(
-          content = msg"site.edit",
-          href = routes.TotalNumberOfPackagesRejectionController.onPageLoad(arrivalId).url,
-          visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"changeItems.totalNumberOfPackages.label"))
+  def totalNumberOfPackages(arrivalId: ArrivalId, value: String)(implicit messages: Messages): SummaryListRow =
+    SummaryListRow(
+      key = messages("changeItems.totalNumberOfPackages.label").toKey,
+      value = Value(value.toText),
+      actions = Some(
+        Actions(
+          "",
+          Seq(
+            ActionItem(
+              content = messages("site.edit").toText,
+              href = routes.TotalNumberOfPackagesRejectionController.onPageLoad(arrivalId).url,
+              visuallyHiddenText = Some(messages("site.edit.hidden", messages("changeItems.totalNumberOfPackages.label")))
+            )
+          )
         )
       )
     )
 
-  def totalNumberOfItems(arrivalId: ArrivalId, value: String): Row =
-    Row(
-      key = Key(msg"changeItems.totalNumberOfItems.label"),
-      value = Value(lit"$value"),
-      actions = List(
-        Action(
-          content = msg"site.edit",
-          href = routes.TotalNumberOfItemsRejectionController.onPageLoad(arrivalId).url,
-          visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"changeItems.totalNumberOfItems.label"))
+  def totalNumberOfItems(arrivalId: ArrivalId, value: String)(implicit messages: Messages): SummaryListRow =
+    SummaryListRow(
+      key = messages("changeItems.totalNumberOfItems.label").toKey,
+      value = Value(value.toText),
+      actions = Some(
+        Actions(
+          "",
+          Seq(
+            ActionItem(
+              content = messages("site.edit").toText,
+              href = routes.TotalNumberOfItemsRejectionController.onPageLoad(arrivalId).url,
+              visuallyHiddenText = Some(messages("site.edit.hidden", messages("changeItems.totalNumberOfItems.label")))
+            )
+          )
         )
       )
     )
 
-  def grossMassAmount(arrivalId: ArrivalId, value: String): Row =
-    Row(
-      key = Key(msg"changeItems.grossMass.label"),
-      value = Value(lit"$value"),
-      actions = List(
-        Action(
-          content = msg"site.edit",
-          href = routes.GrossMassAmountRejectionController.onPageLoad(arrivalId).url,
-          visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"changeItems.grossMass.label"))
+  def grossMassAmount(arrivalId: ArrivalId, value: String)(implicit messages: Messages): SummaryListRow =
+    SummaryListRow(
+      key = messages("changeItems.grossMass.label").toKey,
+      value = Value(value.toText),
+      actions = Some(
+        Actions(
+          "",
+          Seq(
+            ActionItem(
+              content = messages("site.edit").toText,
+              href = routes.GrossMassAmountRejectionController.onPageLoad(arrivalId).url,
+              visuallyHiddenText = Some(messages("site.edit.hidden", messages("changeItems.grossMass.label")))
+            )
+          )
         )
       )
     )
 
-  def unloadingDate(arrivalId: ArrivalId, value: LocalDate): Row =
-    Row(
-      key = Key(msg"changeItems.dateGoodsUnloaded.label"),
-      value = Value(Literal(value.format(Format.cyaDateFormatter))),
-      actions = List(
-        Action(
-          content = msg"site.edit",
-          href = routes.DateGoodsUnloadedRejectionController.onPageLoad(arrivalId).url,
-          visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"changeItems.dateGoodsUnloaded.label")),
-          attributes = Map("id" -> "change-date-goods-unloaded")
+  def unloadingDate(arrivalId: ArrivalId, value: LocalDate)(implicit messages: Messages): SummaryListRow =
+    SummaryListRow(
+      key = messages("changeItems.dateGoodsUnloaded.label").toKey,
+      value = Value(value.format(Format.cyaDateFormatter).toText),
+      actions = Some(
+        Actions(
+          "",
+          Seq(
+            ActionItem(
+              content = messages("site.edit").toText,
+              href = routes.DateGoodsUnloadedRejectionController.onPageLoad(arrivalId).url,
+              visuallyHiddenText = Some(messages("site.edit.hidden", messages("changeItems.dateGoodsUnloaded.label"))),
+              attributes = Map("id" -> "change-date-goods-unloaded")
+            )
+          )
         )
       )
     )

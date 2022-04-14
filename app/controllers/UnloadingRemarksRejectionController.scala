@@ -25,11 +25,11 @@ import models._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import services.UnloadingRemarksRejectionService
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.SummaryList.Row
 import utils.Date.getDate
 import utils.UnloadingRemarksRejectionHelper
-import viewModels.sections.Section
+import viewModels.sections.SummarySection
 import views.html.{UnloadingRemarksMultipleErrorsRejectionView, UnloadingRemarksRejectionView}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -77,7 +77,7 @@ class UnloadingRemarksRejectionController @Inject() (
   }
 
   private def singleErrorPage(arrivalId: ArrivalId, error: FunctionalError)(implicit request: Request[_]): Option[Result] = {
-    val rowOption: Option[Row] = error.originalAttributeValue flatMap {
+    val rowOption: Option[SummaryListRow] = error.originalAttributeValue flatMap {
       originalValue =>
         val cyaHelper = new UnloadingRemarksRejectionHelper()
         error.pointer match {
@@ -94,7 +94,7 @@ class UnloadingRemarksRejectionController @Inject() (
     }
     rowOption map {
       row =>
-        Ok(singleErrorView(arrivalId, Seq(Section(Seq(row)))))
+        Ok(singleErrorView(arrivalId, Seq(SummarySection(Seq(row)))))
     }
   }
 

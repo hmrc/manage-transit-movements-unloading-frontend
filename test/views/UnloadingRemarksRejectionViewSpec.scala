@@ -16,23 +16,39 @@
 
 package views
 
+import generators.{Generators, ViewModelGenerators}
 import play.twirl.api.HtmlFormat
-import views.behaviours.ViewBehaviours
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import viewModels.sections.SummarySection
+import views.behaviours.SummaryListViewBehaviours
 import views.html.UnloadingRemarksRejectionView
 
-class UnloadingRemarksRejectionViewSpec extends ViewBehaviours {
+class UnloadingRemarksRejectionViewSpec extends SummaryListViewBehaviours with ViewModelGenerators with Generators {
+
+  private val sections: Seq[SummarySection] = listWithMaxLength[SummarySection]().sample.value
+
+  override def summaryLists: Seq[SummaryList] = sections.map(
+    section => SummaryList(section.rows)
+  )
 
   private val contactUrl = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/new-computerised-transit-system-enquiries"
   private val reviewUrl  = s"/manage-transit-movements/unloading/${arrivalId.toString}"
 
   override def view: HtmlFormat.Appendable =
-    injector.instanceOf[UnloadingRemarksRejectionView].apply(arrivalId, Nil)(fakeRequest, messages)
+    injector.instanceOf[UnloadingRemarksRejectionView].apply(arrivalId, sections)(fakeRequest, messages)
 
   override val prefix: String = "unloadingRemarksRejection"
 
   behave like pageWithBackLink
 
   behave like pageWithHeading()
+
+  sections.foreach(_.sectionTitle.map {
+    sectionTitle =>
+      behave like pageWithContent("h2", sectionTitle)
+  })
+
+  behave like pageWithSummaryLists()
 
   behave like pageWithPartialContent("p", "You must review the error and")
   behave like pageWithLink(
