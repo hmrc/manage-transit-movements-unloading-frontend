@@ -22,7 +22,8 @@
     mainTemplate: MainTemplate,
     heading: Heading,
     errorSummary: ErrorSummary,
-    config: FrontendAppConfig
+    config: FrontendAppConfig,
+    govukSummaryList: GovukSummaryList
 )
 
 @(arrivalId: ArrivalId, errors: Seq[FunctionalError])(implicit request: Request[_], messages: Messages)
@@ -32,6 +33,10 @@
     showBackLink = true
 ) {
     @heading("unloadingRemarksRejection.heading")
+
+    @for(error <- errors) {
+        @govukSummaryList(error.toSummaryList("unloadingRemarksRejection"))
+    }
 
     <p class="govuk-body">@messages("unloadingRemarksRejection.review")
         <a class="govuk-link" href=@routes.IndexController.onPageLoad(arrivalId).url id="review">@messages("unloadingRemarksRejection.newUnloadingRemarks")</a>.

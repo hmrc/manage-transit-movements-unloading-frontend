@@ -16,23 +16,31 @@
 
 package views
 
+import generators.MessagesModelGenerators
+import models.FunctionalError
 import play.twirl.api.HtmlFormat
-import views.behaviours.ViewBehaviours
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import views.behaviours.SummaryListViewBehaviours
 import views.html.UnloadingRemarksMultipleErrorsRejectionView
 
-class UnloadingRemarksMultipleErrorsRejectionViewSpec extends ViewBehaviours {
+class UnloadingRemarksMultipleErrorsRejectionViewSpec extends SummaryListViewBehaviours with MessagesModelGenerators {
 
   private val contactUrl = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/new-computerised-transit-system-enquiries"
   private val reviewUrl  = s"/manage-transit-movements/unloading/${arrivalId.toString}"
 
-  override def view: HtmlFormat.Appendable =
-    injector.instanceOf[UnloadingRemarksMultipleErrorsRejectionView].apply(arrivalId, Nil)(fakeRequest, messages)
+  override val prefix: String                        = "unloadingRemarksRejection"
+  private val functionalErrors: Seq[FunctionalError] = listWithMaxLength[FunctionalError]()(arbitraryRejectionErrorNonDefaultPointer).sample.value
 
-  override val prefix: String = "unloadingRemarksRejection"
+  override def summaryLists: Seq[SummaryList] = functionalErrors.map(_.toSummaryList(prefix))
+
+  override def view: HtmlFormat.Appendable =
+    injector.instanceOf[UnloadingRemarksMultipleErrorsRejectionView].apply(arrivalId, functionalErrors)(fakeRequest, messages)
 
   behave like pageWithBackLink
 
   behave like pageWithHeading()
+
+  behave like pageWithSummaryLists()
 
   behave like pageWithPartialContent("p", "You must review the error and")
   behave like pageWithLink(
