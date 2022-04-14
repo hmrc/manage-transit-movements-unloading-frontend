@@ -18,38 +18,30 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.VehicleRegistrationCountryFormProvider
-import matchers.JsonMatchers
 import models.NormalMode
 import models.reference.Country
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito.{reset, when}
 import pages.VehicleRegistrationCountryPage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.ReferenceDataService
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.VehicleRegistrationCountryView
 
 import scala.concurrent.Future
 
-class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   val formProvider                                   = new VehicleRegistrationCountryFormProvider()
   private val country: Country                       = Country("GB", "United Kingdom")
   val countries                                      = Seq(country)
   val form: Form[Country]                            = formProvider(countries)
   val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
-  lazy val vehicleRegistrationCountryRoute: String   = routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, NormalMode).url
-
-  def countriesJson(selected: Boolean = false) = Seq(
-    Json.obj("text" -> "", "value"               -> ""),
-    Json.obj("text" -> "United Kingdom", "value" -> "GB", "selected" -> selected)
-  )
+  private val mode                                   = NormalMode
+  lazy val vehicleRegistrationCountryRoute: String   = routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, mode).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -65,8 +57,6 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       when(mockReferenceDataService.getCountries()(any(), any())).thenReturn(Future.successful(countries))
 
@@ -74,30 +64,20 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
 
       val request = FakeRequest(GET, vehicleRegistrationCountryRoute)
 
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
       val result = route(app, request).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = injector.instanceOf[VehicleRegistrationCountryView]
 
-      val expectedJson = Json.obj(
-        "form"      -> form,
-        "mrn"       -> mrn,
-        "mode"      -> NormalMode,
-        "countries" -> countriesJson()
-      )
+      status(result) mustEqual OK
 
-      templateCaptor.getValue mustEqual "vehicleRegistrationCountry.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(form, countries, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       when(mockReferenceDataService.getCountries()(any(), any())).thenReturn(
         Future.successful(countries)
@@ -106,25 +86,17 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
       val userAnswers = emptyUserAnswers.set(VehicleRegistrationCountryPage, country).success.value
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(GET, vehicleRegistrationCountryRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-      val result         = route(app, request).value
-
-      status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val request = FakeRequest(GET, vehicleRegistrationCountryRoute)
+      val result  = route(app, request).value
 
       val filledForm = form.bind(Map("value" -> "GB"))
 
-      val expectedJson = Json.obj(
-        "form"      -> filledForm,
-        "mrn"       -> mrn,
-        "mode"      -> NormalMode,
-        "countries" -> countriesJson(true)
-      )
-      templateCaptor.getValue mustEqual "vehicleRegistrationCountry.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      val view = injector.instanceOf[VehicleRegistrationCountryView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, countries, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -146,31 +118,21 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
 
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockReferenceDataService.getCountries()(any(), any())).thenReturn(Future.successful(countries))
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(POST, vehicleRegistrationCountryRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm      = form.bind(Map("value" -> ""))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request   = FakeRequest(POST, vehicleRegistrationCountryRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = injector.instanceOf[VehicleRegistrationCountryView]
 
-      val expectedJson = Json.obj(
-        "form"      -> boundForm,
-        "mrn"       -> mrn,
-        "mode"      -> NormalMode,
-        "countries" -> countriesJson()
-      )
-
-      templateCaptor.getValue mustEqual "vehicleRegistrationCountry.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(boundForm, countries, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
