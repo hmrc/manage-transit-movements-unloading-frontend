@@ -18,18 +18,16 @@ package controllers
 
 import controllers.actions._
 import forms.GrossMassAmountFormProvider
-
 import javax.inject.Inject
 import models.{ArrivalId, Mode}
 import navigation.Navigator
 import pages.GrossMassAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.GrossMassAmountView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -42,7 +40,7 @@ class GrossMassAmountController @Inject() (
   requireData: DataRequiredAction,
   formProvider: GrossMassAmountFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer,
+  view: GrossMassAmountView,
   checkArrivalStatus: CheckArrivalStatusProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -52,20 +50,14 @@ class GrossMassAmountController @Inject() (
   private val form = formProvider()
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {
+    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData) {
       implicit request =>
         val preparedForm = request.userAnswers.get(GrossMassAmountPage) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
 
-        val json = Json.obj(
-          "form"        -> preparedForm,
-          "mrn"         -> request.userAnswers.mrn,
-          "onSubmitUrl" -> routes.GrossMassAmountController.onSubmit(arrivalId, mode).url
-        )
-
-        renderer.render("grossMassAmount.njk", json).map(Ok(_))
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode))
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
@@ -74,16 +66,7 @@ class GrossMassAmountController @Inject() (
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => {
-
-              val json = Json.obj(
-                "form"        -> formWithErrors,
-                "mrn"         -> request.userAnswers.mrn,
-                "onSubmitUrl" -> routes.GrossMassAmountController.onSubmit(arrivalId, mode).url
-              )
-
-              renderer.render("grossMassAmount.njk", json).map(BadRequest(_))
-            },
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(GrossMassAmountPage, value))
