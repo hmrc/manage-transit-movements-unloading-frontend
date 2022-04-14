@@ -101,8 +101,8 @@ POST       /:arrivalId/vehicle-name-registration-rejection                  cont
 GET        /:arrivalId/total-number-of-packages-rejection                   controllers.TotalNumberOfPackagesRejectionController.onPageLoad(arrivalId: ArrivalId)
 POST       /:arrivalId/total-number-of-packages-rejection                   controllers.TotalNumberOfPackagesRejectionController.onSubmit(arrivalId: ArrivalId)
 
-GET        /:arrivalId/total-number-of-items-rejection                      controllers.TotalNumberOfItemsRejectionController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/total-number-of-items-rejection                      controllers.TotalNumberOfItemsRejectionController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/total-number-of-items-rejection                      controllers.TotalNumberOfItemsRejectionController.onPageLoad(arrivalId: ArrivalId)
+POST       /:arrivalId/total-number-of-items-rejection                      controllers.TotalNumberOfItemsRejectionController.onSubmit(arrivalId: ArrivalId)
 
 GET        /:arrivalId/gross-mass-amount-rejection                          controllers.GrossMassAmountRejectionController.onPageLoad(arrivalId: ArrivalId)
 POST       /:arrivalId/gross-mass-amount-rejection                          controllers.GrossMassAmountRejectionController.onSubmit(arrivalId: ArrivalId)

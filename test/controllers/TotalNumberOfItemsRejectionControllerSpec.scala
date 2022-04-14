@@ -19,7 +19,7 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.TotalNumberOfItemsFormProvider
 import models.ErrorType.IncorrectValue
-import models.{DefaultPointer, FunctionalError, NormalMode, UnloadingRemarksRejectionMessage}
+import models.{DefaultPointer, FunctionalError, UnloadingRemarksRejectionMessage}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import pages.TotalNumberOfItemsPage
@@ -28,7 +28,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.UnloadingRemarksRejectionService
-import views.html.TotalNumberOfItemsView
+import views.html.TotalNumberOfItemsRejectionView
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -38,7 +38,6 @@ class TotalNumberOfItemsRejectionControllerSpec extends SpecBase with AppWithDef
   private val formProvider                 = new TotalNumberOfItemsFormProvider()
   private val form                         = formProvider()
   private val validAnswer                  = 1
-  private val mode                         = NormalMode
   lazy val totalNumberOfItemsRoute: String = routes.TotalNumberOfItemsRejectionController.onPageLoad(arrivalId).url
   private val mockRejectionService         = mock[UnloadingRemarksRejectionService]
 
@@ -62,15 +61,15 @@ class TotalNumberOfItemsRejectionControllerSpec extends SpecBase with AppWithDef
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, totalNumberOfItemsRoute)
-      val view    = injector.instanceOf[TotalNumberOfItemsView]
+      val view    = injector.instanceOf[TotalNumberOfItemsRejectionView]
       val result  = route(app, request).value
 
       status(result) mustEqual OK
 
       val filledForm = form.bind(Map("value" -> validAnswer.toString))
 
-      contentAsString(result) must contain
-      view(filledForm, arrivalId, mode)(request, messages).toString
+      contentAsString(result) mustEqual
+        view(filledForm, arrivalId)(request, messages).toString
     }
 
     "must render the Technical Difficulties page when get rejected value is None" in {
@@ -120,9 +119,9 @@ class TotalNumberOfItemsRejectionControllerSpec extends SpecBase with AppWithDef
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[TotalNumberOfItemsView]
+      val view = injector.instanceOf[TotalNumberOfItemsRejectionView]
 
-      contentAsString(result) mustEqual view(boundForm, arrivalId, mode)(request, messages).toString
+      contentAsString(result) mustEqual view(boundForm, arrivalId)(request, messages).toString
     }
 
     "must render Technical Difficulties when there is no rejection message on submission" in {

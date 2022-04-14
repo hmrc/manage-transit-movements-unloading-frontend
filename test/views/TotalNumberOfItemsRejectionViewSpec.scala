@@ -17,20 +17,19 @@
 package views
 
 import forms.TotalNumberOfItemsFormProvider
-import models.NormalMode
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.TotalNumberOfItemsView
+import views.html.TotalNumberOfItemsRejectionView
 
-class TotalNumberOfItemsViewSpec extends InputTextViewBehaviours[Int] {
+class TotalNumberOfItemsRejectionViewSpec extends InputTextViewBehaviours[Int] {
 
   override def form: Form[Int] = new TotalNumberOfItemsFormProvider()()
 
   override def applyView(form: Form[Int]): HtmlFormat.Appendable =
-    injector.instanceOf[TotalNumberOfItemsView].apply(form, arrivalId, mrn, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[TotalNumberOfItemsRejectionView].apply(form, arrivalId)(fakeRequest, messages)
 
   override val prefix: String = "totalNumberOfItems"
 
@@ -39,8 +38,6 @@ class TotalNumberOfItemsViewSpec extends InputTextViewBehaviours[Int] {
   behave like pageWithBackLink
 
   behave like pageWithHeading()
-
-  behave like pageWithCaption(mrn.toString)
 
   behave like pageWithoutHint
 

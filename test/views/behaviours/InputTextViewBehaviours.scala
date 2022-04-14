@@ -26,7 +26,8 @@ trait InputTextViewBehaviours[T] extends QuestionViewBehaviours[T] with Generato
   implicit val arbitraryT: Arbitrary[T]
   private lazy val validValue: T = arbitrary[T].sample.value
 
-  def pageWithInputText(inputFieldClassSize: Option[InputSize] = None): Unit =
+  // scalastyle:off method.length
+  def pageWithInputText(inputFieldClassSize: Option[InputSize] = None, inputMode: Option[String] = None, pattern: Option[String] = None): Unit =
     "page with an input text field" - {
       "when rendered" - {
 
@@ -43,6 +44,20 @@ trait InputTextViewBehaviours[T] extends QuestionViewBehaviours[T] with Generato
             case Some(sizeClass) => assert(getElementById(doc, "value").hasClass(sizeClass.className))
             case None            => assert(getElementById(doc, "value").classNames().size == 1)
           }
+        }
+
+        inputMode.foreach {
+          x =>
+            "must have the correct input mode" in {
+              assert(getElementByTag(doc, "input").attr("inputmode") == x)
+            }
+        }
+
+        pattern.foreach {
+          x =>
+            "must have the correct pattern" in {
+              assert(getElementByTag(doc, "input").attr("pattern") == x)
+            }
         }
 
         "must not render an error summary" in {
@@ -73,5 +88,5 @@ trait InputTextViewBehaviours[T] extends QuestionViewBehaviours[T] with Generato
         }
       }
     }
-
+  // scalastyle:on method.length
 }

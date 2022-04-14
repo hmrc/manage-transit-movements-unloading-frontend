@@ -54,7 +54,7 @@ class TotalNumberOfItemsController @Inject() (
           case None        => form
           case Some(value) => form.fill(value)
         }
-        Ok(view(preparedForm, arrivalId, mode))
+        Ok(view(preparedForm, arrivalId, request.userAnswers.mrn, mode))
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
@@ -63,7 +63,7 @@ class TotalNumberOfItemsController @Inject() (
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId, mode))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId, request.userAnswers.mrn, mode))),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(TotalNumberOfItemsPage, value))

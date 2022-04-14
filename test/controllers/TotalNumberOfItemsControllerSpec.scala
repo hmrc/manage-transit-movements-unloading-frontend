@@ -33,9 +33,9 @@ class TotalNumberOfItemsControllerSpec extends SpecBase with AppWithDefaultMockF
   private val formProvider = new TotalNumberOfItemsFormProvider()
   private val form         = formProvider()
   private val mode         = NormalMode
-  val validAnswer          = 1
+  private val validAnswer  = 1
 
-  lazy val totalNumberOfItemsRoute = routes.TotalNumberOfItemsController.onPageLoad(arrivalId, NormalMode).url
+  private lazy val totalNumberOfItemsRoute = routes.TotalNumberOfItemsController.onPageLoad(arrivalId, mode).url
 
   "TotalNumberOfItems Controller" - {
 
@@ -51,7 +51,7 @@ class TotalNumberOfItemsControllerSpec extends SpecBase with AppWithDefaultMockF
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, arrivalId, mode)(request, messages).toString
+        view(form, arrivalId, mrn, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -70,7 +70,7 @@ class TotalNumberOfItemsControllerSpec extends SpecBase with AppWithDefaultMockF
       val filledForm = form.bind(Map("value" -> validAnswer.toString))
 
       contentAsString(result) mustEqual
-        view(filledForm, arrivalId, mode)(request, messages).toString
+        view(filledForm, arrivalId, mrn, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -103,7 +103,7 @@ class TotalNumberOfItemsControllerSpec extends SpecBase with AppWithDefaultMockF
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, arrivalId, mode)(request, messages).toString
+        view(boundForm, arrivalId, mrn, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

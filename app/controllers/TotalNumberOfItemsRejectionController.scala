@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.TotalNumberOfItemsFormProvider
 import handlers.ErrorHandler
-import models.{ArrivalId, Mode, UserAnswers}
+import models.{ArrivalId, UserAnswers}
 import pages.TotalNumberOfItemsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,7 +29,8 @@ import repositories.SessionRepository
 import services.UnloadingRemarksRejectionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
-import views.html.TotalNumberOfItemsView
+import views.html.TotalNumberOfItemsRejectionView
+
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -45,7 +46,7 @@ class TotalNumberOfItemsRejectionController @Inject() (
   val appConfig: FrontendAppConfig,
   errorHandler: ErrorHandler,
   checkArrivalStatus: CheckArrivalStatusProvider,
-  view: TotalNumberOfItemsView
+  view: TotalNumberOfItemsRejectionView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -53,22 +54,22 @@ class TotalNumberOfItemsRejectionController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
     (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId)).async {
       implicit request =>
         rejectionService.getRejectedValueAsInt(arrivalId, request.userAnswers)(TotalNumberOfItemsPage) flatMap {
-          case Some(_) => Future.successful(Ok(view(form, arrivalId, mode)))
-          case None    => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
+          case Some(value) => Future.successful(Ok(view(form.fill(value), arrivalId)))
+          case None        => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
         }
     }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
+  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =
     (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId)).async {
       implicit request =>
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId, mode))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId))),
             value =>
               rejectionService.unloadingRemarksRejectionMessage(arrivalId) flatMap {
                 case Some(rejectionMessage) =>

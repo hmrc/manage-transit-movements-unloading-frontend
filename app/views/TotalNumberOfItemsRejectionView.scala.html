@@ -14,30 +14,26 @@
  * limitations under the License.
  *@
 
-@import views.html.components.{Button, ErrorSummary, InputText, HeadingCaption}
-@import models.MovementReferenceNumber
+@import views.html.components.{Button, ErrorSummary, InputText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     button: Button,
     inputText: InputText,
-    errorSummary: ErrorSummary,
-    caption: HeadingCaption
+    errorSummary: ErrorSummary
 )
 
-@(form: Form[_], arrivalId: ArrivalId, mrn: MovementReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], arrivalId: ArrivalId)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("totalNumberOfItems.title"),
-    showBackLink = true,
+    showBackLink = true
 ) {
 
-    @formHelper(action = routes.TotalNumberOfItemsController.onSubmit(arrivalId, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.TotalNumberOfItemsRejectionController.onSubmit(arrivalId), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
-
-        @caption(mrn.toString)
 
         @inputText(
             field = form("value"),
