@@ -17,7 +17,7 @@
 package utils
 
 import controllers.routes
-import models.{ArrivalId, Mode}
+import models.ArrivalId
 import uk.gov.hmrc.viewmodels.MessageInterpolators
 import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
 import uk.gov.hmrc.viewmodels.Text.Literal
@@ -53,7 +53,7 @@ class UnloadingRemarksRejectionHelper {
       )
     )
 
-  def totalNumberOfItems(arrivalId: ArrivalId, value: String, mode: Mode): Row =
+  def totalNumberOfItems(arrivalId: ArrivalId, value: String): Row =
     Row(
       key = Key(msg"changeItems.totalNumberOfItems.label"),
       value = Value(lit"$value"),
