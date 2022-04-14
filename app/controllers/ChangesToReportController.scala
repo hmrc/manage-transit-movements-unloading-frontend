@@ -18,18 +18,17 @@ package controllers
 
 import controllers.actions._
 import forms.ChangesToReportFormProvider
-import javax.inject.Inject
+import models.messages.RemarksNonConform._
 import models.{ArrivalId, Mode}
 import navigation.Navigator
 import pages.ChangesToReportPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.ChangesToReportView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ChangesToReportController @Inject() (
@@ -41,31 +40,23 @@ class ChangesToReportController @Inject() (
   requireData: DataRequiredAction,
   formProvider: ChangesToReportFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer,
-  checkArrivalStatus: CheckArrivalStatusProvider
+  checkArrivalStatus: CheckArrivalStatusProvider,
+  view: ChangesToReportView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
   private val form = formProvider()
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {
+    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData) {
       implicit request =>
         val preparedForm = request.userAnswers.get(ChangesToReportPage) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
 
-        val json = Json.obj(
-          "form"      -> preparedForm,
-          "mrn"       -> request.userAnswers.mrn,
-          "arrivalId" -> arrivalId,
-          "mode"      -> mode
-        )
-
-        renderer.render("changesToReport.njk", json).map(Ok(_))
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, unloadingRemarkLength, mode))
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
@@ -74,17 +65,7 @@ class ChangesToReportController @Inject() (
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => {
-
-              val json = Json.obj(
-                "form"      -> formWithErrors,
-                "mrn"       -> request.userAnswers.mrn,
-                "arrivalId" -> arrivalId,
-                "mode"      -> mode
-              )
-
-              renderer.render("changesToReport.njk", json).map(BadRequest(_))
-            },
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, unloadingRemarkLength, mode))),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(ChangesToReportPage, value))
