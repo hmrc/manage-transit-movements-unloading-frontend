@@ -7,6 +7,7 @@ GET        /:arrivalId                                             controllers.I
 GET        /assets/*file                                           controllers.Assets.versioned(path="/public", file: Asset)
 
 GET        /error/this-service-has-been-reset                      controllers.SessionExpiredController.onPageLoad()
+POST       /error/this-service-has-been-reset                      controllers.SessionExpiredController.onSubmit()
 
 GET        /error/bad-request                                      controllers.ErrorController.badRequest()
 GET        /error/not-found                                        controllers.ErrorController.notFound()
