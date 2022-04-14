@@ -215,7 +215,6 @@ unloadingRemarksRejection.title = There is a problem with these unloading remark
 unloadingRemarksRejection.heading = There is a problem with these unloading remarks
 unloadingRemarksRejection.contact.message = If this information is correct, you will need to
 unloadingRemarksRejection.conflicting.information = There is conflicting information that must be fixed before you can continue.
-unloadingRemarksRejection.contact = contact the New Computerised Transit System helpdesk to fix this(opens in a new tab)
 unloadingRemarksRejection.create.unloadingRemarks = create new unloading remarks
 
 unloadingRemarksRejection.review = You must review the error and
