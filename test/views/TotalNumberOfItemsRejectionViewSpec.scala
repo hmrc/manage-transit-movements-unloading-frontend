@@ -16,35 +16,32 @@
 
 package views
 
-import forms.GrossMassAmountFormProvider
-import models.NormalMode
+import forms.TotalNumberOfItemsFormProvider
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.GrossMassAmountView
+import views.html.TotalNumberOfItemsRejectionView
 
-class GrossMassAmountViewSpec extends InputTextViewBehaviours[String] {
+class TotalNumberOfItemsRejectionViewSpec extends InputTextViewBehaviours[Int] {
 
-  override def form: Form[String] = new GrossMassAmountFormProvider()()
+  override def form: Form[Int] = new TotalNumberOfItemsFormProvider()()
 
-  override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[GrossMassAmountView].apply(form, mrn, arrivalId, NormalMode)(fakeRequest, messages)
+  override def applyView(form: Form[Int]): HtmlFormat.Appendable =
+    injector.instanceOf[TotalNumberOfItemsRejectionView].apply(form, arrivalId)(fakeRequest, messages)
 
-  override val prefix: String = "grossMassAmount"
+  override val prefix: String = "totalNumberOfItems"
 
-  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
+  implicit override val arbitraryT: Arbitrary[Int] = Arbitrary(Gen.oneOf(1 to 100))
 
   behave like pageWithBackLink
-
-  behave like pageWithCaption(mrn.toString)
 
   behave like pageWithHeading()
 
   behave like pageWithoutHint
 
-  behave like pageWithInputText(inputFieldClassSize = Some(InputSize.Width10), suffix = Some("kg"))
+  behave like pageWithInputText(Some(InputSize.Width10), Some("numeric"), Some("[0-9]*"))
 
   behave like pageWithSubmitButton("Continue")
 }

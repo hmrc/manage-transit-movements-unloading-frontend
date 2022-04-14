@@ -26,7 +26,12 @@ trait InputTextViewBehaviours[T] extends QuestionViewBehaviours[T] with Generato
   implicit val arbitraryT: Arbitrary[T]
   private lazy val validValue: T = arbitrary[T].sample.value
 
-  def pageWithInputText(inputFieldClassSize: Option[InputSize] = None, suffix: Option[String] = None): Unit =
+  // scalastyle:off method.length
+  def pageWithInputText(inputFieldClassSize: Option[InputSize] = None,
+                        inputMode: Option[String] = None,
+                        pattern: Option[String] = None,
+                        suffix: Option[String] = None
+  ): Unit =
     "page with an input text field" - {
       "when rendered" - {
 
@@ -45,13 +50,26 @@ trait InputTextViewBehaviours[T] extends QuestionViewBehaviours[T] with Generato
           }
         }
 
-        "must render the correct suffix" in {
-          suffix match {
-            case Some(suffixText) =>
+        inputMode.foreach {
+          x =>
+            "must have the correct input mode" in {
+              assert(getElementByTag(doc, "input").attr("inputmode") == x)
+            }
+        }
+
+        pattern.foreach {
+          x =>
+            "must have the correct pattern" in {
+              assert(getElementByTag(doc, "input").attr("pattern") == x)
+            }
+        }
+
+        suffix.foreach {
+          x =>
+            "must have the correct suffix" in {
               val suffixElement = getElementByClass(doc, "govuk-input__suffix")
-              assertElementContainsText(suffixElement, suffixText)
-            case None => assert(getElementsByClass(doc, "govuk-input__suffix").isEmpty)
-          }
+              assertElementContainsText(suffixElement, x)
+            }
         }
 
         "must not render an error summary" in {
@@ -82,5 +100,5 @@ trait InputTextViewBehaviours[T] extends QuestionViewBehaviours[T] with Generato
         }
       }
     }
-
+  // scalastyle:on method.length
 }

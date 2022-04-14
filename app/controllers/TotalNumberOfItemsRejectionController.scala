@@ -20,18 +20,18 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.TotalNumberOfItemsFormProvider
 import handlers.ErrorHandler
-import javax.inject.Inject
 import models.{ArrivalId, UserAnswers}
 import pages.TotalNumberOfItemsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import renderer.Renderer
 import repositories.SessionRepository
 import services.UnloadingRemarksRejectionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.TotalNumberOfItemsRejectionView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TotalNumberOfItemsRejectionController @Inject() (
@@ -45,7 +45,8 @@ class TotalNumberOfItemsRejectionController @Inject() (
   val renderer: Renderer,
   val appConfig: FrontendAppConfig,
   errorHandler: ErrorHandler,
-  checkArrivalStatus: CheckArrivalStatusProvider
+  checkArrivalStatus: CheckArrivalStatusProvider,
+  view: TotalNumberOfItemsRejectionView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -53,44 +54,33 @@ class TotalNumberOfItemsRejectionController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId)).async {
-    implicit request =>
-      rejectionService.getRejectedValueAsInt(arrivalId, request.userAnswers)(TotalNumberOfItemsPage) flatMap {
-        case Some(originalAttrValue) =>
-          val json = Json.obj(
-            "form"        -> form.fill(originalAttrValue),
-            "onSubmitUrl" -> routes.TotalNumberOfItemsRejectionController.onSubmit(arrivalId).url
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
+    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId)).async {
+      implicit request =>
+        rejectionService.getRejectedValueAsInt(arrivalId, request.userAnswers)(TotalNumberOfItemsPage) flatMap {
+          case Some(value) => Future.successful(Ok(view(form.fill(value), arrivalId)))
+          case None        => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
+        }
+    }
+
+  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =
+    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId)).async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId))),
+            value =>
+              rejectionService.unloadingRemarksRejectionMessage(arrivalId) flatMap {
+                case Some(rejectionMessage) =>
+                  val userAnswers = UserAnswers(arrivalId, rejectionMessage.movementReferenceNumber, request.eoriNumber)
+                  for {
+                    updatedAnswers <- Future.fromTry(userAnswers.set(TotalNumberOfItemsPage, value))
+                    _              <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId))
+
+                case _ => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
+              }
           )
-          renderer.render("totalNumberOfItems.njk", json).map(Ok(_))
-        case None => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
-      }
-  }
-
-  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId)).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-
-            val json = Json.obj(
-              "form"        -> formWithErrors,
-              "onSubmitUrl" -> routes.TotalNumberOfItemsRejectionController.onSubmit(arrivalId).url
-            )
-
-            renderer.render("totalNumberOfItems.njk", json).map(BadRequest(_))
-          },
-          value =>
-            rejectionService.unloadingRemarksRejectionMessage(arrivalId) flatMap {
-              case Some(rejectionMessage) =>
-                val userAnswers = UserAnswers(arrivalId, rejectionMessage.movementReferenceNumber, request.eoriNumber)
-                for {
-                  updatedAnswers <- Future.fromTry(userAnswers.set(TotalNumberOfItemsPage, value))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId))
-
-              case _ => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
-            }
-        )
-  }
+    }
 }
