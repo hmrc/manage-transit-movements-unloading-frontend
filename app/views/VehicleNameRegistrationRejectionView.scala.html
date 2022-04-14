@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import views.html.components.{Button, ErrorSummary, InputText, HeadingCaption}
+@import views.html.components.{Button, ErrorSummary, InputText}
 @import models.MovementReferenceNumber
 
 @this(
@@ -22,8 +22,7 @@
     formHelper: FormWithCSRF,
     button: Button,
     inputText: InputText,
-    errorSummary: ErrorSummary,
-    caption: HeadingCaption
+    errorSummary: ErrorSummary
 )
 
 @(form: Form[_], arrivalId: ArrivalId)(implicit request: Request[_], messages: Messages)
