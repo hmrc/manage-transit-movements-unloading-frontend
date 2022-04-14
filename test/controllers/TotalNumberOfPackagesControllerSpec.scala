@@ -18,86 +18,57 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.TotalNumberOfPackagesFormProvider
-import matchers.JsonMatchers
 import models.NormalMode
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.when
 import pages.TotalNumberOfPackagesPage
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.NunjucksSupport
-
+import views.html.TotalNumberOfPackagesView
 import scala.concurrent.Future
 
-class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  val formProvider = new TotalNumberOfPackagesFormProvider()
-  val form         = formProvider()
-
-  val validAnswer = 1
-
-  lazy val totalNumberOfPackagesRoute = routes.TotalNumberOfPackagesController.onPageLoad(arrivalId, NormalMode).url
+  private val formProvider: TotalNumberOfPackagesFormProvider = new TotalNumberOfPackagesFormProvider()
+  private val form                                            = formProvider()
+  private val mode                                            = NormalMode
+  private val validAnswer                                     = 1
+  lazy val totalNumberOfPackagesRoute: String                 = routes.TotalNumberOfPackagesController.onPageLoad(arrivalId, NormalMode).url
 
   "TotalNumberOfPackages Controller" - {
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, totalNumberOfPackagesRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(app, request).value
+      val request = FakeRequest(GET, totalNumberOfPackagesRoute)
+      val result  = route(app, request).value
+      val view    = injector.instanceOf[TotalNumberOfPackagesView]
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"        -> form,
-        "mrn"         -> mrn,
-        "onSubmitUrl" -> routes.TotalNumberOfPackagesController.onSubmit(arrivalId, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual "totalNumberOfPackages.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(form, arrivalId, mrn, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       val userAnswers = emptyUserAnswers.set(TotalNumberOfPackagesPage, validAnswer).success.value
+
       setExistingUserAnswers(userAnswers)
 
-      val request        = FakeRequest(GET, totalNumberOfPackagesRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(app, request).value
+      val request = FakeRequest(GET, totalNumberOfPackagesRoute)
+      val result  = route(app, request).value
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
       val filledForm = form.bind(Map("value" -> validAnswer.toString))
+      val view       = injector.instanceOf[TotalNumberOfPackagesView]
 
-      val expectedJson = Json.obj(
-        "form"        -> filledForm,
-        "mrn"         -> mrn,
-        "onSubmitUrl" -> routes.TotalNumberOfPackagesController.onSubmit(arrivalId, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual "totalNumberOfPackages.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(filledForm, arrivalId, mrn, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -119,30 +90,19 @@ class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMo
 
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(POST, totalNumberOfPackagesRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm      = form.bind(Map("value" -> "invalid value"))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(app, request).value
+      val request   = FakeRequest(POST, totalNumberOfPackagesRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val result    = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view = injector.instanceOf[TotalNumberOfPackagesView]
 
-      val expectedJson = Json.obj(
-        "form"        -> boundForm,
-        "mrn"         -> mrn,
-        "onSubmitUrl" -> routes.TotalNumberOfPackagesController.onSubmit(arrivalId, NormalMode).url
-      )
-
-      templateCaptor.getValue mustEqual "totalNumberOfPackages.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(boundForm, arrivalId, mrn, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
