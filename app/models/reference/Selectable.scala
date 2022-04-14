@@ -16,15 +16,18 @@
 
 package models.reference
 
-import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-case class Country(code: String, description: String) extends Selectable {
-  override def toString: String = description
-
-  override def toSelectItem(selected: Boolean): SelectItem = SelectItem(Some(code), this.toString, selected)
+trait Selectable {
+  def toSelectItem(selected: Boolean = false): SelectItem
 }
 
-object Country {
-  implicit val format: OFormat[Country] = Json.format[Country]
+object Selectable {
+
+  implicit class Selectables(selectables: Seq[Selectable]) {
+
+    def toSelectItems(selectedValue: Option[Selectable]): Seq[SelectItem] = selectables.map(
+      x => x.toSelectItem(selectedValue.contains(x))
+    )
+  }
 }
