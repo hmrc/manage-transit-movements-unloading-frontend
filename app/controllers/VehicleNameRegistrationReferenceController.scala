@@ -18,18 +18,16 @@ package controllers
 
 import controllers.actions._
 import forms.VehicleNameRegistrationReferenceFormProvider
-import javax.inject.Inject
 import models.{ArrivalId, Mode}
 import navigation.Navigator
 import pages.VehicleNameRegistrationReferencePage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.VehicleNameRegistrationReferenceView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class VehicleNameRegistrationReferenceController @Inject() (
@@ -41,30 +39,23 @@ class VehicleNameRegistrationReferenceController @Inject() (
   requireData: DataRequiredAction,
   formProvider: VehicleNameRegistrationReferenceFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer,
+  view: VehicleNameRegistrationReferenceView,
   checkArrivalStatus: CheckArrivalStatusProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
   private val form = formProvider()
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {
+    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData) {
       implicit request =>
         val preparedForm = request.userAnswers.get(VehicleNameRegistrationReferencePage) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
 
-        val json = Json.obj(
-          "form"        -> preparedForm,
-          "mrn"         -> request.userAnswers.mrn,
-          "onSubmitUrl" -> routes.VehicleNameRegistrationReferenceController.onSubmit(arrivalId, mode).url
-        )
-
-        renderer.render("vehicleNameRegistrationReference.njk", json).map(Ok(_))
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode))
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
@@ -73,16 +64,7 @@ class VehicleNameRegistrationReferenceController @Inject() (
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => {
-
-              val json = Json.obj(
-                "form"        -> formWithErrors,
-                "mrn"         -> request.userAnswers.mrn,
-                "onSubmitUrl" -> routes.VehicleNameRegistrationReferenceController.onSubmit(arrivalId, mode).url
-              )
-
-              renderer.render("vehicleNameRegistrationReference.njk", json).map(BadRequest(_))
-            },
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleNameRegistrationReferencePage, value))
