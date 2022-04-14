@@ -63,13 +63,13 @@ trait InputTextViewBehaviours[T] extends QuestionViewBehaviours[T] with Generato
               assert(getElementByTag(doc, "input").attr("pattern") == x)
             }
         }
-        "must render the correct suffix" in {
-          suffix match {
-            case Some(suffixText) =>
+
+        suffix.foreach {
+          x =>
+            "must have the correct suffix" in {
               val suffixElement = getElementByClass(doc, "govuk-input__suffix")
-              assertElementContainsText(suffixElement, suffixText)
-            case None => assert(getElementsByClass(doc, "govuk-input__suffix").isEmpty)
-          }
+              assertElementContainsText(suffixElement, x)
+            }
         }
 
         "must not render an error summary" in {

@@ -44,7 +44,7 @@ class GrossMassAmountViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithoutHint
 
-  behave like pageWithInputText(Some(InputSize.Width10), None, None, Some("kg"))
+  behave like pageWithInputText(inputFieldClassSize = Some(InputSize.Width10), suffix = Some("kg"))
 
   behave like pageWithSubmitButton("Continue")
 }
