@@ -27,6 +27,8 @@ object SummarySection {
 
   def apply(rows: Seq[SummaryListRow]): SummarySection = new SummarySection(None, rows)
 
+  def apply(row: SummaryListRow): SummarySection = new SummarySection(None, Seq(row))
+
   implicit val sectionWrites: OWrites[SummarySection] =
     (
       (__ \ "sectionTitle").write[Option[String]] and

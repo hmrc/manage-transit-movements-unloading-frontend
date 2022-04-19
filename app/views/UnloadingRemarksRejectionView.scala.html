@@ -25,7 +25,7 @@
     govukSummaryList: GovukSummaryList
 )
 
-@(arrivalId: ArrivalId, sections: Seq[SummarySection])(implicit request: Request[_], messages: Messages)
+@(arrivalId: ArrivalId, section: SummarySection)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("unloadingRemarksRejection.title"),
@@ -33,12 +33,7 @@
 ) {
     @heading("unloadingRemarksRejection.heading")
 
-    @for(section <- sections) {
-        @section.sectionTitle.map { title =>
-            <h2 class="govuk-heading-m">@title</h2>
-        }
-        @govukSummaryList(SummaryList(section.rows))
-    }
+    @govukSummaryList(SummaryList(section.rows))
 
     <p class="govuk-body">@messages("unloadingRemarksRejection.review")
         <a class="govuk-link" href=@routes.IndexController.onPageLoad(arrivalId).url id="review">@messages("unloadingRemarksRejection.newUnloadingRemarks")</a>.

@@ -71,7 +71,7 @@ class UnloadingRemarksRejectionController @Inject() (
     val result: Option[Result] = errors match {
       case Nil          => None
       case error :: Nil => singleError(arrivalId, error)
-      case _            => Some(Ok(multipleErrorsView(arrivalId, errors)))
+      case _            => multipleErrors(arrivalId, errors)
     }
 
     result.orElse(defaultError(arrivalId, errors.headOption))
@@ -83,18 +83,23 @@ class UnloadingRemarksRejectionController @Inject() (
   )(implicit request: Request[_]): Option[Result] =
     viewModel.apply(error, arrivalId) map {
       row =>
-        Ok(singleErrorView(arrivalId, Seq(SummarySection(Seq(row)))))
+        Ok(singleErrorView(arrivalId, SummarySection(row)))
     }
+
+  private def multipleErrors(
+    arrivalId: ArrivalId,
+    errors: Seq[FunctionalError]
+  )(implicit request: Request[_]): Option[Result] =
+    Some(Ok(multipleErrorsView(arrivalId, errors)))
 
   private def defaultError(
     arrivalId: ArrivalId,
     error: Option[FunctionalError]
   )(implicit request: Request[_]): Option[Result] =
     error flatMap {
-      case x @ FunctionalError(_, _: DefaultPointer, _, _) =>
-        Some(Ok(multipleErrorsView(arrivalId, Seq(x))))
+      case error @ FunctionalError(_, _: DefaultPointer, _, _) =>
+        multipleErrors(arrivalId, Seq(error))
       case _ =>
         None
     }
-
 }

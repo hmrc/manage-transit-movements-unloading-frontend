@@ -17,6 +17,7 @@
 package views
 
 import generators.{Generators, ViewModelGenerators}
+import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewModels.sections.SummarySection
@@ -25,28 +26,21 @@ import views.html.UnloadingRemarksRejectionView
 
 class UnloadingRemarksRejectionViewSpec extends SummaryListViewBehaviours with ViewModelGenerators with Generators {
 
-  private val sections: Seq[SummarySection] = listWithMaxLength[SummarySection]().sample.value
+  private val section: SummarySection = arbitrary[SummarySection].sample.value
 
-  override def summaryLists: Seq[SummaryList] = sections.map(
-    section => SummaryList(section.rows)
-  )
+  override def summaryLists: Seq[SummaryList] = Seq(SummaryList(section.rows))
 
   private val contactUrl = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/new-computerised-transit-system-enquiries"
   private val reviewUrl  = s"/manage-transit-movements/unloading/${arrivalId.toString}"
 
   override def view: HtmlFormat.Appendable =
-    injector.instanceOf[UnloadingRemarksRejectionView].apply(arrivalId, sections)(fakeRequest, messages)
+    injector.instanceOf[UnloadingRemarksRejectionView].apply(arrivalId, section)(fakeRequest, messages)
 
   override val prefix: String = "unloadingRemarksRejection"
 
   behave like pageWithBackLink
 
   behave like pageWithHeading()
-
-  sections.foreach(_.sectionTitle.map {
-    sectionTitle =>
-      behave like pageWithContent("h2", sectionTitle)
-  })
 
   behave like pageWithSummaryLists()
 

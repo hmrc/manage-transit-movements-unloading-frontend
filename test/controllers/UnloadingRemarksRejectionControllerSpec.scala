@@ -79,7 +79,7 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
 
       val view = injector.instanceOf[UnloadingRemarksRejectionView]
 
-      val expectedSection: Seq[SummarySection] = Seq(SummarySection(Seq(sampleRow)))
+      val expectedSection: SummarySection = SummarySection(Seq(sampleRow))
 
       status(result) mustEqual OK
 
