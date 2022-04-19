@@ -31,9 +31,9 @@ class UnloadingSummaryViewSpec extends SummaryListViewBehaviours with Generators
 
   override val prefix: String = "unloadingSummary"
 
-  private val sealSections: Seq[Section]             = listWithMaxLength[Section]().sample.value
+  private val sealsSection: Section                  = arbitrary[Section].sample.value
   private val transportAndItemSections: Seq[Section] = listWithMaxLength[Section]().sample.value
-  private val sections: Seq[Section]                 = sealSections ++ transportAndItemSections
+  private val sections: Seq[Section]                 = sealsSection +: transportAndItemSections
 
   private val numberOfSeals: Int           = arbitrary[Int].sample.value
   private val showAddCommentsLink: Boolean = arbitrary[Boolean].sample.value
@@ -45,7 +45,7 @@ class UnloadingSummaryViewSpec extends SummaryListViewBehaviours with Generators
   override def view: HtmlFormat.Appendable =
     injector
       .instanceOf[UnloadingSummaryView]
-      .apply(mrn, arrivalId, sealSections, transportAndItemSections, numberOfSeals, showAddCommentsLink)(fakeRequest, messages)
+      .apply(mrn, arrivalId, Some(sealsSection), transportAndItemSections, numberOfSeals, showAddCommentsLink)(fakeRequest, messages)
 
   behave like pageWithBackLink
 
@@ -72,7 +72,7 @@ class UnloadingSummaryViewSpec extends SummaryListViewBehaviours with Generators
     val view =
       injector
         .instanceOf[UnloadingSummaryView]
-        .apply(mrn, arrivalId, Nil, transportAndItemSections, numberOfSeals, showAddCommentsLink)(fakeRequest, messages)
+        .apply(mrn, arrivalId, None, transportAndItemSections, numberOfSeals, showAddCommentsLink)(fakeRequest, messages)
 
     val doc: Document = parseView(view)
 
@@ -85,7 +85,7 @@ class UnloadingSummaryViewSpec extends SummaryListViewBehaviours with Generators
     val view =
       injector
         .instanceOf[UnloadingSummaryView]
-        .apply(mrn, arrivalId, sealSections, transportAndItemSections, numberOfSeals, showAddCommentLink = true)(fakeRequest, messages)
+        .apply(mrn, arrivalId, Some(sealsSection), transportAndItemSections, numberOfSeals, showAddCommentLink = true)(fakeRequest, messages)
 
     val doc: Document = parseView(view)
 

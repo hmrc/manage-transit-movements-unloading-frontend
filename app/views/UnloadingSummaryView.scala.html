@@ -30,7 +30,7 @@
 @(
     mrn: MovementReferenceNumber,
     arrivalId: ArrivalId,
-    sealSections: Seq[Section],
+    sealsSection: Option[Section],
     transportAndItemSections: Seq[Section],
     numberOfSeals: Int,
     showAddCommentLink: Boolean
@@ -45,22 +45,29 @@
 
     @heading("unloadingSummary.heading")
 
-    @if(sealSections.isEmpty) {
-        <h2 class="govuk-heading-m">@messages("unloadingSummary.seals.subheading")</h2>
-        <p class="govuk-body">@messages("unloadingSummary.noSeals")</p>
-    } else {
-        @summaryList(sealSections)
+    @sealsSection match {
+        case Some(value) => {
+            @summaryList(Seq(value))
+        }
+        case None => {
+            <h2 class="govuk-heading-m">@messages("unloadingSummary.seals.subheading")</h2>
+            <p class="govuk-body">@messages("unloadingSummary.noSeals")</p>
+        }
     }
 
     <p class="govuk-body">
-        <a id="add-seal" href=@routes.NewSealNumberController.onPageLoad(arrivalId, Index(numberOfSeals), NormalMode) class="govuk-link">@messages("unloadingSummary.addSeal.link.text")</a>
+        <a id="add-seal" href=@routes.NewSealNumberController.onPageLoad(arrivalId, Index(numberOfSeals), NormalMode) class="govuk-link">
+            @messages("unloadingSummary.addSeal.link.text")
+        </a>
     </p>
 
     @summaryList(transportAndItemSections)
 
     @if(showAddCommentLink) {
         <p class ="govuk-body">
-            <a id="add-comment" href=@routes.ChangesToReportController.onPageLoad(arrivalId, NormalMode) class="govuk-link">@messages("unloadingSummary.addComment.link.text")</a>
+            <a id="add-comment" href=@routes.ChangesToReportController.onPageLoad(arrivalId, NormalMode) class="govuk-link">
+                @messages("unloadingSummary.addComment.link.text")
+            </a>
         </p>
     }
 

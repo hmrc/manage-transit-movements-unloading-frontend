@@ -21,14 +21,13 @@ import cats.data.NonEmptyList
 import models.{TraderAtDestination, UnloadingPermission}
 import pages.{ChangesToReportPage, GrossMassAmountPage}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import utils.UnloadingSummaryHelper
 import viewModels.sections.Section
 
 import java.time.LocalDate
 
 class ItemsSectionSpec extends SpecBase {
 
-  val unloadingPermission: UnloadingPermission = UnloadingPermission(
+  val sampleUnloadingPermission: UnloadingPermission = UnloadingPermission(
     movementReferenceNumber = "19IT02110010007827",
     transportIdentity = None,
     transportCountry = None,
@@ -46,39 +45,35 @@ class ItemsSectionSpec extends SpecBase {
     "Must display" - {
       "Correct Gross mass when no changes have been made" in {
 
-        val grossMassAmount    = unloadingPermission.copy(grossMass = "1000")
-        val data: Seq[Section] = ItemsSection(emptyUserAnswers)(grossMassAmount, new UnloadingSummaryHelper(emptyUserAnswers), messages)
-        data.head.rows.head.value.content mustBe Text("1000")
-        data.head.rows(3).value.content mustBe Text("Flowers")
+        val unloadingPermission = sampleUnloadingPermission.copy(grossMass = "1000")
+        val section: Section    = ItemsSection(emptyUserAnswers, unloadingPermission)
+        section.rows.head.value.content mustBe Text("1000")
+        section.rows(3).value.content mustBe Text("Flowers")
       }
       "Correct number of items when no changes have been made" in {
 
-        val numberOfItems      = unloadingPermission.copy(grossMass = "1000", numberOfItems = 10)
-        val data: Seq[Section] = ItemsSection(emptyUserAnswers)(numberOfItems, new UnloadingSummaryHelper(emptyUserAnswers), messages)
-        data.head.rows(1).value.content mustBe Text("10")
+        val unloadingPermission = sampleUnloadingPermission.copy(grossMass = "1000", numberOfItems = 10)
+        val section: Section    = ItemsSection(emptyUserAnswers, unloadingPermission)
+        section.rows(1).value.content mustBe Text("10")
       }
 
       "Correct Gross mass when change has been made" in {
-        val grossMassAmount = unloadingPermission.copy(grossMass = "1000")
+        val unloadingPermission = sampleUnloadingPermission.copy(grossMass = "1000")
 
         val updatedAnswers = emptyUserAnswers
-          .set(GrossMassAmountPage, "2000")
-          .success
-          .value
+          .setValue(GrossMassAmountPage, "2000")
 
-        val data: Seq[Section] = ItemsSection(updatedAnswers)(grossMassAmount, new UnloadingSummaryHelper(emptyUserAnswers)(messages), messages)
-        data.head.rows.head.value.content mustBe Text("2000")
-        data.head.rows(3).value.content mustBe Text("Flowers")
+        val section: Section = ItemsSection(updatedAnswers, unloadingPermission)
+        section.rows.head.value.content mustBe Text("2000")
+        section.rows(3).value.content mustBe Text("Flowers")
       }
 
       "Correct Comments when change has been made" in {
         val updatedAnswers = emptyUserAnswers
-          .set(ChangesToReportPage, "Test")
-          .success
-          .value
+          .setValue(ChangesToReportPage, "Test")
 
-        val data: Seq[Section] = ItemsSection(updatedAnswers)(unloadingPermission, new UnloadingSummaryHelper(emptyUserAnswers)(messages), messages)
-        data.head.rows(4).value.content mustBe Text("Test")
+        val section: Section = ItemsSection(updatedAnswers, sampleUnloadingPermission)
+        section.rows(4).value.content mustBe Text("Test")
       }
 
     }

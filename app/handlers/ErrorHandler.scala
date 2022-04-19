@@ -31,6 +31,7 @@ import scala.concurrent.Future
 @Singleton
 class ErrorHandler @Inject() (val messagesApi: MessagesApi) extends HttpErrorHandler with I18nSupport with Logging {
 
+  // TODO - message param not currently used?
   override def onClientError(request: RequestHeader, statusCode: Int, message: String = ""): Future[Result] =
     statusCode match {
       case NOT_FOUND =>
@@ -58,12 +59,13 @@ class ErrorHandler @Inject() (val messagesApi: MessagesApi) extends HttpErrorHan
       """
         |
         |! %sInternal server error, for (%s) [%s] ->
-        | """.stripMargin.format(ex match {
-                                   case p: PlayException => "@" + p.id + " - "
-                                   case _                => ""
-                                 },
-                                 request.method,
-                                 request.uri
+        | """.stripMargin.format(
+        ex match {
+          case p: PlayException => "@" + p.id + " - "
+          case _                => ""
+        },
+        request.method,
+        request.uri
       ),
       ex
     )
