@@ -19,7 +19,6 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import cats.data.NonEmptyList
 import forms.DateGoodsUnloadedFormProvider
-import matchers.JsonMatchers
 import models.ErrorType.IncorrectValue
 import models.{DefaultPointer, FunctionalError, TraderAtDestination, UnloadingPermission, UnloadingRemarksRejectionMessage}
 import org.mockito.ArgumentMatchers.any
@@ -30,13 +29,12 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{UnloadingPermissionService, UnloadingRemarksRejectionService}
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.DateGoodsUnloadedRejectionView
 
 import java.time.{Clock, Instant, LocalDate, ZoneId}
 import scala.concurrent.Future
 
-class DateGoodsUnloadedRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class DateGoodsUnloadedRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val seconds           = 200000
   private val stubClock         = Clock.fixed(Instant.now.plusSeconds(seconds), ZoneId.systemDefault)

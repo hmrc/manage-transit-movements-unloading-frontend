@@ -16,7 +16,7 @@
 
 package views
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import base.SpecBase
 import forms.DateGoodsUnloadedFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -25,7 +25,7 @@ import views.html.DateGoodsUnloadedRejectionView
 
 import java.time.{Clock, LocalDate}
 
-class DateGoodsUnloadedRejectionViewSpec extends SpecBase with DateInputViewBehaviour with AppWithDefaultMockFixtures {
+class DateGoodsUnloadedRejectionViewSpec extends SpecBase with DateInputViewBehaviour {
 
   override def form = new DateGoodsUnloadedFormProvider(Clock.systemUTC())(LocalDate.now())
 
