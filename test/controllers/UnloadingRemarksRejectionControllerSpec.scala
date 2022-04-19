@@ -29,7 +29,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.UnloadingRemarksRejectionService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.UnloadingRemarksRejectionHelper
+import viewModels.UnloadingRemarksRejectionViewModel
 import viewModels.sections.SummarySection
 import views.html.{UnloadingRemarksMultipleErrorsRejectionView, UnloadingRemarksRejectionView}
 
@@ -39,7 +39,7 @@ import scala.concurrent.Future
 class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators with ViewModelGenerators {
 
   private val mockUnloadingRemarksRejectionService = mock[UnloadingRemarksRejectionService]
-  private val mockCyaHelper                        = mock[UnloadingRemarksRejectionHelper]
+  private val mockViewModel                        = mock[UnloadingRemarksRejectionViewModel]
 
   private val originalVehicleValue    = "origValue"
   private val vehicleFunctionalError  = FunctionalError(IncorrectValue, VehicleRegistrationPointer, Some("R206"), Some(originalVehicleValue))
@@ -51,14 +51,14 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockUnloadingRemarksRejectionService, mockCyaHelper)
+    reset(mockUnloadingRemarksRejectionService, mockViewModel)
   }
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind[UnloadingRemarksRejectionService].toInstance(mockUnloadingRemarksRejectionService))
-      .overrides(bind[UnloadingRemarksRejectionHelper].toInstance(mockCyaHelper))
+      .overrides(bind[UnloadingRemarksRejectionViewModel].toInstance(mockViewModel))
 
   "UnloadingRemarksRejection Controller" - {
 
@@ -68,8 +68,8 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
       when(mockUnloadingRemarksRejectionService.unloadingRemarksRejectionMessage(any())(any()))
         .thenReturn(Future.successful(Some(UnloadingRemarksRejectionMessage(mrn, LocalDate.now, None, errors))))
 
-      when(mockCyaHelper.totalNumberOfPackages(any(), any())(any()))
-        .thenReturn(sampleRow)
+      when(mockViewModel.apply(any(), any())(any()))
+        .thenReturn(Some(sampleRow))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -110,6 +110,9 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
       when(mockUnloadingRemarksRejectionService.unloadingRemarksRejectionMessage(any())(any()))
         .thenReturn(Future.successful(Some(UnloadingRemarksRejectionMessage(mrn, LocalDate.now, None, errors))))
 
+      when(mockViewModel.apply(any(), any())(any()))
+        .thenReturn(None)
+
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, routes.UnloadingRemarksRejectionController.onPageLoad(arrivalId).url)
@@ -127,6 +130,9 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
 
       when(mockUnloadingRemarksRejectionService.unloadingRemarksRejectionMessage(any())(any()))
         .thenReturn(Future.successful(Some(UnloadingRemarksRejectionMessage(mrn, LocalDate.now, None, errors))))
+
+      when(mockViewModel.apply(any(), any())(any()))
+        .thenReturn(None)
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -146,6 +152,9 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
       when(mockUnloadingRemarksRejectionService.unloadingRemarksRejectionMessage(any())(any()))
         .thenReturn(Future.successful(Some(UnloadingRemarksRejectionMessage(mrn, LocalDate.now, None, errors))))
 
+      when(mockViewModel.apply(any(), any())(any()))
+        .thenReturn(None)
+
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, routes.UnloadingRemarksRejectionController.onPageLoad(arrivalId).url)
@@ -163,6 +172,9 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
 
       when(mockUnloadingRemarksRejectionService.unloadingRemarksRejectionMessage(any())(any()))
         .thenReturn(Future.successful(Some(UnloadingRemarksRejectionMessage(mrn, LocalDate.now, None, errors))))
+
+      when(mockViewModel.apply(any(), any())(any()))
+        .thenReturn(None)
 
       setExistingUserAnswers(emptyUserAnswers)
 

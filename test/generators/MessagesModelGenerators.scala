@@ -19,6 +19,7 @@ package generators
 import models.ErrorType.GenericError
 import models.messages._
 import models.{
+  DefaultPointer,
   ErrorPointer,
   ErrorType,
   FunctionalError,
@@ -89,7 +90,7 @@ trait MessagesModelGenerators extends Generators {
 
       for {
         errorType     <- arbitrary[ErrorType]
-        pointer       <- Gen.oneOf(Seq(GrossMassPointer, NumberOfItemsPointer, UnloadingDatePointer, VehicleRegistrationPointer, NumberOfPackagesPointer))
+        pointer       <- arbitraryNonDefaultErrorPointer.arbitrary
         reason        <- arbitrary[Option[String]]
         originalValue <- stringsWithMaxLength(6)
         date          <- arbitrary[LocalDate]
@@ -102,6 +103,18 @@ trait MessagesModelGenerators extends Generators {
         }
         FunctionalError(errorType, pointer, reason, value)
       }
+    }
+
+  implicit lazy val arbitraryNonDefaultErrorPointer: Arbitrary[ErrorPointer] =
+    Arbitrary {
+      Gen.oneOf(Seq(GrossMassPointer, NumberOfItemsPointer, UnloadingDatePointer, VehicleRegistrationPointer, NumberOfPackagesPointer))
+    }
+
+  implicit lazy val arbitraryDefaultPointer: Arbitrary[ErrorPointer] =
+    Arbitrary {
+      for {
+        str <- arbitrary[String]
+      } yield DefaultPointer(str)
     }
 
   implicit lazy val arbitraryMeta: Arbitrary[Meta] =

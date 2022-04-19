@@ -25,8 +25,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import services.UnloadingRemarksRejectionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.Date.getDate
-import utils.UnloadingRemarksRejectionHelper
+import viewModels.UnloadingRemarksRejectionViewModel
 import viewModels.sections.SummarySection
 import views.html.{UnloadingRemarksMultipleErrorsRejectionView, UnloadingRemarksRejectionView}
 
@@ -42,7 +41,7 @@ class UnloadingRemarksRejectionController @Inject() (
   errorHandler: ErrorHandler,
   singleErrorView: UnloadingRemarksRejectionView,
   multipleErrorsView: UnloadingRemarksMultipleErrorsRejectionView,
-  cyaHelper: UnloadingRemarksRejectionHelper
+  viewModel: UnloadingRemarksRejectionViewModel
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -82,25 +81,10 @@ class UnloadingRemarksRejectionController @Inject() (
     arrivalId: ArrivalId,
     error: FunctionalError
   )(implicit request: Request[_]): Option[Result] =
-    error.originalAttributeValue
-      .flatMap {
-        originalValue =>
-          error.pointer match {
-            case NumberOfPackagesPointer    => Some(cyaHelper.totalNumberOfPackages(arrivalId, originalValue))
-            case VehicleRegistrationPointer => Some(cyaHelper.vehicleNameRegistrationReference(arrivalId, originalValue))
-            case NumberOfItemsPointer       => Some(cyaHelper.totalNumberOfItems(arrivalId, originalValue))
-            case GrossMassPointer           => Some(cyaHelper.grossMassAmount(arrivalId, originalValue))
-            case UnloadingDatePointer =>
-              getDate(originalValue).map(
-                date => cyaHelper.unloadingDate(arrivalId, date)
-              )
-            case _: DefaultPointer => None
-          }
-      }
-      .map {
-        row =>
-          Ok(singleErrorView(arrivalId, Seq(SummarySection(Seq(row)))))
-      }
+    viewModel.apply(error, arrivalId) map {
+      row =>
+        Ok(singleErrorView(arrivalId, Seq(SummarySection(Seq(row)))))
+    }
 
   private def defaultError(
     arrivalId: ArrivalId,
