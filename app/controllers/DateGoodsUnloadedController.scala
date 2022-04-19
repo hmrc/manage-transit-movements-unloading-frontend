@@ -16,23 +16,20 @@
 
 package controllers
 
-import config.FrontendAppConfig
 import controllers.actions._
 import forms.DateGoodsUnloadedFormProvider
 import handlers.ErrorHandler
-import javax.inject.Inject
 import models.{ArrivalId, Mode}
 import navigation.NavigatorUnloadingPermission
 import pages.DateGoodsUnloadedPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import repositories.SessionRepository
 import services.UnloadingPermissionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.DateGoodsUnloadedView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DateGoodsUnloadedController @Inject() (
@@ -44,16 +41,13 @@ class DateGoodsUnloadedController @Inject() (
   requireData: DataRequiredAction,
   formProvider: DateGoodsUnloadedFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer,
   unloadingPermissionService: UnloadingPermissionService,
-  frontendAppConfig: FrontendAppConfig,
   checkArrivalStatus: CheckArrivalStatusProvider,
   errorHandler: ErrorHandler,
   view: DateGoodsUnloadedView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
     (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {

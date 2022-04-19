@@ -16,37 +16,35 @@
 
 package controllers
 
-import java.time.{Clock, Instant, LocalDate, ZoneId}
-
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import cats.data.NonEmptyList
 import forms.DateGoodsUnloadedFormProvider
 import matchers.JsonMatchers
 import models.ErrorType.IncorrectValue
 import models.{DefaultPointer, FunctionalError, TraderAtDestination, UnloadingPermission, UnloadingRemarksRejectionMessage}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito.{reset, when}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.{UnloadingPermissionService, UnloadingRemarksRejectionService}
-import uk.gov.hmrc.viewmodels.{DateInput, NunjucksSupport}
+import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.DateGoodsUnloadedRejectionView
 
+import java.time.{Clock, Instant, LocalDate, ZoneId}
 import scala.concurrent.Future
 
 class DateGoodsUnloadedRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
 
-  val stubClock         = Clock.fixed(Instant.now.plusSeconds(200000), ZoneId.systemDefault)
-  val formProvider      = new DateGoodsUnloadedFormProvider(stubClock)
-  val dateOfPreparation = LocalDate.now(stubClock)
+  private val seconds           = 200000
+  private val stubClock         = Clock.fixed(Instant.now.plusSeconds(seconds), ZoneId.systemDefault)
+  private val formProvider      = new DateGoodsUnloadedFormProvider(stubClock)
+  private val dateOfPreparation = LocalDate.now(stubClock)
 
-  val unloadingPermission = UnloadingPermission(
-    movementReferenceNumber = "19IT02110010007827",
+  private val unloadingPermission = UnloadingPermission(
+    movementReferenceNumber = "19GB12345678901237",
     transportIdentity = None,
     transportCountry = None,
     grossMass = "1000",
@@ -59,7 +57,7 @@ class DateGoodsUnloadedRejectionControllerSpec extends SpecBase with AppWithDefa
     dateOfPreparation = dateOfPreparation
   )
 
-  val unloadingRemarksRejectionMessage = UnloadingRemarksRejectionMessage(
+  private val unloadingRemarksRejectionMessage = UnloadingRemarksRejectionMessage(
     movementReferenceNumber = mrn,
     rejectionDate = LocalDate.now,
     action = None,
@@ -90,20 +88,14 @@ class DateGoodsUnloadedRejectionControllerSpec extends SpecBase with AppWithDefa
 
     "must populate the view correctly on a GET" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockRejectionService.getRejectedValueAsDate(any(), any())(any())(any())).thenReturn(Future.successful(Some(validAnswer)))
       when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(Some(unloadingPermission)))
 
       setNoExistingUserAnswers()
 
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
       val result = route(app, FakeRequest(GET, dateGoodsUnloadedRoute)).value
 
       status(result) mustEqual OK
-
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
 
       val filledForm = form.bind(
         Map(
@@ -113,16 +105,10 @@ class DateGoodsUnloadedRejectionControllerSpec extends SpecBase with AppWithDefa
         )
       )
 
-      val viewModel = DateInput.localDate(filledForm("value"))
+      val view    = injector.instanceOf[DateGoodsUnloadedRejectionView]
+      val request = FakeRequest(GET, dateGoodsUnloadedRoute)
 
-      val expectedJson = Json.obj(
-        "form"        -> filledForm,
-        "date"        -> viewModel,
-        "onSubmitUrl" -> routes.DateGoodsUnloadedRejectionController.onSubmit(arrivalId).url
-      )
-
-      templateCaptor.getValue mustEqual "dateGoodsUnloaded.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustBe view(mrn.toString, arrivalId, filledForm)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -163,7 +149,6 @@ class DateGoodsUnloadedRejectionControllerSpec extends SpecBase with AppWithDefa
 
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockRejectionService.unloadingRemarksRejectionMessage(any())(any())).thenReturn(Future.successful(Some(unloadingRemarksRejectionMessage)))
       when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(Some(unloadingPermission)))
 
@@ -177,32 +162,19 @@ class DateGoodsUnloadedRejectionControllerSpec extends SpecBase with AppWithDefa
 
       val postRequest = FakeRequest(POST, dateGoodsUnloadedRoute)
         .withFormUrlEncodedBody(badSubmission.toSeq: _*)
-
-      val boundForm      = form.bind(badSubmission)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(app, postRequest).value
+      val boundForm = form.bind(badSubmission)
+      val result    = route(app, postRequest).value
 
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view    = injector.instanceOf[DateGoodsUnloadedRejectionView]
+      val request = FakeRequest(GET, dateGoodsUnloadedRoute)
 
-      val viewModel = DateInput.localDate(boundForm("value"))
-
-      val expectedJson = Json.obj(
-        "form"        -> boundForm,
-        "date"        -> viewModel,
-        "onSubmitUrl" -> routes.DateGoodsUnloadedRejectionController.onSubmit(arrivalId).url
-      )
-
-      templateCaptor.getValue mustEqual "dateGoodsUnloaded.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustBe view(mrn.toString, arrivalId, boundForm)(request, messages).toString
     }
 
     "must return a Bad Request and errors when the date is before date of preparation" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockRejectionService.unloadingRemarksRejectionMessage(any())(any())).thenReturn(Future.successful(Some(unloadingRemarksRejectionMessage)))
       when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(Some(unloadingPermission)))
 
@@ -218,27 +190,15 @@ class DateGoodsUnloadedRejectionControllerSpec extends SpecBase with AppWithDefa
 
       val postRequest = FakeRequest(POST, dateGoodsUnloadedRoute)
         .withFormUrlEncodedBody(badSubmission.toSeq: _*)
-
-      val boundForm      = form.bind(badSubmission)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(app, postRequest).value
+      val boundForm = form.bind(badSubmission)
+      val result    = route(app, postRequest).value
 
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
+      val view    = injector.instanceOf[DateGoodsUnloadedRejectionView]
+      val request = FakeRequest(GET, dateGoodsUnloadedRoute)
 
-      val viewModel = DateInput.localDate(boundForm("value"))
-
-      val expectedJson = Json.obj(
-        "form"        -> boundForm,
-        "date"        -> viewModel,
-        "onSubmitUrl" -> routes.DateGoodsUnloadedRejectionController.onSubmit(arrivalId).url
-      )
-
-      templateCaptor.getValue mustEqual "dateGoodsUnloaded.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustBe view(mrn.toString, arrivalId, boundForm)(request, messages).toString
 
     }
 
