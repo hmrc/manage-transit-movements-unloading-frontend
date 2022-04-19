@@ -17,43 +17,36 @@
 package controllers
 
 import cats.data.OptionT
-import config.FrontendAppConfig
 import controllers.actions._
 import forms.DateGoodsUnloadedFormProvider
 import handlers.ErrorHandler
-import javax.inject.Inject
 import models.{ArrivalId, UserAnswers}
-import navigation.NavigatorUnloadingPermission
 import pages.DateGoodsUnloadedPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import repositories.SessionRepository
 import services.{UnloadingPermissionService, UnloadingRemarksRejectionService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.{DateInput, NunjucksSupport}
+import views.html.DateGoodsUnloadedRejectionView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DateGoodsUnloadedRejectionController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: NavigatorUnloadingPermission,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   formProvider: DateGoodsUnloadedFormProvider,
   rejectionService: UnloadingRemarksRejectionService,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer,
   unloadingPermissionService: UnloadingPermissionService,
-  frontendAppConfig: FrontendAppConfig,
   errorHandler: ErrorHandler,
-  checkArrivalStatus: CheckArrivalStatusProvider
+  checkArrivalStatus: CheckArrivalStatusProvider,
+  view: DateGoodsUnloadedRejectionView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId)).async {
     implicit request =>
@@ -62,22 +55,13 @@ class DateGoodsUnloadedRejectionController @Inject() (
         originalValue <- OptionT(rejectionService.getRejectedValueAsDate(arrivalId, request.userAnswers)(DateGoodsUnloadedPage))
         dateOfPreparation = up.dateOfPreparation
       } yield {
-        val form = formProvider(dateOfPreparation)
-
+        val form         = formProvider(dateOfPreparation)
         val preparedForm = form.fill(originalValue)
-        val viewModel    = DateInput.localDate(preparedForm("value"))
 
-        Json.obj(
-          "form"        -> preparedForm,
-          "date"        -> viewModel,
-          "onSubmitUrl" -> routes.DateGoodsUnloadedRejectionController.onSubmit(arrivalId).url
-        )
-
-      }).foldF {
+        Ok(view(up.movementReferenceNumber, arrivalId, preparedForm))
+      }).getOrElseF {
         errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
-      }(
-        json => renderer.render("dateGoodsUnloaded.njk", json).map(Ok(_))
-      )
+      }
 
   }
 
@@ -91,16 +75,8 @@ class DateGoodsUnloadedRejectionController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => {
-
-            val viewModel = DateInput.localDate(formWithErrors("value"))
-
-            val json = Json.obj(
-              "form"        -> formWithErrors,
-              "date"        -> viewModel,
-              "onSubmitUrl" -> routes.DateGoodsUnloadedRejectionController.onSubmit(arrivalId).url
-            )
-
-            renderer.render("dateGoodsUnloaded.njk", json).map(BadRequest(_))
+            val mrn = up.movementReferenceNumber
+            Future.successful(BadRequest(view(mrn, arrivalId, formWithErrors)))
           },
           value => {
             val userAnswers = UserAnswers(arrivalId, rejectionMessage.movementReferenceNumber, request.eoriNumber)
@@ -113,7 +89,6 @@ class DateGoodsUnloadedRejectionController @Inject() (
         )).getOrElse {
         errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
       }.flatten
-
   }
 
 }
