@@ -19,6 +19,7 @@ package controllers
 import audit.services.AuditEventSubmissionService
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import cats.data.NonEmptyList
+import generators.{Generators, ViewModelGenerators}
 import models.{TraderAtDestination, UnloadingPermission}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -28,12 +29,14 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{UnloadingPermissionService, UnloadingRemarksService}
+import viewModels.CheckYourAnswersViewModel
+import viewModels.sections.Section
 import views.html.CheckYourAnswersView
 
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ViewModelGenerators {
 
   val unloadingPermission: UnloadingPermission = UnloadingPermission(
     movementReferenceNumber = "19IT02110010007827",
@@ -52,12 +55,14 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
   val mockUnloadingPermissionService: UnloadingPermissionService   = mock[UnloadingPermissionService]
   val mockUnloadingRemarksService: UnloadingRemarksService         = mock[UnloadingRemarksService]
   val mockAuditEventSubmissionService: AuditEventSubmissionService = mock[AuditEventSubmissionService]
+  val mockViewModel: CheckYourAnswersViewModel                     = mock[CheckYourAnswersViewModel]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockUnloadingPermissionService)
     reset(mockUnloadingRemarksService)
     reset(mockAuditEventSubmissionService)
+    reset(mockViewModel)
   }
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -66,7 +71,8 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
       .overrides(
         bind[UnloadingPermissionService].toInstance(mockUnloadingPermissionService),
         bind[UnloadingRemarksService].toInstance(mockUnloadingRemarksService),
-        bind[AuditEventSubmissionService].toInstance(mockAuditEventSubmissionService)
+        bind[AuditEventSubmissionService].toInstance(mockAuditEventSubmissionService),
+        bind[CheckYourAnswersViewModel].toInstance(mockViewModel)
       )
 
   "Check Your Answers Controller" - {
@@ -76,6 +82,10 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
       "return OK and the correct view for a GET" in {
         checkArrivalStatus()
         when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(Some(unloadingPermission)))
+
+        val sampleSections = listWithMaxLength[Section]().sample.value
+
+        when(mockViewModel.apply(any(), any(), any())(any())).thenReturn(sampleSections)
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -88,7 +98,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(mrn, arrivalId, Nil)(request, messages).toString
+          view(mrn, arrivalId, sampleSections)(request, messages).toString
       }
 
       "redirect to Session Expired for a GET if no existing data is found" in {

@@ -21,23 +21,19 @@ import play.api.i18n.Messages
 import utils.RejectionCheckYourAnswersHelper
 import viewModels.sections.Section
 
-case class RejectionCheckYourAnswersViewModel(sections: Seq[Section])
+class RejectionCheckYourAnswersViewModel {
 
-object RejectionCheckYourAnswersViewModel {
-
-  def apply(userAnswers: UserAnswers)(implicit messages: Messages): RejectionCheckYourAnswersViewModel = {
+  def apply(userAnswers: UserAnswers)(implicit messages: Messages): Seq[Section] = {
     val cyaHelper = new RejectionCheckYourAnswersHelper(userAnswers)
-    RejectionCheckYourAnswersViewModel(
-      Seq(
-        Section(
-          Seq(
-            cyaHelper.vehicleNameRegistrationRejection,
-            cyaHelper.dateGoodsUnloaded,
-            cyaHelper.totalNumberOfItems,
-            cyaHelper.totalNumberOfPackages,
-            cyaHelper.grossMassAmount
-          ).flatten
-        )
+    Seq(
+      Section(
+        Seq(
+          cyaHelper.vehicleNameRegistrationRejection,
+          cyaHelper.dateGoodsUnloaded,
+          cyaHelper.totalNumberOfItems,
+          cyaHelper.totalNumberOfPackages,
+          cyaHelper.grossMassAmount
+        ).flatten
       )
     )
   }

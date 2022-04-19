@@ -62,83 +62,83 @@ class CheckYourAnswersViewModelSpec extends SpecBase {
 
       val date                     = LocalDate.of(2020: Int, 3: Int, 12: Int)
       val userAnswers: UserAnswers = emptyUserAnswers.set(DateGoodsUnloadedPage, date).success.value
-      val data                     = CheckYourAnswersViewModel(userAnswers, unloadingPermission, transportCountry)
+      val sections                 = new CheckYourAnswersViewModel()(userAnswers, unloadingPermission, transportCountry)
 
-      data.sections.length mustBe 3
-      data.sections.head.rows.head.value.content mustBe Text("12 March 2020")
+      sections.length mustBe 3
+      sections.head.rows.head.value.content mustBe Text("12 March 2020")
     }
     "contain vehicle registration details with new user answers" in {
       val userAnswers = emptyUserAnswers.set(VehicleNameRegistrationReferencePage, "vehicle reference").success.value
-      val data        = CheckYourAnswersViewModel(userAnswers, unloadingPermission, transportCountry)
+      val sections    = new CheckYourAnswersViewModel()(userAnswers, unloadingPermission, transportCountry)
 
-      data.sections.length mustBe 3
-      data.sections(2).rows.head.value.content mustBe Text("vehicle reference")
-      data.sections(2).rows.head.actions.isEmpty mustBe false
+      sections.length mustBe 3
+      sections(2).rows.head.value.content mustBe Text("vehicle reference")
+      sections(2).rows.head.actions.isEmpty mustBe false
     }
     "contain transport country details from unloading permission" in {
-      val data = CheckYourAnswersViewModel(emptyUserAnswers, unloadingPermissionWithTransport, transportCountry)
+      val sections = new CheckYourAnswersViewModel()(emptyUserAnswers, unloadingPermissionWithTransport, transportCountry)
 
-      data.sections.length mustBe 3
-      data.sections(2).rows(1).value.content mustBe Text("United Kingdom")
+      sections.length mustBe 3
+      sections(2).rows(1).value.content mustBe Text("United Kingdom")
     }
     "contain gross mass amount details from unloading permission" in {
-      val data = CheckYourAnswersViewModel(emptyUserAnswers, unloadingPermission, transportCountry)
+      val sections = new CheckYourAnswersViewModel()(emptyUserAnswers, unloadingPermission, transportCountry)
 
-      data.sections.length mustBe 3
-      data.sections(2).rows.head.value.content mustBe Text("1000")
-      data.sections(2).rows.head.actions.isEmpty mustBe false
+      sections.length mustBe 3
+      sections(2).rows.head.value.content mustBe Text("1000")
+      sections(2).rows.head.actions.isEmpty mustBe false
     }
     "contain gross mass details" in {
       val userAnswers = emptyUserAnswers.set(GrossMassAmountPage, "500").success.value
-      val data        = CheckYourAnswersViewModel(userAnswers, unloadingPermission, transportCountry)
+      val sections    = new CheckYourAnswersViewModel()(userAnswers, unloadingPermission, transportCountry)
 
-      data.sections.length mustBe 3
-      data.sections(2).rows.head.value.content mustBe Text("500")
-      data.sections(2).rows.head.actions.isEmpty mustBe false
+      sections.length mustBe 3
+      sections(2).rows.head.value.content mustBe Text("500")
+      sections(2).rows.head.actions.isEmpty mustBe false
     }
     "contain number of items details" in {
       val userAnswers = emptyUserAnswers.set(TotalNumberOfItemsPage, 10).success.value
-      val data        = CheckYourAnswersViewModel(userAnswers, unloadingPermission, transportCountry)
+      val sections    = new CheckYourAnswersViewModel()(userAnswers, unloadingPermission, transportCountry)
 
-      data.sections.length mustBe 3
-      data.sections(2).rows(1).value.content mustBe Text("10")
-      data.sections(2).rows.head.actions.isEmpty mustBe false
+      sections.length mustBe 3
+      sections(2).rows(1).value.content mustBe Text("10")
+      sections(2).rows.head.actions.isEmpty mustBe false
     }
     "contain number of items details with details from unloading permission" in {
-      val data = CheckYourAnswersViewModel(emptyUserAnswers, unloadingPermission, transportCountry)
+      val sections = new CheckYourAnswersViewModel()(emptyUserAnswers, unloadingPermission, transportCountry)
 
-      data.sections.length mustBe 3
-      data.sections(2).rows(1).value.content mustBe Text("1")
-      data.sections(2).rows.head.actions.isEmpty mustBe false
+      sections.length mustBe 3
+      sections(2).rows(1).value.content mustBe Text("1")
+      sections(2).rows.head.actions.isEmpty mustBe false
     }
     "contain number of packages details with details from unloading permission" in {
-      val data = CheckYourAnswersViewModel(emptyUserAnswers, unloadingPermission, transportCountry)
+      val sections = new CheckYourAnswersViewModel()(emptyUserAnswers, unloadingPermission, transportCountry)
 
-      data.sections.length mustBe 3
-      data.sections(2).rows(2).value.content mustBe Text("1")
-      data.sections(2).rows.head.actions.isEmpty mustBe false
+      sections.length mustBe 3
+      sections(2).rows(2).value.content mustBe Text("1")
+      sections(2).rows.head.actions.isEmpty mustBe false
     }
     "contain number of packages details" in {
       val userAnswers = emptyUserAnswers.set(TotalNumberOfPackagesPage, 11).success.value
-      val data        = CheckYourAnswersViewModel(userAnswers, unloadingPermission, transportCountry)
+      val sections    = new CheckYourAnswersViewModel()(userAnswers, unloadingPermission, transportCountry)
 
-      data.sections.length mustBe 3
-      data.sections(2).rows(2).value.content mustBe Text("11")
-      data.sections(2).rows.head.actions.isEmpty mustBe false
+      sections.length mustBe 3
+      sections(2).rows(2).value.content mustBe Text("11")
+      sections(2).rows.head.actions.isEmpty mustBe false
     }
     "contain item details" in {
       val userAnswers = emptyUserAnswers
-      val data        = CheckYourAnswersViewModel(userAnswers, unloadingPermission, transportCountry)
+      val sections    = new CheckYourAnswersViewModel()(userAnswers, unloadingPermission, transportCountry)
 
-      data.sections.length mustBe 3
-      data.sections(2).rows(3).value.content mustBe Text("Flowers")
+      sections.length mustBe 3
+      sections(2).rows(3).value.content mustBe Text("Flowers")
     }
     "contain comments details" in {
       val userAnswers = emptyUserAnswers.set(ChangesToReportPage, "Test comment").success.value
-      val data        = CheckYourAnswersViewModel(userAnswers, unloadingPermission, transportCountry)
+      val sections    = new CheckYourAnswersViewModel()(userAnswers, unloadingPermission, transportCountry)
 
-      data.sections.length mustBe 3
-      data.sections(2).rows(4).value.content mustBe Text("Test comment")
+      sections.length mustBe 3
+      sections(2).rows(4).value.content mustBe Text("Test comment")
     }
   }
 }

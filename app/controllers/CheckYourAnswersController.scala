@@ -45,7 +45,8 @@ class CheckYourAnswersController @Inject() (
   unloadingRemarksService: UnloadingRemarksService,
   auditEventSubmissionService: AuditEventSubmissionService,
   checkArrivalStatus: CheckArrivalStatusProvider,
-  view: CheckYourAnswersView
+  view: CheckYourAnswersView,
+  viewModel: CheckYourAnswersViewModel
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -58,8 +59,8 @@ class CheckYourAnswersController @Inject() (
           case Some(unloadingPermission) =>
             referenceDataService.getCountryByCode(unloadingPermission.transportCountry).map {
               transportCountry =>
-                val viewModel = CheckYourAnswersViewModel(request.userAnswers, unloadingPermission, transportCountry)
-                Ok(view(request.userAnswers.mrn, arrivalId, viewModel.sections))
+                val sections = viewModel(request.userAnswers, unloadingPermission, transportCountry)
+                Ok(view(request.userAnswers.mrn, arrivalId, sections))
             }
           case _ => errorHandler.onClientError(request, BAD_REQUEST)
         }

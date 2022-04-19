@@ -68,7 +68,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
   }
 
   def seals(seals: Seq[String]): Option[SummaryListRow] = seals match {
-    case _ :: _ =>
+    case Nil => None
+    case _ =>
       Some(
         SummaryListRow(
           key = messages("checkYourAnswers.seals.checkYourAnswersLabel").toKey,
@@ -76,7 +77,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
           actions = None
         )
       )
-    case _ => None
   }
 
   def dateGoodsUnloaded: Option[SummaryListRow] = userAnswers.get(DateGoodsUnloadedPage) map {

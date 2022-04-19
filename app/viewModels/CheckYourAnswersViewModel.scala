@@ -26,21 +26,17 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.{CheckYourAnswersHelper, UnloadingSummaryHelper}
 import viewModels.sections.Section
 
-case class CheckYourAnswersViewModel(sections: Seq[Section])
-
-object CheckYourAnswersViewModel {
+class CheckYourAnswersViewModel {
 
   def apply(
     userAnswers: UserAnswers,
     unloadingPermission: UnloadingPermission,
     summaryTransportCountry: Option[Country]
-  )(implicit messages: Messages): CheckYourAnswersViewModel =
-    CheckYourAnswersViewModel(
-      Seq(
-        goodsUnloadedSection(userAnswers),
-        sealsSection(userAnswers, unloadingPermission),
-        itemsSection(userAnswers, unloadingPermission, summaryTransportCountry)
-      )
+  )(implicit messages: Messages): Seq[Section] =
+    Seq(
+      goodsUnloadedSection(userAnswers),
+      sealsSection(userAnswers, unloadingPermission),
+      itemsSection(userAnswers, unloadingPermission, summaryTransportCountry)
     )
 
   private def sealsSection(
