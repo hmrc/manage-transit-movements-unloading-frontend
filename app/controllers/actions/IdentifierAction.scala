@@ -24,7 +24,6 @@ import models.EoriNumber
 import models.requests.IdentifierRequest
 import play.api.mvc.Results._
 import play.api.mvc._
-import renderer.Renderer
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
@@ -40,8 +39,7 @@ class AuthenticatedIdentifierAction @Inject() (
   override val authConnector: AuthConnector,
   config: FrontendAppConfig,
   val parser: BodyParsers.Default,
-  enrolmentStoreConnector: EnrolmentStoreConnector,
-  renderer: Renderer
+  enrolmentStoreConnector: EnrolmentStoreConnector
 )(implicit val executionContext: ExecutionContext)
     extends IdentifierAction
     with AuthorisedFunctions {
@@ -68,7 +66,7 @@ class AuthenticatedIdentifierAction @Inject() (
                   block(IdentifierRequest(request, EoriNumber(eoriNumber.value)))
                 case _ => Future.successful(Redirect(routes.UnauthorisedController.onPageLoad()))
               }
-            case None => checkForGroupEnrolment(maybeGroupId, config)(hc, request)
+            case None => checkForGroupEnrolment(maybeGroupId, config)
           }
       }
   } recover {
@@ -78,10 +76,10 @@ class AuthenticatedIdentifierAction @Inject() (
       Redirect(routes.UnauthorisedController.onPageLoad())
   }
 
-  private def checkForGroupEnrolment[A](maybeGroupId: Option[String], config: FrontendAppConfig)(implicit
-    hc: HeaderCarrier,
-    request: Request[A]
-  ): Future[Result] =
+  private def checkForGroupEnrolment[A](
+    maybeGroupId: Option[String],
+    config: FrontendAppConfig
+  )(implicit hc: HeaderCarrier): Future[Result] =
     maybeGroupId match {
       case Some(groupId) =>
         val hasGroupEnrolment = for {

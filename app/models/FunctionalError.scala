@@ -18,14 +18,31 @@ package models
 
 import cats.syntax.all._
 import com.lucidchart.open.xtract.{XmlReader, __ => xmlPath}
+import play.api.i18n.Messages
 import play.api.libs.json.{Json, OWrites}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow, Value}
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
 final case class FunctionalError(
   errorType: ErrorType,
   pointer: ErrorPointer,
   reason: Option[String],
   originalAttributeValue: Option[String]
-)
+) {
+
+  def toSummaryList(implicit messages: Messages): SummaryList = SummaryList(
+    rows = Seq(
+      SummaryListRow(
+        key = messages("unloadingRemarksRejection.errorCode").toKey,
+        value = Value(errorType.toString.toText)
+      ),
+      SummaryListRow(
+        key = messages("unloadingRemarksRejection.pointer").toKey,
+        value = Value(pointer.value.toText)
+      )
+    )
+  )
+}
 
 object FunctionalError {
 

@@ -19,8 +19,8 @@ package utils
 import base.SpecBase
 import controllers.routes
 import org.scalacheck.Arbitrary.arbitrary
-import uk.gov.hmrc.viewmodels.MessageInterpolators
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
 import java.time.LocalDate
 
@@ -36,15 +36,19 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase {
           val helper      = new UnloadingRemarksRejectionHelper
           val result      = helper.vehicleNameRegistrationReference(userAnswers.id, str)
 
-          result mustEqual Row(
-            key = Key(msg"changeVehicle.reference.label"),
-            value = Value(lit"$str"),
-            actions = List(
-              Action(
-                content = msg"site.edit",
-                href = routes.VehicleNameRegistrationRejectionController.onPageLoad(userAnswers.id).url,
-                visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"changeVehicle.reference.label")),
-                attributes = Map("id" -> "change-vehicle-registration-rejection")
+          result mustEqual SummaryListRow(
+            key = "Name, registration or reference".toKey,
+            value = Value(str.toText),
+            actions = Some(
+              Actions(
+                items = Seq(
+                  ActionItem(
+                    content = "Change".toText,
+                    href = routes.VehicleNameRegistrationRejectionController.onPageLoad(userAnswers.id).url,
+                    visuallyHiddenText = Some("Change Name, registration or reference"),
+                    attributes = Map("id" -> "change-vehicle-registration-rejection")
+                  )
+                )
               )
             )
           )
@@ -59,14 +63,18 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase {
           val helper      = new UnloadingRemarksRejectionHelper
           val result      = helper.totalNumberOfPackages(userAnswers.id, str)
 
-          result mustEqual Row(
-            key = Key(msg"changeItems.totalNumberOfPackages.label"),
-            value = Value(lit"$str"),
-            actions = List(
-              Action(
-                content = msg"site.edit",
-                href = routes.TotalNumberOfPackagesRejectionController.onPageLoad(userAnswers.id).url,
-                visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"changeItems.totalNumberOfPackages.label"))
+          result mustEqual SummaryListRow(
+            key = "Total number of packages".toKey,
+            value = Value(str.toText),
+            actions = Some(
+              Actions(
+                items = Seq(
+                  ActionItem(
+                    content = "Change".toText,
+                    href = routes.TotalNumberOfPackagesRejectionController.onPageLoad(userAnswers.id).url,
+                    visuallyHiddenText = Some("Change Total number of packages")
+                  )
+                )
               )
             )
           )
@@ -81,14 +89,18 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase {
           val helper      = new UnloadingRemarksRejectionHelper
           val result      = helper.totalNumberOfItems(userAnswers.id, str)
 
-          result mustEqual Row(
-            key = Key(msg"changeItems.totalNumberOfItems.label"),
-            value = Value(lit"$str"),
-            actions = List(
-              Action(
-                content = msg"site.edit",
-                href = routes.TotalNumberOfItemsRejectionController.onPageLoad(userAnswers.id).url,
-                visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"changeItems.totalNumberOfItems.label"))
+          result mustEqual SummaryListRow(
+            key = "Total number of items".toKey,
+            value = Value(str.toText),
+            actions = Some(
+              Actions(
+                items = Seq(
+                  ActionItem(
+                    content = "Change".toText,
+                    href = routes.TotalNumberOfItemsRejectionController.onPageLoad(userAnswers.id).url,
+                    visuallyHiddenText = Some("Change Total number of items")
+                  )
+                )
               )
             )
           )
@@ -103,14 +115,18 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase {
           val helper      = new UnloadingRemarksRejectionHelper
           val result      = helper.grossMassAmount(userAnswers.id, str)
 
-          result mustEqual Row(
-            key = Key(msg"changeItems.grossMass.label"),
-            value = Value(lit"$str"),
-            actions = List(
-              Action(
-                content = msg"site.edit",
-                href = routes.GrossMassAmountRejectionController.onPageLoad(userAnswers.id).url,
-                visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"changeItems.grossMass.label"))
+          result mustEqual SummaryListRow(
+            key = "Total gross mass in kilograms".toKey,
+            value = Value(str.toText),
+            actions = Some(
+              Actions(
+                items = Seq(
+                  ActionItem(
+                    content = "Change".toText,
+                    href = routes.GrossMassAmountRejectionController.onPageLoad(userAnswers.id).url,
+                    visuallyHiddenText = Some("Change Total gross mass in kilograms")
+                  )
+                )
               )
             )
           )
@@ -123,15 +139,19 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase {
       val helper      = new UnloadingRemarksRejectionHelper
       val result      = helper.unloadingDate(userAnswers.id, LocalDate.parse("2000-01-01"))
 
-      result mustEqual Row(
-        key = Key(msg"changeItems.dateGoodsUnloaded.label"),
-        value = Value(lit"1 January 2000"),
-        actions = List(
-          Action(
-            content = msg"site.edit",
-            href = routes.DateGoodsUnloadedRejectionController.onPageLoad(userAnswers.id).url,
-            visuallyHiddenText = Some(msg"site.edit.hidden".withArgs(msg"changeItems.dateGoodsUnloaded.label")),
-            attributes = Map("id" -> "change-date-goods-unloaded")
+      result mustEqual SummaryListRow(
+        key = "Unloading date".toKey,
+        value = Value("1 January 2000".toText),
+        actions = Some(
+          Actions(
+            items = Seq(
+              ActionItem(
+                content = "Change".toText,
+                href = routes.DateGoodsUnloadedRejectionController.onPageLoad(userAnswers.id).url,
+                visuallyHiddenText = Some("Change Unloading date"),
+                attributes = Map("id" -> "change-date-goods-unloaded")
+              )
+            )
           )
         )
       )

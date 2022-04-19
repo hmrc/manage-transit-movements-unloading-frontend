@@ -17,113 +17,107 @@
 package viewModels
 
 import base.SpecBase
-import matchers.JsonMatchers._
-import controllers.routes
 import generators.MessagesModelGenerators
-import models.ErrorType.NotSupportedPosition
-import models.{DefaultPointer, FunctionalError}
+import models._
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{verify, when}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.libs.json.Json
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
+import utils.UnloadingRemarksRejectionHelper
 
-class UnloadingRemarksRejectionViewModelSpec extends SpecBase with MessagesModelGenerators with ScalaCheckPropertyChecks {
+import java.time.LocalDate
 
-  "UnloadingRemarksRejectionViewModel" - {
+class UnloadingRemarksRejectionViewModelSpec extends SpecBase with MessagesModelGenerators {
 
-    "must return single error page for one error" in {
+  private lazy val errorType = arbitrary[ErrorType].sample.value
 
-      forAll(arbitrary[FunctionalError](arbitraryRejectionErrorNonDefaultPointer)) {
-        error =>
-          val data: UnloadingRemarksRejectionViewModel =
-            UnloadingRemarksRejectionViewModel(Seq(error), arrivalId, "url")(messages).get
+  private val mockHelper = mock[UnloadingRemarksRejectionHelper]
 
-          data.page mustBe "unloadingRemarksRejection.njk"
+  "apply" - {
+
+    "must return None" - {
+      "when originalAttributeValue is None" in {
+        val pointer   = arbitraryNonDefaultErrorPointer.arbitrary.sample.value
+        val error     = FunctionalError(errorType, pointer, None, None)
+        val viewModel = new UnloadingRemarksRejectionViewModel(mockHelper)
+        val result    = viewModel.apply(error, arrivalId)
+        result mustBe None
+      }
+
+      "when originalAttributeValue is defined but pointer is DefaultPointer" in {
+        val pointer                = arbitraryDefaultPointer.arbitrary.sample.value
+        val originalAttributeValue = arbitrary[String].sample.value
+        val error                  = FunctionalError(errorType, pointer, None, Some(originalAttributeValue))
+        val viewModel              = new UnloadingRemarksRejectionViewModel(mockHelper)
+        val result                 = viewModel.apply(error, arrivalId)
+        result mustBe None
       }
     }
 
-    "must return multiple error page if there are more than one errors" in {
+    "must return summary list row" - {
+      "when pointer is NumberOfPackagesPointer" in {
+        when(mockHelper.totalNumberOfPackages(any(), any())(any())).thenCallRealMethod()
 
-      val error  = arbitrary[FunctionalError](arbitraryRejectionError).sample.value
-      val errors = Seq(error, error)
+        val originalAttributeValue = arbitrary[String].sample.value
+        val error                  = FunctionalError(errorType, NumberOfPackagesPointer, None, Some(originalAttributeValue))
+        val viewModel              = new UnloadingRemarksRejectionViewModel(mockHelper)
+        val result                 = viewModel.apply(error, arrivalId).get
+        result.value mustBe Value(originalAttributeValue.toText)
 
-      val data: UnloadingRemarksRejectionViewModel =
-        UnloadingRemarksRejectionViewModel(errors, arrivalId, "url")(messages).get
+        verify(mockHelper).totalNumberOfPackages(eqTo(arrivalId), eqTo(originalAttributeValue))(any())
+      }
 
-      val expectedJson =
-        Json.obj(
-          "errors"                     -> errors,
-          "contactUrl"                 -> "url",
-          "declareUnloadingRemarksUrl" -> routes.IndexController.onPageLoad(arrivalId).url
-        )
+      "when pointer is VehicleRegistrationPointer" in {
+        when(mockHelper.vehicleNameRegistrationReference(any(), any())(any())).thenCallRealMethod()
 
-      data.page mustBe "unloadingRemarksMultipleErrorsRejection.njk"
-      data.json must containJson(expectedJson)
-    }
+        val originalAttributeValue = arbitrary[String].sample.value
+        val error                  = FunctionalError(errorType, VehicleRegistrationPointer, None, Some(originalAttributeValue))
+        val viewModel              = new UnloadingRemarksRejectionViewModel(mockHelper)
+        val result                 = viewModel.apply(error, arrivalId).get
+        result.value mustBe Value(originalAttributeValue.toText)
 
-    "must return error page when single DefaultPointer errors exist" in {
+        verify(mockHelper).vehicleNameRegistrationReference(eqTo(arrivalId), eqTo(originalAttributeValue))(any())
+      }
 
-      val error  = arbitrary[FunctionalError](arbitraryRejectionError).sample.value.copy(pointer = DefaultPointer("error here"))
-      val errors = Seq(error)
+      "when pointer is NumberOfItemsPointer" in {
+        when(mockHelper.totalNumberOfItems(any(), any())(any())).thenCallRealMethod()
 
-      val data: UnloadingRemarksRejectionViewModel =
-        UnloadingRemarksRejectionViewModel(errors, arrivalId, "url")(messages).get
+        val originalAttributeValue = arbitrary[String].sample.value
+        val error                  = FunctionalError(errorType, NumberOfItemsPointer, None, Some(originalAttributeValue))
+        val viewModel              = new UnloadingRemarksRejectionViewModel(mockHelper)
+        val result                 = viewModel.apply(error, arrivalId).get
+        result.value mustBe Value(originalAttributeValue.toText)
 
-      val expectedJson =
-        Json.obj(
-          "errors"                     -> errors,
-          "contactUrl"                 -> "url",
-          "declareUnloadingRemarksUrl" -> routes.IndexController.onPageLoad(arrivalId).url
-        )
+        verify(mockHelper).totalNumberOfItems(eqTo(arrivalId), eqTo(originalAttributeValue))(any())
+      }
 
-      data.page mustBe "unloadingRemarksMultipleErrorsRejection.njk"
-      data.json must containJson(expectedJson)
-    }
+      "when pointer is GrossMassPointer" in {
+        when(mockHelper.grossMassAmount(any(), any())(any())).thenCallRealMethod()
 
-    "must return error page when multiple DefaultPointer errors exist" in {
+        val originalAttributeValue = arbitrary[String].sample.value
+        val error                  = FunctionalError(errorType, GrossMassPointer, None, Some(originalAttributeValue))
+        val viewModel              = new UnloadingRemarksRejectionViewModel(mockHelper)
+        val result                 = viewModel.apply(error, arrivalId).get
+        result.value mustBe Value(originalAttributeValue.toText)
 
-      val error  = arbitrary[FunctionalError](arbitraryRejectionError).sample.value.copy(pointer = DefaultPointer("error here"))
-      val errors = Seq(error, error)
+        verify(mockHelper).grossMassAmount(eqTo(arrivalId), eqTo(originalAttributeValue))(any())
+      }
 
-      val data: UnloadingRemarksRejectionViewModel =
-        UnloadingRemarksRejectionViewModel(errors, arrivalId, "url")(messages).get
+      "when pointer is UnloadingDatePointer" in {
+        when(mockHelper.unloadingDate(any(), any())(any())).thenCallRealMethod()
 
-      val expectedJson =
-        Json.obj(
-          "errors"                     -> errors,
-          "contactUrl"                 -> "url",
-          "declareUnloadingRemarksUrl" -> routes.IndexController.onPageLoad(arrivalId).url
-        )
+        val originalAttributeValue          = "20000101"
+        val formattedOriginalAttributeValue = "1 January 2000"
+        val originalAttributeValueAsDate    = LocalDate.of(2000, 1, 1)
 
-      data.page mustBe "unloadingRemarksMultipleErrorsRejection.njk"
-      data.json must containJson(expectedJson)
-    }
+        val error     = FunctionalError(errorType, UnloadingDatePointer, None, Some(originalAttributeValue))
+        val viewModel = new UnloadingRemarksRejectionViewModel(mockHelper)
+        val result    = viewModel.apply(error, arrivalId).get
+        result.value mustBe Value(formattedOriginalAttributeValue.toText)
 
-    "must return error page when originalAttributeValue is None" in {
-
-      val error  = FunctionalError(NotSupportedPosition, DefaultPointer("error"), Some("R206"), None)
-      val errors = Seq(error)
-
-      val data: UnloadingRemarksRejectionViewModel =
-        UnloadingRemarksRejectionViewModel(errors, arrivalId, "url")(messages).get
-
-      val expectedJson =
-        Json.obj(
-          "errors"                     -> errors,
-          "contactUrl"                 -> "url",
-          "declareUnloadingRemarksUrl" -> routes.IndexController.onPageLoad(arrivalId).url
-        )
-
-      data.page mustBe "unloadingRemarksMultipleErrorsRejection.njk"
-      data.json must containJson(expectedJson)
-    }
-
-    "must not display any sections when error.originalAttributeValue is None" in {
-
-      val error = arbitrary[FunctionalError](arbitraryRejectionError).sample.value.copy(originalAttributeValue = None)
-      val result: Option[UnloadingRemarksRejectionViewModel] =
-        UnloadingRemarksRejectionViewModel(Seq(error), arrivalId, "url")(messages)
-
-      result mustBe None
+        verify(mockHelper).unloadingDate(eqTo(arrivalId), eqTo(originalAttributeValueAsDate))(any())
+      }
     }
   }
 }
