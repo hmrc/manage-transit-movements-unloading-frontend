@@ -31,7 +31,7 @@ class UnloadingRemarksMultipleErrorsRejectionViewSpec extends SummaryListViewBeh
   override val prefix: String                        = "unloadingRemarksRejection"
   private val functionalErrors: Seq[FunctionalError] = listWithMaxLength[FunctionalError]()(arbitraryRejectionErrorNonDefaultPointer).sample.value
 
-  override def summaryLists: Seq[SummaryList] = functionalErrors.map(_.toSummaryList(prefix))
+  override def summaryLists: Seq[SummaryList] = functionalErrors.map(_.toSummaryList)
 
   override def view: HtmlFormat.Appendable =
     injector.instanceOf[UnloadingRemarksMultipleErrorsRejectionView].apply(arrivalId, functionalErrors)(fakeRequest, messages)

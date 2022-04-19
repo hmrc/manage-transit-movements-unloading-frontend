@@ -16,62 +16,49 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generators.MessagesModelGenerators
+import generators.{MessagesModelGenerators, ViewModelGenerators}
 import models.ErrorType.{IncorrectValue, NotSupportedPosition}
 import models.{DefaultPointer, FunctionalError, NumberOfPackagesPointer, UnloadingRemarksRejectionMessage, VehicleRegistrationPointer}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.UnloadingRemarksRejectionService
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryListRow, Value, _}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.UnloadingRemarksRejectionHelper
 import viewModels.sections.SummarySection
 import views.html.{UnloadingRemarksMultipleErrorsRejectionView, UnloadingRemarksRejectionView}
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
-class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators {
+class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators with ViewModelGenerators {
 
   private val mockUnloadingRemarksRejectionService = mock[UnloadingRemarksRejectionService]
+  private val mockCyaHelper                        = mock[UnloadingRemarksRejectionHelper]
 
-  private val originalVehicalValue    = "origValue"
-  private val vehicleFunctionalError  = FunctionalError(IncorrectValue, VehicleRegistrationPointer, Some("R206"), Some(originalVehicalValue))
+  private val originalVehicleValue    = "origValue"
+  private val vehicleFunctionalError  = FunctionalError(IncorrectValue, VehicleRegistrationPointer, Some("R206"), Some(originalVehicleValue))
   private val originalPackagesValue   = "origValue"
   private val packagesFunctionalError = FunctionalError(IncorrectValue, NumberOfPackagesPointer, Some("R206"), Some(originalPackagesValue))
   private val defaultFunctionalError  = FunctionalError(NotSupportedPosition, DefaultPointer("error here"), Some("R206"), Some(originalPackagesValue))
 
-  private val packagesSummaryListRow = SummaryListRow(
-    key = "Total number of packages".toKey,
-    value = Value(originalPackagesValue.toText),
-    actions = Some(
-      Actions(
-        "",
-        Seq(
-          ActionItem(
-            content = "Change".toText,
-            href = s"/manage-transit-movements/unloading/${arrivalId.toString}/total-number-of-packages-rejection",
-            visuallyHiddenText = Some("Change Total number of packages")
-          )
-        )
-      )
-    )
-  )
+  private val sampleRow = arbitrary[SummaryListRow].sample.value
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockUnloadingRemarksRejectionService)
+    reset(mockUnloadingRemarksRejectionService, mockCyaHelper)
   }
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind[UnloadingRemarksRejectionService].toInstance(mockUnloadingRemarksRejectionService))
+      .overrides(bind[UnloadingRemarksRejectionHelper].toInstance(mockCyaHelper))
 
   "UnloadingRemarksRejection Controller" - {
 
@@ -81,6 +68,9 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
       when(mockUnloadingRemarksRejectionService.unloadingRemarksRejectionMessage(any())(any()))
         .thenReturn(Future.successful(Some(UnloadingRemarksRejectionMessage(mrn, LocalDate.now, None, errors))))
 
+      when(mockCyaHelper.totalNumberOfPackages(any(), any())(any()))
+        .thenReturn(sampleRow)
+
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, routes.UnloadingRemarksRejectionController.onPageLoad(arrivalId).url)
@@ -89,7 +79,7 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
 
       val view = injector.instanceOf[UnloadingRemarksRejectionView]
 
-      val expectedSection: Seq[SummarySection] = Seq(SummarySection(Seq(packagesSummaryListRow)))
+      val expectedSection: Seq[SummarySection] = Seq(SummarySection(Seq(sampleRow)))
 
       status(result) mustEqual OK
 

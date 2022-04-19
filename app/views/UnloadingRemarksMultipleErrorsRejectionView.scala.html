@@ -35,7 +35,7 @@
     @heading("unloadingRemarksRejection.heading")
 
     @for(error <- errors) {
-        @govukSummaryList(error.toSummaryList("unloadingRemarksRejection"))
+        @govukSummaryList(error.toSummaryList)
     }
 
     <p class="govuk-body">@messages("unloadingRemarksRejection.review")

@@ -19,10 +19,10 @@ package utils
 import base.SpecBase
 import controllers.routes
 import org.scalacheck.Arbitrary.arbitrary
-import java.time.LocalDate
-
-import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Actions, SummaryListRow, Value}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
+
+import java.time.LocalDate
 
 class UnloadingRemarksRejectionHelperSpec extends SpecBase {
 
@@ -41,8 +41,7 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase {
             value = Value(str.toText),
             actions = Some(
               Actions(
-                "",
-                Seq(
+                items = Seq(
                   ActionItem(
                     content = "Change".toText,
                     href = routes.VehicleNameRegistrationRejectionController.onPageLoad(userAnswers.id).url,
@@ -69,8 +68,7 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase {
             value = Value(str.toText),
             actions = Some(
               Actions(
-                "",
-                Seq(
+                items = Seq(
                   ActionItem(
                     content = "Change".toText,
                     href = routes.TotalNumberOfPackagesRejectionController.onPageLoad(userAnswers.id).url,
@@ -96,8 +94,7 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase {
             value = Value(str.toText),
             actions = Some(
               Actions(
-                "",
-                Seq(
+                items = Seq(
                   ActionItem(
                     content = "Change".toText,
                     href = routes.TotalNumberOfItemsRejectionController.onPageLoad(userAnswers.id).url,
@@ -123,8 +120,7 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase {
             value = Value(str.toText),
             actions = Some(
               Actions(
-                "",
-                Seq(
+                items = Seq(
                   ActionItem(
                     content = "Change".toText,
                     href = routes.GrossMassAmountRejectionController.onPageLoad(userAnswers.id).url,
@@ -148,8 +144,7 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase {
         value = Value("1 January 2000".toText),
         actions = Some(
           Actions(
-            "",
-            Seq(
+            items = Seq(
               ActionItem(
                 content = "Change".toText,
                 href = routes.DateGoodsUnloadedRejectionController.onPageLoad(userAnswers.id).url,

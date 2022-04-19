@@ -21,7 +21,6 @@ import java.time.LocalDate
 import controllers.routes
 import models.ArrivalId
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
@@ -33,8 +32,7 @@ class UnloadingRemarksRejectionHelper {
       value = Value(value.toText),
       actions = Some(
         Actions(
-          "",
-          Seq(
+          items = Seq(
             ActionItem(
               content = messages("site.edit").toText,
               href = routes.VehicleNameRegistrationRejectionController.onPageLoad(arrivalId).url,
@@ -52,8 +50,7 @@ class UnloadingRemarksRejectionHelper {
       value = Value(value.toText),
       actions = Some(
         Actions(
-          "",
-          Seq(
+          items = Seq(
             ActionItem(
               content = messages("site.edit").toText,
               href = routes.TotalNumberOfPackagesRejectionController.onPageLoad(arrivalId).url,
@@ -70,8 +67,7 @@ class UnloadingRemarksRejectionHelper {
       value = Value(value.toText),
       actions = Some(
         Actions(
-          "",
-          Seq(
+          items = Seq(
             ActionItem(
               content = messages("site.edit").toText,
               href = routes.TotalNumberOfItemsRejectionController.onPageLoad(arrivalId).url,
@@ -88,8 +84,7 @@ class UnloadingRemarksRejectionHelper {
       value = Value(value.toText),
       actions = Some(
         Actions(
-          "",
-          Seq(
+          items = Seq(
             ActionItem(
               content = messages("site.edit").toText,
               href = routes.GrossMassAmountRejectionController.onPageLoad(arrivalId).url,
@@ -106,8 +101,7 @@ class UnloadingRemarksRejectionHelper {
       value = Value(value.format(Format.cyaDateFormatter).toText),
       actions = Some(
         Actions(
-          "",
-          Seq(
+          items = Seq(
             ActionItem(
               content = messages("site.edit").toText,
               href = routes.DateGoodsUnloadedRejectionController.onPageLoad(arrivalId).url,

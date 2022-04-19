@@ -30,14 +30,14 @@ final case class FunctionalError(
   originalAttributeValue: Option[String]
 ) {
 
-  def toSummaryList(prefix: String)(implicit messages: Messages): SummaryList = SummaryList(
+  def toSummaryList(implicit messages: Messages): SummaryList = SummaryList(
     rows = Seq(
       SummaryListRow(
-        key = messages(s"$prefix.errorCode").toKey,
+        key = messages("unloadingRemarksRejection.errorCode").toKey,
         value = Value(errorType.toString.toText)
       ),
       SummaryListRow(
-        key = messages(s"$prefix.pointer").toKey,
+        key = messages("unloadingRemarksRejection.pointer").toKey,
         value = Value(pointer.value.toText)
       )
     )
