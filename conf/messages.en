@@ -127,7 +127,6 @@ unloadingSummary.heading = Check what you found against the transit declaration
 unloadingSummary.addSeal.link.text = Add a new official customs seal number
 unloadingSummary.addComment.link.text = Add comment
 unloadingSummary.noSeals = There are no official customs seals.
-unloadingSummary.noSeals = There are no official customs seals.
 unloadingSummary.seals.subheading = Official customs seals
 
 vehicleUsed.title = Vehicle used

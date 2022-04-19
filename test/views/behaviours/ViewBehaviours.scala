@@ -128,6 +128,9 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     }
 
   def pageWithLink(id: String, expectedText: String, expectedHref: String): Unit =
+    pageWithLink(doc, id, expectedText, expectedHref)
+
+  def pageWithLink(doc: Document, id: String, expectedText: String, expectedHref: String): Unit =
     s"must render link with id $id" in {
       val link = getElementById(doc, id)
       assertElementContainsText(link, expectedText)
@@ -146,13 +149,16 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
       assertElementDoesNotExist(doc, "govuk-back-link")
     }
 
+  def pageWithContent(doc: Document, tag: String, expectedText: String): Unit =
+    pageWithContent(doc, tag, expectedText, _ equals _)
+
   def pageWithContent(tag: String, expectedText: String): Unit =
-    pageWithContent(tag, expectedText, _ equals _)
+    pageWithContent(doc, tag, expectedText, _ equals _)
 
   def pageWithPartialContent(tag: String, expectedText: String): Unit =
-    pageWithContent(tag, expectedText, _ contains _)
+    pageWithContent(doc, tag, expectedText, _ contains _)
 
-  private def pageWithContent(tag: String, expectedText: String, condition: (String, String) => Boolean): Unit =
+  private def pageWithContent(doc: Document, tag: String, expectedText: String, condition: (String, String) => Boolean): Unit =
     s"must render $tag with text $expectedText" in {
       val elements = getElementsByTag(doc, tag)
       assertElementExists(elements, element => condition(element.text, expectedText))

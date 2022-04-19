@@ -46,7 +46,7 @@ object SealsSection {
 
   def apply(
     userAnswers: UserAnswers
-  )(implicit unloadingPermission: UnloadingPermission, unloadingSummaryRow: UnloadingSummaryHelper, messages: Messages): Option[Seq[Section]] =
+  )(implicit unloadingPermission: UnloadingPermission, unloadingSummaryRow: UnloadingSummaryHelper, messages: Messages): Seq[Section] =
     userAnswers.get(SealsQuery) match {
       case Some(seals) =>
         val rows: Seq[SummaryListRow] = seals.zipWithIndex.map {
@@ -59,7 +59,7 @@ object SealsSection {
             }
         }
 
-        Some(Seq(Section(messages("changeSeal.title"), rows)))
+        Seq(Section(messages("changeSeal.title"), rows))
 
       case None =>
         unloadingPermission.seals match {
@@ -70,9 +70,9 @@ object SealsSection {
                 SummaryRow.rowWithIndex(Index(index))(sealAnswer)(sealNumber)(unloadingSummaryRow.seals)
             }
 
-            Some(Seq(Section(messages("changeSeal.title"), rows)))
+            Seq(Section(messages("changeSeal.title"), rows))
           case None =>
-            None
+            Nil
         }
     }
 }

@@ -19,19 +19,18 @@ package controllers
 import controllers.actions._
 import derivable.DeriveNumberOfSeals
 import handlers.ErrorHandler
-
-import javax.inject.Inject
 import models.{ArrivalId, Index, NormalMode, UnloadingPermission}
 import pages.ChangesToReportPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import renderer.Renderer
-import services.{ReferenceDataService, UnloadingPermissionService, UnloadingPermissionServiceImpl}
+import services.{ReferenceDataService, UnloadingPermissionService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UnloadingSummaryHelper
 import viewModels.{SealsSection, UnloadingSummaryViewModel}
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class UnloadingSummaryController @Inject() (
@@ -43,7 +42,6 @@ class UnloadingSummaryController @Inject() (
   renderer: Renderer,
   unloadingPermissionService: UnloadingPermissionService,
   referenceDataService: ReferenceDataService,
-  unloadingPermissionServiceImpl: UnloadingPermissionServiceImpl,
   errorHandler: ErrorHandler,
   checkArrivalStatus: CheckArrivalStatusProvider
 )(implicit ec: ExecutionContext)
@@ -69,7 +67,7 @@ class UnloadingSummaryController @Inject() (
             val numberOfSeals = request.userAnswers.get(DeriveNumberOfSeals) match {
               case Some(sealsNum) => sealsNum
               case None =>
-                unloadingPermissionServiceImpl.convertSeals(request.userAnswers, unloadingPermission) match {
+                unloadingPermissionService.convertSeals(request.userAnswers, unloadingPermission) match {
                   case Some(ua) => ua.get(DeriveNumberOfSeals).getOrElse(0)
                   case _        => 0
                 }

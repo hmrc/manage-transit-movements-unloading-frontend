@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import views.html.components.{Button, Heading, HeadingCaption}
+@import views.html.components.{Button, Heading, HeadingCaption, SummaryList}
 @import viewModels.sections.Section
 @import models.MovementReferenceNumber
 
@@ -22,7 +22,7 @@
     mainTemplate: MainTemplate,
     heading: Heading,
     caption: HeadingCaption,
-    govukSummaryList: GovukSummaryList,
+    summaryList: SummaryList,
     button: Button,
     formHelper: FormWithCSRF
 )
@@ -38,13 +38,7 @@
 
     @heading("checkYourAnswers.heading")
 
-    @for(section <- sections) {
-        @section.sectionTitle.map{ title =>
-            <h2 class="govuk-heading-m">@title</h2>
-        }
-
-        @govukSummaryList(SummaryList(section.rows))
-    }
+    @summaryList(sections)
 
     <h2 class="govuk-heading-m">@messages("checkYourAnswers.confirmation.heading")</h2>
     <p class="govuk-body">@messages("checkYourAnswers.confirmation.paragraph")</p>

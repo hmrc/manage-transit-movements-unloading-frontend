@@ -1,0 +1,73 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.routes
+@import models.{Index, MovementReferenceNumber}
+@import views.html.components.{Button, Heading, HeadingCaption, SummaryList}
+@import viewModels.sections.Section
+
+@this(
+    mainTemplate: MainTemplate,
+    heading: Heading,
+    caption: HeadingCaption,
+    summaryList: SummaryList,
+    button: Button
+)
+
+@(
+    mrn: MovementReferenceNumber,
+    arrivalId: ArrivalId,
+    sealSections: Seq[Section],
+    transportAndItemSections: Seq[Section],
+    numberOfSeals: Int,
+    showAddCommentLink: Boolean
+)(implicit request: Request[_], messages: Messages)
+
+@mainTemplate(
+    title = messages("unloadingSummary.title"),
+    showBackLink = true
+) {
+
+    @caption(mrn.toString)
+
+    @heading("unloadingSummary.heading")
+
+    @if(sealSections.isEmpty) {
+        <h2 class="govuk-heading-m">@messages("unloadingSummary.seals.subheading")</h2>
+        <p class="govuk-body">@messages("unloadingSummary.noSeals")</p>
+    } else {
+        @summaryList(sealSections)
+    }
+
+    <p class="govuk-body">
+        <a id="add-seal" href=@routes.NewSealNumberController.onPageLoad(arrivalId, Index(numberOfSeals), NormalMode) class="govuk-link">@messages("unloadingSummary.addSeal.link.text")</a>
+    </p>
+
+    @summaryList(transportAndItemSections)
+
+    @if(showAddCommentLink) {
+        <p class ="govuk-body">
+            <a id="add-comment" href=@routes.ChangesToReportController.onPageLoad(arrivalId, NormalMode) class="govuk-link">@messages("unloadingSummary.addComment.link.text")</a>
+        </p>
+    }
+
+    @button(
+        messageKey = "site.continue",
+        href = Some(routes.CheckYourAnswersController.onPageLoad(arrivalId).url),
+        attributes = Map("id" -> "submit")
+    )
+
+}

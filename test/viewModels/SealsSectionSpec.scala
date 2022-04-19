@@ -48,7 +48,7 @@ class SealsSectionSpec extends SpecBase {
 
       val withSeals = unloadingPermission.copy(seals = Some(Seals(1, Seq("seal 1", "seal 2"))))
 
-      val data: Seq[Section] = SealsSection(emptyUserAnswers)(withSeals, new UnloadingSummaryHelper(emptyUserAnswers)(messages), messages).head
+      val data: Seq[Section] = SealsSection(emptyUserAnswers)(withSeals, new UnloadingSummaryHelper(emptyUserAnswers)(messages), messages)
       data.head.rows(0).value.content mustBe Text("seal 1")
       data.head.rows(1).value.content mustBe Text("seal 2")
     }
@@ -65,7 +65,7 @@ class SealsSectionSpec extends SpecBase {
         .success
         .value
 
-      val data: Seq[Section] = SealsSection(updatedUserAnswers)(withSeals, new UnloadingSummaryHelper(updatedUserAnswers)(messages), messages).head
+      val data: Seq[Section] = SealsSection(updatedUserAnswers)(withSeals, new UnloadingSummaryHelper(updatedUserAnswers)(messages), messages)
       data.head.rows(0).value.content mustBe Text("new seal value 1")
       data.head.rows(1).value.content mustBe Text("new seal value 2")
     }
@@ -74,8 +74,8 @@ class SealsSectionSpec extends SpecBase {
 
       val noSeals = unloadingPermission.copy(seals = None)
 
-      val data: Option[Seq[Section]] = SealsSection(emptyUserAnswers)(noSeals, new UnloadingSummaryHelper(emptyUserAnswers)(messages), messages)
-      data mustBe None
+      val data: Seq[Section] = SealsSection(emptyUserAnswers)(noSeals, new UnloadingSummaryHelper(emptyUserAnswers)(messages), messages)
+      data mustBe Nil
     }
 
   }
