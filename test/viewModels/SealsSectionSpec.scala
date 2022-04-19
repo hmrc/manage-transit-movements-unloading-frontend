@@ -20,9 +20,9 @@ import base.SpecBase
 import cats.data.NonEmptyList
 import models.{Index, Seals, TraderAtDestination, UnloadingPermission}
 import pages.NewSealNumberPage
-import uk.gov.hmrc.viewmodels.Text.Literal
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import utils.UnloadingSummaryHelper
-import viewModels.sections.Section
+import viewModels.sections.SummarySection
 
 import java.time.LocalDate
 
@@ -48,9 +48,9 @@ class SealsSectionSpec extends SpecBase {
 
       val withSeals = unloadingPermission.copy(seals = Some(Seals(1, Seq("seal 1", "seal 2"))))
 
-      val data: Seq[Section] = SealsSection(emptyUserAnswers)(withSeals, new UnloadingSummaryHelper(emptyUserAnswers)).head
-      data.head.rows(0).value.content mustBe Literal("seal 1")
-      data.head.rows(1).value.content mustBe Literal("seal 2")
+      val data: Seq[SummarySection] = SealsSection(emptyUserAnswers)(withSeals, new UnloadingSummaryHelper(emptyUserAnswers)(messages), messages).head
+      data.head.rows(0).value.content mustBe Text("seal 1")
+      data.head.rows(1).value.content mustBe Text("seal 2")
     }
 
     "contain data from user answers" in {
@@ -65,16 +65,16 @@ class SealsSectionSpec extends SpecBase {
         .success
         .value
 
-      val data: Seq[Section] = SealsSection(updatedUserAnswers)(withSeals, new UnloadingSummaryHelper(updatedUserAnswers)).head
-      data.head.rows(0).value.content mustBe Literal("new seal value 1")
-      data.head.rows(1).value.content mustBe Literal("new seal value 2")
+      val data: Seq[SummarySection] = SealsSection(updatedUserAnswers)(withSeals, new UnloadingSummaryHelper(updatedUserAnswers)(messages), messages).head
+      data.head.rows(0).value.content mustBe Text("new seal value 1")
+      data.head.rows(1).value.content mustBe Text("new seal value 2")
     }
 
     "return nothing if no seals exist" in {
 
       val noSeals = unloadingPermission.copy(seals = None)
 
-      val data: Option[Seq[Section]] = SealsSection(emptyUserAnswers)(noSeals, new UnloadingSummaryHelper(emptyUserAnswers))
+      val data: Option[Seq[SummarySection]] = SealsSection(emptyUserAnswers)(noSeals, new UnloadingSummaryHelper(emptyUserAnswers)(messages), messages)
       data mustBe None
     }
 

@@ -22,9 +22,9 @@ import generators.Generators
 import models.{CheckMode, Seals}
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
-import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels.{Html, MessageInterpolators}
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
 import java.time.LocalDate
 
@@ -52,15 +52,19 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
           val result      = helper.areAnySealsBroken
 
           result mustBe Some(
-            Row(
-              key = Key(msg"areAnySealsBroken.checkYourAnswersLabel"),
-              value = Value(msg"site.yes"),
-              actions = List(
-                Action(
-                  content = msg"site.edit",
-                  href = routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, CheckMode).url,
-                  visuallyHiddenText = Some(msg"areAnySealsBroken.checkYourAnswersLabel"),
-                  attributes = Map("id" -> "change-are-any-seals-broken")
+            SummaryListRow(
+              key = "Are any of the official customs seals broken?".toKey,
+              value = Value("Yes".toText),
+              actions = Some(
+                Actions(items =
+                  List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, CheckMode).url,
+                      visuallyHiddenText = Some("if any of the official customs seals are broken"),
+                      attributes = Map("id" -> "change-are-any-seals-broken")
+                    )
+                  )
                 )
               )
             )
@@ -74,15 +78,19 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
           val result      = helper.areAnySealsBroken
 
           result mustBe Some(
-            Row(
-              key = Key(msg"areAnySealsBroken.checkYourAnswersLabel"),
-              value = Value(msg"site.no"),
-              actions = List(
-                Action(
-                  content = msg"site.edit",
-                  href = routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, CheckMode).url,
-                  visuallyHiddenText = Some(msg"areAnySealsBroken.checkYourAnswersLabel"),
-                  attributes = Map("id" -> "change-are-any-seals-broken")
+            SummaryListRow(
+              key = "Are any of the official customs seals broken?".toKey,
+              value = Value("No".toText),
+              actions = Some(
+                Actions(items =
+                  List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, CheckMode).url,
+                      visuallyHiddenText = Some("if any of the official customs seals are broken"),
+                      attributes = Map("id" -> "change-are-any-seals-broken")
+                    )
+                  )
                 )
               )
             )
@@ -114,15 +122,19 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
           val result      = helper.canSealsBeRead
 
           result mustBe Some(
-            Row(
-              key = Key(msg"canSealsBeRead.checkYourAnswersLabel"),
-              value = Value(msg"site.yes"),
-              actions = List(
-                Action(
-                  content = msg"site.edit",
-                  href = routes.CanSealsBeReadController.onPageLoad(userAnswers.id, CheckMode).url,
-                  visuallyHiddenText = Some(msg"canSealsBeRead.checkYourAnswersLabel"),
-                  attributes = Map("id" -> "change-can-seals-be-read")
+            SummaryListRow(
+              key = "Can all of the official customs seal numbers or marks be read?".toKey,
+              value = Value("Yes".toText),
+              actions = Some(
+                Actions(items =
+                  List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.CanSealsBeReadController.onPageLoad(userAnswers.id, CheckMode).url,
+                      visuallyHiddenText = Some("if all of the official customs seals can be read"),
+                      attributes = Map("id" -> "change-can-seals-be-read")
+                    )
+                  )
                 )
               )
             )
@@ -136,15 +148,19 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
           val result      = helper.canSealsBeRead
 
           result mustBe Some(
-            Row(
-              key = Key(msg"canSealsBeRead.checkYourAnswersLabel"),
-              value = Value(msg"site.no"),
-              actions = List(
-                Action(
-                  content = msg"site.edit",
-                  href = routes.CanSealsBeReadController.onPageLoad(userAnswers.id, CheckMode).url,
-                  visuallyHiddenText = Some(msg"canSealsBeRead.checkYourAnswersLabel"),
-                  attributes = Map("id" -> "change-can-seals-be-read")
+            SummaryListRow(
+              key = "Can all of the official customs seal numbers or marks be read?".toKey,
+              value = Value("No".toText),
+              actions = Some(
+                Actions(items =
+                  List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.CanSealsBeReadController.onPageLoad(userAnswers.id, CheckMode).url,
+                      visuallyHiddenText = Some("if all of the official customs seals can be read"),
+                      attributes = Map("id" -> "change-can-seals-be-read")
+                    )
+                  )
                 )
               )
             )
@@ -178,10 +194,10 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
               val result      = helper.seals(Seq(str))
 
               result mustBe Some(
-                Row(
-                  key = Key(msg"checkYourAnswers.seals.checkYourAnswersLabel"),
-                  value = Value(Html(str)),
-                  actions = Nil
+                SummaryListRow(
+                  key = "Official customs seal numbers".toKey,
+                  value = Value(HtmlContent(str)),
+                  actions = None
                 )
               )
           }
@@ -196,10 +212,10 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
               val result      = helper.seals(strs)
 
               result mustBe Some(
-                Row(
-                  key = Key(msg"checkYourAnswers.seals.checkYourAnswersLabel"),
-                  value = Value(Html(strs.mkString("<br>"))),
-                  actions = Nil
+                SummaryListRow(
+                  key = "Official customs seal numbers".toKey,
+                  value = Value(HtmlContent(strs.mkString("<br>"))),
+                  actions = None
                 )
               )
           }
@@ -229,15 +245,19 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
         val result      = helper.dateGoodsUnloaded
 
         result mustBe Some(
-          Row(
-            key = Key(msg"dateGoodsUnloaded.checkYourAnswersLabel"),
-            value = Value(Literal("1 January 2000")),
-            actions = List(
-              Action(
-                content = msg"site.edit",
-                href = routes.DateGoodsUnloadedController.onPageLoad(userAnswers.id, CheckMode).url,
-                visuallyHiddenText = Some(msg"dateGoodsUnloaded.visually.hidden"),
-                attributes = Map("id" -> "change-date-goods-unloaded")
+          SummaryListRow(
+            key = "When were the goods unloaded?".toKey,
+            value = Value("1 January 2000".toText),
+            actions = Some(
+              Actions(items =
+                List(
+                  ActionItem(
+                    content = "Change".toText,
+                    href = routes.DateGoodsUnloadedController.onPageLoad(userAnswers.id, CheckMode).url,
+                    visuallyHiddenText = Some("the date when the goods were unloaded"),
+                    attributes = Map("id" -> "change-date-goods-unloaded")
+                  )
+                )
               )
             )
           )

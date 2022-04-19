@@ -19,8 +19,9 @@ package controllers
 import controllers.actions._
 import derivable.DeriveNumberOfSeals
 import handlers.ErrorHandler
+
 import javax.inject.Inject
-import models.{ArrivalId, Index, NormalMode}
+import models.{ArrivalId, Index, NormalMode, UnloadingPermission}
 import pages.ChangesToReportPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -61,8 +62,9 @@ class UnloadingSummaryController @Inject() (
         unloadingPermissionService.getUnloadingPermission(arrivalId).flatMap {
           case Some(unloadingPermission) =>
             //TODO: Move unloading summary into UnloadingSummaryViewModel
-            val unloadingSummaryRow: UnloadingSummaryHelper = new UnloadingSummaryHelper(request.userAnswers)
-            val sealsSection                                = SealsSection(request.userAnswers)(unloadingPermission, unloadingSummaryRow)
+            implicit val up: UnloadingPermission                     = unloadingPermission // todo: sort this all out
+            implicit val unloadingSummaryRow: UnloadingSummaryHelper = new UnloadingSummaryHelper(request.userAnswers)
+            val sealsSection                                         = SealsSection(request.userAnswers)
 
             val numberOfSeals = request.userAnswers.get(DeriveNumberOfSeals) match {
               case Some(sealsNum) => sealsNum
@@ -77,7 +79,7 @@ class UnloadingSummaryController @Inject() (
 
             referenceDataService.getCountryByCode(unloadingPermission.transportCountry).flatMap {
               transportCountry =>
-                val sections = UnloadingSummaryViewModel(request.userAnswers, transportCountry)(unloadingPermission).sections
+                val sections = UnloadingSummaryViewModel(request.userAnswers, transportCountry).sections
 
                 val json =
                   Json.obj(

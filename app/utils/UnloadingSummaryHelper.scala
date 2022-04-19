@@ -16,156 +16,190 @@
 
 package utils
 
+import controllers.routes
 import models.{ArrivalId, CheckMode, Index, NormalMode, UserAnswers}
-import uk.gov.hmrc.viewmodels.SummaryList._
-import uk.gov.hmrc.viewmodels._
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
-class UnloadingSummaryHelper(userAnswers: UserAnswers) {
+class UnloadingSummaryHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
-  val seals: (Index, String) => Row = {
+  val seals: (Index, String) => SummaryListRow = {
     (index, value) =>
-      Row(
-        key = Key(msg"changeSeal.sealList.label".withArgs(index.display)),
-        value = Value(lit"$value"),
-        actions = List(
-          Action(
-            content = msg"site.edit",
-            href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, index, CheckMode).url,
-            visuallyHiddenText = Some(msg"changeSeal.sealList.change.hidden".withArgs(index.display, value)),
-            attributes = Map("id" -> s"change-seal-${index.position}")
+      SummaryListRow(
+        key = messages("changeSeal.sealList.label", index.display).toKey,
+        value = Value(value.toText),
+        actions = Some(
+          Actions(items =
+            List(
+              ActionItem(
+                content = messages("site.edit").toText,
+                href = routes.NewSealNumberController.onPageLoad(arrivalId, index, CheckMode).url,
+                visuallyHiddenText = Some(messages("changeSeal.sealList.change.hidden", index.display, value)),
+                attributes = Map("id" -> s"change-seal-${index.position}")
+              )
+            )
           )
         )
       )
   }
 
-  val sealsWithRemove: (Index, String) => Row = {
+  val sealsWithRemove: (Index, String) => SummaryListRow = {
     (index, value) =>
-      Row(
-        key = Key(msg"changeSeal.sealList.label".withArgs(index.display)),
-        value = Value(lit"$value"),
-        actions = List(
-          Action(
-            content = msg"site.edit",
-            href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, index, CheckMode).url,
-            visuallyHiddenText = Some(msg"changeSeal.sealList.change.hidden".withArgs(index.display, value)),
-            attributes = Map("id" -> s"change-seal-${index.position}")
-          ),
-          Action(
-            content = msg"site.delete",
-            href = controllers.routes.ConfirmRemoveSealController.onPageLoad(arrivalId, index, NormalMode).url,
-            visuallyHiddenText = Some(msg"changeSeal.sealList.remove.hidden".withArgs(index.display, value)),
-            attributes = Map("id" -> s"remove-seal-${index.position}")
+      SummaryListRow(
+        key = messages("changeSeal.sealList.label", index.display).toKey,
+        value = Value(value.toText),
+        actions = Some(
+          Actions(items =
+            List(
+              ActionItem(
+                content = messages("site.edit").toText,
+                href = routes.NewSealNumberController.onPageLoad(arrivalId, index, CheckMode).url,
+                visuallyHiddenText = Some(messages("changeSeal.sealList.change.hidden", index.display, value)),
+                attributes = Map("id" -> s"change-seal-${index.position}")
+              ),
+              ActionItem(
+                content = messages("site.delete").toText,
+                href = routes.ConfirmRemoveSealController.onPageLoad(arrivalId, index, CheckMode).url,
+                visuallyHiddenText = Some(messages("changeSeal.sealList.remove.hidden", index.display, value)),
+                attributes = Map("id" -> s"remove-seal-${index.position}")
+              )
+            )
           )
         )
       )
   }
 
-  val items: (Index, String) => Row = {
+  val items: (Index, String) => SummaryListRow = {
     (index, value) =>
-      Row(
-        key = Key(msg"changeItem.itemList.label".withArgs(index.display)),
-        value = Value(lit"$value"),
-        actions = Nil
+      SummaryListRow(
+        key = messages("changeItem.itemList.label", index.display).toKey,
+        value = Value(value.toText),
+        actions = None
       )
   }
 
-  val vehicleUsed: String => Row = {
+  val vehicleUsed: String => SummaryListRow = {
     value =>
-      Row(
-        key = Key(msg"changeVehicle.reference.label"),
-        value = Value(lit"$value"),
-        actions = List(
-          Action(
-            content = msg"site.edit",
-            href = controllers.routes.VehicleNameRegistrationReferenceController.onPageLoad(arrivalId, CheckMode).url,
-            visuallyHiddenText = Some(msg"changeVehicle.reference.change.hidden"),
-            attributes = Map("id" -> "change-vehicle-reference")
+      SummaryListRow(
+        key = messages("changeVehicle.reference.label").toKey,
+        value = Value(value.toText),
+        actions = Some(
+          Actions(items =
+            List(
+              ActionItem(
+                content = messages("site.edit").toText,
+                href = routes.VehicleNameRegistrationReferenceController.onPageLoad(arrivalId, CheckMode).url,
+                visuallyHiddenText = Some(messages("changeVehicle.reference.change.hidden")),
+                attributes = Map("id" -> "change-vehicle-reference")
+              )
+            )
           )
         )
       )
   }
 
-  val registeredCountry: String => Row = {
+  val registeredCountry: String => SummaryListRow = {
     value =>
-      Row(
-        key = Key(msg"changeVehicle.registeredCountry.label"),
-        value = Value(lit"$value"),
-        actions = List(
-          Action(
-            content = msg"site.edit",
-            href = controllers.routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, CheckMode).url,
-            visuallyHiddenText = Some(msg"changeVehicle.registeredCountry.change.hidden"),
-            attributes = Map("id" -> "change-vehicle-country")
+      SummaryListRow(
+        key = messages("changeVehicle.registeredCountry.label").toKey,
+        value = Value(value.toText),
+        actions = Some(
+          Actions(items =
+            List(
+              ActionItem(
+                content = messages("site.edit").toText,
+                href = routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, CheckMode).url,
+                visuallyHiddenText = Some(messages("changeVehicle.registeredCountry.change.hidden")),
+                attributes = Map("id" -> "change-vehicle-country")
+              )
+            )
           )
         )
       )
   }
 
-  val grossMass: String => Row = {
+  val grossMass: String => SummaryListRow = {
     value =>
-      Row(
-        key = Key(msg"changeItems.grossMass.label"),
-        value = Value(lit"$value"),
-        actions = List(
-          Action(
-            content = msg"site.edit",
-            href = controllers.routes.GrossMassAmountController.onPageLoad(arrivalId, CheckMode).url,
-            visuallyHiddenText = Some(msg"changeItems.grossMass.change.hidden"),
-            attributes = Map("id" -> "change-gross-mass")
+      SummaryListRow(
+        key = messages("changeItems.grossMass.label").toKey,
+        value = Value(value.toText),
+        actions = Some(
+          Actions(items =
+            List(
+              ActionItem(
+                content = messages("site.edit").toText,
+                href = routes.GrossMassAmountController.onPageLoad(arrivalId, CheckMode).url,
+                visuallyHiddenText = Some(messages("changeItems.grossMass.change.hidden")),
+                attributes = Map("id" -> "change-gross-mass")
+              )
+            )
           )
         )
       )
   }
 
-  val totalNumberOfItems: Int => Row = {
+  val totalNumberOfItems: Int => SummaryListRow = {
     value =>
-      Row(
-        key = Key(msg"changeItems.totalNumberOfItems.label"),
-        value = Value(lit"$value"),
-        actions = List(
-          Action(
-            content = msg"site.edit",
-            href = controllers.routes.TotalNumberOfItemsController.onPageLoad(arrivalId, CheckMode).url,
-            visuallyHiddenText = Some(msg"changeItems.totalNumberOfItems.change.hidden"),
-            attributes = Map("id" -> "change-total-number-of-items")
+      SummaryListRow(
+        key = messages("changeItems.totalNumberOfItems.label").toKey,
+        value = Value(value.toString.toText),
+        actions = Some(
+          Actions(items =
+            List(
+              ActionItem(
+                content = messages("site.edit").toText,
+                href = routes.TotalNumberOfItemsController.onPageLoad(arrivalId, CheckMode).url,
+                visuallyHiddenText = Some(messages("changeItems.totalNumberOfItems.change.hidden")),
+                attributes = Map("id" -> "change-total-number-of-items")
+              )
+            )
           )
         )
       )
   }
 
-  val totalNumberOfPackages: Int => Row = {
+  val totalNumberOfPackages: Int => SummaryListRow = {
     value =>
-      Row(
-        key = Key(msg"changeItems.totalNumberOfPackages.label"),
-        value = Value(lit"$value"),
-        actions = List(
-          Action(
-            content = msg"site.edit",
-            href = controllers.routes.TotalNumberOfPackagesController.onPageLoad(arrivalId, CheckMode).url,
-            visuallyHiddenText = Some(msg"changeItems.totalNumberOfPackages.change.hidden"),
-            attributes = Map("id" -> "change-total-number-of-packages")
+      SummaryListRow(
+        key = messages("changeItems.totalNumberOfPackages.label").toKey,
+        value = Value(value.toString.toText),
+        actions = Some(
+          Actions(items =
+            List(
+              ActionItem(
+                content = messages("site.edit").toText,
+                href = routes.TotalNumberOfPackagesController.onPageLoad(arrivalId, CheckMode).url,
+                visuallyHiddenText = Some(messages("changeItems.totalNumberOfPackages.change.hidden")),
+                attributes = Map("id" -> "change-total-number-of-packages")
+              )
+            )
           )
         )
       )
   }
 
-  val comments: String => Row = {
+  val comments: String => SummaryListRow = {
     value =>
-      Row(
-        key = Key(msg"changeItems.comments.label"),
-        value = Value(lit"$value"),
-        actions = List(
-          Action(
-            content = msg"site.edit",
-            href = controllers.routes.ChangesToReportController.onPageLoad(arrivalId, NormalMode).url,
-            visuallyHiddenText = Some(msg"changeItems.comments.change.hidden"),
-            attributes = Map("id" -> "change-comments")
-          ),
-          Action(
-            content = msg"site.delete",
-            href = controllers.routes.ConfirmRemoveCommentsController.onPageLoad(arrivalId, NormalMode).url,
-            visuallyHiddenText = Some(msg"changeItems.comments.remove.hidden"),
-            attributes = Map("id" -> "remove-comment")
+      SummaryListRow(
+        key = messages("changeItems.comments.label").toKey,
+        value = Value(value.toText),
+        actions = Some(
+          Actions(items =
+            List(
+              ActionItem(
+                content = messages("site.edit").toText,
+                href = routes.ChangesToReportController.onPageLoad(arrivalId, NormalMode).url,
+                visuallyHiddenText = Some(messages("changeItems.comments.change.hidden")),
+                attributes = Map("id" -> "change-comments")
+              ),
+              ActionItem(
+                content = messages("site.delete").toText,
+                href = routes.ConfirmRemoveCommentsController.onPageLoad(arrivalId, NormalMode).url,
+                visuallyHiddenText = Some(messages("changeItems.comments.remove.hidden")),
+                attributes = Map("id" -> "remove-comments")
+              )
+            )
           )
         )
       )

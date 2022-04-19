@@ -17,15 +17,16 @@
 package views
 
 import play.api.libs.json.{JsObject, Json}
-import uk.gov.hmrc.viewmodels.SummaryList.{Key, Row, Value}
-import viewModels.sections.Section
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
+import viewModels.sections.SummarySection
 
 import scala.collection.convert.ImplicitConversions._
 
 class RejectionCheckYourAnswersViewSpec extends SingleViewSpec("rejection-check-your-answers.njk", hasSignOutLink = true) {
 
-  private val fakeSectionList: Seq[Section] = Seq(
-    Section(rows = Seq(Row(Key(lit""), Value(lit""))))
+  private val fakeSectionList: Seq[SummarySection] = Seq(
+    SummarySection(rows = Seq(SummaryListRow("".toKey, Value("".toText))))
   )
 
   private val json: JsObject =

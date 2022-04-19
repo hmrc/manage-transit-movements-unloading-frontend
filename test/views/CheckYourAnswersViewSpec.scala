@@ -16,40 +16,43 @@
 
 package views
 
-import play.api.libs.json.{JsObject, Json}
-import uk.gov.hmrc.viewmodels.SummaryList.{Key, Row, Value}
-import viewModels.sections.Section
+import generators.{Generators, ViewModelGenerators}
+import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import viewModels.sections.SummarySection
+import views.behaviours.SummaryListViewBehaviours
+import views.html.CheckYourAnswersView
 
-import scala.collection.convert.ImplicitConversions._
+class CheckYourAnswersViewSpec extends SummaryListViewBehaviours with Generators with ViewModelGenerators {
 
-class CheckYourAnswersViewSpec extends SingleViewSpec("check-your-answers.njk", hasSignOutLink = true) {
+  override val prefix: String = "checkYourAnswers"
 
-  private val fakeSectionList: Seq[Section] = Seq(
-    Section(rows = Seq(Row(Key(lit""), Value(lit""))))
+  private val sections: Seq[SummarySection] = listWithMaxLength[SummarySection]().sample.value
+
+  override def summaryLists: Seq[SummaryList] = sections.map(
+    section => new SummaryList(section.rows)
   )
 
-  private val json: JsObject =
-    Json.obj(
-      "sections" -> Json.toJson(fakeSectionList)
-    )
+  override def view: HtmlFormat.Appendable =
+    injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, sections)(fakeRequest, messages)
 
-  "must pass correct class list to summary list macro" in {
+  behave like pageWithBackLink
 
-    val doc      = renderDocument(json).futureValue
-    val sections = doc.getElementsByClass("govuk-summary-sectionRows__row")
+  behave like pageWithCaption(mrn.toString)
 
-    sections.size() mustEqual fakeSectionList.size
+  behave like pageWithHeading()
 
-    sections.forEach {
-      section =>
-        val summaryList = section.getElementsByClass("govuk-summary-list").get(0)
+  sections.foreach(_.sectionTitle.map {
+    sectionTitle =>
+      behave like pageWithContent("h2", sectionTitle)
+  })
 
-        summaryList.classNames().toList mustEqual List(
-          "govuk-summary-list",
-          "govuk-!-margin-bottom-9",
-          "ctc-add-to-a-list"
-        )
-    }
+  behave like pageWithSummaryLists()
 
-  }
+  behave like pageWithContent("h2", "Now send your unloading remarks")
+
+  behave like pageWithContent("p", "By sending this you are confirming that the details you are providing are correct, to the best of your knowledge.")
+
+  behave like pageWithSubmitButton("Confirm and send")
+
 }

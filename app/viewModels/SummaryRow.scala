@@ -20,16 +20,16 @@ import cats.data.NonEmptyList
 import models.reference.Country
 import models.{GoodsItem, Index, UserAnswers}
 import pages.{NewSealNumberPage, QuestionPage}
-import uk.gov.hmrc.viewmodels.SummaryList.Row
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object SummaryRow {
 
-  type StandardRow    = Option[String] => Option[String] => (String => Row) => Seq[Row]
-  type StandardRowInt = Option[Int] => Option[Int] => (Int => Row) => Seq[Row]
-  type RowWithIndex   = Index => Option[String] => String => ((Index, String) => Row) => Row
-  type SealRows       = Seq[String] => UserAnswers => ((Index, String) => Row) => Seq[Row]
-  type GoodsItemRows  = NonEmptyList[GoodsItem] => UserAnswers => ((Index, String) => Row) => NonEmptyList[Row]
-  type GoodsItemRow   = Index => Option[String] => GoodsItem => ((Index, String) => Row) => Row
+  type StandardRow    = Option[String] => Option[String] => (String => SummaryListRow) => Seq[SummaryListRow]
+  type StandardRowInt = Option[Int] => Option[Int] => (Int => SummaryListRow) => Seq[SummaryListRow]
+  type RowWithIndex   = Index => Option[String] => String => ((Index, String) => SummaryListRow) => SummaryListRow
+  type SealRows       = Seq[String] => UserAnswers => ((Index, String) => SummaryListRow) => Seq[SummaryListRow]
+  type GoodsItemRows  = NonEmptyList[GoodsItem] => UserAnswers => ((Index, String) => SummaryListRow) => NonEmptyList[SummaryListRow]
+  type GoodsItemRow   = Index => Option[String] => GoodsItem => ((Index, String) => SummaryListRow) => SummaryListRow
 
   type UserAnswerString  = UserAnswers => QuestionPage[String] => Option[String]
   type UserAnswerInt     = UserAnswers => QuestionPage[Int] => Option[Int]

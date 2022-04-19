@@ -17,18 +17,19 @@
 package viewModels
 
 import models.UserAnswers
+import play.api.i18n.Messages
 import utils.RejectionCheckYourAnswersHelper
-import viewModels.sections.Section
+import viewModels.sections.SummarySection
 
-case class RejectionCheckYourAnswersViewModel(sections: Seq[Section])
+case class RejectionCheckYourAnswersViewModel(sections: Seq[SummarySection])
 
 object RejectionCheckYourAnswersViewModel {
 
-  def apply(userAnswers: UserAnswers): RejectionCheckYourAnswersViewModel = {
+  def apply(userAnswers: UserAnswers)(implicit messages: Messages): RejectionCheckYourAnswersViewModel = {
     val cyaHelper = new RejectionCheckYourAnswersHelper(userAnswers)
     RejectionCheckYourAnswersViewModel(
       Seq(
-        Section(
+        SummarySection(
           Seq(
             cyaHelper.vehicleNameRegistrationRejection,
             cyaHelper.dateGoodsUnloaded,

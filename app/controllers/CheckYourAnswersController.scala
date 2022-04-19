@@ -23,15 +23,12 @@ import controllers.actions.{CheckArrivalStatusProvider, DataRequiredAction, Data
 import handlers.ErrorHandler
 import models.ArrivalId
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import services.{ReferenceDataService, UnloadingPermissionService, UnloadingRemarksService}
 import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import viewModels.CheckYourAnswersViewModel
-import viewModels.sections.Section
+import views.html.CheckYourAnswersView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -42,17 +39,16 @@ class CheckYourAnswersController @Inject() (
   requireData: DataRequiredAction,
   unloadingPermissionService: UnloadingPermissionService,
   val controllerComponents: MessagesControllerComponents,
-  val renderer: Renderer,
   val appConfig: FrontendAppConfig,
   referenceDataService: ReferenceDataService,
   errorHandler: ErrorHandler,
   unloadingRemarksService: UnloadingRemarksService,
   auditEventSubmissionService: AuditEventSubmissionService,
-  checkArrivalStatus: CheckArrivalStatusProvider
+  checkArrivalStatus: CheckArrivalStatusProvider,
+  view: CheckYourAnswersView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
-    with NunjucksSupport
     with HttpErrorFunctions {
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
@@ -60,22 +56,10 @@ class CheckYourAnswersController @Inject() (
       implicit request =>
         unloadingPermissionService.getUnloadingPermission(arrivalId).flatMap {
           case Some(unloadingPermission) =>
-            referenceDataService.getCountryByCode(unloadingPermission.transportCountry).flatMap {
+            referenceDataService.getCountryByCode(unloadingPermission.transportCountry).map {
               transportCountry =>
                 val viewModel = CheckYourAnswersViewModel(request.userAnswers, unloadingPermission, transportCountry)
-
-                val answers: Seq[Section] = viewModel.sections
-
-                renderer
-                  .render(
-                    "check-your-answers.njk",
-                    Json.obj(
-                      "mrn"       -> request.userAnswers.mrn,
-                      "arrivalId" -> arrivalId,
-                      "sections"  -> Json.toJson(answers)
-                    )
-                  )
-                  .map(Ok(_))
+                Ok(view(request.userAnswers.mrn, arrivalId, viewModel.sections))
             }
           case _ => errorHandler.onClientError(request, BAD_REQUEST)
         }

@@ -16,13 +16,13 @@
 
 package viewModels
 
-import java.time.LocalDate
-
 import base.SpecBase
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import pages.{DateGoodsUnloadedPage, GrossMassAmountPage, TotalNumberOfItemsPage, TotalNumberOfPackagesPage, VehicleNameRegistrationReferencePage}
-import uk.gov.hmrc.viewmodels.Text.Literal
+import pages._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+
+import java.time.LocalDate
 
 class RejectionCheckYourAnswersViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
 
@@ -33,7 +33,7 @@ class RejectionCheckYourAnswersViewModelSpec extends AnyFreeSpec with Matchers w
       val data        = RejectionCheckYourAnswersViewModel(userAnswers)
 
       data.sections.length mustBe 1
-      data.sections.head.rows.head.value.content mustBe Literal("reference")
+      data.sections.head.rows.head.value.content mustBe Text("reference")
       data.sections.head.rows.head.actions.nonEmpty mustBe true
     }
 
@@ -42,7 +42,7 @@ class RejectionCheckYourAnswersViewModelSpec extends AnyFreeSpec with Matchers w
       val data        = RejectionCheckYourAnswersViewModel(userAnswers)
 
       data.sections.length mustBe 1
-      data.sections.head.rows.head.value.content mustBe Literal("10000")
+      data.sections.head.rows.head.value.content mustBe Text("10000")
       data.sections.head.rows.head.actions.nonEmpty mustBe true
     }
 
@@ -52,7 +52,7 @@ class RejectionCheckYourAnswersViewModelSpec extends AnyFreeSpec with Matchers w
       val data        = RejectionCheckYourAnswersViewModel(userAnswers)
 
       data.sections.length mustBe 1
-      data.sections.head.rows.head.value.content mustBe Literal("100")
+      data.sections.head.rows.head.value.content mustBe Text("100")
       data.sections.head.rows.head.actions.nonEmpty mustBe true
     }
 
@@ -61,7 +61,7 @@ class RejectionCheckYourAnswersViewModelSpec extends AnyFreeSpec with Matchers w
       val data        = RejectionCheckYourAnswersViewModel(userAnswers)
 
       data.sections.length mustBe 1
-      data.sections.head.rows.head.value.content mustBe Literal("100")
+      data.sections.head.rows.head.value.content mustBe Text("100")
       data.sections.head.rows.head.actions.nonEmpty mustBe true
     }
 
@@ -71,7 +71,7 @@ class RejectionCheckYourAnswersViewModelSpec extends AnyFreeSpec with Matchers w
       val data        = RejectionCheckYourAnswersViewModel(userAnswers)
 
       data.sections.length mustBe 1
-      data.sections.head.rows.head.value.content mustBe Literal("21 July 2020")
+      data.sections.head.rows.head.value.content mustBe Text("21 July 2020")
       data.sections.head.rows.head.actions.nonEmpty mustBe true
     }
   }

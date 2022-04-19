@@ -16,7 +16,6 @@
 
 package views
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.DateGoodsUnloadedFormProvider
 import models.NormalMode
 import play.api.data.Form
@@ -26,7 +25,7 @@ import views.html.DateGoodsUnloadedView
 
 import java.time.{Clock, LocalDate}
 
-class DateGoodsUnloadedViewSpec extends SpecBase with DateInputViewBehaviour with AppWithDefaultMockFixtures {
+class DateGoodsUnloadedViewSpec extends DateInputViewBehaviour {
 
   override def form = new DateGoodsUnloadedFormProvider(Clock.systemUTC())(LocalDate.now())
 

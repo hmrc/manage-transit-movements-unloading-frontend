@@ -51,8 +51,6 @@ checkYourAnswers.subHeading = What you found when unloading
 checkYourAnswers.confirmation.heading = Now send your unloading remarks
 checkYourAnswers.confirmation.paragraph = By sending this you are confirming that the details you are providing are correct, to the best of your knowledge.
 checkYourAnswers.changeItems.hidden = answers
-checkYourAnswers.confirmation.heading = Now send your unloading remarks
-checkYourAnswers.confirmation.paragraph = By sending this you are confirming that the details you are providing are correct, to the best of your knowledge.
 
 index.title =  Manage your transit movements - GOV.UK
 index.heading = Manage transit movements
@@ -93,7 +91,7 @@ dateGoodsUnloaded.error.required = The date goods were unloaded must include {0}
 dateGoodsUnloaded.error.invalid = Enter a real date
 dateGoodsUnloaded.error.min.date = The date when the goods were unloaded must be on or after {0}
 dateGoodsUnloaded.error.max.date = The date when the goods were unloaded must be today or in the past
-dateGoodsUnloaded.visually.hidden = the date when the goods were unloaded
+dateGoodsUnloaded.change.hidden = the date when the goods were unloaded
 
 vehicleNameRegistrationReference.title = What is the name, registration or reference of the new vehicle?
 vehicleNameRegistrationReference.heading = What is the name, registration or reference of the new vehicle?
@@ -101,6 +99,7 @@ vehicleNameRegistrationReference.checkYourAnswersLabel = What is the name, regis
 vehicleNameRegistrationReference.error.required = Enter the name, registration or reference of the vehicle
 vehicleNameRegistrationReference.error.length = The name, registration or reference of the new vehicle must be 27 characters or less
 vehicleNameRegistrationReference.error.invalid = The name, registration or reference of the new vehicle must only include letters a to z or numbers 0 to 9
+vehicleNameRegistrationReference.change.hidden = the name, registration or reference of the new vehicle
 
 vehicleRegistrationCountry.title = Which country is the vehicle registered in?
 vehicleRegistrationCountry.heading = Which country is the vehicle registered in?
@@ -114,6 +113,7 @@ grossMassAmount.checkYourAnswersLabel = What is the new total gross mass in kilo
 grossMassAmount.error.required = Enter the total gross mass in kilograms
 grossMassAmount.error.length = The total gross mass in kilograms must be 99999999999.999 or less
 grossMassAmount.error.characters = The total gross mass in kilograms must be 11 numbers or less and up to 3 decimal places, like 1000000.000
+grossMassAmount.change.hidden = the new total gross mass in kilograms
 
 newSealNumber.title = What is the new official customs seal number or mark?
 newSealNumber.heading = What is the new official customs seal number or mark?
@@ -162,11 +162,13 @@ canSealsBeRead.title = Can all of the official customs seal numbers or marks be 
 canSealsBeRead.heading = Can all of the official customs seal numbers or marks be read?
 canSealsBeRead.checkYourAnswersLabel = Can all of the official customs seal numbers or marks be read?
 canSealsBeRead.error.required = Select yes if all of the official customs seals can be read
+canSealsBeRead.change.hidden = if all of the official customs seals can be read
 
 areAnySealsBroken.title = Are any of the official customs seals broken?
 areAnySealsBroken.heading = Are any of the official customs seals broken?
 areAnySealsBroken.checkYourAnswersLabel = Are any of the official customs seals broken?
 areAnySealsBroken.error.required = Select yes if any of the official customs seals are broken
+areAnySealsBroken.change.hidden = if any of the official customs seals are broken
 
 confirmation.title = Unloading remarks sent
 confirmation.heading = Unloading remarks sent
@@ -202,14 +204,16 @@ totalNumberOfItems.error.nonNumeric = Enter the new total number of items using 
 totalNumberOfItems.error.required = Enter the new total number of items
 totalNumberOfItems.error.wholeNumber = = Total number of items must only include numbers 0 to 9
 totalNumberOfItems.error.outOfRange = Total number of items must be 99999 or less
+totalNumberOfItems.change.hidden = the new total number of items
 
 totalNumberOfPackages.title = What is the new total number of packages?
-totalNumberOfPackages.heading =  What is the new total number of packages?
-totalNumberOfPackages.checkYourAnswersLabel =  What is the new total number of packages?
+totalNumberOfPackages.heading = What is the new total number of packages?
+totalNumberOfPackages.checkYourAnswersLabel = What is the new total number of packages?
 totalNumberOfPackages.error.nonNumeric = Enter the new total number of packages using numbers
 totalNumberOfPackages.error.required = Enter the new total number of packages
 totalNumberOfPackages.error.wholeNumber = Total number of packages must only include numbers 0 to 9
-totalNumberOfPackages.error.outOfRange =  Total number of packages must be 9999999 or less
+totalNumberOfPackages.error.outOfRange = Total number of packages must be 9999999 or less
+totalNumberOfPackages.change.hidden = the new total number of packages
 
 unloadingRemarksRejection.title = There is a problem with these unloading remarks
 unloadingRemarksRejection.heading = There is a problem with these unloading remarks

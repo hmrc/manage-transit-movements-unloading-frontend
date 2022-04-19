@@ -20,7 +20,7 @@ import base.SpecBase
 import cats.data.NonEmptyList
 import models.{Seals, TraderAtDestination, UnloadingPermission}
 import pages.{GrossMassAmountPage, TotalNumberOfItemsPage, TotalNumberOfPackagesPage}
-import uk.gov.hmrc.viewmodels.Text.Literal
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 
 import java.time.LocalDate
 
@@ -47,7 +47,7 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
     "seals sections should" - {
       "display no seals" in {
 
-        val data = UnloadingSummaryViewModel(emptyUserAnswers, transportCountry)(unloadingPermission)
+        val data = UnloadingSummaryViewModel(emptyUserAnswers, transportCountry)(unloadingPermission, messages)
 
         data.sections.length mustBe 1
       }
@@ -56,7 +56,7 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
 
         val withSeals = unloadingPermission.copy(seals = Some(Seals(1, Seq("seal 1", "seal 2"))))
 
-        val data = UnloadingSummaryViewModel(emptyUserAnswers, transportCountry)(withSeals)
+        val data = UnloadingSummaryViewModel(emptyUserAnswers, transportCountry)(withSeals, messages)
 
         data.sections.length mustBe 1
         data.sections.head.sectionTitle mustBe defined
@@ -70,7 +70,7 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
                                                  transportIdentity = Some("registration")
         )
 
-        val data = UnloadingSummaryViewModel(emptyUserAnswers, transportCountry)(withSeals)
+        val data = UnloadingSummaryViewModel(emptyUserAnswers, transportCountry)(withSeals, messages)
 
         data.sections.length mustBe 2
         data.sections(0).sectionTitle mustBe defined
@@ -86,7 +86,7 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
 
         val transportIdentity = unloadingPermission.copy(transportIdentity = Some("registration"))
 
-        val data = UnloadingSummaryViewModel(emptyUserAnswers, transportCountry)(transportIdentity)
+        val data = UnloadingSummaryViewModel(emptyUserAnswers, transportCountry)(transportIdentity, messages)
 
         data.sections.length mustBe 2
         data.sections.head.sectionTitle mustBe defined
@@ -97,7 +97,7 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
 
         val unloadingPermissionTransportCountry = unloadingPermission.copy(transportCountry = Some("registration"))
 
-        val data = UnloadingSummaryViewModel(emptyUserAnswers, transportCountry)(unloadingPermissionTransportCountry)
+        val data = UnloadingSummaryViewModel(emptyUserAnswers, transportCountry)(unloadingPermissionTransportCountry, messages)
 
         data.sections.length mustBe 2
         data.sections.head.sectionTitle mustBe defined
@@ -108,7 +108,7 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
 
         val unloadingPermissionTransportCountry = unloadingPermission.copy(transportCountry = Some("registration"), transportIdentity = Some("registration"))
 
-        val data = UnloadingSummaryViewModel(emptyUserAnswers, transportCountry)(unloadingPermissionTransportCountry)
+        val data = UnloadingSummaryViewModel(emptyUserAnswers, transportCountry)(unloadingPermissionTransportCountry, messages)
 
         data.sections.length mustBe 2
         data.sections.head.sectionTitle mustBe defined
@@ -121,9 +121,9 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
       "display total mass with single item" in {
 
         val userAnswers = emptyUserAnswers.set(GrossMassAmountPage, "99").success.value
-        val data        = UnloadingSummaryViewModel(userAnswers, transportCountry)(unloadingPermission)
+        val data        = UnloadingSummaryViewModel(userAnswers, transportCountry)(unloadingPermission, messages)
 
-        data.sections.head.rows.head.value.content mustBe Literal("99")
+        data.sections.head.rows.head.value.content mustBe Text("99")
         data.sections.length mustBe 1
         data.sections.head.sectionTitle mustBe defined
         data.sections.head.rows.length mustBe 4
@@ -134,19 +134,19 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
       "display total number of items " in {
         val userAnswers = emptyUserAnswers.set(TotalNumberOfItemsPage, 8).success.value
 
-        val data: UnloadingSummaryViewModel = UnloadingSummaryViewModel(userAnswers, transportCountry)(unloadingPermission)
+        val data: UnloadingSummaryViewModel = UnloadingSummaryViewModel(userAnswers, transportCountry)(unloadingPermission, messages)
 
         data.sections.length mustBe 1
-        data.sections.head.rows(1).value.content mustBe Literal("8")
+        data.sections.head.rows(1).value.content mustBe Text("8")
         data.sections.head.rows.head.actions.isEmpty mustBe false
       }
 
       "contain number of packages details " in {
         val userAnswers = emptyUserAnswers.set(TotalNumberOfPackagesPage, 11).success.value
-        val data        = UnloadingSummaryViewModel(userAnswers, transportCountry)(unloadingPermission)
+        val data        = UnloadingSummaryViewModel(userAnswers, transportCountry)(unloadingPermission, messages)
 
         data.sections.length mustBe 1
-        data.sections.head.rows(2).value.content mustBe Literal("11")
+        data.sections.head.rows(2).value.content mustBe Text("11")
         data.sections.head.rows.head.actions.isEmpty mustBe false
       }
 

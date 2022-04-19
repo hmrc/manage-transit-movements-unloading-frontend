@@ -16,24 +16,21 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import audit.services.AuditEventSubmissionService
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import cats.data.NonEmptyList
 import models.{TraderAtDestination, UnloadingPermission}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito.{reset, when}
 import play.api.http.Status.ACCEPTED
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.JsObject
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.{UnloadingPermissionService, UnloadingRemarksService}
+import views.html.CheckYourAnswersView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
@@ -80,23 +77,18 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
         checkArrivalStatus()
         when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(Some(unloadingPermission)))
 
-        when(mockRenderer.render(any(), any())(any()))
-          .thenReturn(Future.successful(Html("")))
-
         setExistingUserAnswers(emptyUserAnswers)
 
         val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(arrivalId).url)
 
         val result = route(app, request).value
 
+        val view = injector.instanceOf[CheckYourAnswersView]
+
         status(result) mustEqual OK
 
-        val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-        val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-
-        verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-        templateCaptor.getValue mustEqual "check-your-answers.njk"
+        contentAsString(result) mustEqual
+          view(mrn, arrivalId, Nil)(request, messages).toString
       }
 
       "redirect to Session Expired for a GET if no existing data is found" in {

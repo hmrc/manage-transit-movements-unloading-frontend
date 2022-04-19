@@ -17,33 +17,43 @@
 package utils
 
 import base.SpecBase
+import controllers.routes
 import models.{CheckMode, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
-import uk.gov.hmrc.viewmodels.MessageInterpolators
-import uk.gov.hmrc.viewmodels.SummaryList.{Action, Key, Row, Value}
+import org.scalacheck.Gen
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
 class UnloadingSummaryHelperSpec extends SpecBase {
+
+  // numbers over 1000 will be comma-separated when passed in to messages, so will be ignored for the purposes of our tests
+  // 998 is used because .display adds 1 to the index position
+  private val arbitraryInt = Gen.choose(0, 998)
 
   "must return summary list row" - {
 
     "when .seals" in {
 
-      forAll(arbitrary[String], arbitrary[Int]) {
+      forAll(arbitrary[String], arbitraryInt) {
         (str, position) =>
           val userAnswers = emptyUserAnswers
           val index       = Index(position)
           val helper      = new UnloadingSummaryHelper(userAnswers)
           val result      = helper.seals(index, str)
 
-          result mustEqual Row(
-            key = Key(msg"changeSeal.sealList.label".withArgs(index.display)),
-            value = Value(lit"$str"),
-            actions = List(
-              Action(
-                content = msg"site.edit",
-                href = controllers.routes.NewSealNumberController.onPageLoad(userAnswers.id, index, CheckMode).url,
-                visuallyHiddenText = Some(msg"changeSeal.sealList.change.hidden".withArgs(index.display, str)),
-                attributes = Map("id" -> s"change-seal-${index.position}")
+          result mustEqual SummaryListRow(
+            key = s"Official customs seal ${index.display}".toKey,
+            value = Value(str.toText),
+            actions = Some(
+              Actions(items =
+                List(
+                  ActionItem(
+                    content = "Change".toText,
+                    href = routes.NewSealNumberController.onPageLoad(userAnswers.id, index, CheckMode).url,
+                    visuallyHiddenText = Some(s"official customs seal ${index.display} $str"),
+                    attributes = Map("id" -> s"change-seal-$position")
+                  )
+                )
               )
             )
           )
@@ -52,28 +62,32 @@ class UnloadingSummaryHelperSpec extends SpecBase {
 
     "when .sealsWithRemove" in {
 
-      forAll(arbitrary[String], arbitrary[Int]) {
+      forAll(arbitrary[String], arbitraryInt) {
         (str, position) =>
           val userAnswers = emptyUserAnswers
           val index       = Index(position)
           val helper      = new UnloadingSummaryHelper(userAnswers)
           val result      = helper.sealsWithRemove(index, str)
 
-          result mustEqual Row(
-            key = Key(msg"changeSeal.sealList.label".withArgs(index.display)),
-            value = Value(lit"$str"),
-            actions = List(
-              Action(
-                content = msg"site.edit",
-                href = controllers.routes.NewSealNumberController.onPageLoad(userAnswers.id, index, CheckMode).url,
-                visuallyHiddenText = Some(msg"changeSeal.sealList.change.hidden".withArgs(index.display, str)),
-                attributes = Map("id" -> s"change-seal-${index.position}")
-              ),
-              Action(
-                content = msg"site.delete",
-                href = controllers.routes.ConfirmRemoveSealController.onPageLoad(userAnswers.id, index, NormalMode).url,
-                visuallyHiddenText = Some(msg"changeSeal.sealList.remove.hidden".withArgs(index.display, str)),
-                attributes = Map("id" -> s"remove-seal-${index.position}")
+          result mustEqual SummaryListRow(
+            key = s"Official customs seal ${index.display}".toKey,
+            value = Value(str.toText),
+            actions = Some(
+              Actions(items =
+                List(
+                  ActionItem(
+                    content = "Change".toText,
+                    href = routes.NewSealNumberController.onPageLoad(userAnswers.id, index, CheckMode).url,
+                    visuallyHiddenText = Some(s"official customs seal ${index.display} $str"),
+                    attributes = Map("id" -> s"change-seal-$position")
+                  ),
+                  ActionItem(
+                    content = "Remove".toText,
+                    href = routes.ConfirmRemoveSealController.onPageLoad(userAnswers.id, index, CheckMode).url,
+                    visuallyHiddenText = Some(s"official customs seal ${index.display} $str"),
+                    attributes = Map("id" -> s"remove-seal-$position")
+                  )
+                )
               )
             )
           )
@@ -82,17 +96,17 @@ class UnloadingSummaryHelperSpec extends SpecBase {
 
     "when .items" in {
 
-      forAll(arbitrary[String], arbitrary[Int]) {
+      forAll(arbitrary[String], arbitraryInt) {
         (str, position) =>
           val userAnswers = emptyUserAnswers
           val index       = Index(position)
           val helper      = new UnloadingSummaryHelper(userAnswers)
           val result      = helper.items(index, str)
 
-          result mustEqual Row(
-            key = Key(msg"changeItem.itemList.label".withArgs(index.display)),
-            value = Value(lit"$str"),
-            actions = Nil
+          result mustEqual SummaryListRow(
+            key = s"Item ${index.display}".toKey,
+            value = Value(str.toText),
+            actions = None
           )
       }
     }
@@ -105,15 +119,19 @@ class UnloadingSummaryHelperSpec extends SpecBase {
           val helper      = new UnloadingSummaryHelper(userAnswers)
           val result      = helper.vehicleUsed(str)
 
-          result mustEqual Row(
-            key = Key(msg"changeVehicle.reference.label"),
-            value = Value(lit"$str"),
-            actions = List(
-              Action(
-                content = msg"site.edit",
-                href = controllers.routes.VehicleNameRegistrationReferenceController.onPageLoad(userAnswers.id, CheckMode).url,
-                visuallyHiddenText = Some(msg"changeVehicle.reference.change.hidden"),
-                attributes = Map("id" -> "change-vehicle-reference")
+          result mustEqual SummaryListRow(
+            key = "Name, registration or reference".toKey,
+            value = Value(str.toText),
+            actions = Some(
+              Actions(items =
+                List(
+                  ActionItem(
+                    content = "Change".toText,
+                    href = routes.VehicleNameRegistrationReferenceController.onPageLoad(userAnswers.id, CheckMode).url,
+                    visuallyHiddenText = Some("name, registration or reference"),
+                    attributes = Map("id" -> "change-vehicle-reference")
+                  )
+                )
               )
             )
           )
@@ -128,15 +146,19 @@ class UnloadingSummaryHelperSpec extends SpecBase {
           val helper      = new UnloadingSummaryHelper(userAnswers)
           val result      = helper.registeredCountry(str)
 
-          result mustEqual Row(
-            key = Key(msg"changeVehicle.registeredCountry.label"),
-            value = Value(lit"$str"),
-            actions = List(
-              Action(
-                content = msg"site.edit",
-                href = controllers.routes.VehicleRegistrationCountryController.onPageLoad(userAnswers.id, CheckMode).url,
-                visuallyHiddenText = Some(msg"changeVehicle.registeredCountry.change.hidden"),
-                attributes = Map("id" -> "change-vehicle-country")
+          result mustEqual SummaryListRow(
+            key = "Registered".toKey,
+            value = Value(str.toText),
+            actions = Some(
+              Actions(items =
+                List(
+                  ActionItem(
+                    content = "Change".toText,
+                    href = routes.VehicleRegistrationCountryController.onPageLoad(userAnswers.id, CheckMode).url,
+                    visuallyHiddenText = Some("registered"),
+                    attributes = Map("id" -> "change-vehicle-country")
+                  )
+                )
               )
             )
           )
@@ -151,15 +173,19 @@ class UnloadingSummaryHelperSpec extends SpecBase {
           val helper      = new UnloadingSummaryHelper(userAnswers)
           val result      = helper.grossMass(str)
 
-          result mustEqual Row(
-            key = Key(msg"changeItems.grossMass.label"),
-            value = Value(lit"$str"),
-            actions = List(
-              Action(
-                content = msg"site.edit",
-                href = controllers.routes.GrossMassAmountController.onPageLoad(userAnswers.id, CheckMode).url,
-                visuallyHiddenText = Some(msg"changeItems.grossMass.change.hidden"),
-                attributes = Map("id" -> "change-gross-mass")
+          result mustEqual SummaryListRow(
+            key = "Total gross mass in kilograms".toKey,
+            value = Value(str.toText),
+            actions = Some(
+              Actions(items =
+                List(
+                  ActionItem(
+                    content = "Change".toText,
+                    href = routes.GrossMassAmountController.onPageLoad(userAnswers.id, CheckMode).url,
+                    visuallyHiddenText = Some("total gross mass in kilograms"),
+                    attributes = Map("id" -> "change-gross-mass")
+                  )
+                )
               )
             )
           )
@@ -174,15 +200,19 @@ class UnloadingSummaryHelperSpec extends SpecBase {
           val helper      = new UnloadingSummaryHelper(userAnswers)
           val result      = helper.totalNumberOfItems(int)
 
-          result mustEqual Row(
-            key = Key(msg"changeItems.totalNumberOfItems.label"),
-            value = Value(lit"$int"),
-            actions = List(
-              Action(
-                content = msg"site.edit",
-                href = controllers.routes.TotalNumberOfItemsController.onPageLoad(userAnswers.id, CheckMode).url,
-                visuallyHiddenText = Some(msg"changeItems.totalNumberOfItems.change.hidden"),
-                attributes = Map("id" -> "change-total-number-of-items")
+          result mustEqual SummaryListRow(
+            key = "Total number of items".toKey,
+            value = Value(int.toString.toText),
+            actions = Some(
+              Actions(items =
+                List(
+                  ActionItem(
+                    content = "Change".toText,
+                    href = routes.TotalNumberOfItemsController.onPageLoad(userAnswers.id, CheckMode).url,
+                    visuallyHiddenText = Some("total number of items"),
+                    attributes = Map("id" -> "change-total-number-of-items")
+                  )
+                )
               )
             )
           )
@@ -197,15 +227,19 @@ class UnloadingSummaryHelperSpec extends SpecBase {
           val helper      = new UnloadingSummaryHelper(userAnswers)
           val result      = helper.totalNumberOfPackages(int)
 
-          result mustEqual Row(
-            key = Key(msg"changeItems.totalNumberOfPackages.label"),
-            value = Value(lit"$int"),
-            actions = List(
-              Action(
-                content = msg"site.edit",
-                href = controllers.routes.TotalNumberOfPackagesController.onPageLoad(userAnswers.id, CheckMode).url,
-                visuallyHiddenText = Some(msg"changeItems.totalNumberOfPackages.change.hidden"),
-                attributes = Map("id" -> "change-total-number-of-packages")
+          result mustEqual SummaryListRow(
+            key = "Total number of packages".toKey,
+            value = Value(int.toString.toText),
+            actions = Some(
+              Actions(items =
+                List(
+                  ActionItem(
+                    content = "Change".toText,
+                    href = routes.TotalNumberOfPackagesController.onPageLoad(userAnswers.id, CheckMode).url,
+                    visuallyHiddenText = Some("total number of packages"),
+                    attributes = Map("id" -> "change-total-number-of-packages")
+                  )
+                )
               )
             )
           )
@@ -220,21 +254,25 @@ class UnloadingSummaryHelperSpec extends SpecBase {
           val helper      = new UnloadingSummaryHelper(userAnswers)
           val result      = helper.comments(str)
 
-          result mustEqual Row(
-            key = Key(msg"changeItems.comments.label"),
-            value = Value(lit"$str"),
-            actions = List(
-              Action(
-                content = msg"site.edit",
-                href = controllers.routes.ChangesToReportController.onPageLoad(userAnswers.id, NormalMode).url,
-                visuallyHiddenText = Some(msg"changeItems.comments.change.hidden"),
-                attributes = Map("id" -> "change-comments")
-              ),
-              Action(
-                content = msg"site.delete",
-                href = controllers.routes.ConfirmRemoveCommentsController.onPageLoad(userAnswers.id, NormalMode).url,
-                visuallyHiddenText = Some(msg"changeItems.comments.remove.hidden"),
-                attributes = Map("id" -> "remove-comment")
+          result mustEqual SummaryListRow(
+            key = "Comments".toKey,
+            value = Value(str.toText),
+            actions = Some(
+              Actions(items =
+                List(
+                  ActionItem(
+                    content = "Change".toText,
+                    href = routes.ChangesToReportController.onPageLoad(userAnswers.id, NormalMode).url,
+                    visuallyHiddenText = Some("comments"),
+                    attributes = Map("id" -> "change-comments")
+                  ),
+                  ActionItem(
+                    content = "Remove".toText,
+                    href = routes.ConfirmRemoveCommentsController.onPageLoad(userAnswers.id, NormalMode).url,
+                    visuallyHiddenText = Some("comments"),
+                    attributes = Map("id" -> "remove-comments")
+                  )
+                )
               )
             )
           )
