@@ -14,17 +14,21 @@
  * limitations under the License.
  */
 
-package models.reference
+package controllers
 
-import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.UnauthorisedWithGroupAccessView
 
-case class Country(code: String, description: String) extends Selectable {
-  override def toString: String = description
+import javax.inject.Inject
 
-  override def toSelectItem(selected: Boolean): SelectItem = SelectItem(Some(code), this.toString, selected)
-}
+class UnauthorisedWithGroupAccessController @Inject() (val controllerComponents: MessagesControllerComponents, view: UnauthorisedWithGroupAccessView)
+    extends FrontendBaseController
+    with I18nSupport {
 
-object Country {
-  implicit val format: OFormat[Country] = Json.format[Country]
+  def onPageLoad(): Action[AnyContent] = Action {
+    implicit request =>
+      Unauthorized(view())
+  }
 }

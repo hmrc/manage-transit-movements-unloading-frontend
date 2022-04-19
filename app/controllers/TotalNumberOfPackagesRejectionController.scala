@@ -20,18 +20,16 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.TotalNumberOfPackagesFormProvider
 import handlers.ErrorHandler
-import javax.inject.Inject
 import models.{ArrivalId, UserAnswers}
 import pages.TotalNumberOfPackagesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import repositories.SessionRepository
 import services.UnloadingRemarksRejectionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.TotalNumberOfPackagesRejectionView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TotalNumberOfPackagesRejectionController @Inject() (
@@ -42,27 +40,21 @@ class TotalNumberOfPackagesRejectionController @Inject() (
   formProvider: TotalNumberOfPackagesFormProvider,
   val controllerComponents: MessagesControllerComponents,
   rejectionService: UnloadingRemarksRejectionService,
-  val renderer: Renderer,
+  view: TotalNumberOfPackagesRejectionView,
   val appConfig: FrontendAppConfig,
   errorHandler: ErrorHandler,
   checkArrivalStatus: CheckArrivalStatusProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
   private val form = formProvider()
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId)).async {
     implicit request =>
       rejectionService.getRejectedValueAsInt(arrivalId, request.userAnswers)(TotalNumberOfPackagesPage) flatMap {
-        case Some(originalAttrValue) =>
-          val json = Json.obj(
-            "form"        -> form.fill(originalAttrValue),
-            "onSubmitUrl" -> routes.TotalNumberOfPackagesRejectionController.onSubmit(arrivalId).url
-          )
-          renderer.render("totalNumberOfPackages.njk", json).map(Ok(_))
-        case None => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
+        case Some(value) => Future.successful(Ok(view(form.fill(value), arrivalId)))
+        case None        => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
       }
   }
 
@@ -71,15 +63,7 @@ class TotalNumberOfPackagesRejectionController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => {
-
-            val json = Json.obj(
-              "form"        -> formWithErrors,
-              "onSubmitUrl" -> routes.TotalNumberOfPackagesRejectionController.onSubmit(arrivalId).url
-            )
-
-            renderer.render("totalNumberOfPackages.njk", json).map(BadRequest(_))
-          },
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId))),
           value =>
             rejectionService.unloadingRemarksRejectionMessage(arrivalId) flatMap {
               case Some(rejectionMessage) =>

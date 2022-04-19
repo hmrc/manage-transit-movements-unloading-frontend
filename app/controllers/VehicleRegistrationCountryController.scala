@@ -18,19 +18,15 @@ package controllers
 
 import controllers.actions._
 import forms.VehicleRegistrationCountryFormProvider
-import models.reference.Country
-import models.{ArrivalId, Mode, MovementReferenceNumber}
+import models.{ArrivalId, Mode}
 import navigation.Navigator
 import pages.VehicleRegistrationCountryPage
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc._
-import renderer.Renderer
 import repositories.SessionRepository
 import services.ReferenceDataService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.VehicleRegistrationCountryView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -45,49 +41,26 @@ class VehicleRegistrationCountryController @Inject() (
   formProvider: VehicleRegistrationCountryFormProvider,
   referenceDataService: ReferenceDataService,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer,
+  view: VehicleRegistrationCountryView,
   checkArrivalStatus: CheckArrivalStatusProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
     (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {
       implicit request =>
-        referenceDataService.getCountries() flatMap {
+        referenceDataService.getCountries() map {
           countries =>
             val form = formProvider(countries)
             val preparedForm = request.userAnswers.get(VehicleRegistrationCountryPage) match {
               case None        => form
               case Some(value) => form.fill(value)
             }
-            renderPage(arrivalId, request.userAnswers.mrn, mode, preparedForm, countries, Results.Ok)
+            Ok(view(preparedForm, countries, request.userAnswers.mrn, arrivalId, mode))
         }
 
     }
-
-  private def renderPage(arrivalId: ArrivalId, mrn: MovementReferenceNumber, mode: Mode, form: Form[Country], countries: Seq[Country], status: Results.Status)(
-    implicit request: Request[AnyContent]
-  ): Future[Result] = {
-    val json = Json.obj(
-      "form"      -> form,
-      "mrn"       -> mrn,
-      "mode"      -> mode,
-      "arrivalId" -> arrivalId,
-      "countries" -> countryJsonList(form.value, countries)
-    )
-    renderer.render("vehicleRegistrationCountry.njk", json).map(status(_))
-  }
-
-  private def countryJsonList(value: Option[Country], countries: Seq[Country]): Seq[JsObject] = {
-    val countryJsonList = countries.map {
-      country =>
-        Json.obj("text" -> country.description, "value" -> country.code, "selected" -> value.contains(country))
-    }
-
-    Json.obj("value" -> "", "text" -> "") +: countryJsonList
-  }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
     (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {
@@ -98,7 +71,7 @@ class VehicleRegistrationCountryController @Inject() (
             form
               .bindFromRequest()
               .fold(
-                formWithErrors => renderPage(arrivalId, request.userAnswers.mrn, mode, formWithErrors, countries, Results.BadRequest),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, countries, request.userAnswers.mrn, arrivalId, mode))),
                 value =>
                   for {
                     updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleRegistrationCountryPage, value))

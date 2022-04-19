@@ -16,35 +16,31 @@
 
 package views
 
-import forms.GrossMassAmountFormProvider
-import models.NormalMode
+import forms.VehicleNameRegistrationReferenceFormProvider
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.GrossMassAmountView
+import views.html.VehicleNameRegistrationRejectionView
 
-class GrossMassAmountViewSpec extends InputTextViewBehaviours[String] {
+class VehicleNameRegistrationRejectionViewSpec extends InputTextViewBehaviours[String] {
 
-  override def form: Form[String] = new GrossMassAmountFormProvider()()
+  override def form: Form[String] = new VehicleNameRegistrationReferenceFormProvider()()
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[GrossMassAmountView].apply(form, mrn, arrivalId, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[VehicleNameRegistrationRejectionView].apply(form, arrivalId)(fakeRequest, messages)
 
-  override val prefix: String = "grossMassAmount"
+  override val prefix: String = "vehicleNameRegistrationReference"
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
   behave like pageWithBackLink
 
-  behave like pageWithCaption(mrn.toString)
-
   behave like pageWithHeading()
 
   behave like pageWithoutHint
 
-  behave like pageWithInputText(inputFieldClassSize = Some(InputSize.Width10), suffix = Some("kg"))
+  behave like pageWithInputText()
 
   behave like pageWithSubmitButton("Continue")
 }

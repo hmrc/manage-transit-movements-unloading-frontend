@@ -27,7 +27,8 @@
     prefix: Option[String] = None,
     suffix: Option[String] = None,
     autocomplete: Option[String] = None,
-    inputMode: Option[String] = None
+    inputMode: Option[String] = None,
+    pattern: Option[String] = None
 )(implicit messages: Messages)
 
 @input = @{
@@ -41,7 +42,8 @@
         inputmode = inputMode,
         prefix = prefix.map(x => PrefixOrSuffix(content = Text(x))),
         suffix = suffix.map(x => PrefixOrSuffix(content = Text(x))),
-        classes = inputClass.getOrElse("")
+        classes = inputClass.getOrElse(""),
+        pattern = pattern
     )
     .withFormField(field)
 }

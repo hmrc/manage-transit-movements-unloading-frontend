@@ -16,12 +16,9 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.VehicleNameRegistrationReferenceFormProvider
 import generators.MessagesModelGenerators
-import matchers.JsonMatchers
 import models.ErrorType.IncorrectValue
 import models.{DefaultPointer, FunctionalError, UnloadingRemarksRejectionMessage, UserAnswers}
 import org.mockito.ArgumentCaptor
@@ -29,21 +26,16 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.UnloadingRemarksRejectionService
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.VehicleNameRegistrationRejectionView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
-class VehicleNameRegistrationRejectionControllerSpec
-    extends SpecBase
-    with AppWithDefaultMockFixtures
-    with NunjucksSupport
-    with JsonMatchers
-    with MessagesModelGenerators {
+class VehicleNameRegistrationRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators {
 
   val formProvider = new VehicleNameRegistrationReferenceFormProvider()
   val form         = formProvider()
@@ -68,27 +60,19 @@ class VehicleNameRegistrationRejectionControllerSpec
       checkArrivalStatus()
       val originalValue = "some reference"
 
-      when(mockRenderer.render(any(), any())(any())).thenReturn(Future.successful(Html("")))
       when(mockRejectionService.getRejectedValueAsString(any(), any())(any())(any())).thenReturn(Future.successful(Some(originalValue)))
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, vehicleNameRegistrationRejectionRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
-      val result         = route(app, request).value
+      val request = FakeRequest(GET, vehicleNameRegistrationRejectionRoute)
+      val result  = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> originalValue))
+      val view       = injector.instanceOf[VehicleNameRegistrationRejectionView]
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val filledForm = form.bind(Map("value" -> originalValue))
-      val expectedJson = Json.obj(
-        "form"        -> filledForm,
-        "onSubmitUrl" -> routes.VehicleNameRegistrationRejectionController.onSubmit(arrivalId).url
-      )
-
-      templateCaptor.getValue mustEqual "vehicleNameRegistrationReference.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(filledForm, arrivalId)(request, messages).toString
     }
 
     "must render the technical difficulties page when there is no rejection message" in {
@@ -108,29 +92,20 @@ class VehicleNameRegistrationRejectionControllerSpec
 
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(POST, vehicleNameRegistrationRejectionRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm      = form.bind(Map("value" -> ""))
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request   = FakeRequest(POST, vehicleNameRegistrationRejectionRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
+      val view = injector.instanceOf[VehicleNameRegistrationRejectionView]
+
       status(result) mustEqual BAD_REQUEST
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"        -> boundForm,
-        "onSubmitUrl" -> routes.VehicleNameRegistrationRejectionController.onSubmit(arrivalId).url
-      )
-
-      templateCaptor.getValue mustEqual "vehicleNameRegistrationReference.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual
+        view(boundForm, arrivalId)(request, messages).toString
     }
 
     "must redirect to check your answers page for a POST" in {

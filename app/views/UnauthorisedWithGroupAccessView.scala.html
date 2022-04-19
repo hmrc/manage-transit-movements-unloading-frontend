@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models.reference
+@import views.html.components.Heading
 
-import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
+@this(
+    mainTemplate: MainTemplate,
+    heading: Heading
+)
 
-case class Country(code: String, description: String) extends Selectable {
-  override def toString: String = description
+@()(implicit request: Request[_], messages: Messages)
 
-  override def toSelectItem(selected: Boolean): SelectItem = SelectItem(Some(code), this.toString, selected)
-}
+@mainTemplate(
+    title = messages("unauthorisedWithGroupAccess.title"),
+    showBackLink = true
+) {
+    @heading("unauthorisedWithGroupAccess.heading")
 
-object Country {
-  implicit val format: OFormat[Country] = Json.format[Country]
+    <p class="govuk-body">@messages("unauthorisedWithGroupAccess.paragraph")</p>
 }

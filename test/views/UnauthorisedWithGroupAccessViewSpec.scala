@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-package models.reference
+package views
 
-import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
+import play.twirl.api.HtmlFormat
+import views.behaviours.ViewBehaviours
+import views.html.UnauthorisedWithGroupAccessView
 
-case class Country(code: String, description: String) extends Selectable {
-  override def toString: String = description
+class UnauthorisedWithGroupAccessViewSpec extends ViewBehaviours {
 
-  override def toSelectItem(selected: Boolean): SelectItem = SelectItem(Some(code), this.toString, selected)
-}
+  override def view: HtmlFormat.Appendable =
+    injector.instanceOf[UnauthorisedWithGroupAccessView].apply()(fakeRequest, messages)
 
-object Country {
-  implicit val format: OFormat[Country] = Json.format[Country]
+  override val prefix: String = "unauthorisedWithGroupAccess"
+
+  behave like pageWithBackLink
+
+  behave like pageWithHeading()
+
+  behave like pageWithContent("p", "If you already have access, you must contact your group administrator to update your access rights.")
+
 }
