@@ -20,13 +20,13 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.EnrolmentStoreConnector
+import controllers.actions.AuthActionSpec._
 import controllers.routes
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{reset, times, verify, when}
-import play.api.mvc.{Action, AnyContent, BodyParsers, Results}
+import org.mockito.Mockito.{reset, when}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.{Action, AnyContent, BodyParsers, Results}
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import renderer.Renderer
@@ -35,7 +35,6 @@ import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{~, Retrieval}
 import uk.gov.hmrc.auth.{core => authClient}
 import uk.gov.hmrc.http.HeaderCarrier
-import controllers.actions.AuthActionSpec._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -315,8 +314,6 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(LEGACY_ENROLMENT_KEY))(any())).thenReturn(Future.successful(false))
         when(mockUIRender.render(any())(any())).thenReturn(Future.successful(Html("")))
 
-        val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
         val bodyParsers       = app.injector.instanceOf[BodyParsers.Default]
         val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
@@ -324,10 +321,10 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe UNAUTHORIZED
+        status(result) mustBe SEE_OTHER
 
-        verify(mockUIRender, times(1)).render(templateCaptor.capture())(any())
-        templateCaptor.getValue mustBe "unauthorisedWithGroupAccess.njk"
+        redirectLocation(result).value mustBe controllers.routes.UnauthorisedWithGroupAccessController.onPageLoad().url
+
       }
 
       "must redirect to unauthorised page with group access when given user has no active legacy enrolments but legacy group has" in {
@@ -344,8 +341,6 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(LEGACY_ENROLMENT_KEY))(any())).thenReturn(Future.successful(true))
         when(mockUIRender.render(any())(any())).thenReturn(Future.successful(Html("")))
 
-        val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
         val bodyParsers       = app.injector.instanceOf[BodyParsers.Default]
         val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
@@ -353,27 +348,16 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe UNAUTHORIZED
+        status(result) mustBe SEE_OTHER
 
-        verify(mockUIRender, times(1)).render(templateCaptor.capture())(any())
-        templateCaptor.getValue mustBe "unauthorisedWithGroupAccess.njk"
+        redirectLocation(result).value mustBe controllers.routes.UnauthorisedWithGroupAccessController.onPageLoad().url
       }
 
       "must redirect to unauthorised page with group access when given user has no active new enrolments but new group has" in {
-        val newEnrolmentsWithEoriButNoActivated: Enrolments = Enrolments(
-          Set(
-            createEnrolment("IR-SA", Some("UTR"), "123", "Activated"),
-            createEnrolment(NEW_ENROLMENT_KEY, Some(NEW_ENROLMENT_ID_KEY), "123", "NotYetActivated")
-          )
-        )
-
         when(mockAuthConnector.authorise[Enrolments ~ Option[String]](any(), any())(any(), any()))
-          .thenReturn(Future.successful(newEnrolmentsWithEoriButNoActivated ~ Some("testName")))
+          .thenReturn(Future.successful(Enrolments(Set.empty) ~ Some("testName")))
         when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(NEW_ENROLMENT_KEY))(any())).thenReturn(Future.successful(true))
         when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(LEGACY_ENROLMENT_KEY))(any())).thenReturn(Future.successful(false))
-        when(mockUIRender.render(any())(any())).thenReturn(Future.successful(Html("")))
-
-        val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
         val bodyParsers       = app.injector.instanceOf[BodyParsers.Default]
         val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
@@ -382,10 +366,9 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe UNAUTHORIZED
+        status(result) mustBe SEE_OTHER
 
-        verify(mockUIRender, times(1)).render(templateCaptor.capture())(any())
-        templateCaptor.getValue mustBe "unauthorisedWithGroupAccess.njk"
+        redirectLocation(result).value mustBe controllers.routes.UnauthorisedWithGroupAccessController.onPageLoad().url
       }
 
       "must redirect to unauthorised page with group access when given user has no active new enrolments but legacy group has" in {
@@ -402,8 +385,6 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(LEGACY_ENROLMENT_KEY))(any())).thenReturn(Future.successful(true))
         when(mockUIRender.render(any())(any())).thenReturn(Future.successful(Html("")))
 
-        val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
         val bodyParsers       = app.injector.instanceOf[BodyParsers.Default]
         val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
@@ -411,11 +392,11 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe UNAUTHORIZED
+        status(result) mustBe SEE_OTHER
 
-        verify(mockUIRender, times(1)).render(templateCaptor.capture())(any())
-        templateCaptor.getValue mustBe "unauthorisedWithGroupAccess.njk"
+        redirectLocation(result).value mustBe controllers.routes.UnauthorisedWithGroupAccessController.onPageLoad().url
       }
+
       "must redirect to unauthorised page with group access when given user has no enrolments but group has" in {
         when(mockAuthConnector.authorise[Enrolments ~ Option[String]](any(), any())(any(), any()))
           .thenReturn(Future.successful(Enrolments(Set.empty) ~ Some("testName")))
@@ -423,8 +404,6 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(LEGACY_ENROLMENT_KEY))(any())).thenReturn(Future.successful(false))
         when(mockUIRender.render(any())(any())).thenReturn(Future.successful(Html("")))
 
-        val templateCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
         val bodyParsers       = app.injector.instanceOf[BodyParsers.Default]
         val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
@@ -432,11 +411,9 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val controller = new Harness(authAction)
         val result     = controller.onPageLoad()(fakeRequest)
 
-        status(result) mustBe UNAUTHORIZED
+        status(result) mustBe SEE_OTHER
 
-        verify(mockUIRender, times(1)).render(templateCaptor.capture())(any())
-
-        templateCaptor.getValue mustBe "unauthorisedWithGroupAccess.njk"
+        redirectLocation(result).value mustBe controllers.routes.UnauthorisedWithGroupAccessController.onPageLoad().url
       }
 
       "must redirect to unauthorised page without group access when given both user and group has no enrolments" in {
