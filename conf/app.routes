@@ -1,32 +1,33 @@
 # microservice specific routes
 
-->         /hmrc-frontend                                           hmrcfrontend.Routes
+->         /hmrc-frontend                                                   hmrcfrontend.Routes
 
-GET        /:arrivalId                                             controllers.IndexController.onPageLoad(arrivalId: ArrivalId)
+GET        /:arrivalId                                                      controllers.IndexController.onPageLoad(arrivalId: ArrivalId)
 
-GET        /assets/*file                                           controllers.Assets.versioned(path="/public", file: Asset)
+GET        /assets/*file                                                    controllers.Assets.versioned(path="/public", file: Asset)
 
-GET        /error/this-service-has-been-reset                      controllers.SessionExpiredController.onPageLoad()
-POST       /error/this-service-has-been-reset                      controllers.SessionExpiredController.onSubmit()
+GET        /error/this-service-has-been-reset                               controllers.SessionExpiredController.onPageLoad()
+POST       /error/this-service-has-been-reset                               controllers.SessionExpiredController.onSubmit()
 
-GET        /error/bad-request                                      controllers.ErrorController.badRequest()
-GET        /error/not-found                                        controllers.ErrorController.notFound()
-GET        /error/technical-difficulties                           controllers.ErrorController.technicalDifficulties()
-GET        /error/internal-server-error                            controllers.ErrorController.internalServerError()
+GET        /error/bad-request                                               controllers.ErrorController.badRequest()
+GET        /error/not-found                                                 controllers.ErrorController.notFound()
+GET        /error/technical-difficulties                                    controllers.ErrorController.technicalDifficulties()
+GET        /error/internal-server-error                                     controllers.ErrorController.internalServerError()
 
-GET        /error/cannot-send-unloading-remarks/not-found          controllers.CannotSendUnloadingRemarksController.notFound()
-GET        /error/cannot-send-unloading-remarks/bad-request        controllers.CannotSendUnloadingRemarksController.badRequest()
+GET        /error/cannot-send-unloading-remarks/not-found                   controllers.CannotSendUnloadingRemarksController.notFound()
+GET        /error/cannot-send-unloading-remarks/bad-request                 controllers.CannotSendUnloadingRemarksController.badRequest()
 
-GET        /:arrivalId/check-your-answers                          controllers.CheckYourAnswersController.onPageLoad(arrivalId: ArrivalId)
-POST       /:arrivalId/check-your-answers                          controllers.CheckYourAnswersController.onSubmit(arrivalId: ArrivalId)
+GET        /:arrivalId/check-your-answers                                   controllers.CheckYourAnswersController.onPageLoad(arrivalId: ArrivalId)
+POST       /:arrivalId/check-your-answers                                   controllers.CheckYourAnswersController.onSubmit(arrivalId: ArrivalId)
 
-GET        /:arrivalId/rejection-check-your-answers                controllers.RejectionCheckYourAnswersController.onPageLoad(arrivalId: ArrivalId)
-POST       /:arrivalId/rejection-check-your-answers                controllers.RejectionCheckYourAnswersController.onSubmit(arrivalId: ArrivalId)
+GET        /:arrivalId/rejection-check-your-answers                         controllers.RejectionCheckYourAnswersController.onPageLoad(arrivalId: ArrivalId)
+POST       /:arrivalId/rejection-check-your-answers                         controllers.RejectionCheckYourAnswersController.onSubmit(arrivalId: ArrivalId)
 
-GET        /error/cannot-use-service-no-eori                       controllers.UnauthorisedController.onPageLoad()
+GET        /error/cannot-use-service-no-eori                                controllers.UnauthorisedController.onPageLoad()
+GET        /unauthorised-group-access                                       controllers.UnauthorisedWithGroupAccessController.onPageLoad()
 
-GET         /data/keep-alive                                            controllers.KeepAliveController.keepAlive(arrivalId: Option[ArrivalId] = None)
-GET         /data/:arrivalId/keep-alive                                 controllers.KeepAliveController.keepAlive(arrivalId: Option[ArrivalId])
+GET         /data/keep-alive                                                controllers.KeepAliveController.keepAlive(arrivalId: Option[ArrivalId] = None)
+GET         /data/:arrivalId/keep-alive                                     controllers.KeepAliveController.keepAlive(arrivalId: Option[ArrivalId])
 
 GET        /:arrivalId/unloading-guidance                                   controllers.UnloadingGuidanceController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 
@@ -46,48 +47,49 @@ POST       /:arrivalId/vehicle-registration-country                         cont
 GET        /:arrivalId/change-vehicle-registration-country                  controllers.VehicleRegistrationCountryController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-vehicle-registration-country                  controllers.VehicleRegistrationCountryController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/gross-mass-amount                        controllers.GrossMassAmountController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/gross-mass-amount                         controllers.GrossMassAmountController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-gross-mass-amount                  controllers.GrossMassAmountController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-gross-mass-amount                   controllers.GrossMassAmountController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+GET        /:arrivalId/gross-mass-amount                                    controllers.GrossMassAmountController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/gross-mass-amount                                    controllers.GrossMassAmountController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-gross-mass-amount                             controllers.GrossMassAmountController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-gross-mass-amount                             controllers.GrossMassAmountController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/seal/:index/new-seal-number                        controllers.NewSealNumberController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
-POST       /:arrivalId/seal/:index/new-seal-number                        controllers.NewSealNumberController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
-GET        /:arrivalId/seal/:index/change-new-seal-number                 controllers.NewSealNumberController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
-POST       /:arrivalId/seal/:index/change-new-seal-number                 controllers.NewSealNumberController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
-GET        /:arrivalId/seal/:index/confirm-remove-seal                        controllers.ConfirmRemoveSealController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
-POST       /:arrivalId/seal/:index/confirm-remove-seal                        controllers.ConfirmRemoveSealController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
-GET        /:arrivalId/seal/:index/change-confirm-remove-seal                  controllers.ConfirmRemoveSealController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
-POST       /:arrivalId/seal/:index/change-confirm-remove-seal                  controllers.ConfirmRemoveSealController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
+GET        /:arrivalId/seal/:index/new-seal-number                          controllers.NewSealNumberController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
+POST       /:arrivalId/seal/:index/new-seal-number                          controllers.NewSealNumberController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
+GET        /:arrivalId/seal/:index/change-new-seal-number                   controllers.NewSealNumberController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
+POST       /:arrivalId/seal/:index/change-new-seal-number                   controllers.NewSealNumberController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
 
-GET        /:arrivalId/unloading-summary                       controllers.UnloadingSummaryController.onPageLoad(arrivalId: ArrivalId)
+GET        /:arrivalId/seal/:index/confirm-remove-seal                      controllers.ConfirmRemoveSealController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
+POST       /:arrivalId/seal/:index/confirm-remove-seal                      controllers.ConfirmRemoveSealController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
+GET        /:arrivalId/seal/:index/change-confirm-remove-seal               controllers.ConfirmRemoveSealController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
+POST       /:arrivalId/seal/:index/change-confirm-remove-seal               controllers.ConfirmRemoveSealController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
 
-GET        /:arrivalId/can-seals-be-read                        controllers.CanSealsBeReadController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/can-seals-be-read                         controllers.CanSealsBeReadController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-can-seals-be-read                   controllers.CanSealsBeReadController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-can-seals-be-read                   controllers.CanSealsBeReadController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+GET        /:arrivalId/unloading-summary                                    controllers.UnloadingSummaryController.onPageLoad(arrivalId: ArrivalId)
 
-GET        /:arrivalId/are-any-seals-broken                        controllers.AreAnySealsBrokenController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/are-any-seals-broken                      controllers.AreAnySealsBrokenController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-are-any-seals-broken                  controllers.AreAnySealsBrokenController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-are-any-seals-broken                 controllers.AreAnySealsBrokenController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+GET        /:arrivalId/can-seals-be-read                                    controllers.CanSealsBeReadController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/can-seals-be-read                                    controllers.CanSealsBeReadController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-can-seals-be-read                             controllers.CanSealsBeReadController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-can-seals-be-read                             controllers.CanSealsBeReadController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/confirmation                       controllers.ConfirmationController.onPageLoad(arrivalId: ArrivalId)
+GET        /:arrivalId/are-any-seals-broken                                 controllers.AreAnySealsBrokenController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/are-any-seals-broken                                 controllers.AreAnySealsBrokenController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-are-any-seals-broken                          controllers.AreAnySealsBrokenController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-are-any-seals-broken                          controllers.AreAnySealsBrokenController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/changes-to-report                        controllers.ChangesToReportController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/changes-to-report                        controllers.ChangesToReportController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-changes-to-report                  controllers.ChangesToReportController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-changes-to-report                  controllers.ChangesToReportController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+GET        /:arrivalId/confirmation                                         controllers.ConfirmationController.onPageLoad(arrivalId: ArrivalId)
 
-GET        /:arrivalId/confirm-remove-comments                        controllers.ConfirmRemoveCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/confirm-remove-comments                        controllers.ConfirmRemoveCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-confirm-remove-comments                  controllers.ConfirmRemoveCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-confirm-remove-comments                  controllers.ConfirmRemoveCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+GET        /:arrivalId/changes-to-report                                    controllers.ChangesToReportController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/changes-to-report                                    controllers.ChangesToReportController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-changes-to-report                             controllers.ChangesToReportController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-changes-to-report                             controllers.ChangesToReportController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/total-number-of-items                  controllers.TotalNumberOfItemsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/total-number-of-items                  controllers.TotalNumberOfItemsController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-total-number-of-items           controllers.TotalNumberOfItemsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-total-number-of-items           controllers.TotalNumberOfItemsController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+GET        /:arrivalId/confirm-remove-comments                              controllers.ConfirmRemoveCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/confirm-remove-comments                              controllers.ConfirmRemoveCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-confirm-remove-comments                       controllers.ConfirmRemoveCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-confirm-remove-comments                       controllers.ConfirmRemoveCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+
+GET        /:arrivalId/total-number-of-items                                controllers.TotalNumberOfItemsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/total-number-of-items                                controllers.TotalNumberOfItemsController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-total-number-of-items                         controllers.TotalNumberOfItemsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-total-number-of-items                         controllers.TotalNumberOfItemsController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
 GET        /:arrivalId/total-number-of-packages                             controllers.TotalNumberOfPackagesController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/total-number-of-packages                             controllers.TotalNumberOfPackagesController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)

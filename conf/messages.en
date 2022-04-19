@@ -237,7 +237,7 @@ pageNotFound.contactLink=contact the New Computerised Transit System(NCTS) helpd
 
 unauthorisedWithGroupAccess.title = You cannot use this service authorisation
 unauthorisedWithGroupAccess.heading = You cannot use this service
-unauthorisedWithGroupAccess.p = If you already have access, you must contact your group administrator to update your access rights.
+unauthorisedWithGroupAccess.paragraph = If you already have access, you must contact your group administrator to update your access rights.
 
 cannotSendUnloadingRemarks.title = You cannot send these unloading remarks
 cannotSendUnloadingRemarks.heading = You cannot send these unloading remarks
