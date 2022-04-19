@@ -16,21 +16,21 @@
 
 package views
 
+import base.SpecBase
 import forms.DateGoodsUnloadedFormProvider
-import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.DateInputViewBehaviour
-import views.html.DateGoodsUnloadedView
+import views.html.DateGoodsUnloadedRejectionView
 
 import java.time.{Clock, LocalDate}
 
-class DateGoodsUnloadedViewSpec extends DateInputViewBehaviour {
+class DateGoodsUnloadedRejectionViewSpec extends SpecBase with DateInputViewBehaviour {
 
   override def form = new DateGoodsUnloadedFormProvider(Clock.systemUTC())(LocalDate.now())
 
   override def applyView(form: Form[LocalDate]): HtmlFormat.Appendable =
-    app.injector.instanceOf[DateGoodsUnloadedView].apply(mrn, arrivalId, NormalMode, form)(fakeRequest, messages)
+    app.injector.instanceOf[DateGoodsUnloadedRejectionView].apply(mrn.toString, arrivalId, form)(fakeRequest, messages)
 
   override val prefix: String = "dateGoodsUnloaded"
 
