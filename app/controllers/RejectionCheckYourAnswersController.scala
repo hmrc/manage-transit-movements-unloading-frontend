@@ -31,7 +31,7 @@ import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.viewmodels.NunjucksSupport
 import viewModels.RejectionCheckYourAnswersViewModel
-import viewModels.sections.SummarySection
+import viewModels.sections.Section
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -56,8 +56,8 @@ class RejectionCheckYourAnswersController @Inject() (
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
     (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {
       implicit request =>
-        val viewModel                    = RejectionCheckYourAnswersViewModel(request.userAnswers)
-        val answers: Seq[SummarySection] = viewModel.sections
+        val viewModel             = RejectionCheckYourAnswersViewModel(request.userAnswers)
+        val answers: Seq[Section] = viewModel.sections
         renderer
           .render(
             "rejection-check-your-answers.njk",

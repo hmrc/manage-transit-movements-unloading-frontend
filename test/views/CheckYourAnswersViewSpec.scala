@@ -19,7 +19,7 @@ package views
 import generators.{Generators, ViewModelGenerators}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-import viewModels.sections.SummarySection
+import viewModels.sections.Section
 import views.behaviours.SummaryListViewBehaviours
 import views.html.CheckYourAnswersView
 
@@ -27,7 +27,7 @@ class CheckYourAnswersViewSpec extends SummaryListViewBehaviours with Generators
 
   override val prefix: String = "checkYourAnswers"
 
-  private val sections: Seq[SummarySection] = listWithMaxLength[SummarySection]().sample.value
+  private val sections: Seq[Section] = listWithMaxLength[Section]().sample.value
 
   override def summaryLists: Seq[SummaryList] = sections.map(
     section => new SummaryList(section.rows)

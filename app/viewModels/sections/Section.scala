@@ -20,19 +20,19 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{__, OWrites}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-case class SummarySection(sectionTitle: Option[String], rows: Seq[SummaryListRow])
+case class Section(sectionTitle: Option[String], rows: Seq[SummaryListRow])
 
-object SummarySection {
-  def apply(sectionTitle: String, rows: Seq[SummaryListRow]): SummarySection = new SummarySection(Some(sectionTitle), rows)
+object Section {
+  def apply(sectionTitle: String, rows: Seq[SummaryListRow]): Section = new Section(Some(sectionTitle), rows)
 
-  def apply(rows: Seq[SummaryListRow]): SummarySection = new SummarySection(None, rows)
+  def apply(rows: Seq[SummaryListRow]): Section = new Section(None, rows)
 
-  def apply(row: SummaryListRow): SummarySection = new SummarySection(None, Seq(row))
+  def apply(row: SummaryListRow): Section = new Section(None, Seq(row))
 
-  implicit val sectionWrites: OWrites[SummarySection] =
+  implicit val sectionWrites: OWrites[Section] =
     (
       (__ \ "sectionTitle").write[Option[String]] and
         (__ \ "rows").write[Seq[SummaryListRow]]
-    )(unlift(SummarySection.unapply))
+    )(unlift(Section.unapply))
 
 }

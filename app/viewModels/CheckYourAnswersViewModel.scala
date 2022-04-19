@@ -24,9 +24,9 @@ import play.api.i18n.Messages
 import queries.SealsQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.{CheckYourAnswersHelper, UnloadingSummaryHelper}
-import viewModels.sections.SummarySection
+import viewModels.sections.Section
 
-case class CheckYourAnswersViewModel(sections: Seq[SummarySection])
+case class CheckYourAnswersViewModel(sections: Seq[Section])
 
 object CheckYourAnswersViewModel {
 
@@ -46,7 +46,7 @@ object CheckYourAnswersViewModel {
   private def sealsSection(
     userAnswers: UserAnswers,
     unloadingPermission: UnloadingPermission
-  )(implicit messages: Messages): SummarySection = {
+  )(implicit messages: Messages): Section = {
     val checkYourAnswersRow = new CheckYourAnswersHelper(userAnswers)
 
     val rowCanSealsBeRead: Option[SummaryListRow]    = checkYourAnswersRow.canSealsBeRead
@@ -58,20 +58,20 @@ object CheckYourAnswersViewModel {
       case (_, _)                                 => None
     }
 
-    SummarySection(messages("checkYourAnswers.seals.subHeading"), seals.toSeq ++ rowCanSealsBeRead ++ rowAreAnySealsBroken)
+    Section(messages("checkYourAnswers.seals.subHeading"), seals.toSeq ++ rowCanSealsBeRead ++ rowAreAnySealsBroken)
   }
 
-  private def goodsUnloadedSection(userAnswers: UserAnswers)(implicit messages: Messages): SummarySection = {
+  private def goodsUnloadedSection(userAnswers: UserAnswers)(implicit messages: Messages): Section = {
     val checkYourAnswersRow                      = new CheckYourAnswersHelper(userAnswers)
     val rowGoodsUnloaded: Option[SummaryListRow] = checkYourAnswersRow.dateGoodsUnloaded
-    SummarySection(rowGoodsUnloaded.toSeq)
+    Section(rowGoodsUnloaded.toSeq)
   }
 
   private def itemsSection(
     userAnswers: UserAnswers,
     unloadingPermission: UnloadingPermission,
     summaryTransportCountry: Option[Country]
-  )(implicit messages: Messages): SummarySection = {
+  )(implicit messages: Messages): Section = {
 
     val unloadingSummaryRow = new UnloadingSummaryHelper(userAnswers)
 
@@ -103,7 +103,7 @@ object CheckYourAnswersViewModel {
     val commentsAnswer: Option[String]   = SummaryRow.userAnswerString(userAnswers)(ChangesToReportPage)
     val commentsRow: Seq[SummaryListRow] = SummaryRow.row(commentsAnswer)(None)(unloadingSummaryRow.comments)
 
-    SummarySection(
+    Section(
       messages("checkYourAnswers.subHeading"),
       transportIdentityRow ++ transportCountryRow ++ grossMassRow ++ totalNumberOfItemsRow ++ totalNumberOfPackagesRow ++ itemsRow.toList ++ commentsRow
     )

@@ -26,7 +26,7 @@ import play.api.mvc._
 import services.UnloadingRemarksRejectionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.UnloadingRemarksRejectionViewModel
-import viewModels.sections.SummarySection
+import viewModels.sections.Section
 import views.html.{UnloadingRemarksMultipleErrorsRejectionView, UnloadingRemarksRejectionView}
 
 import javax.inject.Inject
@@ -83,7 +83,7 @@ class UnloadingRemarksRejectionController @Inject() (
   )(implicit request: Request[_]): Option[Result] =
     viewModel.apply(error, arrivalId) map {
       row =>
-        Ok(singleErrorView(arrivalId, SummarySection(row)))
+        Ok(singleErrorView(arrivalId, Section(row)))
     }
 
   private def multipleErrors(

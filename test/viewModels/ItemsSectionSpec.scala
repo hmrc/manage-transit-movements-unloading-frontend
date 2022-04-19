@@ -22,7 +22,7 @@ import models.{TraderAtDestination, UnloadingPermission}
 import pages.{ChangesToReportPage, GrossMassAmountPage}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import utils.UnloadingSummaryHelper
-import viewModels.sections.SummarySection
+import viewModels.sections.Section
 
 import java.time.LocalDate
 
@@ -46,15 +46,15 @@ class ItemsSectionSpec extends SpecBase {
     "Must display" - {
       "Correct Gross mass when no changes have been made" in {
 
-        val grossMassAmount           = unloadingPermission.copy(grossMass = "1000")
-        val data: Seq[SummarySection] = ItemsSection(emptyUserAnswers)(grossMassAmount, new UnloadingSummaryHelper(emptyUserAnswers), messages)
+        val grossMassAmount    = unloadingPermission.copy(grossMass = "1000")
+        val data: Seq[Section] = ItemsSection(emptyUserAnswers)(grossMassAmount, new UnloadingSummaryHelper(emptyUserAnswers), messages)
         data.head.rows.head.value.content mustBe Text("1000")
         data.head.rows(3).value.content mustBe Text("Flowers")
       }
       "Correct number of items when no changes have been made" in {
 
-        val numberOfItems             = unloadingPermission.copy(grossMass = "1000", numberOfItems = 10)
-        val data: Seq[SummarySection] = ItemsSection(emptyUserAnswers)(numberOfItems, new UnloadingSummaryHelper(emptyUserAnswers), messages)
+        val numberOfItems      = unloadingPermission.copy(grossMass = "1000", numberOfItems = 10)
+        val data: Seq[Section] = ItemsSection(emptyUserAnswers)(numberOfItems, new UnloadingSummaryHelper(emptyUserAnswers), messages)
         data.head.rows(1).value.content mustBe Text("10")
       }
 
@@ -66,7 +66,7 @@ class ItemsSectionSpec extends SpecBase {
           .success
           .value
 
-        val data: Seq[SummarySection] = ItemsSection(updatedAnswers)(grossMassAmount, new UnloadingSummaryHelper(emptyUserAnswers)(messages), messages)
+        val data: Seq[Section] = ItemsSection(updatedAnswers)(grossMassAmount, new UnloadingSummaryHelper(emptyUserAnswers)(messages), messages)
         data.head.rows.head.value.content mustBe Text("2000")
         data.head.rows(3).value.content mustBe Text("Flowers")
       }
@@ -77,7 +77,7 @@ class ItemsSectionSpec extends SpecBase {
           .success
           .value
 
-        val data: Seq[SummarySection] = ItemsSection(updatedAnswers)(unloadingPermission, new UnloadingSummaryHelper(emptyUserAnswers)(messages), messages)
+        val data: Seq[Section] = ItemsSection(updatedAnswers)(unloadingPermission, new UnloadingSummaryHelper(emptyUserAnswers)(messages), messages)
         data.head.rows(4).value.content mustBe Text("Test")
       }
 

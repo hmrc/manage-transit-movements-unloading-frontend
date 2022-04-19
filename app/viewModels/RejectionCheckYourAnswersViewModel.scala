@@ -19,9 +19,9 @@ package viewModels
 import models.UserAnswers
 import play.api.i18n.Messages
 import utils.RejectionCheckYourAnswersHelper
-import viewModels.sections.SummarySection
+import viewModels.sections.Section
 
-case class RejectionCheckYourAnswersViewModel(sections: Seq[SummarySection])
+case class RejectionCheckYourAnswersViewModel(sections: Seq[Section])
 
 object RejectionCheckYourAnswersViewModel {
 
@@ -29,7 +29,7 @@ object RejectionCheckYourAnswersViewModel {
     val cyaHelper = new RejectionCheckYourAnswersHelper(userAnswers)
     RejectionCheckYourAnswersViewModel(
       Seq(
-        SummarySection(
+        Section(
           Seq(
             cyaHelper.vehicleNameRegistrationRejection,
             cyaHelper.dateGoodsUnloaded,

@@ -30,7 +30,7 @@ import play.api.test.Helpers._
 import services.UnloadingRemarksRejectionService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewModels.UnloadingRemarksRejectionViewModel
-import viewModels.sections.SummarySection
+import viewModels.sections.Section
 import views.html.{UnloadingRemarksMultipleErrorsRejectionView, UnloadingRemarksRejectionView}
 
 import java.time.LocalDate
@@ -79,7 +79,7 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
 
       val view = injector.instanceOf[UnloadingRemarksRejectionView]
 
-      val expectedSection: SummarySection = SummarySection(Seq(sampleRow))
+      val expectedSection: Section = Section(Seq(sampleRow))
 
       status(result) mustEqual OK
 
