@@ -59,7 +59,7 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
         val section = new UnloadingSummaryViewModel().sealsSection(emptyUserAnswers, unloadingPermission).get
 
         section.sectionTitle mustBe defined
-        section.rows.length mustBe 4
+        section.rows.length mustBe 2
       }
     }
 
