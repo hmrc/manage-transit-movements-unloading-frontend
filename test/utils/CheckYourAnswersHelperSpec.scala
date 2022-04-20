@@ -47,7 +47,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
       "when AreAnySealsBrokenPage is defined" - {
         "when true" in {
 
-          val userAnswers = emptyUserAnswers.set(AreAnySealsBrokenPage, true).success.value
+          val userAnswers = emptyUserAnswers.setValue(AreAnySealsBrokenPage, true)
           val helper      = new CheckYourAnswersHelper(userAnswers)
           val result      = helper.areAnySealsBroken
 
@@ -73,7 +73,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
 
         "when false" in {
 
-          val userAnswers = emptyUserAnswers.set(AreAnySealsBrokenPage, false).success.value
+          val userAnswers = emptyUserAnswers.setValue(AreAnySealsBrokenPage, false)
           val helper      = new CheckYourAnswersHelper(userAnswers)
           val result      = helper.areAnySealsBroken
 
@@ -117,7 +117,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
       "when CanSealsBeReadPage is defined" - {
         "when true" in {
 
-          val userAnswers = emptyUserAnswers.set(CanSealsBeReadPage, true).success.value
+          val userAnswers = emptyUserAnswers.setValue(CanSealsBeReadPage, true)
           val helper      = new CheckYourAnswersHelper(userAnswers)
           val result      = helper.canSealsBeRead
 
@@ -143,7 +143,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
 
         "when false" in {
 
-          val userAnswers = emptyUserAnswers.set(CanSealsBeReadPage, false).success.value
+          val userAnswers = emptyUserAnswers.setValue(CanSealsBeReadPage, false)
           val helper      = new CheckYourAnswersHelper(userAnswers)
           val result      = helper.canSealsBeRead
 
@@ -240,7 +240,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
     "must return Some(row)" - {
       "when DateGoodsUnloadedPage is defined" in {
 
-        val userAnswers = emptyUserAnswers.set(DateGoodsUnloadedPage, LocalDate.parse("2000-01-01")).success.value
+        val userAnswers = emptyUserAnswers.setValue(DateGoodsUnloadedPage, LocalDate.parse("2000-01-01"))
         val helper      = new CheckYourAnswersHelper(userAnswers)
         val result      = helper.dateGoodsUnloaded
 

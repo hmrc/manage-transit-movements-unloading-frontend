@@ -21,6 +21,7 @@ import controllers.routes
 import models.{CheckMode, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import pages.VehicleNameRegistrationReferencePage
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
@@ -115,9 +116,9 @@ class UnloadingSummaryHelperSpec extends SpecBase {
 
       forAll(arbitrary[String]) {
         str =>
-          val userAnswers = emptyUserAnswers
+          val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, str)
           val helper      = new UnloadingSummaryHelper(userAnswers)
-          val result      = helper.vehicleUsed(str)
+          val result      = helper.vehicleUsed.get
 
           result mustEqual SummaryListRow(
             key = "Name, registration or reference".toKey,

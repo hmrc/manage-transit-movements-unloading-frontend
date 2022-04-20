@@ -45,7 +45,7 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase {
                   ActionItem(
                     content = "Change".toText,
                     href = routes.VehicleNameRegistrationRejectionController.onPageLoad(userAnswers.id).url,
-                    visuallyHiddenText = Some("Change Name, registration or reference"),
+                    visuallyHiddenText = Some("name, registration or reference"),
                     attributes = Map("id" -> "change-vehicle-registration-rejection")
                   )
                 )
@@ -72,7 +72,8 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase {
                   ActionItem(
                     content = "Change".toText,
                     href = routes.TotalNumberOfPackagesRejectionController.onPageLoad(userAnswers.id).url,
-                    visuallyHiddenText = Some("Change Total number of packages")
+                    visuallyHiddenText = Some("total number of packages"),
+                    attributes = Map("id" -> "change-total-number-of-packages")
                   )
                 )
               )
@@ -98,7 +99,8 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase {
                   ActionItem(
                     content = "Change".toText,
                     href = routes.TotalNumberOfItemsRejectionController.onPageLoad(userAnswers.id).url,
-                    visuallyHiddenText = Some("Change Total number of items")
+                    visuallyHiddenText = Some("total number of items"),
+                    attributes = Map("id" -> "change-total-number-of-items")
                   )
                 )
               )
@@ -124,7 +126,8 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase {
                   ActionItem(
                     content = "Change".toText,
                     href = routes.GrossMassAmountRejectionController.onPageLoad(userAnswers.id).url,
-                    visuallyHiddenText = Some("Change Total gross mass in kilograms")
+                    visuallyHiddenText = Some("total gross mass in kilograms"),
+                    attributes = Map("id" -> "change-gross-mass-amount")
                   )
                 )
               )
@@ -148,7 +151,7 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase {
               ActionItem(
                 content = "Change".toText,
                 href = routes.DateGoodsUnloadedRejectionController.onPageLoad(userAnswers.id).url,
-                visuallyHiddenText = Some("Change Unloading date"),
+                visuallyHiddenText = Some("unloading date"),
                 attributes = Map("id" -> "change-date-goods-unloaded")
               )
             )

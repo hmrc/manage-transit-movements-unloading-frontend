@@ -16,7 +16,6 @@
 
 package viewModels
 
-import cats.data.NonEmptyList
 import models.reference.Country
 import models.{Index, UnloadingPermission, UserAnswers}
 import pages._
@@ -49,7 +48,7 @@ object SealsSection {
     userAnswers: UserAnswers,
     unloadingPermission: UnloadingPermission
   )(implicit messages: Messages): Option[Section] = {
-    val unloadingSummaryHelper: UnloadingSummaryHelper = new UnloadingSummaryHelper(userAnswers)
+    val helper: UnloadingSummaryHelper = new UnloadingSummaryHelper(userAnswers, unloadingPermission)
 
     userAnswers.get(SealsQuery) match {
       case Some(seals) =>
@@ -57,8 +56,8 @@ object SealsSection {
           case (sealNumber, index) =>
             unloadingPermission.seals match {
               case Some(existingSeals) if existingSeals.SealId.length >= index + 1 =>
-                SummaryRow.rowWithIndex(Index(index))(None)(sealNumber)(unloadingSummaryHelper.seals)
-              case _ => SummaryRow.rowWithIndex(Index(index))(None)(sealNumber)(unloadingSummaryHelper.sealsWithRemove)
+                SummaryRow.rowWithIndex(Index(index))(None)(sealNumber)(helper.seals)
+              case _ => SummaryRow.rowWithIndex(Index(index))(None)(sealNumber)(helper.sealsWithRemove)
             }
         }
         Some(Section(messages("changeSeal.title"), rows))
@@ -69,7 +68,7 @@ object SealsSection {
             val rows: Seq[SummaryListRow] = seals.SealId.zipWithIndex.map {
               case (sealNumber, index) =>
                 val sealAnswer = SummaryRow.userAnswerWithIndex(Index(index))(userAnswers)(NewSealNumberPage)
-                SummaryRow.rowWithIndex(Index(index))(sealAnswer)(sealNumber)(unloadingSummaryHelper.seals)
+                SummaryRow.rowWithIndex(Index(index))(sealAnswer)(sealNumber)(helper.seals)
             }
             Some(Section(messages("changeSeal.title"), rows))
           case None =>
@@ -86,23 +85,14 @@ object TransportSection {
     country: Option[Country],
     unloadingPermission: UnloadingPermission
   )(implicit messages: Messages): Option[Section] = {
-    val unloadingSummaryHelper: UnloadingSummaryHelper = new UnloadingSummaryHelper(userAnswers)
+    val helper: UnloadingSummaryHelper = new UnloadingSummaryHelper(userAnswers, unloadingPermission)
 
-    val vehicleAnswer: Option[String]          = SummaryRow.userAnswerString(userAnswers)(VehicleNameRegistrationReferencePage)
-    val transportIdentity: Seq[SummaryListRow] = SummaryRow.row(vehicleAnswer)(unloadingPermission.transportIdentity)(unloadingSummaryHelper.vehicleUsed)
-
-    val transportCountryDescription: Option[String] = country match {
-      case Some(value) => Some(value.description)
-      case None        => unloadingPermission.transportCountry
-    }
-
-    val countryAnswer: Option[String]         = SummaryRow.userAnswerCountry(userAnswers)(VehicleRegistrationCountryPage)
-    val transportCountry: Seq[SummaryListRow] = SummaryRow.row(countryAnswer)(transportCountryDescription)(unloadingSummaryHelper.registeredCountry)
-
-    transportIdentity ++ transportCountry match {
-      case transport if transport.nonEmpty =>
-        Some(Section(messages("vehicleUsed.title"), transport))
-      case _ => None
+    Seq(
+      helper.vehicleUsed,
+      helper.registeredCountry(country)
+    ).flatten match {
+      case Nil  => None
+      case rows => Some(Section(messages("vehicleUsed.title"), rows))
     }
   }
 }
@@ -113,23 +103,14 @@ object ItemsSection {
     userAnswers: UserAnswers,
     unloadingPermission: UnloadingPermission
   )(implicit messages: Messages): Section = {
-    val unloadingSummaryHelper: UnloadingSummaryHelper = new UnloadingSummaryHelper(userAnswers)
+    val helper: UnloadingSummaryHelper = new UnloadingSummaryHelper(userAnswers, unloadingPermission)
 
-    val grossMassAnswer: Option[String]   = SummaryRow.userAnswerString(userAnswers)(GrossMassAmountPage)
-    val grossMassRow: Seq[SummaryListRow] = SummaryRow.row(grossMassAnswer)(Some(unloadingPermission.grossMass))(unloadingSummaryHelper.grossMass)
+    val rows = helper.grossMass.toSeq ++
+      helper.totalNumberOfItems.toSeq ++
+      helper.totalNumberOfPackages.toSeq ++
+      helper.items.toList ++
+      helper.comments.toSeq
 
-    val totalNumberOfItemsAnswer: Option[Int] = SummaryRow.userAnswerInt(userAnswers)(TotalNumberOfItemsPage)
-    val totalNumberOfItemsRow: Seq[SummaryListRow] =
-      SummaryRow.rowInt(totalNumberOfItemsAnswer)(Some(unloadingPermission.numberOfItems))(unloadingSummaryHelper.totalNumberOfItems)
-
-    val totalNumberOfPackagesAnswer: Option[Int] = SummaryRow.userAnswerInt(userAnswers)(TotalNumberOfPackagesPage)
-    val totalNumberOfPackagesRow: Seq[SummaryListRow] =
-      SummaryRow.rowInt(totalNumberOfPackagesAnswer)(unloadingPermission.numberOfPackages)(unloadingSummaryHelper.totalNumberOfPackages)
-
-    val itemsRow: NonEmptyList[SummaryListRow] = SummaryRow.rowGoodsItems(unloadingPermission.goodsItems)(userAnswers)(unloadingSummaryHelper.items)
-    val commentsAnswer: Option[String]         = SummaryRow.userAnswerString(userAnswers)(ChangesToReportPage)
-    val commentsRow: Seq[SummaryListRow]       = SummaryRow.row(commentsAnswer)(None)(unloadingSummaryHelper.comments)
-
-    Section(messages("changeItems.title"), grossMassRow ++ totalNumberOfItemsRow ++ totalNumberOfPackagesRow ++ itemsRow.toList ++ commentsRow)
+    Section(messages("changeItems.title"), rows)
   }
 }
