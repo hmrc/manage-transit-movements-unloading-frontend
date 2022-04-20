@@ -20,9 +20,10 @@ import base.SpecBase
 import generators.Generators
 import models.UnloadingPermission
 import models.reference.Country
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalatest.BeforeAndAfterEach
 import pages._
 import queries.{GoodsItemsQuery, SealsQuery}
 import services.ReferenceDataService
@@ -31,30 +32,39 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class UnloadingPermissionExtractorSpec extends SpecBase with Generators {
+class UnloadingPermissionExtractorSpec extends SpecBase with Generators with BeforeAndAfterEach {
 
   private val mockReferenceDataService = mock[ReferenceDataService]
   private val extractor                = new UnloadingPermissionExtractor(mockReferenceDataService)
 
   implicit private val hc: HeaderCarrier = HeaderCarrier()
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockReferenceDataService)
+  }
+
   "must populate user answers with unloading permission data" in {
     forAll(arbitrary[UnloadingPermission], arbitrary[Country]) {
       (unloadingPermission, country) =>
-        when(mockReferenceDataService.getCountryByCode(any()))
+        beforeEach()
+
+        when(mockReferenceDataService.getCountryByCode(any())(any(), any()))
           .thenReturn(Future.successful(Some(country)))
 
         whenReady(extractor.apply(emptyUserAnswers, unloadingPermission)) {
           result =>
             result.get.get(VehicleNameRegistrationReferencePage) mustBe unloadingPermission.transportIdentity
-            result.get.get(VehicleRegistrationCountryPage) mustBe unloadingPermission.transportCountry
+            result.get.get(VehicleRegistrationCountryPage).get mustBe country
             result.get.get(GrossMassAmountPage).get mustBe unloadingPermission.grossMass
             result.get.get(TotalNumberOfItemsPage).get mustBe unloadingPermission.numberOfItems
-            result.get.get(TotalNumberOfPackagesPage).get mustBe unloadingPermission.numberOfPackages
+            result.get.get(TotalNumberOfPackagesPage) mustBe unloadingPermission.numberOfPackages
             result.get.get(SealsQuery) mustBe unloadingPermission.seals.map(_.SealId)
-            result.get.get(GoodsItemsQuery) mustBe unloadingPermission.goodsItems.map(_.description)
+            result.get.get(GoodsItemsQuery).get mustBe unloadingPermission.goodsItems.map(_.description).toList
 
-            result.get.getPrepopulateData(SealsQuery) mustBe unloadingPermission.seals.map(_.SealId)
+            result.get.getPrepopulatedData(SealsQuery) mustBe unloadingPermission.seals.map(_.SealId)
+
+            verify(mockReferenceDataService).getCountryByCode(eqTo(unloadingPermission.transportCountry))(any(), any())
         }
     }
   }

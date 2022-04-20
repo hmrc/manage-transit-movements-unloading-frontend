@@ -17,6 +17,7 @@
 package utils
 
 import controllers.routes
+import derivable.DeriveNumberOfSeals
 import models.reference.Country
 import models.{CheckMode, Index, NormalMode, UserAnswers}
 import pages._
@@ -27,38 +28,43 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
 class UnloadingSummaryHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
+  private lazy val numberOfExistingSeals: Int = userAnswers.getPrepopulatedData(DeriveNumberOfSeals).getOrElse(0)
+
+  private lazy val (existingSeals, newSeals) = userAnswers
+    .get(SealsQuery)
+    .map(_.zipWithIndex.partition {
+      case (_, index) => index < numberOfExistingSeals
+    })
+    .getOrElse((Nil, Nil))
+
+  //format: off
   def seals: Seq[SummaryListRow] =
-    userAnswers
-      .get(SealsQuery)
-      .map(_.zipWithIndex.map {
-        case (sealId, position) =>
-          val index = Index(position)
-          buildRow(
-            prefix = "changeItem.sealList",
-            answer = sealId.toText,
-            id = Some(s"change-seal-${index.position}"),
-            call = Some(routes.NewSealNumberController.onPageLoad(arrivalId, index, CheckMode)),
-            args = index.display
-          )
-      })
-      .getOrElse(Nil)
+    existingSeals.map {
+      case (sealId, position) =>
+        val index = Index(position)
+        buildRow(
+          prefix = "changeSeal.sealList",
+          answer = sealId.toText,
+          id = Some(s"change-seal-${index.position}"),
+          call = Some(routes.NewSealNumberController.onPageLoad(arrivalId, index, CheckMode)),
+          args = index.display, sealId
+        )
+    }
 
   def sealsWithRemove: Seq[SummaryListRow] =
-    userAnswers
-      .get(SealsQuery)
-      .map(_.zipWithIndex.map {
-        case (sealId, position) =>
-          val index = Index(position)
-          buildRemovableRow(
-            prefix = "changeItem.sealList",
-            answer = sealId.toText,
-            id = s"seal-${index.position}",
-            changeCall = routes.NewSealNumberController.onPageLoad(arrivalId, index, CheckMode),
-            removeCall = routes.ConfirmRemoveSealController.onPageLoad(arrivalId, index, CheckMode),
-            args = index.display
-          )
-      })
-      .getOrElse(Nil)
+    newSeals.map {
+      case (sealId, position) =>
+        val index = Index(position)
+        buildRemovableRow(
+          prefix = "changeSeal.sealList",
+          answer = sealId.toText,
+          id = s"seal-${index.position}",
+          changeCall = routes.NewSealNumberController.onPageLoad(arrivalId, index, CheckMode),
+          removeCall = routes.ConfirmRemoveSealController.onPageLoad(arrivalId, index, CheckMode),
+          args = index.display, sealId
+        )
+    }
+  //format: on
 
   def items: Seq[SummaryListRow] =
     userAnswers

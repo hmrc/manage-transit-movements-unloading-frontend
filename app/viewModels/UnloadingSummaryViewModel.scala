@@ -16,7 +16,6 @@
 
 package viewModels
 
-import derivable.DeriveNumberOfSeals
 import models.UserAnswers
 import play.api.i18n.Messages
 import utils.UnloadingSummaryHelper
@@ -36,36 +35,10 @@ object SealsSection {
   def apply(userAnswers: UserAnswers)(implicit messages: Messages): Option[Section] = {
     val helper: UnloadingSummaryHelper = new UnloadingSummaryHelper(userAnswers)
 
-    /*userAnswers.get(SealsQuery) match {
-      case Some(seals) =>
-        val rows: Seq[SummaryListRow] = seals.zipWithIndex.map {
-          case (sealNumber, index) =>
-            unloadingPermission.seals match {
-              case Some(existingSeals) if existingSeals.SealId.length >= index + 1 =>
-                SummaryRow.rowWithIndex(Index(index))(None)(sealNumber)(helper.seals)
-              case _ => SummaryRow.rowWithIndex(Index(index))(None)(sealNumber)(helper.sealsWithRemove)
-            }
-        }
-        Some(Section(messages("changeSeal.title"), rows))
-
-      case None =>
-        unloadingPermission.seals match {
-          case Some(seals) =>
-            val rows: Seq[SummaryListRow] = seals.SealId.zipWithIndex.map {
-              case (sealNumber, index) =>
-                val sealAnswer = SummaryRow.userAnswerWithIndex(Index(index))(userAnswers)(NewSealNumberPage)
-                SummaryRow.rowWithIndex(Index(index))(sealAnswer)(sealNumber)(helper.seals)
-            }
-            Some(Section(messages("changeSeal.title"), rows))
-          case None =>
-            None
-        }
-    }*/
-
-    // you can remove a seal if it's been added in session
-    val numberOfExistingSeals = userAnswers.getPrepopulateData(DeriveNumberOfSeals).getOrElse(0)
-
-    Some(Section(messages("changeSeal.title"), Nil))
+    helper.seals ++ helper.sealsWithRemove match {
+      case Nil  => None
+      case rows => Some(Section(messages("changeSeal.title"), rows))
+    }
   }
 }
 

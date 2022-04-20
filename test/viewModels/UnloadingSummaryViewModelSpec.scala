@@ -68,7 +68,6 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
       }
 
       "display transportCountry and transportIdentity" in {
-
         val userAnswers = emptyUserAnswers
           .setValue(VehicleNameRegistrationReferencePage, "registration")
           .setValue(VehicleRegistrationCountryPage, Country("FR", "France"))
@@ -84,35 +83,33 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
     "items sections should" - {
 
       "display total mass with single item" in {
-
-        val userAnswers = emptyUserAnswers.set(GrossMassAmountPage, "99").success.value
-        val sections    = new UnloadingSummaryViewModel().transportAndItemSections(userAnswers)
-
-        sections.head.rows.head.value.content mustBe Text("99")
-        sections.length mustBe 1
-        sections.head.sectionTitle mustBe defined
-        sections.head.rows.length mustBe 4
-        sections.head.rows.head.actions.isEmpty mustBe false
-        sections.head.rows(3).actions.isEmpty mustBe true
-      }
-
-      "display total number of items " in {
-        val userAnswers = emptyUserAnswers.set(TotalNumberOfItemsPage, 8).success.value
+        val userAnswers = emptyUserAnswers.setValue(GrossMassAmountPage, "99")
 
         val sections = new UnloadingSummaryViewModel().transportAndItemSections(userAnswers)
 
         sections.length mustBe 1
-        sections.head.rows(1).value.content mustBe Text("8")
-        sections.head.rows.head.actions.isEmpty mustBe false
+        sections.head.rows.length mustBe 1
+        sections.head.rows.head.value.content mustBe Text("99")
+      }
+
+      "display total number of items " in {
+        val userAnswers = emptyUserAnswers.setValue(TotalNumberOfItemsPage, 8)
+
+        val sections = new UnloadingSummaryViewModel().transportAndItemSections(userAnswers)
+
+        sections.length mustBe 1
+        sections.head.rows.length mustBe 1
+        sections.head.rows.head.value.content mustBe Text("8")
       }
 
       "contain number of packages details " in {
-        val userAnswers = emptyUserAnswers.set(TotalNumberOfPackagesPage, 11).success.value
-        val sections    = new UnloadingSummaryViewModel().transportAndItemSections(userAnswers)
+        val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, 11)
+
+        val sections = new UnloadingSummaryViewModel().transportAndItemSections(userAnswers)
 
         sections.length mustBe 1
-        sections.head.rows(2).value.content mustBe Text("11")
-        sections.head.rows.head.actions.isEmpty mustBe false
+        sections.head.rows.length mustBe 1
+        sections.head.rows.head.value.content mustBe Text("11")
       }
     }
   }

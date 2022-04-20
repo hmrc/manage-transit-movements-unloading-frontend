@@ -42,13 +42,16 @@ class UnloadingSummaryHelperSpec extends SpecBase with Generators {
         result mustEqual Nil
       }
 
-      "when there are seals" in {
+      "when there are existing seals" in {
 
         forAll(listWithMaxLength[String](Seals.maxSeals)) {
           strs =>
-            val userAnswers = emptyUserAnswers.setValue(SealsQuery, strs)
-            val helper      = new UnloadingSummaryHelper(userAnswers)
-            val result      = helper.seals
+            val userAnswers = emptyUserAnswers
+              .setPrepopulatedValue(SealsQuery, strs)
+              .setValue(SealsQuery, strs)
+
+            val helper = new UnloadingSummaryHelper(userAnswers)
+            val result = helper.seals
 
             result.size mustEqual strs.size
 
@@ -74,40 +77,52 @@ class UnloadingSummaryHelperSpec extends SpecBase with Generators {
       }
     }
 
-    "when .sealsWithRemove" in {
+    "when .sealsWithRemove" - {
 
-      forAll(listWithMaxLength[String](Seals.maxSeals)) {
-        strs =>
-          val userAnswers = emptyUserAnswers.setValue(SealsQuery, strs)
-          val helper      = new UnloadingSummaryHelper(userAnswers)
-          val result      = helper.sealsWithRemove
+      "when no seals" in {
 
-          result.size mustEqual strs.size
+        val userAnswers = emptyUserAnswers
+        val helper      = new UnloadingSummaryHelper(userAnswers)
+        val result      = helper.sealsWithRemove
 
-          val index = Index(0)
-          val str   = strs.head
-          result.head mustEqual SummaryListRow(
-            key = s"Official customs seal ${index.display}".toKey,
-            value = Value(str.toText),
-            actions = Some(
-              Actions(items =
-                List(
-                  ActionItem(
-                    content = "Change".toText,
-                    href = routes.NewSealNumberController.onPageLoad(userAnswers.id, index, CheckMode).url,
-                    visuallyHiddenText = Some(s"official customs seal ${index.display} $str"),
-                    attributes = Map("id" -> s"change-seal-${index.position}")
-                  ),
-                  ActionItem(
-                    content = "Remove".toText,
-                    href = routes.ConfirmRemoveSealController.onPageLoad(userAnswers.id, index, CheckMode).url,
-                    visuallyHiddenText = Some(s"official customs seal ${index.display} $str"),
-                    attributes = Map("id" -> s"remove-seal-${index.position}")
+        result mustEqual Nil
+      }
+
+      "when there are new seals" in {
+
+        forAll(listWithMaxLength[String](Seals.maxSeals)) {
+          strs =>
+            val userAnswers = emptyUserAnswers.setValue(SealsQuery, strs)
+            val helper      = new UnloadingSummaryHelper(userAnswers)
+            val result      = helper.sealsWithRemove
+
+            result.size mustEqual strs.size
+
+            val index = Index(0)
+            val str   = strs.head
+            result.head mustEqual SummaryListRow(
+              key = s"Official customs seal ${index.display}".toKey,
+              value = Value(str.toText),
+              actions = Some(
+                Actions(items =
+                  List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.NewSealNumberController.onPageLoad(userAnswers.id, index, CheckMode).url,
+                      visuallyHiddenText = Some(s"official customs seal ${index.display} $str"),
+                      attributes = Map("id" -> s"change-seal-${index.position}")
+                    ),
+                    ActionItem(
+                      content = "Remove".toText,
+                      href = routes.ConfirmRemoveSealController.onPageLoad(userAnswers.id, index, CheckMode).url,
+                      visuallyHiddenText = Some(s"official customs seal ${index.display} $str"),
+                      attributes = Map("id" -> s"remove-seal-${index.position}")
+                    )
                   )
                 )
               )
             )
-          )
+        }
       }
     }
 

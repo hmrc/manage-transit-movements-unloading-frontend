@@ -55,7 +55,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
   private lazy val nextPage = routes.UnloadingGuidanceController.onPageLoad(arrivalId).url
 
   "Index Controller" - {
-    "must redirect to onward route for a GET when there are no UserAnswers and prepopulate data" in {
+    "must redirect to onward route for a GET when there are no UserAnswers and prepopulated data" in {
       checkArrivalStatus()
       val unloadingPermission = sampleUnloadingPermission.copy(movementReferenceNumber = mrn.toString)
 

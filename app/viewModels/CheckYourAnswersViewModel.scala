@@ -52,14 +52,13 @@ class CheckYourAnswersViewModel {
   private def itemsSection(userAnswers: UserAnswers)(implicit messages: Messages): Section = {
     val helper = new UnloadingSummaryHelper(userAnswers)
 
-    val rows = Seq(
-      helper.vehicleUsed,
-      helper.registeredCountry,
-      helper.grossMass,
-      helper.totalNumberOfItems,
-      helper.totalNumberOfPackages,
-      helper.comments
-    ).flatten
+    val rows = helper.vehicleUsed.toSeq ++
+      helper.registeredCountry.toSeq ++
+      helper.grossMass.toSeq ++
+      helper.totalNumberOfItems.toSeq ++
+      helper.totalNumberOfPackages.toSeq ++
+      helper.items ++
+      helper.comments.toSeq
 
     Section(messages("checkYourAnswers.subHeading"), rows)
   }

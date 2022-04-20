@@ -35,25 +35,25 @@ class ItemsSectionSpec extends SpecBase {
       "Correct number of items" in {
         val userAnswers      = emptyUserAnswers.setValue(TotalNumberOfItemsPage, 10)
         val section: Section = ItemsSection(userAnswers)
-        section.rows(1).value.content mustBe Text("10")
+        section.rows.head.value.content mustBe Text("10")
       }
 
       "Correct number of packages" in {
         val userAnswers      = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, 10)
         val section: Section = ItemsSection(userAnswers)
-        section.rows(2).value.content mustBe Text("10")
+        section.rows.head.value.content mustBe Text("10")
       }
 
       "Correct items" in {
         val userAnswers      = emptyUserAnswers.setValue(GoodsItemsQuery, Seq("Test"))
         val section: Section = ItemsSection(userAnswers)
-        section.rows(3).value.content mustBe Text("Test")
+        section.rows.head.value.content mustBe Text("Test")
       }
 
       "Correct Comments" in {
         val userAnswers      = emptyUserAnswers.setValue(ChangesToReportPage, "Test")
         val section: Section = ItemsSection(userAnswers)
-        section.rows(4).value.content mustBe Text("Test")
+        section.rows.head.value.content mustBe Text("Test")
       }
     }
   }

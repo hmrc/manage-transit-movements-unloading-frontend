@@ -30,7 +30,7 @@ final case class UserAnswers(
   mrn: MovementReferenceNumber,
   eoriNumber: EoriNumber,
   data: JsObject = Json.obj(),
-  prepopulateData: JsObject = Json.obj(),
+  prepopulatedData: JsObject = Json.obj(),
   lastUpdated: LocalDateTime = LocalDateTime.now
 ) {
 
@@ -43,11 +43,11 @@ final case class UserAnswers(
   def get[A](page: QuestionPage[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
 
-  def getPrepopulateData[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
-    Reads.optionNoError(Reads.at(page.path)).reads(prepopulateData).getOrElse(None)
+  def getPrepopulatedData[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
+    Reads.optionNoError(Reads.at(page.path)).reads(prepopulatedData).getOrElse(None)
 
-  def getPrepopulateData[A, B](derivable: Derivable[A, B])(implicit rds: Reads[A]): Option[B] =
-    getPrepopulateData(derivable: Gettable[A]).map(derivable.derive)
+  def getPrepopulatedData[A, B](derivable: Derivable[A, B])(implicit rds: Reads[A]): Option[B] =
+    getPrepopulatedData(derivable: Gettable[A]).map(derivable.derive)
 
   def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
 
@@ -65,9 +65,9 @@ final case class UserAnswers(
     }
   }
 
-  def setPrepopulateData[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
+  def setPrepopulatedData[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
 
-    val updatedData = prepopulateData.setObject(page.path, Json.toJson(value)) match {
+    val updatedData = prepopulatedData.setObject(page.path, Json.toJson(value)) match {
       case JsSuccess(jsValue, _) =>
         Success(jsValue)
       case JsError(errors) =>
@@ -76,7 +76,7 @@ final case class UserAnswers(
 
     updatedData.flatMap {
       d =>
-        val updatedAnswers = copy(prepopulateData = d)
+        val updatedAnswers = copy(prepopulatedData = d)
         page.cleanup(Some(value), updatedAnswers)
     }
   }

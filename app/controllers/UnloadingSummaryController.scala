@@ -27,7 +27,6 @@ import viewModels.UnloadingSummaryViewModel
 import views.html.UnloadingSummaryView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 class UnloadingSummaryController @Inject() (
   override val messagesApi: MessagesApi,
@@ -38,8 +37,7 @@ class UnloadingSummaryController @Inject() (
   checkArrivalStatus: CheckArrivalStatusProvider,
   view: UnloadingSummaryView,
   viewModel: UnloadingSummaryViewModel
-)(implicit ec: ExecutionContext)
-    extends FrontendBaseController
+) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
