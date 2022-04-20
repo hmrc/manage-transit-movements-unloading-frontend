@@ -18,59 +18,75 @@ package utils
 
 import base.SpecBase
 import controllers.routes
-import models.{CheckMode, Index, NormalMode}
+import generators.Generators
+import models.reference.Country
+import models.{CheckMode, Index, NormalMode, Seals, UnloadingPermission}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
-import pages.VehicleNameRegistrationReferencePage
+import pages._
+import queries.{GoodsItemsQuery, SealsQuery}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
-class UnloadingSummaryHelperSpec extends SpecBase {
-
-  // numbers over 1000 will be comma-separated when passed in to messages, so will be ignored for the purposes of our tests
-  // 998 is used because .display adds 1 to the index position
-  private val arbitraryInt = Gen.choose(0, 998)
+class UnloadingSummaryHelperSpec extends SpecBase with Generators {
 
   "must return summary list row" - {
 
-    "when .seals" in {
+    "when .seals" - {
 
-      forAll(arbitrary[String], arbitraryInt) {
-        (str, position) =>
-          val userAnswers = emptyUserAnswers
-          val index       = Index(position)
-          val helper      = new UnloadingSummaryHelper(userAnswers)
-          val result      = helper.seals(index, str)
+      "when no seals" in {
 
-          result mustEqual SummaryListRow(
-            key = s"Official customs seal ${index.display}".toKey,
-            value = Value(str.toText),
-            actions = Some(
-              Actions(items =
-                List(
-                  ActionItem(
-                    content = "Change".toText,
-                    href = routes.NewSealNumberController.onPageLoad(userAnswers.id, index, CheckMode).url,
-                    visuallyHiddenText = Some(s"official customs seal ${index.display} $str"),
-                    attributes = Map("id" -> s"change-seal-$position")
+        val userAnswers = emptyUserAnswers
+        val helper      = new UnloadingSummaryHelper(userAnswers)
+        val result      = helper.seals
+
+        result mustEqual Nil
+      }
+
+      "when there are seals" in {
+
+        forAll(listWithMaxLength[String](Seals.maxSeals)) {
+          strs =>
+            val userAnswers = emptyUserAnswers.setValue(SealsQuery, strs)
+            val helper      = new UnloadingSummaryHelper(userAnswers)
+            val result      = helper.seals
+
+            result.size mustEqual strs.size
+
+            val index = Index(0)
+            val str   = strs.head
+            result.head mustEqual SummaryListRow(
+              key = s"Official customs seal ${index.display}".toKey,
+              value = Value(str.toText),
+              actions = Some(
+                Actions(items =
+                  List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.NewSealNumberController.onPageLoad(userAnswers.id, index, CheckMode).url,
+                      visuallyHiddenText = Some(s"official customs seal ${index.display} $str"),
+                      attributes = Map("id" -> s"change-seal-${index.position}")
+                    )
                   )
                 )
               )
             )
-          )
+        }
       }
     }
 
     "when .sealsWithRemove" in {
 
-      forAll(arbitrary[String], arbitraryInt) {
-        (str, position) =>
-          val userAnswers = emptyUserAnswers
-          val index       = Index(position)
+      forAll(listWithMaxLength[String](Seals.maxSeals)) {
+        strs =>
+          val userAnswers = emptyUserAnswers.setValue(SealsQuery, strs)
           val helper      = new UnloadingSummaryHelper(userAnswers)
-          val result      = helper.sealsWithRemove(index, str)
+          val result      = helper.sealsWithRemove
 
-          result mustEqual SummaryListRow(
+          result.size mustEqual strs.size
+
+          val index = Index(0)
+          val str   = strs.head
+          result.head mustEqual SummaryListRow(
             key = s"Official customs seal ${index.display}".toKey,
             value = Value(str.toText),
             actions = Some(
@@ -80,13 +96,13 @@ class UnloadingSummaryHelperSpec extends SpecBase {
                     content = "Change".toText,
                     href = routes.NewSealNumberController.onPageLoad(userAnswers.id, index, CheckMode).url,
                     visuallyHiddenText = Some(s"official customs seal ${index.display} $str"),
-                    attributes = Map("id" -> s"change-seal-$position")
+                    attributes = Map("id" -> s"change-seal-${index.position}")
                   ),
                   ActionItem(
                     content = "Remove".toText,
                     href = routes.ConfirmRemoveSealController.onPageLoad(userAnswers.id, index, CheckMode).url,
                     visuallyHiddenText = Some(s"official customs seal ${index.display} $str"),
-                    attributes = Map("id" -> s"remove-seal-$position")
+                    attributes = Map("id" -> s"remove-seal-${index.position}")
                   )
                 )
               )
@@ -97,14 +113,17 @@ class UnloadingSummaryHelperSpec extends SpecBase {
 
     "when .items" in {
 
-      forAll(arbitrary[String], arbitraryInt) {
-        (str, position) =>
-          val userAnswers = emptyUserAnswers
-          val index       = Index(position)
+      forAll(listWithMaxLength[String](UnloadingPermission.maxGoodsItems)) {
+        strs =>
+          val userAnswers = emptyUserAnswers.setValue(GoodsItemsQuery, strs)
           val helper      = new UnloadingSummaryHelper(userAnswers)
-          val result      = helper.items(index, str)
+          val result      = helper.items
 
-          result mustEqual SummaryListRow(
+          result.size mustEqual strs.size
+
+          val index = Index(0)
+          val str   = strs.head
+          result.head mustEqual SummaryListRow(
             key = s"Item ${index.display}".toKey,
             value = Value(str.toText),
             actions = None
@@ -141,15 +160,15 @@ class UnloadingSummaryHelperSpec extends SpecBase {
 
     "when .registeredCountry" in {
 
-      forAll(arbitrary[String]) {
-        str =>
-          val userAnswers = emptyUserAnswers
+      forAll(arbitrary[Country]) {
+        country =>
+          val userAnswers = emptyUserAnswers.setValue(VehicleRegistrationCountryPage, country)
           val helper      = new UnloadingSummaryHelper(userAnswers)
-          val result      = helper.registeredCountry(str)
+          val result      = helper.registeredCountry.get
 
           result mustEqual SummaryListRow(
             key = "Registered".toKey,
-            value = Value(str.toText),
+            value = Value(country.description.toText),
             actions = Some(
               Actions(items =
                 List(
@@ -170,9 +189,9 @@ class UnloadingSummaryHelperSpec extends SpecBase {
 
       forAll(arbitrary[String]) {
         str =>
-          val userAnswers = emptyUserAnswers
+          val userAnswers = emptyUserAnswers.setValue(GrossMassAmountPage, str)
           val helper      = new UnloadingSummaryHelper(userAnswers)
-          val result      = helper.grossMass(str)
+          val result      = helper.grossMass.get
 
           result mustEqual SummaryListRow(
             key = "Total gross mass in kilograms".toKey,
@@ -197,9 +216,9 @@ class UnloadingSummaryHelperSpec extends SpecBase {
 
       forAll(arbitrary[Int]) {
         int =>
-          val userAnswers = emptyUserAnswers
+          val userAnswers = emptyUserAnswers.setValue(TotalNumberOfItemsPage, int)
           val helper      = new UnloadingSummaryHelper(userAnswers)
-          val result      = helper.totalNumberOfItems(int)
+          val result      = helper.totalNumberOfItems.get
 
           result mustEqual SummaryListRow(
             key = "Total number of items".toKey,
@@ -224,9 +243,9 @@ class UnloadingSummaryHelperSpec extends SpecBase {
 
       forAll(arbitrary[Int]) {
         int =>
-          val userAnswers = emptyUserAnswers
+          val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, int)
           val helper      = new UnloadingSummaryHelper(userAnswers)
-          val result      = helper.totalNumberOfPackages(int)
+          val result      = helper.totalNumberOfPackages.get
 
           result mustEqual SummaryListRow(
             key = "Total number of packages".toKey,
@@ -251,9 +270,9 @@ class UnloadingSummaryHelperSpec extends SpecBase {
 
       forAll(arbitrary[String]) {
         str =>
-          val userAnswers = emptyUserAnswers
+          val userAnswers = emptyUserAnswers.setValue(ChangesToReportPage, str)
           val helper      = new UnloadingSummaryHelper(userAnswers)
-          val result      = helper.comments(str)
+          val result      = helper.comments.get
 
           result mustEqual SummaryListRow(
             key = "Comments".toKey,

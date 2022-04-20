@@ -16,41 +16,27 @@
 
 package viewModels
 
-import models.reference.Country
-import models.{Index, UnloadingPermission, UserAnswers}
-import pages._
+import derivable.DeriveNumberOfSeals
+import models.UserAnswers
 import play.api.i18n.Messages
-import queries.SealsQuery
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.UnloadingSummaryHelper
 import viewModels.sections.Section
 
 class UnloadingSummaryViewModel {
 
-  def sealsSection(
-    userAnswers: UserAnswers,
-    unloadingPermission: UnloadingPermission
-  )(implicit messages: Messages): Option[Section] =
-    SealsSection.apply(userAnswers, unloadingPermission)
+  def sealsSection(userAnswers: UserAnswers)(implicit messages: Messages): Option[Section] =
+    SealsSection.apply(userAnswers)
 
-  def transportAndItemSections(
-    userAnswers: UserAnswers,
-    country: Option[Country],
-    unloadingPermission: UnloadingPermission
-  )(implicit messages: Messages): Seq[Section] =
-    TransportSection(userAnswers, country, unloadingPermission).toSeq :+
-      ItemsSection(userAnswers, unloadingPermission)
+  def transportAndItemSections(userAnswers: UserAnswers)(implicit messages: Messages): Seq[Section] =
+    TransportSection(userAnswers).toSeq :+ ItemsSection(userAnswers)
 }
 
 object SealsSection {
 
-  def apply(
-    userAnswers: UserAnswers,
-    unloadingPermission: UnloadingPermission
-  )(implicit messages: Messages): Option[Section] = {
-    val helper: UnloadingSummaryHelper = new UnloadingSummaryHelper(userAnswers, unloadingPermission)
+  def apply(userAnswers: UserAnswers)(implicit messages: Messages): Option[Section] = {
+    val helper: UnloadingSummaryHelper = new UnloadingSummaryHelper(userAnswers)
 
-    userAnswers.get(SealsQuery) match {
+    /*userAnswers.get(SealsQuery) match {
       case Some(seals) =>
         val rows: Seq[SummaryListRow] = seals.zipWithIndex.map {
           case (sealNumber, index) =>
@@ -74,22 +60,23 @@ object SealsSection {
           case None =>
             None
         }
-    }
+    }*/
+
+    // you can remove a seal if it's been added in session
+    val numberOfExistingSeals = userAnswers.getPrepopulateData(DeriveNumberOfSeals).getOrElse(0)
+
+    Some(Section(messages("changeSeal.title"), Nil))
   }
 }
 
 object TransportSection {
 
-  def apply(
-    userAnswers: UserAnswers,
-    country: Option[Country],
-    unloadingPermission: UnloadingPermission
-  )(implicit messages: Messages): Option[Section] = {
-    val helper: UnloadingSummaryHelper = new UnloadingSummaryHelper(userAnswers, unloadingPermission)
+  def apply(userAnswers: UserAnswers)(implicit messages: Messages): Option[Section] = {
+    val helper: UnloadingSummaryHelper = new UnloadingSummaryHelper(userAnswers)
 
     Seq(
       helper.vehicleUsed,
-      helper.registeredCountry(country)
+      helper.registeredCountry
     ).flatten match {
       case Nil  => None
       case rows => Some(Section(messages("vehicleUsed.title"), rows))
@@ -99,16 +86,13 @@ object TransportSection {
 
 object ItemsSection {
 
-  def apply(
-    userAnswers: UserAnswers,
-    unloadingPermission: UnloadingPermission
-  )(implicit messages: Messages): Section = {
-    val helper: UnloadingSummaryHelper = new UnloadingSummaryHelper(userAnswers, unloadingPermission)
+  def apply(userAnswers: UserAnswers)(implicit messages: Messages): Section = {
+    val helper: UnloadingSummaryHelper = new UnloadingSummaryHelper(userAnswers)
 
     val rows = helper.grossMass.toSeq ++
       helper.totalNumberOfItems.toSeq ++
       helper.totalNumberOfPackages.toSeq ++
-      helper.items.toList ++
+      helper.items ++
       helper.comments.toSeq
 
     Section(messages("changeItems.title"), rows)

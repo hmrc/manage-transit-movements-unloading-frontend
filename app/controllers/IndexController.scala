@@ -17,18 +17,18 @@
 package controllers
 
 import controllers.actions.{CheckArrivalStatusProvider, DataRetrievalActionProvider, IdentifierAction}
-
-import javax.inject.Inject
+import extractors.UnloadingPermissionExtractor
 import logging.Logging
 import models.{ArrivalId, MovementReferenceNumber, UserAnswers}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.SealsQuery
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.UnloadingPermissionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
 class IndexController @Inject() (
   val controllerComponents: MessagesControllerComponents,
@@ -36,39 +36,36 @@ class IndexController @Inject() (
   getData: DataRetrievalActionProvider,
   unloadingPermissionService: UnloadingPermissionService,
   sessionRepository: SessionRepository,
-  checkArrivalStatus: CheckArrivalStatusProvider
+  checkArrivalStatus: CheckArrivalStatusProvider,
+  unloadingPermissionExtractor: UnloadingPermissionExtractor
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
-  private val nextPage: ArrivalId => String = arrivalId => routes.UnloadingGuidanceController.onPageLoad(arrivalId).url
+  private val redirect: ArrivalId => Result = arrivalId => Redirect(routes.UnloadingGuidanceController.onPageLoad(arrivalId))
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId)).async {
     implicit request =>
       request.userAnswers match {
         case Some(_) =>
-          Future.successful(Redirect(nextPage(arrivalId)))
+          Future.successful(redirect(arrivalId))
         case None =>
           unloadingPermissionService.getUnloadingPermission(arrivalId) flatMap {
             case Some(unloadingPermission) =>
               MovementReferenceNumber(unloadingPermission.movementReferenceNumber) match {
                 case Some(mrn) =>
-                  val updatedAnswers = request.userAnswers.getOrElse(UserAnswers(id = arrivalId, mrn = mrn, eoriNumber = request.eoriNumber))
-
-                  val userAnswersWithPrepopulatedSeals: UserAnswers =
-                    unloadingPermission.seals
-                      .flatMap {
-                        seals =>
-                          updatedAnswers.setPrepopulateData(SealsQuery, seals.SealId).toOption
+                  val userAnswers = UserAnswers(id = arrivalId, mrn = mrn, eoriNumber = request.eoriNumber)
+                  unloadingPermissionExtractor(userAnswers, unloadingPermission).flatMap {
+                    case Success(updatedAnswers) =>
+                      sessionRepository.set(updatedAnswers).map {
+                        _ => redirect(arrivalId)
                       }
-                      .getOrElse(updatedAnswers)
-
-                  sessionRepository.set(userAnswersWithPrepopulatedSeals).flatMap {
-                    _ =>
-                      Future.successful(Redirect(nextPage(arrivalId)))
+                    case Failure(exception) =>
+                      logger.error(s"Failed to extract unloading permission data to user answers: ${exception.getMessage}")
+                      Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
                   }
-                case _ =>
+                case None =>
                   logger.error(s"Failed to get validate mrn: ${unloadingPermission.movementReferenceNumber}")
                   Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
               }

@@ -46,10 +46,9 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       call = Some(routes.CanSealsBeReadController.onPageLoad(userAnswers.id, CheckMode))
     )
 
-  def seals(value: Option[Seq[String]]): Option[SummaryListRow] =
-    getAnswerOrAlternativeAnswerAndBuildRow[Seq[String]](
+  def seals: Option[SummaryListRow] =
+    getAnswerAndBuildRow[Seq[String]](
       page = SealsQuery,
-      alternativeValue = value,
       formatAnswer = x => HtmlContent(x.mkString("<br>")),
       prefix = "checkYourAnswers.seals",
       id = None,

@@ -24,7 +24,7 @@ import handlers.ErrorHandler
 import models.ArrivalId
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{ReferenceDataService, UnloadingPermissionService, UnloadingRemarksService}
+import services.{UnloadingPermissionService, UnloadingRemarksService}
 import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.CheckYourAnswersViewModel
@@ -40,7 +40,6 @@ class CheckYourAnswersController @Inject() (
   unloadingPermissionService: UnloadingPermissionService,
   val controllerComponents: MessagesControllerComponents,
   val appConfig: FrontendAppConfig,
-  referenceDataService: ReferenceDataService,
   errorHandler: ErrorHandler,
   unloadingRemarksService: UnloadingRemarksService,
   auditEventSubmissionService: AuditEventSubmissionService,
@@ -53,17 +52,10 @@ class CheckYourAnswersController @Inject() (
     with HttpErrorFunctions {
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {
+    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData) {
       implicit request =>
-        unloadingPermissionService.getUnloadingPermission(arrivalId).flatMap {
-          case Some(unloadingPermission) =>
-            referenceDataService.getCountryByCode(unloadingPermission.transportCountry).map {
-              transportCountry =>
-                val sections = viewModel(request.userAnswers, unloadingPermission, transportCountry)
-                Ok(view(request.userAnswers.mrn, arrivalId, sections))
-            }
-          case _ => errorHandler.onClientError(request, BAD_REQUEST)
-        }
+        val sections = viewModel(request.userAnswers)
+        Ok(view(request.userAnswers.mrn, arrivalId, sections))
     }
 
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =

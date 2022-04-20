@@ -19,6 +19,6 @@ package queries
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object SealsQuery extends QuestionPage[Seq[String]] {
-  override def path: JsPath = JsPath \ "seals"
+case object GoodsItemsQuery extends QuestionPage[Seq[String]] {
+  override def path: JsPath = JsPath \ "goodsItems"
 }

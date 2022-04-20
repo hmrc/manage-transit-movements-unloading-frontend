@@ -19,9 +19,10 @@ package utils
 import base.SpecBase
 import controllers.routes
 import generators.Generators
-import models.{CheckMode, Seals}
+import models.{CheckMode, Index, Seals}
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
+import queries.SealsQuery
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
@@ -177,7 +178,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
 
         val userAnswers = emptyUserAnswers
         val helper      = new CheckYourAnswersHelper(userAnswers)
-        val result      = helper.seals(Nil)
+        val result      = helper.seals
 
         result mustBe None
       }
@@ -189,9 +190,9 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
 
           forAll(arbitrary[String]) {
             str =>
-              val userAnswers = emptyUserAnswers
+              val userAnswers = emptyUserAnswers.setValue(NewSealNumberPage(Index(0)), str)
               val helper      = new CheckYourAnswersHelper(userAnswers)
-              val result      = helper.seals(Seq(str))
+              val result      = helper.seals
 
               result mustBe Some(
                 SummaryListRow(
@@ -207,9 +208,9 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
 
           forAll(listWithMaxLength[String](Seals.maxSeals)) {
             strs =>
-              val userAnswers = emptyUserAnswers
+              val userAnswers = emptyUserAnswers.setValue(SealsQuery, strs)
               val helper      = new CheckYourAnswersHelper(userAnswers)
-              val result      = helper.seals(strs)
+              val result      = helper.seals
 
               result mustBe Some(
                 SummaryListRow(

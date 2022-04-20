@@ -35,26 +35,7 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
     call: Option[Call],
     args: Any*
   )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    getAnswerOrAlternativeAnswerAndBuildRow(
-      page = page,
-      alternativeValue = None,
-      formatAnswer = formatAnswer,
-      prefix = prefix,
-      id = id,
-      call = call,
-      args = args
-    )
-
-  def getAnswerOrAlternativeAnswerAndBuildRow[T](
-    page: QuestionPage[T],
-    alternativeValue: Option[T],
-    formatAnswer: T => Content,
-    prefix: String,
-    id: Option[String],
-    call: Option[Call],
-    args: Any*
-  )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.get(page) orElse alternativeValue map {
+    userAnswers.get(page) map {
       answer =>
         buildRow(
           prefix = prefix,
@@ -65,10 +46,8 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
         )
     }
 
-  // scalastyle:off parameter.number
-  def getAnswerOrAlternativeAnswerAndBuildRemovableRow[T](
+  def getAnswerAndBuildRemovableRow[T](
     page: QuestionPage[T],
-    alternativeValue: Option[T],
     formatAnswer: T => Content,
     prefix: String,
     id: String,
@@ -76,7 +55,7 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
     removeCall: Call,
     args: Any*
   )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.get(page) orElse alternativeValue map {
+    userAnswers.get(page) map {
       answer =>
         buildRemovableRow(
           prefix = prefix,
@@ -87,5 +66,4 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
           args = args: _*
         )
     }
-  // scalastyle:on parameter.number
 }

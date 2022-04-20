@@ -18,11 +18,11 @@ package controllers
 
 import audit.services.AuditEventSubmissionService
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import cats.data.NonEmptyList
 import generators.{Generators, ViewModelGenerators}
-import models.{TraderAtDestination, UnloadingPermission}
+import models.UnloadingPermission
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.http.Status.ACCEPTED
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -33,24 +33,11 @@ import viewModels.CheckYourAnswersViewModel
 import viewModels.sections.Section
 import views.html.CheckYourAnswersView
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
 class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ViewModelGenerators {
 
-  val unloadingPermission: UnloadingPermission = UnloadingPermission(
-    movementReferenceNumber = "19IT02110010007827",
-    transportIdentity = None,
-    transportCountry = None,
-    grossMass = "1000",
-    numberOfItems = 1,
-    numberOfPackages = Some(1),
-    traderAtDestination = TraderAtDestination("eori", "name", "streetAndNumber", "postcode", "city", "countryCode"),
-    presentationOffice = "GB000060",
-    seals = None,
-    goodsItems = NonEmptyList(goodsItemMandatory, Nil),
-    dateOfPreparation = LocalDate.now()
-  )
+  val unloadingPermission: UnloadingPermission = arbitrary[UnloadingPermission].sample.value
 
   val mockUnloadingPermissionService: UnloadingPermissionService   = mock[UnloadingPermissionService]
   val mockUnloadingRemarksService: UnloadingRemarksService         = mock[UnloadingRemarksService]
@@ -81,11 +68,10 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       "return OK and the correct view for a GET" in {
         checkArrivalStatus()
-        when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(Some(unloadingPermission)))
 
         val sampleSections = listWithMaxLength[Section]().sample.value
 
-        when(mockViewModel.apply(any(), any(), any())(any())).thenReturn(sampleSections)
+        when(mockViewModel.apply(any())(any())).thenReturn(sampleSections)
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -112,21 +98,6 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
-      }
-
-      "return BAD REQUEST when unloading permission does not exist" in {
-        checkArrivalStatus()
-        when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(None))
-
-        setExistingUserAnswers(emptyUserAnswers)
-
-        val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(arrivalId).url)
-
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual routes.ErrorController.badRequest().url
       }
 
     }

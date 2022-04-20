@@ -16,8 +16,7 @@
 
 package viewModels
 
-import models.reference.Country
-import models.{UnloadingPermission, UserAnswers}
+import models.UserAnswers
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.{CheckYourAnswersHelper, UnloadingSummaryHelper}
@@ -25,25 +24,18 @@ import viewModels.sections.Section
 
 class CheckYourAnswersViewModel {
 
-  def apply(
-    userAnswers: UserAnswers,
-    unloadingPermission: UnloadingPermission,
-    country: Option[Country]
-  )(implicit messages: Messages): Seq[Section] =
+  def apply(userAnswers: UserAnswers)(implicit messages: Messages): Seq[Section] =
     Seq(
       goodsUnloadedSection(userAnswers),
-      sealsSection(userAnswers, unloadingPermission),
-      itemsSection(userAnswers, unloadingPermission, country)
+      sealsSection(userAnswers),
+      itemsSection(userAnswers)
     )
 
-  private def sealsSection(
-    userAnswers: UserAnswers,
-    unloadingPermission: UnloadingPermission
-  )(implicit messages: Messages): Section = {
+  private def sealsSection(userAnswers: UserAnswers)(implicit messages: Messages): Section = {
     val helper = new CheckYourAnswersHelper(userAnswers)
 
     val rows = Seq(
-      helper.seals(unloadingPermission.seals.map(_.SealId)),
+      helper.seals,
       helper.canSealsBeRead,
       helper.areAnySealsBroken
     ).flatten
@@ -57,16 +49,12 @@ class CheckYourAnswersViewModel {
     Section(rowGoodsUnloaded.toSeq)
   }
 
-  private def itemsSection(
-    userAnswers: UserAnswers,
-    unloadingPermission: UnloadingPermission,
-    country: Option[Country]
-  )(implicit messages: Messages): Section = {
-    val helper = new UnloadingSummaryHelper(userAnswers, unloadingPermission)
+  private def itemsSection(userAnswers: UserAnswers)(implicit messages: Messages): Section = {
+    val helper = new UnloadingSummaryHelper(userAnswers)
 
     val rows = Seq(
       helper.vehicleUsed,
-      helper.registeredCountry(country),
+      helper.registeredCountry,
       helper.grossMass,
       helper.totalNumberOfItems,
       helper.totalNumberOfPackages,

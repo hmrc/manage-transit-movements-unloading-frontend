@@ -43,6 +43,12 @@ final case class UserAnswers(
   def get[A](page: QuestionPage[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
 
+  def getPrepopulateData[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
+    Reads.optionNoError(Reads.at(page.path)).reads(prepopulateData).getOrElse(None)
+
+  def getPrepopulateData[A, B](derivable: Derivable[A, B])(implicit rds: Reads[A]): Option[B] =
+    getPrepopulateData(derivable: Gettable[A]).map(derivable.derive)
+
   def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
 
     val updatedData = data.setObject(page.path, Json.toJson(value)) match {
