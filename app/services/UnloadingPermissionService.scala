@@ -54,4 +54,5 @@ class UnloadingPermissionServiceImpl @Inject() (connector: UnloadingConnector) e
 trait UnloadingPermissionService {
   def getUnloadingPermission(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[UnloadingPermission]]
   def convertSeals(userAnswers: UserAnswers)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[UserAnswers]]
+  def convertSeals(userAnswers: UserAnswers, unloadingPermission: UnloadingPermission): Option[UserAnswers]
 }

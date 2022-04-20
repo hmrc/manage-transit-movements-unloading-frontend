@@ -18,18 +18,17 @@ package viewModels
 
 import base.SpecBase
 import cats.data.NonEmptyList
-import models.{TraderAtDestination, UnloadingPermission}
 import models.reference.Country
+import models.{TraderAtDestination, UnloadingPermission}
 import pages.{VehicleNameRegistrationReferencePage, VehicleRegistrationCountryPage}
-import uk.gov.hmrc.viewmodels.Text.Literal
-import utils.UnloadingSummaryHelper
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import viewModels.sections.Section
 
 import java.time.LocalDate
 
 class TransportSectionSpec extends SpecBase {
 
-  val unloadingPermission: UnloadingPermission = UnloadingPermission(
+  val sampleUnloadingPermission: UnloadingPermission = UnloadingPermission(
     movementReferenceNumber = "19IT02110010007827",
     transportIdentity = None,
     transportCountry = None,
@@ -49,30 +48,30 @@ class TransportSectionSpec extends SpecBase {
 
       "correct transport identity number from unloading permission" in {
 
-        val regNumber          = unloadingPermission.copy(transportIdentity = Some("RegNumber1"))
-        val data: Seq[Section] = TransportSection(emptyUserAnswers, None)(regNumber, new UnloadingSummaryHelper(emptyUserAnswers))
-        data.head.rows.head.value.content mustBe Literal("RegNumber1")
+        val unloadingPermission = sampleUnloadingPermission.copy(transportIdentity = Some("RegNumber1"))
+        val section: Section    = TransportSection(emptyUserAnswers, None, unloadingPermission).get
+        section.rows.head.value.content mustBe Text("RegNumber1")
       }
 
       "correct transport country from unloading permission " in {
 
-        val regNumber          = unloadingPermission.copy(transportCountry = Some("France"))
-        val data: Seq[Section] = TransportSection(emptyUserAnswers, None)(regNumber, new UnloadingSummaryHelper(emptyUserAnswers))
-        data.head.rows.head.value.content mustBe Literal("France")
+        val unloadingPermission = sampleUnloadingPermission.copy(transportCountry = Some("France"))
+        val section: Section    = TransportSection(emptyUserAnswers, None, unloadingPermission).get
+        section.rows.head.value.content mustBe Text("France")
       }
 
-      "correct country from Country object    " in {
+      "correct country from Country object" in {
 
-        val regNumber          = unloadingPermission.copy(transportCountry = Some("FR"))
-        val data: Seq[Section] = TransportSection(emptyUserAnswers, Some(Country("FR", "France")))(regNumber, new UnloadingSummaryHelper(emptyUserAnswers))
-        data.head.rows.head.value.content mustBe Literal("France")
+        val unloadingPermission = sampleUnloadingPermission.copy(transportCountry = Some("FR"))
+        val section: Section    = TransportSection(emptyUserAnswers, Some(Country("FR", "France")), unloadingPermission).get
+        section.rows.head.value.content mustBe Text("France")
       }
 
       "no sections if identity and country don't exist" in {
 
-        val noTransport        = unloadingPermission.copy(transportCountry = None, transportIdentity = None)
-        val data: Seq[Section] = TransportSection(emptyUserAnswers, None)(noTransport, new UnloadingSummaryHelper(emptyUserAnswers))
-        data mustBe Nil
+        val unloadingPermission      = sampleUnloadingPermission.copy(transportCountry = None, transportIdentity = None)
+        val section: Option[Section] = TransportSection(emptyUserAnswers, None, unloadingPermission)
+        section mustBe None
       }
 
     }
@@ -81,28 +80,24 @@ class TransportSectionSpec extends SpecBase {
 
       "display correct transport identity when change has been made" in {
 
-        val regNumber = unloadingPermission.copy(transportIdentity = Some("RegNumber1"))
+        val unloadingPermission = sampleUnloadingPermission.copy(transportIdentity = Some("RegNumber1"))
 
         val updatedUserAnswers = emptyUserAnswers
-          .set(VehicleNameRegistrationReferencePage, "RegNumber2")
-          .success
-          .value
+          .setValue(VehicleNameRegistrationReferencePage, "RegNumber2")
 
-        val data: Seq[Section] = TransportSection(updatedUserAnswers, None)(regNumber, new UnloadingSummaryHelper(updatedUserAnswers))
-        data.head.rows.head.value.content mustBe Literal("RegNumber2")
+        val section: Section = TransportSection(updatedUserAnswers, None, unloadingPermission).get
+        section.rows.head.value.content mustBe Text("RegNumber2")
       }
 
       "correct transport vehicle registration country when change has been made" in {
 
-        val regCountry = unloadingPermission.copy(transportCountry = Some("United Kingdom"))
+        val unloadingPermission = sampleUnloadingPermission.copy(transportCountry = Some("United Kingdom"))
 
         val updatedUserAnswers = emptyUserAnswers
-          .set(VehicleRegistrationCountryPage, Country("FR", "France"))
-          .success
-          .value
+          .setValue(VehicleRegistrationCountryPage, Country("FR", "France"))
 
-        val data: Seq[Section] = TransportSection(updatedUserAnswers, None)(regCountry, new UnloadingSummaryHelper(updatedUserAnswers))
-        data.head.rows.head.value.content mustBe Literal("France")
+        val section: Section = TransportSection(updatedUserAnswers, None, unloadingPermission).get
+        section.rows.head.value.content mustBe Text("France")
       }
     }
 

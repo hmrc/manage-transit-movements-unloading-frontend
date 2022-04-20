@@ -15,21 +15,23 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import viewModels.sections.Section
 
-@this(govukButton: GovukButton)
+@this(govukSummaryList: GovukSummaryList)
 
 @(
-    messageKey: String = "site.continue",
-    isStartButton: Boolean = false,
-    preventDoubleClick: Boolean = false,
-    attributes: Map[String, String] = Map.empty,
-    href: Option[String] = None
+    sections: Seq[Section]
 )(implicit messages: Messages)
 
-@govukButton(Button(
-    isStartButton = isStartButton,
-    preventDoubleClick = preventDoubleClick,
-    content = Text(messages(messageKey)),
-    attributes = attributes,
-    href = href
-))
+@for(section <- sections) {
+    @section.sectionTitle.map { title =>
+        <h2 class="govuk-heading-m">@title</h2>
+    }
+
+    @govukSummaryList(
+        SummaryList(
+            rows = section.rows,
+            classes = "govuk-!-margin-bottom-9 ctc-add-to-a-list"
+        )
+    )
+}

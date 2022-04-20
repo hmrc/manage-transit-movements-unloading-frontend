@@ -19,77 +19,92 @@ package utils
 import controllers.routes
 import models.{CheckMode, UserAnswers}
 import pages._
-import uk.gov.hmrc.viewmodels.SummaryList._
-import uk.gov.hmrc.viewmodels.Text.Literal
-import uk.gov.hmrc.viewmodels._
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import utils.Format._
 
-class CheckYourAnswersHelper(userAnswers: UserAnswers) {
+class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
-  def areAnySealsBroken: Option[Row] = userAnswers.get(AreAnySealsBrokenPage) map {
+  def areAnySealsBroken: Option[SummaryListRow] = userAnswers.get(AreAnySealsBrokenPage) map {
     answer =>
-      Row(
-        key = Key(msg"areAnySealsBroken.checkYourAnswersLabel"),
+      SummaryListRow(
+        key = messages("areAnySealsBroken.checkYourAnswersLabel").toKey,
         value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content = msg"site.edit",
-            href = routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, CheckMode).url,
-            visuallyHiddenText = Some(msg"areAnySealsBroken.checkYourAnswersLabel"),
-            attributes = Map("id" -> "change-are-any-seals-broken")
+        actions = Some(
+          Actions(items =
+            List(
+              ActionItem(
+                content = messages("site.edit").toText,
+                href = routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, CheckMode).url,
+                visuallyHiddenText = Some(messages("areAnySealsBroken.change.hidden")),
+                attributes = Map("id" -> "change-are-any-seals-broken")
+              )
+            )
           )
         )
       )
   }
 
-  def canSealsBeRead: Option[Row] = userAnswers.get(CanSealsBeReadPage) map {
+  def canSealsBeRead: Option[SummaryListRow] = userAnswers.get(CanSealsBeReadPage) map {
     answer =>
-      Row(
-        key = Key(msg"canSealsBeRead.checkYourAnswersLabel"),
+      SummaryListRow(
+        key = messages("canSealsBeRead.checkYourAnswersLabel").toKey,
         value = Value(yesOrNo(answer)),
-        actions = List(
-          Action(
-            content = msg"site.edit",
-            href = routes.CanSealsBeReadController.onPageLoad(userAnswers.id, CheckMode).url,
-            visuallyHiddenText = Some(msg"canSealsBeRead.checkYourAnswersLabel"),
-            attributes = Map("id" -> "change-can-seals-be-read")
+        actions = Some(
+          Actions(items =
+            List(
+              ActionItem(
+                content = messages("site.edit").toText,
+                href = routes.CanSealsBeReadController.onPageLoad(userAnswers.id, CheckMode).url,
+                visuallyHiddenText = Some(messages("canSealsBeRead.change.hidden")),
+                attributes = Map("id" -> "change-can-seals-be-read")
+              )
+            )
           )
         )
       )
   }
 
-  def seals(seals: Seq[String]): Option[Row] = seals match {
-    case _ :: _ =>
+  def seals(seals: Seq[String]): Option[SummaryListRow] = seals match {
+    case Nil => None
+    case _ =>
       Some(
-        Row(
-          key = Key(msg"checkYourAnswers.seals.checkYourAnswersLabel"),
-          value = Value(Html(seals.mkString("<br>"))),
-          actions = Nil
+        SummaryListRow(
+          key = messages("checkYourAnswers.seals.checkYourAnswersLabel").toKey,
+          value = Value(HtmlContent(seals.mkString("<br>"))),
+          actions = None
         )
       )
-    case _ => None
   }
 
-  def dateGoodsUnloaded: Option[Row] = userAnswers.get(DateGoodsUnloadedPage) map {
+  def dateGoodsUnloaded: Option[SummaryListRow] = userAnswers.get(DateGoodsUnloadedPage) map {
     answer =>
-      Row(
-        key = Key(msg"dateGoodsUnloaded.checkYourAnswersLabel"),
-        value = Value(Literal(answer.format(cyaDateFormatter))),
-        actions = List(
-          Action(
-            content = msg"site.edit",
-            href = routes.DateGoodsUnloadedController.onPageLoad(userAnswers.id, CheckMode).url,
-            visuallyHiddenText = Some(msg"dateGoodsUnloaded.visually.hidden"),
-            attributes = Map("id" -> "change-date-goods-unloaded")
+      SummaryListRow(
+        key = messages("dateGoodsUnloaded.checkYourAnswersLabel").toKey,
+        value = Value(answer.format(cyaDateFormatter).toText),
+        actions = Some(
+          Actions(items =
+            List(
+              ActionItem(
+                content = messages("site.edit").toText,
+                href = routes.DateGoodsUnloadedController.onPageLoad(userAnswers.id, CheckMode).url,
+                visuallyHiddenText = Some(messages("dateGoodsUnloaded.change.hidden")),
+                attributes = Map("id" -> "change-date-goods-unloaded")
+              )
+            )
           )
         )
       )
   }
 
-  private def yesOrNo(answer: Boolean): Content =
-    if (answer) {
-      msg"site.yes"
-    } else {
-      msg"site.no"
-    }
+  private def yesOrNo(answer: Boolean)(implicit messages: Messages): Content =
+    messages {
+      if (answer) {
+        "site.yes"
+      } else {
+        "site.no"
+      }
+    }.toText
 }

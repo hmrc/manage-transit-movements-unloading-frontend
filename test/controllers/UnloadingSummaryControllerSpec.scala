@@ -17,77 +17,212 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import cats.data.NonEmptyList
-import matchers.JsonMatchers
-import models.{TraderAtDestination, UnloadingPermission}
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
+import generators.{Generators, ViewModelGenerators}
+import models.reference.Country
+import models.{Index, UnloadingPermission}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{never, reset, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
+import pages.{ChangesToReportPage, NewSealNumberPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import services.UnloadingPermissionService
+import services.{ReferenceDataService, UnloadingPermissionService}
+import viewModels.UnloadingSummaryViewModel
+import viewModels.sections.Section
+import views.html.UnloadingSummaryView
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
-class UnloadingSummaryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with JsonMatchers {
+class UnloadingSummaryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ViewModelGenerators {
 
-  val unloadingPermission: UnloadingPermission = UnloadingPermission(
-    movementReferenceNumber = "19IT02110010007827",
-    transportIdentity = None,
-    transportCountry = None,
-    grossMass = "1000",
-    numberOfItems = 1,
-    numberOfPackages = Some(1),
-    traderAtDestination = TraderAtDestination("eori", "name", "streetAndNumber", "postcode", "city", "countryCode"),
-    presentationOffice = "GB000060",
-    seals = None,
-    goodsItems = NonEmptyList(goodsItemMandatory, Nil),
-    dateOfPreparation = LocalDate.now()
-  )
+  private val sampleUnloadingPermission: UnloadingPermission = arbitrary[UnloadingPermission].sample.value
+  private val sampleSealsSection: Option[Section]            = arbitrary[Option[Section]].sample.value
+  private val sampleTransportAndItemSections: Seq[Section]   = listWithMaxLength[Section]().sample.value
+  private val sampleCountry: Country                         = arbitrary[Country].sample.value
 
   private val mockUnloadingPermissionService = mock[UnloadingPermissionService]
+  private val mockReferenceDataService       = mock[ReferenceDataService]
+  private val mockViewModel                  = mock[UnloadingSummaryViewModel]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockUnloadingPermissionService)
+    reset(mockUnloadingPermissionService, mockReferenceDataService, mockViewModel)
   }
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind[UnloadingPermissionService].toInstance(mockUnloadingPermissionService))
+      .overrides(bind[ReferenceDataService].toInstance(mockReferenceDataService))
+      .overrides(bind[UnloadingSummaryViewModel].toInstance(mockViewModel))
 
   "UnloadingSummary Controller" - {
 
-    "return OK and the correct view for a GET" in {
+    "return OK and the correct view for a GET" - {
+
+      "when ChangesToReportPage is not populated" in {
+        checkArrivalStatus()
+
+        val userAnswers = emptyUserAnswers
+        setExistingUserAnswers(userAnswers)
+
+        when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(sampleUnloadingPermission)))
+        when(mockUnloadingPermissionService.convertSeals(any(), any()))
+          .thenReturn(None)
+        when(mockReferenceDataService.getCountryByCode(any())(any(), any()))
+          .thenReturn(Future.successful(None))
+        when(mockViewModel.sealsSection(any(), any())(any()))
+          .thenReturn(sampleSealsSection)
+        when(mockViewModel.transportAndItemSections(any(), any(), any())(any()))
+          .thenReturn(sampleTransportAndItemSections)
+
+        val request = FakeRequest(GET, routes.UnloadingSummaryController.onPageLoad(arrivalId).url)
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[UnloadingSummaryView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(mrn, arrivalId, sampleSealsSection, sampleTransportAndItemSections, 0, showAddCommentLink = true)(request, messages).toString
+
+        verify(mockUnloadingPermissionService).getUnloadingPermission(eqTo(arrivalId))(any(), any())
+        verify(mockUnloadingPermissionService).convertSeals(eqTo(userAnswers), eqTo(sampleUnloadingPermission))
+        verify(mockReferenceDataService).getCountryByCode(eqTo(sampleUnloadingPermission.transportCountry))(any(), any())
+        verify(mockViewModel).sealsSection(eqTo(userAnswers), eqTo(sampleUnloadingPermission))(any())
+        verify(mockViewModel).transportAndItemSections(eqTo(userAnswers), eqTo(None), eqTo(sampleUnloadingPermission))(any())
+      }
+
+      "when ChangesToReportPage is populated" in {
+        checkArrivalStatus()
+
+        val userAnswers = emptyUserAnswers.setValue(ChangesToReportPage, arbitrary[String].sample.value)
+        setExistingUserAnswers(userAnswers)
+
+        when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(sampleUnloadingPermission)))
+        when(mockUnloadingPermissionService.convertSeals(any(), any()))
+          .thenReturn(None)
+        when(mockReferenceDataService.getCountryByCode(any())(any(), any()))
+          .thenReturn(Future.successful(None))
+        when(mockViewModel.sealsSection(any(), any())(any()))
+          .thenReturn(sampleSealsSection)
+        when(mockViewModel.transportAndItemSections(any(), any(), any())(any()))
+          .thenReturn(sampleTransportAndItemSections)
+
+        val request = FakeRequest(GET, routes.UnloadingSummaryController.onPageLoad(arrivalId).url)
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[UnloadingSummaryView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(mrn, arrivalId, sampleSealsSection, sampleTransportAndItemSections, 0, showAddCommentLink = false)(request, messages).toString
+
+        verify(mockUnloadingPermissionService).getUnloadingPermission(eqTo(arrivalId))(any(), any())
+        verify(mockUnloadingPermissionService).convertSeals(eqTo(userAnswers), eqTo(sampleUnloadingPermission))
+        verify(mockReferenceDataService).getCountryByCode(eqTo(sampleUnloadingPermission.transportCountry))(any(), any())
+        verify(mockViewModel).sealsSection(eqTo(userAnswers), eqTo(sampleUnloadingPermission))(any())
+        verify(mockViewModel).transportAndItemSections(eqTo(userAnswers), eqTo(None), eqTo(sampleUnloadingPermission))(any())
+      }
+
+      "when user answers contains seals" in {
+        checkArrivalStatus()
+
+        val userAnswers = emptyUserAnswers
+          .setValue(NewSealNumberPage(Index(0)), "new seal value 1")
+          .setValue(NewSealNumberPage(Index(1)), "new seal value 2")
+        setExistingUserAnswers(userAnswers)
+
+        when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(sampleUnloadingPermission)))
+        when(mockReferenceDataService.getCountryByCode(any())(any(), any()))
+          .thenReturn(Future.successful(Some(sampleCountry)))
+        when(mockViewModel.sealsSection(any(), any())(any()))
+          .thenReturn(sampleSealsSection)
+        when(mockViewModel.transportAndItemSections(any(), any(), any())(any()))
+          .thenReturn(sampleTransportAndItemSections)
+
+        val request = FakeRequest(GET, routes.UnloadingSummaryController.onPageLoad(arrivalId).url)
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[UnloadingSummaryView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(mrn, arrivalId, sampleSealsSection, sampleTransportAndItemSections, 2, showAddCommentLink = true)(request, messages).toString
+
+        verify(mockUnloadingPermissionService).getUnloadingPermission(eqTo(arrivalId))(any(), any())
+        verify(mockUnloadingPermissionService, never()).convertSeals(any(), any())
+        verify(mockReferenceDataService).getCountryByCode(eqTo(sampleUnloadingPermission.transportCountry))(any(), any())
+        verify(mockViewModel).sealsSection(eqTo(userAnswers), eqTo(sampleUnloadingPermission))(any())
+        verify(mockViewModel).transportAndItemSections(eqTo(userAnswers), eqTo(Some(sampleCountry)), eqTo(sampleUnloadingPermission))(any())
+      }
+
+      "when user answers does not contain seals but unloading permission does" in {
+        checkArrivalStatus()
+
+        val userAnswers = emptyUserAnswers
+        val userAnswersWithSeals = userAnswers
+          .setValue(NewSealNumberPage(Index(0)), "new seal value 1")
+          .setValue(NewSealNumberPage(Index(1)), "new seal value 2")
+        setExistingUserAnswers(userAnswers)
+
+        when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(sampleUnloadingPermission)))
+        when(mockUnloadingPermissionService.convertSeals(any(), any()))
+          .thenReturn(Some(userAnswersWithSeals))
+        when(mockReferenceDataService.getCountryByCode(any())(any(), any()))
+          .thenReturn(Future.successful(Some(sampleCountry)))
+        when(mockViewModel.sealsSection(any(), any())(any()))
+          .thenReturn(sampleSealsSection)
+        when(mockViewModel.transportAndItemSections(any(), any(), any())(any()))
+          .thenReturn(sampleTransportAndItemSections)
+
+        val request = FakeRequest(GET, routes.UnloadingSummaryController.onPageLoad(arrivalId).url)
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[UnloadingSummaryView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(mrn, arrivalId, sampleSealsSection, sampleTransportAndItemSections, 2, showAddCommentLink = true)(request, messages).toString
+
+        verify(mockUnloadingPermissionService).getUnloadingPermission(eqTo(arrivalId))(any(), any())
+        verify(mockUnloadingPermissionService).convertSeals(eqTo(userAnswers), eqTo(sampleUnloadingPermission))
+        verify(mockReferenceDataService).getCountryByCode(eqTo(sampleUnloadingPermission.transportCountry))(any(), any())
+        verify(mockViewModel).sealsSection(eqTo(userAnswers), eqTo(sampleUnloadingPermission))(any())
+        verify(mockViewModel).transportAndItemSections(eqTo(userAnswers), eqTo(Some(sampleCountry)), eqTo(sampleUnloadingPermission))(any())
+      }
+    }
+
+    "render bad request error page when unloading permission not found" in {
       checkArrivalStatus()
-      when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(Some(unloadingPermission)))
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
+      val userAnswers = emptyUserAnswers
+      setExistingUserAnswers(userAnswers)
 
-      setExistingUserAnswers(emptyUserAnswers)
+      when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any()))
+        .thenReturn(Future.successful(None))
 
-      val request        = FakeRequest(GET, routes.UnloadingSummaryController.onPageLoad(arrivalId).url)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, routes.UnloadingSummaryController.onPageLoad(arrivalId).url)
 
       val result = route(app, request).value
 
-      status(result) mustEqual OK
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual controllers.routes.ErrorController.badRequest().url
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      //TODO fix the test with all the other controller tests
-      val expectedJson = Json.obj("mrn" -> mrn, "arrivalId" -> arrivalId)
-
-      templateCaptor.getValue mustEqual "unloadingSummary.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      verify(mockUnloadingPermissionService).getUnloadingPermission(eqTo(arrivalId))(any(), any())
     }
   }
 }

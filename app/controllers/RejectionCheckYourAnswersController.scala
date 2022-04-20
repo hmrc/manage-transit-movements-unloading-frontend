@@ -23,15 +23,12 @@ import controllers.actions.{CheckArrivalStatusProvider, DataRequiredAction, Data
 import handlers.ErrorHandler
 import models.ArrivalId
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import services.UnloadingRemarksService
 import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import viewModels.RejectionCheckYourAnswersViewModel
-import viewModels.sections.Section
+import views.html.RejectionCheckYourAnswersView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -43,28 +40,21 @@ class RejectionCheckYourAnswersController @Inject() (
   unloadingRemarksService: UnloadingRemarksService,
   val controllerComponents: MessagesControllerComponents,
   errorHandler: ErrorHandler,
-  val renderer: Renderer,
   val appConfig: FrontendAppConfig,
   auditEventSubmissionService: AuditEventSubmissionService,
-  checkArrivalStatus: CheckArrivalStatusProvider
+  checkArrivalStatus: CheckArrivalStatusProvider,
+  view: RejectionCheckYourAnswersView,
+  viewModel: RejectionCheckYourAnswersViewModel
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
-    with NunjucksSupport
     with HttpErrorFunctions {
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {
+    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData) {
       implicit request =>
-        val viewModel             = RejectionCheckYourAnswersViewModel(request.userAnswers)
-        val answers: Seq[Section] = viewModel.sections
-        renderer
-          .render(
-            "rejection-check-your-answers.njk",
-            Json
-              .obj("mrn" -> request.userAnswers.mrn, "sections" -> Json.toJson(answers), "arrivalId" -> arrivalId)
-          )
-          .map(Ok(_))
+        val sections = viewModel(request.userAnswers)
+        Ok(view(request.userAnswers.mrn, arrivalId, sections))
     }
 
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =

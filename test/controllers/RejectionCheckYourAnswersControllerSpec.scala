@@ -17,50 +17,57 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import org.mockito.ArgumentCaptor
+import generators.{Generators, ViewModelGenerators}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito.{reset, when}
 import pages.VehicleNameRegistrationReferencePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.UnloadingRemarksService
+import viewModels.RejectionCheckYourAnswersViewModel
+import viewModels.sections.Section
+import views.html.RejectionCheckYourAnswersView
 
 import scala.concurrent.Future
 
-class RejectionCheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class RejectionCheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ViewModelGenerators {
 
-  private val mockUnloadingRemarksService = mock[UnloadingRemarksService]
+  private val mockUnloadingRemarksService                       = mock[UnloadingRemarksService]
+  private val mockViewModel: RejectionCheckYourAnswersViewModel = mock[RejectionCheckYourAnswersViewModel]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockUnloadingRemarksService)
+    reset(mockUnloadingRemarksService, mockViewModel)
   }
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind[UnloadingRemarksService].toInstance(mockUnloadingRemarksService))
+      .overrides(bind[RejectionCheckYourAnswersViewModel].toInstance(mockViewModel))
 
   "return OK and the Rejection view for a GET when unloading rejection message returns a Some" in {
     checkArrivalStatus()
-    when(mockRenderer.render(any(), any())(any()))
-      .thenReturn(Future.successful(Html("")))
+
+    val sampleSections = listWithMaxLength[Section]().sample.value
+
+    when(mockViewModel.apply(any())(any())).thenReturn(sampleSections)
 
     setExistingUserAnswers(emptyUserAnswers)
 
-    val request                = FakeRequest(GET, routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId).url)
-    val templateCaptor         = ArgumentCaptor.forClass(classOf[String])
+    val request = FakeRequest(GET, routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId).url)
+
     val result: Future[Result] = route(app, request).value
+
+    val view = injector.instanceOf[RejectionCheckYourAnswersView]
 
     status(result) mustEqual OK
 
-    verify(mockRenderer, times(1)).render(templateCaptor.capture(), any())(any())
-
-    templateCaptor.getValue mustEqual "rejection-check-your-answers.njk"
+    contentAsString(result) mustEqual
+      view(mrn, arrivalId, sampleSections)(request, messages).toString
   }
 
   "onSubmit" - {

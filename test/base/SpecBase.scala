@@ -25,9 +25,10 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.QuestionPage
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, Reads, Writes}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 
@@ -72,4 +73,16 @@ trait SpecBase
 
   def messagesApi: MessagesApi    = app.injector.instanceOf[MessagesApi]
   implicit def messages: Messages = messagesApi.preferred(fakeRequest)
+
+  implicit class RichUserAnswers(userAnswers: UserAnswers) {
+
+    def getValue[T](page: QuestionPage[T])(implicit rds: Reads[T]): T =
+      userAnswers.get(page).value
+
+    def setValue[T](page: QuestionPage[T], value: T)(implicit wts: Writes[T]): UserAnswers =
+      userAnswers.set(page, value).success.value
+
+    def removeValue(page: QuestionPage[_]): UserAnswers =
+      userAnswers.remove(page).success.value
+  }
 }

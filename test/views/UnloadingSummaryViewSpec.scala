@@ -16,40 +16,85 @@
 
 package views
 
-import play.api.libs.json.{JsObject, Json}
-import uk.gov.hmrc.viewmodels.SummaryList.{Key, Row, Value}
+import controllers.routes
+import generators.{Generators, ViewModelGenerators}
+import models.{Index, NormalMode}
+import org.jsoup.nodes.Document
+import org.scalacheck.Arbitrary.arbitrary
+import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewModels.sections.Section
+import views.behaviours.SummaryListViewBehaviours
+import views.html.UnloadingSummaryView
 
-import scala.collection.convert.ImplicitConversions._
+class UnloadingSummaryViewSpec extends SummaryListViewBehaviours with Generators with ViewModelGenerators {
 
-class UnloadingSummaryViewSpec extends SingleViewSpec("unloadingSummary.njk", hasSignOutLink = true) {
+  override val prefix: String = "unloadingSummary"
 
-  private val fakeSectionList: Seq[Section] = Seq(
-    Section(rows = Seq(Row(Key(lit""), Value(lit""))))
+  private val sealsSection: Section                  = arbitrary[Section].sample.value
+  private val transportAndItemSections: Seq[Section] = listWithMaxLength[Section]().sample.value
+  private val sections: Seq[Section]                 = sealsSection +: transportAndItemSections
+
+  private val numberOfSeals: Int           = arbitrary[Int].sample.value
+  private val showAddCommentsLink: Boolean = arbitrary[Boolean].sample.value
+
+  override def summaryLists: Seq[SummaryList] = sections.map(
+    section => new SummaryList(section.rows)
   )
 
-  private val json: JsObject =
-    Json.obj(
-      "sections" -> Json.toJson(fakeSectionList)
-    )
+  override def view: HtmlFormat.Appendable =
+    injector
+      .instanceOf[UnloadingSummaryView]
+      .apply(mrn, arrivalId, Some(sealsSection), transportAndItemSections, numberOfSeals, showAddCommentsLink)(fakeRequest, messages)
 
-  "must pass correct class list to summary list macro" in {
+  behave like pageWithBackLink
 
-    val doc      = renderDocument(json).futureValue
-    val sections = doc.getElementsByClass("govuk-summary-sectionRows__row")
+  behave like pageWithCaption(mrn.toString)
 
-    sections.size() mustEqual fakeSectionList.size
+  behave like pageWithHeading()
 
-    sections.forEach {
-      section =>
-        val summaryList = section.getElementsByClass("govuk-summary-list").get(0)
+  sections.foreach(_.sectionTitle.map {
+    sectionTitle =>
+      behave like pageWithContent("h2", sectionTitle)
+  })
 
-        summaryList.classNames().toList mustEqual List(
-          "govuk-summary-list",
-          "govuk-!-margin-bottom-9",
-          "ctc-add-to-a-list"
-        )
-    }
+  behave like pageWithSummaryLists()
 
+  behave like pageWithLink(
+    id = "add-seal",
+    expectedText = "Add a new official customs seal number",
+    expectedHref = routes.NewSealNumberController.onPageLoad(arrivalId, Index(numberOfSeals), NormalMode).url
+  )
+
+  behave like pageWithSubmitButton("Continue")
+
+  "when there are no seal sections" - {
+    val view =
+      injector
+        .instanceOf[UnloadingSummaryView]
+        .apply(mrn, arrivalId, None, transportAndItemSections, numberOfSeals, showAddCommentsLink)(fakeRequest, messages)
+
+    val doc: Document = parseView(view)
+
+    behave like pageWithContent(doc, "h2", "Official customs seals")
+
+    behave like pageWithContent(doc, "p", "There are no official customs seals.")
   }
+
+  "when showing the add comment link" - {
+    val view =
+      injector
+        .instanceOf[UnloadingSummaryView]
+        .apply(mrn, arrivalId, Some(sealsSection), transportAndItemSections, numberOfSeals, showAddCommentLink = true)(fakeRequest, messages)
+
+    val doc: Document = parseView(view)
+
+    behave like pageWithLink(
+      doc = doc,
+      id = "add-comment",
+      expectedText = "Add comment",
+      expectedHref = routes.ChangesToReportController.onPageLoad(arrivalId, NormalMode).url
+    )
+  }
+
 }
