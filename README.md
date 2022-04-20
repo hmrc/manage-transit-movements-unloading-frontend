@@ -20,7 +20,7 @@ Service manager port: 10123
     
 
 ### Stop Unloading frontend and start this with sbt instead
-    sm --stop MANAGE_TRANSIT_MOVEMENTS_UNLOADING_FRONTEND
+    sm --start MANAGE_TRANSIT_MOVEMENTS_UNLOADING_FRONTEND
 
 You now should be able to access [View arrivals]("http://localhost:9485/manage-transit-movements/view-arrivals")  
 and access */manage-transit-movements/unloading* locally

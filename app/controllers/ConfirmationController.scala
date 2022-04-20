@@ -16,42 +16,31 @@
 
 package controllers
 
-import config.FrontendAppConfig
 import controllers.actions._
-import javax.inject.Inject
 import models.ArrivalId
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-
-import scala.concurrent.ExecutionContext
+import views.html.ConfirmationView
+import javax.inject.Inject
 
 class ConfirmationController @Inject() (
   override val messagesApi: MessagesApi,
-  appConfig: FrontendAppConfig,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
   sessionRepository: SessionRepository,
   val controllerComponents: MessagesControllerComponents,
-  renderer: Renderer
-)(implicit ec: ExecutionContext)
-    extends FrontendBaseController
+  view: ConfirmationView
+) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
-    (identify andThen getData(arrivalId) andThen requireData).async {
+    (identify andThen getData(arrivalId) andThen requireData) {
       implicit request =>
-        val json = Json.obj(
-          "mrn"                       -> request.userAnswers.mrn,
-          "arrivalId"                 -> arrivalId,
-          "manageTransitMovementsUrl" -> appConfig.viewArrivals
-        )
-
         sessionRepository.remove(arrivalId)
-        renderer.render("confirmation.njk", json).map(Ok(_))
+        Ok(view(request.userAnswers.mrn))
+
     }
 }
