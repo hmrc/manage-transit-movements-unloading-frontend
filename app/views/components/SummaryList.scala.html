@@ -28,5 +28,10 @@
         <h2 class="govuk-heading-m">@title</h2>
     }
 
-    @govukSummaryList(SummaryList(section.rows))
+    @govukSummaryList(
+        SummaryList(
+            rows = section.rows,
+            classes = "govuk-!-margin-bottom-9 ctc-add-to-a-list"
+        )
+    )
 }
