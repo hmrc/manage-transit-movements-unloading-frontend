@@ -18,19 +18,17 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.VehicleNameRegistrationReferenceFormProvider
-import matchers.JsonMatchers
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.VehicleNameRegistrationReferencePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.VehicleNameRegistrationReferenceView
 
 import scala.concurrent.Future
 
-class VehicleNameRegistrationReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class VehicleNameRegistrationReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider = new VehicleNameRegistrationReferenceFormProvider()
   private val form         = formProvider()

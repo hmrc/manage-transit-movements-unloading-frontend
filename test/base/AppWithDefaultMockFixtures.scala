@@ -31,7 +31,6 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{ActionFilter, Call, Result}
 import repositories.SessionRepository
-import uk.gov.hmrc.nunjucks.NunjucksRenderer
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -40,13 +39,11 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   override def beforeEach(): Unit =
     Mockito.reset(
-      mockRenderer,
       mockSessionRepository,
       mockDataRetrievalActionProvider,
       mockCheckArrivalStatusProvider
     )
 
-  final val mockRenderer: NunjucksRenderer                             = mock[NunjucksRenderer]
   final val mockSessionRepository: SessionRepository                   = mock[SessionRepository]
   final val mockDataRetrievalActionProvider                            = mock[DataRetrievalActionProvider]
   final val mockCheckArrivalStatusProvider: CheckArrivalStatusProvider = mock[CheckArrivalStatusProvider]
@@ -81,7 +78,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[IdentifierAction].to[FakeIdentifierAction],
-        bind[NunjucksRenderer].toInstance(mockRenderer),
         bind[CheckArrivalStatusProvider].toInstance(mockCheckArrivalStatusProvider),
         bind[SessionRepository].toInstance(mockSessionRepository),
         bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),

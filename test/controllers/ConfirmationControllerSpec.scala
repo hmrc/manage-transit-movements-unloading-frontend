@@ -17,15 +17,15 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import config.FrontendAppConfig
-import org.mockito.Mockito.{times, verify}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{times, verify, when}
 import pages.DateGoodsUnloadedPage
-import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.ConfirmationView
 
 import java.time.LocalDate
+import scala.concurrent.Future
 
 class ConfirmationControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
@@ -37,16 +37,15 @@ class ConfirmationControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       setExistingUserAnswers(userAnswers)
 
-      val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-      val request           = FakeRequest(GET, routes.ConfirmationController.onPageLoad(arrivalId).url)
-      val result            = route(app, request).value
-      val view              = injector.instanceOf[ConfirmationView]
+      when(mockSessionRepository.remove(any())).thenReturn(Future.successful(()))
+
+      val request = FakeRequest(GET, routes.ConfirmationController.onPageLoad(arrivalId).url)
+      val result  = route(app, request).value
+      val view    = injector.instanceOf[ConfirmationView]
 
       status(result) mustEqual OK
 
       verify(mockSessionRepository, times(1)).remove(arrivalId)
-
-      val expectedJson = Json.obj("mrn" -> mrn, "manageTransitMovementsUrl" -> frontendAppConfig.viewArrivals)
 
       contentAsString(result) mustEqual view(mrn)(request, messages).toString
     }

@@ -20,21 +20,20 @@ import config.FrontendAppConfig
 import connectors.UnloadingConnector
 import controllers.actions.IdentifierAction
 import handlers.ErrorHandler
-import javax.inject.Inject
 import models.ArrivalId
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class UnloadingPermissionPDFController @Inject() (identify: IdentifierAction,
-                                                  val controllerComponents: MessagesControllerComponents,
-                                                  unloadingConnector: UnloadingConnector,
-                                                  val renderer: Renderer,
-                                                  val appConfig: FrontendAppConfig,
-                                                  errorHandler: ErrorHandler
+class UnloadingPermissionPDFController @Inject() (
+  identify: IdentifierAction,
+  val controllerComponents: MessagesControllerComponents,
+  unloadingConnector: UnloadingConnector,
+  val appConfig: FrontendAppConfig,
+  errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {

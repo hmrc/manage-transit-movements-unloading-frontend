@@ -24,11 +24,9 @@ import models.{ArrivalId, UserAnswers}
 import pages.TotalNumberOfItemsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import repositories.SessionRepository
 import services.UnloadingRemarksRejectionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.TotalNumberOfItemsRejectionView
 
 import javax.inject.Inject
@@ -42,15 +40,13 @@ class TotalNumberOfItemsRejectionController @Inject() (
   formProvider: TotalNumberOfItemsFormProvider,
   val controllerComponents: MessagesControllerComponents,
   rejectionService: UnloadingRemarksRejectionService,
-  val renderer: Renderer,
   val appConfig: FrontendAppConfig,
   errorHandler: ErrorHandler,
   checkArrivalStatus: CheckArrivalStatusProvider,
   view: TotalNumberOfItemsRejectionView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
   private val form = formProvider()
 

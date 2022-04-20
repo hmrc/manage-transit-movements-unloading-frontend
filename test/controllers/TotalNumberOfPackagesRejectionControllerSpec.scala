@@ -27,7 +27,6 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.UnloadingRemarksRejectionService
 import views.html.TotalNumberOfPackagesRejectionView
 
@@ -99,9 +98,8 @@ class TotalNumberOfPackagesRejectionControllerSpec extends SpecBase with AppWith
 
       setNoExistingUserAnswers()
 
-      val request =
-        FakeRequest(POST, totalNumberOfPackagesRoute)
-          .withFormUrlEncodedBody(("value", validAnswer.toString))
+      val request = FakeRequest(POST, totalNumberOfPackagesRoute)
+        .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(app, request).value
 
@@ -112,8 +110,6 @@ class TotalNumberOfPackagesRejectionControllerSpec extends SpecBase with AppWith
 
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -134,9 +130,8 @@ class TotalNumberOfPackagesRejectionControllerSpec extends SpecBase with AppWith
 
       setNoExistingUserAnswers()
 
-      val request =
-        FakeRequest(POST, totalNumberOfPackagesRoute)
-          .withFormUrlEncodedBody(("value", validAnswer.toString))
+      val request = FakeRequest(POST, totalNumberOfPackagesRoute)
+        .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(app, request).value
 

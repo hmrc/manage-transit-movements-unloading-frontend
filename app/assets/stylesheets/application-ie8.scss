@@ -2,7 +2,9 @@ $govuk-assets-path: "/manage-transit-movements/unloading/assets/lib/govuk-fronte
 $hmrc-assets-path: "/manage-transit-movements/unloading/assets/lib/hmrc-frontend/hmrc/assets/";
 
 @import "lib/govuk-frontend/govuk/all-ie8.scss";
-@import "partials/page-heading";
-@import "partials/header";
+@import "lib/hmrc-frontend/hmrc/all-ie8.scss";
 @import "partials/shame";
-@import "partials/timeout-dialog";
+
+.govuk-summary-list__actions-list-item {
+    display: inline-block;
+}

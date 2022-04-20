@@ -23,7 +23,9 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.ConfirmationView
+
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class ConfirmationController @Inject() (
   override val messagesApi: MessagesApi,
@@ -33,14 +35,15 @@ class ConfirmationController @Inject() (
   sessionRepository: SessionRepository,
   val controllerComponents: MessagesControllerComponents,
   view: ConfirmationView
-) extends FrontendBaseController
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
-    (identify andThen getData(arrivalId) andThen requireData) {
+    (identify andThen getData(arrivalId) andThen requireData).async {
       implicit request =>
-        sessionRepository.remove(arrivalId)
-        Ok(view(request.userAnswers.mrn))
-
+        sessionRepository.remove(arrivalId) map {
+          _ => Ok(view(request.userAnswers.mrn))
+        }
     }
 }
