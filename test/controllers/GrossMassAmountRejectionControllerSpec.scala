@@ -16,28 +16,23 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.GrossMassAmountFormProvider
-import matchers.JsonMatchers
 import models.ErrorType.IncorrectValue
 import models.{DefaultPointer, FunctionalError, UnloadingRemarksRejectionMessage}
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito.{reset, when}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.UnloadingRemarksRejectionService
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.GrossMassAmountRejectionView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
-class GrossMassAmountRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class GrossMassAmountRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   val formProvider = new GrossMassAmountFormProvider()
   val form         = formProvider()
@@ -61,29 +56,20 @@ class GrossMassAmountRejectionControllerSpec extends SpecBase with AppWithDefaul
     "must populate the view correctly on a GET" in {
       checkArrivalStatus()
       val originalValue = "100000.123"
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       when(mockRejectionService.getRejectedValueAsString(any(), any())(any())(any())).thenReturn(Future.successful(Some(originalValue)))
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request        = FakeRequest(GET, grossMassAmountRejectionRoute)
-      val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+      val request = FakeRequest(GET, grossMassAmountRejectionRoute)
 
       val result = route(app, request).value
 
+      val view = app.injector.instanceOf[GrossMassAmountRejectionView]
+
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-      val expectedJson = Json.obj(
-        "form"        -> form.fill(originalValue),
-        "onSubmitUrl" -> routes.GrossMassAmountRejectionController.onSubmit(arrivalId).url
-      )
-
-      templateCaptor.getValue mustEqual "grossMassAmount.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustBe
+        view(form.fill(originalValue), arrivalId)(request, messages).toString
     }
 
     "must render the technical difficulties when there is no rejection message" in {
@@ -113,9 +99,8 @@ class GrossMassAmountRejectionControllerSpec extends SpecBase with AppWithDefaul
 
     setExistingUserAnswers(emptyUserAnswers)
 
-    val request =
-      FakeRequest(POST, grossMassAmountRejectionRoute)
-        .withFormUrlEncodedBody(("value", "123456.123"))
+    val request = FakeRequest(POST, grossMassAmountRejectionRoute)
+      .withFormUrlEncodedBody(("value", "123456.123"))
 
     val result = route(app, request).value
 
@@ -141,28 +126,19 @@ class GrossMassAmountRejectionControllerSpec extends SpecBase with AppWithDefaul
 
   "must return a Bad Request and errors when invalid data is submitted" in {
     checkArrivalStatus()
-    when(mockRenderer.render(any(), any())(any()))
-      .thenReturn(Future.successful(Html("")))
 
     setExistingUserAnswers(emptyUserAnswers)
 
-    val request        = FakeRequest(POST, grossMassAmountRejectionRoute).withFormUrlEncodedBody(("value", ""))
-    val boundForm      = form.bind(Map("value" -> ""))
-    val templateCaptor = ArgumentCaptor.forClass(classOf[String])
-    val jsonCaptor     = ArgumentCaptor.forClass(classOf[JsObject])
+    val request   = FakeRequest(POST, grossMassAmountRejectionRoute).withFormUrlEncodedBody(("value", ""))
+    val boundForm = form.bind(Map("value" -> ""))
 
     val result = route(app, request).value
 
+    val view = app.injector.instanceOf[GrossMassAmountRejectionView]
+
     status(result) mustEqual BAD_REQUEST
 
-    verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
-
-    val expectedJson = Json.obj(
-      "form"        -> boundForm,
-      "onSubmitUrl" -> routes.GrossMassAmountRejectionController.onSubmit(arrivalId).url
-    )
-
-    templateCaptor.getValue mustEqual "grossMassAmount.njk"
-    jsonCaptor.getValue must containJson(expectedJson)
+    contentAsString(result) mustBe
+      view(boundForm, arrivalId)(request, messages).toString
   }
 }

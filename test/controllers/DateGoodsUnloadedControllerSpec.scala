@@ -16,12 +16,9 @@
 
 package controllers
 
-import java.time.{Clock, Instant, LocalDate, ZoneId}
-
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import cats.data.NonEmptyList
 import forms.DateGoodsUnloadedFormProvider
-import matchers.JsonMatchers
 import models.{NormalMode, TraderAtDestination, UnloadingPermission}
 import navigation.{FakeUnloadingPermissionNavigator, NavigatorUnloadingPermission}
 import org.mockito.ArgumentMatchers.any
@@ -32,12 +29,12 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.UnloadingPermissionService
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.DateGoodsUnloadedView
 
+import java.time.{Clock, Instant, LocalDate, ZoneId}
 import scala.concurrent.Future
 
-class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFixtures with NunjucksSupport with JsonMatchers {
+class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val stubClock         = Clock.fixed(Instant.now, ZoneId.systemDefault)
   private val dateOfPreparation = LocalDate.now(stubClock)

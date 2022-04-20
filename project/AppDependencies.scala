@@ -11,10 +11,6 @@ object AppDependencies {
     "uk.gov.hmrc"          %% "play-conditional-form-mapping"  % "1.10.0-play-28",
     "uk.gov.hmrc"          %% "bootstrap-frontend-play-28"     % "5.19.0",
     "uk.gov.hmrc"          %% "play-allowlist-filter"          % "1.0.0-play-28",
-    "uk.gov.hmrc"          %% "play-nunjucks"                  % "0.35.0-play-28",
-    "uk.gov.hmrc"          %% "play-nunjucks-viewmodel"        % "0.15.0-play-28",
-    "org.webjars.npm"      % "govuk-frontend"                  % "3.14.0",
-    "uk.gov.hmrc.webjars"  % "hmrc-frontend"                   % "3.1.1",
     "com.lucidchart"       %% "xtract"                         % "2.2.1",
     "uk.gov.hmrc"          %% "play-frontend-hmrc"             % "3.8.0-play-28"
   )

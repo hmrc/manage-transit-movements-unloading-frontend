@@ -18,7 +18,6 @@ package controllers
 
 import controllers.actions._
 import forms.GrossMassAmountFormProvider
-import javax.inject.Inject
 import models.{ArrivalId, Mode}
 import navigation.Navigator
 import pages.GrossMassAmountPage
@@ -26,9 +25,9 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 import views.html.GrossMassAmountView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class GrossMassAmountController @Inject() (
@@ -44,8 +43,7 @@ class GrossMassAmountController @Inject() (
   checkArrivalStatus: CheckArrivalStatusProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
   private val form = formProvider()
 

@@ -20,18 +20,16 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.GrossMassAmountFormProvider
 import handlers.ErrorHandler
-import javax.inject.Inject
 import models.{ArrivalId, UserAnswers}
 import pages.GrossMassAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import renderer.Renderer
 import repositories.SessionRepository
 import services.UnloadingRemarksRejectionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.viewmodels.NunjucksSupport
+import views.html.GrossMassAmountRejectionView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class GrossMassAmountRejectionController @Inject() (
@@ -42,14 +40,13 @@ class GrossMassAmountRejectionController @Inject() (
   formProvider: GrossMassAmountFormProvider,
   rejectionService: UnloadingRemarksRejectionService,
   val controllerComponents: MessagesControllerComponents,
-  val renderer: Renderer,
   val appConfig: FrontendAppConfig,
   checkArrivalStatus: CheckArrivalStatusProvider,
-  errorHandler: ErrorHandler
+  errorHandler: ErrorHandler,
+  view: GrossMassAmountRejectionView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport
-    with NunjucksSupport {
+    with I18nSupport {
 
   private val form = formProvider()
 
@@ -57,12 +54,9 @@ class GrossMassAmountRejectionController @Inject() (
     implicit request =>
       rejectionService.getRejectedValueAsString(arrivalId, request.userAnswers)(GrossMassAmountPage) flatMap {
         case Some(originalAttrValue) =>
-          val json = Json.obj(
-            "form"        -> form.fill(originalAttrValue),
-            "onSubmitUrl" -> routes.GrossMassAmountRejectionController.onSubmit(arrivalId).url
-          )
-          renderer.render("grossMassAmount.njk", json).map(Ok(_))
-        case None => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
+          Future.successful(Ok(view(form.fill(originalAttrValue), arrivalId)))
+        case None =>
+          errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
       }
   }
 
@@ -71,15 +65,7 @@ class GrossMassAmountRejectionController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => {
-
-            val json = Json.obj(
-              "form"        -> formWithErrors,
-              "onSubmitUrl" -> routes.GrossMassAmountRejectionController.onSubmit(arrivalId).url
-            )
-
-            renderer.render("grossMassAmount.njk", json).map(BadRequest(_))
-          },
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId))),
           value =>
             rejectionService.unloadingRemarksRejectionMessage(arrivalId) flatMap {
               case Some(rejectionMessage) =>

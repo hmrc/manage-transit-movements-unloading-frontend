@@ -30,18 +30,16 @@ import play.api.mvc.Results._
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
-import uk.gov.hmrc.viewmodels.NunjucksSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ArrivalStatusActionSpec extends SpecBase with BeforeAndAfterEach with AppWithDefaultMockFixtures with NunjucksSupport {
+class ArrivalStatusActionSpec extends SpecBase with BeforeAndAfterEach with AppWithDefaultMockFixtures {
 
   val mockConnector: UnloadingConnector = mock[UnloadingConnector]
 
-  override def beforeEach: Unit = {
-    super.beforeEach
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     Mockito.reset(mockConnector)
   }
 
@@ -64,9 +62,6 @@ class ArrivalStatusActionSpec extends SpecBase with BeforeAndAfterEach with AppW
               ArrivalId(1),
               validArrivalStatus
             )
-
-          when(mockRenderer.render(any(), any())(any()))
-            .thenReturn(Future.successful(Html("")))
 
           when(mockConnector.getArrival(any())(any())).thenReturn(Future.successful(Some(mockArrivalResponse)))
 

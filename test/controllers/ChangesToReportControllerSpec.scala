@@ -25,7 +25,6 @@ import org.mockito.Mockito.when
 import pages.ChangesToReportPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import views.html.ChangesToReportView
 
 import scala.concurrent.Future
@@ -81,9 +80,8 @@ class ChangesToReportControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request =
-        FakeRequest(POST, changesToReportRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+      val request = FakeRequest(POST, changesToReportRoute)
+        .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value
 
@@ -93,8 +91,6 @@ class ChangesToReportControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -127,9 +123,8 @@ class ChangesToReportControllerSpec extends SpecBase with AppWithDefaultMockFixt
       checkArrivalStatus()
       setNoExistingUserAnswers()
 
-      val request =
-        FakeRequest(POST, changesToReportRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+      val request = FakeRequest(POST, changesToReportRoute)
+        .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value
 

@@ -4,10 +4,7 @@ $hmrc-assets-path: "/manage-transit-movements/unloading/assets/lib/hmrc-frontend
 @import "lib/govuk-frontend/govuk/all";
 @import "lib/hmrc-frontend/hmrc/all";
 
-@import "partials/page-heading";
-@import "partials/header";
 @import "partials/shame";
-@import "partials/timeout-dialog";
 
 .govuk-summary-list__actions-list-item {
     display: inline-block;
