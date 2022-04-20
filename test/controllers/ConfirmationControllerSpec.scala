@@ -16,23 +16,18 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import config.FrontendAppConfig
-import matchers.JsonMatchers
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{times, verify}
 import pages.DateGoodsUnloadedPage
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.Html
+import views.html.ConfirmationView
 
-import scala.concurrent.Future
+import java.time.LocalDate
 
-class ConfirmationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with JsonMatchers {
+class ConfirmationControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   "Confirmation Controller" - {
 
@@ -40,27 +35,20 @@ class ConfirmationControllerSpec extends SpecBase with AppWithDefaultMockFixture
       checkArrivalStatus()
       val userAnswers = emptyUserAnswers.set(DateGoodsUnloadedPage, LocalDate.now()).success.value
 
-      when(mockRenderer.render(any(), any())(any()))
-        .thenReturn(Future.successful(Html("")))
-
       setExistingUserAnswers(userAnswers)
 
       val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
       val request           = FakeRequest(GET, routes.ConfirmationController.onPageLoad(arrivalId).url)
-      val templateCaptor    = ArgumentCaptor.forClass(classOf[String])
-      val jsonCaptor        = ArgumentCaptor.forClass(classOf[JsObject])
-
-      val result = route(app, request).value
+      val result            = route(app, request).value
+      val view              = injector.instanceOf[ConfirmationView]
 
       status(result) mustEqual OK
 
-      verify(mockRenderer, times(1)).render(templateCaptor.capture(), jsonCaptor.capture())(any())
       verify(mockSessionRepository, times(1)).remove(arrivalId)
 
       val expectedJson = Json.obj("mrn" -> mrn, "manageTransitMovementsUrl" -> frontendAppConfig.viewArrivals)
 
-      templateCaptor.getValue mustEqual "confirmation.njk"
-      jsonCaptor.getValue must containJson(expectedJson)
+      contentAsString(result) mustEqual view(mrn)(request, messages).toString
     }
   }
 }
