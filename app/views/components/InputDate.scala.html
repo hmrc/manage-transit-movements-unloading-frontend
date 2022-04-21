@@ -14,57 +14,56 @@
  * limitations under the License.
  *@
 
-@import viewModels.Link
+@import views.utils.ViewUtils._
 
 @this(
-        govukDateInput: GovukDateInput
+    govukDateInput: GovukDateInput
 )
 
 @(
-        field: Field,
-        legend: String,
-        legendClass: String = "govuk-fieldset__legend--xl",
-        hint: Option[String] = None,
-        readerHint: Option[String] = None,
-        link: Option[Link] = None,
-        legendAsHeading: Boolean = false,
-        extraText: Option[String] = None
+    field: Field,
+    legend: String,
+    legendClass: String = "govuk-fieldset__legend--xl",
+    hint: Option[String] = None,
+    legendAsHeading: Boolean = false
 )(implicit messages: Messages)
 
-@govukDateInput(DateInput(
-    fieldset = Some(Fieldset(
-        legend = Some(
-            Legend(
-                content = Text(messages(legend)),
-                isPageHeading = legendAsHeading,
-                classes = legendClass
+@govukDateInput(
+    DateInput(
+        fieldset = Some(Fieldset(
+            legend = Some(
+                Legend(
+                    content = Text(messages(legend)),
+                    isPageHeading = legendAsHeading,
+                    classes = legendClass
+                )
             )
-        )
-    )),
-    id = field.id,
-    items = Seq(
-        InputItem(
-            classes = s"govuk-input--width-2",
-            name = s"${field.id}.day",
-            label = Some(messages("date.day.capitalized")),
-            value = field("day").value,
-            id = s"${field.id}.day"
+        )),
+        id = field.id,
+        items = Seq(
+            InputItem(
+                classes = s"govuk-input--width-2 ${errorClass(field.error, "day")}",
+                name = s"${field.id}.day",
+                label = Some(messages("date.day.capitalized")),
+                value = field("day").value,
+                id = s"${field.id}_day"
+            ),
+            InputItem(
+                classes = s"govuk-input--width-2 ${errorClass(field.error, "month")}",
+                name = s"${field.id}.month",
+                label = Some(messages("date.month.capitalized")),
+                value = field("month").value,
+                id = s"${field.id}_month"
+            ),
+            InputItem(
+                classes = s"govuk-input--width-4 ${errorClass(field.error, "year")}",
+                name = s"${field.id}.year",
+                label = Some(messages("date.year.capitalized")),
+                value = field("year").value,
+                id = s"${field.id}_year"
+            )
         ),
-        InputItem(
-            classes = s"govuk-input--width-2",
-            name = s"${field.id}.month",
-            label = Some(messages("date.month.capitalized")),
-            value = field("month").value,
-            id = s"${field.id}.month"
-        ),
-        InputItem(
-            classes = s"govuk-input--width-4",
-            name = s"${field.id}.year",
-            label = Some(messages("date.year.capitalized")),
-            value = field("year").value,
-            id = s"${field.id}.year"
-        )
-    ),
-    hint = hint.map(hint => Hint(content = Text(messages(hint)))),
-    errorMessage = field.error.map(err => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(err.message, err.args: _*))))
-))
+        hint = hint.map(hint => Hint(content = Text(messages(hint)))),
+        errorMessage = field.error.map(err => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(err.message, err.args: _*))))
+    )
+)

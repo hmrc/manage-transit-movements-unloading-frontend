@@ -40,7 +40,7 @@ class ConfirmationViewSpec extends PanelViewBehaviours {
   behave like pageWithLink(
     id = "manage-transit-movements",
     expectedText = "Go to arrival notifications",
-    expectedHref = "http://localhost:9485/manage-transit-movements"
+    expectedHref = "http://localhost:9485/manage-transit-movements/view-arrivals"
   )
 
   behave like pageWithPartialContent("p", "You must wait for the goods to be released.")
