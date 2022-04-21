@@ -29,33 +29,39 @@ class ItemsSectionSpec extends SpecBase {
 
   "ItemsSection" - {
     "Must display" - {
+
+      "Nothing if answers are empty" in {
+        val section: Option[Section] = ItemsSection(emptyUserAnswers, mode)
+        section mustBe None
+      }
+
       "Correct Gross mass" in {
         val userAnswers      = emptyUserAnswers.setValue(GrossMassAmountPage, "1000")
-        val section: Section = ItemsSection(userAnswers, mode)
+        val section: Section = ItemsSection(userAnswers, mode).get
         section.rows.head.value.content mustBe Text("1000")
       }
 
       "Correct number of items" in {
         val userAnswers      = emptyUserAnswers.setValue(TotalNumberOfItemsPage, 10)
-        val section: Section = ItemsSection(userAnswers, mode)
+        val section: Section = ItemsSection(userAnswers, mode).get
         section.rows.head.value.content mustBe Text("10")
       }
 
       "Correct number of packages" in {
         val userAnswers      = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, 10)
-        val section: Section = ItemsSection(userAnswers, mode)
+        val section: Section = ItemsSection(userAnswers, mode).get
         section.rows.head.value.content mustBe Text("10")
       }
 
       "Correct items" in {
         val userAnswers      = emptyUserAnswers.setValue(GoodsItemsQuery, Seq("Test"))
-        val section: Section = ItemsSection(userAnswers, mode)
+        val section: Section = ItemsSection(userAnswers, mode).get
         section.rows.head.value.content mustBe Text("Test")
       }
 
       "Correct Comments" in {
         val userAnswers      = emptyUserAnswers.setValue(ChangesToReportPage, "Test")
-        val section: Section = ItemsSection(userAnswers, mode)
+        val section: Section = ItemsSection(userAnswers, mode).get
         section.rows.head.value.content mustBe Text("Test")
       }
     }

@@ -18,7 +18,6 @@ package viewModels
 
 import models.{CheckMode, UserAnswers}
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.{CheckYourAnswersHelper, UnloadingSummaryHelper}
 import viewModels.sections.Section
 
@@ -29,9 +28,9 @@ class CheckYourAnswersViewModel {
       goodsUnloadedSection(userAnswers),
       sealsSection(userAnswers),
       itemsSection(userAnswers)
-    )
+    ).flatten
 
-  private def sealsSection(userAnswers: UserAnswers)(implicit messages: Messages): Section = {
+  private def sealsSection(userAnswers: UserAnswers)(implicit messages: Messages): Option[Section] = {
     val helper = new CheckYourAnswersHelper(userAnswers)
 
     val rows = Seq(
@@ -40,16 +39,23 @@ class CheckYourAnswersViewModel {
       helper.areAnySealsBroken
     ).flatten
 
-    Section(messages("checkYourAnswers.seals.subHeading"), rows)
+    rows match {
+      case Nil => None
+      case _   => Some(Section(messages("checkYourAnswers.seals.subHeading"), rows))
+    }
   }
 
-  private def goodsUnloadedSection(userAnswers: UserAnswers)(implicit messages: Messages): Section = {
-    val checkYourAnswersRow                      = new CheckYourAnswersHelper(userAnswers)
-    val rowGoodsUnloaded: Option[SummaryListRow] = checkYourAnswersRow.dateGoodsUnloaded
-    Section(rowGoodsUnloaded.toSeq)
+  private def goodsUnloadedSection(userAnswers: UserAnswers)(implicit messages: Messages): Option[Section] = {
+    val helper = new CheckYourAnswersHelper(userAnswers)
+    val rows   = helper.dateGoodsUnloaded.toSeq
+
+    rows match {
+      case Nil => None
+      case _   => Some(Section(rows))
+    }
   }
 
-  private def itemsSection(userAnswers: UserAnswers)(implicit messages: Messages): Section = {
+  private def itemsSection(userAnswers: UserAnswers)(implicit messages: Messages): Option[Section] = {
     val helper = new UnloadingSummaryHelper(userAnswers, CheckMode)
 
     val rows = helper.vehicleUsed.toSeq ++
@@ -60,7 +66,10 @@ class CheckYourAnswersViewModel {
       helper.items ++
       helper.comments.toSeq
 
-    Section(messages("checkYourAnswers.subHeading"), rows)
+    rows match {
+      case Nil => None
+      case _   => Some(Section(messages("checkYourAnswers.subHeading"), rows))
+    }
   }
 
 }
