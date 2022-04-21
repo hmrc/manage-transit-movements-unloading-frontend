@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions._
 import derivable.DeriveNumberOfSeals
-import models.ArrivalId
+import models.{ArrivalId, NormalMode}
 import pages.ChangesToReportPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -47,8 +47,8 @@ class UnloadingSummaryController @Inject() (
           view(
             mrn = request.userAnswers.mrn,
             arrivalId = arrivalId,
-            sealsSection = viewModel.sealsSection(request.userAnswers),
-            transportAndItemSections = viewModel.transportAndItemSections(request.userAnswers),
+            sealsSection = viewModel.sealsSection(request.userAnswers, NormalMode),
+            transportAndItemSections = viewModel.transportAndItemSections(request.userAnswers, NormalMode),
             numberOfSeals = request.userAnswers.get(DeriveNumberOfSeals).getOrElse(0),
             showAddCommentLink = request.userAnswers.get(ChangesToReportPage).isEmpty
           )

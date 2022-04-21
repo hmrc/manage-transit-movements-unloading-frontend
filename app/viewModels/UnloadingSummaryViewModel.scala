@@ -16,24 +16,24 @@
 
 package viewModels
 
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import utils.UnloadingSummaryHelper
 import viewModels.sections.Section
 
 class UnloadingSummaryViewModel {
 
-  def sealsSection(userAnswers: UserAnswers)(implicit messages: Messages): Option[Section] =
-    SealsSection.apply(userAnswers)
+  def sealsSection(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): Option[Section] =
+    SealsSection.apply(userAnswers, mode)
 
-  def transportAndItemSections(userAnswers: UserAnswers)(implicit messages: Messages): Seq[Section] =
-    TransportSection(userAnswers).toSeq :+ ItemsSection(userAnswers)
+  def transportAndItemSections(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): Seq[Section] =
+    TransportSection(userAnswers, mode).toSeq :+ ItemsSection(userAnswers, mode)
 }
 
 object SealsSection {
 
-  def apply(userAnswers: UserAnswers)(implicit messages: Messages): Option[Section] = {
-    val helper: UnloadingSummaryHelper = new UnloadingSummaryHelper(userAnswers)
+  def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): Option[Section] = {
+    val helper: UnloadingSummaryHelper = new UnloadingSummaryHelper(userAnswers, mode)
 
     helper.seals ++ helper.sealsWithRemove match {
       case Nil  => None
@@ -44,8 +44,8 @@ object SealsSection {
 
 object TransportSection {
 
-  def apply(userAnswers: UserAnswers)(implicit messages: Messages): Option[Section] = {
-    val helper: UnloadingSummaryHelper = new UnloadingSummaryHelper(userAnswers)
+  def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): Option[Section] = {
+    val helper: UnloadingSummaryHelper = new UnloadingSummaryHelper(userAnswers, mode)
 
     Seq(
       helper.vehicleUsed,
@@ -59,8 +59,8 @@ object TransportSection {
 
 object ItemsSection {
 
-  def apply(userAnswers: UserAnswers)(implicit messages: Messages): Section = {
-    val helper: UnloadingSummaryHelper = new UnloadingSummaryHelper(userAnswers)
+  def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): Section = {
+    val helper: UnloadingSummaryHelper = new UnloadingSummaryHelper(userAnswers, mode)
 
     val rows = helper.grossMass.toSeq ++
       helper.totalNumberOfItems.toSeq ++

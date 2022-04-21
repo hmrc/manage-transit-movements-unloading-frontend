@@ -17,6 +17,7 @@
 package viewModels
 
 import base.SpecBase
+import models.NormalMode
 import pages.{ChangesToReportPage, GrossMassAmountPage, TotalNumberOfItemsPage, TotalNumberOfPackagesPage}
 import queries.GoodsItemsQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
@@ -24,35 +25,37 @@ import viewModels.sections.Section
 
 class ItemsSectionSpec extends SpecBase {
 
+  private val mode = NormalMode
+
   "ItemsSection" - {
     "Must display" - {
       "Correct Gross mass" in {
         val userAnswers      = emptyUserAnswers.setValue(GrossMassAmountPage, "1000")
-        val section: Section = ItemsSection(userAnswers)
+        val section: Section = ItemsSection(userAnswers, mode)
         section.rows.head.value.content mustBe Text("1000")
       }
 
       "Correct number of items" in {
         val userAnswers      = emptyUserAnswers.setValue(TotalNumberOfItemsPage, 10)
-        val section: Section = ItemsSection(userAnswers)
+        val section: Section = ItemsSection(userAnswers, mode)
         section.rows.head.value.content mustBe Text("10")
       }
 
       "Correct number of packages" in {
         val userAnswers      = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, 10)
-        val section: Section = ItemsSection(userAnswers)
+        val section: Section = ItemsSection(userAnswers, mode)
         section.rows.head.value.content mustBe Text("10")
       }
 
       "Correct items" in {
         val userAnswers      = emptyUserAnswers.setValue(GoodsItemsQuery, Seq("Test"))
-        val section: Section = ItemsSection(userAnswers)
+        val section: Section = ItemsSection(userAnswers, mode)
         section.rows.head.value.content mustBe Text("Test")
       }
 
       "Correct Comments" in {
         val userAnswers      = emptyUserAnswers.setValue(ChangesToReportPage, "Test")
-        val section: Section = ItemsSection(userAnswers)
+        val section: Section = ItemsSection(userAnswers, mode)
         section.rows.head.value.content mustBe Text("Test")
       }
     }

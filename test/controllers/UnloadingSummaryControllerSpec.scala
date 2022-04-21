@@ -18,7 +18,7 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.{Generators, ViewModelGenerators}
-import models.Index
+import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -58,9 +58,9 @@ class UnloadingSummaryControllerSpec extends SpecBase with AppWithDefaultMockFix
         val userAnswers = emptyUserAnswers
         setExistingUserAnswers(userAnswers)
 
-        when(mockViewModel.sealsSection(any())(any()))
+        when(mockViewModel.sealsSection(any(), any())(any()))
           .thenReturn(sampleSealsSection)
-        when(mockViewModel.transportAndItemSections(any())(any()))
+        when(mockViewModel.transportAndItemSections(any(), any())(any()))
           .thenReturn(sampleTransportAndItemSections)
 
         val request = FakeRequest(GET, routes.UnloadingSummaryController.onPageLoad(arrivalId).url)
@@ -74,8 +74,8 @@ class UnloadingSummaryControllerSpec extends SpecBase with AppWithDefaultMockFix
         contentAsString(result) mustEqual
           view(mrn, arrivalId, sampleSealsSection, sampleTransportAndItemSections, 0, showAddCommentLink = true)(request, messages).toString
 
-        verify(mockViewModel).sealsSection(eqTo(userAnswers))(any())
-        verify(mockViewModel).transportAndItemSections(eqTo(userAnswers))(any())
+        verify(mockViewModel).sealsSection(eqTo(userAnswers), eqTo(NormalMode))(any())
+        verify(mockViewModel).transportAndItemSections(eqTo(userAnswers), eqTo(NormalMode))(any())
       }
 
       "when ChangesToReportPage is populated" in {
@@ -84,9 +84,9 @@ class UnloadingSummaryControllerSpec extends SpecBase with AppWithDefaultMockFix
         val userAnswers = emptyUserAnswers.setValue(ChangesToReportPage, arbitrary[String].sample.value)
         setExistingUserAnswers(userAnswers)
 
-        when(mockViewModel.sealsSection(any())(any()))
+        when(mockViewModel.sealsSection(any(), any())(any()))
           .thenReturn(sampleSealsSection)
-        when(mockViewModel.transportAndItemSections(any())(any()))
+        when(mockViewModel.transportAndItemSections(any(), any())(any()))
           .thenReturn(sampleTransportAndItemSections)
 
         val request = FakeRequest(GET, routes.UnloadingSummaryController.onPageLoad(arrivalId).url)
@@ -100,8 +100,8 @@ class UnloadingSummaryControllerSpec extends SpecBase with AppWithDefaultMockFix
         contentAsString(result) mustEqual
           view(mrn, arrivalId, sampleSealsSection, sampleTransportAndItemSections, 0, showAddCommentLink = false)(request, messages).toString
 
-        verify(mockViewModel).sealsSection(eqTo(userAnswers))(any())
-        verify(mockViewModel).transportAndItemSections(eqTo(userAnswers))(any())
+        verify(mockViewModel).sealsSection(eqTo(userAnswers), eqTo(NormalMode))(any())
+        verify(mockViewModel).transportAndItemSections(eqTo(userAnswers), eqTo(NormalMode))(any())
       }
 
       "when user answers contains seals" in {
@@ -112,9 +112,9 @@ class UnloadingSummaryControllerSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(NewSealNumberPage(Index(1)), "new seal value 2")
         setExistingUserAnswers(userAnswers)
 
-        when(mockViewModel.sealsSection(any())(any()))
+        when(mockViewModel.sealsSection(any(), any())(any()))
           .thenReturn(sampleSealsSection)
-        when(mockViewModel.transportAndItemSections(any())(any()))
+        when(mockViewModel.transportAndItemSections(any(), any())(any()))
           .thenReturn(sampleTransportAndItemSections)
 
         val request = FakeRequest(GET, routes.UnloadingSummaryController.onPageLoad(arrivalId).url)
@@ -128,8 +128,8 @@ class UnloadingSummaryControllerSpec extends SpecBase with AppWithDefaultMockFix
         contentAsString(result) mustEqual
           view(mrn, arrivalId, sampleSealsSection, sampleTransportAndItemSections, 2, showAddCommentLink = true)(request, messages).toString
 
-        verify(mockViewModel).sealsSection(eqTo(userAnswers))(any())
-        verify(mockViewModel).transportAndItemSections(eqTo(userAnswers))(any())
+        verify(mockViewModel).sealsSection(eqTo(userAnswers), eqTo(NormalMode))(any())
+        verify(mockViewModel).transportAndItemSections(eqTo(userAnswers), eqTo(NormalMode))(any())
       }
     }
   }

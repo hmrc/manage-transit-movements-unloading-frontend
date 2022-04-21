@@ -32,7 +32,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
     "in Normal mode" - {
 
-      "must go from a page that doesn't exist in the route map to Index" in {
+      "must go from a page that doesn't exist in the route map to unloading summary" in {
 
         case object UnknownPage extends Page
 
@@ -40,7 +40,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           answers =>
             navigator
               .nextPage(UnknownPage, NormalMode, answers)
-              .mustBe(routes.IndexController.onPageLoad(arrivalId))
+              .mustBe(routes.UnloadingSummaryController.onPageLoad(arrivalId))
         }
       }
 

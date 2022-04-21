@@ -16,7 +16,7 @@
 
 package viewModels
 
-import models.UserAnswers
+import models.{CheckMode, UserAnswers}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.{CheckYourAnswersHelper, UnloadingSummaryHelper}
@@ -50,7 +50,7 @@ class CheckYourAnswersViewModel {
   }
 
   private def itemsSection(userAnswers: UserAnswers)(implicit messages: Messages): Section = {
-    val helper = new UnloadingSummaryHelper(userAnswers)
+    val helper = new UnloadingSummaryHelper(userAnswers, CheckMode)
 
     val rows = helper.vehicleUsed.toSeq ++
       helper.registeredCountry.toSeq ++

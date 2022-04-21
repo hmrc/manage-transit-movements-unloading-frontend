@@ -17,6 +17,7 @@
 package viewModels
 
 import base.SpecBase
+import models.NormalMode
 import models.reference.Country
 import pages.{VehicleNameRegistrationReferencePage, VehicleRegistrationCountryPage}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
@@ -24,26 +25,28 @@ import viewModels.sections.Section
 
 class TransportSectionSpec extends SpecBase {
 
+  private val mode = NormalMode
+
   "TransportSection" - {
 
     "must display" - {
 
       "correct transport identity number" in {
         val userAnswers      = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, "RegNumber1")
-        val section: Section = TransportSection(userAnswers).get
+        val section: Section = TransportSection(userAnswers, mode).get
         section.sectionTitle.get mustBe "Vehicle used"
         section.rows.head.value.content mustBe Text("RegNumber1")
       }
 
       "correct transport country from unloading permission " in {
         val userAnswers      = emptyUserAnswers.setValue(VehicleRegistrationCountryPage, Country("FR", "France"))
-        val section: Section = TransportSection(userAnswers).get
+        val section: Section = TransportSection(userAnswers, mode).get
         section.sectionTitle.get mustBe "Vehicle used"
         section.rows.head.value.content mustBe Text("France")
       }
 
       "nothing when user answers empty" in {
-        val section: Option[Section] = TransportSection(emptyUserAnswers)
+        val section: Option[Section] = TransportSection(emptyUserAnswers, mode)
         section mustBe None
       }
     }

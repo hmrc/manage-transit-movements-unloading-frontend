@@ -19,14 +19,14 @@ package utils
 import controllers.routes
 import derivable.DeriveNumberOfSeals
 import models.reference.Country
-import models.{CheckMode, Index, NormalMode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import pages._
 import play.api.i18n.Messages
 import queries.{GoodsItemsQuery, SealsQuery}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
-class UnloadingSummaryHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
+class UnloadingSummaryHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
   private lazy val numberOfExistingSeals: Int = userAnswers.getPrepopulatedData(DeriveNumberOfSeals).getOrElse(0)
 
@@ -46,7 +46,7 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers)(implicit messages: Messag
           prefix = "changeSeal.sealList",
           answer = sealId.toText,
           id = Some(s"change-seal-${index.position}"),
-          call = Some(routes.NewSealNumberController.onPageLoad(arrivalId, index, CheckMode)),
+          call = Some(routes.NewSealNumberController.onPageLoad(arrivalId, index, mode)),
           args = index.display, sealId
         )
     }
@@ -59,8 +59,8 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers)(implicit messages: Messag
           prefix = "changeSeal.sealList",
           answer = sealId.toText,
           id = s"seal-${index.position}",
-          changeCall = routes.NewSealNumberController.onPageLoad(arrivalId, index, CheckMode),
-          removeCall = routes.ConfirmRemoveSealController.onPageLoad(arrivalId, index, CheckMode),
+          changeCall = routes.NewSealNumberController.onPageLoad(arrivalId, index, mode),
+          removeCall = routes.ConfirmRemoveSealController.onPageLoad(arrivalId, index, mode),
           args = index.display, sealId
         )
     }
@@ -87,7 +87,7 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers)(implicit messages: Messag
       formatAnswer = _.toText,
       prefix = "changeVehicle.reference",
       id = Some("change-vehicle-reference"),
-      call = Some(routes.VehicleNameRegistrationReferenceController.onPageLoad(arrivalId, CheckMode))
+      call = Some(routes.VehicleNameRegistrationReferenceController.onPageLoad(arrivalId, mode))
     )
 
   def registeredCountry: Option[SummaryListRow] =
@@ -96,7 +96,7 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers)(implicit messages: Messag
       formatAnswer = _.description.toText,
       prefix = "changeVehicle.registeredCountry",
       id = Some("change-vehicle-country"),
-      call = Some(routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, CheckMode))
+      call = Some(routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, mode))
     )
 
   def grossMass: Option[SummaryListRow] =
@@ -105,7 +105,7 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers)(implicit messages: Messag
       formatAnswer = _.toText,
       prefix = "changeItems.grossMass",
       id = Some("change-gross-mass"),
-      call = Some(routes.GrossMassAmountController.onPageLoad(arrivalId, CheckMode))
+      call = Some(routes.GrossMassAmountController.onPageLoad(arrivalId, mode))
     )
 
   def totalNumberOfItems: Option[SummaryListRow] =
@@ -114,7 +114,7 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers)(implicit messages: Messag
       formatAnswer = _.toString.toText,
       prefix = "changeItems.totalNumberOfItems",
       id = Some("change-total-number-of-items"),
-      call = Some(routes.TotalNumberOfItemsController.onPageLoad(arrivalId, CheckMode))
+      call = Some(routes.TotalNumberOfItemsController.onPageLoad(arrivalId, mode))
     )
 
   def totalNumberOfPackages: Option[SummaryListRow] =
@@ -123,7 +123,7 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers)(implicit messages: Messag
       formatAnswer = _.toString.toText,
       prefix = "changeItems.totalNumberOfPackages",
       id = Some("change-total-number-of-packages"),
-      call = Some(routes.TotalNumberOfPackagesController.onPageLoad(arrivalId, CheckMode))
+      call = Some(routes.TotalNumberOfPackagesController.onPageLoad(arrivalId, mode))
     )
 
   def comments: Option[SummaryListRow] =
@@ -132,7 +132,7 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers)(implicit messages: Messag
       formatAnswer = _.toText,
       prefix = "changeItems.comments",
       id = "comments",
-      changeCall = routes.ChangesToReportController.onPageLoad(arrivalId, NormalMode),
-      removeCall = routes.ConfirmRemoveCommentsController.onPageLoad(arrivalId, NormalMode)
+      changeCall = routes.ChangesToReportController.onPageLoad(arrivalId, mode),
+      removeCall = routes.ConfirmRemoveCommentsController.onPageLoad(arrivalId, mode)
     )
 }

@@ -60,11 +60,11 @@ class Navigator @Inject() () {
       ua => routes.UnloadingSummaryController.onPageLoad(ua.id)
 
     case _ =>
-      ua => routes.IndexController.onPageLoad(ua.id)
+      ua => routes.UnloadingSummaryController.onPageLoad(ua.id)
 
   }
 
-  private val checkRouteMap: Page => UserAnswers => Call = {
+  private val checkRoutes: Page => UserAnswers => Call = {
     case VehicleNameRegistrationReferencePage =>
       ua => routes.UnloadingSummaryController.onPageLoad(ua.id)
     case VehicleRegistrationCountryPage =>
@@ -85,7 +85,7 @@ class Navigator @Inject() () {
     case NormalMode =>
       normalRoutes(page)(userAnswers)
     case CheckMode =>
-      checkRouteMap(page)(userAnswers)
+      checkRoutes(page)(userAnswers)
   }
 
 }
