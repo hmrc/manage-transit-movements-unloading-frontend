@@ -16,18 +16,13 @@
 
 package pages
 
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.JsPath
 
 import java.time.LocalDate
 
-class DateGoodsUnloadedPageSpec extends PageBehaviours {
+case object DateOfPreparationPage extends QuestionPage[LocalDate] {
 
-  "DateGoodsUnloadedPage" - {
+  override def path: JsPath = JsPath \ toString
 
-    beRetrievable[LocalDate](DateGoodsUnloadedPage)
-
-    beSettable[LocalDate](DateGoodsUnloadedPage)
-
-    beRemovable[LocalDate](DateGoodsUnloadedPage)
-  }
+  override def toString: String = "dateOfPreparation"
 }

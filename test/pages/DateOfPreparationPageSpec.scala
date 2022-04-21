@@ -20,14 +20,14 @@ import pages.behaviours.PageBehaviours
 
 import java.time.LocalDate
 
-class DateGoodsUnloadedPageSpec extends PageBehaviours {
+class DateOfPreparationPageSpec extends PageBehaviours {
 
-  "DateGoodsUnloadedPage" - {
+  "DateOfPreparationPage" - {
 
-    beRetrievable[LocalDate](DateGoodsUnloadedPage)
+    beRetrievable[LocalDate](DateOfPreparationPage)
 
-    beSettable[LocalDate](DateGoodsUnloadedPage)
+    beSettable[LocalDate](DateOfPreparationPage)
 
-    beRemovable[LocalDate](DateGoodsUnloadedPage)
+    beRemovable[LocalDate](DateOfPreparationPage)
   }
 }

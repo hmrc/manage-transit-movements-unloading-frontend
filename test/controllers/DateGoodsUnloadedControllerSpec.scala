@@ -19,16 +19,14 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.DateGoodsUnloadedFormProvider
 import generators.Generators
-import models.{NormalMode, UnloadingPermission}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
-import org.scalacheck.Arbitrary.arbitrary
-import pages.DateGoodsUnloadedPage
+import org.mockito.Mockito.when
+import pages.{DateGoodsUnloadedPage, DateOfPreparationPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.UnloadingPermissionService
 import views.html.DateGoodsUnloadedView
 
 import java.time.{Clock, Instant, LocalDate, ZoneId}
@@ -40,35 +38,23 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
   private val dateOfPreparation = LocalDate.now(stubClock)
   private val validAnswer       = dateOfPreparation
 
-  private val unloadingPermission = arbitrary[UnloadingPermission].sample.value
-
   private def form = new DateGoodsUnloadedFormProvider(stubClock)(dateOfPreparation)
 
   private lazy val dateGoodsUnloadedRoute = routes.DateGoodsUnloadedController.onPageLoad(arrivalId, NormalMode).url
-
-  private val mockUnloadingPermissionService = mock[UnloadingPermissionService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[UnloadingPermissionService].toInstance(mockUnloadingPermissionService),
         bind[Clock].toInstance(stubClock)
       )
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockUnloadingPermissionService)
-  }
 
   "DateGoodsUnloaded Controller" - {
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
 
-      when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(Some(unloadingPermission)))
-
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(emptyUserAnswers.setValue(DateOfPreparationPage, dateOfPreparation))
 
       val view = app.injector.instanceOf[DateGoodsUnloadedView]
 
@@ -83,9 +69,9 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(Some(unloadingPermission)))
-
-      val userAnswers = emptyUserAnswers.set(DateGoodsUnloadedPage, validAnswer).success.value
+      val userAnswers = emptyUserAnswers
+        .setValue(DateOfPreparationPage, dateOfPreparation)
+        .setValue(DateGoodsUnloadedPage, validAnswer)
 
       setExistingUserAnswers(userAnswers)
 
@@ -107,9 +93,8 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
       contentAsString(result) mustBe view(mrn, arrivalId, NormalMode, filledForm)(request, messages).toString
     }
 
-    "must return an Internal Server Error on a GET when date of preparation is not available" in {
+    "must redirect to session expired on a GET when date of preparation is not available" in {
       checkArrivalStatus()
-      when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(None))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -117,24 +102,21 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
-
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect on to the next page when valid data is submitted" in {
       checkArrivalStatus()
-      when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(Some(unloadingPermission)))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(emptyUserAnswers.setValue(DateOfPreparationPage, dateOfPreparation))
 
-      val postRequest =
-        FakeRequest(POST, dateGoodsUnloadedRoute)
-          .withFormUrlEncodedBody(
-            "value.day"   -> validAnswer.getDayOfMonth.toString,
-            "value.month" -> validAnswer.getMonthValue.toString,
-            "value.year"  -> validAnswer.getYear.toString
-          )
+      val postRequest = FakeRequest(POST, dateGoodsUnloadedRoute)
+        .withFormUrlEncodedBody(
+          "value.day"   -> validAnswer.getDayOfMonth.toString,
+          "value.month" -> validAnswer.getMonthValue.toString,
+          "value.year"  -> validAnswer.getYear.toString
+        )
 
       val result = route(app, postRequest).value
 
@@ -145,9 +127,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
 
-      when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(Some(unloadingPermission)))
-
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(emptyUserAnswers.setValue(DateOfPreparationPage, dateOfPreparation))
 
       val badSubmission = Map(
         "value.day"   -> "invalid value",
@@ -172,9 +152,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
     "must return a Bad Request and errors when the date is before date of preparation" in {
       checkArrivalStatus()
 
-      when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(Some(unloadingPermission)))
-
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(emptyUserAnswers.setValue(DateOfPreparationPage, dateOfPreparation))
 
       val invalidDate = dateOfPreparation.minusDays(1)
 
@@ -197,24 +175,22 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
       contentAsString(result) mustBe view(mrn, arrivalId, NormalMode, boundForm)(request, messages).toString
     }
 
-    "must return an Internal Server Error when valid data is submitted but date of preparation is not available" in {
+    "must redirect to session expired on a POST when date of preparation is not available" in {
       checkArrivalStatus()
-      when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(None))
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val postRequest =
-        FakeRequest(POST, dateGoodsUnloadedRoute)
-          .withFormUrlEncodedBody(
-            "value.day"   -> validAnswer.getDayOfMonth.toString,
-            "value.month" -> validAnswer.getMonthValue.toString,
-            "value.year"  -> validAnswer.getYear.toString
-          )
+      val postRequest = FakeRequest(POST, dateGoodsUnloadedRoute)
+        .withFormUrlEncodedBody(
+          "value.day"   -> validAnswer.getDayOfMonth.toString,
+          "value.month" -> validAnswer.getMonthValue.toString,
+          "value.year"  -> validAnswer.getYear.toString
+        )
       val result = route(app, postRequest).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
   }
 }

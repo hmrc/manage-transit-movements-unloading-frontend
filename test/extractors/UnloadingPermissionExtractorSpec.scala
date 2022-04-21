@@ -62,6 +62,8 @@ class UnloadingPermissionExtractorSpec extends SpecBase with Generators with Bef
             result.get.get(SealsQuery) mustBe unloadingPermission.seals.map(_.SealId)
             result.get.get(GoodsItemsQuery).get mustBe unloadingPermission.goodsItems.map(_.description).toList
 
+            result.get.get(DateOfPreparationPage).get mustBe unloadingPermission.dateOfPreparation
+
             result.get.getPrepopulatedData(SealsQuery) mustBe unloadingPermission.seals.map(_.SealId)
 
             verify(mockReferenceDataService).getCountryByCode(eqTo(unloadingPermission.transportCountry))(any(), any())

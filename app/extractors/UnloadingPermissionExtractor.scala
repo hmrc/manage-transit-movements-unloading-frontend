@@ -39,6 +39,7 @@ class UnloadingPermissionExtractor @Inject() (referenceDataService: ReferenceDat
         .flatMap(extractTotalNumberOfPackages(_, unloadingPermission))
         .flatMap(extractSeals(_, unloadingPermission))
         .flatMap(extractGoodsItems(_, unloadingPermission))
+        .flatMap(extractDateOfPreparation(_, unloadingPermission))
     } flatMap {
       extractVehicleRegistrationCountryPage(_, unloadingPermission)
     }
@@ -96,4 +97,10 @@ class UnloadingPermissionExtractor @Inject() (referenceDataService: ReferenceDat
     unloadingPermission: UnloadingPermission
   ): Try[UserAnswers] =
     userAnswers.set(GoodsItemsQuery, unloadingPermission.goodsItems.toList.map(_.description))
+
+  private def extractDateOfPreparation(
+    userAnswers: UserAnswers,
+    unloadingPermission: UnloadingPermission
+  ): Try[UserAnswers] =
+    userAnswers.set(DateOfPreparationPage, unloadingPermission.dateOfPreparation)
 }
