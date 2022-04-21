@@ -84,7 +84,7 @@
     )),
     userResearchBannerUrl = if (appConfig.showUserResearchBanner) Some(appConfig.userResearchUrl) else None,
     serviceName = Some(messages("site.service_name")),
-    serviceUrl = Some(appConfig.loginContinueUrl),
+    serviceUrl = Some(appConfig.serviceUrl),
     signOutUrl = if (canSignOut) Some(appConfig.signOutUrl) else None,
     phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUnauthenticatedUrl)),
     beforeContentBlock = Some(beforeContentBlock),
