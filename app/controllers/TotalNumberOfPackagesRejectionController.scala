@@ -35,22 +35,20 @@ import scala.concurrent.{ExecutionContext, Future}
 class TotalNumberOfPackagesRejectionController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
+  actions: Actions,
   formProvider: TotalNumberOfPackagesFormProvider,
   val controllerComponents: MessagesControllerComponents,
   rejectionService: UnloadingRemarksRejectionService,
   view: TotalNumberOfPackagesRejectionView,
   val appConfig: FrontendAppConfig,
-  errorHandler: ErrorHandler,
-  checkArrivalStatus: CheckArrivalStatusProvider
+  errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   private val form = formProvider()
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId)).async {
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.getData(arrivalId).async {
     implicit request =>
       rejectionService.getRejectedValueAsInt(arrivalId, request.userAnswers)(TotalNumberOfPackagesPage) flatMap {
         case Some(value) => Future.successful(Ok(view(form.fill(value), arrivalId)))
@@ -58,7 +56,7 @@ class TotalNumberOfPackagesRejectionController @Inject() (
       }
   }
 
-  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId)).async {
+  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.getData(arrivalId).async {
     implicit request =>
       form
         .bindFromRequest()

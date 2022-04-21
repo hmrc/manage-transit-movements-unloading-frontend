@@ -23,8 +23,11 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.SessionExpiredView
 
-class SessionExpiredController @Inject() (val controllerComponents: MessagesControllerComponents, val config: FrontendAppConfig, view: SessionExpiredView)()
-    extends FrontendBaseController
+class SessionExpiredController @Inject() (
+  val controllerComponents: MessagesControllerComponents,
+  val config: FrontendAppConfig,
+  view: SessionExpiredView
+) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = Action {

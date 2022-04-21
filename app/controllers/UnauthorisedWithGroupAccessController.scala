@@ -23,8 +23,10 @@ import views.html.UnauthorisedWithGroupAccessView
 
 import javax.inject.Inject
 
-class UnauthorisedWithGroupAccessController @Inject() (val controllerComponents: MessagesControllerComponents, view: UnauthorisedWithGroupAccessView)
-    extends FrontendBaseController
+class UnauthorisedWithGroupAccessController @Inject() (
+  val controllerComponents: MessagesControllerComponents,
+  view: UnauthorisedWithGroupAccessView
+) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = Action {

@@ -35,49 +35,42 @@ import scala.concurrent.{ExecutionContext, Future}
 class DateGoodsUnloadedRejectionController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
+  actions: Actions,
   formProvider: DateGoodsUnloadedFormProvider,
   rejectionService: UnloadingRemarksRejectionService,
   val controllerComponents: MessagesControllerComponents,
   unloadingPermissionService: UnloadingPermissionService,
   errorHandler: ErrorHandler,
-  checkArrivalStatus: CheckArrivalStatusProvider,
   view: DateGoodsUnloadedRejectionView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId)).async {
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.getData(arrivalId).async {
     implicit request =>
       (for {
-        up            <- OptionT(unloadingPermissionService.getUnloadingPermission(arrivalId))
-        originalValue <- OptionT(rejectionService.getRejectedValueAsDate(arrivalId, request.userAnswers)(DateGoodsUnloadedPage))
-        dateOfPreparation = up.dateOfPreparation
+        unloadingPermission <- OptionT(unloadingPermissionService.getUnloadingPermission(arrivalId))
+        originalValue       <- OptionT(rejectionService.getRejectedValueAsDate(arrivalId, request.userAnswers)(DateGoodsUnloadedPage))
       } yield {
-        val form         = formProvider(dateOfPreparation)
+        val form         = formProvider(unloadingPermission.dateOfPreparation)
         val preparedForm = form.fill(originalValue)
 
-        Ok(view(up.movementReferenceNumber, arrivalId, preparedForm))
+        Ok(view(unloadingPermission.movementReferenceNumber, arrivalId, preparedForm))
       }).getOrElseF {
         errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
       }
-
   }
 
-  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId)).async {
+  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.getData(arrivalId).async {
     implicit request =>
       (for {
-        up <- OptionT(unloadingPermissionService.getUnloadingPermission(arrivalId))
-        dateOfPreparation = up.dateOfPreparation
+        unloadingPermission <- OptionT(unloadingPermissionService.getUnloadingPermission(arrivalId))
+        dateOfPreparation = unloadingPermission.dateOfPreparation
         rejectionMessage <- OptionT(rejectionService.unloadingRemarksRejectionMessage(arrivalId))
       } yield formProvider(dateOfPreparation)
         .bindFromRequest()
         .fold(
-          formWithErrors => {
-            val mrn = up.movementReferenceNumber
-            Future.successful(BadRequest(view(mrn, arrivalId, formWithErrors)))
-          },
+          formWithErrors => Future.successful(BadRequest(view(unloadingPermission.movementReferenceNumber, arrivalId, formWithErrors))),
           value => {
             val userAnswers = UserAnswers(arrivalId, rejectionMessage.movementReferenceNumber, request.eoriNumber)
             for {

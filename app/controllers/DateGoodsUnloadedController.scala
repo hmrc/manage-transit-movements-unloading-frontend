@@ -35,71 +35,60 @@ import scala.concurrent.{ExecutionContext, Future}
 class DateGoodsUnloadedController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
+  actions: Actions,
   navigator: NavigatorUnloadingPermission,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
   formProvider: DateGoodsUnloadedFormProvider,
   val controllerComponents: MessagesControllerComponents,
   unloadingPermissionService: UnloadingPermissionService,
-  checkArrivalStatus: CheckArrivalStatusProvider,
   errorHandler: ErrorHandler,
   view: DateGoodsUnloadedView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {
-      implicit request =>
-        unloadingPermissionService
-          .getUnloadingPermission(arrivalId) // TODO potentially move this to the action
-          .flatMap {
-            case Some(up) =>
-              val form = formProvider(up.dateOfPreparation)
+  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
+    implicit request =>
+      unloadingPermissionService
+        .getUnloadingPermission(arrivalId) // TODO potentially move this to the action
+        .flatMap {
+          case Some(up) =>
+            val form = formProvider(up.dateOfPreparation)
 
-              val preparedForm = request.userAnswers.get(DateGoodsUnloadedPage) match {
-                case Some(value) => form.fill(value)
-                case None        => form
-              }
+            val preparedForm = request.userAnswers.get(DateGoodsUnloadedPage) match {
+              case Some(value) => form.fill(value)
+              case None        => form
+            }
 
-              val mrn = request.userAnswers.mrn
+            val mrn = request.userAnswers.mrn
 
-              Future.successful(Ok(view(mrn, arrivalId, mode, preparedForm)))
+            Future.successful(Ok(view(mrn, arrivalId, mode, preparedForm)))
 
-            case None =>
-              errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
-          }
+          case None =>
+            errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
+        }
 
-    }
+  }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {
-      implicit request =>
-        unloadingPermissionService
-          .getUnloadingPermission(arrivalId)
-          .flatMap {
-            case Some(up) =>
-              formProvider(up.dateOfPreparation)
-                .bindFromRequest()
-                .fold(
-                  formWithErrors => {
+  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
+    implicit request =>
+      unloadingPermissionService
+        .getUnloadingPermission(arrivalId)
+        .flatMap {
+          case Some(unloadingPermission) =>
+            formProvider(unloadingPermission.dateOfPreparation)
+              .bindFromRequest()
+              .fold(
+                formWithErrors => Future.successful(BadRequest(view(request.userAnswers.mrn, arrivalId, mode, formWithErrors))),
+                value =>
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(DateGoodsUnloadedPage, value))
+                    _              <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(navigator.nextPage(DateGoodsUnloadedPage, mode, updatedAnswers, Some(unloadingPermission)))
+              )
 
-                    val mrn = request.userAnswers.mrn
+          case None =>
+            errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
+        }
 
-                    Future.successful(BadRequest(view(mrn, arrivalId, mode, formWithErrors)))
-                  },
-                  value =>
-                    for {
-                      updatedAnswers      <- Future.fromTry(request.userAnswers.set(DateGoodsUnloadedPage, value))
-                      _                   <- sessionRepository.set(updatedAnswers)
-                      unloadingPermission <- unloadingPermissionService.getUnloadingPermission(arrivalId)
-                    } yield Redirect(navigator.nextPage(DateGoodsUnloadedPage, mode, updatedAnswers, unloadingPermission))
-                )
-
-            case None =>
-              errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
-          }
-
-    }
+  }
 }

@@ -19,7 +19,7 @@ package controllers
 import audit.services.AuditEventSubmissionService
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import controllers.actions.{CheckArrivalStatusProvider, DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
+import controllers.actions.Actions
 import handlers.ErrorHandler
 import models.ArrivalId
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -34,16 +34,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourAnswersController @Inject() (
   override val messagesApi: MessagesApi,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
+  actions: Actions,
   unloadingPermissionService: UnloadingPermissionService,
   val controllerComponents: MessagesControllerComponents,
   val appConfig: FrontendAppConfig,
   errorHandler: ErrorHandler,
   unloadingRemarksService: UnloadingRemarksService,
   auditEventSubmissionService: AuditEventSubmissionService,
-  checkArrivalStatus: CheckArrivalStatusProvider,
   view: CheckYourAnswersView,
   viewModel: CheckYourAnswersViewModel
 )(implicit ec: ExecutionContext)
@@ -51,31 +48,29 @@ class CheckYourAnswersController @Inject() (
     with I18nSupport
     with HttpErrorFunctions {
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData) {
-      implicit request =>
-        val sections = viewModel(request.userAnswers)
-        Ok(view(request.userAnswers.mrn, arrivalId, sections))
-    }
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
+    implicit request =>
+      val sections = viewModel(request.userAnswers)
+      Ok(view(request.userAnswers.mrn, arrivalId, sections))
+  }
 
-  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {
-      implicit request =>
-        unloadingPermissionService.getUnloadingPermission(arrivalId).flatMap {
-          case Some(unloadingPermission) =>
-            unloadingRemarksService.submit(arrivalId, request.userAnswers, unloadingPermission) flatMap {
-              case Some(status) =>
-                status match {
-                  case status if is2xx(status) =>
-                    auditEventSubmissionService.auditUnloadingRemarks(request.userAnswers, "submitUnloadingRemarks")
-                    Future.successful(Redirect(routes.ConfirmationController.onPageLoad(arrivalId)))
-                  case status if is4xx(status) => errorHandler.onClientError(request, status)
-                  case _                       => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
-                }
-              case None => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
-            }
-          case _ => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
-        }
-    }
+  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
+    implicit request =>
+      unloadingPermissionService.getUnloadingPermission(arrivalId).flatMap {
+        case Some(unloadingPermission) =>
+          unloadingRemarksService.submit(arrivalId, request.userAnswers, unloadingPermission) flatMap {
+            case Some(status) =>
+              status match {
+                case status if is2xx(status) =>
+                  auditEventSubmissionService.auditUnloadingRemarks(request.userAnswers, "submitUnloadingRemarks")
+                  Future.successful(Redirect(routes.ConfirmationController.onPageLoad(arrivalId)))
+                case status if is4xx(status) => errorHandler.onClientError(request, status)
+                case _                       => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
+              }
+            case None => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
+          }
+        case _ => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
+      }
+  }
 
 }
