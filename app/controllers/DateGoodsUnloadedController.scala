@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.DateGoodsUnloadedFormProvider
 import handlers.ErrorHandler
 import models.{ArrivalId, Mode}
-import navigation.NavigatorUnloadingPermission
+import navigation.Navigator
 import pages.DateGoodsUnloadedPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,7 +36,7 @@ class DateGoodsUnloadedController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
-  navigator: NavigatorUnloadingPermission,
+  navigator: Navigator,
   formProvider: DateGoodsUnloadedFormProvider,
   val controllerComponents: MessagesControllerComponents,
   unloadingPermissionService: UnloadingPermissionService,
@@ -51,8 +51,8 @@ class DateGoodsUnloadedController @Inject() (
       unloadingPermissionService
         .getUnloadingPermission(arrivalId) // TODO potentially move this to the action
         .flatMap {
-          case Some(up) =>
-            val form = formProvider(up.dateOfPreparation)
+          case Some(unloadingPermission) =>
+            val form = formProvider(unloadingPermission.dateOfPreparation)
 
             val preparedForm = request.userAnswers.get(DateGoodsUnloadedPage) match {
               case Some(value) => form.fill(value)
@@ -83,7 +83,7 @@ class DateGoodsUnloadedController @Inject() (
                   for {
                     updatedAnswers <- Future.fromTry(request.userAnswers.set(DateGoodsUnloadedPage, value))
                     _              <- sessionRepository.set(updatedAnswers)
-                  } yield Redirect(navigator.nextPage(DateGoodsUnloadedPage, mode, updatedAnswers, Some(unloadingPermission)))
+                  } yield Redirect(navigator.nextPage(DateGoodsUnloadedPage, mode, updatedAnswers))
               )
 
           case None =>

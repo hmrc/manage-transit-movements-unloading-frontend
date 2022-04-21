@@ -18,6 +18,7 @@ package navigation
 
 import com.google.inject.{Inject, Singleton}
 import controllers.routes
+import derivable.DeriveNumberOfSeals
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages._
 import play.api.mvc.Call
@@ -31,7 +32,12 @@ class Navigator @Inject() () {
       ua => routes.DateGoodsUnloadedController.onPageLoad(ua.id, NormalMode)
 
     case DateGoodsUnloadedPage =>
-      ua => routes.CanSealsBeReadController.onPageLoad(ua.id, NormalMode)
+      ua =>
+        if (ua.get(DeriveNumberOfSeals).exists(_ > 0)) {
+          routes.CanSealsBeReadController.onPageLoad(ua.id, NormalMode)
+        } else {
+          routes.UnloadingSummaryController.onPageLoad(ua.id)
+        }
 
     case CanSealsBeReadPage =>
       ua =>

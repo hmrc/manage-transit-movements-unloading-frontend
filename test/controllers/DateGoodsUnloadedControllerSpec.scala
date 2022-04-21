@@ -17,12 +17,12 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import cats.data.NonEmptyList
 import forms.DateGoodsUnloadedFormProvider
-import models.{NormalMode, TraderAtDestination, UnloadingPermission}
-import navigation.{FakeUnloadingPermissionNavigator, NavigatorUnloadingPermission}
+import generators.Generators
+import models.{NormalMode, UnloadingPermission}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.DateGoodsUnloadedPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -34,25 +34,13 @@ import views.html.DateGoodsUnloadedView
 import java.time.{Clock, Instant, LocalDate, ZoneId}
 import scala.concurrent.Future
 
-class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val stubClock         = Clock.fixed(Instant.now, ZoneId.systemDefault)
   private val dateOfPreparation = LocalDate.now(stubClock)
   private val validAnswer       = dateOfPreparation
 
-  private val unloadingPermission = UnloadingPermission(
-    movementReferenceNumber = "19IT02110010007827",
-    transportIdentity = None,
-    transportCountry = None,
-    grossMass = "1000",
-    numberOfItems = 1,
-    numberOfPackages = Some(1),
-    traderAtDestination = TraderAtDestination("eori", "name", "streetAndNumber", "postcode", "city", "countryCode"),
-    presentationOffice = "GB000060",
-    seals = None,
-    goodsItems = NonEmptyList(goodsItemMandatory, Nil),
-    dateOfPreparation = dateOfPreparation
-  )
+  private val unloadingPermission = arbitrary[UnloadingPermission].sample.value
 
   private def form = new DateGoodsUnloadedFormProvider(stubClock)(dateOfPreparation)
 
@@ -64,7 +52,6 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[NavigatorUnloadingPermission].toInstance(new FakeUnloadingPermissionNavigator(onwardRoute)),
         bind[UnloadingPermissionService].toInstance(mockUnloadingPermissionService),
         bind[Clock].toInstance(stubClock)
       )
@@ -170,9 +157,8 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       val view = app.injector.instanceOf[DateGoodsUnloadedView]
 
-      val request =
-        FakeRequest(POST, dateGoodsUnloadedRoute)
-          .withFormUrlEncodedBody(badSubmission.toSeq: _*)
+      val request = FakeRequest(POST, dateGoodsUnloadedRoute)
+        .withFormUrlEncodedBody(badSubmission.toSeq: _*)
 
       val boundForm = form.bind(badSubmission)
 
@@ -197,9 +183,8 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
         "value.month" -> invalidDate.getMonth.toString,
         "value.year"  -> invalidDate.getYear.toString
       )
-      val request =
-        FakeRequest(POST, dateGoodsUnloadedRoute)
-          .withFormUrlEncodedBody(badSubmission.toSeq: _*)
+      val request = FakeRequest(POST, dateGoodsUnloadedRoute)
+        .withFormUrlEncodedBody(badSubmission.toSeq: _*)
 
       val boundForm = form.bind(badSubmission)
 
