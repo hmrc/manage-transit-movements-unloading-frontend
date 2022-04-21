@@ -17,16 +17,13 @@
 package controllers
 
 import controllers.actions._
-import derivable.DeriveNumberOfSeals
 import forms.NewSealNumberFormProvider
-import handlers.ErrorHandler
-import models.{ArrivalId, Index, Mode, UserAnswers}
+import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
 import pages.NewSealNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.UnloadingPermissionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.NewSealNumberView
 
@@ -43,8 +40,6 @@ class NewSealNumberController @Inject() (
   formProvider: NewSealNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: NewSealNumberView,
-  unloadingPermissionService: UnloadingPermissionService,
-  errorHandler: ErrorHandler,
   checkArrivalStatus: CheckArrivalStatusProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -66,26 +61,16 @@ class NewSealNumberController @Inject() (
   def onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] =
     (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {
       implicit request =>
-        val userAnswers: Future[Option[UserAnswers]] = request.userAnswers.get(DeriveNumberOfSeals) match {
-          case Some(_) => Future.successful(Some(request.userAnswers))
-          case None    => unloadingPermissionService.convertSeals(request.userAnswers)
-        }
-
-        userAnswers.flatMap {
-          case Some(ua) =>
-            form
-              .bindFromRequest()
-              .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, mode))),
-                value =>
-                  for {
-                    updatedAnswers <- Future.fromTry(ua.set(NewSealNumberPage(index), value))
-                    _              <- sessionRepository.set(updatedAnswers)
-                  } yield Redirect(navigator.nextPage(NewSealNumberPage(index), mode, updatedAnswers))
-              )
-          case _ =>
-            errorHandler.onClientError(request, BAD_REQUEST, "errors.malformedSeals") //todo: get design and content to look at this
-        }
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, mode))),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(NewSealNumberPage(index), value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(NewSealNumberPage(index), mode, updatedAnswers))
+          )
 
     }
 

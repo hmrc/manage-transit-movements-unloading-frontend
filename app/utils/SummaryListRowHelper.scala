@@ -45,25 +45,8 @@ class SummaryListRowHelper(implicit messages: Messages) {
     call: Option[Call],
     args: Any*
   ): SummaryListRow =
-    buildSimpleRow(
-      prefix = prefix,
-      key = messages(s"$prefix.checkYourAnswersLabel", args: _*).toText,
-      answer = answer,
-      id = id,
-      call = call,
-      args = args: _*
-    )
-
-  def buildSimpleRow(
-    prefix: String,
-    key: Content,
-    answer: Content,
-    id: Option[String],
-    call: Option[Call],
-    args: Any*
-  ): SummaryListRow =
     SummaryListRow(
-      key = Key(key),
+      key = messages(s"$prefix.checkYourAnswersLabel", args: _*).toKey,
       value = Value(answer),
       actions = call.map {
         x =>
