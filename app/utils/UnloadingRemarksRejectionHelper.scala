@@ -24,92 +24,45 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
-class UnloadingRemarksRejectionHelper {
+class UnloadingRemarksRejectionHelper(implicit messages: Messages) extends SummaryListRowHelper {
 
-  def vehicleNameRegistrationReference(arrivalId: ArrivalId, value: String)(implicit messages: Messages): SummaryListRow =
-    SummaryListRow(
-      key = messages("changeVehicle.reference.label").toKey,
-      value = Value(value.toText),
-      actions = Some(
-        Actions(
-          items = Seq(
-            ActionItem(
-              content = messages("site.edit").toText,
-              href = routes.VehicleNameRegistrationRejectionController.onPageLoad(arrivalId).url,
-              visuallyHiddenText = Some(messages("site.edit.hidden", messages("changeVehicle.reference.label"))),
-              attributes = Map("id" -> "change-vehicle-registration-rejection")
-            )
-          )
-        )
-      )
+  def vehicleNameRegistrationReference(arrivalId: ArrivalId, value: String): SummaryListRow =
+    buildRow(
+      prefix = "changeVehicle.reference",
+      answer = value.toText,
+      id = Some("change-vehicle-registration-rejection"),
+      call = Some(routes.VehicleNameRegistrationRejectionController.onPageLoad(arrivalId))
     )
 
-  def totalNumberOfPackages(arrivalId: ArrivalId, value: String)(implicit messages: Messages): SummaryListRow =
-    SummaryListRow(
-      key = messages("changeItems.totalNumberOfPackages.label").toKey,
-      value = Value(value.toText),
-      actions = Some(
-        Actions(
-          items = Seq(
-            ActionItem(
-              content = messages("site.edit").toText,
-              href = routes.TotalNumberOfPackagesRejectionController.onPageLoad(arrivalId).url,
-              visuallyHiddenText = Some(messages("site.edit.hidden", messages("changeItems.totalNumberOfPackages.label")))
-            )
-          )
-        )
-      )
+  def totalNumberOfPackages(arrivalId: ArrivalId, value: String): SummaryListRow =
+    buildRow(
+      prefix = "changeItems.totalNumberOfPackages",
+      answer = value.toText,
+      id = Some("change-total-number-of-packages"),
+      call = Some(routes.TotalNumberOfPackagesRejectionController.onPageLoad(arrivalId))
     )
 
-  def totalNumberOfItems(arrivalId: ArrivalId, value: String)(implicit messages: Messages): SummaryListRow =
-    SummaryListRow(
-      key = messages("changeItems.totalNumberOfItems.label").toKey,
-      value = Value(value.toText),
-      actions = Some(
-        Actions(
-          items = Seq(
-            ActionItem(
-              content = messages("site.edit").toText,
-              href = routes.TotalNumberOfItemsRejectionController.onPageLoad(arrivalId).url,
-              visuallyHiddenText = Some(messages("site.edit.hidden", messages("changeItems.totalNumberOfItems.label")))
-            )
-          )
-        )
-      )
+  def totalNumberOfItems(arrivalId: ArrivalId, value: String): SummaryListRow =
+    buildRow(
+      prefix = "changeItems.totalNumberOfItems",
+      answer = value.toText,
+      id = Some("change-total-number-of-items"),
+      call = Some(routes.TotalNumberOfItemsRejectionController.onPageLoad(arrivalId))
     )
 
-  def grossMassAmount(arrivalId: ArrivalId, value: String)(implicit messages: Messages): SummaryListRow =
-    SummaryListRow(
-      key = messages("changeItems.grossMass.label").toKey,
-      value = Value(value.toText),
-      actions = Some(
-        Actions(
-          items = Seq(
-            ActionItem(
-              content = messages("site.edit").toText,
-              href = routes.GrossMassAmountRejectionController.onPageLoad(arrivalId).url,
-              visuallyHiddenText = Some(messages("site.edit.hidden", messages("changeItems.grossMass.label")))
-            )
-          )
-        )
-      )
+  def grossMassAmount(arrivalId: ArrivalId, value: String): SummaryListRow =
+    buildRow(
+      prefix = "changeItems.grossMass",
+      answer = value.toText,
+      id = Some("change-gross-mass-amount"),
+      call = Some(routes.GrossMassAmountRejectionController.onPageLoad(arrivalId))
     )
 
-  def unloadingDate(arrivalId: ArrivalId, value: LocalDate)(implicit messages: Messages): SummaryListRow =
-    SummaryListRow(
-      key = messages("changeItems.dateGoodsUnloaded.label").toKey,
-      value = Value(value.format(Format.cyaDateFormatter).toText),
-      actions = Some(
-        Actions(
-          items = Seq(
-            ActionItem(
-              content = messages("site.edit").toText,
-              href = routes.DateGoodsUnloadedRejectionController.onPageLoad(arrivalId).url,
-              visuallyHiddenText = Some(messages("site.edit.hidden", messages("changeItems.dateGoodsUnloaded.label"))),
-              attributes = Map("id" -> "change-date-goods-unloaded")
-            )
-          )
-        )
-      )
+  def unloadingDate(arrivalId: ArrivalId, value: LocalDate): SummaryListRow =
+    buildRow(
+      prefix = "changeItems.dateGoodsUnloaded",
+      answer = formatAsDate(value),
+      id = Some("change-date-goods-unloaded"),
+      call = Some(routes.DateGoodsUnloadedRejectionController.onPageLoad(arrivalId))
     )
 }

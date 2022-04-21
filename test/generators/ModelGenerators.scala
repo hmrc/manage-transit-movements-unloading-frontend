@@ -16,8 +16,6 @@
 
 package generators
 
-import java.time.LocalDate
-
 import models.messages._
 import models.reference.Country
 import models.{UnloadingPermission, _}
@@ -25,6 +23,8 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen.choose
 import org.scalacheck.{Arbitrary, Gen}
 import wolfendale.scalacheck.regexp.RegexpGen
+
+import java.time.LocalDate
 
 trait ModelGenerators {
 
@@ -232,5 +232,10 @@ trait ModelGenerators {
         unloadingRemark = unloadingRemark,
         unloadingDate = date
       )
+    }
+
+  implicit lazy val arbitraryMode: Arbitrary[Mode] =
+    Arbitrary {
+      Gen.oneOf(NormalMode, CheckMode)
     }
 }

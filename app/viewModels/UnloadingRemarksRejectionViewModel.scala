@@ -22,16 +22,13 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.Date.getDate
 import utils.UnloadingRemarksRejectionHelper
 
-import javax.inject.Inject
-
-class UnloadingRemarksRejectionViewModel @Inject() (
-  helper: UnloadingRemarksRejectionHelper
-) {
+class UnloadingRemarksRejectionViewModel {
 
   def apply(
     error: FunctionalError,
     arrivalId: ArrivalId
-  )(implicit messages: Messages): Option[SummaryListRow] =
+  )(implicit messages: Messages): Option[SummaryListRow] = {
+    lazy val helper = new UnloadingRemarksRejectionHelper()
     error.originalAttributeValue.flatMap {
       originalValue =>
         error.pointer match {
@@ -46,4 +43,5 @@ class UnloadingRemarksRejectionViewModel @Inject() (
           case _: DefaultPointer => None
         }
     }
+  }
 }

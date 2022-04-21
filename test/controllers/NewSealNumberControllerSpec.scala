@@ -18,16 +18,13 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NewSealNumberFormProvider
-import models.{Index, MovementReferenceNumber, NormalMode, UserAnswers}
+import models.{Index, NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.when
 import pages.NewSealNumberPage
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.UnloadingPermissionService
 import views.html.NewSealNumberView
 
 import scala.concurrent.Future
@@ -39,19 +36,7 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
   private val index        = Index(0)
   private val mode         = NormalMode
 
-  lazy val newSealNumberRoute = routes.NewSealNumberController.onPageLoad(arrivalId, index, mode).url
-
-  private def mockUnloadingPermissionService = mock[UnloadingPermissionService]
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockUnloadingPermissionService)
-  }
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(bind[UnloadingPermissionService].toInstance(mockUnloadingPermissionService))
+  private lazy val newSealNumberRoute = routes.NewSealNumberController.onPageLoad(arrivalId, index, mode).url
 
   "NewSealNumber Controller" - {
 
@@ -98,15 +83,11 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
         checkArrivalStatus()
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-        when(mockUnloadingPermissionService.convertSeals(any())(any(), any()))
-          .thenReturn(Future.successful(Some(emptyUserAnswers)))
-
         val userAnswers = emptyUserAnswers.set(NewSealNumberPage(index), "answer").success.value
         setExistingUserAnswers(userAnswers)
 
-        val request =
-          FakeRequest(POST, newSealNumberRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+        val request = FakeRequest(POST, newSealNumberRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(app, request).value
 
@@ -116,9 +97,6 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
       "must return a Bad Request and errors when invalid data is submitted" in {
         checkArrivalStatus()
-
-        when(mockUnloadingPermissionService.convertSeals(any())(any(), any()))
-          .thenReturn(Future.successful(Some(emptyUserAnswers)))
 
         val userAnswers = emptyUserAnswers.set(NewSealNumberPage(index), "answer").success.value
         setExistingUserAnswers(userAnswers)
@@ -153,9 +131,8 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
         checkArrivalStatus()
         setNoExistingUserAnswers()
 
-        val request =
-          FakeRequest(POST, newSealNumberRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+        val request = FakeRequest(POST, newSealNumberRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(app, request).value
 
@@ -180,20 +157,6 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual onwardRoute.url
-      }
-
-      "redirect to error page when no UserAnswers returned from unloading permissions service" ignore {
-        checkArrivalStatus()
-        val ua = UserAnswers(arrivalId, MovementReferenceNumber("41", "IT", "0211001000782"), eoriNumber, Json.obj())
-        setExistingUserAnswers(ua)
-
-        val request =
-          FakeRequest(POST, routes.NewSealNumberController.onPageLoad(arrivalId, Index(0), NormalMode).url)
-            .withFormUrlEncodedBody(("value", "answer"))
-
-        route(app, request).value
-
-        //todo: Test this
       }
     }
   }

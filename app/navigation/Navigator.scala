@@ -19,7 +19,7 @@ package navigation
 import com.google.inject.{Inject, Singleton}
 import controllers.routes
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
-import pages.{ConfirmRemoveSealPage, _}
+import pages._
 import play.api.mvc.Call
 
 @Singleton
@@ -47,45 +47,18 @@ class Navigator @Inject() () {
           case _       => routes.SessionExpiredController.onPageLoad() //TODO temporary redirect will be error page
         }
 
-    case ChangesToReportPage =>
-      ua => routes.UnloadingSummaryController.onPageLoad(ua.id)
-
-    case NewSealNumberPage(_) =>
-      ua => routes.UnloadingSummaryController.onPageLoad(ua.id)
-
-    case ConfirmRemoveCommentsPage =>
-      ua => routes.UnloadingSummaryController.onPageLoad(ua.id)
-
-    case ConfirmRemoveSealPage =>
-      ua => routes.UnloadingSummaryController.onPageLoad(ua.id)
-
     case _ =>
-      ua => routes.IndexController.onPageLoad(ua.id)
+      ua => routes.UnloadingSummaryController.onPageLoad(ua.id)
 
   }
 
-  private val checkRouteMap: Page => UserAnswers => Call = {
-    case VehicleNameRegistrationReferencePage =>
-      ua => routes.UnloadingSummaryController.onPageLoad(ua.id)
-    case VehicleRegistrationCountryPage =>
-      ua => routes.UnloadingSummaryController.onPageLoad(ua.id)
-    case GrossMassAmountPage =>
-      ua => routes.UnloadingSummaryController.onPageLoad(ua.id)
-    case TotalNumberOfItemsPage =>
-      ua => routes.UnloadingSummaryController.onPageLoad(ua.id)
-    case TotalNumberOfPackagesPage =>
-      ua => routes.UnloadingSummaryController.onPageLoad(ua.id)
-    case NewSealNumberPage(_) =>
-      ua => routes.UnloadingSummaryController.onPageLoad(ua.id)
-    case _ =>
-      ua => routes.CheckYourAnswersController.onPageLoad(ua.id)
-  }
+  private val checkRoutes: Page => UserAnswers => Call = _ => ua => routes.CheckYourAnswersController.onPageLoad(ua.id)
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
     case NormalMode =>
       normalRoutes(page)(userAnswers)
     case CheckMode =>
-      checkRouteMap(page)(userAnswers)
+      checkRoutes(page)(userAnswers)
   }
 
 }

@@ -18,7 +18,6 @@ package utils
 
 import base.SpecBase
 import controllers.routes
-import models.CheckMode
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
@@ -46,7 +45,7 @@ class RejectionCheckYourAnswersHelperSpec extends SpecBase {
 
         forAll(arbitrary[String]) {
           str =>
-            val userAnswers = emptyUserAnswers.set(VehicleNameRegistrationReferencePage, str).success.value
+            val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, str)
             val helper      = new RejectionCheckYourAnswersHelper(userAnswers)
             val result      = helper.vehicleNameRegistrationRejection
 
@@ -89,7 +88,7 @@ class RejectionCheckYourAnswersHelperSpec extends SpecBase {
     "must return Some(row)" - {
       "when DateGoodsUnloadedPage is defined" in {
 
-        val userAnswers = emptyUserAnswers.set(DateGoodsUnloadedPage, LocalDate.parse("2000-01-01")).success.value
+        val userAnswers = emptyUserAnswers.setValue(DateGoodsUnloadedPage, LocalDate.parse("2000-01-01"))
         val helper      = new RejectionCheckYourAnswersHelper(userAnswers)
         val result      = helper.dateGoodsUnloaded
 
@@ -133,7 +132,7 @@ class RejectionCheckYourAnswersHelperSpec extends SpecBase {
 
         forAll(arbitrary[Int]) {
           int =>
-            val userAnswers = emptyUserAnswers.set(TotalNumberOfPackagesPage, int).success.value
+            val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, int)
             val helper      = new RejectionCheckYourAnswersHelper(userAnswers)
             val result      = helper.totalNumberOfPackages
 
@@ -178,7 +177,7 @@ class RejectionCheckYourAnswersHelperSpec extends SpecBase {
 
         forAll(arbitrary[Int]) {
           int =>
-            val userAnswers = emptyUserAnswers.set(TotalNumberOfItemsPage, int).success.value
+            val userAnswers = emptyUserAnswers.setValue(TotalNumberOfItemsPage, int)
             val helper      = new RejectionCheckYourAnswersHelper(userAnswers)
             val result      = helper.totalNumberOfItems
 
@@ -191,7 +190,7 @@ class RejectionCheckYourAnswersHelperSpec extends SpecBase {
                     List(
                       ActionItem(
                         content = "Change".toText,
-                        href = routes.TotalNumberOfItemsController.onPageLoad(userAnswers.id, CheckMode).url,
+                        href = routes.TotalNumberOfItemsRejectionController.onPageLoad(userAnswers.id).url,
                         visuallyHiddenText = Some("the new total number of items"),
                         attributes = Map("id" -> "change-total-number-of-items")
                       )
@@ -223,7 +222,7 @@ class RejectionCheckYourAnswersHelperSpec extends SpecBase {
 
         forAll(arbitrary[String]) {
           str =>
-            val userAnswers = emptyUserAnswers.set(GrossMassAmountPage, str).success.value
+            val userAnswers = emptyUserAnswers.setValue(GrossMassAmountPage, str)
             val helper      = new RejectionCheckYourAnswersHelper(userAnswers)
             val result      = helper.grossMassAmount
 

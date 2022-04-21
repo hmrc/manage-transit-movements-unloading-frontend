@@ -19,10 +19,10 @@
 @import config.FrontendAppConfig
 
 @this(
-        main_template: MainTemplate,
-        heading: Heading,
-        button: Button,
-        config: FrontendAppConfig
+    main_template: MainTemplate,
+    heading: Heading,
+    button: Button,
+    config: FrontendAppConfig
 )
 
 @(mrn: MovementReferenceNumber, pdfUrl: String, nextPageUrl: String)(implicit request: Request[_], messages: Messages)
@@ -40,7 +40,10 @@
         <li>@messages("unloadingGuidance.bullet2", mrn)</li>
     </ul>
 
-    <p class="govuk-body"><a class="govuk-link" href=@pdfUrl>@messages("unloadingGuidance.pdf")</a></p>
+    <p class="govuk-body"><a id="download" class="govuk-link" href=@pdfUrl>@messages("unloadingGuidance.pdf")</a></p>
 
-    @button(href = Some(nextPageUrl))
+    @button(
+        href = Some(nextPageUrl),
+        attributes = Map("id" -> "submit")
+    )
 }

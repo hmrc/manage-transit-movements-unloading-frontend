@@ -16,45 +16,31 @@
 
 package viewModels
 
-import cats.data.NonEmptyList
-import models.reference.Country
-import models.{UnloadingPermission, UserAnswers}
-import pages._
+import models.{CheckMode, UserAnswers}
 import play.api.i18n.Messages
-import queries.SealsQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.{CheckYourAnswersHelper, UnloadingSummaryHelper}
 import viewModels.sections.Section
 
 class CheckYourAnswersViewModel {
 
-  def apply(
-    userAnswers: UserAnswers,
-    unloadingPermission: UnloadingPermission,
-    summaryTransportCountry: Option[Country]
-  )(implicit messages: Messages): Seq[Section] =
+  def apply(userAnswers: UserAnswers)(implicit messages: Messages): Seq[Section] =
     Seq(
       goodsUnloadedSection(userAnswers),
-      sealsSection(userAnswers, unloadingPermission),
-      itemsSection(userAnswers, unloadingPermission, summaryTransportCountry)
+      sealsSection(userAnswers),
+      itemsSection(userAnswers)
     )
 
-  private def sealsSection(
-    userAnswers: UserAnswers,
-    unloadingPermission: UnloadingPermission
-  )(implicit messages: Messages): Section = {
-    val checkYourAnswersRow = new CheckYourAnswersHelper(userAnswers)
+  private def sealsSection(userAnswers: UserAnswers)(implicit messages: Messages): Section = {
+    val helper = new CheckYourAnswersHelper(userAnswers)
 
-    val rowCanSealsBeRead: Option[SummaryListRow]    = checkYourAnswersRow.canSealsBeRead
-    val rowAreAnySealsBroken: Option[SummaryListRow] = checkYourAnswersRow.areAnySealsBroken
+    val rows = Seq(
+      helper.seals,
+      helper.canSealsBeRead,
+      helper.areAnySealsBroken
+    ).flatten
 
-    val seals: Option[SummaryListRow] = (userAnswers.get(SealsQuery), unloadingPermission.seals) match {
-      case (Some(userAnswersSeals), _)            => checkYourAnswersRow.seals(userAnswersSeals)
-      case (None, Some(unloadingPermissionSeals)) => checkYourAnswersRow.seals(unloadingPermissionSeals.SealId)
-      case (_, _)                                 => None
-    }
-
-    Section(messages("checkYourAnswers.seals.subHeading"), seals.toSeq ++ rowCanSealsBeRead ++ rowAreAnySealsBroken)
+    Section(messages("checkYourAnswers.seals.subHeading"), rows)
   }
 
   private def goodsUnloadedSection(userAnswers: UserAnswers)(implicit messages: Messages): Section = {
@@ -63,46 +49,18 @@ class CheckYourAnswersViewModel {
     Section(rowGoodsUnloaded.toSeq)
   }
 
-  private def itemsSection(
-    userAnswers: UserAnswers,
-    unloadingPermission: UnloadingPermission,
-    summaryTransportCountry: Option[Country]
-  )(implicit messages: Messages): Section = {
+  private def itemsSection(userAnswers: UserAnswers)(implicit messages: Messages): Section = {
+    val helper = new UnloadingSummaryHelper(userAnswers, CheckMode)
 
-    val unloadingSummaryRow = new UnloadingSummaryHelper(userAnswers)
+    val rows = helper.vehicleUsed.toSeq ++
+      helper.registeredCountry.toSeq ++
+      helper.grossMass.toSeq ++
+      helper.totalNumberOfItems.toSeq ++
+      helper.totalNumberOfPackages.toSeq ++
+      helper.items ++
+      helper.comments.toSeq
 
-    val transportIdentityAnswer: Option[String] = userAnswers.get(VehicleNameRegistrationReferencePage)
-    val transportIdentityRow: Seq[SummaryListRow] =
-      SummaryRow.row(transportIdentityAnswer)(unloadingPermission.transportIdentity)(unloadingSummaryRow.vehicleUsed)
-
-    val transportCountryDescription: Option[String] = summaryTransportCountry match {
-      case Some(country) => Some(country.description)
-      case None          => unloadingPermission.transportCountry
-    }
-
-    val countryAnswer: Option[String]            = SummaryRow.userAnswerCountry(userAnswers)(VehicleRegistrationCountryPage)
-    val transportCountryRow: Seq[SummaryListRow] = SummaryRow.row(countryAnswer)(transportCountryDescription)(unloadingSummaryRow.registeredCountry)
-
-    val grossMassAnswer: Option[String]   = SummaryRow.userAnswerString(userAnswers)(GrossMassAmountPage)
-    val grossMassRow: Seq[SummaryListRow] = SummaryRow.row(grossMassAnswer)(Some(unloadingPermission.grossMass))(unloadingSummaryRow.grossMass)
-
-    val itemsRow: NonEmptyList[SummaryListRow] = SummaryRow.rowGoodsItems(unloadingPermission.goodsItems)(userAnswers)(unloadingSummaryRow.items)
-
-    val totalNumberOfItemsAnswer: Option[Int] = SummaryRow.userAnswerInt(userAnswers)(TotalNumberOfItemsPage)
-    val totalNumberOfItemsRow: Seq[SummaryListRow] =
-      SummaryRow.rowInt(totalNumberOfItemsAnswer)(Some(unloadingPermission.numberOfItems))(unloadingSummaryRow.totalNumberOfItems)
-
-    val totalNumberOfPackagesAnswer: Option[Int] = SummaryRow.userAnswerInt(userAnswers)(TotalNumberOfPackagesPage)
-    val totalNumberOfPackagesRow: Seq[SummaryListRow] =
-      SummaryRow.rowInt(totalNumberOfPackagesAnswer)(unloadingPermission.numberOfPackages)(unloadingSummaryRow.totalNumberOfPackages)
-
-    val commentsAnswer: Option[String]   = SummaryRow.userAnswerString(userAnswers)(ChangesToReportPage)
-    val commentsRow: Seq[SummaryListRow] = SummaryRow.row(commentsAnswer)(None)(unloadingSummaryRow.comments)
-
-    Section(
-      messages("checkYourAnswers.subHeading"),
-      transportIdentityRow ++ transportCountryRow ++ grossMassRow ++ totalNumberOfItemsRow ++ totalNumberOfPackagesRow ++ itemsRow.toList ++ commentsRow
-    )
+    Section(messages("checkYourAnswers.subHeading"), rows)
   }
 
 }

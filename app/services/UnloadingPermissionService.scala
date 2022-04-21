@@ -18,8 +18,7 @@ package services
 
 import com.google.inject.Inject
 import connectors.UnloadingConnector
-import models.{ArrivalId, UnloadingPermission, UserAnswers}
-import queries.SealsQuery
+import models.{ArrivalId, UnloadingPermission}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,27 +31,8 @@ class UnloadingPermissionServiceImpl @Inject() (connector: UnloadingConnector) e
         connector.getUnloadingPermission(summary.messagesLocation.unloadingPermission)
       case _ => Future.successful(None)
     }
-
-  def convertSeals(userAnswers: UserAnswers)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[UserAnswers]] =
-    getUnloadingPermission(userAnswers.id).map {
-      _.flatMap {
-        unloadingPermission =>
-          unloadingPermission.seals.fold(Option(userAnswers)) {
-            seals =>
-              userAnswers.set(SealsQuery, seals.SealId).toOption
-          }
-      }
-    }
-
-  def convertSeals(userAnswers: UserAnswers, unloadingPermission: UnloadingPermission): Option[UserAnswers] =
-    unloadingPermission.seals match {
-      case Some(seals) => userAnswers.set(SealsQuery, seals.SealId).toOption
-      case _           => Some(userAnswers)
-    }
 }
 
 trait UnloadingPermissionService {
   def getUnloadingPermission(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[UnloadingPermission]]
-  def convertSeals(userAnswers: UserAnswers)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[UserAnswers]]
-  def convertSeals(userAnswers: UserAnswers, unloadingPermission: UnloadingPermission): Option[UserAnswers]
 }

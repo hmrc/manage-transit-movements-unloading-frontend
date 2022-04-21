@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
-package viewModels
+package queries
 
-case class Link(text: String, url: String)
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+
+case object GoodsItemsQuery extends QuestionPage[Seq[String]] {
+  override def path: JsPath = JsPath \ "goodsItems"
+}
