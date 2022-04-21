@@ -17,9 +17,7 @@
 package controllers
 
 import controllers.actions._
-import models.{ArrivalId, Mode}
-import navigation.Navigator
-import pages.UnloadingGuidancePage
+import models.{ArrivalId, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -30,17 +28,17 @@ import javax.inject.Inject
 class UnloadingGuidanceController @Inject() (
   override val messagesApi: MessagesApi,
   actions: Actions,
-  navigator: Navigator,
   val controllerComponents: MessagesControllerComponents,
   view: UnloadingGuidanceView
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val pdfUrl      = routes.UnloadingPermissionPDFController.getPDF(arrivalId).url
-      val nextPageUrl = navigator.nextPage(UnloadingGuidancePage, mode, request.userAnswers).url
+      Ok(view(request.userAnswers.mrn, arrivalId))
+  }
 
-      Ok(view(request.userAnswers.mrn, pdfUrl, nextPageUrl))
+  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
+    _ => Redirect(routes.DateGoodsUnloadedController.onPageLoad(arrivalId, NormalMode))
   }
 }

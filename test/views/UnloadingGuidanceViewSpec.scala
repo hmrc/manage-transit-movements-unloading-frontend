@@ -16,18 +16,15 @@
 
 package views
 
-import org.scalacheck.Arbitrary.arbitrary
+import controllers.routes
 import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
 import views.html.UnloadingGuidanceView
 
 class UnloadingGuidanceViewSpec extends ViewBehaviours {
 
-  private val pdfUrl      = arbitrary[String].sample.value
-  private val nextPageUrl = arbitrary[String].sample.value
-
   override def view: HtmlFormat.Appendable =
-    injector.instanceOf[UnloadingGuidanceView].apply(mrn, pdfUrl, nextPageUrl)(fakeRequest, messages)
+    injector.instanceOf[UnloadingGuidanceView].apply(mrn, arrivalId)(fakeRequest, messages)
 
   override val prefix: String = "unloadingGuidance"
 
@@ -46,12 +43,8 @@ class UnloadingGuidanceViewSpec extends ViewBehaviours {
   behave like pageWithLink(
     id = "download",
     expectedText = "Download the Unloading Permission PDF",
-    expectedHref = pdfUrl
+    expectedHref = routes.UnloadingPermissionPDFController.getPDF(arrivalId).url
   )
 
-  behave like pageWithButton("Continue") {
-    button =>
-      assertElementContainsId(button, "submit")
-      assertElementContainsHref(button, nextPageUrl)
-  }
+  behave like pageWithSubmitButton("Continue")
 }
