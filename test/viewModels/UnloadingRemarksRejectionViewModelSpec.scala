@@ -18,77 +18,65 @@ package viewModels
 
 import base.SpecBase
 import generators.MessagesModelGenerators
-import models._
 import org.scalacheck.Arbitrary.arbitrary
+import pages._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
-class UnloadingRemarksRejectionViewModelSpec extends SpecBase with MessagesModelGenerators {
+import java.time.LocalDate
 
-  private lazy val errorType = arbitrary[ErrorType].sample.value
+class UnloadingRemarksRejectionViewModelSpec extends SpecBase with MessagesModelGenerators {
 
   "apply" - {
 
     "must return None" - {
-      "when originalAttributeValue is None" in {
-        val pointer   = arbitraryNonDefaultErrorPointer.arbitrary.sample.value
-        val error     = FunctionalError(errorType, pointer, None, None)
+      "when user answers empty" in {
         val viewModel = new UnloadingRemarksRejectionViewModel()
-        val result    = viewModel.apply(error, arrivalId)
-        result mustBe None
-      }
-
-      "when originalAttributeValue is defined but pointer is DefaultPointer" in {
-        val pointer                = arbitraryDefaultPointer.arbitrary.sample.value
-        val originalAttributeValue = arbitrary[String].sample.value
-        val error                  = FunctionalError(errorType, pointer, None, Some(originalAttributeValue))
-        val viewModel              = new UnloadingRemarksRejectionViewModel()
-        val result                 = viewModel.apply(error, arrivalId)
+        val result    = viewModel.apply(emptyUserAnswers)
         result mustBe None
       }
     }
 
     "must return summary list row" - {
       "when pointer is NumberOfPackagesPointer" in {
-        val originalAttributeValue = arbitrary[String].sample.value
-        val error                  = FunctionalError(errorType, NumberOfPackagesPointer, None, Some(originalAttributeValue))
-        val viewModel              = new UnloadingRemarksRejectionViewModel()
-        val result                 = viewModel.apply(error, arrivalId).get
-        result.value mustBe Value(originalAttributeValue.toText)
+        val value       = arbitrary[Int].sample.value
+        val viewModel   = new UnloadingRemarksRejectionViewModel()
+        val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, value)
+        val result      = viewModel.apply(userAnswers).get
+        result.value mustBe Value(value.toString.toText)
       }
 
       "when pointer is VehicleRegistrationPointer" in {
-        val originalAttributeValue = arbitrary[String].sample.value
-        val error                  = FunctionalError(errorType, VehicleRegistrationPointer, None, Some(originalAttributeValue))
-        val viewModel              = new UnloadingRemarksRejectionViewModel()
-        val result                 = viewModel.apply(error, arrivalId).get
-        result.value mustBe Value(originalAttributeValue.toText)
+        val value       = arbitrary[String].sample.value
+        val viewModel   = new UnloadingRemarksRejectionViewModel()
+        val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, value)
+        val result      = viewModel.apply(userAnswers).get
+        result.value mustBe Value(value.toText)
       }
 
       "when pointer is NumberOfItemsPointer" in {
-        val originalAttributeValue = arbitrary[String].sample.value
-        val error                  = FunctionalError(errorType, NumberOfItemsPointer, None, Some(originalAttributeValue))
-        val viewModel              = new UnloadingRemarksRejectionViewModel()
-        val result                 = viewModel.apply(error, arrivalId).get
-        result.value mustBe Value(originalAttributeValue.toText)
+        val value       = arbitrary[Int].sample.value
+        val viewModel   = new UnloadingRemarksRejectionViewModel()
+        val userAnswers = emptyUserAnswers.setValue(TotalNumberOfItemsPage, value)
+        val result      = viewModel.apply(userAnswers).get
+        result.value mustBe Value(value.toString.toText)
       }
 
       "when pointer is GrossMassPointer" in {
-        val originalAttributeValue = arbitrary[String].sample.value
-        val error                  = FunctionalError(errorType, GrossMassPointer, None, Some(originalAttributeValue))
-        val viewModel              = new UnloadingRemarksRejectionViewModel()
-        val result                 = viewModel.apply(error, arrivalId).get
-        result.value mustBe Value(originalAttributeValue.toText)
+        val value       = arbitrary[String].sample.value
+        val viewModel   = new UnloadingRemarksRejectionViewModel()
+        val userAnswers = emptyUserAnswers.setValue(GrossMassAmountPage, value)
+        val result      = viewModel.apply(userAnswers).get
+        result.value mustBe Value(value.toText)
       }
 
       "when pointer is UnloadingDatePointer" in {
-        val originalAttributeValue          = "20000101"
-        val formattedOriginalAttributeValue = "1 January 2000"
-
-        val error     = FunctionalError(errorType, UnloadingDatePointer, None, Some(originalAttributeValue))
-        val viewModel = new UnloadingRemarksRejectionViewModel()
-        val result    = viewModel.apply(error, arrivalId).get
-        result.value mustBe Value(formattedOriginalAttributeValue.toText)
+        val value          = LocalDate.parse("2000-01-01")
+        val formattedValue = "1 January 2000"
+        val viewModel      = new UnloadingRemarksRejectionViewModel()
+        val userAnswers    = emptyUserAnswers.setValue(DateGoodsUnloadedPage, value)
+        val result         = viewModel.apply(userAnswers).get
+        result.value mustBe Value(formattedValue.toText)
       }
     }
   }

@@ -56,17 +56,12 @@ class RejectionCheckYourAnswersController @Inject() (
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       unloadingRemarksService.resubmit(arrivalId, request.userAnswers) flatMap {
-        case Some(status) =>
-          status match {
-            case status if is2xx(status) =>
-              auditEventSubmissionService.auditUnloadingRemarks(request.userAnswers, "resubmitUnloadingRemarks")
-              Future.successful(Redirect(routes.ConfirmationController.onPageLoad(arrivalId)))
-            case status if is4xx(status) => errorHandler.onClientError(request, status)
-            case _                       => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
-          }
-        case None => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
+        case Some(status) if is2xx(status) =>
+          auditEventSubmissionService.auditUnloadingRemarks(request.userAnswers, "resubmitUnloadingRemarks")
+          Future.successful(Redirect(routes.ConfirmationController.onPageLoad(arrivalId)))
+        case Some(status) if is4xx(status) => errorHandler.onClientError(request, status)
+        case _                             => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
       }
-
   }
 
 }

@@ -17,11 +17,12 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import extractors.RejectionMessageExtractor
 import generators.{MessagesModelGenerators, ViewModelGenerators}
-import models.ErrorType.{IncorrectValue, NotSupportedPosition}
-import models.{DefaultPointer, FunctionalError, NumberOfPackagesPointer, UnloadingRemarksRejectionMessage, VehicleRegistrationPointer}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
+import models.ErrorType.IncorrectValue
+import models.{DefaultPointer, ErrorPointer, FunctionalError, NumberOfPackagesPointer, UnloadingRemarksRejectionMessage, VehicleRegistrationPointer}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -35,23 +36,26 @@ import views.html.{UnloadingRemarksMultipleErrorsRejectionView, UnloadingRemarks
 
 import java.time.LocalDate
 import scala.concurrent.Future
+import scala.util.{Failure, Success}
 
 class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators with ViewModelGenerators {
 
   private val mockUnloadingRemarksRejectionService = mock[UnloadingRemarksRejectionService]
   private val mockViewModel                        = mock[UnloadingRemarksRejectionViewModel]
+  private val mockExtractor                        = mock[RejectionMessageExtractor]
 
-  private val originalVehicleValue    = "origValue"
-  private val vehicleFunctionalError  = FunctionalError(IncorrectValue, VehicleRegistrationPointer, Some("R206"), Some(originalVehicleValue))
-  private val originalPackagesValue   = "origValue"
-  private val packagesFunctionalError = FunctionalError(IncorrectValue, NumberOfPackagesPointer, Some("R206"), Some(originalPackagesValue))
-  private val defaultFunctionalError  = FunctionalError(NotSupportedPosition, DefaultPointer("error here"), Some("R206"), Some(originalPackagesValue))
+  private def functionalError(pointer: ErrorPointer) = FunctionalError(IncorrectValue, pointer, Some("R206"), Some("origValue"))
+  private val vehicleFunctionalError                 = functionalError(VehicleRegistrationPointer)
+  private val packagesFunctionalError                = functionalError(NumberOfPackagesPointer)
+  private val defaultFunctionalError                 = functionalError(DefaultPointer("error here"))
+
+  private def rejectionMessageWithErrors(errors: Seq[FunctionalError]) = UnloadingRemarksRejectionMessage(mrn, LocalDate.now, None, errors)
 
   private val sampleRow = arbitrary[SummaryListRow].sample.value
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockUnloadingRemarksRejectionService, mockViewModel)
+    reset(mockUnloadingRemarksRejectionService, mockViewModel, mockExtractor)
   }
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -59,6 +63,7 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
       .guiceApplicationBuilder()
       .overrides(bind[UnloadingRemarksRejectionService].toInstance(mockUnloadingRemarksRejectionService))
       .overrides(bind[UnloadingRemarksRejectionViewModel].toInstance(mockViewModel))
+      .overrides(bind[RejectionMessageExtractor].toInstance(mockExtractor))
 
   "UnloadingRemarksRejection Controller" - {
 
@@ -66,12 +71,17 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
       val errors: Seq[FunctionalError] = Seq(packagesFunctionalError)
 
       when(mockUnloadingRemarksRejectionService.unloadingRemarksRejectionMessage(any())(any()))
-        .thenReturn(Future.successful(Some(UnloadingRemarksRejectionMessage(mrn, LocalDate.now, None, errors))))
+        .thenReturn(Future.successful(Some(rejectionMessageWithErrors(errors))))
 
-      when(mockViewModel.apply(any(), any())(any()))
+      val userAnswers = emptyUserAnswers
+
+      when(mockExtractor.apply(any(), any()))
+        .thenReturn(Success(userAnswers))
+
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+
+      when(mockViewModel.apply(any())(any()))
         .thenReturn(Some(sampleRow))
-
-      setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, routes.UnloadingRemarksRejectionController.onPageLoad(arrivalId).url)
 
@@ -84,15 +94,21 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual view(arrivalId, expectedSection)(request, messages).toString
+
+      verify(mockViewModel).apply(eqTo(userAnswers))(any())
+      verify(mockSessionRepository).set(eqTo(userAnswers))
     }
 
     "return OK and the multiple error rejection view for a GET when unloading rejection message returns Some" in {
       val errors = Seq(packagesFunctionalError, vehicleFunctionalError)
 
       when(mockUnloadingRemarksRejectionService.unloadingRemarksRejectionMessage(any())(any()))
-        .thenReturn(Future.successful(Some(UnloadingRemarksRejectionMessage(mrn, LocalDate.now, None, errors))))
+        .thenReturn(Future.successful(Some(rejectionMessageWithErrors(errors))))
 
-      setExistingUserAnswers(emptyUserAnswers)
+      when(mockExtractor.apply(any(), any()))
+        .thenReturn(Success(emptyUserAnswers))
+
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(GET, routes.UnloadingRemarksRejectionController.onPageLoad(arrivalId).url)
 
@@ -108,12 +124,15 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
       val errors = Seq(defaultFunctionalError)
 
       when(mockUnloadingRemarksRejectionService.unloadingRemarksRejectionMessage(any())(any()))
-        .thenReturn(Future.successful(Some(UnloadingRemarksRejectionMessage(mrn, LocalDate.now, None, errors))))
+        .thenReturn(Future.successful(Some(rejectionMessageWithErrors(errors))))
 
-      when(mockViewModel.apply(any(), any())(any()))
+      when(mockExtractor.apply(any(), any()))
+        .thenReturn(Success(emptyUserAnswers))
+
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+
+      when(mockViewModel.apply(any())(any()))
         .thenReturn(None)
-
-      setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, routes.UnloadingRemarksRejectionController.onPageLoad(arrivalId).url)
 
@@ -129,12 +148,15 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
       val errors = Seq(defaultFunctionalError, defaultFunctionalError)
 
       when(mockUnloadingRemarksRejectionService.unloadingRemarksRejectionMessage(any())(any()))
-        .thenReturn(Future.successful(Some(UnloadingRemarksRejectionMessage(mrn, LocalDate.now, None, errors))))
+        .thenReturn(Future.successful(Some(rejectionMessageWithErrors(errors))))
 
-      when(mockViewModel.apply(any(), any())(any()))
+      when(mockExtractor.apply(any(), any()))
+        .thenReturn(Success(emptyUserAnswers))
+
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+
+      when(mockViewModel.apply(any())(any()))
         .thenReturn(None)
-
-      setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, routes.UnloadingRemarksRejectionController.onPageLoad(arrivalId).url)
 
@@ -150,12 +172,15 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
       val errors = Seq(defaultFunctionalError.copy(originalAttributeValue = None))
 
       when(mockUnloadingRemarksRejectionService.unloadingRemarksRejectionMessage(any())(any()))
-        .thenReturn(Future.successful(Some(UnloadingRemarksRejectionMessage(mrn, LocalDate.now, None, errors))))
+        .thenReturn(Future.successful(Some(rejectionMessageWithErrors(errors))))
 
-      when(mockViewModel.apply(any(), any())(any()))
+      when(mockExtractor.apply(any(), any()))
+        .thenReturn(Success(emptyUserAnswers))
+
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+
+      when(mockViewModel.apply(any())(any()))
         .thenReturn(None)
-
-      setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, routes.UnloadingRemarksRejectionController.onPageLoad(arrivalId).url)
 
@@ -171,12 +196,15 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
       val errors = Seq(packagesFunctionalError.copy(originalAttributeValue = None))
 
       when(mockUnloadingRemarksRejectionService.unloadingRemarksRejectionMessage(any())(any()))
-        .thenReturn(Future.successful(Some(UnloadingRemarksRejectionMessage(mrn, LocalDate.now, None, errors))))
+        .thenReturn(Future.successful(Some(rejectionMessageWithErrors(errors))))
 
-      when(mockViewModel.apply(any(), any())(any()))
+      when(mockExtractor.apply(any(), any()))
+        .thenReturn(Success(emptyUserAnswers))
+
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+
+      when(mockViewModel.apply(any())(any()))
         .thenReturn(None)
-
-      setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, routes.UnloadingRemarksRejectionController.onPageLoad(arrivalId).url)
 
@@ -187,12 +215,14 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
       redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
     }
 
-    "render 'Technical difficulties' page when unloading rejection message's has no errors" in {
-
+    "render 'Technical difficulties' page when unloading rejection message has no errors" in {
       when(mockUnloadingRemarksRejectionService.unloadingRemarksRejectionMessage(any())(any()))
         .thenReturn(Future.successful(Some(UnloadingRemarksRejectionMessage(mrn, LocalDate.now, None, Seq.empty))))
 
-      setExistingUserAnswers(emptyUserAnswers)
+      when(mockExtractor.apply(any(), any()))
+        .thenReturn(Success(emptyUserAnswers))
+
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(GET, routes.UnloadingRemarksRejectionController.onPageLoad(arrivalId).url)
 
@@ -207,16 +237,37 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
       when(mockUnloadingRemarksRejectionService.unloadingRemarksRejectionMessage(any())(any()))
         .thenReturn(Future.successful(None))
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val request = FakeRequest(GET, routes.UnloadingRemarksRejectionController.onPageLoad(arrivalId).url)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
+
+      verify(mockUnloadingRemarksRejectionService).unloadingRemarksRejectionMessage(eqTo(arrivalId))(any())
+    }
+
+    "render the 'Technical difficulties' page when the extractor fails" in {
+      val errors: Seq[FunctionalError] = Seq(packagesFunctionalError)
+
+      val rejectionMessage = rejectionMessageWithErrors(errors)
+
+      when(mockUnloadingRemarksRejectionService.unloadingRemarksRejectionMessage(any())(any()))
+        .thenReturn(Future.successful(Some(rejectionMessageWithErrors(errors))))
+
+      when(mockExtractor.apply(any(), any()))
+        .thenReturn(Failure(new Throwable("")))
 
       val request = FakeRequest(GET, routes.UnloadingRemarksRejectionController.onPageLoad(arrivalId).url)
 
       val result = route(app, request).value
 
-      verify(mockUnloadingRemarksRejectionService, times(1)).unloadingRemarksRejectionMessage(any())(any())
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
+
+      verify(mockExtractor).apply(any(), eqTo(rejectionMessage))
     }
   }
 }

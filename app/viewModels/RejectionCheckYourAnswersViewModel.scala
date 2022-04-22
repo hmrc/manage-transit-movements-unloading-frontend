@@ -28,7 +28,7 @@ class RejectionCheckYourAnswersViewModel {
     Seq(
       Section(
         Seq(
-          cyaHelper.vehicleNameRegistrationRejection,
+          cyaHelper.vehicleNameRegistration,
           cyaHelper.dateGoodsUnloaded,
           cyaHelper.totalNumberOfItems,
           cyaHelper.totalNumberOfPackages,

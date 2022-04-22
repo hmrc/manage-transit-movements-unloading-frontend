@@ -19,6 +19,7 @@ package utils
 import base.SpecBase
 import controllers.routes
 import org.scalacheck.Arbitrary.arbitrary
+import pages._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
@@ -32,9 +33,9 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase {
 
       forAll(arbitrary[String]) {
         str =>
-          val userAnswers = emptyUserAnswers
-          val helper      = new UnloadingRemarksRejectionHelper
-          val result      = helper.vehicleNameRegistrationReference(userAnswers.id, str)
+          val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, str)
+          val helper      = new UnloadingRemarksRejectionHelper(userAnswers)
+          val result      = helper.vehicleNameRegistrationReference.get
 
           result mustEqual SummaryListRow(
             key = "Name, registration or reference".toKey,
@@ -57,15 +58,15 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase {
 
     "when .totalNumberOfPackages" in {
 
-      forAll(arbitrary[String]) {
-        str =>
-          val userAnswers = emptyUserAnswers
-          val helper      = new UnloadingRemarksRejectionHelper
-          val result      = helper.totalNumberOfPackages(userAnswers.id, str)
+      forAll(arbitrary[Int]) {
+        int =>
+          val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, int)
+          val helper      = new UnloadingRemarksRejectionHelper(userAnswers)
+          val result      = helper.totalNumberOfPackages.get
 
           result mustEqual SummaryListRow(
             key = "Total number of packages".toKey,
-            value = Value(str.toText),
+            value = Value(int.toString.toText),
             actions = Some(
               Actions(
                 items = Seq(
@@ -84,15 +85,15 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase {
 
     "when .totalNumberOfItems" in {
 
-      forAll(arbitrary[String]) {
-        str =>
-          val userAnswers = emptyUserAnswers
-          val helper      = new UnloadingRemarksRejectionHelper
-          val result      = helper.totalNumberOfItems(userAnswers.id, str)
+      forAll(arbitrary[Int]) {
+        int =>
+          val userAnswers = emptyUserAnswers.setValue(TotalNumberOfItemsPage, int)
+          val helper      = new UnloadingRemarksRejectionHelper(userAnswers)
+          val result      = helper.totalNumberOfItems.get
 
           result mustEqual SummaryListRow(
             key = "Total number of items".toKey,
-            value = Value(str.toText),
+            value = Value(int.toString.toText),
             actions = Some(
               Actions(
                 items = Seq(
@@ -113,9 +114,9 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase {
 
       forAll(arbitrary[String]) {
         str =>
-          val userAnswers = emptyUserAnswers
-          val helper      = new UnloadingRemarksRejectionHelper
-          val result      = helper.grossMassAmount(userAnswers.id, str)
+          val userAnswers = emptyUserAnswers.setValue(GrossMassAmountPage, str)
+          val helper      = new UnloadingRemarksRejectionHelper(userAnswers)
+          val result      = helper.grossMassAmount.get
 
           result mustEqual SummaryListRow(
             key = "Total gross mass in kilograms".toKey,
@@ -138,9 +139,10 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase {
 
     "when .unloadingDate" in {
 
-      val userAnswers = emptyUserAnswers
-      val helper      = new UnloadingRemarksRejectionHelper
-      val result      = helper.unloadingDate(userAnswers.id, LocalDate.parse("2000-01-01"))
+      val date        = LocalDate.parse("2000-01-01")
+      val userAnswers = emptyUserAnswers.setValue(DateGoodsUnloadedPage, date)
+      val helper      = new UnloadingRemarksRejectionHelper(userAnswers)
+      val result      = helper.unloadingDate.get
 
       result mustEqual SummaryListRow(
         key = "Unloading date".toKey,
