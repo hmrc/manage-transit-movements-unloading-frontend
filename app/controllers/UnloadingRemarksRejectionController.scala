@@ -18,12 +18,14 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
+import extractors.UnloadingPermissionExtractor
 import handlers.ErrorHandler
 import logging.Logging
 import models._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
-import services.UnloadingRemarksRejectionService
+import repositories.SessionRepository
+import services.{UnloadingPermissionService, UnloadingRemarksRejectionService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.UnloadingRemarksRejectionViewModel
 import viewModels.sections.Section
@@ -31,13 +33,17 @@ import views.html.{UnloadingRemarksMultipleErrorsRejectionView, UnloadingRemarks
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
 class UnloadingRemarksRejectionController @Inject() (
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   val controllerComponents: MessagesControllerComponents,
   val appConfig: FrontendAppConfig,
-  service: UnloadingRemarksRejectionService,
+  rejectionService: UnloadingRemarksRejectionService,
+  permissionService: UnloadingPermissionService,
+  extractor: UnloadingPermissionExtractor,
+  sessionRepository: SessionRepository,
   errorHandler: ErrorHandler,
   singleErrorView: UnloadingRemarksRejectionView,
   multipleErrorsView: UnloadingRemarksMultipleErrorsRejectionView,
@@ -49,13 +55,29 @@ class UnloadingRemarksRejectionController @Inject() (
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = identify.async {
     implicit request =>
-      service.unloadingRemarksRejectionMessage(arrivalId) flatMap {
+      rejectionService.unloadingRemarksRejectionMessage(arrivalId) flatMap {
         case Some(rejectionMessage) =>
-          errorView(arrivalId, rejectionMessage.errors) match {
-            case Some(result) =>
-              Future.successful(result)
+          permissionService.getUnloadingPermission(arrivalId) flatMap {
+            case Some(unloadingPermission) =>
+              val userAnswers = UserAnswers(arrivalId, rejectionMessage.movementReferenceNumber, request.eoriNumber)
+              extractor.apply(userAnswers, unloadingPermission) flatMap {
+                case Success(value) =>
+                  sessionRepository.set(value) flatMap {
+                    _ =>
+                      errorView(arrivalId, rejectionMessage.errors) match {
+                        case Some(result) =>
+                          Future.successful(result)
+                        case _ =>
+                          logger.debug(s"Couldn't build a UnloadingRemarksRejectionViewModel for arrival: $arrivalId")
+                          errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
+                      }
+                  }
+                case Failure(exception) =>
+                  logger.error(s"Failed to extract unloading permission to user answers for arrival: $arrivalId, ${exception.getMessage}")
+                  errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
+              }
             case _ =>
-              logger.debug(s"Couldn't build a UnloadingRemarksRejectionViewModel for arrival: $arrivalId")
+              logger.error(s"Failed to get unloading permission for arrival: $arrivalId")
               errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
           }
         case _ =>
