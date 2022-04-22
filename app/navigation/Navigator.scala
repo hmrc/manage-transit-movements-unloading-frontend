@@ -28,9 +28,6 @@ class Navigator @Inject() () {
 
   private val normalRoutes: Page => UserAnswers => Call = {
 
-    case UnloadingGuidancePage =>
-      ua => routes.DateGoodsUnloadedController.onPageLoad(ua.id, NormalMode)
-
     case DateGoodsUnloadedPage =>
       ua =>
         if (ua.get(DeriveNumberOfSeals).exists(_ > 0)) {

@@ -54,7 +54,7 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
 
         val sections = new UnloadingSummaryViewModel().transportAndItemSections(userAnswers, mode)
 
-        sections.length mustBe 2
+        sections.length mustBe 1
         sections.head.sectionTitle mustBe defined
         sections.head.rows.length mustBe 1
       }
@@ -64,7 +64,7 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
 
         val sections = new UnloadingSummaryViewModel().transportAndItemSections(userAnswers, mode)
 
-        sections.length mustBe 2
+        sections.length mustBe 1
         sections.head.sectionTitle mustBe defined
         sections.head.rows.length mustBe 1
       }
@@ -76,7 +76,7 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
 
         val sections = new UnloadingSummaryViewModel().transportAndItemSections(userAnswers, mode)
 
-        sections.length mustBe 2
+        sections.length mustBe 1
         sections.head.sectionTitle mustBe defined
         sections.head.rows.length mustBe 2
       }
