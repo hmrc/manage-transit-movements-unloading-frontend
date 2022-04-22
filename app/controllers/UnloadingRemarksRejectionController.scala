@@ -40,7 +40,7 @@ class UnloadingRemarksRejectionController @Inject() (
   identify: IdentifierAction,
   val controllerComponents: MessagesControllerComponents,
   val appConfig: FrontendAppConfig,
-  rejectionService: UnloadingRemarksRejectionService,
+  service: UnloadingRemarksRejectionService,
   extractor: RejectionMessageExtractor,
   sessionRepository: SessionRepository,
   errorHandler: ErrorHandler,
@@ -54,14 +54,14 @@ class UnloadingRemarksRejectionController @Inject() (
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = identify.async {
     implicit request =>
-      rejectionService.unloadingRemarksRejectionMessage(arrivalId) flatMap {
+      service.unloadingRemarksRejectionMessage(arrivalId) flatMap {
         case Some(rejectionMessage) =>
           val userAnswers = UserAnswers(arrivalId, rejectionMessage.movementReferenceNumber, request.eoriNumber)
           extractor.apply(userAnswers, rejectionMessage) match {
-            case Success(value) =>
-              sessionRepository.set(value) flatMap {
+            case Success(updatedAnswers) =>
+              sessionRepository.set(updatedAnswers) flatMap {
                 _ =>
-                  errorView(arrivalId, rejectionMessage.errors) match {
+                  errorView(updatedAnswers, rejectionMessage.errors) match {
                     case Some(result) =>
                       Future.successful(result)
                     case _ =>
@@ -80,40 +80,39 @@ class UnloadingRemarksRejectionController @Inject() (
   }
 
   private def errorView(
-    arrivalId: ArrivalId,
+    userAnswers: UserAnswers,
     errors: Seq[FunctionalError]
   )(implicit request: Request[_]): Option[Result] = {
     val result: Option[Result] = errors match {
-      case Nil          => None
-      case error :: Nil => singleError(arrivalId, error)
-      case _            => multipleErrors(arrivalId, errors)
+      case Nil      => None
+      case _ :: Nil => singleError(userAnswers)
+      case _        => multipleErrors(userAnswers, errors)
     }
 
-    result.orElse(defaultError(arrivalId, errors.headOption))
+    result.orElse(defaultError(userAnswers, errors.headOption))
   }
 
   private def singleError(
-    arrivalId: ArrivalId,
-    error: FunctionalError
+    userAnswers: UserAnswers
   )(implicit request: Request[_]): Option[Result] =
-    viewModel.apply(error, arrivalId) map {
+    viewModel.apply(userAnswers) map {
       row =>
-        Ok(singleErrorView(arrivalId, Section(row)))
+        Ok(singleErrorView(userAnswers.id, Section(row)))
     }
 
   private def multipleErrors(
-    arrivalId: ArrivalId,
+    userAnswers: UserAnswers,
     errors: Seq[FunctionalError]
   )(implicit request: Request[_]): Option[Result] =
-    Some(Ok(multipleErrorsView(arrivalId, errors)))
+    Some(Ok(multipleErrorsView(userAnswers.id, errors)))
 
   private def defaultError(
-    arrivalId: ArrivalId,
+    userAnswers: UserAnswers,
     error: Option[FunctionalError]
   )(implicit request: Request[_]): Option[Result] =
     error flatMap {
       case error @ FunctionalError(_, _: DefaultPointer, _, _) =>
-        multipleErrors(arrivalId, Seq(error))
+        multipleErrors(userAnswers, Seq(error))
       case _ =>
         None
     }

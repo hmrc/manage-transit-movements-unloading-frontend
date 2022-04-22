@@ -78,7 +78,7 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
 
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
-      when(mockViewModel.apply(any(), any())(any()))
+      when(mockViewModel.apply(any())(any()))
         .thenReturn(Some(sampleRow))
 
       val request = FakeRequest(GET, routes.UnloadingRemarksRejectionController.onPageLoad(arrivalId).url)
@@ -126,7 +126,7 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
 
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
-      when(mockViewModel.apply(any(), any())(any()))
+      when(mockViewModel.apply(any())(any()))
         .thenReturn(None)
 
       val request = FakeRequest(GET, routes.UnloadingRemarksRejectionController.onPageLoad(arrivalId).url)
@@ -150,7 +150,7 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
 
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
-      when(mockViewModel.apply(any(), any())(any()))
+      when(mockViewModel.apply(any())(any()))
         .thenReturn(None)
 
       val request = FakeRequest(GET, routes.UnloadingRemarksRejectionController.onPageLoad(arrivalId).url)
@@ -174,7 +174,7 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
 
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
-      when(mockViewModel.apply(any(), any())(any()))
+      when(mockViewModel.apply(any())(any()))
         .thenReturn(None)
 
       val request = FakeRequest(GET, routes.UnloadingRemarksRejectionController.onPageLoad(arrivalId).url)
@@ -198,7 +198,7 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
 
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
-      when(mockViewModel.apply(any(), any())(any()))
+      when(mockViewModel.apply(any())(any()))
         .thenReturn(None)
 
       val request = FakeRequest(GET, routes.UnloadingRemarksRejectionController.onPageLoad(arrivalId).url)

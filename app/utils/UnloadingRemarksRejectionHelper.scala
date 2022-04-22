@@ -16,52 +16,58 @@
 
 package utils
 
-import java.time.LocalDate
-
 import controllers.routes
-import models.ArrivalId
+import models.UserAnswers
+import pages._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
-class UnloadingRemarksRejectionHelper(implicit messages: Messages) extends SummaryListRowHelper {
+import java.time.LocalDate
 
-  def vehicleNameRegistrationReference(arrivalId: ArrivalId, value: String): SummaryListRow =
-    buildRow(
+class UnloadingRemarksRejectionHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
+
+  def vehicleNameRegistrationReference: Option[SummaryListRow] =
+    getAnswerAndBuildRow[String](
+      page = VehicleNameRegistrationReferencePage,
+      formatAnswer = _.toText,
       prefix = "changeVehicle.reference",
-      answer = value.toText,
       id = Some("change-vehicle-registration-rejection"),
       call = Some(routes.VehicleNameRegistrationRejectionController.onPageLoad(arrivalId))
     )
 
-  def totalNumberOfPackages(arrivalId: ArrivalId, value: String): SummaryListRow =
-    buildRow(
+  def totalNumberOfPackages: Option[SummaryListRow] =
+    getAnswerAndBuildRow[Int](
+      page = TotalNumberOfPackagesPage,
+      formatAnswer = _.toString.toText,
       prefix = "changeItems.totalNumberOfPackages",
-      answer = value.toText,
       id = Some("change-total-number-of-packages"),
       call = Some(routes.TotalNumberOfPackagesRejectionController.onPageLoad(arrivalId))
     )
 
-  def totalNumberOfItems(arrivalId: ArrivalId, value: String): SummaryListRow =
-    buildRow(
+  def totalNumberOfItems: Option[SummaryListRow] =
+    getAnswerAndBuildRow[Int](
+      page = TotalNumberOfItemsPage,
+      formatAnswer = _.toString.toText,
       prefix = "changeItems.totalNumberOfItems",
-      answer = value.toText,
       id = Some("change-total-number-of-items"),
       call = Some(routes.TotalNumberOfItemsRejectionController.onPageLoad(arrivalId))
     )
 
-  def grossMassAmount(arrivalId: ArrivalId, value: String): SummaryListRow =
-    buildRow(
+  def grossMassAmount: Option[SummaryListRow] =
+    getAnswerAndBuildRow[String](
+      page = GrossMassAmountPage,
+      formatAnswer = _.toText,
       prefix = "changeItems.grossMass",
-      answer = value.toText,
       id = Some("change-gross-mass-amount"),
       call = Some(routes.GrossMassAmountRejectionController.onPageLoad(arrivalId))
     )
 
-  def unloadingDate(arrivalId: ArrivalId, value: LocalDate): SummaryListRow =
-    buildRow(
+  def unloadingDate: Option[SummaryListRow] =
+    getAnswerAndBuildRow[LocalDate](
+      page = DateGoodsUnloadedPage,
+      formatAnswer = formatAsDate,
       prefix = "changeItems.dateGoodsUnloaded",
-      answer = formatAsDate(value),
       id = Some("change-date-goods-unloaded"),
       call = Some(routes.DateGoodsUnloadedRejectionController.onPageLoad(arrivalId))
     )
