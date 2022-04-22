@@ -35,6 +35,7 @@ class DateGoodsUnloadedRejectionController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: DateGoodsUnloadedFormProvider,
   val controllerComponents: MessagesControllerComponents,
   unloadingPermissionService: UnloadingPermissionService,
@@ -44,20 +45,18 @@ class DateGoodsUnloadedRejectionController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
-    implicit request =>
-      unloadingPermissionService.getUnloadingPermission(arrivalId) flatMap {
-        case Some(unloadingPermission) =>
-          val form = formProvider(unloadingPermission.dateOfPreparation)
-          val preparedForm = request.userAnswers.get(DateGoodsUnloadedPage) match {
-            case None        => form
-            case Some(value) => form.fill(value)
-          }
-          Future.successful(Ok(view(unloadingPermission.movementReferenceNumber, arrivalId, preparedForm)))
-        case _ =>
-          errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
-      }
-  }
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
+    actions.requireData(arrivalId).andThen(getMandatoryPage(DateGoodsUnloadedPage)).async {
+      implicit request =>
+        unloadingPermissionService.getUnloadingPermission(arrivalId) flatMap {
+          case Some(unloadingPermission) =>
+            val form         = formProvider(unloadingPermission.dateOfPreparation)
+            val preparedForm = form.fill(request.arg)
+            Future.successful(Ok(view(request.userAnswers.mrn.toString, arrivalId, preparedForm)))
+          case _ =>
+            errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
+        }
+    }
 
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
@@ -66,7 +65,7 @@ class DateGoodsUnloadedRejectionController @Inject() (
           formProvider(unloadingPermission.dateOfPreparation)
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(unloadingPermission.movementReferenceNumber, arrivalId, formWithErrors))),
+              formWithErrors => Future.successful(BadRequest(view(request.userAnswers.mrn.toString, arrivalId, formWithErrors))),
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(DateGoodsUnloadedPage, value))

@@ -34,6 +34,7 @@ class VehicleNameRegistrationRejectionController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: VehicleNameRegistrationReferenceFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: VehicleNameRegistrationRejectionView,
@@ -44,14 +45,11 @@ class VehicleNameRegistrationRejectionController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(VehicleNameRegistrationReferencePage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
-      Ok(view(preparedForm, arrivalId))
-  }
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
+    actions.requireData(arrivalId).andThen(getMandatoryPage(VehicleNameRegistrationReferencePage)) {
+      implicit request =>
+        Ok(view(form.fill(request.arg), arrivalId))
+    }
 
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>

@@ -39,23 +39,7 @@ class VehicleNameRegistrationRejectionControllerSpec extends SpecBase with AppWi
 
   "VehicleNameRegistrationRejectionController Controller" - {
 
-    "must populate the view correctly on a GET when the value has not been extracted" in {
-      checkArrivalStatus()
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request = FakeRequest(GET, vehicleNameRegistrationRejectionRoute)
-      val result  = route(app, request).value
-
-      val view = injector.instanceOf[VehicleNameRegistrationRejectionView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form, arrivalId)(request, messages).toString
-    }
-
-    "must populate the view correctly on a GET when the value has been extracted" in {
+    "must populate the view correctly on a GET" in {
       checkArrivalStatus()
       val originalValue = "some reference"
 
@@ -71,6 +55,20 @@ class VehicleNameRegistrationRejectionControllerSpec extends SpecBase with AppWi
 
       contentAsString(result) mustEqual
         view(filledForm, arrivalId)(request, messages).toString
+    }
+
+    "must redirect to session expired when vehicle name is not in user answers" in {
+      checkArrivalStatus()
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(GET, vehicleNameRegistrationRejectionRoute)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

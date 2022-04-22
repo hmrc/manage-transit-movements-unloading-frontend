@@ -38,24 +38,7 @@ class GrossMassAmountRejectionControllerSpec extends SpecBase with AppWithDefaul
 
   "GrossMassAmountRejection Controller" - {
 
-    "must populate the view correctly on a GET when the value has not been extracted" in {
-      checkArrivalStatus()
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request = FakeRequest(GET, grossMassAmountRejectionRoute)
-
-      val result = route(app, request).value
-
-      val view = app.injector.instanceOf[GrossMassAmountRejectionView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustBe
-        view(form, arrivalId)(request, messages).toString
-    }
-
-    "must populate the view correctly on a GET when the value has been extracted" in {
+    "must populate the view correctly on a GET" in {
       checkArrivalStatus()
       val originalValue = "100000.123"
 
@@ -71,6 +54,20 @@ class GrossMassAmountRejectionControllerSpec extends SpecBase with AppWithDefaul
 
       contentAsString(result) mustBe
         view(form.fill(originalValue), arrivalId)(request, messages).toString
+    }
+
+    "must redirect to session expired when gross mass amount is not in user answers" in {
+      checkArrivalStatus()
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(GET, grossMassAmountRejectionRoute)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to the next page when valid data is submitted" in {
