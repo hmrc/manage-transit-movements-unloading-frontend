@@ -14,23 +14,15 @@
  * limitations under the License.
  */
 
-package controllers
+package pages
 
-import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.UnauthorisedWithGroupAccessView
+import play.api.libs.json.JsPath
 
-import javax.inject.Inject
+import java.time.LocalDate
 
-class UnauthorisedWithGroupAccessController @Inject() (
-  val controllerComponents: MessagesControllerComponents,
-  view: UnauthorisedWithGroupAccessView
-) extends FrontendBaseController
-    with I18nSupport {
+case object DateOfPreparationPage extends QuestionPage[LocalDate] {
 
-  def onPageLoad(): Action[AnyContent] = Action {
-    implicit request =>
-      Unauthorized(view())
-  }
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "dateOfPreparation"
 }

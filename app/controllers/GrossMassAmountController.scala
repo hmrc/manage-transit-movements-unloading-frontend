@@ -34,42 +34,37 @@ class GrossMassAmountController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
+  actions: Actions,
   formProvider: GrossMassAmountFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: GrossMassAmountView,
-  checkArrivalStatus: CheckArrivalStatusProvider
+  view: GrossMassAmountView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   private val form = formProvider()
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData) {
-      implicit request =>
-        val preparedForm = request.userAnswers.get(GrossMassAmountPage) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
+  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
+    implicit request =>
+      val preparedForm = request.userAnswers.get(GrossMassAmountPage) match {
+        case None        => form
+        case Some(value) => form.fill(value)
+      }
 
-        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode))
-    }
+      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode))
+  }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {
-      implicit request =>
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(GrossMassAmountPage, value))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(GrossMassAmountPage, mode, updatedAnswers))
-          )
-    }
+  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
+    implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(GrossMassAmountPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(GrossMassAmountPage, mode, updatedAnswers))
+        )
+  }
 }

@@ -35,13 +35,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class GrossMassAmountRejectionController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
+  actions: Actions,
   formProvider: GrossMassAmountFormProvider,
   rejectionService: UnloadingRemarksRejectionService,
   val controllerComponents: MessagesControllerComponents,
   val appConfig: FrontendAppConfig,
-  checkArrivalStatus: CheckArrivalStatusProvider,
   errorHandler: ErrorHandler,
   view: GrossMassAmountRejectionView
 )(implicit ec: ExecutionContext)
@@ -50,7 +48,7 @@ class GrossMassAmountRejectionController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId)).async {
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.getData(arrivalId).async {
     implicit request =>
       rejectionService.getRejectedValueAsString(arrivalId, request.userAnswers)(GrossMassAmountPage) flatMap {
         case Some(originalAttrValue) =>
@@ -60,7 +58,7 @@ class GrossMassAmountRejectionController @Inject() (
       }
   }
 
-  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId)).async {
+  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.getData(arrivalId).async {
     implicit request =>
       form
         .bindFromRequest()

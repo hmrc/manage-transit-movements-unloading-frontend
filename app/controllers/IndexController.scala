@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.actions.{CheckArrivalStatusProvider, DataRetrievalActionProvider, IdentifierAction}
+import controllers.actions.Actions
 import extractors.UnloadingPermissionExtractor
 import logging.Logging
 import models.{ArrivalId, MovementReferenceNumber, UserAnswers}
@@ -32,11 +32,9 @@ import scala.util.{Failure, Success}
 
 class IndexController @Inject() (
   val controllerComponents: MessagesControllerComponents,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
+  actions: Actions,
   unloadingPermissionService: UnloadingPermissionService,
   sessionRepository: SessionRepository,
-  checkArrivalStatus: CheckArrivalStatusProvider,
   unloadingPermissionExtractor: UnloadingPermissionExtractor
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -45,7 +43,7 @@ class IndexController @Inject() (
 
   private val redirect: ArrivalId => Result = arrivalId => Redirect(routes.UnloadingGuidanceController.onPageLoad(arrivalId))
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId)).async {
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.getData(arrivalId).async {
     implicit request =>
       request.userAnswers match {
         case Some(_) =>

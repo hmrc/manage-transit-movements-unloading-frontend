@@ -23,6 +23,7 @@ import models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
+import queries.SealsQuery
 
 class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -43,6 +44,28 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             navigator
               .nextPage(UnknownPage, mode, answers)
               .mustBe(routes.UnloadingSummaryController.onPageLoad(arrivalId))
+        }
+      }
+
+      "must go from date goods unloaded page" - {
+        "to can seals be read page when seals exist" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedUserAnswers = answers.setValue(SealsQuery, Seq("seal 1"))
+              navigator
+                .nextPage(DateGoodsUnloadedPage, mode, updatedUserAnswers)
+                .mustBe(routes.CanSealsBeReadController.onPageLoad(updatedUserAnswers.id, mode))
+          }
+        }
+
+        "to unloading summary page when no seals exist" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedUserAnswers = answers.removeValue(SealsQuery)
+              navigator
+                .nextPage(DateGoodsUnloadedPage, mode, updatedUserAnswers)
+                .mustBe(routes.UnloadingSummaryController.onPageLoad(updatedUserAnswers.id))
+          }
         }
       }
 
@@ -156,7 +179,17 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           }
         }
 
-        "must go from Vehicle Name Registration Reference page to unloading summary page" in {
+        "must go from date goods unloaded page to check your answers page" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              navigator
+                .nextPage(DateGoodsUnloadedPage, mode, answers)
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.id))
+          }
+        }
+
+        "must go from Vehicle Name Registration Reference page to check your answers page" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
@@ -166,7 +199,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           }
         }
 
-        "must go from Vehicle Registration Country page to unloading summary page" in {
+        "must go from Vehicle Registration Country page to check your answers page" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
@@ -176,7 +209,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           }
         }
 
-        "must go from Gross mass amount page to unloading summary page" in {
+        "must go from Gross mass amount page to check your answers page" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
@@ -186,7 +219,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           }
         }
 
-        "must go from New Seal Number page to unloading summary page" in {
+        "must go from New Seal Number page to check your answers page" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
@@ -197,7 +230,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
         }
 
         "must go from Remove comments page " - {
-          "to unloading summary page when the form is submitted" in {
+          "to check your answers page when the form is submitted" in {
 
             forAll(arbitrary[UserAnswers]) {
               answers =>

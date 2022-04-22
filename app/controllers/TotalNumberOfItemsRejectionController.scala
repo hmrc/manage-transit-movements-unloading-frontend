@@ -35,14 +35,12 @@ import scala.concurrent.{ExecutionContext, Future}
 class TotalNumberOfItemsRejectionController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
+  actions: Actions,
   formProvider: TotalNumberOfItemsFormProvider,
   val controllerComponents: MessagesControllerComponents,
   rejectionService: UnloadingRemarksRejectionService,
   val appConfig: FrontendAppConfig,
   errorHandler: ErrorHandler,
-  checkArrivalStatus: CheckArrivalStatusProvider,
   view: TotalNumberOfItemsRejectionView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -50,33 +48,31 @@ class TotalNumberOfItemsRejectionController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId)).async {
-      implicit request =>
-        rejectionService.getRejectedValueAsInt(arrivalId, request.userAnswers)(TotalNumberOfItemsPage) flatMap {
-          case Some(value) => Future.successful(Ok(view(form.fill(value), arrivalId)))
-          case None        => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
-        }
-    }
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.getData(arrivalId).async {
+    implicit request =>
+      rejectionService.getRejectedValueAsInt(arrivalId, request.userAnswers)(TotalNumberOfItemsPage) flatMap {
+        case Some(value) => Future.successful(Ok(view(form.fill(value), arrivalId)))
+        case None        => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
+      }
+  }
 
-  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId)).async {
-      implicit request =>
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId))),
-            value =>
-              rejectionService.unloadingRemarksRejectionMessage(arrivalId) flatMap {
-                case Some(rejectionMessage) =>
-                  val userAnswers = UserAnswers(arrivalId, rejectionMessage.movementReferenceNumber, request.eoriNumber)
-                  for {
-                    updatedAnswers <- Future.fromTry(userAnswers.set(TotalNumberOfItemsPage, value))
-                    _              <- sessionRepository.set(updatedAnswers)
-                  } yield Redirect(routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId))
+  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.getData(arrivalId).async {
+    implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId))),
+          value =>
+            rejectionService.unloadingRemarksRejectionMessage(arrivalId) flatMap {
+              case Some(rejectionMessage) =>
+                val userAnswers = UserAnswers(arrivalId, rejectionMessage.movementReferenceNumber, request.eoriNumber)
+                for {
+                  updatedAnswers <- Future.fromTry(userAnswers.set(TotalNumberOfItemsPage, value))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId))
 
-                case _ => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
-              }
-          )
-    }
+              case _ => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
+            }
+        )
+  }
 }

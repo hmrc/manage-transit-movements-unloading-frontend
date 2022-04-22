@@ -20,7 +20,6 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.VehicleNameRegistrationReferenceFormProvider
 import handlers.ErrorHandler
-import models.requests.IdentifierRequest
 import models.{ArrivalId, UserAnswers}
 import pages.VehicleNameRegistrationReferencePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -36,14 +35,12 @@ import scala.concurrent.{ExecutionContext, Future}
 class VehicleNameRegistrationRejectionController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  identify: IdentifierAction,
+  actions: Actions,
   formProvider: VehicleNameRegistrationReferenceFormProvider,
-  getData: DataRetrievalActionProvider,
   val controllerComponents: MessagesControllerComponents,
   rejectionService: UnloadingRemarksRejectionService,
   view: VehicleNameRegistrationRejectionView,
   val appConfig: FrontendAppConfig,
-  checkArrivalStatus: CheckArrivalStatusProvider,
   errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -51,7 +48,7 @@ class VehicleNameRegistrationRejectionController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId)).async {
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.getData(arrivalId).async {
     implicit request =>
       rejectionService.getRejectedValueAsString(arrivalId, request.userAnswers)(VehicleNameRegistrationReferencePage) flatMap {
         case Some(originalAttrValue) => Future.successful(Ok(view(form.fill(originalAttrValue), arrivalId)))
@@ -60,8 +57,8 @@ class VehicleNameRegistrationRejectionController @Inject() (
 
   }
 
-  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = identify.async {
-    implicit request: IdentifierRequest[AnyContent] =>
+  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.getData(arrivalId).async {
+    implicit request =>
       form
         .bindFromRequest()
         .fold(

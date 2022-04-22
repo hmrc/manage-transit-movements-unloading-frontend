@@ -17,7 +17,6 @@
 package controllers
 
 import controllers.actions._
-import javax.inject.Inject
 import models.{ArrivalId, Mode}
 import navigation.Navigator
 import pages.UnloadingGuidancePage
@@ -26,24 +25,22 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.UnloadingGuidanceView
 
+import javax.inject.Inject
+
 class UnloadingGuidanceController @Inject() (
   override val messagesApi: MessagesApi,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
+  actions: Actions,
   navigator: Navigator,
   val controllerComponents: MessagesControllerComponents,
-  view: UnloadingGuidanceView,
-  checkArrivalStatus: CheckArrivalStatusProvider
+  view: UnloadingGuidanceView
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData) {
-      implicit request =>
-        val pdfUrl      = routes.UnloadingPermissionPDFController.getPDF(arrivalId).url
-        val nextPageUrl = navigator.nextPage(UnloadingGuidancePage, mode, request.userAnswers).url
+  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
+    implicit request =>
+      val pdfUrl      = routes.UnloadingPermissionPDFController.getPDF(arrivalId).url
+      val nextPageUrl = navigator.nextPage(UnloadingGuidancePage, mode, request.userAnswers).url
 
-        Ok(view(request.userAnswers.mrn, pdfUrl, nextPageUrl))
-    }
+      Ok(view(request.userAnswers.mrn, pdfUrl, nextPageUrl))
+  }
 }

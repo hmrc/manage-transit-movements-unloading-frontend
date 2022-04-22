@@ -30,28 +30,24 @@ import javax.inject.Inject
 
 class UnloadingSummaryController @Inject() (
   override val messagesApi: MessagesApi,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
+  actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  checkArrivalStatus: CheckArrivalStatusProvider,
   view: UnloadingSummaryView,
   viewModel: UnloadingSummaryViewModel
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData) {
-      implicit request =>
-        Ok(
-          view(
-            mrn = request.userAnswers.mrn,
-            arrivalId = arrivalId,
-            sealsSection = viewModel.sealsSection(request.userAnswers, NormalMode),
-            transportAndItemSections = viewModel.transportAndItemSections(request.userAnswers, NormalMode),
-            numberOfSeals = request.userAnswers.get(DeriveNumberOfSeals).getOrElse(0),
-            showAddCommentLink = request.userAnswers.get(ChangesToReportPage).isEmpty
-          )
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
+    implicit request =>
+      Ok(
+        view(
+          mrn = request.userAnswers.mrn,
+          arrivalId = arrivalId,
+          sealsSection = viewModel.sealsSection(request.userAnswers, NormalMode),
+          transportAndItemSections = viewModel.transportAndItemSections(request.userAnswers, NormalMode),
+          numberOfSeals = request.userAnswers.get(DeriveNumberOfSeals).getOrElse(0),
+          showAddCommentLink = request.userAnswers.get(ChangesToReportPage).isEmpty
         )
-    }
+      )
+  }
 }
