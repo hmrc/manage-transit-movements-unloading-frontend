@@ -34,7 +34,7 @@ class RejectionCheckYourAnswersHelperSpec extends SpecBase {
 
         val userAnswers = emptyUserAnswers
         val helper      = new RejectionCheckYourAnswersHelper(userAnswers)
-        val result      = helper.vehicleNameRegistrationRejection
+        val result      = helper.vehicleNameRegistration
 
         result mustBe None
       }
@@ -47,7 +47,7 @@ class RejectionCheckYourAnswersHelperSpec extends SpecBase {
           str =>
             val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, str)
             val helper      = new RejectionCheckYourAnswersHelper(userAnswers)
-            val result      = helper.vehicleNameRegistrationRejection
+            val result      = helper.vehicleNameRegistration
 
             result mustBe Some(
               SummaryListRow(

@@ -18,35 +18,43 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.DateGoodsUnloadedFormProvider
-import models.UserAnswers
+import generators.Generators
+import models.{UnloadingPermission, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.{DateGoodsUnloadedPage, DateOfPreparationPage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.UnloadingPermissionService
 import views.html.DateGoodsUnloadedRejectionView
 
 import java.time.{Clock, Instant, LocalDate, ZoneId}
 import scala.concurrent.Future
 
-class DateGoodsUnloadedRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class DateGoodsUnloadedRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val stubClock         = Clock.fixed(Instant.now, ZoneId.systemDefault)
   private val formProvider      = new DateGoodsUnloadedFormProvider(stubClock)
-  private val dateOfPreparation = LocalDate.now(stubClock).minusWeeks(1)
-  private val validAnswer       = dateOfPreparation
+  private val validAnswer       = LocalDate.now(stubClock)
+  private val dateOfPreparation = validAnswer.minusWeeks(1)
+
+  private val unloadingPermission = arbitrary[UnloadingPermission].sample.value.copy(dateOfPreparation = dateOfPreparation)
 
   private def form: Form[LocalDate] = formProvider(dateOfPreparation)
 
   private lazy val dateGoodsUnloadedRoute = routes.DateGoodsUnloadedRejectionController.onPageLoad(arrivalId).url
 
+  private val mockUnloadingPermissionService = mock[UnloadingPermissionService]
+
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(bind[UnloadingPermissionService].toInstance(mockUnloadingPermissionService))
       .overrides(bind[Clock].toInstance(stubClock))
 
   "DateGoodsUnloadedRejectionController" - {
@@ -54,10 +62,9 @@ class DateGoodsUnloadedRejectionControllerSpec extends SpecBase with AppWithDefa
     "must populate the view correctly on a GET" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers
-        .setValue(DateOfPreparationPage, dateOfPreparation)
-        .setValue(DateGoodsUnloadedPage, validAnswer)
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(emptyUserAnswers.setValue(DateGoodsUnloadedPage, validAnswer))
+
+      when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(Some(unloadingPermission)))
 
       val result = route(app, FakeRequest(GET, dateGoodsUnloadedRoute)).value
 
@@ -71,7 +78,8 @@ class DateGoodsUnloadedRejectionControllerSpec extends SpecBase with AppWithDefa
         )
       )
 
-      val view    = injector.instanceOf[DateGoodsUnloadedRejectionView]
+      val view = injector.instanceOf[DateGoodsUnloadedRejectionView]
+
       val request = FakeRequest(GET, dateGoodsUnloadedRoute)
 
       contentAsString(result) mustBe view(mrn.toString, arrivalId, filledForm)(request, messages).toString
@@ -80,8 +88,9 @@ class DateGoodsUnloadedRejectionControllerSpec extends SpecBase with AppWithDefa
     "must redirect to the next page when valid data is submitted" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(DateOfPreparationPage, dateOfPreparation)
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(emptyUserAnswers)
+
+      when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(Some(unloadingPermission)))
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -102,28 +111,38 @@ class DateGoodsUnloadedRejectionControllerSpec extends SpecBase with AppWithDefa
       userAnswersCaptor.getValue.get(DateGoodsUnloadedPage).get mustBe validAnswer
     }
 
-    "must redirect to session expired when date of preparation is not available" in {
+    "must return an Internal Server Error on a GET when date of preparation is not available" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(DateGoodsUnloadedPage, validAnswer)
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(emptyUserAnswers.setValue(DateGoodsUnloadedPage, validAnswer))
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(None))
 
       val result = route(app, FakeRequest(GET, dateGoodsUnloadedRoute)).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
+    }
+
+    "must return an Internal Server Error on a POST when date of preparation is not available" in {
+      checkArrivalStatus()
+
+      setExistingUserAnswers(emptyUserAnswers.setValue(DateGoodsUnloadedPage, validAnswer))
+
+      when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(None))
+
+      val result = route(app, FakeRequest(POST, dateGoodsUnloadedRoute)).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
     }
 
     "must redirect to session expired when date goods unloaded is not available" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(DateOfPreparationPage, dateOfPreparation)
-      setExistingUserAnswers(userAnswers)
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      setExistingUserAnswers(emptyUserAnswers)
 
       val result = route(app, FakeRequest(GET, dateGoodsUnloadedRoute)).value
 
@@ -135,8 +154,9 @@ class DateGoodsUnloadedRejectionControllerSpec extends SpecBase with AppWithDefa
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(DateOfPreparationPage, dateOfPreparation)
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(emptyUserAnswers)
+
+      when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(Some(unloadingPermission)))
 
       val badSubmission = Map(
         "value.day"   -> "invalid value",

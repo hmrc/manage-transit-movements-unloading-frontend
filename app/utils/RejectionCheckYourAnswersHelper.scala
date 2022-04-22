@@ -27,7 +27,7 @@ import java.time.LocalDate
 
 class RejectionCheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
-  def vehicleNameRegistrationRejection: Option[SummaryListRow] =
+  def vehicleNameRegistration: Option[SummaryListRow] =
     getAnswerAndBuildRow[String](
       page = VehicleNameRegistrationReferencePage,
       formatAnswer = _.toText,

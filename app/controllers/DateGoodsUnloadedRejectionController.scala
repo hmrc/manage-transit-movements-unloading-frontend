@@ -18,11 +18,13 @@ package controllers
 
 import controllers.actions._
 import forms.DateGoodsUnloadedFormProvider
+import handlers.ErrorHandler
 import models.ArrivalId
-import pages.{DateGoodsUnloadedPage, DateOfPreparationPage}
+import pages.DateGoodsUnloadedPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.UnloadingPermissionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.DateGoodsUnloadedRejectionView
 
@@ -36,34 +38,42 @@ class DateGoodsUnloadedRejectionController @Inject() (
   getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: DateGoodsUnloadedFormProvider,
   val controllerComponents: MessagesControllerComponents,
+  unloadingPermissionService: UnloadingPermissionService,
+  errorHandler: ErrorHandler,
   view: DateGoodsUnloadedRejectionView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
-    actions
-      .requireData(arrivalId)
-      .andThen(getMandatoryPage.getFirst(DateOfPreparationPage))
-      .andThen(getMandatoryPage.getSecond(DateGoodsUnloadedPage)) {
-        implicit request =>
-          val form         = formProvider(request.arg._1)
-          val preparedForm = form.fill(request.arg._2)
-          Ok(view(request.userAnswers.mrn.toString, arrivalId, preparedForm))
-      }
-
-  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =
-    actions.requireData(arrivalId).andThen(getMandatoryPage(DateOfPreparationPage)).async {
+    actions.requireData(arrivalId).andThen(getMandatoryPage(DateGoodsUnloadedPage)).async {
       implicit request =>
-        formProvider(request.arg)
-          .bindFromRequest()
-          .fold(
-            formWithErrors => Future.successful(BadRequest(view(request.userAnswers.mrn.toString, arrivalId, formWithErrors))),
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(DateGoodsUnloadedPage, value))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId))
-          )
+        unloadingPermissionService.getUnloadingPermission(arrivalId) flatMap {
+          case Some(unloadingPermission) =>
+            val form         = formProvider(unloadingPermission.dateOfPreparation)
+            val preparedForm = form.fill(request.arg)
+            Future.successful(Ok(view(request.userAnswers.mrn.toString, arrivalId, preparedForm)))
+          case _ =>
+            errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
+        }
     }
+
+  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
+    implicit request =>
+      unloadingPermissionService.getUnloadingPermission(arrivalId) flatMap {
+        case Some(unloadingPermission) =>
+          formProvider(unloadingPermission.dateOfPreparation)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(request.userAnswers.mrn.toString, arrivalId, formWithErrors))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(DateGoodsUnloadedPage, value))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId))
+            )
+        case _ =>
+          errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
+      }
+  }
 }
