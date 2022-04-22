@@ -19,13 +19,11 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.TotalNumberOfPackagesFormProvider
-import handlers.ErrorHandler
-import models.{ArrivalId, UserAnswers}
+import models.ArrivalId
 import pages.TotalNumberOfPackagesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.UnloadingRemarksRejectionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.TotalNumberOfPackagesRejectionView
 
@@ -36,44 +34,34 @@ class TotalNumberOfPackagesRejectionController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: TotalNumberOfPackagesFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  rejectionService: UnloadingRemarksRejectionService,
   view: TotalNumberOfPackagesRejectionView,
-  val appConfig: FrontendAppConfig,
-  errorHandler: ErrorHandler
+  val appConfig: FrontendAppConfig
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   private val form = formProvider()
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.getData(arrivalId).async {
-    implicit request =>
-      rejectionService.getRejectedValueAsInt(arrivalId, request.userAnswers)(TotalNumberOfPackagesPage) flatMap {
-        case Some(value) => Future.successful(Ok(view(form.fill(value), arrivalId)))
-        case None        => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
-      }
-  }
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
+    actions.requireData(arrivalId).andThen(getMandatoryPage(TotalNumberOfPackagesPage)) {
+      implicit request =>
+        Ok(view(form.fill(request.arg), arrivalId))
+    }
 
-  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.getData(arrivalId).async {
+  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId))),
           value =>
-            rejectionService.unloadingRemarksRejectionMessage(arrivalId) flatMap {
-              case Some(rejectionMessage) =>
-                val userAnswers = UserAnswers(arrivalId, rejectionMessage.movementReferenceNumber, request.eoriNumber)
-                for {
-                  updatedAnswers <- Future.fromTry(userAnswers.set(TotalNumberOfPackagesPage, value))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId))
-
-              case _ => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
-            }
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(TotalNumberOfPackagesPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId))
         )
   }
-
 }

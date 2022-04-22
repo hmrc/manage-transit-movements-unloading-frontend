@@ -18,19 +18,15 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.TotalNumberOfItemsFormProvider
-import models.ErrorType.IncorrectValue
-import models.{DefaultPointer, FunctionalError, UnloadingRemarksRejectionMessage}
+import models.UserAnswers
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{verify, when}
 import pages.TotalNumberOfItemsPage
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.UnloadingRemarksRejectionService
 import views.html.TotalNumberOfItemsRejectionView
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
 class TotalNumberOfItemsRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
@@ -39,26 +35,13 @@ class TotalNumberOfItemsRejectionControllerSpec extends SpecBase with AppWithDef
   private val form                         = formProvider()
   private val validAnswer                  = 1
   lazy val totalNumberOfItemsRoute: String = routes.TotalNumberOfItemsRejectionController.onPageLoad(arrivalId).url
-  private val mockRejectionService         = mock[UnloadingRemarksRejectionService]
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockRejectionService)
-  }
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(bind[UnloadingRemarksRejectionService].toInstance(mockRejectionService))
 
   "TotalNumberOfItems Rejection Controller" - {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      when(mockRejectionService.getRejectedValueAsInt(any(), any())(any())(any())).thenReturn(Future.successful(Some(validAnswer)))
-
-      setNoExistingUserAnswers()
+      setExistingUserAnswers(emptyUserAnswers.setValue(TotalNumberOfItemsPage, validAnswer))
 
       val request = FakeRequest(GET, totalNumberOfItemsRoute)
       val view    = injector.instanceOf[TotalNumberOfItemsRejectionView]
@@ -72,31 +55,25 @@ class TotalNumberOfItemsRejectionControllerSpec extends SpecBase with AppWithDef
         view(filledForm, arrivalId)(request, messages).toString
     }
 
-    "must render the Technical Difficulties page when get rejected value is None" in {
+    "must redirect to session expired when total number of items is not in user answers" in {
       checkArrivalStatus()
-      when(mockRejectionService.getRejectedValueAsInt(any(), any())(any())(any())).thenReturn(Future.successful(None))
 
-      val userAnswers = emptyUserAnswers.set(TotalNumberOfItemsPage, validAnswer).success.value
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, totalNumberOfItemsRoute)
       val result  = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to the next page when valid data is submitted" in {
       checkArrivalStatus()
-      val originalValue    = "some reference"
-      val errors           = Seq(FunctionalError(IncorrectValue, DefaultPointer(""), None, Some(originalValue)))
-      val rejectionMessage = UnloadingRemarksRejectionMessage(mrn, LocalDate.now, None, errors)
 
-      when(mockRejectionService.unloadingRemarksRejectionMessage(any())(any())).thenReturn(Future.successful(Some(rejectionMessage)))
+      setExistingUserAnswers(emptyUserAnswers)
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, totalNumberOfItemsRoute)
         .withFormUrlEncodedBody(("value", validAnswer.toString))
@@ -106,6 +83,10 @@ class TotalNumberOfItemsRejectionControllerSpec extends SpecBase with AppWithDef
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId).url
+
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())
+      userAnswersCaptor.getValue.get(TotalNumberOfItemsPage).get mustBe validAnswer
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
@@ -122,23 +103,6 @@ class TotalNumberOfItemsRejectionControllerSpec extends SpecBase with AppWithDef
       val view = injector.instanceOf[TotalNumberOfItemsRejectionView]
 
       contentAsString(result) mustEqual view(boundForm, arrivalId)(request, messages).toString
-    }
-
-    "must render Technical Difficulties when there is no rejection message on submission" in {
-      checkArrivalStatus()
-      when(mockRejectionService.unloadingRemarksRejectionMessage(any())(any())).thenReturn(Future.successful(None))
-
-      setNoExistingUserAnswers()
-
-      val request =
-        FakeRequest(POST, totalNumberOfItemsRoute)
-          .withFormUrlEncodedBody(("value", validAnswer.toString))
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
     }
   }
 }

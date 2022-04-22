@@ -18,38 +18,23 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.GrossMassAmountFormProvider
-import models.ErrorType.IncorrectValue
-import models.{DefaultPointer, FunctionalError, UnloadingRemarksRejectionMessage}
+import models.UserAnswers
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
+import org.mockito.Mockito.{verify, when}
+import pages.GrossMassAmountPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.UnloadingRemarksRejectionService
 import views.html.GrossMassAmountRejectionView
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
 class GrossMassAmountRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  val formProvider = new GrossMassAmountFormProvider()
-  val form         = formProvider()
+  private val formProvider = new GrossMassAmountFormProvider()
+  private val form         = formProvider()
 
-  lazy val grossMassAmountRejectionRoute = routes.GrossMassAmountRejectionController.onPageLoad(arrivalId).url
-
-  private val mockRejectionService = mock[UnloadingRemarksRejectionService]
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockRejectionService)
-  }
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(bind[UnloadingRemarksRejectionService].toInstance(mockRejectionService))
+  private lazy val grossMassAmountRejectionRoute = routes.GrossMassAmountRejectionController.onPageLoad(arrivalId).url
 
   "GrossMassAmountRejection Controller" - {
 
@@ -57,8 +42,7 @@ class GrossMassAmountRejectionControllerSpec extends SpecBase with AppWithDefaul
       checkArrivalStatus()
       val originalValue = "100000.123"
 
-      when(mockRejectionService.getRejectedValueAsString(any(), any())(any())(any())).thenReturn(Future.successful(Some(originalValue)))
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(emptyUserAnswers.setValue(GrossMassAmountPage, originalValue))
 
       val request = FakeRequest(GET, grossMassAmountRejectionRoute)
 
@@ -72,9 +56,8 @@ class GrossMassAmountRejectionControllerSpec extends SpecBase with AppWithDefaul
         view(form.fill(originalValue), arrivalId)(request, messages).toString
     }
 
-    "must render the technical difficulties when there is no rejection message" in {
+    "must redirect to session expired when gross mass amount is not in user answers" in {
       checkArrivalStatus()
-      when(mockRejectionService.getRejectedValueAsString(any(), any())(any())(any())).thenReturn(Future.successful(None))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -84,44 +67,30 @@ class GrossMassAmountRejectionControllerSpec extends SpecBase with AppWithDefaul
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
   }
 
   "must redirect to the next page when valid data is submitted" in {
     checkArrivalStatus()
-    val originalValue    = "some reference"
-    val errors           = Seq(FunctionalError(IncorrectValue, DefaultPointer(""), None, Some(originalValue)))
-    val rejectionMessage = UnloadingRemarksRejectionMessage(mrn, LocalDate.now, None, errors)
-
-    when(mockRejectionService.unloadingRemarksRejectionMessage(any())(any())).thenReturn(Future.successful(Some(rejectionMessage)))
-    when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
     setExistingUserAnswers(emptyUserAnswers)
 
+    when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+    val newValue = "123456.123"
+
     val request = FakeRequest(POST, grossMassAmountRejectionRoute)
-      .withFormUrlEncodedBody(("value", "123456.123"))
+      .withFormUrlEncodedBody(("value", newValue))
 
     val result = route(app, request).value
 
     status(result) mustEqual SEE_OTHER
     redirectLocation(result).value mustEqual routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId).url
-  }
 
-  "must render the technical difficulties page when rejection message is None" in {
-    checkArrivalStatus()
-    when(mockRejectionService.unloadingRemarksRejectionMessage(any())(any())).thenReturn(Future.successful(None))
-    when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-    setNoExistingUserAnswers()
-
-    val request =
-      FakeRequest(POST, grossMassAmountRejectionRoute)
-        .withFormUrlEncodedBody(("value", "123456.123"))
-
-    val result = route(app, request).value
-    status(result) mustEqual SEE_OTHER
-    redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
+    val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+    verify(mockSessionRepository).set(userAnswersCaptor.capture())
+    userAnswersCaptor.getValue.get(GrossMassAmountPage).get mustBe newValue
   }
 
   "must return a Bad Request and errors when invalid data is submitted" in {
