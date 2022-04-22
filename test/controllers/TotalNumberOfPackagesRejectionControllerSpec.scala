@@ -38,7 +38,22 @@ class TotalNumberOfPackagesRejectionControllerSpec extends SpecBase with AppWith
 
   "TotalNumberOfPackages Rejection Controller" - {
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+    "must populate the view correctly on a GET when the value has not been extracted" in {
+      checkArrivalStatus()
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(GET, totalNumberOfPackagesRoute)
+      val view    = injector.instanceOf[TotalNumberOfPackagesRejectionView]
+      val result  = route(app, request).value
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(form, arrivalId)(request, messages).toString
+    }
+
+    "must populate the view correctly on a GET when the value has been extracted" in {
       checkArrivalStatus()
 
       setExistingUserAnswers(emptyUserAnswers.setValue(TotalNumberOfPackagesPage, validAnswer))
@@ -53,19 +68,6 @@ class TotalNumberOfPackagesRejectionControllerSpec extends SpecBase with AppWith
 
       contentAsString(result) mustEqual
         view(filledForm, arrivalId)(request, messages).toString
-    }
-
-    "must redirect to session expired when total number of packages is not in user answers" in {
-      checkArrivalStatus()
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request = FakeRequest(GET, totalNumberOfPackagesRoute)
-      val result  = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to the next page when valid data is submitted" in {

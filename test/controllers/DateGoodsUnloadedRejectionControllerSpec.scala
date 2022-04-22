@@ -43,7 +43,10 @@ class DateGoodsUnloadedRejectionControllerSpec extends SpecBase with AppWithDefa
   private val validAnswer       = LocalDate.now(stubClock)
   private val dateOfPreparation = validAnswer.minusWeeks(1)
 
-  private val unloadingPermission = arbitrary[UnloadingPermission].sample.value.copy(dateOfPreparation = dateOfPreparation)
+  private val unloadingPermission = arbitrary[UnloadingPermission].sample.value.copy(
+    movementReferenceNumber = mrn.toString,
+    dateOfPreparation = dateOfPreparation
+  )
 
   private def form: Form[LocalDate] = formProvider(dateOfPreparation)
 
@@ -59,7 +62,25 @@ class DateGoodsUnloadedRejectionControllerSpec extends SpecBase with AppWithDefa
 
   "DateGoodsUnloadedRejectionController" - {
 
-    "must populate the view correctly on a GET" in {
+    "must populate the view correctly on a GET when the value has not been extracted" in {
+      checkArrivalStatus()
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(Some(unloadingPermission)))
+
+      val result = route(app, FakeRequest(GET, dateGoodsUnloadedRoute)).value
+
+      status(result) mustEqual OK
+
+      val view = injector.instanceOf[DateGoodsUnloadedRejectionView]
+
+      val request = FakeRequest(GET, dateGoodsUnloadedRoute)
+
+      contentAsString(result) mustBe view(mrn.toString, arrivalId, form)(request, messages).toString
+    }
+
+    "must populate the view correctly on a GET when the value has been extracted" in {
       checkArrivalStatus()
 
       setExistingUserAnswers(emptyUserAnswers.setValue(DateGoodsUnloadedPage, validAnswer))
@@ -137,18 +158,6 @@ class DateGoodsUnloadedRejectionControllerSpec extends SpecBase with AppWithDefa
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
-    }
-
-    "must redirect to session expired when date goods unloaded is not available" in {
-      checkArrivalStatus()
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val result = route(app, FakeRequest(GET, dateGoodsUnloadedRoute)).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

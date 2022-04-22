@@ -34,7 +34,6 @@ class TotalNumberOfItemsRejectionController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: TotalNumberOfItemsFormProvider,
   val controllerComponents: MessagesControllerComponents,
   val appConfig: FrontendAppConfig,
@@ -45,11 +44,14 @@ class TotalNumberOfItemsRejectionController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
-    actions.requireData(arrivalId).andThen(getMandatoryPage(TotalNumberOfItemsPage)) {
-      implicit request =>
-        Ok(view(form.fill(request.arg), arrivalId))
-    }
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
+    implicit request =>
+      val preparedForm = request.userAnswers.get(TotalNumberOfItemsPage) match {
+        case None        => form
+        case Some(value) => form.fill(value)
+      }
+      Ok(view(preparedForm, arrivalId))
+  }
 
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>

@@ -38,7 +38,24 @@ class GrossMassAmountRejectionControllerSpec extends SpecBase with AppWithDefaul
 
   "GrossMassAmountRejection Controller" - {
 
-    "must populate the view correctly on a GET" in {
+    "must populate the view correctly on a GET when the value has not been extracted" in {
+      checkArrivalStatus()
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(GET, grossMassAmountRejectionRoute)
+
+      val result = route(app, request).value
+
+      val view = app.injector.instanceOf[GrossMassAmountRejectionView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustBe
+        view(form, arrivalId)(request, messages).toString
+    }
+
+    "must populate the view correctly on a GET when the value has been extracted" in {
       checkArrivalStatus()
       val originalValue = "100000.123"
 
@@ -56,58 +73,44 @@ class GrossMassAmountRejectionControllerSpec extends SpecBase with AppWithDefaul
         view(form.fill(originalValue), arrivalId)(request, messages).toString
     }
 
-    "must redirect to session expired when gross mass amount is not in user answers" in {
+    "must redirect to the next page when valid data is submitted" in {
       checkArrivalStatus()
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, grossMassAmountRejectionRoute)
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val newValue = "123456.123"
+
+      val request = FakeRequest(POST, grossMassAmountRejectionRoute)
+        .withFormUrlEncodedBody(("value", newValue))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId).url
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())
+      userAnswersCaptor.getValue.get(GrossMassAmountPage).get mustBe newValue
     }
-  }
 
-  "must redirect to the next page when valid data is submitted" in {
-    checkArrivalStatus()
+    "must return a Bad Request and errors when invalid data is submitted" in {
+      checkArrivalStatus()
 
-    setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(emptyUserAnswers)
 
-    when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      val request   = FakeRequest(POST, grossMassAmountRejectionRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
 
-    val newValue = "123456.123"
+      val result = route(app, request).value
 
-    val request = FakeRequest(POST, grossMassAmountRejectionRoute)
-      .withFormUrlEncodedBody(("value", newValue))
+      val view = app.injector.instanceOf[GrossMassAmountRejectionView]
 
-    val result = route(app, request).value
+      status(result) mustEqual BAD_REQUEST
 
-    status(result) mustEqual SEE_OTHER
-    redirectLocation(result).value mustEqual routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId).url
-
-    val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-    verify(mockSessionRepository).set(userAnswersCaptor.capture())
-    userAnswersCaptor.getValue.get(GrossMassAmountPage).get mustBe newValue
-  }
-
-  "must return a Bad Request and errors when invalid data is submitted" in {
-    checkArrivalStatus()
-
-    setExistingUserAnswers(emptyUserAnswers)
-
-    val request   = FakeRequest(POST, grossMassAmountRejectionRoute).withFormUrlEncodedBody(("value", ""))
-    val boundForm = form.bind(Map("value" -> ""))
-
-    val result = route(app, request).value
-
-    val view = app.injector.instanceOf[GrossMassAmountRejectionView]
-
-    status(result) mustEqual BAD_REQUEST
-
-    contentAsString(result) mustBe
-      view(boundForm, arrivalId)(request, messages).toString
+      contentAsString(result) mustBe
+        view(boundForm, arrivalId)(request, messages).toString
+    }
   }
 }
