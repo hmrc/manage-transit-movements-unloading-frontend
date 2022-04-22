@@ -73,8 +73,10 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
       when(mockUnloadingRemarksRejectionService.unloadingRemarksRejectionMessage(any())(any()))
         .thenReturn(Future.successful(Some(rejectionMessageWithErrors(errors))))
 
+      val userAnswers = emptyUserAnswers
+
       when(mockExtractor.apply(any(), any()))
-        .thenReturn(Success(emptyUserAnswers))
+        .thenReturn(Success(userAnswers))
 
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
@@ -92,6 +94,9 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual view(arrivalId, expectedSection)(request, messages).toString
+
+      verify(mockViewModel).apply(eqTo(userAnswers))(any())
+      verify(mockSessionRepository).set(eqTo(userAnswers))
     }
 
     "return OK and the multiple error rejection view for a GET when unloading rejection message returns Some" in {

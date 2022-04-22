@@ -28,11 +28,11 @@ class RejectionMessageExtractor {
   def apply(userAnswers: UserAnswers, rejectionMessage: UnloadingRemarksRejectionMessage): Try[UserAnswers] =
     rejectionMessage.errors match {
       case error :: Nil =>
-        def setValue[T](page: QuestionPage[T])(f: String => Option[T])(implicit writes: Writes[T]): Try[UserAnswers] =
+        def setValue[T](page: QuestionPage[T])(format: String => Option[T])(implicit writes: Writes[T]): Try[UserAnswers] =
           (for {
-            originalAttributeValue <- error.originalAttributeValue
-            t                      <- f(originalAttributeValue)
-          } yield userAnswers.set(page, t)).getOrElse(Success(userAnswers))
+            value          <- error.originalAttributeValue
+            formattedValue <- format(value)
+          } yield userAnswers.set(page, formattedValue)).getOrElse(Success(userAnswers))
 
         error.pointer match {
           case GrossMassPointer           => setValue(GrossMassAmountPage)(Some(_))
