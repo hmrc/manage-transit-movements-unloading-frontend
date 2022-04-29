@@ -19,7 +19,7 @@ package controllers
 import controllers.actions.Actions
 import extractors.UnloadingPermissionExtractor
 import logging.Logging
-import models.{ArrivalId, MovementReferenceNumber, UserAnswers}
+import models.{ArrivalId, MovementReferenceNumber, UnloadingPermission, UserAnswers}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -55,9 +55,9 @@ class IndexController @Inject() (
               MovementReferenceNumber(unloadingPermission.movementReferenceNumber) match {
                 case Some(mrn) =>
                   val userAnswers = UserAnswers(id = arrivalId, mrn = mrn, eoriNumber = request.eoriNumber)
-                  unpackUnloadingPermission(arrivalId, userAnswers)
+                  unpackUnloadingPermission(userAnswers, unloadingPermission)
                 case None =>
-                  logger.error(s"Failed to get validate mrn: ${unloadingPermission.movementReferenceNumber}")
+                  logger.error(s"Failed to validate mrn: ${unloadingPermission.movementReferenceNumber}")
                   Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
               }
             case None =>
@@ -69,26 +69,26 @@ class IndexController @Inject() (
 
   def newUnloadingRemarks(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
-      unpackUnloadingPermission(arrivalId, request.userAnswers)
+      unloadingPermissionService.getUnloadingPermission(arrivalId) flatMap {
+        case Some(unloadingPermission) =>
+          unpackUnloadingPermission(request.userAnswers, unloadingPermission)
+        case None =>
+          logger.error(s"Failed to get unloading permission for arrivalId: ${arrivalId.value}")
+          Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      }
   }
 
   private def unpackUnloadingPermission(
-    arrivalId: ArrivalId,
-    userAnswers: UserAnswers
+    userAnswers: UserAnswers,
+    unloadingPermission: UnloadingPermission
   )(implicit hc: HeaderCarrier): Future[Result] =
-    unloadingPermissionService.getUnloadingPermission(arrivalId) flatMap {
-      case Some(unloadingPermission) =>
-        unloadingPermissionExtractor(userAnswers, unloadingPermission).flatMap {
-          case Success(updatedAnswers) =>
-            sessionRepository.set(updatedAnswers).map {
-              _ => redirect(arrivalId)
-            }
-          case Failure(exception) =>
-            logger.error(s"Failed to extract unloading permission data to user answers: ${exception.getMessage}")
-            Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+    unloadingPermissionExtractor(userAnswers, unloadingPermission).flatMap {
+      case Success(updatedAnswers) =>
+        sessionRepository.set(updatedAnswers).map {
+          _ => redirect(userAnswers.id)
         }
-      case None =>
-        logger.error(s"Failed to get unloading permission for arrivalId: ${arrivalId.value}")
+      case Failure(exception) =>
+        logger.error(s"Failed to extract unloading permission data to user answers: ${exception.getMessage}")
         Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
     }
 }
