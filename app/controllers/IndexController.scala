@@ -42,53 +42,52 @@ class IndexController @Inject() (
     with I18nSupport
     with Logging {
 
-  private val redirect: ArrivalId => Result = arrivalId => Redirect(routes.UnloadingGuidanceController.onPageLoad(arrivalId))
-
   def unloadingRemarks(arrivalId: ArrivalId): Action[AnyContent] = actions.getData(arrivalId).async {
     implicit request =>
       request.userAnswers match {
         case Some(_) =>
-          Future.successful(redirect(arrivalId))
+          Future.successful(Redirect(routes.UnloadingGuidanceController.onPageLoad(arrivalId)))
         case None =>
-          unloadingPermissionService.getUnloadingPermission(arrivalId) flatMap {
-            case Some(unloadingPermission) =>
+          unpackUnloadingPermission(arrivalId) {
+            unloadingPermission =>
               MovementReferenceNumber(unloadingPermission.movementReferenceNumber) match {
                 case Some(mrn) =>
-                  val userAnswers = UserAnswers(id = arrivalId, mrn = mrn, eoriNumber = request.eoriNumber)
-                  unpackUnloadingPermission(userAnswers, unloadingPermission)
+                  Right(UserAnswers(id = arrivalId, mrn = mrn, eoriNumber = request.eoriNumber))
                 case None =>
                   logger.error(s"Failed to validate mrn: ${unloadingPermission.movementReferenceNumber}")
-                  Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+                  Left(Future.successful(Redirect(routes.SessionExpiredController.onPageLoad())))
               }
-            case None =>
-              logger.error(s"Failed to get unloading permission for arrivalId: ${arrivalId.value}")
-              Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
           }
       }
   }
 
   def newUnloadingRemarks(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
-      unloadingPermissionService.getUnloadingPermission(arrivalId) flatMap {
-        case Some(unloadingPermission) =>
-          unpackUnloadingPermission(request.userAnswers, unloadingPermission)
-        case None =>
-          logger.error(s"Failed to get unloading permission for arrivalId: ${arrivalId.value}")
-          Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      unpackUnloadingPermission(arrivalId) {
+        _ => Right(request.userAnswers)
       }
   }
 
-  private def unpackUnloadingPermission(
-    userAnswers: UserAnswers,
-    unloadingPermission: UnloadingPermission
+  private def unpackUnloadingPermission(arrivalId: ArrivalId)(
+    f: UnloadingPermission => Either[Future[Result], UserAnswers]
   )(implicit hc: HeaderCarrier): Future[Result] =
-    unloadingPermissionExtractor(userAnswers, unloadingPermission).flatMap {
-      case Success(updatedAnswers) =>
-        sessionRepository.set(updatedAnswers).map {
-          _ => redirect(userAnswers.id)
+    unloadingPermissionService.getUnloadingPermission(arrivalId).flatMap {
+      case Some(unloadingPermission) =>
+        f(unloadingPermission) match {
+          case Right(userAnswers) =>
+            unloadingPermissionExtractor(userAnswers, unloadingPermission).flatMap {
+              case Success(updatedAnswers) =>
+                sessionRepository.set(updatedAnswers).map {
+                  _ => Redirect(routes.UnloadingGuidanceController.onPageLoad(arrivalId))
+                }
+              case Failure(exception) =>
+                logger.error(s"Failed to extract unloading permission data to user answers: ${exception.getMessage}")
+                Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+            }
+          case Left(result) => result
         }
-      case Failure(exception) =>
-        logger.error(s"Failed to extract unloading permission data to user answers: ${exception.getMessage}")
+      case None =>
+        logger.error(s"Failed to get unloading permission for arrivalId: ${arrivalId.value}")
         Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
     }
 }
