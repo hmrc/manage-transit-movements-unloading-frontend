@@ -47,9 +47,9 @@ class IndexController @Inject() (
   def unloadingRemarks(arrivalId: ArrivalId): Action[AnyContent] = actions.getData(arrivalId).async {
     implicit request =>
       request.userAnswers match {
-        case Some(userAnswers) if userAnswers.id == arrivalId =>
+        case Some(_) =>
           Future.successful(redirect(arrivalId))
-        case _ =>
+        case None =>
           unloadingPermissionService.getUnloadingPermission(arrivalId) flatMap {
             case Some(unloadingPermission) =>
               MovementReferenceNumber(unloadingPermission.movementReferenceNumber) match {

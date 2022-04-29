@@ -19,7 +19,7 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import extractors.UnloadingPermissionExtractor
 import generators.Generators
-import models.{ArrivalId, UnloadingPermission, UserAnswers}
+import models.{UnloadingPermission, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -86,7 +86,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
         userAnswersCaptor.getValue mustBe userAnswers
       }
 
-      "must redirect to onward route when there are UserAnswers and arrival id matches what is in user answers" in {
+      "must redirect to onward route when there are UserAnswers" in {
         checkArrivalStatus()
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -95,33 +95,6 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual nextPage
-      }
-
-      "must set new user answers when there are UserAnswers but arrival id is different" in {
-        checkArrivalStatus()
-        setExistingUserAnswers(emptyUserAnswers)
-
-        val differentArrivalId = ArrivalId(2)
-
-        val unloadingPermission = sampleUnloadingPermission.copy(movementReferenceNumber = mrn.toString)
-
-        when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any()))
-          .thenReturn(Future.successful(Some(unloadingPermission)))
-
-        when(mockExtractor.apply(any(), any())(any(), any()))
-          .thenReturn(Future.successful(Success(emptyUserAnswers.copy(id = differentArrivalId))))
-
-        when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
-
-        val request = FakeRequest(GET, routes.IndexController.unloadingRemarks(differentArrivalId).url)
-        val result  = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.UnloadingGuidanceController.onPageLoad(differentArrivalId).url
-
-        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(mockSessionRepository).set(userAnswersCaptor.capture())
-        userAnswersCaptor.getValue.id mustBe differentArrivalId
       }
 
       "must redirect to session expired when no response for arrivalId" in {
