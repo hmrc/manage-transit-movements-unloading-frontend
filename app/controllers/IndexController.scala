@@ -87,7 +87,7 @@ class IndexController @Inject() (
           case Left(result) => result
         }
       case None =>
-        logger.error(s"Failed to get unloading permission for arrivalId: ${arrivalId.value}")
+        logger.error(s"Failed to get unloading permission for arrivalId: $arrivalId")
         Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
     }
 }

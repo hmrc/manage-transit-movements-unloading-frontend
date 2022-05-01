@@ -3,7 +3,7 @@
 ->         /hmrc-frontend                                                   hmrcfrontend.Routes
 
 GET        /:arrivalId                                                      controllers.IndexController.unloadingRemarks(arrivalId: ArrivalId)
-GET        /:arrivalId/send-new-unloading-remarks                           controllers.IndexController.newUnloadingRemarks(arrivalId: ArrivalId)
+GET        /:arrivalId/new-unloading-remarks                                controllers.IndexController.newUnloadingRemarks(arrivalId: ArrivalId)
 
 GET        /assets/*file                                                    controllers.Assets.versioned(path="/public", file: Asset)
 
