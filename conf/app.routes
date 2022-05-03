@@ -2,7 +2,8 @@
 
 ->         /hmrc-frontend                                                   hmrcfrontend.Routes
 
-GET        /:arrivalId                                                      controllers.IndexController.onPageLoad(arrivalId: ArrivalId)
+GET        /:arrivalId                                                      controllers.IndexController.unloadingRemarks(arrivalId: ArrivalId)
+GET        /:arrivalId/new-unloading-remarks                                controllers.IndexController.newUnloadingRemarks(arrivalId: ArrivalId)
 
 GET        /assets/*file                                                    controllers.Assets.versioned(path="/public", file: Asset)
 
@@ -26,8 +27,8 @@ POST       /:arrivalId/rejection-check-your-answers                         cont
 GET        /error/cannot-use-service-no-eori                                controllers.UnauthorisedController.onPageLoad()
 GET        /unauthorised-group-access                                       controllers.UnauthorisedWithGroupAccessController.onPageLoad()
 
-GET         /data/keep-alive                                                controllers.KeepAliveController.keepAlive(arrivalId: Option[ArrivalId] = None)
-GET         /data/:arrivalId/keep-alive                                     controllers.KeepAliveController.keepAlive(arrivalId: Option[ArrivalId])
+GET        /data/keep-alive                                                 controllers.KeepAliveController.keepAlive(arrivalId: Option[ArrivalId] = None)
+GET        /data/:arrivalId/keep-alive                                      controllers.KeepAliveController.keepAlive(arrivalId: Option[ArrivalId])
 
 GET        /:arrivalId/unloading-guidance                                   controllers.UnloadingGuidanceController.onPageLoad(arrivalId: ArrivalId)
 POST       /:arrivalId/unloading-guidance                                   controllers.UnloadingGuidanceController.onSubmit(arrivalId: ArrivalId)
@@ -115,4 +116,3 @@ GET        /:arrivalId/date-goods-unloaded-rejection                        cont
 POST       /:arrivalId/date-goods-unloaded-rejection                        controllers.DateGoodsUnloadedRejectionController.onSubmit(arrivalId: ArrivalId)
 
 GET        /:arrivalId/unloading-permission-pdf                             controllers.UnloadingPermissionPDFController.getPDF(arrivalId: ArrivalId)
-

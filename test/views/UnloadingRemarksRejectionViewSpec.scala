@@ -31,7 +31,6 @@ class UnloadingRemarksRejectionViewSpec extends SummaryListViewBehaviours with V
   override def summaryLists: Seq[SummaryList] = Seq(SummaryList(section.rows))
 
   private val contactUrl = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/new-computerised-transit-system-enquiries"
-  private val reviewUrl  = s"/manage-transit-movements/unloading/${arrivalId.toString}"
 
   override def view: HtmlFormat.Appendable =
     injector.instanceOf[UnloadingRemarksRejectionView].apply(arrivalId, section)(fakeRequest, messages)
@@ -48,7 +47,7 @@ class UnloadingRemarksRejectionViewSpec extends SummaryListViewBehaviours with V
   behave like pageWithLink(
     "review",
     "send new unloading remarks with the right information",
-    reviewUrl
+    controllers.routes.IndexController.newUnloadingRemarks(arrivalId).url
   )
 
   behave like pageWithPartialContent("p", "You can ")
