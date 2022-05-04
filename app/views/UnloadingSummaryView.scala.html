@@ -16,13 +16,14 @@
 
 @import controllers.routes
 @import models.{Index, MovementReferenceNumber}
-@import views.html.components.{AnswerSections, Button, Heading, HeadingCaption}
+@import views.html.components.{AnswerSection, AnswerSections, Button, Heading, HeadingCaption}
 @import viewModels.sections.Section
 
 @this(
     mainTemplate: MainTemplate,
     heading: Heading,
     caption: HeadingCaption,
+    answerSection: AnswerSection,
     answerSections: AnswerSections,
     button: Button
 )
@@ -30,7 +31,7 @@
 @(
     mrn: MovementReferenceNumber,
     arrivalId: ArrivalId,
-    sealsSection: Option[Section],
+    sealsSection: Section,
     transportAndItemSections: Seq[Section],
     numberOfSeals: Int,
     showAddCommentLink: Boolean
@@ -45,14 +46,9 @@
 
     @heading("unloadingSummary.heading")
 
-    @sealsSection match {
-        case Some(value) => {
-            @answerSections(Seq(value))
-        }
-        case None => {
-            <h2 class="govuk-heading-m">@messages("unloadingSummary.seals.subheading")</h2>
-            <p class="govuk-body">@messages("unloadingSummary.noSeals")</p>
-        }
+    @answerSection(sealsSection) {
+        <h2 class="govuk-heading-m">@messages("unloadingSummary.seals.subheading")</h2>
+        <p class="govuk-body">@messages("unloadingSummary.noSeals")</p>
     }
 
     <p class="govuk-body">

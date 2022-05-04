@@ -39,7 +39,7 @@ class UnloadingSummaryViewSpec extends CheckYourAnswersViewBehaviours {
   override def viewWithSections(sections: Seq[Section]): HtmlFormat.Appendable =
     injector
       .instanceOf[UnloadingSummaryView]
-      .apply(mrn, arrivalId, Some(sections.head), sections.tail, numberOfSeals, showAddCommentsLink)(fakeRequest, messages)
+      .apply(mrn, arrivalId, sections.head, sections.tail, numberOfSeals, showAddCommentsLink)(fakeRequest, messages)
 
   behave like pageWithBackLink
 
@@ -57,11 +57,11 @@ class UnloadingSummaryViewSpec extends CheckYourAnswersViewBehaviours {
 
   behave like pageWithSubmitButton("Continue")
 
-  "when there are no seal sections" - {
+  "when there are no seals" - {
     val view =
       injector
         .instanceOf[UnloadingSummaryView]
-        .apply(mrn, arrivalId, None, transportAndItemSections, numberOfSeals, showAddCommentsLink)(fakeRequest, messages)
+        .apply(mrn, arrivalId, sealsSection.copy(rows = Nil), transportAndItemSections, numberOfSeals, showAddCommentsLink)(fakeRequest, messages)
 
     val doc: Document = parseView(view)
 
@@ -74,7 +74,7 @@ class UnloadingSummaryViewSpec extends CheckYourAnswersViewBehaviours {
     val view =
       injector
         .instanceOf[UnloadingSummaryView]
-        .apply(mrn, arrivalId, Some(sealsSection), transportAndItemSections, numberOfSeals, showAddCommentLink = true)(fakeRequest, messages)
+        .apply(mrn, arrivalId, sealsSection, transportAndItemSections, numberOfSeals, showAddCommentLink = true)(fakeRequest, messages)
 
     val doc: Document = parseView(view)
 

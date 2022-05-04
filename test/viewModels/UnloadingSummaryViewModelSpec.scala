@@ -29,18 +29,19 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
   "UnloadingSummaryViewModel" - {
 
     "seals sections should" - {
-      "display no seals" in {
+      "display no rows when there are no seals in user answers" in {
         val section = new UnloadingSummaryViewModel().sealsSection(emptyUserAnswers, mode)
 
-        section mustBe None
+        section.sectionTitle.get mustBe "Official customs seals"
+        section.rows mustBe empty
       }
 
-      "display seals" in {
+      "display rows when there are seals in user answers" in {
         val userAnswers = emptyUserAnswers
           .setValue(NewSealNumberPage(Index(0)), "seal 1")
           .setValue(NewSealNumberPage(Index(1)), "seal 2")
 
-        val section = new UnloadingSummaryViewModel().sealsSection(userAnswers, mode).get
+        val section = new UnloadingSummaryViewModel().sealsSection(userAnswers, mode)
 
         section.sectionTitle.get mustBe "Official customs seals"
         section.rows.length mustBe 2

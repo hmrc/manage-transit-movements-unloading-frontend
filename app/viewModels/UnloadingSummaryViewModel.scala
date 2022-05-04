@@ -23,8 +23,8 @@ import viewModels.sections.Section
 
 class UnloadingSummaryViewModel {
 
-  def sealsSection(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): Option[Section] =
-    SealsSection.apply(userAnswers, mode).asOpt
+  def sealsSection(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): Section =
+    SealsSection.apply(userAnswers, mode)
 
   def transportAndItemSections(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): Seq[Section] =
     Seq(
