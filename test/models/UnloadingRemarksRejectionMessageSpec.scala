@@ -18,12 +18,12 @@ package models
 
 import base.SpecBase
 import com.lucidchart.open.xtract.XmlReader
-import generators.MessagesModelGenerators
+import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 import utils.Format.dateFormatted
 
-class UnloadingRemarksRejectionMessageSpec extends SpecBase with ScalaCheckDrivenPropertyChecks with MessagesModelGenerators {
+class UnloadingRemarksRejectionMessageSpec extends SpecBase with ScalaCheckDrivenPropertyChecks with Generators {
 
   "UnloadingRemarksRejectionMessage" - {
     "must deserialize from XML with minimal answers" in {

@@ -18,7 +18,7 @@ package controllers
 
 import audit.services.AuditEventSubmissionService
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generators.{Generators, ViewModelGenerators}
+import generators.Generators
 import models.UnloadingPermission
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -35,7 +35,7 @@ import views.html.CheckYourAnswersView
 
 import scala.concurrent.Future
 
-class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ViewModelGenerators {
+class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   val unloadingPermission: UnloadingPermission = arbitrary[UnloadingPermission].sample.value
 

@@ -16,28 +16,26 @@
 
 package services
 
-import java.time.LocalDate
-
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import connectors.UnloadingConnector
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.UnloadingPermission
-import models.messages.{InterchangeControlReference, _}
+import models.messages._
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{when, _}
+import org.mockito.Mockito._
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import play.api.http.Status._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import repositories.InterchangeControlReferenceIdRepository
-import UnloadingRemarksRequestServiceSpec.header
+import services.UnloadingRemarksRequestServiceSpec.header
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
-class UnloadingRemarksServiceSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators with ScalaCheckPropertyChecks {
+class UnloadingRemarksServiceSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val mockRemarksService                                                 = mock[RemarksService]
   private val mockMetaService                                                    = mock[MetaService]

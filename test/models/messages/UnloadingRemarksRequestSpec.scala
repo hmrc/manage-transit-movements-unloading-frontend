@@ -17,7 +17,7 @@
 package models.messages
 
 import com.lucidchart.open.xtract.XmlReader
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.XMLWrites._
 import org.scalacheck.Arbitrary._
 import org.scalatest.freespec.AnyFreeSpec
@@ -31,7 +31,7 @@ import scala.xml.{Node, NodeSeq}
 class UnloadingRemarksRequestSpec
     extends AnyFreeSpec
     with Matchers
-    with MessagesModelGenerators
+    with Generators
     with ScalaCheckPropertyChecks
     with StreamlinedXmlEquality
     with OptionValues {

@@ -16,12 +16,12 @@
 
 package views
 
-import generators.MessagesModelGenerators
+import generators.Generators
 import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
 import views.html.CannotSendUnloadingRemarksView
 
-class CannotSendUnloadingRemarksViewSpec extends ViewBehaviours with MessagesModelGenerators {
+class CannotSendUnloadingRemarksViewSpec extends ViewBehaviours with Generators {
 
   override def view: HtmlFormat.Appendable =
     injector.instanceOf[CannotSendUnloadingRemarksView].apply()(fakeRequest, messages)

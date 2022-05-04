@@ -16,7 +16,7 @@
 
 package views
 
-import generators.{Generators, ViewModelGenerators}
+import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
@@ -24,7 +24,7 @@ import viewModels.sections.Section
 import views.behaviours.SummaryListViewBehaviours
 import views.html.UnloadingRemarksRejectionView
 
-class UnloadingRemarksRejectionViewSpec extends SummaryListViewBehaviours with ViewModelGenerators with Generators {
+class UnloadingRemarksRejectionViewSpec extends SummaryListViewBehaviours with Generators {
 
   private val section: Section = arbitrary[Section].sample.value
 
