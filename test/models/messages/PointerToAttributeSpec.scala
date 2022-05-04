@@ -17,7 +17,7 @@
 package models.messages
 
 import com.lucidchart.open.xtract.XmlReader
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.XMLWrites._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.OptionValues
@@ -28,7 +28,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import scala.xml.Node
 import scala.xml.Utility.trim
 
-class PointerToAttributeSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues with MessagesModelGenerators {
+class PointerToAttributeSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues with Generators {
 
   "PointerToAttributeSpec" - {
 

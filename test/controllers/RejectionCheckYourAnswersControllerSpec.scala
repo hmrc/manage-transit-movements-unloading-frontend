@@ -17,7 +17,7 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generators.{Generators, ViewModelGenerators}
+import generators.Generators
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import pages.VehicleNameRegistrationReferencePage
@@ -33,7 +33,7 @@ import views.html.RejectionCheckYourAnswersView
 
 import scala.concurrent.Future
 
-class RejectionCheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ViewModelGenerators {
+class RejectionCheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val mockUnloadingRemarksService                       = mock[UnloadingRemarksService]
   private val mockViewModel: RejectionCheckYourAnswersViewModel = mock[RejectionCheckYourAnswersViewModel]

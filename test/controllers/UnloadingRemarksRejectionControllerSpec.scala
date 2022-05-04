@@ -18,7 +18,7 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import extractors.RejectionMessageExtractor
-import generators.{MessagesModelGenerators, ViewModelGenerators}
+import generators.Generators
 import models.ErrorType.IncorrectValue
 import models.{DefaultPointer, ErrorPointer, FunctionalError, NumberOfPackagesPointer, UnloadingRemarksRejectionMessage, VehicleRegistrationPointer}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
@@ -38,7 +38,7 @@ import java.time.LocalDate
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
-class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators with ViewModelGenerators {
+class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val mockUnloadingRemarksRejectionService = mock[UnloadingRemarksRejectionService]
   private val mockViewModel                        = mock[UnloadingRemarksRejectionViewModel]

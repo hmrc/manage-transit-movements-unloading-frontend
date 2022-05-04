@@ -17,7 +17,7 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generators.{Generators, ViewModelGenerators}
+import generators.Generators
 import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
@@ -31,7 +31,7 @@ import viewModels.UnloadingSummaryViewModel
 import viewModels.sections.Section
 import views.html.UnloadingSummaryView
 
-class UnloadingSummaryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ViewModelGenerators {
+class UnloadingSummaryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val sampleSealsSection: Section                  = arbitrary[Section].sample.value
   private val sampleTransportAndItemSections: Seq[Section] = listWithMaxLength[Section]().sample.value

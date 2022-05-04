@@ -18,7 +18,7 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.VehicleNameRegistrationReferenceFormProvider
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.UserAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -30,7 +30,7 @@ import views.html.VehicleNameRegistrationRejectionView
 
 import scala.concurrent.Future
 
-class VehicleNameRegistrationRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators {
+class VehicleNameRegistrationRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider = new VehicleNameRegistrationReferenceFormProvider()
   private val form         = formProvider()

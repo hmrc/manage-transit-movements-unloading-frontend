@@ -16,10 +16,8 @@
 
 package connectors
 
-import java.time.LocalDate
-
 import com.github.tomakehurst.wiremock.client.WireMock._
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.XMLWrites._
 import models._
 import models.messages.UnloadingRemarksRequest
@@ -36,6 +34,7 @@ import play.api.libs.ws.WSResponse
 import play.api.test.Helpers.running
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDate
 import scala.concurrent.Future
 import scala.xml.NodeSeq
 
@@ -46,7 +45,7 @@ class UnloadingConnectorSpec
     with WireMockSuite
     with Matchers
     with OptionValues
-    with MessagesModelGenerators
+    with Generators
     with StreamlinedXmlEquality
     with ScalaCheckPropertyChecks {
 

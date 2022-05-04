@@ -16,18 +16,17 @@
 
 package services
 
-import java.time.LocalDateTime
-
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.messages._
 import models.{Index, Seals, UnloadingPermission}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.{NewSealNumberPage, VehicleNameRegistrationReferencePage}
 
-class UnloadingRemarksRequestServiceSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators with ScalaCheckPropertyChecks {
+import java.time.LocalDateTime
+
+class UnloadingRemarksRequestServiceSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   import UnloadingRemarksRequestServiceSpec._
 

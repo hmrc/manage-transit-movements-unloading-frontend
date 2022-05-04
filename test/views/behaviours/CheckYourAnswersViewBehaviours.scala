@@ -16,12 +16,12 @@
 
 package views.behaviours
 
-import generators.{Generators, ViewModelGenerators}
+import generators.Generators
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewModels.sections.Section
 
-trait CheckYourAnswersViewBehaviours extends SummaryListViewBehaviours with Generators with ViewModelGenerators {
+trait CheckYourAnswersViewBehaviours extends SummaryListViewBehaviours with Generators {
 
   lazy val sections: Seq[Section] = listWithMaxLength[Section]().sample.value
 

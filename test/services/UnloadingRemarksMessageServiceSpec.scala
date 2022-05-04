@@ -18,20 +18,20 @@ package services
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import connectors.UnloadingConnector
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.messages.UnloadingRemarksRequest
 import models.{MessagesLocation, MessagesSummary}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import play.api.inject.bind
 import org.scalacheck.Arbitrary.arbitrary
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class UnloadingRemarksMessageServiceSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators {
+class UnloadingRemarksMessageServiceSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val mockConnector = mock[UnloadingConnector]
 

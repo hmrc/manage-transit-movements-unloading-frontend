@@ -17,14 +17,14 @@
 package views
 
 import _root_.utils.UnloadingRemarksRejectionHelper._
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.FunctionalError
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import views.behaviours.SummaryListViewBehaviours
 import views.html.UnloadingRemarksMultipleErrorsRejectionView
 
-class UnloadingRemarksMultipleErrorsRejectionViewSpec extends SummaryListViewBehaviours with MessagesModelGenerators {
+class UnloadingRemarksMultipleErrorsRejectionViewSpec extends SummaryListViewBehaviours with Generators {
 
   private val contactUrl = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/new-computerised-transit-system-enquiries"
 

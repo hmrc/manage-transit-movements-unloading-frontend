@@ -17,7 +17,7 @@
 package models.messages
 
 import com.lucidchart.open.xtract.{ParseFailure, XmlReader}
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.XMLWrites._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
@@ -32,7 +32,7 @@ class InterchangeControlReferenceSpec
     with Matchers
     with ScalaCheckPropertyChecks
     with StreamlinedXmlEquality
-    with MessagesModelGenerators
+    with Generators
     with OptionValues {
 
   "InterchangeControlReference" - {

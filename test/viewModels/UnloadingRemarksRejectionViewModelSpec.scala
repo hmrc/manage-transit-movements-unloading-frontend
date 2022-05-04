@@ -17,7 +17,7 @@
 package viewModels
 
 import base.SpecBase
-import generators.MessagesModelGenerators
+import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
@@ -25,7 +25,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
 import java.time.LocalDate
 
-class UnloadingRemarksRejectionViewModelSpec extends SpecBase with MessagesModelGenerators {
+class UnloadingRemarksRejectionViewModelSpec extends SpecBase with Generators {
 
   "apply" - {
 
