@@ -28,7 +28,7 @@ class SealsSectionSpec extends SpecBase {
 
   "SealsSection" - {
 
-    "contain section" - {
+    "return rows" - {
 
       val seals = Seq("new seal value 1", "new seal value 2")
 
@@ -37,7 +37,8 @@ class SealsSectionSpec extends SpecBase {
           .setPrepopulatedValue(SealsQuery, seals)
           .setValue(SealsQuery, seals)
 
-        val section: Section = SealsSection(userAnswers, mode).get
+        val section: Section = SealsSection(userAnswers, mode)
+        section.sectionTitle.get mustBe "Official customs seals"
         section.rows.head.value.content mustBe Text("new seal value 1")
         section.rows.head.actions.get.items.size mustBe 1
         section.rows(1).value.content mustBe Text("new seal value 2")
@@ -48,7 +49,8 @@ class SealsSectionSpec extends SpecBase {
         val userAnswers = emptyUserAnswers
           .setValue(SealsQuery, seals)
 
-        val section: Section = SealsSection(userAnswers, mode).get
+        val section: Section = SealsSection(userAnswers, mode)
+        section.sectionTitle.get mustBe "Official customs seals"
         section.rows.head.value.content mustBe Text("new seal value 1")
         section.rows.head.actions.get.items.size mustBe 2
         section.rows(1).value.content mustBe Text("new seal value 2")
@@ -56,10 +58,10 @@ class SealsSectionSpec extends SpecBase {
       }
     }
 
-    "return nothing if no seals exist" in {
-      val section: Option[Section] = SealsSection(emptyUserAnswers, mode)
-
-      section mustBe None
+    "return no rows when no seals exist" in {
+      val section: Section = SealsSection(emptyUserAnswers, mode)
+      section.sectionTitle.get mustBe "Official customs seals"
+      section.rows mustBe empty
     }
   }
 }

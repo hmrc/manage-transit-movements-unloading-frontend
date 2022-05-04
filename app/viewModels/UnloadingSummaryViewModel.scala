@@ -24,29 +24,29 @@ import viewModels.sections.Section
 class UnloadingSummaryViewModel {
 
   def sealsSection(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): Option[Section] =
-    SealsSection.apply(userAnswers, mode)
+    SealsSection.apply(userAnswers, mode).asOpt
 
   def transportAndItemSections(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): Seq[Section] =
-    TransportSection(userAnswers, mode).toSeq ++ ItemsSection(userAnswers, mode).toSeq
+    Seq(
+      TransportSection(userAnswers, mode),
+      ItemsSection(userAnswers, mode)
+    )
 }
 
 object SealsSection {
 
-  def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): Option[Section] = {
+  def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): Section = {
     val helper: UnloadingSummaryHelper = new UnloadingSummaryHelper(userAnswers, mode)
 
     val rows = helper.seals ++ helper.sealsWithRemove
 
-    rows match {
-      case Nil => None
-      case _   => Some(Section(messages("changeSeal.title"), rows))
-    }
+    Section(messages("changeSeal.title"), rows)
   }
 }
 
 object TransportSection {
 
-  def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): Option[Section] = {
+  def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): Section = {
     val helper: UnloadingSummaryHelper = new UnloadingSummaryHelper(userAnswers, mode)
 
     val rows = Seq(
@@ -54,16 +54,13 @@ object TransportSection {
       helper.registeredCountry
     ).flatten
 
-    rows match {
-      case Nil => None
-      case _   => Some(Section(messages("vehicleUsed.title"), rows))
-    }
+    Section(messages("vehicleUsed.title"), rows)
   }
 }
 
 object ItemsSection {
 
-  def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): Option[Section] = {
+  def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): Section = {
     val helper: UnloadingSummaryHelper = new UnloadingSummaryHelper(userAnswers, mode)
 
     val rows = helper.grossMass.toSeq ++
@@ -72,9 +69,6 @@ object ItemsSection {
       helper.items ++
       helper.comments.toSeq
 
-    rows match {
-      case Nil => None
-      case _   => Some(Section(messages("changeItems.title"), rows))
-    }
+    Section(messages("changeItems.title"), rows)
   }
 }

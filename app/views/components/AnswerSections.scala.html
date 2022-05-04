@@ -24,7 +24,7 @@
 )(implicit messages: Messages)
 
 @for(section <- sections) {
-    @if(section.rows.nonEmpty) {
+    @section.asOpt.map { section =>
         @section.sectionTitle.map { title =>
             <h2 class="govuk-heading-m">@title</h2>
         }

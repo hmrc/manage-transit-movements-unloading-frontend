@@ -33,21 +33,22 @@ class TransportSectionSpec extends SpecBase {
 
       "correct transport identity number" in {
         val userAnswers      = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, "RegNumber1")
-        val section: Section = TransportSection(userAnswers, mode).get
+        val section: Section = TransportSection(userAnswers, mode)
         section.sectionTitle.get mustBe "Vehicle used"
         section.rows.head.value.content mustBe Text("RegNumber1")
       }
 
       "correct transport country from unloading permission " in {
         val userAnswers      = emptyUserAnswers.setValue(VehicleRegistrationCountryPage, Country("FR", "France"))
-        val section: Section = TransportSection(userAnswers, mode).get
+        val section: Section = TransportSection(userAnswers, mode)
         section.sectionTitle.get mustBe "Vehicle used"
         section.rows.head.value.content mustBe Text("France")
       }
 
       "nothing when user answers empty" in {
-        val section: Option[Section] = TransportSection(emptyUserAnswers, mode)
-        section mustBe None
+        val section: Section = TransportSection(emptyUserAnswers, mode)
+        section.sectionTitle.get mustBe "Vehicle used"
+        section.rows mustBe empty
       }
     }
   }

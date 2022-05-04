@@ -20,7 +20,9 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{__, OWrites}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-case class Section(sectionTitle: Option[String], rows: Seq[SummaryListRow])
+case class Section(sectionTitle: Option[String], rows: Seq[SummaryListRow]) {
+  def asOpt: Option[Section] = if (rows.nonEmpty) Some(this) else None
+}
 
 object Section {
   def apply(sectionTitle: String, rows: Seq[SummaryListRow]): Section = new Section(Some(sectionTitle), rows)
