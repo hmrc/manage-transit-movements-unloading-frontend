@@ -17,7 +17,7 @@
 package utils
 
 import controllers.routes
-import models.UserAnswers
+import models.{FunctionalError, UserAnswers}
 import pages._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
@@ -71,4 +71,23 @@ class UnloadingRemarksRejectionHelper(userAnswers: UserAnswers)(implicit message
       id = Some("change-date-goods-unloaded"),
       call = Some(routes.DateGoodsUnloadedRejectionController.onPageLoad(arrivalId))
     )
+}
+
+object UnloadingRemarksRejectionHelper {
+
+  implicit class RichFunctionalError(functionalError: FunctionalError) {
+
+    def toSummaryList(implicit messages: Messages): SummaryList = SummaryList(
+      rows = Seq(
+        SummaryListRow(
+          key = messages("unloadingRemarksRejection.errorCode").toKey,
+          value = Value(functionalError.errorType.toString.toText)
+        ),
+        SummaryListRow(
+          key = messages("unloadingRemarksRejection.pointer").toKey,
+          value = Value(functionalError.pointer.value.toText)
+        )
+      )
+    )
+  }
 }

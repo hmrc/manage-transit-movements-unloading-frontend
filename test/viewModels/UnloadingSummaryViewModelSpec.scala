@@ -29,20 +29,21 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
   "UnloadingSummaryViewModel" - {
 
     "seals sections should" - {
-      "display no seals" in {
-        val data = new UnloadingSummaryViewModel().sealsSection(emptyUserAnswers, mode)
+      "display no rows when there are no seals in user answers" in {
+        val section = new UnloadingSummaryViewModel().sealsSection(emptyUserAnswers, mode)
 
-        data mustBe None
+        section.sectionTitle.get mustBe "Official customs seals"
+        section.rows mustBe empty
       }
 
-      "display seals" in {
+      "display rows when there are seals in user answers" in {
         val userAnswers = emptyUserAnswers
           .setValue(NewSealNumberPage(Index(0)), "seal 1")
           .setValue(NewSealNumberPage(Index(1)), "seal 2")
 
-        val section = new UnloadingSummaryViewModel().sealsSection(userAnswers, mode).get
+        val section = new UnloadingSummaryViewModel().sealsSection(userAnswers, mode)
 
-        section.sectionTitle mustBe defined
+        section.sectionTitle.get mustBe "Official customs seals"
         section.rows.length mustBe 2
       }
     }
@@ -54,8 +55,8 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
 
         val sections = new UnloadingSummaryViewModel().transportAndItemSections(userAnswers, mode)
 
-        sections.length mustBe 1
-        sections.head.sectionTitle mustBe defined
+        sections.length mustBe 2
+        sections.head.sectionTitle.get mustBe "Vehicle used"
         sections.head.rows.length mustBe 1
       }
 
@@ -64,8 +65,8 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
 
         val sections = new UnloadingSummaryViewModel().transportAndItemSections(userAnswers, mode)
 
-        sections.length mustBe 1
-        sections.head.sectionTitle mustBe defined
+        sections.length mustBe 2
+        sections.head.sectionTitle.get mustBe "Vehicle used"
         sections.head.rows.length mustBe 1
       }
 
@@ -76,8 +77,8 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
 
         val sections = new UnloadingSummaryViewModel().transportAndItemSections(userAnswers, mode)
 
-        sections.length mustBe 1
-        sections.head.sectionTitle mustBe defined
+        sections.length mustBe 2
+        sections.head.sectionTitle.get mustBe "Vehicle used"
         sections.head.rows.length mustBe 2
       }
     }
@@ -89,9 +90,10 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
 
         val sections = new UnloadingSummaryViewModel().transportAndItemSections(userAnswers, mode)
 
-        sections.length mustBe 1
-        sections.head.rows.length mustBe 1
-        sections.head.rows.head.value.content mustBe Text("99")
+        sections.length mustBe 2
+        sections(1).sectionTitle.get mustBe "Items"
+        sections(1).rows.length mustBe 1
+        sections(1).rows.head.value.content mustBe Text("99")
       }
 
       "display total number of items " in {
@@ -99,9 +101,10 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
 
         val sections = new UnloadingSummaryViewModel().transportAndItemSections(userAnswers, mode)
 
-        sections.length mustBe 1
-        sections.head.rows.length mustBe 1
-        sections.head.rows.head.value.content mustBe Text("8")
+        sections.length mustBe 2
+        sections(1).sectionTitle.get mustBe "Items"
+        sections(1).rows.length mustBe 1
+        sections(1).rows.head.value.content mustBe Text("8")
       }
 
       "contain number of packages details " in {
@@ -109,9 +112,10 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
 
         val sections = new UnloadingSummaryViewModel().transportAndItemSections(userAnswers, mode)
 
-        sections.length mustBe 1
-        sections.head.rows.length mustBe 1
-        sections.head.rows.head.value.content mustBe Text("11")
+        sections.length mustBe 2
+        sections(1).sectionTitle.get mustBe "Items"
+        sections(1).rows.length mustBe 1
+        sections(1).rows.head.value.content mustBe Text("11")
       }
     }
   }

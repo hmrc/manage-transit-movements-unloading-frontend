@@ -16,21 +16,22 @@
 
 @import controllers.routes
 @import models.{Index, MovementReferenceNumber}
-@import views.html.components.{Button, Heading, HeadingCaption, SummaryList}
+@import views.html.components.{AnswerSection, AnswerSections, Button, Heading, HeadingCaption}
 @import viewModels.sections.Section
 
 @this(
     mainTemplate: MainTemplate,
     heading: Heading,
     caption: HeadingCaption,
-    summaryList: SummaryList,
+    answerSection: AnswerSection,
+    answerSections: AnswerSections,
     button: Button
 )
 
 @(
     mrn: MovementReferenceNumber,
     arrivalId: ArrivalId,
-    sealsSection: Option[Section],
+    sealsSection: Section,
     transportAndItemSections: Seq[Section],
     numberOfSeals: Int,
     showAddCommentLink: Boolean
@@ -45,14 +46,9 @@
 
     @heading("unloadingSummary.heading")
 
-    @sealsSection match {
-        case Some(value) => {
-            @summaryList(Seq(value))
-        }
-        case None => {
-            <h2 class="govuk-heading-m">@messages("unloadingSummary.seals.subheading")</h2>
-            <p class="govuk-body">@messages("unloadingSummary.noSeals")</p>
-        }
+    @answerSection(sealsSection) {
+        <h2 class="govuk-heading-m">@messages("unloadingSummary.seals.subheading")</h2>
+        <p class="govuk-body">@messages("unloadingSummary.noSeals")</p>
     }
 
     <p class="govuk-body">
@@ -61,7 +57,7 @@
         </a>
     </p>
 
-    @summaryList(transportAndItemSections)
+    @answerSections(transportAndItemSections)
 
     @if(showAddCommentLink) {
         <p class ="govuk-body">

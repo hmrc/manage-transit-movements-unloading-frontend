@@ -28,9 +28,9 @@ class CheckYourAnswersViewModel {
       goodsUnloadedSection(userAnswers),
       sealsSection(userAnswers),
       itemsSection(userAnswers)
-    ).flatten
+    )
 
-  private def sealsSection(userAnswers: UserAnswers)(implicit messages: Messages): Option[Section] = {
+  private def sealsSection(userAnswers: UserAnswers)(implicit messages: Messages): Section = {
     val helper = new CheckYourAnswersHelper(userAnswers)
 
     val rows = Seq(
@@ -39,23 +39,17 @@ class CheckYourAnswersViewModel {
       helper.areAnySealsBroken
     ).flatten
 
-    rows match {
-      case Nil => None
-      case _   => Some(Section(messages("checkYourAnswers.seals.subHeading"), rows))
-    }
+    Section(messages("checkYourAnswers.seals.subHeading"), rows)
   }
 
-  private def goodsUnloadedSection(userAnswers: UserAnswers)(implicit messages: Messages): Option[Section] = {
+  private def goodsUnloadedSection(userAnswers: UserAnswers)(implicit messages: Messages): Section = {
     val helper = new CheckYourAnswersHelper(userAnswers)
     val rows   = helper.dateGoodsUnloaded.toSeq
 
-    rows match {
-      case Nil => None
-      case _   => Some(Section(rows))
-    }
+    Section(rows)
   }
 
-  private def itemsSection(userAnswers: UserAnswers)(implicit messages: Messages): Option[Section] = {
+  private def itemsSection(userAnswers: UserAnswers)(implicit messages: Messages): Section = {
     val helper = new UnloadingSummaryHelper(userAnswers, CheckMode)
 
     val rows = helper.vehicleUsed.toSeq ++
@@ -66,10 +60,7 @@ class CheckYourAnswersViewModel {
       helper.items ++
       helper.comments.toSeq
 
-    rows match {
-      case Nil => None
-      case _   => Some(Section(messages("checkYourAnswers.subHeading"), rows))
-    }
+    Section(messages("checkYourAnswers.subHeading"), rows)
   }
 
 }

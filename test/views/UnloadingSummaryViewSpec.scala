@@ -17,35 +17,29 @@
 package views
 
 import controllers.routes
-import generators.{Generators, ViewModelGenerators}
 import models.{Index, NormalMode}
 import org.jsoup.nodes.Document
 import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewModels.sections.Section
-import views.behaviours.SummaryListViewBehaviours
+import views.behaviours.CheckYourAnswersViewBehaviours
 import views.html.UnloadingSummaryView
 
-class UnloadingSummaryViewSpec extends SummaryListViewBehaviours with Generators with ViewModelGenerators {
+class UnloadingSummaryViewSpec extends CheckYourAnswersViewBehaviours {
 
   override val prefix: String = "unloadingSummary"
 
   private val sealsSection: Section                  = arbitrary[Section].sample.value
   private val transportAndItemSections: Seq[Section] = listWithMaxLength[Section]().sample.value
-  private val sections: Seq[Section]                 = sealsSection +: transportAndItemSections
+  override lazy val sections: Seq[Section]           = sealsSection +: transportAndItemSections
 
   private val numberOfSeals: Int           = arbitrary[Int].sample.value
   private val showAddCommentsLink: Boolean = arbitrary[Boolean].sample.value
 
-  override def summaryLists: Seq[SummaryList] = sections.map(
-    section => new SummaryList(section.rows)
-  )
-
-  override def view: HtmlFormat.Appendable =
+  override def viewWithSections(sections: Seq[Section]): HtmlFormat.Appendable =
     injector
       .instanceOf[UnloadingSummaryView]
-      .apply(mrn, arrivalId, Some(sealsSection), transportAndItemSections, numberOfSeals, showAddCommentsLink)(fakeRequest, messages)
+      .apply(mrn, arrivalId, sections.head, sections.tail, numberOfSeals, showAddCommentsLink)(fakeRequest, messages)
 
   behave like pageWithBackLink
 
@@ -53,12 +47,7 @@ class UnloadingSummaryViewSpec extends SummaryListViewBehaviours with Generators
 
   behave like pageWithHeading()
 
-  sections.foreach(_.sectionTitle.map {
-    sectionTitle =>
-      behave like pageWithContent("h2", sectionTitle)
-  })
-
-  behave like pageWithSummaryLists()
+  behave like pageWithCheckYourAnswers()
 
   behave like pageWithLink(
     id = "add-seal",
@@ -68,11 +57,11 @@ class UnloadingSummaryViewSpec extends SummaryListViewBehaviours with Generators
 
   behave like pageWithSubmitButton("Continue")
 
-  "when there are no seal sections" - {
+  "when there are no seals" - {
     val view =
       injector
         .instanceOf[UnloadingSummaryView]
-        .apply(mrn, arrivalId, None, transportAndItemSections, numberOfSeals, showAddCommentsLink)(fakeRequest, messages)
+        .apply(mrn, arrivalId, sealsSection.copy(rows = Nil), transportAndItemSections, numberOfSeals, showAddCommentsLink)(fakeRequest, messages)
 
     val doc: Document = parseView(view)
 
@@ -85,7 +74,7 @@ class UnloadingSummaryViewSpec extends SummaryListViewBehaviours with Generators
     val view =
       injector
         .instanceOf[UnloadingSummaryView]
-        .apply(mrn, arrivalId, Some(sealsSection), transportAndItemSections, numberOfSeals, showAddCommentLink = true)(fakeRequest, messages)
+        .apply(mrn, arrivalId, sealsSection, transportAndItemSections, numberOfSeals, showAddCommentLink = true)(fakeRequest, messages)
 
     val doc: Document = parseView(view)
 

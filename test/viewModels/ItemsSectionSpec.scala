@@ -28,40 +28,46 @@ class ItemsSectionSpec extends SpecBase {
   private val mode = NormalMode
 
   "ItemsSection" - {
-    "Must display" - {
+    "must display" - {
 
-      "Nothing if answers are empty" in {
-        val section: Option[Section] = ItemsSection(emptyUserAnswers, mode)
-        section mustBe None
+      "no rows if answers are empty" in {
+        val section: Section = ItemsSection(emptyUserAnswers, mode)
+        section.sectionTitle.get mustBe "Items"
+        section.rows mustBe empty
       }
 
-      "Correct Gross mass" in {
+      "correct gross mass" in {
         val userAnswers      = emptyUserAnswers.setValue(GrossMassAmountPage, "1000")
-        val section: Section = ItemsSection(userAnswers, mode).get
+        val section: Section = ItemsSection(userAnswers, mode)
+        section.sectionTitle.get mustBe "Items"
         section.rows.head.value.content mustBe Text("1000")
       }
 
-      "Correct number of items" in {
+      "correct number of items" in {
         val userAnswers      = emptyUserAnswers.setValue(TotalNumberOfItemsPage, 10)
-        val section: Section = ItemsSection(userAnswers, mode).get
+        val section: Section = ItemsSection(userAnswers, mode)
+        section.sectionTitle.get mustBe "Items"
         section.rows.head.value.content mustBe Text("10")
       }
 
-      "Correct number of packages" in {
+      "correct number of packages" in {
         val userAnswers      = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, 10)
-        val section: Section = ItemsSection(userAnswers, mode).get
+        val section: Section = ItemsSection(userAnswers, mode)
+        section.sectionTitle.get mustBe "Items"
         section.rows.head.value.content mustBe Text("10")
       }
 
-      "Correct items" in {
+      "correct items" in {
         val userAnswers      = emptyUserAnswers.setValue(GoodsItemsQuery, Seq("Test"))
-        val section: Section = ItemsSection(userAnswers, mode).get
+        val section: Section = ItemsSection(userAnswers, mode)
+        section.sectionTitle.get mustBe "Items"
         section.rows.head.value.content mustBe Text("Test")
       }
 
-      "Correct Comments" in {
+      "correct comments" in {
         val userAnswers      = emptyUserAnswers.setValue(ChangesToReportPage, "Test")
-        val section: Section = ItemsSection(userAnswers, mode).get
+        val section: Section = ItemsSection(userAnswers, mode)
+        section.sectionTitle.get mustBe "Items"
         section.rows.head.value.content mustBe Text("Test")
       }
     }
