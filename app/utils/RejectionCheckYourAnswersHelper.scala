@@ -20,7 +20,6 @@ import controllers.routes
 import models.UserAnswers
 import pages._
 import play.api.i18n.Messages
-import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
@@ -36,8 +35,6 @@ class RejectionCheckYourAnswersHelper(userAnswers: UserAnswers)(implicit message
       id = Some("change-vehicle-registration-rejection"),
       call = Some(routes.VehicleNameRegistrationRejectionController.onPageLoad(arrivalId))
     )
-
-  val t = Html("")
 
   def dateGoodsUnloaded: Option[SummaryListRow] =
     getAnswerAndBuildRow[LocalDate](
