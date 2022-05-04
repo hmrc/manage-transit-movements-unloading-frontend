@@ -18,14 +18,16 @@ package utils
 
 import base.SpecBase
 import controllers.routes
+import generators.MessagesModelGenerators
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
+import utils.UnloadingRemarksRejectionHelper._
 
 import java.time.LocalDate
 
-class UnloadingRemarksRejectionHelperSpec extends SpecBase {
+class UnloadingRemarksRejectionHelperSpec extends SpecBase with MessagesModelGenerators {
 
   "must return summary list row" - {
 
@@ -162,5 +164,27 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase {
       )
     }
 
+  }
+
+  "RichFunctionalError" - {
+    ".toSummaryList" - {
+      "must return summary list" in {
+        forAll(arbitraryRejectionError.arbitrary) {
+          functionalError =>
+            functionalError.toSummaryList mustBe SummaryList(
+              rows = Seq(
+                SummaryListRow(
+                  key = "Error code".toKey,
+                  value = Value(functionalError.errorType.toString.toText)
+                ),
+                SummaryListRow(
+                  key = "Pointer".toKey,
+                  value = Value(functionalError.pointer.value.toText)
+                )
+              )
+            )
+        }
+      }
+    }
   }
 }

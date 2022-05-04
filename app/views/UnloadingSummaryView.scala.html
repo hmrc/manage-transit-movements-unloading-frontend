@@ -16,14 +16,14 @@
 
 @import controllers.routes
 @import models.{Index, MovementReferenceNumber}
-@import views.html.components.{Button, Heading, HeadingCaption, SummaryList}
+@import views.html.components.{AnswerSections, Button, Heading, HeadingCaption}
 @import viewModels.sections.Section
 
 @this(
     mainTemplate: MainTemplate,
     heading: Heading,
     caption: HeadingCaption,
-    summaryList: SummaryList,
+    answerSections: AnswerSections,
     button: Button
 )
 
@@ -47,7 +47,7 @@
 
     @sealsSection match {
         case Some(value) => {
-            @summaryList(Seq(value))
+            @answerSections(Seq(value))
         }
         case None => {
             <h2 class="govuk-heading-m">@messages("unloadingSummary.seals.subheading")</h2>
@@ -61,7 +61,7 @@
         </a>
     </p>
 
-    @summaryList(transportAndItemSections)
+    @answerSections(transportAndItemSections)
 
     @if(showAddCommentLink) {
         <p class ="govuk-body">
