@@ -19,17 +19,17 @@
 @import views.html.components.DateErrorSummary
 
 @this(
-        main_template: MainTemplate,
-        errorSummary: DateErrorSummary,
-        formHelper: FormWithCSRF,
-        inputDate: InputDate,
-        button: Button,
-        caption: HeadingCaption
+    mainTemplate: MainTemplate,
+    errorSummary: DateErrorSummary,
+    formHelper: FormWithCSRF,
+    inputDate: InputDate,
+    button: Button,
+    caption: HeadingCaption
 )
 
 @(mrn: String, arrivalId: ArrivalId, form: Form[LocalDate])(implicit request: Request[_], messages: Messages)
 
-@main_template(
+@mainTemplate(
     title = messages("dateGoodsUnloaded.title"),
     showBackLink = true
 ) {

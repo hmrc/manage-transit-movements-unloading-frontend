@@ -18,7 +18,7 @@
 @import views.html.components.{Button, Heading}
 
 @this(
-    main_template: MainTemplate,
+    mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     heading: Heading,
     button: Button
@@ -26,7 +26,7 @@
 
 @(mrn: MovementReferenceNumber, arrivalId: ArrivalId)(implicit request: Request[_], messages: Messages)
 
-@main_template(
+@mainTemplate(
     title = messages("unloadingGuidance.title"),
     showBackLink = true
 ) {
