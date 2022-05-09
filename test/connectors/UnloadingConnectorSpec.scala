@@ -16,44 +16,35 @@
 
 package connectors
 
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock._
+import connectors.UnloadingConnectorSpec._
 import generators.Generators
 import models.XMLWrites._
 import models._
 import models.messages.UnloadingRemarksRequest
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.{OptionValues, StreamlinedXmlEquality}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.http.Status._
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json._
 import play.api.libs.ws.WSResponse
-import play.api.test.Helpers.running
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDate
 import scala.concurrent.Future
 import scala.xml.NodeSeq
 
-class UnloadingConnectorSpec
-    extends AnyFreeSpec
-    with ScalaFutures
-    with IntegrationPatience
-    with WireMockSuite
-    with Matchers
-    with OptionValues
-    with Generators
-    with StreamlinedXmlEquality
-    with ScalaCheckPropertyChecks {
+class UnloadingConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockSuite with Generators {
 
-  import UnloadingConnectorSpec._
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .configure(conf = "microservice.services.arrivals-backend.port" -> server.port())
 
-  override protected def portConfigKey: String = "microservice.services.arrivals-backend.port"
+  private lazy val connector: UnloadingConnector = app.injector.instanceOf[UnloadingConnector]
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit private val hc: HeaderCarrier = HeaderCarrier()
 
   "UnloadingConnectorSpec" - {
 
@@ -64,38 +55,29 @@ class UnloadingConnectorSpec
           post(postUri)
             .withHeader("Channel", containing("web"))
             .withHeader("Content-Type", containing("application/xml"))
-            .willReturn(status(ACCEPTED)))
+            .willReturn(status(ACCEPTED))
+        )
 
-        val app = appBuilder.build()
+        val unloadingRemarksRequest = arbitrary[UnloadingRemarksRequest].sample.value
 
-        running(app) {
-          val connector: UnloadingConnector = app.injector.instanceOf[UnloadingConnector]
-          val unloadingRemarksRequest       = arbitrary[UnloadingRemarksRequest].sample.value
+        val result = connector.post(arrivalId, unloadingRemarksRequest).futureValue
 
-          val result = connector.post(arrivalId, unloadingRemarksRequest).futureValue
-
-          result.status mustBe ACCEPTED
-        }
+        result.status mustBe ACCEPTED
       }
 
       "should handle client and server errors" in {
 
-        val app = appBuilder.build()
+        forAll(arbitrary[UnloadingRemarksRequest], errorResponseCodes) {
+          (unloadingRemarksRequest, errorResponseCode) =>
+            server.stubFor(
+              post(postUri)
+                .withHeader("Channel", containing("web"))
+                .withHeader("Content-Type", containing("application/xml"))
+                .willReturn(aResponse().withStatus(errorResponseCode))
+            )
 
-        running(app) {
-          val errorResponsesCodes: Gen[Int] = Gen.chooseNum(400: Int, 599: Int)
-          val connector: UnloadingConnector = app.injector.instanceOf[UnloadingConnector]
-
-          forAll(arbitrary[UnloadingRemarksRequest], errorResponsesCodes) {
-            (unloadingRemarksRequest, errorResponseCode) =>
-              server.stubFor(
-                post(postUri)
-                  .withHeader("Channel", containing("web"))
-                  .withHeader("Content-Type", containing("application/xml"))
-                  .willReturn(aResponse().withStatus(errorResponseCode)))
-
-              connector.post(arrivalId, unloadingRemarksRequest).futureValue.status mustBe errorResponseCode
-          }
+            val result = connector.post(arrivalId, unloadingRemarksRequest).futureValue
+            result.status mustBe errorResponseCode
         }
       }
     }
@@ -114,20 +96,15 @@ class UnloadingConnectorSpec
             )
         )
 
-        val app = appBuilder.build()
-        running(app) {
-          val connector: UnloadingConnector = app.injector.instanceOf[UnloadingConnector]
-          val result                        = connector.getUnloadingPermission(unloadingPermissionUrl).futureValue
-          result.value mustBe an[UnloadingPermission]
-        }
+        val result = connector.getUnloadingPermission(unloadingPermissionUrl).futureValue
+        result.value mustBe an[UnloadingPermission]
       }
 
       "must return None when xml fails conversion" in {
 
-        val expectedResult: NodeSeq = {
+        val expectedResult: NodeSeq =
           <CC043A>
           </CC043A>
-        }
 
         val json = Json.obj("message" -> expectedResult.toString())
 
@@ -139,15 +116,11 @@ class UnloadingConnectorSpec
             )
         )
 
-        val app = appBuilder.build()
-        running(app) {
-          val connector: UnloadingConnector = app.injector.instanceOf[UnloadingConnector]
-          connector.getUnloadingPermission(unloadingPermissionUrl).futureValue mustBe None
-        }
+        connector.getUnloadingPermission(unloadingPermissionUrl).futureValue mustBe None
       }
 
       "must return 'None' when an error response is returned" in {
-        forAll(responseCodes) {
+        forAll(errorResponseCodes) {
           code: Int =>
             server.stubFor(
               get(unloadingPermissionUrl)
@@ -155,11 +128,7 @@ class UnloadingConnectorSpec
                 .willReturn(aResponse().withStatus(code))
             )
 
-            val app = appBuilder.build()
-            running(app) {
-              val connector: UnloadingConnector = app.injector.instanceOf[UnloadingConnector]
-              connector.getUnloadingPermission(unloadingPermissionUrl).futureValue mustBe None
-            }
+            connector.getUnloadingPermission(unloadingPermissionUrl).futureValue mustBe None
         }
       }
     }
@@ -194,15 +163,11 @@ class UnloadingConnectorSpec
             )
         )
 
-        val app = appBuilder.build()
-        running(app) {
-          val connector: UnloadingConnector = app.injector.instanceOf[UnloadingConnector]
-          connector.getSummary(arrivalId).futureValue mustBe Some(messageAction)
-        }
+        connector.getSummary(arrivalId).futureValue mustBe Some(messageAction)
       }
 
       "must return 'None' when an error response is returned from getSummary" in {
-        forAll(responseCodes) {
+        forAll(errorResponseCodes) {
           code: Int =>
             server.stubFor(
               get(summaryUri)
@@ -210,11 +175,7 @@ class UnloadingConnectorSpec
                 .willReturn(aResponse().withStatus(code))
             )
 
-            val app = appBuilder.build()
-            running(app) {
-              val connector: UnloadingConnector = app.injector.instanceOf[UnloadingConnector]
-              connector.getSummary(ArrivalId(1)).futureValue mustBe None
-            }
+            connector.getSummary(ArrivalId(1)).futureValue mustBe None
         }
       }
     }
@@ -250,14 +211,11 @@ class UnloadingConnectorSpec
             LocalDate.of(2019, 10, 18),
             None,
             List(FunctionalError(genRejectionError, DefaultPointer("Message type"), None, Some("GB007A")))
-          ))
+          )
+        )
 
-        val app = appBuilder.build()
-        running(app) {
-          val connector: UnloadingConnector = app.injector.instanceOf[UnloadingConnector]
-          val result                        = connector.getRejectionMessage(rejectionUri).futureValue
-          result mustBe expectedResult
-        }
+        val result = connector.getRejectionMessage(rejectionUri).futureValue
+        result mustBe expectedResult
       }
 
       "must return None for malformed xml'" in {
@@ -277,15 +235,11 @@ class UnloadingConnectorSpec
             )
         )
 
-        val app = appBuilder.build()
-        running(app) {
-          val connector: UnloadingConnector = app.injector.instanceOf[UnloadingConnector]
-          connector.getRejectionMessage(rejectionUri).futureValue mustBe None
-        }
+        connector.getRejectionMessage(rejectionUri).futureValue mustBe None
       }
 
       "must return None when an error response is returned from getRejectionMessage" in {
-        forAll(responseCodes) {
+        forAll(errorResponseCodes) {
           code: Int =>
             server.stubFor(
               get(rejectionUri)
@@ -293,11 +247,7 @@ class UnloadingConnectorSpec
                 .willReturn(aResponse().withStatus(code))
             )
 
-            val app = appBuilder.build()
-            running(app) {
-              val connector: UnloadingConnector = app.injector.instanceOf[UnloadingConnector]
-              connector.getRejectionMessage(rejectionUri).futureValue mustBe None
-            }
+            connector.getRejectionMessage(rejectionUri).futureValue mustBe None
         }
       }
     }
@@ -316,16 +266,12 @@ class UnloadingConnectorSpec
             )
         )
 
-        val app = appBuilder.build()
-        running(app) {
-          val connector: UnloadingConnector = app.injector.instanceOf[UnloadingConnector]
-          val result                        = connector.getUnloadingRemarksMessage(unloadingRemarksUri).futureValue.value
-          result mustBe unloadingRemarksRequest
-        }
+        val result = connector.getUnloadingRemarksMessage(unloadingRemarksUri).futureValue.value
+        result mustBe unloadingRemarksRequest
       }
 
       "must return None when an error response is returned from getUnloadingRemarksMessage" in {
-        forAll(responseCodes) {
+        forAll(errorResponseCodes) {
           code: Int =>
             server.stubFor(
               get(unloadingRemarksUri)
@@ -333,11 +279,7 @@ class UnloadingConnectorSpec
                 .willReturn(aResponse().withStatus(code))
             )
 
-            val app = appBuilder.build()
-            running(app) {
-              val connector: UnloadingConnector = app.injector.instanceOf[UnloadingConnector]
-              connector.getUnloadingRemarksMessage(rejectionUri).futureValue mustBe None
-            }
+            connector.getUnloadingRemarksMessage(rejectionUri).futureValue mustBe None
         }
       }
     }
@@ -355,17 +297,14 @@ class UnloadingConnectorSpec
             )
         )
 
-        val app = appBuilder.build()
-        running(app) {
-          val connector: UnloadingConnector = app.injector.instanceOf[UnloadingConnector]
-          val result: Future[WSResponse]    = connector.getPDF(arrivalId, "bearerToken")
+        val result: Future[WSResponse] = connector.getPDF(arrivalId, "bearerToken")
 
-          result.futureValue.status mustBe 200
-        }
+        result.futureValue.status mustBe 200
       }
+
       "must return other error status codes without exceptions" in {
 
-        forAll(responseCodes) {
+        forAll(errorResponseCodes) {
           responseCode =>
             server.stubFor(
               get(urlEqualTo(getPDFUrl))
@@ -376,13 +315,9 @@ class UnloadingConnectorSpec
                 )
             )
 
-            val app = appBuilder.build()
-            running(app) {
-              val connector: UnloadingConnector = app.injector.instanceOf[UnloadingConnector]
-              val result: Future[WSResponse]    = connector.getPDF(arrivalId, "bearerToken")
+            val result: Future[WSResponse] = connector.getPDF(arrivalId, "bearerToken")
 
-              result.futureValue.status mustBe responseCode
-            }
+            result.futureValue.status mustBe responseCode
         }
       }
     }
@@ -392,7 +327,7 @@ class UnloadingConnectorSpec
 
 object UnloadingConnectorSpec {
 
-  val unloadingPermission: NodeSeq = {
+  val unloadingPermission: NodeSeq =
     <CC043A>
       <SynIdeMES1>UNOC</SynIdeMES1>
       <SynVerNumMES2>3</SynVerNumMES2>
@@ -478,7 +413,6 @@ object UnloadingConnectorSpec {
         </SGICODSD2>
       </GOOITEGDS>
     </CC043A>
-  }
 
   private val arrivalId           = ArrivalId(1)
   private val postUri             = s"/transit-movements-trader-at-destination/movements/arrivals/${arrivalId.value}/messages/"
@@ -489,5 +423,5 @@ object UnloadingConnectorSpec {
 
   private val unloadingPermissionUrl = s"/transit-movements-trader-at-destination/movements/arrivals/${arrivalId.value}/unloading-permission"
 
-  val responseCodes: Gen[Int] = Gen.chooseNum(400: Int, 599: Int)
+  val errorResponseCodes: Gen[Int] = Gen.chooseNum(400: Int, 599: Int)
 }

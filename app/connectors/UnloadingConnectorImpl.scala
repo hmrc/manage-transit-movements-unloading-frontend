@@ -147,7 +147,7 @@ trait UnloadingConnector {
   def post(arrivalId: ArrivalId, unloadingRemarksRequest: UnloadingRemarksRequest)(implicit hc: HeaderCarrier): Future[HttpResponse]
   def getSummary(arrivalId: ArrivalId)(implicit hc: HeaderCarrier): Future[Option[MessagesSummary]]
   def getRejectionMessage(rejectionLocation: String)(implicit hc: HeaderCarrier): Future[Option[UnloadingRemarksRejectionMessage]]
-  def getUnloadingRemarksMessage(unloadinRemarksLocation: String)(implicit hc: HeaderCarrier): Future[Option[UnloadingRemarksRequest]]
+  def getUnloadingRemarksMessage(unloadingRemarksLocation: String)(implicit hc: HeaderCarrier): Future[Option[UnloadingRemarksRequest]]
   def getPDF(arrivalId: ArrivalId, bearerToken: String)(implicit hc: HeaderCarrier): Future[WSResponse]
   def getArrival(arrivalId: ArrivalId)(implicit hc: HeaderCarrier): Future[Option[ResponseArrival]]
 }
