@@ -50,4 +50,8 @@ class UnloadingSummaryController @Inject() (
         )
       )
   }
+
+  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
+    _ => Redirect(routes.CheckYourAnswersController.onPageLoad(arrivalId))
+  }
 }
