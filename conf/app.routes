@@ -65,6 +65,7 @@ GET        /:arrivalId/seal/:index/change-confirm-remove-seal               cont
 POST       /:arrivalId/seal/:index/change-confirm-remove-seal               controllers.ConfirmRemoveSealController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
 
 GET        /:arrivalId/unloading-summary                                    controllers.UnloadingSummaryController.onPageLoad(arrivalId: ArrivalId)
+POST       /:arrivalId/unloading-summary                                    controllers.UnloadingSummaryController.onSubmit(arrivalId: ArrivalId)
 
 GET        /:arrivalId/can-seals-be-read                                    controllers.CanSealsBeReadController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/can-seals-be-read                                    controllers.CanSealsBeReadController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)

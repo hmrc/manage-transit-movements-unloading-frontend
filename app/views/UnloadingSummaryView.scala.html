@@ -21,6 +21,7 @@
 
 @this(
     mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
     heading: Heading,
     caption: HeadingCaption,
     answerSection: AnswerSection,
@@ -67,10 +68,8 @@
         </p>
     }
 
-    @button(
-        messageKey = "site.continue",
-        href = Some(routes.CheckYourAnswersController.onPageLoad(arrivalId).url),
-        attributes = Map("id" -> "submit")
-    )
+    @formHelper(action = routes.UnloadingSummaryController.onSubmit(arrivalId), 'autoComplete -> "off") {
+        @button(attributes = Map("id" -> "submit"))
+    }
 
 }

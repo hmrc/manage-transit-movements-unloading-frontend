@@ -38,6 +38,8 @@ class UnloadingSummaryControllerSpec extends SpecBase with AppWithDefaultMockFix
 
   private val mockViewModel = mock[UnloadingSummaryViewModel]
 
+  private lazy val unloadingSummaryRoute = routes.UnloadingSummaryController.onPageLoad(arrivalId).url
+
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockViewModel)
@@ -63,7 +65,7 @@ class UnloadingSummaryControllerSpec extends SpecBase with AppWithDefaultMockFix
         when(mockViewModel.transportAndItemSections(any(), any())(any()))
           .thenReturn(sampleTransportAndItemSections)
 
-        val request = FakeRequest(GET, routes.UnloadingSummaryController.onPageLoad(arrivalId).url)
+        val request = FakeRequest(GET, unloadingSummaryRoute)
 
         val result = route(app, request).value
 
@@ -89,7 +91,7 @@ class UnloadingSummaryControllerSpec extends SpecBase with AppWithDefaultMockFix
         when(mockViewModel.transportAndItemSections(any(), any())(any()))
           .thenReturn(sampleTransportAndItemSections)
 
-        val request = FakeRequest(GET, routes.UnloadingSummaryController.onPageLoad(arrivalId).url)
+        val request = FakeRequest(GET, unloadingSummaryRoute)
 
         val result = route(app, request).value
 
@@ -117,7 +119,7 @@ class UnloadingSummaryControllerSpec extends SpecBase with AppWithDefaultMockFix
         when(mockViewModel.transportAndItemSections(any(), any())(any()))
           .thenReturn(sampleTransportAndItemSections)
 
-        val request = FakeRequest(GET, routes.UnloadingSummaryController.onPageLoad(arrivalId).url)
+        val request = FakeRequest(GET, unloadingSummaryRoute)
 
         val result = route(app, request).value
 
@@ -131,6 +133,19 @@ class UnloadingSummaryControllerSpec extends SpecBase with AppWithDefaultMockFix
         verify(mockViewModel).sealsSection(eqTo(userAnswers), eqTo(NormalMode))(any())
         verify(mockViewModel).transportAndItemSections(eqTo(userAnswers), eqTo(NormalMode))(any())
       }
+    }
+
+    "must redirect to check your answers for a POST" in {
+      checkArrivalStatus()
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(POST, unloadingSummaryRoute)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustBe routes.CheckYourAnswersController.onPageLoad(arrivalId).url
     }
   }
 }
