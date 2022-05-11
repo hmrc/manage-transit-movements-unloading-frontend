@@ -16,7 +16,6 @@
 
 package services
 
-import com.google.inject.Inject
 import derivable.DeriveNumberOfSeals
 import models.messages._
 import models.{Seals, UnloadingPermission, UserAnswers}
@@ -24,44 +23,40 @@ import pages._
 import queries.SealsQuery
 
 import java.time.LocalDate
-import scala.concurrent.Future
+import scala.util._
 
-class RemarksServiceImpl @Inject() (resultOfControlService: ResultOfControlService) extends RemarksService {
+class RemarksServiceImpl extends RemarksService {
 
   import RemarksService._
 
-  def build(userAnswers: UserAnswers, unloadingPermission: UnloadingPermission): Response =
+  def build(userAnswers: UserAnswers, unloadingPermission: UnloadingPermission): Try[Remarks] =
     userAnswers.get(DateGoodsUnloadedPage) match {
-
       case Some(date) =>
-        implicit val unloadingDate: LocalDate = date
-
-        implicit val originalValues: UnloadingPermission = unloadingPermission
-
-        Seq(unloadingPermissionContainsSeals(userAnswers), unloadingPermissionDoesNotContainSeals(userAnswers))
-          .reduce(_ orElse _)
-          .apply(unloadingPermission.seals)
-
+        Success(
+          Seq(
+            unloadingPermissionContainsSeals(userAnswers, date, unloadingPermission),
+            unloadingPermissionDoesNotContainSeals(userAnswers, date, unloadingPermission)
+          ).reduce(_ orElse _).apply(unloadingPermission.seals)
+        )
       case None =>
-        Future.failed(new NoSuchElementException("date goods unloaded not found"))
+        Failure(new NoSuchElementException("date goods unloaded not found"))
     }
 
-  private def unloadingPermissionContainsSeals(userAnswers: UserAnswers)(implicit
+  private def unloadingPermissionContainsSeals(
+    userAnswers: UserAnswers,
     unloadingDate: LocalDate,
     originalValues: UnloadingPermission
-  ): PartialFunction[Option[Seals], Response] = {
-    case Some(Seals(_, unloadingPermissionSeals)) if unloadingPermissionSeals.nonEmpty =>
+  ): PartialFunction[Option[Seals], Remarks] = {
+    case Some(Seals(unloadingPermissionSeals)) if unloadingPermissionSeals.nonEmpty =>
       if (
         haveSealsChanged(unloadingPermissionSeals, userAnswers) ||
-        sealsUnreadable(userAnswers.get(CanSealsBeReadPage)) ||
-        sealsBroken(userAnswers.get(AreAnySealsBrokenPage))
+        sealsUnreadable(userAnswers) ||
+        sealsBroken(userAnswers)
       ) {
-        Future.successful(
-          RemarksNonConform(
-            stateOfSeals = Some(0),
-            unloadingRemark = userAnswers.get(ChangesToReportPage),
-            unloadingDate = unloadingDate
-          )
+        RemarksNonConform(
+          stateOfSeals = Some(0),
+          unloadingRemark = userAnswers.get(ChangesToReportPage),
+          unloadingDate = unloadingDate
         )
       } else {
         (hasGrossMassChanged(originalValues.grossMass, userAnswers),
@@ -69,39 +64,32 @@ class RemarksServiceImpl @Inject() (resultOfControlService: ResultOfControlServi
          hasTotalNumberOfPackagesChanged(originalValues.numberOfPackages, userAnswers)
         ) match {
           case (false, false, false) =>
-            Future.successful(
-              RemarksConformWithSeals(
-                unloadingRemark = userAnswers.get(ChangesToReportPage),
-                unloadingDate = unloadingDate
-              )
-            )
-          case (_, _, _) =>
-            Future.successful(
-              RemarksNonConform(
-                stateOfSeals = Some(1),
-                unloadingRemark = userAnswers.get(ChangesToReportPage),
-                unloadingDate = unloadingDate
-              )
-            )
-        }
-
-      }
-
-  }
-
-  private def unloadingPermissionDoesNotContainSeals(userAnswers: UserAnswers)(implicit
-    unloadingDate: LocalDate,
-    originalValues: UnloadingPermission
-  ): PartialFunction[Option[Seals], Response] = {
-    case None =>
-      userAnswers.get(DeriveNumberOfSeals) match {
-        case Some(_) =>
-          Future.successful(
-            RemarksNonConform(
-              stateOfSeals = Some(0),
+            RemarksConformWithSeals(
               unloadingRemark = userAnswers.get(ChangesToReportPage),
               unloadingDate = unloadingDate
             )
+          case (_, _, _) =>
+            RemarksNonConform(
+              stateOfSeals = Some(1),
+              unloadingRemark = userAnswers.get(ChangesToReportPage),
+              unloadingDate = unloadingDate
+            )
+        }
+      }
+  }
+
+  private def unloadingPermissionDoesNotContainSeals(
+    userAnswers: UserAnswers,
+    unloadingDate: LocalDate,
+    originalValues: UnloadingPermission
+  ): PartialFunction[Option[Seals], Remarks] = {
+    case None =>
+      userAnswers.get(DeriveNumberOfSeals) match {
+        case Some(_) =>
+          RemarksNonConform(
+            stateOfSeals = Some(0),
+            unloadingRemark = userAnswers.get(ChangesToReportPage),
+            unloadingDate = unloadingDate
           )
         case None =>
           (hasGrossMassChanged(originalValues.grossMass, userAnswers),
@@ -109,19 +97,15 @@ class RemarksServiceImpl @Inject() (resultOfControlService: ResultOfControlServi
            hasTotalNumberOfPackagesChanged(originalValues.numberOfPackages, userAnswers)
           ) match {
             case (false, false, false) =>
-              Future.successful(
-                RemarksConform(
-                  unloadingRemark = userAnswers.get(ChangesToReportPage),
-                  unloadingDate = unloadingDate
-                )
+              RemarksConform(
+                unloadingRemark = userAnswers.get(ChangesToReportPage),
+                unloadingDate = unloadingDate
               )
             case (_, _, _) =>
-              Future.successful(
-                RemarksNonConform(
-                  stateOfSeals = None,
-                  unloadingRemark = userAnswers.get(ChangesToReportPage),
-                  unloadingDate = unloadingDate
-                )
+              RemarksNonConform(
+                stateOfSeals = None,
+                unloadingRemark = userAnswers.get(ChangesToReportPage),
+                unloadingDate = unloadingDate
               )
           }
       }
@@ -130,36 +114,33 @@ class RemarksServiceImpl @Inject() (resultOfControlService: ResultOfControlServi
 
 object RemarksService {
 
-  type Response = Future[Remarks]
+  def sealsUnreadable(userAnswers: UserAnswers): Boolean =
+    !userAnswers.get(CanSealsBeReadPage).getOrElse(true)
 
-  def sealsUnreadable(canSealsBeReadPage: Option[Boolean]): Boolean =
-    !canSealsBeReadPage.getOrElse(true)
-
-  def sealsBroken(areAnySealsBrokenPage: Option[Boolean]): Boolean =
-    areAnySealsBrokenPage.getOrElse(false)
+  def sealsBroken(userAnswers: UserAnswers): Boolean =
+    userAnswers.get(AreAnySealsBrokenPage).getOrElse(false)
 
   def haveSealsChanged(originalSeals: Seq[String], userAnswers: UserAnswers): Boolean =
     userAnswers.get(SealsQuery).exists {
-      userSeals =>
-        userSeals.sorted != originalSeals.sorted
+      _.sorted != originalSeals.sorted
     }
 
   def hasGrossMassChanged(originalValue: String, userAnswers: UserAnswers): Boolean =
     userAnswers.get(GrossMassAmountPage).exists {
-      userGrossMass =>
-        userGrossMass != originalValue
+      _ != originalValue
     }
 
   def hasNumberOfItemsChanged(originalValue: Int, userAnswers: UserAnswers): Boolean =
     userAnswers.get(TotalNumberOfItemsPage).exists {
-      userNumberItems =>
-        userNumberItems != originalValue
+      _ != originalValue
     }
 
   def hasTotalNumberOfPackagesChanged(originalValue: Option[Int], userAnswers: UserAnswers): Boolean =
-    userAnswers.get(TotalNumberOfPackagesPage).exists(!originalValue.contains(_))
+    userAnswers.get(TotalNumberOfPackagesPage).exists {
+      !originalValue.contains(_)
+    }
 }
 
 trait RemarksService {
-  def build(userAnswers: UserAnswers, unloadingPermission: UnloadingPermission): Future[Remarks]
+  def build(userAnswers: UserAnswers, unloadingPermission: UnloadingPermission): Try[Remarks]
 }

@@ -38,17 +38,18 @@ class UnloadingPermissionSpec extends SpecBase with Generators {
     "must serialize UnloadingPermission from Xml" in {
 
       forAll(genUnloadingPermission) {
-        case unloadingPermission @ UnloadingPermission(movementReferenceNumber,
-                                                       transportIdentity,
-                                                       transportCountry,
-                                                       numberOfItems,
-                                                       numberOfPackages,
-                                                       grossMass,
-                                                       traderAtDestination,
-                                                       presentationOffice,
-                                                       seals,
-                                                       goodsItems,
-                                                       _
+        case unloadingPermission @ UnloadingPermission(
+              movementReferenceNumber,
+              transportIdentity,
+              transportCountry,
+              numberOfItems,
+              numberOfPackages,
+              grossMass,
+              traderAtDestination,
+              presentationOffice,
+              seals,
+              goodsItems,
+              _
             ) =>
           val expectedResult =
             <CC043A>
@@ -235,10 +236,10 @@ object UnloadingPermissionSpec {
   def sealsXml(seals: Option[Seals]) = seals match {
     case Some(sealValues) =>
       <SEAINFSLI>
-        <SeaNumSLI2>{sealValues.numberOfSeals}</SeaNumSLI2>
+        <SeaNumSLI2>{sealValues.sealIds.length}</SeaNumSLI2>
         <SEAIDSID>
           {
-        sealValues.SealId.map {
+        sealValues.sealIds.map {
           sealId => <SeaIdeSID1>{sealId}</SeaIdeSID1>
         }
       }

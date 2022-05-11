@@ -38,10 +38,11 @@ class UnloadingRemarksRequestServiceSpec extends SpecBase with AppWithDefaultMoc
 
         val unloadingRemarksRequestService = app.injector.instanceOf[UnloadingRemarksRequestService]
 
-        forAll(arbitrary[UnloadingPermission],
-               arbitrary[Meta],
-               arbitrary[LocalDateTime],
-               Gen.option(stringsWithMaxLength(RemarksNonConform.unloadingRemarkLength))
+        forAll(
+          arbitrary[UnloadingPermission],
+          arbitrary[Meta],
+          arbitrary[LocalDateTime],
+          Gen.option(stringsWithMaxLength(RemarksNonConform.unloadingRemarkLength))
         ) {
           (unloadingPermission, meta, localDateTime, unloadingRemark) =>
             val unloadingRemarks = RemarksConform(localDateTime.toLocalDate, unloadingRemark)
@@ -63,10 +64,11 @@ class UnloadingRemarksRequestServiceSpec extends SpecBase with AppWithDefaultMoc
 
         val unloadingRemarksRequestService = app.injector.instanceOf[UnloadingRemarksRequestService]
 
-        forAll(arbitrary[UnloadingPermission],
-               arbitrary[Meta],
-               arbitrary[LocalDateTime],
-               Gen.option(stringsWithMaxLength(RemarksNonConform.unloadingRemarkLength))
+        forAll(
+          arbitrary[UnloadingPermission],
+          arbitrary[Meta],
+          arbitrary[LocalDateTime],
+          Gen.option(stringsWithMaxLength(RemarksNonConform.unloadingRemarkLength))
         ) {
           (unloadingPermission, meta, localDateTime, unloadingRemark) =>
             val unloadingRemarks = RemarksConformWithSeals(localDateTime.toLocalDate, unloadingRemark)
@@ -171,17 +173,10 @@ class UnloadingRemarksRequestServiceSpec extends SpecBase with AppWithDefaultMoc
               localDateTime.toLocalDate
             )
 
-            val userAnswersUpdated =
-              emptyUserAnswers
-                .set(NewSealNumberPage(Index(0)), "seal 2")
-                .success
-                .value
-                .set(NewSealNumberPage(Index(1)), "seal 1")
-                .success
-                .value
-                .set(NewSealNumberPage(Index(2)), "seal 3")
-                .success
-                .value
+            val userAnswersUpdated = emptyUserAnswers
+              .setValue(NewSealNumberPage(Index(0)), "seal 2")
+              .setValue(NewSealNumberPage(Index(1)), "seal 1")
+              .setValue(NewSealNumberPage(Index(2)), "seal 3")
 
             unloadingRemarksRequestService.build(meta, unloadingRemarks, unloadingPermission, userAnswersUpdated) mustBe
               UnloadingRemarksRequest(
@@ -191,7 +186,7 @@ class UnloadingRemarksRequestServiceSpec extends SpecBase with AppWithDefaultMoc
                 unloadingPermission.presentationOffice,
                 unloadingRemarks,
                 Seq(ResultsOfControlSealsUpdated),
-                seals = Some(Seals(3, Seq("seal 2", "seal 1", "seal 3")))
+                seals = Some(Seals(Seq("seal 2", "seal 1", "seal 3")))
               )
         }
       }
@@ -208,20 +203,11 @@ class UnloadingRemarksRequestServiceSpec extends SpecBase with AppWithDefaultMoc
               localDateTime.toLocalDate
             )
 
-            val userAnswersUpdated =
-              emptyUserAnswers
-                .set(NewSealNumberPage(Index(0)), "seal 2")
-                .success
-                .value
-                .set(NewSealNumberPage(Index(1)), "seal 1")
-                .success
-                .value
-                .set(NewSealNumberPage(Index(2)), "seal 3")
-                .success
-                .value
-                .set(VehicleNameRegistrationReferencePage, "reference")
-                .success
-                .value
+            val userAnswersUpdated = emptyUserAnswers
+              .setValue(NewSealNumberPage(Index(0)), "seal 2")
+              .setValue(NewSealNumberPage(Index(1)), "seal 1")
+              .setValue(NewSealNumberPage(Index(2)), "seal 3")
+              .setValue(VehicleNameRegistrationReferencePage, "reference")
 
             unloadingRemarksRequestService.build(meta, unloadingRemarks, unloadingPermission, userAnswersUpdated) mustBe
               UnloadingRemarksRequest(
@@ -230,13 +216,14 @@ class UnloadingRemarksRequestServiceSpec extends SpecBase with AppWithDefaultMoc
                 unloadingPermission.traderAtDestination,
                 unloadingPermission.presentationOffice,
                 unloadingRemarks,
-                Seq(ResultsOfControlDifferentValues(
-                      PointerToAttribute(TransportIdentity),
-                      "reference"
-                    ),
-                    ResultsOfControlSealsUpdated
+                Seq(
+                  ResultsOfControlDifferentValues(
+                    PointerToAttribute(TransportIdentity),
+                    "reference"
+                  ),
+                  ResultsOfControlSealsUpdated
                 ),
-                seals = Some(Seals(3, Seq("seal 2", "seal 1", "seal 3")))
+                seals = Some(Seals(Seq("seal 2", "seal 1", "seal 3")))
               )
         }
       }

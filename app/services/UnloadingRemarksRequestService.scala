@@ -16,10 +16,11 @@
 
 package services
 
-import javax.inject.Inject
-import models.{Seals, UnloadingPermission, UserAnswers}
 import models.messages._
+import models.{Seals, UnloadingPermission, UserAnswers}
 import queries.SealsQuery
+
+import javax.inject.Inject
 
 class UnloadingRemarksRequestServiceImpl @Inject() (resultOfControlService: ResultOfControlService) extends UnloadingRemarksRequestService {
 
@@ -42,11 +43,8 @@ class UnloadingRemarksRequestServiceImpl @Inject() (resultOfControlService: Resu
       case _ =>
         userAnswers
           .get(SealsQuery)
-          .map {
-            seals =>
-              Some(Seals(seals.length, seals))
-          }
-          .getOrElse(unloadingPermission.seals)
+          .map(Seals(_))
+          .orElse(unloadingPermission.seals)
     }
     val resultsOfControl: Seq[ResultsOfControl] = resultOfControlService.build(userAnswers, unloadingPermission)
 

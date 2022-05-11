@@ -34,6 +34,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import java.time.LocalDate
 import scala.concurrent.Future
+import scala.util._
 
 class UnloadingRemarksServiceSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
@@ -72,11 +73,8 @@ class UnloadingRemarksServiceSpec extends SpecBase with AppWithDefaultMockFixtur
           arbitrary[LocalDate]
         ) {
           (unloadingPermission, meta, unloadingRemarks, interchangeControlReference, localDate) =>
-            val userAnswersUpdated =
-              emptyUserAnswers
-                .set(DateGoodsUnloadedPage, localDate)
-                .success
-                .value
+            val userAnswersUpdated = emptyUserAnswers
+              .setValue(DateGoodsUnloadedPage, localDate)
 
             when(mockInterchangeControlReferenceIdRepository.nextInterchangeControlReferenceId())
               .thenReturn(Future.successful(interchangeControlReference))
@@ -85,7 +83,7 @@ class UnloadingRemarksServiceSpec extends SpecBase with AppWithDefaultMockFixtur
               .thenReturn(meta)
 
             when(mockRemarksService.build(userAnswersUpdated, unloadingPermission))
-              .thenReturn(Future.successful(unloadingRemarks))
+              .thenReturn(Success(unloadingRemarks))
 
             val unloadingRemarksRequest = UnloadingRemarksRequest(
               meta,
@@ -98,9 +96,7 @@ class UnloadingRemarksServiceSpec extends SpecBase with AppWithDefaultMockFixtur
             )
 
             when(mockUnloadingRemarksRequestService.build(meta, unloadingRemarks, unloadingPermission, userAnswersUpdated))
-              .thenReturn(
-                unloadingRemarksRequest
-              )
+              .thenReturn(unloadingRemarksRequest)
 
             when(mockUnloadingConnector.post(any(), any())(any())).thenReturn(Future.successful(HttpResponse(ACCEPTED, "")))
 
@@ -115,19 +111,15 @@ class UnloadingRemarksServiceSpec extends SpecBase with AppWithDefaultMockFixtur
         }
       }
 
-      //TODO: Do we need to be more specific for different connector failures?
-      "should return 503 when connector fails" in {
+      "should return None when connector fails" in {
 
         val unloadingPermission         = arbitrary[UnloadingPermission].sample.value
         val meta                        = arbitrary[Meta].sample.value
         val unloadingRemarks            = arbitrary[RemarksConform].sample.value
         val interchangeControlReference = arbitrary[InterchangeControlReference].sample.value
         val localDate                   = arbitrary[LocalDate].sample.value
-        val userAnswersUpdated =
-          emptyUserAnswers
-            .set(DateGoodsUnloadedPage, localDate)
-            .success
-            .value
+        val userAnswersUpdated = emptyUserAnswers
+          .setValue(DateGoodsUnloadedPage, localDate)
 
         when(mockInterchangeControlReferenceIdRepository.nextInterchangeControlReferenceId())
           .thenReturn(Future.successful(interchangeControlReference))
@@ -136,19 +128,17 @@ class UnloadingRemarksServiceSpec extends SpecBase with AppWithDefaultMockFixtur
           .thenReturn(meta)
 
         when(mockRemarksService.build(userAnswersUpdated, unloadingPermission))
-          .thenReturn(Future.successful(unloadingRemarks))
+          .thenReturn(Success(unloadingRemarks))
 
         val unloadingRemarksRequest = arbitrary[UnloadingRemarksRequest].sample.value
 
         when(mockUnloadingRemarksRequestService.build(meta, unloadingRemarks, unloadingPermission, userAnswersUpdated))
-          .thenReturn(
-            unloadingRemarksRequest
-          )
+          .thenReturn(unloadingRemarksRequest)
 
         when(mockUnloadingConnector.post(any(), any())(any())).thenReturn(Future.failed(new Throwable))
 
         val arrivalNotificationService = app.injector.instanceOf[UnloadingRemarksService]
-        arrivalNotificationService.submit(arrivalId, userAnswersUpdated, unloadingPermission).futureValue mustBe Some(SERVICE_UNAVAILABLE)
+        arrivalNotificationService.submit(arrivalId, userAnswersUpdated, unloadingPermission).futureValue mustBe None
 
         reset(mockInterchangeControlReferenceIdRepository)
         reset(mockMetaService)
@@ -168,7 +158,7 @@ class UnloadingRemarksServiceSpec extends SpecBase with AppWithDefaultMockFixtur
               .thenReturn(meta)
 
             when(mockRemarksService.build(emptyUserAnswers, unloadingPermission))
-              .thenReturn(Future.failed(new Throwable))
+              .thenReturn(Failure(new Throwable))
 
             val arrivalNotificationService = app.injector.instanceOf[UnloadingRemarksService]
             arrivalNotificationService.submit(arrivalId, emptyUserAnswers, unloadingPermission).futureValue mustBe None
@@ -176,7 +166,6 @@ class UnloadingRemarksServiceSpec extends SpecBase with AppWithDefaultMockFixtur
             reset(mockInterchangeControlReferenceIdRepository)
             reset(mockMetaService)
             reset(mockRemarksService)
-
         }
       }
 
@@ -209,7 +198,7 @@ class UnloadingRemarksServiceSpec extends SpecBase with AppWithDefaultMockFixtur
         when(mockMetaService.build(interchangeControlReference))
           .thenReturn(meta)
 
-        val userAnswers = emptyUserAnswers.set(VehicleNameRegistrationReferencePage, "new registration").get
+        val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, "new registration")
 
         val arrivalNotificationService = app.injector.instanceOf[UnloadingRemarksService]
         val result                     = arrivalNotificationService.resubmit(arrivalId, userAnswers)
@@ -241,7 +230,7 @@ class UnloadingRemarksServiceSpec extends SpecBase with AppWithDefaultMockFixtur
             .thenReturn(Future.successful(interchangeControlReference))
           when(mockMetaService.build(interchangeControlReference))
             .thenReturn(meta)
-          val userAnswers = emptyUserAnswers.set(VehicleNameRegistrationReferencePage, "new registration").get
+          val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, "new registration")
 
           val expectedResultOfControl: Seq[ResultsOfControl] = unloadingRemarksRequest.resultOfControl.map {
             case y: ResultsOfControlDifferentValues if y.pointerToAttribute.pointer == TransportIdentity => y.copy(correctedValue = "new registration")
@@ -262,7 +251,7 @@ class UnloadingRemarksServiceSpec extends SpecBase with AppWithDefaultMockFixtur
             .thenReturn(Future.successful(interchangeControlReference))
           when(mockMetaService.build(interchangeControlReference))
             .thenReturn(meta)
-          val userAnswers = emptyUserAnswers.set(TotalNumberOfPackagesPage, 1234).success.value
+          val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, 1234)
 
           val expectedResultOfControl: Seq[ResultsOfControl] = unloadingRemarksRequest.resultOfControl.map {
             case y: ResultsOfControlDifferentValues if y.pointerToAttribute.pointer == NumberOfPackages => y.copy(correctedValue = "1234")
@@ -283,7 +272,7 @@ class UnloadingRemarksServiceSpec extends SpecBase with AppWithDefaultMockFixtur
             .thenReturn(Future.successful(interchangeControlReference))
           when(mockMetaService.build(interchangeControlReference))
             .thenReturn(meta)
-          val userAnswers = emptyUserAnswers.set(TotalNumberOfItemsPage, 1234).success.value
+          val userAnswers = emptyUserAnswers.setValue(TotalNumberOfItemsPage, 1234)
 
           val expectedResultOfControl: Seq[ResultsOfControl] = unloadingRemarksRequest.resultOfControl.map {
             case y: ResultsOfControlDifferentValues if y.pointerToAttribute.pointer == NumberOfItems => y.copy(correctedValue = "1234")
@@ -304,7 +293,7 @@ class UnloadingRemarksServiceSpec extends SpecBase with AppWithDefaultMockFixtur
             .thenReturn(Future.successful(interchangeControlReference))
           when(mockMetaService.build(interchangeControlReference))
             .thenReturn(meta)
-          val userAnswers = emptyUserAnswers.set(GrossMassAmountPage, "1234").success.value
+          val userAnswers = emptyUserAnswers.setValue(GrossMassAmountPage, "1234")
 
           val expectedResultOfControl: Seq[ResultsOfControl] = unloadingRemarksRequest.resultOfControl.map {
             case y: ResultsOfControlDifferentValues if y.pointerToAttribute.pointer == GrossMass => y.copy(correctedValue = "1234")
@@ -326,7 +315,7 @@ class UnloadingRemarksServiceSpec extends SpecBase with AppWithDefaultMockFixtur
             .thenReturn(Future.successful(interchangeControlReference))
           when(mockMetaService.build(interchangeControlReference))
             .thenReturn(meta)
-          val userAnswers = emptyUserAnswers.set(DateGoodsUnloadedPage, localDate).get
+          val userAnswers = emptyUserAnswers.setValue(DateGoodsUnloadedPage, localDate)
 
           val expectedUnloadingRemark: Remarks = unloadingRemarksRequest.unloadingRemark match {
             case y: RemarksNonConform => y.copy(unloadingDate = localDate)
