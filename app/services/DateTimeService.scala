@@ -35,5 +35,4 @@ trait DateTimeService {
   def currentDateTime: LocalDateTime
 
   def dateFormatted: String
-
 }

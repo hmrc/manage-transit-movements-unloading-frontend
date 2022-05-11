@@ -16,6 +16,7 @@
 
 package services
 
+import cats.data.OptionT
 import com.google.inject.Inject
 import connectors.UnloadingConnector
 import models.{ArrivalId, UnloadingRemarksRejectionMessage}
@@ -26,14 +27,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class UnloadingRemarksRejectionService @Inject() (connector: UnloadingConnector)(implicit ec: ExecutionContext) {
 
   def unloadingRemarksRejectionMessage(arrivalId: ArrivalId)(implicit hc: HeaderCarrier): Future[Option[UnloadingRemarksRejectionMessage]] =
-    connector.getSummary(arrivalId) flatMap {
-      case Some(summary) =>
-        summary.messagesLocation.unloadingRemarksRejection match {
-          case Some(rejectionLocation) =>
-            connector.getRejectionMessage(rejectionLocation)
-          case _ =>
-            Future.successful(None)
-        }
-      case _ => Future.successful(None)
-    }
+    (
+      for {
+        summary           <- OptionT(connector.getSummary(arrivalId))
+        rejectionLocation <- OptionT.fromOption[Future](summary.messagesLocation.unloadingRemarksRejection)
+        message           <- OptionT(connector.getRejectionMessage(rejectionLocation))
+      } yield message
+    ).value
 }

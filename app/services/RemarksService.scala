@@ -68,7 +68,7 @@ class RemarksServiceImpl extends RemarksService {
               unloadingRemark = userAnswers.get(ChangesToReportPage),
               unloadingDate = unloadingDate
             )
-          case (_, _, _) =>
+          case _ =>
             RemarksNonConform(
               stateOfSeals = Some(1),
               unloadingRemark = userAnswers.get(ChangesToReportPage),
@@ -101,7 +101,7 @@ class RemarksServiceImpl extends RemarksService {
                 unloadingRemark = userAnswers.get(ChangesToReportPage),
                 unloadingDate = unloadingDate
               )
-            case (_, _, _) =>
+            case _ =>
               RemarksNonConform(
                 stateOfSeals = None,
                 unloadingRemark = userAnswers.get(ChangesToReportPage),
