@@ -74,7 +74,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
-              val updatedUserAnswers = answers.set(CanSealsBeReadPage, true).success.value
+              val updatedUserAnswers = answers.setValue(CanSealsBeReadPage, true)
               navigator
                 .nextPage(CanSealsBeReadPage, mode, updatedUserAnswers)
                 .mustBe(routes.AreAnySealsBrokenController.onPageLoad(updatedUserAnswers.id, mode))
@@ -85,7 +85,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
-              val updatedUserAnswers = answers.set(CanSealsBeReadPage, false).success.value
+              val updatedUserAnswers = answers.setValue(CanSealsBeReadPage, false)
               navigator
                 .nextPage(CanSealsBeReadPage, mode, updatedUserAnswers)
                 .mustBe(routes.AreAnySealsBrokenController.onPageLoad(updatedUserAnswers.id, mode))
@@ -96,7 +96,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
-              val updatedUserAnswers = answers.remove(CanSealsBeReadPage).success.value
+              val updatedUserAnswers = answers.removeValue(CanSealsBeReadPage)
               navigator
                 .nextPage(CanSealsBeReadPage, mode, updatedUserAnswers)
                 .mustBe(routes.SessionExpiredController.onPageLoad())
@@ -109,7 +109,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
-              val updatedUserAnswers = answers.set(AreAnySealsBrokenPage, false).success.value
+              val updatedUserAnswers = answers.setValue(AreAnySealsBrokenPage, false)
 
               navigator
                 .nextPage(AreAnySealsBrokenPage, mode, updatedUserAnswers)
@@ -121,7 +121,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
-              val updatedUserAnswers = answers.set(AreAnySealsBrokenPage, true).success.value
+              val updatedUserAnswers = answers.setValue(AreAnySealsBrokenPage, true)
 
               navigator
                 .nextPage(AreAnySealsBrokenPage, mode, updatedUserAnswers)
@@ -133,7 +133,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
-              val updatedUserAnswers = answers.remove(AreAnySealsBrokenPage).success.value
+              val updatedUserAnswers = answers.removeValue(AreAnySealsBrokenPage)
 
               navigator
                 .nextPage(AreAnySealsBrokenPage, mode, updatedUserAnswers)

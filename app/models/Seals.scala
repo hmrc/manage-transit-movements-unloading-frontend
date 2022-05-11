@@ -20,7 +20,7 @@ import cats.syntax.all._
 import com.lucidchart.open.xtract.XmlReader._
 import com.lucidchart.open.xtract.{__, XmlReader}
 
-case class Seals(numberOfSeals: Int, SealId: Seq[String])
+case class Seals(sealIds: Seq[String])
 
 object Seals {
 
@@ -31,17 +31,19 @@ object Seals {
   implicit val xmlReader: XmlReader[Seals] = (
     (__ \ "SeaNumSLI2").read[Int],
     (__ \ "SEAIDSID" \ "SeaIdeSID1").read(seq[String])
-  ).mapN(apply)
+  ).mapN {
+    (_, sealIds) => Seals(sealIds)
+  }
 
   implicit def writes: XMLWrites[Seals] = XMLWrites[Seals] {
     seals =>
       <SEAINFSLI>
-        <SeaNumSLI2>{seals.numberOfSeals}</SeaNumSLI2>
+        <SeaNumSLI2>{seals.sealIds.length}</SeaNumSLI2>
         {
-        seals.SealId.map {
-          id =>
+        seals.sealIds.map {
+          sealId =>
             <SEAIDSID>
-                <SeaIdeSID1>{id}</SeaIdeSID1>
+                <SeaIdeSID1>{sealId}</SeaIdeSID1>
                 <SeaIdeSID1LNG>{LanguageCodeEnglish.code}</SeaIdeSID1LNG>
               </SEAIDSID>
         }

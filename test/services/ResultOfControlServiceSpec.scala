@@ -49,9 +49,7 @@ class ResultOfControlServiceSpec extends SpecBase with Generators with ScalaChec
         forAll(arbitrary[UnloadingPermission]) {
           unloadingPermission =>
             val userAnswersUpdated = emptyUserAnswers
-              .set(VehicleNameRegistrationReferencePage, "reference")
-              .success
-              .value
+              .setValue(VehicleNameRegistrationReferencePage, "reference")
 
             service.build(userAnswersUpdated, unloadingPermission) mustBe Seq(
               ResultsOfControlDifferentValues(
@@ -66,9 +64,7 @@ class ResultOfControlServiceSpec extends SpecBase with Generators with ScalaChec
         forAll(arbitrary[UnloadingPermission]) {
           unloadingPermission =>
             val userAnswersUpdated = emptyUserAnswers
-              .set(VehicleRegistrationCountryPage, Country("FR", "description"))
-              .success
-              .value
+              .setValue(VehicleRegistrationCountryPage, Country("FR", "description"))
 
             service.build(userAnswersUpdated, unloadingPermission) mustBe Seq(
               ResultsOfControlDifferentValues(
@@ -83,9 +79,7 @@ class ResultOfControlServiceSpec extends SpecBase with Generators with ScalaChec
         forAll(arbitrary[UnloadingPermission]) {
           unloadingPermission =>
             val userAnswersUpdated = emptyUserAnswers
-              .set(TotalNumberOfItemsPage, 123: Int)
-              .success
-              .value
+              .setValue(TotalNumberOfItemsPage, 123: Int)
 
             service.build(userAnswersUpdated, unloadingPermission) mustBe Seq(
               ResultsOfControlDifferentValues(
@@ -100,9 +94,7 @@ class ResultOfControlServiceSpec extends SpecBase with Generators with ScalaChec
         forAll(arbitrary[UnloadingPermission]) {
           unloadingPermission =>
             val userAnswersUpdated = emptyUserAnswers
-              .set(TotalNumberOfPackagesPage, 123: Int)
-              .success
-              .value
+              .setValue(TotalNumberOfPackagesPage, 123: Int)
 
             service.build(userAnswersUpdated, unloadingPermission) mustBe Seq(
               ResultsOfControlDifferentValues(
@@ -117,9 +109,7 @@ class ResultOfControlServiceSpec extends SpecBase with Generators with ScalaChec
         forAll(arbitrary[UnloadingPermission]) {
           unloadingPermission =>
             val userAnswersUpdated = emptyUserAnswers
-              .set(GrossMassAmountPage, "12234567")
-              .success
-              .value
+              .setValue(GrossMassAmountPage, "12234567")
 
             service.build(userAnswersUpdated, unloadingPermission) mustBe Seq(
               ResultsOfControlDifferentValues(
@@ -134,12 +124,8 @@ class ResultOfControlServiceSpec extends SpecBase with Generators with ScalaChec
         forAll(arbitrary[UnloadingPermission]) {
           unloadingPermission =>
             val userAnswersUpdated = emptyUserAnswers
-              .set(VehicleNameRegistrationReferencePage, "reference")
-              .success
-              .value
-              .set(VehicleRegistrationCountryPage, Country("FR", "description"))
-              .success
-              .value
+              .setValue(VehicleNameRegistrationReferencePage, "reference")
+              .setValue(VehicleRegistrationCountryPage, Country("FR", "description"))
 
             service.build(userAnswersUpdated, unloadingPermission) mustBe Seq(
               ResultsOfControlDifferentValues(
@@ -157,11 +143,8 @@ class ResultOfControlServiceSpec extends SpecBase with Generators with ScalaChec
       "don't contain seals" - {
         forAll(arbitrary[UnloadingPermission]) {
           unloadingPermission =>
-            val userAnswersUpdated =
-              emptyUserAnswers
-                .set(DateGoodsUnloadedPage, dateGoodsUnloaded)
-                .success
-                .value
+            val userAnswersUpdated = emptyUserAnswers
+              .setValue(DateGoodsUnloadedPage, dateGoodsUnloaded)
 
             service.build(userAnswersUpdated, unloadingPermission) mustBe Nil
         }
@@ -174,18 +157,13 @@ class ResultOfControlServiceSpec extends SpecBase with Generators with ScalaChec
             unloadingPermission =>
               val unloadingPermissionUpdated = unloadingPermission.copy(
                 seals = Some(
-                  Seals(1, Seq("original value 1"))
+                  Seals(Seq("original value 1"))
                 )
               )
 
-              val userAnswersUpdated =
-                emptyUserAnswers
-                  .set(DateGoodsUnloadedPage, dateGoodsUnloaded)
-                  .success
-                  .value
-                  .set(NewSealNumberPage(Index(0)), "changed value 1")
-                  .success
-                  .value
+              val userAnswersUpdated = emptyUserAnswers
+                .setValue(DateGoodsUnloadedPage, dateGoodsUnloaded)
+                .setValue(NewSealNumberPage(Index(0)), "changed value 1")
 
               service.build(userAnswersUpdated, unloadingPermissionUpdated) mustBe Seq(
                 ResultsOfControlOther(
@@ -200,18 +178,13 @@ class ResultOfControlServiceSpec extends SpecBase with Generators with ScalaChec
             unloadingPermission =>
               val unloadingPermissionUpdated = unloadingPermission.copy(
                 seals = Some(
-                  Seals(1, Seq("original value 1"))
+                  Seals(Seq("original value 1"))
                 )
               )
 
-              val userAnswersUpdated =
-                emptyUserAnswers
-                  .set(DateGoodsUnloadedPage, dateGoodsUnloaded)
-                  .success
-                  .value
-                  .set(NewSealNumberPage(Index(0)), "original value 1")
-                  .success
-                  .value
+              val userAnswersUpdated = emptyUserAnswers
+                .setValue(DateGoodsUnloadedPage, dateGoodsUnloaded)
+                .setValue(NewSealNumberPage(Index(0)), "original value 1")
 
               service.build(userAnswersUpdated, unloadingPermissionUpdated) mustBe Nil
           }
@@ -222,21 +195,14 @@ class ResultOfControlServiceSpec extends SpecBase with Generators with ScalaChec
             unloadingPermission =>
               val unloadingPermissionUpdated = unloadingPermission.copy(
                 seals = Some(
-                  Seals(2, Seq("original value 1", "original value 2"))
+                  Seals(Seq("original value 1", "original value 2"))
                 )
               )
 
-              val userAnswersUpdated =
-                emptyUserAnswers
-                  .set(DateGoodsUnloadedPage, dateGoodsUnloaded)
-                  .success
-                  .value
-                  .set(NewSealNumberPage(Index(0)), "original value 2")
-                  .success
-                  .value
-                  .set(NewSealNumberPage(Index(1)), "original value 1")
-                  .success
-                  .value
+              val userAnswersUpdated = emptyUserAnswers
+                .setValue(DateGoodsUnloadedPage, dateGoodsUnloaded)
+                .setValue(NewSealNumberPage(Index(0)), "original value 2")
+                .setValue(NewSealNumberPage(Index(1)), "original value 1")
 
               service.build(userAnswersUpdated, unloadingPermissionUpdated) mustBe Nil
           }
@@ -247,14 +213,9 @@ class ResultOfControlServiceSpec extends SpecBase with Generators with ScalaChec
             unloadingPermission =>
               val unloadingPermissionUpdated = unloadingPermission.copy(seals = None)
 
-              val userAnswersUpdated =
-                emptyUserAnswers
-                  .set(DateGoodsUnloadedPage, dateGoodsUnloaded)
-                  .success
-                  .value
-                  .set(NewSealNumberPage(Index(0)), "new seal")
-                  .success
-                  .value
+              val userAnswersUpdated = emptyUserAnswers
+                .setValue(DateGoodsUnloadedPage, dateGoodsUnloaded)
+                .setValue(NewSealNumberPage(Index(0)), "new seal")
 
               service.build(userAnswersUpdated, unloadingPermissionUpdated) mustBe Seq(
                 ResultsOfControlOther(
@@ -269,9 +230,7 @@ class ResultOfControlServiceSpec extends SpecBase with Generators with ScalaChec
         forAll(arbitrary[UnloadingPermission]) {
           unloadingPermission =>
             val userAnswersUpdated = emptyUserAnswers
-              .set(AreAnySealsBrokenPage, true)
-              .success
-              .value
+              .setValue(AreAnySealsBrokenPage, true)
 
             service.build(userAnswersUpdated, unloadingPermission) mustBe Seq(
               ResultsOfControlOther(
@@ -286,9 +245,7 @@ class ResultOfControlServiceSpec extends SpecBase with Generators with ScalaChec
         forAll(arbitrary[UnloadingPermission]) {
           unloadingPermission =>
             val userAnswersUpdated = emptyUserAnswers
-              .set(CanSealsBeReadPage, false)
-              .success
-              .value
+              .setValue(CanSealsBeReadPage, false)
 
             service.build(userAnswersUpdated, unloadingPermission) mustBe Seq(
               ResultsOfControlOther(
@@ -302,12 +259,8 @@ class ResultOfControlServiceSpec extends SpecBase with Generators with ScalaChec
         forAll(arbitrary[UnloadingPermission]) {
           unloadingPermission =>
             val userAnswersUpdated = emptyUserAnswers
-              .set(AreAnySealsBrokenPage, true)
-              .success
-              .value
-              .set(CanSealsBeReadPage, false)
-              .success
-              .value
+              .setValue(AreAnySealsBrokenPage, true)
+              .setValue(CanSealsBeReadPage, false)
 
             service.build(userAnswersUpdated, unloadingPermission) mustBe Seq(
               ResultsOfControlOther(

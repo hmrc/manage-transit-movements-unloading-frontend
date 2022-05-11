@@ -57,7 +57,7 @@ class TotalNumberOfItemsControllerSpec extends SpecBase with AppWithDefaultMockF
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.set(TotalNumberOfItemsPage, validAnswer).success.value
+      val userAnswers = emptyUserAnswers.setValue(TotalNumberOfItemsPage, validAnswer)
 
       setExistingUserAnswers(userAnswers)
 

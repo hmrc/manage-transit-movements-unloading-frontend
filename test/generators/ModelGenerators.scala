@@ -124,8 +124,8 @@ trait ModelGenerators {
       for {
         numberOfSeals <- choose(min = 1, 10)
         sealPattern: Gen[String] = RegexpGen.from(Seals.sealIdRegex)
-        sealId <- listWithMaxSize(numberOfSeals, sealPattern)
-      } yield Seals(numberOfSeals, sealId)
+        sealIds <- listOfSize(numberOfSeals, sealPattern)
+      } yield Seals(sealIds)
     }
 
   implicit lazy val arbitraryGoodsItem: Arbitrary[GoodsItem] =

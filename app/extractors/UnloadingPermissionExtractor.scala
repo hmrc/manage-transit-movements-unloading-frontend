@@ -87,7 +87,7 @@ class UnloadingPermissionExtractor @Inject() (referenceDataService: ReferenceDat
     userAnswers: UserAnswers,
     unloadingPermission: UnloadingPermission
   ): Try[UserAnswers] =
-    unloadingPermission.seals.map(_.SealId) match {
+    unloadingPermission.seals.map(_.sealIds) match {
       case Some(value) => userAnswers.set(SealsQuery, value).flatMap(_.setPrepopulatedData(SealsQuery, value))
       case None        => Success(userAnswers)
     }

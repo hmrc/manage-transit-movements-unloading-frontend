@@ -42,13 +42,14 @@ class ResultOfControlServiceImpl extends ResultOfControlService {
 
     val sealsUpdated: Seq[ResultsOfControl] = resultsOfControlSealsUpdated(unloadingPermission.seals)
 
-    Seq(vehicleRegistrationReference,
-        vehicleRegistrationCountry,
-        totalNumberOfItemsPage,
-        totalNumberOfPackagesPage,
-        grossMassAmount,
-        sealsBroken,
-        sealsUpdated
+    Seq(
+      vehicleRegistrationReference,
+      vehicleRegistrationCountry,
+      totalNumberOfItemsPage,
+      totalNumberOfPackagesPage,
+      grossMassAmount,
+      sealsBroken,
+      sealsUpdated
     ).flatten
   }
 
@@ -102,7 +103,7 @@ class ResultOfControlServiceImpl extends ResultOfControlService {
 
   private def resultsOfControlSealsUpdated(unloadingPermissionSeals: Option[Seals])(implicit ua: UserAnswers): Seq[ResultsOfControlOther] =
     unloadingPermissionSeals match {
-      case Some(Seals(_, originalSeals)) if originalSeals.nonEmpty =>
+      case Some(Seals(originalSeals)) if originalSeals.nonEmpty =>
         if (RemarksService.haveSealsChanged(originalSeals, ua)) {
           Seq(ResultsOfControlSealsUpdated)
         } else {

@@ -59,15 +59,11 @@ class CheckYourAnswersController @Inject() (
       unloadingPermissionService.getUnloadingPermission(arrivalId).flatMap {
         case Some(unloadingPermission) =>
           unloadingRemarksService.submit(arrivalId, request.userAnswers, unloadingPermission) flatMap {
-            case Some(status) =>
-              status match {
-                case status if is2xx(status) =>
-                  auditEventSubmissionService.auditUnloadingRemarks(request.userAnswers, "submitUnloadingRemarks")
-                  Future.successful(Redirect(routes.ConfirmationController.onPageLoad(arrivalId)))
-                case status if is4xx(status) => errorHandler.onClientError(request, status)
-                case _                       => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
-              }
-            case None => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
+            case Some(status) if is2xx(status) =>
+              auditEventSubmissionService.auditUnloadingRemarks(request.userAnswers, "submitUnloadingRemarks")
+              Future.successful(Redirect(routes.ConfirmationController.onPageLoad(arrivalId)))
+            case Some(status) if is4xx(status) => errorHandler.onClientError(request, status)
+            case _                             => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
           }
         case _ => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
       }

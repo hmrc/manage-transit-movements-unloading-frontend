@@ -55,7 +55,7 @@ class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMo
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.set(TotalNumberOfPackagesPage, validAnswer).success.value
+      val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, validAnswer)
 
       setExistingUserAnswers(userAnswers)
 

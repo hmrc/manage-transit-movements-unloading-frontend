@@ -60,7 +60,7 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.set(NewSealNumberPage(index), "answer").success.value
+      val userAnswers = emptyUserAnswers.setValue(NewSealNumberPage(index), "answer")
 
       setExistingUserAnswers(userAnswers)
 
@@ -83,7 +83,7 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
         checkArrivalStatus()
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-        val userAnswers = emptyUserAnswers.set(NewSealNumberPage(index), "answer").success.value
+        val userAnswers = emptyUserAnswers.setValue(NewSealNumberPage(index), "answer")
         setExistingUserAnswers(userAnswers)
 
         val request = FakeRequest(POST, newSealNumberRoute)
@@ -98,7 +98,7 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       "must return a Bad Request and errors when invalid data is submitted" in {
         checkArrivalStatus()
 
-        val userAnswers = emptyUserAnswers.set(NewSealNumberPage(index), "answer").success.value
+        val userAnswers = emptyUserAnswers.setValue(NewSealNumberPage(index), "answer")
         setExistingUserAnswers(userAnswers)
 
         val request   = FakeRequest(POST, newSealNumberRoute).withFormUrlEncodedBody(("value", ""))

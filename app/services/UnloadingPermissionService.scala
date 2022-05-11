@@ -16,6 +16,7 @@
 
 package services
 
+import cats.data.OptionT
 import com.google.inject.Inject
 import connectors.UnloadingConnector
 import models.{ArrivalId, UnloadingPermission}
@@ -26,11 +27,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class UnloadingPermissionServiceImpl @Inject() (connector: UnloadingConnector) extends UnloadingPermissionService {
 
   def getUnloadingPermission(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[UnloadingPermission]] =
-    connector.getSummary(arrivalId) flatMap {
-      case Some(summary) =>
-        connector.getUnloadingPermission(summary.messagesLocation.unloadingPermission)
-      case _ => Future.successful(None)
-    }
+    (for {
+      summary             <- OptionT(connector.getSummary(arrivalId))
+      unloadingPermission <- OptionT(connector.getUnloadingPermission(summary.messagesLocation.unloadingPermission))
+    } yield unloadingPermission).value
 }
 
 trait UnloadingPermissionService {
