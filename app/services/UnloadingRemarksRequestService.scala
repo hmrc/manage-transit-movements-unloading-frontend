@@ -40,22 +40,17 @@ class UnloadingRemarksRequestServiceImpl @Inject() (resultOfControlService: Resu
       case _: RemarksConformWithSeals       => unloadingPermission.seals
       case RemarksNonConform(None, _, _)    => unloadingPermission.seals
       case RemarksNonConform(Some(1), _, _) => unloadingPermission.seals
-      case _ =>
-        userAnswers
-          .get(SealsQuery)
-          .map(Seals(_))
-          .orElse(unloadingPermission.seals)
+      case _                                => userAnswers.get(SealsQuery).map(Seals(_)).orElse(unloadingPermission.seals)
     }
-    val resultsOfControl: Seq[ResultsOfControl] = resultOfControlService.build(userAnswers, unloadingPermission)
 
     UnloadingRemarksRequest(
-      meta,
-      header,
-      unloadingPermission.traderAtDestination,
-      unloadingPermission.presentationOffice,
-      unloadingRemarks,
-      resultsOfControl,
-      seals
+      meta = meta,
+      header = header,
+      traderAtDestination = unloadingPermission.traderAtDestination,
+      presentationOffice = unloadingPermission.presentationOffice,
+      unloadingRemark = unloadingRemarks,
+      resultOfControl = resultOfControlService.build(userAnswers, unloadingPermission),
+      seals = seals
     )
   }
 

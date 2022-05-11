@@ -28,11 +28,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class UnloadingRemarksMessageService @Inject() (connector: UnloadingConnector) {
 
   def unloadingRemarksMessage(arrivalId: ArrivalId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[UnloadingRemarksRequest]] =
-    (
-      for {
-        summary          <- OptionT(connector.getSummary(arrivalId))
-        unloadingRemarks <- OptionT.fromOption[Future](summary.messagesLocation.unloadingRemarks)
-        message          <- OptionT(connector.getUnloadingRemarksMessage(unloadingRemarks))
-      } yield message
-    ).value
+    (for {
+      summary          <- OptionT(connector.getSummary(arrivalId))
+      unloadingRemarks <- OptionT.fromOption[Future](summary.messagesLocation.unloadingRemarks)
+      message          <- OptionT(connector.getUnloadingRemarksMessage(unloadingRemarks))
+    } yield message).value
 }

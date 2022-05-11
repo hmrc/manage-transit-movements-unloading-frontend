@@ -27,12 +27,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class UnloadingPermissionServiceImpl @Inject() (connector: UnloadingConnector) extends UnloadingPermissionService {
 
   def getUnloadingPermission(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[UnloadingPermission]] =
-    (
-      for {
-        summary             <- OptionT(connector.getSummary(arrivalId))
-        unloadingPermission <- OptionT(connector.getUnloadingPermission(summary.messagesLocation.unloadingPermission))
-      } yield unloadingPermission
-    ).value
+    (for {
+      summary             <- OptionT(connector.getSummary(arrivalId))
+      unloadingPermission <- OptionT(connector.getUnloadingPermission(summary.messagesLocation.unloadingPermission))
+    } yield unloadingPermission).value
 }
 
 trait UnloadingPermissionService {

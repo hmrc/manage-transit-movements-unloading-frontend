@@ -16,6 +16,7 @@
 
 package services
 
+import cats.data.OptionT
 import com.google.inject.Inject
 import connectors.UnloadingConnector
 import logging.Logging
@@ -39,38 +40,24 @@ class UnloadingRemarksService @Inject() (
     extends Logging {
 
   def submit(arrivalId: ArrivalId, userAnswers: UserAnswers, unloadingPermission: UnloadingPermission)(implicit hc: HeaderCarrier): Future[Option[Int]] =
-    (
-      for {
-        interchangeControlReference <- interchangeControlReferenceIdRepository.nextInterchangeControlReferenceId()
-        unloadingRemarks            <- Future.fromTry(remarksService.build(userAnswers, unloadingPermission))
-        meta                    = metaService.build(interchangeControlReference)
-        unloadingRemarksRequest = unloadingRemarksRequestService.build(meta, unloadingRemarks, unloadingPermission, userAnswers)
-        response <- unloadingConnector.post(arrivalId, unloadingRemarksRequest)
-      } yield Some(response.status)
-    ).recover {
+    (for {
+      interchangeControlReference <- interchangeControlReferenceIdRepository.nextInterchangeControlReferenceId()
+      unloadingRemarks            <- Future.fromTry(remarksService.build(userAnswers, unloadingPermission))
+      meta                    = metaService.build(interchangeControlReference)
+      unloadingRemarksRequest = unloadingRemarksRequestService.build(meta, unloadingRemarks, unloadingPermission, userAnswers)
+      response <- unloadingConnector.post(arrivalId, unloadingRemarksRequest)
+    } yield Some(response.status)).recover {
       case ex =>
         logger.error(s"[UnloadingRemarksService][submit] Submission failed: ${ex.getMessage}")
         None
     }
 
   def resubmit(arrivalId: ArrivalId, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Option[Int]] =
-    unloadingRemarksMessageService.unloadingRemarksMessage(arrivalId) flatMap {
-      case Some(unloadingRemarksRequest) =>
-        getUpdatedUnloadingRemarkRequest(unloadingRemarksRequest, userAnswers) flatMap {
-          case Some(updatedUnloadingRemarks) =>
-            unloadingConnector
-              .post(arrivalId, updatedUnloadingRemarks)
-              .map(
-                response => Some(response.status)
-              )
-          case _ =>
-            logger.debug("Failed to get updated unloading remarks request")
-            Future.successful(None)
-        }
-      case _ =>
-        logger.debug("Failed to get unloading remarks request")
-        Future.successful(None)
-    }
+    (for {
+      unloadingRemarksRequest <- OptionT(unloadingRemarksMessageService.unloadingRemarksMessage(arrivalId))
+      updatedUnloadingRemarks <- OptionT(getUpdatedUnloadingRemarkRequest(unloadingRemarksRequest, userAnswers))
+      response                <- OptionT.liftF(unloadingConnector.post(arrivalId, updatedUnloadingRemarks))
+    } yield response.status).value
 
   private[services] def getUpdatedUnloadingRemarkRequest(
     unloadingRemarksRequest: UnloadingRemarksRequest,
