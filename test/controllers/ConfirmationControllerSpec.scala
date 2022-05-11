@@ -33,7 +33,7 @@ class ConfirmationControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
     "return correct view and remove UserAnswers" in {
       checkArrivalStatus()
-      val userAnswers = emptyUserAnswers.set(DateGoodsUnloadedPage, LocalDate.now()).success.value
+      val userAnswers = emptyUserAnswers.setValue(DateGoodsUnloadedPage, LocalDate.now())
 
       setExistingUserAnswers(userAnswers)
 

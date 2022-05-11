@@ -20,6 +20,7 @@ import base.SpecBase
 import cats.data.NonEmptyList
 import com.lucidchart.open.xtract.{ParseFailure, ParseSuccess, XmlReader}
 import generators.Generators
+import models.XMLWrites.XMLWritesOps
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 
@@ -38,47 +39,35 @@ class UnloadingPermissionSpec extends SpecBase with Generators {
     "must serialize UnloadingPermission from Xml" in {
 
       forAll(genUnloadingPermission) {
-        case unloadingPermission @ UnloadingPermission(
-              movementReferenceNumber,
-              transportIdentity,
-              transportCountry,
-              numberOfItems,
-              numberOfPackages,
-              grossMass,
-              traderAtDestination,
-              presentationOffice,
-              seals,
-              goodsItems,
-              _
-            ) =>
+        unloadingPermission =>
           val expectedResult =
             <CC043A>
               <HEAHEA>
-                <DocNumHEA5>{movementReferenceNumber}</DocNumHEA5>
-                {transportIdentityXml(transportIdentity).getOrElse(NodeSeq.Empty)}
-                {transportCountryXml(transportCountry).getOrElse(NodeSeq.Empty)}
-                <TotNumOfIteHEA305>{numberOfItems}</TotNumOfIteHEA305>
+                <DocNumHEA5>{unloadingPermission.movementReferenceNumber}</DocNumHEA5>
+                {transportIdentityXml(unloadingPermission.transportIdentity).getOrElse(NodeSeq.Empty)}
+                {transportCountryXml(unloadingPermission.transportCountry).getOrElse(NodeSeq.Empty)}
+                <TotNumOfIteHEA305>{unloadingPermission.numberOfItems}</TotNumOfIteHEA305>
                 {
-              numberOfPackages.fold(NodeSeq.Empty) {
+              unloadingPermission.numberOfPackages.fold(NodeSeq.Empty) {
                 numberOfPackages =>
                   <TotNumOfPacHEA306>{numberOfPackages}</TotNumOfPacHEA306>
               }
             }
-                <TotGroMasHEA307>{grossMass}</TotGroMasHEA307>
+                <TotGroMasHEA307>{unloadingPermission.grossMass}</TotGroMasHEA307>
               </HEAHEA>
               <TRADESTRD>
-                <NamTRD7>{traderAtDestination.name}</NamTRD7>
-                <StrAndNumTRD22>{traderAtDestination.streetAndNumber}</StrAndNumTRD22>
-                <PosCodTRD23>{traderAtDestination.postCode}</PosCodTRD23>
-                <CitTRD24>{traderAtDestination.city}</CitTRD24>
-                <CouTRD25>{traderAtDestination.countryCode}</CouTRD25>
-                <TINTRD59>{traderAtDestination.eori}</TINTRD59>
+                <NamTRD7>{unloadingPermission.traderAtDestination.name}</NamTRD7>
+                <StrAndNumTRD22>{unloadingPermission.traderAtDestination.streetAndNumber}</StrAndNumTRD22>
+                <PosCodTRD23>{unloadingPermission.traderAtDestination.postCode}</PosCodTRD23>
+                <CitTRD24>{unloadingPermission.traderAtDestination.city}</CitTRD24>
+                <CouTRD25>{unloadingPermission.traderAtDestination.countryCode}</CouTRD25>
+                <TINTRD59>{unloadingPermission.traderAtDestination.eori}</TINTRD59>
               </TRADESTRD>
               <CUSOFFPREOFFRES>
-                <RefNumRES1>{presentationOffice}</RefNumRES1>
+                <RefNumRES1>{unloadingPermission.presentationOffice}</RefNumRES1>
               </CUSOFFPREOFFRES>
-              {sealsXml(seals)}
-              {goodsItemsXml(goodsItems)}
+              {sealsXml(unloadingPermission.seals)}
+              {goodsItemsXml(unloadingPermission.goodsItems)}
               <DatOfPreMES9>20201231</DatOfPreMES9>
             </CC043A>
 
@@ -233,19 +222,6 @@ object UnloadingPermissionSpec {
     response.toList
   }
 
-  def sealsXml(seals: Option[Seals]) = seals match {
-    case Some(sealValues) =>
-      <SEAINFSLI>
-        <SeaNumSLI2>{sealValues.sealIds.length}</SeaNumSLI2>
-        <SEAIDSID>
-          {
-        sealValues.sealIds.map {
-          sealId => <SeaIdeSID1>{sealId}</SeaIdeSID1>
-        }
-      }
-        </SEAIDSID>
-      </SEAINFSLI>
-    case None => NodeSeq.Empty
-  }
+  def sealsXml(seals: Option[Seals]) = seals.map(_.toXml).getOrElse(NodeSeq.Empty)
 
 }

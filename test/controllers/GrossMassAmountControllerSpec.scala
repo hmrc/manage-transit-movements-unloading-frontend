@@ -56,7 +56,7 @@ class GrossMassAmountControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
-      val userAnswers = emptyUserAnswers.set(GrossMassAmountPage, "123456.123").success.value
+      val userAnswers = emptyUserAnswers.setValue(GrossMassAmountPage, "123456.123")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, grossMassAmountRoute)

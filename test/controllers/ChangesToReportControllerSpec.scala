@@ -58,7 +58,7 @@ class ChangesToReportControllerSpec extends SpecBase with AppWithDefaultMockFixt
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.set(ChangesToReportPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.setValue(ChangesToReportPage, "answer")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, changesToReportRoute)

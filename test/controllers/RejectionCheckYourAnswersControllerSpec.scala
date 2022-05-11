@@ -73,7 +73,7 @@ class RejectionCheckYourAnswersControllerSpec extends SpecBase with AppWithDefau
   "onSubmit" - {
     "must redirect to Confirmation on valid submission" in {
       checkArrivalStatus()
-      val userAnswers = emptyUserAnswers.set(VehicleNameRegistrationReferencePage, "updatedValue").success.value
+      val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, "updatedValue")
 
       when(mockUnloadingRemarksService.resubmit(any(), any())(any()))
         .thenReturn(Future.successful(Some(ACCEPTED)))
@@ -91,7 +91,7 @@ class RejectionCheckYourAnswersControllerSpec extends SpecBase with AppWithDefau
 
     "return BadRequest when backend returns 401" in {
       checkArrivalStatus()
-      val userAnswers = emptyUserAnswers.set(VehicleNameRegistrationReferencePage, "updatedValue").success.value
+      val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, "updatedValue")
 
       setExistingUserAnswers(userAnswers)
 
@@ -108,7 +108,7 @@ class RejectionCheckYourAnswersControllerSpec extends SpecBase with AppWithDefau
 
     "return Technical Difficulties on internal failure" in {
       checkArrivalStatus()
-      val userAnswers = emptyUserAnswers.set(VehicleNameRegistrationReferencePage, "updatedValue").success.value
+      val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, "updatedValue")
 
       setExistingUserAnswers(userAnswers)
 

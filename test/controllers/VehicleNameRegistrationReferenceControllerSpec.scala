@@ -58,7 +58,7 @@ class VehicleNameRegistrationReferenceControllerSpec extends SpecBase with AppWi
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.set(VehicleNameRegistrationReferencePage, "answer").success.value
+      val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, "answer")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, vehicleNameRegistrationReferenceRoute)

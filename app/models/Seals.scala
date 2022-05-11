@@ -16,6 +16,7 @@
 
 package models
 
+import cats.syntax.all._
 import com.lucidchart.open.xtract.XmlReader._
 import com.lucidchart.open.xtract.{__, XmlReader}
 
@@ -27,7 +28,12 @@ object Seals {
   val sealIdLength = 20
   val sealIdRegex  = "^[a-zA-Z0-9&'@/.\\-%? ]*$"
 
-  implicit val xmlReader: XmlReader[Seals] = (__ \ "SEAIDSID" \ "SeaIdeSID1").read(seq[String]).map(apply)
+  implicit val xmlReader: XmlReader[Seals] = (
+    (__ \ "SeaNumSLI2").read[Int],
+    (__ \ "SEAIDSID" \ "SeaIdeSID1").read(seq[String])
+  ).mapN {
+    (_, sealIds) => Seals(sealIds)
+  }
 
   implicit def writes: XMLWrites[Seals] = XMLWrites[Seals] {
     seals =>
@@ -35,9 +41,9 @@ object Seals {
         <SeaNumSLI2>{seals.sealIds.length}</SeaNumSLI2>
         {
         seals.sealIds.map {
-          id =>
+          sealId =>
             <SEAIDSID>
-                <SeaIdeSID1>{id}</SeaIdeSID1>
+                <SeaIdeSID1>{sealId}</SeaIdeSID1>
                 <SeaIdeSID1LNG>{LanguageCodeEnglish.code}</SeaIdeSID1LNG>
               </SEAIDSID>
         }

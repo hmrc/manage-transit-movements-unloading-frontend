@@ -146,6 +146,11 @@ trait Generators
       items <- Gen.listOfN(size, gen)
     } yield items
 
+  def listOfSize[T](size: Int, gen: Gen[T]): Gen[Seq[T]] =
+    for {
+      items <- Gen.listOfN(size, gen)
+    } yield items
+
   def nonEmptyListWithMaxSize[T](maxSize: Int, gen: Gen[T]): Gen[NonEmptyList[T]] =
     for {
 

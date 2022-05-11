@@ -83,7 +83,7 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
         Future.successful(countries)
       )
 
-      val userAnswers = emptyUserAnswers.set(VehicleRegistrationCountryPage, country).success.value
+      val userAnswers = emptyUserAnswers.setValue(VehicleRegistrationCountryPage, country)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, vehicleRegistrationCountryRoute)

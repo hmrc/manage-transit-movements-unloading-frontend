@@ -42,7 +42,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.set(NewSealNumberPage(index), sealDescription).success.value
+      val userAnswers = emptyUserAnswers.setValue(NewSealNumberPage(index), sealDescription)
 
       setExistingUserAnswers(userAnswers)
 
@@ -61,7 +61,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
       checkArrivalStatus()
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val userAnswers = emptyUserAnswers.set(NewSealNumberPage(index), "seal 1").success.value
+      val userAnswers = emptyUserAnswers.setValue(NewSealNumberPage(index), "seal 1")
 
       setExistingUserAnswers(userAnswers)
 
@@ -79,7 +79,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.set(NewSealNumberPage(index), "seal 1").success.value
+      val userAnswers = emptyUserAnswers.setValue(NewSealNumberPage(index), "seal 1")
 
       setExistingUserAnswers(userAnswers)
 
