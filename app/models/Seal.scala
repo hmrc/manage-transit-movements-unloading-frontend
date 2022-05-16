@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package derivable
+package models
 
-import models.Seal
-import play.api.libs.json.JsPath
-import queries.SealsQuery
+import play.api.libs.json.{Format, Json}
 
-case object DeriveNumberOfSeals extends Derivable[List[Seal], Int] {
-  override val derive: List[Seal] => Int = _.size
+case class Seal(sealId: String, removable: Boolean)
 
-  override def path: JsPath = SealsQuery.path
+object Seal {
+  implicit val format: Format[Seal] = Json.format[Seal]
 }

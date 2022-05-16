@@ -16,10 +16,19 @@
 
 package pages
 
-import models.Index
-import play.api.libs.json.JsPath
+import models.{Index, Seal}
+import pages.behaviours.PageBehaviours
 
-final case class NewSealNumberPage(index: Index) extends QuestionPage[String] {
+class SealPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ "seals" \ index.position
+  var index = Index(0)
+
+  "NewSealNumberPage" - {
+
+    beRetrievable[Seal](SealPage(index))
+
+    beSettable[Seal](SealPage(index))
+
+    beRemovable[Seal](SealPage(index))
+  }
 }

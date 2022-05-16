@@ -128,6 +128,14 @@ trait ModelGenerators {
       } yield Seals(sealIds)
     }
 
+  implicit lazy val arbitrarySeal: Arbitrary[Seal] =
+    Arbitrary {
+      for {
+        sealId    <- RegexpGen.from(Seals.sealIdRegex)
+        removable <- arbitrary[Boolean]
+      } yield Seal(sealId, removable)
+    }
+
   implicit lazy val arbitraryGoodsItem: Arbitrary[GoodsItem] =
     Arbitrary {
       for {

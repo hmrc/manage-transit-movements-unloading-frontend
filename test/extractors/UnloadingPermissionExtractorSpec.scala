@@ -18,7 +18,7 @@ package extractors
 
 import base.SpecBase
 import generators.Generators
-import models.UnloadingPermission
+import models.{Seal, UnloadingPermission}
 import models.reference.Country
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
@@ -59,12 +59,10 @@ class UnloadingPermissionExtractorSpec extends SpecBase with Generators with Bef
             result.get.get(GrossMassAmountPage).get mustBe unloadingPermission.grossMass
             result.get.get(TotalNumberOfItemsPage).get mustBe unloadingPermission.numberOfItems
             result.get.get(TotalNumberOfPackagesPage) mustBe unloadingPermission.numberOfPackages
-            result.get.get(SealsQuery) mustBe unloadingPermission.seals.map(_.sealIds)
+            result.get.get(SealsQuery) mustBe unloadingPermission.seals.map(_.sealIds.map(Seal(_, removable = false)))
             result.get.get(GoodsItemsQuery).get mustBe unloadingPermission.goodsItems.map(_.description).toList
 
             result.get.get(DateOfPreparationPage).get mustBe unloadingPermission.dateOfPreparation
-
-            result.get.getPrepopulatedData(SealsQuery) mustBe unloadingPermission.seals.map(_.sealIds)
 
             verify(mockReferenceDataService).getCountryByCode(eqTo(unloadingPermission.transportCountry))(any(), any())
         }

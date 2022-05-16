@@ -17,7 +17,7 @@
 package utils
 
 import controllers.routes
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, Seal, UserAnswers}
 import pages._
 import play.api.i18n.Messages
 import queries.SealsQuery
@@ -47,9 +47,9 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     )
 
   def seals: Option[SummaryListRow] =
-    getAnswerAndBuildRow[Seq[String]](
+    getAnswerAndBuildRow[Seq[Seal]](
       page = SealsQuery,
-      formatAnswer = x => HtmlContent(x.mkString("<br>")),
+      formatAnswer = x => HtmlContent(x.map(_.sealId).mkString("<br>")),
       prefix = "checkYourAnswers.seals",
       id = None,
       call = None

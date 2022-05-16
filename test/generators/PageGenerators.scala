@@ -43,8 +43,8 @@ trait PageGenerators {
   implicit lazy val arbitraryCanSealsBeReadPage: Arbitrary[CanSealsBeReadPage.type] =
     Arbitrary(CanSealsBeReadPage)
 
-  implicit lazy val arbitrarySealNumberPage: Arbitrary[NewSealNumberPage] =
-    Arbitrary(NewSealNumberPage(Index(0)))
+  implicit lazy val arbitrarySealNumberPage: Arbitrary[SealPage] =
+    Arbitrary(SealPage(Index(0)))
 
   implicit lazy val arbitraryGrossMassAmountPage: Arbitrary[GrossMassAmountPage.type] =
     Arbitrary(GrossMassAmountPage)

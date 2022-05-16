@@ -17,7 +17,6 @@
 package utils
 
 import controllers.routes
-import derivable.DeriveNumberOfSeals
 import models.reference.Country
 import models.{Index, Mode, UserAnswers}
 import pages._
@@ -28,40 +27,38 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
 class UnloadingSummaryHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
-  private lazy val numberOfExistingSeals: Int = userAnswers.getPrepopulatedData(DeriveNumberOfSeals).getOrElse(0)
-
-  private lazy val (existingSeals, newSeals) = userAnswers
+  private lazy val (newSeals, existingSeals) = userAnswers
     .get(SealsQuery)
     .map(_.zipWithIndex.partition {
-      case (_, index) => index < numberOfExistingSeals
+      case (seal, _) => seal.removable
     })
     .getOrElse((Nil, Nil))
 
   //format: off
   def seals: Seq[SummaryListRow] =
     existingSeals.map {
-      case (sealId, position) =>
+      case (seal, position) =>
         val index = Index(position)
         buildRow(
           prefix = "changeSeal.sealList",
-          answer = sealId.toText,
+          answer = seal.sealId.toText,
           id = Some(s"change-seal-${index.position}"),
           call = Some(routes.NewSealNumberController.onPageLoad(arrivalId, index, mode)),
-          args = index.display, sealId
+          args = index.display, seal.sealId
         )
     }
 
   def sealsWithRemove: Seq[SummaryListRow] =
     newSeals.map {
-      case (sealId, position) =>
+      case (seal, position) =>
         val index = Index(position)
         buildRemovableRow(
           prefix = "changeSeal.sealList",
-          answer = sealId.toText,
+          answer = seal.sealId.toText,
           id = s"seal-${index.position}",
           changeCall = routes.NewSealNumberController.onPageLoad(arrivalId, index, mode),
           removeCall = routes.ConfirmRemoveSealController.onPageLoad(arrivalId, index, mode),
-          args = index.display, sealId
+          args = index.display, seal.sealId
         )
     }
   //format: on
