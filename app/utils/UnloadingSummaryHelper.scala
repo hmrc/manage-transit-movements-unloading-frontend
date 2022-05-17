@@ -17,9 +17,8 @@
 package utils
 
 import controllers.routes
-import derivable.DeriveNumberOfSeals
 import models.reference.Country
-import models.{Index, Mode, UserAnswers}
+import models.{Index, Mode, Seal, UserAnswers}
 import pages._
 import play.api.i18n.Messages
 import queries.{GoodsItemsQuery, SealsQuery}
@@ -28,19 +27,17 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
 class UnloadingSummaryHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
-  private lazy val numberOfExistingSeals: Int = userAnswers.getPrepopulatedData(DeriveNumberOfSeals).getOrElse(0)
-
-  private lazy val (existingSeals, newSeals) = userAnswers
+  private lazy val (newSeals, existingSeals) = userAnswers
     .get(SealsQuery)
     .map(_.zipWithIndex.partition {
-      case (_, index) => index < numberOfExistingSeals
+      case (seal, _) => seal.removable
     })
     .getOrElse((Nil, Nil))
 
   //format: off
   def seals: Seq[SummaryListRow] =
     existingSeals.map {
-      case (sealId, position) =>
+      case (Seal(sealId, _), position) =>
         val index = Index(position)
         buildRow(
           prefix = "changeSeal.sealList",
@@ -53,7 +50,7 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
 
   def sealsWithRemove: Seq[SummaryListRow] =
     newSeals.map {
-      case (sealId, position) =>
+      case (Seal(sealId, _), position) =>
         val index = Index(position)
         buildRemovableRow(
           prefix = "changeSeal.sealList",

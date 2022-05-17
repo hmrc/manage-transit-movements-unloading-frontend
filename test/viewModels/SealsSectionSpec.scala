@@ -17,7 +17,7 @@
 package viewModels
 
 import base.SpecBase
-import models.NormalMode
+import models.{NormalMode, Seal}
 import queries.SealsQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import viewModels.sections.Section
@@ -30,30 +30,19 @@ class SealsSectionSpec extends SpecBase {
 
     "return rows" - {
 
-      val seals = Seq("new seal value 1", "new seal value 2")
+      "when there are seals" in {
+        val seals = Seq(
+          Seal("new seal value", removable = true),
+          Seal("existing seal value", removable = false)
+        )
 
-      "when there are existing seals" in {
-        val userAnswers = emptyUserAnswers
-          .setPrepopulatedValue(SealsQuery, seals)
-          .setValue(SealsQuery, seals)
+        val userAnswers = emptyUserAnswers.setValue(SealsQuery, seals)
 
         val section: Section = SealsSection(userAnswers, mode)
         section.sectionTitle.get mustBe "Official customs seals"
-        section.rows.head.value.content mustBe Text("new seal value 1")
+        section.rows.head.value.content mustBe Text("existing seal value")
         section.rows.head.actions.get.items.size mustBe 1
-        section.rows(1).value.content mustBe Text("new seal value 2")
-        section.rows(1).actions.get.items.size mustBe 1
-      }
-
-      "when there are new seals" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(SealsQuery, seals)
-
-        val section: Section = SealsSection(userAnswers, mode)
-        section.sectionTitle.get mustBe "Official customs seals"
-        section.rows.head.value.content mustBe Text("new seal value 1")
-        section.rows.head.actions.get.items.size mustBe 2
-        section.rows(1).value.content mustBe Text("new seal value 2")
+        section.rows(1).value.content mustBe Text("new seal value")
         section.rows(1).actions.get.items.size mustBe 2
       }
     }

@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package audit.services
+package pages
 
-import audit.models.{AuditAutoInput, AuditEventData, AuditUserInput}
-import models.UserAnswers
+import models.{Index, Seal}
+import play.api.libs.json.JsPath
 
-object AuditEventService {
+final case class SealPage(index: Index) extends QuestionPage[Seal] {
 
-  def extendedDataEvent(userAnswers: UserAnswers): AuditEventData = {
-
-    val auditUserInput: AuditUserInput = AuditUserInput(userAnswers.data)
-    val auditAutoInput: AuditAutoInput = AuditAutoInput(userAnswers.prepopulatedData)
-
-    AuditEventData(auditUserInput, auditAutoInput)
-  }
+  override def path: JsPath = JsPath \ "seals" \ index.position
 }

@@ -19,7 +19,7 @@ package services
 import base.SpecBase
 import generators.Generators
 import models.messages._
-import models.{Index, Seals, UnloadingPermission, UserAnswers}
+import models.{Index, Seal, Seals, UnloadingPermission, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalacheck.Gen.choose
@@ -270,9 +270,9 @@ class RemarksServiceSpec extends SpecBase with Generators with ScalaCheckPropert
 
               val userAnswersUpdated = emptyUserAnswers
                 .setValue(DateGoodsUnloadedPage, dateGoodsUnloaded)
-                .setValue(NewSealNumberPage(Index(0)), "seal 2")
-                .setValue(NewSealNumberPage(Index(1)), "seal 1")
-                .setValue(NewSealNumberPage(Index(2)), "seal 3")
+                .setValue(SealPage(Index(0)), Seal("seal 2", removable = false))
+                .setValue(SealPage(Index(1)), Seal("seal 1", removable = false))
+                .setValue(SealPage(Index(2)), Seal("seal 3", removable = false))
 
               service.build(userAnswersUpdated, unloadingPermissionWithSeals).get mustBe
                 RemarksConformWithSeals(dateGoodsUnloaded, None)
@@ -354,7 +354,7 @@ class RemarksServiceSpec extends SpecBase with Generators with ScalaCheckPropert
 
               val userAnswersUpdated = userAnswers
                 .setValue(DateGoodsUnloadedPage, dateGoodsUnloaded)
-                .setValue(NewSealNumberPage(Index(0)), "new seal")
+                .setValue(SealPage(Index(0)), Seal("new seal", removable = true))
 
               service.build(userAnswersUpdated, unloadingPermissionWithSeals).get mustBe
                 RemarksNonConform(
@@ -373,9 +373,9 @@ class RemarksServiceSpec extends SpecBase with Generators with ScalaCheckPropert
 
               val userAnswersUpdated = userAnswers
                 .setValue(DateGoodsUnloadedPage, dateGoodsUnloaded)
-                .setValue(NewSealNumberPage(Index(0)), "seal 1")
-                .setValue(NewSealNumberPage(Index(1)), "updated seal")
-                .setValue(NewSealNumberPage(Index(2)), "seal 3")
+                .setValue(SealPage(Index(0)), Seal("seal 1", removable = false))
+                .setValue(SealPage(Index(1)), Seal("updated seal", removable = false))
+                .setValue(SealPage(Index(2)), Seal("seal 3", removable = false))
 
               service.build(userAnswersUpdated, unloadingPermissionWithSeals).get mustBe
                 RemarksNonConform(

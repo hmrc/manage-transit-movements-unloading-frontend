@@ -16,11 +16,12 @@
 
 package derivable
 
+import models.Seal
 import play.api.libs.json.JsPath
 import queries.SealsQuery
 
-case object DeriveNumberOfSeals extends Derivable[List[String], Int] {
-  override val derive: List[String] => Int = _.size
+case object DeriveNumberOfSeals extends Derivable[List[Seal], Int] {
+  override val derive: List[Seal] => Int = _.size
 
   override def path: JsPath = SealsQuery.path
 }

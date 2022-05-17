@@ -30,7 +30,6 @@ final case class UserAnswers(
   mrn: MovementReferenceNumber,
   eoriNumber: EoriNumber,
   data: JsObject = Json.obj(),
-  prepopulatedData: JsObject = Json.obj(),
   lastUpdated: LocalDateTime = LocalDateTime.now
 ) {
 
@@ -41,13 +40,7 @@ final case class UserAnswers(
     get(derivable: Gettable[A]).map(derivable.derive)
 
   def get[A](page: QuestionPage[A])(implicit rds: Reads[A]): Option[A] =
-    Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
-
-  def getPrepopulatedData[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
-    Reads.optionNoError(Reads.at(page.path)).reads(prepopulatedData).getOrElse(None)
-
-  def getPrepopulatedData[A, B](derivable: Derivable[A, B])(implicit rds: Reads[A]): Option[B] =
-    getPrepopulatedData(derivable: Gettable[A]).map(derivable.derive)
+    get(page: Gettable[A])
 
   def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
 
@@ -61,22 +54,6 @@ final case class UserAnswers(
     updatedData.flatMap {
       d =>
         val updatedAnswers = copy(data = d)
-        page.cleanup(Some(value), updatedAnswers)
-    }
-  }
-
-  def setPrepopulatedData[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
-
-    val updatedData = prepopulatedData.setObject(page.path, Json.toJson(value)) match {
-      case JsSuccess(jsValue, _) =>
-        Success(jsValue)
-      case JsError(errors) =>
-        Failure(JsResultException(errors))
-    }
-
-    updatedData.flatMap {
-      d =>
-        val updatedAnswers = copy(prepopulatedData = d)
         page.cleanup(Some(value), updatedAnswers)
     }
   }
@@ -109,7 +86,6 @@ object UserAnswers {
         (__ \ "mrn").read[MovementReferenceNumber] and
         (__ \ "eoriNumber").read[EoriNumber] and
         (__ \ "data").read[JsObject] and
-        (__ \ "autoData").read[JsObject] and
         (__ \ "lastUpdated").read(MongoJavatimeFormats.localDateTimeReads)
     )(UserAnswers.apply _)
   }
@@ -123,7 +99,6 @@ object UserAnswers {
         (__ \ "mrn").write[MovementReferenceNumber] and
         (__ \ "eoriNumber").write[EoriNumber] and
         (__ \ "data").write[JsObject] and
-        (__ \ "autoData").write[JsObject] and
         (__ \ "lastUpdated").write(MongoJavatimeFormats.localDateTimeWrites)
     )(unlift(UserAnswers.unapply))
   }

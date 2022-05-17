@@ -19,7 +19,7 @@ package utils
 import base.SpecBase
 import controllers.routes
 import generators.Generators
-import models.{CheckMode, Index, Seals}
+import models.{CheckMode, Index, Seal, Seals}
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
 import queries.SealsQuery
@@ -188,16 +188,16 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
       "when list is not empty" - {
         "when single seal" in {
 
-          forAll(arbitrary[String]) {
-            str =>
-              val userAnswers = emptyUserAnswers.setValue(NewSealNumberPage(Index(0)), str)
+          forAll(arbitrary[Seal]) {
+            seal =>
+              val userAnswers = emptyUserAnswers.setValue(SealPage(Index(0)), seal)
               val helper      = new CheckYourAnswersHelper(userAnswers)
               val result      = helper.seals
 
               result mustBe Some(
                 SummaryListRow(
                   key = "Official customs seal numbers".toKey,
-                  value = Value(HtmlContent(str)),
+                  value = Value(HtmlContent(seal.sealId)),
                   actions = None
                 )
               )
@@ -206,16 +206,16 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
 
         "when multiple seals" in {
 
-          forAll(listWithMaxLength[String](Seals.maxSeals)) {
-            strs =>
-              val userAnswers = emptyUserAnswers.setValue(SealsQuery, strs)
+          forAll(listWithMaxLength[Seal](Seals.maxSeals)) {
+            seals =>
+              val userAnswers = emptyUserAnswers.setValue(SealsQuery, seals)
               val helper      = new CheckYourAnswersHelper(userAnswers)
               val result      = helper.seals
 
               result mustBe Some(
                 SummaryListRow(
                   key = "Official customs seal numbers".toKey,
-                  value = Value(HtmlContent(strs.mkString("<br>"))),
+                  value = Value(HtmlContent(seals.map(_.sealId).mkString("<br>"))),
                   actions = None
                 )
               )

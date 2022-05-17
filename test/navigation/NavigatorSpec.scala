@@ -49,9 +49,9 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
       "must go from date goods unloaded page" - {
         "to can seals be read page when seals exist" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedUserAnswers = answers.setValue(SealsQuery, Seq("seal 1"))
+          forAll(arbitrary[UserAnswers], arbitrary[Seal]) {
+            (answers, seal) =>
+              val updatedUserAnswers = answers.setValue(SealsQuery, Seq(seal))
               navigator
                 .nextPage(DateGoodsUnloadedPage, mode, updatedUserAnswers)
                 .mustBe(routes.CanSealsBeReadController.onPageLoad(updatedUserAnswers.id, mode))
@@ -147,7 +147,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
-              .nextPage(NewSealNumberPage(Index(0)), mode, answers)
+              .nextPage(SealPage(Index(0)), mode, answers)
               .mustBe(routes.UnloadingSummaryController.onPageLoad(answers.id))
         }
       }
@@ -224,7 +224,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator
-                .nextPage(NewSealNumberPage(Index(0)), mode, answers)
+                .nextPage(SealPage(Index(0)), mode, answers)
                 .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.id))
           }
         }

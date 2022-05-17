@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.routes
 import generators.Generators
 import models.reference.Country
-import models.{Index, Mode, Seals, UnloadingPermission}
+import models.{Index, Mode, Seal, UnloadingPermission}
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
 import queries.{GoodsItemsQuery, SealsQuery}
@@ -46,35 +46,36 @@ class UnloadingSummaryHelperSpec extends SpecBase with Generators {
 
       "when there are existing seals" in {
 
-        forAll(listWithMaxLength[String](Seals.maxSeals)) {
+        forAll(listWithMaxLength[String]()) {
           strs =>
-            val userAnswers = emptyUserAnswers
-              .setPrepopulatedValue(SealsQuery, strs)
-              .setValue(SealsQuery, strs)
+            val seals       = strs.map(Seal(_, removable = false))
+            val userAnswers = emptyUserAnswers.setValue(SealsQuery, seals)
 
             val helper = new UnloadingSummaryHelper(userAnswers, mode)
             val result = helper.seals
 
-            result.size mustEqual strs.size
+            result.size mustEqual seals.size
 
-            val index = Index(0)
-            val str   = strs.head
-            result.head mustEqual SummaryListRow(
-              key = s"Official customs seal ${index.display}".toKey,
-              value = Value(str.toText),
-              actions = Some(
-                Actions(items =
-                  List(
-                    ActionItem(
-                      content = "Change".toText,
-                      href = routes.NewSealNumberController.onPageLoad(userAnswers.id, index, mode).url,
-                      visuallyHiddenText = Some(s"official customs seal ${index.display} $str"),
-                      attributes = Map("id" -> s"change-seal-${index.position}")
+            strs.zipWithIndex.foreach {
+              case (str, i) =>
+                val index = Index(i)
+                result(i) mustEqual SummaryListRow(
+                  key = s"Official customs seal ${index.display}".toKey,
+                  value = Value(str.toText),
+                  actions = Some(
+                    Actions(items =
+                      List(
+                        ActionItem(
+                          content = "Change".toText,
+                          href = routes.NewSealNumberController.onPageLoad(userAnswers.id, index, mode).url,
+                          visuallyHiddenText = Some(s"official customs seal ${index.display} $str"),
+                          attributes = Map("id" -> s"change-seal-${index.position}")
+                        )
+                      )
                     )
                   )
                 )
-              )
-            )
+            }
         }
       }
     }
@@ -92,38 +93,42 @@ class UnloadingSummaryHelperSpec extends SpecBase with Generators {
 
       "when there are new seals" in {
 
-        forAll(listWithMaxLength[String](Seals.maxSeals)) {
+        forAll(listWithMaxLength[String]()) {
           strs =>
-            val userAnswers = emptyUserAnswers.setValue(SealsQuery, strs)
-            val helper      = new UnloadingSummaryHelper(userAnswers, mode)
-            val result      = helper.sealsWithRemove
+            val seals       = strs.map(Seal(_, removable = true))
+            val userAnswers = emptyUserAnswers.setValue(SealsQuery, seals)
 
-            result.size mustEqual strs.size
+            val helper = new UnloadingSummaryHelper(userAnswers, mode)
+            val result = helper.sealsWithRemove
 
-            val index = Index(0)
-            val str   = strs.head
-            result.head mustEqual SummaryListRow(
-              key = s"Official customs seal ${index.display}".toKey,
-              value = Value(str.toText),
-              actions = Some(
-                Actions(items =
-                  List(
-                    ActionItem(
-                      content = "Change".toText,
-                      href = routes.NewSealNumberController.onPageLoad(userAnswers.id, index, mode).url,
-                      visuallyHiddenText = Some(s"official customs seal ${index.display} $str"),
-                      attributes = Map("id" -> s"change-seal-${index.position}")
-                    ),
-                    ActionItem(
-                      content = "Remove".toText,
-                      href = routes.ConfirmRemoveSealController.onPageLoad(userAnswers.id, index, mode).url,
-                      visuallyHiddenText = Some(s"official customs seal ${index.display} $str"),
-                      attributes = Map("id" -> s"remove-seal-${index.position}")
+            result.size mustEqual seals.size
+
+            strs.zipWithIndex.foreach {
+              case (str, i) =>
+                val index = Index(i)
+                result(i) mustEqual SummaryListRow(
+                  key = s"Official customs seal ${index.display}".toKey,
+                  value = Value(str.toText),
+                  actions = Some(
+                    Actions(items =
+                      List(
+                        ActionItem(
+                          content = "Change".toText,
+                          href = routes.NewSealNumberController.onPageLoad(userAnswers.id, index, mode).url,
+                          visuallyHiddenText = Some(s"official customs seal ${index.display} $str"),
+                          attributes = Map("id" -> s"change-seal-${index.position}")
+                        ),
+                        ActionItem(
+                          content = "Remove".toText,
+                          href = routes.ConfirmRemoveSealController.onPageLoad(userAnswers.id, index, mode).url,
+                          visuallyHiddenText = Some(s"official customs seal ${index.display} $str"),
+                          attributes = Map("id" -> s"remove-seal-${index.position}")
+                        )
+                      )
                     )
                   )
                 )
-              )
-            )
+            }
         }
       }
     }

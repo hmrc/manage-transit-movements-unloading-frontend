@@ -16,7 +16,7 @@
 
 package extractors
 
-import models.{UnloadingPermission, UserAnswers}
+import models.{Seal, UnloadingPermission, UserAnswers}
 import pages._
 import queries.{GoodsItemsQuery, SealsQuery}
 import services.ReferenceDataService
@@ -49,8 +49,8 @@ class UnloadingPermissionExtractor @Inject() (referenceDataService: ReferenceDat
     unloadingPermission: UnloadingPermission
   ): Try[UserAnswers] =
     unloadingPermission.transportIdentity match {
-      case Some(value) => userAnswers.set(VehicleNameRegistrationReferencePage, value)
-      case None        => Success(userAnswers)
+      case Some(transportIdentity) => userAnswers.set(VehicleNameRegistrationReferencePage, transportIdentity)
+      case None                    => Success(userAnswers)
     }
 
   private def extractVehicleRegistrationCountryPage(
@@ -79,8 +79,8 @@ class UnloadingPermissionExtractor @Inject() (referenceDataService: ReferenceDat
     unloadingPermission: UnloadingPermission
   ): Try[UserAnswers] =
     unloadingPermission.numberOfPackages match {
-      case Some(value) => userAnswers.set(TotalNumberOfPackagesPage, value)
-      case None        => Success(userAnswers)
+      case Some(numberOfPackages) => userAnswers.set(TotalNumberOfPackagesPage, numberOfPackages)
+      case None                   => Success(userAnswers)
     }
 
   private def extractSeals(
@@ -88,7 +88,7 @@ class UnloadingPermissionExtractor @Inject() (referenceDataService: ReferenceDat
     unloadingPermission: UnloadingPermission
   ): Try[UserAnswers] =
     unloadingPermission.seals.map(_.sealIds) match {
-      case Some(value) => userAnswers.set(SealsQuery, value).flatMap(_.setPrepopulatedData(SealsQuery, value))
+      case Some(seals) => userAnswers.set(SealsQuery, seals.map(Seal(_, removable = false)))
       case None        => Success(userAnswers)
     }
 

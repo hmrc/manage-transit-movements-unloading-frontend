@@ -18,9 +18,9 @@ package controllers
 
 import controllers.actions._
 import forms.NewSealNumberFormProvider
-import models.{ArrivalId, Index, Mode}
+import models.{ArrivalId, Index, Mode, Seal}
 import navigation.Navigator
-import pages.NewSealNumberPage
+import pages.SealPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -46,9 +46,9 @@ class NewSealNumberController @Inject() (
 
   def onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(NewSealNumberPage(index)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+      val preparedForm = request.userAnswers.get(SealPage(index)) match {
+        case None       => form
+        case Some(seal) => form.fill(seal.sealId)
       }
 
       Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, index, mode))
@@ -60,11 +60,13 @@ class NewSealNumberController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, mode))),
-          value =>
+          value => {
+            val removable = request.userAnswers.get(SealPage(index)).forall(_.removable)
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(NewSealNumberPage(index), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(SealPage(index), Seal(value, removable)))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(NewSealNumberPage(index), mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(SealPage(index), mode, updatedAnswers))
+          }
         )
 
   }

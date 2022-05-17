@@ -16,8 +16,10 @@
 
 package audit.services
 
+import audit.models.{AuditAutoInput, AuditEventData, AuditUserInput}
 import com.google.inject.Inject
-import models.UserAnswers
+import models.UnloadingPermission
+import models.requests.DataRequest
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
@@ -25,10 +27,15 @@ import scala.concurrent.ExecutionContext
 
 class AuditEventSubmissionService @Inject() (auditConnector: AuditConnector) {
 
-  def auditUnloadingRemarks(userAnswers: UserAnswers, auditType: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Unit = {
-
-    val data = AuditEventService.extendedDataEvent(userAnswers)
-
-    auditConnector.sendExplicitAudit(auditType, data)
-  }
+  def auditUnloadingRemarks(
+    unloadingPermission: UnloadingPermission,
+    auditType: String
+  )(implicit request: DataRequest[_], hc: HeaderCarrier, ec: ExecutionContext): Unit =
+    auditConnector.sendExplicitAudit(
+      auditType = auditType,
+      detail = AuditEventData(
+        userInput = AuditUserInput(request.userAnswers),
+        autoInput = AuditAutoInput(unloadingPermission)
+      )
+    )
 }

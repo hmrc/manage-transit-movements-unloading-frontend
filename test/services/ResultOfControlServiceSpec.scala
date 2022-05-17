@@ -16,16 +16,16 @@
 
 package services
 
-import java.time.{LocalDate, ZoneOffset}
-
 import base.SpecBase
 import generators.Generators
-import models.{Index, Seals, UnloadingPermission}
 import models.messages._
 import models.reference.Country
+import models.{Index, Seal, Seals, UnloadingPermission}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
+
+import java.time.{LocalDate, ZoneOffset}
 
 class ResultOfControlServiceSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
@@ -163,7 +163,7 @@ class ResultOfControlServiceSpec extends SpecBase with Generators with ScalaChec
 
               val userAnswersUpdated = emptyUserAnswers
                 .setValue(DateGoodsUnloadedPage, dateGoodsUnloaded)
-                .setValue(NewSealNumberPage(Index(0)), "changed value 1")
+                .setValue(SealPage(Index(0)), Seal("changed value 1", removable = false))
 
               service.build(userAnswersUpdated, unloadingPermissionUpdated) mustBe Seq(
                 ResultsOfControlOther(
@@ -184,7 +184,7 @@ class ResultOfControlServiceSpec extends SpecBase with Generators with ScalaChec
 
               val userAnswersUpdated = emptyUserAnswers
                 .setValue(DateGoodsUnloadedPage, dateGoodsUnloaded)
-                .setValue(NewSealNumberPage(Index(0)), "original value 1")
+                .setValue(SealPage(Index(0)), Seal("original value 1", removable = false))
 
               service.build(userAnswersUpdated, unloadingPermissionUpdated) mustBe Nil
           }
@@ -201,8 +201,8 @@ class ResultOfControlServiceSpec extends SpecBase with Generators with ScalaChec
 
               val userAnswersUpdated = emptyUserAnswers
                 .setValue(DateGoodsUnloadedPage, dateGoodsUnloaded)
-                .setValue(NewSealNumberPage(Index(0)), "original value 2")
-                .setValue(NewSealNumberPage(Index(1)), "original value 1")
+                .setValue(SealPage(Index(0)), Seal("original value 2", removable = false))
+                .setValue(SealPage(Index(1)), Seal("original value 1", removable = false))
 
               service.build(userAnswersUpdated, unloadingPermissionUpdated) mustBe Nil
           }
@@ -215,7 +215,7 @@ class ResultOfControlServiceSpec extends SpecBase with Generators with ScalaChec
 
               val userAnswersUpdated = emptyUserAnswers
                 .setValue(DateGoodsUnloadedPage, dateGoodsUnloaded)
-                .setValue(NewSealNumberPage(Index(0)), "new seal")
+                .setValue(SealPage(Index(0)), Seal("new seal", removable = true))
 
               service.build(userAnswersUpdated, unloadingPermissionUpdated) mustBe Seq(
                 ResultsOfControlOther(
