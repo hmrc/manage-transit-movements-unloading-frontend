@@ -18,23 +18,40 @@ package models
 
 import audit.models.{AuditAutoInput, AuditEventData, AuditUserInput}
 import base.SpecBase
+import generators.Generators
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 
-class AuditEventDataSpec extends SpecBase {
+class AuditEventDataSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "AuditEventData" - {
 
     "must serialise" in {
 
-      val ua = emptyUserAnswers.copy(data = Json.obj(("key", "value")), prepopulatedData = Json.obj(("key", "value")))
+      val originalSeals = Seq("Seals01", "Seals02", "Seals03")
 
-      val auditUserInput = AuditUserInput(ua.data)
-      val auditAutoInput = AuditAutoInput(ua.prepopulatedData)
-      val audit          = AuditEventData(auditUserInput, auditAutoInput)
+      forAll(arbitrary[UserAnswers], arbitrary[UnloadingPermission]) {
+        (userAnswers, unloadingPermission) =>
+          val auditUserInput = AuditUserInput(userAnswers)
+          val auditAutoInput = AuditAutoInput(unloadingPermission.copy(seals = Some(Seals(originalSeals))))
+          val audit          = AuditEventData(auditUserInput, auditAutoInput)
 
-      val expectedResult = Json.toJsObject(auditUserInput) ++ Json.toJsObject(auditAutoInput)
+          val expectedResult = Json.parse(s"""
+              |{
+              |  "fullUserAnswers": ${userAnswers.data},
+              |  "prepopulatedUserAnswers": {
+              |    "seals": [
+              |      "Seals01",
+              |      "Seals02",
+              |      "Seals03"
+              |    ]
+              |  }
+              |}
+              |""".stripMargin)
 
-      Json.toJson(audit) mustBe expectedResult
+          Json.toJson(audit) mustBe expectedResult
+      }
     }
   }
 

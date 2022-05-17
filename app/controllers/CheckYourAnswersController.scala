@@ -60,7 +60,7 @@ class CheckYourAnswersController @Inject() (
         case Some(unloadingPermission) =>
           unloadingRemarksService.submit(arrivalId, request.userAnswers, unloadingPermission) flatMap {
             case Some(status) if is2xx(status) =>
-              auditEventSubmissionService.auditUnloadingRemarks(request.userAnswers, "submitUnloadingRemarks")
+              auditEventSubmissionService.auditUnloadingRemarks(unloadingPermission, "submitUnloadingRemarks")
               Future.successful(Redirect(routes.ConfirmationController.onPageLoad(arrivalId)))
             case Some(status) if is4xx(status) => errorHandler.onClientError(request, status)
             case _                             => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)

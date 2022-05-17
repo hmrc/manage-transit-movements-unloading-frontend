@@ -30,7 +30,6 @@ final case class UserAnswers(
   mrn: MovementReferenceNumber,
   eoriNumber: EoriNumber,
   data: JsObject = Json.obj(),
-  prepopulatedData: JsObject = Json.obj(),
   lastUpdated: LocalDateTime = LocalDateTime.now
 ) {
 
@@ -55,22 +54,6 @@ final case class UserAnswers(
     updatedData.flatMap {
       d =>
         val updatedAnswers = copy(data = d)
-        page.cleanup(Some(value), updatedAnswers)
-    }
-  }
-
-  def setPrepopulatedData[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
-
-    val updatedData = prepopulatedData.setObject(page.path, Json.toJson(value)) match {
-      case JsSuccess(jsValue, _) =>
-        Success(jsValue)
-      case JsError(errors) =>
-        Failure(JsResultException(errors))
-    }
-
-    updatedData.flatMap {
-      d =>
-        val updatedAnswers = copy(prepopulatedData = d)
         page.cleanup(Some(value), updatedAnswers)
     }
   }
@@ -103,7 +86,6 @@ object UserAnswers {
         (__ \ "mrn").read[MovementReferenceNumber] and
         (__ \ "eoriNumber").read[EoriNumber] and
         (__ \ "data").read[JsObject] and
-        (__ \ "autoData").read[JsObject] and
         (__ \ "lastUpdated").read(MongoJavatimeFormats.localDateTimeReads)
     )(UserAnswers.apply _)
   }
@@ -117,7 +99,6 @@ object UserAnswers {
         (__ \ "mrn").write[MovementReferenceNumber] and
         (__ \ "eoriNumber").write[EoriNumber] and
         (__ \ "data").write[JsObject] and
-        (__ \ "autoData").write[JsObject] and
         (__ \ "lastUpdated").write(MongoJavatimeFormats.localDateTimeWrites)
     )(unlift(UserAnswers.unapply))
   }

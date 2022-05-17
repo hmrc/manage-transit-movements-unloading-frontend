@@ -89,7 +89,7 @@ class UnloadingPermissionExtractor @Inject() (referenceDataService: ReferenceDat
   ): Try[UserAnswers] =
     unloadingPermission.seals.map(_.sealIds) match {
       case Some(seals) => userAnswers.set(SealsQuery, seals.map(Seal(_, removable = false)))
-      case None => Success(userAnswers)
+      case None        => Success(userAnswers)
     }
 
   private def extractGoodsItems(
