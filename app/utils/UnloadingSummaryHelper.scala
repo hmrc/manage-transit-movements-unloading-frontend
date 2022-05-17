@@ -18,7 +18,7 @@ package utils
 
 import controllers.routes
 import models.reference.Country
-import models.{Index, Mode, UserAnswers}
+import models.{Index, Mode, Seal, UserAnswers}
 import pages._
 import play.api.i18n.Messages
 import queries.{GoodsItemsQuery, SealsQuery}
@@ -37,28 +37,28 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
   //format: off
   def seals: Seq[SummaryListRow] =
     existingSeals.map {
-      case (seal, position) =>
+      case (Seal(sealId, _), position) =>
         val index = Index(position)
         buildRow(
           prefix = "changeSeal.sealList",
-          answer = seal.sealId.toText,
+          answer = sealId.toText,
           id = Some(s"change-seal-${index.position}"),
           call = Some(routes.NewSealNumberController.onPageLoad(arrivalId, index, mode)),
-          args = index.display, seal.sealId
+          args = index.display, sealId
         )
     }
 
   def sealsWithRemove: Seq[SummaryListRow] =
     newSeals.map {
-      case (seal, position) =>
+      case (Seal(sealId, _), position) =>
         val index = Index(position)
         buildRemovableRow(
           prefix = "changeSeal.sealList",
-          answer = seal.sealId.toText,
+          answer = sealId.toText,
           id = s"seal-${index.position}",
           changeCall = routes.NewSealNumberController.onPageLoad(arrivalId, index, mode),
           removeCall = routes.ConfirmRemoveSealController.onPageLoad(arrivalId, index, mode),
-          args = index.display, seal.sealId
+          args = index.display, sealId
         )
     }
   //format: on
