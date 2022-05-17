@@ -33,7 +33,7 @@ class AuditEventDataSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
         forAll(arbitrary[UserAnswers], arbitrary[UnloadingPermission]) {
           (userAnswers, unloadingPermission) =>
             val auditUserInput = AuditUserInput(userAnswers)
-            val auditAutoInput = AuditAutoInput(unloadingPermission.copy(seals = Some(Seals(originalSeals))))
+            val auditAutoInput = Some(AuditAutoInput(unloadingPermission.copy(seals = Some(Seals(originalSeals)))))
             val audit          = AuditEventData(auditUserInput, auditAutoInput)
 
             val expectedResult = Json.parse(s"""
@@ -57,7 +57,7 @@ class AuditEventDataSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
         forAll(arbitrary[UserAnswers], arbitrary[UnloadingPermission]) {
           (userAnswers, unloadingPermission) =>
             val auditUserInput = AuditUserInput(userAnswers)
-            val auditAutoInput = AuditAutoInput(unloadingPermission.copy(seals = Some(Seals(Nil))))
+            val auditAutoInput = Some(AuditAutoInput(unloadingPermission.copy(seals = Some(Seals(Nil)))))
             val audit          = AuditEventData(auditUserInput, auditAutoInput)
 
             val expectedResult = Json.parse(s"""
@@ -77,7 +77,7 @@ class AuditEventDataSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
         forAll(arbitrary[UserAnswers], arbitrary[UnloadingPermission]) {
           (userAnswers, unloadingPermission) =>
             val auditUserInput = AuditUserInput(userAnswers)
-            val auditAutoInput = AuditAutoInput(unloadingPermission.copy(seals = None))
+            val auditAutoInput = Some(AuditAutoInput(unloadingPermission.copy(seals = None)))
             val audit          = AuditEventData(auditUserInput, auditAutoInput)
 
             val expectedResult = Json.parse(s"""
@@ -86,6 +86,23 @@ class AuditEventDataSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
                  |  "prepopulatedUserAnswers": {
                  |    "seals": []
                  |  }
+                 |}
+                 |""".stripMargin)
+
+            Json.toJson(audit) mustBe expectedResult
+        }
+      }
+
+      "when no unloading permission" in {
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            val auditUserInput = AuditUserInput(userAnswers)
+            val auditAutoInput = None
+            val audit          = AuditEventData(auditUserInput, auditAutoInput)
+
+            val expectedResult = Json.parse(s"""
+                 |{
+                 |  "fullUserAnswers": ${userAnswers.data}
                  |}
                  |""".stripMargin)
 

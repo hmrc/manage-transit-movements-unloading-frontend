@@ -47,20 +47,39 @@ class AuditEventSubmissionServiceSpec extends SpecBase with BeforeAndAfterEach w
 
   "AuditEventSubmissionService" - {
     "auditUnloadingRemarks" - {
-      "must audit unloading remarks" in {
-        forAll(arbitrary[String], arbitrary[UserAnswers], arbitrary[UnloadingPermission]) {
-          (auditType, userAnswers, unloadingPermission) =>
-            beforeEach()
+      "must audit unloading remarks" - {
+        "when unloading permission provided" in {
+          forAll(arbitrary[String], arbitrary[UserAnswers], arbitrary[UnloadingPermission]) {
+            (auditType, userAnswers, unloadingPermission) =>
+              beforeEach()
 
-            implicit val request: DataRequest[_] = DataRequest(fakeRequest, eoriNumber, userAnswers)
+              implicit val request: DataRequest[_] = DataRequest(fakeRequest, eoriNumber, userAnswers)
 
-            service.auditUnloadingRemarks(unloadingPermission, auditType)
+              service.auditUnloadingRemarks(Some(unloadingPermission), auditType)
 
-            verify(mockAuditConnector)
-              .sendExplicitAudit(
-                eqTo(auditType),
-                eqTo(AuditEventData(AuditUserInput(userAnswers), AuditAutoInput(unloadingPermission)))
-              )(any(), any(), any())
+              verify(mockAuditConnector)
+                .sendExplicitAudit(
+                  eqTo(auditType),
+                  eqTo(AuditEventData(AuditUserInput(userAnswers), Some(AuditAutoInput(unloadingPermission))))
+                )(any(), any(), any())
+          }
+        }
+
+        "when unloading permission not provided" in {
+          forAll(arbitrary[String], arbitrary[UserAnswers]) {
+            (auditType, userAnswers) =>
+              beforeEach()
+
+              implicit val request: DataRequest[_] = DataRequest(fakeRequest, eoriNumber, userAnswers)
+
+              service.auditUnloadingRemarks(None, auditType)
+
+              verify(mockAuditConnector)
+                .sendExplicitAudit(
+                  eqTo(auditType),
+                  eqTo(AuditEventData(AuditUserInput(userAnswers), None))
+                )(any(), any(), any())
+          }
         }
       }
     }

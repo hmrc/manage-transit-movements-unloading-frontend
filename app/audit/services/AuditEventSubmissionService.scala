@@ -28,14 +28,14 @@ import scala.concurrent.ExecutionContext
 class AuditEventSubmissionService @Inject() (auditConnector: AuditConnector) {
 
   def auditUnloadingRemarks(
-    unloadingPermission: UnloadingPermission,
+    unloadingPermission: Option[UnloadingPermission],
     auditType: String
   )(implicit request: DataRequest[_], hc: HeaderCarrier, ec: ExecutionContext): Unit =
     auditConnector.sendExplicitAudit(
       auditType = auditType,
       detail = AuditEventData(
         userInput = AuditUserInput(request.userAnswers),
-        autoInput = AuditAutoInput(unloadingPermission)
+        autoInput = unloadingPermission.map(AuditAutoInput(_))
       )
     )
 }

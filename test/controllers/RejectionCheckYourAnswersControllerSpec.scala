@@ -18,16 +18,14 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
-import models.UnloadingPermission
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import org.scalacheck.Arbitrary.arbitrary
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.{UnloadingPermissionService, UnloadingRemarksService}
+import services.UnloadingRemarksService
 import viewModels.RejectionCheckYourAnswersViewModel
 import viewModels.sections.Section
 import views.html.RejectionCheckYourAnswersView
@@ -36,21 +34,17 @@ import scala.concurrent.Future
 
 class RejectionCheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val unloadingPermission: UnloadingPermission = arbitrary[UnloadingPermission].sample.value
-
-  private val mockUnloadingPermissionService: UnloadingPermissionService = mock[UnloadingPermissionService]
-  private val mockUnloadingRemarksService                                = mock[UnloadingRemarksService]
-  private val mockViewModel: RejectionCheckYourAnswersViewModel          = mock[RejectionCheckYourAnswersViewModel]
+  private val mockUnloadingRemarksService                       = mock[UnloadingRemarksService]
+  private val mockViewModel: RejectionCheckYourAnswersViewModel = mock[RejectionCheckYourAnswersViewModel]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockUnloadingPermissionService, mockUnloadingRemarksService, mockViewModel)
+    reset(mockUnloadingRemarksService, mockViewModel)
   }
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[UnloadingPermissionService].toInstance(mockUnloadingPermissionService))
       .overrides(bind[UnloadingRemarksService].toInstance(mockUnloadingRemarksService))
       .overrides(bind[RejectionCheckYourAnswersViewModel].toInstance(mockViewModel))
 
@@ -79,9 +73,6 @@ class RejectionCheckYourAnswersControllerSpec extends SpecBase with AppWithDefau
       checkArrivalStatus()
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any()))
-        .thenReturn(Future.successful(Some(unloadingPermission)))
-
       when(mockUnloadingRemarksService.resubmit(any(), any())(any()))
         .thenReturn(Future.successful(Some(ACCEPTED)))
 
@@ -97,9 +88,6 @@ class RejectionCheckYourAnswersControllerSpec extends SpecBase with AppWithDefau
     "return BadRequest when backend returns 401" in {
       checkArrivalStatus()
       setExistingUserAnswers(emptyUserAnswers)
-
-      when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any()))
-        .thenReturn(Future.successful(Some(unloadingPermission)))
 
       when(mockUnloadingRemarksService.resubmit(any(), any())(any()))
         .thenReturn(Future.successful(Some(UNAUTHORIZED)))
@@ -117,26 +105,7 @@ class RejectionCheckYourAnswersControllerSpec extends SpecBase with AppWithDefau
       checkArrivalStatus()
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any()))
-        .thenReturn(Future.successful(Some(unloadingPermission)))
-
       when(mockUnloadingRemarksService.resubmit(any(), any())(any()))
-        .thenReturn(Future.successful(None))
-
-      val request = FakeRequest(POST, routes.RejectionCheckYourAnswersController.onSubmit(arrivalId).url)
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
-    }
-
-    "return Technical Difficulties page when UnloadingPermission can't be retrieved" in {
-      checkArrivalStatus()
-      setExistingUserAnswers(emptyUserAnswers)
-
-      when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any()))
         .thenReturn(Future.successful(None))
 
       val request = FakeRequest(POST, routes.RejectionCheckYourAnswersController.onSubmit(arrivalId).url)
