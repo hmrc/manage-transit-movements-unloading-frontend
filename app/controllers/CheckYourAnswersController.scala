@@ -29,6 +29,7 @@ import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.CheckYourAnswersViewModel
 import views.html.CheckYourAnswersView
+import logging.Logging
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -46,11 +47,13 @@ class CheckYourAnswersController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
-    with HttpErrorFunctions {
+    with HttpErrorFunctions
+    with Logging {
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
       val sections = viewModel(request.userAnswers)
+      logger.debug(s"Rendering check answers for $arrivalId with sections : ${sections.size}")
       Ok(view(request.userAnswers.mrn, arrivalId, sections))
   }
 
@@ -58,14 +61,22 @@ class CheckYourAnswersController @Inject() (
     implicit request =>
       unloadingPermissionService.getUnloadingPermission(arrivalId).flatMap {
         case Some(unloadingPermission) =>
+          logger.debug(s"Unloading permission found for $arrivalId")
           unloadingRemarksService.submit(arrivalId, request.userAnswers, unloadingPermission) flatMap {
             case Some(status) if is2xx(status) =>
+              logger.debug(s"Submitted unloading remarks to destination backend, status: $status")
               auditEventSubmissionService.auditUnloadingRemarks(request.userAnswers, "submitUnloadingRemarks")
               Future.successful(Redirect(routes.ConfirmationController.onPageLoad(arrivalId)))
-            case Some(status) if is4xx(status) => errorHandler.onClientError(request, status)
-            case _                             => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
+            case Some(status) if is4xx(status) =>
+              logger.debug(s"Error from submitting unloading remarks to destination backend, status: $status")
+              errorHandler.onClientError(request, status)
+            case e =>
+              logger.error(s"Error received from destination service, status: $e")
+              errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
           }
-        case _ => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
+        case e =>
+          logger.error(s"Error getting unloading permission from destination backend $e")
+          errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
       }
   }
 

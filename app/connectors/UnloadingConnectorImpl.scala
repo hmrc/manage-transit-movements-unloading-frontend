@@ -83,6 +83,8 @@ class UnloadingConnectorImpl @Inject() (
     val serviceUrl = s"${config.arrivalsBackendBaseUrl}$rejectionLocation"
     val header     = hc.withExtraHeaders(ChannelHeader(channel))
 
+    logger.debug(s"GETTING REJECTION MESSAGE AT $rejectionLocation")
+
     http.GET[HttpResponse](serviceUrl)(httpReads, header, ec) map {
       case responseMessage if is2xx(responseMessage.status) =>
         val message: NodeSeq = responseMessage.json.as[ResponseMovementMessage].message
