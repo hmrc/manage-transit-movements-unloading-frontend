@@ -65,7 +65,7 @@ class CheckYourAnswersController @Inject() (
           unloadingRemarksService.submit(arrivalId, request.userAnswers, unloadingPermission) flatMap {
             case Some(status) if is2xx(status) =>
               logger.debug(s"Submitted unloading remarks to destination backend, status: $status")
-              auditEventSubmissionService.auditUnloadingRemarks(request.userAnswers, "submitUnloadingRemarks")
+              auditEventSubmissionService.auditUnloadingRemarks(Some(unloadingPermission), "submitUnloadingRemarks")
               Future.successful(Redirect(routes.ConfirmationController.onPageLoad(arrivalId)))
             case Some(status) if is4xx(status) =>
               logger.debug(s"Error from submitting unloading remarks to destination backend, status: $status")

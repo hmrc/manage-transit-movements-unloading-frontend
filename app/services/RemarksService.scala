@@ -122,7 +122,7 @@ object RemarksService {
 
   def haveSealsChanged(originalSeals: Seq[String], userAnswers: UserAnswers): Boolean =
     userAnswers.get(SealsQuery).exists {
-      _.sorted != originalSeals.sorted
+      _.map(_.sealId).sorted != originalSeals.sorted
     }
 
   def hasGrossMassChanged(originalValue: String, userAnswers: UserAnswers): Boolean =

@@ -21,9 +21,9 @@ import forms.ConfirmRemoveSealFormProvider
 import models.requests.SpecificDataRequestProvider1
 
 import javax.inject.Inject
-import models.{ArrivalId, Index, Mode}
+import models.{ArrivalId, Index, Mode, Seal}
 import navigation.Navigator
-import pages.{ConfirmRemoveSealPage, NewSealNumberPage}
+import pages.{ConfirmRemoveSealPage, SealPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -46,23 +46,23 @@ class ConfirmRemoveSealController @Inject() (
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] =
-    actions.requireData(arrivalId).andThen(getMandatoryPage(NewSealNumberPage(index))) {
+    actions.requireData(arrivalId).andThen(getMandatoryPage(SealPage(index))) {
       implicit request =>
-        val form = formProvider(seal)
-        Ok(view(form, request.userAnswers.mrn, arrivalId, index, seal, mode))
+        val form = formProvider(sealId)
+        Ok(view(form, request.userAnswers.mrn, arrivalId, index, sealId, mode))
     }
 
   def onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] =
-    actions.requireData(arrivalId).andThen(getMandatoryPage(NewSealNumberPage(index))).async {
+    actions.requireData(arrivalId).andThen(getMandatoryPage(SealPage(index))).async {
       implicit request =>
-        formProvider(seal)
+        formProvider(sealId)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, seal, mode))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, sealId, mode))),
             value =>
               if (value) {
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.remove(NewSealNumberPage(index)))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.remove(SealPage(index)))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(navigator.nextPage(ConfirmRemoveSealPage, mode, updatedAnswers))
               } else {
@@ -71,6 +71,6 @@ class ConfirmRemoveSealController @Inject() (
           )
     }
 
-  private def seal(implicit request: SpecificDataRequestProvider1[String]#SpecificDataRequest[_]): String =
-    request.arg
+  private def sealId(implicit request: SpecificDataRequestProvider1[Seal]#SpecificDataRequest[_]): String =
+    request.arg.sealId
 }

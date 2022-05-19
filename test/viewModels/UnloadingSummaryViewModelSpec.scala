@@ -18,7 +18,7 @@ package viewModels
 
 import base.SpecBase
 import models.reference.Country
-import models.{Index, NormalMode}
+import models.{Index, NormalMode, Seal}
 import pages._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 
@@ -38,8 +38,8 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
 
       "display rows when there are seals in user answers" in {
         val userAnswers = emptyUserAnswers
-          .setValue(NewSealNumberPage(Index(0)), "seal 1")
-          .setValue(NewSealNumberPage(Index(1)), "seal 2")
+          .setValue(SealPage(Index(0)), Seal("seal 1", removable = false))
+          .setValue(SealPage(Index(1)), Seal("seal 2", removable = true))
 
         val section = new UnloadingSummaryViewModel().sealsSection(userAnswers, mode)
 

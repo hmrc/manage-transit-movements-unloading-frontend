@@ -19,10 +19,10 @@ package services
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.messages._
-import models.{Index, Seals, UnloadingPermission}
+import models.{Index, Seal, Seals, UnloadingPermission}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.{NewSealNumberPage, VehicleNameRegistrationReferencePage}
+import pages.{SealPage, VehicleNameRegistrationReferencePage}
 
 import java.time.LocalDateTime
 
@@ -174,9 +174,9 @@ class UnloadingRemarksRequestServiceSpec extends SpecBase with AppWithDefaultMoc
             )
 
             val userAnswersUpdated = emptyUserAnswers
-              .setValue(NewSealNumberPage(Index(0)), "seal 2")
-              .setValue(NewSealNumberPage(Index(1)), "seal 1")
-              .setValue(NewSealNumberPage(Index(2)), "seal 3")
+              .setValue(SealPage(Index(0)), Seal("seal 2", removable = false))
+              .setValue(SealPage(Index(1)), Seal("seal 1", removable = false))
+              .setValue(SealPage(Index(2)), Seal("seal 3", removable = false))
 
             unloadingRemarksRequestService.build(meta, unloadingRemarks, unloadingPermission, userAnswersUpdated) mustBe
               UnloadingRemarksRequest(
@@ -204,9 +204,9 @@ class UnloadingRemarksRequestServiceSpec extends SpecBase with AppWithDefaultMoc
             )
 
             val userAnswersUpdated = emptyUserAnswers
-              .setValue(NewSealNumberPage(Index(0)), "seal 2")
-              .setValue(NewSealNumberPage(Index(1)), "seal 1")
-              .setValue(NewSealNumberPage(Index(2)), "seal 3")
+              .setValue(SealPage(Index(0)), Seal("seal 2", removable = false))
+              .setValue(SealPage(Index(1)), Seal("seal 1", removable = false))
+              .setValue(SealPage(Index(2)), Seal("seal 3", removable = false))
               .setValue(VehicleNameRegistrationReferencePage, "reference")
 
             unloadingRemarksRequestService.build(meta, unloadingRemarks, unloadingPermission, userAnswersUpdated) mustBe

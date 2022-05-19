@@ -16,10 +16,18 @@
 
 package audit.models
 
-import play.api.libs.json.{JsObject, Json, OFormat}
+import models.UnloadingPermission
+import play.api.libs.json.{JsArray, JsString, Json, Writes}
 
-case class AuditAutoInput(prepopulatedUserAnswers: JsObject)
+case class AuditAutoInput(unloadingPermission: UnloadingPermission)
 
 object AuditAutoInput {
-  implicit val formats: OFormat[AuditAutoInput] = Json.format[AuditAutoInput]
+
+  implicit val writes: Writes[AuditAutoInput] = (input: AuditAutoInput) => {
+    Json.obj(
+      "prepopulatedUserAnswers" -> Json.obj(
+        "seals" -> JsArray(input.unloadingPermission.seals.map(_.sealIds.map(JsString)).getOrElse(Nil))
+      )
+    )
+  }
 }

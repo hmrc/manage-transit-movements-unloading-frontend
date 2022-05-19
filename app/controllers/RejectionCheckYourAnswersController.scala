@@ -24,7 +24,7 @@ import handlers.ErrorHandler
 import models.ArrivalId
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.UnloadingRemarksService
+import services.{UnloadingPermissionService, UnloadingRemarksService}
 import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.RejectionCheckYourAnswersViewModel
@@ -35,6 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class RejectionCheckYourAnswersController @Inject() (
   override val messagesApi: MessagesApi,
   actions: Actions,
+  unloadingPermissionService: UnloadingPermissionService,
   unloadingRemarksService: UnloadingRemarksService,
   val controllerComponents: MessagesControllerComponents,
   errorHandler: ErrorHandler,
@@ -57,7 +58,7 @@ class RejectionCheckYourAnswersController @Inject() (
     implicit request =>
       unloadingRemarksService.resubmit(arrivalId, request.userAnswers) flatMap {
         case Some(status) if is2xx(status) =>
-          auditEventSubmissionService.auditUnloadingRemarks(request.userAnswers, "resubmitUnloadingRemarks")
+          auditEventSubmissionService.auditUnloadingRemarks(None, "resubmitUnloadingRemarks")
           Future.successful(Redirect(routes.ConfirmationController.onPageLoad(arrivalId)))
         case Some(status) if is4xx(status) => errorHandler.onClientError(request, status)
         case _                             => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)

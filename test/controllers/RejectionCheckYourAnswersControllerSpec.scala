@@ -20,7 +20,6 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import pages.VehicleNameRegistrationReferencePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Result
@@ -51,12 +50,11 @@ class RejectionCheckYourAnswersControllerSpec extends SpecBase with AppWithDefau
 
   "return OK and the Rejection view for a GET when unloading rejection message returns a Some" in {
     checkArrivalStatus()
+    setExistingUserAnswers(emptyUserAnswers)
 
     val sampleSections = listWithMaxLength[Section]().sample.value
 
     when(mockViewModel.apply(any())(any())).thenReturn(sampleSections)
-
-    setExistingUserAnswers(emptyUserAnswers)
 
     val request = FakeRequest(GET, routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId).url)
 
@@ -73,12 +71,10 @@ class RejectionCheckYourAnswersControllerSpec extends SpecBase with AppWithDefau
   "onSubmit" - {
     "must redirect to Confirmation on valid submission" in {
       checkArrivalStatus()
-      val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, "updatedValue")
+      setExistingUserAnswers(emptyUserAnswers)
 
       when(mockUnloadingRemarksService.resubmit(any(), any())(any()))
         .thenReturn(Future.successful(Some(ACCEPTED)))
-
-      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(POST, routes.RejectionCheckYourAnswersController.onSubmit(arrivalId).url)
 
@@ -91,11 +87,10 @@ class RejectionCheckYourAnswersControllerSpec extends SpecBase with AppWithDefau
 
     "return BadRequest when backend returns 401" in {
       checkArrivalStatus()
-      val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, "updatedValue")
+      setExistingUserAnswers(emptyUserAnswers)
 
-      setExistingUserAnswers(userAnswers)
-
-      when(mockUnloadingRemarksService.resubmit(any(), any())(any())).thenReturn(Future.successful(Some(UNAUTHORIZED)))
+      when(mockUnloadingRemarksService.resubmit(any(), any())(any()))
+        .thenReturn(Future.successful(Some(UNAUTHORIZED)))
 
       val request = FakeRequest(POST, routes.RejectionCheckYourAnswersController.onSubmit(arrivalId).url)
 
@@ -108,11 +103,10 @@ class RejectionCheckYourAnswersControllerSpec extends SpecBase with AppWithDefau
 
     "return Technical Difficulties on internal failure" in {
       checkArrivalStatus()
-      val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, "updatedValue")
+      setExistingUserAnswers(emptyUserAnswers)
 
-      setExistingUserAnswers(userAnswers)
-
-      when(mockUnloadingRemarksService.resubmit(any(), any())(any())).thenReturn(Future.successful(None))
+      when(mockUnloadingRemarksService.resubmit(any(), any())(any()))
+        .thenReturn(Future.successful(None))
 
       val request = FakeRequest(POST, routes.RejectionCheckYourAnswersController.onSubmit(arrivalId).url)
 

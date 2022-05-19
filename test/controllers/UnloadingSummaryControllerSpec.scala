@@ -18,11 +18,11 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
-import models.{Index, NormalMode}
+import models.{Index, NormalMode, Seal}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.{ChangesToReportPage, NewSealNumberPage}
+import pages.{ChangesToReportPage, SealPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -110,8 +110,8 @@ class UnloadingSummaryControllerSpec extends SpecBase with AppWithDefaultMockFix
         checkArrivalStatus()
 
         val userAnswers = emptyUserAnswers
-          .setValue(NewSealNumberPage(Index(0)), "new seal value 1")
-          .setValue(NewSealNumberPage(Index(1)), "new seal value 2")
+          .setValue(SealPage(Index(0)), Seal("new seal value", removable = true))
+          .setValue(SealPage(Index(1)), Seal("existing seal value", removable = false))
         setExistingUserAnswers(userAnswers)
 
         when(mockViewModel.sealsSection(any(), any())(any()))

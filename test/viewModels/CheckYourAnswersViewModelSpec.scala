@@ -17,8 +17,8 @@
 package viewModels
 
 import base.SpecBase
-import models.UserAnswers
 import models.reference.Country
+import models.{Seal, UserAnswers}
 import pages._
 import queries.{GoodsItemsQuery, SealsQuery}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
@@ -40,8 +40,14 @@ class CheckYourAnswersViewModelSpec extends SpecBase {
     }
 
     "contain seals" in {
-      val userAnswers: UserAnswers = emptyUserAnswers.setValue(SealsQuery, Seq("Seal 1", "Seal 2"))
-      val sections                 = new CheckYourAnswersViewModel()(userAnswers)
+      val userAnswers: UserAnswers = emptyUserAnswers
+        .setValue(SealsQuery,
+                  Seq(
+                    Seal("Seal 1", removable = false),
+                    Seal("Seal 2", removable = true)
+                  )
+        )
+      val sections = new CheckYourAnswersViewModel()(userAnswers)
 
       sections.length mustBe 3
       sections(1).sectionTitle.get mustBe "Check official customs seals"

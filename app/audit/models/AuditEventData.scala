@@ -18,7 +18,7 @@ package audit.models
 
 import play.api.libs.json.{__, OWrites}
 
-case class AuditEventData(userInput: AuditUserInput, autoInput: AuditAutoInput)
+case class AuditEventData(userInput: AuditUserInput, autoInput: Option[AuditAutoInput])
 
 object AuditEventData {
 
@@ -26,7 +26,7 @@ object AuditEventData {
 
     import play.api.libs.functional.syntax._
 
-    (__.write[AuditUserInput] and __.write[AuditAutoInput])(unlift(AuditEventData.unapply))
+    (__.write[AuditUserInput] and __.writeNullable[AuditAutoInput])(unlift(AuditEventData.unapply))
   }
 
 }

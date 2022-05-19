@@ -40,7 +40,13 @@ class UnloadingRemarksRequestServiceImpl @Inject() (resultOfControlService: Resu
       case _: RemarksConformWithSeals       => unloadingPermission.seals
       case RemarksNonConform(None, _, _)    => unloadingPermission.seals
       case RemarksNonConform(Some(1), _, _) => unloadingPermission.seals
-      case _                                => userAnswers.get(SealsQuery).map(Seals(_)).orElse(unloadingPermission.seals)
+      case _ =>
+        userAnswers
+          .get(SealsQuery)
+          .map(
+            x => Seals(x.map(_.sealId))
+          )
+          .orElse(unloadingPermission.seals)
     }
 
     UnloadingRemarksRequest(

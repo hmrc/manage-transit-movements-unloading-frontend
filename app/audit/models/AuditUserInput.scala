@@ -16,10 +16,16 @@
 
 package audit.models
 
-import play.api.libs.json.{JsObject, Json, OFormat}
+import models.UserAnswers
+import play.api.libs.json.{Json, Writes}
 
-case class AuditUserInput(fullUserAnswers: JsObject)
+case class AuditUserInput(userAnswers: UserAnswers)
 
 object AuditUserInput {
-  implicit val formats: OFormat[AuditUserInput] = Json.format[AuditUserInput]
+
+  implicit val writes: Writes[AuditUserInput] = (input: AuditUserInput) => {
+    Json.obj(
+      "fullUserAnswers" -> input.userAnswers.data
+    )
+  }
 }
