@@ -85,8 +85,9 @@ object ViewUtils {
   implicit class ErrorSummaryImplicits(errorSummary: ErrorSummary)(implicit messages: Messages) extends RichErrorSummarySupport {
 
     def withDateErrorMapping(form: Form[LocalDate], fieldName: String): ErrorSummary = {
-      val arg = form.errors.flatMap(_.args) match {
-        case Nil       => "day"
+      val args = Seq("day", "month", "year")
+      val arg = form.errors.flatMap(_.args).filter(args.contains) match {
+        case Nil       => args.head
         case head :: _ => head.toString
       }
       errorSummary.withFormErrorsAsText(form, mapping = Map(fieldName -> s"${fieldName}_$arg"))
