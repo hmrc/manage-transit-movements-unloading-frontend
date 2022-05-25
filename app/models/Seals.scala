@@ -26,7 +26,7 @@ object Seals {
 
   val maxSeals     = 9999
   val sealIdLength = 20
-  val sealIdRegex  = "^[a-zA-Z0-9&'@/.\\-%? ]*$"
+  val sealIdRegex  = "^[a-zA-Z0-9&'@/.\\%? -]*$"
 
   implicit val xmlReader: XmlReader[Seals] = (
     (__ \ "SeaNumSLI2").read[Int],

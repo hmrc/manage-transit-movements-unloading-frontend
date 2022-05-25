@@ -22,6 +22,8 @@ import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.data.{Field, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
 
+import scala.util.Random
+
 class ChangesToReportFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "changesToReport.error.required"
@@ -48,9 +50,8 @@ class ChangesToReportFormProviderSpec extends StringFieldBehaviours {
     )
 
     "must not bind strings that do not match regex" in {
-
       val expectedError          = FormError(fieldName, invalidKey)
-      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{350}")
+      val generator: Gen[String] = RegexpGen.from("[!£^*(){}_+=:;|`~,±üçñèé@]{350}")
 
       forAll(generator) {
         invalidString =>
@@ -58,5 +59,24 @@ class ChangesToReportFormProviderSpec extends StringFieldBehaviours {
           result.errors must contain(expectedError)
       }
     }
+
+    "must bind strings that do match regex" in {
+      val generator: Gen[String] = RegexpGen.from("[a-zA-Z0-9&'@/.?% -]{1,350}")
+
+      forAll(generator) {
+        invalidString =>
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors mustBe Nil
+      }
+    }
+
+    s"must not bind strings longer than $maxLength characters" in {
+      val invalidString = Random.alphanumeric.take(maxLength + 1).mkString
+
+      val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+
+      result.errors must contain(FormError(fieldName, lengthKey, List(maxLength)))
+    }
+
   }
 }
