@@ -12,7 +12,7 @@ object AppDependencies {
     "uk.gov.hmrc"          %% "bootstrap-frontend-play-28"     % "5.24.0",
     "uk.gov.hmrc"          %% "play-allowlist-filter"          % "1.0.0-play-28",
     "com.lucidchart"       %% "xtract"                         % "2.2.1",
-    "uk.gov.hmrc"          %% "play-frontend-hmrc"             % "3.8.0-play-28"
+    "uk.gov.hmrc"          %% "play-frontend-hmrc"             % "3.21.0-play-28"
   )
 
   val test: Seq[ModuleID] = Seq(
