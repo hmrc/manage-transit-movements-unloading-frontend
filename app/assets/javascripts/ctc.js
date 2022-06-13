@@ -1,5 +1,3 @@
-document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
-
 // Find first ancestor of el with tagName
 // or undefined if not found
 function upTo(el, tagName) {
