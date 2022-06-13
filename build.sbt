@@ -8,7 +8,7 @@ lazy val appName: String = "manage-transit-movements-unloading-frontend"
 
 resolvers += "hmrc-releases" at "https://artefacts.tax.service.gov.uk/artifactory/hmrc-releases/"
 
-val silencerVersion = "1.7.1"
+val silencerVersion = "1.7.9"
 
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtDistributablesPlugin)
@@ -22,7 +22,7 @@ lazy val root = (project in file("."))
   .settings(majorVersion := 0)
   .settings(headerSettings(IntegrationTest): _*)
   .settings(automateHeaderSettings(IntegrationTest))
-  .settings(scalaVersion := "2.12.12")
+  .settings(scalaVersion := "2.12.15")
   .settings(
     name := appName,
     RoutesKeys.routesImport ++= Seq("models._", "models.OptionBinder._"),
