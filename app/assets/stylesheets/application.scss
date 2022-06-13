@@ -1,11 +1,7 @@
 $govuk-assets-path: "/manage-transit-movements/unloading/assets/lib/govuk-frontend/govuk/assets/";
-$hmrc-assets-path: "/manage-transit-movements/unloading/assets/lib/hmrc-frontend/hmrc/assets";
+$hmrc-assets-path: "/manage-transit-movements/unloading/assets/lib/hmrc-frontend/hmrc/assets/";
 
 @import "lib/govuk-frontend/govuk/all";
 @import "lib/hmrc-frontend/hmrc/all";
 
 @import "partials/shame";
-
-.govuk-summary-list__actions-list-item {
-    display: inline-block;
-}

@@ -6,8 +6,6 @@ date.day    = day
 date.month  = month
 date.year   = year
 
-
-site.back = Back
 site.delete = Remove
 site.edit = Change
 site.delete.hidden = Change {0}
