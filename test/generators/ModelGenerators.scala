@@ -16,8 +16,6 @@
 
 package generators
 
-import java.time.LocalDate
-
 import models.messages._
 import models.reference.Country
 import models.{UnloadingPermission, _}
@@ -25,6 +23,8 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen.choose
 import org.scalacheck.{Arbitrary, Gen}
 import wolfendale.scalacheck.regexp.RegexpGen
+
+import java.time.LocalDate
 
 trait ModelGenerators {
 
@@ -124,8 +124,16 @@ trait ModelGenerators {
       for {
         numberOfSeals <- choose(min = 1, 10)
         sealPattern: Gen[String] = RegexpGen.from(Seals.sealIdRegex)
-        sealId <- listWithMaxSize(numberOfSeals, sealPattern)
-      } yield Seals(numberOfSeals, sealId)
+        sealIds <- listOfSize(numberOfSeals, sealPattern)
+      } yield Seals(sealIds)
+    }
+
+  implicit lazy val arbitrarySeal: Arbitrary[Seal] =
+    Arbitrary {
+      for {
+        sealId    <- RegexpGen.from(Seals.sealIdRegex)
+        removable <- arbitrary[Boolean]
+      } yield Seal(sealId, removable)
     }
 
   implicit lazy val arbitraryGoodsItem: Arbitrary[GoodsItem] =
@@ -232,5 +240,10 @@ trait ModelGenerators {
         unloadingRemark = unloadingRemark,
         unloadingDate = date
       )
+    }
+
+  implicit lazy val arbitraryMode: Arbitrary[Mode] =
+    Arbitrary {
+      Gen.oneOf(NormalMode, CheckMode)
     }
 }

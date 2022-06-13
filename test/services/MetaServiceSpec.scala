@@ -16,18 +16,17 @@
 
 package services
 
-import java.time.LocalDateTime
-
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.messages.{InterchangeControlReference, Meta}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 
-class MetaServiceSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators with ScalaCheckPropertyChecks {
+import java.time.LocalDateTime
+
+class MetaServiceSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val mockDateTimeService = mock[DateTimeService]
 

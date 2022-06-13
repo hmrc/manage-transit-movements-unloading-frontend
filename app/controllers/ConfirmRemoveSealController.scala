@@ -18,10 +18,12 @@ package controllers
 
 import controllers.actions._
 import forms.ConfirmRemoveSealFormProvider
+import models.requests.SpecificDataRequestProvider1
+
 import javax.inject.Inject
-import models.{ArrivalId, Index, Mode}
+import models.{ArrivalId, Index, Mode, Seal}
 import navigation.Navigator
-import pages.{ConfirmRemoveSealPage, NewSealNumberPage}
+import pages.{ConfirmRemoveSealPage, SealPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -34,49 +36,41 @@ class ConfirmRemoveSealController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
+  actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: ConfirmRemoveSealFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: ConfirmRemoveSealView,
-  checkArrivalStatus: CheckArrivalStatusProvider
+  view: ConfirmRemoveSealView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData) {
+    actions.requireData(arrivalId).andThen(getMandatoryPage(SealPage(index))) {
       implicit request =>
-        request.userAnswers.get(NewSealNumberPage(index)) match {
-          case Some(seal) =>
-            val form = formProvider(seal)
-            Ok(view(form, request.userAnswers.mrn, arrivalId, index, seal, mode))
-
-          case _ => Redirect(routes.SessionExpiredController.onPageLoad())
-        }
+        val form = formProvider(sealId)
+        Ok(view(form, request.userAnswers.mrn, arrivalId, index, sealId, mode))
     }
 
   def onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {
+    actions.requireData(arrivalId).andThen(getMandatoryPage(SealPage(index))).async {
       implicit request =>
-        request.userAnswers.get(NewSealNumberPage(index)) match {
-          case Some(seal) =>
-            formProvider(seal)
-              .bindFromRequest()
-              .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, seal, mode))),
-                value =>
-                  if (value) {
-                    for {
-                      updatedAnswers <- Future.fromTry(request.userAnswers.remove(NewSealNumberPage(index)))
-                      _              <- sessionRepository.set(updatedAnswers)
-                    } yield Redirect(navigator.nextPage(ConfirmRemoveSealPage, mode, updatedAnswers))
-                  } else {
-                    Future.successful(Redirect(navigator.nextPage(ConfirmRemoveSealPage, mode, request.userAnswers)))
-                  }
-              )
-          case _ => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
-        }
+        formProvider(sealId)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, sealId, mode))),
+            value =>
+              if (value) {
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.remove(SealPage(index)))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(ConfirmRemoveSealPage, mode, updatedAnswers))
+              } else {
+                Future.successful(Redirect(navigator.nextPage(ConfirmRemoveSealPage, mode, request.userAnswers)))
+              }
+          )
     }
+
+  private def sealId(implicit request: SpecificDataRequestProvider1[Seal]#SpecificDataRequest[_]): String =
+    request.arg.sealId
 }

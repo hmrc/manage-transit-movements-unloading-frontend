@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import models.Index
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{Format, Json}
 
-class NewSealNumberPageSpec extends PageBehaviours {
+case class Seal(sealId: String, removable: Boolean)
 
-  var index = Index(0)
-
-  "NewSealNumberPage" - {
-
-    beRetrievable[String](NewSealNumberPage(index))
-
-    beSettable[String](NewSealNumberPage(index))
-
-    beRemovable[String](NewSealNumberPage(index))
-  }
+object Seal {
+  implicit val format: Format[Seal] = Json.format[Seal]
 }

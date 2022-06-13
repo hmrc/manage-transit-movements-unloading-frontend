@@ -18,66 +18,40 @@ package controllers
 
 import controllers.actions._
 import derivable.DeriveNumberOfSeals
-import handlers.ErrorHandler
-import models.requests.DataRequest
-import models.{ArrivalId, UnloadingPermission}
+import models.{ArrivalId, NormalMode}
 import pages.ChangesToReportPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{ReferenceDataService, UnloadingPermissionService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.UnloadingSummaryViewModel
 import views.html.UnloadingSummaryView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 class UnloadingSummaryController @Inject() (
   override val messagesApi: MessagesApi,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
+  actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  unloadingPermissionService: UnloadingPermissionService,
-  referenceDataService: ReferenceDataService,
-  errorHandler: ErrorHandler,
-  checkArrivalStatus: CheckArrivalStatusProvider,
   view: UnloadingSummaryView,
   viewModel: UnloadingSummaryViewModel
-)(implicit ec: ExecutionContext)
-    extends FrontendBaseController
+) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {
-      implicit request =>
-        unloadingPermissionService.getUnloadingPermission(arrivalId).flatMap {
-          case Some(unloadingPermission) =>
-            referenceDataService.getCountryByCode(unloadingPermission.transportCountry).map {
-              transportCountry =>
-                Ok(
-                  view(
-                    mrn = request.userAnswers.mrn,
-                    arrivalId = arrivalId,
-                    sealsSection = viewModel.sealsSection(request.userAnswers, unloadingPermission),
-                    transportAndItemSections = viewModel.transportAndItemSections(request.userAnswers, transportCountry, unloadingPermission),
-                    numberOfSeals = numberOfSeals(unloadingPermission),
-                    showAddCommentLink = request.userAnswers.get(ChangesToReportPage).isEmpty
-                  )
-                )
-            }
-          case _ =>
-            errorHandler.onClientError(request, BAD_REQUEST, "errors.malformedSeals") //todo: get design and content to look at this
-        }
-    }
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
+    implicit request =>
+      Ok(
+        view(
+          mrn = request.userAnswers.mrn,
+          arrivalId = arrivalId,
+          sealsSection = viewModel.sealsSection(request.userAnswers, NormalMode),
+          transportAndItemSections = viewModel.transportAndItemSections(request.userAnswers, NormalMode),
+          numberOfSeals = request.userAnswers.get(DeriveNumberOfSeals).getOrElse(0),
+          showAddCommentLink = request.userAnswers.get(ChangesToReportPage).isEmpty
+        )
+      )
+  }
 
-  private def numberOfSeals(unloadingPermission: UnloadingPermission)(implicit request: DataRequest[_]): Int =
-    request.userAnswers.get(DeriveNumberOfSeals) match {
-      case Some(value) => value
-      case None =>
-        unloadingPermissionService.convertSeals(request.userAnswers, unloadingPermission) match {
-          case Some(ua) => ua.get(DeriveNumberOfSeals).getOrElse(0)
-          case _        => 0
-        }
-    }
+  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
+    _ => Redirect(routes.CheckYourAnswersController.onPageLoad(arrivalId))
+  }
 }

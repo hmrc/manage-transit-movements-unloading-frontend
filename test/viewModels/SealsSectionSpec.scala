@@ -17,62 +17,40 @@
 package viewModels
 
 import base.SpecBase
-import cats.data.NonEmptyList
-import models.{Index, Seals, TraderAtDestination, UnloadingPermission}
-import pages.NewSealNumberPage
+import models.{NormalMode, Seal}
+import queries.SealsQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import viewModels.sections.Section
 
-import java.time.LocalDate
-
 class SealsSectionSpec extends SpecBase {
 
-  val sampleUnloadingPermission: UnloadingPermission = UnloadingPermission(
-    movementReferenceNumber = "19IT02110010007827",
-    transportIdentity = None,
-    transportCountry = None,
-    grossMass = "1000",
-    numberOfItems = 1,
-    numberOfPackages = Some(1),
-    traderAtDestination = TraderAtDestination("eori", "name", "streetAndNumber", "postcode", "city", "countryCode"),
-    presentationOffice = "GB000060",
-    seals = None,
-    goodsItems = NonEmptyList(goodsItemMandatory, Nil),
-    dateOfPreparation = LocalDate.now()
-  )
+  private val mode = NormalMode
 
   "SealsSection" - {
 
-    "contain section from unloading permission" in {
+    "return rows" - {
 
-      val unloadingPermission = sampleUnloadingPermission.copy(seals = Some(Seals(1, Seq("seal 1", "seal 2"))))
+      "when there are seals" in {
+        val seals = Seq(
+          Seal("new seal value", removable = true),
+          Seal("existing seal value", removable = false)
+        )
 
-      val section: Section = SealsSection(emptyUserAnswers, unloadingPermission).get
-      section.rows(0).value.content mustBe Text("seal 1")
-      section.rows(1).value.content mustBe Text("seal 2")
+        val userAnswers = emptyUserAnswers.setValue(SealsQuery, seals)
+
+        val section: Section = SealsSection(userAnswers, mode)
+        section.sectionTitle.get mustBe "Official customs seals"
+        section.rows.head.value.content mustBe Text("existing seal value")
+        section.rows.head.actions.get.items.size mustBe 1
+        section.rows(1).value.content mustBe Text("new seal value")
+        section.rows(1).actions.get.items.size mustBe 2
+      }
     }
 
-    "contain section from user answers" in {
-
-      val unloadingPermission = sampleUnloadingPermission.copy(seals = Some(Seals(1, Seq("seal 1", "seal 2"))))
-
-      val updatedUserAnswers = emptyUserAnswers
-        .setValue(NewSealNumberPage(Index(0)), "new seal value 1")
-        .setValue(NewSealNumberPage(Index(1)), "new seal value 2")
-
-      val section: Section = SealsSection(updatedUserAnswers, unloadingPermission).get
-      section.rows(0).value.content mustBe Text("new seal value 1")
-      section.rows(1).value.content mustBe Text("new seal value 2")
+    "return no rows when no seals exist" in {
+      val section: Section = SealsSection(emptyUserAnswers, mode)
+      section.sectionTitle.get mustBe "Official customs seals"
+      section.rows mustBe empty
     }
-
-    "return nothing if no seals exist" in {
-
-      val unloadingPermission = sampleUnloadingPermission.copy(seals = None)
-
-      val section: Option[Section] = SealsSection(emptyUserAnswers, unloadingPermission)
-      section mustBe None
-    }
-
   }
-
 }

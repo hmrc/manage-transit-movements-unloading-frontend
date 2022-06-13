@@ -17,66 +17,59 @@
 package viewModels
 
 import base.SpecBase
-import cats.data.NonEmptyList
-import models.{TraderAtDestination, UnloadingPermission}
-import pages.{ChangesToReportPage, GrossMassAmountPage}
+import models.NormalMode
+import pages.{ChangesToReportPage, GrossMassAmountPage, TotalNumberOfItemsPage, TotalNumberOfPackagesPage}
+import queries.GoodsItemsQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import viewModels.sections.Section
 
-import java.time.LocalDate
-
 class ItemsSectionSpec extends SpecBase {
 
-  val sampleUnloadingPermission: UnloadingPermission = UnloadingPermission(
-    movementReferenceNumber = "19IT02110010007827",
-    transportIdentity = None,
-    transportCountry = None,
-    grossMass = "1000",
-    numberOfItems = 1,
-    numberOfPackages = Some(1),
-    traderAtDestination = TraderAtDestination("eori", "name", "streetAndNumber", "postcode", "city", "countryCode"),
-    presentationOffice = "GB000060",
-    seals = None,
-    goodsItems = NonEmptyList(goodsItemMandatory, Nil),
-    dateOfPreparation = LocalDate.now()
-  )
+  private val mode = NormalMode
 
   "ItemsSection" - {
-    "Must display" - {
-      "Correct Gross mass when no changes have been made" in {
+    "must display" - {
 
-        val unloadingPermission = sampleUnloadingPermission.copy(grossMass = "1000")
-        val section: Section    = ItemsSection(emptyUserAnswers, unloadingPermission)
+      "no rows if answers are empty" in {
+        val section: Section = ItemsSection(emptyUserAnswers, mode)
+        section.sectionTitle.get mustBe "Items"
+        section.rows mustBe empty
+      }
+
+      "correct gross mass" in {
+        val userAnswers      = emptyUserAnswers.setValue(GrossMassAmountPage, "1000")
+        val section: Section = ItemsSection(userAnswers, mode)
+        section.sectionTitle.get mustBe "Items"
         section.rows.head.value.content mustBe Text("1000")
-        section.rows(3).value.content mustBe Text("Flowers")
-      }
-      "Correct number of items when no changes have been made" in {
-
-        val unloadingPermission = sampleUnloadingPermission.copy(grossMass = "1000", numberOfItems = 10)
-        val section: Section    = ItemsSection(emptyUserAnswers, unloadingPermission)
-        section.rows(1).value.content mustBe Text("10")
       }
 
-      "Correct Gross mass when change has been made" in {
-        val unloadingPermission = sampleUnloadingPermission.copy(grossMass = "1000")
-
-        val updatedAnswers = emptyUserAnswers
-          .setValue(GrossMassAmountPage, "2000")
-
-        val section: Section = ItemsSection(updatedAnswers, unloadingPermission)
-        section.rows.head.value.content mustBe Text("2000")
-        section.rows(3).value.content mustBe Text("Flowers")
+      "correct number of items" in {
+        val userAnswers      = emptyUserAnswers.setValue(TotalNumberOfItemsPage, 10)
+        val section: Section = ItemsSection(userAnswers, mode)
+        section.sectionTitle.get mustBe "Items"
+        section.rows.head.value.content mustBe Text("10")
       }
 
-      "Correct Comments when change has been made" in {
-        val updatedAnswers = emptyUserAnswers
-          .setValue(ChangesToReportPage, "Test")
-
-        val section: Section = ItemsSection(updatedAnswers, sampleUnloadingPermission)
-        section.rows(4).value.content mustBe Text("Test")
+      "correct number of packages" in {
+        val userAnswers      = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, 10)
+        val section: Section = ItemsSection(userAnswers, mode)
+        section.sectionTitle.get mustBe "Items"
+        section.rows.head.value.content mustBe Text("10")
       }
 
+      "correct items" in {
+        val userAnswers      = emptyUserAnswers.setValue(GoodsItemsQuery, Seq("Test"))
+        val section: Section = ItemsSection(userAnswers, mode)
+        section.sectionTitle.get mustBe "Items"
+        section.rows.head.value.content mustBe Text("Test")
+      }
+
+      "correct comments" in {
+        val userAnswers      = emptyUserAnswers.setValue(ChangesToReportPage, "Test")
+        val section: Section = ItemsSection(userAnswers, mode)
+        section.sectionTitle.get mustBe "Items"
+        section.rows.head.value.content mustBe Text("Test")
+      }
     }
   }
-
 }

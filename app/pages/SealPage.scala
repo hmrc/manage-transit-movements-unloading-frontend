@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
-package viewModels
+package pages
 
-case class Link(text: String, url: String)
+import models.{Index, Seal}
+import play.api.libs.json.JsPath
+
+final case class SealPage(index: Index) extends QuestionPage[Seal] {
+
+  override def path: JsPath = JsPath \ "seals" \ index.position
+}

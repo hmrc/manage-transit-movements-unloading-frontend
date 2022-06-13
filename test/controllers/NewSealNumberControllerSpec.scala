@@ -18,16 +18,13 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NewSealNumberFormProvider
-import models.{Index, MovementReferenceNumber, NormalMode, UserAnswers}
+import models.{Index, NormalMode, Seal, UserAnswers}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
-import pages.NewSealNumberPage
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
+import org.mockito.Mockito.{verify, when}
+import pages.SealPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.UnloadingPermissionService
 import views.html.NewSealNumberView
 
 import scala.concurrent.Future
@@ -39,19 +36,9 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
   private val index        = Index(0)
   private val mode         = NormalMode
 
-  lazy val newSealNumberRoute = routes.NewSealNumberController.onPageLoad(arrivalId, index, mode).url
+  private val validAnswer = "seal ID"
 
-  private def mockUnloadingPermissionService = mock[UnloadingPermissionService]
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockUnloadingPermissionService)
-  }
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(bind[UnloadingPermissionService].toInstance(mockUnloadingPermissionService))
+  private lazy val newSealNumberRoute = routes.NewSealNumberController.onPageLoad(arrivalId, index, mode).url
 
   "NewSealNumber Controller" - {
 
@@ -75,7 +62,7 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.set(NewSealNumberPage(index), "answer").success.value
+      val userAnswers = emptyUserAnswers.setValue(SealPage(index), Seal(validAnswer, removable = false))
 
       setExistingUserAnswers(userAnswers)
 
@@ -83,7 +70,7 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "answer"))
+      val filledForm = form.bind(Map("value" -> validAnswer))
 
       val view = injector.instanceOf[NewSealNumberView]
 
@@ -94,37 +81,75 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
     }
 
     "onSubmit" - {
-      "must redirect to the next page when valid data is submitted" in {
-        checkArrivalStatus()
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      "must redirect to the next page when valid data is submitted" - {
+        "adding a new seal" in {
+          checkArrivalStatus()
+          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-        when(mockUnloadingPermissionService.convertSeals(any())(any(), any()))
-          .thenReturn(Future.successful(Some(emptyUserAnswers)))
+          setExistingUserAnswers(emptyUserAnswers)
 
-        val userAnswers = emptyUserAnswers.set(NewSealNumberPage(index), "answer").success.value
-        setExistingUserAnswers(userAnswers)
+          val request = FakeRequest(POST, newSealNumberRoute)
+            .withFormUrlEncodedBody(("value", validAnswer))
 
-        val request =
-          FakeRequest(POST, newSealNumberRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+          val result = route(app, request).value
 
-        val result = route(app, request).value
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          userAnswersCaptor.getValue.get(SealPage(index)).get mustBe Seal(validAnswer, removable = true)
+        }
+
+        "updating a new seal" in {
+          checkArrivalStatus()
+          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+          val userAnswers = emptyUserAnswers.setValue(SealPage(index), Seal("value before update", removable = true))
+          setExistingUserAnswers(userAnswers)
+
+          val request = FakeRequest(POST, newSealNumberRoute)
+            .withFormUrlEncodedBody(("value", validAnswer))
+
+          val result = route(app, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          userAnswersCaptor.getValue.get(SealPage(index)).get mustBe Seal(validAnswer, removable = true)
+        }
+
+        "updating an existing seal" in {
+          checkArrivalStatus()
+          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+          val userAnswers = emptyUserAnswers.setValue(SealPage(index), Seal("value before update", removable = false))
+          setExistingUserAnswers(userAnswers)
+
+          val request = FakeRequest(POST, newSealNumberRoute)
+            .withFormUrlEncodedBody(("value", validAnswer))
+
+          val result = route(app, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual onwardRoute.url
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())
+          userAnswersCaptor.getValue.get(SealPage(index)).get mustBe Seal(validAnswer, removable = false)
+        }
       }
 
       "must return a Bad Request and errors when invalid data is submitted" in {
+        val invalidAnswer = ""
         checkArrivalStatus()
 
-        when(mockUnloadingPermissionService.convertSeals(any())(any(), any()))
-          .thenReturn(Future.successful(Some(emptyUserAnswers)))
+        setExistingUserAnswers(emptyUserAnswers)
 
-        val userAnswers = emptyUserAnswers.set(NewSealNumberPage(index), "answer").success.value
-        setExistingUserAnswers(userAnswers)
-
-        val request   = FakeRequest(POST, newSealNumberRoute).withFormUrlEncodedBody(("value", ""))
-        val boundForm = form.bind(Map("value" -> ""))
+        val request   = FakeRequest(POST, newSealNumberRoute).withFormUrlEncodedBody(("value", invalidAnswer))
+        val boundForm = form.bind(Map("value" -> invalidAnswer))
 
         val result = route(app, request).value
 
@@ -135,66 +160,33 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
         contentAsString(result) mustEqual
           view(boundForm, mrn, arrivalId, index, mode)(request, messages).toString
       }
+    }
 
-      "must redirect to Session Expired for a GET if no existing data is found" in {
-        checkArrivalStatus()
-        setNoExistingUserAnswers()
+    "must redirect to Session Expired for a GET if no existing data is found" in {
+      checkArrivalStatus()
+      setNoExistingUserAnswers()
 
-        val request = FakeRequest(GET, newSealNumberRoute)
+      val request = FakeRequest(GET, newSealNumberRoute)
 
-        val result = route(app, request).value
+      val result = route(app, request).value
 
-        status(result) mustEqual SEE_OTHER
+      status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
-      }
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+    }
 
-      "must redirect to Session Expired for a POST if no existing data is found" in {
-        checkArrivalStatus()
-        setNoExistingUserAnswers()
+    "must redirect to Session Expired for a POST if no existing data is found" in {
+      checkArrivalStatus()
+      setNoExistingUserAnswers()
 
-        val request =
-          FakeRequest(POST, newSealNumberRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+      val request = FakeRequest(POST, newSealNumberRoute)
+        .withFormUrlEncodedBody(("value", "answer"))
 
-        val result = route(app, request).value
+      val result = route(app, request).value
 
-        status(result) mustEqual SEE_OTHER
+      status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
-      }
-
-      "must redirect to the correct page when seals already in the UserAnswers" in {
-        checkArrivalStatus()
-        val userAnswers = UserAnswers(arrivalId, mrn, eoriNumber, Json.obj("seals" -> Seq("Seals01")))
-
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-        setExistingUserAnswers(userAnswers)
-
-        val request =
-          FakeRequest(POST, routes.NewSealNumberController.onPageLoad(arrivalId, Index(1), NormalMode).url)
-            .withFormUrlEncodedBody(("value", "answer"))
-
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
-      }
-
-      "redirect to error page when no UserAnswers returned from unloading permissions service" ignore {
-        checkArrivalStatus()
-        val ua = UserAnswers(arrivalId, MovementReferenceNumber("41", "IT", "0211001000782"), eoriNumber, Json.obj())
-        setExistingUserAnswers(ua)
-
-        val request =
-          FakeRequest(POST, routes.NewSealNumberController.onPageLoad(arrivalId, Index(0), NormalMode).url)
-            .withFormUrlEncodedBody(("value", "answer"))
-
-        route(app, request).value
-
-        //todo: Test this
-      }
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
   }
 }

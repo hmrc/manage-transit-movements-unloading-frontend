@@ -14,33 +14,39 @@
  * limitations under the License.
  *@
 
-@import views.html.components.Heading
-@import views.html.components.Button
-@import config.FrontendAppConfig
+@import controllers.routes
+@import views.html.components.{Button, Heading}
 
 @this(
-        main_template: MainTemplate,
-        heading: Heading,
-        button: Button,
-        config: FrontendAppConfig
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    heading: Heading,
+    button: Button
 )
 
-@(mrn: MovementReferenceNumber, pdfUrl: String, nextPageUrl: String)(implicit request: Request[_], messages: Messages)
+@(mrn: MovementReferenceNumber, arrivalId: ArrivalId)(implicit request: Request[_], messages: Messages)
 
-@main_template(
+@mainTemplate(
     title = messages("unloadingGuidance.title"),
     showBackLink = true
 ) {
-    @heading(messages("unloadingGuidance.heading"))
 
-    <p class="govuk-body">@messages("unloadingGuidance.para")</p>
+    @formHelper(action = routes.UnloadingGuidanceController.onSubmit(arrivalId), 'autoComplete -> "off") {
+        @heading(messages("unloadingGuidance.heading"))
 
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("unloadingGuidance.bullet1")</li>
-        <li>@messages("unloadingGuidance.bullet2", mrn)</li>
-    </ul>
+        <p class="govuk-body">@messages("unloadingGuidance.para")</p>
 
-    <p class="govuk-body"><a class="govuk-link" href=@pdfUrl>@messages("unloadingGuidance.pdf")</a></p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("unloadingGuidance.bullet1")</li>
+            <li>@messages("unloadingGuidance.bullet2", mrn)</li>
+        </ul>
 
-    @button(href = Some(nextPageUrl))
+        <p class="govuk-body">
+            <a id="download" class="govuk-link" href=@routes.UnloadingPermissionPDFController.getPDF(arrivalId)>
+                @messages("unloadingGuidance.pdf")
+            </a>
+        </p>
+
+        @button(attributes = Map("id" -> "submit"))
+    }
 }

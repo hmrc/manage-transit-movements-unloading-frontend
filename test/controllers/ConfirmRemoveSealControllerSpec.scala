@@ -18,10 +18,10 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.ConfirmRemoveSealFormProvider
-import models.{Index, NormalMode}
+import models.{Index, NormalMode, Seal}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.NewSealNumberPage
+import pages.SealPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.ConfirmRemoveSealView
@@ -34,7 +34,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
   private val form                        = formProvider("seal 1")
   private val index: Index                = Index(0)
   private val mode                        = NormalMode
-  private val sealDescription             = "seal 1"
+  private val seal                        = Seal("seal 1", removable = true)
   private lazy val confirmRemoveSealRoute = routes.ConfirmRemoveSealController.onPageLoad(arrivalId, index, mode).url
 
   "ConfirmRemoveSeal Controller" - {
@@ -42,7 +42,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.set(NewSealNumberPage(index), sealDescription).success.value
+      val userAnswers = emptyUserAnswers.setValue(SealPage(index), seal)
 
       setExistingUserAnswers(userAnswers)
 
@@ -54,14 +54,14 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
       val view = injector.instanceOf[ConfirmRemoveSealView]
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, index, sealDescription, mode)(request, messages).toString
+        view(form, mrn, arrivalId, index, seal.sealId, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
       checkArrivalStatus()
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val userAnswers = emptyUserAnswers.set(NewSealNumberPage(index), "seal 1").success.value
+      val userAnswers = emptyUserAnswers.setValue(SealPage(index), seal)
 
       setExistingUserAnswers(userAnswers)
 
@@ -79,7 +79,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.set(NewSealNumberPage(index), "seal 1").success.value
+      val userAnswers = emptyUserAnswers.setValue(SealPage(index), seal)
 
       setExistingUserAnswers(userAnswers)
 
@@ -93,7 +93,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
       val view = injector.instanceOf[ConfirmRemoveSealView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, arrivalId, index, sealDescription, mode)(request, messages).toString
+        view(boundForm, mrn, arrivalId, index, seal.sealId, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

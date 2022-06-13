@@ -17,33 +17,28 @@
 package controllers
 
 import controllers.actions._
-import javax.inject.Inject
-import models.{ArrivalId, Mode}
-import navigation.Navigator
-import pages.UnloadingGuidancePage
+import models.{ArrivalId, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.UnloadingGuidanceView
 
+import javax.inject.Inject
+
 class UnloadingGuidanceController @Inject() (
   override val messagesApi: MessagesApi,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
-  navigator: Navigator,
+  actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  view: UnloadingGuidanceView,
-  checkArrivalStatus: CheckArrivalStatusProvider
+  view: UnloadingGuidanceView
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData) {
-      implicit request =>
-        val pdfUrl      = routes.UnloadingPermissionPDFController.getPDF(arrivalId).url
-        val nextPageUrl = navigator.nextPage(UnloadingGuidancePage, mode, request.userAnswers).url
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
+    implicit request =>
+      Ok(view(request.userAnswers.mrn, arrivalId))
+  }
 
-        Ok(view(request.userAnswers.mrn, pdfUrl, nextPageUrl))
-    }
+  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
+    _ => Redirect(routes.DateGoodsUnloadedController.onPageLoad(arrivalId, NormalMode))
+  }
 }

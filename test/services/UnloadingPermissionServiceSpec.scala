@@ -19,12 +19,11 @@ package services
 import base.SpecBase
 import connectors.UnloadingConnector
 import generators.Generators
-import models.{MessagesLocation, MessagesSummary, Seals, UnloadingPermission, UserAnswers}
+import models.{MessagesLocation, MessagesSummary, UnloadingPermission}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.BeforeAndAfterEach
-import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -83,54 +82,5 @@ class UnloadingPermissionServiceSpec extends SpecBase with BeforeAndAfterEach wi
       }
 
     }
-
-    "convertSeals" - {
-
-      "return the same userAnswers when given an ID with no Seals" in {
-
-        val unloadingPermissionMessage = arbitrary[UnloadingPermission].sample.value
-
-        val messagesSummary =
-          MessagesSummary(arrivalId, MessagesLocation(s"/movements/arrivals/${arrivalId.value}/messages/3", Some("/movements/arrivals/1234/messages/5")))
-
-        when(mockConnector.getSummary(arrivalId)).thenReturn(Future.successful(Some(messagesSummary)))
-
-        when(mockConnector.getUnloadingPermission(any())(any()))
-          .thenReturn(Future.successful(Some(unloadingPermissionMessage.copy(seals = None))))
-
-        val userAnswers = UserAnswers(arrivalId, mrn, eoriNumber, Json.obj())
-        service.convertSeals(userAnswers).futureValue mustBe Some(userAnswers)
-      }
-
-      "return updated userAnswers when given an ID with seals" in {
-
-        val unloadingPermissionMessage = arbitrary[UnloadingPermission].sample.value
-
-        val messagesSummary =
-          MessagesSummary(arrivalId, MessagesLocation(s"/movements/arrivals/${arrivalId.value}/messages/3", Some("/movements/arrivals/1234/messages/5")))
-
-        when(mockConnector.getSummary(arrivalId)).thenReturn(Future.successful(Some(messagesSummary)))
-
-        when(mockConnector.getUnloadingPermission(any())(any()))
-          .thenReturn(Future.successful(Some(unloadingPermissionMessage.copy(seals = Some(Seals(2, Seq("Seals01", "Seals02")))))))
-        val userAnswers = UserAnswers(arrivalId, mrn, eoriNumber, Json.obj())
-        val userAnswersWithSeals =
-          UserAnswers(arrivalId, mrn, eoriNumber, Json.obj("seals" -> Seq("Seals01", "Seals02")), lastUpdated = userAnswers.lastUpdated)
-        service.convertSeals(userAnswers).futureValue mustBe Some(userAnswersWithSeals)
-      }
-
-      "accept unloadingPermission arg and update user answers if seals exist" in {
-
-        val unloadingPermissionMessage = arbitrary[UnloadingPermission].sample.value
-
-        val userAnswers = UserAnswers(arrivalId, mrn, eoriNumber, Json.obj())
-        val userAnswersWithSeals =
-          UserAnswers(arrivalId, mrn, eoriNumber, Json.obj("seals" -> Seq("Seals01", "Seals02")), lastUpdated = userAnswers.lastUpdated)
-        service.convertSeals(userAnswers, unloadingPermissionMessage.copy(seals = Some(Seals(2, Seq("Seals01", "Seals02"))))) mustBe Some(userAnswersWithSeals)
-      }
-
-    }
-
   }
-
 }

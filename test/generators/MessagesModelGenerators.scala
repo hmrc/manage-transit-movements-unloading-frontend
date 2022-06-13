@@ -42,7 +42,8 @@ import utils.Format.dateFormatted
 
 import java.time.{LocalDate, LocalTime}
 
-trait MessagesModelGenerators extends Generators {
+trait MessagesModelGenerators {
+  self: Generators =>
 
   implicit lazy val arbitraryInterchangeControlReference: Arbitrary[InterchangeControlReference] =
     Arbitrary {

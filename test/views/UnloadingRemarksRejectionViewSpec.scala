@@ -16,7 +16,7 @@
 
 package views
 
-import generators.{Generators, ViewModelGenerators}
+import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
@@ -24,14 +24,13 @@ import viewModels.sections.Section
 import views.behaviours.SummaryListViewBehaviours
 import views.html.UnloadingRemarksRejectionView
 
-class UnloadingRemarksRejectionViewSpec extends SummaryListViewBehaviours with ViewModelGenerators with Generators {
+class UnloadingRemarksRejectionViewSpec extends SummaryListViewBehaviours with Generators {
 
   private val section: Section = arbitrary[Section].sample.value
 
   override def summaryLists: Seq[SummaryList] = Seq(SummaryList(section.rows))
 
   private val contactUrl = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/new-computerised-transit-system-enquiries"
-  private val reviewUrl  = s"/manage-transit-movements/unloading/${arrivalId.toString}"
 
   override def view: HtmlFormat.Appendable =
     injector.instanceOf[UnloadingRemarksRejectionView].apply(arrivalId, section)(fakeRequest, messages)
@@ -48,7 +47,7 @@ class UnloadingRemarksRejectionViewSpec extends SummaryListViewBehaviours with V
   behave like pageWithLink(
     "review",
     "send new unloading remarks with the right information",
-    reviewUrl
+    controllers.routes.IndexController.newUnloadingRemarks(arrivalId).url
   )
 
   behave like pageWithPartialContent("p", "You can ")

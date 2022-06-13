@@ -18,50 +18,32 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.VehicleNameRegistrationReferenceFormProvider
-import generators.MessagesModelGenerators
-import models.ErrorType.IncorrectValue
-import models.{DefaultPointer, FunctionalError, UnloadingRemarksRejectionMessage, UserAnswers}
+import generators.Generators
+import models.UserAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
+import org.mockito.Mockito.{verify, when}
+import pages.VehicleNameRegistrationReferencePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.UnloadingRemarksRejectionService
 import views.html.VehicleNameRegistrationRejectionView
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
-class VehicleNameRegistrationRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators {
+class VehicleNameRegistrationRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  val formProvider = new VehicleNameRegistrationReferenceFormProvider()
-  val form         = formProvider()
+  private val formProvider = new VehicleNameRegistrationReferenceFormProvider()
+  private val form         = formProvider()
 
-  lazy val vehicleNameRegistrationRejectionRoute: String = routes.VehicleNameRegistrationRejectionController.onPageLoad(arrivalId).url
-
-  private val mockRejectionService = mock[UnloadingRemarksRejectionService]
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockRejectionService)
-  }
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(bind[UnloadingRemarksRejectionService].toInstance(mockRejectionService))
+  private lazy val vehicleNameRegistrationRejectionRoute: String = routes.VehicleNameRegistrationRejectionController.onPageLoad(arrivalId).url
 
   "VehicleNameRegistrationRejectionController Controller" - {
 
-    "must populate the value from the rejection service original value attribute" in {
+    "must populate the view correctly on a GET" in {
       checkArrivalStatus()
       val originalValue = "some reference"
 
-      when(mockRejectionService.getRejectedValueAsString(any(), any())(any())(any())).thenReturn(Future.successful(Some(originalValue)))
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, originalValue))
 
       val request = FakeRequest(GET, vehicleNameRegistrationRejectionRoute)
       val result  = route(app, request).value
@@ -75,9 +57,8 @@ class VehicleNameRegistrationRejectionControllerSpec extends SpecBase with AppWi
         view(filledForm, arrivalId)(request, messages).toString
     }
 
-    "must render the technical difficulties page when there is no rejection message" in {
+    "must redirect to session expired when vehicle name is not in user answers" in {
       checkArrivalStatus()
-      when(mockRejectionService.getRejectedValueAsString(any(), any())(any())(any())).thenReturn(Future.successful(None))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -87,7 +68,7 @@ class VehicleNameRegistrationRejectionControllerSpec extends SpecBase with AppWi
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
+      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
@@ -110,48 +91,25 @@ class VehicleNameRegistrationRejectionControllerSpec extends SpecBase with AppWi
 
     "must redirect to check your answers page for a POST" in {
       checkArrivalStatus()
-      val originalValue     = "some reference"
-      val errors            = Seq(FunctionalError(IncorrectValue, DefaultPointer(""), None, Some(originalValue)))
-      val rejectionMessage  = UnloadingRemarksRejectionMessage(mrn, LocalDate.now, None, errors)
-      val userAnswersCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-      when(mockRejectionService.unloadingRemarksRejectionMessage(any())(any())).thenReturn(Future.successful(Some(rejectionMessage)))
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val newValue = "answer"
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      setNoExistingUserAnswers()
-
-      val request =
-        FakeRequest(POST, vehicleNameRegistrationRejectionRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+      val request = FakeRequest(POST, vehicleNameRegistrationRejectionRoute)
+        .withFormUrlEncodedBody(("value", newValue))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId).url
-      verify(mockSessionRepository, times(1)).set(userAnswersCaptor.capture())
 
-      userAnswersCaptor.getValue.data mustBe Json.obj("vehicleNameRegistrationReference" -> "answer")
-      userAnswersCaptor.getValue.id mustBe arrivalId
-      userAnswersCaptor.getValue.mrn mustBe mrn
-    }
-
-    "must render the technical difficulties page for a POST" in {
-      checkArrivalStatus()
-      when(mockRejectionService.unloadingRemarksRejectionMessage(any())(any())).thenReturn(Future.successful(None))
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      setNoExistingUserAnswers()
-
-      val request =
-        FakeRequest(POST, vehicleNameRegistrationRejectionRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())
+      userAnswersCaptor.getValue.get(VehicleNameRegistrationReferencePage).get mustBe newValue
     }
   }
 }

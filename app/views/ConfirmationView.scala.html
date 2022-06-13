@@ -19,7 +19,7 @@
 @import models.MovementReferenceNumber
 
 @this(
-    main_template: MainTemplate,
+    mainTemplate: MainTemplate,
     heading: Heading,
     config: FrontendAppConfig,
     govukPanel: GovukPanel
@@ -27,7 +27,7 @@
 
 @(mrn: MovementReferenceNumber)(implicit request: Request[_], messages: Messages)
 
-@main_template(
+@mainTemplate(
     title = messages("confirmation.title"),
     showBackLink = false
 ) {
@@ -42,9 +42,6 @@
     <p class="govuk-body">@messages("confirmation.para2")</p>
 
     <p class="govuk-body">
-        <a id="manage-transit-movements" href="@config.manageTransitMovementsUrl" class="govuk-link">
-            @messages("confirmation.linkText")
-        </a>
-        @messages("confirmation.para3")
+        <a id="manage-transit-movements" href="@config.viewArrivals" class="govuk-link">@messages("confirmation.linkText")</a> @messages("confirmation.para3")
     </p>
 }

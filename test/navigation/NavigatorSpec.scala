@@ -23,6 +23,7 @@ import models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
+import queries.SealsQuery
 
 class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -32,15 +33,39 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
     "in Normal mode" - {
 
-      "must go from a page that doesn't exist in the route map to Index" in {
+      val mode = NormalMode
+
+      "must go from a page that doesn't exist in the route map to unloading summary" in {
 
         case object UnknownPage extends Page
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
-              .nextPage(UnknownPage, NormalMode, answers)
-              .mustBe(routes.IndexController.onPageLoad(arrivalId))
+              .nextPage(UnknownPage, mode, answers)
+              .mustBe(routes.UnloadingSummaryController.onPageLoad(arrivalId))
+        }
+      }
+
+      "must go from date goods unloaded page" - {
+        "to can seals be read page when seals exist" in {
+          forAll(arbitrary[UserAnswers], arbitrary[Seal]) {
+            (answers, seal) =>
+              val updatedUserAnswers = answers.setValue(SealsQuery, Seq(seal))
+              navigator
+                .nextPage(DateGoodsUnloadedPage, mode, updatedUserAnswers)
+                .mustBe(routes.CanSealsBeReadController.onPageLoad(updatedUserAnswers.id, mode))
+          }
+        }
+
+        "to unloading summary page when no seals exist" in {
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              val updatedUserAnswers = answers.removeValue(SealsQuery)
+              navigator
+                .nextPage(DateGoodsUnloadedPage, mode, updatedUserAnswers)
+                .mustBe(routes.UnloadingSummaryController.onPageLoad(updatedUserAnswers.id))
+          }
         }
       }
 
@@ -49,10 +74,10 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
-              val updatedUserAnswers = answers.set(CanSealsBeReadPage, true).success.value
+              val updatedUserAnswers = answers.setValue(CanSealsBeReadPage, true)
               navigator
-                .nextPage(CanSealsBeReadPage, NormalMode, updatedUserAnswers)
-                .mustBe(routes.AreAnySealsBrokenController.onPageLoad(updatedUserAnswers.id, NormalMode))
+                .nextPage(CanSealsBeReadPage, mode, updatedUserAnswers)
+                .mustBe(routes.AreAnySealsBrokenController.onPageLoad(updatedUserAnswers.id, mode))
           }
         }
 
@@ -60,10 +85,10 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
-              val updatedUserAnswers = answers.set(CanSealsBeReadPage, false).success.value
+              val updatedUserAnswers = answers.setValue(CanSealsBeReadPage, false)
               navigator
-                .nextPage(CanSealsBeReadPage, NormalMode, updatedUserAnswers)
-                .mustBe(routes.AreAnySealsBrokenController.onPageLoad(updatedUserAnswers.id, NormalMode))
+                .nextPage(CanSealsBeReadPage, mode, updatedUserAnswers)
+                .mustBe(routes.AreAnySealsBrokenController.onPageLoad(updatedUserAnswers.id, mode))
           }
         }
 
@@ -71,9 +96,9 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
-              val updatedUserAnswers = answers.remove(CanSealsBeReadPage).success.value
+              val updatedUserAnswers = answers.removeValue(CanSealsBeReadPage)
               navigator
-                .nextPage(CanSealsBeReadPage, NormalMode, updatedUserAnswers)
+                .nextPage(CanSealsBeReadPage, mode, updatedUserAnswers)
                 .mustBe(routes.SessionExpiredController.onPageLoad())
           }
         }
@@ -84,10 +109,10 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
-              val updatedUserAnswers = answers.set(AreAnySealsBrokenPage, false).success.value
+              val updatedUserAnswers = answers.setValue(AreAnySealsBrokenPage, false)
 
               navigator
-                .nextPage(AreAnySealsBrokenPage, NormalMode, updatedUserAnswers)
+                .nextPage(AreAnySealsBrokenPage, mode, updatedUserAnswers)
                 .mustBe(routes.UnloadingSummaryController.onPageLoad(updatedUserAnswers.id))
           }
         }
@@ -96,10 +121,10 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
-              val updatedUserAnswers = answers.set(AreAnySealsBrokenPage, true).success.value
+              val updatedUserAnswers = answers.setValue(AreAnySealsBrokenPage, true)
 
               navigator
-                .nextPage(AreAnySealsBrokenPage, NormalMode, updatedUserAnswers)
+                .nextPage(AreAnySealsBrokenPage, mode, updatedUserAnswers)
                 .mustBe(routes.UnloadingSummaryController.onPageLoad(updatedUserAnswers.id))
           }
         }
@@ -108,10 +133,10 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
-              val updatedUserAnswers = answers.remove(AreAnySealsBrokenPage).success.value
+              val updatedUserAnswers = answers.removeValue(AreAnySealsBrokenPage)
 
               navigator
-                .nextPage(AreAnySealsBrokenPage, NormalMode, updatedUserAnswers)
+                .nextPage(AreAnySealsBrokenPage, mode, updatedUserAnswers)
                 .mustBe(routes.SessionExpiredController.onPageLoad())
           }
         }
@@ -122,7 +147,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
-              .nextPage(NewSealNumberPage(Index(0)), NormalMode, answers)
+              .nextPage(SealPage(Index(0)), mode, answers)
               .mustBe(routes.UnloadingSummaryController.onPageLoad(answers.id))
         }
       }
@@ -132,13 +157,15 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
-              .nextPage(ChangesToReportPage, NormalMode, answers)
+              .nextPage(ChangesToReportPage, mode, answers)
               .mustBe(routes.UnloadingSummaryController.onPageLoad(answers.id))
 
         }
       }
 
       "in Check mode" - {
+
+        val mode = CheckMode
 
         "must go from a page that doesn't exist in the edit route map  to Check Your Answers" in {
 
@@ -147,59 +174,69 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator
-                .nextPage(UnknownPage, CheckMode, answers)
+                .nextPage(UnknownPage, mode, answers)
                 .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.id))
           }
         }
 
-        "must go from Vehicle Name Registration Reference page to unloading summary page" in {
+        "must go from date goods unloaded page to check your answers page" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator
-                .nextPage(VehicleNameRegistrationReferencePage, CheckMode, answers)
-                .mustBe(routes.UnloadingSummaryController.onPageLoad(answers.id))
+                .nextPage(DateGoodsUnloadedPage, mode, answers)
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.id))
           }
         }
 
-        "must go from Vehicle Registration Country page to unloading summary page" in {
+        "must go from Vehicle Name Registration Reference page to check your answers page" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator
-                .nextPage(VehicleNameRegistrationReferencePage, CheckMode, answers)
-                .mustBe(routes.UnloadingSummaryController.onPageLoad(answers.id))
+                .nextPage(VehicleNameRegistrationReferencePage, mode, answers)
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.id))
           }
         }
 
-        "must go from Gross mass amount page to unloading summary page" in {
+        "must go from Vehicle Registration Country page to check your answers page" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator
-                .nextPage(GrossMassAmountPage, CheckMode, answers)
-                .mustBe(routes.UnloadingSummaryController.onPageLoad(answers.id))
+                .nextPage(VehicleNameRegistrationReferencePage, mode, answers)
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.id))
           }
         }
 
-        "must go from New Seal Number page to unloading summary page" in {
+        "must go from Gross mass amount page to check your answers page" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator
-                .nextPage(NewSealNumberPage(Index(0)), CheckMode, answers)
-                .mustBe(routes.UnloadingSummaryController.onPageLoad(answers.id))
+                .nextPage(GrossMassAmountPage, mode, answers)
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.id))
+          }
+        }
+
+        "must go from New Seal Number page to check your answers page" in {
+
+          forAll(arbitrary[UserAnswers]) {
+            answers =>
+              navigator
+                .nextPage(SealPage(Index(0)), mode, answers)
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.id))
           }
         }
 
         "must go from Remove comments page " - {
-          "to unloading summary page when the form is submitted" in {
+          "to check your answers page when the form is submitted" in {
 
             forAll(arbitrary[UserAnswers]) {
               answers =>
                 navigator
-                  .nextPage(ConfirmRemoveCommentsPage, NormalMode, answers)
-                  .mustBe(routes.UnloadingSummaryController.onPageLoad(answers.id))
+                  .nextPage(ConfirmRemoveCommentsPage, mode, answers)
+                  .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.id))
             }
           }
         }

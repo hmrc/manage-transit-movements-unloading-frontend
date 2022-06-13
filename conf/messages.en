@@ -6,8 +6,6 @@ date.day    = day
 date.month  = month
 date.year   = year
 
-
-site.back = Back
 site.delete = Remove
 site.edit = Change
 site.delete.hidden = Change {0}
@@ -130,30 +128,36 @@ unloadingSummary.noSeals = There are no official customs seals.
 unloadingSummary.seals.subheading = Official customs seals
 
 vehicleUsed.title = Vehicle used
-changeVehicle.reference.label = Name, registration or reference
+
+changeVehicle.reference.checkYourAnswersLabel = Name, registration or reference
 changeVehicle.reference.change.hidden = name, registration or reference
-changeVehicle.registeredCountry.label = Registered
+
+changeVehicle.registeredCountry.checkYourAnswersLabel = Registered
 changeVehicle.registeredCountry.change.hidden = registered
 
 changeSeal.title = Official customs seals
-changeSeal.sealList.label = Official customs seal {0}
+changeSeal.sealList.checkYourAnswersLabel = Official customs seal {0}
 changeSeal.sealList.change.hidden = official customs seal {0} {1}
 changeSeal.sealList.remove.hidden = official customs seal {0} {1}
 
 changeItems.title = Items
-changeItems.grossMass.label = Total gross mass in kilograms
+
+changeItems.grossMass.checkYourAnswersLabel = Total gross mass in kilograms
 changeItems.grossMass.change.hidden = total gross mass in kilograms
 
-changeItems.totalNumberOfItems.label = Total number of items
+changeItems.totalNumberOfItems.checkYourAnswersLabel = Total number of items
 changeItems.totalNumberOfItems.change.hidden = total number of items
-changeItems.totalNumberOfPackages.label = Total number of packages
+
+changeItems.totalNumberOfPackages.checkYourAnswersLabel = Total number of packages
 changeItems.totalNumberOfPackages.change.hidden = total number of packages
 
-changeItems.dateGoodsUnloaded.label = Unloading date
+changeItems.dateGoodsUnloaded.checkYourAnswersLabel = Unloading date
+changeItems.dateGoodsUnloaded.change.hidden = unloading date
 
-changeItem.itemList.label = Item {0}
+changeItem.itemList.checkYourAnswersLabel = Item {0}
 changeItem.itemList.change.hidden = Item {0}
-changeItems.comments.label = Comments
+
+changeItems.comments.checkYourAnswersLabel = Comments
 changeItems.comments.change.hidden = comments
 changeItems.comments.remove.hidden = comments
 

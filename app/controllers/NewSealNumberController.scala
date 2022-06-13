@@ -17,16 +17,13 @@
 package controllers
 
 import controllers.actions._
-import derivable.DeriveNumberOfSeals
 import forms.NewSealNumberFormProvider
-import handlers.ErrorHandler
-import models.{ArrivalId, Index, Mode, UserAnswers}
+import models.{ArrivalId, Index, Mode, Seal}
 import navigation.Navigator
-import pages.NewSealNumberPage
+import pages.SealPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.UnloadingPermissionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.NewSealNumberView
 
@@ -37,56 +34,41 @@ class NewSealNumberController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
+  actions: Actions,
   formProvider: NewSealNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: NewSealNumberView,
-  unloadingPermissionService: UnloadingPermissionService,
-  errorHandler: ErrorHandler,
-  checkArrivalStatus: CheckArrivalStatusProvider
+  view: NewSealNumberView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   private val form = formProvider()
 
-  def onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData) {
-      implicit request =>
-        val preparedForm = request.userAnswers.get(NewSealNumberPage(index)) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
+  def onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
+    implicit request =>
+      val preparedForm = request.userAnswers.get(SealPage(index)) match {
+        case None       => form
+        case Some(seal) => form.fill(seal.sealId)
+      }
 
-        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, index, mode))
-    }
+      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, index, mode))
+  }
 
-  def onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {
-      implicit request =>
-        val userAnswers: Future[Option[UserAnswers]] = request.userAnswers.get(DeriveNumberOfSeals) match {
-          case Some(_) => Future.successful(Some(request.userAnswers))
-          case None    => unloadingPermissionService.convertSeals(request.userAnswers)
-        }
+  def onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
+    implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, mode))),
+          value => {
+            val removable = request.userAnswers.get(SealPage(index)).forall(_.removable)
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(SealPage(index), Seal(value, removable)))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(SealPage(index), mode, updatedAnswers))
+          }
+        )
 
-        userAnswers.flatMap {
-          case Some(ua) =>
-            form
-              .bindFromRequest()
-              .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, mode))),
-                value =>
-                  for {
-                    updatedAnswers <- Future.fromTry(ua.set(NewSealNumberPage(index), value))
-                    _              <- sessionRepository.set(updatedAnswers)
-                  } yield Redirect(navigator.nextPage(NewSealNumberPage(index), mode, updatedAnswers))
-              )
-          case _ =>
-            errorHandler.onClientError(request, BAD_REQUEST, "errors.malformedSeals") //todo: get design and content to look at this
-        }
-
-    }
+  }
 
 }

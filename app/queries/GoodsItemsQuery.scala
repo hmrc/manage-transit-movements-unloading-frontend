@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-package audit.services
+package queries
 
-import audit.models.{AuditAutoInput, AuditEventData, AuditUserInput}
-import models.UserAnswers
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-object AuditEventService {
-
-  def extendedDataEvent(userAnswers: UserAnswers): AuditEventData = {
-
-    val auditUserInput: AuditUserInput = AuditUserInput(userAnswers.data)
-    val auditAutoInput: AuditAutoInput = AuditAutoInput(userAnswers.prepopulateData)
-
-    AuditEventData(auditUserInput, auditAutoInput)
-  }
+case object GoodsItemsQuery extends QuestionPage[Seq[String]] {
+  override def path: JsPath = JsPath \ "goodsItems"
 }

@@ -2,7 +2,8 @@
 
 ->         /hmrc-frontend                                                   hmrcfrontend.Routes
 
-GET        /:arrivalId                                                      controllers.IndexController.onPageLoad(arrivalId: ArrivalId)
+GET        /:arrivalId                                                      controllers.IndexController.unloadingRemarks(arrivalId: ArrivalId)
+GET        /:arrivalId/new-unloading-remarks                                controllers.IndexController.newUnloadingRemarks(arrivalId: ArrivalId)
 
 GET        /assets/*file                                                    controllers.Assets.versioned(path="/public", file: Asset)
 
@@ -26,10 +27,11 @@ POST       /:arrivalId/rejection-check-your-answers                         cont
 GET        /error/cannot-use-service-no-eori                                controllers.UnauthorisedController.onPageLoad()
 GET        /unauthorised-group-access                                       controllers.UnauthorisedWithGroupAccessController.onPageLoad()
 
-GET         /data/keep-alive                                                controllers.KeepAliveController.keepAlive(arrivalId: Option[ArrivalId] = None)
-GET         /data/:arrivalId/keep-alive                                     controllers.KeepAliveController.keepAlive(arrivalId: Option[ArrivalId])
+GET        /data/keep-alive                                                 controllers.KeepAliveController.keepAlive(arrivalId: Option[ArrivalId] = None)
+GET        /data/:arrivalId/keep-alive                                      controllers.KeepAliveController.keepAlive(arrivalId: Option[ArrivalId])
 
-GET        /:arrivalId/unloading-guidance                                   controllers.UnloadingGuidanceController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/unloading-guidance                                   controllers.UnloadingGuidanceController.onPageLoad(arrivalId: ArrivalId)
+POST       /:arrivalId/unloading-guidance                                   controllers.UnloadingGuidanceController.onSubmit(arrivalId: ArrivalId)
 
 GET        /:arrivalId/date-goods-unloaded                                  controllers.DateGoodsUnloadedController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/date-goods-unloaded                                  controllers.DateGoodsUnloadedController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
@@ -63,6 +65,7 @@ GET        /:arrivalId/seal/:index/change-confirm-remove-seal               cont
 POST       /:arrivalId/seal/:index/change-confirm-remove-seal               controllers.ConfirmRemoveSealController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
 
 GET        /:arrivalId/unloading-summary                                    controllers.UnloadingSummaryController.onPageLoad(arrivalId: ArrivalId)
+POST       /:arrivalId/unloading-summary                                    controllers.UnloadingSummaryController.onSubmit(arrivalId: ArrivalId)
 
 GET        /:arrivalId/can-seals-be-read                                    controllers.CanSealsBeReadController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/can-seals-be-read                                    controllers.CanSealsBeReadController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
@@ -114,4 +117,3 @@ GET        /:arrivalId/date-goods-unloaded-rejection                        cont
 POST       /:arrivalId/date-goods-unloaded-rejection                        controllers.DateGoodsUnloadedRejectionController.onSubmit(arrivalId: ArrivalId)
 
 GET        /:arrivalId/unloading-permission-pdf                             controllers.UnloadingPermissionPDFController.getPDF(arrivalId: ArrivalId)
-

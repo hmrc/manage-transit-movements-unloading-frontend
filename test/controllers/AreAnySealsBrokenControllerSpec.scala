@@ -58,7 +58,7 @@ class AreAnySealsBrokenControllerSpec extends SpecBase with AppWithDefaultMockFi
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.set(AreAnySealsBrokenPage, true).success.value
+      val userAnswers = emptyUserAnswers.setValue(AreAnySealsBrokenPage, true)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, areAnySealsBrokenRoute)

@@ -19,9 +19,10 @@ package utils
 import base.SpecBase
 import controllers.routes
 import generators.Generators
-import models.{CheckMode, Seals}
+import models.{CheckMode, Index, Seal, Seals}
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
+import queries.SealsQuery
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
@@ -47,7 +48,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
       "when AreAnySealsBrokenPage is defined" - {
         "when true" in {
 
-          val userAnswers = emptyUserAnswers.set(AreAnySealsBrokenPage, true).success.value
+          val userAnswers = emptyUserAnswers.setValue(AreAnySealsBrokenPage, true)
           val helper      = new CheckYourAnswersHelper(userAnswers)
           val result      = helper.areAnySealsBroken
 
@@ -73,7 +74,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
 
         "when false" in {
 
-          val userAnswers = emptyUserAnswers.set(AreAnySealsBrokenPage, false).success.value
+          val userAnswers = emptyUserAnswers.setValue(AreAnySealsBrokenPage, false)
           val helper      = new CheckYourAnswersHelper(userAnswers)
           val result      = helper.areAnySealsBroken
 
@@ -117,7 +118,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
       "when CanSealsBeReadPage is defined" - {
         "when true" in {
 
-          val userAnswers = emptyUserAnswers.set(CanSealsBeReadPage, true).success.value
+          val userAnswers = emptyUserAnswers.setValue(CanSealsBeReadPage, true)
           val helper      = new CheckYourAnswersHelper(userAnswers)
           val result      = helper.canSealsBeRead
 
@@ -143,7 +144,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
 
         "when false" in {
 
-          val userAnswers = emptyUserAnswers.set(CanSealsBeReadPage, false).success.value
+          val userAnswers = emptyUserAnswers.setValue(CanSealsBeReadPage, false)
           val helper      = new CheckYourAnswersHelper(userAnswers)
           val result      = helper.canSealsBeRead
 
@@ -177,7 +178,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
 
         val userAnswers = emptyUserAnswers
         val helper      = new CheckYourAnswersHelper(userAnswers)
-        val result      = helper.seals(Nil)
+        val result      = helper.seals
 
         result mustBe None
       }
@@ -187,16 +188,16 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
       "when list is not empty" - {
         "when single seal" in {
 
-          forAll(arbitrary[String]) {
-            str =>
-              val userAnswers = emptyUserAnswers
+          forAll(arbitrary[Seal]) {
+            seal =>
+              val userAnswers = emptyUserAnswers.setValue(SealPage(Index(0)), seal)
               val helper      = new CheckYourAnswersHelper(userAnswers)
-              val result      = helper.seals(Seq(str))
+              val result      = helper.seals
 
               result mustBe Some(
                 SummaryListRow(
                   key = "Official customs seal numbers".toKey,
-                  value = Value(HtmlContent(str)),
+                  value = Value(HtmlContent(seal.sealId)),
                   actions = None
                 )
               )
@@ -205,16 +206,16 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
 
         "when multiple seals" in {
 
-          forAll(listWithMaxLength[String](Seals.maxSeals)) {
-            strs =>
-              val userAnswers = emptyUserAnswers
+          forAll(listWithMaxLength[Seal](Seals.maxSeals)) {
+            seals =>
+              val userAnswers = emptyUserAnswers.setValue(SealsQuery, seals)
               val helper      = new CheckYourAnswersHelper(userAnswers)
-              val result      = helper.seals(strs)
+              val result      = helper.seals
 
               result mustBe Some(
                 SummaryListRow(
                   key = "Official customs seal numbers".toKey,
-                  value = Value(HtmlContent(strs.mkString("<br>"))),
+                  value = Value(HtmlContent(seals.map(_.sealId).mkString("<br>"))),
                   actions = None
                 )
               )
@@ -240,7 +241,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
     "must return Some(row)" - {
       "when DateGoodsUnloadedPage is defined" in {
 
-        val userAnswers = emptyUserAnswers.set(DateGoodsUnloadedPage, LocalDate.parse("2000-01-01")).success.value
+        val userAnswers = emptyUserAnswers.setValue(DateGoodsUnloadedPage, LocalDate.parse("2000-01-01"))
         val helper      = new CheckYourAnswersHelper(userAnswers)
         val result      = helper.dateGoodsUnloaded
 

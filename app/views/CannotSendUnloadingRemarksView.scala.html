@@ -21,7 +21,6 @@
 @this(
      mainTemplate: MainTemplate,
      heading: Heading,
-     govukSummaryList: GovukSummaryList,
      config: FrontendAppConfig
 )
 
@@ -35,9 +34,7 @@
 @heading("cannotSendUnloadingRemarks.heading")
 
     <p class="govuk-body">@messages("cannotSendUnloadingRemarks.message")
-        <a class="govuk-link" href=@config.nctsEnquiriesUrl target="_blank" rel="noreferrer noopener" id ="contact">
-            @messages("cannotSendUnloadingRemarks.contactLink")
-        </a>.
+        <a class="govuk-link" href=@config.nctsEnquiriesUrl target="_blank" rel="noreferrer noopener" id ="contact">@messages("cannotSendUnloadingRemarks.contactLink")</a>.
     </p>
 
     <a class="govuk-link govuk-body" href=@config.arrivalNotificationsUrl target="_blank"  id ="contactText">@messages("cannotSendUnloadingRemarks.linkText")</a>.

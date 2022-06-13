@@ -16,7 +16,7 @@
 
 package models
 
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.XMLWrites._
 import models.messages.escapeXml
 import org.scalacheck.Arbitrary.arbitrary
@@ -25,7 +25,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class TraderAtDestinationSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with MessagesModelGenerators with StreamlinedXmlEquality {
+class TraderAtDestinationSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with Generators with StreamlinedXmlEquality {
 
   "TraderDestination" - {
 

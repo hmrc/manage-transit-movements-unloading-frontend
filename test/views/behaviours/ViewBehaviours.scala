@@ -65,7 +65,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
   "must render service name link in header" in {
     val link = getElementByClass(doc, "hmrc-header__service-name--linked")
     assertElementContainsText(link, "Manage your transit movements")
-    assertElementContainsHref(link, "http://localhost:10123/manage-transit-movements/unloading")
+    assertElementContainsHref(link, "http://localhost:9485/manage-transit-movements/what-do-you-want-to-do")
   }
 
   "must append service to feedback link" in {
@@ -90,6 +90,15 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
 
   "must not render language toggle" in {
     assertElementDoesNotExist(doc, "hmrc-language-select")
+  }
+
+  "must render 'page not working properly' link" in {
+    val link = getElementByClass(doc, "hmrc-report-technical-issue")
+
+    assertElementContainsText(link, "Is this page not working properly? (opens in new tab)")
+    getElementHref(link) must include(
+      "http://localhost:9250/contact/report-technical-problem?newTab=true&service=CTCTraders&referrerUrl="
+    )
   }
 
   def pageWithHeading(args: String*): Unit =
@@ -141,7 +150,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     "must render back link" in {
       val link = getElementByClass(doc, "govuk-back-link")
       assertElementContainsText(link, "Back")
-      assertElementContainsHref(link, "javascript:history.back()")
+      assertElementContainsHref(link, "#")
     }
 
   def pageWithoutBackLink(): Unit =
@@ -162,6 +171,12 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     s"must render $tag with text $expectedText" in {
       val elements = getElementsByTag(doc, tag)
       assertElementExists(elements, element => condition(element.text, expectedText))
+    }
+
+  def pageWithoutContent(doc: Document, tag: String, expectedText: String): Unit =
+    s"must not render $tag with text $expectedText" in {
+      val elements = getElementsByTag(doc, tag)
+      assertElementDoesNotExist(elements, _.text == expectedText)
     }
 
   def pageWithList(listClass: String, expectedListItems: String*): Unit =

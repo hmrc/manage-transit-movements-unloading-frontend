@@ -17,135 +17,178 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import cats.data.NonEmptyList
-import models.{EoriNumber, Seals, TraderAtDestination, UnloadingPermission, UserAnswers}
+import extractors.UnloadingPermissionExtractor
+import generators.Generators
+import models.{UnloadingPermission, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsArray, JsString, Json}
+import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.UnloadingPermissionService
 
-import java.time.LocalDate
 import scala.concurrent.Future
+import scala.util.{Failure, Success}
 
-class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  val unloadingPermission: UnloadingPermission = UnloadingPermission(
-    movementReferenceNumber = "19IT02110010007827",
-    transportIdentity = None,
-    transportCountry = None,
-    grossMass = "1000",
-    numberOfItems = 1,
-    numberOfPackages = Some(1),
-    traderAtDestination = TraderAtDestination("eori", "name", "streetAndNumber", "postcode", "city", "countryCode"),
-    presentationOffice = "GB000060",
-    seals = None,
-    goodsItems = NonEmptyList(goodsItemMandatory, Nil),
-    dateOfPreparation = LocalDate.now()
-  )
+  val sampleUnloadingPermission: UnloadingPermission = arbitrary[UnloadingPermission].sample.value
 
   private val mockUnloadingPermissionService = mock[UnloadingPermissionService]
+  private val mockExtractor                  = mock[UnloadingPermissionExtractor]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockUnloadingPermissionService)
+    reset(mockUnloadingPermissionService, mockExtractor)
   }
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind[UnloadingPermissionService].toInstance(mockUnloadingPermissionService))
+      .overrides(bind[UnloadingPermissionExtractor].toInstance(mockExtractor))
 
-  private val nextPage = routes.UnloadingGuidanceController.onPageLoad(arrivalId).url
+  private lazy val nextPage = routes.UnloadingGuidanceController.onPageLoad(arrivalId).url
 
   "Index Controller" - {
-    "must redirect to onward route for a GET when there are no UserAnswers and prepopulate data" in {
-      checkArrivalStatus()
-      val seals                        = Seals(1, Seq("Seal1", "Seal2"))
-      val unloadingPermissionWithSeals = unloadingPermission.copy(seals = Some(seals))
 
-      when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any()))
-        .thenReturn(Future.successful(Some(unloadingPermissionWithSeals)))
+    "unloadingRemarks" - {
+      "must redirect to onward route for a GET when there are no UserAnswers and prepopulated data" in {
+        checkArrivalStatus()
+        val unloadingPermission = sampleUnloadingPermission.copy(movementReferenceNumber = mrn.toString)
 
-      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+        when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(unloadingPermission)))
 
-      val userAnswersCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        val userAnswers = emptyUserAnswers
 
-      setNoExistingUserAnswers()
+        when(mockExtractor.apply(any(), any())(any(), any())).thenReturn(Future.successful(Success(userAnswers)))
 
-      val request                = FakeRequest(GET, routes.IndexController.onPageLoad(arrivalId).url)
-      val result: Future[Result] = route(app, request).value
+        when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
-      status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual nextPage
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-      verify(mockSessionRepository).set(userAnswersCaptor.capture())
+        setNoExistingUserAnswers()
 
-      userAnswersCaptor.getValue.mrn.toString mustBe unloadingPermission.movementReferenceNumber
-      userAnswersCaptor.getValue.id mustBe arrivalId
-      userAnswersCaptor.getValue.eoriNumber mustBe EoriNumber("id")
-      userAnswersCaptor.getValue.prepopulateData mustBe Json.obj("seals" -> JsArray(Seq(JsString("Seal1"), JsString("Seal2"))))
+        val request                = FakeRequest(GET, routes.IndexController.unloadingRemarks(arrivalId).url)
+        val result: Future[Result] = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual nextPage
+
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+
+        userAnswersCaptor.getValue mustBe userAnswers
+      }
+
+      "must redirect to onward route when there are UserAnswers" in {
+        checkArrivalStatus()
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, routes.IndexController.unloadingRemarks(arrivalId).url)
+        val result  = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual nextPage
+      }
+
+      "must redirect to session expired when no response for arrivalId" in {
+        checkArrivalStatus()
+        when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any()))
+          .thenReturn(Future.successful(None))
+
+        setNoExistingUserAnswers()
+
+        val request = FakeRequest(GET, routes.IndexController.unloadingRemarks(arrivalId).url)
+        val result  = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      }
+
+      "must redirect to session expired when bad mrn received" in {
+        checkArrivalStatus()
+        val badUnloadingPermission = sampleUnloadingPermission.copy(movementReferenceNumber = "")
+
+        when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(badUnloadingPermission)))
+
+        when(mockSessionRepository.set(any()))
+          .thenReturn(Future.successful(true))
+
+        setNoExistingUserAnswers()
+
+        val request = FakeRequest(GET, routes.IndexController.unloadingRemarks(arrivalId).url)
+        val result  = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      }
+
+      "must redirect to session expired when extractor fails" in {
+        checkArrivalStatus()
+
+        val unloadingPermission = sampleUnloadingPermission.copy(movementReferenceNumber = mrn.toString)
+
+        when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(unloadingPermission)))
+
+        when(mockExtractor.apply(any(), any())(any(), any())).thenReturn(Future.successful(Failure(new Throwable(""))))
+
+        setNoExistingUserAnswers()
+
+        val request = FakeRequest(GET, routes.IndexController.unloadingRemarks(arrivalId).url)
+        val result  = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      }
     }
 
-    "must redirect to onward route for a when there are UserAnswers" in {
-      checkArrivalStatus()
-      setExistingUserAnswers(emptyUserAnswers)
+    "newUnloadingRemarks" - {
+      "must redirect to session expired if no user answers" in {
+        checkArrivalStatus()
+        setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, routes.IndexController.onPageLoad(arrivalId).url)
-      val result  = route(app, request).value
+        val request                = FakeRequest(GET, routes.IndexController.newUnloadingRemarks(arrivalId).url)
+        val result: Future[Result] = route(app, request).value
 
-      status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual nextPage
-    }
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      }
 
-    "must redirect to session expired when no response for arrivalId" in {
-      checkArrivalStatus()
-      when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any()))
-        .thenReturn(Future.successful(None))
+      "must extract unloading permission to user answers" in {
+        checkArrivalStatus()
+        val unloadingPermission = sampleUnloadingPermission.copy(movementReferenceNumber = mrn.toString)
 
-      setNoExistingUserAnswers()
+        when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(unloadingPermission)))
 
-      val request = FakeRequest(GET, routes.IndexController.onPageLoad(arrivalId).url)
-      val result  = route(app, request).value
+        val userAnswers = emptyUserAnswers.copy(data = Json.obj("foo" -> "bar"))
 
-      status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
-    }
+        when(mockExtractor.apply(any(), any())(any(), any())).thenReturn(Future.successful(Success(userAnswers)))
 
-    "must redirect to session expired when bad mrn received" in {
-      checkArrivalStatus()
-      val badUnloadingPermission = UnloadingPermission(
-        movementReferenceNumber = "",
-        transportIdentity = None,
-        transportCountry = None,
-        grossMass = "1000",
-        numberOfItems = 1,
-        numberOfPackages = Some(1),
-        traderAtDestination = TraderAtDestination("eori", "name", "streetAndNumber", "postcode", "city", "countryCode"),
-        presentationOffice = "GB000060",
-        seals = None,
-        goodsItems = NonEmptyList(goodsItemMandatory, Nil),
-        dateOfPreparation = LocalDate.now()
-      )
+        when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
-      when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any()))
-        .thenReturn(Future.successful(Some(badUnloadingPermission)))
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-      when(mockSessionRepository.set(any()))
-        .thenReturn(Future.successful(true))
+        setExistingUserAnswers(emptyUserAnswers)
 
-      setNoExistingUserAnswers()
+        val request                = FakeRequest(GET, routes.IndexController.newUnloadingRemarks(arrivalId).url)
+        val result: Future[Result] = route(app, request).value
 
-      val request = FakeRequest(GET, routes.IndexController.onPageLoad(arrivalId).url)
-      val result  = route(app, request).value
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual nextPage
 
-      status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+
+        userAnswersCaptor.getValue mustBe userAnswers
+      }
     }
   }
 }

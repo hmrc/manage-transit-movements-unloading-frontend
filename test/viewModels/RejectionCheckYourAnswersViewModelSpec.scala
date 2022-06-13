@@ -29,7 +29,7 @@ class RejectionCheckYourAnswersViewModelSpec extends AnyFreeSpec with Matchers w
   "RejectionCheckYourAnswersViewModel" - {
 
     "display vehicle name reference on check your answers" in {
-      val userAnswers = emptyUserAnswers.set(VehicleNameRegistrationReferencePage, "reference").success.value
+      val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, "reference")
       val sections    = new RejectionCheckYourAnswersViewModel()(userAnswers)
 
       sections.length mustBe 1
@@ -38,7 +38,7 @@ class RejectionCheckYourAnswersViewModelSpec extends AnyFreeSpec with Matchers w
     }
 
     "display gross mass amount on check your answers" in {
-      val userAnswers = emptyUserAnswers.set(GrossMassAmountPage, "10000").success.value
+      val userAnswers = emptyUserAnswers.setValue(GrossMassAmountPage, "10000")
       val sections    = new RejectionCheckYourAnswersViewModel()(userAnswers)
 
       sections.length mustBe 1
@@ -48,7 +48,7 @@ class RejectionCheckYourAnswersViewModelSpec extends AnyFreeSpec with Matchers w
 
     //noinspection ScalaStyle
     "display total number of packages on check your answers" in {
-      val userAnswers = emptyUserAnswers.set(TotalNumberOfPackagesPage, 100).success.value
+      val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, 100)
       val sections    = new RejectionCheckYourAnswersViewModel()(userAnswers)
 
       sections.length mustBe 1
@@ -57,7 +57,7 @@ class RejectionCheckYourAnswersViewModelSpec extends AnyFreeSpec with Matchers w
     }
 
     "display total number of items on check your answers" in {
-      val userAnswers = emptyUserAnswers.set(TotalNumberOfItemsPage, 100).success.value
+      val userAnswers = emptyUserAnswers.setValue(TotalNumberOfItemsPage, 100)
       val sections    = new RejectionCheckYourAnswersViewModel()(userAnswers)
 
       sections.length mustBe 1
@@ -67,7 +67,7 @@ class RejectionCheckYourAnswersViewModelSpec extends AnyFreeSpec with Matchers w
 
     "display date goods unloaded on check your answers" in {
       val date        = LocalDate.parse("2020-07-21")
-      val userAnswers = emptyUserAnswers.set(DateGoodsUnloadedPage, date).success.value
+      val userAnswers = emptyUserAnswers.setValue(DateGoodsUnloadedPage, date)
       val sections    = new RejectionCheckYourAnswersViewModel()(userAnswers)
 
       sections.length mustBe 1

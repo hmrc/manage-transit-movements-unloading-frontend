@@ -19,13 +19,11 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.GrossMassAmountFormProvider
-import handlers.ErrorHandler
-import models.{ArrivalId, UserAnswers}
+import models.ArrivalId
 import pages.GrossMassAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.UnloadingRemarksRejectionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.GrossMassAmountRejectionView
 
@@ -35,14 +33,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class GrossMassAmountRejectionController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
+  actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: GrossMassAmountFormProvider,
-  rejectionService: UnloadingRemarksRejectionService,
   val controllerComponents: MessagesControllerComponents,
   val appConfig: FrontendAppConfig,
-  checkArrivalStatus: CheckArrivalStatusProvider,
-  errorHandler: ErrorHandler,
   view: GrossMassAmountRejectionView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -50,33 +45,23 @@ class GrossMassAmountRejectionController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId)).async {
-    implicit request =>
-      rejectionService.getRejectedValueAsString(arrivalId, request.userAnswers)(GrossMassAmountPage) flatMap {
-        case Some(originalAttrValue) =>
-          Future.successful(Ok(view(form.fill(originalAttrValue), arrivalId)))
-        case None =>
-          errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
-      }
-  }
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
+    actions.requireData(arrivalId).andThen(getMandatoryPage(GrossMassAmountPage)) {
+      implicit request =>
+        Ok(view(form.fill(request.arg), arrivalId))
+    }
 
-  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId)).async {
+  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId))),
           value =>
-            rejectionService.unloadingRemarksRejectionMessage(arrivalId) flatMap {
-              case Some(rejectionMessage) =>
-                val userAnswers = UserAnswers(arrivalId, rejectionMessage.movementReferenceNumber, request.eoriNumber)
-                for {
-                  updatedAnswers <- Future.fromTry(userAnswers.set(GrossMassAmountPage, value))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId))
-
-              case _ => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
-            }
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(GrossMassAmountPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId))
         )
   }
 }

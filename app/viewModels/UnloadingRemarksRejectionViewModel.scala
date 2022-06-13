@@ -19,31 +19,21 @@ package viewModels
 import models._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.Date.getDate
 import utils.UnloadingRemarksRejectionHelper
 
-import javax.inject.Inject
-
-class UnloadingRemarksRejectionViewModel @Inject() (
-  helper: UnloadingRemarksRejectionHelper
-) {
+class UnloadingRemarksRejectionViewModel {
 
   def apply(
-    error: FunctionalError,
-    arrivalId: ArrivalId
-  )(implicit messages: Messages): Option[SummaryListRow] =
-    error.originalAttributeValue.flatMap {
-      originalValue =>
-        error.pointer match {
-          case NumberOfPackagesPointer    => Some(helper.totalNumberOfPackages(arrivalId, originalValue))
-          case VehicleRegistrationPointer => Some(helper.vehicleNameRegistrationReference(arrivalId, originalValue))
-          case NumberOfItemsPointer       => Some(helper.totalNumberOfItems(arrivalId, originalValue))
-          case GrossMassPointer           => Some(helper.grossMassAmount(arrivalId, originalValue))
-          case UnloadingDatePointer =>
-            getDate(originalValue).map(
-              date => helper.unloadingDate(arrivalId, date)
-            )
-          case _: DefaultPointer => None
-        }
-    }
+    userAnswers: UserAnswers
+  )(implicit messages: Messages): Option[SummaryListRow] = {
+    lazy val helper = new UnloadingRemarksRejectionHelper(userAnswers)
+
+    Seq(
+      helper.totalNumberOfPackages,
+      helper.vehicleNameRegistrationReference,
+      helper.totalNumberOfItems,
+      helper.grossMassAmount,
+      helper.unloadingDate
+    ).flatten.headOption
+  }
 }

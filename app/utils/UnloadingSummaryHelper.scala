@@ -17,193 +17,119 @@
 package utils
 
 import controllers.routes
-import models.{ArrivalId, CheckMode, Index, NormalMode, UserAnswers}
+import models.reference.Country
+import models.{Index, Mode, Seal, UserAnswers}
+import pages._
 import play.api.i18n.Messages
+import queries.{GoodsItemsQuery, SealsQuery}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
-class UnloadingSummaryHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
+class UnloadingSummaryHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
-  val seals: (Index, String) => SummaryListRow = {
-    (index, value) =>
-      SummaryListRow(
-        key = messages("changeSeal.sealList.label", index.display).toKey,
-        value = Value(value.toText),
-        actions = Some(
-          Actions(items =
-            List(
-              ActionItem(
-                content = messages("site.edit").toText,
-                href = routes.NewSealNumberController.onPageLoad(arrivalId, index, CheckMode).url,
-                visuallyHiddenText = Some(messages("changeSeal.sealList.change.hidden", index.display, value)),
-                attributes = Map("id" -> s"change-seal-${index.position}")
-              )
-            )
-          )
+  private lazy val (newSeals, existingSeals) = userAnswers
+    .get(SealsQuery)
+    .map(_.zipWithIndex.partition {
+      case (seal, _) => seal.removable
+    })
+    .getOrElse((Nil, Nil))
+
+  //format: off
+  def seals: Seq[SummaryListRow] =
+    existingSeals.map {
+      case (Seal(sealId, _), position) =>
+        val index = Index(position)
+        buildRow(
+          prefix = "changeSeal.sealList",
+          answer = sealId.toText,
+          id = Some(s"change-seal-${index.position}"),
+          call = Some(routes.NewSealNumberController.onPageLoad(arrivalId, index, mode)),
+          args = index.display, sealId
         )
-      )
-  }
+    }
 
-  val sealsWithRemove: (Index, String) => SummaryListRow = {
-    (index, value) =>
-      SummaryListRow(
-        key = messages("changeSeal.sealList.label", index.display).toKey,
-        value = Value(value.toText),
-        actions = Some(
-          Actions(items =
-            List(
-              ActionItem(
-                content = messages("site.edit").toText,
-                href = routes.NewSealNumberController.onPageLoad(arrivalId, index, CheckMode).url,
-                visuallyHiddenText = Some(messages("changeSeal.sealList.change.hidden", index.display, value)),
-                attributes = Map("id" -> s"change-seal-${index.position}")
-              ),
-              ActionItem(
-                content = messages("site.delete").toText,
-                href = routes.ConfirmRemoveSealController.onPageLoad(arrivalId, index, CheckMode).url,
-                visuallyHiddenText = Some(messages("changeSeal.sealList.remove.hidden", index.display, value)),
-                attributes = Map("id" -> s"remove-seal-${index.position}")
-              )
-            )
-          )
+  def sealsWithRemove: Seq[SummaryListRow] =
+    newSeals.map {
+      case (Seal(sealId, _), position) =>
+        val index = Index(position)
+        buildRemovableRow(
+          prefix = "changeSeal.sealList",
+          answer = sealId.toText,
+          id = s"seal-${index.position}",
+          changeCall = routes.NewSealNumberController.onPageLoad(arrivalId, index, mode),
+          removeCall = routes.ConfirmRemoveSealController.onPageLoad(arrivalId, index, mode),
+          args = index.display, sealId
         )
-      )
-  }
+    }
+  //format: on
 
-  val items: (Index, String) => SummaryListRow = {
-    (index, value) =>
-      SummaryListRow(
-        key = messages("changeItem.itemList.label", index.display).toKey,
-        value = Value(value.toText),
-        actions = None
-      )
-  }
-
-  val vehicleUsed: String => SummaryListRow = {
-    value =>
-      SummaryListRow(
-        key = messages("changeVehicle.reference.label").toKey,
-        value = Value(value.toText),
-        actions = Some(
-          Actions(items =
-            List(
-              ActionItem(
-                content = messages("site.edit").toText,
-                href = routes.VehicleNameRegistrationReferenceController.onPageLoad(arrivalId, CheckMode).url,
-                visuallyHiddenText = Some(messages("changeVehicle.reference.change.hidden")),
-                attributes = Map("id" -> "change-vehicle-reference")
-              )
-            )
+  def items: Seq[SummaryListRow] =
+    userAnswers
+      .get(GoodsItemsQuery)
+      .map(_.zipWithIndex.map {
+        case (goodsItemDescription, index) =>
+          buildRow(
+            prefix = "changeItem.itemList",
+            answer = goodsItemDescription.toText,
+            id = None,
+            call = None,
+            args = Index(index).display
           )
-        )
-      )
-  }
+      })
+      .getOrElse(Nil)
 
-  val registeredCountry: String => SummaryListRow = {
-    value =>
-      SummaryListRow(
-        key = messages("changeVehicle.registeredCountry.label").toKey,
-        value = Value(value.toText),
-        actions = Some(
-          Actions(items =
-            List(
-              ActionItem(
-                content = messages("site.edit").toText,
-                href = routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, CheckMode).url,
-                visuallyHiddenText = Some(messages("changeVehicle.registeredCountry.change.hidden")),
-                attributes = Map("id" -> "change-vehicle-country")
-              )
-            )
-          )
-        )
-      )
-  }
+  def vehicleUsed: Option[SummaryListRow] =
+    getAnswerAndBuildRow[String](
+      page = VehicleNameRegistrationReferencePage,
+      formatAnswer = _.toText,
+      prefix = "changeVehicle.reference",
+      id = Some("change-vehicle-reference"),
+      call = Some(routes.VehicleNameRegistrationReferenceController.onPageLoad(arrivalId, mode))
+    )
 
-  val grossMass: String => SummaryListRow = {
-    value =>
-      SummaryListRow(
-        key = messages("changeItems.grossMass.label").toKey,
-        value = Value(value.toText),
-        actions = Some(
-          Actions(items =
-            List(
-              ActionItem(
-                content = messages("site.edit").toText,
-                href = routes.GrossMassAmountController.onPageLoad(arrivalId, CheckMode).url,
-                visuallyHiddenText = Some(messages("changeItems.grossMass.change.hidden")),
-                attributes = Map("id" -> "change-gross-mass")
-              )
-            )
-          )
-        )
-      )
-  }
+  def registeredCountry: Option[SummaryListRow] =
+    getAnswerAndBuildRow[Country](
+      page = VehicleRegistrationCountryPage,
+      formatAnswer = _.description.toText,
+      prefix = "changeVehicle.registeredCountry",
+      id = Some("change-vehicle-country"),
+      call = Some(routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, mode))
+    )
 
-  val totalNumberOfItems: Int => SummaryListRow = {
-    value =>
-      SummaryListRow(
-        key = messages("changeItems.totalNumberOfItems.label").toKey,
-        value = Value(value.toString.toText),
-        actions = Some(
-          Actions(items =
-            List(
-              ActionItem(
-                content = messages("site.edit").toText,
-                href = routes.TotalNumberOfItemsController.onPageLoad(arrivalId, CheckMode).url,
-                visuallyHiddenText = Some(messages("changeItems.totalNumberOfItems.change.hidden")),
-                attributes = Map("id" -> "change-total-number-of-items")
-              )
-            )
-          )
-        )
-      )
-  }
+  def grossMass: Option[SummaryListRow] =
+    getAnswerAndBuildRow[String](
+      page = GrossMassAmountPage,
+      formatAnswer = _.toText,
+      prefix = "changeItems.grossMass",
+      id = Some("change-gross-mass"),
+      call = Some(routes.GrossMassAmountController.onPageLoad(arrivalId, mode))
+    )
 
-  val totalNumberOfPackages: Int => SummaryListRow = {
-    value =>
-      SummaryListRow(
-        key = messages("changeItems.totalNumberOfPackages.label").toKey,
-        value = Value(value.toString.toText),
-        actions = Some(
-          Actions(items =
-            List(
-              ActionItem(
-                content = messages("site.edit").toText,
-                href = routes.TotalNumberOfPackagesController.onPageLoad(arrivalId, CheckMode).url,
-                visuallyHiddenText = Some(messages("changeItems.totalNumberOfPackages.change.hidden")),
-                attributes = Map("id" -> "change-total-number-of-packages")
-              )
-            )
-          )
-        )
-      )
-  }
+  def totalNumberOfItems: Option[SummaryListRow] =
+    getAnswerAndBuildRow[Int](
+      page = TotalNumberOfItemsPage,
+      formatAnswer = _.toString.toText,
+      prefix = "changeItems.totalNumberOfItems",
+      id = Some("change-total-number-of-items"),
+      call = Some(routes.TotalNumberOfItemsController.onPageLoad(arrivalId, mode))
+    )
 
-  val comments: String => SummaryListRow = {
-    value =>
-      SummaryListRow(
-        key = messages("changeItems.comments.label").toKey,
-        value = Value(value.toText),
-        actions = Some(
-          Actions(items =
-            List(
-              ActionItem(
-                content = messages("site.edit").toText,
-                href = routes.ChangesToReportController.onPageLoad(arrivalId, NormalMode).url,
-                visuallyHiddenText = Some(messages("changeItems.comments.change.hidden")),
-                attributes = Map("id" -> "change-comments")
-              ),
-              ActionItem(
-                content = messages("site.delete").toText,
-                href = routes.ConfirmRemoveCommentsController.onPageLoad(arrivalId, NormalMode).url,
-                visuallyHiddenText = Some(messages("changeItems.comments.remove.hidden")),
-                attributes = Map("id" -> "remove-comments")
-              )
-            )
-          )
-        )
-      )
-  }
+  def totalNumberOfPackages: Option[SummaryListRow] =
+    getAnswerAndBuildRow[Int](
+      page = TotalNumberOfPackagesPage,
+      formatAnswer = _.toString.toText,
+      prefix = "changeItems.totalNumberOfPackages",
+      id = Some("change-total-number-of-packages"),
+      call = Some(routes.TotalNumberOfPackagesController.onPageLoad(arrivalId, mode))
+    )
 
-  def arrivalId: ArrivalId = userAnswers.id
+  def comments: Option[SummaryListRow] =
+    getAnswerAndBuildRemovableRow[String](
+      page = ChangesToReportPage,
+      formatAnswer = _.toText,
+      prefix = "changeItems.comments",
+      id = "comments",
+      changeCall = routes.ChangesToReportController.onPageLoad(arrivalId, mode),
+      removeCall = routes.ConfirmRemoveCommentsController.onPageLoad(arrivalId, mode)
+    )
 }

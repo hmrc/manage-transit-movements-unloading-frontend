@@ -16,10 +16,8 @@
 
 package models.messages
 
-import java.time.LocalTime
-
 import com.lucidchart.open.xtract.XmlReader
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.XMLWrites._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
@@ -29,9 +27,10 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import utils.Format
 import utils.Format.timeFormatter
 
+import java.time.LocalTime
 import scala.xml.NodeSeq
 
-class MetaSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with MessagesModelGenerators with StreamlinedXmlEquality with OptionValues {
+class MetaSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with Generators with StreamlinedXmlEquality with OptionValues {
 
   //format off
   "MetaSpec" - {

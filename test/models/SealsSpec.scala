@@ -37,7 +37,7 @@ class SealsSpec extends AnyFreeSpec with Matchers with Generators with ScalaChec
       forAll(arbitrary[Seals]) {
 
         seals =>
-          val sealsNodes: Seq[Elem] = seals.SealId.map {
+          val sealsNodes: Seq[Elem] = seals.sealIds.map {
             sealId =>
               <SEAIDSID>
                 <SeaIdeSID1>{sealId}</SeaIdeSID1>
@@ -45,14 +45,14 @@ class SealsSpec extends AnyFreeSpec with Matchers with Generators with ScalaChec
               </SEAIDSID>
           }
 
-          val expectedResult =
+          val xml =
             <SEAINFSLI>
-              <SeaNumSLI2>{seals.numberOfSeals}</SeaNumSLI2>
+              <SeaNumSLI2>{seals.sealIds.length}</SeaNumSLI2>
               {sealsNodes}
             </SEAINFSLI>
 
-          XmlReader.of[Seals].read(trim(expectedResult)) mustBe
-            ParseSuccess(Seals(seals.numberOfSeals, seals.SealId))
+          XmlReader.of[Seals].read(trim(xml)) mustBe
+            ParseSuccess(seals)
       }
 
     }
@@ -62,7 +62,7 @@ class SealsSpec extends AnyFreeSpec with Matchers with Generators with ScalaChec
       forAll(arbitrary[Seals]) {
 
         seals =>
-          val sealsNodes: Seq[Elem] = seals.SealId.map {
+          val sealsNodes: Seq[Elem] = seals.sealIds.map {
             sealId =>
               <SEAIDSID>
                 <SeaIdeSID1>{sealId}</SeaIdeSID1>
@@ -72,7 +72,7 @@ class SealsSpec extends AnyFreeSpec with Matchers with Generators with ScalaChec
 
           val expectedResult =
             <SEAINFSLI>
-              <SeaNumSLI2>{seals.numberOfSeals}</SeaNumSLI2>
+              <SeaNumSLI2>{seals.sealIds.length}</SeaNumSLI2>
               {sealsNodes}
             </SEAINFSLI>
 

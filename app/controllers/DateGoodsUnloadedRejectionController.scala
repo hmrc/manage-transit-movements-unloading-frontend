@@ -16,16 +16,15 @@
 
 package controllers
 
-import cats.data.OptionT
 import controllers.actions._
 import forms.DateGoodsUnloadedFormProvider
 import handlers.ErrorHandler
-import models.{ArrivalId, UserAnswers}
+import models.ArrivalId
 import pages.DateGoodsUnloadedPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.{UnloadingPermissionService, UnloadingRemarksRejectionService}
+import services.UnloadingPermissionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.DateGoodsUnloadedRejectionView
 
@@ -35,60 +34,46 @@ import scala.concurrent.{ExecutionContext, Future}
 class DateGoodsUnloadedRejectionController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
+  actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: DateGoodsUnloadedFormProvider,
-  rejectionService: UnloadingRemarksRejectionService,
   val controllerComponents: MessagesControllerComponents,
   unloadingPermissionService: UnloadingPermissionService,
   errorHandler: ErrorHandler,
-  checkArrivalStatus: CheckArrivalStatusProvider,
   view: DateGoodsUnloadedRejectionView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId)).async {
-    implicit request =>
-      (for {
-        up            <- OptionT(unloadingPermissionService.getUnloadingPermission(arrivalId))
-        originalValue <- OptionT(rejectionService.getRejectedValueAsDate(arrivalId, request.userAnswers)(DateGoodsUnloadedPage))
-        dateOfPreparation = up.dateOfPreparation
-      } yield {
-        val form         = formProvider(dateOfPreparation)
-        val preparedForm = form.fill(originalValue)
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
+    actions.requireData(arrivalId).andThen(getMandatoryPage(DateGoodsUnloadedPage)).async {
+      implicit request =>
+        unloadingPermissionService.getUnloadingPermission(arrivalId) flatMap {
+          case Some(unloadingPermission) =>
+            val form         = formProvider(unloadingPermission.dateOfPreparation)
+            val preparedForm = form.fill(request.arg)
+            Future.successful(Ok(view(request.userAnswers.mrn.toString, arrivalId, preparedForm)))
+          case _ =>
+            errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
+        }
+    }
 
-        Ok(view(up.movementReferenceNumber, arrivalId, preparedForm))
-      }).getOrElseF {
-        errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
+  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
+    implicit request =>
+      unloadingPermissionService.getUnloadingPermission(arrivalId) flatMap {
+        case Some(unloadingPermission) =>
+          formProvider(unloadingPermission.dateOfPreparation)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(request.userAnswers.mrn.toString, arrivalId, formWithErrors))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(DateGoodsUnloadedPage, value))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId))
+            )
+        case _ =>
+          errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
       }
-
   }
-
-  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId)).async {
-    implicit request =>
-      (for {
-        up <- OptionT(unloadingPermissionService.getUnloadingPermission(arrivalId))
-        dateOfPreparation = up.dateOfPreparation
-        rejectionMessage <- OptionT(rejectionService.unloadingRemarksRejectionMessage(arrivalId))
-      } yield formProvider(dateOfPreparation)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-            val mrn = up.movementReferenceNumber
-            Future.successful(BadRequest(view(mrn, arrivalId, formWithErrors)))
-          },
-          value => {
-            val userAnswers = UserAnswers(arrivalId, rejectionMessage.movementReferenceNumber, request.eoriNumber)
-            for {
-              updatedAnswers <- Future.fromTry(userAnswers.set(DateGoodsUnloadedPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId))
-
-          }
-        )).getOrElse {
-        errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
-      }.flatten
-  }
-
 }

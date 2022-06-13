@@ -18,6 +18,7 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import matchers.JsonMatchers
+import models.NormalMode
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.UnloadingGuidanceView
@@ -36,10 +37,23 @@ class UnloadingGuidanceControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       val view = app.injector.instanceOf[UnloadingGuidanceView]
 
-      val pdfUrl = routes.UnloadingPermissionPDFController.getPDF(arrivalId).url
-
       status(result) mustBe OK
-      contentAsString(result) mustEqual view(mrn, pdfUrl, onwardRoute.url)(request, messages).toString
+
+      contentAsString(result) mustEqual view(mrn, arrivalId)(request, messages).toString
+    }
+
+    "must redirect to 'date goods unloaded' for a POST" in {
+      checkArrivalStatus()
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(POST, routes.UnloadingGuidanceController.onSubmit(arrivalId).url)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.DateGoodsUnloadedController.onPageLoad(arrivalId, NormalMode).url
     }
   }
 }

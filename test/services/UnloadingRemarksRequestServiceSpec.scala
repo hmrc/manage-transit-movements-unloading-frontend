@@ -16,18 +16,17 @@
 
 package services
 
-import java.time.LocalDateTime
-
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generators.MessagesModelGenerators
+import generators.Generators
 import models.messages._
-import models.{Index, Seals, UnloadingPermission}
+import models.{Index, Seal, Seals, UnloadingPermission}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.{NewSealNumberPage, VehicleNameRegistrationReferencePage}
+import pages.{SealPage, VehicleNameRegistrationReferencePage}
 
-class UnloadingRemarksRequestServiceSpec extends SpecBase with AppWithDefaultMockFixtures with MessagesModelGenerators with ScalaCheckPropertyChecks {
+import java.time.LocalDateTime
+
+class UnloadingRemarksRequestServiceSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   import UnloadingRemarksRequestServiceSpec._
 
@@ -39,10 +38,11 @@ class UnloadingRemarksRequestServiceSpec extends SpecBase with AppWithDefaultMoc
 
         val unloadingRemarksRequestService = app.injector.instanceOf[UnloadingRemarksRequestService]
 
-        forAll(arbitrary[UnloadingPermission],
-               arbitrary[Meta],
-               arbitrary[LocalDateTime],
-               Gen.option(stringsWithMaxLength(RemarksNonConform.unloadingRemarkLength))
+        forAll(
+          arbitrary[UnloadingPermission],
+          arbitrary[Meta],
+          arbitrary[LocalDateTime],
+          Gen.option(stringsWithMaxLength(RemarksNonConform.unloadingRemarkLength))
         ) {
           (unloadingPermission, meta, localDateTime, unloadingRemark) =>
             val unloadingRemarks = RemarksConform(localDateTime.toLocalDate, unloadingRemark)
@@ -64,10 +64,11 @@ class UnloadingRemarksRequestServiceSpec extends SpecBase with AppWithDefaultMoc
 
         val unloadingRemarksRequestService = app.injector.instanceOf[UnloadingRemarksRequestService]
 
-        forAll(arbitrary[UnloadingPermission],
-               arbitrary[Meta],
-               arbitrary[LocalDateTime],
-               Gen.option(stringsWithMaxLength(RemarksNonConform.unloadingRemarkLength))
+        forAll(
+          arbitrary[UnloadingPermission],
+          arbitrary[Meta],
+          arbitrary[LocalDateTime],
+          Gen.option(stringsWithMaxLength(RemarksNonConform.unloadingRemarkLength))
         ) {
           (unloadingPermission, meta, localDateTime, unloadingRemark) =>
             val unloadingRemarks = RemarksConformWithSeals(localDateTime.toLocalDate, unloadingRemark)
@@ -172,17 +173,10 @@ class UnloadingRemarksRequestServiceSpec extends SpecBase with AppWithDefaultMoc
               localDateTime.toLocalDate
             )
 
-            val userAnswersUpdated =
-              emptyUserAnswers
-                .set(NewSealNumberPage(Index(0)), "seal 2")
-                .success
-                .value
-                .set(NewSealNumberPage(Index(1)), "seal 1")
-                .success
-                .value
-                .set(NewSealNumberPage(Index(2)), "seal 3")
-                .success
-                .value
+            val userAnswersUpdated = emptyUserAnswers
+              .setValue(SealPage(Index(0)), Seal("seal 2", removable = false))
+              .setValue(SealPage(Index(1)), Seal("seal 1", removable = false))
+              .setValue(SealPage(Index(2)), Seal("seal 3", removable = false))
 
             unloadingRemarksRequestService.build(meta, unloadingRemarks, unloadingPermission, userAnswersUpdated) mustBe
               UnloadingRemarksRequest(
@@ -192,7 +186,7 @@ class UnloadingRemarksRequestServiceSpec extends SpecBase with AppWithDefaultMoc
                 unloadingPermission.presentationOffice,
                 unloadingRemarks,
                 Seq(ResultsOfControlSealsUpdated),
-                seals = Some(Seals(3, Seq("seal 2", "seal 1", "seal 3")))
+                seals = Some(Seals(Seq("seal 2", "seal 1", "seal 3")))
               )
         }
       }
@@ -209,20 +203,11 @@ class UnloadingRemarksRequestServiceSpec extends SpecBase with AppWithDefaultMoc
               localDateTime.toLocalDate
             )
 
-            val userAnswersUpdated =
-              emptyUserAnswers
-                .set(NewSealNumberPage(Index(0)), "seal 2")
-                .success
-                .value
-                .set(NewSealNumberPage(Index(1)), "seal 1")
-                .success
-                .value
-                .set(NewSealNumberPage(Index(2)), "seal 3")
-                .success
-                .value
-                .set(VehicleNameRegistrationReferencePage, "reference")
-                .success
-                .value
+            val userAnswersUpdated = emptyUserAnswers
+              .setValue(SealPage(Index(0)), Seal("seal 2", removable = false))
+              .setValue(SealPage(Index(1)), Seal("seal 1", removable = false))
+              .setValue(SealPage(Index(2)), Seal("seal 3", removable = false))
+              .setValue(VehicleNameRegistrationReferencePage, "reference")
 
             unloadingRemarksRequestService.build(meta, unloadingRemarks, unloadingPermission, userAnswersUpdated) mustBe
               UnloadingRemarksRequest(
@@ -231,13 +216,14 @@ class UnloadingRemarksRequestServiceSpec extends SpecBase with AppWithDefaultMoc
                 unloadingPermission.traderAtDestination,
                 unloadingPermission.presentationOffice,
                 unloadingRemarks,
-                Seq(ResultsOfControlDifferentValues(
-                      PointerToAttribute(TransportIdentity),
-                      "reference"
-                    ),
-                    ResultsOfControlSealsUpdated
+                Seq(
+                  ResultsOfControlDifferentValues(
+                    PointerToAttribute(TransportIdentity),
+                    "reference"
+                  ),
+                  ResultsOfControlSealsUpdated
                 ),
-                seals = Some(Seals(3, Seq("seal 2", "seal 1", "seal 3")))
+                seals = Some(Seals(Seq("seal 2", "seal 1", "seal 3")))
               )
         }
       }

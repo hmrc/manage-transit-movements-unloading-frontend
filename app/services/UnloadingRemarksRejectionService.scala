@@ -16,57 +16,20 @@
 
 package services
 
-import java.time.LocalDate
-
+import cats.data.OptionT
 import com.google.inject.Inject
 import connectors.UnloadingConnector
-import models.{ArrivalId, UnloadingRemarksRejectionMessage, UserAnswers}
-import pages.QuestionPage
+import models.{ArrivalId, UnloadingRemarksRejectionMessage}
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.{Date, IntValue}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class UnloadingRemarksRejectionService @Inject() (connector: UnloadingConnector)(implicit ec: ExecutionContext) {
 
   def unloadingRemarksRejectionMessage(arrivalId: ArrivalId)(implicit hc: HeaderCarrier): Future[Option[UnloadingRemarksRejectionMessage]] =
-    connector.getSummary(arrivalId) flatMap {
-      case Some(summary) =>
-        summary.messagesLocation.unloadingRemarksRejection match {
-          case Some(rejectionLocation) =>
-            connector.getRejectionMessage(rejectionLocation)
-          case _ =>
-            Future.successful(None)
-        }
-      case _ => Future.successful(None)
-    }
-
-  def getRejectedValueAsString(arrivalId: ArrivalId, userAnswers: Option[UserAnswers])(
-    page: QuestionPage[String]
-  )(implicit hc: HeaderCarrier): Future[Option[String]] =
-    userAnswers match {
-      case Some(userAnswers: UserAnswers) if userAnswers.get(page).isDefined => Future.successful(userAnswers.get(page))
-      case _                                                                 => getRejectedValue(arrivalId)
-    }
-
-  def getRejectedValueAsInt(arrivalId: ArrivalId, userAnswers: Option[UserAnswers])(page: QuestionPage[Int])(implicit hc: HeaderCarrier): Future[Option[Int]] =
-    userAnswers match {
-      case Some(userAnswers: UserAnswers) if userAnswers.get(page).isDefined => Future.successful(userAnswers.get(page))
-      case _                                                                 => getRejectedValue(arrivalId).map(_.flatMap(IntValue.getInt))
-    }
-
-  def getRejectedValueAsDate(arrivalId: ArrivalId, userAnswers: Option[UserAnswers])(
-    page: QuestionPage[LocalDate]
-  )(implicit hc: HeaderCarrier): Future[Option[LocalDate]] =
-    userAnswers match {
-      case Some(userAnswers: UserAnswers) if userAnswers.get(page).isDefined => Future.successful(userAnswers.get(page))
-      case _                                                                 => getRejectedValue(arrivalId).map(_.flatMap(Date.getDate))
-    }
-
-  private def getRejectedValue(arrivalId: ArrivalId)(implicit hc: HeaderCarrier): Future[Option[String]] =
-    unloadingRemarksRejectionMessage(arrivalId) map {
-      case Some(rejectionMessage) if rejectionMessage.errors.length == 1 =>
-        rejectionMessage.errors.head.originalAttributeValue
-      case _ => None
-    }
+    (for {
+      summary           <- OptionT(connector.getSummary(arrivalId))
+      rejectionLocation <- OptionT.fromOption[Future](summary.messagesLocation.unloadingRemarksRejection)
+      message           <- OptionT(connector.getRejectionMessage(rejectionLocation))
+    } yield message).value
 }

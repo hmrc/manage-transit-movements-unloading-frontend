@@ -17,112 +17,58 @@
 package utils
 
 import controllers.routes
-import models.{CheckMode, UserAnswers}
+import models.UserAnswers
 import pages._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
-import utils.Format._
 
-class RejectionCheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
+import java.time.LocalDate
 
-  def vehicleNameRegistrationRejection: Option[SummaryListRow] = userAnswers.get(VehicleNameRegistrationReferencePage) map {
-    answer =>
-      SummaryListRow(
-        key = messages("vehicleNameRegistrationReference.checkYourAnswersLabel").toKey,
-        value = Value(answer.toText),
-        actions = Some(
-          Actions(items =
-            List(
-              ActionItem(
-                content = messages("site.edit").toText,
-                href = routes.VehicleNameRegistrationRejectionController.onPageLoad(userAnswers.id).url,
-                visuallyHiddenText = Some(messages("vehicleNameRegistrationReference.change.hidden")),
-                attributes = Map("id" -> "change-vehicle-registration-rejection")
-              )
-            )
-          )
-        )
-      )
-  }
+class RejectionCheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
-  def dateGoodsUnloaded: Option[SummaryListRow] = userAnswers.get(DateGoodsUnloadedPage) map {
-    answer =>
-      SummaryListRow(
-        key = messages("dateGoodsUnloaded.checkYourAnswersLabel").toKey,
-        value = Value(answer.format(cyaDateFormatter).toText),
-        actions = Some(
-          Actions(items =
-            List(
-              ActionItem(
-                content = messages("site.edit").toText,
-                href = routes.DateGoodsUnloadedRejectionController.onPageLoad(userAnswers.id).url,
-                visuallyHiddenText = Some(messages("dateGoodsUnloaded.change.hidden")),
-                attributes = Map("id" -> "change-date-goods-unloaded")
-              )
-            )
-          )
-        )
-      )
-  }
+  def vehicleNameRegistration: Option[SummaryListRow] =
+    getAnswerAndBuildRow[String](
+      page = VehicleNameRegistrationReferencePage,
+      formatAnswer = _.toText,
+      prefix = "vehicleNameRegistrationReference",
+      id = Some("change-vehicle-registration-rejection"),
+      call = Some(routes.VehicleNameRegistrationRejectionController.onPageLoad(arrivalId))
+    )
 
-  def totalNumberOfPackages: Option[SummaryListRow] = userAnswers.get(TotalNumberOfPackagesPage) map {
-    answer =>
-      SummaryListRow(
-        key = messages("totalNumberOfPackages.checkYourAnswersLabel").toKey,
-        value = Value(answer.toString.toText),
-        actions = Some(
-          Actions(items =
-            List(
-              ActionItem(
-                content = messages("site.edit").toText,
-                href = routes.TotalNumberOfPackagesRejectionController.onPageLoad(userAnswers.id).url,
-                visuallyHiddenText = Some(messages("totalNumberOfPackages.change.hidden")),
-                attributes = Map("id" -> "change-total-number-of-packages")
-              )
-            )
-          )
-        )
-      )
-  }
+  def dateGoodsUnloaded: Option[SummaryListRow] =
+    getAnswerAndBuildRow[LocalDate](
+      page = DateGoodsUnloadedPage,
+      formatAnswer = formatAsDate,
+      prefix = "dateGoodsUnloaded",
+      id = Some("change-date-goods-unloaded"),
+      call = Some(routes.DateGoodsUnloadedRejectionController.onPageLoad(arrivalId))
+    )
 
-  def totalNumberOfItems: Option[SummaryListRow] = userAnswers.get(TotalNumberOfItemsPage) map {
-    answer =>
-      SummaryListRow(
-        key = messages("totalNumberOfItems.checkYourAnswersLabel").toKey,
-        value = Value(answer.toString.toText),
-        actions = Some(
-          Actions(items =
-            List(
-              ActionItem(
-                content = messages("site.edit").toText,
-                href = routes.TotalNumberOfItemsController.onPageLoad(userAnswers.id, CheckMode).url,
-                visuallyHiddenText = Some(messages("totalNumberOfItems.change.hidden")),
-                attributes = Map("id" -> "change-total-number-of-items")
-              )
-            )
-          )
-        )
-      )
-  }
+  def totalNumberOfPackages: Option[SummaryListRow] =
+    getAnswerAndBuildRow[Int](
+      page = TotalNumberOfPackagesPage,
+      formatAnswer = _.toString.toText,
+      prefix = "totalNumberOfPackages",
+      id = Some("change-total-number-of-packages"),
+      call = Some(routes.TotalNumberOfPackagesRejectionController.onPageLoad(arrivalId))
+    )
 
-  def grossMassAmount: Option[SummaryListRow] = userAnswers.get(GrossMassAmountPage) map {
-    answer =>
-      SummaryListRow(
-        key = messages("grossMassAmount.checkYourAnswersLabel").toKey,
-        value = Value(answer.toText),
-        actions = Some(
-          Actions(items =
-            List(
-              ActionItem(
-                content = messages("site.edit").toText,
-                href = routes.GrossMassAmountRejectionController.onPageLoad(userAnswers.id).url,
-                visuallyHiddenText = Some(messages("grossMassAmount.change.hidden")),
-                attributes = Map("id" -> "change-gross-mass-amount")
-              )
-            )
-          )
-        )
-      )
-  }
+  def totalNumberOfItems: Option[SummaryListRow] =
+    getAnswerAndBuildRow[Int](
+      page = TotalNumberOfItemsPage,
+      formatAnswer = _.toString.toText,
+      prefix = "totalNumberOfItems",
+      id = Some("change-total-number-of-items"),
+      call = Some(routes.TotalNumberOfItemsRejectionController.onPageLoad(arrivalId))
+    )
+
+  def grossMassAmount: Option[SummaryListRow] =
+    getAnswerAndBuildRow[String](
+      page = GrossMassAmountPage,
+      formatAnswer = _.toText,
+      prefix = "grossMassAmount",
+      id = Some("change-gross-mass-amount"),
+      call = Some(routes.GrossMassAmountRejectionController.onPageLoad(arrivalId))
+    )
 }

@@ -35,49 +35,43 @@ class VehicleRegistrationCountryController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
+  actions: Actions,
   formProvider: VehicleRegistrationCountryFormProvider,
   referenceDataService: ReferenceDataService,
   val controllerComponents: MessagesControllerComponents,
-  view: VehicleRegistrationCountryView,
-  checkArrivalStatus: CheckArrivalStatusProvider
+  view: VehicleRegistrationCountryView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {
-      implicit request =>
-        referenceDataService.getCountries() map {
-          countries =>
-            val form = formProvider(countries)
-            val preparedForm = request.userAnswers.get(VehicleRegistrationCountryPage) match {
-              case None        => form
-              case Some(value) => form.fill(value)
-            }
-            Ok(view(preparedForm, countries, request.userAnswers.mrn, arrivalId, mode))
-        }
+  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
+    implicit request =>
+      referenceDataService.getCountries() map {
+        countries =>
+          val form = formProvider(countries)
+          val preparedForm = request.userAnswers.get(VehicleRegistrationCountryPage) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
+          Ok(view(preparedForm, countries, request.userAnswers.mrn, arrivalId, mode))
+      }
+  }
 
-    }
-
-  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId) andThen requireData).async {
-      implicit request =>
-        referenceDataService.getCountries() flatMap {
-          countries =>
-            val form = formProvider(countries)
-            form
-              .bindFromRequest()
-              .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, countries, request.userAnswers.mrn, arrivalId, mode))),
-                value =>
-                  for {
-                    updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleRegistrationCountryPage, value))
-                    _              <- sessionRepository.set(updatedAnswers)
-                  } yield Redirect(navigator.nextPage(VehicleRegistrationCountryPage, mode, updatedAnswers))
-              )
-        }
-    }
+  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
+    implicit request =>
+      referenceDataService.getCountries() flatMap {
+        countries =>
+          val form = formProvider(countries)
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, countries, request.userAnswers.mrn, arrivalId, mode))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleRegistrationCountryPage, value))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(VehicleRegistrationCountryPage, mode, updatedAnswers))
+            )
+      }
+  }
 }

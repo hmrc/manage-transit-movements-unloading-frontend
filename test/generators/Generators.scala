@@ -23,7 +23,13 @@ import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen, Shrink}
 
-trait Generators extends UserAnswersGenerator with PageGenerators with ModelGenerators with UserAnswersEntryGenerators {
+trait Generators
+    extends UserAnswersGenerator
+    with PageGenerators
+    with ModelGenerators
+    with UserAnswersEntryGenerators
+    with ViewModelGenerators
+    with MessagesModelGenerators {
 
   implicit val dontShrink: Shrink[String] = Shrink.shrinkAny
   private val maxListLength               = 10
@@ -137,6 +143,11 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
   def listWithMaxSize[T](maxSize: Int, gen: Gen[T]): Gen[Seq[T]] =
     for {
       size  <- Gen.choose(0, maxSize)
+      items <- Gen.listOfN(size, gen)
+    } yield items
+
+  def listOfSize[T](size: Int, gen: Gen[T]): Gen[Seq[T]] =
+    for {
       items <- Gen.listOfN(size, gen)
     } yield items
 

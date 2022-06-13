@@ -19,14 +19,11 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.VehicleNameRegistrationReferenceFormProvider
-import handlers.ErrorHandler
-import models.requests.IdentifierRequest
-import models.{ArrivalId, UserAnswers}
+import models.ArrivalId
 import pages.VehicleNameRegistrationReferencePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.UnloadingRemarksRejectionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.VehicleNameRegistrationRejectionView
 
@@ -36,47 +33,35 @@ import scala.concurrent.{ExecutionContext, Future}
 class VehicleNameRegistrationRejectionController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  identify: IdentifierAction,
+  actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: VehicleNameRegistrationReferenceFormProvider,
-  getData: DataRetrievalActionProvider,
   val controllerComponents: MessagesControllerComponents,
-  rejectionService: UnloadingRemarksRejectionService,
   view: VehicleNameRegistrationRejectionView,
-  val appConfig: FrontendAppConfig,
-  checkArrivalStatus: CheckArrivalStatusProvider,
-  errorHandler: ErrorHandler
+  val appConfig: FrontendAppConfig
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   private val form = formProvider()
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = (identify andThen checkArrivalStatus(arrivalId) andThen getData(arrivalId)).async {
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
+    actions.requireData(arrivalId).andThen(getMandatoryPage(VehicleNameRegistrationReferencePage)) {
+      implicit request =>
+        Ok(view(form.fill(request.arg), arrivalId))
+    }
+
+  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
-      rejectionService.getRejectedValueAsString(arrivalId, request.userAnswers)(VehicleNameRegistrationReferencePage) flatMap {
-        case Some(originalAttrValue) => Future.successful(Ok(view(form.fill(originalAttrValue), arrivalId)))
-        case None                    => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
-      }
-
-  }
-
-  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = identify.async {
-    implicit request: IdentifierRequest[AnyContent] =>
       form
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId))),
           value =>
-            rejectionService.unloadingRemarksRejectionMessage(arrivalId) flatMap {
-              case Some(rejectionMessage) =>
-                val userAnswers = UserAnswers(arrivalId, rejectionMessage.movementReferenceNumber, request.eoriNumber)
-                for {
-                  updatedAnswers <- Future.fromTry(userAnswers.set(VehicleNameRegistrationReferencePage, value))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId))
-
-              case _ => errorHandler.onClientError(request, INTERNAL_SERVER_ERROR)
-            }
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleNameRegistrationReferencePage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId))
         )
   }
 }

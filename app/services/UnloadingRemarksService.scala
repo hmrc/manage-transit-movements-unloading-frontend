@@ -16,78 +16,52 @@
 
 package services
 
-import java.time.LocalDate
-
+import cats.data.OptionT
 import com.google.inject.Inject
 import connectors.UnloadingConnector
 import logging.Logging
 import models.messages._
 import models.{ArrivalId, UnloadingPermission, UserAnswers}
 import pages._
-import play.api.http.Status._
 import repositories.InterchangeControlReferenceIdRepository
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
-class UnloadingRemarksService @Inject() (metaService: MetaService,
-                                         remarksService: RemarksService,
-                                         unloadingRemarksRequestService: UnloadingRemarksRequestService,
-                                         interchangeControlReferenceIdRepository: InterchangeControlReferenceIdRepository,
-                                         unloadingRemarksMessageService: UnloadingRemarksMessageService,
-                                         unloadingConnector: UnloadingConnector
+class UnloadingRemarksService @Inject() (
+  metaService: MetaService,
+  remarksService: RemarksService,
+  unloadingRemarksRequestService: UnloadingRemarksRequestService,
+  interchangeControlReferenceIdRepository: InterchangeControlReferenceIdRepository,
+  unloadingRemarksMessageService: UnloadingRemarksMessageService,
+  unloadingConnector: UnloadingConnector
 )(implicit ec: ExecutionContext)
     extends Logging {
 
   def submit(arrivalId: ArrivalId, userAnswers: UserAnswers, unloadingPermission: UnloadingPermission)(implicit hc: HeaderCarrier): Future[Option[Int]] =
-    interchangeControlReferenceIdRepository
-      .nextInterchangeControlReferenceId()
-      .flatMap {
-        interchangeControlReference =>
-          remarksService
-            .build(userAnswers, unloadingPermission)
-            .flatMap {
-              unloadingRemarks =>
-                val meta: Meta = metaService.build(interchangeControlReference)
-
-                val unloadingRemarksRequest: UnloadingRemarksRequest =
-                  unloadingRemarksRequestService.build(meta, unloadingRemarks, unloadingPermission, userAnswers)
-
-                unloadingConnector
-                  .post(arrivalId, unloadingRemarksRequest)
-                  .flatMap(
-                    response => Future.successful(Some(response.status))
-                  )
-                  .recover {
-                    case ex =>
-                      logger.error(s"$ex")
-                      Some(SERVICE_UNAVAILABLE)
-                  }
-            }
-      }
-      .recover {
-        case ex =>
-          logger.error(s"$ex")
-          None
-      }
-
-  def resubmit(arrivalId: ArrivalId, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Option[Int]] =
-    unloadingRemarksMessageService.unloadingRemarksMessage(arrivalId) flatMap {
-      case Some(unloadingRemarksRequest) =>
-        getUpdatedUnloadingRemarkRequest(unloadingRemarksRequest, userAnswers) flatMap {
-          case Some(updatedUnloadingRemarks) =>
-            unloadingConnector
-              .post(arrivalId, updatedUnloadingRemarks)
-              .map(
-                response => Some(response.status)
-              )
-          case _ => logger.debug("Failed to get updated unloading remarks request"); Future.successful(None)
-        }
-      case _ => logger.debug("Failed to get unloading remarks request: Service.unloadingRemarksMessage(arrivalId)"); Future.successful(None)
+    (for {
+      interchangeControlReference <- interchangeControlReferenceIdRepository.nextInterchangeControlReferenceId()
+      unloadingRemarks            <- Future.fromTry(remarksService.build(userAnswers, unloadingPermission))
+      meta                    = metaService.build(interchangeControlReference)
+      unloadingRemarksRequest = unloadingRemarksRequestService.build(meta, unloadingRemarks, unloadingPermission, userAnswers)
+      response <- unloadingConnector.post(arrivalId, unloadingRemarksRequest)
+    } yield Some(response.status)).recover {
+      case ex =>
+        logger.error(s"[UnloadingRemarksService][submit] Submission failed: ${ex.getMessage}")
+        None
     }
 
-  private[services] def getUpdatedUnloadingRemarkRequest(unloadingRemarksRequest: UnloadingRemarksRequest,
-                                                         userAnswers: UserAnswers
+  def resubmit(arrivalId: ArrivalId, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Option[Int]] =
+    (for {
+      unloadingRemarksRequest <- OptionT(unloadingRemarksMessageService.unloadingRemarksMessage(arrivalId))
+      updatedUnloadingRemarks <- OptionT(getUpdatedUnloadingRemarkRequest(unloadingRemarksRequest, userAnswers))
+      response                <- OptionT.liftF(unloadingConnector.post(arrivalId, updatedUnloadingRemarks))
+    } yield response.status).value
+
+  private[services] def getUpdatedUnloadingRemarkRequest(
+    unloadingRemarksRequest: UnloadingRemarksRequest,
+    userAnswers: UserAnswers
   ): Future[Option[UnloadingRemarksRequest]] =
     interchangeControlReferenceIdRepository
       .nextInterchangeControlReferenceId()
@@ -104,7 +78,6 @@ class UnloadingRemarksService @Inject() (metaService: MetaService,
                 resultOfControls =>
                   unloadingRemarksRequestWithMeta.copy(resultOfControl = resultOfControls)
               }
-
           }
       }
 
@@ -115,32 +88,18 @@ class UnloadingRemarksService @Inject() (metaService: MetaService,
     }
 
   private def updatedResultsOfControl(unloadingRemarksRequest: UnloadingRemarksRequest, userAnswers: UserAnswers): Option[Seq[ResultsOfControl]] =
-    getResultOfControlCorrectedValue(userAnswers: UserAnswers) match {
-      case Some((newValue, pointerIdentity: PointerIdentity)) =>
-        val resultsOfControl = unloadingRemarksRequest.resultOfControl.map {
+    getResultOfControlCorrectedValue(userAnswers) map {
+      case (newValue, pointerIdentity) =>
+        unloadingRemarksRequest.resultOfControl map {
           case differentValues: ResultsOfControlDifferentValues if differentValues.pointerToAttribute.pointer == pointerIdentity =>
             differentValues.copy(correctedValue = newValue)
           case roc: ResultsOfControl => roc
         }
-        Some(resultsOfControl)
-      case _ => None
     }
 
   private def getResultOfControlCorrectedValue(userAnswers: UserAnswers): Option[(String, PointerIdentity)] =
-    userAnswers.get(VehicleNameRegistrationReferencePage) match {
-      case Some(answer) => Some((answer, TransportIdentity))
-      case _ =>
-        userAnswers.get(TotalNumberOfPackagesPage) match {
-          case Some(answer) => Some((answer.toString, NumberOfPackages))
-          case _ =>
-            userAnswers.get(TotalNumberOfItemsPage) match {
-              case Some(answer) => Some((answer.toString, NumberOfItems))
-              case _ =>
-                userAnswers.get(GrossMassAmountPage) match {
-                  case Some(answer) => Some((answer, GrossMass))
-                  case _            => None
-                }
-            }
-        }
-    }
+    userAnswers.get(VehicleNameRegistrationReferencePage).map((_, TransportIdentity)) orElse
+      userAnswers.get(TotalNumberOfPackagesPage).map(_.toString).map((_, NumberOfPackages)) orElse
+      userAnswers.get(TotalNumberOfItemsPage).map(_.toString).map((_, NumberOfItems)) orElse
+      userAnswers.get(GrossMassAmountPage).map((_, GrossMass))
 }
