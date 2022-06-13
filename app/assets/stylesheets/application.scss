@@ -5,7 +5,3 @@ $hmrc-assets-path: "/manage-transit-movements/unloading/assets/lib/hmrc-frontend
 @import "lib/hmrc-frontend/hmrc/all";
 
 @import "partials/shame";
-
-.govuk-summary-list__actions-list-item {
-    display: inline-block;
-}

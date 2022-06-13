@@ -74,8 +74,9 @@
     overflow-wrap: break-word;
     hyphens: auto;
 }
-
-
+.govuk-summary-list__actions-list-item {
+    display: inline-block;
+}
 
 // make numbers easier to read
 @supports (font-variant-numeric: tabular-nums) {
