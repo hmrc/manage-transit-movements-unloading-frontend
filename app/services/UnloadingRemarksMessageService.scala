@@ -22,6 +22,7 @@ import connectors.UnloadingConnector
 import models.ArrivalId
 import models.messages.UnloadingRemarksRequest
 import uk.gov.hmrc.http.HeaderCarrier
+import cats.implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
 

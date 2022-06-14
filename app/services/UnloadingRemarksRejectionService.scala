@@ -17,6 +17,7 @@
 package services
 
 import cats.data.OptionT
+import cats.implicits._
 import com.google.inject.Inject
 import connectors.UnloadingConnector
 import models.{ArrivalId, UnloadingRemarksRejectionMessage}
