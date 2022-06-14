@@ -21,6 +21,7 @@ import com.google.inject.Inject
 import connectors.UnloadingConnector
 import models.{ArrivalId, UnloadingPermission}
 import uk.gov.hmrc.http.HeaderCarrier
+import cats.implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
 
