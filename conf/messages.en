@@ -224,11 +224,11 @@ unloadingRemarksRejection.contact.message = If this information is correct, you 
 unloadingRemarksRejection.conflicting.information = There is conflicting information that must be fixed before you can continue.
 unloadingRemarksRejection.create.unloadingRemarks = create new unloading remarks
 
-unloadingRemarksRejection.review = You must review the error and
+unloadingRemarksRejection.review = You must review the errors and
 unloadingRemarksRejection.newUnloadingRemarks = send new unloading remarks with the right information
 unloadingRemarksRejection.youCan = You can
-unloadingRemarksRejection.contact = contact the New Computerised Transit System helpdesk if you need help understanding the error (opens in a new tab)
-
+unloadingRemarksRejection.error.contact = contact the New Computerised Transit System helpdesk if you need help understanding the error (opens in a new tab)
+unloadingRemarksRejection.errors.contact = contact the New Computerised Transit System helpdesk if you need help understanding the errors (opens in a new tab)
 
 unloadingRemarksRejection.errorCode = Error code
 unloadingRemarksRejection.pointer = Pointer
@@ -239,7 +239,7 @@ pageNotFound.heading = Page not found
 pageNotFound.paragraph1 = If you typed the web address, check it is correct.
 pageNotFound.paragraph2 = If you pasted the web address, check you copied the entire address.
 pageNotFound.paragraph3Start = If the web address is correct or you selected a link or button,
-pageNotFound.contactLink=contact the New Computerised Transit System(NCTS) helpdesk if you need to speak to someone about your transit movement (opens in a new tab)
+pageNotFound.contactLink = contact the New Computerised Transit System(NCTS) helpdesk if you need to speak to someone about your transit movement (opens in a new tab)
 
 unauthorisedWithGroupAccess.title = You cannot use this service authorisation
 unauthorisedWithGroupAccess.heading = You cannot use this service
