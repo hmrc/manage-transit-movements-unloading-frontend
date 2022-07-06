@@ -42,7 +42,7 @@ class UnloadingRemarksMultipleErrorsRejectionViewSpec extends SummaryListViewBeh
 
   behave like pageWithSummaryLists()
 
-  behave like pageWithPartialContent("p", "You must review the error and")
+  behave like pageWithPartialContent("p", "You must review the errors and")
   behave like pageWithLink(
     "review",
     "send new unloading remarks with the right information",
@@ -52,7 +52,7 @@ class UnloadingRemarksMultipleErrorsRejectionViewSpec extends SummaryListViewBeh
   behave like pageWithPartialContent("p", "You can ")
   behave like pageWithLink(
     "contact",
-    "contact the New Computerised Transit System helpdesk if you need help understanding the error (opens in a new tab)",
+    "contact the New Computerised Transit System helpdesk if you need help understanding the errors (opens in a new tab)",
     contactUrl
   )
 }
