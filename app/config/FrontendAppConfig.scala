@@ -18,6 +18,8 @@ package config
 
 import com.google.inject.{Inject, Singleton}
 import play.api.Configuration
+import play.api.mvc.RequestHeader
+import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration) {
@@ -36,7 +38,10 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val showUserResearchBanner: Boolean = configuration.get[Boolean]("banners.showUserResearch")
   lazy val nctsHelpdeskUrl: String    = configuration.get[String]("urls.nctsHelpdesk")
 
-  val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
+  private val host: String = configuration.get[String]("host")
+
+  def feedbackUrl(implicit request: RequestHeader): String =
+    s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
 
   val signOutUrl: String = configuration.get[String]("urls.logoutContinue") + configuration.get[String]("urls.feedback")
 
