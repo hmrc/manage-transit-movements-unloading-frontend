@@ -36,6 +36,8 @@ class UnloadingRemarksMultipleErrorsRejectionViewSpec extends SummaryListViewBeh
   override def view: HtmlFormat.Appendable =
     injector.instanceOf[UnloadingRemarksMultipleErrorsRejectionView].apply(arrivalId, functionalErrors)(fakeRequest, messages)
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink
 
   behave like pageWithHeading()

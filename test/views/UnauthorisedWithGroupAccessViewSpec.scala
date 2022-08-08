@@ -27,6 +27,8 @@ class UnauthorisedWithGroupAccessViewSpec extends ViewBehaviours {
 
   override val prefix: String = "unauthorisedWithGroupAccess"
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink
 
   behave like pageWithHeading()

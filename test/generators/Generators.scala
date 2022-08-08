@@ -16,12 +16,12 @@
 
 package generators
 
-import java.time._
-
 import cats.data.NonEmptyList
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen, Shrink}
+
+import java.time._
 
 trait Generators
     extends UserAnswersGenerator
@@ -48,6 +48,8 @@ trait Generators
         m + n
     }
   }
+
+  def positiveInts: Gen[Int] = Gen.choose(0, Int.MaxValue)
 
   def intsInRangeWithCommas(min: Int, max: Int): Gen[String] = {
     val numberGen = choose[Int](min, max)
@@ -85,13 +87,12 @@ trait Generators
     )
 
   def nonBooleans: Gen[String] =
-    arbitrary[String]
-      .suchThat(_.nonEmpty)
+    nonEmptyString
       .suchThat(_ != "true")
       .suchThat(_ != "false")
 
   def nonEmptyString: Gen[String] =
-    arbitrary[String] suchThat (_.nonEmpty)
+    Gen.alphaNumStr suchThat (_.nonEmpty)
 
   def stringsWithMaxLength(maxLength: Int): Gen[String] =
     for {

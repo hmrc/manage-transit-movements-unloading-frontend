@@ -41,6 +41,8 @@ class UnloadingSummaryViewSpec extends CheckYourAnswersViewBehaviours {
       .instanceOf[UnloadingSummaryView]
       .apply(mrn, arrivalId, sections.head, sections.tail, numberOfSeals, showAddCommentsLink)(fakeRequest, messages)
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink
 
   behave like pageWithCaption(mrn.toString)

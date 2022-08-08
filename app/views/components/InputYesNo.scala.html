@@ -15,24 +15,26 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import viewModels.components.InputYesNoViewModel
+@import viewModels.components.InputYesNoViewModel._
+@import views.html.components.Heading
 @import views.utils.ViewUtils._
 
-@this(govukRadios: GovukRadios)
+@this(
+    govukRadios: GovukRadios,
+    hmrcHeading: Heading
+)
 
 @(
     field: Field,
-    messageKeyPrefix: String,
-    caption: Option[String] = None,
-    hint: Option[String] = None,
-    legendIsHeading: Boolean = true,
-    legendIsVisible: Boolean = true,
-    legendParams: Seq[String] = Nil
+    yesNoType: InputYesNoViewModel,
+    hint: Option[Content] = None
 )(implicit messages: Messages)
 
 @radios = @{
     Radios(
         classes = "govuk-radios--inline",
-        hint = hint.map(x => Hint(content = Text(x))),
+        hint = hint.map(x => Hint(content = x)),
         items = Seq(
             RadioItem(
                 id = Some(field.id),
@@ -49,10 +51,16 @@
     .withFormField(field)
 }
 
-@govukRadios(
-    if (legendIsHeading) {
-        radios.withHeadingAndCaption(messages(s"$messageKeyPrefix.heading", legendParams: _*), caption)
-    } else {
-        radios.withLabel(messages(s"$messageKeyPrefix.label", legendParams: _*), legendIsVisible)
+@yesNoType match {
+    case OrdinaryYesNo(heading, caption) => {
+        @govukRadios(radios.withHeadingAndCaption(heading, caption))
     }
-)
+    case x @ YesNoWithAdditionalHtml(heading, caption, additionalHtml) => {
+        @hmrcHeading(heading, caption, Some(x.headingClasses))
+        @additionalHtml
+        @govukRadios(radios.withLegend(heading, false))
+    }
+    case YesNoWithLegend(legend) => {
+        @govukRadios(radios.withLegend(legend))
+    }
+}

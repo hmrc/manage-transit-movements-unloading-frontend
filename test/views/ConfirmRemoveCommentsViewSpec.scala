@@ -32,6 +32,8 @@ class ConfirmRemoveCommentsViewSpec extends YesNoViewBehaviours {
 
   override val prefix: String = "confirmRemoveComments"
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink
 
   behave like pageWithHeading()

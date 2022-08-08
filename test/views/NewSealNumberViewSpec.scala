@@ -36,6 +36,8 @@ class NewSealNumberViewSpec extends InputTextViewBehaviours[String] {
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink
 
   behave like pageWithHeading()

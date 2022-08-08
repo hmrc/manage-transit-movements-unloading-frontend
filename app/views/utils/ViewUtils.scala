@@ -19,13 +19,9 @@ package views.utils
 import play.api.data.{Form, FormError}
 import play.api.i18n.Messages
 import play.twirl.api.Html
-import uk.gov.hmrc.govukfrontend.views.implicits.{RichCharacterCountSupport, RichRadiosSupport, RichTextareaSupport}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.charactercount.CharacterCount
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.errorsummary.ErrorSummary
-import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.{Fieldset, Legend}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.Radios
-import uk.gov.hmrc.govukfrontend.views.viewmodels.textarea.Textarea
+import uk.gov.hmrc.govukfrontend.views.Aliases._
+import uk.gov.hmrc.govukfrontend.views.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.input.Input
 import uk.gov.hmrc.hmrcfrontend.views.implicits.RichErrorSummarySupport
 
 import java.time.LocalDate
@@ -56,21 +52,12 @@ object ViewUtils {
         case None        => radios.withHeading(Text(heading))
       }
 
-    def withLabel(label: String, labelIsVisible: Boolean = true): Radios = {
-      val labelClass = if (labelIsVisible) "govuk-fieldset__legend--m" else "govuk-visually-hidden"
+    def withLegend(legend: String, legendIsVisible: Boolean = true): Radios = {
+      val labelClass = if (legendIsVisible) "govuk-fieldset__legend--m" else "govuk-visually-hidden"
       radios.copy(
-        fieldset = Some(Fieldset(legend = Some(Legend(content = Text(label), classes = labelClass, isPageHeading = false))))
+        fieldset = Some(Fieldset(legend = Some(Legend(content = Text(legend), classes = labelClass, isPageHeading = false))))
       )
     }
-  }
-
-  implicit class TextAreaImplicits(textArea: Textarea)(implicit messages: Messages) extends RichTextareaSupport {
-
-    def withHeadingAndCaption(heading: String, caption: Option[String]): Textarea =
-      caption match {
-        case Some(value) => textArea.withHeadingAndSectionCaption(Text(heading), Text(value))
-        case None        => textArea.withHeading(Text(heading))
-      }
   }
 
   implicit class CharacterCountImplicits(characterCount: CharacterCount)(implicit messages: Messages) extends RichCharacterCountSupport {
@@ -92,6 +79,24 @@ object ViewUtils {
       }
       errorSummary.withFormErrorsAsText(form, mapping = Map(fieldName -> s"${fieldName}_$arg"))
     }
+  }
+
+  implicit class SelectImplicits(select: Select)(implicit messages: Messages) extends RichSelectSupport {
+
+    def withHeadingAndCaption(heading: String, caption: Option[String]): Select =
+      caption match {
+        case Some(value) => select.withHeadingAndSectionCaption(Text(heading), Text(value))
+        case None        => select.withHeading(Text(heading))
+      }
+  }
+
+  implicit class InputImplicits(input: Input)(implicit messages: Messages) extends RichInputSupport {
+
+    def withHeadingAndCaption(heading: String, caption: Option[String]): Input =
+      caption match {
+        case Some(value) => input.withHeadingAndSectionCaption(Text(heading), Text(value))
+        case None        => input.withHeading(Text(heading))
+      }
   }
 
 }

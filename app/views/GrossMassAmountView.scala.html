@@ -14,8 +14,9 @@
  * limitations under the License.
  *@
 
-@import views.html.components.{Button, ErrorSummary, InputText, HeadingCaption}
 @import models.{MovementReferenceNumber, ArrivalId}
+@import viewModels.components.InputTextViewModel._
+@import views.html.components.{Button, ErrorSummary, InputText, HeadingCaption}
 
 @this(
     mainTemplate: MainTemplate,
@@ -41,9 +42,11 @@
 
         @inputText(
             field = form("value"),
-            label = messages("grossMassAmount.heading"),
+            inputTextType = OrdinaryTextInput(
+                heading = messages("grossMassAmount.heading")
+            ),
             inputClass = InputSize.Width10,
-            suffix = Some("kg"),
+            suffix = Some("kg")
         )
 
         @button(attributes = Map("id" -> "submit"))

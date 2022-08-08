@@ -169,7 +169,7 @@ trait ModelGenerators {
     Arbitrary {
       for {
         code <- Gen.pick(2, 'A' to 'Z')
-        name <- arbitrary[String]
+        name <- nonEmptyString
       } yield Country(code.mkString, name)
     }
 

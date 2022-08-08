@@ -103,7 +103,8 @@ vehicleRegistrationCountry.title = Which country is the vehicle registered in?
 vehicleRegistrationCountry.heading = Which country is the vehicle registered in?
 vehicleRegistrationCountry.checkYourAnswersLabel = Which country is the vehicle registered in?
 vehicleRegistrationCountry.error.required = Enter which country the vehicle is registered in
-vehicleRegistrationCountry.error.length =  The country the vehicle is registered in must be 100 characters or less
+vehicleRegistrationCountry.error.length = The country the vehicle is registered in must be 100 characters or less
+vehicleRegistrationCountry.placeHolder = Select a country
 
 grossMassAmount.title = What is the new total gross mass in kilograms?
 grossMassAmount.heading = What is the new total gross mass in kilograms?

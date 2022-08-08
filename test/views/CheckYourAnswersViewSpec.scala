@@ -28,6 +28,8 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours {
   override def viewWithSections(sections: Seq[Section]): HtmlFormat.Appendable =
     injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, sections)(fakeRequest, messages)
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink
 
   behave like pageWithCaption(mrn.toString)

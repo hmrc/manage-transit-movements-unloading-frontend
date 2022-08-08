@@ -15,6 +15,7 @@
  *@
 
 @import models.MovementReferenceNumber
+@import viewModels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo, HeadingCaption}
 
 @this(
@@ -41,7 +42,9 @@
 
         @inputYesNo(
             field = form("value"),
-            messageKeyPrefix = "areAnySealsBroken"
+            yesNoType = OrdinaryYesNo(
+                heading = messages("areAnySealsBroken.heading")
+            )
         )
 
         @button(attributes = Map("id" -> "submit"))
