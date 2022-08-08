@@ -18,26 +18,10 @@ site.service_name = Manage your transit movements
 site.textarea.char_limit = (Limit is {0} characters)
 site.title.suffix = - Manage your transit movements - GOV.UK
 site.youMust = You must
+site.section = This section is
 
 error.title.prefix = Error:
 error.summary.title = There is a problem
-
-footer.links.support_links = Support links
-footer.links.help = Help using GOV.UK
-footer.links.cookies = Cookies
-footer.links.accessibility = Accessibility statement
-footer.links.privacy = Privacy policy
-footer.links.terms = Terms and conditions
-
-language.cymraeg = Cymraeg
-language.change.cymraeg = Newid yr iaith i'r Gymraeg
-language.english = English
-language.change.english = Change the language to English
-language.switcher = Language switcher
-
-phaseBanner.1 = This is a new service – your
-phaseBanner.2 = feedback
-phaseBanner.3 = will help us to improve it.
 
 checkYourAnswers.title = Check your answers before sending these unloading remarks
 checkYourAnswers.heading = Check your answers before sending these unloading remarks
@@ -49,10 +33,6 @@ checkYourAnswers.subHeading = What you found when unloading
 checkYourAnswers.confirmation.heading = Now send your unloading remarks
 checkYourAnswers.confirmation.paragraph = By sending this you are confirming that the details you are providing are correct, to the best of your knowledge.
 checkYourAnswers.changeItems.hidden = answers
-
-index.title =  Manage your transit movements - GOV.UK
-index.heading = Manage transit movements
-index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
 session_expired.title = For your security, we signed you out
 session_expired.heading = For your security, we signed you out

@@ -16,6 +16,9 @@
 
 package viewModels.components
 
+import play.twirl.api.Html
+
 trait AdditionalHtmlViewModel {
+  val additionalHtml: Html
   val headingClasses = "govuk-!-margin-top-0 govuk-!-margin-bottom-2"
 }
