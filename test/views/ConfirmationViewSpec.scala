@@ -27,6 +27,8 @@ class ConfirmationViewSpec extends PanelViewBehaviours {
   override def view: HtmlFormat.Appendable =
     injector.instanceOf[ConfirmationView].apply(mrn)(fakeRequest, messages)
 
+  behave like pageWithTitle()
+
   behave like pageWithoutBackLink
 
   behave like pageWithHeading()

@@ -14,8 +14,9 @@
  * limitations under the License.
  *@
 
-@import views.html.components.{Button, ErrorSummary, InputText, HeadingCaption}
 @import models.MovementReferenceNumber
+@import viewModels.components.InputTextViewModel._
+@import views.html.components.{Button, ErrorSummary, InputText, HeadingCaption}
 
 @this(
     mainTemplate: MainTemplate,
@@ -41,7 +42,9 @@
 
         @inputText(
             field = form("value"),
-            label = messages("newSealNumber.heading")
+            inputTextType = OrdinaryTextInput(
+                heading = messages("newSealNumber.heading")
+            )
         )
 
         @button(attributes = Map("id" -> "submit"))

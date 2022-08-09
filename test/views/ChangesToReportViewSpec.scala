@@ -33,6 +33,8 @@ class ChangesToReportViewSpec extends CharacterCountViewBehaviours {
 
   override val prefix: String = "changesToReport"
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink
 
   behave like pageWithCaption(mrn.toString)

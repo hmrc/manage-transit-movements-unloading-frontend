@@ -23,7 +23,7 @@
 @(
     field: Field,
     label: String,
-    maxLength: Option[Int] = None,
+    maxLength: Int,
     caption: Option[String] = None,
     hint: Option[String] = None,
     rows: Int = 5
@@ -35,7 +35,7 @@
         name = field.id,
         value = field.value,
         rows = rows,
-        maxLength = maxLength,
+        maxLength = Some(maxLength),
         hint = hint.map(x => Hint(content = HtmlContent(messages(x)))),
         errorMessage = field.error.map { e =>
             ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args: _*)))

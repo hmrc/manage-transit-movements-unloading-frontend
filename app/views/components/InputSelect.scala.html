@@ -15,21 +15,28 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import viewModels.components.InputSelectViewModel
+@import viewModels.components.InputSelectViewModel._
+@import views.html.components.Heading
+@import views.utils.ViewUtils._
 
-@this(govukSelect: GovukSelect)
+@this(
+    govukSelect: GovukSelect,
+    hmrcHeading: Heading
+)
 
 @(
     field: Field,
-    label: String,
-    hint: Option[String] = None,
-    placeholder: Option[String] = None,
-    selectItems: Seq[SelectItem]
+    selectType: InputSelectViewModel,
+    placeholder: String,
+    selectItems: Seq[SelectItem],
+    hint: Option[String] = None
 )(implicit messages: Messages)
 
-@govukSelect(
+@select = @{
     Select(
         hint = hint.map(x => Hint(content = Text(x))),
-        items = SelectItem(value = None, text = placeholder.getOrElse("")) +: selectItems,
+        items = SelectItem(value = None, text = placeholder) +: selectItems,
         formGroupClasses = "autocomplete-wrapper",
         attributes = Map("data-autocomplete" -> ""),
         errorMessage = field.error.map { e =>
@@ -38,5 +45,18 @@
         classes = "govuk-!-width-two-thirds"
     )
     .withFormField(field)
-    .withHeading(heading = Text(label))
-)
+}
+
+@selectType match {
+    case OrdinarySelect(heading, caption) => {
+        @govukSelect(select.withHeadingAndCaption(heading, caption))
+    }
+    case x @ SelectWithAdditionalHtml(heading, caption, additionalHtml) => {
+        @hmrcHeading(heading, caption, Some(x.headingClasses))
+        @additionalHtml
+        @govukSelect(select.copy(label = Label(content = Text(heading), isPageHeading = false, classes = "govuk-visually-hidden")))
+    }
+    case AddressCountrySelect(label) => {
+        @govukSelect(select.copy(label = Label(content = Text(label), isPageHeading = false)))
+    }
+}

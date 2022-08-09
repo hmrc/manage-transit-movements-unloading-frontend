@@ -15,12 +15,12 @@
  *@
 
 @import models.{MovementReferenceNumber, ArrivalId, Index}
-@import views.html.components.{Button, ErrorSummary, Heading, InputYesNo, HeadingCaption}
+@import viewModels.components.InputYesNoViewModel._
+@import views.html.components.{Button, ErrorSummary, InputYesNo, HeadingCaption}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    heading: Heading,
     inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
     button: Button,
@@ -42,8 +42,9 @@
 
         @inputYesNo(
             field = form("value"),
-            messageKeyPrefix = "confirmRemoveSeal",
-            legendParams = List(sealDescription)
+            yesNoType = OrdinaryYesNo(
+                heading = messages("confirmRemoveSeal.heading", sealDescription)
+            )
         )
 
         @button(attributes = Map("id" -> "submit"))

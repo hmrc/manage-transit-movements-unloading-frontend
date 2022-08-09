@@ -31,7 +31,7 @@ import services.DateTimeService
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
 class InterchangeControlReferenceIdRepositorySpec
-  extends AnyFreeSpec
+    extends AnyFreeSpec
     with Matchers
     with ScalaFutures
     with BeforeAndAfterEach

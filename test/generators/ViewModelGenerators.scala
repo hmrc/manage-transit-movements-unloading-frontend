@@ -18,6 +18,9 @@ package generators
 
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
+import play.api.data.FormError
+import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Content, Hint, Label, RadioItem}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
@@ -84,5 +87,52 @@ trait ViewModelGenerators {
       length       <- Gen.choose(1, maxSeqLength)
       rows         <- Gen.containerOfN[Seq, SummaryListRow](length, arbitrary[SummaryListRow])
     } yield Section(sectionTitle, rows)
+  }
+
+  implicit lazy val arbitraryHtml: Arbitrary[Html] = Arbitrary {
+    for {
+      text <- nonEmptyString
+    } yield Html(text)
+  }
+
+  implicit lazy val arbitraryFormError: Arbitrary[FormError] = Arbitrary {
+    for {
+      key     <- nonEmptyString
+      message <- nonEmptyString
+    } yield FormError(key, message)
+  }
+
+  implicit lazy val arbitraryRadioItem: Arbitrary[RadioItem] = Arbitrary {
+    for {
+      content         <- arbitrary[Content]
+      id              <- Gen.option(nonEmptyString)
+      value           <- Gen.option(nonEmptyString)
+      label           <- Gen.option(arbitrary[Label])
+      hint            <- Gen.option(arbitrary[Hint])
+      divider         <- Gen.option(nonEmptyString)
+      checked         <- arbitrary[Boolean]
+      conditionalHtml <- Gen.option(arbitrary[Html])
+      disabled        <- arbitrary[Boolean]
+      attributes      <- Gen.const(Map.empty[String, String])
+    } yield RadioItem(content, id, value, label, hint, divider, checked, conditionalHtml, disabled, attributes)
+  }
+
+  implicit lazy val arbitraryLabel: Arbitrary[Label] = Arbitrary {
+    for {
+      forAttr       <- Gen.option(nonEmptyString)
+      isPageHeading <- arbitrary[Boolean]
+      classes       <- Gen.alphaNumStr
+      attributes    <- Gen.const(Map.empty[String, String])
+      content       <- arbitrary[Content]
+    } yield Label(forAttr, isPageHeading, classes, attributes, content)
+  }
+
+  implicit lazy val arbitraryHint: Arbitrary[Hint] = Arbitrary {
+    for {
+      id         <- Gen.option(nonEmptyString)
+      classes    <- Gen.alphaNumStr
+      attributes <- Gen.const(Map.empty[String, String])
+      content    <- arbitrary[Content]
+    } yield Hint(id, classes, attributes, content)
   }
 }

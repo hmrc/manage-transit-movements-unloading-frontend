@@ -15,12 +15,12 @@
  *@
 
 @import models.MovementReferenceNumber
-@import views.html.components.{Button, ErrorSummary, Heading, InputYesNo, HeadingCaption}
+@import viewModels.components.InputYesNoViewModel._
+@import views.html.components.{Button, ErrorSummary, InputYesNo, HeadingCaption}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    heading: Heading,
     inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
     button: Button,
@@ -42,7 +42,9 @@
 
         @inputYesNo(
             field = form("value"),
-            messageKeyPrefix = "confirmRemoveComments"
+            yesNoType = OrdinaryYesNo(
+                heading = messages("confirmRemoveComments.heading")
+            )
         )
 
         @button(attributes = Map("id" -> "submit"))

@@ -29,6 +29,8 @@ class SessionExpiredViewSpec extends ViewBehaviours {
 
   override val hasSignOutLink: Boolean = false
 
+  behave like pageWithTitle()
+
   behave like pageWithoutBackLink
 
   behave like pageWithHeading()

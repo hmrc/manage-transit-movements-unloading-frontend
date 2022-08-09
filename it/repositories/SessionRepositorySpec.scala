@@ -28,14 +28,15 @@ import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class SessionRepositorySpec extends AnyFreeSpec
-  with Matchers
-  with ScalaFutures
-  with BeforeAndAfterEach
-  with IntegrationPatience
-  with GuiceOneAppPerSuite
-  with OptionValues
-  with DefaultPlayMongoRepositorySupport[UserAnswers] {
+class SessionRepositorySpec
+    extends AnyFreeSpec
+    with Matchers
+    with ScalaFutures
+    with BeforeAndAfterEach
+    with IntegrationPatience
+    with GuiceOneAppPerSuite
+    with OptionValues
+    with DefaultPlayMongoRepositorySupport[UserAnswers] {
 
   private val config: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
@@ -58,9 +59,9 @@ class SessionRepositorySpec extends AnyFreeSpec
 
         val result = repository.get(ArrivalId(0), EoriNumber("EoriNumber1")).futureValue
 
-        result.value.id         mustBe userAnswers1.id
+        result.value.id mustBe userAnswers1.id
         result.value.eoriNumber mustBe userAnswers1.eoriNumber
-        result.value.data       mustBe userAnswers1.data
+        result.value.data mustBe userAnswers1.data
       }
 
       "must return None when no UserAnswers match ArrivalId" in {
@@ -88,11 +89,10 @@ class SessionRepositorySpec extends AnyFreeSpec
 
         val getResult = repository.get(ArrivalId(3), EoriNumber("EoriNumber3")).futureValue.value
 
-
-        setResult            mustBe true
-        getResult.id         mustBe userAnswers.id
+        setResult mustBe true
+        getResult.id mustBe userAnswers.id
         getResult.eoriNumber mustBe userAnswers.eoriNumber
-        getResult.data       mustBe userAnswers.data
+        getResult.data mustBe userAnswers.data
       }
     }
 

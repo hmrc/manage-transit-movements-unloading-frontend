@@ -28,6 +28,8 @@ class UnloadingGuidanceViewSpec extends ViewBehaviours {
 
   override val prefix: String = "unloadingGuidance"
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink
 
   behave like pageWithHeading()

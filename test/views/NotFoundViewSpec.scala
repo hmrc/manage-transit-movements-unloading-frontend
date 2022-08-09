@@ -29,6 +29,8 @@ class NotFoundViewSpec extends ViewBehaviours {
 
   private val contactUrl = "https://www.gov.uk/new-computerised-transit-system"
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink
 
   behave like pageWithHeading()

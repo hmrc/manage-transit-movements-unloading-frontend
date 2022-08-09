@@ -33,7 +33,7 @@
     title = messages("unloadingRemarksRejection.title"),
     showBackLink = true
 ) {
-    @heading("unloadingRemarksRejection.heading")
+    @heading(messages("unloadingRemarksRejection.heading"))
 
     @for(error <- errors) {
         @govukSummaryList(error.toSummaryList)
