@@ -34,9 +34,13 @@ class DateGoodsUnloadedRejectionViewSpec extends SpecBase with DateInputViewBeha
 
   override val prefix: String = "dateGoodsUnloaded"
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink()
 
   behave like pageWithCaption(mrn.toString)
+
+  behave like pageWithHeading()
 
   behave like pageWithDateInput
 

@@ -73,11 +73,6 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     getElementHref(link) must fullyMatch regex "http:\\/\\/localhost:9250\\/contact\\/beta-feedback\\?service=CTCTraders&backUrl=.*"
   }
 
-  "must render title" in {
-    val title = doc.title()
-    title mustBe s"${messages(s"$prefix.title")} - Manage your transit movements - GOV.UK"
-  }
-
   "must render accessibility statement link" in {
     val link = doc
       .select(".govuk-footer__inline-list-item > .govuk-footer__link")
@@ -101,10 +96,20 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     )
   }
 
+  def pageWithTitle(args: String*): Unit =
+    "must render title" in {
+      val title      = doc.title()
+      val messageKey = s"$prefix.title"
+      title mustBe s"${messages(messageKey, args: _*)} - Manage your transit movements - GOV.UK"
+      assert(messages.isDefinedAt(messageKey))
+    }
+
   def pageWithHeading(args: String*): Unit =
     "must render heading" in {
-      val heading = getElementByTag(doc, "h1")
-      assertElementIncludesText(heading, messages(s"$prefix.heading", args: _*))
+      val heading    = getElementByTag(doc, "h1")
+      val messageKey = s"$prefix.heading"
+      assertElementIncludesText(heading, messages(messageKey, args: _*))
+      assert(messages.isDefinedAt(messageKey))
     }
 
   def pageWithCaption(expectedText: String): Unit =

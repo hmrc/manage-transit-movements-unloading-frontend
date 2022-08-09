@@ -36,6 +36,8 @@ class TotalNumberOfItemsViewSpec extends InputTextViewBehaviours[Int] {
 
   implicit override val arbitraryT: Arbitrary[Int] = Arbitrary(Gen.oneOf(1 to 100))
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink
 
   behave like pageWithHeading()

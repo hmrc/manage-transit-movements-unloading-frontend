@@ -32,6 +32,8 @@ class CanSealsBeReadViewSpec extends YesNoViewBehaviours {
 
   override val prefix: String = "canSealsBeRead"
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink
 
   behave like pageWithCaption(mrn.toString)

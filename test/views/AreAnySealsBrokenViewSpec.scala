@@ -32,6 +32,8 @@ class AreAnySealsBrokenViewSpec extends YesNoViewBehaviours {
 
   override val prefix: String = "areAnySealsBroken"
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink
 
   behave like pageWithCaption(mrn.toString)

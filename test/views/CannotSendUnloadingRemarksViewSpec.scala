@@ -28,6 +28,8 @@ class CannotSendUnloadingRemarksViewSpec extends ViewBehaviours with Generators 
 
   override val prefix: String = "cannotSendUnloadingRemarks"
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink
 
   behave like pageWithHeading()

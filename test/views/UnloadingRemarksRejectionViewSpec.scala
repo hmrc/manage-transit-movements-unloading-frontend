@@ -37,6 +37,8 @@ class UnloadingRemarksRejectionViewSpec extends SummaryListViewBehaviours with G
 
   override val prefix: String = "unloadingRemarksRejection"
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink
 
   behave like pageWithHeading()

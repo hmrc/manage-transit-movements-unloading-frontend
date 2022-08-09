@@ -14,8 +14,9 @@
  * limitations under the License.
  *@
 
-@import views.html.components.{Button, ErrorSummary, InputText, HeadingCaption}
 @import models.MovementReferenceNumber
+@import viewModels.components.InputTextViewModel._
+@import views.html.components.{Button, ErrorSummary, InputText, HeadingCaption}
 
 @this(
     mainTemplate: MainTemplate,
@@ -41,7 +42,9 @@
 
         @inputText(
             field = form("value"),
-            label = messages("totalNumberOfItems.heading"),
+            inputTextType = OrdinaryTextInput(
+                heading = messages("totalNumberOfItems.heading")
+            ),
             inputClass = InputSize.Width10,
             inputMode = Some("numeric"),
             pattern = Some("[0-9]*")

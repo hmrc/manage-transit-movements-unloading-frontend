@@ -33,9 +33,13 @@ class ConfirmRemoveSealViewSpec extends YesNoViewBehaviours {
 
   override val prefix: String = "confirmRemoveSeal"
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink
 
   behave like pageWithCaption(mrn.toString)
+
+  behave like pageWithHeading(sealDescription)
 
   behave like pageWithRadioItems(args = List(sealDescription))
 

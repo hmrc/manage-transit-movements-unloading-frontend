@@ -14,8 +14,9 @@
  * limitations under the License.
  *@
 
-@import views.html.components.{Button, ErrorSummary, InputText}
 @import models.MovementReferenceNumber
+@import viewModels.components.InputTextViewModel._
+@import views.html.components.{Button, ErrorSummary, InputText}
 
 @this(
     mainTemplate: MainTemplate,
@@ -38,7 +39,9 @@
 
         @inputText(
             field = form("value"),
-            label = messages("vehicleNameRegistrationReference.heading")
+            inputTextType = OrdinaryTextInput(
+                heading = messages("vehicleNameRegistrationReference.heading")
+            )
         )
 
         @button(attributes = Map("id" -> "submit"))

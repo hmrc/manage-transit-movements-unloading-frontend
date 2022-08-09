@@ -15,11 +15,10 @@
  *@
 
 @import models.MovementReferenceNumber
-@import views.html.components.{ErrorSummary, Button, InputSelect, HeadingCaption}
-@import models.Index
-@import models.reference.Country
-@import models.reference.Selectable
+@import models.reference.{Country, Selectable}
 @import models.reference.Selectable._
+@import viewModels.components.InputSelectViewModel._
+@import views.html.components.{ErrorSummary, Button, InputSelect, HeadingCaption}
 
 @this(
     mainTemplate: MainTemplate,
@@ -30,7 +29,7 @@
     caption: HeadingCaption
 )
 
-@(form: Form[Country], countryList: Seq[Selectable], mrn: MovementReferenceNumber, arrivalId: ArrivalId,  mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Country], countryList: Seq[Selectable], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("vehicleRegistrationCountry.title"),
@@ -45,8 +44,11 @@
 
         @select(
             field = form("value"),
-            label = messages("vehicleRegistrationCountry.heading"),
-            selectItems = countryList.toSelectItems(form.value)
+            selectType = OrdinarySelect(
+                heading = messages("vehicleRegistrationCountry.heading")
+            ),
+            selectItems = countryList.toSelectItems(form.value),
+            placeholder = messages("vehicleRegistrationCountry.placeholder")
         )
 
         @button(attributes = Map("id" -> "submit"))

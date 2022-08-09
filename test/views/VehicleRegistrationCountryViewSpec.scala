@@ -40,6 +40,8 @@ class VehicleRegistrationCountryViewSpec extends InputSelectViewBehaviours[Count
     Country("ES", "Spain")
   )
 
+  behave like pageWithTitle()
+
   behave like pageWithBackLink
 
   behave like pageWithHeading()
