@@ -83,7 +83,7 @@ trait ViewModelGenerators {
 
   implicit lazy val arbitrarySection: Arbitrary[Section] = Arbitrary {
     for {
-      sectionTitle <- Gen.alphaNumStr
+      sectionTitle <- nonEmptyString
       length       <- Gen.choose(1, maxSeqLength)
       rows         <- Gen.containerOfN[Seq, SummaryListRow](length, arbitrary[SummaryListRow])
     } yield Section(sectionTitle, rows)
