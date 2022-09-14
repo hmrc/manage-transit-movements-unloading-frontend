@@ -33,7 +33,7 @@ trait ViewModelGenerators {
 
   implicit lazy val arbitraryText: Arbitrary[Text] = Arbitrary {
     for {
-      content <- Gen.alphaNumStr
+      content <- nonEmptyString
     } yield content.toText
   }
 
