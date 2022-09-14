@@ -26,12 +26,12 @@ object AppDependencies {
     "org.scalatestplus"          %% "mockito-4-5"              % "3.2.12.0",
     "org.scalacheck"             %% "scalacheck"               % "1.16.0",
     "org.scalatestplus"          %% "scalacheck-1-16"          % "3.2.12.0",
+    "wolfendale"                 %% "scalacheck-gen-regexp"    % "0.1.1",
     "org.pegdown"                 % "pegdown"                  % "1.6.0",
     "org.jsoup"                   % "jsoup"                    % "1.15.3",
-    "wolfendale"                 %% "scalacheck-gen-regexp"    % "0.1.1",
     "com.github.tomakehurst"      % "wiremock-standalone"      % "2.27.2",
     "com.vladsch.flexmark"        % "flexmark-all"             % "0.62.2"
-    ).map(_ % "test, it")
+  ).map(_ % "test, it")
 
   def apply(): Seq[ModuleID] = compile ++ test
 }
