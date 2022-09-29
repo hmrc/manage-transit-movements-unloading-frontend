@@ -67,7 +67,7 @@ trait Generators
     )
 
   def nonNumerics: Gen[String] =
-    alphaStr suchThat (_.nonEmpty)
+    Gen.nonEmptyListOf[Char](Gen.alphaChar).map(_.mkString)
 
   def decimals: Gen[String] =
     arbitrary[BigDecimal]
@@ -92,7 +92,7 @@ trait Generators
       .suchThat(_ != "false")
 
   def nonEmptyString: Gen[String] =
-    Gen.alphaNumStr suchThat (_.nonEmpty)
+    Gen.nonEmptyListOf[Char](Gen.alphaNumChar).map(_.mkString)
 
   def stringsWithMaxLength(maxLength: Int): Gen[String] =
     for {
