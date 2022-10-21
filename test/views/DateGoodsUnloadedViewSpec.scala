@@ -42,6 +42,6 @@ class DateGoodsUnloadedViewSpec extends DateInputViewBehaviour {
 
   behave like pageWithHeading()
 
-  behave like pageWithDateInput
+  behave like pageWithDateInput()
 
 }

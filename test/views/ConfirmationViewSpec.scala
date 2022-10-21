@@ -29,7 +29,7 @@ class ConfirmationViewSpec extends PanelViewBehaviours {
 
   behave like pageWithTitle()
 
-  behave like pageWithoutBackLink
+  behave like pageWithoutBackLink()
 
   behave like pageWithHeading()
 

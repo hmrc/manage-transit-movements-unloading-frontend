@@ -35,7 +35,7 @@ class ConfirmRemoveSealViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithTitle()
 
-  behave like pageWithBackLink
+  behave like pageWithBackLink()
 
   behave like pageWithCaption(mrn.toString)
 

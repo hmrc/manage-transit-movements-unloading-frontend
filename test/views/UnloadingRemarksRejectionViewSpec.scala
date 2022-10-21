@@ -39,7 +39,7 @@ class UnloadingRemarksRejectionViewSpec extends SummaryListViewBehaviours with G
 
   behave like pageWithTitle()
 
-  behave like pageWithBackLink
+  behave like pageWithBackLink()
 
   behave like pageWithHeading()
 

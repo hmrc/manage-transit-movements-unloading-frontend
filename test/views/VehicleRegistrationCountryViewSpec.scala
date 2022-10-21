@@ -42,13 +42,13 @@ class VehicleRegistrationCountryViewSpec extends InputSelectViewBehaviours[Count
 
   behave like pageWithTitle()
 
-  behave like pageWithBackLink
+  behave like pageWithBackLink()
 
   behave like pageWithHeading()
 
   behave like pageWithSelect()
 
-  behave like pageWithoutHint
+  behave like pageWithoutHint()
 
   behave like pageWithSubmitButton("Continue")
 }

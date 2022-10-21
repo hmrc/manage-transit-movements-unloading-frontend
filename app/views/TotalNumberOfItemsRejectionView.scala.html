@@ -32,7 +32,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.TotalNumberOfItemsRejectionController.onSubmit(arrivalId), 'autoComplete -> "off") {
+    @formHelper(action = routes.TotalNumberOfItemsRejectionController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

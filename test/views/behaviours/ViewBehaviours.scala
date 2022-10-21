@@ -23,7 +23,7 @@ import org.scalatest.Assertion
 import play.twirl.api.HtmlFormat
 import views.assertions.ViewSpecAssertions
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
 

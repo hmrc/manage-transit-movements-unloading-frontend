@@ -16,7 +16,7 @@
 
 package models.messages
 
-import com.lucidchart.open.xtract.XmlReader
+import com.lucidchart.open.xtract.{ParseFailure, TypeError, XmlReader}
 import generators.Generators
 import models.XMLWrites._
 import org.scalacheck.Arbitrary.arbitrary
@@ -67,6 +67,15 @@ class PointerToAttributeSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
           val xml    = <RESOFCON534><PoiToTheAttTOC5>{identity.pointer.value}</PoiToTheAttTOC5></RESOFCON534>
           val result = XmlReader.of[PointerToAttribute].read(xml).toOption.value
           result mustBe identity
+      }
+    }
+
+    "must fail for an unrecognised pointer" in {
+      forAll(arbitrary[String]) {
+        str =>
+          val xml    = <RESOFCON534><PoiToTheAttTOC5>{str}</PoiToTheAttTOC5></RESOFCON534>
+          val result = XmlReader.of[PointerToAttribute].read(xml)
+          result mustBe ParseFailure(TypeError(PointerToAttribute.getClass))
       }
     }
   }

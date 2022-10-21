@@ -52,7 +52,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           Country("AD", "Andorra")
         )
 
-        connector.getCountries.futureValue mustBe expectedResult
+        connector.getCountries().futureValue mustBe expectedResult
       }
 
       "should handle client and server errors" in {
@@ -68,7 +68,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
                 )
             )
 
-            connector.getCountries.futureValue mustBe Nil
+            connector.getCountries().futureValue mustBe Nil
         }
       }
     }

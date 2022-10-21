@@ -34,7 +34,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.DateGoodsUnloadedRejectionController.onSubmit(arrivalId), 'autoComplete -> "off") {
+    @formHelper(action = routes.DateGoodsUnloadedRejectionController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form)
 

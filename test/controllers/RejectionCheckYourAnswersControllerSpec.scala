@@ -39,7 +39,7 @@ class RejectionCheckYourAnswersControllerSpec extends SpecBase with AppWithDefau
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockUnloadingRemarksService, mockViewModel)
+    reset(mockUnloadingRemarksService); reset(mockViewModel)
   }
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =

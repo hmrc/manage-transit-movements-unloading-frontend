@@ -68,7 +68,7 @@
         </p>
     }
 
-    @formHelper(action = routes.UnloadingSummaryController.onSubmit(arrivalId), 'autoComplete -> "off") {
+    @formHelper(action = routes.UnloadingSummaryController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
         @button(attributes = Map("id" -> "submit"))
     }
 

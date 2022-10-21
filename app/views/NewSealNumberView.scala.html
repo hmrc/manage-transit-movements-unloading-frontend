@@ -34,7 +34,7 @@
     showBackLink = true,
 ) {
 
-    @formHelper(action = routes.NewSealNumberController.onSubmit(arrivalId, index, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.NewSealNumberController.onSubmit(arrivalId, index, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

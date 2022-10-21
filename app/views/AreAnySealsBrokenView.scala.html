@@ -34,7 +34,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.AreAnySealsBrokenController.onSubmit(arrivalId, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.AreAnySealsBrokenController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

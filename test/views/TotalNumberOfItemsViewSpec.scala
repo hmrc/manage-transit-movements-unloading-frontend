@@ -38,13 +38,13 @@ class TotalNumberOfItemsViewSpec extends InputTextViewBehaviours[Int] {
 
   behave like pageWithTitle()
 
-  behave like pageWithBackLink
+  behave like pageWithBackLink()
 
   behave like pageWithHeading()
 
   behave like pageWithCaption(mrn.toString)
 
-  behave like pageWithoutHint
+  behave like pageWithoutHint()
 
   behave like pageWithInputText(Some(InputSize.Width10), Some("numeric"), Some("[0-9]*"))
 

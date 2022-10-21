@@ -44,7 +44,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockUnloadingPermissionService, mockExtractor)
+    reset(mockUnloadingPermissionService); reset(mockExtractor)
   }
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
