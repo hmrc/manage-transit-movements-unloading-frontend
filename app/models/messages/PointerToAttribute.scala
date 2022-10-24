@@ -16,7 +16,7 @@
 
 package models.messages
 
-import com.lucidchart.open.xtract.{__, XmlReader}
+import com.lucidchart.open.xtract.{__, TypeError, XmlReader}
 import models.XMLWrites
 
 //TODO: Can we get rid of PointerToAttribute (use PointerIdentity)
@@ -29,13 +29,18 @@ object PointerToAttribute {
       pointerToAttribute => <PoiToTheAttTOC5>{pointerToAttribute.pointer.value}</PoiToTheAttTOC5>
     )
 
-  implicit val reads: XmlReader[PointerToAttribute] = (__ \ "PoiToTheAttTOC5").read[String] map {
-    case TransportIdentity.value => PointerToAttribute(TransportIdentity)
-    case TransportCountry.value  => PointerToAttribute(TransportCountry)
-    case NumberOfItems.value     => PointerToAttribute(NumberOfItems)
-    case NumberOfPackages.value  => PointerToAttribute(NumberOfPackages)
-    case GrossMass.value         => PointerToAttribute(GrossMass)
-  }
+  implicit val reads: XmlReader[PointerToAttribute] = (__ \ "PoiToTheAttTOC5")
+    .read[String]
+    .tryMap {
+      _ => TypeError(PointerToAttribute.getClass)
+    } {
+      case TransportIdentity.value => PointerToAttribute(TransportIdentity)
+      case TransportCountry.value  => PointerToAttribute(TransportCountry)
+      case NumberOfItems.value     => PointerToAttribute(NumberOfItems)
+      case NumberOfPackages.value  => PointerToAttribute(NumberOfPackages)
+      case GrossMass.value         => PointerToAttribute(GrossMass)
+      case x                       => throw new Exception(s"Unexpected pointer value: $x")
+    }
 
 }
 

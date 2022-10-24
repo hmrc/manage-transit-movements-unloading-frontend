@@ -30,7 +30,7 @@ class CannotSendUnloadingRemarksViewSpec extends ViewBehaviours with Generators 
 
   behave like pageWithTitle()
 
-  behave like pageWithBackLink
+  behave like pageWithBackLink()
 
   behave like pageWithHeading()
 

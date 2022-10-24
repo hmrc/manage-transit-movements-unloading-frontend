@@ -19,7 +19,7 @@
 
 @this(govukSummaryList: GovukSummaryList)
 
-@(section: Section)(html: Html = Html(""))(implicit messages: Messages)
+@(section: Section)(html: Html = Html(""))
 
 @if(section.rows.nonEmpty) {
     @section.sectionTitle.map { title =>

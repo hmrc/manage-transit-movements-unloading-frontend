@@ -19,7 +19,7 @@
 
 @this(answerSection: AnswerSection)
 
-@(sections: Seq[Section])(implicit messages: Messages)
+@(sections: Seq[Section])
 
 @for(section <- sections) {
     @answerSection(section)()

@@ -38,13 +38,13 @@ class GrossMassAmountViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithTitle()
 
-  behave like pageWithBackLink
+  behave like pageWithBackLink()
 
   behave like pageWithCaption(mrn.toString)
 
   behave like pageWithHeading()
 
-  behave like pageWithoutHint
+  behave like pageWithoutHint()
 
   behave like pageWithInputText(inputFieldClassSize = Some(InputSize.Width10), suffix = Some("kg"))
 

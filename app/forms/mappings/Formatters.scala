@@ -16,9 +16,9 @@
 
 package forms.mappings
 
+import models.Enumerable
 import play.api.data.FormError
 import play.api.data.format.Formatter
-import models.Enumerable
 
 import scala.util.control.Exception.nonFatalCatch
 
@@ -44,7 +44,6 @@ trait Formatters {
       override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Boolean] =
         baseFormatter
           .bind(key, data)
-          .right
           .flatMap {
             case "true"  => Right(true)
             case "false" => Right(false)
@@ -61,13 +60,11 @@ trait Formatters {
 
       private val baseFormatter = stringFormatter(requiredKey)
 
-      override def bind(key: String, data: Map[String, String]) =
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Int] =
         baseFormatter
           .bind(key, data)
-          .right
           .map(_.replace(",", ""))
           .map(_.replaceAll("\\s", ""))
-          .right
           .flatMap {
             case s if s.matches(decimalRegexp) =>
               Left(Seq(FormError(key, wholeNumberKey, args)))
@@ -80,7 +77,7 @@ trait Formatters {
                 )
           }
 
-      override def unbind(key: String, value: Int) =
+      override def unbind(key: String, value: Int): Map[String, String] =
         baseFormatter.unbind(key, value.toString)
     }
 
@@ -90,7 +87,7 @@ trait Formatters {
       private val baseFormatter = stringFormatter(requiredKey)
 
       override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], A] =
-        baseFormatter.bind(key, data).right.flatMap {
+        baseFormatter.bind(key, data).flatMap {
           str =>
             ev.withName(str).map(Right.apply).getOrElse(Left(Seq(FormError(key, invalidKey))))
         }

@@ -111,7 +111,7 @@ class UnloadingConnectorImpl @Inject() (
     val serviceUrl: String = s"${config.arrivalsBackend}/movements/arrivals/${arrivalId.value}/unloading-permission"
     ws.url(serviceUrl)
       .withHttpHeaders(ChannelHeader(channel), AuthorizationHeader(bearerToken))
-      .get
+      .get()
   }
 
   override def getArrival(arrivalId: ArrivalId)(implicit hc: HeaderCarrier): Future[Option[ResponseArrival]] = {

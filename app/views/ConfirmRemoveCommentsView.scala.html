@@ -36,7 +36,7 @@
 
     @errorSummary(form.errors)
 
-    @formHelper(action = routes.ConfirmRemoveCommentsController.onSubmit(arrivalId, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.ConfirmRemoveCommentsController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
         @caption(mrn.toString)
 

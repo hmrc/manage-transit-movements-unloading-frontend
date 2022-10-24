@@ -19,7 +19,7 @@ package views.behaviours
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 trait SummaryListViewBehaviours extends ViewBehaviours {
 

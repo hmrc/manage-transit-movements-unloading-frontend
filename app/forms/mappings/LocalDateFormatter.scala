@@ -52,10 +52,10 @@ private[mappings] class LocalDateFormatter(
     )
 
     for {
-      day   <- int.bind(s"$key.day".replaceAll("\\s", ""), data).right
-      month <- int.bind(s"$key.month".replaceAll("\\s", ""), data).right
-      year  <- int.bind(s"$key.year".replaceAll("\\s", ""), data).right
-      date  <- toDate(key, day, month, year).right
+      day   <- int.bind(s"$key.day".replaceAll("\\s", ""), data)
+      month <- int.bind(s"$key.month".replaceAll("\\s", ""), data)
+      year  <- int.bind(s"$key.year".replaceAll("\\s", ""), data)
+      date  <- toDate(key, day, month, year)
 
     } yield date
   }

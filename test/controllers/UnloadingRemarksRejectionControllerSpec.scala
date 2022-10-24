@@ -55,7 +55,7 @@ class UnloadingRemarksRejectionControllerSpec extends SpecBase with AppWithDefau
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockUnloadingRemarksRejectionService, mockViewModel, mockExtractor)
+    reset(mockUnloadingRemarksRejectionService); reset(mockViewModel); reset(mockExtractor)
   }
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =

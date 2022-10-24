@@ -38,6 +38,7 @@ trait SpecBase
     with ScalaCheckPropertyChecks
     with OptionValues
     with TryValues
+    with EitherValues
     with ScalaFutures
     with IntegrationPatience
     with MockitoSugar

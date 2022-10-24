@@ -42,6 +42,6 @@ class DateGoodsUnloadedRejectionViewSpec extends SpecBase with DateInputViewBeha
 
   behave like pageWithHeading()
 
-  behave like pageWithDateInput
+  behave like pageWithDateInput()
 
 }

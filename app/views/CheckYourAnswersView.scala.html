@@ -43,7 +43,7 @@
     <h2 class="govuk-heading-m">@messages("checkYourAnswers.confirmation.heading")</h2>
     <p class="govuk-body">@messages("checkYourAnswers.confirmation.paragraph")</p>
 
-    @formHelper(action = routes.CheckYourAnswersController.onSubmit(arrivalId), 'autoComplete -> "off") {
+    @formHelper(action = routes.CheckYourAnswersController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
         @button(
             messageKey = "site.confirmAndSend",
             preventDoubleClick = true,

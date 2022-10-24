@@ -34,7 +34,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.ConfirmRemoveSealController.onSubmit(arrivalId, index, mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.ConfirmRemoveSealController.onSubmit(arrivalId, index, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

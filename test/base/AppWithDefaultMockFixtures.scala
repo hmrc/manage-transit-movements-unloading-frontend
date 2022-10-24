@@ -21,8 +21,7 @@ import models.UserAnswers
 import models.requests.IdentifierRequest
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.{GuiceFakeApplicationFactory, GuiceOneAppPerSuite}
@@ -37,12 +36,9 @@ import scala.concurrent.{ExecutionContext, Future}
 trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerSuite with GuiceFakeApplicationFactory with MockitoSugar {
   self: TestSuite =>
 
-  override def beforeEach(): Unit =
-    Mockito.reset(
-      mockSessionRepository,
-      mockDataRetrievalActionProvider,
-      mockCheckArrivalStatusProvider
-    )
+  override def beforeEach(): Unit = {
+    reset(mockSessionRepository); reset(mockDataRetrievalActionProvider); reset(mockCheckArrivalStatusProvider)
+  }
 
   final val mockSessionRepository: SessionRepository                   = mock[SessionRepository]
   final val mockDataRetrievalActionProvider                            = mock[DataRetrievalActionProvider]

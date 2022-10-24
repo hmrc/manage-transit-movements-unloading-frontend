@@ -35,7 +35,7 @@ class ChangesToReportViewSpec extends CharacterCountViewBehaviours {
 
   behave like pageWithTitle()
 
-  behave like pageWithBackLink
+  behave like pageWithBackLink()
 
   behave like pageWithCaption(mrn.toString)
 
