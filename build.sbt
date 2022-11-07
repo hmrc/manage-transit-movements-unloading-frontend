@@ -60,7 +60,6 @@ lazy val root = (project in file("."))
     dependencyOverrides ++= AppDependencies.overrides,
     retrieveManaged := true,
     resolvers ++= Seq(
-      Resolver.bintrayRepo("hmrc", "releases"),
       Resolver.jcenterRepo
     ),
     Concat.groups := Seq(
