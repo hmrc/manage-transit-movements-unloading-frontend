@@ -27,16 +27,16 @@ import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class InterchangeControlReferenceIdRepository @Inject()(
-                                                         mongoComponent: MongoComponent,
-                                                         dateTimeService: DateTimeService
-                                                       )(implicit ec: ExecutionContext)
-  extends PlayMongoRepository[InterchangeControlReference](
-    mongoComponent = mongoComponent,
-    collectionName = "interchange-control-reference-ids",
-    domainFormat = InterchangeControlReference.format,
-    indexes = Nil
-  ) {
+class InterchangeControlReferenceIdRepository @Inject() (
+  mongoComponent: MongoComponent,
+  dateTimeService: DateTimeService
+)(implicit ec: ExecutionContext)
+    extends PlayMongoRepository[InterchangeControlReference](
+      mongoComponent = mongoComponent,
+      collectionName = "interchange-control-reference-ids",
+      domainFormat = InterchangeControlReference.format,
+      indexes = Nil
+    ) {
 
   def nextInterchangeControlReferenceId(): Future[InterchangeControlReference] = {
 
