@@ -29,6 +29,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import services.DateTimeService
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class InterchangeControlReferenceIdRepositorySpec
     extends AnyFreeSpec
