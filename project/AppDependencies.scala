@@ -4,7 +4,7 @@ object AppDependencies {
   import play.core.PlayVersion
 
   private val mongoVersion = "0.73.0"
-  private val bootstrapVersion = "7.8.0"
+  private val bootstrapVersion = "7.11.0"
   private val catsVersion = "2.8.0"
 
   val compile: Seq[ModuleID] = Seq(
