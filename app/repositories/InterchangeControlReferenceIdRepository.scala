@@ -24,14 +24,14 @@ import services.DateTimeService
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class InterchangeControlReferenceIdRepository @Inject() (
   mongoComponent: MongoComponent,
   dateTimeService: DateTimeService
-) extends PlayMongoRepository[InterchangeControlReference](
+)(implicit ec: ExecutionContext)
+    extends PlayMongoRepository[InterchangeControlReference](
       mongoComponent = mongoComponent,
       collectionName = "interchange-control-reference-ids",
       domainFormat = InterchangeControlReference.format,
