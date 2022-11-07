@@ -17,7 +17,6 @@
 package repositories
 
 import com.google.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
 import com.mongodb.client.model.ReturnDocument
 import models.messages.InterchangeControlReference
 import org.mongodb.scala.model.{Filters, FindOneAndUpdateOptions, Updates}
@@ -25,19 +24,19 @@ import services.DateTimeService
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class InterchangeControlReferenceIdRepository @Inject() (
-  mongoComponent: MongoComponent,
-  dateTimeService: DateTimeService
-)(implicit ec: ExecutionContext)
-    extends PlayMongoRepository[InterchangeControlReference](
-        mongoComponent = mongoComponent,
-        collectionName = "interchange-control-reference-ids",
-        domainFormat = InterchangeControlReference.format,
-        indexes = Nil
-      ) {
+class InterchangeControlReferenceIdRepository @Inject()(
+                                                         mongoComponent: MongoComponent,
+                                                         dateTimeService: DateTimeService
+                                                       )(implicit ec: ExecutionContext)
+  extends PlayMongoRepository[InterchangeControlReference](
+    mongoComponent = mongoComponent,
+    collectionName = "interchange-control-reference-ids",
+    domainFormat = InterchangeControlReference.format,
+    indexes = Nil
+  ) {
 
   def nextInterchangeControlReferenceId(): Future[InterchangeControlReference] = {
 
