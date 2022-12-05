@@ -15,6 +15,8 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.Implicits.RichSelect
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.accessibleautocomplete.AccessibleAutocomplete
 @import viewModels.components.InputSelectViewModel
 @import viewModels.components.InputSelectViewModel._
 @import views.html.components.Heading
@@ -37,14 +39,12 @@
     Select(
         hint = hint.map(x => Hint(content = Text(x))),
         items = SelectItem(value = None, text = placeholder) +: selectItems,
-        formGroupClasses = "autocomplete-wrapper",
-        attributes = Map("data-autocomplete" -> ""),
         errorMessage = field.error.map { e =>
             ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args: _*)))
-        },
-        classes = "govuk-!-width-two-thirds"
+        }
     )
     .withFormField(field)
+    .asAccessibleAutocomplete(Some(AccessibleAutocomplete(showAllValues = true)))
 }
 
 @selectType match {
