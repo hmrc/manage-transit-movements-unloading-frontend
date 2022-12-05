@@ -41,8 +41,7 @@
         items = SelectItem(value = None, text = placeholder) +: selectItems,
         errorMessage = field.error.map { e =>
             ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args: _*)))
-        },
-        classes = "govuk-!-width-two-thirds"
+        }
     )
     .withFormField(field)
     .asAccessibleAutocomplete(Some(AccessibleAutocomplete(showAllValues = true)))
