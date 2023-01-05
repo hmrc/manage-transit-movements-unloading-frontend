@@ -7,8 +7,8 @@
 
     <logger name="uk.gov" level="WARN"/>
 
-    <logger name="application" level="${logger.application:-WARN}"/>
-    <logger name="application.controllers.UnloadingRemarksRejectionController" level="${logger.application.controllers.UnloadingRemarksRejectionController:-WARN}"/>
+    <logger name="application" level="WARN"/>
+    <logger name="application.controllers.UnloadingRemarksRejectionController" level="WARN"/>
 
     <root level="WARN">
         <appender-ref ref="STDOUT"/>
