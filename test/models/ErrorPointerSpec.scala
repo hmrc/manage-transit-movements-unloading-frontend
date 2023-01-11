@@ -39,7 +39,7 @@ class ErrorPointerSpec extends AnyFreeSpec with Generators with ScalaCheckProper
 
       forAll(
         nonEmptyString suchThat (
-          x => !ErrorPointer.values.contains(x)
+          x => !ErrorPointer.values.map(_.value).contains(x)
         )
       ) {
         string =>

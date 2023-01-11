@@ -42,14 +42,7 @@ trait DateInputViewBehaviour extends QuestionViewBehaviours[LocalDate] {
       }
 
       "when rendered with error" - {
-        "must show an error summary" in {
-          assertRenderedById(docWithError(), "error-summary-title")
-        }
-
-        "must show an error in the value field's label" in {
-          val errorSpan = docWithError().getElementsByClass("govuk-error-message").first
-          assertElementContainsText(errorSpan, s"${messages("error.title.prefix")} ${messages(errorMessage)}")
-        }
+        behave like pageWithErrorSummary()
 
         "must show an error class on the inputs" in {
           val docWithError = parseView(applyView(form.withError(FormError("value", errorMessage, Seq("day", "month", "year")))))
