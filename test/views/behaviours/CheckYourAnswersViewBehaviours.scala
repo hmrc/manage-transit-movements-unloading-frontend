@@ -17,13 +17,14 @@
 package views.behaviours
 
 import generators.Generators
+import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewModels.sections.Section
 
 trait CheckYourAnswersViewBehaviours extends SummaryListViewBehaviours with Generators {
 
-  lazy val sections: Seq[Section] = listWithMaxLength[Section]().sample.value
+  lazy val sections: Seq[Section] = arbitrary[List[Section]].sample.value
 
   override def view: HtmlFormat.Appendable = viewWithSections(sections)
 

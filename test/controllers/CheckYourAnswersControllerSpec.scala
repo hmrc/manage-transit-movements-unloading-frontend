@@ -69,7 +69,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
       "return OK and the correct view for a GET" in {
         checkArrivalStatus()
 
-        val sampleSections = listWithMaxLength[Section]().sample.value
+        val sampleSections = arbitrary[List[Section]].sample.value
 
         when(mockViewModel.apply(any())(any())).thenReturn(sampleSections)
 
