@@ -34,7 +34,7 @@ import views.html.UnloadingSummaryView
 class UnloadingSummaryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val sampleSealsSection: Section                  = arbitrary[Section].sample.value
-  private val sampleTransportAndItemSections: Seq[Section] = listWithMaxLength[Section]().sample.value
+  private val sampleTransportAndItemSections: Seq[Section] = arbitrary[List[Section]].sample.value
 
   private val mockViewModel = mock[UnloadingSummaryViewModel]
 

@@ -30,7 +30,7 @@ class UnloadingSummaryViewSpec extends CheckYourAnswersViewBehaviours {
   override val prefix: String = "unloadingSummary"
 
   private val sealsSection: Section                  = arbitrary[Section].sample.value
-  private val transportAndItemSections: Seq[Section] = listWithMaxLength[Section]().sample.value
+  private val transportAndItemSections: Seq[Section] = arbitrary[List[Section]].sample.value
   override lazy val sections: Seq[Section]           = sealsSection +: transportAndItemSections
 
   private val numberOfSeals: Int           = arbitrary[Int].sample.value
