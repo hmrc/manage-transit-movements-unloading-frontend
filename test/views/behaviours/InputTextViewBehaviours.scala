@@ -73,9 +73,7 @@ trait InputTextViewBehaviours[T] extends QuestionViewBehaviours[T] with Generato
             }
         }
 
-        "must not render an error summary" in {
-          assertNotRenderedById(doc, "error-summary_header")
-        }
+        behave like pageWithoutErrorSummary()
       }
 
       "when rendered with a valid value" - {
@@ -85,9 +83,7 @@ trait InputTextViewBehaviours[T] extends QuestionViewBehaviours[T] with Generato
           docWithFilledForm.getElementById("value").attr("value") mustBe validValue.toString
         }
 
-        "must not render an error summary" in {
-          assertNotRenderedById(docWithFilledForm, "error-summary_header")
-        }
+        behave like pageWithoutErrorSummary(docWithFilledForm)
       }
 
       behave like pageWithErrorSummary()

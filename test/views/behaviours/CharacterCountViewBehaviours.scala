@@ -37,17 +37,13 @@ trait CharacterCountViewBehaviours extends QuestionViewBehaviours[String] {
           module mustBe maxLength.toString
         }
 
-        "must not render an error summary" in {
-          assertNotRenderedById(doc, "error-summary_header")
-        }
+        behave like pageWithoutErrorSummary()
       }
 
       "when rendered with a valid value" - {
         val docWithValidValue = parseView(applyView(form.fill("answer")))
 
-        "must not render an error summary" in {
-          assertNotRenderedById(docWithValidValue, "error-summary_header")
-        }
+        behave like pageWithoutErrorSummary(docWithValidValue)
       }
 
       behave like pageWithErrorSummary()

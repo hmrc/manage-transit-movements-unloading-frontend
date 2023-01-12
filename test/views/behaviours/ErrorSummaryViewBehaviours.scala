@@ -16,6 +16,8 @@
 
 package views.behaviours
 
+import org.jsoup.nodes.Document
+
 trait ErrorSummaryViewBehaviours[T] {
   this: QuestionViewBehaviours[T] =>
 
@@ -31,8 +33,8 @@ trait ErrorSummaryViewBehaviours[T] {
       }
     }
 
-  def pageWithoutErrorSummary(): Unit =
+  def pageWithoutErrorSummary(document: Document = doc): Unit =
     "must not render an error summary" in {
-      assertNotRenderedByClass(doc, "govuk-error-summary")
+      assertNotRenderedByClass(document, "govuk-error-summary")
     }
 }
