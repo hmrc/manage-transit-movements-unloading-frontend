@@ -9,7 +9,7 @@ import views.html.$package$.$className$View
 class $className$ViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[$className$View].apply(form, lrn, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[$className$View].apply(form, arrivalId, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "$package;format="decap"$.$className;format="decap"$"
 

@@ -16,7 +16,7 @@ class $className$ViewSpec extends DynamicAddressViewBehaviours with Generators {
   override def form: Form[DynamicAddress] = new $formProvider$()(prefix, isPostalCodeRequired, name)
 
   override def applyView(form: Form[DynamicAddress]): HtmlFormat.Appendable =
-    injector.instanceOf[$className$View].apply(form, lrn, NormalMode, name, isPostalCodeRequired)(fakeRequest, messages)
+    injector.instanceOf[$className$View].apply(form, arrivalId, NormalMode, name, isPostalCodeRequired)(fakeRequest, messages)
 
   override val prefix: String = "$package$.$className;format="decap"$"
 

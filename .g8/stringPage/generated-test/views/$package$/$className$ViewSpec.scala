@@ -16,7 +16,7 @@ class $className$ViewSpec extends InputTextViewBehaviours[String] {
   override def form: Form[String] = new $formProvider$()(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[$className$View].apply(form, lrn, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[$className$View].apply(form, arrivalId, NormalMode)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 

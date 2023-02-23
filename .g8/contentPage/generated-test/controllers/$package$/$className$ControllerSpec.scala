@@ -7,7 +7,7 @@ import views.html.$package$.$className$View
 
 class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(lrn).url
+  private lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(arrivalId).url
 
   "$className$ Controller" - {
 
@@ -23,7 +23,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(lrn)(request, messages).toString
+        view(arrivalId)(request, messages).toString
     }
   }
 }

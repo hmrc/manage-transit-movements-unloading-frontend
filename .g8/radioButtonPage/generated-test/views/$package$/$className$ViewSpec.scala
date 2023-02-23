@@ -14,7 +14,7 @@ class $className$ViewSpec extends RadioViewBehaviours[$className$] {
   override def form: Form[$className$] = new EnumerableFormProvider()(prefix)
 
   override def applyView(form: Form[$className$]): HtmlFormat.Appendable =
-    injector.instanceOf[$className$View].apply(form, lrn, $className$.radioItems, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[$className$View].apply(form, arrivalId, $className$.radioItems, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "$package$.$className;format="decap"$"
 

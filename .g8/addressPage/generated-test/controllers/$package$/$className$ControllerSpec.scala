@@ -30,7 +30,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private def form(isPostalCodeRequired: Boolean) = formProvider("$package$.$className;format="decap"$", isPostalCodeRequired, addressHolderName)
 
   private val mode                                 = NormalMode
-  private lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(lrn, mode).url
+  private lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(arrivalId, mode).url
 
   private lazy val mockCountriesService: CountriesService = mock[CountriesService]
 
@@ -68,7 +68,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(isPostalCodeRequired), lrn, mode, addressHolderName, isPostalCodeRequired)(request, messages).toString
+          view(form(isPostalCodeRequired), arrivalId, mode, addressHolderName, isPostalCodeRequired)(request, messages).toString
       }
 
       "when postcode is optional" in {
@@ -90,7 +90,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(isPostalCodeRequired), lrn, mode, addressHolderName, isPostalCodeRequired)(request, messages).toString
+          view(form(isPostalCodeRequired), arrivalId, mode, addressHolderName, isPostalCodeRequired)(request, messages).toString
       }
     }
 
@@ -127,7 +127,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(filledForm, lrn, mode, addressHolderName, isPostalCodeRequired)(request, messages).toString
+          view(filledForm, arrivalId, mode, addressHolderName, isPostalCodeRequired)(request, messages).toString
       }
 
       "when postcode is optional" in {
@@ -161,7 +161,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(filledForm, lrn, mode, addressHolderName, isPostalCodeRequired)(request, messages).toString
+          view(filledForm, arrivalId, mode, addressHolderName, isPostalCodeRequired)(request, messages).toString
       }
     }
 
@@ -212,7 +212,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
         val view = injector.instanceOf[$className$View]
 
         contentAsString(result) mustEqual
-          view(boundForm, lrn, mode, addressHolderName, isPostalCodeRequired)(request, messages).toString
+          view(boundForm, arrivalId, mode, addressHolderName, isPostalCodeRequired)(request, messages).toString
       }
 
       "when postcode is optional" in {
@@ -236,7 +236,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
         val view = injector.instanceOf[$className$View]
 
         contentAsString(result) mustEqual
-          view(boundForm, lrn, mode, addressHolderName, isPostalCodeRequired)(request, messages).toString
+          view(boundForm, arrivalId, mode, addressHolderName, isPostalCodeRequired)(request, messages).toString
       }
     }
 

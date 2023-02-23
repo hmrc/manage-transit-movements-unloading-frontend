@@ -3,7 +3,7 @@ package controllers.$package$
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.$formProvider$
-import models.{Mode, LocalReferenceNumber}
+import models.{Mode, ArrivalId}
 import navigation.UserAnswersNavigator
 import pages.$package$.$className$Page
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -27,22 +27,22 @@ class $className;format="cap"$Controller @Inject()(
 
   private val form = formProvider("$package$.$className;format="decap"$")
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get($className$Page) match {
         case None => form
         case Some(value) => form.fill(value)
       }
-      Ok(view(preparedForm, lrn, mode))
+      Ok(view(preparedForm, arrivalId, mode))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
+  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       form
        .bindFromRequest()
        .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId, mode))),
         value => {
           implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
           $className$Page.writeToUserAnswers(value).updateTask[$navRoute$Domain]().writeToSession().navigate()

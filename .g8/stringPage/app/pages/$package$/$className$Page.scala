@@ -14,5 +14,5 @@ case object $className$Page extends QuestionPage[String] {
   override def toString: String = "$className;format="decap"$"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.$className;format="cap"$Controller.onPageLoad(userAnswers.lrn, mode))
+    Some(routes.$className;format="cap"$Controller.onPageLoad(userAnswers.arrivalId, mode))
 }

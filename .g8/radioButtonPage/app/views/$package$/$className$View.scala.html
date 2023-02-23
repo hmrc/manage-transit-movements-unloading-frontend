@@ -15,7 +15,7 @@
  *@
 
 @import controllers.$package$.routes
-@import models.LocalReferenceNumber
+@import models.ArrivalId
 @import models.$package$.$className$
 @import views.html.components.{Button, ErrorSummary, InputRadio}
 @import viewModels.components.InputRadioViewModel
@@ -29,15 +29,15 @@
     button: Button
 )
 
-@(form: Form[$className;format="cap"$], lrn: LocalReferenceNumber, radios: (String, Option[$className;format="cap"$]) => Seq[RadioItem], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[$className;format="cap"$], arrivalId: ArrivalId, radios: (String, Option[$className;format="cap"$]) => Seq[RadioItem], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("$package$.$className;format="decap"$.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    arrivalId = Some(arrivalId)
 ) {
 
-    @formHelper(action = routes.$className;format="cap"$Controller.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.$className;format="cap"$Controller.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

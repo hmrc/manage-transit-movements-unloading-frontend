@@ -15,7 +15,7 @@
  *@
 
 @import controllers.$package$.routes
-@import models.LocalReferenceNumber
+@import models.ArrivalId
 @import models.reference.$referenceClass$
 @import models.Selectable
 @import models.Selectable._
@@ -31,15 +31,15 @@
     button: Button
 )
 
-@(form: Form[$referenceClass$], lrn: LocalReferenceNumber, $referenceClassPlural;format="decap"$: Seq[$referenceClass$], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[$referenceClass$], arrivalId: ArrivalId, $referenceClassPlural;format="decap"$: Seq[$referenceClass$], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("$package$.$className;format="decap"$.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    arrivalId = Some(arrivalId)
 ) {
 
-    @formHelper(action = routes.$className;format="cap"$Controller.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.$className;format="cap"$Controller.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

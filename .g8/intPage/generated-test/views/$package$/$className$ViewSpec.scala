@@ -14,7 +14,7 @@ class $className$ViewSpec extends InputTextViewBehaviours[Int] {
   override def form: Form[Int] = new $formProvider$()(prefix, 10)
 
   override def applyView(form: Form[Int]): HtmlFormat.Appendable =
-    injector.instanceOf[$className$View].apply(form, lrn, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[$className$View].apply(form, arrivalId, NormalMode)(fakeRequest, messages)
 
   private val maxInt = $maximum$
 
