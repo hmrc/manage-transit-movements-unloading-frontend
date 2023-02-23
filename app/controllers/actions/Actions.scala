@@ -30,7 +30,7 @@ class Actions @Inject() (
 ) {
 
   def getData(arrivalId: ArrivalId): ActionBuilder[OptionalDataRequest, AnyContent] =
-    identifierAction andThen checkArrivalStatus(arrivalId) andThen dataRetrievalAction(arrivalId)
+    identifierAction andThen dataRetrievalAction(arrivalId)
 
   def requireData(arrivalId: ArrivalId): ActionBuilder[DataRequest, AnyContent] =
     getData(arrivalId) andThen dataRequiredAction
