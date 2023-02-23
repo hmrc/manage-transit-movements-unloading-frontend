@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.P5
 
 import controllers.actions._
+import derivable.DeriveNumberOfSeals
 import forms.NewSealNumberFormProvider
+import models.requests.DataRequest
 import models.{ArrivalId, Index, Mode, Seal}
 import navigation.Navigator
 import pages.SealPage
@@ -53,6 +55,11 @@ class NewSealNumberController @Inject() (
 
       Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, index, mode))
   }
+  private def isADuplicateSeal(value: String)(implicit request: DataRequest[_]): Boolean = {
+    val numberOfSeals = request.userAnswers.get(DeriveNumberOfSeals).getOrElse(1)
+    val sealIDs = for(sealIndex <- 0 to numberOfSeals) yield request.userAnswers.get(SealPage(Index(sealIndex))).get.sealId
+    if(sealIDs.contains(value)) true else false
+  }
 
   def onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
@@ -61,11 +68,16 @@ class NewSealNumberController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, mode))),
           value => {
-            val removable = request.userAnswers.get(SealPage(index)).forall(_.removable)
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(SealPage(index), Seal(value, removable)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(SealPage(index), mode, updatedAnswers))
+            if(isADuplicateSeal(value)) {
+              Future.successful(BadRequest(view(form., request.userAnswers.mrn, arrivalId, index, mode))) // TODO - Make error message for duplicate seal show up
+            }
+            else {
+              val removable = request.userAnswers.get(SealPage(index)).forall(_.removable)
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(SealPage(index), Seal(value, removable)))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(SealPage(index), mode, updatedAnswers))
+            }
           }
         )
 

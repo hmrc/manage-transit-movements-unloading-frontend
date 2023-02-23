@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.P5
 
 import forms.NewSealNumberFormProvider
 import models.{Index, NormalMode}

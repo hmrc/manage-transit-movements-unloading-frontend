@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.P5
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.routes
 import forms.NewSealNumberFormProvider
 import models.{Index, NormalMode, Seal, UserAnswers}
 import org.mockito.ArgumentCaptor
