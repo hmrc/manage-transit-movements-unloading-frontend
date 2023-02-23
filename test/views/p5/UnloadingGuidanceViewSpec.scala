@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package views
+package views.p5
 
 import controllers.routes
 import play.twirl.api.HtmlFormat
-import views.P5.html.UnloadingGuidanceView
 import views.behaviours.ViewBehaviours
+import views.html.p5.UnloadingGuidanceView
 
 class UnloadingGuidanceViewSpec extends ViewBehaviours {
 

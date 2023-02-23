@@ -29,8 +29,8 @@ GET        /unauthorised-group-access                                       cont
 GET        /data/keep-alive                                                 controllers.KeepAliveController.keepAlive(arrivalId: Option[ArrivalId] = None)
 GET        /data/:arrivalId/keep-alive                                      controllers.KeepAliveController.keepAlive(arrivalId: Option[ArrivalId])
 
-GET        /:arrivalId/unloading-guidance                                   controllers.P5.UnloadingGuidanceController.onPageLoad(arrivalId: ArrivalId)
-POST       /:arrivalId/unloading-guidance                                   controllers.P5.UnloadingGuidanceController.onSubmit(arrivalId: ArrivalId)
+GET        /:arrivalId/unloading-guidance                                   controllers.p5.UnloadingGuidanceController.onPageLoad(arrivalId: ArrivalId)
+POST       /:arrivalId/unloading-guidance                                   controllers.p5.UnloadingGuidanceController.onSubmit(arrivalId: ArrivalId)
 
 GET        /:arrivalId/date-goods-unloaded                                  controllers.DateGoodsUnloadedController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/date-goods-unloaded                                  controllers.DateGoodsUnloadedController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)

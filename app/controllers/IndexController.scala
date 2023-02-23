@@ -46,7 +46,7 @@ class IndexController @Inject() (
           )) // TODO MRN is pulled from unloading permission
         }
         _ <- sessionRepository.set(getUserAnswer)
-      } yield Redirect(controllers.P5.routes.UnloadingGuidanceController.onPageLoad(arrivalId))
+      } yield Redirect(controllers.p5.routes.UnloadingGuidanceController.onPageLoad(arrivalId))
   }
 
 }

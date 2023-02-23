@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.P5
+package controllers.p5
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import matchers.JsonMatchers
 import models.NormalMode
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.P5.html.UnloadingGuidanceView
+import views.html.p5.UnloadingGuidanceView
 
 class UnloadingGuidanceControllerSpec extends SpecBase with AppWithDefaultMockFixtures with JsonMatchers {
 

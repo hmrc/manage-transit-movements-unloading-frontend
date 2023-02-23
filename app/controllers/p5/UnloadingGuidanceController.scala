@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.P5
+package controllers.p5
 
 import controllers.actions._
 import controllers.routes
@@ -22,7 +22,7 @@ import models.{ArrivalId, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.P5.html.UnloadingGuidanceView
+import views.html.p5.UnloadingGuidanceView
 
 import javax.inject.Inject
 
