@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.P5
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import matchers.JsonMatchers
 import models.NormalMode
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.UnloadingGuidanceView
+import views.P5.html.UnloadingGuidanceView
 
 class UnloadingGuidanceControllerSpec extends SpecBase with AppWithDefaultMockFixtures with JsonMatchers {
 
@@ -53,7 +53,7 @@ class UnloadingGuidanceControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.DateGoodsUnloadedController.onPageLoad(arrivalId, NormalMode).url
+      redirectLocation(result).value mustEqual controllers.routes.DateGoodsUnloadedController.onPageLoad(arrivalId, NormalMode).url
     }
   }
 }

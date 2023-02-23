@@ -18,8 +18,8 @@ package views
 
 import controllers.routes
 import play.twirl.api.HtmlFormat
+import views.P5.html.UnloadingGuidanceView
 import views.behaviours.ViewBehaviours
-import views.html.UnloadingGuidanceView
 
 class UnloadingGuidanceViewSpec extends ViewBehaviours {
 

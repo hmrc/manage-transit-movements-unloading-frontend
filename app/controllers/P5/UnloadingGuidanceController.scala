@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.P5
 
 import controllers.actions._
+import controllers.routes
 import models.{ArrivalId, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.UnloadingGuidanceView
+import views.P5.html.UnloadingGuidanceView
 
 import javax.inject.Inject
 

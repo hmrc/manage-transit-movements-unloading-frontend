@@ -46,7 +46,7 @@ class IndexController @Inject() (
     implicit request =>
       request.userAnswers match {
         case Some(_) =>
-          Future.successful(Redirect(routes.UnloadingGuidanceController.onPageLoad(arrivalId)))
+          Future.successful(Redirect(controllers.P5.routes.UnloadingGuidanceController.onPageLoad(arrivalId)))
         case None =>
           unpackUnloadingPermission(arrivalId) {
             unloadingPermission =>
@@ -78,7 +78,7 @@ class IndexController @Inject() (
             unloadingPermissionExtractor(userAnswers, unloadingPermission).flatMap {
               case Success(updatedAnswers) =>
                 sessionRepository.set(updatedAnswers).map {
-                  _ => Redirect(routes.UnloadingGuidanceController.onPageLoad(arrivalId))
+                  _ => Redirect(controllers.P5.routes.UnloadingGuidanceController.onPageLoad(arrivalId))
                 }
               case Failure(exception) =>
                 logger.error(s"Failed to extract unloading permission data to user answers: ${exception.getMessage}")

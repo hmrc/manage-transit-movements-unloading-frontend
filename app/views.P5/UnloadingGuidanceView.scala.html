@@ -31,7 +31,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.UnloadingGuidanceController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.P5.routes.UnloadingGuidanceController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
         @heading(messages("unloadingGuidance.heading"))
 
         <p class="govuk-body">@messages("unloadingGuidance.para", mrn)</p>
