@@ -34,18 +34,11 @@
     @formHelper(action = routes.UnloadingGuidanceController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
         @heading(messages("unloadingGuidance.heading"))
 
-        <p class="govuk-body">@messages("unloadingGuidance.para")</p>
+        <p class="govuk-body">@messages("unloadingGuidance.para", mrn)</p>
 
-        <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("unloadingGuidance.bullet1")</li>
-            <li>@messages("unloadingGuidance.bullet2", mrn)</li>
-        </ul>
-
-        <p class="govuk-body">
-            <a id="download" class="govuk-link" href=@routes.UnloadingPermissionPDFController.getPDF(arrivalId)>
-                @messages("unloadingGuidance.pdf")
-            </a>
-        </p>
+        <p class="govuk-body">@messages("unloadingGuidance.pdf.preLinkText")
+        <a id="download" class="govuk-link" href=@routes.UnloadingPermissionPDFController.getPDF(arrivalId)>@messages("unloadingGuidance.pdf.link")</a>
+        .</p>
 
         @button(attributes = Map("id" -> "submit"))
     }

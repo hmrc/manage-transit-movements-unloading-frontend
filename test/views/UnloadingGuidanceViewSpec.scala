@@ -34,17 +34,14 @@ class UnloadingGuidanceViewSpec extends ViewBehaviours {
 
   behave like pageWithHeading()
 
-  behave like pageWithContent("p", "You can:")
-
-  behave like pageWithList(
-    "govuk-list--bullet",
-    "view and print the unloading permissions accompanying document",
-    s"check that the unloaded goods match the information in the transit declaration for movement reference $mrn"
+  behave like pageWithContent("p",
+                              s"When unloading, check that the goods match the information in the transit declaration for Movement Reference Number (MRN) $mrn."
   )
+  behave like pageWithPartialContent("p", "or further guidance,")
 
   behave like pageWithLink(
     id = "download",
-    expectedText = "Download the Unloading Permission PDF",
+    expectedText = "download the Unloading Permission PDF",
     expectedHref = routes.UnloadingPermissionPDFController.getPDF(arrivalId).url
   )
 
