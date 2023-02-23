@@ -42,7 +42,7 @@ class NewSealNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading()
 
-  behave like pageWithoutHint()
+  behave like pageWithHint("This can be up to 20 characters long and include both letters and numbers.")
 
   behave like pageWithInputText()
 

@@ -44,7 +44,8 @@
             field = form("value"),
             inputTextType = OrdinaryTextInput(
                 heading = messages("newSealNumber.heading")
-            )
+            ),
+            hint = Some(messages("newSealNumber.hint"))
         )
 
         @button(attributes = Map("id" -> "submit"))
