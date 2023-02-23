@@ -39,10 +39,6 @@
         @govukSummaryList(error.toSummaryList)
     }
 
-    <p class="govuk-body">@messages("unloadingRemarksRejection.review")
-        <a class="govuk-link" href=@routes.IndexController.newUnloadingRemarks(arrivalId) id="review">@messages("unloadingRemarksRejection.newUnloadingRemarks")</a>.
-    </p>
-
     <p class="govuk-body">@messages("unloadingRemarksRejection.youCan")
         <a class="govuk-link" href=@config.nctsEnquiriesUrl target="_blank" rel="noopener noreferrer" id="contact">@messages("unloadingRemarksRejection.errors.contact")</a>.
     </p>

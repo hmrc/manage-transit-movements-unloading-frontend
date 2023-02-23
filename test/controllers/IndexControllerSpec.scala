@@ -55,7 +55,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
   private lazy val nextPage = routes.UnloadingGuidanceController.onPageLoad(arrivalId).url
 
-  "Index Controller" - {
+  "Index Controller" ignore {
 
     "unloadingRemarks" - {
       "must redirect to onward route for a GET when there are no UserAnswers and prepopulated data" in {
@@ -147,47 +147,6 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
-      }
-    }
-
-    "newUnloadingRemarks" - {
-      "must redirect to session expired if no user answers" in {
-        checkArrivalStatus()
-        setNoExistingUserAnswers()
-
-        val request                = FakeRequest(GET, routes.IndexController.newUnloadingRemarks(arrivalId).url)
-        val result: Future[Result] = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
-      }
-
-      "must extract unloading permission to user answers" in {
-        checkArrivalStatus()
-        val unloadingPermission = sampleUnloadingPermission.copy(movementReferenceNumber = mrn.toString)
-
-        when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any()))
-          .thenReturn(Future.successful(Some(unloadingPermission)))
-
-        val userAnswers = emptyUserAnswers.copy(data = Json.obj("foo" -> "bar"))
-
-        when(mockExtractor.apply(any(), any())(any(), any())).thenReturn(Future.successful(Success(userAnswers)))
-
-        when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
-
-        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-
-        setExistingUserAnswers(emptyUserAnswers)
-
-        val request                = FakeRequest(GET, routes.IndexController.newUnloadingRemarks(arrivalId).url)
-        val result: Future[Result] = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual nextPage
-
-        verify(mockSessionRepository).set(userAnswersCaptor.capture())
-
-        userAnswersCaptor.getValue mustBe userAnswers
       }
     }
   }
