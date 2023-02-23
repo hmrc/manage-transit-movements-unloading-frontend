@@ -1,0 +1,57 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.$package$.routes
+@import models.LocalReferenceNumber
+@import views.html.components.{Button, ErrorSummary, InputDynamicAddress}
+
+@this(
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    inputAddress: InputAddress,
+    errorSummary: ErrorSummary,
+    button: Button
+)
+
+@(
+    form: Form[DynamicAddress],
+    lrn: LocalReferenceNumber,
+    mode: Mode,
+    name: String,
+    isPostalCodeRequired: Boolean
+)(implicit request: Request[_], messages: Messages)
+
+@mainTemplate(
+    title = messages("$package$.$className;format="decap"$.title"),
+    showBackLink = true,
+    lrn = Some(lrn)
+) {
+
+    @formHelper(action = routes.$className$Controller.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
+
+        @errorSummary(form.errors)
+
+        @inputAddress(
+            form = form,
+            messageKeyPrefix = "$package$.$className;format="decap"$",
+            caption = None,
+            isPostalCodeRequired = isPostalCodeRequired,
+            headingArgs = name
+        )
+
+        @button(attributes = Map("id" -> "submit"))
+    }
+}
