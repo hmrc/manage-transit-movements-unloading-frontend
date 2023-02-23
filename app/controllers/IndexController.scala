@@ -16,78 +16,37 @@
 
 package controllers
 
-import controllers.actions.Actions
-import extractors.UnloadingPermissionExtractor
+import controllers.actions.IdentifierAction
 import logging.Logging
-import models.{ArrivalId, MovementReferenceNumber, UnloadingPermission, UserAnswers}
+import models.{ArrivalId, MovementReferenceNumber, UserAnswers}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.UnloadingPermissionService
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success}
+import scala.concurrent.ExecutionContext
 
 class IndexController @Inject() (
   val controllerComponents: MessagesControllerComponents,
-  actions: Actions,
-  unloadingPermissionService: UnloadingPermissionService,
-  sessionRepository: SessionRepository,
-  unloadingPermissionExtractor: UnloadingPermissionExtractor
+  identify: IdentifierAction,
+  sessionRepository: SessionRepository
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
-  def unloadingRemarks(arrivalId: ArrivalId): Action[AnyContent] = actions.getData(arrivalId).async {
+  def unloadingRemarks(arrivalId: ArrivalId): Action[AnyContent] = identify.async {
     implicit request =>
-      request.userAnswers match {
-        case Some(_) =>
-          Future.successful(Redirect(controllers.P5.routes.UnloadingGuidanceController.onPageLoad(arrivalId)))
-        case None =>
-          unpackUnloadingPermission(arrivalId) {
-            unloadingPermission =>
-              MovementReferenceNumber(unloadingPermission.movementReferenceNumber) match {
-                case Some(mrn) =>
-                  Right(UserAnswers(id = arrivalId, mrn = mrn, eoriNumber = request.eoriNumber))
-                case None =>
-                  logger.error(s"Failed to validate mrn: ${unloadingPermission.movementReferenceNumber}")
-                  Left(Future.successful(Redirect(routes.SessionExpiredController.onPageLoad())))
-              }
-          }
-      }
-  }
-
-  def newUnloadingRemarks(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
-    implicit request =>
-      unpackUnloadingPermission(arrivalId) {
-        _ => Right(request.userAnswers)
-      }
-  }
-
-  private def unpackUnloadingPermission(arrivalId: ArrivalId)(
-    f: UnloadingPermission => Either[Future[Result], UserAnswers]
-  )(implicit hc: HeaderCarrier): Future[Result] =
-    unloadingPermissionService.getUnloadingPermission(arrivalId).flatMap {
-      case Some(unloadingPermission) =>
-        f(unloadingPermission) match {
-          case Right(userAnswers) =>
-            unloadingPermissionExtractor(userAnswers, unloadingPermission).flatMap {
-              case Success(updatedAnswers) =>
-                sessionRepository.set(updatedAnswers).map {
-                  _ => Redirect(controllers.P5.routes.UnloadingGuidanceController.onPageLoad(arrivalId))
-                }
-              case Failure(exception) =>
-                logger.error(s"Failed to extract unloading permission data to user answers: ${exception.getMessage}")
-                Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
-            }
-          case Left(result) => result
+      for {
+        getUserAnswer <- sessionRepository.get(arrivalId, request.eoriNumber) map {
+          _ getOrElse (UserAnswers(arrivalId,
+                                   MovementReferenceNumber("35SS9OUMUBMODEESJ8").get,
+                                   request.eoriNumber
+          )) // TODO MRN is pulled from unloading permission
         }
-      case None =>
-        logger.error(s"Failed to get unloading permission for arrivalId: $arrivalId")
-        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
-    }
+        _ <- sessionRepository.set(getUserAnswer)
+      } yield Redirect(controllers.P5.routes.UnloadingGuidanceController.onPageLoad(arrivalId))
+  }
+
 }
