@@ -26,8 +26,8 @@ class VehicleIdentificationNumberFormProvider @Inject() extends Mappings {
 
   def apply(): Form[String] =
     Form(
-      "value" -> text("VehicleIdentificationNumber.error.required")
-        .verifying(maxLength(UnloadingRemarksRequest.vehicleIdentificationNumberMaxLength, "VehicleIdentificationNumber.error.length"))
-        .verifying(regexp(alphaNumericRegex.r, "VehicleIdentificationNumber.error.invalid", Seq.empty))
+      "value" -> text("vehicleIdentificationNumber.error.required")
+        .verifying(maxLength(UnloadingRemarksRequest.vehicleIdentificationNumberMaxLength, "vehicleIdentificationNumber.error.length"))
+        .verifying(regexp(alphaNumericRegex.r, "vehicleIdentificationNumber.error.invalid", Seq.empty))
     )
 }
