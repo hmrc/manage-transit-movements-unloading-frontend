@@ -61,6 +61,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       formatAnswer = formatAsDate,
       prefix = "dateGoodsUnloaded",
       id = Some("change-date-goods-unloaded"),
-      call = Some(routes.DateGoodsUnloadedController.onPageLoad(userAnswers.id, CheckMode))
+      call = Some(controllers.p5.routes.DateGoodsUnloadedController.onPageLoad(userAnswers.id, CheckMode))
     )
 }

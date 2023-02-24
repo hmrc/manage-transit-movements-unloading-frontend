@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package views
+package views.p5
 
 import forms.DateGoodsUnloadedFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.DateInputViewBehaviour
-import views.html.DateGoodsUnloadedView
+import views.html.p5.DateGoodsUnloadedView
 
 import java.time.{Clock, LocalDate}
 

@@ -254,7 +254,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
                 List(
                   ActionItem(
                     content = "Change".toText,
-                    href = routes.DateGoodsUnloadedController.onPageLoad(userAnswers.id, CheckMode).url,
+                    href = controllers.p5.routes.DateGoodsUnloadedController.onPageLoad(userAnswers.id, CheckMode).url,
                     visuallyHiddenText = Some("the date when the goods were unloaded"),
                     attributes = Map("id" -> "change-date-goods-unloaded")
                   )

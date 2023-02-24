@@ -17,7 +17,6 @@
 package controllers.p5
 
 import controllers.actions._
-import controllers.routes
 import models.{ArrivalId, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -40,6 +39,6 @@ class UnloadingGuidanceController @Inject() (
   }
 
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
-    _ => Redirect(routes.DateGoodsUnloadedController.onPageLoad(arrivalId, NormalMode))
+    _ => Redirect(controllers.p5.routes.DateGoodsUnloadedController.onPageLoad(arrivalId, NormalMode))
   }
 }
