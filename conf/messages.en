@@ -60,14 +60,14 @@ unloadingGuidance.pdf.link = download the Unloading Permission PDF
 
 dateGoodsUnloaded.title = When were the goods unloaded?
 dateGoodsUnloaded.heading = When were the goods unloaded?
-dateGoodsUnloaded.hint = For example, 14 1 2020
+dateGoodsUnloaded.hint = For example, 15 08 2022.
 dateGoodsUnloaded.checkYourAnswersLabel = When were the goods unloaded?
-dateGoodsUnloaded.error.required.all = Enter the date when the goods were unloaded
-dateGoodsUnloaded.error.required.two = The date goods were unloaded must include {0} and {1}
-dateGoodsUnloaded.error.required = The date goods were unloaded must include {0}
+dateGoodsUnloaded.error.required.all = Enter the date the goods were unloaded
+dateGoodsUnloaded.error.required.two = The date must include a {0} and {1}
+dateGoodsUnloaded.error.required = The date must include a {0}
 dateGoodsUnloaded.error.invalid = Enter a real date
-dateGoodsUnloaded.error.min.date = The date when the goods were unloaded must be on or after {0}
-dateGoodsUnloaded.error.max.date = The date when the goods were unloaded must be today or in the past
+dateGoodsUnloaded.error.min.date = The date must be on or after {0}
+dateGoodsUnloaded.error.max.date = The date must be today or in the past
 dateGoodsUnloaded.change.hidden = the date when the goods were unloaded
 
 vehicleNameRegistrationReference.title = What is the name, registration or reference of the new vehicle?
