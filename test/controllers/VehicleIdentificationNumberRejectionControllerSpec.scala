@@ -30,7 +30,7 @@ import views.html.VehicleNameRegistrationRejectionView
 
 import scala.concurrent.Future
 
-class VehicleNameRegistrationRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class VehicleIdentificationNumberRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider = new VehicleIdentificationNumberFormProvider()
   private val form         = formProvider()

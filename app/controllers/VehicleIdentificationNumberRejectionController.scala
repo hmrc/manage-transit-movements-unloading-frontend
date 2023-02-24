@@ -30,7 +30,7 @@ import views.html.VehicleNameRegistrationRejectionView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class VehicleNameRegistrationRejectionController @Inject() (
+class VehicleIdentificationNumberRejectionController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,

@@ -23,7 +23,7 @@ import play.twirl.api.HtmlFormat
 import views.behaviours.InputTextViewBehaviours
 import views.html.VehicleNameRegistrationRejectionView
 
-class VehicleNameRegistrationRejectionViewSpec extends InputTextViewBehaviours[String] {
+class VehicleIdentificationNumberRejectionViewSpec extends InputTextViewBehaviours[String] {
 
   override def form: Form[String] = new VehicleIdentificationNumberFormProvider()()
 

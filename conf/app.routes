@@ -100,8 +100,8 @@ POST       /:arrivalId/change-total-number-of-packages                      cont
 
 GET        /:arrivalId/unloading-rejection                                  controllers.UnloadingRemarksRejectionController.onPageLoad(arrivalId: ArrivalId)
 
-GET        /:arrivalId/vehicle-name-registration-rejection                  controllers.VehicleNameRegistrationRejectionController.onPageLoad(arrivalId: ArrivalId)
-POST       /:arrivalId/vehicle-name-registration-rejection                  controllers.VehicleNameRegistrationRejectionController.onSubmit(arrivalId: ArrivalId)
+GET        /:arrivalId/vehicle-name-registration-rejection                  controllers.VehicleIdentificationNumberRejectionController.onPageLoad(arrivalId: ArrivalId)
+POST       /:arrivalId/vehicle-name-registration-rejection                  controllers.VehicleIdentificationNumberRejectionController.onSubmit(arrivalId: ArrivalId)
 
 GET        /:arrivalId/total-number-of-packages-rejection                   controllers.TotalNumberOfPackagesRejectionController.onPageLoad(arrivalId: ArrivalId)
 POST       /:arrivalId/total-number-of-packages-rejection                   controllers.TotalNumberOfPackagesRejectionController.onSubmit(arrivalId: ArrivalId)
