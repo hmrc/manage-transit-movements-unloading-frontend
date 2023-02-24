@@ -52,12 +52,11 @@ technicalDifficulties.tryAgain = Try again later.
 technicalDifficulties.contact = You can
 technicalDifficulties.contact.link = contact the New Computerised Transit System helpdesk if you need to speak to someone about transit movements (opens in a new tab).
 
-unloadingGuidance.title = Unload the goods before you send the unloading remarks
-unloadingGuidance.heading = Unload the goods before you send the unloading remarks
-unloadingGuidance.para = You can:
-unloadingGuidance.bullet1 = view and print the unloading permissions accompanying document
-unloadingGuidance.bullet2 = check that the unloaded goods match the information in the transit declaration for movement reference {0}
-unloadingGuidance.pdf = Download the Unloading Permission PDF
+unloadingGuidance.title = Unload the goods before you make unloading remarks
+unloadingGuidance.heading = Unload the goods before you make unloading remarks
+unloadingGuidance.para = When unloading, check that the goods match the information in the transit declaration for Movement Reference Number (MRN) {0}.
+unloadingGuidance.pdf.preLinkText = For further guidance,
+unloadingGuidance.pdf.link = download the Unloading Permission PDF
 
 dateGoodsUnloaded.title = When were the goods unloaded?
 dateGoodsUnloaded.heading = When were the goods unloaded?

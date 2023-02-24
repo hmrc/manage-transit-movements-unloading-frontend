@@ -44,13 +44,6 @@ class UnloadingRemarksMultipleErrorsRejectionViewSpec extends SummaryListViewBeh
 
   behave like pageWithSummaryLists()
 
-  behave like pageWithPartialContent("p", "You must review the errors and")
-  behave like pageWithLink(
-    "review",
-    "send new unloading remarks with the right information",
-    controllers.routes.IndexController.newUnloadingRemarks(arrivalId).url
-  )
-
   behave like pageWithPartialContent("p", "You can ")
   behave like pageWithLink(
     "contact",
