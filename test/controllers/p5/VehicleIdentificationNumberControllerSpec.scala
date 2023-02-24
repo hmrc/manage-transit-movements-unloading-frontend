@@ -53,7 +53,7 @@ class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDef
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, arrivalId, mode)(request, messages).toString
+        view(form, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -73,7 +73,7 @@ class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDef
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, arrivalId, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -107,7 +107,7 @@ class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDef
       val view = injector.instanceOf[VehicleIdentificationNumberView]
 
       contentAsString(result) mustEqual
-        view(boundForm, arrivalId, mode)(request, messages).toString
+        view(boundForm, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
