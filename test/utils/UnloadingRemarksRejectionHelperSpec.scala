@@ -47,7 +47,7 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase with Generators {
                 items = Seq(
                   ActionItem(
                     content = "Change".toText,
-                    href = routes.VehicleNameRegistrationRejectionController.onPageLoad(userAnswers.id).url,
+                    href = controllers.p5.routes.VehicleIdentificationNumberRejectionController.onPageLoad(userAnswers.id).url,
                     visuallyHiddenText = Some("identification number for the new vehicle"),
                     attributes = Map("id" -> "change-vehicle-registration-rejection")
                   )

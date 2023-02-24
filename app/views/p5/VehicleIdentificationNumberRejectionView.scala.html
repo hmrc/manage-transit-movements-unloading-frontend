@@ -33,7 +33,7 @@
     showBackLink = true,
 ) {
 
-    @formHelper(action = routes.VehicleNameRegistrationRejectionController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.p5.routes.VehicleIdentificationNumberRejectionController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

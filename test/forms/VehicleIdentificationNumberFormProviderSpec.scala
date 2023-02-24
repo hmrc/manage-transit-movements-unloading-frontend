@@ -25,9 +25,9 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class VehicleIdentificationNumberFormProviderSpec extends StringFieldBehaviours {
 
-  private val requiredKey = "VehicleIdentificationNumber.error.required"
+  private val requiredKey = "vehicleIdentificationNumber.error.required"
   private val maxLength   = UnloadingRemarksRequest.vehicleIdentificationNumberMaxLength
-  private val invalidKey  = "VehicleIdentificationNumber.error.invalid"
+  private val invalidKey  = "vehicleIdentificationNumber.error.invalid"
 
   private val form      = new VehicleIdentificationNumberFormProvider()()
   private val fieldName = "value"

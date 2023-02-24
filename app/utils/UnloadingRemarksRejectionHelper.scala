@@ -33,7 +33,7 @@ class UnloadingRemarksRejectionHelper(userAnswers: UserAnswers)(implicit message
       formatAnswer = _.toText,
       prefix = "changeVehicle.reference",
       id = Some("change-vehicle-registration-rejection"),
-      call = Some(routes.VehicleNameRegistrationRejectionController.onPageLoad(arrivalId))
+      call = Some(controllers.p5.routes.VehicleIdentificationNumberRejectionController.onPageLoad(arrivalId))
     )
 
   def totalNumberOfPackages: Option[SummaryListRow] =

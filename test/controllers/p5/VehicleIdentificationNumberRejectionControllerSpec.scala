@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.routes
 import forms.VehicleIdentificationNumberFormProvider
 import generators.Generators
 import models.UserAnswers
@@ -26,7 +27,7 @@ import org.mockito.Mockito.{verify, when}
 import pages.VehicleIdentificationNumberPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.VehicleNameRegistrationRejectionView
+import views.html.p5.VehicleIdentificationNumberRejectionView
 
 import scala.concurrent.Future
 
@@ -35,7 +36,8 @@ class VehicleIdentificationNumberRejectionControllerSpec extends SpecBase with A
   private val formProvider = new VehicleIdentificationNumberFormProvider()
   private val form         = formProvider()
 
-  private lazy val vehicleNameRegistrationRejectionRoute: String = routes.VehicleNameRegistrationRejectionController.onPageLoad(arrivalId).url
+  private lazy val VehicleIdentificationNumberRejectionRoute: String =
+    controllers.p5.routes.VehicleIdentificationNumberRejectionController.onPageLoad(arrivalId).url
 
   "VehicleNameRegistrationRejectionController Controller" - {
 
@@ -45,11 +47,11 @@ class VehicleIdentificationNumberRejectionControllerSpec extends SpecBase with A
 
       setExistingUserAnswers(emptyUserAnswers.setValue(VehicleIdentificationNumberPage, originalValue))
 
-      val request = FakeRequest(GET, vehicleNameRegistrationRejectionRoute)
+      val request = FakeRequest(GET, VehicleIdentificationNumberRejectionRoute)
       val result  = route(app, request).value
 
       val filledForm = form.bind(Map("value" -> originalValue))
-      val view       = injector.instanceOf[VehicleNameRegistrationRejectionView]
+      val view       = injector.instanceOf[VehicleIdentificationNumberRejectionView]
 
       status(result) mustEqual OK
 
@@ -62,7 +64,7 @@ class VehicleIdentificationNumberRejectionControllerSpec extends SpecBase with A
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, vehicleNameRegistrationRejectionRoute)
+      val request = FakeRequest(GET, VehicleIdentificationNumberRejectionRoute)
 
       val result = route(app, request).value
 
@@ -76,12 +78,12 @@ class VehicleIdentificationNumberRejectionControllerSpec extends SpecBase with A
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, vehicleNameRegistrationRejectionRoute).withFormUrlEncodedBody(("value", ""))
+      val request   = FakeRequest(POST, VehicleIdentificationNumberRejectionRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[VehicleNameRegistrationRejectionView]
+      val view = injector.instanceOf[VehicleIdentificationNumberRejectionView]
 
       status(result) mustEqual BAD_REQUEST
 
@@ -98,7 +100,7 @@ class VehicleIdentificationNumberRejectionControllerSpec extends SpecBase with A
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, vehicleNameRegistrationRejectionRoute)
+      val request = FakeRequest(POST, VehicleIdentificationNumberRejectionRoute)
         .withFormUrlEncodedBody(("value", newValue))
 
       val result = route(app, request).value

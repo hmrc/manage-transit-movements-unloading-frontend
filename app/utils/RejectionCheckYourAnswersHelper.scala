@@ -33,7 +33,7 @@ class RejectionCheckYourAnswersHelper(userAnswers: UserAnswers)(implicit message
       formatAnswer = _.toText,
       prefix = "vehicleIdentificationNumber",
       id = Some("change-vehicle-registration-rejection"),
-      call = Some(routes.VehicleNameRegistrationRejectionController.onPageLoad(arrivalId))
+      call = Some(controllers.p5.routes.VehicleIdentificationNumberRejectionController.onPageLoad(arrivalId))
     )
 
   def dateGoodsUnloaded: Option[SummaryListRow] =
