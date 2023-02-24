@@ -71,10 +71,10 @@ POST       /:arrivalId/can-seals-be-read                                    cont
 GET        /:arrivalId/change-can-seals-be-read                             controllers.CanSealsBeReadController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-can-seals-be-read                             controllers.CanSealsBeReadController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/are-any-seals-broken                                 controllers.AreAnySealsBrokenController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/are-any-seals-broken                                 controllers.AreAnySealsBrokenController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-are-any-seals-broken                          controllers.AreAnySealsBrokenController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-are-any-seals-broken                          controllers.AreAnySealsBrokenController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+GET        /:arrivalId/any-seals-broken                                     controllers.AreAnySealsBrokenController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/any-seals-broken                                     controllers.AreAnySealsBrokenController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-any-seals-broken                              controllers.AreAnySealsBrokenController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-any-seals-broken                              controllers.AreAnySealsBrokenController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
 GET        /:arrivalId/confirmation                                         controllers.ConfirmationController.onPageLoad(arrivalId: ArrivalId)
 
