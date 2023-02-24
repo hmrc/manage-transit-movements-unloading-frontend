@@ -30,7 +30,7 @@ class NewSealNumberViewSpec extends InputTextViewBehaviours[String] {
   private val index: Index        = Index(0)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[NewSealNumberView].apply(form, arrivalId, index, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[NewSealNumberView].apply(form, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "newSealNumber"
 
@@ -41,6 +41,8 @@ class NewSealNumberViewSpec extends InputTextViewBehaviours[String] {
   behave like pageWithBackLink()
 
   behave like pageWithHeading()
+
+  behave like pageWithCaption(mrn.toString)
 
   behave like pageWithHint("This can be up to 20 characters long and include both letters and numbers.")
 

@@ -57,7 +57,7 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, arrivalId, index, mode)(request, messages).toString
+        view(form, mrn, arrivalId, index, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -78,7 +78,7 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, arrivalId, index, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, index, mode)(request, messages).toString
     }
 
     "onSubmit" - {
@@ -159,7 +159,7 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
         val view = injector.instanceOf[NewSealNumberView]
 
         contentAsString(result) mustEqual
-          view(boundForm, arrivalId, index, mode)(request, messages).toString
+          view(boundForm, mrn, arrivalId, index, mode)(request, messages).toString
       }
     }
 

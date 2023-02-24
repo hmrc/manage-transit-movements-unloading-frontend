@@ -51,7 +51,7 @@ class NewSealNumberController @Inject() (
         case Some(seal) => form.fill(seal.sealId)
       }
 
-      Ok(view(preparedForm, arrivalId, index, mode))
+      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, index, mode))
   }
 
   def onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
@@ -59,9 +59,9 @@ class NewSealNumberController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId, index, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, mode))),
           value => {
-            Future.successful(BadRequest(view(form, arrivalId, index, mode)))
+            Future.successful(BadRequest(view(form, request.userAnswers.mrn, arrivalId, index, mode)))
             val removable = request.userAnswers.get(SealPage(index)).forall(_.removable)
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(SealPage(index), Seal(value, removable)))
