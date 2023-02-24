@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package controllers.P5
+package controllers.p5
 
 import controllers.actions._
-import derivable.DeriveNumberOfSeals
 import forms.NewSealNumberFormProvider
-import models.requests.DataRequest
 import models.{ArrivalId, Index, Mode, Seal}
 import navigation.Navigator
 import pages.SealPage
@@ -27,7 +25,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.NewSealNumberView
+import views.html.p5.NewSealNumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -53,12 +51,7 @@ class NewSealNumberController @Inject() (
         case Some(seal) => form.fill(seal.sealId)
       }
 
-      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, index, mode))
-  }
-  private def isADuplicateSeal(value: String)(implicit request: DataRequest[_]): Boolean = {
-    val numberOfSeals = request.userAnswers.get(DeriveNumberOfSeals).getOrElse(1)
-    val sealIDs = for(sealIndex <- 0 to numberOfSeals) yield request.userAnswers.get(SealPage(Index(sealIndex))).get.sealId
-    if(sealIDs.contains(value)) true else false
+      Ok(view(preparedForm, arrivalId, index, mode))
   }
 
   def onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
@@ -66,18 +59,14 @@ class NewSealNumberController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId, index, mode))),
           value => {
-            if(isADuplicateSeal(value)) {
-              Future.successful(BadRequest(view(form., request.userAnswers.mrn, arrivalId, index, mode))) // TODO - Make error message for duplicate seal show up
-            }
-            else {
-              val removable = request.userAnswers.get(SealPage(index)).forall(_.removable)
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(SealPage(index), Seal(value, removable)))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(SealPage(index), mode, updatedAnswers))
-            }
+            Future.successful(BadRequest(view(form, arrivalId, index, mode)))
+            val removable = request.userAnswers.get(SealPage(index)).forall(_.removable)
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(SealPage(index), Seal(value, removable)))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(SealPage(index), mode, updatedAnswers))
           }
         )
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.P5
+package views.p5
 
 import forms.NewSealNumberFormProvider
 import models.{Index, NormalMode}
@@ -22,7 +22,7 @@ import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.InputTextViewBehaviours
-import views.html.NewSealNumberView
+import views.html.p5.NewSealNumberView
 
 class NewSealNumberViewSpec extends InputTextViewBehaviours[String] {
 
@@ -30,7 +30,7 @@ class NewSealNumberViewSpec extends InputTextViewBehaviours[String] {
   private val index: Index        = Index(0)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[NewSealNumberView].apply(form, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[NewSealNumberView].apply(form, arrivalId, index, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "newSealNumber"
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.P5
+package controllers.p5
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
@@ -26,7 +26,7 @@ import org.mockito.Mockito.{verify, when}
 import pages.SealPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.NewSealNumberView
+import views.html.p5.NewSealNumberView
 
 import scala.concurrent.Future
 
@@ -39,7 +39,7 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
   private val validAnswer = "seal ID"
 
-  private lazy val newSealNumberRoute = routes.NewSealNumberController.onPageLoad(arrivalId, index, mode).url
+  private lazy val newSealNumberRoute = controllers.p5.routes.NewSealNumberController.onPageLoad(arrivalId, index, mode).url
 
   "NewSealNumber Controller" - {
 
@@ -57,7 +57,7 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, index, mode)(request, messages).toString
+        view(form, arrivalId, index, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -78,7 +78,7 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, index, mode)(request, messages).toString
+        view(filledForm, arrivalId, index, mode)(request, messages).toString
     }
 
     "onSubmit" - {
@@ -159,7 +159,7 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
         val view = injector.instanceOf[NewSealNumberView]
 
         contentAsString(result) mustEqual
-          view(boundForm, mrn, arrivalId, index, mode)(request, messages).toString
+          view(boundForm, arrivalId, index, mode)(request, messages).toString
       }
     }
 
