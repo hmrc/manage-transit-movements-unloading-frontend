@@ -26,7 +26,6 @@ import org.mockito.Mockito._
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -53,7 +52,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
       .overrides(bind[UnloadingPermissionService].toInstance(mockUnloadingPermissionService))
       .overrides(bind[UnloadingPermissionExtractor].toInstance(mockExtractor))
 
-  private lazy val nextPage = routes.UnloadingGuidanceController.onPageLoad(arrivalId).url
+  private lazy val nextPage = controllers.p5.routes.UnloadingGuidanceController.onPageLoad(arrivalId).url
 
   "Index Controller" ignore {
 
