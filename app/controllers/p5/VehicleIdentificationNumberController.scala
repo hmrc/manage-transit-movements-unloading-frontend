@@ -14,30 +14,30 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
 import controllers.actions._
-import forms.VehicleNameRegistrationReferenceFormProvider
+import forms.VehicleIdentificationNumberFormProvider
 import models.{ArrivalId, Mode}
 import navigation.Navigator
-import pages.VehicleNameRegistrationReferencePage
+import pages.VehicleIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.VehicleNameRegistrationReferenceView
+import views.html.p5.VehicleIdentificationNumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class VehicleNameRegistrationReferenceController @Inject() (
+class VehicleIdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
   actions: Actions,
-  formProvider: VehicleNameRegistrationReferenceFormProvider,
+  formProvider: VehicleIdentificationNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: VehicleNameRegistrationReferenceView
+  view: VehicleIdentificationNumberView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -46,12 +46,12 @@ class VehicleNameRegistrationReferenceController @Inject() (
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(VehicleNameRegistrationReferencePage) match {
+      val preparedForm = request.userAnswers.get(VehicleIdentificationNumberPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode))
+      Ok(view(preparedForm, arrivalId, mode))
   }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
@@ -59,12 +59,12 @@ class VehicleNameRegistrationReferenceController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId, mode))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleNameRegistrationReferencePage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleIdentificationNumberPage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(VehicleNameRegistrationReferencePage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(VehicleIdentificationNumberPage, mode, updatedAnswers))
         )
   }
 }

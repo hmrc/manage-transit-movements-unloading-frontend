@@ -71,10 +71,10 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryVehicleNameRegistrationReference: Arbitrary[(VehicleNameRegistrationReferencePage.type, JsValue)] =
+  implicit lazy val arbitraryVehicleNameRegistrationReference: Arbitrary[(VehicleIdentificationNumberPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[VehicleNameRegistrationReferencePage.type]
+        page  <- arbitrary[VehicleIdentificationNumberPage.type]
         value <- arbitrary[String].map(Json.toJson(_))
       } yield (page, value)
     }

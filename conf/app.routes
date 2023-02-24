@@ -37,10 +37,10 @@ POST       /:arrivalId/date-goods-unloaded                                  cont
 GET        /:arrivalId/change-date-goods-unloaded                           controllers.DateGoodsUnloadedController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-date-goods-unloaded                           controllers.DateGoodsUnloadedController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/vehicle-name-registration-reference                  controllers.VehicleNameRegistrationReferenceController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/vehicle-name-registration-reference                  controllers.VehicleNameRegistrationReferenceController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-vehicle-name-registration-reference           controllers.VehicleNameRegistrationReferenceController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-vehicle-name-registration-reference           controllers.VehicleNameRegistrationReferenceController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+GET        /:arrivalId/vehicle-identification-number                        controllers.p5.VehicleIdentificationNumberController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/vehicle-identification-number                        controllers.p5.VehicleIdentificationNumberController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-vehicle-identification-number                 controllers.p5.VehicleIdentificationNumberController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-vehicle-identification-number                 controllers.p5.VehicleIdentificationNumberController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
 
 GET        /:arrivalId/vehicle-registration-country                         controllers.VehicleRegistrationCountryController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)

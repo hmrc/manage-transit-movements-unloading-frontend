@@ -49,7 +49,7 @@ class UnloadingRemarksRejectionViewModelSpec extends SpecBase with Generators {
       "when pointer is VehicleRegistrationPointer" in {
         val value       = arbitrary[String].sample.value
         val viewModel   = new UnloadingRemarksRejectionViewModel()
-        val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, value)
+        val userAnswers = emptyUserAnswers.setValue(VehicleIdentificationNumberPage, value)
         val result      = viewModel.apply(userAnswers).get
         result.value mustBe Value(value.toText)
       }

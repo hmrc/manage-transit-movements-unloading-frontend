@@ -29,7 +29,7 @@
 @(form: Form[_], arrivalId: ArrivalId)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("vehicleNameRegistrationReference.title"),
+    title = messages("vehicleIdentificationNumber.title"),
     showBackLink = true,
 ) {
 
@@ -40,7 +40,7 @@
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("vehicleNameRegistrationReference.heading")
+                heading = messages("vehicleIdentificationNumber.heading")
             )
         )
 

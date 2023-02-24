@@ -22,7 +22,7 @@ import models.messages._
 import models.{Index, Seal, Seals, UnloadingPermission}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.{SealPage, VehicleNameRegistrationReferencePage}
+import pages.{SealPage, VehicleIdentificationNumberPage}
 
 import java.time.LocalDateTime
 
@@ -207,7 +207,7 @@ class UnloadingRemarksRequestServiceSpec extends SpecBase with AppWithDefaultMoc
               .setValue(SealPage(Index(0)), Seal("seal 2", removable = false))
               .setValue(SealPage(Index(1)), Seal("seal 1", removable = false))
               .setValue(SealPage(Index(2)), Seal("seal 3", removable = false))
-              .setValue(VehicleNameRegistrationReferencePage, "reference")
+              .setValue(VehicleIdentificationNumberPage, "reference")
 
             unloadingRemarksRequestService.build(meta, unloadingRemarks, unloadingPermission, userAnswersUpdated) mustBe
               UnloadingRemarksRequest(

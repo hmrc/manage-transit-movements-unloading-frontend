@@ -44,12 +44,12 @@ class ResultOfControlServiceSpec extends SpecBase with Generators with ScalaChec
         }
       }
 
-      "contains VehicleNameRegistrationReference value" in {
+      "contains VehicleIdentificationNumber value" in {
 
         forAll(arbitrary[UnloadingPermission]) {
           unloadingPermission =>
             val userAnswersUpdated = emptyUserAnswers
-              .setValue(VehicleNameRegistrationReferencePage, "reference")
+              .setValue(VehicleIdentificationNumberPage, "reference")
 
             service.build(userAnswersUpdated, unloadingPermission) mustBe Seq(
               ResultsOfControlDifferentValues(
@@ -124,7 +124,7 @@ class ResultOfControlServiceSpec extends SpecBase with Generators with ScalaChec
         forAll(arbitrary[UnloadingPermission]) {
           unloadingPermission =>
             val userAnswersUpdated = emptyUserAnswers
-              .setValue(VehicleNameRegistrationReferencePage, "reference")
+              .setValue(VehicleIdentificationNumberPage, "reference")
               .setValue(VehicleRegistrationCountryPage, Country("FR", "description"))
 
             service.build(userAnswersUpdated, unloadingPermission) mustBe Seq(

@@ -38,7 +38,7 @@ class RejectionMessageExtractor {
           case GrossMassPointer           => setValue(GrossMassAmountPage)(Some(_))
           case NumberOfItemsPointer       => setValue(TotalNumberOfItemsPage)(IntValue.getInt)
           case UnloadingDatePointer       => setValue(DateGoodsUnloadedPage)(Date.getDate)
-          case VehicleRegistrationPointer => setValue(VehicleNameRegistrationReferencePage)(Some(_))
+          case VehicleRegistrationPointer => setValue(VehicleIdentificationNumberPage)(Some(_))
           case NumberOfPackagesPointer    => setValue(TotalNumberOfPackagesPage)(IntValue.getInt)
           case _: DefaultPointer          => Success(userAnswers)
         }

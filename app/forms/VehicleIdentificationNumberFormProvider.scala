@@ -22,12 +22,12 @@ import models.messages.UnloadingRemarksRequest
 import models.messages.UnloadingRemarksRequest.alphaNumericRegex
 import play.api.data.Form
 
-class VehicleNameRegistrationReferenceFormProvider @Inject() extends Mappings {
+class VehicleIdentificationNumberFormProvider @Inject() extends Mappings {
 
   def apply(): Form[String] =
     Form(
-      "value" -> text("vehicleNameRegistrationReference.error.required")
-        .verifying(maxLength(UnloadingRemarksRequest.vehicleNameMaxLength, "vehicleNameRegistrationReference.error.length"))
-        .verifying(regexp(alphaNumericRegex.r, "vehicleNameRegistrationReference.error.invalid", Seq.empty))
+      "value" -> text("VehicleIdentificationNumber.error.required")
+        .verifying(maxLength(UnloadingRemarksRequest.vehicleIdentificationNumberMaxLength, "VehicleIdentificationNumber.error.length"))
+        .verifying(regexp(alphaNumericRegex.r, "VehicleIdentificationNumber.error.invalid", Seq.empty))
     )
 }

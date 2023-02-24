@@ -17,13 +17,13 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.VehicleNameRegistrationReferenceFormProvider
+import forms.VehicleIdentificationNumberFormProvider
 import generators.Generators
 import models.UserAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
-import pages.VehicleNameRegistrationReferencePage
+import pages.VehicleIdentificationNumberPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.VehicleNameRegistrationRejectionView
@@ -32,7 +32,7 @@ import scala.concurrent.Future
 
 class VehicleNameRegistrationRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val formProvider = new VehicleNameRegistrationReferenceFormProvider()
+  private val formProvider = new VehicleIdentificationNumberFormProvider()
   private val form         = formProvider()
 
   private lazy val vehicleNameRegistrationRejectionRoute: String = routes.VehicleNameRegistrationRejectionController.onPageLoad(arrivalId).url
@@ -43,7 +43,7 @@ class VehicleNameRegistrationRejectionControllerSpec extends SpecBase with AppWi
       checkArrivalStatus()
       val originalValue = "some reference"
 
-      setExistingUserAnswers(emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, originalValue))
+      setExistingUserAnswers(emptyUserAnswers.setValue(VehicleIdentificationNumberPage, originalValue))
 
       val request = FakeRequest(GET, vehicleNameRegistrationRejectionRoute)
       val result  = route(app, request).value
@@ -109,7 +109,7 @@ class VehicleNameRegistrationRejectionControllerSpec extends SpecBase with AppWi
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())
-      userAnswersCaptor.getValue.get(VehicleNameRegistrationReferencePage).get mustBe newValue
+      userAnswersCaptor.getValue.get(VehicleIdentificationNumberPage).get mustBe newValue
     }
   }
 }

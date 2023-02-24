@@ -73,7 +73,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase {
     }
 
     "contain vehicle registration details" in {
-      val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, "vehicle reference")
+      val userAnswers = emptyUserAnswers.setValue(VehicleIdentificationNumberPage, "vehicle reference")
       val sections    = new CheckYourAnswersViewModel()(userAnswers)
 
       sections.length mustBe 3

@@ -31,16 +31,16 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase with Generators {
 
   "must return summary list row" - {
 
-    "when .vehicleNameRegistrationReference" in {
+    "when .VehicleIdentificationNumber" in {
 
       forAll(arbitrary[String]) {
         str =>
-          val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, str)
+          val userAnswers = emptyUserAnswers.setValue(VehicleIdentificationNumberPage, str)
           val helper      = new UnloadingRemarksRejectionHelper(userAnswers)
-          val result      = helper.vehicleNameRegistrationReference.get
+          val result      = helper.VehicleIdentificationNumber.get
 
           result mustEqual SummaryListRow(
-            key = "Name, registration or reference".toKey,
+            key = "Identification number for the new vehicle".toKey,
             value = Value(str.toText),
             actions = Some(
               Actions(
@@ -48,7 +48,7 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase with Generators {
                   ActionItem(
                     content = "Change".toText,
                     href = routes.VehicleNameRegistrationRejectionController.onPageLoad(userAnswers.id).url,
-                    visuallyHiddenText = Some("name, registration or reference"),
+                    visuallyHiddenText = Some("identification number for the new vehicle"),
                     attributes = Map("id" -> "change-vehicle-registration-rejection")
                   )
                 )

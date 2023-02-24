@@ -27,11 +27,11 @@ import java.time.LocalDate
 
 class RejectionCheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
-  def vehicleNameRegistration: Option[SummaryListRow] =
+  def vehicleIdentificationNumber: Option[SummaryListRow] =
     getAnswerAndBuildRow[String](
-      page = VehicleNameRegistrationReferencePage,
+      page = VehicleIdentificationNumberPage,
       formatAnswer = _.toText,
-      prefix = "vehicleNameRegistrationReference",
+      prefix = "vehicleIdentificationNumber",
       id = Some("change-vehicle-registration-rejection"),
       call = Some(routes.VehicleNameRegistrationRejectionController.onPageLoad(arrivalId))
     )
