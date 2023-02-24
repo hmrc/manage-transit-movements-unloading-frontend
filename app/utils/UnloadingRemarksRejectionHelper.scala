@@ -27,7 +27,7 @@ import java.time.LocalDate
 
 class UnloadingRemarksRejectionHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
-  def VehicleIdentificationNumber: Option[SummaryListRow] =
+  def vehicleIdentificationNumber: Option[SummaryListRow] =
     getAnswerAndBuildRow[String](
       page = VehicleIdentificationNumberPage,
       formatAnswer = _.toText,

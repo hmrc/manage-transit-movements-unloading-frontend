@@ -30,7 +30,7 @@ class UnloadingRemarksRejectionViewModel {
 
     Seq(
       helper.totalNumberOfPackages,
-      helper.VehicleIdentificationNumber,
+      helper.vehicleIdentificationNumber,
       helper.totalNumberOfItems,
       helper.grossMassAmount,
       helper.unloadingDate

@@ -37,7 +37,7 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase with Generators {
         str =>
           val userAnswers = emptyUserAnswers.setValue(VehicleIdentificationNumberPage, str)
           val helper      = new UnloadingRemarksRejectionHelper(userAnswers)
-          val result      = helper.VehicleIdentificationNumber.get
+          val result      = helper.vehicleIdentificationNumber.get
 
           result mustEqual SummaryListRow(
             key = "Identification number for the new vehicle".toKey,
