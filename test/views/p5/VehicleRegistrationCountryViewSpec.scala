@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.p5
 
 import forms.VehicleRegistrationCountryFormProvider
 import generators.Generators
@@ -23,7 +23,7 @@ import models.reference.Country
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.InputSelectViewBehaviours
-import views.html.VehicleRegistrationCountryView
+import views.html.p5.VehicleRegistrationCountryView
 
 class VehicleRegistrationCountryViewSpec extends InputSelectViewBehaviours[Country] with Generators {
 

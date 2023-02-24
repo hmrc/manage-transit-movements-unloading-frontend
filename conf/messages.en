@@ -78,11 +78,10 @@ vehicleNameRegistrationReference.error.length = The name, registration or refere
 vehicleNameRegistrationReference.error.invalid = The name, registration or reference of the new vehicle must only include letters a to z or numbers 0 to 9
 vehicleNameRegistrationReference.change.hidden = the name, registration or reference of the new vehicle
 
-vehicleRegistrationCountry.title = Which country is the vehicle registered in?
-vehicleRegistrationCountry.heading = Which country is the vehicle registered in?
-vehicleRegistrationCountry.checkYourAnswersLabel = Which country is the vehicle registered in?
-vehicleRegistrationCountry.error.required = Enter which country the vehicle is registered in
-vehicleRegistrationCountry.error.length = The country the vehicle is registered in must be 100 characters or less
+vehicleRegistrationCountry.title = What country is the vehicle registered to?
+vehicleRegistrationCountry.heading = What country is the vehicle registered to?
+vehicleRegistrationCountry.checkYourAnswersLabel = What country is the vehicle registered to?
+vehicleRegistrationCountry.error.required = Select the country the vehicle is registered to
 vehicleRegistrationCountry.placeHolder = Select a country
 
 grossMassAmount.title = What is the new total gross mass in kilograms?

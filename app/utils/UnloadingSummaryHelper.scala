@@ -93,7 +93,7 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
       formatAnswer = _.description.toText,
       prefix = "changeVehicle.registeredCountry",
       id = Some("change-vehicle-country"),
-      call = Some(routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, mode))
+      call = Some(controllers.p5.routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, mode))
     )
 
   def grossMass: Option[SummaryListRow] =

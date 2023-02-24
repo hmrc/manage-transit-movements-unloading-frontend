@@ -43,10 +43,10 @@ GET        /:arrivalId/change-vehicle-name-registration-reference           cont
 POST       /:arrivalId/change-vehicle-name-registration-reference           controllers.VehicleNameRegistrationReferenceController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
 
-GET        /:arrivalId/vehicle-registration-country                         controllers.VehicleRegistrationCountryController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/vehicle-registration-country                         controllers.VehicleRegistrationCountryController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-vehicle-registration-country                  controllers.VehicleRegistrationCountryController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-vehicle-registration-country                  controllers.VehicleRegistrationCountryController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+GET        /:arrivalId/vehicle-registered-country                           controllers.p5.VehicleRegistrationCountryController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/vehicle-registered-country                           controllers.p5.VehicleRegistrationCountryController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-vehicle-registered-country                    controllers.p5.VehicleRegistrationCountryController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-vehicle-registered-country                    controllers.p5.VehicleRegistrationCountryController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
 GET        /:arrivalId/gross-mass-amount                                    controllers.GrossMassAmountController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/gross-mass-amount                                    controllers.GrossMassAmountController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
