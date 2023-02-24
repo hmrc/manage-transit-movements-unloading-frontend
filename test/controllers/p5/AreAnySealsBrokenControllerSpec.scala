@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.routes
 import forms.AreAnySealsBrokenFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
@@ -24,7 +25,7 @@ import org.mockito.Mockito.when
 import pages.AreAnySealsBrokenPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.AreAnySealsBrokenView
+import views.html.p5.AreAnySealsBrokenView
 
 import scala.concurrent.Future
 
@@ -34,7 +35,7 @@ class AreAnySealsBrokenControllerSpec extends SpecBase with AppWithDefaultMockFi
   private val form         = formProvider()
   private val mode         = NormalMode
 
-  lazy val areAnySealsBrokenRoute = routes.AreAnySealsBrokenController.onPageLoad(arrivalId, mode).url
+  lazy val areAnySealsBrokenRoute: String = controllers.p5.routes.AreAnySealsBrokenController.onPageLoad(arrivalId, mode).url
 
   "AreAnySealsBroken Controller" - {
 

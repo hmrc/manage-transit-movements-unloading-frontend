@@ -77,7 +77,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               val updatedUserAnswers = answers.setValue(CanSealsBeReadPage, true)
               navigator
                 .nextPage(CanSealsBeReadPage, mode, updatedUserAnswers)
-                .mustBe(routes.AreAnySealsBrokenController.onPageLoad(updatedUserAnswers.id, mode))
+                .mustBe(controllers.p5.routes.AreAnySealsBrokenController.onPageLoad(updatedUserAnswers.id, mode))
           }
         }
 
@@ -88,7 +88,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               val updatedUserAnswers = answers.setValue(CanSealsBeReadPage, false)
               navigator
                 .nextPage(CanSealsBeReadPage, mode, updatedUserAnswers)
-                .mustBe(routes.AreAnySealsBrokenController.onPageLoad(updatedUserAnswers.id, mode))
+                .mustBe(controllers.p5.routes.AreAnySealsBrokenController.onPageLoad(updatedUserAnswers.id, mode))
           }
         }
 

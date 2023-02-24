@@ -61,7 +61,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
                   List(
                     ActionItem(
                       content = "Change".toText,
-                      href = routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, CheckMode).url,
+                      href = controllers.p5.routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, CheckMode).url,
                       visuallyHiddenText = Some("if any of the seals are broken"),
                       attributes = Map("id" -> "change-are-any-seals-broken")
                     )
@@ -87,7 +87,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
                   List(
                     ActionItem(
                       content = "Change".toText,
-                      href = routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, CheckMode).url,
+                      href = controllers.p5.routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, CheckMode).url,
                       visuallyHiddenText = Some("if any of the seals are broken"),
                       attributes = Map("id" -> "change-are-any-seals-broken")
                     )
