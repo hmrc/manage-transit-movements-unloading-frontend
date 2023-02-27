@@ -32,13 +32,13 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class UnloadingReportController @Inject() (
-                                            override val messagesApi: MessagesApi,
-                                            sessionRepository: SessionRepository,
-                                            navigator: Navigator,
-                                            actions: Actions,
-                                            formProvider: UnloadingReportFormProvider,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            view: UnloadingReportView
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  navigator: Navigator,
+  actions: Actions,
+  formProvider: UnloadingReportFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: UnloadingReportView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
