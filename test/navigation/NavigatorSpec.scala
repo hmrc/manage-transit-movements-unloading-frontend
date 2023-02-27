@@ -54,7 +54,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               val updatedUserAnswers = answers.setValue(SealsQuery, Seq(seal))
               navigator
                 .nextPage(DateGoodsUnloadedPage, mode, updatedUserAnswers)
-                .mustBe(routes.CanSealsBeReadController.onPageLoad(updatedUserAnswers.id, mode))
+                .mustBe(controllers.p5.routes.CanSealsBeReadController.onPageLoad(updatedUserAnswers.id, mode))
           }
         }
 

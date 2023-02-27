@@ -43,7 +43,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
       formatAnswer = formatAsYesOrNo,
       prefix = "canSealsBeRead",
       id = Some("change-can-seals-be-read"),
-      call = Some(routes.CanSealsBeReadController.onPageLoad(userAnswers.id, CheckMode))
+      call = Some(controllers.p5.routes.CanSealsBeReadController.onPageLoad(userAnswers.id, CheckMode))
     )
 
   def seals: Option[SummaryListRow] =

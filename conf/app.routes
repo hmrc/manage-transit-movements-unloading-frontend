@@ -66,10 +66,10 @@ POST       /:arrivalId/seal/:index/change-confirm-remove-seal               cont
 GET        /:arrivalId/unloading-summary                                    controllers.UnloadingSummaryController.onPageLoad(arrivalId: ArrivalId)
 POST       /:arrivalId/unloading-summary                                    controllers.UnloadingSummaryController.onSubmit(arrivalId: ArrivalId)
 
-GET        /:arrivalId/can-seals-be-read                                    controllers.CanSealsBeReadController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/can-seals-be-read                                    controllers.CanSealsBeReadController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-can-seals-be-read                             controllers.CanSealsBeReadController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-can-seals-be-read                             controllers.CanSealsBeReadController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+GET        /:arrivalId/seals-readable                                       controllers.p5.CanSealsBeReadController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/seals-readable                                       controllers.p5.CanSealsBeReadController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-seals-readable                                controllers.p5.CanSealsBeReadController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-seals-readable                                controllers.p5.CanSealsBeReadController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
 GET        /:arrivalId/are-any-seals-broken                                 controllers.AreAnySealsBrokenController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/are-any-seals-broken                                 controllers.AreAnySealsBrokenController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
