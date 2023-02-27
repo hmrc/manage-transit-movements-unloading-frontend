@@ -42,7 +42,7 @@ class NewSealNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading()
 
-  behave like pageWithCaption(mrn.toString, Some("MRN - "))
+  behave like pageWithCaption(mrn.toString)
 
   behave like pageWithHint("This can be up to 20 characters long and include both letters and numbers.")
 
