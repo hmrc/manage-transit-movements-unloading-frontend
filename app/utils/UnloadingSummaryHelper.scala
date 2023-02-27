@@ -129,7 +129,7 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
       formatAnswer = _.toText,
       prefix = "changeItems.comments",
       id = "comments",
-      changeCall = routes.ChangesToReportController.onPageLoad(arrivalId, mode),
+      changeCall = controllers.p5.routes.ChangesToReportController.onPageLoad(arrivalId, mode),
       removeCall = routes.ConfirmRemoveCommentsController.onPageLoad(arrivalId, mode)
     )
 }

@@ -304,7 +304,7 @@ class UnloadingSummaryHelperSpec extends SpecBase with Generators {
                 List(
                   ActionItem(
                     content = "Change".toText,
-                    href = routes.ChangesToReportController.onPageLoad(userAnswers.id, mode).url,
+                    href = controllers.p5.routes.ChangesToReportController.onPageLoad(userAnswers.id, mode).url,
                     visuallyHiddenText = Some("comments"),
                     attributes = Map("id" -> "change-comments")
                   ),

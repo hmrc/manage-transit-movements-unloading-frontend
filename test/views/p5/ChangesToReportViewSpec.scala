@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.p5
 
 import forms.ChangesToReportFormProvider
 import models.NormalMode
@@ -22,7 +22,7 @@ import models.messages.RemarksNonConform._
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.CharacterCountViewBehaviours
-import views.html.ChangesToReportView
+import views.html.p5.ChangesToReportView
 
 class ChangesToReportViewSpec extends CharacterCountViewBehaviours {
 

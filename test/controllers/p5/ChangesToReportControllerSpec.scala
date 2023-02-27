@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.routes
 import forms.ChangesToReportFormProvider
 import models.NormalMode
 import models.messages.RemarksNonConform._
@@ -25,7 +26,7 @@ import org.mockito.Mockito.when
 import pages.ChangesToReportPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.ChangesToReportView
+import views.html.p5.ChangesToReportView
 
 import scala.concurrent.Future
 
@@ -35,7 +36,7 @@ class ChangesToReportControllerSpec extends SpecBase with AppWithDefaultMockFixt
   private val form         = formProvider()
   private val mode         = NormalMode
 
-  private lazy val changesToReportRoute = routes.ChangesToReportController.onPageLoad(arrivalId, NormalMode).url
+  private lazy val changesToReportRoute = controllers.p5.routes.ChangesToReportController.onPageLoad(arrivalId, NormalMode).url
 
   "ChangesToReport Controller" - {
 

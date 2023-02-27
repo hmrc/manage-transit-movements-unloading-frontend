@@ -35,7 +35,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.ChangesToReportController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.p5.routes.ChangesToReportController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
