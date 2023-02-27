@@ -23,6 +23,8 @@ site.section = This section is
 error.title.prefix = Error:
 error.summary.title = There is a problem
 
+mrn.caption.hidden = MRN -
+
 checkYourAnswers.title = Check your answers before sending these unloading remarks
 checkYourAnswers.heading = Check your answers before sending these unloading remarks
 
