@@ -29,7 +29,7 @@ class UnloadingReportFormProviderSpec extends StringFieldBehaviours {
   val requiredKey = "changesToReport.error.required"
   val lengthKey   = "changesToReport.error.length"
   val invalidKey  = "changesToReport.error.invalid"
-  val maxLength   = 350
+  val maxLength   = 512
 
   val form = new UnloadingReportFormProvider()()
 
