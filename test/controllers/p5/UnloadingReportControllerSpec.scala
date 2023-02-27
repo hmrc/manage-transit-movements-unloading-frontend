@@ -18,7 +18,7 @@ package controllers.p5
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
-import forms.ChangesToReportFormProvider
+import forms.UnloadingReportFormProvider
 import models.NormalMode
 import models.messages.RemarksNonConform._
 import org.mockito.ArgumentMatchers.any
@@ -32,7 +32,7 @@ import scala.concurrent.Future
 
 class UnloadingReportControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider = new ChangesToReportFormProvider()
+  private val formProvider = new UnloadingReportFormProvider()
   private val form         = formProvider()
   private val mode         = NormalMode
 

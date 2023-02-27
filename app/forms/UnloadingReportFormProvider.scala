@@ -22,7 +22,7 @@ import models.messages.RemarksNonConform
 import play.api.data.Form
 import models.messages.UnloadingRemarksRequest.stringFieldRegex
 
-class ChangesToReportFormProvider @Inject() extends Mappings {
+class UnloadingReportFormProvider @Inject() extends Mappings {
 
   def apply(): Form[String] =
     Form(

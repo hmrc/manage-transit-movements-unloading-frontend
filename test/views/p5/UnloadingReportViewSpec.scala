@@ -16,7 +16,7 @@
 
 package views.p5
 
-import forms.ChangesToReportFormProvider
+import forms.UnloadingReportFormProvider
 import models.NormalMode
 import models.messages.RemarksNonConform._
 import play.api.data.Form
@@ -26,7 +26,7 @@ import views.html.p5.UnloadingReportView
 
 class UnloadingReportViewSpec extends CharacterCountViewBehaviours {
 
-  override def form: Form[String] = new ChangesToReportFormProvider()()
+  override def form: Form[String] = new UnloadingReportFormProvider()()
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector.instanceOf[UnloadingReportView].apply(form, mrn, arrivalId, unloadingRemarkLength, NormalMode)(fakeRequest, messages)
