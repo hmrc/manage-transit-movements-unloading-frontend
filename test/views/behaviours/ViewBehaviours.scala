@@ -116,8 +116,8 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     "must render caption" in {
       val caption = getElementByClass(doc, "govuk-caption-xl")
       hiddenText match {
-        case Some(_) => assertElementContainsText(caption, hiddenText + expectedText)
-        case None => assertElementContainsText(caption, expectedText)
+        case Some(value) => assertElementContainsText(caption, value + expectedText)
+        case None        => assertElementContainsText(caption, expectedText)
       }
     }
 
