@@ -163,12 +163,12 @@ confirmation.linkText = Go to arrival notifications
 confirmation.para3 = to see the latest messages.
 
 
-changesToReport.title = What do you need to report?
-changesToReport.heading = What do you need to report?
-changesToReport.checkYourAnswersLabel = What do you need to report?
-changesToReport.error.required = Enter what you need to report
-changesToReport.error.length = What you need to report must be 350 characters or less
-changesToReport.error.invalid = What you need to report must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks and spaces
+changesToReport.title = What do you want to report?
+changesToReport.heading = What do you want to report?
+changesToReport.checkYourAnswersLabel = What do you want to report?
+changesToReport.error.required = Enter what you want to report
+changesToReport.error.length = Your report must be 350 characters or less
+changesToReport.error.invalid = Your report must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 
 confirmRemoveComments.title = Are you sure you want to remove your comments?
 confirmRemoveComments.heading = Are you sure you want to remove your comments?
