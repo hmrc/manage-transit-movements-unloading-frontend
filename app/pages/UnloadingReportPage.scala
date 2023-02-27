@@ -16,16 +16,11 @@
 
 package pages
 
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.JsPath
 
-class ChangesToReportPageSpec extends PageBehaviours {
+case object UnloadingReportPage extends QuestionPage[String] {
 
-  "ChangesToReportPage" - {
+  override def path: JsPath = JsPath \ toString
 
-    beRetrievable[String](ChangesToReportPage)
-
-    beSettable[String](ChangesToReportPage)
-
-    beRemovable[String](ChangesToReportPage)
-  }
+  override def toString: String = "unloadingReport"
 }

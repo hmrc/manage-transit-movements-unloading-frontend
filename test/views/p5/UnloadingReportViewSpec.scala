@@ -22,14 +22,14 @@ import models.messages.RemarksNonConform._
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.CharacterCountViewBehaviours
-import views.html.p5.ChangesToReportView
+import views.html.p5.UnloadingReportView
 
-class ChangesToReportViewSpec extends CharacterCountViewBehaviours {
+class UnloadingReportViewSpec extends CharacterCountViewBehaviours {
 
   override def form: Form[String] = new ChangesToReportFormProvider()()
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[ChangesToReportView].apply(form, mrn, arrivalId, unloadingRemarkLength, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[UnloadingReportView].apply(form, mrn, arrivalId, unloadingRemarkLength, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "changesToReport"
 

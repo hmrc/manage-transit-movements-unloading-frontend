@@ -55,7 +55,7 @@ class RemarksServiceImpl extends RemarksService {
       ) {
         RemarksNonConform(
           stateOfSeals = Some(0),
-          unloadingRemark = userAnswers.get(ChangesToReportPage),
+          unloadingRemark = userAnswers.get(UnloadingReportPage),
           unloadingDate = unloadingDate
         )
       } else {
@@ -65,13 +65,13 @@ class RemarksServiceImpl extends RemarksService {
         ) match {
           case (false, false, false) =>
             RemarksConformWithSeals(
-              unloadingRemark = userAnswers.get(ChangesToReportPage),
+              unloadingRemark = userAnswers.get(UnloadingReportPage),
               unloadingDate = unloadingDate
             )
           case _ =>
             RemarksNonConform(
               stateOfSeals = Some(1),
-              unloadingRemark = userAnswers.get(ChangesToReportPage),
+              unloadingRemark = userAnswers.get(UnloadingReportPage),
               unloadingDate = unloadingDate
             )
         }
@@ -88,7 +88,7 @@ class RemarksServiceImpl extends RemarksService {
         case Some(_) =>
           RemarksNonConform(
             stateOfSeals = Some(0),
-            unloadingRemark = userAnswers.get(ChangesToReportPage),
+            unloadingRemark = userAnswers.get(UnloadingReportPage),
             unloadingDate = unloadingDate
           )
         case None =>
@@ -98,13 +98,13 @@ class RemarksServiceImpl extends RemarksService {
           ) match {
             case (false, false, false) =>
               RemarksConform(
-                unloadingRemark = userAnswers.get(ChangesToReportPage),
+                unloadingRemark = userAnswers.get(UnloadingReportPage),
                 unloadingDate = unloadingDate
               )
             case _ =>
               RemarksNonConform(
                 stateOfSeals = None,
-                unloadingRemark = userAnswers.get(ChangesToReportPage),
+                unloadingRemark = userAnswers.get(UnloadingReportPage),
                 unloadingDate = unloadingDate
               )
           }

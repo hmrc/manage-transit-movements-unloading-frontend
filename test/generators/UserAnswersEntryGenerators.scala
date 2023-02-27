@@ -23,10 +23,10 @@ import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators {
 
-  implicit lazy val arbitraryChangesToReportEntry: Arbitrary[(ChangesToReportPage.type, JsValue)] =
+  implicit lazy val arbitraryChangesToReportEntry: Arbitrary[(UnloadingReportPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[ChangesToReportPage.type]
+        page  <- arbitrary[UnloadingReportPage.type]
         value <- arbitrary[String].map(Json.toJson(_))
       } yield (page, value)
     }

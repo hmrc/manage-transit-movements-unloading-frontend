@@ -62,7 +62,7 @@
 
     @if(showAddCommentLink) {
         <p class ="govuk-body">
-            <a id="add-comment" href=@controllers.p5.routes.ChangesToReportController.onPageLoad(arrivalId, NormalMode) class="govuk-link">
+            <a id="add-comment" href=@controllers.p5.routes.UnloadingReportController.onPageLoad(arrivalId, NormalMode) class="govuk-link">
                 @messages("unloadingSummary.addComment.link.text")
             </a>
         </p>

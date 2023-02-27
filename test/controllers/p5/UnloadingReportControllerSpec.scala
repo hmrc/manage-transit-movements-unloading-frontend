@@ -23,20 +23,20 @@ import models.NormalMode
 import models.messages.RemarksNonConform._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.ChangesToReportPage
+import pages.UnloadingReportPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.p5.ChangesToReportView
+import views.html.p5.UnloadingReportView
 
 import scala.concurrent.Future
 
-class ChangesToReportControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class UnloadingReportControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider = new ChangesToReportFormProvider()
   private val form         = formProvider()
   private val mode         = NormalMode
 
-  private lazy val changesToReportRoute = controllers.p5.routes.ChangesToReportController.onPageLoad(arrivalId, NormalMode).url
+  private lazy val changesToReportRoute = controllers.p5.routes.UnloadingReportController.onPageLoad(arrivalId, NormalMode).url
 
   "ChangesToReport Controller" - {
 
@@ -49,7 +49,7 @@ class ChangesToReportControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[ChangesToReportView]
+      val view = injector.instanceOf[UnloadingReportView]
 
       status(result) mustEqual OK
 
@@ -59,7 +59,7 @@ class ChangesToReportControllerSpec extends SpecBase with AppWithDefaultMockFixt
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(ChangesToReportPage, "answer")
+      val userAnswers = emptyUserAnswers.setValue(UnloadingReportPage, "answer")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, changesToReportRoute)
@@ -68,7 +68,7 @@ class ChangesToReportControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       val filledForm = form.bind(Map("value" -> "answer"))
 
-      val view = injector.instanceOf[ChangesToReportView]
+      val view = injector.instanceOf[UnloadingReportView]
 
       status(result) mustEqual OK
 
@@ -100,7 +100,7 @@ class ChangesToReportControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[ChangesToReportView]
+      val view = injector.instanceOf[UnloadingReportView]
 
       status(result) mustEqual BAD_REQUEST
 

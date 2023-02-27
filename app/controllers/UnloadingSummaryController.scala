@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import derivable.DeriveNumberOfSeals
 import models.{ArrivalId, NormalMode}
-import pages.ChangesToReportPage
+import pages.UnloadingReportPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -46,7 +46,7 @@ class UnloadingSummaryController @Inject() (
           sealsSection = viewModel.sealsSection(request.userAnswers, NormalMode),
           transportAndItemSections = viewModel.transportAndItemSections(request.userAnswers, NormalMode),
           numberOfSeals = request.userAnswers.get(DeriveNumberOfSeals).getOrElse(0),
-          showAddCommentLink = request.userAnswers.get(ChangesToReportPage).isEmpty
+          showAddCommentLink = request.userAnswers.get(UnloadingReportPage).isEmpty
         )
       )
   }
