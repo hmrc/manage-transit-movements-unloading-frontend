@@ -79,7 +79,7 @@ class UnloadingPermissionExtractor @Inject() (referenceDataService: ReferenceDat
     unloadingPermission: UnloadingPermission
   ): Try[UserAnswers] =
     unloadingPermission.numberOfPackages match {
-      case Some(numberOfPackages) => userAnswers.set(TotalNumberOfPackagesPage, numberOfPackages)
+      case Some(numberOfPackages) => userAnswers.set(TotalNumberOfPackagesPage, numberOfPackages.toString)
       case None                   => Success(userAnswers)
     }
 

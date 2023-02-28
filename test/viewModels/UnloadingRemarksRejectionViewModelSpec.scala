@@ -41,7 +41,7 @@ class UnloadingRemarksRejectionViewModelSpec extends SpecBase with Generators {
       "when pointer is NumberOfPackagesPointer" in {
         val value       = arbitrary[Int].sample.value
         val viewModel   = new UnloadingRemarksRejectionViewModel()
-        val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, value)
+        val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, value.toString)
         val result      = viewModel.apply(userAnswers).get
         result.value mustBe Value(value.toString.toText)
       }

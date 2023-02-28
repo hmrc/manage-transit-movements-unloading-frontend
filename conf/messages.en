@@ -189,13 +189,12 @@ totalNumberOfItems.error.wholeNumber = = Total number of items must only include
 totalNumberOfItems.error.outOfRange = Total number of items must be 99999 or less
 totalNumberOfItems.change.hidden = the new total number of items
 
-totalNumberOfPackages.title = What is the new total number of packages?
-totalNumberOfPackages.heading = What is the new total number of packages?
-totalNumberOfPackages.checkYourAnswersLabel = What is the new total number of packages?
-totalNumberOfPackages.error.nonNumeric = Enter the new total number of packages using numbers
-totalNumberOfPackages.error.required = Enter the new total number of packages
-totalNumberOfPackages.error.wholeNumber = Total number of packages must only include numbers 0 to 9
-totalNumberOfPackages.error.outOfRange = Total number of packages must be 9999999 or less
+totalNumberOfPackages.title = What is the new number of packages for item {0}?
+totalNumberOfPackages.heading = What is the new number of packages for item {0}?
+totalNumberOfPackages.checkYourAnswersLabel = What is the new number of packages for item {0}?
+totalNumberOfPackages.error.nonNumeric = The new number of packages must only include numbers 0 to 9
+totalNumberOfPackages.error.required = Enter the new number of packages for item {0}
+totalNumberOfPackages.error.outOfRange = The new number of packages must be {0} or less
 totalNumberOfPackages.change.hidden = the new total number of packages
 
 unloadingRemarksRejection.title = There is a problem with these unloading remarks

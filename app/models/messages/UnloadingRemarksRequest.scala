@@ -39,13 +39,14 @@ object UnloadingRemarksRequest {
   val transportIdentityLength    = 27
   val transportIdentityCountry   = 2
   val numberOfItems              = 99999
-  val numberOfPackages           = 9999999
+  val numberOfPackages           = 99999999
   val presentationOfficeLength   = 8
   val newSealNumberMaximumLength = 20
   val vehicleNameMaxLength       = 27
   val alphaNumericRegex          = "^[a-zA-Z0-9 ]*$"
   val grossMassRegex             = "^(\\d{1,11}|(\\d{0,11}\\.{1}\\d{1,3}){1})$"
   val grossMassLength            = 15
+  val numericRegex               = "^[0-9]*$".r
   val stringFieldRegex           = "^[a-zA-Z0-9&'@/.\\%? -]*$"
 
   implicit def writes: XMLWrites[UnloadingRemarksRequest] = XMLWrites[UnloadingRemarksRequest] {

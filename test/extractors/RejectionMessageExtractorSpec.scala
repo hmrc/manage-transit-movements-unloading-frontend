@@ -58,7 +58,7 @@ class RejectionMessageExtractorSpec extends SpecBase with Generators {
 
     "when number of packages pointer" in {
       val result = extractor.apply(emptyUserAnswers, rejectionMessage(NumberOfPackagesPointer, Some("1000")))
-      result.get.getValue(TotalNumberOfPackagesPage) mustBe 1000
+      result.get.getValue(TotalNumberOfPackagesPage) mustBe "1000"
     }
   }
 
@@ -100,12 +100,6 @@ class RejectionMessageExtractorSpec extends SpecBase with Generators {
     "when unloading date pointer but value cannot be parsed as LocalDate" in {
       val userAnswers = emptyUserAnswers
       val result      = extractor.apply(userAnswers, rejectionMessage(UnloadingDatePointer, Some("invalid")))
-      result.get mustBe userAnswers
-    }
-
-    "when number of packages pointer but value cannot be parsed as Int" in {
-      val userAnswers = emptyUserAnswers
-      val result      = extractor.apply(userAnswers, rejectionMessage(NumberOfPackagesPointer, Some("invalid")))
       result.get mustBe userAnswers
     }
   }

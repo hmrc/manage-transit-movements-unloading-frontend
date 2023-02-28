@@ -29,7 +29,7 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
   "UnloadingSummaryViewModel" - {
 
     "seals sections should" - {
-      "display no rows when there are no seals in user answers" in {
+      "display no rows when there are no TotalNumberOfPackagesControllerSpec in user answers" in {
         val section = new UnloadingSummaryViewModel().sealsSection(emptyUserAnswers, mode)
 
         section.sectionTitle.get mustBe "Official customs seals"
@@ -108,7 +108,7 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
       }
 
       "contain number of packages details " in {
-        val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, 11)
+        val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, "11")
 
         val sections = new UnloadingSummaryViewModel().transportAndItemSections(userAnswers, mode)
 

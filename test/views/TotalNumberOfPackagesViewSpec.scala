@@ -17,30 +17,32 @@
 package views
 
 import forms.TotalNumberOfPackagesFormProvider
-import models.NormalMode
+import models.{Index, NormalMode}
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.TotalNumberOfPackagesView
+import views.html.p5.TotalNumberOfPackagesView
 
-class TotalNumberOfPackagesViewSpec extends InputTextViewBehaviours[Int] {
+class TotalNumberOfPackagesViewSpec extends InputTextViewBehaviours[String] {
 
-  override def form: Form[Int] = new TotalNumberOfPackagesFormProvider()()
+  val index = Index(0)
 
-  override def applyView(form: Form[Int]): HtmlFormat.Appendable =
-    injector.instanceOf[TotalNumberOfPackagesView].apply(form, arrivalId, mrn, NormalMode)(fakeRequest, messages)
+  override def form: Form[String] = new TotalNumberOfPackagesFormProvider()(index)
+
+  override def applyView(form: Form[String]): HtmlFormat.Appendable =
+    injector.instanceOf[TotalNumberOfPackagesView].apply(form, arrivalId, mrn, index, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "totalNumberOfPackages"
 
-  implicit override val arbitraryT: Arbitrary[Int] = Arbitrary(Gen.oneOf(1 to 100))
+  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.oneOf(1 to 100).toString)
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(index.display.toString)
 
   behave like pageWithBackLink()
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(index.display.toString)
 
   behave like pageWithCaption(mrn.toString)
 

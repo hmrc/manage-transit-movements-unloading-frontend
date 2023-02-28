@@ -265,7 +265,7 @@ class UnloadingSummaryHelperSpec extends SpecBase with Generators {
 
       forAll(arbitrary[Int]) {
         int =>
-          val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, int)
+          val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, int.toString)
           val helper      = new UnloadingSummaryHelper(userAnswers, mode)
           val result      = helper.totalNumberOfPackages.get
 
@@ -277,7 +277,7 @@ class UnloadingSummaryHelperSpec extends SpecBase with Generators {
                 List(
                   ActionItem(
                     content = "Change".toText,
-                    href = routes.TotalNumberOfPackagesController.onPageLoad(userAnswers.id, mode).url,
+                    href = controllers.p5.routes.TotalNumberOfPackagesController.onPageLoad(userAnswers.id, Index(0), mode).url,
                     visuallyHiddenText = Some("total number of packages"),
                     attributes = Map("id" -> "change-total-number-of-packages")
                   )
