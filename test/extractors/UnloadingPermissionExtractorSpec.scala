@@ -56,7 +56,7 @@ class UnloadingPermissionExtractorSpec extends SpecBase with Generators with Bef
           result =>
             result.get.get(VehicleNameRegistrationReferencePage) mustBe unloadingPermission.transportIdentity
             result.get.get(VehicleRegistrationCountryPage).get mustBe country
-            result.get.get(GrossWeightAmountPage).get mustBe unloadingPermission.GrossWeight
+            result.get.get(GrossWeightPage).get mustBe unloadingPermission.GrossWeight
             result.get.get(TotalNumberOfItemsPage).get mustBe unloadingPermission.numberOfItems
             result.get.get(TotalNumberOfPackagesPage) mustBe unloadingPermission.numberOfPackages
             result.get.get(SealsQuery) mustBe unloadingPermission.seals.map(_.sealIds.map(Seal(_, removable = false)))

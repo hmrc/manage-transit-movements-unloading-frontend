@@ -22,7 +22,7 @@ import models.UserAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
-import pages.GrossWeightAmountPage
+import pages.GrossWeightPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.GrossWeightAmountRejectionView
@@ -42,7 +42,7 @@ class GrossWeightAmountRejectionControllerSpec extends SpecBase with AppWithDefa
       checkArrivalStatus()
       val originalValue = "100000.123"
 
-      setExistingUserAnswers(emptyUserAnswers.setValue(GrossWeightAmountPage, originalValue))
+      setExistingUserAnswers(emptyUserAnswers.setValue(GrossWeightPage, originalValue))
 
       val request = FakeRequest(GET, GrossWeightAmountRejectionRoute)
 
@@ -89,7 +89,7 @@ class GrossWeightAmountRejectionControllerSpec extends SpecBase with AppWithDefa
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())
-      userAnswersCaptor.getValue.get(GrossWeightAmountPage).get mustBe newValue
+      userAnswersCaptor.getValue.get(GrossWeightPage).get mustBe newValue
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

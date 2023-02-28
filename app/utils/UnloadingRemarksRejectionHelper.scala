@@ -56,7 +56,7 @@ class UnloadingRemarksRejectionHelper(userAnswers: UserAnswers)(implicit message
 
   def GrossWeightAmount: Option[SummaryListRow] =
     getAnswerAndBuildRow[String](
-      page = GrossWeightAmountPage,
+      page = GrossWeightPage,
       formatAnswer = _.toText,
       prefix = "changeItems.GrossWeight",
       id = Some("change-gross-mass-amount"),

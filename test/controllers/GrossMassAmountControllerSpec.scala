@@ -21,19 +21,19 @@ import forms.GrossWeightAmountFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.GrossWeightAmountPage
+import pages.GrossWeightPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.GrossWeightAmountView
 
 import scala.concurrent.Future
 
-class GrossWeightAmountControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider                = new GrossWeightAmountFormProvider()
   private val form                        = formProvider()
   private val mode                        = NormalMode
-  private lazy val GrossWeightAmountRoute = routes.GrossWeightAmountController.onPageLoad(arrivalId, mode).url
+  private lazy val GrossWeightAmountRoute = routes.GrossWeightController.onPageLoad(arrivalId, mode).url
 
   "GrossWeightAmount Controller" - {
 
@@ -56,7 +56,7 @@ class GrossWeightAmountControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
-      val userAnswers = emptyUserAnswers.setValue(GrossWeightAmountPage, "123456.123")
+      val userAnswers = emptyUserAnswers.setValue(GrossWeightPage, "123456.123")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, GrossWeightAmountRoute)

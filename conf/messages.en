@@ -85,15 +85,15 @@ vehicleRegistrationCountry.error.required = Enter which country the vehicle is r
 vehicleRegistrationCountry.error.length = The country the vehicle is registered in must be 100 characters or less
 vehicleRegistrationCountry.placeHolder = Select a country
 
-grossWeightAmount.title = What is the new gross weight of item {0}?
-grossWeightAmount.heading = What is the new gross weight of item {0}?
-grossWeightAmount.checkYourAnswersLabel = What is the new gross weight of item {0}?
-grossWeightAmount.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
-grossWeightAmount.error.required = Enter the new gross weight of item {0}
-grossWeightAmount.error.length = The new gross weight must be 16 characters or less
-grossWeightAmount.error.characters = The new gross weight must only include numbers 0 to 9 and a decimal point
-grossWeightAmount.error.decimal = The new gross weight must only include 6 decimal places or less
-grossWeightAmount.change.hidden = the new total gross weight
+grossWeight.title = What is the new gross weight of item {0}?
+grossWeight.heading = What is the new gross weight of item {0}?
+grossWeight.checkYourAnswersLabel = What is the new gross weight of item {0}?
+grossWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
+grossWeight.error.required = Enter the new gross weight of item {0}
+grossWeight.error.length = The new gross weight must be 16 characters or less
+grossWeight.error.characters = The new gross weight must only include numbers 0 to 9 and a decimal point
+grossWeight.error.decimal = The new gross weight must only include 6 decimal places or less
+grossWeight.change.hidden = the new total gross weight
 
 newSealNumber.title = What is the new official customs seal number or mark?
 newSealNumber.heading = What is the new official customs seal number or mark?

@@ -38,7 +38,7 @@ class RejectionMessageExtractorSpec extends SpecBase with Generators {
   "must populate user answers" - {
     "when gross mass pointer" in {
       val result = extractor.apply(emptyUserAnswers, rejectionMessage(GrossWeightPointer, Some("1000")))
-      result.get.getValue(GrossWeightAmountPage) mustBe "1000"
+      result.get.getValue(GrossWeightPage) mustBe "1000"
     }
 
     "when number of items pointer" in {

@@ -86,7 +86,7 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
     "items sections should" - {
 
       "display total mass with single item" in {
-        val userAnswers = emptyUserAnswers.setValue(GrossWeightAmountPage, "99")
+        val userAnswers = emptyUserAnswers.setValue(GrossWeightPage, "99")
 
         val sections = new UnloadingSummaryViewModel().transportAndItemSections(userAnswers, mode)
 

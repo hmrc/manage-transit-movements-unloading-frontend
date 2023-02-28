@@ -65,7 +65,7 @@ class RejectionCheckYourAnswersHelper(userAnswers: UserAnswers)(implicit message
 
   def GrossWeightAmount: Option[SummaryListRow] =
     getAnswerAndBuildRow[String](
-      page = GrossWeightAmountPage,
+      page = GrossWeightPage,
       formatAnswer = _.toText,
       prefix = "grossWeightAmount",
       id = Some("change-gross-weight-amount"),

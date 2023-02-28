@@ -18,9 +18,9 @@ package controllers
 
 import controllers.actions._
 import forms.GrossWeightAmountFormProvider
-import models.{ArrivalId, Mode}
+import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
-import pages.GrossWeightAmountPage
+import pages.GrossWeightPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -30,7 +30,7 @@ import views.html.GrossWeightAmountView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class GrossWeightAmountController @Inject() (
+class GrossWeightController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
@@ -44,27 +44,27 @@ class GrossWeightAmountController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, index: Index = Index(0), mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(GrossWeightAmountPage) match {
+      val preparedForm = request.userAnswers.get(GrossWeightPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode))
+      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, index, mode))
   }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
+  def onSubmit(arrivalId: ArrivalId, index: Index = Index(0), mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, mode))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(GrossWeightAmountPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(GrossWeightPage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(GrossWeightAmountPage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(GrossWeightPage, mode, updatedAnswers))
         )
   }
 }

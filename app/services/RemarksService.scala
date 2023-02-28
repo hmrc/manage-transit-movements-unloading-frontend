@@ -126,7 +126,7 @@ object RemarksService {
     }
 
   def hasGrossWeightChanged(originalValue: String, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(GrossWeightAmountPage).exists {
+    userAnswers.get(GrossWeightPage).exists {
       _ != originalValue
     }
 

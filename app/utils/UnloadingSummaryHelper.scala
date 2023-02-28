@@ -56,8 +56,8 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
           prefix = "changeSeal.sealList",
           answer = sealId.toText,
           id = s"seal-${index.position}",
-          changeCall = routes.NewSealNumberController.onPageLoad(arrivalId, index, mode),
-          removeCall = routes.ConfirmRemoveSealController.onPageLoad(arrivalId, index, mode),
+          changeCall = routes.NewSealNumberController.onPageLoad(arrivalId, itemsIndex, mode),
+          removeCall = routes.ConfirmRemoveSealController.onPageLoad(arrivalId, itemsIndex, mode),
           args = index.display, sealId
         )
     }
@@ -98,11 +98,11 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
 
   def GrossWeight: Option[SummaryListRow] =
     getAnswerAndBuildRow[String](
-      page = GrossWeightAmountPage,
+      page = GrossWeightPage,
       formatAnswer = _.toText,
       prefix = "changeItems.GrossWeight",
       id = Some("change-gross-mass"),
-      call = Some(routes.GrossWeightAmountController.onPageLoad(arrivalId, mode))
+      call = Some(controllers.routes.GrossWeightController.onPageLoad(arrivalId, itemsIndex, mode))
     )
 
   def totalNumberOfItems: Option[SummaryListRow] =

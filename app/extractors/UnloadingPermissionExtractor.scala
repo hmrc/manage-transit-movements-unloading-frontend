@@ -66,7 +66,7 @@ class UnloadingPermissionExtractor @Inject() (referenceDataService: ReferenceDat
     userAnswers: UserAnswers,
     unloadingPermission: UnloadingPermission
   ): Try[UserAnswers] =
-    userAnswers.set(GrossWeightAmountPage, unloadingPermission.GrossWeight)
+    userAnswers.set(GrossWeightPage, unloadingPermission.GrossWeight)
 
   private def extractTotalNumberOfItems(
     userAnswers: UserAnswers,

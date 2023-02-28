@@ -91,7 +91,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase {
     }
 
     "contain gross mass details" in {
-      val userAnswers = emptyUserAnswers.setValue(GrossWeightAmountPage, "500")
+      val userAnswers = emptyUserAnswers.setValue(GrossWeightPage, "500")
       val sections    = new CheckYourAnswersViewModel()(userAnswers)
 
       sections.length mustBe 3

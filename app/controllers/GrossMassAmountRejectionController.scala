@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.GrossWeightAmountFormProvider
 import models.ArrivalId
-import pages.GrossWeightAmountPage
+import pages.GrossWeightPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -46,7 +46,7 @@ class GrossWeightAmountRejectionController @Inject() (
   private val form = formProvider()
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
-    actions.requireData(arrivalId).andThen(getMandatoryPage(GrossWeightAmountPage)) {
+    actions.requireData(arrivalId).andThen(getMandatoryPage(GrossWeightPage)) {
       implicit request =>
         Ok(view(form.fill(request.arg), arrivalId))
     }
@@ -59,7 +59,7 @@ class GrossWeightAmountRejectionController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(GrossWeightAmountPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(GrossWeightPage, value))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId))
         )

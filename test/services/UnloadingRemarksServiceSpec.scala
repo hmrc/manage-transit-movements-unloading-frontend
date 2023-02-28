@@ -293,7 +293,7 @@ class UnloadingRemarksServiceSpec extends SpecBase with AppWithDefaultMockFixtur
             .thenReturn(Future.successful(interchangeControlReference))
           when(mockMetaService.build(interchangeControlReference))
             .thenReturn(meta)
-          val userAnswers = emptyUserAnswers.setValue(GrossWeightAmountPage, "1234")
+          val userAnswers = emptyUserAnswers.setValue(GrossWeightPage, "1234")
 
           val expectedResultOfControl: Seq[ResultsOfControl] = unloadingRemarksRequest.resultOfControl.map {
             case y: ResultsOfControlDifferentValues if y.pointerToAttribute.pointer == GrossWeight => y.copy(correctedValue = "1234")

@@ -94,7 +94,7 @@ class RemarksServiceSpec extends SpecBase with Generators with ScalaCheckPropert
 
               val userAnswers = emptyUserAnswers
                 .setValue(DateGoodsUnloadedPage, dateGoodsUnloaded)
-                .setValue(GrossWeightAmountPage, GrossWeight.toString())
+                .setValue(GrossWeightPage, GrossWeight.toString())
 
               service.build(userAnswers, unloadingPermissionUpdated).get mustBe
                 RemarksNonConform(stateOfSeals = None, unloadingRemark = None, unloadingDate = dateGoodsUnloaded)
@@ -114,7 +114,7 @@ class RemarksServiceSpec extends SpecBase with Generators with ScalaCheckPropert
 
               val userAnswers = emptyUserAnswers
                 .setValue(DateGoodsUnloadedPage, dateGoodsUnloaded)
-                .setValue(GrossWeightAmountPage, GrossWeight.toString())
+                .setValue(GrossWeightPage, GrossWeight.toString())
 
               service.build(userAnswers, unloadingPermissionWithNoSeals).get mustBe
                 RemarksNonConform(stateOfSeals = Some(1), unloadingRemark = None, unloadingDate = dateGoodsUnloaded)
@@ -133,7 +133,7 @@ class RemarksServiceSpec extends SpecBase with Generators with ScalaCheckPropert
 
               val userAnswers = emptyUserAnswers
                 .setValue(DateGoodsUnloadedPage, dateGoodsUnloaded)
-                .setValue(GrossWeightAmountPage, GrossWeight.toString())
+                .setValue(GrossWeightPage, GrossWeight.toString())
 
               service.build(userAnswers, unloadingPermissionWithNoSeals).get mustBe
                 RemarksConformWithSeals(unloadingRemark = None, unloadingDate = dateGoodsUnloaded)

@@ -222,7 +222,7 @@ class RejectionCheckYourAnswersHelperSpec extends SpecBase with Generators {
 
         forAll(arbitrary[String]) {
           str =>
-            val userAnswers = emptyUserAnswers.setValue(GrossWeightAmountPage, str)
+            val userAnswers = emptyUserAnswers.setValue(GrossWeightPage, str)
             val helper      = new RejectionCheckYourAnswersHelper(userAnswers)
             val result      = helper.GrossWeightAmount
 

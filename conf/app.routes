@@ -48,10 +48,10 @@ POST       /:arrivalId/vehicle-registration-country                         cont
 GET        /:arrivalId/change-vehicle-registration-country                  controllers.VehicleRegistrationCountryController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-vehicle-registration-country                  controllers.VehicleRegistrationCountryController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/gross-weight                                         controllers.GrossWeightAmountController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/gross-weight                                         controllers.GrossWeightAmountController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-gross-weight                                  controllers.GrossWeightAmountController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-gross-weight                                  controllers.GrossWeightAmountController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+GET        /:arrivalId/items/:index/gross-weight                                         controllers.GrossWeightController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
+POST       /:arrivalId/items/:index/gross-weight                                         controllers.GrossWeightController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
+GET        /:arrivalId/items/:index/change-gross-weight                                  controllers.GrossWeightController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
+POST       /:arrivalId/items/:index/change-gross-weight                                  controllers.GrossWeightController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
 
 GET        /:arrivalId/seal/:index/new-seal-number                          controllers.NewSealNumberController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
 POST       /:arrivalId/seal/:index/new-seal-number                          controllers.NewSealNumberController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
