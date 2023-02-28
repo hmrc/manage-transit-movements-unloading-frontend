@@ -101,8 +101,8 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
       page = GrossWeightPage,
       formatAnswer = _.toText,
       prefix = "changeItems.GrossWeight",
-      id = Some("change-gross-mass"),
-      call = Some(controllers.routes.GrossWeightController.onPageLoad(arrivalId, itemsIndex, mode))
+      id = Some("change-gross-weight"),
+      call = Some(controllers.routes.GrossWeightController.onPageLoad(arrivalId, Index(0), mode))
     )
 
   def totalNumberOfItems: Option[SummaryListRow] =

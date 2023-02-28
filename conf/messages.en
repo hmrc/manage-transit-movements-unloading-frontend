@@ -124,8 +124,8 @@ changeSeal.sealList.remove.hidden = official customs seal {0} {1}
 
 changeItems.title = Items
 
-changeItems.GrossWeight.checkYourAnswersLabel = Total gross mass in kilograms
-changeItems.GrossWeight.change.hidden = total gross mass in kilograms
+changeItems.GrossWeight.checkYourAnswersLabel = Total gross weight in kilograms
+changeItems.GrossWeight.change.hidden = total gross weight in kilograms
 
 changeItems.totalNumberOfItems.checkYourAnswersLabel = Total number of items
 changeItems.totalNumberOfItems.change.hidden = total number of items

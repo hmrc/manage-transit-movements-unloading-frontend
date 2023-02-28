@@ -59,7 +59,7 @@ class UnloadingRemarksRejectionHelper(userAnswers: UserAnswers)(implicit message
       page = GrossWeightPage,
       formatAnswer = _.toText,
       prefix = "changeItems.GrossWeight",
-      id = Some("change-gross-mass-amount"),
+      id = Some("change-gross-weight"),
       call = Some(routes.GrossWeightAmountRejectionController.onPageLoad(arrivalId))
     )
 
