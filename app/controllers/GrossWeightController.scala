@@ -42,13 +42,13 @@ class GrossWeightController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider()
+  private def form(index: Index) = formProvider(index)
 
   def onPageLoad(arrivalId: ArrivalId, index: Index = Index(0), mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
       val preparedForm = request.userAnswers.get(GrossWeightPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+        case None        => form(index)
+        case Some(value) => form(index).fill(value)
       }
 
       Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, index, mode))
@@ -56,7 +56,7 @@ class GrossWeightController @Inject() (
 
   def onSubmit(arrivalId: ArrivalId, index: Index = Index(0), mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
-      form
+      form(index)
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, mode))),

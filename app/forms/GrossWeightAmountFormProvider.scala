@@ -18,14 +18,15 @@ package forms
 
 import javax.inject.Inject
 import forms.mappings.Mappings
+import models.Index
 import models.messages.UnloadingRemarksRequest
 import play.api.data.Form
 
 class GrossWeightAmountFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def apply(index: Index = Index(0)): Form[String] = //todo update
     Form(
-      "value" -> text("grossWeight.error.required")
+      "value" -> text(s"grossWeight.error.required", args = Seq(s"${index.display}"))
         .verifying(
           StopOnFirstFail[String](
             maxLength(UnloadingRemarksRequest.grossWeightLength, "grossWeight.error.length"),

@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import models.Index
 import models.messages.UnloadingRemarksRequest
 import play.api.data.{Field, FormError}
 
@@ -41,7 +42,7 @@ class GrossWeightAmountFormProviderSpec extends StringFieldBehaviours {
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(Index(0).display.toString))
     )
   }
 
