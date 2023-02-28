@@ -43,8 +43,9 @@
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("grossWeightAmount.heading")
+                heading = messages("grossWeightAmount.heading"),
             ),
+            hint = Some(messages("grossWeightAmount.hint")),
             inputClass = InputSize.Width10,
             suffix = Some("kg")
         )

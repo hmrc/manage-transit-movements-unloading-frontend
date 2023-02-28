@@ -228,7 +228,7 @@ class RejectionCheckYourAnswersHelperSpec extends SpecBase with Generators {
 
             result mustBe Some(
               SummaryListRow(
-                key = "What is the new total gross mass in kilograms?".toKey,
+                key = "What is the new gross weight of item {0}?".toKey,
                 value = Value(str.toText),
                 actions = Some(
                   Actions(items =
@@ -236,8 +236,8 @@ class RejectionCheckYourAnswersHelperSpec extends SpecBase with Generators {
                       ActionItem(
                         content = "Change".toText,
                         href = routes.GrossWeightAmountRejectionController.onPageLoad(userAnswers.id).url,
-                        visuallyHiddenText = Some("the new total gross mass in kilograms"),
-                        attributes = Map("id" -> "change-gross-mass-amount")
+                        visuallyHiddenText = Some("the new total gross weight"),
+                        attributes = Map("id" -> "change-gross-weight-amount")
                       )
                     )
                   )

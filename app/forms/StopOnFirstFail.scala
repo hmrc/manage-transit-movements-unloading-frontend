@@ -16,19 +16,20 @@
 
 package forms
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import models.messages.UnloadingRemarksRequest
-import play.api.data.Form
+import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 
-class GrossWeightAmountFormProvider @Inject() extends Mappings {
+object StopOnFirstFail {
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("GrossWeightAmount.error.required")
-        .verifying(
-          maxLength(UnloadingRemarksRequest.GrossWeightLength, "GrossWeightAmount.error.length"),
-          regexp(UnloadingRemarksRequest.GrossWeightRegex, "GrossWeightAmount.error.characters")
-        )
+  def apply[T](constraints: Constraint[T]*): Constraint[T] = Constraint {
+    field: T =>
+      constraints.toList dropWhile (_(field) == Valid) match {
+        case Nil             => Valid
+        case constraint :: _ => constraint(field)
+      }
+  }
+
+  def constraint[T](message: String, validator: (T) => Boolean): Constraint[T] =
+    Constraint(
+      (data: T) => if (validator(data)) Valid else Invalid(Seq(ValidationError(message)))
     )
 }

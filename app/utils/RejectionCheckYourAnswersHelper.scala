@@ -67,8 +67,8 @@ class RejectionCheckYourAnswersHelper(userAnswers: UserAnswers)(implicit message
     getAnswerAndBuildRow[String](
       page = GrossWeightAmountPage,
       formatAnswer = _.toText,
-      prefix = "GrossWeightAmount",
-      id = Some("change-gross-mass-amount"),
+      prefix = "grossWeightAmount",
+      id = Some("change-gross-weight-amount"),
       call = Some(routes.GrossWeightAmountRejectionController.onPageLoad(arrivalId))
     )
 }

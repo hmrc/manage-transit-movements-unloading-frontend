@@ -24,9 +24,10 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class GrossWeightAmountFormProviderSpec extends StringFieldBehaviours {
 
-  private val requiredKey = "GrossWeightAmount.error.required"
-  private val invalidKey  = "GrossWeightAmount.error.characters"
-  private val maxLength   = UnloadingRemarksRequest.GrossWeightLength
+  private val requiredKey       = "grossWeightAmount.error.required"
+  private val invalidCharacters = "grossWeightAmount.error.characters"
+  private val decimalPoint      = "grossWeightAmount.error.decimal"
+  private val maxLength         = UnloadingRemarksRequest.grossWeightLength
 
   private val form      = new GrossWeightAmountFormProvider()()
   private val fieldName = "value"
@@ -46,17 +47,24 @@ class GrossWeightAmountFormProviderSpec extends StringFieldBehaviours {
     )
   }
 
-  "must not bind strings that do not match regex" in {
+  "must not bind strings wth too many decimal places" in {
 
-    val generator: Gen[String] = RegexpGen.from("""[^\d{1,15}|(\d{0,15}.{1}\d{1,3}){1}]""")
-    val validRegex: String     = UnloadingRemarksRequest.GrossWeightRegex
-    val expectedError          = FormError(fieldName, invalidKey, Seq(validRegex))
+    val invalidString      = "1.1234567"
+    val validRegex: String = UnloadingRemarksRequest.grossWeightRegex
+    val expectedError      = FormError(fieldName, decimalPoint, Seq(validRegex))
 
-    forAll(generator) {
-      invalidString =>
-        val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-        result.errors should contain(expectedError)
-    }
+    val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+    result.errors should contain(expectedError)
+  }
+
+  "must not bind strings wth invalid characters" in {
+
+    val invalidString      = "abc"
+    val validRegex: String = UnloadingRemarksRequest.grossWeightCharsRegex
+    val expectedError      = FormError(fieldName, invalidCharacters, Seq(validRegex))
+
+    val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+    result.errors should contain(expectedError)
   }
 
 }

@@ -44,7 +44,7 @@ class GrossWeightAmountViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading()
 
-  behave like pageWithoutHint()
+  behave like pageWithHint("Enter the weight in kilograms (kg), up to 6 decimal places.")
 
   behave like pageWithInputText(inputFieldClassSize = Some(InputSize.Width10), suffix = Some("kg"))
 
