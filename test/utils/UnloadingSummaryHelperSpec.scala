@@ -100,7 +100,7 @@ class UnloadingSummaryHelperSpec extends SpecBase with Generators {
 
             val helper = new UnloadingSummaryHelper(userAnswers, mode)
             val result = helper.sealsWithRemove
-
+            println("\n\n\n\nRESULT = \n " + result)
             result.size mustEqual seals.size
 
             strs.zipWithIndex.foreach {
@@ -120,7 +120,7 @@ class UnloadingSummaryHelperSpec extends SpecBase with Generators {
                         ),
                         ActionItem(
                           content = "Remove".toText,
-                          href = routes.ConfirmRemoveSealController.onPageLoad(userAnswers.id, index, mode).url,
+                          href = routes.ConfirmRemoveSealController.onPageLoad(userAnswers.id, Index(i - 1), mode).url,
                           visuallyHiddenText = Some(s"official customs seal ${index.display} $str"),
                           attributes = Map("id" -> s"remove-seal-${index.position}")
                         )

@@ -38,13 +38,13 @@ class GrossWeightAmountViewSpec extends InputTextViewBehaviours[String] {
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
-  behave like pageWithTitle(index.toString)
+  behave like pageWithTitle(index.display.toString)
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(mrn.toString)
 
-  behave like pageWithHeading(index.toString)
+  behave like pageWithHeading(index.display.toString)
 
   behave like pageWithHint("Enter the weight in kilograms (kg), up to 6 decimal places.")
 
