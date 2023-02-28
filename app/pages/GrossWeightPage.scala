@@ -22,5 +22,5 @@ case object GrossWeightPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "GrossWeight"
+  override def toString: String = "grossWeight"
 }

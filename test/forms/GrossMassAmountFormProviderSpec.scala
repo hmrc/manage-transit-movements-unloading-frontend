@@ -16,17 +16,15 @@
 
 package forms
 
-import models.messages.UnloadingRemarksRequest
 import forms.behaviours.StringFieldBehaviours
-import org.scalacheck.Gen
+import models.messages.UnloadingRemarksRequest
 import play.api.data.{Field, FormError}
-import wolfendale.scalacheck.regexp.RegexpGen
 
 class GrossWeightAmountFormProviderSpec extends StringFieldBehaviours {
 
-  private val requiredKey       = "grossWeightAmount.error.required"
-  private val invalidCharacters = "grossWeightAmount.error.characters"
-  private val decimalPoint      = "grossWeightAmount.error.decimal"
+  private val requiredKey       = "grossWeight.error.required"
+  private val invalidCharacters = "grossWeight.error.characters"
+  private val decimalPoint      = "grossWeight.error.decimal"
   private val maxLength         = UnloadingRemarksRequest.grossWeightLength
 
   private val form      = new GrossWeightAmountFormProvider()()

@@ -25,12 +25,12 @@ class GrossWeightAmountFormProvider @Inject() extends Mappings {
 
   def apply(): Form[String] =
     Form(
-      "value" -> text("grossWeightAmount.error.required")
+      "value" -> text("grossWeight.error.required")
         .verifying(
           StopOnFirstFail[String](
-            maxLength(UnloadingRemarksRequest.grossWeightLength, "grossWeightAmount.error.length"),
-            regexp(UnloadingRemarksRequest.grossWeightCharsRegex, "grossWeightAmount.error.characters"),
-            regexp(UnloadingRemarksRequest.grossWeightRegex, "grossWeightAmount.error.decimal")
+            maxLength(UnloadingRemarksRequest.grossWeightLength, "grossWeight.error.length"),
+            regexp(UnloadingRemarksRequest.grossWeightCharsRegex, "grossWeight.error.characters"),
+            regexp(UnloadingRemarksRequest.grossWeightRegex, "grossWeight.error.decimal")
           )
         )
     )

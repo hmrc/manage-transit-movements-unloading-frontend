@@ -204,7 +204,7 @@ class RejectionCheckYourAnswersHelperSpec extends SpecBase with Generators {
     }
   }
 
-  "when .GrossWeightAmount" - {
+  "when .GrossWeight" - {
 
     "must return None" - {
       "when GrossWeightAmountPage is undefined" in {

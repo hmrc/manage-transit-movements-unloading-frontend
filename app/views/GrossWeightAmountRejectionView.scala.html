@@ -29,7 +29,7 @@
 @(form: Form[_], arrivalId: ArrivalId)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("grossWeightAmount.title"),
+    title = messages("grossWeight.title"),
     showBackLink = true
 ) {
 
@@ -40,7 +40,7 @@
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("grossWeightAmount.heading")
+                heading = messages("grossWeight.heading")
             ),
             inputClass = InputSize.Width10,
             suffix = Some("kg")

@@ -112,7 +112,7 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase with Generators {
       }
     }
 
-    "when .GrossWeightAmount" in {
+    "when .GrossWeight" in {
 
       forAll(arbitrary[String]) {
         str =>

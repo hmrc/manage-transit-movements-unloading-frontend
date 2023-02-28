@@ -17,7 +17,7 @@
 package views
 
 import forms.GrossWeightAmountFormProvider
-import models.NormalMode
+import models.{Index, NormalMode}
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -27,22 +27,24 @@ import views.html.GrossWeightAmountView
 
 class GrossWeightAmountViewSpec extends InputTextViewBehaviours[String] {
 
+  private val index = Index(0)
+
   override def form: Form[String] = new GrossWeightAmountFormProvider()()
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[GrossWeightAmountView].apply(form, mrn, arrivalId, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[GrossWeightAmountView].apply(form, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "grossWeight"
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(index.toString)
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(mrn.toString)
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(index.toString)
 
   behave like pageWithHint("Enter the weight in kilograms (kg), up to 6 decimal places.")
 

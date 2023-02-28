@@ -223,7 +223,7 @@ class UnloadingSummaryHelperSpec extends SpecBase with Generators {
                 List(
                   ActionItem(
                     content = "Change".toText,
-                    href = routes.GrossWeightController.onPageLoad(userAnswers.id, mode).url,
+                    href = routes.GrossWeightController.onPageLoad(userAnswers.id, Index(0), mode).url,
                     visuallyHiddenText = Some("total gross mass in kilograms"),
                     attributes = Map("id" -> "change-gross-mass")
                   )
