@@ -59,7 +59,7 @@ class RemarksServiceImpl extends RemarksService {
           unloadingDate = unloadingDate
         )
       } else {
-        (hasGrossMassChanged(originalValues.grossMass, userAnswers),
+        (hasGrossWeightChanged(originalValues.GrossWeight, userAnswers),
          hasNumberOfItemsChanged(originalValues.numberOfItems, userAnswers),
          hasTotalNumberOfPackagesChanged(originalValues.numberOfPackages, userAnswers)
         ) match {
@@ -92,7 +92,7 @@ class RemarksServiceImpl extends RemarksService {
             unloadingDate = unloadingDate
           )
         case None =>
-          (hasGrossMassChanged(originalValues.grossMass, userAnswers),
+          (hasGrossWeightChanged(originalValues.GrossWeight, userAnswers),
            hasNumberOfItemsChanged(originalValues.numberOfItems, userAnswers),
            hasTotalNumberOfPackagesChanged(originalValues.numberOfPackages, userAnswers)
           ) match {
@@ -125,8 +125,8 @@ object RemarksService {
       _.map(_.sealId).sorted != originalSeals.sorted
     }
 
-  def hasGrossMassChanged(originalValue: String, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(GrossMassAmountPage).exists {
+  def hasGrossWeightChanged(originalValue: String, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(GrossWeightAmountPage).exists {
       _ != originalValue
     }
 

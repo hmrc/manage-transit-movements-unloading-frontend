@@ -85,13 +85,15 @@ vehicleRegistrationCountry.error.required = Enter which country the vehicle is r
 vehicleRegistrationCountry.error.length = The country the vehicle is registered in must be 100 characters or less
 vehicleRegistrationCountry.placeHolder = Select a country
 
-grossMassAmount.title = What is the new total gross mass in kilograms?
-grossMassAmount.heading = What is the new total gross mass in kilograms?
-grossMassAmount.checkYourAnswersLabel = What is the new total gross mass in kilograms?
-grossMassAmount.error.required = Enter the total gross mass in kilograms
-grossMassAmount.error.length = The total gross mass in kilograms must be 99999999999.999 or less
-grossMassAmount.error.characters = The total gross mass in kilograms must be 11 numbers or less and up to 3 decimal places, like 1000000.000
-grossMassAmount.change.hidden = the new total gross mass in kilograms
+grossWeightAmount.title = What is the new gross weight of item {0}?
+grossWeightAmount.heading = What is the new gross weight of item {0}?
+grossWeightAmount.checkYourAnswersLabel = What is the new gross weight of item {0}?
+grossWeightAmount.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
+grossWeightAmount.error.required = Enter the new gross weight of item {0}
+grossWeightAmount.error.length = The new gross weight must be 16 characters or less
+grossWeightAmount.error.amount = The new gross weight must be less than 10,000,000,000,000,000kg
+grossWeightAmount.error.characters = The new gross weight must only include numbers 0 to 9 and a decimal point
+grossWeightAmount.change.hidden = the new total gross weight
 
 newSealNumber.title = What is the new official customs seal number or mark?
 newSealNumber.heading = What is the new official customs seal number or mark?
@@ -122,8 +124,8 @@ changeSeal.sealList.remove.hidden = official customs seal {0} {1}
 
 changeItems.title = Items
 
-changeItems.grossMass.checkYourAnswersLabel = Total gross mass in kilograms
-changeItems.grossMass.change.hidden = total gross mass in kilograms
+changeItems.GrossWeight.checkYourAnswersLabel = Total gross mass in kilograms
+changeItems.GrossWeight.change.hidden = total gross mass in kilograms
 
 changeItems.totalNumberOfItems.checkYourAnswersLabel = Total number of items
 changeItems.totalNumberOfItems.change.hidden = total number of items

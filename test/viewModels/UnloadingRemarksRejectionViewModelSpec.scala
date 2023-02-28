@@ -62,10 +62,10 @@ class UnloadingRemarksRejectionViewModelSpec extends SpecBase with Generators {
         result.value mustBe Value(value.toString.toText)
       }
 
-      "when pointer is GrossMassPointer" in {
+      "when pointer is GrossWeightPointer" in {
         val value       = arbitrary[String].sample.value
         val viewModel   = new UnloadingRemarksRejectionViewModel()
-        val userAnswers = emptyUserAnswers.setValue(GrossMassAmountPage, value)
+        val userAnswers = emptyUserAnswers.setValue(GrossWeightAmountPage, value)
         val result      = viewModel.apply(userAnswers).get
         result.value mustBe Value(value.toText)
       }

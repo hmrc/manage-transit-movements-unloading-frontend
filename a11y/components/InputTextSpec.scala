@@ -17,7 +17,7 @@
 package components
 
 import a11ySpecBase.A11ySpecBase
-import forms.GrossMassAmountFormProvider
+import forms.GrossWeightAmountFormProvider
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.twirl.api.Html
@@ -48,7 +48,7 @@ class InputTextSpec extends A11ySpecBase {
       .value
     val pattern        = Gen.oneOf(None, Some("[0-9]*")).sample.value
     val additionalHtml = arbitrary[Html].sample.value
-    val form           = new GrossMassAmountFormProvider()()
+    val form           = new GrossWeightAmountFormProvider()()
 
     "pass accessibility checks" when {
 

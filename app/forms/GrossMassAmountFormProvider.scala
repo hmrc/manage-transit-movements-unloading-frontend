@@ -21,14 +21,14 @@ import forms.mappings.Mappings
 import models.messages.UnloadingRemarksRequest
 import play.api.data.Form
 
-class GrossMassAmountFormProvider @Inject() extends Mappings {
+class GrossWeightAmountFormProvider @Inject() extends Mappings {
 
   def apply(): Form[String] =
     Form(
-      "value" -> text("grossMassAmount.error.required")
+      "value" -> text("GrossWeightAmount.error.required")
         .verifying(
-          maxLength(UnloadingRemarksRequest.grossMassLength, "grossMassAmount.error.length"),
-          regexp(UnloadingRemarksRequest.grossMassRegex, "grossMassAmount.error.characters")
+          maxLength(UnloadingRemarksRequest.GrossWeightLength, "GrossWeightAmount.error.length"),
+          regexp(UnloadingRemarksRequest.GrossWeightRegex, "GrossWeightAmount.error.characters")
         )
     )
 }

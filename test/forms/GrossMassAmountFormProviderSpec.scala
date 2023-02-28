@@ -22,13 +22,13 @@ import org.scalacheck.Gen
 import play.api.data.{Field, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
 
-class GrossMassAmountFormProviderSpec extends StringFieldBehaviours {
+class GrossWeightAmountFormProviderSpec extends StringFieldBehaviours {
 
-  private val requiredKey = "grossMassAmount.error.required"
-  private val invalidKey  = "grossMassAmount.error.characters"
-  private val maxLength   = UnloadingRemarksRequest.grossMassLength
+  private val requiredKey = "GrossWeightAmount.error.required"
+  private val invalidKey  = "GrossWeightAmount.error.characters"
+  private val maxLength   = UnloadingRemarksRequest.GrossWeightLength
 
-  private val form      = new GrossMassAmountFormProvider()()
+  private val form      = new GrossWeightAmountFormProvider()()
   private val fieldName = "value"
 
   ".value" - {
@@ -49,7 +49,7 @@ class GrossMassAmountFormProviderSpec extends StringFieldBehaviours {
   "must not bind strings that do not match regex" in {
 
     val generator: Gen[String] = RegexpGen.from("""[^\d{1,15}|(\d{0,15}.{1}\d{1,3}){1}]""")
-    val validRegex: String     = UnloadingRemarksRequest.grossMassRegex
+    val validRegex: String     = UnloadingRemarksRequest.GrossWeightRegex
     val expectedError          = FormError(fieldName, invalidKey, Seq(validRegex))
 
     forAll(generator) {

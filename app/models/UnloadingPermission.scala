@@ -31,7 +31,7 @@ case class UnloadingPermission(
   transportCountry: Option[String],
   numberOfItems: Int,
   numberOfPackages: Option[Int],
-  grossMass: String,
+  GrossWeight: String,
   traderAtDestination: TraderAtDestination,
   presentationOffice: String,
   seals: Option[Seals],

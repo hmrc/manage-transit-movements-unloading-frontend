@@ -37,7 +37,7 @@ object ErrorPointer extends Serializable {
   }
 
   val values = Seq(
-    GrossMassPointer,
+    GrossWeightPointer,
     NumberOfItemsPointer,
     UnloadingDatePointer,
     VehicleRegistrationPointer,
@@ -46,7 +46,7 @@ object ErrorPointer extends Serializable {
 
 }
 
-object GrossMassPointer extends ErrorPointer("HEA.Total gross mass")
+object GrossWeightPointer extends ErrorPointer("HEA.Total gross mass")
 
 object NumberOfItemsPointer extends ErrorPointer("HEA.Total number of items")
 

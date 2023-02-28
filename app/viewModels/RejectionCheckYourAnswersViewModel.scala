@@ -32,7 +32,7 @@ class RejectionCheckYourAnswersViewModel {
           cyaHelper.dateGoodsUnloaded,
           cyaHelper.totalNumberOfItems,
           cyaHelper.totalNumberOfPackages,
-          cyaHelper.grossMassAmount
+          cyaHelper.GrossWeightAmount
         ).flatten
       )
     )

@@ -18,27 +18,27 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
-import forms.GrossMassAmountFormProvider
+import forms.GrossWeightAmountFormProvider
 import models.ArrivalId
-import pages.GrossMassAmountPage
+import pages.GrossWeightAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.GrossMassAmountRejectionView
+import views.html.GrossWeightAmountRejectionView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class GrossMassAmountRejectionController @Inject() (
+class GrossWeightAmountRejectionController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
-  formProvider: GrossMassAmountFormProvider,
+  formProvider: GrossWeightAmountFormProvider,
   val controllerComponents: MessagesControllerComponents,
   val appConfig: FrontendAppConfig,
-  view: GrossMassAmountRejectionView
+  view: GrossWeightAmountRejectionView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -46,7 +46,7 @@ class GrossMassAmountRejectionController @Inject() (
   private val form = formProvider()
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
-    actions.requireData(arrivalId).andThen(getMandatoryPage(GrossMassAmountPage)) {
+    actions.requireData(arrivalId).andThen(getMandatoryPage(GrossWeightAmountPage)) {
       implicit request =>
         Ok(view(form.fill(request.arg), arrivalId))
     }
@@ -59,7 +59,7 @@ class GrossMassAmountRejectionController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(GrossMassAmountPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(GrossWeightAmountPage, value))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId))
         )

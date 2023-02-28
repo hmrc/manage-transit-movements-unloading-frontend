@@ -18,6 +18,7 @@ package utils
 
 import base.SpecBase
 import controllers.routes
+import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
@@ -25,8 +26,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
 import java.time.LocalDate
 
-class RejectionCheckYourAnswersHelperSpec extends SpecBase {
-
+class RejectionCheckYourAnswersHelperSpec extends SpecBase with Generators {
   "when .vehicleNameRegistrationRejection" - {
 
     "must return None" - {
@@ -204,14 +204,14 @@ class RejectionCheckYourAnswersHelperSpec extends SpecBase {
     }
   }
 
-  "when .grossMassAmount" - {
+  "when .GrossWeightAmount" - {
 
     "must return None" - {
-      "when GrossMassAmountPage is undefined" in {
+      "when GrossWeightAmountPage is undefined" in {
 
         val userAnswers = emptyUserAnswers
         val helper      = new RejectionCheckYourAnswersHelper(userAnswers)
-        val result      = helper.grossMassAmount
+        val result      = helper.GrossWeightAmount
 
         result mustBe None
       }
@@ -222,9 +222,9 @@ class RejectionCheckYourAnswersHelperSpec extends SpecBase {
 
         forAll(arbitrary[String]) {
           str =>
-            val userAnswers = emptyUserAnswers.setValue(GrossMassAmountPage, str)
+            val userAnswers = emptyUserAnswers.setValue(GrossWeightAmountPage, str)
             val helper      = new RejectionCheckYourAnswersHelper(userAnswers)
-            val result      = helper.grossMassAmount
+            val result      = helper.GrossWeightAmount
 
             result mustBe Some(
               SummaryListRow(
@@ -235,7 +235,7 @@ class RejectionCheckYourAnswersHelperSpec extends SpecBase {
                     List(
                       ActionItem(
                         content = "Change".toText,
-                        href = routes.GrossMassAmountRejectionController.onPageLoad(userAnswers.id).url,
+                        href = routes.GrossWeightAmountRejectionController.onPageLoad(userAnswers.id).url,
                         visuallyHiddenText = Some("the new total gross mass in kilograms"),
                         attributes = Map("id" -> "change-gross-mass-amount")
                       )

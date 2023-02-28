@@ -18,14 +18,14 @@ package pages
 
 import pages.behaviours.PageBehaviours
 
-class GrossMassAmountPageSpec extends PageBehaviours {
+class GrossWeightAmountPageSpec extends PageBehaviours {
 
-  "GrossMassAmountPage" - {
+  "GrossWeightAmountPage" - {
 
-    beRetrievable[String](GrossMassAmountPage)
+    beRetrievable[String](GrossWeightAmountPage)
 
-    beSettable[String](GrossMassAmountPage)
+    beSettable[String](GrossWeightAmountPage)
 
-    beRemovable[String](GrossMassAmountPage)
+    beRemovable[String](GrossWeightAmountPage)
   }
 }

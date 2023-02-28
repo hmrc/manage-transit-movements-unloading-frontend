@@ -96,13 +96,13 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
       call = Some(routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, mode))
     )
 
-  def grossMass: Option[SummaryListRow] =
+  def GrossWeight: Option[SummaryListRow] =
     getAnswerAndBuildRow[String](
-      page = GrossMassAmountPage,
+      page = GrossWeightAmountPage,
       formatAnswer = _.toText,
-      prefix = "changeItems.grossMass",
+      prefix = "changeItems.GrossWeight",
       id = Some("change-gross-mass"),
-      call = Some(routes.GrossMassAmountController.onPageLoad(arrivalId, mode))
+      call = Some(routes.GrossWeightAmountController.onPageLoad(arrivalId, mode))
     )
 
   def totalNumberOfItems: Option[SummaryListRow] =

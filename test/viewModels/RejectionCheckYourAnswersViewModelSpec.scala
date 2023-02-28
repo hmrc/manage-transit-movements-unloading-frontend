@@ -38,7 +38,7 @@ class RejectionCheckYourAnswersViewModelSpec extends AnyFreeSpec with Matchers w
     }
 
     "display gross mass amount on check your answers" in {
-      val userAnswers = emptyUserAnswers.setValue(GrossMassAmountPage, "10000")
+      val userAnswers = emptyUserAnswers.setValue(GrossWeightAmountPage, "10000")
       val sections    = new RejectionCheckYourAnswersViewModel()(userAnswers)
 
       sections.length mustBe 1

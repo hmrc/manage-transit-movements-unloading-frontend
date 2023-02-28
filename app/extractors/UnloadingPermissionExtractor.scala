@@ -34,7 +34,7 @@ class UnloadingPermissionExtractor @Inject() (referenceDataService: ReferenceDat
   )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Try[UserAnswers]] =
     Future.fromTry {
       extractVehicleNameRegistrationReference(userAnswers, unloadingPermission)
-        .flatMap(extractGrossMassAmount(_, unloadingPermission))
+        .flatMap(extractGrossWeightAmount(_, unloadingPermission))
         .flatMap(extractTotalNumberOfItems(_, unloadingPermission))
         .flatMap(extractTotalNumberOfPackages(_, unloadingPermission))
         .flatMap(extractSeals(_, unloadingPermission))
@@ -62,11 +62,11 @@ class UnloadingPermissionExtractor @Inject() (referenceDataService: ReferenceDat
       case None          => Success(userAnswers)
     }
 
-  private def extractGrossMassAmount(
+  private def extractGrossWeightAmount(
     userAnswers: UserAnswers,
     unloadingPermission: UnloadingPermission
   ): Try[UserAnswers] =
-    userAnswers.set(GrossMassAmountPage, unloadingPermission.grossMass)
+    userAnswers.set(GrossWeightAmountPage, unloadingPermission.GrossWeight)
 
   private def extractTotalNumberOfItems(
     userAnswers: UserAnswers,

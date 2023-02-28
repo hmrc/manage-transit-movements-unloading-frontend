@@ -207,13 +207,13 @@ class UnloadingSummaryHelperSpec extends SpecBase with Generators {
       }
     }
 
-    "when .grossMass" in {
+    "when .GrossWeight" in {
 
       forAll(arbitrary[String]) {
         str =>
-          val userAnswers = emptyUserAnswers.setValue(GrossMassAmountPage, str)
+          val userAnswers = emptyUserAnswers.setValue(GrossWeightAmountPage, str)
           val helper      = new UnloadingSummaryHelper(userAnswers, mode)
-          val result      = helper.grossMass.get
+          val result      = helper.GrossWeight.get
 
           result mustEqual SummaryListRow(
             key = "Total gross mass in kilograms".toKey,
@@ -223,7 +223,7 @@ class UnloadingSummaryHelperSpec extends SpecBase with Generators {
                 List(
                   ActionItem(
                     content = "Change".toText,
-                    href = routes.GrossMassAmountController.onPageLoad(userAnswers.id, mode).url,
+                    href = routes.GrossWeightAmountController.onPageLoad(userAnswers.id, mode).url,
                     visuallyHiddenText = Some("total gross mass in kilograms"),
                     attributes = Map("id" -> "change-gross-mass")
                   )

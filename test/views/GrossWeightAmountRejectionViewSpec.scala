@@ -16,22 +16,22 @@
 
 package views
 
-import forms.GrossMassAmountFormProvider
+import forms.GrossWeightAmountFormProvider
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.GrossMassAmountRejectionView
+import views.html.GrossWeightAmountRejectionView
 
-class GrossMassAmountRejectionViewSpec extends InputTextViewBehaviours[String] {
+class GrossWeightAmountRejectionViewSpec extends InputTextViewBehaviours[String] {
 
-  override def form: Form[String] = new GrossMassAmountFormProvider()()
+  override def form: Form[String] = new GrossWeightAmountFormProvider()()
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[GrossMassAmountRejectionView].apply(form, arrivalId)(fakeRequest, messages)
+    injector.instanceOf[GrossWeightAmountRejectionView].apply(form, arrivalId)(fakeRequest, messages)
 
-  override val prefix: String = "grossMassAmount"
+  override val prefix: String = "grossWeightAmount"
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 

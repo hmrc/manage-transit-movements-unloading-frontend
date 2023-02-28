@@ -29,18 +29,18 @@
 @(form: Form[_], arrivalId: ArrivalId)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("grossMassAmount.title"),
+    title = messages("grossWeightAmount.title"),
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.GrossMassAmountRejectionController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.GrossWeightAmountRejectionController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("grossMassAmount.heading")
+                heading = messages("grossWeightAmount.heading")
             ),
             inputClass = InputSize.Width10,
             suffix = Some("kg")

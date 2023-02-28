@@ -240,6 +240,6 @@ object UnloadingRemarksRequestServiceSpec {
       transportCountry = unloadingPermission.transportCountry,
       numberOfItems = unloadingPermission.numberOfItems,
       numberOfPackages = unloadingPermission.numberOfPackages,
-      grossMass = unloadingPermission.grossMass
+      GrossWeight = unloadingPermission.GrossWeight
     )
 }
