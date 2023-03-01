@@ -17,7 +17,7 @@
 package components
 
 import a11ySpecBase.A11ySpecBase
-import forms.UnloadingReportFormProvider
+import forms.UnloadingCommentsFormProvider
 import org.scalacheck.Gen
 import views.html.components.InputCharacterCount
 import views.html.templates.MainTemplate
@@ -34,7 +34,7 @@ class InputCharacterCountSpec extends A11ySpecBase {
     val caption   = Gen.option(nonEmptyString).sample.value
     val hint      = Gen.option(nonEmptyString).sample.value
     val rows      = positiveInts.sample.value
-    val form      = new UnloadingReportFormProvider()()
+    val form      = new UnloadingCommentsFormProvider()()
 
     val content = template.apply(title) {
       component.apply(form("value"), label, maxLength, caption, hint, rows)

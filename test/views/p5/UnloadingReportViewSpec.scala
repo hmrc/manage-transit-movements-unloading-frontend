@@ -16,20 +16,20 @@
 
 package views.p5
 
-import forms.UnloadingReportFormProvider
+import forms.UnloadingCommentsFormProvider
 import models.NormalMode
 import models.messages.RemarksNonConform._
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.CharacterCountViewBehaviours
-import views.html.p5.UnloadingReportView
+import views.html.p5.UnloadingCommentsView
 
-class UnloadingReportViewSpec extends CharacterCountViewBehaviours {
+class UnloadingCommentsViewSpec extends CharacterCountViewBehaviours {
 
-  override def form: Form[String] = new UnloadingReportFormProvider()()
+  override def form: Form[String] = new UnloadingCommentsFormProvider()()
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[UnloadingReportView].apply(form, mrn, arrivalId, unloadingRemarkLength, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[UnloadingCommentsView].apply(form, mrn, arrivalId, unloadingRemarkLength, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "changesToReport"
 

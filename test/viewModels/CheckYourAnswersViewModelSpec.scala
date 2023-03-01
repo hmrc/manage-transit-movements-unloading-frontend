@@ -127,7 +127,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase {
     }
 
     "contain comments details" in {
-      val userAnswers = emptyUserAnswers.setValue(UnloadingReportPage, "Test comment")
+      val userAnswers = emptyUserAnswers.setValue(UnloadingCommentsPage, "Test comment")
       val sections    = new CheckYourAnswersViewModel()(userAnswers)
 
       sections.length mustBe 3

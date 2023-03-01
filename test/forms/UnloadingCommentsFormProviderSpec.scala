@@ -24,14 +24,14 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 import scala.util.Random
 
-class UnloadingReportFormProviderSpec extends StringFieldBehaviours {
+class UnloadingCommentsFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "changesToReport.error.required"
   val lengthKey   = "changesToReport.error.length"
   val invalidKey  = "changesToReport.error.invalid"
   val maxLength   = 512
 
-  val form = new UnloadingReportFormProvider()()
+  val form = new UnloadingCommentsFormProvider()()
 
   ".value" - {
 

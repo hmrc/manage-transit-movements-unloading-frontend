@@ -84,7 +84,7 @@ class UnloadingSummaryViewSpec extends CheckYourAnswersViewBehaviours {
       doc = doc,
       id = "add-comment",
       expectedText = "Add comment",
-      expectedHref = controllers.p5.routes.UnloadingReportController.onPageLoad(arrivalId, NormalMode).url
+      expectedHref = controllers.p5.routes.UnloadingCommentsController.onPageLoad(arrivalId, NormalMode).url
     )
   }
 

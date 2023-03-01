@@ -125,11 +125,11 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
 
   def comments: Option[SummaryListRow] =
     getAnswerAndBuildRemovableRow[String](
-      page = UnloadingReportPage,
+      page = UnloadingCommentsPage,
       formatAnswer = _.toText,
       prefix = "changeItems.comments",
       id = "comments",
-      changeCall = controllers.p5.routes.UnloadingReportController.onPageLoad(arrivalId, mode),
+      changeCall = controllers.p5.routes.UnloadingCommentsController.onPageLoad(arrivalId, mode),
       removeCall = routes.ConfirmRemoveCommentsController.onPageLoad(arrivalId, mode)
     )
 }

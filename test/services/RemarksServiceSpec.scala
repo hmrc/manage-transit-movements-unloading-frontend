@@ -59,7 +59,7 @@ class RemarksServiceSpec extends SpecBase with Generators with ScalaCheckPropert
 
             val userAnswers = emptyUserAnswers
               .setValue(DateGoodsUnloadedPage, dateGoodsUnloaded)
-              .setValue(UnloadingReportPage, unloadingRemarks)
+              .setValue(UnloadingCommentsPage, unloadingRemarks)
 
             service.build(userAnswers, unloadingPermissionWithSeals).get mustBe
               RemarksConformWithSeals(unloadingRemark = Some(unloadingRemarks), unloadingDate = dateGoodsUnloaded)
@@ -74,7 +74,7 @@ class RemarksServiceSpec extends SpecBase with Generators with ScalaCheckPropert
 
             val userAnswers = emptyUserAnswers
               .setValue(DateGoodsUnloadedPage, dateGoodsUnloaded)
-              .setValue(UnloadingReportPage, unloadingRemarks)
+              .setValue(UnloadingCommentsPage, unloadingRemarks)
 
             service.build(userAnswers, unloadingPermissionWithNoSeals).get mustBe
               RemarksConform(unloadingRemark = Some(unloadingRemarks), unloadingDate = dateGoodsUnloaded)
@@ -292,7 +292,7 @@ class RemarksServiceSpec extends SpecBase with Generators with ScalaCheckPropert
               service.build(userAnswersUpdated, unloadingPermissionWithSeals).get mustBe
                 RemarksNonConform(
                   stateOfSeals = Some(0),
-                  unloadingRemark = userAnswers.get(UnloadingReportPage),
+                  unloadingRemark = userAnswers.get(UnloadingCommentsPage),
                   unloadingDate = dateGoodsUnloaded
                 )
           }
@@ -311,7 +311,7 @@ class RemarksServiceSpec extends SpecBase with Generators with ScalaCheckPropert
               service.build(userAnswersUpdated, unloadingPermissionWithSeals).get mustBe
                 RemarksNonConform(
                   stateOfSeals = Some(0),
-                  unloadingRemark = userAnswersUpdated.get(UnloadingReportPage),
+                  unloadingRemark = userAnswersUpdated.get(UnloadingCommentsPage),
                   unloadingDate = dateGoodsUnloaded
                 )
           }
@@ -325,7 +325,7 @@ class RemarksServiceSpec extends SpecBase with Generators with ScalaCheckPropert
 
               val userAnswersUpdated = emptyUserAnswers
                 .setValue(DateGoodsUnloadedPage, dateGoodsUnloaded)
-                .setValue(UnloadingReportPage, unloadingRemarks)
+                .setValue(UnloadingCommentsPage, unloadingRemarks)
 
               service.build(userAnswersUpdated, unloadingPermissionWithNoSeals).get mustBe
                 RemarksConform(dateGoodsUnloaded, Some(unloadingRemarks))
@@ -339,7 +339,7 @@ class RemarksServiceSpec extends SpecBase with Generators with ScalaCheckPropert
 
               val userAnswersUpdated = emptyUserAnswers
                 .setValue(DateGoodsUnloadedPage, dateGoodsUnloaded)
-                .setValue(UnloadingReportPage, unloadingRemarks)
+                .setValue(UnloadingCommentsPage, unloadingRemarks)
 
               service.build(userAnswersUpdated, unloadingPermissionWithSeals).get mustBe
                 RemarksConformWithSeals(dateGoodsUnloaded, Some(unloadingRemarks))
@@ -359,7 +359,7 @@ class RemarksServiceSpec extends SpecBase with Generators with ScalaCheckPropert
               service.build(userAnswersUpdated, unloadingPermissionWithSeals).get mustBe
                 RemarksNonConform(
                   stateOfSeals = Some(0),
-                  unloadingRemark = userAnswers.get(UnloadingReportPage),
+                  unloadingRemark = userAnswers.get(UnloadingCommentsPage),
                   unloadingDate = dateGoodsUnloaded
                 )
           }
@@ -380,7 +380,7 @@ class RemarksServiceSpec extends SpecBase with Generators with ScalaCheckPropert
               service.build(userAnswersUpdated, unloadingPermissionWithSeals).get mustBe
                 RemarksNonConform(
                   stateOfSeals = Some(0),
-                  unloadingRemark = userAnswers.get(UnloadingReportPage),
+                  unloadingRemark = userAnswers.get(UnloadingCommentsPage),
                   unloadingDate = dateGoodsUnloaded
                 )
           }
