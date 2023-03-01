@@ -105,15 +105,15 @@ class ResultOfControlServiceSpec extends SpecBase with Generators with ScalaChec
         }
       }
 
-      "contains GrossMass value" in {
+      "contains GrossWeight value" in {
         forAll(arbitrary[UnloadingPermission]) {
           unloadingPermission =>
             val userAnswersUpdated = emptyUserAnswers
-              .setValue(GrossMassAmountPage, "12234567")
+              .setValue(GrossWeightPage, "12234567")
 
             service.build(userAnswersUpdated, unloadingPermission) mustBe Seq(
               ResultsOfControlDifferentValues(
-                PointerToAttribute(GrossMass),
+                PointerToAttribute(GrossWeight),
                 "12234567"
               )
             )

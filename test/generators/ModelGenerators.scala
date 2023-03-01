@@ -98,7 +98,7 @@ trait ModelGenerators {
         transportCountry        <- Gen.option(Gen.pick(2, 'A' to 'Z'))
         numberOfItems           <- choose(min = 1: Int, 2: Int)
         numberOfPackages        <- Gen.option(choose(min = 1: Int, 2: Int))
-        grossMass               <- stringsWithMaxLength(2: Int)
+        GrossWeight             <- stringsWithMaxLength(2: Int)
         traderAtDestination     <- arbitrary[TraderAtDestination]
         presentationOffice      <- stringsWithMaxLength(UnloadingPermission.presentationOfficeLength)
         seals                   <- Gen.option(arbitrary[Seals])
@@ -110,7 +110,7 @@ trait ModelGenerators {
         transportCountry.map(_.mkString),
         numberOfItems,
         numberOfPackages,
-        grossMass,
+        GrossWeight,
         traderAtDestination,
         presentationOffice,
         seals,
@@ -142,7 +142,7 @@ trait ModelGenerators {
         itemNumber    <- choose(min = 1, 10)
         commodityCode <- Gen.option(stringsWithMaxLength(GoodsItem.commodityCodeLength: Int))
         description   <- stringsWithMaxLength(Packages.kindOfPackageLength)
-        grossMass <- Gen.option(
+        GrossWeight <- Gen.option(
           Gen.choose(0.0, 99999999.999).map(BigDecimal(_).bigDecimal.setScale(3, BigDecimal.RoundingMode.DOWN))
         ) //BigDecimal.RoundingMode.DOWN
         netMass <- Gen.option(
@@ -156,7 +156,7 @@ trait ModelGenerators {
         itemNumber,
         commodityCode,
         description,
-        grossMass.map(_.toString),
+        GrossWeight.map(_.toString),
         netMass.map(_.toString),
         producedDocuments,
         containers,

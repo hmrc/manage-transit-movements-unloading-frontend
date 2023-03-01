@@ -32,7 +32,7 @@ class UnloadingRemarksRejectionViewModel {
       helper.totalNumberOfPackages,
       helper.vehicleNameRegistrationReference,
       helper.totalNumberOfItems,
-      helper.grossMassAmount,
+      helper.GrossWeightAmount,
       helper.unloadingDate
     ).flatten.headOption
   }

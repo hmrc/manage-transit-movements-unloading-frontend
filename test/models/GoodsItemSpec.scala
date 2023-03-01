@@ -44,9 +44,9 @@ class GoodsItemSpec extends AnyFreeSpec with Matchers with Generators with Scala
               <ComCodTarCodGDS10>{code}</ComCodTarCodGDS10>
           }
 
-          val grossMass: Option[Elem] = goodsItem.grossMass.map {
-            grossMass =>
-              <GroMasGDS46>{grossMass}</GroMasGDS46>
+          val GrossWeight: Option[Elem] = goodsItem.GrossWeight.map {
+            GrossWeight =>
+              <GroMasGDS46>{GrossWeight}</GroMasGDS46>
           }
 
           val netMass: Option[Elem] = goodsItem.netMass.map {
@@ -68,7 +68,7 @@ class GoodsItemSpec extends AnyFreeSpec with Matchers with Generators with Scala
               <GooDesGDS23>
                 {goodsItem.description}
               </GooDesGDS23>
-              {grossMass.getOrElse(NodeSeq.Empty)}
+              {GrossWeight.getOrElse(NodeSeq.Empty)}
               {netMass.getOrElse(NodeSeq.Empty)}
               {producedDocument(goodsItem)}
               {
@@ -86,7 +86,7 @@ class GoodsItemSpec extends AnyFreeSpec with Matchers with Generators with Scala
                 goodsItem.itemNumber,
                 goodsItem.commodityCode,
                 goodsItem.description,
-                goodsItem.grossMass,
+                goodsItem.GrossWeight,
                 goodsItem.netMass,
                 goodsItem.producedDocuments,
                 goodsItem.containers,
@@ -107,9 +107,9 @@ class GoodsItemSpec extends AnyFreeSpec with Matchers with Generators with Scala
               <ComCodTarCodGDS10>{code}</ComCodTarCodGDS10>
           }
 
-          val grossMass: Option[Elem] = goodsItem.grossMass.map {
-            grossMass =>
-              <GroMasGDS46>{grossMass}</GroMasGDS46>
+          val GrossWeight: Option[Elem] = goodsItem.GrossWeight.map {
+            GrossWeight =>
+              <GroMasGDS46>{GrossWeight}</GroMasGDS46>
           }
 
           val netMass: Option[Elem] = goodsItem.netMass.map {
@@ -132,7 +132,7 @@ class GoodsItemSpec extends AnyFreeSpec with Matchers with Generators with Scala
                 {goodsItem.description}
               </GooDesGDS23>
               <GooDesGDS23LNG>EN</GooDesGDS23LNG>
-              {grossMass.getOrElse(NodeSeq.Empty)}
+              {GrossWeight.getOrElse(NodeSeq.Empty)}
               {netMass.getOrElse(NodeSeq.Empty)}
               {
               goodsItem.producedDocuments.map(

@@ -112,25 +112,25 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase with Generators {
       }
     }
 
-    "when .grossMassAmount" in {
+    "when .GrossWeight" in {
 
       forAll(arbitrary[String]) {
         str =>
-          val userAnswers = emptyUserAnswers.setValue(GrossMassAmountPage, str)
+          val userAnswers = emptyUserAnswers.setValue(GrossWeightPage, str)
           val helper      = new UnloadingRemarksRejectionHelper(userAnswers)
-          val result      = helper.grossMassAmount.get
+          val result      = helper.GrossWeightAmount.get
 
           result mustEqual SummaryListRow(
-            key = "Total gross mass in kilograms".toKey,
+            key = "Total gross weight in kilograms".toKey,
             value = Value(str.toText),
             actions = Some(
               Actions(
                 items = Seq(
                   ActionItem(
                     content = "Change".toText,
-                    href = routes.GrossMassAmountRejectionController.onPageLoad(userAnswers.id).url,
-                    visuallyHiddenText = Some("total gross mass in kilograms"),
-                    attributes = Map("id" -> "change-gross-mass-amount")
+                    href = routes.GrossWeightAmountRejectionController.onPageLoad(userAnswers.id).url,
+                    visuallyHiddenText = Some("total gross weight in kilograms"),
+                    attributes = Map("id" -> "change-gross-weight")
                   )
                 )
               )

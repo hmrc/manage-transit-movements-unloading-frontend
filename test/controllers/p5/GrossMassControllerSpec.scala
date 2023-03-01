@@ -14,52 +14,54 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.GrossMassAmountFormProvider
-import models.NormalMode
+import controllers.routes
+import forms.GrossWeightFormProvider
+import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.GrossMassAmountPage
+import pages.GrossWeightPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.GrossMassAmountView
+import views.html.p5.GrossWeightView
 
 import scala.concurrent.Future
 
-class GrossMassAmountControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider              = new GrossMassAmountFormProvider()
-  private val form                      = formProvider()
-  private val mode                      = NormalMode
-  private lazy val grossMassAmountRoute = routes.GrossMassAmountController.onPageLoad(arrivalId, mode).url
+  private val formProvider                = new GrossWeightFormProvider()
+  private val form                        = formProvider()
+  private val mode                        = NormalMode
+  private val index                       = Index(0)
+  private lazy val GrossWeightAmountRoute = controllers.p5.routes.GrossWeightController.onPageLoad(arrivalId, index, mode).url
 
-  "GrossMassAmount Controller" - {
+  "GrossWeightAmount Controller" - {
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, grossMassAmountRoute)
+      val request = FakeRequest(GET, GrossWeightAmountRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[GrossMassAmountView]
+      val view = injector.instanceOf[GrossWeightView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, mode)(request, messages).toString
+        view(form, mrn, arrivalId, index, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
-      val userAnswers = emptyUserAnswers.setValue(GrossMassAmountPage, "123456.123")
+      val userAnswers = emptyUserAnswers.setValue(GrossWeightPage, "123456.123")
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, grossMassAmountRoute)
+      val request = FakeRequest(GET, GrossWeightAmountRoute)
 
       val result = route(app, request).value
 
@@ -67,10 +69,10 @@ class GrossMassAmountControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       val filledForm = form.bind(Map("value" -> "123456.123"))
 
-      val view = injector.instanceOf[GrossMassAmountView]
+      val view = injector.instanceOf[GrossWeightView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, index, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -80,7 +82,7 @@ class GrossMassAmountControllerSpec extends SpecBase with AppWithDefaultMockFixt
       setExistingUserAnswers(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, grossMassAmountRoute)
+        FakeRequest(POST, GrossWeightAmountRoute)
           .withFormUrlEncodedBody(("value", "123456.123"))
 
       val result = route(app, request).value
@@ -94,23 +96,23 @@ class GrossMassAmountControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, grossMassAmountRoute).withFormUrlEncodedBody(("value", ""))
+      val request   = FakeRequest(POST, GrossWeightAmountRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
-      val view = injector.instanceOf[GrossMassAmountView]
+      val view = injector.instanceOf[GrossWeightView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, arrivalId, mode)(request, messages).toString
+        view(boundForm, mrn, arrivalId, index, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, grossMassAmountRoute)
+      val request = FakeRequest(GET, GrossWeightAmountRoute)
 
       val result = route(app, request).value
 
@@ -124,7 +126,7 @@ class GrossMassAmountControllerSpec extends SpecBase with AppWithDefaultMockFixt
       setNoExistingUserAnswers()
 
       val request =
-        FakeRequest(POST, grossMassAmountRoute)
+        FakeRequest(POST, GrossWeightAmountRoute)
           .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value

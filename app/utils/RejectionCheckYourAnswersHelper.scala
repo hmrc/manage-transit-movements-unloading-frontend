@@ -63,12 +63,12 @@ class RejectionCheckYourAnswersHelper(userAnswers: UserAnswers)(implicit message
       call = Some(routes.TotalNumberOfItemsRejectionController.onPageLoad(arrivalId))
     )
 
-  def grossMassAmount: Option[SummaryListRow] =
+  def GrossWeightAmount: Option[SummaryListRow] =
     getAnswerAndBuildRow[String](
-      page = GrossMassAmountPage,
+      page = GrossWeightPage,
       formatAnswer = _.toText,
-      prefix = "grossMassAmount",
-      id = Some("change-gross-mass-amount"),
-      call = Some(routes.GrossMassAmountRejectionController.onPageLoad(arrivalId))
+      prefix = "grossWeight",
+      id = Some("change-gross-weight-amount"),
+      call = Some(routes.GrossWeightAmountRejectionController.onPageLoad(arrivalId))
     )
 }
