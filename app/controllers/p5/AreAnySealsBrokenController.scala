@@ -14,30 +14,30 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
 import controllers.actions._
-import forms.GrossMassAmountFormProvider
+import forms.AreAnySealsBrokenFormProvider
 import models.{ArrivalId, Mode}
 import navigation.Navigator
-import pages.GrossMassAmountPage
+import pages.AreAnySealsBrokenPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.GrossMassAmountView
+import views.html.p5.AreAnySealsBrokenView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class GrossMassAmountController @Inject() (
+class AreAnySealsBrokenController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
   actions: Actions,
-  formProvider: GrossMassAmountFormProvider,
+  formProvider: AreAnySealsBrokenFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: GrossMassAmountView
+  view: AreAnySealsBrokenView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -46,7 +46,7 @@ class GrossMassAmountController @Inject() (
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(GrossMassAmountPage) match {
+      val preparedForm = request.userAnswers.get(AreAnySealsBrokenPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -62,9 +62,9 @@ class GrossMassAmountController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(GrossMassAmountPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AreAnySealsBrokenPage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(GrossMassAmountPage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(AreAnySealsBrokenPage, mode, updatedAnswers))
         )
   }
 }

@@ -54,15 +54,15 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
 
           result mustBe Some(
             SummaryListRow(
-              key = "Are any of the official customs seals broken?".toKey,
+              key = "Are any of the seals broken?".toKey,
               value = Value("Yes".toText),
               actions = Some(
                 Actions(items =
                   List(
                     ActionItem(
                       content = "Change".toText,
-                      href = routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, CheckMode).url,
-                      visuallyHiddenText = Some("if any of the official customs seals are broken"),
+                      href = controllers.p5.routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, CheckMode).url,
+                      visuallyHiddenText = Some("if any of the seals are broken"),
                       attributes = Map("id" -> "change-are-any-seals-broken")
                     )
                   )
@@ -80,15 +80,15 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
 
           result mustBe Some(
             SummaryListRow(
-              key = "Are any of the official customs seals broken?".toKey,
+              key = "Are any of the seals broken?".toKey,
               value = Value("No".toText),
               actions = Some(
                 Actions(items =
                   List(
                     ActionItem(
                       content = "Change".toText,
-                      href = routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, CheckMode).url,
-                      visuallyHiddenText = Some("if any of the official customs seals are broken"),
+                      href = controllers.p5.routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, CheckMode).url,
+                      visuallyHiddenText = Some("if any of the seals are broken"),
                       attributes = Map("id" -> "change-are-any-seals-broken")
                     )
                   )

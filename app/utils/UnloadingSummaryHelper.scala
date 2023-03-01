@@ -43,7 +43,7 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
           prefix = "changeSeal.sealList",
           answer = sealId.toText,
           id = Some(s"change-seal-${index.position}"),
-          call = Some(routes.NewSealNumberController.onPageLoad(arrivalId, index, mode)),
+          call = Some(controllers.p5.routes.NewSealNumberController.onPageLoad(arrivalId, index, mode)),
           args = index.display, sealId
         )
     }
@@ -56,7 +56,7 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
           prefix = "changeSeal.sealList",
           answer = sealId.toText,
           id = s"seal-${index.position}",
-          changeCall = routes.NewSealNumberController.onPageLoad(arrivalId, index, mode),
+          changeCall = controllers.p5.routes.NewSealNumberController.onPageLoad(arrivalId, index, mode),
           removeCall = routes.ConfirmRemoveSealController.onPageLoad(arrivalId, index, mode),
           args = index.display, sealId
         )
@@ -96,13 +96,13 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
       call = Some(routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, mode))
     )
 
-  def grossMass: Option[SummaryListRow] =
+  def GrossWeight: Option[SummaryListRow] =
     getAnswerAndBuildRow[String](
-      page = GrossMassAmountPage,
+      page = GrossWeightPage,
       formatAnswer = _.toText,
-      prefix = "changeItems.grossMass",
-      id = Some("change-gross-mass"),
-      call = Some(routes.GrossMassAmountController.onPageLoad(arrivalId, mode))
+      prefix = "changeItems.GrossWeight",
+      id = Some("change-gross-weight"),
+      call = Some(controllers.p5.routes.GrossWeightController.onPageLoad(arrivalId, Index(0), mode))
     )
 
   def totalNumberOfItems: Option[SummaryListRow] =

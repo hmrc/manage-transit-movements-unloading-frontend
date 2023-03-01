@@ -36,7 +36,7 @@ class ResultOfControlServiceImpl extends ResultOfControlService {
 
     val totalNumberOfPackagesPage: Seq[ResultsOfControl] = resultsOfControlInt(TotalNumberOfPackagesPage, NumberOfPackages)
 
-    val grossMassAmount: Seq[ResultsOfControl] = resultsOfControlString(GrossMassAmountPage, GrossMass)
+    val GrossWeightAmount: Seq[ResultsOfControl] = resultsOfControlString(GrossWeightPage, GrossWeight)
 
     val sealsBroken: Seq[ResultsOfControl] = resultsOfControlOther()
 
@@ -47,7 +47,7 @@ class ResultOfControlServiceImpl extends ResultOfControlService {
       vehicleRegistrationCountry,
       totalNumberOfItemsPage,
       totalNumberOfPackagesPage,
-      grossMassAmount,
+      GrossWeightAmount,
       sealsBroken,
       sealsUpdated
     ).flatten

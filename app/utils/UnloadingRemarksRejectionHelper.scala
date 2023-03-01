@@ -54,13 +54,13 @@ class UnloadingRemarksRejectionHelper(userAnswers: UserAnswers)(implicit message
       call = Some(routes.TotalNumberOfItemsRejectionController.onPageLoad(arrivalId))
     )
 
-  def grossMassAmount: Option[SummaryListRow] =
+  def GrossWeightAmount: Option[SummaryListRow] =
     getAnswerAndBuildRow[String](
-      page = GrossMassAmountPage,
+      page = GrossWeightPage,
       formatAnswer = _.toText,
-      prefix = "changeItems.grossMass",
-      id = Some("change-gross-mass-amount"),
-      call = Some(routes.GrossMassAmountRejectionController.onPageLoad(arrivalId))
+      prefix = "changeItems.GrossWeight",
+      id = Some("change-gross-weight"),
+      call = Some(routes.GrossWeightAmountRejectionController.onPageLoad(arrivalId))
     )
 
   def unloadingDate: Option[SummaryListRow] =

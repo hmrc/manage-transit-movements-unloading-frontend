@@ -23,7 +23,7 @@ import models.{
   ErrorPointer,
   ErrorType,
   FunctionalError,
-  GrossMassPointer,
+  GrossWeightPointer,
   MovementReferenceNumber,
   NumberOfItemsPointer,
   NumberOfPackagesPointer,
@@ -108,7 +108,7 @@ trait MessagesModelGenerators {
 
   implicit lazy val arbitraryNonDefaultErrorPointer: Arbitrary[ErrorPointer] =
     Arbitrary {
-      Gen.oneOf(Seq(GrossMassPointer, NumberOfItemsPointer, UnloadingDatePointer, VehicleRegistrationPointer, NumberOfPackagesPointer))
+      Gen.oneOf(Seq(GrossWeightPointer, NumberOfItemsPointer, UnloadingDatePointer, VehicleRegistrationPointer, NumberOfPackagesPointer))
     }
 
   implicit lazy val arbitraryDefaultPointer: Arbitrary[ErrorPointer] =
@@ -149,8 +149,14 @@ trait MessagesModelGenerators {
         transportCountry        <- Gen.option(Gen.pick(UnloadingPermission.transportCountryLength, 'A' to 'Z'))
         numberOfItems           <- choose(min = 1: Int, 2: Int)
         numberOfPackages        <- Gen.option(choose(min = 1: Int, 2: Int))
-        grossMass               <- Gen.choose(0.0, 99999999.999).map(BigDecimal(_).bigDecimal.setScale(3, BigDecimal.RoundingMode.DOWN))
-      } yield Header(movementReferenceNumber.toString, transportIdentity, transportCountry.map(_.mkString), numberOfItems, numberOfPackages, grossMass.toString)
+        GrossWeight             <- Gen.choose(0.0, 99999999.999).map(BigDecimal(_).bigDecimal.setScale(3, BigDecimal.RoundingMode.DOWN))
+      } yield Header(movementReferenceNumber.toString,
+                     transportIdentity,
+                     transportCountry.map(_.mkString),
+                     numberOfItems,
+                     numberOfPackages,
+                     GrossWeight.toString
+      )
     }
 
   implicit lazy val arbitraryUnloadingRemarksRequest: Arbitrary[UnloadingRemarksRequest] =

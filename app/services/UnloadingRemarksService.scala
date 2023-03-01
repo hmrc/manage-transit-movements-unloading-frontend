@@ -102,5 +102,5 @@ class UnloadingRemarksService @Inject() (
     userAnswers.get(VehicleIdentificationNumberPage).map((_, TransportIdentity)) orElse
       userAnswers.get(TotalNumberOfPackagesPage).map(_.toString).map((_, NumberOfPackages)) orElse
       userAnswers.get(TotalNumberOfItemsPage).map(_.toString).map((_, NumberOfItems)) orElse
-      userAnswers.get(GrossMassAmountPage).map((_, GrossMass))
+      userAnswers.get(GrossWeightPage).map((_, GrossWeight))
 }

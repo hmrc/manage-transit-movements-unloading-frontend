@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 
-package views
+package views.p5
 
-import forms.GrossMassAmountFormProvider
+import forms.NewSealNumberFormProvider
+import models.{Index, NormalMode}
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.GrossMassAmountRejectionView
+import views.html.p5.NewSealNumberView
 
-class GrossMassAmountRejectionViewSpec extends InputTextViewBehaviours[String] {
+class NewSealNumberViewSpec extends InputTextViewBehaviours[String] {
 
-  override def form: Form[String] = new GrossMassAmountFormProvider()()
+  override def form: Form[String] = new NewSealNumberFormProvider()()
+  private val index: Index        = Index(0)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[GrossMassAmountRejectionView].apply(form, arrivalId)(fakeRequest, messages)
+    injector.instanceOf[NewSealNumberView].apply(form, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "grossMassAmount"
+  override val prefix: String = "newSealNumber"
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
@@ -41,9 +42,11 @@ class GrossMassAmountRejectionViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading()
 
-  behave like pageWithoutHint()
+  behave like pageWithCaption(mrn.toString)
 
-  behave like pageWithInputText(inputFieldClassSize = Some(InputSize.Width10), suffix = Some("kg"))
+  behave like pageWithHint("This can be up to 20 characters long and include both letters and numbers.")
+
+  behave like pageWithInputText()
 
   behave like pageWithSubmitButton("Continue")
 }
