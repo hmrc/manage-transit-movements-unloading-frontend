@@ -14,42 +14,43 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
 import controllers.actions._
-import forms.NewSealNumberFormProvider
-import models.{ArrivalId, Index, Mode, Seal}
+import forms.NewContainerIdentificationNumberFormProvider
+import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
-import pages.SealPage
+import pages.ContainerIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.NewSealNumberView
+import views.html.p5.NewContainerIdentificationNumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class NewSealNumberController @Inject() (
+class NewContainerIdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
   actions: Actions,
-  formProvider: NewSealNumberFormProvider,
+  formProvider: NewContainerIdentificationNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: NewSealNumberView
+  view: NewContainerIdentificationNumberView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   private val form = formProvider()
 
-  //TODO: Do not allow duplicate seal numbers to be submitted
+  //TODO: Do not allow duplicate container identification numbers to be submitted
+
   def onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(SealPage(index)) match {
-        case None       => form
-        case Some(seal) => form.fill(seal.sealId)
+      val preparedForm = request.userAnswers.get(ContainerIdentificationNumberPage(index)) match {
+        case None                       => form
+        case Some(identificationNumber) => form.fill(identificationNumber)
       }
 
       Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, index, mode))
@@ -61,13 +62,11 @@ class NewSealNumberController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, mode))),
-          value => {
-            val removable = request.userAnswers.get(SealPage(index)).forall(_.removable)
+          value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(SealPage(index), Seal(value, removable)))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(ContainerIdentificationNumberPage(index), value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(SealPage(index), mode, updatedAnswers))
-          }
+            } yield Redirect(controllers.routes.SessionExpiredController.onPageLoad()) // TODO: Implement once navigation is in
         )
 
   }
