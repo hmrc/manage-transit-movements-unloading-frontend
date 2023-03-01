@@ -44,7 +44,6 @@ class ConfirmRemoveSealController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  // TODO: Hit new seal page first then this page
   def onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId).andThen(getMandatoryPage(SealPage(index))) {
       implicit request =>
