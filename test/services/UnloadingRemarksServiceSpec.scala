@@ -198,7 +198,7 @@ class UnloadingRemarksServiceSpec extends SpecBase with AppWithDefaultMockFixtur
         when(mockMetaService.build(interchangeControlReference))
           .thenReturn(meta)
 
-        val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, "new registration")
+        val userAnswers = emptyUserAnswers.setValue(VehicleIdentificationNumberPage, "new registration")
 
         val arrivalNotificationService = app.injector.instanceOf[UnloadingRemarksService]
         val result                     = arrivalNotificationService.resubmit(arrivalId, userAnswers)
@@ -230,7 +230,7 @@ class UnloadingRemarksServiceSpec extends SpecBase with AppWithDefaultMockFixtur
             .thenReturn(Future.successful(interchangeControlReference))
           when(mockMetaService.build(interchangeControlReference))
             .thenReturn(meta)
-          val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, "new registration")
+          val userAnswers = emptyUserAnswers.setValue(VehicleIdentificationNumberPage, "new registration")
 
           val expectedResultOfControl: Seq[ResultsOfControl] = unloadingRemarksRequest.resultOfControl.map {
             case y: ResultsOfControlDifferentValues if y.pointerToAttribute.pointer == TransportIdentity => y.copy(correctedValue = "new registration")

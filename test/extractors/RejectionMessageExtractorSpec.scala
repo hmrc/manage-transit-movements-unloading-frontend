@@ -53,7 +53,7 @@ class RejectionMessageExtractorSpec extends SpecBase with Generators {
 
     "when vehicle registration pointer" in {
       val result = extractor.apply(emptyUserAnswers, rejectionMessage(VehicleRegistrationPointer, Some("value")))
-      result.get.getValue(VehicleNameRegistrationReferencePage) mustBe "value"
+      result.get.getValue(VehicleIdentificationNumberPage) mustBe "value"
     }
 
     "when number of packages pointer" in {

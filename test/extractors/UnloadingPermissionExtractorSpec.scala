@@ -54,7 +54,7 @@ class UnloadingPermissionExtractorSpec extends SpecBase with Generators with Bef
 
         whenReady(extractor.apply(emptyUserAnswers, unloadingPermission)) {
           result =>
-            result.get.get(VehicleNameRegistrationReferencePage) mustBe unloadingPermission.transportIdentity
+            result.get.get(VehicleIdentificationNumberPage) mustBe unloadingPermission.transportIdentity
             result.get.get(VehicleRegistrationCountryPage).get mustBe country
             result.get.get(GrossWeightPage).get mustBe unloadingPermission.GrossWeight
             result.get.get(TotalNumberOfItemsPage).get mustBe unloadingPermission.numberOfItems

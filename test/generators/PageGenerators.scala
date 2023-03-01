@@ -52,8 +52,8 @@ trait PageGenerators {
   implicit lazy val arbitraryVehicleRegistrationCountryPage: Arbitrary[VehicleRegistrationCountryPage.type] =
     Arbitrary(VehicleRegistrationCountryPage)
 
-  implicit lazy val arbitraryVehicleNameRegistrationReferencePage: Arbitrary[VehicleNameRegistrationReferencePage.type] =
-    Arbitrary(VehicleNameRegistrationReferencePage)
+  implicit lazy val arbitraryVehicleNameRegistrationReferencePage: Arbitrary[VehicleIdentificationNumberPage.type] =
+    Arbitrary(VehicleIdentificationNumberPage)
 
   implicit lazy val arbitraryDateGoodsUnloadedPage: Arbitrary[DateGoodsUnloadedPage.type] =
     Arbitrary(DateGoodsUnloadedPage)

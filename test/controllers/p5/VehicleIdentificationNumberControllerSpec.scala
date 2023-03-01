@@ -14,40 +14,41 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.VehicleNameRegistrationReferenceFormProvider
+import controllers.routes
+import forms.VehicleIdentificationNumberFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.VehicleNameRegistrationReferencePage
+import pages.VehicleIdentificationNumberPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.VehicleNameRegistrationReferenceView
+import views.html.p5.VehicleIdentificationNumberView
 
 import scala.concurrent.Future
 
-class VehicleNameRegistrationReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider = new VehicleNameRegistrationReferenceFormProvider()
+  private val formProvider = new VehicleIdentificationNumberFormProvider()
   private val form         = formProvider()
   private val mode         = NormalMode
 
-  lazy val vehicleNameRegistrationReferenceRoute: String = routes.VehicleNameRegistrationReferenceController.onPageLoad(arrivalId, mode).url
+  lazy val vehicleIdentificationNumberRoute: String = controllers.p5.routes.VehicleIdentificationNumberController.onPageLoad(arrivalId, mode).url
 
-  "VehicleNameRegistrationReference Controller" - {
+  "VehicleIdentificationNumber Controller" - {
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, vehicleNameRegistrationReferenceRoute)
+      val request = FakeRequest(GET, vehicleIdentificationNumberRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[VehicleNameRegistrationReferenceView]
+      val view = injector.instanceOf[VehicleIdentificationNumberView]
 
       status(result) mustEqual OK
 
@@ -58,16 +59,16 @@ class VehicleNameRegistrationReferenceControllerSpec extends SpecBase with AppWi
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, "answer")
+      val userAnswers = emptyUserAnswers.setValue(VehicleIdentificationNumberPage, "answer")
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, vehicleNameRegistrationReferenceRoute)
+      val request = FakeRequest(GET, vehicleIdentificationNumberRoute)
 
       val result = route(app, request).value
 
       val filledForm = form.bind(Map("value" -> "answer"))
 
-      val view = injector.instanceOf[VehicleNameRegistrationReferenceView]
+      val view = injector.instanceOf[VehicleIdentificationNumberView]
 
       status(result) mustEqual OK
 
@@ -82,7 +83,7 @@ class VehicleNameRegistrationReferenceControllerSpec extends SpecBase with AppWi
       setExistingUserAnswers(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, vehicleNameRegistrationReferenceRoute)
+        FakeRequest(POST, vehicleIdentificationNumberRoute)
           .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value
@@ -96,14 +97,14 @@ class VehicleNameRegistrationReferenceControllerSpec extends SpecBase with AppWi
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, vehicleNameRegistrationReferenceRoute).withFormUrlEncodedBody(("value", ""))
+      val request   = FakeRequest(POST, vehicleIdentificationNumberRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[VehicleNameRegistrationReferenceView]
+      val view = injector.instanceOf[VehicleIdentificationNumberView]
 
       contentAsString(result) mustEqual
         view(boundForm, mrn, arrivalId, mode)(request, messages).toString
@@ -113,7 +114,7 @@ class VehicleNameRegistrationReferenceControllerSpec extends SpecBase with AppWi
       checkArrivalStatus()
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, vehicleNameRegistrationReferenceRoute)
+      val request = FakeRequest(GET, vehicleIdentificationNumberRoute)
 
       val result = route(app, request).value
 
@@ -127,7 +128,7 @@ class VehicleNameRegistrationReferenceControllerSpec extends SpecBase with AppWi
       setNoExistingUserAnswers()
 
       val request =
-        FakeRequest(POST, vehicleNameRegistrationReferenceRoute)
+        FakeRequest(POST, vehicleIdentificationNumberRoute)
           .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value

@@ -14,30 +14,31 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
 import config.FrontendAppConfig
 import controllers.actions._
-import forms.VehicleNameRegistrationReferenceFormProvider
+import controllers.routes
+import forms.VehicleIdentificationNumberFormProvider
 import models.ArrivalId
-import pages.VehicleNameRegistrationReferencePage
+import pages.VehicleIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.VehicleNameRegistrationRejectionView
+import views.html.p5.VehicleIdentificationNumberRejectionView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class VehicleNameRegistrationRejectionController @Inject() (
+class VehicleIdentificationNumberRejectionController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
-  formProvider: VehicleNameRegistrationReferenceFormProvider,
+  formProvider: VehicleIdentificationNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: VehicleNameRegistrationRejectionView,
+  view: VehicleIdentificationNumberRejectionView,
   val appConfig: FrontendAppConfig
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -46,7 +47,7 @@ class VehicleNameRegistrationRejectionController @Inject() (
   private val form = formProvider()
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
-    actions.requireData(arrivalId).andThen(getMandatoryPage(VehicleNameRegistrationReferencePage)) {
+    actions.requireData(arrivalId).andThen(getMandatoryPage(VehicleIdentificationNumberPage)) {
       implicit request =>
         Ok(view(form.fill(request.arg), arrivalId))
     }
@@ -59,7 +60,7 @@ class VehicleNameRegistrationRejectionController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleNameRegistrationReferencePage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleIdentificationNumberPage, value))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId))
         )

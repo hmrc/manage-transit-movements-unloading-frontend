@@ -157,20 +157,20 @@ class UnloadingSummaryHelperSpec extends SpecBase with Generators {
 
       forAll(arbitrary[String]) {
         str =>
-          val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, str)
+          val userAnswers = emptyUserAnswers.setValue(VehicleIdentificationNumberPage, str)
           val helper      = new UnloadingSummaryHelper(userAnswers, mode)
           val result      = helper.vehicleUsed.get
 
           result mustEqual SummaryListRow(
-            key = "Name, registration or reference".toKey,
+            key = "Identification number for the new vehicle".toKey,
             value = Value(str.toText),
             actions = Some(
               Actions(items =
                 List(
                   ActionItem(
                     content = "Change".toText,
-                    href = routes.VehicleNameRegistrationReferenceController.onPageLoad(userAnswers.id, mode).url,
-                    visuallyHiddenText = Some("name, registration or reference"),
+                    href = controllers.p5.routes.VehicleIdentificationNumberController.onPageLoad(userAnswers.id, mode).url,
+                    visuallyHiddenText = Some("identification number for the new vehicle"),
                     attributes = Map("id" -> "change-vehicle-reference")
                   )
                 )

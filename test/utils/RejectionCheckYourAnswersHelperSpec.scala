@@ -34,7 +34,7 @@ class RejectionCheckYourAnswersHelperSpec extends SpecBase with Generators {
 
         val userAnswers = emptyUserAnswers
         val helper      = new RejectionCheckYourAnswersHelper(userAnswers)
-        val result      = helper.vehicleNameRegistration
+        val result      = helper.vehicleIdentificationNumber
 
         result mustBe None
       }
@@ -45,21 +45,21 @@ class RejectionCheckYourAnswersHelperSpec extends SpecBase with Generators {
 
         forAll(arbitrary[String]) {
           str =>
-            val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, str)
+            val userAnswers = emptyUserAnswers.setValue(VehicleIdentificationNumberPage, str)
             val helper      = new RejectionCheckYourAnswersHelper(userAnswers)
-            val result      = helper.vehicleNameRegistration
+            val result      = helper.vehicleIdentificationNumber
 
             result mustBe Some(
               SummaryListRow(
-                key = "What is the name, registration or reference of the new vehicle?".toKey,
+                key = "What is the identification number for the new vehicle?".toKey,
                 value = Value(str.toText),
                 actions = Some(
                   Actions(items =
                     List(
                       ActionItem(
                         content = "Change".toText,
-                        href = routes.VehicleNameRegistrationRejectionController.onPageLoad(userAnswers.id).url,
-                        visuallyHiddenText = Some("the name, registration or reference of the new vehicle"),
+                        href = controllers.p5.routes.VehicleIdentificationNumberRejectionController.onPageLoad(userAnswers.id).url,
+                        visuallyHiddenText = Some("the identification number for the new vehicle"),
                         attributes = Map("id" -> "change-vehicle-registration-rejection")
                       )
                     )

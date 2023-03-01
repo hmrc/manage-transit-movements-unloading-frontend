@@ -49,7 +49,7 @@ class UnloadingPermissionExtractor @Inject() (referenceDataService: ReferenceDat
     unloadingPermission: UnloadingPermission
   ): Try[UserAnswers] =
     unloadingPermission.transportIdentity match {
-      case Some(transportIdentity) => userAnswers.set(VehicleNameRegistrationReferencePage, transportIdentity)
+      case Some(transportIdentity) => userAnswers.set(VehicleIdentificationNumberPage, transportIdentity)
       case None                    => Success(userAnswers)
     }
 

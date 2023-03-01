@@ -70,13 +70,13 @@ dateGoodsUnloaded.error.min.date = The date when the goods were unloaded must be
 dateGoodsUnloaded.error.max.date = The date when the goods were unloaded must be today or in the past
 dateGoodsUnloaded.change.hidden = the date when the goods were unloaded
 
-vehicleNameRegistrationReference.title = What is the name, registration or reference of the new vehicle?
-vehicleNameRegistrationReference.heading = What is the name, registration or reference of the new vehicle?
-vehicleNameRegistrationReference.checkYourAnswersLabel = What is the name, registration or reference of the new vehicle?
-vehicleNameRegistrationReference.error.required = Enter the name, registration or reference of the vehicle
-vehicleNameRegistrationReference.error.length = The name, registration or reference of the new vehicle must be 27 characters or less
-vehicleNameRegistrationReference.error.invalid = The name, registration or reference of the new vehicle must only include letters a to z or numbers 0 to 9
-vehicleNameRegistrationReference.change.hidden = the name, registration or reference of the new vehicle
+vehicleIdentificationNumber.title = What is the identification number for the new vehicle?
+vehicleIdentificationNumber.heading = What is the identification number for the new vehicle?
+vehicleIdentificationNumber.checkYourAnswersLabel = What is the identification number for the new vehicle?
+vehicleIdentificationNumber.error.required = Enter the identification number for the new vehicle
+vehicleIdentificationNumber.error.length = The identification number must be 35 characters or less
+vehicleIdentificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
+vehicleIdentificationNumber.change.hidden = the identification number for the new vehicle
 
 vehicleRegistrationCountry.title = Which country is the vehicle registered in?
 vehicleRegistrationCountry.heading = Which country is the vehicle registered in?
@@ -113,8 +113,8 @@ unloadingSummary.seals.subheading = Official customs seals
 
 vehicleUsed.title = Vehicle used
 
-changeVehicle.reference.checkYourAnswersLabel = Name, registration or reference
-changeVehicle.reference.change.hidden = name, registration or reference
+changeVehicle.reference.checkYourAnswersLabel = Identification number for the new vehicle
+changeVehicle.reference.change.hidden = identification number for the new vehicle
 
 changeVehicle.registeredCountry.checkYourAnswersLabel = Registered
 changeVehicle.registeredCountry.change.hidden = registered
