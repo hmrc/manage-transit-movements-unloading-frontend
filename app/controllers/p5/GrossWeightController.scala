@@ -17,7 +17,7 @@
 package controllers.p5
 
 import controllers.actions._
-import forms.GrossWeightAmountFormProvider
+import forms.GrossWeightFormProvider
 import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
 import pages.GrossWeightPage
@@ -25,7 +25,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.p5.GrossWeightAmountView
+import views.html.p5.GrossWeightView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,9 +35,9 @@ class GrossWeightController @Inject() (
   sessionRepository: SessionRepository,
   navigator: Navigator,
   actions: Actions,
-  formProvider: GrossWeightAmountFormProvider,
+  formProvider: GrossWeightFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: GrossWeightAmountView
+  view: GrossWeightView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {

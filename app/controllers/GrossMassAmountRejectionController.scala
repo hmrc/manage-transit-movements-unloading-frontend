@@ -18,7 +18,7 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
-import forms.GrossWeightAmountFormProvider
+import forms.GrossWeightFormProvider
 import models.{ArrivalId, Index}
 import pages.GrossWeightPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -26,7 +26,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.GrossWeightAmountRejectionView
-import views.html.helper.form
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,7 +35,7 @@ class GrossWeightAmountRejectionController @Inject() (
   sessionRepository: SessionRepository,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
-  formProvider: GrossWeightAmountFormProvider,
+  formProvider: GrossWeightFormProvider,
   val controllerComponents: MessagesControllerComponents,
   val appConfig: FrontendAppConfig,
   view: GrossWeightAmountRejectionView

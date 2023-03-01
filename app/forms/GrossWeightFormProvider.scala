@@ -22,7 +22,7 @@ import models.Index
 import models.messages.UnloadingRemarksRequest
 import play.api.data.Form
 
-class GrossWeightAmountFormProvider @Inject() extends Mappings {
+class GrossWeightFormProvider @Inject() extends Mappings {
 
   def apply(index: Index = Index(0)): Form[String] = //todo update
     Form(
