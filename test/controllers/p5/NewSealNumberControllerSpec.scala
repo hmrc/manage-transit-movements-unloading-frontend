@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.routes
 import forms.NewSealNumberFormProvider
 import models.{Index, NormalMode, Seal, UserAnswers}
 import org.mockito.ArgumentCaptor
@@ -25,7 +26,7 @@ import org.mockito.Mockito.{verify, when}
 import pages.SealPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.NewSealNumberView
+import views.html.p5.NewSealNumberView
 
 import scala.concurrent.Future
 
@@ -38,7 +39,7 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
   private val validAnswer = "seal ID"
 
-  private lazy val newSealNumberRoute = routes.NewSealNumberController.onPageLoad(arrivalId, index, mode).url
+  private lazy val newSealNumberRoute = controllers.p5.routes.NewSealNumberController.onPageLoad(arrivalId, index, mode).url
 
   "NewSealNumber Controller" - {
 

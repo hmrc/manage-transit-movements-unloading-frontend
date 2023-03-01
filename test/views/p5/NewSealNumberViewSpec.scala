@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.p5
 
 import forms.NewSealNumberFormProvider
 import models.{Index, NormalMode}
@@ -22,7 +22,7 @@ import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.InputTextViewBehaviours
-import views.html.NewSealNumberView
+import views.html.p5.NewSealNumberView
 
 class NewSealNumberViewSpec extends InputTextViewBehaviours[String] {
 
@@ -42,7 +42,9 @@ class NewSealNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading()
 
-  behave like pageWithoutHint()
+  behave like pageWithCaption(mrn.toString)
+
+  behave like pageWithHint("This can be up to 20 characters long and include both letters and numbers.")
 
   behave like pageWithInputText()
 

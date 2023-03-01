@@ -34,17 +34,18 @@
     showBackLink = true,
 ) {
 
-    @formHelper(action = routes.NewSealNumberController.onSubmit(arrivalId, index, mode), Symbol("autoComplete") -> "off") {
+    @errorSummary(form.errors)
 
-        @errorSummary(form.errors)
+    @caption(mrn.toString)
 
-        @caption(mrn.toString)
+    @formHelper(action = controllers.p5.routes.NewSealNumberController.onSubmit(arrivalId, index, mode), Symbol("autoComplete") -> "off") {
 
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
                 heading = messages("newSealNumber.heading")
-            )
+            ),
+            hint = Some(messages("newSealNumber.hint"))
         )
 
         @button(attributes = Map("id" -> "submit"))
