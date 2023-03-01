@@ -34,11 +34,12 @@
     showBackLink = true,
 ) {
 
+    @errorSummary(form.errors)
+
+    @caption(mrn.toString)
+
     @formHelper(action = controllers.p5.routes.VehicleIdentificationNumberController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
-        @errorSummary(form.errors)
-
-        @caption(mrn.toString)
 
         @inputText(
             field = form("value"),
