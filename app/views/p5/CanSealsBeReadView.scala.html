@@ -34,12 +34,12 @@
     showBackLink = true
 ) {
 
+    @errorSummary(form.errors)
+
+    @caption(mrn.toString)
+
     @formHelper(action = controllers.p5.routes.CanSealsBeReadController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
-
-        @errorSummary(form.errors)
-
-        @caption(mrn.toString)
-
+        
         @inputYesNo(
             field = form("value"),
             yesNoType = OrdinaryYesNo(
