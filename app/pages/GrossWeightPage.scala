@@ -14,21 +14,13 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import models.messages.UnloadingRemarksRequest
-import play.api.data.Form
+import play.api.libs.json.JsPath
 
-class GrossMassAmountFormProvider @Inject() extends Mappings {
+case object GrossWeightPage extends QuestionPage[String] {
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("grossMassAmount.error.required")
-        .verifying(
-          maxLength(UnloadingRemarksRequest.grossMassLength, "grossMassAmount.error.length"),
-          regexp(UnloadingRemarksRequest.grossMassRegex, "grossMassAmount.error.characters")
-        )
-    )
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "grossWeight"
 }

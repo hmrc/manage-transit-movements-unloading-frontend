@@ -284,7 +284,7 @@ class UnloadingRemarksServiceSpec extends SpecBase with AppWithDefaultMockFixtur
           result.futureValue.value.resultOfControl mustBe expectedResultOfControl
         }
 
-        "must return updated results of control for the input GrossMassAmountPage" in {
+        "must return updated results of control for the input GrossWeightAmountPage" in {
           val unloadingRemarksRequest     = arbitrary[UnloadingRemarksRequest].sample.value
           val meta                        = arbitrary[Meta].sample.value
           val interchangeControlReference = arbitrary[InterchangeControlReference].sample.value
@@ -293,11 +293,11 @@ class UnloadingRemarksServiceSpec extends SpecBase with AppWithDefaultMockFixtur
             .thenReturn(Future.successful(interchangeControlReference))
           when(mockMetaService.build(interchangeControlReference))
             .thenReturn(meta)
-          val userAnswers = emptyUserAnswers.setValue(GrossMassAmountPage, "1234")
+          val userAnswers = emptyUserAnswers.setValue(GrossWeightPage, "1234")
 
           val expectedResultOfControl: Seq[ResultsOfControl] = unloadingRemarksRequest.resultOfControl.map {
-            case y: ResultsOfControlDifferentValues if y.pointerToAttribute.pointer == GrossMass => y.copy(correctedValue = "1234")
-            case x                                                                               => x
+            case y: ResultsOfControlDifferentValues if y.pointerToAttribute.pointer == GrossWeight => y.copy(correctedValue = "1234")
+            case x                                                                                 => x
           }
 
           val arrivalNotificationService = app.injector.instanceOf[UnloadingRemarksService]

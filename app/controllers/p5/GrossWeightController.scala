@@ -14,57 +14,57 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
 import controllers.actions._
-import forms.AreAnySealsBrokenFormProvider
-import models.{ArrivalId, Mode}
+import forms.GrossWeightFormProvider
+import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
-import pages.AreAnySealsBrokenPage
+import pages.GrossWeightPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.AreAnySealsBrokenView
+import views.html.p5.GrossWeightView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AreAnySealsBrokenController @Inject() (
+class GrossWeightController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
   actions: Actions,
-  formProvider: AreAnySealsBrokenFormProvider,
+  formProvider: GrossWeightFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AreAnySealsBrokenView
+  view: GrossWeightView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider()
+  private def form(index: Index) = formProvider(index)
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, index: Index = Index(0), mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AreAnySealsBrokenPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+      val preparedForm = request.userAnswers.get(GrossWeightPage) match {
+        case None        => form(index)
+        case Some(value) => form(index).fill(value)
       }
 
-      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode))
+      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, index, mode))
   }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
+  def onSubmit(arrivalId: ArrivalId, index: Index = Index(0), mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
-      form
+      form(index)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, mode))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AreAnySealsBrokenPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(GrossWeightPage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AreAnySealsBrokenPage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(GrossWeightPage, mode, updatedAnswers))
         )
   }
 }

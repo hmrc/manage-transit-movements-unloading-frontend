@@ -14,37 +14,36 @@
  * limitations under the License.
  *@
 
-@import models.MovementReferenceNumber
-@import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo, HeadingCaption}
+@import models.ArrivalId
+@import viewModels.components.InputTextViewModel._
+@import views.html.components.{Button, ErrorSummary, InputText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    inputYesNo: InputYesNo,
-    errorSummary: ErrorSummary,
     button: Button,
-    caption: HeadingCaption
+    inputText: InputText,
+    errorSummary: ErrorSummary
 )
 
-@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], arrivalId: ArrivalId)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("areAnySealsBroken.title"),
+    title = messages("grossWeight.title"),
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.AreAnySealsBrokenController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.GrossWeightAmountRejectionController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
-        @caption(mrn.toString)
-
-        @inputYesNo(
+        @inputText(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
-                heading = messages("areAnySealsBroken.heading")
-            )
+            inputTextType = OrdinaryTextInput(
+                heading = messages("grossWeight.heading")
+            ),
+            inputClass = InputSize.Width10,
+            suffix = Some("kg")
         )
 
         @button(attributes = Map("id" -> "submit"))

@@ -48,10 +48,10 @@ POST       /:arrivalId/vehicle-registration-country                         cont
 GET        /:arrivalId/change-vehicle-registration-country                  controllers.VehicleRegistrationCountryController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-vehicle-registration-country                  controllers.VehicleRegistrationCountryController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/gross-mass-amount                                    controllers.GrossMassAmountController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/gross-mass-amount                                    controllers.GrossMassAmountController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-gross-mass-amount                             controllers.GrossMassAmountController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-gross-mass-amount                             controllers.GrossMassAmountController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+GET        /:arrivalId/items/:index/gross-weight                            controllers.p5.GrossWeightController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
+POST       /:arrivalId/items/:index/gross-weight                            controllers.p5.GrossWeightController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
+GET        /:arrivalId/items/:index/change-gross-weight                     controllers.p5.GrossWeightController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
+POST       /:arrivalId/items/:index/change-gross-weight                     controllers.p5.GrossWeightController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
 
 GET        /:arrivalId/seal/:index/seal-identification-number                          controllers.p5.NewSealNumberController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
 POST       /:arrivalId/seal/:index/seal-identification-number                          controllers.p5.NewSealNumberController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
@@ -71,10 +71,10 @@ POST       /:arrivalId/seals-readable                                       cont
 GET        /:arrivalId/change-seals-readable                                controllers.p5.CanSealsBeReadController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-seals-readable                                controllers.p5.CanSealsBeReadController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/are-any-seals-broken                                 controllers.AreAnySealsBrokenController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/are-any-seals-broken                                 controllers.AreAnySealsBrokenController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-are-any-seals-broken                          controllers.AreAnySealsBrokenController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-are-any-seals-broken                          controllers.AreAnySealsBrokenController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+GET        /:arrivalId/any-seals-broken                                     controllers.p5.AreAnySealsBrokenController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/any-seals-broken                                     controllers.p5.AreAnySealsBrokenController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-any-seals-broken                              controllers.p5.AreAnySealsBrokenController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-any-seals-broken                              controllers.p5.AreAnySealsBrokenController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
 GET        /:arrivalId/confirmation                                         controllers.ConfirmationController.onPageLoad(arrivalId: ArrivalId)
 
@@ -109,8 +109,8 @@ POST       /:arrivalId/total-number-of-packages-rejection                   cont
 GET        /:arrivalId/total-number-of-items-rejection                      controllers.TotalNumberOfItemsRejectionController.onPageLoad(arrivalId: ArrivalId)
 POST       /:arrivalId/total-number-of-items-rejection                      controllers.TotalNumberOfItemsRejectionController.onSubmit(arrivalId: ArrivalId)
 
-GET        /:arrivalId/gross-mass-amount-rejection                          controllers.GrossMassAmountRejectionController.onPageLoad(arrivalId: ArrivalId)
-POST       /:arrivalId/gross-mass-amount-rejection                          controllers.GrossMassAmountRejectionController.onSubmit(arrivalId: ArrivalId)
+GET        /:arrivalId/gross-mass-amount-rejection                          controllers.GrossWeightAmountRejectionController.onPageLoad(arrivalId: ArrivalId)
+POST       /:arrivalId/gross-mass-amount-rejection                          controllers.GrossWeightAmountRejectionController.onSubmit(arrivalId: ArrivalId)
 
 GET        /:arrivalId/date-goods-unloaded-rejection                        controllers.DateGoodsUnloadedRejectionController.onPageLoad(arrivalId: ArrivalId)
 POST       /:arrivalId/date-goods-unloaded-rejection                        controllers.DateGoodsUnloadedRejectionController.onSubmit(arrivalId: ArrivalId)
