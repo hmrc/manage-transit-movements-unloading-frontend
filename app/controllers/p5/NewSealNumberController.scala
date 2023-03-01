@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
 import controllers.actions._
 import forms.NewSealNumberFormProvider
@@ -25,7 +25,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.NewSealNumberView
+import views.html.p5.NewSealNumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -62,6 +62,7 @@ class NewSealNumberController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, mode))),
           value => {
+            Future.successful(BadRequest(view(form, request.userAnswers.mrn, arrivalId, index, mode)))
             val removable = request.userAnswers.get(SealPage(index)).forall(_.removable)
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(SealPage(index), Seal(value, removable)))

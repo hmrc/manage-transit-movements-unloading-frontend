@@ -93,12 +93,14 @@ grossMassAmount.error.length = The total gross mass in kilograms must be 9999999
 grossMassAmount.error.characters = The total gross mass in kilograms must be 11 numbers or less and up to 3 decimal places, like 1000000.000
 grossMassAmount.change.hidden = the new total gross mass in kilograms
 
-newSealNumber.title = What is the new official customs seal number or mark?
-newSealNumber.heading = What is the new official customs seal number or mark?
-newSealNumber.checkYourAnswersLabel = What is the new official customs seal number or mark?
-newSealNumber.error.required = Enter the new official customs seal number or mark
-newSealNumber.error.length = The new official customs seal number must be 20 characters or less
-newSealNumber.error.characters = The new official customs seal number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks and spaces
+newSealNumber.title = What is the new seal identification number?
+newSealNumber.heading = What is the new seal identification number?
+newSealNumber.hint = This can be up to 20 characters long and include both letters and numbers.
+newSealNumber.checkYourAnswersLabel = What is the new seal identification number?
+newSealNumber.error.required = Enter the new seal identification number
+newSealNumber.error.length = The identification number must be 20 characters or less
+newSealNumber.error.characters = The identification number must only include letters a to z and numbers 0 to 9
+newSealNumber.error.alreadyEntered = This identification number has already been submitted. Enter a unique seal identification number
 
 newContainerIdentificationNumber.title = What is the new container identification number?
 newContainerIdentificationNumber.heading = What is the new container identification number?
