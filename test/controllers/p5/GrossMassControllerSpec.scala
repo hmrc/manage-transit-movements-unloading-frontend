@@ -18,20 +18,20 @@ package controllers.p5
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
-import forms.GrossWeightAmountFormProvider
+import forms.GrossWeightFormProvider
 import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.GrossWeightPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.p5.GrossWeightAmountView
+import views.html.p5.GrossWeightView
 
 import scala.concurrent.Future
 
 class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider                = new GrossWeightAmountFormProvider()
+  private val formProvider                = new GrossWeightFormProvider()
   private val form                        = formProvider()
   private val mode                        = NormalMode
   private val index                       = Index(0)
@@ -48,7 +48,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[GrossWeightAmountView]
+      val view = injector.instanceOf[GrossWeightView]
 
       status(result) mustEqual OK
 
@@ -69,7 +69,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       val filledForm = form.bind(Map("value" -> "123456.123"))
 
-      val view = injector.instanceOf[GrossWeightAmountView]
+      val view = injector.instanceOf[GrossWeightView]
 
       contentAsString(result) mustEqual
         view(filledForm, mrn, arrivalId, index, mode)(request, messages).toString
@@ -102,7 +102,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
-      val view = injector.instanceOf[GrossWeightAmountView]
+      val view = injector.instanceOf[GrossWeightView]
 
       contentAsString(result) mustEqual
         view(boundForm, mrn, arrivalId, index, mode)(request, messages).toString

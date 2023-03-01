@@ -17,7 +17,7 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.GrossWeightAmountFormProvider
+import forms.GrossWeightFormProvider
 import models.UserAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -31,7 +31,7 @@ import scala.concurrent.Future
 
 class GrossWeightAmountRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider = new GrossWeightAmountFormProvider()
+  private val formProvider = new GrossWeightFormProvider()
   private val form         = formProvider()
 
   private lazy val GrossWeightAmountRejectionRoute = routes.GrossWeightAmountRejectionController.onPageLoad(arrivalId).url

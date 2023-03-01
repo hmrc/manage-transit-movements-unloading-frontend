@@ -21,14 +21,14 @@ import models.Index
 import models.messages.UnloadingRemarksRequest
 import play.api.data.{Field, FormError}
 
-class GrossWeightAmountFormProviderSpec extends StringFieldBehaviours {
+class GrossWeightFormProviderSpec extends StringFieldBehaviours {
 
   private val requiredKey       = "grossWeight.error.required"
   private val invalidCharacters = "grossWeight.error.characters"
   private val decimalPoint      = "grossWeight.error.decimal"
   private val maxLength         = UnloadingRemarksRequest.grossWeightLength
 
-  private val form      = new GrossWeightAmountFormProvider()()
+  private val form      = new GrossWeightFormProvider()()
   private val fieldName = "value"
 
   ".value" - {
