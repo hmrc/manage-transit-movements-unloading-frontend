@@ -43,7 +43,7 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
           prefix = "changeSeal.sealList",
           answer = sealId.toText,
           id = Some(s"change-seal-${index.position}"),
-          call = Some(routes.NewSealNumberController.onPageLoad(arrivalId, index, mode)),
+          call = Some(controllers.p5.routes.NewSealNumberController.onPageLoad(arrivalId, index, mode)),
           args = index.display, sealId
         )
     }
@@ -56,8 +56,8 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
           prefix = "changeSeal.sealList",
           answer = sealId.toText,
           id = s"seal-${index.position}",
-          changeCall = routes.NewSealNumberController.onPageLoad(arrivalId, itemsIndex, mode),
-          removeCall = routes.ConfirmRemoveSealController.onPageLoad(arrivalId, itemsIndex, mode),
+          changeCall = controllers.p5.routes.NewSealNumberController.onPageLoad(arrivalId, index, mode),
+          removeCall = routes.ConfirmRemoveSealController.onPageLoad(arrivalId, index, mode),
           args = index.display, sealId
         )
     }

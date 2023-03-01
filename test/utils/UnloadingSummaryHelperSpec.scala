@@ -67,7 +67,7 @@ class UnloadingSummaryHelperSpec extends SpecBase with Generators {
                       List(
                         ActionItem(
                           content = "Change".toText,
-                          href = routes.NewSealNumberController.onPageLoad(userAnswers.id, index, mode).url,
+                          href = controllers.p5.routes.NewSealNumberController.onPageLoad(userAnswers.id, index, mode).url,
                           visuallyHiddenText = Some(s"official customs seal ${index.display} $str"),
                           attributes = Map("id" -> s"change-seal-${index.position}")
                         )
@@ -114,7 +114,7 @@ class UnloadingSummaryHelperSpec extends SpecBase with Generators {
                       List(
                         ActionItem(
                           content = "Change".toText,
-                          href = routes.NewSealNumberController.onPageLoad(userAnswers.id, index, mode).url,
+                          href = controllers.p5.routes.NewSealNumberController.onPageLoad(userAnswers.id, index, mode).url,
                           visuallyHiddenText = Some(s"official customs seal ${index.display} $str"),
                           attributes = Map("id" -> s"change-seal-${index.position}")
                         ),
