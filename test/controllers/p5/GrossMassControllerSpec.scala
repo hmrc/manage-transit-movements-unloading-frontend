@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.routes
 import forms.GrossWeightAmountFormProvider
 import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
@@ -24,7 +25,7 @@ import org.mockito.Mockito.when
 import pages.GrossWeightPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.GrossWeightAmountView
+import views.html.p5.GrossWeightAmountView
 
 import scala.concurrent.Future
 
@@ -34,7 +35,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val form                        = formProvider()
   private val mode                        = NormalMode
   private val index                       = Index(0)
-  private lazy val GrossWeightAmountRoute = routes.GrossWeightController.onPageLoad(arrivalId, index, mode).url
+  private lazy val GrossWeightAmountRoute = controllers.p5.routes.GrossWeightController.onPageLoad(arrivalId, index, mode).url
 
   "GrossWeightAmount Controller" - {
 

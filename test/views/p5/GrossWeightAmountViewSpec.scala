@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.p5
 
 import forms.GrossWeightAmountFormProvider
 import models.{Index, NormalMode}
@@ -23,7 +23,7 @@ import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.GrossWeightAmountView
+import views.html.p5.GrossWeightAmountView
 
 class GrossWeightAmountViewSpec extends InputTextViewBehaviours[String] {
 
