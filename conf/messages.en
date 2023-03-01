@@ -87,7 +87,7 @@ vehicleRegistrationCountry.placeHolder = Select a country
 
 grossWeight.title = What is the new gross weight of item {0}?
 grossWeight.heading = What is the new gross weight of item {0}?
-grossWeight.checkYourAnswersLabel = What is the new gross weight of item {0}?
+grossWeight.paragraph = This is the combined weight of the item’s goods and packaging.
 grossWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
 grossWeight.error.required = Enter the new gross weight of item {0}
 grossWeight.error.length = The new gross weight must be 16 characters or less
