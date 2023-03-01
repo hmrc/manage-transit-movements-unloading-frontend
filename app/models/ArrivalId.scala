@@ -19,37 +19,27 @@ package models
 import play.api.libs.json._
 import play.api.mvc.{JavascriptLiteral, PathBindable}
 
-import scala.util.Try
-
-final case class ArrivalId(value: Int) {
-  override def toString: String = value.toString
-}
+final case class ArrivalId(value: String)
 
 object ArrivalId {
 
   implicit val formatsArrivalId: Format[ArrivalId] = new Format[ArrivalId] {
 
     override def reads(json: JsValue): JsResult[ArrivalId] = json match {
-      case JsNumber(number) =>
-        Try(number.toInt)
-          .map(ArrivalId(_))
-          .map(JsSuccess(_))
-          .getOrElse(JsError("Error in converting JsNumber to an Int"))
-
+      case JsString(value) => JsSuccess(ArrivalId(value))
       case e =>
-        JsError(s"Error in deserialization of Json value to an ArrivalId, expected JsNumber got ${e.getClass}")
+        JsError(s"Error in deserialization of Json value to an ArrivalId, expected JsString got ${e.getClass}")
     }
 
-    override def writes(o: ArrivalId): JsNumber = JsNumber(o.value)
+    override def writes(o: ArrivalId): JsString = JsString(o.value)
   }
 
   implicit lazy val pathBindable: PathBindable[ArrivalId] = new PathBindable[ArrivalId] {
 
     override def bind(key: String, value: String): Either[String, ArrivalId] =
-      implicitly[PathBindable[Int]].bind(key, value).map(ArrivalId(_))
+      implicitly[PathBindable[String]].bind(key, value).map(ArrivalId(_))
 
-    override def unbind(key: String, value: ArrivalId): String =
-      value.toString
+    override def unbind(key: String, arrivalId: ArrivalId): String = arrivalId.value
   }
 
   implicit val arrivalIdJSLBinder: JavascriptLiteral[ArrivalId] = (value: ArrivalId) => s"""'${value.toString}'"""

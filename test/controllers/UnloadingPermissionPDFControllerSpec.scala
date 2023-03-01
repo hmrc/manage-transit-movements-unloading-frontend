@@ -20,7 +20,6 @@ import akka.util.ByteString
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import connectors.UnloadingConnector
 import generators.Generators
-import models.ArrivalId
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Gen
@@ -66,8 +65,6 @@ class UnloadingPermissionPDFControllerSpec extends SpecBase with AppWithDefaultM
         when(mockUnloadingConnector.getPDF(any(), any())(any()))
           .thenReturn(Future.successful(wsResponse))
 
-        val arrivalId = ArrivalId(0)
-
         setNoExistingUserAnswers()
 
         val request = FakeRequest(GET, routes.UnloadingPermissionPDFController.getPDF(arrivalId).url)
@@ -81,8 +78,6 @@ class UnloadingPermissionPDFControllerSpec extends SpecBase with AppWithDefaultM
       }
 
       "must redirect to UnauthorisedController if bearer token is missing" in {
-
-        val arrivalId = ArrivalId(0)
 
         setNoExistingUserAnswers()
 
@@ -105,9 +100,8 @@ class UnloadingPermissionPDFControllerSpec extends SpecBase with AppWithDefaultM
         when(mockUnloadingConnector.getPDF(any(), any())(any()))
           .thenReturn(Future.successful(wsResponse))
 
-        val arrivalId = ArrivalId(0)
-
         setNoExistingUserAnswers()
+
 
         val request = FakeRequest(GET, routes.UnloadingPermissionPDFController.getPDF(arrivalId).url)
           .withSession(("authToken" -> "BearerToken"))
