@@ -102,7 +102,6 @@ class UnloadingPermissionPDFControllerSpec extends SpecBase with AppWithDefaultM
 
         setNoExistingUserAnswers()
 
-
         val request = FakeRequest(GET, routes.UnloadingPermissionPDFController.getPDF(arrivalId).url)
           .withSession(("authToken" -> "BearerToken"))
 
