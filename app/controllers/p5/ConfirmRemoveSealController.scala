@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
 import controllers.actions._
 import forms.ConfirmRemoveSealFormProvider
 import models.requests.SpecificDataRequestProvider1
-
-import javax.inject.Inject
 import models.{ArrivalId, Index, Mode, Seal}
 import navigation.Navigator
 import pages.{ConfirmRemoveSealPage, SealPage}
@@ -28,8 +26,9 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.ConfirmRemoveSealView
+import views.html.p5.ConfirmRemoveSealView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmRemoveSealController @Inject() (
@@ -45,6 +44,7 @@ class ConfirmRemoveSealController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
+  // TODO: Hit new seal page first then this page
   def onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId).andThen(getMandatoryPage(SealPage(index))) {
       implicit request =>

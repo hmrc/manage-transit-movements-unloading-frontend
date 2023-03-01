@@ -57,7 +57,7 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
           answer = sealId.toText,
           id = s"seal-${index.position}",
           changeCall = controllers.p5.routes.NewSealNumberController.onPageLoad(arrivalId, index, mode),
-          removeCall = routes.ConfirmRemoveSealController.onPageLoad(arrivalId, index, mode),
+          removeCall = controllers.p5.routes.ConfirmRemoveSealController.onPageLoad(arrivalId, index, mode),
           args = index.display, sealId
         )
     }

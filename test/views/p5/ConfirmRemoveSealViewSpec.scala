@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package views
+package views.p5
 
 import forms.ConfirmRemoveSealFormProvider
 import models.{Index, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.ConfirmRemoveSealView
+import views.html.p5.ConfirmRemoveSealView
 
 class ConfirmRemoveSealViewSpec extends YesNoViewBehaviours {
 
@@ -33,7 +33,7 @@ class ConfirmRemoveSealViewSpec extends YesNoViewBehaviours {
 
   override val prefix: String = "confirmRemoveSeal"
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(sealDescription)
 
   behave like pageWithBackLink()
 
@@ -43,5 +43,5 @@ class ConfirmRemoveSealViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithRadioItems(args = List(sealDescription))
 
-  behave like pageWithSubmitButton("Continue")
+  behave like pageWithSubmitButton("Save and continue")
 }

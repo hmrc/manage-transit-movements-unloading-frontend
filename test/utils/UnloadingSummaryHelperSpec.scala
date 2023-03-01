@@ -120,7 +120,7 @@ class UnloadingSummaryHelperSpec extends SpecBase with Generators {
                         ),
                         ActionItem(
                           content = "Remove".toText,
-                          href = routes.ConfirmRemoveSealController.onPageLoad(userAnswers.id, index, mode).url,
+                          href = controllers.p5.routes.ConfirmRemoveSealController.onPageLoad(userAnswers.id, index, mode).url,
                           visuallyHiddenText = Some(s"official customs seal ${index.display} $str"),
                           attributes = Map("id" -> s"remove-seal-${index.position}")
                         )
