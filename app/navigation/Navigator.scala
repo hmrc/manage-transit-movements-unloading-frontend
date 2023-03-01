@@ -31,7 +31,7 @@ class Navigator @Inject() () {
     case DateGoodsUnloadedPage =>
       ua =>
         if (ua.get(DeriveNumberOfSeals).exists(_ > 0)) {
-          routes.CanSealsBeReadController.onPageLoad(ua.id, NormalMode)
+          controllers.p5.routes.CanSealsBeReadController.onPageLoad(ua.id, NormalMode)
         } else {
           routes.UnloadingSummaryController.onPageLoad(ua.id)
         }

@@ -145,11 +145,11 @@ changeItems.comments.checkYourAnswersLabel = Comments
 changeItems.comments.change.hidden = comments
 changeItems.comments.remove.hidden = comments
 
-canSealsBeRead.title = Can all of the official customs seal numbers or marks be read?
-canSealsBeRead.heading = Can all of the official customs seal numbers or marks be read?
-canSealsBeRead.checkYourAnswersLabel = Can all of the official customs seal numbers or marks be read?
-canSealsBeRead.error.required = Select yes if all of the official customs seals can be read
-canSealsBeRead.change.hidden = if all of the official customs seals can be read
+canSealsBeRead.title = Are all the seal identification numbers or marks readable?
+canSealsBeRead.heading = Are all the seal identification numbers or marks readable?
+canSealsBeRead.checkYourAnswersLabel = Are all the seal identification numbers or marks readable?
+canSealsBeRead.error.required = Select yes if all the seal identification numbers and marks are readable
+canSealsBeRead.change.hidden = if all the seal identification numbers or marks are readable
 
 areAnySealsBroken.title = Are any of the seals broken?
 areAnySealsBroken.heading = Are any of the seals broken?

@@ -17,7 +17,7 @@
 package utils
 
 import base.SpecBase
-import controllers.routes
+import controllers.p5.routes
 import generators.Generators
 import models.{CheckMode, Index, Seal, Seals}
 import org.scalacheck.Arbitrary.arbitrary
@@ -124,7 +124,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
 
           result mustBe Some(
             SummaryListRow(
-              key = "Can all of the official customs seal numbers or marks be read?".toKey,
+              key = "Are all the seal identification numbers or marks readable?".toKey,
               value = Value("Yes".toText),
               actions = Some(
                 Actions(items =
@@ -132,7 +132,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
                     ActionItem(
                       content = "Change".toText,
                       href = routes.CanSealsBeReadController.onPageLoad(userAnswers.id, CheckMode).url,
-                      visuallyHiddenText = Some("if all of the official customs seals can be read"),
+                      visuallyHiddenText = Some("if all the seal identification numbers or marks are readable"),
                       attributes = Map("id" -> "change-can-seals-be-read")
                     )
                   )
@@ -150,7 +150,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
 
           result mustBe Some(
             SummaryListRow(
-              key = "Can all of the official customs seal numbers or marks be read?".toKey,
+              key = "Are all the seal identification numbers or marks readable?".toKey,
               value = Value("No".toText),
               actions = Some(
                 Actions(items =
@@ -158,7 +158,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
                     ActionItem(
                       content = "Change".toText,
                       href = routes.CanSealsBeReadController.onPageLoad(userAnswers.id, CheckMode).url,
-                      visuallyHiddenText = Some("if all of the official customs seals can be read"),
+                      visuallyHiddenText = Some("if all the seal identification numbers or marks are readable"),
                       attributes = Map("id" -> "change-can-seals-be-read")
                     )
                   )
@@ -254,7 +254,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with Generators {
                 List(
                   ActionItem(
                     content = "Change".toText,
-                    href = routes.DateGoodsUnloadedController.onPageLoad(userAnswers.id, CheckMode).url,
+                    href = controllers.routes.DateGoodsUnloadedController.onPageLoad(userAnswers.id, CheckMode).url,
                     visuallyHiddenText = Some("the date when the goods were unloaded"),
                     attributes = Map("id" -> "change-date-goods-unloaded")
                   )

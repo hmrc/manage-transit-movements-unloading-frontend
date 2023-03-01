@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.CanSealsBeReadFormProvider
@@ -24,7 +24,7 @@ import org.mockito.Mockito.when
 import pages.CanSealsBeReadPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.CanSealsBeReadView
+import views.html.p5.CanSealsBeReadView
 
 import scala.concurrent.Future
 
@@ -119,7 +119,7 @@ class CanSealsBeReadControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -134,7 +134,7 @@ class CanSealsBeReadControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
   }
 }

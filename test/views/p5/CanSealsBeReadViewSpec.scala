@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package views
+package views.p5
 
 import forms.CanSealsBeReadFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.CanSealsBeReadView
+import views.html.p5.CanSealsBeReadView
 
 class CanSealsBeReadViewSpec extends YesNoViewBehaviours {
 
