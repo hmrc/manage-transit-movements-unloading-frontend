@@ -58,10 +58,10 @@ POST       /:arrivalId/items/:index/net-weight                              cont
 GET        /:arrivalId/items/:index/change-net-weight                       controllers.p5.NetWeightController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
 POST       /:arrivalId/items/:index/change-net-weight                       controllers.p5.NetWeightController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
 
-GET        /:arrivalId/seal/:index/new-seal-number                          controllers.NewSealNumberController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
-POST       /:arrivalId/seal/:index/new-seal-number                          controllers.NewSealNumberController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
-GET        /:arrivalId/seal/:index/change-new-seal-number                   controllers.NewSealNumberController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
-POST       /:arrivalId/seal/:index/change-new-seal-number                   controllers.NewSealNumberController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
+GET        /:arrivalId/seal/:index/seal-identification-number                          controllers.p5.NewSealNumberController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
+POST       /:arrivalId/seal/:index/seal-identification-number                          controllers.p5.NewSealNumberController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
+GET        /:arrivalId/seal/:index/change-seal-identification-number                   controllers.p5.NewSealNumberController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
+POST       /:arrivalId/seal/:index/change-seal-identification-number                   controllers.p5.NewSealNumberController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
 
 GET        /:arrivalId/seal/:index/confirm-remove-seal                      controllers.ConfirmRemoveSealController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
 POST       /:arrivalId/seal/:index/confirm-remove-seal                      controllers.ConfirmRemoveSealController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)

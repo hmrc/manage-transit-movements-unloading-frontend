@@ -63,7 +63,7 @@ object ItemsSection {
   def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): Section = {
     val helper: UnloadingSummaryHelper = new UnloadingSummaryHelper(userAnswers, mode)
 
-    val rows = helper.GrossWeight.toSeq ++
+    val rows = helper.grossWeight.toSeq ++
       helper.totalNumberOfItems.toSeq ++
       helper.totalNumberOfPackages.toSeq ++
       helper.items ++
