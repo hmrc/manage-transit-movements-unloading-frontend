@@ -17,6 +17,7 @@
 @import models.{MovementReferenceNumber, ArrivalId}
 @import viewModels.components.InputTextViewModel._
 @import views.html.components.{Button, ErrorSummary, InputText, HeadingCaption}
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
 @this(
     mainTemplate: MainTemplate,
@@ -43,9 +44,10 @@
 
         @inputText(
             field = form("value"),
-            inputTextType = OrdinaryTextInput(
-                heading = messages("netWeight.heading", index.display)
-            ),
+            inputTextType = TextInputWithHiddenLabel(
+                heading = messages("netWeight.heading", index.display),
+                additionalHtml = Html(s"""<p class="govuk-body">${messages("netWeight.paragraph")}</p>""")
+                 ),
             hint = Some(messages("netWeight.hint")),
             inputClass = InputSize.Width10,
             suffix = Some("kg")
