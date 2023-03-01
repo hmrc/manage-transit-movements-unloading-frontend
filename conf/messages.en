@@ -109,7 +109,7 @@ newContainerIdentificationNumber.hint = This can be up to 17 characters long and
 newContainerIdentificationNumber.error.required = Enter the new container identification number
 newContainerIdentificationNumber.error.length = The identification number must be 17 characters or less
 newContainerIdentificationNumber.error.characters = The identification number must only include letters a to z and numbers 0 to 9
-newContainerIdentificationNumber.error.alreadyEntered = TThis identification number has already been submitted. Enter a unique container identification number
+newContainerIdentificationNumber.error.alreadyEntered = This identification number has already been submitted. Enter a unique container identification number
 
 unloadingSummary.title = Check what you found against the transit declaration
 unloadingSummary.heading = Check what you found against the transit declaration
