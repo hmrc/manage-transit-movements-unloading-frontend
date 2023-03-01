@@ -32,7 +32,7 @@
 //
 //package views
 //
-//import forms.GrossWeightAmountFormProvider
+//import forms.GrossWeightFormProvider
 //import org.scalacheck.{Arbitrary, Gen}
 //import play.api.data.Form
 //import play.twirl.api.HtmlFormat
@@ -42,7 +42,7 @@
 //
 //class GrossWeightAmountRejectionViewSpec extends InputTextViewBehaviours[String] {
 //
-//  override def form: Form[String] = new GrossWeightAmountFormProvider()()
+//  override def form: Form[String] = new GrossWeightFormProvider()()
 //
 //  override def applyView(form: Form[String]): HtmlFormat.Appendable =
 //    injector.instanceOf[GrossWeightAmountRejectionView].apply(form, arrivalId)(fakeRequest, messages)

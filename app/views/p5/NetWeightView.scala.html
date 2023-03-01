@@ -35,6 +35,8 @@
     showBackLink = true
 ) {
 
+        @errorSummary(form.errors)
+
         @caption(mrn.toString)
 
         @formHelper(action = controllers.p5.routes.NetWeightController.onSubmit(arrivalId, index, mode), Symbol("autoComplete") -> "off") {
