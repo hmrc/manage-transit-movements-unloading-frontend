@@ -36,9 +36,10 @@
 
     @errorSummary(form.errors)
 
+    @caption(mrn.toString)
+
     @formHelper(action = routes.ConfirmRemoveCommentsController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
-        @caption(mrn.toString)
 
         @inputYesNo(
             field = form("value"),
