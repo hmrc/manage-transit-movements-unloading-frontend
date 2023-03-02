@@ -23,6 +23,8 @@ import models.messages.UnloadingRemarksRequest
 import org.scalacheck.Gen
 import play.api.data.{Field, FormError}
 
+import scala.util.matching.Regex
+
 class TotalNumberOfPackagesFormProviderSpec extends StringFieldBehaviours with Generators {
 
   private val requiredKey = "totalNumberOfPackages.error.required"
@@ -52,11 +54,13 @@ class TotalNumberOfPackagesFormProviderSpec extends StringFieldBehaviours with G
   "must not bind strings that do not match regex" in {
 
     val expectedError = FormError(fieldName, invalidKey, Seq(index.display))
+    val regex         = new Regex("[A-Za-z@~{}><!*&%$]{5}")
 
-    forAll(nonEmptyString) {
+    forAll(stringsThatMatchRegex(regex)) {
       invalidString =>
         val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
         result.errors should contain(expectedError)
     }
+
   }
 }
