@@ -21,7 +21,7 @@ import connectors.UnloadingConnector
 import controllers.routes
 import models.requests.IdentifierRequest
 import models.response.ResponseArrival
-import models.{ArrivalId, ArrivalStatus, EoriNumber}
+import models.{ArrivalStatus, EoriNumber}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.mockito.Mockito.when
@@ -59,13 +59,13 @@ class ArrivalStatusActionSpec extends SpecBase with BeforeAndAfterEach with AppW
         validArrivalStatus =>
           val mockArrivalResponse: ResponseArrival =
             ResponseArrival(
-              ArrivalId(1),
+              arrivalId,
               validArrivalStatus
             )
 
           when(mockConnector.getArrival(any())(any())).thenReturn(Future.successful(Some(mockArrivalResponse)))
 
-          val checkArrivalStatusProvider = (new CheckArrivalStatusProvider(mockConnector)(implicitly))(ArrivalId(1))
+          val checkArrivalStatusProvider = (new CheckArrivalStatusProvider(mockConnector)(implicitly))(arrivalId)
 
           val testRequest = IdentifierRequest(FakeRequest(GET, "/"), EoriNumber("eori"))
 
@@ -80,12 +80,12 @@ class ArrivalStatusActionSpec extends SpecBase with BeforeAndAfterEach with AppW
   "will get a 400 and will load the cannot cancel page when arrival status is not valid" in {
     val mockArrivalResponse: ResponseArrival =
       ResponseArrival(
-        ArrivalId(1),
+        arrivalId,
         ArrivalStatus.OtherStatus
       )
     when(mockConnector.getArrival(any())(any())).thenReturn(Future.successful(Some(mockArrivalResponse)))
 
-    val checkArrivalStatusProvider = (new CheckArrivalStatusProvider(mockConnector)(implicitly))(ArrivalId(1))
+    val checkArrivalStatusProvider = (new CheckArrivalStatusProvider(mockConnector)(implicitly))(arrivalId)
     val testRequest                = IdentifierRequest(FakeRequest(GET, "/"), EoriNumber("eori"))
     val result: Future[Result]     = checkArrivalStatusProvider.invokeBlock(testRequest, fakeOkResult)
 
@@ -97,7 +97,7 @@ class ArrivalStatusActionSpec extends SpecBase with BeforeAndAfterEach with AppW
 
     when(mockConnector.getArrival(any())(any())).thenReturn(Future.successful(None))
 
-    val checkArrivalStatusProvider = (new CheckArrivalStatusProvider(mockConnector)(implicitly))(ArrivalId(1))
+    val checkArrivalStatusProvider = (new CheckArrivalStatusProvider(mockConnector)(implicitly))(arrivalId)
     val testRequest                = IdentifierRequest(FakeRequest(GET, "/"), EoriNumber("eori"))
     val result: Future[Result]     = checkArrivalStatusProvider.invokeBlock(testRequest, fakeOkResult)
 

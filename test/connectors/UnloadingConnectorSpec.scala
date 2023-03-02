@@ -175,7 +175,7 @@ class UnloadingConnectorSpec extends SpecBase with AppWithDefaultMockFixtures wi
                 .willReturn(aResponse().withStatus(code))
             )
 
-            connector.getSummary(ArrivalId(1)).futureValue mustBe None
+            connector.getSummary(ArrivalId("AB123")).futureValue mustBe None
         }
       }
     }
@@ -414,7 +414,7 @@ object UnloadingConnectorSpec {
       </GOOITEGDS>
     </CC043A>
 
-  private val arrivalId           = ArrivalId(1)
+  private val arrivalId           = ArrivalId("AB123")
   private val postUri             = s"/transit-movements-trader-at-destination/movements/arrivals/${arrivalId.value}/messages/"
   private val summaryUri          = s"/transit-movements-trader-at-destination/movements/arrivals/${arrivalId.value}/messages/summary"
   private val rejectionUri        = s"/transit-movements-trader-at-destination/movements/arrivals/${arrivalId.value}/messages/1"
