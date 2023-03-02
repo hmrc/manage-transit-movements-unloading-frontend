@@ -49,9 +49,9 @@ object UnloadingRemarksRequest {
   val grossWeightLength                    = 16
   val grossWeightCharsRegex                = "^([[0-9])(\\.])*"
   val stringFieldRegex                     = "^[a-zA-Z0-9&'@/.\\%? -]*$"
-  val grossMassRegex = "^(\\d{1,11}|(\\d{0,11}\\.{1}\\d{1,3}){1})$"
-  val grossMassLength = 15
-  val numericRegex = "^[0-9]*$".r
+  val grossMassRegex                       = "^(\\d{1,11}|(\\d{0,11}\\.{1}\\d{1,3}){1})$"
+  val grossMassLength                      = 15
+  val numericRegex                         = "^[0-9]*$".r
 
   implicit def writes: XMLWrites[UnloadingRemarksRequest] = XMLWrites[UnloadingRemarksRequest] {
     unloadingRemarksRequest =>
