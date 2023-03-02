@@ -62,7 +62,7 @@ trait SpecBase
     itemNumber = 1,
     commodityCode = None,
     description = "Flowers",
-    grossMass = Some("1000"),
+    GrossWeight = Some("1000"),
     netMass = Some("999"),
     producedDocuments = Seq.empty,
     containers = Seq.empty,

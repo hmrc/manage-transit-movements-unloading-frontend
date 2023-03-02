@@ -28,7 +28,7 @@ case class Header(
   transportCountry: Option[String],
   numberOfItems: Int,
   numberOfPackages: Option[Int],
-  grossMass: String
+  GrossWeight: String
 )
 
 object Header {
@@ -57,7 +57,7 @@ object Header {
             <TotNumOfPacHEA306>{numberOfPackages}</TotNumOfPacHEA306>
         }
       }
-        <TotGroMasHEA307>{escapeXml(header.grossMass)}</TotGroMasHEA307>
+        <TotGroMasHEA307>{escapeXml(header.GrossWeight)}</TotGroMasHEA307>
       </HEAHEA>
   }
 

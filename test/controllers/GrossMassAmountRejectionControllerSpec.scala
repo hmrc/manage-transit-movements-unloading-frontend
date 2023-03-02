@@ -17,38 +17,38 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.GrossMassAmountFormProvider
+import forms.GrossWeightFormProvider
 import models.UserAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
-import pages.GrossMassAmountPage
+import pages.GrossWeightPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.GrossMassAmountRejectionView
+import views.html.GrossWeightAmountRejectionView
 
 import scala.concurrent.Future
 
-class GrossMassAmountRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class GrossWeightAmountRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider = new GrossMassAmountFormProvider()
+  private val formProvider = new GrossWeightFormProvider()
   private val form         = formProvider()
 
-  private lazy val grossMassAmountRejectionRoute = routes.GrossMassAmountRejectionController.onPageLoad(arrivalId).url
+  private lazy val GrossWeightAmountRejectionRoute = routes.GrossWeightAmountRejectionController.onPageLoad(arrivalId).url
 
-  "GrossMassAmountRejection Controller" - {
+  "GrossWeightAmountRejection Controller" - {
 
     "must populate the view correctly on a GET" in {
       checkArrivalStatus()
       val originalValue = "100000.123"
 
-      setExistingUserAnswers(emptyUserAnswers.setValue(GrossMassAmountPage, originalValue))
+      setExistingUserAnswers(emptyUserAnswers.setValue(GrossWeightPage, originalValue))
 
-      val request = FakeRequest(GET, grossMassAmountRejectionRoute)
+      val request = FakeRequest(GET, GrossWeightAmountRejectionRoute)
 
       val result = route(app, request).value
 
-      val view = app.injector.instanceOf[GrossMassAmountRejectionView]
+      val view = app.injector.instanceOf[GrossWeightAmountRejectionView]
 
       status(result) mustEqual OK
 
@@ -61,7 +61,7 @@ class GrossMassAmountRejectionControllerSpec extends SpecBase with AppWithDefaul
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, grossMassAmountRejectionRoute)
+      val request = FakeRequest(GET, GrossWeightAmountRejectionRoute)
 
       val result = route(app, request).value
 
@@ -79,7 +79,7 @@ class GrossMassAmountRejectionControllerSpec extends SpecBase with AppWithDefaul
 
       val newValue = "123456.123"
 
-      val request = FakeRequest(POST, grossMassAmountRejectionRoute)
+      val request = FakeRequest(POST, GrossWeightAmountRejectionRoute)
         .withFormUrlEncodedBody(("value", newValue))
 
       val result = route(app, request).value
@@ -89,7 +89,7 @@ class GrossMassAmountRejectionControllerSpec extends SpecBase with AppWithDefaul
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())
-      userAnswersCaptor.getValue.get(GrossMassAmountPage).get mustBe newValue
+      userAnswersCaptor.getValue.get(GrossWeightPage).get mustBe newValue
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
@@ -97,12 +97,12 @@ class GrossMassAmountRejectionControllerSpec extends SpecBase with AppWithDefaul
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, grossMassAmountRejectionRoute).withFormUrlEncodedBody(("value", ""))
+      val request   = FakeRequest(POST, GrossWeightAmountRejectionRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
-      val view = app.injector.instanceOf[GrossMassAmountRejectionView]
+      val view = app.injector.instanceOf[GrossWeightAmountRejectionView]
 
       status(result) mustEqual BAD_REQUEST
 

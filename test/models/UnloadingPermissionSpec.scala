@@ -53,7 +53,7 @@ class UnloadingPermissionSpec extends SpecBase with Generators {
                   <TotNumOfPacHEA306>{numberOfPackages}</TotNumOfPacHEA306>
               }
             }
-                <TotGroMasHEA307>{unloadingPermission.grossMass}</TotGroMasHEA307>
+                <TotGroMasHEA307>{unloadingPermission.GrossWeight}</TotGroMasHEA307>
               </HEAHEA>
               <TRADESTRD>
                 <NamTRD7>{unloadingPermission.traderAtDestination.name}</NamTRD7>
@@ -92,7 +92,7 @@ class UnloadingPermissionSpec extends SpecBase with Generators {
               <TotNumOfPacHEA306>{numberOfPackages}</TotNumOfPacHEA306>
           }
         }
-            <TotGroMasHEA307>{unloadingPermission.grossMass}</TotGroMasHEA307>
+            <TotGroMasHEA307>{unloadingPermission.GrossWeight}</TotGroMasHEA307>
           </HEAHEA>
           <TRADESTRD>
             <NamTRD7>{unloadingPermission.traderAtDestination.name}</NamTRD7>
@@ -131,7 +131,7 @@ class UnloadingPermissionSpec extends SpecBase with Generators {
               <TotNumOfPacHEA306>{numberOfPackages}</TotNumOfPacHEA306>
           }
         }
-            <TotGroMasHEA307>{unloadingPermission.grossMass}</TotGroMasHEA307>
+            <TotGroMasHEA307>{unloadingPermission.GrossWeight}</TotGroMasHEA307>
           </HEAHEA>
           <TRADESTRD>
             <NamTRD7>{unloadingPermission.traderAtDestination.name}</NamTRD7>
@@ -183,9 +183,9 @@ object UnloadingPermissionSpec {
             <ComCodTarCodGDS10>{code}</ComCodTarCodGDS10>
         }
 
-        val grossMass: Option[Elem] = goodsItem.grossMass.map {
-          grossMass =>
-            <GroMasGDS46>{grossMass}</GroMasGDS46>
+        val GrossWeight: Option[Elem] = goodsItem.GrossWeight.map {
+          GrossWeight =>
+            <GroMasGDS46>{GrossWeight}</GroMasGDS46>
         }
 
         val netMass: Option[Elem] = goodsItem.netMass.map {
@@ -206,7 +206,7 @@ object UnloadingPermissionSpec {
           <GooDesGDS23>
             {goodsItem.description}
           </GooDesGDS23>
-          {grossMass.getOrElse(NodeSeq.Empty)}
+          {GrossWeight.getOrElse(NodeSeq.Empty)}
           {netMass.getOrElse(NodeSeq.Empty)}
           {producedDocument(goodsItem)}
           {
