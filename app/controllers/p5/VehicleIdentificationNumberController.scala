@@ -14,54 +14,57 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
-import config.FrontendAppConfig
 import controllers.actions._
-import forms.VehicleNameRegistrationReferenceFormProvider
-import models.ArrivalId
-import pages.VehicleNameRegistrationReferencePage
+import forms.VehicleIdentificationNumberFormProvider
+import models.{ArrivalId, Mode}
+import navigation.Navigator
+import pages.VehicleIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.VehicleNameRegistrationRejectionView
+import views.html.p5.VehicleIdentificationNumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class VehicleNameRegistrationRejectionController @Inject() (
+class VehicleIdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
+  navigator: Navigator,
   actions: Actions,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
-  formProvider: VehicleNameRegistrationReferenceFormProvider,
+  formProvider: VehicleIdentificationNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: VehicleNameRegistrationRejectionView,
-  val appConfig: FrontendAppConfig
+  view: VehicleIdentificationNumberView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   private val form = formProvider()
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
-    actions.requireData(arrivalId).andThen(getMandatoryPage(VehicleNameRegistrationReferencePage)) {
-      implicit request =>
-        Ok(view(form.fill(request.arg), arrivalId))
-    }
+  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
+    implicit request =>
+      val preparedForm = request.userAnswers.get(VehicleIdentificationNumberPage) match {
+        case None        => form
+        case Some(value) => form.fill(value)
+      }
 
-  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
+      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode))
+  }
+
+  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleNameRegistrationReferencePage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleIdentificationNumberPage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId))
+            } yield Redirect(navigator.nextPage(VehicleIdentificationNumberPage, mode, updatedAnswers))
         )
   }
 }

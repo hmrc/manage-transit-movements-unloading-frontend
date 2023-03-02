@@ -63,20 +63,20 @@ dateGoodsUnloaded.heading = When were the goods unloaded?
 dateGoodsUnloaded.hint = For example, 14 1 2020
 dateGoodsUnloaded.checkYourAnswersLabel = When were the goods unloaded?
 dateGoodsUnloaded.error.required.all = Enter the date when the goods were unloaded
-dateGoodsUnloaded.error.required.two = The date goods were unloaded must include {0} and {1} me
+dateGoodsUnloaded.error.required.two = The date goods were unloaded must include {0} and {1}
 dateGoodsUnloaded.error.required = The date goods were unloaded must include {0}
 dateGoodsUnloaded.error.invalid = Enter a real date
 dateGoodsUnloaded.error.min.date = The date when the goods were unloaded must be on or after {0}
 dateGoodsUnloaded.error.max.date = The date when the goods were unloaded must be today or in the past
 dateGoodsUnloaded.change.hidden = the date when the goods were unloaded
 
-vehicleNameRegistrationReference.title = What is the name, registration or reference of the new vehicle?
-vehicleNameRegistrationReference.heading = What is the name, registration or reference of the new vehicle?
-vehicleNameRegistrationReference.checkYourAnswersLabel = What is the name, registration or reference of the new vehicle?
-vehicleNameRegistrationReference.error.required = Enter the name, registration or reference of the vehicle
-vehicleNameRegistrationReference.error.length = The name, registration or reference of the new vehicle must be 27 characters or less
-vehicleNameRegistrationReference.error.invalid = The name, registration or reference of the new vehicle must only include letters a to z or numbers 0 to 9
-vehicleNameRegistrationReference.change.hidden = the name, registration or reference of the new vehicle
+vehicleIdentificationNumber.title = What is the identification number for the new vehicle?
+vehicleIdentificationNumber.heading = What is the identification number for the new vehicle?
+vehicleIdentificationNumber.checkYourAnswersLabel = What is the identification number for the new vehicle?
+vehicleIdentificationNumber.error.required = Enter the identification number for the new vehicle
+vehicleIdentificationNumber.error.length = The identification number must be 35 characters or less
+vehicleIdentificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
+vehicleIdentificationNumber.change.hidden = the identification number for the new vehicle
 
 vehicleRegistrationCountry.title = Which country is the vehicle registered in?
 vehicleRegistrationCountry.heading = Which country is the vehicle registered in?
@@ -87,7 +87,7 @@ vehicleRegistrationCountry.placeHolder = Select a country
 
 grossWeight.title = What is the new gross weight of item {0}?
 grossWeight.heading = What is the new gross weight of item {0}?
-grossWeight.checkYourAnswersLabel = What is the new gross weight of item {0}?
+grossWeight.paragraph = This is the combined weight of the item’s goods and packaging.
 grossWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
 grossWeight.error.required = Enter the new gross weight of item {0}
 grossWeight.error.length = The new gross weight must be 16 characters or less
@@ -124,8 +124,8 @@ unloadingSummary.seals.subheading = Official customs seals
 
 vehicleUsed.title = Vehicle used
 
-changeVehicle.reference.checkYourAnswersLabel = Name, registration or reference
-changeVehicle.reference.change.hidden = name, registration or reference
+changeVehicle.reference.checkYourAnswersLabel = Identification number for the new vehicle
+changeVehicle.reference.change.hidden = identification number for the new vehicle
 
 changeVehicle.registeredCountry.checkYourAnswersLabel = Registered
 changeVehicle.registeredCountry.change.hidden = registered
@@ -156,17 +156,17 @@ changeItems.comments.checkYourAnswersLabel = Comments
 changeItems.comments.change.hidden = comments
 changeItems.comments.remove.hidden = comments
 
-canSealsBeRead.title = Can all of the official customs seal numbers or marks be read?
-canSealsBeRead.heading = Can all of the official customs seal numbers or marks be read?
-canSealsBeRead.checkYourAnswersLabel = Can all of the official customs seal numbers or marks be read?
-canSealsBeRead.error.required = Select yes if all of the official customs seals can be read
-canSealsBeRead.change.hidden = if all of the official customs seals can be read
+canSealsBeRead.title = Are all the seal identification numbers or marks readable?
+canSealsBeRead.heading = Are all the seal identification numbers or marks readable?
+canSealsBeRead.checkYourAnswersLabel = Are all the seal identification numbers or marks readable?
+canSealsBeRead.error.required = Select yes if all the seal identification numbers and marks are readable
+canSealsBeRead.change.hidden = if all the seal identification numbers or marks are readable
 
-areAnySealsBroken.title = Are any of the official customs seals broken?
-areAnySealsBroken.heading = Are any of the official customs seals broken?
-areAnySealsBroken.checkYourAnswersLabel = Are any of the official customs seals broken?
-areAnySealsBroken.error.required = Select yes if any of the official customs seals are broken
-areAnySealsBroken.change.hidden = if any of the official customs seals are broken
+areAnySealsBroken.title = Are any of the seals broken?
+areAnySealsBroken.heading = Are any of the seals broken?
+areAnySealsBroken.checkYourAnswersLabel = Are any of the seals broken?
+areAnySealsBroken.error.required = Select yes if any of the seals are broken
+areAnySealsBroken.change.hidden = if any of the seals are broken
 
 confirmation.title = Unloading remarks sent
 confirmation.heading = Unloading remarks sent

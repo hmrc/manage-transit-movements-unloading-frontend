@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package views
+package views.p5
 
-import forms.VehicleNameRegistrationReferenceFormProvider
+import forms.VehicleIdentificationNumberFormProvider
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.InputTextViewBehaviours
-import views.html.VehicleNameRegistrationRejectionView
+import views.html.p5.VehicleIdentificationNumberRejectionView
 
-class VehicleNameRegistrationRejectionViewSpec extends InputTextViewBehaviours[String] {
+class VehicleIdentificationNumberRejectionViewSpec extends InputTextViewBehaviours[String] {
 
-  override def form: Form[String] = new VehicleNameRegistrationReferenceFormProvider()()
+  override def form: Form[String] = new VehicleIdentificationNumberFormProvider()()
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[VehicleNameRegistrationRejectionView].apply(form, arrivalId)(fakeRequest, messages)
+    injector.instanceOf[VehicleIdentificationNumberRejectionView].apply(form, arrivalId)(fakeRequest, messages)
 
-  override val prefix: String = "vehicleNameRegistrationReference"
+  override val prefix: String = "vehicleIdentificationNumber"
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 

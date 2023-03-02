@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package views
+package views.p5
 
-import forms.AreAnySealsBrokenFormProvider
+import forms.CanSealsBeReadFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.AreAnySealsBrokenView
+import views.html.p5.CanSealsBeReadView
 
-class AreAnySealsBrokenViewSpec extends YesNoViewBehaviours {
+class CanSealsBeReadViewSpec extends YesNoViewBehaviours {
 
-  override def form: Form[Boolean] = new AreAnySealsBrokenFormProvider()()
+  override def form: Form[Boolean] = new CanSealsBeReadFormProvider()()
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AreAnySealsBrokenView].apply(form, mrn, arrivalId, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[CanSealsBeReadView].apply(form, mrn, arrivalId, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "areAnySealsBroken"
+  override val prefix: String = "canSealsBeRead"
 
   behave like pageWithTitle()
 

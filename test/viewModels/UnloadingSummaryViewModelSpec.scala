@@ -51,7 +51,7 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
     "vehicle sections should" - {
 
       "display transportIdentity" in {
-        val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, "registration")
+        val userAnswers = emptyUserAnswers.setValue(VehicleIdentificationNumberPage, "registration")
 
         val sections = new UnloadingSummaryViewModel().transportAndItemSections(userAnswers, mode)
 
@@ -72,7 +72,7 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
 
       "display transportCountry and transportIdentity" in {
         val userAnswers = emptyUserAnswers
-          .setValue(VehicleNameRegistrationReferencePage, "registration")
+          .setValue(VehicleIdentificationNumberPage, "registration")
           .setValue(VehicleRegistrationCountryPage, Country("FR", "France"))
 
         val sections = new UnloadingSummaryViewModel().transportAndItemSections(userAnswers, mode)

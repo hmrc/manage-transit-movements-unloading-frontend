@@ -80,11 +80,11 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
 
   def vehicleUsed: Option[SummaryListRow] =
     getAnswerAndBuildRow[String](
-      page = VehicleNameRegistrationReferencePage,
+      page = VehicleIdentificationNumberPage,
       formatAnswer = _.toText,
       prefix = "changeVehicle.reference",
       id = Some("change-vehicle-reference"),
-      call = Some(routes.VehicleNameRegistrationReferenceController.onPageLoad(arrivalId, mode))
+      call = Some(controllers.p5.routes.VehicleIdentificationNumberController.onPageLoad(arrivalId, mode))
     )
 
   def registeredCountry: Option[SummaryListRow] =

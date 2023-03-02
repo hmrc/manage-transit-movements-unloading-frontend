@@ -40,11 +40,11 @@
 
         @formHelper(action = controllers.p5.routes.GrossWeightController.onSubmit(arrivalId, index, mode), Symbol("autoComplete") -> "off") {
 
-
         @inputText(
             field = form("value"),
-            inputTextType = OrdinaryTextInput(
-                heading = messages("grossWeight.heading", index.display)
+            inputTextType = TextInputWithHiddenLabel(
+                heading = messages("grossWeight.heading", index.display),
+                additionalHtml = Html(s"""<p class="govuk-body">${messages("grossWeight.paragraph")}</p>""")
             ),
             hint = Some(messages("grossWeight.hint")),
             inputClass = InputSize.Width10,

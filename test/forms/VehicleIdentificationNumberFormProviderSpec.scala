@@ -23,13 +23,13 @@ import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.data.{Field, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
 
-class VehicleNameRegistrationReferenceFormProviderSpec extends StringFieldBehaviours {
+class VehicleIdentificationNumberFormProviderSpec extends StringFieldBehaviours {
 
-  private val requiredKey = "vehicleNameRegistrationReference.error.required"
-  private val maxLength   = UnloadingRemarksRequest.vehicleNameMaxLength
-  private val invalidKey  = "vehicleNameRegistrationReference.error.invalid"
+  private val requiredKey = "vehicleIdentificationNumber.error.required"
+  private val maxLength   = UnloadingRemarksRequest.vehicleIdentificationNumberMaxLength
+  private val invalidKey  = "vehicleIdentificationNumber.error.invalid"
 
-  private val form      = new VehicleNameRegistrationReferenceFormProvider()()
+  private val form      = new VehicleIdentificationNumberFormProvider()()
   private val fieldName = "value"
 
   ".value" - {

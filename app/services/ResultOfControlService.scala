@@ -28,7 +28,7 @@ class ResultOfControlServiceImpl extends ResultOfControlService {
 
     implicit val ua: UserAnswers = userAnswers
 
-    val vehicleRegistrationReference: Seq[ResultsOfControl] = resultsOfControlString(VehicleNameRegistrationReferencePage, TransportIdentity)
+    val vehicleRegistrationReference: Seq[ResultsOfControl] = resultsOfControlString(VehicleIdentificationNumberPage, TransportIdentity)
 
     val vehicleRegistrationCountry: Seq[ResultsOfControlDifferentValues] = resultsOfControlCountry(VehicleRegistrationCountryPage, TransportCountry)
 

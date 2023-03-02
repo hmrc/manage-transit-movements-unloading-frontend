@@ -29,7 +29,7 @@ class RejectionCheckYourAnswersViewModelSpec extends AnyFreeSpec with Matchers w
   "RejectionCheckYourAnswersViewModel" - {
 
     "display vehicle name reference on check your answers" in {
-      val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, "reference")
+      val userAnswers = emptyUserAnswers.setValue(VehicleIdentificationNumberPage, "reference")
       val sections    = new RejectionCheckYourAnswersViewModel()(userAnswers)
 
       sections.length mustBe 1
