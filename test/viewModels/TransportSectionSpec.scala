@@ -19,7 +19,7 @@ package viewModels
 import base.SpecBase
 import models.NormalMode
 import models.reference.Country
-import pages.{VehicleNameRegistrationReferencePage, VehicleRegistrationCountryPage}
+import pages.{VehicleIdentificationNumberPage, VehicleRegistrationCountryPage}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import viewModels.sections.Section
 
@@ -32,7 +32,7 @@ class TransportSectionSpec extends SpecBase {
     "must display" - {
 
       "correct transport identity number" in {
-        val userAnswers      = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, "RegNumber1")
+        val userAnswers      = emptyUserAnswers.setValue(VehicleIdentificationNumberPage, "RegNumber1")
         val section: Section = TransportSection(userAnswers, mode)
         section.sectionTitle.get mustBe "Vehicle used"
         section.rows.head.value.content mustBe Text("RegNumber1")

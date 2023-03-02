@@ -14,81 +14,80 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.CanSealsBeReadFormProvider
-import models.NormalMode
+import controllers.routes
+import forms.GrossWeightFormProvider
+import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.CanSealsBeReadPage
+import pages.GrossWeightPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.CanSealsBeReadView
+import views.html.p5.GrossWeightView
 
 import scala.concurrent.Future
 
-class CanSealsBeReadControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider = new CanSealsBeReadFormProvider()
-  private val form         = formProvider()
-  private val mode         = NormalMode
+  private val formProvider                = new GrossWeightFormProvider()
+  private val form                        = formProvider()
+  private val mode                        = NormalMode
+  private val index                       = Index(0)
+  private lazy val GrossWeightAmountRoute = controllers.p5.routes.GrossWeightController.onPageLoad(arrivalId, index, mode).url
 
-  private lazy val canSealsBeReadRoute = routes.CanSealsBeReadController.onPageLoad(arrivalId, NormalMode).url
-
-  "CanSealsBeRead Controller" - {
+  "GrossWeightAmount Controller" - {
 
     "must return OK and the correct view for a GET" in {
-
       checkArrivalStatus()
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, canSealsBeReadRoute)
+      val request = FakeRequest(GET, GrossWeightAmountRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[CanSealsBeReadView]
+      val view = injector.instanceOf[GrossWeightView]
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual view(form, mrn, arrivalId, mode)(request, messages).toString
+      contentAsString(result) mustEqual
+        view(form, mrn, arrivalId, index, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
-
-      val userAnswers = emptyUserAnswers.setValue(CanSealsBeReadPage, true)
+      val userAnswers = emptyUserAnswers.setValue(GrossWeightPage, "123456.123")
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, canSealsBeReadRoute)
+      val request = FakeRequest(GET, GrossWeightAmountRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "true"))
-
-      val view = injector.instanceOf[CanSealsBeReadView]
-
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual view(filledForm, mrn, arrivalId, mode)(request, messages).toString
+      val filledForm = form.bind(Map("value" -> "123456.123"))
+
+      val view = injector.instanceOf[GrossWeightView]
+
+      contentAsString(result) mustEqual
+        view(filledForm, mrn, arrivalId, index, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
       checkArrivalStatus()
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, canSealsBeReadRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, GrossWeightAmountRoute)
+          .withFormUrlEncodedBody(("value", "123456.123"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual onwardRoute.url
     }
 
@@ -97,23 +96,23 @@ class CanSealsBeReadControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, canSealsBeReadRoute).withFormUrlEncodedBody(("value", ""))
+      val request   = FakeRequest(POST, GrossWeightAmountRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[CanSealsBeReadView]
-
       status(result) mustEqual BAD_REQUEST
+      val view = injector.instanceOf[GrossWeightView]
 
-      contentAsString(result) mustEqual view(boundForm, mrn, arrivalId, mode)(request, messages).toString
+      contentAsString(result) mustEqual
+        view(boundForm, mrn, arrivalId, index, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, canSealsBeReadRoute)
+      val request = FakeRequest(GET, GrossWeightAmountRoute)
 
       val result = route(app, request).value
 
@@ -127,8 +126,8 @@ class CanSealsBeReadControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       setNoExistingUserAnswers()
 
       val request =
-        FakeRequest(POST, canSealsBeReadRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, GrossWeightAmountRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value
 

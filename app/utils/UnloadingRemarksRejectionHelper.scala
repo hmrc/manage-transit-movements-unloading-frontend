@@ -27,13 +27,13 @@ import java.time.LocalDate
 
 class UnloadingRemarksRejectionHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
-  def vehicleNameRegistrationReference: Option[SummaryListRow] =
+  def vehicleIdentificationNumber: Option[SummaryListRow] =
     getAnswerAndBuildRow[String](
-      page = VehicleNameRegistrationReferencePage,
+      page = VehicleIdentificationNumberPage,
       formatAnswer = _.toText,
       prefix = "changeVehicle.reference",
       id = Some("change-vehicle-registration-rejection"),
-      call = Some(routes.VehicleNameRegistrationRejectionController.onPageLoad(arrivalId))
+      call = Some(controllers.p5.routes.VehicleIdentificationNumberRejectionController.onPageLoad(arrivalId))
     )
 
   def totalNumberOfPackages: Option[SummaryListRow] =
@@ -54,13 +54,13 @@ class UnloadingRemarksRejectionHelper(userAnswers: UserAnswers)(implicit message
       call = Some(routes.TotalNumberOfItemsRejectionController.onPageLoad(arrivalId))
     )
 
-  def grossMassAmount: Option[SummaryListRow] =
+  def GrossWeightAmount: Option[SummaryListRow] =
     getAnswerAndBuildRow[String](
-      page = GrossMassAmountPage,
+      page = GrossWeightPage,
       formatAnswer = _.toText,
-      prefix = "changeItems.grossMass",
-      id = Some("change-gross-mass-amount"),
-      call = Some(routes.GrossMassAmountRejectionController.onPageLoad(arrivalId))
+      prefix = "changeItems.GrossWeight",
+      id = Some("change-gross-weight"),
+      call = Some(routes.GrossWeightAmountRejectionController.onPageLoad(arrivalId))
     )
 
   def unloadingDate: Option[SummaryListRow] =

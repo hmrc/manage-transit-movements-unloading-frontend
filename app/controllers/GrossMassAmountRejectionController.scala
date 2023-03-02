@@ -18,48 +18,48 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
-import forms.GrossMassAmountFormProvider
-import models.ArrivalId
-import pages.GrossMassAmountPage
+import forms.GrossWeightFormProvider
+import models.{ArrivalId, Index}
+import pages.GrossWeightPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.GrossMassAmountRejectionView
+import views.html.GrossWeightAmountRejectionView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class GrossMassAmountRejectionController @Inject() (
+class GrossWeightAmountRejectionController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
-  formProvider: GrossMassAmountFormProvider,
+  formProvider: GrossWeightFormProvider,
   val controllerComponents: MessagesControllerComponents,
   val appConfig: FrontendAppConfig,
-  view: GrossMassAmountRejectionView
+  view: GrossWeightAmountRejectionView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider()
+  private def form(index: Index) = formProvider(index)
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
-    actions.requireData(arrivalId).andThen(getMandatoryPage(GrossMassAmountPage)) {
+    actions.requireData(arrivalId).andThen(getMandatoryPage(GrossWeightPage)) {
       implicit request =>
-        Ok(view(form.fill(request.arg), arrivalId))
+        Ok(view(form(Index(0)).fill(request.arg), arrivalId))
     }
 
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
-      form
+      form(Index(0))
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(GrossMassAmountPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(GrossWeightPage, value))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId))
         )

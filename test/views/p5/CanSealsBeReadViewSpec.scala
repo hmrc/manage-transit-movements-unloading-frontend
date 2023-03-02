@@ -14,27 +14,23 @@
  * limitations under the License.
  */
 
-package views
+package views.p5
 
-import forms.GrossMassAmountFormProvider
+import forms.CanSealsBeReadFormProvider
 import models.NormalMode
-import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.InputSize
-import views.behaviours.InputTextViewBehaviours
-import views.html.GrossMassAmountView
+import views.behaviours.YesNoViewBehaviours
+import views.html.p5.CanSealsBeReadView
 
-class GrossMassAmountViewSpec extends InputTextViewBehaviours[String] {
+class CanSealsBeReadViewSpec extends YesNoViewBehaviours {
 
-  override def form: Form[String] = new GrossMassAmountFormProvider()()
+  override def form: Form[Boolean] = new CanSealsBeReadFormProvider()()
 
-  override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[GrossMassAmountView].apply(form, mrn, arrivalId, NormalMode)(fakeRequest, messages)
+  override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
+    injector.instanceOf[CanSealsBeReadView].apply(form, mrn, arrivalId, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "grossMassAmount"
-
-  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
+  override val prefix: String = "canSealsBeRead"
 
   behave like pageWithTitle()
 
@@ -44,9 +40,7 @@ class GrossMassAmountViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading()
 
-  behave like pageWithoutHint()
-
-  behave like pageWithInputText(inputFieldClassSize = Some(InputSize.Width10), suffix = Some("kg"))
+  behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Continue")
 }

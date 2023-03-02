@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package views
+package views.p5
 
 import forms.AreAnySealsBrokenFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.AreAnySealsBrokenView
+import views.html.p5.AreAnySealsBrokenView
 
 class AreAnySealsBrokenViewSpec extends YesNoViewBehaviours {
 

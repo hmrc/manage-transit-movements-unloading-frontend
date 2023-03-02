@@ -14,30 +14,30 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
 import controllers.actions._
-import forms.CanSealsBeReadFormProvider
+import forms.VehicleIdentificationNumberFormProvider
 import models.{ArrivalId, Mode}
 import navigation.Navigator
-import pages.CanSealsBeReadPage
+import pages.VehicleIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.CanSealsBeReadView
+import views.html.p5.VehicleIdentificationNumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CanSealsBeReadController @Inject() (
+class VehicleIdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
   actions: Actions,
-  formProvider: CanSealsBeReadFormProvider,
+  formProvider: VehicleIdentificationNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: CanSealsBeReadView
+  view: VehicleIdentificationNumberView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -46,7 +46,7 @@ class CanSealsBeReadController @Inject() (
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(CanSealsBeReadPage) match {
+      val preparedForm = request.userAnswers.get(VehicleIdentificationNumberPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -62,9 +62,9 @@ class CanSealsBeReadController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(CanSealsBeReadPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleIdentificationNumberPage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(CanSealsBeReadPage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(VehicleIdentificationNumberPage, mode, updatedAnswers))
         )
   }
 }

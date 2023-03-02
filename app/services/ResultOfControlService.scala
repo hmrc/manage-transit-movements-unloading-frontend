@@ -28,7 +28,7 @@ class ResultOfControlServiceImpl extends ResultOfControlService {
 
     implicit val ua: UserAnswers = userAnswers
 
-    val vehicleRegistrationReference: Seq[ResultsOfControl] = resultsOfControlString(VehicleNameRegistrationReferencePage, TransportIdentity)
+    val vehicleRegistrationReference: Seq[ResultsOfControl] = resultsOfControlString(VehicleIdentificationNumberPage, TransportIdentity)
 
     val vehicleRegistrationCountry: Seq[ResultsOfControlDifferentValues] = resultsOfControlCountry(VehicleRegistrationCountryPage, TransportCountry)
 
@@ -36,7 +36,7 @@ class ResultOfControlServiceImpl extends ResultOfControlService {
 
     val totalNumberOfPackagesPage: Seq[ResultsOfControl] = resultsOfControlString(TotalNumberOfPackagesPage, NumberOfPackages)
 
-    val grossMassAmount: Seq[ResultsOfControl] = resultsOfControlString(GrossMassAmountPage, GrossMass)
+    val GrossWeightAmount: Seq[ResultsOfControl] = resultsOfControlString(GrossWeightPage, GrossWeight)
 
     val sealsBroken: Seq[ResultsOfControl] = resultsOfControlOther()
 
@@ -47,7 +47,7 @@ class ResultOfControlServiceImpl extends ResultOfControlService {
       vehicleRegistrationCountry,
       totalNumberOfItemsPage,
       totalNumberOfPackagesPage,
-      grossMassAmount,
+      GrossWeightAmount,
       sealsBroken,
       sealsUpdated
     ).flatten
