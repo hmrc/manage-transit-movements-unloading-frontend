@@ -38,7 +38,7 @@ object PointerToAttribute {
       case TransportCountry.value  => PointerToAttribute(TransportCountry)
       case NumberOfItems.value     => PointerToAttribute(NumberOfItems)
       case NumberOfPackages.value  => PointerToAttribute(NumberOfPackages)
-      case GrossMass.value         => PointerToAttribute(GrossMass)
+      case GrossWeight.value       => PointerToAttribute(GrossWeight)
       case x                       => throw new Exception(s"Unexpected pointer value: $x")
     }
 
@@ -55,7 +55,7 @@ object PointerIdentity {
     TransportCountry,
     NumberOfItems,
     NumberOfPackages,
-    GrossMass
+    GrossWeight
   )
 }
 
@@ -75,6 +75,6 @@ object NumberOfPackages extends PointerIdentity {
   val value = "6"
 }
 
-object GrossMass extends PointerIdentity {
+object GrossWeight extends PointerIdentity {
   val value = "35"
 }

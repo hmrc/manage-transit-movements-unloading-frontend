@@ -16,7 +16,7 @@
 
 package utils
 
-import models.{ArrivalId, UserAnswers}
+import models.{ArrivalId, Index, UserAnswers}
 import pages.QuestionPage
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
@@ -26,6 +26,7 @@ import uk.gov.hmrc.govukfrontend.views.html.components._
 class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends SummaryListRowHelper {
 
   def arrivalId: ArrivalId = userAnswers.id
+  def itemsIndex: Index    = Index(0)
 
   def getAnswerAndBuildRow[T](
     page: QuestionPage[T],

@@ -54,9 +54,9 @@ class PointerToAttributeSpec extends AnyFreeSpec with Matchers with ScalaCheckPr
         PointerToAttribute(NumberOfPackages).toXml.map(trim) mustBe xml.map(trim)
       }
 
-      "for GrossMass" in {
+      "for GrossWeight" in {
         val xml: Node = <PoiToTheAttTOC5>35</PoiToTheAttTOC5>
-        PointerToAttribute(GrossMass).toXml.map(trim) mustBe xml.map(trim)
+        PointerToAttribute(GrossWeight).toXml.map(trim) mustBe xml.map(trim)
       }
 
     }

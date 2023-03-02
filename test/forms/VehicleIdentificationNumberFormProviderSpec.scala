@@ -16,19 +16,20 @@
 
 package forms
 
-import models.messages.UnloadingRemarksRequest
 import forms.behaviours.StringFieldBehaviours
+import models.messages.UnloadingRemarksRequest
 import org.scalacheck.Gen
+import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.data.{Field, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
 
-class GrossMassAmountFormProviderSpec extends StringFieldBehaviours {
+class VehicleIdentificationNumberFormProviderSpec extends StringFieldBehaviours {
 
-  private val requiredKey = "grossMassAmount.error.required"
-  private val invalidKey  = "grossMassAmount.error.characters"
-  private val maxLength   = UnloadingRemarksRequest.grossMassLength
+  private val requiredKey = "vehicleIdentificationNumber.error.required"
+  private val maxLength   = UnloadingRemarksRequest.vehicleIdentificationNumberMaxLength
+  private val invalidKey  = "vehicleIdentificationNumber.error.invalid"
 
-  private val form      = new GrossMassAmountFormProvider()()
+  private val form      = new VehicleIdentificationNumberFormProvider()()
   private val fieldName = "value"
 
   ".value" - {
@@ -44,19 +45,17 @@ class GrossMassAmountFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
-  }
 
-  "must not bind strings that do not match regex" in {
+    "must not bind strings that do not match regex" in {
 
-    val generator: Gen[String] = RegexpGen.from("""[^\d{1,15}|(\d{0,15}.{1}\d{1,3}){1}]""")
-    val validRegex: String     = UnloadingRemarksRequest.grossMassRegex
-    val expectedError          = FormError(fieldName, invalidKey, Seq(validRegex))
+      val expectedError          = FormError(fieldName, invalidKey)
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
 
-    forAll(generator) {
-      invalidString =>
-        val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-        result.errors should contain(expectedError)
+      forAll(generator) {
+        invalidString =>
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(expectedError)
+      }
     }
   }
-
 }
