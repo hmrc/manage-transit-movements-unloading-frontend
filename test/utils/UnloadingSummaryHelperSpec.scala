@@ -196,7 +196,7 @@ class UnloadingSummaryHelperSpec extends SpecBase with Generators {
                 List(
                   ActionItem(
                     content = "Change".toText,
-                    href = routes.VehicleRegistrationCountryController.onPageLoad(userAnswers.id, mode).url,
+                    href = controllers.p5.routes.VehicleRegistrationCountryController.onPageLoad(userAnswers.id, mode).url,
                     visuallyHiddenText = Some("registered"),
                     attributes = Map("id" -> "change-vehicle-country")
                   )

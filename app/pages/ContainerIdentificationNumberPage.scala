@@ -16,7 +16,7 @@
 
 package pages
 
-import models.{Index, Seal}
+import models.Index
 import play.api.libs.json.JsPath
 
 final case class ContainerIdentificationNumberPage(index: Index) extends QuestionPage[String] {
