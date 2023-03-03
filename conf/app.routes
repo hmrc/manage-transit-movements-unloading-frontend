@@ -86,7 +86,14 @@ POST       /:arrivalId/any-seals-broken                                         
 GET        /:arrivalId/change-any-seals-broken                                              controllers.p5.AreAnySealsBrokenController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-any-seals-broken                                              controllers.p5.AreAnySealsBrokenController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
+
+GET        /:arrivalId/remove-additional-comments                              controllers.ConfirmRemoveCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/remove-additional-comments                              controllers.ConfirmRemoveCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-remove-additional-comments                       controllers.ConfirmRemoveCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-remove-additional-comments                       controllers.ConfirmRemoveCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+
 GET        /:arrivalId/confirmation                                                         controllers.ConfirmationController.onPageLoad(arrivalId: ArrivalId)
+
 
 GET        /:arrivalId/additional-comments                                                  controllers.p5.UnloadingCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/additional-comments                                                  controllers.p5.UnloadingCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
