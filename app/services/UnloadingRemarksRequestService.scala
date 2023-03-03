@@ -32,7 +32,7 @@ class UnloadingRemarksRequestServiceImpl @Inject() (resultOfControlService: Resu
       transportCountry = unloadingPermission.transportCountry,
       numberOfItems = unloadingPermission.numberOfItems,
       numberOfPackages = unloadingPermission.numberOfPackages,
-      grossMass = unloadingPermission.grossMass
+      GrossWeight = unloadingPermission.GrossWeight
     )
 
     val seals: Option[Seals] = unloadingRemarks match {

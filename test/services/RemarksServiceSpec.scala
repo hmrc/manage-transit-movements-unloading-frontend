@@ -89,12 +89,12 @@ class RemarksServiceSpec extends SpecBase with Generators with ScalaCheckPropert
             genDecimal(0.0, 50000.999),
             genDecimal(60000.000, 99999999.999)
           ) {
-            (unloadingPermission, grossMassUnloading, grossMass) =>
-              val unloadingPermissionUpdated = unloadingPermission.copy(seals = None, grossMass = grossMassUnloading.toString)
+            (unloadingPermission, GrossWeightUnloading, GrossWeight) =>
+              val unloadingPermissionUpdated = unloadingPermission.copy(seals = None, GrossWeight = GrossWeightUnloading.toString)
 
               val userAnswers = emptyUserAnswers
                 .setValue(DateGoodsUnloadedPage, dateGoodsUnloaded)
-                .setValue(GrossMassAmountPage, grossMass.toString())
+                .setValue(GrossWeightPage, GrossWeight.toString())
 
               service.build(userAnswers, unloadingPermissionUpdated).get mustBe
                 RemarksNonConform(stateOfSeals = None, unloadingRemark = None, unloadingDate = dateGoodsUnloaded)
@@ -108,13 +108,13 @@ class RemarksServiceSpec extends SpecBase with Generators with ScalaCheckPropert
             genDecimal(0.0, 50000.999),
             genDecimal(60000.000, 99999999.999)
           ) {
-            (unloadingPermission, grossMassUnloading, grossMass) =>
+            (unloadingPermission, GrossWeightUnloading, GrossWeight) =>
               val unloadingPermissionWithNoSeals =
-                unloadingPermission.copy(grossMass = grossMassUnloading.toString(), seals = Some(Seals(Seq("seal 1", "seal 2"))))
+                unloadingPermission.copy(GrossWeight = GrossWeightUnloading.toString(), seals = Some(Seals(Seq("seal 1", "seal 2"))))
 
               val userAnswers = emptyUserAnswers
                 .setValue(DateGoodsUnloadedPage, dateGoodsUnloaded)
-                .setValue(GrossMassAmountPage, grossMass.toString())
+                .setValue(GrossWeightPage, GrossWeight.toString())
 
               service.build(userAnswers, unloadingPermissionWithNoSeals).get mustBe
                 RemarksNonConform(stateOfSeals = Some(1), unloadingRemark = None, unloadingDate = dateGoodsUnloaded)
@@ -127,13 +127,13 @@ class RemarksServiceSpec extends SpecBase with Generators with ScalaCheckPropert
             arbitrary[UnloadingPermission],
             genDecimal(0.0, 50000.999)
           ) {
-            (unloadingPermission, grossMass) =>
+            (unloadingPermission, GrossWeight) =>
               val unloadingPermissionWithNoSeals =
-                unloadingPermission.copy(grossMass = grossMass.toString(), seals = Some(Seals(Seq("seal 1", "seal 2"))))
+                unloadingPermission.copy(GrossWeight = GrossWeight.toString(), seals = Some(Seals(Seq("seal 1", "seal 2"))))
 
               val userAnswers = emptyUserAnswers
                 .setValue(DateGoodsUnloadedPage, dateGoodsUnloaded)
-                .setValue(GrossMassAmountPage, grossMass.toString())
+                .setValue(GrossWeightPage, GrossWeight.toString())
 
               service.build(userAnswers, unloadingPermissionWithNoSeals).get mustBe
                 RemarksConformWithSeals(unloadingRemark = None, unloadingDate = dateGoodsUnloaded)

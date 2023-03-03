@@ -54,7 +54,7 @@ class CheckYourAnswersViewModel {
 
     val rows = helper.vehicleUsed.toSeq ++
       helper.registeredCountry.toSeq ++
-      helper.grossMass.toSeq ++
+      helper.grossWeight.toSeq ++
       helper.totalNumberOfItems.toSeq ++
       helper.totalNumberOfPackages.toSeq ++
       helper.items ++

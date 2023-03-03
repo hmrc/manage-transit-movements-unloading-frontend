@@ -31,9 +31,9 @@ trait UserAnswersGenerator extends TryValues {
       arbitrary[(AreAnySealsBrokenPage.type, JsValue)] ::
       arbitrary[(CanSealsBeReadPage.type, JsValue)] ::
       arbitrary[(SealPage, JsValue)] ::
-      arbitrary[(GrossMassAmountPage.type, JsValue)] ::
+      arbitrary[(GrossWeightPage.type, JsValue)] ::
       arbitrary[(VehicleRegistrationCountryPage.type, JsValue)] ::
-      arbitrary[(VehicleNameRegistrationReferencePage.type, JsValue)] ::
+      arbitrary[(VehicleIdentificationNumberPage.type, JsValue)] ::
       arbitrary[(DateGoodsUnloadedPage.type, JsValue)] ::
       Nil
 
@@ -50,7 +50,7 @@ trait UserAnswersGenerator extends TryValues {
           case _   => Gen.mapOf(oneOf(generators))
         }
       } yield UserAnswers(
-        id = ArrivalId(1),
+        id = ArrivalId("AB123"),
         mrn = mrn,
         eoriNumber = eoriNumber,
         data = data.foldLeft(Json.obj()) {

@@ -54,7 +54,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               val updatedUserAnswers = answers.setValue(SealsQuery, Seq(seal))
               navigator
                 .nextPage(DateGoodsUnloadedPage, mode, updatedUserAnswers)
-                .mustBe(routes.CanSealsBeReadController.onPageLoad(updatedUserAnswers.id, mode))
+                .mustBe(controllers.p5.routes.CanSealsBeReadController.onPageLoad(updatedUserAnswers.id, mode))
           }
         }
 
@@ -77,7 +77,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               val updatedUserAnswers = answers.setValue(CanSealsBeReadPage, true)
               navigator
                 .nextPage(CanSealsBeReadPage, mode, updatedUserAnswers)
-                .mustBe(routes.AreAnySealsBrokenController.onPageLoad(updatedUserAnswers.id, mode))
+                .mustBe(controllers.p5.routes.AreAnySealsBrokenController.onPageLoad(updatedUserAnswers.id, mode))
           }
         }
 
@@ -88,7 +88,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               val updatedUserAnswers = answers.setValue(CanSealsBeReadPage, false)
               navigator
                 .nextPage(CanSealsBeReadPage, mode, updatedUserAnswers)
-                .mustBe(routes.AreAnySealsBrokenController.onPageLoad(updatedUserAnswers.id, mode))
+                .mustBe(controllers.p5.routes.AreAnySealsBrokenController.onPageLoad(updatedUserAnswers.id, mode))
           }
         }
 
@@ -194,7 +194,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator
-                .nextPage(VehicleNameRegistrationReferencePage, mode, answers)
+                .nextPage(VehicleIdentificationNumberPage, mode, answers)
                 .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.id))
           }
         }
@@ -204,7 +204,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator
-                .nextPage(VehicleNameRegistrationReferencePage, mode, answers)
+                .nextPage(VehicleIdentificationNumberPage, mode, answers)
                 .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.id))
           }
         }
@@ -214,7 +214,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator
-                .nextPage(GrossMassAmountPage, mode, answers)
+                .nextPage(GrossWeightPage, mode, answers)
                 .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.id))
           }
         }
