@@ -50,7 +50,7 @@ trait UserAnswersGenerator extends TryValues {
           case _   => Gen.mapOf(oneOf(generators))
         }
       } yield UserAnswers(
-        id = ArrivalId(1),
+        id = ArrivalId("AB123"),
         mrn = mrn,
         eoriNumber = eoriNumber,
         data = data.foldLeft(Json.obj()) {

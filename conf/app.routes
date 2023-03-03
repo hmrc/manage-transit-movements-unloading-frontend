@@ -53,6 +53,11 @@ POST       /:arrivalId/items/:index/gross-weight                            cont
 GET        /:arrivalId/items/:index/change-gross-weight                     controllers.p5.GrossWeightController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
 POST       /:arrivalId/items/:index/change-gross-weight                     controllers.p5.GrossWeightController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
 
+GET        /:arrivalId/items/:index/net-weight                              controllers.p5.NetWeightController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
+POST       /:arrivalId/items/:index/net-weight                              controllers.p5.NetWeightController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
+GET        /:arrivalId/items/:index/change-net-weight                       controllers.p5.NetWeightController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
+POST       /:arrivalId/items/:index/change-net-weight                       controllers.p5.NetWeightController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
+
 GET        /:arrivalId/seal/:index/seal-identification-number                          controllers.p5.NewSealNumberController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
 POST       /:arrivalId/seal/:index/seal-identification-number                          controllers.p5.NewSealNumberController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
 GET        /:arrivalId/seal/:index/change-seal-identification-number                   controllers.p5.NewSealNumberController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
