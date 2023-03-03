@@ -93,10 +93,10 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
       formatAnswer = _.description.toText,
       prefix = "changeVehicle.registeredCountry",
       id = Some("change-vehicle-country"),
-      call = Some(routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, mode))
+      call = Some(controllers.p5.routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, mode))
     )
 
-  def GrossWeight: Option[SummaryListRow] =
+  def grossWeight: Option[SummaryListRow] =
     getAnswerAndBuildRow[String](
       page = GrossWeightPage,
       formatAnswer = _.toText,
@@ -125,11 +125,11 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
 
   def comments: Option[SummaryListRow] =
     getAnswerAndBuildRemovableRow[String](
-      page = ChangesToReportPage,
+      page = UnloadingCommentsPage,
       formatAnswer = _.toText,
       prefix = "changeItems.comments",
       id = "comments",
-      changeCall = routes.ChangesToReportController.onPageLoad(arrivalId, mode),
+      changeCall = controllers.p5.routes.UnloadingCommentsController.onPageLoad(arrivalId, mode),
       removeCall = routes.ConfirmRemoveCommentsController.onPageLoad(arrivalId, mode)
     )
 }

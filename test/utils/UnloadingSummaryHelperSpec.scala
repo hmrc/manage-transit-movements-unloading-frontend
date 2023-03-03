@@ -196,7 +196,7 @@ class UnloadingSummaryHelperSpec extends SpecBase with Generators {
                 List(
                   ActionItem(
                     content = "Change".toText,
-                    href = routes.VehicleRegistrationCountryController.onPageLoad(userAnswers.id, mode).url,
+                    href = controllers.p5.routes.VehicleRegistrationCountryController.onPageLoad(userAnswers.id, mode).url,
                     visuallyHiddenText = Some("registered"),
                     attributes = Map("id" -> "change-vehicle-country")
                   )
@@ -213,7 +213,7 @@ class UnloadingSummaryHelperSpec extends SpecBase with Generators {
         str =>
           val userAnswers = emptyUserAnswers.setValue(GrossWeightPage, str)
           val helper      = new UnloadingSummaryHelper(userAnswers, mode)
-          val result      = helper.GrossWeight.get
+          val result      = helper.grossWeight.get
 
           result mustEqual SummaryListRow(
             key = "Total gross weight in kilograms".toKey,
@@ -292,7 +292,7 @@ class UnloadingSummaryHelperSpec extends SpecBase with Generators {
 
       forAll(arbitrary[String]) {
         str =>
-          val userAnswers = emptyUserAnswers.setValue(ChangesToReportPage, str)
+          val userAnswers = emptyUserAnswers.setValue(UnloadingCommentsPage, str)
           val helper      = new UnloadingSummaryHelper(userAnswers, mode)
           val result      = helper.comments.get
 
@@ -304,7 +304,7 @@ class UnloadingSummaryHelperSpec extends SpecBase with Generators {
                 List(
                   ActionItem(
                     content = "Change".toText,
-                    href = routes.ChangesToReportController.onPageLoad(userAnswers.id, mode).url,
+                    href = controllers.p5.routes.UnloadingCommentsController.onPageLoad(userAnswers.id, mode).url,
                     visuallyHiddenText = Some("comments"),
                     attributes = Map("id" -> "change-comments")
                   ),

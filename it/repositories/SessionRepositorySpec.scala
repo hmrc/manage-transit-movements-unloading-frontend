@@ -42,8 +42,8 @@ class SessionRepositorySpec
 
   override protected def repository = new SessionRepository(mongoComponent, config)
 
-  private val userAnswers1 = UserAnswers(ArrivalId(0), MovementReferenceNumber("99IT9876AB88901209").get, EoriNumber("EoriNumber1"), Json.obj("foo" -> "bar"))
-  private val userAnswers2 = UserAnswers(ArrivalId(1), MovementReferenceNumber("18GB0000601001EB15").get, EoriNumber("EoriNumber2"), Json.obj("bar" -> "foo"))
+  private val userAnswers1 = UserAnswers(ArrivalId("0"), MovementReferenceNumber("99IT9876AB88901209").get, EoriNumber("EoriNumber1"), Json.obj("foo" -> "bar"))
+  private val userAnswers2 = UserAnswers(ArrivalId("1"), MovementReferenceNumber("18GB0000601001EB15").get, EoriNumber("EoriNumber2"), Json.obj("bar" -> "foo"))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -57,7 +57,7 @@ class SessionRepositorySpec
 
       "must return UserAnswers when given an ArrivalId and EoriNumber" in {
 
-        val result = repository.get(ArrivalId(0), EoriNumber("EoriNumber1")).futureValue
+        val result = repository.get(ArrivalId("0"), EoriNumber("EoriNumber1")).futureValue
 
         result.value.id mustBe userAnswers1.id
         result.value.eoriNumber mustBe userAnswers1.eoriNumber
@@ -66,14 +66,14 @@ class SessionRepositorySpec
 
       "must return None when no UserAnswers match ArrivalId" in {
 
-        val result = repository.get(ArrivalId(3), EoriNumber("EoriNumber1")).futureValue
+        val result = repository.get(ArrivalId("3"), EoriNumber("EoriNumber1")).futureValue
 
         result mustBe None
       }
 
       "must return None when no UserAnswers match EoriNumber" in {
 
-        val result = repository.get(ArrivalId(0), EoriNumber("InvalidEori")).futureValue
+        val result = repository.get(ArrivalId("0"), EoriNumber("InvalidEori")).futureValue
 
         result mustBe None
       }
@@ -83,11 +83,11 @@ class SessionRepositorySpec
 
       "must create new document when given valid UserAnswers" in {
 
-        val userAnswers = UserAnswers(ArrivalId(3), MovementReferenceNumber("18GB0000601001EBD1").get, EoriNumber("EoriNumber3"), Json.obj("foo" -> "bar"))
+        val userAnswers = UserAnswers(ArrivalId("3"), MovementReferenceNumber("18GB0000601001EBD1").get, EoriNumber("EoriNumber3"), Json.obj("foo" -> "bar"))
 
         val setResult = repository.set(userAnswers).futureValue
 
-        val getResult = repository.get(ArrivalId(3), EoriNumber("EoriNumber3")).futureValue.value
+        val getResult = repository.get(ArrivalId("3"), EoriNumber("EoriNumber3")).futureValue.value
 
         setResult mustBe true
         getResult.id mustBe userAnswers.id
@@ -100,11 +100,11 @@ class SessionRepositorySpec
 
       "must remove document when given a valid ArrivalId" in {
 
-        repository.get(ArrivalId(0), EoriNumber("EoriNumber1")).futureValue mustBe defined
+        repository.get(ArrivalId("0"), EoriNumber("EoriNumber1")).futureValue mustBe defined
 
-        repository.remove(ArrivalId(0)).futureValue
+        repository.remove(ArrivalId("0")).futureValue
 
-        repository.get(ArrivalId(0), EoriNumber("EoriNumber1")).futureValue must not be defined
+        repository.get(ArrivalId("0"), EoriNumber("EoriNumber1")).futureValue must not be defined
       }
     }
   }

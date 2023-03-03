@@ -16,23 +16,18 @@
 
 package forms
 
-import javax.inject.Inject
 import forms.mappings.Mappings
-import models.Index
-import models.messages.UnloadingRemarksRequest
+import javax.inject.Inject
+import models.messages.RemarksNonConform
 import play.api.data.Form
+import models.messages.UnloadingRemarksRequest.stringFieldRegex
 
-class GrossWeightFormProvider @Inject() extends Mappings {
+class UnloadingCommentsFormProvider @Inject() extends Mappings {
 
-  def apply(index: Index = Index(0)): Form[String] = //todo update
+  def apply(): Form[String] =
     Form(
-      "value" -> text(s"grossWeight.error.required", args = Seq(s"${index.display}"))
-        .verifying(
-          StopOnFirstFail[String](
-            maxLength(UnloadingRemarksRequest.weightLength, "grossWeight.error.length"),
-            regexp(UnloadingRemarksRequest.weightCharsRegex, "grossWeight.error.characters"),
-            regexp(UnloadingRemarksRequest.weightRegex, "grossWeight.error.decimal")
-          )
-        )
+      "value" -> text("changesToReport.error.required")
+        .verifying(maxLength(RemarksNonConform.unloadingRemarkLength, "changesToReport.error.length"))
+        .verifying(regexp(stringFieldRegex.r, "changesToReport.error.invalid", Seq.empty))
     )
 }

@@ -16,22 +16,25 @@
 
 package forms
 
-import javax.inject.Inject
 import forms.mappings.Mappings
-import models.Index
+import models.Seals
 import models.messages.UnloadingRemarksRequest
 import play.api.data.Form
 
-class GrossWeightFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
 
-  def apply(index: Index = Index(0)): Form[String] = //todo update
+class NewContainerIdentificationNumberFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[String] =
     Form(
-      "value" -> text(s"grossWeight.error.required", args = Seq(s"${index.display}"))
+      "value" -> text("newContainerIdentificationNumber.error.required")
         .verifying(
-          StopOnFirstFail[String](
-            maxLength(UnloadingRemarksRequest.weightLength, "grossWeight.error.length"),
-            regexp(UnloadingRemarksRequest.weightCharsRegex, "grossWeight.error.characters"),
-            regexp(UnloadingRemarksRequest.weightRegex, "grossWeight.error.decimal")
+          maxLength(UnloadingRemarksRequest.newContainerIdentificationNumberMaximumLength, "newContainerIdentificationNumber.error.length")
+        )
+        .verifying(
+          regexp(
+            UnloadingRemarksRequest.alphaNumericRegex,
+            "newContainerIdentificationNumber.error.characters"
           )
         )
     )

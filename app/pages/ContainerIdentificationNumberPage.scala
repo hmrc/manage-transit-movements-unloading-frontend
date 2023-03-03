@@ -16,16 +16,10 @@
 
 package pages
 
-import pages.behaviours.PageBehaviours
+import models.Index
+import play.api.libs.json.JsPath
 
-class ChangesToReportPageSpec extends PageBehaviours {
+final case class ContainerIdentificationNumberPage(index: Index) extends QuestionPage[String] {
 
-  "ChangesToReportPage" - {
-
-    beRetrievable[String](ChangesToReportPage)
-
-    beSettable[String](ChangesToReportPage)
-
-    beRemovable[String](ChangesToReportPage)
-  }
+  override def path: JsPath = JsPath \ "containers" \ index.position
 }

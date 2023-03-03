@@ -119,7 +119,7 @@ case class RemarksNonConform(
 
 object RemarksNonConform {
 
-  val unloadingRemarkLength  = 350
+  val unloadingRemarkLength  = 512
   val resultsOfControlLength = 9
 
   implicit val writes: XMLWrites[RemarksNonConform] =
