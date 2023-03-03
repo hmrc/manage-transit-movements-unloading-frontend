@@ -22,7 +22,7 @@ import models.{Index, NormalMode, Seal}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.{ChangesToReportPage, SealPage}
+import pages.{SealPage, UnloadingCommentsPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -83,7 +83,7 @@ class UnloadingSummaryControllerSpec extends SpecBase with AppWithDefaultMockFix
       "when ChangesToReportPage is populated" in {
         checkArrivalStatus()
 
-        val userAnswers = emptyUserAnswers.setValue(ChangesToReportPage, arbitrary[String].sample.value)
+        val userAnswers = emptyUserAnswers.setValue(UnloadingCommentsPage, arbitrary[String].sample.value)
         setExistingUserAnswers(userAnswers)
 
         when(mockViewModel.sealsSection(any(), any())(any()))

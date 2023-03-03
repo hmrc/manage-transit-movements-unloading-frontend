@@ -28,11 +28,11 @@ class RejectionCheckYourAnswersViewModel {
     Seq(
       Section(
         Seq(
-          cyaHelper.vehicleNameRegistration,
+          cyaHelper.vehicleIdentificationNumber,
           cyaHelper.dateGoodsUnloaded,
           cyaHelper.totalNumberOfItems,
           cyaHelper.totalNumberOfPackages,
-          cyaHelper.grossMassAmount
+          cyaHelper.GrossWeightAmount
         ).flatten
       )
     )

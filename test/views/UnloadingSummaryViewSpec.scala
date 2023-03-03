@@ -54,7 +54,7 @@ class UnloadingSummaryViewSpec extends CheckYourAnswersViewBehaviours {
   behave like pageWithLink(
     id = "add-seal",
     expectedText = "Add a new official customs seal number",
-    expectedHref = routes.NewSealNumberController.onPageLoad(arrivalId, Index(numberOfSeals), NormalMode).url
+    expectedHref = controllers.p5.routes.NewSealNumberController.onPageLoad(arrivalId, Index(numberOfSeals), NormalMode).url
   )
 
   behave like pageWithSubmitButton("Continue")
@@ -84,7 +84,7 @@ class UnloadingSummaryViewSpec extends CheckYourAnswersViewBehaviours {
       doc = doc,
       id = "add-comment",
       expectedText = "Add comment",
-      expectedHref = routes.ChangesToReportController.onPageLoad(arrivalId, NormalMode).url
+      expectedHref = controllers.p5.routes.UnloadingCommentsController.onPageLoad(arrivalId, NormalMode).url
     )
   }
 
