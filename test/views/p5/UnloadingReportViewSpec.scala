@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package views
+package views.p5
 
-import forms.ChangesToReportFormProvider
+import forms.UnloadingCommentsFormProvider
 import models.NormalMode
 import models.messages.RemarksNonConform._
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.CharacterCountViewBehaviours
-import views.html.ChangesToReportView
+import views.html.p5.UnloadingCommentsView
 
-class ChangesToReportViewSpec extends CharacterCountViewBehaviours {
+class UnloadingCommentsViewSpec extends CharacterCountViewBehaviours {
 
-  override def form: Form[String] = new ChangesToReportFormProvider()()
+  override def form: Form[String] = new UnloadingCommentsFormProvider()()
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[ChangesToReportView].apply(form, mrn, arrivalId, unloadingRemarkLength, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[UnloadingCommentsView].apply(form, mrn, arrivalId, unloadingRemarkLength, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "changesToReport"
 

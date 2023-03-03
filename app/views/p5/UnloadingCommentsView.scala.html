@@ -35,11 +35,12 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.ChangesToReportController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
+    @errorSummary(form.errors)
 
-        @errorSummary(form.errors)
+    @caption(mrn.toString)
 
-        @caption(mrn.toString)
+    @formHelper(action = controllers.p5.routes.UnloadingCommentsController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
+
 
         @inputCharacterCount(
           field = form("value"),
