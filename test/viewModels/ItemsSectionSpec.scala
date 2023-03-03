@@ -18,7 +18,7 @@ package viewModels
 
 import base.SpecBase
 import models.NormalMode
-import pages.{UnloadingCommentsPage, GrossWeightPage, TotalNumberOfItemsPage, TotalNumberOfPackagesPage}
+import pages.{GrossWeightPage, TotalNumberOfItemsPage, TotalNumberOfPackagesPage, UnloadingCommentsPage}
 import queries.GoodsItemsQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import viewModels.sections.Section
