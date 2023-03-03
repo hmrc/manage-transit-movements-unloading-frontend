@@ -213,7 +213,7 @@ class UnloadingSummaryHelperSpec extends SpecBase with Generators {
         str =>
           val userAnswers = emptyUserAnswers.setValue(GrossWeightPage, str)
           val helper      = new UnloadingSummaryHelper(userAnswers, mode)
-          val result      = helper.GrossWeight.get
+          val result      = helper.grossWeight.get
 
           result mustEqual SummaryListRow(
             key = "Total gross weight in kilograms".toKey,
