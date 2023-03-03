@@ -31,7 +31,7 @@ class TotalNumberOfPackagesFormProvider @Inject() extends Mappings {
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(UnloadingRemarksRequest.numericRegex, "totalNumberOfPackages.error.nonNumeric", Seq(index.display)),
-            maximumValue[String](UnloadingRemarksRequest.numberOfPackages.toString, "totalNumberOfPackages.error.outOfRange")
+            maxLength(UnloadingRemarksRequest.numberOfPackagesLength, "totalNumberOfPackages.error.outOfRange")
           )
         )
     )

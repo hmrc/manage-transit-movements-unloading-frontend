@@ -198,7 +198,7 @@ totalNumberOfPackages.heading = What is the new number of packages for item {0}?
 totalNumberOfPackages.checkYourAnswersLabel = What is the new number of packages for item {0}?
 totalNumberOfPackages.error.nonNumeric = The new number of packages must only include numbers 0 to 9
 totalNumberOfPackages.error.required = Enter the new number of packages for item {0}
-totalNumberOfPackages.error.outOfRange = The new number of packages must be {0} or less
+totalNumberOfPackages.error.outOfRange = The new number of packages must be 99999999 or less
 totalNumberOfPackages.change.hidden = the new total number of packages
 
 unloadingRemarksRejection.title = There is a problem with these unloading remarks

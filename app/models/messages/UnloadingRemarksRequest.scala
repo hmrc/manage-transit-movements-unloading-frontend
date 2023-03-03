@@ -39,7 +39,7 @@ object UnloadingRemarksRequest {
   val transportIdentityLength              = 27
   val transportIdentityCountry             = 2
   val numberOfItems                        = 99999
-  val numberOfPackages                     = 9999999
+  val numberOfPackagesLength               = 8
   val presentationOfficeLength             = 8
   val newSealNumberMaximumLength           = 20
   val vehicleIdentificationNumberMaxLength = 35

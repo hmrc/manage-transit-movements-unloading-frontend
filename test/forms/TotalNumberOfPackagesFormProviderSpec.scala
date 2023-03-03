@@ -29,7 +29,7 @@ class TotalNumberOfPackagesFormProviderSpec extends StringFieldBehaviours with G
 
   private val requiredKey = "totalNumberOfPackages.error.required"
   private val invalidKey  = "totalNumberOfPackages.error.nonNumeric"
-  private val maxLength   = UnloadingRemarksRequest.numberOfPackages
+  private val maxLength   = UnloadingRemarksRequest.numberOfPackagesLength
 
   private val index = Index(0)
 
