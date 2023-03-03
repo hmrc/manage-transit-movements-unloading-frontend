@@ -22,10 +22,10 @@ class TotalNumberOfPackagesPageSpec extends PageBehaviours {
 
   "TotalNumberOfPackagesPage" - {
 
-    beRetrievable[Int](TotalNumberOfPackagesPage)
+    beRetrievable[String](TotalNumberOfPackagesPage)
 
-    beSettable[Int](TotalNumberOfPackagesPage)
+    beSettable[String](TotalNumberOfPackagesPage)
 
-    beRemovable[Int](TotalNumberOfPackagesPage)
+    beRemovable[String](TotalNumberOfPackagesPage)
   }
 }

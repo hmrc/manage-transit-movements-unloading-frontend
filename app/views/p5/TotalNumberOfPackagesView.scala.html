@@ -27,23 +27,23 @@
     caption: HeadingCaption
 )
 
-@(form: Form[_], arrivalId: ArrivalId, mrn: MovementReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], arrivalId: ArrivalId, mrn: MovementReferenceNumber, index: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("totalNumberOfPackages.title"),
+    title = messages("totalNumberOfPackages.title", index.display),
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.TotalNumberOfPackagesController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
+    @errorSummary(form.errors)
 
-        @errorSummary(form.errors)
+    @caption(mrn.toString)
 
-        @caption(mrn.toString)
+    @formHelper(action = controllers.p5.routes.TotalNumberOfPackagesController.onSubmit(arrivalId, index, mode), Symbol("autoComplete") -> "off") {
 
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("totalNumberOfPackages.heading")
+                heading = messages("totalNumberOfPackages.heading", index.display)
             ),
             inputClass = InputSize.Width10,
             inputMode = Some("numeric"),

@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
 import controllers.actions._
 import forms.TotalNumberOfPackagesFormProvider
-import models.{ArrivalId, Mode}
+import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
 import pages.TotalNumberOfPackagesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.TotalNumberOfPackagesView
+import views.html.p5.TotalNumberOfPackagesView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,24 +42,26 @@ class TotalNumberOfPackagesController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider()
-
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
+      val form = formProvider(index)
+
       val preparedForm = request.userAnswers.get(TotalNumberOfPackagesPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
-      Ok(view(preparedForm, arrivalId, request.userAnswers.mrn, mode))
+      Ok(view(preparedForm, arrivalId, request.userAnswers.mrn, index, mode))
 
   }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
+  def onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
+      val form = formProvider(index)
+
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId, request.userAnswers.mrn, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId, request.userAnswers.mrn, index, mode))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(TotalNumberOfPackagesPage, value))

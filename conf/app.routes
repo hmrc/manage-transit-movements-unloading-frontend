@@ -103,10 +103,10 @@ POST       /:arrivalId/total-number-of-items                                    
 GET        /:arrivalId/change-total-number-of-items                                         controllers.TotalNumberOfItemsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-total-number-of-items                                         controllers.TotalNumberOfItemsController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/total-number-of-packages                                             controllers.TotalNumberOfPackagesController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/total-number-of-packages                                             controllers.TotalNumberOfPackagesController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-total-number-of-packages                                      controllers.TotalNumberOfPackagesController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-total-number-of-packages                                      controllers.TotalNumberOfPackagesController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+GET        /:arrivalId/items/:index/number-of-packages                      controllers.p5.TotalNumberOfPackagesController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
+POST       /:arrivalId/items/:index/number-of-packages                      controllers.p5.TotalNumberOfPackagesController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
+GET        /:arrivalId/items/:index/change-number-of-packages               controllers.p5.TotalNumberOfPackagesController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
+POST       /:arrivalId/items/:index/change-number-of-packages               controllers.p5.TotalNumberOfPackagesController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
 
 GET        /:arrivalId/unloading-rejection                                                  controllers.UnloadingRemarksRejectionController.onPageLoad(arrivalId: ArrivalId)
 

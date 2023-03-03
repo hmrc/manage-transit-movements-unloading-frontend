@@ -19,7 +19,7 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.TotalNumberOfPackagesFormProvider
-import models.ArrivalId
+import models.{ArrivalId, Index}
 import pages.TotalNumberOfPackagesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -43,7 +43,7 @@ class TotalNumberOfPackagesRejectionController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider()
+  private val form = formProvider(Index(0))
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
     actions.requireData(arrivalId).andThen(getMandatoryPage(TotalNumberOfPackagesPage)) {

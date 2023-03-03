@@ -115,12 +115,13 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
     )
 
   def totalNumberOfPackages: Option[SummaryListRow] =
-    getAnswerAndBuildRow[Int](
+    getAnswerAndBuildRow[String](
       page = TotalNumberOfPackagesPage,
-      formatAnswer = _.toString.toText,
+      formatAnswer = _.toText,
       prefix = "changeItems.totalNumberOfPackages",
       id = Some("change-total-number-of-packages"),
-      call = Some(routes.TotalNumberOfPackagesController.onPageLoad(arrivalId, mode))
+      call =
+        Some(controllers.p5.routes.TotalNumberOfPackagesController.onPageLoad(arrivalId, Index(0), mode)) // TODO add looping to this when we have IE043 data
     )
 
   def comments: Option[SummaryListRow] =

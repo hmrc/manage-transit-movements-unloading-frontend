@@ -51,7 +51,7 @@ class ItemsSectionSpec extends SpecBase {
       }
 
       "correct number of packages" in {
-        val userAnswers      = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, 10)
+        val userAnswers      = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, "10")
         val section: Section = ItemsSection(userAnswers, mode)
         section.sectionTitle.get mustBe "Items"
         section.rows.head.value.content mustBe Text("10")

@@ -37,18 +37,18 @@ case class UnloadingRemarksRequest(
 object UnloadingRemarksRequest {
 
   val transportIdentityLength                       = 27
-  val transportIdentityCountry                      = 2
   val numberOfItems                                 = 99999
-  val numberOfPackages                              = 9999999
+  val numberOfPackagesLength                        = 8
   val presentationOfficeLength                      = 8
   val newSealNumberMaximumLength                    = 20
-  val newContainerIdentificationNumberMaximumLength = 17
+  val vehicleIdentificationNumberMaxLength          = 35
   val alphaNumericRegex                             = "^[a-zA-Z0-9 ]*$"
   val stringFieldRegex                              = "^[a-zA-Z0-9&'@/.\\%? -]*$"
-  val vehicleIdentificationNumberMaxLength          = 35
   val weightRegex                                   = "^(\\d{1,16}|(\\d{0,15}\\.{1}\\d{1,6}){1})$"
   val weightLength                                  = 16
   val weightCharsRegex                              = "^([[0-9])(\\.])*"
+  val newContainerIdentificationNumberMaximumLength = 17
+  val numericRegex                                  = "^[0-9]*$".r
 
   implicit def writes: XMLWrites[UnloadingRemarksRequest] = XMLWrites[UnloadingRemarksRequest] {
     unloadingRemarksRequest =>

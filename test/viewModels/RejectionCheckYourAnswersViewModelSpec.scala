@@ -48,7 +48,7 @@ class RejectionCheckYourAnswersViewModelSpec extends AnyFreeSpec with Matchers w
 
     //noinspection ScalaStyle
     "display total number of packages on check your answers" in {
-      val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, 100)
+      val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, "100")
       val sections    = new RejectionCheckYourAnswersViewModel()(userAnswers)
 
       sections.length mustBe 1

@@ -94,7 +94,7 @@ class ResultOfControlServiceSpec extends SpecBase with Generators with ScalaChec
         forAll(arbitrary[UnloadingPermission]) {
           unloadingPermission =>
             val userAnswersUpdated = emptyUserAnswers
-              .setValue(TotalNumberOfPackagesPage, 123: Int)
+              .setValue(TotalNumberOfPackagesPage, "123")
 
             service.build(userAnswersUpdated, unloadingPermission) mustBe Seq(
               ResultsOfControlDifferentValues(

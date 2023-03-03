@@ -34,7 +34,7 @@ class ResultOfControlServiceImpl extends ResultOfControlService {
 
     val totalNumberOfItemsPage: Seq[ResultsOfControl] = resultsOfControlInt(TotalNumberOfItemsPage, NumberOfItems)
 
-    val totalNumberOfPackagesPage: Seq[ResultsOfControl] = resultsOfControlInt(TotalNumberOfPackagesPage, NumberOfPackages)
+    val totalNumberOfPackagesPage: Seq[ResultsOfControl] = resultsOfControlString(TotalNumberOfPackagesPage, NumberOfPackages)
 
     val GrossWeightAmount: Seq[ResultsOfControl] = resultsOfControlString(GrossWeightPage, GrossWeight)
 
