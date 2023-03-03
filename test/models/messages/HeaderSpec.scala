@@ -55,7 +55,7 @@ class HeaderSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks
                   <TotNumOfPacHEA306>{numberOfPackages}</TotNumOfPacHEA306>
               }
             }
-            <TotGroMasHEA307>{escapeXml(header.grossMass)}</TotGroMasHEA307>
+            <TotGroMasHEA307>{escapeXml(header.GrossWeight)}</TotGroMasHEA307>
           </HEAHEA>
 
           header.toXml mustEqual expectedResult

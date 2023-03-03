@@ -31,7 +31,7 @@ class Navigator @Inject() () {
     case DateGoodsUnloadedPage =>
       ua =>
         if (ua.get(DeriveNumberOfSeals).exists(_ > 0)) {
-          routes.CanSealsBeReadController.onPageLoad(ua.id, NormalMode)
+          controllers.p5.routes.CanSealsBeReadController.onPageLoad(ua.id, NormalMode)
         } else {
           routes.UnloadingSummaryController.onPageLoad(ua.id)
         }
@@ -39,7 +39,7 @@ class Navigator @Inject() () {
     case CanSealsBeReadPage =>
       ua =>
         ua.get(CanSealsBeReadPage) match {
-          case Some(_) => routes.AreAnySealsBrokenController.onPageLoad(ua.id, NormalMode)
+          case Some(_) => controllers.p5.routes.AreAnySealsBrokenController.onPageLoad(ua.id, NormalMode)
           case _       => routes.SessionExpiredController.onPageLoad() //TODO temporary redirect will be error page
         }
 

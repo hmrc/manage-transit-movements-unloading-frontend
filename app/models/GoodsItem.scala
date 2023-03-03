@@ -29,7 +29,7 @@ final case class GoodsItem(
   itemNumber: Int,
   commodityCode: Option[String],
   description: String,
-  grossMass: Option[String],
+  GrossWeight: Option[String],
   netMass: Option[String],
   producedDocuments: Seq[ProducedDocument],
   containers: Seq[String],
@@ -66,9 +66,9 @@ object GoodsItem {
           <ComCodTarCodGDS10>{commodityCode}</ComCodTarCodGDS10>
       }
 
-      val grossMass = goodsItem.grossMass.fold(NodeSeq.Empty) {
-        grossMass =>
-          <GroMasGDS46>{grossMass}</GroMasGDS46>
+      val GrossWeight = goodsItem.GrossWeight.fold(NodeSeq.Empty) {
+        GrossWeight =>
+          <GroMasGDS46>{GrossWeight}</GroMasGDS46>
       }
 
       val netMass = goodsItem.netMass.fold(NodeSeq.Empty) {
@@ -88,7 +88,7 @@ object GoodsItem {
         {commodityCode}
         <GooDesGDS23>{goodsItem.description}</GooDesGDS23>
         <GooDesGDS23LNG>EN</GooDesGDS23LNG>
-        {grossMass}
+        {GrossWeight}
         {netMass}
         {
         goodsItem.producedDocuments.map(
