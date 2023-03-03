@@ -14,28 +14,29 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.ChangesToReportFormProvider
+import controllers.routes
+import forms.UnloadingCommentsFormProvider
 import models.NormalMode
 import models.messages.RemarksNonConform._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.ChangesToReportPage
+import pages.UnloadingCommentsPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.ChangesToReportView
+import views.html.p5.UnloadingCommentsView
 
 import scala.concurrent.Future
 
-class ChangesToReportControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class UnloadingCommentsControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider = new ChangesToReportFormProvider()
+  private val formProvider = new UnloadingCommentsFormProvider()
   private val form         = formProvider()
   private val mode         = NormalMode
 
-  private lazy val changesToReportRoute = routes.ChangesToReportController.onPageLoad(arrivalId, NormalMode).url
+  private lazy val changesToReportRoute = controllers.p5.routes.UnloadingCommentsController.onPageLoad(arrivalId, NormalMode).url
 
   "ChangesToReport Controller" - {
 
@@ -48,7 +49,7 @@ class ChangesToReportControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[ChangesToReportView]
+      val view = injector.instanceOf[UnloadingCommentsView]
 
       status(result) mustEqual OK
 
@@ -58,7 +59,7 @@ class ChangesToReportControllerSpec extends SpecBase with AppWithDefaultMockFixt
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(ChangesToReportPage, "answer")
+      val userAnswers = emptyUserAnswers.setValue(UnloadingCommentsPage, "answer")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, changesToReportRoute)
@@ -67,7 +68,7 @@ class ChangesToReportControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       val filledForm = form.bind(Map("value" -> "answer"))
 
-      val view = injector.instanceOf[ChangesToReportView]
+      val view = injector.instanceOf[UnloadingCommentsView]
 
       status(result) mustEqual OK
 
@@ -99,7 +100,7 @@ class ChangesToReportControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[ChangesToReportView]
+      val view = injector.instanceOf[UnloadingCommentsView]
 
       status(result) mustEqual BAD_REQUEST
 

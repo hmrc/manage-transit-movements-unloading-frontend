@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
 import controllers.actions._
-import forms.ChangesToReportFormProvider
+import forms.UnloadingCommentsFormProvider
 import models.messages.RemarksNonConform._
 import models.{ArrivalId, Mode}
 import navigation.Navigator
-import pages.ChangesToReportPage
+import pages.UnloadingCommentsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.ChangesToReportView
+import views.html.p5.UnloadingCommentsView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ChangesToReportController @Inject() (
+class UnloadingCommentsController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
   actions: Actions,
-  formProvider: ChangesToReportFormProvider,
+  formProvider: UnloadingCommentsFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: ChangesToReportView
+  view: UnloadingCommentsView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -47,7 +47,7 @@ class ChangesToReportController @Inject() (
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(ChangesToReportPage) match {
+      val preparedForm = request.userAnswers.get(UnloadingCommentsPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -63,9 +63,9 @@ class ChangesToReportController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, unloadingRemarkLength, mode))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(ChangesToReportPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(UnloadingCommentsPage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(ChangesToReportPage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(UnloadingCommentsPage, mode, updatedAnswers))
         )
   }
 }

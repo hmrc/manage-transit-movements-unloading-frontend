@@ -34,8 +34,8 @@ trait PageGenerators {
   implicit lazy val arbitraryConfirmRemoveCommentsPage: Arbitrary[ConfirmRemoveCommentsPage.type] =
     Arbitrary(ConfirmRemoveCommentsPage)
 
-  implicit lazy val arbitraryChangesToReportPage: Arbitrary[ChangesToReportPage.type] =
-    Arbitrary(ChangesToReportPage)
+  implicit lazy val arbitraryChangesToReportPage: Arbitrary[UnloadingCommentsPage.type] =
+    Arbitrary(UnloadingCommentsPage)
 
   implicit lazy val arbitraryAreAnySealsBrokenPage: Arbitrary[AreAnySealsBrokenPage.type] =
     Arbitrary(AreAnySealsBrokenPage)

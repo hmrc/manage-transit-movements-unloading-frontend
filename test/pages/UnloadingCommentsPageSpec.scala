@@ -18,14 +18,14 @@ package pages
 
 import pages.behaviours.PageBehaviours
 
-class ChangesToReportPageSpec extends PageBehaviours {
+class UnloadingCommentsPageSpec extends PageBehaviours {
 
   "ChangesToReportPage" - {
 
-    beRetrievable[String](ChangesToReportPage)
+    beRetrievable[String](UnloadingCommentsPage)
 
-    beSettable[String](ChangesToReportPage)
+    beSettable[String](UnloadingCommentsPage)
 
-    beRemovable[String](ChangesToReportPage)
+    beRemovable[String](UnloadingCommentsPage)
   }
 }
