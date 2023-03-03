@@ -292,7 +292,7 @@ class UnloadingSummaryHelperSpec extends SpecBase with Generators {
 
       forAll(arbitrary[String]) {
         str =>
-          val userAnswers = emptyUserAnswers.setValue(ChangesToReportPage, str)
+          val userAnswers = emptyUserAnswers.setValue(UnloadingCommentsPage, str)
           val helper      = new UnloadingSummaryHelper(userAnswers, mode)
           val result      = helper.comments.get
 
@@ -304,7 +304,7 @@ class UnloadingSummaryHelperSpec extends SpecBase with Generators {
                 List(
                   ActionItem(
                     content = "Change".toText,
-                    href = routes.ChangesToReportController.onPageLoad(userAnswers.id, mode).url,
+                    href = controllers.p5.routes.UnloadingCommentsController.onPageLoad(userAnswers.id, mode).url,
                     visuallyHiddenText = Some("comments"),
                     attributes = Map("id" -> "change-comments")
                   ),

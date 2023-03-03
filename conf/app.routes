@@ -83,10 +83,10 @@ POST       /:arrivalId/change-any-seals-broken                              cont
 
 GET        /:arrivalId/confirmation                                         controllers.ConfirmationController.onPageLoad(arrivalId: ArrivalId)
 
-GET        /:arrivalId/changes-to-report                                    controllers.ChangesToReportController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/changes-to-report                                    controllers.ChangesToReportController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-changes-to-report                             controllers.ChangesToReportController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-changes-to-report                             controllers.ChangesToReportController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+GET        /:arrivalId/additional-comments                                    controllers.p5.UnloadingCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/additional-comments                                    controllers.p5.UnloadingCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-additional-comments                             controllers.p5.UnloadingCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-additional-comments                             controllers.p5.UnloadingCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
 GET        /:arrivalId/confirm-remove-comments                              controllers.ConfirmRemoveCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/confirm-remove-comments                              controllers.ConfirmRemoveCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
