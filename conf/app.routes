@@ -63,15 +63,15 @@ POST       /:arrivalId/seal/:index/seal-identification-number                   
 GET        /:arrivalId/seal/:index/change-seal-identification-number                        controllers.p5.NewSealNumberController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
 POST       /:arrivalId/seal/:index/change-seal-identification-number                        controllers.p5.NewSealNumberController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
 
+GET        /:arrivalId/seal/:index/remove-seal-identification-number                        controllers.p5.ConfirmRemoveSealController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
+POST       /:arrivalId/seal/:index/remove-seal-identification-number                        controllers.p5.ConfirmRemoveSealController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
+GET        /:arrivalId/seal/:index/change-remove-seal-identification-number                 controllers.p5.ConfirmRemoveSealController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
+POST       /:arrivalId/seal/:index/change-remove-seal-identification-number                 controllers.p5.ConfirmRemoveSealController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
+
 GET        /:arrivalId/container/:index/container-identification-number                     controllers.p5.NewContainerIdentificationNumberController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
 POST       /:arrivalId/container/:index/container-identification-number                     controllers.p5.NewContainerIdentificationNumberController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
 GET        /:arrivalId/container/:index/change-container-identification-number              controllers.p5.NewContainerIdentificationNumberController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
 POST       /:arrivalId/container/:index/change-container-identification-numbe               controllers.p5.NewContainerIdentificationNumberController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
-
-GET        /:arrivalId/seal/:index/confirm-remove-seal                                      controllers.ConfirmRemoveSealController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
-POST       /:arrivalId/seal/:index/confirm-remove-seal                                      controllers.ConfirmRemoveSealController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
-GET        /:arrivalId/seal/:index/change-confirm-remove-seal                               controllers.ConfirmRemoveSealController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
-POST       /:arrivalId/seal/:index/change-confirm-remove-seal                               controllers.ConfirmRemoveSealController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
 
 GET        /:arrivalId/unloading-summary                                                    controllers.UnloadingSummaryController.onPageLoad(arrivalId: ArrivalId)
 POST       /:arrivalId/unloading-summary                                                    controllers.UnloadingSummaryController.onSubmit(arrivalId: ArrivalId)

@@ -30,15 +30,16 @@
 @(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, index: Index, sealDescription: String, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("confirmRemoveSeal.title"),
+    title = messages("confirmRemoveSeal.title", sealDescription),
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.ConfirmRemoveSealController.onSubmit(arrivalId, index, mode), Symbol("autoComplete") -> "off") {
+    @errorSummary(form.errors)
 
-        @errorSummary(form.errors)
+    @caption(mrn.toString)
 
-        @caption(mrn.toString)
+    @formHelper(action = controllers.p5.routes.ConfirmRemoveSealController.onSubmit(arrivalId, index, mode), Symbol("autoComplete") -> "off") {
+
 
         @inputYesNo(
             field = form("value"),
@@ -47,6 +48,6 @@
             )
         )
 
-        @button(attributes = Map("id" -> "submit"))
+        @button(attributes = Map("id" -> "submit"), messageKey = "site.saveAndContinue")
     }
 }
