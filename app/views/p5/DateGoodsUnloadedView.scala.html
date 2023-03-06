@@ -34,11 +34,12 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.DateGoodsUnloadedController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
-
         @errorSummary(form)
 
         @caption(mrn.toString)
+
+        @formHelper(action = controllers.p5.routes.DateGoodsUnloadedController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
+
 
         @inputDate(
             field = form("value"),
