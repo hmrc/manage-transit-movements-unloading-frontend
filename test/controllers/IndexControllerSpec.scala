@@ -48,7 +48,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
       .guiceApplicationBuilder()
       .overrides(bind[UnloadingPermissionService].toInstance(mockUnloadingPermissionService))
 
-  private lazy val nextPage = controllers.p5.routes.UnloadingGuidanceController.onPageLoad(arrivalId).url
+  private lazy val nextPage = controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId).url
 
   "Index Controller" ignore {
 

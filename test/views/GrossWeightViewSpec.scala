@@ -16,39 +16,41 @@
 
 package views
 
-import forms.TotalNumberOfPackagesFormProvider
+import forms.GrossWeightFormProvider
 import models.{Index, NormalMode}
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.TotalNumberOfPackagesView
+import views.html.GrossWeightView
 
-class TotalNumberOfPackagesViewSpec extends InputTextViewBehaviours[String] {
+class GrossWeightViewSpec extends InputTextViewBehaviours[String] {
 
-  val index = Index(0)
+  private val index = Index(0)
 
-  override def form: Form[String] = new TotalNumberOfPackagesFormProvider()(index)
+  override def form: Form[String] = new GrossWeightFormProvider()()
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[TotalNumberOfPackagesView].apply(form, arrivalId, mrn, index, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[GrossWeightView].apply(form, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "totalNumberOfPackages"
+  override val prefix: String = "grossWeight"
 
-  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.oneOf(1 to 100).toString)
+  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
   behave like pageWithTitle(index.display.toString)
 
   behave like pageWithBackLink()
 
-  behave like pageWithHeading(index.display.toString)
-
   behave like pageWithCaption(mrn.toString)
 
-  behave like pageWithoutHint()
+  behave like pageWithHeading(index.display.toString)
 
-  behave like pageWithInputText(Some(InputSize.Width10), Some("numeric"), Some("[0-9]*"))
+  behave like pageWithContent("p", "This is the combined weight of the item’s goods and packaging.")
+
+  behave like pageWithHint("Enter the weight in kilograms (kg), up to 6 decimal places.")
+
+  behave like pageWithInputText(inputFieldClassSize = Some(InputSize.Width10), suffix = Some("kg"))
 
   behave like pageWithSubmitButton("Continue")
 }

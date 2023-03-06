@@ -17,56 +17,74 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.ConfirmRemoveSealFormProvider
-import models.{Index, NormalMode, Seal}
+import forms.AreAnySealsBrokenFormProvider
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.SealPage
+import pages.AreAnySealsBrokenPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.ConfirmRemoveSealView
+import views.html.AreAnySealsBrokenView
 
 import scala.concurrent.Future
 
-class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class AreAnySealsBrokenControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider                = new ConfirmRemoveSealFormProvider()
-  private val form                        = formProvider("seal 1")
-  private val index: Index                = Index(0)
-  private val mode                        = NormalMode
-  private val seal                        = Seal("seal 1", removable = true)
-  private lazy val confirmRemoveSealRoute = controllers.routes.ConfirmRemoveSealController.onPageLoad(arrivalId, index, mode).url
+  private val formProvider = new AreAnySealsBrokenFormProvider()
+  private val form         = formProvider()
+  private val mode         = NormalMode
 
-  "ConfirmRemoveSeal Controller" - {
+  lazy val areAnySealsBrokenRoute: String = controllers.routes.AreAnySealsBrokenController.onPageLoad(arrivalId, mode).url
+
+  "AreAnySealsBroken Controller" - {
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(SealPage(index), seal)
+      setExistingUserAnswers(emptyUserAnswers)
 
-      setExistingUserAnswers(userAnswers)
-
-      val request = FakeRequest(GET, confirmRemoveSealRoute)
+      val request = FakeRequest(GET, areAnySealsBrokenRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual OK
-      val view = injector.instanceOf[ConfirmRemoveSealView]
+
+      val view = injector.instanceOf[AreAnySealsBrokenView]
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, index, seal.sealId, mode)(request, messages).toString
+        view(form, mrn, arrivalId, mode)(request, messages).toString
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered" in {
+      checkArrivalStatus()
+
+      val userAnswers = emptyUserAnswers.setValue(AreAnySealsBrokenPage, true)
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(GET, areAnySealsBrokenRoute)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual OK
+
+      val filledForm = form.bind(Map("value" -> "true"))
+
+      val view = injector.instanceOf[AreAnySealsBrokenView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
       checkArrivalStatus()
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val userAnswers = emptyUserAnswers.setValue(SealPage(index), seal)
-
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, confirmRemoveSealRoute)
+        FakeRequest(POST, areAnySealsBrokenRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
@@ -79,41 +97,26 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(SealPage(index), seal)
+      setExistingUserAnswers(emptyUserAnswers)
 
-      setExistingUserAnswers(userAnswers)
-
-      val request   = FakeRequest(POST, confirmRemoveSealRoute).withFormUrlEncodedBody(("value", ""))
+      val request   = FakeRequest(POST, areAnySealsBrokenRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[ConfirmRemoveSealView]
+      val view = injector.instanceOf[AreAnySealsBrokenView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, arrivalId, index, seal.sealId, mode)(request, messages).toString
+        view(boundForm, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, confirmRemoveSealRoute)
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
-    }
-
-    "must redirect to Session Expired for a GET if NewSealNumberPage is undefined" in {
-      checkArrivalStatus()
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request = FakeRequest(GET, confirmRemoveSealRoute)
+      val request = FakeRequest(GET, areAnySealsBrokenRoute)
 
       val result = route(app, request).value
 
@@ -127,22 +130,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
       setNoExistingUserAnswers()
 
       val request =
-        FakeRequest(POST, confirmRemoveSealRoute)
-          .withFormUrlEncodedBody(("value", "true"))
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
-    }
-
-    "must redirect to Session Expired for a POST if NewSealNumberPage is undefined" in {
-      checkArrivalStatus()
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request =
-        FakeRequest(POST, confirmRemoveSealRoute)
+        FakeRequest(POST, areAnySealsBrokenRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
