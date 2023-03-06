@@ -14,54 +14,58 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
-import config.FrontendAppConfig
 import controllers.actions._
-import forms.TotalNumberOfPackagesFormProvider
-import models.{ArrivalId, Index}
-import pages.TotalNumberOfPackagesPage
+import forms.UnloadingCommentsFormProvider
+import models.messages.RemarksNonConform._
+import models.{ArrivalId, Mode}
+import navigation.Navigator
+import pages.UnloadingCommentsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.TotalNumberOfPackagesRejectionView
+import views.html.p5.UnloadingCommentsView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TotalNumberOfPackagesRejectionController @Inject() (
+class UnloadingCommentsController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
+  navigator: Navigator,
   actions: Actions,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
-  formProvider: TotalNumberOfPackagesFormProvider,
+  formProvider: UnloadingCommentsFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: TotalNumberOfPackagesRejectionView,
-  val appConfig: FrontendAppConfig
+  view: UnloadingCommentsView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider(Index(0))
+  private val form = formProvider()
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
-    actions.requireData(arrivalId).andThen(getMandatoryPage(TotalNumberOfPackagesPage)) {
-      implicit request =>
-        Ok(view(form.fill(request.arg), arrivalId))
-    }
+  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
+    implicit request =>
+      val preparedForm = request.userAnswers.get(UnloadingCommentsPage) match {
+        case None        => form
+        case Some(value) => form.fill(value)
+      }
 
-  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
+      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, unloadingRemarkLength, mode))
+  }
+
+  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, unloadingRemarkLength, mode))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(TotalNumberOfPackagesPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(UnloadingCommentsPage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(routes.RejectionCheckYourAnswersController.onPageLoad(arrivalId))
+            } yield Redirect(navigator.nextPage(UnloadingCommentsPage, mode, updatedAnswers))
         )
   }
 }

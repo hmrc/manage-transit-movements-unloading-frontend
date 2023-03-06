@@ -16,16 +16,11 @@
 
 package pages
 
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.JsPath
 
-class TotalNumberOfPackagesPageSpec extends PageBehaviours {
+case object UnloadingCommentsPage extends QuestionPage[String] {
 
-  "TotalNumberOfPackagesPage" - {
+  override def path: JsPath = JsPath \ toString
 
-    beRetrievable[String](TotalNumberOfPackagesPage)
-
-    beSettable[String](TotalNumberOfPackagesPage)
-
-    beRemovable[String](TotalNumberOfPackagesPage)
-  }
+  override def toString: String = "unloadingReport"
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
 import controllers.actions._
 import forms.VehicleRegistrationCountryFormProvider
@@ -26,7 +26,7 @@ import play.api.mvc._
 import repositories.SessionRepository
 import services.ReferenceDataService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.VehicleRegistrationCountryView
+import views.html.p5.VehicleRegistrationCountryView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

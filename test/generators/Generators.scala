@@ -20,8 +20,10 @@ import cats.data.NonEmptyList
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen, Shrink}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 import java.time._
+import scala.util.matching.Regex
 
 trait Generators
     extends UserAnswersGenerator
@@ -93,6 +95,9 @@ trait Generators
 
   def nonEmptyString: Gen[String] =
     Gen.nonEmptyListOf[Char](Gen.alphaNumChar).map(_.mkString)
+
+  def stringsThatMatchRegex(regex: Regex): Gen[String] =
+    RegexpGen.from(regex.regex).suchThat(_.nonEmpty)
 
   def stringsWithMaxLength(maxLength: Int): Gen[String] =
     for {

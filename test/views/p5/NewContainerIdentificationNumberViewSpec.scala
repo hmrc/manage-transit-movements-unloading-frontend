@@ -14,24 +14,27 @@
  * limitations under the License.
  */
 
-package views
+package views.p5
 
-import forms.ChangesToReportFormProvider
-import models.NormalMode
-import models.messages.RemarksNonConform._
+import forms.NewContainerIdentificationNumberFormProvider
+import models.{Index, NormalMode}
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.CharacterCountViewBehaviours
-import views.html.ChangesToReportView
+import views.behaviours.InputTextViewBehaviours
+import views.html.p5.NewContainerIdentificationNumberView
 
-class ChangesToReportViewSpec extends CharacterCountViewBehaviours {
+class NewContainerIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
-  override def form: Form[String] = new ChangesToReportFormProvider()()
+  override def form: Form[String] = new NewContainerIdentificationNumberFormProvider()()
+  private val index: Index        = Index(0)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[ChangesToReportView].apply(form, mrn, arrivalId, unloadingRemarkLength, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[NewContainerIdentificationNumberView].apply(form, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "changesToReport"
+  override val prefix: String = "newContainerIdentificationNumber"
+
+  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
   behave like pageWithTitle()
 
@@ -41,9 +44,9 @@ class ChangesToReportViewSpec extends CharacterCountViewBehaviours {
 
   behave like pageWithHeading()
 
-  behave like pageWithCharacterCount(unloadingRemarkLength)
+  behave like pageWithHint("This can be up to 17 characters long and include both letters and numbers.")
 
-  behave like pageWithHint(s"You can enter up to $unloadingRemarkLength characters")
+  behave like pageWithInputText()
 
   behave like pageWithSubmitButton("Continue")
 }

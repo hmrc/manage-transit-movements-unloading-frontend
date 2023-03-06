@@ -16,7 +16,6 @@
 
 package views
 
-import controllers.routes
 import models.{Index, NormalMode}
 import org.jsoup.nodes.Document
 import org.scalacheck.Arbitrary.arbitrary
@@ -84,7 +83,7 @@ class UnloadingSummaryViewSpec extends CheckYourAnswersViewBehaviours {
       doc = doc,
       id = "add-comment",
       expectedText = "Add comment",
-      expectedHref = routes.ChangesToReportController.onPageLoad(arrivalId, NormalMode).url
+      expectedHref = controllers.p5.routes.UnloadingCommentsController.onPageLoad(arrivalId, NormalMode).url
     )
   }
 

@@ -132,13 +132,13 @@ class RejectionCheckYourAnswersHelperSpec extends SpecBase with Generators {
 
         forAll(arbitrary[Int]) {
           int =>
-            val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, int)
+            val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, int.toString)
             val helper      = new RejectionCheckYourAnswersHelper(userAnswers)
             val result      = helper.totalNumberOfPackages
 
             result mustBe Some(
               SummaryListRow(
-                key = "What is the new total number of packages?".toKey,
+                key = "What is the new number of packages for item {0}?".toKey, //TODO this may not be needed
                 value = Value(int.toString.toText),
                 actions = Some(
                   Actions(items =

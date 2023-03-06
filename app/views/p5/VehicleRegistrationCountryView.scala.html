@@ -36,11 +36,12 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.VehicleRegistrationCountryController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
+    @errorSummary(form.errors)
 
-        @errorSummary(form.errors)
+    @caption(mrn.toString)
 
-        @caption(mrn.toString)
+    @formHelper(action = controllers.p5.routes.VehicleRegistrationCountryController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
+
 
         @select(
             field = form("value"),

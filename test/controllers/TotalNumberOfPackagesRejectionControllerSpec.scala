@@ -18,7 +18,7 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.TotalNumberOfPackagesFormProvider
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
@@ -31,9 +31,11 @@ import scala.concurrent.Future
 
 class TotalNumberOfPackagesRejectionControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
+  private val index = Index(0)
+
   private val formProvider                    = new TotalNumberOfPackagesFormProvider()
-  private val form                            = formProvider()
-  private val validAnswer                     = 1
+  private val form                            = formProvider(index)
+  private val validAnswer                     = "1"
   private lazy val totalNumberOfPackagesRoute = routes.TotalNumberOfPackagesRejectionController.onPageLoad(arrivalId).url
 
   "TotalNumberOfPackages Rejection Controller" - {
@@ -49,7 +51,7 @@ class TotalNumberOfPackagesRejectionControllerSpec extends SpecBase with AppWith
 
       status(result) mustEqual OK
 
-      val filledForm = form.bind(Map("value" -> validAnswer.toString))
+      val filledForm = form.bind(Map("value" -> validAnswer))
 
       contentAsString(result) mustEqual
         view(filledForm, arrivalId)(request, messages).toString
@@ -76,7 +78,7 @@ class TotalNumberOfPackagesRejectionControllerSpec extends SpecBase with AppWith
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val request = FakeRequest(POST, totalNumberOfPackagesRoute)
-        .withFormUrlEncodedBody(("value", validAnswer.toString))
+        .withFormUrlEncodedBody(("value", validAnswer))
 
       val result = route(app, request).value
 

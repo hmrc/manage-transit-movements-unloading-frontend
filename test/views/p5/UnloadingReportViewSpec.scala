@@ -14,39 +14,36 @@
  * limitations under the License.
  */
 
-package views
+package views.p5
 
-import forms.TotalNumberOfPackagesFormProvider
-import models.Index
-import org.scalacheck.{Arbitrary, Gen}
+import forms.UnloadingCommentsFormProvider
+import models.NormalMode
+import models.messages.RemarksNonConform._
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.InputSize
-import views.behaviours.InputTextViewBehaviours
-import views.html.TotalNumberOfPackagesRejectionView
+import views.behaviours.CharacterCountViewBehaviours
+import views.html.p5.UnloadingCommentsView
 
-class TotalNumberOfPackagesRejectionViewSpec extends InputTextViewBehaviours[String] {
+class UnloadingCommentsViewSpec extends CharacterCountViewBehaviours {
 
-  private val index = Index(0)
-
-  override def form: Form[String] = new TotalNumberOfPackagesFormProvider()(index)
+  override def form: Form[String] = new UnloadingCommentsFormProvider()()
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[TotalNumberOfPackagesRejectionView].apply(form, arrivalId)(fakeRequest, messages)
+    injector.instanceOf[UnloadingCommentsView].apply(form, mrn, arrivalId, unloadingRemarkLength, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "totalNumberOfPackages"
-
-  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.oneOf(1 to 100).toString)
+  override val prefix: String = "changesToReport"
 
   behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
+  behave like pageWithCaption(mrn.toString)
+
   behave like pageWithHeading()
 
-  behave like pageWithoutHint()
+  behave like pageWithCharacterCount(unloadingRemarkLength)
 
-  behave like pageWithInputText(Some(InputSize.Width10), Some("numeric"), Some("[0-9]*"))
+  behave like pageWithHint(s"You can enter up to $unloadingRemarkLength characters")
 
   behave like pageWithSubmitButton("Continue")
 }

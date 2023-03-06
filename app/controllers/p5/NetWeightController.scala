@@ -14,57 +14,57 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
 import controllers.actions._
-import forms.TotalNumberOfPackagesFormProvider
-import models.{ArrivalId, Mode}
+import forms.NetWeightFormProvider
+import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
-import pages.TotalNumberOfPackagesPage
+import pages.NetWeightPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.TotalNumberOfPackagesView
+import views.html.p5.NetWeightView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TotalNumberOfPackagesController @Inject() (
+class NetWeightController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
   actions: Actions,
-  formProvider: TotalNumberOfPackagesFormProvider,
+  formProvider: NetWeightFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: TotalNumberOfPackagesView
+  view: NetWeightView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider()
+  private def form(index: Index) = formProvider(index)
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, index: Index = Index(0), mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(TotalNumberOfPackagesPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+      val preparedForm = request.userAnswers.get(NetWeightPage) match {
+        case None        => form(index)
+        case Some(value) => form(index).fill(value)
       }
-      Ok(view(preparedForm, arrivalId, request.userAnswers.mrn, mode))
 
+      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, index, mode))
   }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
+  def onSubmit(arrivalId: ArrivalId, index: Index = Index(0), mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
-      form
+      form(index)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId, request.userAnswers.mrn, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, mode))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(TotalNumberOfPackagesPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(NetWeightPage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(TotalNumberOfPackagesPage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(NetWeightPage, mode, updatedAnswers))
         )
   }
 }

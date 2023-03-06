@@ -14,64 +14,65 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.ChangesToReportFormProvider
-import models.NormalMode
-import models.messages.RemarksNonConform._
+import controllers.routes
+import forms.NetWeightFormProvider
+import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.ChangesToReportPage
+import pages.NetWeightPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.ChangesToReportView
+import views.html.p5.NetWeightView
 
 import scala.concurrent.Future
 
-class ChangesToReportControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider = new ChangesToReportFormProvider()
-  private val form         = formProvider()
-  private val mode         = NormalMode
+  private val formProvider        = new NetWeightFormProvider()
+  private val form                = formProvider()
+  private val mode                = NormalMode
+  private val index               = Index(0)
+  private lazy val NetWeightRoute = controllers.p5.routes.NetWeightController.onPageLoad(arrivalId, index, mode).url
 
-  private lazy val changesToReportRoute = routes.ChangesToReportController.onPageLoad(arrivalId, NormalMode).url
-
-  "ChangesToReport Controller" - {
+  "NetWeightAmount Controller" - {
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, changesToReportRoute)
+      val request = FakeRequest(GET, NetWeightRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[ChangesToReportView]
+      val view = injector.instanceOf[NetWeightView]
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual view(form, mrn, arrivalId, unloadingRemarkLength, mode)(request, messages).toString
+      contentAsString(result) mustEqual
+        view(form, mrn, arrivalId, index, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
-
-      val userAnswers = emptyUserAnswers.setValue(ChangesToReportPage, "answer")
+      val userAnswers = emptyUserAnswers.setValue(NetWeightPage, "123456.123")
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, changesToReportRoute)
+      val request = FakeRequest(GET, NetWeightRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "answer"))
-
-      val view = injector.instanceOf[ChangesToReportView]
-
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual view(filledForm, mrn, arrivalId, unloadingRemarkLength, mode)(request, messages).toString
+      val filledForm = form.bind(Map("value" -> "123456.123"))
+
+      val view = injector.instanceOf[NetWeightView]
+
+      contentAsString(result) mustEqual
+        view(filledForm, mrn, arrivalId, index, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -80,8 +81,9 @@ class ChangesToReportControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, changesToReportRoute)
-        .withFormUrlEncodedBody(("value", "answer"))
+      val request =
+        FakeRequest(POST, NetWeightRoute)
+          .withFormUrlEncodedBody(("value", "123456.123"))
 
       val result = route(app, request).value
 
@@ -94,23 +96,23 @@ class ChangesToReportControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, changesToReportRoute).withFormUrlEncodedBody(("value", ""))
+      val request   = FakeRequest(POST, NetWeightRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[ChangesToReportView]
-
       status(result) mustEqual BAD_REQUEST
+      val view = injector.instanceOf[NetWeightView]
 
-      contentAsString(result) mustEqual view(boundForm, mrn, arrivalId, unloadingRemarkLength, mode)(request, messages).toString
+      contentAsString(result) mustEqual
+        view(boundForm, mrn, arrivalId, index, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, changesToReportRoute)
+      val request = FakeRequest(GET, NetWeightRoute)
 
       val result = route(app, request).value
 
@@ -123,8 +125,9 @@ class ChangesToReportControllerSpec extends SpecBase with AppWithDefaultMockFixt
       checkArrivalStatus()
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, changesToReportRoute)
-        .withFormUrlEncodedBody(("value", "answer"))
+      val request =
+        FakeRequest(POST, NetWeightRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value
 

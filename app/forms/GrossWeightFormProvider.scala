@@ -29,9 +29,9 @@ class GrossWeightFormProvider @Inject() extends Mappings {
       "value" -> text(s"grossWeight.error.required", args = Seq(s"${index.display}"))
         .verifying(
           StopOnFirstFail[String](
-            maxLength(UnloadingRemarksRequest.grossWeightLength, "grossWeight.error.length"),
-            regexp(UnloadingRemarksRequest.grossWeightCharsRegex, "grossWeight.error.characters"),
-            regexp(UnloadingRemarksRequest.grossWeightRegex, "grossWeight.error.decimal")
+            maxLength(UnloadingRemarksRequest.weightLength, "grossWeight.error.length"),
+            regexp(UnloadingRemarksRequest.weightCharsRegex, "grossWeight.error.characters"),
+            regexp(UnloadingRemarksRequest.weightRegex, "grossWeight.error.decimal")
           )
         )
     )

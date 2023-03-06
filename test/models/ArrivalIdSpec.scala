@@ -26,18 +26,18 @@ class ArrivalIdSpec extends AnyFreeSpec with Matchers with EitherValues {
   "Arrival Id" - {
     "must bind from url" in {
       val pathBindable = implicitly[PathBindable[ArrivalId]]
-      val arrivalId    = ArrivalId(12)
+      val arrivalId    = ArrivalId("AB123")
 
-      val bind: Either[String, ArrivalId] = pathBindable.bind("arrivalId", "12")
+      val bind: Either[String, ArrivalId] = pathBindable.bind("arrivalId", "AB123")
       bind.value mustBe arrivalId
     }
 
     "unbind to path value" in {
       val pathBindable = implicitly[PathBindable[ArrivalId]]
-      val arrivalId    = ArrivalId(12)
+      val arrivalId    = ArrivalId("AB123")
 
       val bindValue = pathBindable.unbind("arrivalId", arrivalId)
-      bindValue mustBe "12"
+      bindValue mustBe "AB123"
     }
   }
 }
