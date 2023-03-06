@@ -41,7 +41,7 @@ class UnloadingRemarksRejectionController @Inject() (
   identify: IdentifierAction,
   val controllerComponents: MessagesControllerComponents,
   val appConfig: FrontendAppConfig,
-  service: UnloadingRemarksRejectionService,
+  unloadingRemarksRejectionService: UnloadingRemarksRejectionService,
   dateTimeService: DateTimeService,
   extractor: RejectionMessageExtractor,
   sessionRepository: SessionRepository,
@@ -56,7 +56,7 @@ class UnloadingRemarksRejectionController @Inject() (
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = identify.async {
     implicit request =>
-      service.unloadingRemarksRejectionMessage(arrivalId) flatMap {
+      unloadingRemarksRejectionService.unloadingRemarksRejectionMessage(arrivalId) flatMap {
         case Some(rejectionMessage) =>
           val userAnswers = UserAnswers(arrivalId, rejectionMessage.movementReferenceNumber, request.eoriNumber, Json.obj(), dateTimeService.now)
           extractor.apply(userAnswers, rejectionMessage) match {
