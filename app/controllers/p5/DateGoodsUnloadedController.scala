@@ -47,7 +47,7 @@ class DateGoodsUnloadedController @Inject() (
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
-        val form = formProvider(LocalDate.now) //todo update when IE043 message work complete
+        val form = formProvider(LocalDate.now.minusDays(6)) //todo update when IE043 message work complete
         val preparedForm = request.userAnswers.get(DateGoodsUnloadedPage) match {
           case Some(value) => form.fill(value)
           case None        => form
@@ -59,7 +59,7 @@ class DateGoodsUnloadedController @Inject() (
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
-        formProvider(LocalDate.now) //todo update when IE043 message work complete
+        formProvider(LocalDate.now.minusDays(6)) //todo update when IE043 message work complete
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(view(request.userAnswers.mrn, arrivalId, mode, formWithErrors))),

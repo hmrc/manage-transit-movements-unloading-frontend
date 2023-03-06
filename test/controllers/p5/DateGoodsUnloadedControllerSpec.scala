@@ -36,7 +36,7 @@ import scala.concurrent.Future
 class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val stubClock         = Clock.fixed(Instant.now, ZoneId.systemDefault)
-  private val dateOfPreparation = LocalDate.now(stubClock)
+  private val dateOfPreparation = LocalDate.now(stubClock).minusDays(6)
   private val validAnswer       = dateOfPreparation
 
   private def form = new DateGoodsUnloadedFormProvider(stubClock)(dateOfPreparation)
