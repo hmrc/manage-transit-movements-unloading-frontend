@@ -16,7 +16,6 @@
 
 package views
 
-import controllers.routes
 import models.{Index, NormalMode}
 import org.jsoup.nodes.Document
 import org.scalacheck.Arbitrary.arbitrary
