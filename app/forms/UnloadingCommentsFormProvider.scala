@@ -17,22 +17,17 @@
 package forms
 
 import forms.mappings.Mappings
-import models.Index
-
 import javax.inject.Inject
-import models.messages.UnloadingRemarksRequest
+import models.messages.RemarksNonConform
 import play.api.data.Form
+import models.messages.UnloadingRemarksRequest.stringFieldRegex
 
-class TotalNumberOfPackagesFormProvider @Inject() extends Mappings {
+class UnloadingCommentsFormProvider @Inject() extends Mappings {
 
-  def apply(index: Index): Form[String] =
+  def apply(): Form[String] =
     Form(
-      "value" -> text("totalNumberOfPackages.error.required", Seq(index.display.toString))
-        .verifying(
-          forms.StopOnFirstFail[String](
-            regexp(UnloadingRemarksRequest.numericRegex, "totalNumberOfPackages.error.nonNumeric", Seq(index.display)),
-            maxLength(UnloadingRemarksRequest.numberOfPackagesLength, "totalNumberOfPackages.error.outOfRange")
-          )
-        )
+      "value" -> text("changesToReport.error.required")
+        .verifying(maxLength(RemarksNonConform.unloadingRemarkLength, "changesToReport.error.length"))
+        .verifying(regexp(stringFieldRegex.r, "changesToReport.error.invalid", Seq.empty))
     )
 }

@@ -18,20 +18,21 @@ package forms
 
 import forms.mappings.Mappings
 import models.Index
-
-import javax.inject.Inject
 import models.messages.UnloadingRemarksRequest
 import play.api.data.Form
 
-class TotalNumberOfPackagesFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
 
-  def apply(index: Index): Form[String] =
+class NetWeightFormProvider @Inject() extends Mappings {
+
+  def apply(index: Index = Index(0)): Form[String] = //todo update
     Form(
-      "value" -> text("totalNumberOfPackages.error.required", Seq(index.display.toString))
+      "value" -> text(s"netWeight.error.required", args = Seq(s"${index.display}"))
         .verifying(
-          forms.StopOnFirstFail[String](
-            regexp(UnloadingRemarksRequest.numericRegex, "totalNumberOfPackages.error.nonNumeric", Seq(index.display)),
-            maxLength(UnloadingRemarksRequest.numberOfPackagesLength, "totalNumberOfPackages.error.outOfRange")
+          StopOnFirstFail[String](
+            maxLength(UnloadingRemarksRequest.weightLength, "netWeight.error.length"),
+            regexp(UnloadingRemarksRequest.weightCharsRegex, "netWeight.error.characters"),
+            regexp(UnloadingRemarksRequest.weightRegex, "netWeight.error.decimal")
           )
         )
     )

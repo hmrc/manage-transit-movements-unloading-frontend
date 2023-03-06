@@ -93,10 +93,10 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
       formatAnswer = _.description.toText,
       prefix = "changeVehicle.registeredCountry",
       id = Some("change-vehicle-country"),
-      call = Some(routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, mode))
+      call = Some(controllers.p5.routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, mode))
     )
 
-  def GrossWeight: Option[SummaryListRow] =
+  def grossWeight: Option[SummaryListRow] =
     getAnswerAndBuildRow[String](
       page = GrossWeightPage,
       formatAnswer = _.toText,
@@ -115,21 +115,22 @@ class UnloadingSummaryHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
     )
 
   def totalNumberOfPackages: Option[SummaryListRow] =
-    getAnswerAndBuildRow[Int](
+    getAnswerAndBuildRow[String](
       page = TotalNumberOfPackagesPage,
-      formatAnswer = _.toString.toText,
+      formatAnswer = _.toText,
       prefix = "changeItems.totalNumberOfPackages",
       id = Some("change-total-number-of-packages"),
-      call = Some(routes.TotalNumberOfPackagesController.onPageLoad(arrivalId, mode))
+      call =
+        Some(controllers.p5.routes.TotalNumberOfPackagesController.onPageLoad(arrivalId, Index(0), mode)) // TODO add looping to this when we have IE043 data
     )
 
   def comments: Option[SummaryListRow] =
     getAnswerAndBuildRemovableRow[String](
-      page = ChangesToReportPage,
+      page = UnloadingCommentsPage,
       formatAnswer = _.toText,
       prefix = "changeItems.comments",
       id = "comments",
-      changeCall = routes.ChangesToReportController.onPageLoad(arrivalId, mode),
+      changeCall = controllers.p5.routes.UnloadingCommentsController.onPageLoad(arrivalId, mode),
       removeCall = routes.ConfirmRemoveCommentsController.onPageLoad(arrivalId, mode)
     )
 }

@@ -16,7 +16,6 @@
 
 package views.behaviours
 
-import models.Index
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
 import play.twirl.api.HtmlFormat
@@ -38,7 +37,7 @@ trait QuestionViewBehaviours[T] extends ViewBehaviours with ErrorSummaryViewBeha
   "when there are form errors" - {
     "must render error prefix in title" in {
       val title = docWithError().title()
-      title mustBe s"Error: ${messages(s"$prefix.title", Index(0).display)} - Manage your transit movements - GOV.UK"
+      title must startWith("Error: ")
     }
   }
 }

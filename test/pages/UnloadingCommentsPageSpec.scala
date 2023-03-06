@@ -18,14 +18,14 @@ package pages
 
 import pages.behaviours.PageBehaviours
 
-class TotalNumberOfPackagesPageSpec extends PageBehaviours {
+class UnloadingCommentsPageSpec extends PageBehaviours {
 
-  "TotalNumberOfPackagesPage" - {
+  "ChangesToReportPage" - {
 
-    beRetrievable[String](TotalNumberOfPackagesPage)
+    beRetrievable[String](UnloadingCommentsPage)
 
-    beSettable[String](TotalNumberOfPackagesPage)
+    beSettable[String](UnloadingCommentsPage)
 
-    beRemovable[String](TotalNumberOfPackagesPage)
+    beRemovable[String](UnloadingCommentsPage)
   }
 }

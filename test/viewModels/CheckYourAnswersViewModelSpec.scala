@@ -109,7 +109,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase {
     }
 
     "contain number of packages details" in {
-      val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, 11)
+      val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, "11")
       val sections    = new CheckYourAnswersViewModel()(userAnswers)
 
       sections.length mustBe 3
@@ -127,7 +127,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase {
     }
 
     "contain comments details" in {
-      val userAnswers = emptyUserAnswers.setValue(ChangesToReportPage, "Test comment")
+      val userAnswers = emptyUserAnswers.setValue(UnloadingCommentsPage, "Test comment")
       val sections    = new CheckYourAnswersViewModel()(userAnswers)
 
       sections.length mustBe 3

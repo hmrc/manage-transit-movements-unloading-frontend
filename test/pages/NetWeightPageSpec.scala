@@ -18,14 +18,14 @@ package pages
 
 import pages.behaviours.PageBehaviours
 
-class TotalNumberOfPackagesPageSpec extends PageBehaviours {
+class NetWeightPageSpec extends PageBehaviours {
 
-  "TotalNumberOfPackagesPage" - {
+  "GrossWeightAmountPage" - {
 
-    beRetrievable[String](TotalNumberOfPackagesPage)
+    beRetrievable[String](NetWeightPage)
 
-    beSettable[String](TotalNumberOfPackagesPage)
+    beSettable[String](NetWeightPage)
 
-    beRemovable[String](TotalNumberOfPackagesPage)
+    beRemovable[String](NetWeightPage)
   }
 }

@@ -46,9 +46,9 @@ class RejectionCheckYourAnswersHelper(userAnswers: UserAnswers)(implicit message
     )
 
   def totalNumberOfPackages: Option[SummaryListRow] =
-    getAnswerAndBuildRow[Int](
+    getAnswerAndBuildRow[String](
       page = TotalNumberOfPackagesPage,
-      formatAnswer = _.toString.toText,
+      formatAnswer = _.toText,
       prefix = "totalNumberOfPackages",
       id = Some("change-total-number-of-packages"),
       call = Some(routes.TotalNumberOfPackagesRejectionController.onPageLoad(arrivalId))

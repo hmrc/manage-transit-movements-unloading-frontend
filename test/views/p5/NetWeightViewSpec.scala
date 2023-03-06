@@ -14,39 +14,43 @@
  * limitations under the License.
  */
 
-package views
+package views.p5
 
-import forms.TotalNumberOfPackagesFormProvider
-import models.Index
+import forms.NetWeightFormProvider
+import models.{Index, NormalMode}
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.TotalNumberOfPackagesRejectionView
+import views.html.p5.NetWeightView
 
-class TotalNumberOfPackagesRejectionViewSpec extends InputTextViewBehaviours[String] {
+class NetWeightViewSpec extends InputTextViewBehaviours[String] {
 
   private val index = Index(0)
 
-  override def form: Form[String] = new TotalNumberOfPackagesFormProvider()(index)
+  override def form: Form[String] = new NetWeightFormProvider()()
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[TotalNumberOfPackagesRejectionView].apply(form, arrivalId)(fakeRequest, messages)
+    injector.instanceOf[NetWeightView].apply(form, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "totalNumberOfPackages"
+  override val prefix: String = "netWeight"
 
-  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.oneOf(1 to 100).toString)
+  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(index.display.toString)
 
   behave like pageWithBackLink()
 
-  behave like pageWithHeading()
+  behave like pageWithCaption(mrn.toString)
 
-  behave like pageWithoutHint()
+  behave like pageWithHeading(index.display.toString)
 
-  behave like pageWithInputText(Some(InputSize.Width10), Some("numeric"), Some("[0-9]*"))
+  behave like pageWithContent("p", "This is the weight of the item’s goods, excluding all packaging.")
+
+  behave like pageWithHint("Enter the weight in kilograms (kg), up to 6 decimal places.")
+
+  behave like pageWithInputText(inputFieldClassSize = Some(InputSize.Width10), suffix = Some("kg"))
 
   behave like pageWithSubmitButton("Continue")
 }

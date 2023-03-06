@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.p5
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.routes
 import forms.VehicleRegistrationCountryFormProvider
 import models.NormalMode
 import models.reference.Country
@@ -29,7 +30,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.ReferenceDataService
-import views.html.VehicleRegistrationCountryView
+import views.html.p5.VehicleRegistrationCountryView
 
 import scala.concurrent.Future
 
@@ -37,11 +38,11 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
 
   val formProvider                                   = new VehicleRegistrationCountryFormProvider()
   private val country: Country                       = Country("GB", "United Kingdom")
-  val countries                                      = Seq(country)
+  val countries: Seq[Country]                        = Seq(country)
   val form: Form[Country]                            = formProvider(countries)
   val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
   private val mode                                   = NormalMode
-  lazy val vehicleRegistrationCountryRoute: String   = routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, mode).url
+  lazy val vehicleRegistrationCountryRoute: String   = controllers.p5.routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, mode).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()

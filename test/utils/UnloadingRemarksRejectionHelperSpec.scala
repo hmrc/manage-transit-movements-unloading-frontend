@@ -62,7 +62,7 @@ class UnloadingRemarksRejectionHelperSpec extends SpecBase with Generators {
 
       forAll(arbitrary[Int]) {
         int =>
-          val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, int)
+          val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, int.toString)
           val helper      = new UnloadingRemarksRejectionHelper(userAnswers)
           val result      = helper.totalNumberOfPackages.get
 

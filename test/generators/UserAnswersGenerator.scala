@@ -27,7 +27,7 @@ trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
-    arbitrary[(ChangesToReportPage.type, JsValue)] ::
+    arbitrary[(UnloadingCommentsPage.type, JsValue)] ::
       arbitrary[(AreAnySealsBrokenPage.type, JsValue)] ::
       arbitrary[(CanSealsBeReadPage.type, JsValue)] ::
       arbitrary[(SealPage, JsValue)] ::
@@ -50,7 +50,7 @@ trait UserAnswersGenerator extends TryValues {
           case _   => Gen.mapOf(oneOf(generators))
         }
       } yield UserAnswers(
-        id = ArrivalId(1),
+        id = ArrivalId("AB123"),
         mrn = mrn,
         eoriNumber = eoriNumber,
         data = data.foldLeft(Json.obj()) {

@@ -17,23 +17,18 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import generators.Generators
-import models.Index
 import models.messages.UnloadingRemarksRequest
 import org.scalacheck.Gen
 import play.api.data.{Field, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
-import scala.util.matching.Regex
+class NewContainerIdentificationNumberFormProviderSpec extends StringFieldBehaviours {
 
-class TotalNumberOfPackagesFormProviderSpec extends StringFieldBehaviours with Generators {
+  private val requiredKey = "newContainerIdentificationNumber.error.required"
+  private val maxLength   = UnloadingRemarksRequest.newSealNumberMaximumLength
+  private val invalidKey  = "newContainerIdentificationNumber.error.characters"
 
-  private val requiredKey = "totalNumberOfPackages.error.required"
-  private val invalidKey  = "totalNumberOfPackages.error.nonNumeric"
-  private val maxLength   = UnloadingRemarksRequest.numberOfPackagesLength
-
-  private val index = Index(0)
-
-  private val form      = new TotalNumberOfPackagesFormProvider()(index)
+  private val form      = new NewContainerIdentificationNumberFormProvider()()
   private val fieldName = "value"
 
   ".value" - {
@@ -41,26 +36,26 @@ class TotalNumberOfPackagesFormProviderSpec extends StringFieldBehaviours with G
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      Gen.chooseNum(0, maxLength).toString
+      stringsWithMaxLength(maxLength)
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(index.display.toString))
+      requiredError = FormError(fieldName, requiredKey)
     )
   }
 
   "must not bind strings that do not match regex" in {
 
-    val expectedError = FormError(fieldName, invalidKey, Seq(index.display))
-    val regex         = new Regex("[A-Za-z@~{}><!*&%$]{5}")
+    val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±<>]{20}")
+    val validRegex: String     = UnloadingRemarksRequest.alphaNumericRegex
+    val expectedError          = FormError(fieldName, invalidKey, Seq(validRegex))
 
-    forAll(stringsThatMatchRegex(regex)) {
+    forAll(generator) {
       invalidString =>
         val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
         result.errors should contain(expectedError)
     }
-
   }
 }

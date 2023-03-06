@@ -44,7 +44,7 @@ trait SpecBase
     with MockitoSugar
     with GuiceOneAppPerSuite {
 
-  val arrivalId: ArrivalId = ArrivalId(1)
+  val arrivalId: ArrivalId = ArrivalId("AB123")
 
   val configKey = "config"
 
