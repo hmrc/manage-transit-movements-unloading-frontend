@@ -17,7 +17,6 @@
 package forms
 
 import forms.mappings.Mappings
-import models.Seals
 import models.messages.UnloadingRemarksRequest
 import play.api.data.Form
 

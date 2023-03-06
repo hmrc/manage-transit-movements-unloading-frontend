@@ -22,15 +22,15 @@ import play.api.libs.json._
 import queries.Gettable
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
-import java.time.LocalDateTime
+import java.time.Instant
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
   id: ArrivalId,
   mrn: MovementReferenceNumber,
   eoriNumber: EoriNumber,
-  data: JsObject = Json.obj(),
-  lastUpdated: LocalDateTime = LocalDateTime.now
+  data: JsObject,
+  lastUpdated: Instant
 ) {
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
@@ -77,31 +77,25 @@ final case class UserAnswers(
 
 object UserAnswers {
 
-  implicit lazy val reads: Reads[UserAnswers] = {
+  import play.api.libs.functional.syntax._
 
-    import play.api.libs.functional.syntax._
-
+  implicit lazy val reads: Reads[UserAnswers] =
     (
       (__ \ "_id").read[ArrivalId] and
         (__ \ "mrn").read[MovementReferenceNumber] and
         (__ \ "eoriNumber").read[EoriNumber] and
         (__ \ "data").read[JsObject] and
-        (__ \ "lastUpdated").read(MongoJavatimeFormats.localDateTimeReads)
+        (__ \ "lastUpdated").read(MongoJavatimeFormats.instantReads)
     )(UserAnswers.apply _)
-  }
 
-  implicit lazy val writes: OWrites[UserAnswers] = {
-
-    import play.api.libs.functional.syntax._
-
+  implicit lazy val writes: OWrites[UserAnswers] =
     (
       (__ \ "_id").write[ArrivalId] and
         (__ \ "mrn").write[MovementReferenceNumber] and
         (__ \ "eoriNumber").write[EoriNumber] and
         (__ \ "data").write[JsObject] and
-        (__ \ "lastUpdated").write(MongoJavatimeFormats.localDateTimeWrites)
+        (__ \ "lastUpdated").write(MongoJavatimeFormats.instantWrites)
     )(unlift(UserAnswers.unapply))
-  }
 
   implicit lazy val format: Format[UserAnswers] = Format(reads, writes)
 }

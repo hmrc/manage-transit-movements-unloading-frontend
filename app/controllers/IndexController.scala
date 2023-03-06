@@ -18,10 +18,13 @@ package controllers
 
 import controllers.actions.IdentifierAction
 import logging.Logging
+
+import play.api.libs.json.Json
 import models.{ArrivalId, MovementReferenceNumber, UserAnswers}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.DateTimeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
@@ -30,7 +33,8 @@ import scala.concurrent.ExecutionContext
 class IndexController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   identify: IdentifierAction,
-  sessionRepository: SessionRepository
+  sessionRepository: SessionRepository,
+  dateTimeService: DateTimeService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -42,7 +46,9 @@ class IndexController @Inject() (
         getUserAnswer <- sessionRepository.get(arrivalId, request.eoriNumber) map {
           _ getOrElse (UserAnswers(arrivalId,
                                    MovementReferenceNumber("35SS9OUMUBMODEESJ8").get,
-                                   request.eoriNumber
+                                   request.eoriNumber,
+                                   Json.obj(),
+                                   dateTimeService.now
           )) // TODO MRN is pulled from unloading permission
         }
         _ <- sessionRepository.set(getUserAnswer)
