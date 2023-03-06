@@ -17,7 +17,6 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import extractors.UnloadingPermissionExtractor
 import generators.Generators
 import models.{UnloadingPermission, UserAnswers}
 import org.mockito.ArgumentCaptor
@@ -32,25 +31,22 @@ import play.api.test.Helpers._
 import services.UnloadingPermissionService
 
 import scala.concurrent.Future
-import scala.util.{Failure, Success}
 
 class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   val sampleUnloadingPermission: UnloadingPermission = arbitrary[UnloadingPermission].sample.value
 
   private val mockUnloadingPermissionService = mock[UnloadingPermissionService]
-  private val mockExtractor                  = mock[UnloadingPermissionExtractor]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockUnloadingPermissionService); reset(mockExtractor)
+    reset(mockUnloadingPermissionService);
   }
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind[UnloadingPermissionService].toInstance(mockUnloadingPermissionService))
-      .overrides(bind[UnloadingPermissionExtractor].toInstance(mockExtractor))
 
   private lazy val nextPage = controllers.p5.routes.UnloadingGuidanceController.onPageLoad(arrivalId).url
 
@@ -65,8 +61,6 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
           .thenReturn(Future.successful(Some(unloadingPermission)))
 
         val userAnswers = emptyUserAnswers
-
-        when(mockExtractor.apply(any(), any())(any(), any())).thenReturn(Future.successful(Success(userAnswers)))
 
         when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
@@ -136,8 +130,6 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
         when(mockUnloadingPermissionService.getUnloadingPermission(any())(any(), any()))
           .thenReturn(Future.successful(Some(unloadingPermission)))
-
-        when(mockExtractor.apply(any(), any())(any(), any())).thenReturn(Future.successful(Failure(new Throwable(""))))
 
         setNoExistingUserAnswers()
 

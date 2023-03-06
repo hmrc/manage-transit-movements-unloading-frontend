@@ -33,7 +33,7 @@ class Navigator @Inject() () {
         if (ua.get(DeriveNumberOfSeals).exists(_ > 0)) {
           controllers.p5.routes.CanSealsBeReadController.onPageLoad(ua.id, NormalMode)
         } else {
-          routes.UnloadingSummaryController.onPageLoad(ua.id)
+          routes.SessionExpiredController.onPageLoad()
         }
 
     case CanSealsBeReadPage =>
@@ -46,16 +46,16 @@ class Navigator @Inject() () {
     case AreAnySealsBrokenPage =>
       ua =>
         ua.get(AreAnySealsBrokenPage) match {
-          case Some(_) => routes.UnloadingSummaryController.onPageLoad(ua.id)
+          case Some(_) => routes.SessionExpiredController.onPageLoad()
           case _       => routes.SessionExpiredController.onPageLoad() //TODO temporary redirect will be error page
         }
 
     case _ =>
-      ua => routes.UnloadingSummaryController.onPageLoad(ua.id)
+      ua => routes.SessionExpiredController.onPageLoad()
 
   }
 
-  private val checkRoutes: Page => UserAnswers => Call = _ => ua => routes.CheckYourAnswersController.onPageLoad(ua.id)
+  private val checkRoutes: Page => UserAnswers => Call = _ => ua => routes.SessionExpiredController.onPageLoad()
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
     case NormalMode =>

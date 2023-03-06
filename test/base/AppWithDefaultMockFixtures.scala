@@ -37,12 +37,11 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   self: TestSuite =>
 
   override def beforeEach(): Unit = {
-    reset(mockSessionRepository); reset(mockDataRetrievalActionProvider); reset(mockCheckArrivalStatusProvider)
+    reset(mockSessionRepository); reset(mockDataRetrievalActionProvider)
   }
 
-  final val mockSessionRepository: SessionRepository                   = mock[SessionRepository]
-  final val mockDataRetrievalActionProvider                            = mock[DataRetrievalActionProvider]
-  final val mockCheckArrivalStatusProvider: CheckArrivalStatusProvider = mock[CheckArrivalStatusProvider]
+  final val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  final val mockDataRetrievalActionProvider          = mock[DataRetrievalActionProvider]
 
   final override def fakeApplication(): Application =
     guiceApplicationBuilder()
@@ -62,7 +61,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
       override protected def executionContext: ExecutionContext = scala.concurrent.ExecutionContext.global
     }
 
-    when(mockCheckArrivalStatusProvider.apply(any())).thenReturn(fakeCheckArrivalStatusAction)
   }
 
   protected val onwardRoute: Call = Call("GET", "/foo")
@@ -74,7 +72,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[IdentifierAction].to[FakeIdentifierAction],
-        bind[CheckArrivalStatusProvider].toInstance(mockCheckArrivalStatusProvider),
         bind[SessionRepository].toInstance(mockSessionRepository),
         bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),
         bind[Navigator].toInstance(fakeNavigator)
