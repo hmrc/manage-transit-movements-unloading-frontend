@@ -32,10 +32,10 @@ GET        /data/:arrivalId/keep-alive                                          
 GET        /:arrivalId/unloading-guidance                                                   controllers.p5.UnloadingGuidanceController.onPageLoad(arrivalId: ArrivalId)
 POST       /:arrivalId/unloading-guidance                                                   controllers.p5.UnloadingGuidanceController.onSubmit(arrivalId: ArrivalId)
 
-GET        /:arrivalId/goods-unloaded-date                                  controllers.p5.DateGoodsUnloadedController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/goods-unloaded-date                                  controllers.p5.DateGoodsUnloadedController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-goods-unloaded-date                           controllers.p5.DateGoodsUnloadedController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-goods-unloaded-date                           controllers.p5.DateGoodsUnloadedController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+GET        /:arrivalId/goods-unloaded-date                                                  controllers.p5.DateGoodsUnloadedController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/goods-unloaded-date                                                  controllers.p5.DateGoodsUnloadedController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-goods-unloaded-date                                           controllers.p5.DateGoodsUnloadedController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-goods-unloaded-date                                           controllers.p5.DateGoodsUnloadedController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
 GET        /:arrivalId/vehicle-identification-number                                        controllers.p5.VehicleIdentificationNumberController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/vehicle-identification-number                                        controllers.p5.VehicleIdentificationNumberController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)

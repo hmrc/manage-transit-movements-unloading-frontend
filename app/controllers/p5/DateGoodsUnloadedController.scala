@@ -27,6 +27,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.p5.DateGoodsUnloadedView
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,9 +45,9 @@ class DateGoodsUnloadedController @Inject() (
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    actions.requireData(arrivalId).andThen(getMandatoryPage(DateOfPreparationPage)) {
+    actions.requireData(arrivalId) {
       implicit request =>
-        val form = formProvider(request.arg)
+        val form = formProvider(LocalDate.now) //todo update when IE043 message work complete
         val preparedForm = request.userAnswers.get(DateGoodsUnloadedPage) match {
           case Some(value) => form.fill(value)
           case None        => form
@@ -56,9 +57,9 @@ class DateGoodsUnloadedController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    actions.requireData(arrivalId).andThen(getMandatoryPage(DateOfPreparationPage)).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
-        formProvider(request.arg)
+        formProvider(LocalDate.now) //todo update when IE043 message work complete
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(view(request.userAnswers.mrn, arrivalId, mode, formWithErrors))),
