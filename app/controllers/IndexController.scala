@@ -16,42 +16,34 @@
 
 package controllers
 
-import connectors.ArrivalMovementConnector
-import controllers.actions.IdentifierAction
+import controllers.actions.{IdentifierAction, UnloadingPermissionActionProvider}
 import logging.Logging
 import models.{ArrivalId, MovementReferenceNumber, UserAnswers}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.P5.UnloadingPermissionMessageService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class IndexController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   identify: IdentifierAction,
-  sessionRepository: SessionRepository,
-  unloadingPermissionMessageService: UnloadingPermissionMessageService
+  unloadingPermission: UnloadingPermissionActionProvider,
+  sessionRepository: SessionRepository
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
-  def unloadingRemarks(arrivalId: ArrivalId): Action[AnyContent] = identify.async {
+  def unloadingRemarks(arrivalId: ArrivalId): Action[AnyContent] = (identify andThen unloadingPermission(arrivalId)).async {
     implicit request =>
-      unloadingPermissionMessageService.getUnloadingPermissionXml(arrivalId).flatMap {
-        case Some(value) =>
-          for {
-            getUserAnswer <- sessionRepository.get(arrivalId, request.eoriNumber) map {
-              _ getOrElse (UserAnswers(arrivalId, MovementReferenceNumber("35SS9OUMUBMODEESJ8").get, request.eoriNumber))
-            }
-            _ <- sessionRepository.set(getUserAnswer)
-          } yield Redirect(controllers.p5.routes.UnloadingGuidanceController.onPageLoad(arrivalId))
-        case None =>
-          Future.successful(Redirect(controllers.routes.ErrorController.technicalDifficulties()))
-      }
+      for {
+        getUserAnswer <- sessionRepository.get(arrivalId, request.eoriNumber) map {
+          _ getOrElse (UserAnswers(arrivalId, request.movementReferenceNumber, request.eoriNumber, request.unloadingPermission))
+        }
+        _ <- sessionRepository.set(getUserAnswer)
+      } yield Redirect(controllers.p5.routes.UnloadingGuidanceController.onPageLoad(arrivalId))
   }
-
 }

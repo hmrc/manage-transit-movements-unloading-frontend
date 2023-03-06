@@ -24,7 +24,6 @@ import javax.inject.Inject
 
 class Actions @Inject() (
   identifierAction: IdentifierAction,
-  checkArrivalStatus: CheckArrivalStatusProvider,
   dataRetrievalAction: DataRetrievalActionProvider,
   dataRequiredAction: DataRequiredAction
 ) {

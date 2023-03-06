@@ -18,7 +18,7 @@ package models.P5
 
 import play.api.libs.json.{Json, Reads}
 
-case class Messages(messages: Seq[Message])
+case class Messages(messages: List[MessageMetaData])
 
 object Messages {
   implicit val reads: Reads[Messages] = Json.reads[Messages]

@@ -20,7 +20,7 @@ import cats.data.OptionT
 import connectors.ArrivalMovementConnector
 import models.ArrivalId
 import models.P5.ArrivalMessageType.UnloadingPermission
-import models.P5.{Message, MessageWithXml}
+import models.P5.{Message, MessageMetaData}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -28,25 +28,23 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class UnloadingPermissionMessageService @Inject() (arrivalMovementConnector: ArrivalMovementConnector) {
 
-  def getUnloadingPermissionMessage(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[Message]] =
+  def getUnloadingPermissionMessage(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[MessageMetaData]] =
     arrivalMovementConnector
-      .getMessages(arrivalId)
+      .getMessageMetaData(arrivalId)
       .map(
         _.messages
           .filter(_.messageType == UnloadingPermission)
           .sortBy(_.received)
+          .reverse
           .headOption
       )
 
-  def getUnloadingPermissionXml(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[MessageWithXml]] =
+  def getUnloadingPermissionJson(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[Message]] =
     (
       for {
         unloadingPermissionMessage <- OptionT(getUnloadingPermissionMessage(arrivalId))
-        unloadingPermissionXml <- {
-          println(s"\n\n\n $unloadingPermissionMessage \n\n\n")
-          OptionT.liftF(arrivalMovementConnector.getMessageXml(unloadingPermissionMessage.path))
-        }
-      } yield unloadingPermissionXml
+        unloadingPermission        <- OptionT.liftF(arrivalMovementConnector.getMessage(unloadingPermissionMessage.path))
+      } yield unloadingPermission
     ).value
 
 }

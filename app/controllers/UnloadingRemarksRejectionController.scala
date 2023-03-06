@@ -23,6 +23,7 @@ import handlers.ErrorHandler
 import logging.Logging
 import models._
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.JsObject
 import play.api.mvc._
 import repositories.SessionRepository
 import services.UnloadingRemarksRejectionService
@@ -56,7 +57,7 @@ class UnloadingRemarksRejectionController @Inject() (
     implicit request =>
       service.unloadingRemarksRejectionMessage(arrivalId) flatMap {
         case Some(rejectionMessage) =>
-          val userAnswers = UserAnswers(arrivalId, rejectionMessage.movementReferenceNumber, request.eoriNumber)
+          val userAnswers = UserAnswers(arrivalId, rejectionMessage.movementReferenceNumber, request.eoriNumber, JsObject.empty) // TODO remove this
           extractor.apply(userAnswers, rejectionMessage) match {
             case Success(updatedAnswers) =>
               sessionRepository.set(updatedAnswers) flatMap {

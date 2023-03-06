@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package models.P5
+package models.requests
 
-import play.api.libs.json.{__, JsObject, Json, Reads}
+import models.{EoriNumber, MovementReferenceNumber}
+import play.api.libs.json.JsObject
+import play.api.mvc.{Request, WrappedRequest}
 
-case class Message(body: JsObject)
-
-object Message {
-  implicit lazy val reads: Reads[Message] = Json.reads[Message]
-}
+case class UnloadingPermissionRequest[A](
+  request: Request[A],
+  eoriNumber: EoriNumber,
+  unloadingPermission: JsObject,
+  movementReferenceNumber: MovementReferenceNumber
+) extends WrappedRequest[A](request)
