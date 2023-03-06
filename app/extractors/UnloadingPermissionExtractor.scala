@@ -34,7 +34,7 @@ class UnloadingPermissionExtractor @Inject() (referenceDataService: ReferenceDat
   )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Try[UserAnswers]] =
     Future.fromTry {
       extractVehicleNameRegistrationReference(userAnswers, unloadingPermission)
-        .flatMap(extractGrossMassAmount(_, unloadingPermission))
+        .flatMap(extractGrossWeightAmount(_, unloadingPermission))
         .flatMap(extractTotalNumberOfItems(_, unloadingPermission))
         .flatMap(extractTotalNumberOfPackages(_, unloadingPermission))
         .flatMap(extractSeals(_, unloadingPermission))
@@ -49,7 +49,7 @@ class UnloadingPermissionExtractor @Inject() (referenceDataService: ReferenceDat
     unloadingPermission: UnloadingPermission
   ): Try[UserAnswers] =
     unloadingPermission.transportIdentity match {
-      case Some(transportIdentity) => userAnswers.set(VehicleNameRegistrationReferencePage, transportIdentity)
+      case Some(transportIdentity) => userAnswers.set(VehicleIdentificationNumberPage, transportIdentity)
       case None                    => Success(userAnswers)
     }
 
@@ -62,11 +62,11 @@ class UnloadingPermissionExtractor @Inject() (referenceDataService: ReferenceDat
       case None          => Success(userAnswers)
     }
 
-  private def extractGrossMassAmount(
+  private def extractGrossWeightAmount(
     userAnswers: UserAnswers,
     unloadingPermission: UnloadingPermission
   ): Try[UserAnswers] =
-    userAnswers.set(GrossMassAmountPage, unloadingPermission.grossMass)
+    userAnswers.set(GrossWeightPage, unloadingPermission.GrossWeight)
 
   private def extractTotalNumberOfItems(
     userAnswers: UserAnswers,
@@ -79,7 +79,7 @@ class UnloadingPermissionExtractor @Inject() (referenceDataService: ReferenceDat
     unloadingPermission: UnloadingPermission
   ): Try[UserAnswers] =
     unloadingPermission.numberOfPackages match {
-      case Some(numberOfPackages) => userAnswers.set(TotalNumberOfPackagesPage, numberOfPackages)
+      case Some(numberOfPackages) => userAnswers.set(TotalNumberOfPackagesPage, numberOfPackages.toString)
       case None                   => Success(userAnswers)
     }
 

@@ -18,7 +18,7 @@ package viewModels
 
 import base.SpecBase
 import models.NormalMode
-import pages.{ChangesToReportPage, GrossMassAmountPage, TotalNumberOfItemsPage, TotalNumberOfPackagesPage}
+import pages.{GrossWeightPage, TotalNumberOfItemsPage, TotalNumberOfPackagesPage, UnloadingCommentsPage}
 import queries.GoodsItemsQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import viewModels.sections.Section
@@ -37,7 +37,7 @@ class ItemsSectionSpec extends SpecBase {
       }
 
       "correct gross mass" in {
-        val userAnswers      = emptyUserAnswers.setValue(GrossMassAmountPage, "1000")
+        val userAnswers      = emptyUserAnswers.setValue(GrossWeightPage, "1000")
         val section: Section = ItemsSection(userAnswers, mode)
         section.sectionTitle.get mustBe "Items"
         section.rows.head.value.content mustBe Text("1000")
@@ -51,7 +51,7 @@ class ItemsSectionSpec extends SpecBase {
       }
 
       "correct number of packages" in {
-        val userAnswers      = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, 10)
+        val userAnswers      = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, "10")
         val section: Section = ItemsSection(userAnswers, mode)
         section.sectionTitle.get mustBe "Items"
         section.rows.head.value.content mustBe Text("10")
@@ -65,7 +65,7 @@ class ItemsSectionSpec extends SpecBase {
       }
 
       "correct comments" in {
-        val userAnswers      = emptyUserAnswers.setValue(ChangesToReportPage, "Test")
+        val userAnswers      = emptyUserAnswers.setValue(UnloadingCommentsPage, "Test")
         val section: Section = ItemsSection(userAnswers, mode)
         section.sectionTitle.get mustBe "Items"
         section.rows.head.value.content mustBe Text("Test")

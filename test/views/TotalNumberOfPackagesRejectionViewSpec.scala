@@ -17,6 +17,7 @@
 package views
 
 import forms.TotalNumberOfPackagesFormProvider
+import models.Index
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -24,16 +25,18 @@ import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
 import views.html.TotalNumberOfPackagesRejectionView
 
-class TotalNumberOfPackagesRejectionViewSpec extends InputTextViewBehaviours[Int] {
+class TotalNumberOfPackagesRejectionViewSpec extends InputTextViewBehaviours[String] {
 
-  override def form: Form[Int] = new TotalNumberOfPackagesFormProvider()()
+  private val index = Index(0)
 
-  override def applyView(form: Form[Int]): HtmlFormat.Appendable =
+  override def form: Form[String] = new TotalNumberOfPackagesFormProvider()(index)
+
+  override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector.instanceOf[TotalNumberOfPackagesRejectionView].apply(form, arrivalId)(fakeRequest, messages)
 
   override val prefix: String = "totalNumberOfPackages"
 
-  implicit override val arbitraryT: Arbitrary[Int] = Arbitrary(Gen.oneOf(1 to 100))
+  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.oneOf(1 to 100).toString)
 
   behave like pageWithTitle()
 

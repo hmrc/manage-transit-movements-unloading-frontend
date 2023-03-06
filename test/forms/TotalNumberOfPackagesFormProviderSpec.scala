@@ -16,48 +16,51 @@
 
 package forms
 
-import forms.behaviours.IntFieldBehaviours
+import forms.behaviours.StringFieldBehaviours
+import generators.Generators
+import models.Index
 import models.messages.UnloadingRemarksRequest
-import play.api.data.FormError
+import org.scalacheck.Gen
+import play.api.data.{Field, FormError}
 
-class TotalNumberOfPackagesFormProviderSpec extends IntFieldBehaviours {
+import scala.util.matching.Regex
 
-  val form = new TotalNumberOfPackagesFormProvider()()
+class TotalNumberOfPackagesFormProviderSpec extends StringFieldBehaviours with Generators {
+
+  private val requiredKey = "totalNumberOfPackages.error.required"
+  private val invalidKey  = "totalNumberOfPackages.error.nonNumeric"
+  private val maxLength   = UnloadingRemarksRequest.numberOfPackagesLength
+
+  private val index = Index(0)
+
+  private val form      = new TotalNumberOfPackagesFormProvider()(index)
+  private val fieldName = "value"
 
   ".value" - {
-
-    val fieldName = "value"
-
-    val minimum = 1
-    val maximum = UnloadingRemarksRequest.numberOfPackages
-
-    val validDataGenerator = intsInRangeWithCommas(minimum, maximum)
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      validDataGenerator
-    )
-
-    behave like intField(
-      form,
-      fieldName,
-      nonNumericError = FormError(fieldName, "totalNumberOfPackages.error.nonNumeric"),
-      wholeNumberError = FormError(fieldName, "totalNumberOfPackages.error.wholeNumber")
-    )
-
-    behave like intFieldWithRange(
-      form,
-      fieldName,
-      minimum = minimum,
-      maximum = maximum,
-      expectedError = FormError(fieldName, "totalNumberOfPackages.error.outOfRange", Seq(minimum, maximum))
+      Gen.chooseNum(0, maxLength).toString
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, "totalNumberOfPackages.error.required")
+      requiredError = FormError(fieldName, requiredKey, Seq(index.display.toString))
     )
+  }
+
+  "must not bind strings that do not match regex" in {
+
+    val expectedError = FormError(fieldName, invalidKey, Seq(index.display))
+    val regex         = new Regex("[A-Za-z@~{}><!*&%$]{5}")
+
+    forAll(stringsThatMatchRegex(regex)) {
+      invalidString =>
+        val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+        result.errors should contain(expectedError)
+    }
+
   }
 }

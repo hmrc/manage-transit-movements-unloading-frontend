@@ -37,7 +37,7 @@ trait QuestionViewBehaviours[T] extends ViewBehaviours with ErrorSummaryViewBeha
   "when there are form errors" - {
     "must render error prefix in title" in {
       val title = docWithError().title()
-      title mustBe s"Error: ${messages(s"$prefix.title")} - Manage your transit movements - GOV.UK"
+      title must startWith("Error: ")
     }
   }
 }

@@ -29,7 +29,7 @@ class RejectionCheckYourAnswersViewModelSpec extends AnyFreeSpec with Matchers w
   "RejectionCheckYourAnswersViewModel" - {
 
     "display vehicle name reference on check your answers" in {
-      val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, "reference")
+      val userAnswers = emptyUserAnswers.setValue(VehicleIdentificationNumberPage, "reference")
       val sections    = new RejectionCheckYourAnswersViewModel()(userAnswers)
 
       sections.length mustBe 1
@@ -38,7 +38,7 @@ class RejectionCheckYourAnswersViewModelSpec extends AnyFreeSpec with Matchers w
     }
 
     "display gross mass amount on check your answers" in {
-      val userAnswers = emptyUserAnswers.setValue(GrossMassAmountPage, "10000")
+      val userAnswers = emptyUserAnswers.setValue(GrossWeightPage, "10000")
       val sections    = new RejectionCheckYourAnswersViewModel()(userAnswers)
 
       sections.length mustBe 1
@@ -48,7 +48,7 @@ class RejectionCheckYourAnswersViewModelSpec extends AnyFreeSpec with Matchers w
 
     //noinspection ScalaStyle
     "display total number of packages on check your answers" in {
-      val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, 100)
+      val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, "100")
       val sections    = new RejectionCheckYourAnswersViewModel()(userAnswers)
 
       sections.length mustBe 1

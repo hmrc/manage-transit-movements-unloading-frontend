@@ -37,8 +37,8 @@ class RejectionMessageExtractorSpec extends SpecBase with Generators {
 
   "must populate user answers" - {
     "when gross mass pointer" in {
-      val result = extractor.apply(emptyUserAnswers, rejectionMessage(GrossMassPointer, Some("1000")))
-      result.get.getValue(GrossMassAmountPage) mustBe "1000"
+      val result = extractor.apply(emptyUserAnswers, rejectionMessage(GrossWeightPointer, Some("1000")))
+      result.get.getValue(GrossWeightPage) mustBe "1000"
     }
 
     "when number of items pointer" in {
@@ -53,12 +53,12 @@ class RejectionMessageExtractorSpec extends SpecBase with Generators {
 
     "when vehicle registration pointer" in {
       val result = extractor.apply(emptyUserAnswers, rejectionMessage(VehicleRegistrationPointer, Some("value")))
-      result.get.getValue(VehicleNameRegistrationReferencePage) mustBe "value"
+      result.get.getValue(VehicleIdentificationNumberPage) mustBe "value"
     }
 
     "when number of packages pointer" in {
       val result = extractor.apply(emptyUserAnswers, rejectionMessage(NumberOfPackagesPointer, Some("1000")))
-      result.get.getValue(TotalNumberOfPackagesPage) mustBe 1000
+      result.get.getValue(TotalNumberOfPackagesPage) mustBe "1000"
     }
   }
 
@@ -71,7 +71,7 @@ class RejectionMessageExtractorSpec extends SpecBase with Generators {
 
     "when original attribute value is None" in {
       val userAnswers = emptyUserAnswers
-      val result      = extractor.apply(userAnswers, rejectionMessage(GrossMassPointer, None))
+      val result      = extractor.apply(userAnswers, rejectionMessage(GrossWeightPointer, None))
       result.get mustBe userAnswers
     }
 
@@ -81,7 +81,7 @@ class RejectionMessageExtractorSpec extends SpecBase with Generators {
         rejectionDate = LocalDate.parse("2020-01-01"),
         action = None,
         errors = Seq(
-          FunctionalError(IncorrectValue, GrossMassPointer, None, Some("1000")),
+          FunctionalError(IncorrectValue, GrossWeightPointer, None, Some("1000")),
           FunctionalError(IncorrectValue, NumberOfItemsPointer, None, Some("2000"))
         )
       )
@@ -100,12 +100,6 @@ class RejectionMessageExtractorSpec extends SpecBase with Generators {
     "when unloading date pointer but value cannot be parsed as LocalDate" in {
       val userAnswers = emptyUserAnswers
       val result      = extractor.apply(userAnswers, rejectionMessage(UnloadingDatePointer, Some("invalid")))
-      result.get mustBe userAnswers
-    }
-
-    "when number of packages pointer but value cannot be parsed as Int" in {
-      val userAnswers = emptyUserAnswers
-      val result      = extractor.apply(userAnswers, rejectionMessage(NumberOfPackagesPointer, Some("invalid")))
       result.get mustBe userAnswers
     }
   }

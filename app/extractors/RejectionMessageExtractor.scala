@@ -35,11 +35,11 @@ class RejectionMessageExtractor {
           } yield userAnswers.set(page, formattedValue)).getOrElse(Success(userAnswers))
 
         error.pointer match {
-          case GrossMassPointer           => setValue(GrossMassAmountPage)(Some(_))
+          case GrossWeightPointer         => setValue(GrossWeightPage)(Some(_))
           case NumberOfItemsPointer       => setValue(TotalNumberOfItemsPage)(IntValue.getInt)
           case UnloadingDatePointer       => setValue(DateGoodsUnloadedPage)(Date.getDate)
-          case VehicleRegistrationPointer => setValue(VehicleNameRegistrationReferencePage)(Some(_))
-          case NumberOfPackagesPointer    => setValue(TotalNumberOfPackagesPage)(IntValue.getInt)
+          case VehicleRegistrationPointer => setValue(VehicleIdentificationNumberPage)(Some(_))
+          case NumberOfPackagesPointer    => setValue(TotalNumberOfPackagesPage)(Some(_))
           case _: DefaultPointer          => Success(userAnswers)
         }
       case _ => Success(userAnswers)

@@ -27,13 +27,13 @@ import java.time.LocalDate
 
 class RejectionCheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
-  def vehicleNameRegistration: Option[SummaryListRow] =
+  def vehicleIdentificationNumber: Option[SummaryListRow] =
     getAnswerAndBuildRow[String](
-      page = VehicleNameRegistrationReferencePage,
+      page = VehicleIdentificationNumberPage,
       formatAnswer = _.toText,
-      prefix = "vehicleNameRegistrationReference",
+      prefix = "vehicleIdentificationNumber",
       id = Some("change-vehicle-registration-rejection"),
-      call = Some(routes.VehicleNameRegistrationRejectionController.onPageLoad(arrivalId))
+      call = Some(controllers.p5.routes.VehicleIdentificationNumberRejectionController.onPageLoad(arrivalId))
     )
 
   def dateGoodsUnloaded: Option[SummaryListRow] =
@@ -46,9 +46,9 @@ class RejectionCheckYourAnswersHelper(userAnswers: UserAnswers)(implicit message
     )
 
   def totalNumberOfPackages: Option[SummaryListRow] =
-    getAnswerAndBuildRow[Int](
+    getAnswerAndBuildRow[String](
       page = TotalNumberOfPackagesPage,
-      formatAnswer = _.toString.toText,
+      formatAnswer = _.toText,
       prefix = "totalNumberOfPackages",
       id = Some("change-total-number-of-packages"),
       call = Some(routes.TotalNumberOfPackagesRejectionController.onPageLoad(arrivalId))
@@ -63,12 +63,12 @@ class RejectionCheckYourAnswersHelper(userAnswers: UserAnswers)(implicit message
       call = Some(routes.TotalNumberOfItemsRejectionController.onPageLoad(arrivalId))
     )
 
-  def grossMassAmount: Option[SummaryListRow] =
+  def GrossWeightAmount: Option[SummaryListRow] =
     getAnswerAndBuildRow[String](
-      page = GrossMassAmountPage,
+      page = GrossWeightPage,
       formatAnswer = _.toText,
-      prefix = "grossMassAmount",
-      id = Some("change-gross-mass-amount"),
-      call = Some(routes.GrossMassAmountRejectionController.onPageLoad(arrivalId))
+      prefix = "grossWeight",
+      id = Some("change-gross-weight-amount"),
+      call = Some(routes.GrossWeightAmountRejectionController.onPageLoad(arrivalId))
     )
 }

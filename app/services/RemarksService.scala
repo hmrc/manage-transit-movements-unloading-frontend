@@ -55,23 +55,23 @@ class RemarksServiceImpl extends RemarksService {
       ) {
         RemarksNonConform(
           stateOfSeals = Some(0),
-          unloadingRemark = userAnswers.get(ChangesToReportPage),
+          unloadingRemark = userAnswers.get(UnloadingCommentsPage),
           unloadingDate = unloadingDate
         )
       } else {
-        (hasGrossMassChanged(originalValues.grossMass, userAnswers),
+        (hasGrossWeightChanged(originalValues.GrossWeight, userAnswers),
          hasNumberOfItemsChanged(originalValues.numberOfItems, userAnswers),
          hasTotalNumberOfPackagesChanged(originalValues.numberOfPackages, userAnswers)
         ) match {
           case (false, false, false) =>
             RemarksConformWithSeals(
-              unloadingRemark = userAnswers.get(ChangesToReportPage),
+              unloadingRemark = userAnswers.get(UnloadingCommentsPage),
               unloadingDate = unloadingDate
             )
           case _ =>
             RemarksNonConform(
               stateOfSeals = Some(1),
-              unloadingRemark = userAnswers.get(ChangesToReportPage),
+              unloadingRemark = userAnswers.get(UnloadingCommentsPage),
               unloadingDate = unloadingDate
             )
         }
@@ -88,23 +88,23 @@ class RemarksServiceImpl extends RemarksService {
         case Some(_) =>
           RemarksNonConform(
             stateOfSeals = Some(0),
-            unloadingRemark = userAnswers.get(ChangesToReportPage),
+            unloadingRemark = userAnswers.get(UnloadingCommentsPage),
             unloadingDate = unloadingDate
           )
         case None =>
-          (hasGrossMassChanged(originalValues.grossMass, userAnswers),
+          (hasGrossWeightChanged(originalValues.GrossWeight, userAnswers),
            hasNumberOfItemsChanged(originalValues.numberOfItems, userAnswers),
            hasTotalNumberOfPackagesChanged(originalValues.numberOfPackages, userAnswers)
           ) match {
             case (false, false, false) =>
               RemarksConform(
-                unloadingRemark = userAnswers.get(ChangesToReportPage),
+                unloadingRemark = userAnswers.get(UnloadingCommentsPage),
                 unloadingDate = unloadingDate
               )
             case _ =>
               RemarksNonConform(
                 stateOfSeals = None,
-                unloadingRemark = userAnswers.get(ChangesToReportPage),
+                unloadingRemark = userAnswers.get(UnloadingCommentsPage),
                 unloadingDate = unloadingDate
               )
           }
@@ -125,8 +125,8 @@ object RemarksService {
       _.map(_.sealId).sorted != originalSeals.sorted
     }
 
-  def hasGrossMassChanged(originalValue: String, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(GrossMassAmountPage).exists {
+  def hasGrossWeightChanged(originalValue: String, userAnswers: UserAnswers): Boolean =
+    userAnswers.get(GrossWeightPage).exists {
       _ != originalValue
     }
 

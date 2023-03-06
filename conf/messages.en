@@ -13,6 +13,7 @@ site.edit.hidden = Change {0}
 site.no = No
 site.yes = Yes
 site.continue = Continue
+site.saveAndContinue = Save and continue
 site.confirmAndSend = Confirm and send
 site.service_name = Manage your transit movements
 site.textarea.char_limit = (Limit is {0} characters)
@@ -70,35 +71,58 @@ dateGoodsUnloaded.error.min.date = The date when the goods were unloaded must be
 dateGoodsUnloaded.error.max.date = The date when the goods were unloaded must be today or in the past
 dateGoodsUnloaded.change.hidden = the date when the goods were unloaded
 
-vehicleNameRegistrationReference.title = What is the name, registration or reference of the new vehicle?
-vehicleNameRegistrationReference.heading = What is the name, registration or reference of the new vehicle?
-vehicleNameRegistrationReference.checkYourAnswersLabel = What is the name, registration or reference of the new vehicle?
-vehicleNameRegistrationReference.error.required = Enter the name, registration or reference of the vehicle
-vehicleNameRegistrationReference.error.length = The name, registration or reference of the new vehicle must be 27 characters or less
-vehicleNameRegistrationReference.error.invalid = The name, registration or reference of the new vehicle must only include letters a to z or numbers 0 to 9
-vehicleNameRegistrationReference.change.hidden = the name, registration or reference of the new vehicle
+vehicleIdentificationNumber.title = What is the identification number for the new vehicle?
+vehicleIdentificationNumber.heading = What is the identification number for the new vehicle?
+vehicleIdentificationNumber.checkYourAnswersLabel = What is the identification number for the new vehicle?
+vehicleIdentificationNumber.error.required = Enter the identification number for the new vehicle
+vehicleIdentificationNumber.error.length = The identification number must be 35 characters or less
+vehicleIdentificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
+vehicleIdentificationNumber.change.hidden = the identification number for the new vehicle
 
-vehicleRegistrationCountry.title = Which country is the vehicle registered in?
-vehicleRegistrationCountry.heading = Which country is the vehicle registered in?
-vehicleRegistrationCountry.checkYourAnswersLabel = Which country is the vehicle registered in?
-vehicleRegistrationCountry.error.required = Enter which country the vehicle is registered in
-vehicleRegistrationCountry.error.length = The country the vehicle is registered in must be 100 characters or less
+vehicleRegistrationCountry.title = What country is the vehicle registered to?
+vehicleRegistrationCountry.heading = What country is the vehicle registered to?
+vehicleRegistrationCountry.checkYourAnswersLabel = What country is the vehicle registered to?
+vehicleRegistrationCountry.error.required = Select the country the vehicle is registered to
 vehicleRegistrationCountry.placeHolder = Select a country
 
-grossMassAmount.title = What is the new total gross mass in kilograms?
-grossMassAmount.heading = What is the new total gross mass in kilograms?
-grossMassAmount.checkYourAnswersLabel = What is the new total gross mass in kilograms?
-grossMassAmount.error.required = Enter the total gross mass in kilograms
-grossMassAmount.error.length = The total gross mass in kilograms must be 99999999999.999 or less
-grossMassAmount.error.characters = The total gross mass in kilograms must be 11 numbers or less and up to 3 decimal places, like 1000000.000
-grossMassAmount.change.hidden = the new total gross mass in kilograms
+grossWeight.title = What is the new gross weight of item {0}?
+grossWeight.heading = What is the new gross weight of item {0}?
+grossWeight.paragraph = This is the combined weight of the item’s goods and packaging.
+grossWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
+grossWeight.error.required = Enter the new gross weight of item {0}
+grossWeight.error.length = The new gross weight must be 16 characters or less
+grossWeight.error.characters = The new gross weight must only include numbers 0 to 9 and a decimal point
+grossWeight.error.decimal = The new gross weight must only include 6 decimal places or less
+grossWeight.change.hidden = the new total gross weight
 
-newSealNumber.title = What is the new official customs seal number or mark?
-newSealNumber.heading = What is the new official customs seal number or mark?
-newSealNumber.checkYourAnswersLabel = What is the new official customs seal number or mark?
-newSealNumber.error.required = Enter the new official customs seal number or mark
-newSealNumber.error.length = The new official customs seal number must be 20 characters or less
-newSealNumber.error.characters = The new official customs seal number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks and spaces
+netWeight.title = What is the new net weight of item {0}?
+netWeight.heading = What is the new net weight of item {0}?
+netWeight.checkYourAnswersLabel = What is the net net weight of item {0}?
+netWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
+netWeight.paragraph = This is the weight of the item’s goods, excluding all packaging.
+netWeight.error.required = Enter the new net weight of item {0}
+netWeight.error.length = The new net weight must be 16 characters or less
+netWeight.error.characters = The new net weight must only include numbers 0 to 9 and a decimal point
+netWeight.error.decimal = The new net weight must only include 6 decimal places or less
+netWeight.change.hidden = the new net weight
+
+newSealNumber.title = What is the new seal identification number?
+newSealNumber.heading = What is the new seal identification number?
+newSealNumber.hint = This can be up to 20 characters long and include both letters and numbers.
+newSealNumber.checkYourAnswersLabel = What is the new seal identification number?
+newSealNumber.error.required = Enter the new seal identification number
+newSealNumber.error.length = The identification number must be 20 characters or less
+newSealNumber.error.characters = The identification number must only include letters a to z and numbers 0 to 9
+newSealNumber.error.alreadyEntered = This identification number has already been submitted. Enter a unique seal identification number
+
+newContainerIdentificationNumber.title = What is the new container identification number?
+newContainerIdentificationNumber.heading = What is the new container identification number?
+newContainerIdentificationNumber.checkYourAnswersLabel = What is the new container identification number?
+newContainerIdentificationNumber.hint = This can be up to 17 characters long and include both letters and numbers.
+newContainerIdentificationNumber.error.required = Enter the new container identification number
+newContainerIdentificationNumber.error.length = The identification number must be 17 characters or less
+newContainerIdentificationNumber.error.characters = The identification number must only include letters a to z and numbers 0 to 9
+newContainerIdentificationNumber.error.alreadyEntered = This identification number has already been submitted. Enter a unique container identification number
 
 unloadingSummary.title = Check what you found against the transit declaration
 unloadingSummary.heading = Check what you found against the transit declaration
@@ -109,8 +133,8 @@ unloadingSummary.seals.subheading = Official customs seals
 
 vehicleUsed.title = Vehicle used
 
-changeVehicle.reference.checkYourAnswersLabel = Name, registration or reference
-changeVehicle.reference.change.hidden = name, registration or reference
+changeVehicle.reference.checkYourAnswersLabel = Identification number for the new vehicle
+changeVehicle.reference.change.hidden = identification number for the new vehicle
 
 changeVehicle.registeredCountry.checkYourAnswersLabel = Registered
 changeVehicle.registeredCountry.change.hidden = registered
@@ -122,8 +146,8 @@ changeSeal.sealList.remove.hidden = official customs seal {0} {1}
 
 changeItems.title = Items
 
-changeItems.grossMass.checkYourAnswersLabel = Total gross mass in kilograms
-changeItems.grossMass.change.hidden = total gross mass in kilograms
+changeItems.GrossWeight.checkYourAnswersLabel = Total gross weight in kilograms
+changeItems.GrossWeight.change.hidden = total gross weight in kilograms
 
 changeItems.totalNumberOfItems.checkYourAnswersLabel = Total number of items
 changeItems.totalNumberOfItems.change.hidden = total number of items
@@ -141,17 +165,17 @@ changeItems.comments.checkYourAnswersLabel = Comments
 changeItems.comments.change.hidden = comments
 changeItems.comments.remove.hidden = comments
 
-canSealsBeRead.title = Can all of the official customs seal numbers or marks be read?
-canSealsBeRead.heading = Can all of the official customs seal numbers or marks be read?
-canSealsBeRead.checkYourAnswersLabel = Can all of the official customs seal numbers or marks be read?
-canSealsBeRead.error.required = Select yes if all of the official customs seals can be read
-canSealsBeRead.change.hidden = if all of the official customs seals can be read
+canSealsBeRead.title = Are all the seal identification numbers or marks readable?
+canSealsBeRead.heading = Are all the seal identification numbers or marks readable?
+canSealsBeRead.checkYourAnswersLabel = Are all the seal identification numbers or marks readable?
+canSealsBeRead.error.required = Select yes if all the seal identification numbers and marks are readable
+canSealsBeRead.change.hidden = if all the seal identification numbers or marks are readable
 
-areAnySealsBroken.title = Are any of the official customs seals broken?
-areAnySealsBroken.heading = Are any of the official customs seals broken?
-areAnySealsBroken.checkYourAnswersLabel = Are any of the official customs seals broken?
-areAnySealsBroken.error.required = Select yes if any of the official customs seals are broken
-areAnySealsBroken.change.hidden = if any of the official customs seals are broken
+areAnySealsBroken.title = Are any of the seals broken?
+areAnySealsBroken.heading = Are any of the seals broken?
+areAnySealsBroken.checkYourAnswersLabel = Are any of the seals broken?
+areAnySealsBroken.error.required = Select yes if any of the seals are broken
+areAnySealsBroken.change.hidden = if any of the seals are broken
 
 confirmation.title = Unloading remarks sent
 confirmation.heading = Unloading remarks sent
@@ -163,17 +187,17 @@ confirmation.linkText = Go to arrival notifications
 confirmation.para3 = to see the latest messages.
 
 
-changesToReport.title = What do you need to report?
-changesToReport.heading = What do you need to report?
-changesToReport.checkYourAnswersLabel = What do you need to report?
-changesToReport.error.required = Enter what you need to report
-changesToReport.error.length = What you need to report must be 350 characters or less
-changesToReport.error.invalid = What you need to report must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, percent signs, question marks and spaces
+changesToReport.title = What comments do you want to add?
+changesToReport.heading = What comments do you want to add?
+changesToReport.checkYourAnswersLabel = What comments do you want to add?
+changesToReport.error.required = Enter the comments you want to add
+changesToReport.error.length = Your comments must be 512 characters or less
+changesToReport.error.invalid = Your comments must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 
 confirmRemoveComments.title = Are you sure you want to remove your comments?
 confirmRemoveComments.heading = Are you sure you want to remove your comments?
 confirmRemoveComments.checkYourAnswersLabel = Are you sure you want to remove your comments?
-confirmRemoveComments.error.required = Select yes if you are sure you want to remove your comments
+confirmRemoveComments.error.required = Select yes if you want to remove your comments
 
 confirmRemoveSeal.title = Are you sure you want to remove official customs seal?
 confirmRemoveSeal.heading = Are you sure you want to remove official customs seal {0}?
@@ -189,13 +213,12 @@ totalNumberOfItems.error.wholeNumber = = Total number of items must only include
 totalNumberOfItems.error.outOfRange = Total number of items must be 99999 or less
 totalNumberOfItems.change.hidden = the new total number of items
 
-totalNumberOfPackages.title = What is the new total number of packages?
-totalNumberOfPackages.heading = What is the new total number of packages?
-totalNumberOfPackages.checkYourAnswersLabel = What is the new total number of packages?
-totalNumberOfPackages.error.nonNumeric = Enter the new total number of packages using numbers
-totalNumberOfPackages.error.required = Enter the new total number of packages
-totalNumberOfPackages.error.wholeNumber = Total number of packages must only include numbers 0 to 9
-totalNumberOfPackages.error.outOfRange = Total number of packages must be 9999999 or less
+totalNumberOfPackages.title = What is the new number of packages for item {0}?
+totalNumberOfPackages.heading = What is the new number of packages for item {0}?
+totalNumberOfPackages.checkYourAnswersLabel = What is the new number of packages for item {0}?
+totalNumberOfPackages.error.nonNumeric = The new number of packages must only include numbers 0 to 9
+totalNumberOfPackages.error.required = Enter the new number of packages for item {0}
+totalNumberOfPackages.error.outOfRange = The new number of packages must be 99,999,999 or less
 totalNumberOfPackages.change.hidden = the new total number of packages
 
 unloadingRemarksRejection.title = There is a problem with these unloading remarks

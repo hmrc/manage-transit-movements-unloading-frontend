@@ -29,7 +29,7 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
   "UnloadingSummaryViewModel" - {
 
     "seals sections should" - {
-      "display no rows when there are no seals in user answers" in {
+      "display no rows when there are no TotalNumberOfPackagesControllerSpec in user answers" in {
         val section = new UnloadingSummaryViewModel().sealsSection(emptyUserAnswers, mode)
 
         section.sectionTitle.get mustBe "Official customs seals"
@@ -51,7 +51,7 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
     "vehicle sections should" - {
 
       "display transportIdentity" in {
-        val userAnswers = emptyUserAnswers.setValue(VehicleNameRegistrationReferencePage, "registration")
+        val userAnswers = emptyUserAnswers.setValue(VehicleIdentificationNumberPage, "registration")
 
         val sections = new UnloadingSummaryViewModel().transportAndItemSections(userAnswers, mode)
 
@@ -72,7 +72,7 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
 
       "display transportCountry and transportIdentity" in {
         val userAnswers = emptyUserAnswers
-          .setValue(VehicleNameRegistrationReferencePage, "registration")
+          .setValue(VehicleIdentificationNumberPage, "registration")
           .setValue(VehicleRegistrationCountryPage, Country("FR", "France"))
 
         val sections = new UnloadingSummaryViewModel().transportAndItemSections(userAnswers, mode)
@@ -86,7 +86,7 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
     "items sections should" - {
 
       "display total mass with single item" in {
-        val userAnswers = emptyUserAnswers.setValue(GrossMassAmountPage, "99")
+        val userAnswers = emptyUserAnswers.setValue(GrossWeightPage, "99")
 
         val sections = new UnloadingSummaryViewModel().transportAndItemSections(userAnswers, mode)
 
@@ -108,7 +108,7 @@ class UnloadingSummaryViewModelSpec extends SpecBase {
       }
 
       "contain number of packages details " in {
-        val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, 11)
+        val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, "11")
 
         val sections = new UnloadingSummaryViewModel().transportAndItemSections(userAnswers, mode)
 

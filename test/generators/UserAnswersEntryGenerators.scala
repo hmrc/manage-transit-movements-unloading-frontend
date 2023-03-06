@@ -23,10 +23,10 @@ import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators {
 
-  implicit lazy val arbitraryChangesToReportEntry: Arbitrary[(ChangesToReportPage.type, JsValue)] =
+  implicit lazy val arbitraryChangesToReportEntry: Arbitrary[(UnloadingCommentsPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[ChangesToReportPage.type]
+        page  <- arbitrary[UnloadingCommentsPage.type]
         value <- arbitrary[String].map(Json.toJson(_))
       } yield (page, value)
     }
@@ -55,10 +55,10 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryGrossMassAmountReference: Arbitrary[(GrossMassAmountPage.type, JsValue)] =
+  implicit lazy val arbitraryGrossWeightAmountReference: Arbitrary[(GrossWeightPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[GrossMassAmountPage.type]
+        page  <- arbitrary[GrossWeightPage.type]
         value <- arbitrary[String].map(Json.toJson(_))
       } yield (page, value)
     }
@@ -71,10 +71,10 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryVehicleNameRegistrationReference: Arbitrary[(VehicleNameRegistrationReferencePage.type, JsValue)] =
+  implicit lazy val arbitraryVehicleNameRegistrationReference: Arbitrary[(VehicleIdentificationNumberPage.type, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[VehicleNameRegistrationReferencePage.type]
+        page  <- arbitrary[VehicleIdentificationNumberPage.type]
         value <- arbitrary[String].map(Json.toJson(_))
       } yield (page, value)
     }
