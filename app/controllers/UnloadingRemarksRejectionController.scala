@@ -22,12 +22,11 @@ import extractors.RejectionMessageExtractor
 import handlers.ErrorHandler
 import logging.Logging
 import play.api.libs.json.Json
-import java.time.Instant
 import models._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import repositories.SessionRepository
-import services.UnloadingRemarksRejectionService
+import services.{DateTimeService, UnloadingRemarksRejectionService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.UnloadingRemarksRejectionViewModel
 import viewModels.sections.Section
@@ -43,6 +42,7 @@ class UnloadingRemarksRejectionController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   val appConfig: FrontendAppConfig,
   service: UnloadingRemarksRejectionService,
+  dateTimeService: DateTimeService,
   extractor: RejectionMessageExtractor,
   sessionRepository: SessionRepository,
   errorHandler: ErrorHandler,
@@ -58,7 +58,7 @@ class UnloadingRemarksRejectionController @Inject() (
     implicit request =>
       service.unloadingRemarksRejectionMessage(arrivalId) flatMap {
         case Some(rejectionMessage) =>
-          val userAnswers = UserAnswers(arrivalId, rejectionMessage.movementReferenceNumber, request.eoriNumber, Json.obj(), Instant.now())
+          val userAnswers = UserAnswers(arrivalId, rejectionMessage.movementReferenceNumber, request.eoriNumber, Json.obj(), dateTimeService.now)
           extractor.apply(userAnswers, rejectionMessage) match {
             case Success(updatedAnswers) =>
               sessionRepository.set(updatedAnswers) flatMap {
