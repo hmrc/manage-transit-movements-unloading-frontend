@@ -22,6 +22,7 @@ import models.requests.{IdentifierRequest, OptionalDataRequest}
 import models.{EoriNumber, MovementReferenceNumber, UserAnswers}
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
+import play.api.libs.json.JsObject
 import play.api.mvc.{AnyContent, Request, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -30,7 +31,7 @@ import scala.concurrent.Future
 
 class DataRetrievalActionSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  def harness(mrn: MovementReferenceNumber, f: OptionalDataRequest[AnyContent] => Unit): Unit = {
+  def harness(f: OptionalDataRequest[AnyContent] => Unit): Unit = {
 
     lazy val actionProvider = app.injector.instanceOf[DataRetrievalActionProviderImpl]
 
@@ -54,7 +55,9 @@ class DataRetrievalActionSpec extends SpecBase with AppWithDefaultMockFixtures w
 
         when(mockSessionRepository.get(any(), any())) thenReturn Future.successful(None)
 
-        harness(mrn, request => request.userAnswers must not be defined)
+        harness(
+          request => request.userAnswers must not be defined
+        )
       }
     }
 
@@ -62,9 +65,11 @@ class DataRetrievalActionSpec extends SpecBase with AppWithDefaultMockFixtures w
 
       "when there are existing answers for this MRN" in {
 
-        when(mockSessionRepository.get(any(), any())) thenReturn Future.successful(Some(UserAnswers(arrivalId, mrn, eoriNumber)))
+        when(mockSessionRepository.get(any(), any())) thenReturn Future.successful(Some(UserAnswers(arrivalId, mrn, eoriNumber, JsObject.empty)))
 
-        harness(mrn, request => request.userAnswers mustBe defined)
+        harness(
+          request => request.userAnswers mustBe defined
+        )
       }
     }
   }
