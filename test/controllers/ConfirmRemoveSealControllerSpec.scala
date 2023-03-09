@@ -24,7 +24,7 @@ import org.mockito.Mockito.when
 import pages.SealPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.ConfirmRemoveSealView
+import views.html.p5.ConfirmRemoveSealView
 
 import scala.concurrent.Future
 
@@ -35,7 +35,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
   private val index: Index                = Index(0)
   private val mode                        = NormalMode
   private val seal                        = Seal("seal 1", removable = true)
-  private lazy val confirmRemoveSealRoute = routes.ConfirmRemoveSealController.onPageLoad(arrivalId, index, mode).url
+  private lazy val confirmRemoveSealRoute = controllers.p5.routes.ConfirmRemoveSealController.onPageLoad(arrivalId, index, mode).url
 
   "ConfirmRemoveSeal Controller" - {
 

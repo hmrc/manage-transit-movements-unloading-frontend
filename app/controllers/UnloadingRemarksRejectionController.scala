@@ -21,9 +21,9 @@ import controllers.actions._
 import extractors.RejectionMessageExtractor
 import handlers.ErrorHandler
 import logging.Logging
-import play.api.libs.json.Json
 import models._
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc._
 import repositories.SessionRepository
 import services.{DateTimeService, UnloadingRemarksRejectionService}
@@ -58,7 +58,14 @@ class UnloadingRemarksRejectionController @Inject() (
     implicit request =>
       unloadingRemarksRejectionService.unloadingRemarksRejectionMessage(arrivalId) flatMap {
         case Some(rejectionMessage) =>
-          val userAnswers = UserAnswers(arrivalId, rejectionMessage.movementReferenceNumber, request.eoriNumber, Json.obj(), dateTimeService.now)
+          val userAnswers = UserAnswers(
+            arrivalId,
+            rejectionMessage.movementReferenceNumber,
+            request.eoriNumber,
+            Json.obj(),
+            Json.obj(),
+            dateTimeService.now
+          ) // TODO remove this
           extractor.apply(userAnswers, rejectionMessage) match {
             case Success(updatedAnswers) =>
               sessionRepository.set(updatedAnswers) flatMap {

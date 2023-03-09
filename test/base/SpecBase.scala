@@ -18,7 +18,6 @@ package base
 
 import cats.data.NonEmptyList
 import models.{ArrivalId, EoriNumber, GoodsItem, MovementReferenceNumber, Packages, ProducedDocument, UserAnswers}
-import java.time.Instant
 import org.scalatest._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
@@ -32,6 +31,8 @@ import play.api.inject.Injector
 import play.api.libs.json.{Json, Reads, Writes}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
+
+import java.time.Instant
 
 trait SpecBase
     extends AnyFreeSpec
@@ -53,7 +54,7 @@ trait SpecBase
 
   val mrn: MovementReferenceNumber  = MovementReferenceNumber("19", "GB", "1234567890123")
   val eoriNumber: EoriNumber        = EoriNumber("id")
-  def emptyUserAnswers: UserAnswers = UserAnswers(arrivalId, mrn, eoriNumber, Json.obj(), Instant.now())
+  def emptyUserAnswers: UserAnswers = UserAnswers(arrivalId, mrn, eoriNumber, Json.obj(), Json.obj(), Instant.now())
 
   protected lazy val packages: Packages = Packages(Some("Ref."), "BX", Some(1), None)
 

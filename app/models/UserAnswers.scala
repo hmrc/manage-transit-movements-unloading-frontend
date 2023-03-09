@@ -29,6 +29,7 @@ final case class UserAnswers(
   id: ArrivalId,
   mrn: MovementReferenceNumber,
   eoriNumber: EoriNumber,
+  ie043Data: JsObject,
   data: JsObject,
   lastUpdated: Instant
 ) {
@@ -84,6 +85,7 @@ object UserAnswers {
       (__ \ "_id").read[ArrivalId] and
         (__ \ "mrn").read[MovementReferenceNumber] and
         (__ \ "eoriNumber").read[EoriNumber] and
+        (__ \ "ie043Data").read[JsObject] and
         (__ \ "data").read[JsObject] and
         (__ \ "lastUpdated").read(MongoJavatimeFormats.instantReads)
     )(UserAnswers.apply _)
@@ -93,6 +95,7 @@ object UserAnswers {
       (__ \ "_id").write[ArrivalId] and
         (__ \ "mrn").write[MovementReferenceNumber] and
         (__ \ "eoriNumber").write[EoriNumber] and
+        (__ \ "ie043Data").write[JsObject] and
         (__ \ "data").write[JsObject] and
         (__ \ "lastUpdated").write(MongoJavatimeFormats.instantWrites)
     )(unlift(UserAnswers.unapply))
