@@ -35,6 +35,8 @@ class SummaryListRowHelper(implicit messages: Messages) {
       }
     }.toText
 
+  protected def formatAsText[T](answer: T): Content = s"$answer".toText
+
   def formatAsDate(answer: LocalDate): Content =
     answer.format(cyaDateFormatter).toText
 

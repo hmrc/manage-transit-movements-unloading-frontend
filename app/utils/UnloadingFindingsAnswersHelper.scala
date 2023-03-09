@@ -13,3 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package utils
+
+import models.{Index, Mode, UserAnswers}
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
+
+class UnloadingFindingsAnswersHelper(IEO43: UserAnswers)(implicit messages: Messages) extends AnswersHelper(IEO43) {
+
+  def departureMeansID: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    path = ???,
+    formatAnswer = formatAsText,
+    prefix = "",
+    id = Some("change-departure-means-id")
+  )
+}

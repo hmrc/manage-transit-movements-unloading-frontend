@@ -93,4 +93,9 @@ POST       /:arrivalId/items/:index/number-of-packages                          
 GET        /:arrivalId/items/:index/change-number-of-packages                               controllers.TotalNumberOfPackagesController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
 POST       /:arrivalId/items/:index/change-number-of-packages                               controllers.TotalNumberOfPackagesController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
 
+GET        /:arrivalId/unloading-summary                                                    controllers.UnloadingFindingsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/unloading-summary                                                    controllers.UnloadingFindingsController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-unloading-summary                                                    controllers.UnloadingFindingsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-unloading-summary                                                    controllers.UnloadingFindingsController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+
 GET        /:arrivalId/unloading-permission-pdf                                             controllers.UnloadingPermissionPDFController.getPDF(arrivalId: ArrivalId)

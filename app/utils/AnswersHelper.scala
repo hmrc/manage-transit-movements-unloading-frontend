@@ -19,7 +19,7 @@ package utils
 import models.{ArrivalId, Index, UserAnswers}
 import pages.QuestionPage
 import play.api.i18n.Messages
-import play.api.libs.json.Reads
+import play.api.libs.json.{JsPath, Reads}
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components._
 
@@ -37,6 +37,25 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
     args: Any*
   )(implicit rds: Reads[T]): Option[SummaryListRow] =
     userAnswers.get(page) map {
+      answer =>
+        buildRow(
+          prefix = prefix,
+          answer = formatAnswer(answer),
+          id = id,
+          call = call,
+          args = args: _*
+        )
+    }
+
+  def getAnswerAndBuildRow[T](
+    path: JsPath,
+    formatAnswer: T => Content,
+    prefix: String,
+    id: Option[String],
+    call: Option[Call],
+    args: Any*
+  )(implicit rds: Reads[T]): Option[SummaryListRow] =
+    userAnswers.getIE043(path) map {
       answer =>
         buildRow(
           prefix = prefix,
