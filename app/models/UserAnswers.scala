@@ -40,9 +40,6 @@ final case class UserAnswers(
   def getIE043[A](path: JsPath)(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(path)).reads(ie043Data).getOrElse(None)
 
-  def getIE043[A](path: JsPath)(implicit rds: Reads[A]): Option[A] =
-    getIE043(path)
-
   def get[A, B](derivable: Derivable[A, B])(implicit rds: Reads[A]): Option[B] =
     get(derivable: Gettable[A]).map(derivable.derive)
 

@@ -47,7 +47,7 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
         )
     }
 
-  def getAnswerAndBuildRow[T](
+  def getAnswerAndBuildRowFromPath[T](
     path: JsPath,
     formatAnswer: T => Content,
     prefix: String,

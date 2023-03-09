@@ -258,3 +258,6 @@ cannotSendUnloadingRemarks.linkText = Back to arrival notification
 unloadingFindings.title = What did you find when unloading?
 unloadingFindings.heading = What did you find when unloading?
 unloadingFindings.paragraph = Cross-check the transit with the following information. Change these details if you find something different
+
+unloadingFindings.rowHeadings.identificationType = Test
+unloadingFindings.rowHeadings.vehicleNationality = Registered country

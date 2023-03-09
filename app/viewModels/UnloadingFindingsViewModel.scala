@@ -16,7 +16,7 @@
 
 package viewModels
 
-import models.{CheckMode, Index, UserAnswers}
+import models.UserAnswers
 import play.api.i18n.Messages
 import utils.UnloadingFindingsAnswersHelper
 import viewModels.sections.Section
@@ -27,20 +27,20 @@ case class UnloadingFindingsViewModel(section: Section)
 
 object UnloadingFindingsViewModel {
 
-  def apply(IE043: UserAnswers)(implicit messages: Messages): UnloadingFindingsViewModel =
-    new UnloadingFindingsViewModelProvider()(IE043)
+  def apply(userAnswers: UserAnswers)(implicit messages: Messages): UnloadingFindingsViewModel =
+    new UnloadingFindingsViewModelProvider()(userAnswers)
 
   class UnloadingFindingsViewModelProvider @Inject() () {
 
-    def apply(IE043: UserAnswers)(implicit messages: Messages): UnloadingFindingsViewModel = {
-      val helper = new UnloadingFindingsAnswersHelper(IE043)
+    def apply(userAnswers: UserAnswers)(implicit messages: Messages): UnloadingFindingsViewModel = {
+      val helper = new UnloadingFindingsAnswersHelper(userAnswers)
 
       val rows = Seq(
         helper.departureMeansID,
         helper.departureRegisteredCountry
       ).flatten
 
-      new UnloadingFindingsViewModel(Section(rows))
+      new UnloadingFindingsViewModel(Section("Means of transport", rows)) //TODO : Use message keys
     }
   }
 }

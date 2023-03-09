@@ -16,23 +16,26 @@
 
 package utils
 
-import models.UserAnswers
+import models.{NormalMode, UserAnswers}
 import play.api.i18n.Messages
+import play.api.libs.json.JsPath
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
 
-class UnloadingFindingsAnswersHelper(IEO43: UserAnswers)(implicit messages: Messages) extends AnswersHelper(IEO43) {
+class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
-  def departureMeansID: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    path = ???,
+  def departureMeansID: Option[SummaryListRow] = getAnswerAndBuildRowFromPath[String](
+    path = JsPath \ "n1:CC043C" \ "Consignment" \ "DepartureTransportMeans" \ "identificationNumber",
     formatAnswer = formatAsText,
-    prefix = "",
-    id = Some("change-departure-means-id")
+    prefix = "unloadingFindings.rowHeadings.identificationType",
+    id = Some("change-departure-means-id"),
+    call = Some(controllers.routes.VehicleIdentificationNumberController.onPageLoad(arrivalId, NormalMode))
   )
 
-  def departureRegisteredCountry: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    path = ???,
+  def departureRegisteredCountry: Option[SummaryListRow] = getAnswerAndBuildRowFromPath[String](
+    path = JsPath \ "n1:CC043C" \ "Consignment" \ "DepartureTransportMeans" \ "nationality",
     formatAnswer = formatAsText,
-    prefix = "",
-    id = Some("change-departure-means-country")
+    prefix = "unloadingFindings.rowHeadings.vehicleNationality",
+    id = Some("change-departure-means-country"),
+    call = Some(controllers.routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, NormalMode))
   )
 }

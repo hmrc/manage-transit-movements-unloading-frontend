@@ -18,7 +18,7 @@ package controllers
 
 import com.google.inject.Inject
 import controllers.actions.{Actions, SpecificDataRequiredActionProvider}
-import models.{ArrivalId, CheckMode, Mode}
+import models.ArrivalId
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -37,7 +37,7 @@ class UnloadingFindingsController @Inject() (
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val section = viewModelProvider.apply(request.userAnswers.getIE043()).section
+      val section = viewModelProvider.apply(request.userAnswers).section
       Ok(view(request.userAnswers.mrn, arrivalId, Seq(section)))
   }
 

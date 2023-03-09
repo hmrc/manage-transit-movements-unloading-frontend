@@ -24,7 +24,7 @@ import views.html.UnloadingFindingsView
 
 class UnloadingFindingsViewSpec extends CheckYourAnswersViewBehaviours {
 
-  override val prefix: String = "guaranteeDetails.checkYourAnswers"
+  override val prefix: String = "unloadingFindings"
 
   override def view: HtmlFormat.Appendable = viewWithSections(sections)
 
@@ -43,6 +43,6 @@ class UnloadingFindingsViewSpec extends CheckYourAnswersViewBehaviours {
 
   behave like pageWithFormAction(controllers.routes.UnloadingFindingsController.onSubmit(arrivalId).url)
 
-  behave like pageWithSubmitButton("Save and continue")
+  behave like pageWithSubmitButton("Continue")
 
 }
