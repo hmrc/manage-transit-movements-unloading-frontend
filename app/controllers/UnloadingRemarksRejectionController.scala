@@ -59,12 +59,12 @@ class UnloadingRemarksRejectionController @Inject() (
       unloadingRemarksRejectionService.unloadingRemarksRejectionMessage(arrivalId) flatMap {
         case Some(rejectionMessage) =>
           val userAnswers = UserAnswers(
-            arrivalId,
-            rejectionMessage.movementReferenceNumber,
-            request.eoriNumber,
-            Json.obj(),
-            Json.obj(),
-            dateTimeService.now
+            id = arrivalId,
+            mrn = rejectionMessage.movementReferenceNumber,
+            eoriNumber = request.eoriNumber,
+            ie043Data = Json.obj(),
+            data = Json.obj(),
+            lastUpdated = dateTimeService.now
           ) // TODO remove this
           extractor.apply(userAnswers, rejectionMessage) match {
             case Success(updatedAnswers) =>

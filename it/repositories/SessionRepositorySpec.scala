@@ -44,11 +44,23 @@ class SessionRepositorySpec
 
   override protected val repository = new SessionRepository(mongoComponent, config, dateTimeService)
 
-  private val userAnswers1 =
-    UserAnswers(ArrivalId("0"), MovementReferenceNumber("99IT9876AB88901209").get, EoriNumber("EoriNumber1"), Json.obj("foo" -> "bar"), dateTimeService.now)
+  private val userAnswers1 = UserAnswers(
+    id = ArrivalId("0"),
+    mrn = MovementReferenceNumber("99IT9876AB88901209").get,
+    eoriNumber = EoriNumber("EoriNumber1"),
+    ie043Data = Json.obj("foo" -> "bar"),
+    data = Json.obj("bar" -> "foo"),
+    lastUpdated = dateTimeService.now
+  )
 
-  private val userAnswers2 =
-    UserAnswers(ArrivalId("1"), MovementReferenceNumber("18GB0000601001EB15").get, EoriNumber("EoriNumber2"), Json.obj("bar" -> "foo"), dateTimeService.now)
+  private val userAnswers2 = UserAnswers(
+    id = ArrivalId("1"),
+    mrn = MovementReferenceNumber("18GB0000601001EB15").get,
+    eoriNumber = EoriNumber("EoriNumber2"),
+    ie043Data = Json.obj("bar" -> "foo"),
+    data = Json.obj("foo" -> "bar"),
+    lastUpdated = dateTimeService.now
+  )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -66,6 +78,7 @@ class SessionRepositorySpec
 
         result.value.id mustBe userAnswers1.id
         result.value.eoriNumber mustBe userAnswers1.eoriNumber
+        result.value.ie043Data mustBe userAnswers1.ie043Data
         result.value.data mustBe userAnswers1.data
       }
 
@@ -88,14 +101,14 @@ class SessionRepositorySpec
 
       "must create new document when given valid UserAnswers" in {
 
-        val userAnswers =
-          UserAnswers(
-            ArrivalId("3"),
-            MovementReferenceNumber("18GB0000601001EBD1").get,
-            EoriNumber("EoriNumber3"),
-            Json.obj("foo" -> "bar"),
-            dateTimeService.now
-          )
+        val userAnswers = UserAnswers(
+          id = ArrivalId("3"),
+          mrn = MovementReferenceNumber("18GB0000601001EBD1").get,
+          eoriNumber = EoriNumber("EoriNumber3"),
+          ie043Data = Json.obj("foo" -> "bar"),
+          data = Json.obj("bar" -> "foo"),
+          lastUpdated = dateTimeService.now
+        )
 
         val setResult = repository.set(userAnswers).futureValue
 
@@ -104,6 +117,7 @@ class SessionRepositorySpec
         setResult mustBe true
         getResult.id mustBe userAnswers.id
         getResult.eoriNumber mustBe userAnswers.eoriNumber
+        getResult.ie043Data mustBe userAnswers.ie043Data
         getResult.data mustBe userAnswers.data
       }
     }
