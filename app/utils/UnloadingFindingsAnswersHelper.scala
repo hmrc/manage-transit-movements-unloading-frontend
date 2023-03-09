@@ -16,7 +16,7 @@
 
 package utils
 
-import models.{Index, Mode, UserAnswers}
+import models.UserAnswers
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
 
@@ -27,5 +27,12 @@ class UnloadingFindingsAnswersHelper(IEO43: UserAnswers)(implicit messages: Mess
     formatAnswer = formatAsText,
     prefix = "",
     id = Some("change-departure-means-id")
+  )
+
+  def departureRegisteredCountry: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    path = ???,
+    formatAnswer = formatAsText,
+    prefix = "",
+    id = Some("change-departure-means-country")
   )
 }

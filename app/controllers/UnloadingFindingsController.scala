@@ -35,12 +35,12 @@ class UnloadingFindingsController @Inject() (
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
       val section = viewModelProvider.apply(request.userAnswers.getIE043()).section
-      Ok(view(request.userAnswers.mrn, arrivalId, Seq(section), mode))
+      Ok(view(request.userAnswers.mrn, arrivalId, Seq(section)))
   }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = ???
+  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = ???
 
 }
