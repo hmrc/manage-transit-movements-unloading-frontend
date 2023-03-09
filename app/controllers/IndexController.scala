@@ -54,6 +54,6 @@ class IndexController @Inject() (
           )
         }
         _ <- sessionRepository.set(getUserAnswer)
-      } yield Redirect(controllers.p5.routes.UnloadingGuidanceController.onPageLoad(arrivalId))
+      } yield Redirect(controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId))
   }
 }

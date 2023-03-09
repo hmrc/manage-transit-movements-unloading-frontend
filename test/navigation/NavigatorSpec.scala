@@ -43,7 +43,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           answers =>
             navigator
               .nextPage(UnknownPage, mode, answers)
-              .mustBe(routes.UnloadingSummaryController.onPageLoad(arrivalId))
+              .mustBe(routes.SessionExpiredController.onPageLoad())
         }
       }
 
@@ -54,7 +54,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               val updatedUserAnswers = answers.setValue(SealsQuery, Seq(seal))
               navigator
                 .nextPage(DateGoodsUnloadedPage, mode, updatedUserAnswers)
-                .mustBe(controllers.p5.routes.CanSealsBeReadController.onPageLoad(updatedUserAnswers.id, mode))
+                .mustBe(controllers.routes.CanSealsBeReadController.onPageLoad(updatedUserAnswers.id, mode))
           }
         }
 
@@ -64,7 +64,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               val updatedUserAnswers = answers.removeValue(SealsQuery)
               navigator
                 .nextPage(DateGoodsUnloadedPage, mode, updatedUserAnswers)
-                .mustBe(routes.UnloadingSummaryController.onPageLoad(updatedUserAnswers.id))
+                .mustBe(routes.SessionExpiredController.onPageLoad())
           }
         }
       }
@@ -77,7 +77,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               val updatedUserAnswers = answers.setValue(CanSealsBeReadPage, true)
               navigator
                 .nextPage(CanSealsBeReadPage, mode, updatedUserAnswers)
-                .mustBe(controllers.p5.routes.AreAnySealsBrokenController.onPageLoad(updatedUserAnswers.id, mode))
+                .mustBe(controllers.routes.AreAnySealsBrokenController.onPageLoad(updatedUserAnswers.id, mode))
           }
         }
 
@@ -88,7 +88,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               val updatedUserAnswers = answers.setValue(CanSealsBeReadPage, false)
               navigator
                 .nextPage(CanSealsBeReadPage, mode, updatedUserAnswers)
-                .mustBe(controllers.p5.routes.AreAnySealsBrokenController.onPageLoad(updatedUserAnswers.id, mode))
+                .mustBe(controllers.routes.AreAnySealsBrokenController.onPageLoad(updatedUserAnswers.id, mode))
           }
         }
 
@@ -113,7 +113,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
               navigator
                 .nextPage(AreAnySealsBrokenPage, mode, updatedUserAnswers)
-                .mustBe(routes.UnloadingSummaryController.onPageLoad(updatedUserAnswers.id))
+                .mustBe(routes.SessionExpiredController.onPageLoad())
           }
         }
 
@@ -125,7 +125,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
               navigator
                 .nextPage(AreAnySealsBrokenPage, mode, updatedUserAnswers)
-                .mustBe(routes.UnloadingSummaryController.onPageLoad(updatedUserAnswers.id))
+                .mustBe(routes.SessionExpiredController.onPageLoad())
           }
         }
 
@@ -148,7 +148,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           answers =>
             navigator
               .nextPage(SealPage(Index(0)), mode, answers)
-              .mustBe(routes.UnloadingSummaryController.onPageLoad(answers.id))
+              .mustBe(routes.SessionExpiredController.onPageLoad())
         }
       }
 
@@ -158,7 +158,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           answers =>
             navigator
               .nextPage(UnloadingCommentsPage, mode, answers)
-              .mustBe(routes.UnloadingSummaryController.onPageLoad(answers.id))
+              .mustBe(routes.SessionExpiredController.onPageLoad())
 
         }
       }
@@ -175,7 +175,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               navigator
                 .nextPage(UnknownPage, mode, answers)
-                .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.id))
+                .mustBe(routes.SessionExpiredController.onPageLoad())
           }
         }
 
@@ -185,7 +185,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               navigator
                 .nextPage(DateGoodsUnloadedPage, mode, answers)
-                .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.id))
+                .mustBe(routes.SessionExpiredController.onPageLoad())
           }
         }
 
@@ -195,7 +195,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               navigator
                 .nextPage(VehicleIdentificationNumberPage, mode, answers)
-                .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.id))
+                .mustBe(routes.SessionExpiredController.onPageLoad())
           }
         }
 
@@ -205,7 +205,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               navigator
                 .nextPage(VehicleIdentificationNumberPage, mode, answers)
-                .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.id))
+                .mustBe(routes.SessionExpiredController.onPageLoad())
           }
         }
 
@@ -215,7 +215,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               navigator
                 .nextPage(GrossWeightPage, mode, answers)
-                .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.id))
+                .mustBe(routes.SessionExpiredController.onPageLoad())
           }
         }
 
@@ -225,7 +225,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               navigator
                 .nextPage(SealPage(Index(0)), mode, answers)
-                .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.id))
+                .mustBe(routes.SessionExpiredController.onPageLoad())
           }
         }
 
@@ -236,7 +236,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               answers =>
                 navigator
                   .nextPage(ConfirmRemoveCommentsPage, mode, answers)
-                  .mustBe(routes.CheckYourAnswersController.onPageLoad(answers.id))
+                  .mustBe(routes.SessionExpiredController.onPageLoad())
             }
           }
         }

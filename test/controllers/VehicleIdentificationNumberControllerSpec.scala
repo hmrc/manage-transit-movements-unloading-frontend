@@ -17,61 +17,62 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.TotalNumberOfPackagesFormProvider
-import models.{Index, NormalMode}
+import forms.VehicleIdentificationNumberFormProvider
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.TotalNumberOfPackagesPage
+import pages.VehicleIdentificationNumberPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.TotalNumberOfPackagesView
+import views.html.VehicleIdentificationNumberView
 
 import scala.concurrent.Future
 
-class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val index = Index(0)
+  private val formProvider = new VehicleIdentificationNumberFormProvider()
+  private val form         = formProvider()
+  private val mode         = NormalMode
 
-  private val formProvider: TotalNumberOfPackagesFormProvider = new TotalNumberOfPackagesFormProvider()
-  private val form                                            = formProvider(index)
-  private val mode                                            = NormalMode
-  private val validAnswer                                     = "1"
-  lazy val totalNumberOfPackagesRoute: String                 = controllers.routes.TotalNumberOfPackagesController.onPageLoad(arrivalId, index, NormalMode).url
+  lazy val vehicleIdentificationNumberRoute: String = controllers.routes.VehicleIdentificationNumberController.onPageLoad(arrivalId, mode).url
 
-  "TotalNumberOfPackages Controller" - {
+  "VehicleIdentificationNumber Controller" - {
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, totalNumberOfPackagesRoute)
-      val result  = route(app, request).value
-      val view    = injector.instanceOf[TotalNumberOfPackagesView]
+      val request = FakeRequest(GET, vehicleIdentificationNumberRoute)
+
+      val result = route(app, request).value
+
+      val view = injector.instanceOf[VehicleIdentificationNumberView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, arrivalId, mrn, index, mode)(request, messages).toString
+        view(form, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, validAnswer)
-
+      val userAnswers = emptyUserAnswers.setValue(VehicleIdentificationNumberPage, "answer")
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, totalNumberOfPackagesRoute)
-      val result  = route(app, request).value
+      val request = FakeRequest(GET, vehicleIdentificationNumberRoute)
+
+      val result = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> "answer"))
+
+      val view = injector.instanceOf[VehicleIdentificationNumberView]
 
       status(result) mustEqual OK
 
-      val filledForm = form.bind(Map("value" -> validAnswer.toString))
-      val view       = injector.instanceOf[TotalNumberOfPackagesView]
-
       contentAsString(result) mustEqual
-        view(filledForm, arrivalId, mrn, index, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -81,13 +82,12 @@ class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMo
       setExistingUserAnswers(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, totalNumberOfPackagesRoute)
-          .withFormUrlEncodedBody(("value", validAnswer.toString))
+        FakeRequest(POST, vehicleIdentificationNumberRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual onwardRoute.url
     }
 
@@ -96,27 +96,29 @@ class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMo
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, totalNumberOfPackagesRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
-      val result    = route(app, request).value
+      val request   = FakeRequest(POST, vehicleIdentificationNumberRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
+
+      val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[TotalNumberOfPackagesView]
+      val view = injector.instanceOf[VehicleIdentificationNumberView]
 
       contentAsString(result) mustEqual
-        view(boundForm, arrivalId, mrn, index, mode)(request, messages).toString
+        view(boundForm, mrn, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, totalNumberOfPackagesRoute)
+      val request = FakeRequest(GET, vehicleIdentificationNumberRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
@@ -125,8 +127,8 @@ class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMo
       setNoExistingUserAnswers()
 
       val request =
-        FakeRequest(POST, totalNumberOfPackagesRoute)
-          .withFormUrlEncodedBody(("value", validAnswer.toString))
+        FakeRequest(POST, vehicleIdentificationNumberRoute)
+          .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value
 
