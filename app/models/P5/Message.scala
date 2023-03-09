@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 
-package pages
+package models.P5
 
-import models.Index
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{JsObject, Json, Reads}
 
-class ContainerIdentificationNumberPageSpec extends PageBehaviours {
+case class Message(body: JsObject)
 
-  var index = Index(0)
-
-  "ContainerIdentificationNumberPage" - {
-
-    beRetrievable[String](ContainerIdentificationNumberPage(index))
-
-    beSettable[String](ContainerIdentificationNumberPage(index))
-
-    beRemovable[String](ContainerIdentificationNumberPage(index))
-  }
+object Message {
+  implicit lazy val reads: Reads[Message] = Json.reads[Message]
 }

@@ -14,21 +14,24 @@
  * limitations under the License.
  */
 
-package pages
+package models.P5
 
-import models.Index
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{__, Reads}
 
-class ContainerIdentificationNumberPageSpec extends PageBehaviours {
+import java.time.LocalDateTime
 
-  var index = Index(0)
+case class MessageMetaData(received: LocalDateTime, messageType: ArrivalMessageType, path: String)
 
-  "ContainerIdentificationNumberPage" - {
+object MessageMetaData {
 
-    beRetrievable[String](ContainerIdentificationNumberPage(index))
-
-    beSettable[String](ContainerIdentificationNumberPage(index))
-
-    beRemovable[String](ContainerIdentificationNumberPage(index))
+  implicit lazy val reads: Reads[MessageMetaData] = {
+    import play.api.libs.functional.syntax._
+    (
+      (__ \ "received").read[LocalDateTime] and
+        (__ \ "type").read[ArrivalMessageType] and
+        (__ \ "_links" \ "self" \ "href")
+          .read[String]
+          .map(_.replace("/customs/transits/", ""))
+    )(MessageMetaData.apply _)
   }
 }

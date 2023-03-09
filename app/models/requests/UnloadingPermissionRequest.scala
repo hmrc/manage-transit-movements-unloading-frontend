@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package models.requests
 
-import models.Index
-import pages.behaviours.PageBehaviours
+import models.{EoriNumber, MovementReferenceNumber}
+import play.api.libs.json.JsObject
+import play.api.mvc.{Request, WrappedRequest}
 
-class ContainerIdentificationNumberPageSpec extends PageBehaviours {
-
-  var index = Index(0)
-
-  "ContainerIdentificationNumberPage" - {
-
-    beRetrievable[String](ContainerIdentificationNumberPage(index))
-
-    beSettable[String](ContainerIdentificationNumberPage(index))
-
-    beRemovable[String](ContainerIdentificationNumberPage(index))
-  }
-}
+case class UnloadingPermissionRequest[A](
+  request: Request[A],
+  eoriNumber: EoriNumber,
+  unloadingPermission: JsObject,
+  movementReferenceNumber: MovementReferenceNumber
+) extends WrappedRequest[A](request)

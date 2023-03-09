@@ -16,12 +16,14 @@
 
 package controllers
 
-import controllers.actions.IdentifierAction
+import controllers.actions.{IdentifierAction, UnloadingPermissionActionProvider}
 import logging.Logging
-import models.{ArrivalId, MovementReferenceNumber, UserAnswers}
+import models.{ArrivalId, UserAnswers}
 import play.api.i18n.I18nSupport
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.DateTimeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
@@ -30,23 +32,28 @@ import scala.concurrent.ExecutionContext
 class IndexController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   identify: IdentifierAction,
-  sessionRepository: SessionRepository
+  unloadingPermission: UnloadingPermissionActionProvider,
+  sessionRepository: SessionRepository,
+  dateTimeService: DateTimeService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
-  def unloadingRemarks(arrivalId: ArrivalId): Action[AnyContent] = identify.async {
+  def unloadingRemarks(arrivalId: ArrivalId): Action[AnyContent] = (identify andThen unloadingPermission(arrivalId)).async {
     implicit request =>
       for {
         getUserAnswer <- sessionRepository.get(arrivalId, request.eoriNumber) map {
-          _ getOrElse (UserAnswers(arrivalId,
-                                   MovementReferenceNumber("35SS9OUMUBMODEESJ8").get,
-                                   request.eoriNumber
-          )) // TODO MRN is pulled from unloading permission
+          _ getOrElse UserAnswers(
+            id = arrivalId,
+            mrn = request.movementReferenceNumber,
+            eoriNumber = request.eoriNumber,
+            ie043Data = request.unloadingPermission,
+            data = Json.obj(),
+            lastUpdated = dateTimeService.now
+          )
         }
         _ <- sessionRepository.set(getUserAnswer)
       } yield Redirect(controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId))
   }
-
 }
