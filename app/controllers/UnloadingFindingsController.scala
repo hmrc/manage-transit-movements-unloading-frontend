@@ -28,7 +28,6 @@ import views.html.UnloadingFindingsView
 class UnloadingFindingsController @Inject() (
   override val messagesApi: MessagesApi,
   actions: Actions,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   val controllerComponents: MessagesControllerComponents,
   view: UnloadingFindingsView,
   viewModelProvider: UnloadingFindingsViewModelProvider
@@ -38,6 +37,7 @@ class UnloadingFindingsController @Inject() (
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
       val section = viewModelProvider.apply(request.userAnswers).section
+      println(s"\n\n\n $section \n\n\n")
       Ok(view(request.userAnswers.mrn, arrivalId, Seq(section)))
   }
 

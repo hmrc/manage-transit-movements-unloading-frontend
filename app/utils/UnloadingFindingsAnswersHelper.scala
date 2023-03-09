@@ -24,7 +24,7 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
 class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
   def departureMeansID: Option[SummaryListRow] = getAnswerAndBuildRowFromPath[String](
-    path = JsPath \ "n1:CC043C" \ "Consignment" \ "DepartureTransportMeans" \ "identificationNumber",
+    path = JsPath \ "n1:CC043C" \ "Consignment" \ "DepartureTransportMeans" \ 0 \ "identificationNumber", // TODO loop with index
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.identificationType",
     id = Some("change-departure-means-id"),
@@ -32,7 +32,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
   )
 
   def departureRegisteredCountry: Option[SummaryListRow] = getAnswerAndBuildRowFromPath[String](
-    path = JsPath \ "n1:CC043C" \ "Consignment" \ "DepartureTransportMeans" \ "nationality",
+    path = JsPath \ "n1:CC043C" \ "Consignment" \ "DepartureTransportMeans" \ 0 \ "nationality",
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.vehicleNationality",
     id = Some("change-departure-means-country"),
