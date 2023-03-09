@@ -32,6 +32,8 @@ import play.api.libs.json.{Json, Reads, Writes}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 
+import java.time.Instant
+
 trait SpecBase
     extends AnyFreeSpec
     with Matchers
@@ -52,7 +54,7 @@ trait SpecBase
 
   val mrn: MovementReferenceNumber  = MovementReferenceNumber("19", "GB", "1234567890123")
   val eoriNumber: EoriNumber        = EoriNumber("id")
-  def emptyUserAnswers: UserAnswers = UserAnswers(arrivalId, mrn, eoriNumber, Json.obj())
+  def emptyUserAnswers: UserAnswers = UserAnswers(arrivalId, mrn, eoriNumber, Json.obj(), Json.obj(), Instant.now())
 
   protected lazy val packages: Packages = Packages(Some("Ref."), "BX", Some(1), None)
 

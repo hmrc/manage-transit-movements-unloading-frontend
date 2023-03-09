@@ -17,6 +17,7 @@
 package generators
 
 import models.UserAnswers
+import java.time.Instant
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
@@ -57,7 +58,8 @@ trait UserAnswersGenerator extends TryValues {
         data = data.foldLeft(Json.obj()) {
           case (obj, (path, value)) =>
             obj.setObject(path.path, value).get
-        }
+        },
+        lastUpdated = Instant.now
       )
     }
   }

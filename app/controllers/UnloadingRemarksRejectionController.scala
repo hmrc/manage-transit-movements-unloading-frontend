@@ -23,10 +23,10 @@ import handlers.ErrorHandler
 import logging.Logging
 import models._
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.JsObject
+import play.api.libs.json.Json
 import play.api.mvc._
 import repositories.SessionRepository
-import services.UnloadingRemarksRejectionService
+import services.{DateTimeService, UnloadingRemarksRejectionService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.UnloadingRemarksRejectionViewModel
 import viewModels.sections.Section
@@ -41,7 +41,8 @@ class UnloadingRemarksRejectionController @Inject() (
   identify: IdentifierAction,
   val controllerComponents: MessagesControllerComponents,
   val appConfig: FrontendAppConfig,
-  service: UnloadingRemarksRejectionService,
+  unloadingRemarksRejectionService: UnloadingRemarksRejectionService,
+  dateTimeService: DateTimeService,
   extractor: RejectionMessageExtractor,
   sessionRepository: SessionRepository,
   errorHandler: ErrorHandler,
@@ -55,9 +56,16 @@ class UnloadingRemarksRejectionController @Inject() (
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = identify.async {
     implicit request =>
-      service.unloadingRemarksRejectionMessage(arrivalId) flatMap {
+      unloadingRemarksRejectionService.unloadingRemarksRejectionMessage(arrivalId) flatMap {
         case Some(rejectionMessage) =>
-          val userAnswers = UserAnswers(arrivalId, rejectionMessage.movementReferenceNumber, request.eoriNumber, JsObject.empty) // TODO remove this
+          val userAnswers = UserAnswers(
+            id = arrivalId,
+            mrn = rejectionMessage.movementReferenceNumber,
+            eoriNumber = request.eoriNumber,
+            ie043Data = Json.obj(),
+            data = Json.obj(),
+            lastUpdated = dateTimeService.now
+          ) // TODO remove this
           extractor.apply(userAnswers, rejectionMessage) match {
             case Success(updatedAnswers) =>
               sessionRepository.set(updatedAnswers) flatMap {

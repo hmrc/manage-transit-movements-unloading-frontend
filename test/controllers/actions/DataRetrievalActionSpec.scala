@@ -18,11 +18,10 @@ package controllers.actions
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
+import models.EoriNumber
 import models.requests.{IdentifierRequest, OptionalDataRequest}
-import models.{EoriNumber, MovementReferenceNumber, UserAnswers}
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
-import play.api.libs.json.JsObject
 import play.api.mvc.{AnyContent, Request, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -65,7 +64,7 @@ class DataRetrievalActionSpec extends SpecBase with AppWithDefaultMockFixtures w
 
       "when there are existing answers for this MRN" in {
 
-        when(mockSessionRepository.get(any(), any())) thenReturn Future.successful(Some(UserAnswers(arrivalId, mrn, eoriNumber, JsObject.empty)))
+        when(mockSessionRepository.get(any(), any())) thenReturn Future.successful(Some(emptyUserAnswers))
 
         harness(
           request => request.userAnswers mustBe defined

@@ -18,10 +18,12 @@ package controllers
 
 import controllers.actions.{IdentifierAction, UnloadingPermissionActionProvider}
 import logging.Logging
-import models.{ArrivalId, MovementReferenceNumber, UserAnswers}
+import models.{ArrivalId, UserAnswers}
 import play.api.i18n.I18nSupport
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.DateTimeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
@@ -31,7 +33,8 @@ class IndexController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   identify: IdentifierAction,
   unloadingPermission: UnloadingPermissionActionProvider,
-  sessionRepository: SessionRepository
+  sessionRepository: SessionRepository,
+  dateTimeService: DateTimeService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -41,7 +44,14 @@ class IndexController @Inject() (
     implicit request =>
       for {
         getUserAnswer <- sessionRepository.get(arrivalId, request.eoriNumber) map {
-          _ getOrElse (UserAnswers(arrivalId, request.movementReferenceNumber, request.eoriNumber, request.unloadingPermission))
+          _ getOrElse UserAnswers(
+            id = arrivalId,
+            mrn = request.movementReferenceNumber,
+            eoriNumber = request.eoriNumber,
+            ie043Data = request.unloadingPermission,
+            data = Json.obj(),
+            lastUpdated = dateTimeService.now
+          )
         }
         _ <- sessionRepository.set(getUserAnswer)
       } yield Redirect(controllers.p5.routes.UnloadingGuidanceController.onPageLoad(arrivalId))

@@ -16,7 +16,7 @@
 
 package pages
 
-import models.{Index, Seal}
+import models.Index
 import pages.behaviours.PageBehaviours
 
 class ContainerIdentificationNumberPageSpec extends PageBehaviours {

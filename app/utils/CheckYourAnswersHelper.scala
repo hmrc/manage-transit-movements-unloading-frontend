@@ -16,7 +16,6 @@
 
 package utils
 
-import controllers.routes
 import models.{CheckMode, Seal, UserAnswers}
 import pages._
 import play.api.i18n.Messages

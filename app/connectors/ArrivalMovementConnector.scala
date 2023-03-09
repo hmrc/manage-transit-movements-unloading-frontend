@@ -19,7 +19,8 @@ package connectors
 import config.FrontendAppConfig
 import models.ArrivalId
 import models.P5.{Message, Messages}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads}
+import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -27,12 +28,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class ArrivalMovementConnector @Inject() (config: FrontendAppConfig, http: HttpClient) {
 
   def getMessageMetaData(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Messages] = {
-
     val headers = hc.withExtraHeaders(("Accept", "application/vnd.hmrc.2.0+json"))
 
     val serviceUrl = s"${config.commonTransitConventionTradersUrl}movements/arrivals/${arrivalId.value}/messages"
 
-    http.GET[Messages](serviceUrl)(HttpReads[Messages], headers, ec)
+    http.GET[Messages](serviceUrl)(implicitly, headers, ec)
   }
 
   def getMessage(path: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Message] = {
@@ -40,6 +40,6 @@ class ArrivalMovementConnector @Inject() (config: FrontendAppConfig, http: HttpC
 
     val serviceUrl = s"${config.commonTransitConventionTradersUrl}$path"
 
-    http.GET[Message](serviceUrl)(HttpReads[Message], headers, ec)
+    http.GET[Message](serviceUrl)(implicitly, headers, ec)
   }
 }

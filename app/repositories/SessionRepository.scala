@@ -20,10 +20,10 @@ import config.FrontendAppConfig
 import models.{ArrivalId, EoriNumber, UserAnswers}
 import org.mongodb.scala.model.Indexes.{ascending, compoundIndex}
 import org.mongodb.scala.model._
+import services.DateTimeService
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 
-import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,7 +31,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class SessionRepository @Inject() (
   mongoComponent: MongoComponent,
-  appConfig: FrontendAppConfig
+  appConfig: FrontendAppConfig,
+  dateTimeService: DateTimeService
 )(implicit ec: ExecutionContext)
     extends PlayMongoRepository[UserAnswers](
       mongoComponent = mongoComponent,
@@ -45,7 +46,7 @@ class SessionRepository @Inject() (
       Filters.eq("_id", id.value),
       Filters.eq("eoriNumber", eoriNumber.value)
     )
-    val update = Updates.set("lastUpdated", LocalDateTime.now())
+    val update = Updates.set("lastUpdated", dateTimeService.now)
 
     collection
       .findOneAndUpdate(filter, update, FindOneAndUpdateOptions().upsert(false))
@@ -54,7 +55,7 @@ class SessionRepository @Inject() (
 
   def set(userAnswers: UserAnswers): Future[Boolean] = {
     val filter             = Filters.eq("_id", userAnswers.id.value)
-    val updatedUserAnswers = userAnswers.copy(lastUpdated = LocalDateTime.now())
+    val updatedUserAnswers = userAnswers.copy(lastUpdated = dateTimeService.now)
 
     collection
       .replaceOne(filter, updatedUserAnswers, ReplaceOptions().upsert(true))

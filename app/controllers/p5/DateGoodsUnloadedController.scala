@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.DateGoodsUnloadedFormProvider
 import models.{ArrivalId, Mode}
 import navigation.Navigator
-import pages.{DateGoodsUnloadedPage, DateOfPreparationPage}
+import pages.DateGoodsUnloadedPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository

@@ -16,7 +16,7 @@
 
 package models.P5
 
-import play.api.libs.json.{__, JsObject, Json, Reads}
+import play.api.libs.json.{JsObject, Json, Reads}
 
 case class Message(body: JsObject)
 
