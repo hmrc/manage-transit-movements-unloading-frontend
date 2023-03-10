@@ -259,5 +259,18 @@ unloadingFindings.title = What did you find when unloading?
 unloadingFindings.heading = What did you find when unloading?
 unloadingFindings.paragraph = Cross-check the transit with the following information. Change these details if you find something different
 
-unloadingFindings.rowHeadings.identificationType = Test
+unloadingFindings.subsections.transportMeans = Means of transport
+
+unloadingFindings.rowHeadings.identificationType.seaGoingVessel = Name of a sea-going vessel
+unloadingFindings.rowHeadings.identificationType.iataFlightNumber = IATA flight number
+unloadingFindings.rowHeadings.identificationType.inlandWaterwaysVehicle = Name of an inland waterways vehicle
+unloadingFindings.rowHeadings.identificationType.imoShipIdNumber = IMO ship identification number
+unloadingFindings.rowHeadings.identificationType.wagonNumber = Wagon number
+unloadingFindings.rowHeadings.identificationType.trainNumber = Train number
+unloadingFindings.rowHeadings.identificationType.regNumberRoadVehicle = Registration number of a road vehicle
+unloadingFindings.rowHeadings.identificationType.regNumberRoadTrailer = Registration number of a road trailer
+unloadingFindings.rowHeadings.identificationType.regNumberAircraft = Registration number of an aircraft
+unloadingFindings.rowHeadings.identificationType.europeanVesselIdNumber = European vessel identification number (ENI code)
+unloadingFindings.rowHeadings.identificationType.unknown = Unknown - this can only be used during the transitional period
+
 unloadingFindings.rowHeadings.vehicleNationality = Registered country

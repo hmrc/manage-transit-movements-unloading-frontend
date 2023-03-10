@@ -16,17 +16,17 @@
 
 package utils
 
-import models.{NormalMode, UserAnswers}
+import models.{Identification, NormalMode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.libs.json.JsPath
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
 
 class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
-  def departureMeansID: Option[SummaryListRow] = getAnswerAndBuildRowFromPath[String](
+  def departureMeansID: Option[SummaryListRow] = getAnswerAndBuildRowFromPathWithDynamicPrefix[String](
     path = JsPath \ "n1:CC043C" \ "Consignment" \ "DepartureTransportMeans" \ 0 \ "identificationNumber", // TODO loop with index
     formatAnswer = formatAsText,
-    prefix = "unloadingFindings.rowHeadings.identificationType",
+    dynamicPrefix = formatIdentificationTypeAsText,
     id = Some("change-departure-means-id"),
     call = Some(controllers.routes.VehicleIdentificationNumberController.onPageLoad(arrivalId, NormalMode))
   )

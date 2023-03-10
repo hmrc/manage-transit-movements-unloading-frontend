@@ -57,8 +57,27 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
   )(implicit rds: Reads[T]): Option[SummaryListRow] =
     userAnswers.getIE043(path) map {
       answer =>
-        buildRow(
+        buildRowFromPath(
           prefix = prefix,
+          answer = formatAnswer(answer),
+          id = id,
+          call = call,
+          args = args: _*
+        )
+    }
+
+  def getAnswerAndBuildRowFromPathWithDynamicPrefix[T](
+    path: JsPath,
+    formatAnswer: T => Content,
+    dynamicPrefix: T => String,
+    id: Option[String],
+    call: Option[Call],
+    args: Any*
+  )(implicit rds: Reads[T]): Option[SummaryListRow] =
+    userAnswers.getIE043(path) map {
+      answer =>
+        buildRowFromPath(
+          prefix = dynamicPrefix(answer),
           answer = formatAnswer(answer),
           id = id,
           call = call,

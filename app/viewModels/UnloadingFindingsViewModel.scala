@@ -40,7 +40,7 @@ object UnloadingFindingsViewModel {
         helper.departureRegisteredCountry
       ).flatten
 
-      new UnloadingFindingsViewModel(Section("Means of transport", rows)) //TODO : Use message keys
+      new UnloadingFindingsViewModel(Section(messages("unloadingFindings.subsections.transportMeans"), rows))
     }
   }
 }
