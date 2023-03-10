@@ -44,9 +44,9 @@ object UnloadingFindingsViewModel {
         ).flatten
       )
 
-//      val transportEquipmentRows = userAnswers.getIE043[JsArray]()
+      val transportEquipmentSections = helper.transportEquipmentSections
 
-      val sections = Seq(transportMeansSection)
+      val sections = Seq(transportMeansSection) ++ transportEquipmentSections
 
       new UnloadingFindingsViewModel(sections)
     }
