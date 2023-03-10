@@ -19,7 +19,7 @@ package utils
 import models.{ArrivalId, Index, UserAnswers}
 import pages.QuestionPage
 import play.api.i18n.Messages
-import play.api.libs.json.{JsPath, Reads}
+import play.api.libs.json.{JsArray, JsPath, JsValue, Reads}
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components._
 
@@ -106,4 +106,44 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
           args = args: _*
         )
     }
+
+  implicit class RichJsArray(arr: JsArray) {
+
+    def zipWithIndex: List[(JsValue, Index)] = arr.value.toList.zipWithIndex.map(
+      x => (x._1, Index(x._2))
+    )
+
+    def filterWithIndex(f: (JsValue, Index) => Boolean): Seq[(JsValue, Index)] =
+      arr.zipWithIndex.filter {
+        case (value, i) => f(value, i)
+      }
+
+    def isEmpty: Boolean = arr.value.isEmpty
+  }
+
+  implicit class RichOptionalJsArray(arr: Option[JsArray]) {
+
+    def mapWithIndex[T](f: (JsValue, Index) => Option[T]): Seq[T] =
+      arr
+        .map {
+          _.zipWithIndex.flatMap {
+            case (value, i) => f(value, i)
+          }
+        }
+        .getOrElse(Nil)
+
+    def validate[T](implicit rds: Reads[T]): Option[T] =
+      arr.flatMap(_.validate[T].asOpt)
+
+    def length: Int = arr.getOrElse(JsArray()).value.length
+
+  }
+
+  def getAnswersAndBuildSectionRows(path: JsPath)(f: Index => Option[SummaryListRow]): Seq[SummaryListRow] =
+    userAnswers
+      .getIE043[JsArray](path)
+      .mapWithIndex {
+        (_, index) => f(index)
+      }
+
 }

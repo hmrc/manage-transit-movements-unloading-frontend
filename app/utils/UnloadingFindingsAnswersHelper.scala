@@ -16,10 +16,11 @@
 
 package utils
 
-import models.{Identification, NormalMode, UserAnswers}
+import models.{Index, NormalMode, UserAnswers}
 import play.api.i18n.Messages
-import play.api.libs.json.JsPath
-import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
+import play.api.libs.json.{JsArray, JsPath}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewModels.sections.Section
 
 class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
@@ -39,4 +40,46 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
     id = Some("change-departure-means-country"),
     call = Some(controllers.routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, NormalMode))
   )
+
+  def transportEquipmentSectiond: Seq[Section] = {
+    val path = JsPath \ "n1:CC043C" \ "Consignment" \ "TransportEquipment"
+
+    userAnswers
+      .getIE043[JsArray](path).mapWithIndex {
+      (_, index) => {
+
+        val containerRow: Seq[Option[SummaryListRow]] = Seq(containerIdentificationNumber(index))
+        val sealRows: Seq[SummaryListRow] = transportEquipmentSeals(index)
+
+        Section(
+          messages("unloadingFindings.subsections.transportEquipment", index.display),
+          containerRow ++ sealRows
+        )
+      }
+    }
+  }
+
+  def transportEquipmentSeals(equipmentIndex: Index): Seq[SummaryListRow] = {
+
+    val path = JsPath \ "n1:CC043C" \ "Consignment" \ "TransportEquipment" \ equipmentIndex.position \ "Seal"
+
+    getAnswersAndBuildSectionRows(path)(sealIndex => transportEquipmentSeal(equipmentIndex, sealIndex))
+  }
+
+  def containerIdentificationNumber(index: Index): Option[SummaryListRow] = getAnswerAndBuildRowFromPath[String](
+    path = JsPath \ "n1:CC043C" \ "Consignment" \ "TransportEquipment" \ index.position \ "containerIdentificationNumber",
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.containerIdentificationNumber",
+    id = Some(s"change-container-identification-number-${index.display}"),
+    call = Some(controllers.routes.NewContainerIdentificationNumberController.onPageLoad(arrivalId, index, NormalMode))
+  )
+
+  def transportEquipmentSeal(equipmentIndex: Index, sealIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRowFromPath[String](
+    path = JsPath \ "n1:CC043C" \ "Consignment" \ "TransportEquipment" \ equipmentIndex.position \ "Seal" \ sealIndex.position,
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.sealIdentifier",
+    id = Some(s"change-seal-identifier-${sealIndex.display}"),
+    call = Some(controllers.routes.NewSealNumberController.onPageLoad(arrivalId, sealIndex, NormalMode)) // TODO add transport equipment to controller / page
+  )
+
 }

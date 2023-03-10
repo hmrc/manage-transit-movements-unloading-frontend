@@ -18,12 +18,13 @@ package viewModels
 
 import models.UserAnswers
 import play.api.i18n.Messages
+import play.api.libs.json.JsArray
 import utils.UnloadingFindingsAnswersHelper
 import viewModels.sections.Section
 
 import javax.inject.Inject
 
-case class UnloadingFindingsViewModel(section: Section)
+case class UnloadingFindingsViewModel(section: Seq[Section])
 
 object UnloadingFindingsViewModel {
 
@@ -35,17 +36,19 @@ object UnloadingFindingsViewModel {
     def apply(userAnswers: UserAnswers)(implicit messages: Messages): UnloadingFindingsViewModel = {
       val helper = new UnloadingFindingsAnswersHelper(userAnswers)
 
-      val transportMeansRows = Seq(
-        helper.departureMeansID,
-        helper.departureRegisteredCountry
-      ).flatten
+      val transportMeansSection = Section(
+        messages("unloadingFindings.subsections.transportMeans"),
+        Seq(
+          helper.departureMeansID,
+          helper.departureRegisteredCountry
+        ).flatten
+      )
 
-      val transportEquipmentRows = Seq(
-        helper.departureMeansID,
-        helper.departureRegisteredCountry
-      ).flatten
+//      val transportEquipmentRows = userAnswers.getIE043[JsArray]()
 
-      new UnloadingFindingsViewModel(Section(messages("unloadingFindings.subsections.transportMeans"), transportMeansRows))
+      val sections = Seq(transportMeansSection)
+
+      new UnloadingFindingsViewModel(sections)
     }
   }
 }
