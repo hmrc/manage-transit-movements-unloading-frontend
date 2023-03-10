@@ -35,12 +35,17 @@ object UnloadingFindingsViewModel {
     def apply(userAnswers: UserAnswers)(implicit messages: Messages): UnloadingFindingsViewModel = {
       val helper = new UnloadingFindingsAnswersHelper(userAnswers)
 
-      val rows = Seq(
+      val transportMeansRows = Seq(
         helper.departureMeansID,
         helper.departureRegisteredCountry
       ).flatten
 
-      new UnloadingFindingsViewModel(Section(messages("unloadingFindings.subsections.transportMeans"), rows))
+      val transportEquipmentRows = Seq(
+        helper.departureMeansID,
+        helper.departureRegisteredCountry
+      ).flatten
+
+      new UnloadingFindingsViewModel(Section(messages("unloadingFindings.subsections.transportMeans"), transportMeansRows))
     }
   }
 }
