@@ -111,7 +111,10 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
           x => x._2
         )
         .sum
-      Section(messages("unloadingFindings.subsections.itemSummary"), Seq(numberOfItemsRow(numberOfItems), grossWeightRow(grossWeight), netWeightRow(netWeight)))
+      Section(
+        messages("unloadingFindings.subsections.itemSummary"),
+        Seq(numberOfItemsRow(numberOfItems), totalGrossWeightRow(grossWeight), totalNetWeightRow(netWeight))
+      )
     }
   }
 
@@ -130,16 +133,55 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
     args = None
   )
 
-  def grossWeightRow(answer: Double): SummaryListRow = buildRowWithNoChangeLink(
-    answer = formatAsText(answer),
-    prefix = "unloadingFindings.rowHeadings.grossWeight",
+  def totalGrossWeightRow(answer: Double): SummaryListRow = buildRowWithNoChangeLink(
+    answer = formatAsWeight(answer),
+    prefix = "unloadingFindings.rowHeadings.totalGrossWeight",
     args = None
   )
 
-  def netWeightRow(answer: Double): SummaryListRow = buildRowWithNoChangeLink(
-    answer = formatAsText(answer),
-    prefix = "unloadingFindings.rowHeadings.netWeight",
+  def totalNetWeightRow(answer: Double): SummaryListRow = buildRowWithNoChangeLink(
+    answer = formatAsWeight(answer),
+    prefix = "unloadingFindings.rowHeadings.totalNetWeight",
     args = None
+  )
+
+  def itemSections: Seq[Section] = {
+    val itemPath = JsPath \ "n1:CC043C" \ "Consignment" \ "HouseConsignment" \ 0 \ "ConsignmentItem"
+
+    userAnswers
+      .getIE043[JsArray](itemPath)
+      .mapWithIndex {
+        (_, itemIndex) =>
+          val itemDescription: Option[SummaryListRow] = itemDescriptionRow(itemIndex)
+          val grossWeight: Option[SummaryListRow]     = grossWeightRow(itemIndex)
+          val netWeight: Option[SummaryListRow]       = netWeightRow(itemIndex)
+
+          Some(Section(messages("unloadingFindings.subsections.item", itemIndex.display), Seq(itemDescription, grossWeight, netWeight).flatten))
+      }
+  }
+
+  def itemDescriptionRow(itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRowFromPath[String](
+    path = JsPath \ "n1:CC043C" \ "Consignment" \ "HouseConsignment" \ 0 \ "ConsignmentItem" \ itemIndex.position \ "Commodity" \ "descriptionOfGoods",
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.item.description",
+    id = Some(s"change-item-description-${itemIndex.display}"),
+    call = None //TODO: item description change controller
+  )
+
+  def grossWeightRow(itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRowFromPath[Double](
+    path = JsPath \ "n1:CC043C" \ "Consignment" \ "HouseConsignment" \ 0 \ "ConsignmentItem" \ itemIndex.position \ "Commodity" \ "GoodsMeasure" \ "grossMass",
+    formatAnswer = formatAsWeight,
+    prefix = "unloadingFindings.rowHeadings.item.grossWeight",
+    id = Some(s"change-gross-weight-${itemIndex.display}"),
+    call = Some(controllers.routes.GrossWeightController.onPageLoad(arrivalId, itemIndex, NormalMode))
+  )
+
+  def netWeightRow(itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRowFromPath[Double](
+    path = JsPath \ "n1:CC043C" \ "Consignment" \ "HouseConsignment" \ 0 \ "ConsignmentItem" \ itemIndex.position \ "Commodity" \ "GoodsMeasure" \ "netMass",
+    formatAnswer = formatAsWeight,
+    prefix = "unloadingFindings.rowHeadings.item.netWeight",
+    id = Some(s"change-net-weight-${itemIndex.display}"),
+    call = Some(controllers.routes.NetWeightController.onPageLoad(arrivalId, itemIndex, NormalMode))
   )
 
 }

@@ -38,6 +38,8 @@ class SummaryListRowHelper(implicit messages: Messages) {
 
   protected def formatAsText[T](answer: T): Content = s"$answer".toText
 
+  protected def formatAsWeight[T](answer: T): Content = s"${answer}kg".toText
+
   protected def formatIdentificationTypeAsText(xmlString: String): String =
     s"${Identification.messageKeyPrefix}.${Identification(xmlString)}"
 

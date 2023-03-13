@@ -279,10 +279,17 @@ unloadingFindings.subsections.transportEquipment = Transport equipment {0}
 unloadingFindings.rowHeadings.containerIdentificationNumber = Container identification number
 unloadingFindings.rowHeadings.sealIdentifier = Seal {0}
 
+
 unloadingFindings.subsections.itemSummary = Items summary
 unloadingFindings.rowHeadings.numberOfItems = Total number of items
-unloadingFindings.rowHeadings.grossWeight = Total gross weight of all items
-unloadingFindings.rowHeadings.netWeight = Total net weight of all items
+unloadingFindings.rowHeadings.totalGrossWeight = Total gross weight of all items
+unloadingFindings.rowHeadings.totalNetWeight = Total net weight of all items
+
+unloadingFindings.subsections.item = Item {0}
+unloadingFindings.rowHeadings.item.description = Description
+unloadingFindings.rowHeadings.item.grossWeight = Gross weight
+unloadingFindings.rowHeadings.item.netWeight = Net weight
+
 
 
 
