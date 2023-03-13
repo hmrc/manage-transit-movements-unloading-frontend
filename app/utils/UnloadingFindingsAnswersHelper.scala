@@ -55,9 +55,14 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
 
           containerRow.head match {
             case Some(containerRow) =>
-              Some(Section(messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display), Seq(containerRow) ++ sealRows))
+              Some(
+                Section(messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display),
+                        Seq(containerRow) ++ sealRows,
+                        addNewSeal(equipmentIndex)
+                )
+              )
             case None =>
-              Some(Section(messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display), sealRows))
+              Some(Section(messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display), sealRows, addNewSeal(equipmentIndex)))
           }
       }
   }
@@ -87,6 +92,15 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
     id = Some(s"change-seal-identifier-${sealIndex.display}"),
     call = Some(controllers.routes.NewSealNumberController.onPageLoad(arrivalId, sealIndex, NormalMode)) // TODO add transport equipment to controller / page
   )
+
+  def addNewSeal(equipmentIndex: Index): Option[Link] =
+    Some(
+      Link(
+        id = "add-new-seal-identification-number",
+        text = messages("unloadingFindings.addNewSeal.link"),
+        href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, NormalMode).url // TODO: Add seal index
+      )
+    )
 
   def itemsSummarySection: Section = {
     val itemsSummaryPath = JsPath \ "n1:CC043C" \ "Consignment" \ "HouseConsignment" \ 0 \ "ConsignmentItem"

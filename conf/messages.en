@@ -278,6 +278,7 @@ unloadingFindings.rowHeadings.vehicleNationality = Registered country
 unloadingFindings.subsections.transportEquipment = Transport equipment {0}
 unloadingFindings.rowHeadings.containerIdentificationNumber = Container identification number
 unloadingFindings.rowHeadings.sealIdentifier = Seal {0}
+unloadingFindings.addNewSeal.link = Add a new seal identification number
 
 
 unloadingFindings.subsections.itemSummary = Items summary
