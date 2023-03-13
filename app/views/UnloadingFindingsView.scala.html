@@ -17,17 +17,20 @@
 @import viewModels.sections.Section
 @import views.html.components.{AnswerSections, Button, Heading}
 @import views.html.components.HeadingCaption
+@import viewModels.UnloadingFindingsViewModel
+@import views.html.components.VisibleSection
 
 @this(
 mainTemplate: MainTemplate,
 heading: Heading,
 answerSections: AnswerSections,
+visibleSection: VisibleSection,
 button: Button,
 caption: HeadingCaption,
 formHelper: FormWithCSRF
 )
 
-@(mrn: MovementReferenceNumber, arrivalId: ArrivalId, sections: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(mrn: MovementReferenceNumber, arrivalId: ArrivalId, unloadingFindingsViewModel: UnloadingFindingsViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("unloadingFindings.title"),
@@ -43,7 +46,9 @@ formHelper: FormWithCSRF
     <p class="govuk-body">@messages("unloadingFindings.paragraph")</p>
 
 
-    @answerSections(sections)
+    @answerSections(unloadingFindingsViewModel.section)
+
+    @visibleSection(unloadingFindingsViewModel.additionalComments)
 
     @formHelper(action = routes.UnloadingFindingsController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
         @button(attributes = Map("id" -> "submit"))

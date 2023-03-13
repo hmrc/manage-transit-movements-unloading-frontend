@@ -60,7 +60,7 @@ class SummaryListRowHelper(implicit messages: Messages) {
     args: Any*
   ): SummaryListRow =
     SummaryListRow(
-      key = messages(s"$prefix.checkYourAnswersLabel", args: _*).toKey,
+      key = messages(s"$prefix", args: _*).toKey,
       value = Value(answer),
       actions = call.map {
         x =>

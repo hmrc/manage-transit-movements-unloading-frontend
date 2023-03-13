@@ -16,7 +16,8 @@
 
 package utils
 
-import models.{Index, NormalMode, UserAnswers}
+import models.{Index, Link, NormalMode, UserAnswers}
+import pages.UnloadingCommentsPage
 import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, JsPath}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -183,5 +184,21 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
     id = Some(s"change-net-weight-${itemIndex.display}"),
     call = Some(controllers.routes.NetWeightController.onPageLoad(arrivalId, itemIndex, NormalMode))
   )
+
+  def additionalComment: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = UnloadingCommentsPage,
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.additionalComments",
+    id = Some(s"change-comment"),
+    call = Some(controllers.routes.UnloadingCommentsController.onPageLoad(arrivalId, NormalMode))
+  )
+
+  def addAdditionalComments(): Option[Link] = buildLinkIfAnswerNotPresent(UnloadingCommentsPage) {
+    Link(
+      id = "add-new-comment",
+      text = messages("unloadingFindings.additionalComments.link"),
+      href = controllers.routes.UnloadingCommentsController.onPageLoad(arrivalId, NormalMode).url
+    )
+  }
 
 }
