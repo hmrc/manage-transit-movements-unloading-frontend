@@ -1,0 +1,56 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.MovementReferenceNumber
+
+@this(
+mainTemplate: MainTemplate,
+formHelper: FormWithCSRF,
+errorSummary: ErrorSummary
+)
+
+@(mrn: MovementReferenceNumber)(implicit request: Request[_], messages: Messages)
+
+@mainTemplate(
+title = messages("Unloading remarks sent"),
+showBackLink = false,
+) {
+    <div class="govuk-width-container ">
+        <main class="govuk-main-wrapper govuk-main-wrapper--l" id="main-content" role="main">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <div class="govuk-panel govuk-panel--confirmation">
+                        <h1 class="govuk-panel__title">
+                            Unloading remarks sent
+                        </h1>
+                        <div class="govuk-panel__body">
+                            for Movement Reference Number (MRN)<br><strong>@mrn</strong>
+                        </div>
+                    </div>
+
+                    <h2 class="govuk-heading-m">What happens next</h2>
+
+                    <p>You must wait for the goods to be released.</p>
+                    <p class="govuk-body"><a href="">Go to arrivals notifications</a> to see the latest messages.</p>
+
+                    <p class="govuk-body"><a href="/arrivals/version-7/GB/movement-reference.html" class="govuk-link">Create another arrival notification</a></p>
+
+                </div>
+            </div>
+
+        </main>
+    </div>
+}
