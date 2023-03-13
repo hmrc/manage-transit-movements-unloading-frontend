@@ -19,9 +19,9 @@ package connectors
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock._
 import generators.Generators
-import models.P5.{ArrivalMessageType, Message, MessageMetaData, Messages}
+import models.MovementReferenceNumber
+import models.P5._
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDateTime
@@ -85,14 +85,21 @@ class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtu
       }
     }
 
-    "getMessage" - {
+    "getUnloadingPermission" - {
 
       val expectedResponse =
         """
           |{
           |  "body": {
-          |   "foo": "bar"
-          |  }
+          |   "n1:CC043C": {
+          |     "TransitOperation": {
+          |       "MRN": "99IT9876AB88901209"
+          |     },
+          |     "Consignment": {
+          |       "HouseConsignment": []
+          |     }
+          |   }
+          | }
           |}
           |""".stripMargin
 
@@ -103,9 +110,14 @@ class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtu
             .willReturn(okJson(expectedResponse))
         )
 
-        val result = connector.getMessage("path/url").futureValue
+        val result = connector.getUnloadingPermission("path/url").futureValue
 
-        val expectedResult = Message(Json.obj(("foo", "bar")))
+        val expectedResult = IE043Data(
+          MessageData(
+            TransitOperation = TransitOperation(MovementReferenceNumber("99IT9876AB88901209").get),
+            Consignment = Consignment(None, None, List.empty)
+          )
+        )
 
         result mustBe expectedResult
       }

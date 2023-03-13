@@ -46,10 +46,10 @@ class IndexController @Inject() (
         getUserAnswer <- sessionRepository.get(arrivalId, request.eoriNumber) map {
           _ getOrElse UserAnswers(
             id = arrivalId,
-            mrn = request.movementReferenceNumber,
+            mrn = request.unloadingPermission.TransitOperation.MRN,
             eoriNumber = request.eoriNumber,
-            ie043Data = request.unloadingPermission,
-            data = Json.obj(),
+            ie043Data = Json.toJsObject(request.unloadingPermission),
+            data = Json.toJsObject(request.unloadingPermission),
             lastUpdated = dateTimeService.now
           )
         }

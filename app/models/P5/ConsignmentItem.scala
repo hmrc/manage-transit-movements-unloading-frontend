@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package models.requests
+package models.P5
 
-import models.EoriNumber
-import models.P5.MessageData
-import play.api.mvc.{Request, WrappedRequest}
+import play.api.libs.json.{Json, OFormat}
 
-case class UnloadingPermissionRequest[A](
-  request: Request[A],
-  eoriNumber: EoriNumber,
-  unloadingPermission: MessageData
-) extends WrappedRequest[A](request)
+case class ConsignmentItem(
+  goodsItemNumber: Option[String],
+  declarationGoodsItemNumber: Option[Int],
+  Commodity: Option[Commodity],
+  Packaging: Option[List[Packaging]]
+)
+
+object ConsignmentItem {
+  implicit val formats: OFormat[ConsignmentItem] = Json.format[ConsignmentItem]
+}

@@ -16,10 +16,14 @@
 
 package models.P5
 
-import play.api.libs.json.{JsObject, Json, Reads}
+import play.api.libs.json.{Json, OFormat}
 
-case class Message(body: JsObject)
+case class Consignment(
+  TransportEquipment: Option[List[TransportEquipment]],
+  DepartureTransportMeans: Option[List[DepartureTransportMeans]],
+  HouseConsignment: List[HouseConsignment]
+)
 
-object Message {
-  implicit lazy val reads: Reads[Message] = Json.reads[Message]
+object Consignment {
+  implicit val formats: OFormat[Consignment] = Json.format[Consignment]
 }

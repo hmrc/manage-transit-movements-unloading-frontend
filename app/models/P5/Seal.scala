@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package models.requests
+package models.P5
 
-import models.EoriNumber
-import models.P5.MessageData
-import play.api.mvc.{Request, WrappedRequest}
+import play.api.libs.json.{Json, OFormat}
 
-case class UnloadingPermissionRequest[A](
-  request: Request[A],
-  eoriNumber: EoriNumber,
-  unloadingPermission: MessageData
-) extends WrappedRequest[A](request)
+case class Seal(
+  sequenceNumber: Option[String],
+  identifier: Option[String]
+)
+
+object Seal {
+  implicit val formats: OFormat[Seal] = Json.format[Seal]
+}

@@ -18,14 +18,13 @@ package controllers.actions
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
-import models.EoriNumber
-import models.P5.Message
+import models.P5.{Consignment, IE043Data, MessageData, TransitOperation}
 import models.requests.IdentifierRequest
+import models.{EoriNumber, MovementReferenceNumber}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Results._
 import play.api.mvc._
 import play.api.test.FakeRequest
@@ -50,17 +49,14 @@ class UnloadingPermissionActionSpec extends SpecBase with BeforeAndAfterEach wit
   "UnloadingPermissionAction" - {
     "must return 200 when an unloading permission is available" in {
 
-      val message = Message(
-        Json.obj(
-          "n1:CC043C" -> Json.obj(
-            "TransitOperation" -> Json.obj(
-              "MRN" -> "99IT9876AB88901209"
-            )
-          )
+      val message = IE043Data(
+        MessageData(
+          TransitOperation = TransitOperation(MovementReferenceNumber("23", "GB", "123")),
+          Consignment = Consignment(None, None, List.empty)
         )
       )
 
-      when(mockService.getUnloadingPermissionJson(any())(any(), any())).thenReturn(Future.successful(Some(message)))
+      when(mockService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(Some(message)))
 
       val unloadingPermissionProvider = (new UnloadingPermissionActionProvider(mockService)(implicitly))(arrivalId)
 
@@ -73,53 +69,7 @@ class UnloadingPermissionActionSpec extends SpecBase with BeforeAndAfterEach wit
 
     "must return 303 and redirect to technical difficulties when no unloading permission is available" in {
 
-      when(mockService.getUnloadingPermissionJson(any())(any(), any())).thenReturn(Future.successful(None))
-
-      val unloadingPermissionProvider = (new UnloadingPermissionActionProvider(mockService)(implicitly))(arrivalId)
-
-      val testRequest = IdentifierRequest(FakeRequest(GET, "/"), EoriNumber("eori"))
-
-      val result: Future[Result] = unloadingPermissionProvider.invokeBlock(testRequest, fakeOkResult)
-
-      status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustBe routes.ErrorController.technicalDifficulties().url
-    }
-
-    "must return 303 and redirect to technical difficulties when MRN is not valid" in {
-
-      val message = Message(
-        Json.obj(
-          "n1:CC043C" -> Json.obj(
-            "TransitOperation" -> Json.obj(
-              "MRN" -> "AB123"
-            )
-          )
-        )
-      )
-
-      when(mockService.getUnloadingPermissionJson(any())(any(), any())).thenReturn(Future.successful(Some(message)))
-
-      val unloadingPermissionProvider = (new UnloadingPermissionActionProvider(mockService)(implicitly))(arrivalId)
-
-      val testRequest = IdentifierRequest(FakeRequest(GET, "/"), EoriNumber("eori"))
-
-      val result: Future[Result] = unloadingPermissionProvider.invokeBlock(testRequest, fakeOkResult)
-
-      status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustBe routes.ErrorController.technicalDifficulties().url
-    }
-
-    "must return 303 and redirect to technical difficulties when MRN is not available" in {
-
-      val message = Message(
-        Json.obj(
-          "n1:CC043C" -> Json.obj(
-            "TransitOperation" -> JsObject.empty
-          )
-        )
-      )
-
-      when(mockService.getUnloadingPermissionJson(any())(any(), any())).thenReturn(Future.successful(Some(message)))
+      when(mockService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(None))
 
       val unloadingPermissionProvider = (new UnloadingPermissionActionProvider(mockService)(implicitly))(arrivalId)
 

@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package models.requests
+package models.P5
 
-import models.EoriNumber
-import models.P5.MessageData
-import play.api.mvc.{Request, WrappedRequest}
+import play.api.libs.json.{__, Json, OWrites, Reads}
 
-case class UnloadingPermissionRequest[A](
-  request: Request[A],
-  eoriNumber: EoriNumber,
-  unloadingPermission: MessageData
-) extends WrappedRequest[A](request)
+case class IE043Data(data: MessageData)
+
+object IE043Data {
+  implicit val reads: Reads[IE043Data]    = (__ \ "body" \ "n1:CC043C").read[MessageData].map(IE043Data.apply)
+  implicit val writes: OWrites[IE043Data] = Json.writes[IE043Data]
+}
