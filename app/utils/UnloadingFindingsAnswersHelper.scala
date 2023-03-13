@@ -87,4 +87,61 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
     call = Some(controllers.routes.NewSealNumberController.onPageLoad(arrivalId, sealIndex, NormalMode)) // TODO add transport equipment to controller / page
   )
 
+  def itemsSummarySection: Section = {
+    val itemsSummaryPath = JsPath \ "n1:CC043C" \ "Consignment" \ "HouseConsignment" \ 0 \ "ConsignmentItem"
+
+    val itemsSummary = userAnswers.getIE043[JsArray](itemsSummaryPath)
+
+    val itemWeights: Seq[(Double, Double)] = itemsSummary.mapWithIndex[(Double, Double)](
+      (_, itemIndex) => Some(fetchWeightValues(itemIndex))
+    )
+
+    val numberOfItems: Int = itemsSummary.fold(0)(
+      x => x.value.size
+    )
+
+    if (numberOfItems == 0) {
+      Section(None, Seq.empty)
+    } else {
+      val grossWeight = itemWeights
+        .map(
+          x => x._1
+        )
+        .sum
+      val netWeight = itemWeights
+        .map(
+          x => x._2
+        )
+        .sum
+      Section(messages("unloadingFindings.subsections.itemSummary"), Seq(numberOfItemsRow(numberOfItems), grossWeightRow(grossWeight), netWeightRow(netWeight)))
+    }
+  }
+
+  def fetchWeightValues(itemIndex: Index): (Double, Double) = {
+    val itemPathGrossWeight =
+      JsPath \ "n1:CC043C" \ "Consignment" \ "HouseConsignment" \ 0 \ "ConsignmentItem" \ itemIndex.position \ "Commodity" \ "GoodsMeasure" \ "grossMass"
+    val itemPathNetWeight =
+      JsPath \ "n1:CC043C" \ "Consignment" \ "HouseConsignment" \ 0 \ "ConsignmentItem" \ itemIndex.position \ "Commodity" \ "GoodsMeasure" \ "netMass"
+
+    (userAnswers.getIE043[Double](itemPathGrossWeight).getOrElse(0d), userAnswers.getIE043[Double](itemPathNetWeight).getOrElse(0d))
+  }
+
+  def numberOfItemsRow(answer: Int): SummaryListRow = buildRowWithNoChangeLink(
+    answer = formatAsText(answer),
+    prefix = "unloadingFindings.rowHeadings.numberOfItems",
+    args = None
+  )
+
+  def grossWeightRow(answer: Double): SummaryListRow = buildRowWithNoChangeLink(
+    answer = formatAsText(answer),
+    prefix = "unloadingFindings.rowHeadings.grossWeight",
+    args = None
+  )
+
+  def netWeightRow(answer: Double): SummaryListRow = buildRowWithNoChangeLink(
+    answer = formatAsText(answer),
+    prefix = "unloadingFindings.rowHeadings.netWeight",
+    args = None
+  )
+
 }

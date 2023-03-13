@@ -46,7 +46,9 @@ object UnloadingFindingsViewModel {
 
       val transportEquipmentSections = helper.transportEquipmentSections
 
-      val sections = Seq(transportMeansSection) ++ transportEquipmentSections
+      val itemsSummarySection = helper.itemsSummarySection
+
+      val sections = Seq(transportMeansSection) ++ transportEquipmentSections ++ Seq(itemsSummarySection)
 
       new UnloadingFindingsViewModel(sections)
     }
