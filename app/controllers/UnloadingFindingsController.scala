@@ -36,9 +36,9 @@ class UnloadingFindingsController @Inject() (
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val section = viewModelProvider.apply(request.userAnswers).section
+      val unloadingFindingsViewModel = viewModelProvider.apply(request.userAnswers)
 
-      Ok(view(request.userAnswers.mrn, arrivalId, section))
+      Ok(view(request.userAnswers.mrn, arrivalId, unloadingFindingsViewModel))
   }
 
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = ???

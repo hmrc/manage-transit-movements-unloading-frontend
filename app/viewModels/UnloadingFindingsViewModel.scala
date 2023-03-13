@@ -24,7 +24,7 @@ import viewModels.sections.Section
 
 import javax.inject.Inject
 
-case class UnloadingFindingsViewModel(section: Seq[Section])
+case class UnloadingFindingsViewModel(section: Seq[Section], additionalComments: Section)
 
 object UnloadingFindingsViewModel {
 
@@ -46,9 +46,19 @@ object UnloadingFindingsViewModel {
 
       val transportEquipmentSections = helper.transportEquipmentSections
 
-      val sections = Seq(transportMeansSection) ++ transportEquipmentSections
+      val itemsSummarySection = helper.itemsSummarySection
 
-      new UnloadingFindingsViewModel(sections)
+      val itemsSection = helper.itemSections
+
+      val additionalCommentsSection = Section(
+        sectionTitle = messages("unloadingFindings.subsections.additionalComments"),
+        rows = Seq(helper.additionalComment).flatten,
+        addAnotherLink = helper.addAdditionalComments()
+      )
+
+      val sections = Seq(transportMeansSection) ++ transportEquipmentSections ++ Seq(itemsSummarySection) ++ itemsSection
+
+      new UnloadingFindingsViewModel(sections, additionalCommentsSection)
     }
   }
 }

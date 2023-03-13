@@ -273,9 +273,29 @@ unloadingFindings.rowHeadings.identificationType.regNumberAircraft = Registratio
 unloadingFindings.rowHeadings.identificationType.europeanVesselIdNumber = European vessel identification number (ENI code)
 unloadingFindings.rowHeadings.identificationType.unknown = Unknown - this can only be used during the transitional period
 
+unloadingFindings.rowHeadings.vehicleNationality = Registered country
+
 unloadingFindings.subsections.transportEquipment = Transport equipment {0}
 unloadingFindings.rowHeadings.containerIdentificationNumber = Container identification number
 unloadingFindings.rowHeadings.sealIdentifier = Seal {0}
+unloadingFindings.addNewSeal.link = Add a new seal identification number
 
 
-unloadingFindings.rowHeadings.vehicleNationality = Registered country
+unloadingFindings.subsections.itemSummary = Items summary
+unloadingFindings.rowHeadings.numberOfItems = Total number of items
+unloadingFindings.rowHeadings.totalGrossWeight = Total gross weight of all items
+unloadingFindings.rowHeadings.totalNetWeight = Total net weight of all items
+
+unloadingFindings.subsections.item = Item {0}
+unloadingFindings.rowHeadings.item.description = Description
+unloadingFindings.rowHeadings.item.grossWeight = Gross weight
+unloadingFindings.rowHeadings.item.netWeight = Net weight
+
+unloadingFindings.subsections.additionalComments = Additional comments
+unloadingFindings.additionalComments.link = Add comments
+unloadingFindings.rowHeadings.additionalComments = Comments
+
+
+
+
+

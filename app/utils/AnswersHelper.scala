@@ -16,10 +16,10 @@
 
 package utils
 
-import models.{ArrivalId, Index, UserAnswers}
+import models.{ArrivalId, Index, Link, UserAnswers}
 import pages.QuestionPage
 import play.api.i18n.Messages
-import play.api.libs.json.{JsArray, JsPath, JsValue, Reads}
+import play.api.libs.json.{JsArray, JsObject, JsPath, JsValue, Reads}
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components._
 
@@ -145,5 +145,11 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
       .mapWithIndex {
         (_, index) => f(index)
       }
+
+  protected def buildLinkIfAnswerNotPresent[T](answer: QuestionPage[String])(link: => Link): Option[Link] =
+    if (userAnswers.get(answer).isEmpty) Some(link) else None
+
+  protected def buildLink[T](path: JsPath)(link: => Link): Option[Link] =
+    if (userAnswers.getIE043[JsArray](path).exists(_.isEmpty)) Some(link) else None
 
 }
