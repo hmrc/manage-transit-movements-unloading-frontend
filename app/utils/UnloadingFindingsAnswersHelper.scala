@@ -96,9 +96,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
       (_, itemIndex) => Some(fetchWeightValues(itemIndex))
     )
 
-    val numberOfItems: Int = itemsSummary.fold(0)(
-      x => x.value.size
-    )
+    val numberOfItems: Int = itemsSummary.fold(0)(_.value.size)
 
     if (numberOfItems == 0) {
       Section(None, Seq.empty)
