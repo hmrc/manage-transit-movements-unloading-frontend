@@ -16,20 +16,24 @@
 
 package views
 
-import models.CheckMode
+import generators.Generators
 import play.twirl.api.HtmlFormat
+import viewModels.UnloadingFindingsViewModel
 import viewModels.sections.Section
 import views.behaviours.CheckYourAnswersViewBehaviours
 import views.html.UnloadingFindingsView
+import org.scalacheck.Arbitrary.arbitrary
 
-class UnloadingFindingsViewSpec extends CheckYourAnswersViewBehaviours {
+class UnloadingFindingsViewSpec extends CheckYourAnswersViewBehaviours with Generators {
 
   override val prefix: String = "unloadingFindings"
 
   override def view: HtmlFormat.Appendable = viewWithSections(sections)
 
+  val unloadingFindingsViewModel: UnloadingFindingsViewModel = new UnloadingFindingsViewModel(sections, arbitrary[Section].sample.value)
+
   override def viewWithSections(sections: Seq[Section]): HtmlFormat.Appendable =
-    injector.instanceOf[UnloadingFindingsView].apply(mrn, arrivalId, sections)(fakeRequest, messages)
+    injector.instanceOf[UnloadingFindingsView].apply(mrn, arrivalId, unloadingFindingsViewModel)(fakeRequest, messages)
 
   behave like pageWithTitle()
 
