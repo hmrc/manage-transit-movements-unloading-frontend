@@ -98,3 +98,5 @@ GET        /:arrivalId/unloading-summary                                        
 POST       /:arrivalId/unloading-summary                                                    controllers.UnloadingFindingsController.onSubmit(arrivalId: ArrivalId)
 
 GET        /:arrivalId/unloading-permission-pdf                                             controllers.UnloadingPermissionPDFController.getPDF(arrivalId: ArrivalId)
+
+GET       /:mrn/unloading-remarks-sent                                                      controllers.UnloadingRemarksSentController.onPageLoad(mrn: MovementReferenceNumber)
