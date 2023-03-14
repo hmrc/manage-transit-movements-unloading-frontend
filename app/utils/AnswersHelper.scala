@@ -17,11 +17,13 @@
 package utils
 
 import models.{ArrivalId, Index, Link, UserAnswers}
-import pages.QuestionPage
+import pages.{Page, QuestionPage}
+import pages.sections.Section
 import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, JsObject, JsPath, JsValue, Reads}
 import play.api.mvc.Call
-import uk.gov.hmrc.govukfrontend.views.html.components._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends SummaryListRowHelper {
 
@@ -66,9 +68,9 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
         )
     }
 
-  def getAnswerAndBuildRowFromPathWithDynamicPrefix[T](
-    answerPath: JsPath,
-    titlePath: JsPath,
+  def getAnswerAndBuildRowWithDynamicPrefix[T](
+    answerPath: QuestionPage[T],
+    titlePath: QuestionPage[T],
     formatAnswer: T => Content,
     dynamicPrefix: T => String,
     id: Option[String],
@@ -76,8 +78,8 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
     args: Any*
   )(implicit rds: Reads[T]): Option[SummaryListRow] =
     for {
-      answer <- userAnswers.getIE043(answerPath)
-      title  <- userAnswers.getIE043(titlePath)
+      answer <- userAnswers.get(answerPath)
+      title  <- userAnswers.get(titlePath)
     } yield buildRowFromPath(
       prefix = dynamicPrefix(title),
       answer = formatAnswer(answer),
@@ -139,9 +141,9 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
 
   }
 
-  def getAnswersAndBuildSectionRows(path: JsPath)(f: Index => Option[SummaryListRow]): Seq[SummaryListRow] =
+  def getAnswersAndBuildSectionRows(section: Section[JsArray])(f: Index => Option[SummaryListRow]): Seq[SummaryListRow] =
     userAnswers
-      .getIE043[JsArray](path)
+      .get(section)
       .mapWithIndex {
         (_, index) => f(index)
       }

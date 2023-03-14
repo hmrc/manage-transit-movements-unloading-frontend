@@ -27,7 +27,7 @@
     caption: HeadingCaption
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, index: Index, sealDescription: String, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, sealDescription: String, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("confirmRemoveSeal.title", sealDescription),
@@ -38,7 +38,7 @@
 
     @caption(mrn.toString)
 
-    @formHelper(action = controllers.routes.ConfirmRemoveSealController.onSubmit(arrivalId, index, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.routes.ConfirmRemoveSealController.onSubmit(arrivalId, equipmentIndex, sealIndex, mode), Symbol("autoComplete") -> "off") {
 
 
         @inputYesNo(

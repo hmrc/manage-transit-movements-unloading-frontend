@@ -17,6 +17,7 @@
 package utils
 
 import models.Identification
+import models.reference.Country
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -36,8 +37,7 @@ class SummaryListRowHelper(implicit messages: Messages) {
       }
     }.toText
 
-  protected def formatAsText[T](answer: T): Content = s"$answer".toText
-
+  protected def formatAsText[T](answer: T): Content   = s"$answer".toText
   protected def formatAsWeight[T](answer: T): Content = s"${answer}kg".toText
 
   protected def formatIdentificationTypeAsText(xmlString: String): String =

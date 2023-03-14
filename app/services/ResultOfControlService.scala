@@ -22,7 +22,7 @@ import models.reference.Country
 import pages._
 import queries.SealsQuery
 
-class ResultOfControlServiceImpl extends ResultOfControlService {
+class ResultOfControlServiceImpl extends ResultOfControlService { // TODO: Can we delele this?
 
   def build(userAnswers: UserAnswers, unloadingPermission: UnloadingPermission): Seq[ResultsOfControl] = {
 
@@ -30,13 +30,9 @@ class ResultOfControlServiceImpl extends ResultOfControlService {
 
     val vehicleRegistrationReference: Seq[ResultsOfControl] = resultsOfControlString(VehicleIdentificationNumberPage, TransportIdentity)
 
-    val vehicleRegistrationCountry: Seq[ResultsOfControlDifferentValues] = resultsOfControlCountry(VehicleRegistrationCountryPage, TransportCountry)
-
     val totalNumberOfItemsPage: Seq[ResultsOfControl] = resultsOfControlInt(TotalNumberOfItemsPage, NumberOfItems)
 
     val totalNumberOfPackagesPage: Seq[ResultsOfControl] = resultsOfControlString(TotalNumberOfPackagesPage, NumberOfPackages)
-
-    val GrossWeightAmount: Seq[ResultsOfControl] = resultsOfControlString(GrossWeightPage, GrossWeight)
 
     val sealsBroken: Seq[ResultsOfControl] = resultsOfControlOther()
 
@@ -44,10 +40,8 @@ class ResultOfControlServiceImpl extends ResultOfControlService {
 
     Seq(
       vehicleRegistrationReference,
-      vehicleRegistrationCountry,
       totalNumberOfItemsPage,
       totalNumberOfPackagesPage,
-      GrossWeightAmount,
       sealsBroken,
       sealsUpdated
     ).flatten
@@ -110,6 +104,7 @@ class ResultOfControlServiceImpl extends ResultOfControlService {
           Nil
         }
       case _ =>
+        1
         if (ua.get(SealsQuery).exists(_.nonEmpty)) {
           Seq(ResultsOfControlSealsUpdated)
         } else {

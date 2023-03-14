@@ -14,15 +14,9 @@
  * limitations under the License.
  */
 
-package pages
+package pages.sections
 
-import models.{Index, Seal}
-import pages.sections.{SealsSection, TransportEquipmentListSection}
-import play.api.libs.json.JsPath
+import pages.QuestionPage
+import play.api.libs.json.JsValue
 
-final case class SealPage(equipmentIndex: Index, sealIndex: Index) extends QuestionPage[String] {
-
-  override def path: JsPath = SealsSection(equipmentIndex).path \ sealIndex.position \ toString
-
-  override def toString: String = "identifier"
-}
+trait Section[T <: JsValue] extends QuestionPage[T]

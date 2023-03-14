@@ -25,7 +25,7 @@ import queries.SealsQuery
 import java.time.LocalDate
 import scala.util._
 
-class RemarksServiceImpl extends RemarksService {
+class RemarksServiceImpl extends RemarksService { // TODO: Can this be deleted?
 
   import RemarksService._
 
@@ -59,11 +59,11 @@ class RemarksServiceImpl extends RemarksService {
           unloadingDate = unloadingDate
         )
       } else {
-        (hasGrossWeightChanged(originalValues.GrossWeight, userAnswers),
-         hasNumberOfItemsChanged(originalValues.numberOfItems, userAnswers),
-         hasTotalNumberOfPackagesChanged(originalValues.numberOfPackages, userAnswers)
+        (
+          hasNumberOfItemsChanged(originalValues.numberOfItems, userAnswers),
+          hasTotalNumberOfPackagesChanged(originalValues.numberOfPackages, userAnswers)
         ) match {
-          case (false, false, false) =>
+          case (false, false) =>
             RemarksConformWithSeals(
               unloadingRemark = userAnswers.get(UnloadingCommentsPage),
               unloadingDate = unloadingDate
@@ -92,11 +92,11 @@ class RemarksServiceImpl extends RemarksService {
             unloadingDate = unloadingDate
           )
         case None =>
-          (hasGrossWeightChanged(originalValues.GrossWeight, userAnswers),
-           hasNumberOfItemsChanged(originalValues.numberOfItems, userAnswers),
-           hasTotalNumberOfPackagesChanged(originalValues.numberOfPackages, userAnswers)
+          (
+            hasNumberOfItemsChanged(originalValues.numberOfItems, userAnswers),
+            hasTotalNumberOfPackagesChanged(originalValues.numberOfPackages, userAnswers)
           ) match {
-            case (false, false, false) =>
+            case (false, false) =>
               RemarksConform(
                 unloadingRemark = userAnswers.get(UnloadingCommentsPage),
                 unloadingDate = unloadingDate
@@ -123,11 +123,6 @@ object RemarksService {
   def haveSealsChanged(originalSeals: Seq[String], userAnswers: UserAnswers): Boolean =
     userAnswers.get(SealsQuery).exists {
       _.map(_.sealId).sorted != originalSeals.sorted
-    }
-
-  def hasGrossWeightChanged(originalValue: String, userAnswers: UserAnswers): Boolean =
-    userAnswers.get(GrossWeightPage).exists {
-      _ != originalValue
     }
 
   def hasNumberOfItemsChanged(originalValue: Int, userAnswers: UserAnswers): Boolean =

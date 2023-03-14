@@ -48,15 +48,15 @@ POST       /:arrivalId/items/:index/net-weight                                  
 GET        /:arrivalId/items/:index/change-net-weight                                       controllers.NetWeightController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
 POST       /:arrivalId/items/:index/change-net-weight                                       controllers.NetWeightController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
 
-GET        /:arrivalId/seal/:index/seal-identification-number                               controllers.NewSealNumberController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
-POST       /:arrivalId/seal/:index/seal-identification-number                               controllers.NewSealNumberController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
-GET        /:arrivalId/seal/:index/change-seal-identification-number                        controllers.NewSealNumberController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
-POST       /:arrivalId/seal/:index/change-seal-identification-number                        controllers.NewSealNumberController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
+GET        /:arrivalId/transport-equipment/:equipmentIndex/seal/:sealIndex/seal-identification-number                               controllers.NewSealNumberController.onPageLoad(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode = NormalMode)
+POST       /:arrivalId/transport-equipment/:equipmentIndex/seal/:sealIndex/seal-identification-number                               controllers.NewSealNumberController.onSubmit(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode = NormalMode)
+GET        /:arrivalId/transport-equipment/:equipmentIndex/seal/:sealIndex/change-seal-identification-number                        controllers.NewSealNumberController.onPageLoad(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode = CheckMode)
+POST       /:arrivalId/transport-equipment/:equipmentIndex/seal/:sealIndex/change-seal-identification-number                        controllers.NewSealNumberController.onSubmit(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode = CheckMode)
 
-GET        /:arrivalId/seal/:index/remove-seal-identification-number                        controllers.ConfirmRemoveSealController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
-POST       /:arrivalId/seal/:index/remove-seal-identification-number                        controllers.ConfirmRemoveSealController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
-GET        /:arrivalId/seal/:index/change-remove-seal-identification-number                 controllers.ConfirmRemoveSealController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
-POST       /:arrivalId/seal/:index/change-remove-seal-identification-number                 controllers.ConfirmRemoveSealController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
+GET        /:arrivalId/transport-equipment/:equipmentIndex/seal/:sealIndex/remove-seal-identification-number                        controllers.ConfirmRemoveSealController.onPageLoad(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode = NormalMode)
+POST       /:arrivalId/transport-equipment/:equipmentIndex/seal/:sealIndex/remove-seal-identification-number                        controllers.ConfirmRemoveSealController.onSubmit(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode = NormalMode)
+GET        /:arrivalId/transport-equipment/:equipmentIndex/seal/:sealIndex/change-remove-seal-identification-number                 controllers.ConfirmRemoveSealController.onPageLoad(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode = CheckMode)
+POST       /:arrivalId/transport-equipment/:equipmentIndex/seal/:sealIndex/change-remove-seal-identification-number                 controllers.ConfirmRemoveSealController.onSubmit(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode = CheckMode)
 
 GET        /:arrivalId/container/:index/container-identification-number                     controllers.NewContainerIdentificationNumberController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
 POST       /:arrivalId/container/:index/container-identification-number                     controllers.NewContainerIdentificationNumberController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)

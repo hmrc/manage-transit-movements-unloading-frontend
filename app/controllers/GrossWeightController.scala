@@ -42,29 +42,29 @@ class GrossWeightController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(index: Index) = formProvider(index)
+  private def form(itemIndex: Index) = formProvider(itemIndex)
 
-  def onPageLoad(arrivalId: ArrivalId, index: Index = Index(0), mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, itemIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(GrossWeightPage) match {
-        case None        => form(index)
-        case Some(value) => form(index).fill(value)
+      val preparedForm = request.userAnswers.get(GrossWeightPage(itemIndex)) match {
+        case None        => form(itemIndex)
+        case Some(value) => form(itemIndex).fill(value.toString)
       }
 
-      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, index, mode))
+      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, itemIndex, mode))
   }
 
-  def onSubmit(arrivalId: ArrivalId, index: Index = Index(0), mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
+  def onSubmit(arrivalId: ArrivalId, itemIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
-      form(index)
+      form(itemIndex)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, itemIndex, mode))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(GrossWeightPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(GrossWeightPage(itemIndex), value.toDouble))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(GrossWeightPage, mode, updatedAnswers))
+            } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
         )
   }
 }
