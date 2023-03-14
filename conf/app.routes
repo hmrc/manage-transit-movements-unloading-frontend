@@ -94,3 +94,5 @@ GET        /:arrivalId/items/:index/change-number-of-packages                   
 POST       /:arrivalId/items/:index/change-number-of-packages                               controllers.TotalNumberOfPackagesController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
 
 GET        /:arrivalId/unloading-permission-pdf                                             controllers.UnloadingPermissionPDFController.getPDF(arrivalId: ArrivalId)
+
+GET       /:mrn/unloading-remarks-sent                                                      controllers.UnloadingRemarksSentController.onPageLoad(mrn: MovementReferenceNumber)

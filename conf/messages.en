@@ -254,3 +254,7 @@ cannotSendUnloadingRemarks.declarationNotFound = There is no departure declarati
 cannotSendUnloadingRemarks.message =  If you still need to send these unloading remarks, you must
 cannotSendUnloadingRemarks.contactLink = contact the New Computerised Transit System (NCTS) Helpdesk (opens in a new tab)
 cannotSendUnloadingRemarks.linkText = Back to arrival notification
+
+unloadingRemarksSent.title = Unloading remarks sent – Manage your transit movements – GOV.UK
+unloadingRemarksSent.heading = Unloading remarks sent for Movement Reference Number (MRN)
+unloadingRemarksSent.paragraph1 = What happens next Check the status of arrival notifications to find out when goods have been released. If the goods are not released when expected or you have another problem, contact Customs at [office_of_destination] on [office_of_destination_telephone_number]. Create another arrival notification
