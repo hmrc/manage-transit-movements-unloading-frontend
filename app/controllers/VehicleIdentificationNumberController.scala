@@ -64,7 +64,7 @@ class VehicleIdentificationNumberController @Inject() (
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleIdentificationNumberPage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(VehicleIdentificationNumberPage, mode, updatedAnswers))
+            } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
         )
   }
 }

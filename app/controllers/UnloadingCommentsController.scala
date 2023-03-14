@@ -65,7 +65,7 @@ class UnloadingCommentsController @Inject() (
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(UnloadingCommentsPage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(UnloadingCommentsPage, mode, updatedAnswers))
+            } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
         )
   }
 }

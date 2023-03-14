@@ -93,11 +93,11 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
           val result = route(app, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
+          redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
 
           val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(mockSessionRepository).set(userAnswersCaptor.capture())
-          userAnswersCaptor.getValue.get(SealPage(equipmentIndex, sealIndex)).get mustBe Seal(validAnswer, removable = true)
+          userAnswersCaptor.getValue.get(SealPage(equipmentIndex, sealIndex)).get mustBe validAnswer
         }
 
         "updating a new seal" in {
@@ -113,11 +113,11 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
           val result = route(app, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
+          redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
 
           val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(mockSessionRepository).set(userAnswersCaptor.capture())
-          userAnswersCaptor.getValue.get(SealPage(equipmentIndex, sealIndex)).get mustBe Seal(validAnswer, removable = true)
+          userAnswersCaptor.getValue.get(SealPage(equipmentIndex, sealIndex)).get mustBe validAnswer
         }
 
         "updating an existing seal" in {
@@ -133,7 +133,7 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
           val result = route(app, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual onwardRoute.url
+          redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
 
           val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(mockSessionRepository).set(userAnswersCaptor.capture())
