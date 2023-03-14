@@ -14,23 +14,13 @@
  * limitations under the License.
  */
 
-package pages
+package pages.sections
 
 import models.Index
-import pages.sections.{NewSealsSection, SealsSection}
-import play.api.libs.json.JsPath
+import play.api.libs.json.{JsArray, JsPath}
 
-final case class SealPage(equipmentIndex: Index, sealIndex: Index) extends QuestionPage[String] {
+case class NewSealSection(equipmentIndex: Index, sealIndex: Index) extends Section[JsArray] {
 
-  override def path: JsPath = SealsSection(equipmentIndex).path \ sealIndex.position \ toString
-
-  override def toString: String = "identifier"
-}
-
-final case class NewSealPage(equipmentIndex: Index, sealIndex: Index) extends QuestionPage[String] {
-
-  override def path: JsPath = NewSealsSection(equipmentIndex).path \ sealIndex.position \ toString
-
-  override def toString: String = "identifier"
+  override def path: JsPath = NewSealsSection(equipmentIndex).path \ sealIndex.position
 
 }

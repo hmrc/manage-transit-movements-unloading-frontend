@@ -21,7 +21,8 @@ import forms.ConfirmRemoveSealFormProvider
 import models.requests.SpecificDataRequestProvider1
 import models.{ArrivalId, Index, Mode, Seal}
 import navigation.Navigator
-import pages.{ConfirmRemoveSealPage, SealPage}
+import pages.NewSealPage
+import pages.sections.NewSealSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -45,14 +46,14 @@ class ConfirmRemoveSealController @Inject() (
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode): Action[AnyContent] =
-    actions.requireData(arrivalId).andThen(getMandatoryPage(SealPage(equipmentIndex, sealIndex))) {
+    actions.requireData(arrivalId).andThen(getMandatoryPage(NewSealPage(equipmentIndex, sealIndex))) {
       implicit request =>
         val form = formProvider(request.arg)
         Ok(view(form, request.userAnswers.mrn, arrivalId, equipmentIndex, sealIndex, request.arg, mode))
     }
 
   def onSubmit(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode): Action[AnyContent] =
-    actions.requireData(arrivalId).andThen(getMandatoryPage(SealPage(equipmentIndex, sealIndex))).async {
+    actions.requireData(arrivalId).andThen(getMandatoryPage(NewSealPage(equipmentIndex, sealIndex))).async {
       implicit request =>
         formProvider(request.arg)
           .bindFromRequest()
@@ -62,7 +63,7 @@ class ConfirmRemoveSealController @Inject() (
             value =>
               if (value) {
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.remove(SealPage(equipmentIndex, sealIndex)))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.remove(NewSealSection(equipmentIndex, sealIndex)))
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
               } else {

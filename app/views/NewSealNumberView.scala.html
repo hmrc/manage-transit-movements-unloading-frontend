@@ -27,7 +27,7 @@
     caption: HeadingCaption
 )
 
-@(form: Form[_], mrn: MovementReferenceNumber, arrivalId: ArrivalId,  equipmentIndex: Index, sealIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mrn: MovementReferenceNumber, arrivalId: ArrivalId,  equipmentIndex: Index, sealIndex: Index, mode: Mode, newSeal: Boolean)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("newSealNumber.title"),
@@ -38,7 +38,7 @@
 
     @caption(mrn.toString)
 
-    @formHelper(action = controllers.routes.NewSealNumberController.onSubmit(arrivalId, equipmentIndex, sealIndex, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.routes.NewSealNumberController.onSubmit(arrivalId, equipmentIndex, sealIndex, mode, newSeal), Symbol("autoComplete") -> "off") {
 
         @inputText(
             field = form("value"),

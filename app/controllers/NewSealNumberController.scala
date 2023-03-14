@@ -45,7 +45,7 @@ class NewSealNumberController @Inject() (
   private val form = formProvider()
 
   //TODO: Do not allow duplicate seal numbers to be submitted
-  def onPageLoad(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode, newSeal: Boolean): Action[AnyContent] =
+  def onPageLoad(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode, newSeal: Boolean = false): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
         val page: QuestionPage[String] = if (newSeal) {
@@ -59,10 +59,10 @@ class NewSealNumberController @Inject() (
           case Some(seal) => form.fill(seal)
         }
 
-        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, equipmentIndex, sealIndex, mode))
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, equipmentIndex, sealIndex, mode, newSeal = newSeal))
     }
 
-  def onSubmit(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode, newSeal: Boolean): Action[AnyContent] =
+  def onSubmit(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode, newSeal: Boolean = false): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
         val page: QuestionPage[String] = if (newSeal) {
@@ -74,9 +74,10 @@ class NewSealNumberController @Inject() (
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, equipmentIndex, sealIndex, mode))),
+            formWithErrors =>
+              Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, equipmentIndex, sealIndex, mode, newSeal = newSeal))),
             value => {
-              Future.successful(BadRequest(view(form, request.userAnswers.mrn, arrivalId, equipmentIndex, sealIndex, mode)))
+              Future.successful(BadRequest(view(form, request.userAnswers.mrn, arrivalId, equipmentIndex, sealIndex, mode, newSeal = newSeal)))
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
                 _              <- sessionRepository.set(updatedAnswers)

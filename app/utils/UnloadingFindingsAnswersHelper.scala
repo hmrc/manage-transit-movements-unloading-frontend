@@ -49,27 +49,34 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
         (_, equipmentIndex) =>
           val sealLength = userAnswers
             .get(NewSealsSection(equipmentIndex))
-            .map(_.value.length + 1)
+            .map(_.value.length)
+            .getOrElse(0)
+
+          val sealPrefixNumber = userAnswers
+            .get(SealsSection(equipmentIndex))
+            .map(_.value.length)
             .getOrElse(0)
 
           val containerRow: Seq[Option[SummaryListRow]] = Seq(containerIdentificationNumber(equipmentIndex))
 
-          val sealRows: Seq[SummaryListRow] = transportEquipmentSeals(equipmentIndex)
+          val sealRows: Seq[SummaryListRow]    = transportEquipmentSeals(equipmentIndex)
+          val newSealRows: Seq[SummaryListRow] = transportEquipmentNewSeals(equipmentIndex, sealPrefixNumber)
 
           containerRow.head match {
             case Some(containerRow) =>
               Some(
                 Section(
                   messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display),
-                  Seq(containerRow) ++ sealRows,
+                  Seq(containerRow) ++ sealRows ++ newSealRows,
                   addNewSeal(equipmentIndex, Index(sealLength))
                 )
               )
             case None =>
               Some(
-                Section(messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display),
-                        sealRows,
-                        addNewSeal(equipmentIndex, Index(sealLength))
+                Section(
+                  messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display),
+                  sealRows ++ newSealRows,
+                  addNewSeal(equipmentIndex, Index(sealLength))
                 )
               )
           }
@@ -78,6 +85,11 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
   def transportEquipmentSeals(equipmentIndex: Index): Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(SealsSection(equipmentIndex))(
       sealIndex => transportEquipmentSeal(equipmentIndex, sealIndex)
+    )
+
+  def transportEquipmentNewSeals(equipmentIndex: Index, sealPrefixNumber: Int): Seq[SummaryListRow] =
+    getAnswersAndBuildSectionRows(NewSealsSection(equipmentIndex))(
+      sealIndex => transportEquipmentNewSeal(equipmentIndex, sealIndex, sealPrefixNumber + sealIndex.display)
     )
 
   def containerIdentificationNumber(index: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
@@ -97,12 +109,22 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
     call = Some(controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode))
   )
 
+  def transportEquipmentNewSeal(equipmentIndex: Index, sealIndex: Index, sealPrefixNumber: Int): Option[SummaryListRow] = getAnswerAndBuildRemovableRow[String](
+    page = NewSealPage(equipmentIndex, sealIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.sealIdentifier",
+    args = sealPrefixNumber,
+    id = s"change-new-seal-identifier-$sealPrefixNumber",
+    changeCall = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode, newSeal = true),
+    removeCall = controllers.routes.ConfirmRemoveSealController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode)
+  )
+
   def addNewSeal(equipmentIndex: Index, sealIndex: Index): Option[Link] =
     Some(
       Link(
         id = "add-new-seal-identification-number",
         text = messages("unloadingFindings.addNewSeal.link"),
-        href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode).url
+        href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode, newSeal = true).url
       )
     )
 
