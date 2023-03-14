@@ -18,8 +18,7 @@ package controllers
 
 import controllers.actions._
 import forms.ConfirmRemoveSealFormProvider
-import models.requests.SpecificDataRequestProvider1
-import models.{ArrivalId, Index, Mode, Seal}
+import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
 import pages.NewSealPage
 import pages.sections.NewSealSection

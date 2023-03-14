@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions._
 import forms.NewSealNumberFormProvider
-import models.{ArrivalId, Index, Mode, Seal}
+import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
 import pages.{NewSealPage, QuestionPage, SealPage}
 import play.api.i18n.{I18nSupport, MessagesApi}

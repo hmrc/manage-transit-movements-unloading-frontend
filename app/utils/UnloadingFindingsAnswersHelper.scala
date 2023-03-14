@@ -119,14 +119,13 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
     removeCall = controllers.routes.ConfirmRemoveSealController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode)
   )
 
-  def addNewSeal(equipmentIndex: Index, sealIndex: Index): Option[Link] =
-    Some(
-      Link(
-        id = "add-new-seal-identification-number",
-        text = messages("unloadingFindings.addNewSeal.link"),
-        href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode, newSeal = true).url
-      )
+  def addNewSeal(equipmentIndex: Index, sealIndex: Index): Option[Link] = buildLink(SealsSection(equipmentIndex)) {
+    Link(
+      id = "add-new-seal-identification-number",
+      text = messages("unloadingFindings.addNewSeal.link"),
+      href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode, newSeal = true).url
     )
+  }
 
   def itemsSummarySection: Option[Section] = {
     val itemArray      = userAnswers.get(ItemsSection)

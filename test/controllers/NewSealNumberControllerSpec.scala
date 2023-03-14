@@ -18,7 +18,7 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NewSealNumberFormProvider
-import models.{NormalMode, Seal, UserAnswers}
+import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
@@ -55,7 +55,7 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, equipmentIndex, sealIndex, mode)(request, messages).toString
+        view(form, mrn, arrivalId, equipmentIndex, sealIndex, mode, false)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -76,7 +76,7 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, equipmentIndex, sealIndex, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, equipmentIndex, sealIndex, mode, false)(request, messages).toString
     }
 
     "onSubmit" - {
@@ -157,7 +157,7 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
         val view = injector.instanceOf[NewSealNumberView]
 
         contentAsString(result) mustEqual
-          view(boundForm, mrn, arrivalId, equipmentIndex, sealIndex, mode)(request, messages).toString
+          view(boundForm, mrn, arrivalId, equipmentIndex, sealIndex, mode, false)(request, messages).toString
       }
     }
 

@@ -29,7 +29,7 @@ class NewSealNumberViewSpec extends InputTextViewBehaviours[String] {
   override def form: Form[String] = new NewSealNumberFormProvider()()
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[NewSealNumberView].apply(form, mrn, arrivalId, equipmentIndex, sealIndex, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[NewSealNumberView].apply(form, mrn, arrivalId, equipmentIndex, sealIndex, NormalMode, false)(fakeRequest, messages)
 
   override val prefix: String = "newSealNumber"
 
