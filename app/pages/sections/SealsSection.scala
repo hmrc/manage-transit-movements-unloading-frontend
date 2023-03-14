@@ -25,3 +25,10 @@ case class SealsSection(equipmentIndex: Index) extends Section[JsArray] {
 
   override def toString: String = "Seal"
 }
+
+case class NewSealsSection(equipmentIndex: Index) extends Section[JsArray] {
+
+  override def path: JsPath = TransportEquipmentListSection.path \ equipmentIndex.position \ toString
+
+  override def toString: String = "NewSeal"
+}

@@ -17,7 +17,7 @@
 package utils
 
 import models.{Index, Link, NormalMode, UserAnswers}
-import pages.sections.{ItemsSection, SealsSection, TransportEquipmentListSection}
+import pages.sections.{ItemsSection, NewSealsSection, SealsSection, TransportEquipmentListSection}
 import pages._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -47,6 +47,11 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
       .get(TransportEquipmentListSection)
       .mapWithIndex {
         (_, equipmentIndex) =>
+          val sealLength = userAnswers
+            .get(NewSealsSection(equipmentIndex))
+            .map(_.value.length + 1)
+            .getOrElse(0)
+
           val containerRow: Seq[Option[SummaryListRow]] = Seq(containerIdentificationNumber(equipmentIndex))
 
           val sealRows: Seq[SummaryListRow] = transportEquipmentSeals(equipmentIndex)
@@ -57,13 +62,16 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
                 Section(
                   messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display),
                   Seq(containerRow) ++ sealRows,
-                  addNewSeal(equipmentIndex, Index(0)) //TODO: Get last seal index
+                  addNewSeal(equipmentIndex, Index(sealLength))
                 )
               )
             case None =>
               Some(
-                Section(messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display), sealRows, addNewSeal(equipmentIndex, Index(0)))
-              ) //TODO: Get last seal index
+                Section(messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display),
+                        sealRows,
+                        addNewSeal(equipmentIndex, Index(sealLength))
+                )
+              )
           }
       }
 
@@ -94,7 +102,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
       Link(
         id = "add-new-seal-identification-number",
         text = messages("unloadingFindings.addNewSeal.link"),
-        href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode).url // TODO: Add seal index
+        href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode).url
       )
     )
 
