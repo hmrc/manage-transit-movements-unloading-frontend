@@ -17,7 +17,7 @@
 package base
 
 import cats.data.NonEmptyList
-import models.{ArrivalId, EoriNumber, GoodsItem, MovementReferenceNumber, Packages, ProducedDocument, UserAnswers}
+import models.{ArrivalId, EoriNumber, GoodsItem, Index, MovementReferenceNumber, Packages, ProducedDocument, UserAnswers}
 import org.scalatest._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
@@ -52,8 +52,13 @@ trait SpecBase
 
   def injector: Injector = app.injector
 
-  val mrn: MovementReferenceNumber  = MovementReferenceNumber("19", "GB", "1234567890123")
-  val eoriNumber: EoriNumber        = EoriNumber("id")
+  val mrn: MovementReferenceNumber = MovementReferenceNumber("19", "GB", "1234567890123")
+  val eoriNumber: EoriNumber       = EoriNumber("id")
+
+  val index: Index                  = Index(0)
+  val equipmentIndex: Index         = Index(0)
+  val sealIndex: Index              = Index(0)
+  val itemIndex: Index              = Index(0)
   def emptyUserAnswers: UserAnswers = UserAnswers(arrivalId, mrn, eoriNumber, Json.obj(), Json.obj(), Instant.now())
 
   protected lazy val packages: Packages = Packages(Some("Ref."), "BX", Some(1), None)

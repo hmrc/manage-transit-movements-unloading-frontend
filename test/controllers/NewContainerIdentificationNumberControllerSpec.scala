@@ -18,7 +18,7 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NewContainerIdentificationNumberFormProvider
-import models.{Index, NormalMode}
+import models.NormalMode
 import pages.ContainerIdentificationNumberPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -28,7 +28,6 @@ class NewContainerIdentificationNumberControllerSpec extends SpecBase with AppWi
 
   private val formProvider = new NewContainerIdentificationNumberFormProvider()
   private val form         = formProvider()
-  private val index        = Index(0)
   private val mode         = NormalMode
 
   private val validAnswer = "container ID"

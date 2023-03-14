@@ -38,19 +38,11 @@ class Module extends AbstractModule {
 
     bind(classOf[UnloadingConnector]).to(classOf[UnloadingConnectorImpl]).asEagerSingleton()
 
-    bind(classOf[UnloadingPermissionService]).to(classOf[UnloadingPermissionServiceImpl]).asEagerSingleton()
-
-    bind(classOf[RemarksService]).to(classOf[RemarksServiceImpl]).asEagerSingleton()
-
-    bind(classOf[ResultOfControlService]).to(classOf[ResultOfControlServiceImpl]).asEagerSingleton()
-
     bind(classOf[ReferenceDataService]).to(classOf[ReferenceDataServiceImpl]).asEagerSingleton()
 
     bind(classOf[DateTimeService]).to(classOf[DateTimeServiceImpl]).asEagerSingleton()
 
     bind(classOf[MetaService]).to(classOf[MetaServiceImpl]).asEagerSingleton()
-
-    bind(classOf[UnloadingRemarksRequestService]).to(classOf[UnloadingRemarksRequestServiceImpl]).asEagerSingleton()
 
     bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
 

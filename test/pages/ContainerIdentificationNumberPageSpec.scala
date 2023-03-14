@@ -16,12 +16,9 @@
 
 package pages
 
-import models.Index
 import pages.behaviours.PageBehaviours
 
 class ContainerIdentificationNumberPageSpec extends PageBehaviours {
-
-  var index = Index(0)
 
   "ContainerIdentificationNumberPage" - {
 

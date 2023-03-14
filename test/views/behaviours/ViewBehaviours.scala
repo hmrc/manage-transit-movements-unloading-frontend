@@ -21,7 +21,6 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Assertion
 import play.twirl.api.HtmlFormat
-import viewModels.UnloadingFindingsViewModel
 import views.assertions.ViewSpecAssertions
 
 import scala.jdk.CollectionConverters._

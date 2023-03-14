@@ -17,7 +17,7 @@
 package views
 
 import forms.NewContainerIdentificationNumberFormProvider
-import models.{Index, NormalMode}
+import models.NormalMode
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -27,7 +27,6 @@ import views.html.NewContainerIdentificationNumberView
 class NewContainerIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   override def form: Form[String] = new NewContainerIdentificationNumberFormProvider()()
-  private val index: Index        = Index(0)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector.instanceOf[NewContainerIdentificationNumberView].apply(form, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)

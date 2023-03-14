@@ -18,7 +18,7 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NetWeightFormProvider
-import models.{Index, NormalMode}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.NetWeightPage
@@ -33,7 +33,6 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
   private val formProvider        = new NetWeightFormProvider()
   private val form                = formProvider()
   private val mode                = NormalMode
-  private val index               = Index(0)
   private lazy val NetWeightRoute = controllers.routes.NetWeightController.onPageLoad(arrivalId, index, mode).url
 
   "NetWeightAmount Controller" - {
@@ -57,7 +56,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
-      val userAnswers = emptyUserAnswers.setValue(NetWeightPage, "123456.123")
+      val userAnswers = emptyUserAnswers.setValue(NetWeightPage(itemIndex), "123456.123".toDouble)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, NetWeightRoute)
@@ -71,7 +70,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
       val view = injector.instanceOf[NetWeightView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, index, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, itemIndex, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -104,7 +103,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
       val view = injector.instanceOf[NetWeightView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, arrivalId, index, mode)(request, messages).toString
+        view(boundForm, mrn, arrivalId, itemIndex, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

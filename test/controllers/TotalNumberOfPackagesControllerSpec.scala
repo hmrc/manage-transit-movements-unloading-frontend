@@ -18,7 +18,7 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.TotalNumberOfPackagesFormProvider
-import models.{Index, NormalMode}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.TotalNumberOfPackagesPage
@@ -29,8 +29,6 @@ import views.html.TotalNumberOfPackagesView
 import scala.concurrent.Future
 
 class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
-
-  private val index = Index(0)
 
   private val formProvider: TotalNumberOfPackagesFormProvider = new TotalNumberOfPackagesFormProvider()
   private val form                                            = formProvider(index)

@@ -18,7 +18,7 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NewSealNumberFormProvider
-import models.{Index, NormalMode, Seal, UserAnswers}
+import models.{NormalMode, Seal, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
@@ -33,12 +33,11 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
   private val formProvider = new NewSealNumberFormProvider()
   private val form         = formProvider()
-  private val index        = Index(0)
   private val mode         = NormalMode
 
   private val validAnswer = "seal ID"
 
-  private lazy val newSealNumberRoute = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, index, mode).url
+  private lazy val newSealNumberRoute = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, mode).url
 
   "NewSealNumber Controller" - {
 
@@ -56,13 +55,13 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, index, mode)(request, messages).toString
+        view(form, mrn, arrivalId, equipmentIndex, sealIndex, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(SealPage(index), Seal(validAnswer, removable = false))
+      val userAnswers = emptyUserAnswers.setValue(SealPage(equipmentIndex, sealIndex), validAnswer)
 
       setExistingUserAnswers(userAnswers)
 
@@ -77,7 +76,7 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, index, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, equipmentIndex, sealIndex, mode)(request, messages).toString
     }
 
     "onSubmit" - {
@@ -98,14 +97,14 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
           val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(mockSessionRepository).set(userAnswersCaptor.capture())
-          userAnswersCaptor.getValue.get(SealPage(index)).get mustBe Seal(validAnswer, removable = true)
+          userAnswersCaptor.getValue.get(SealPage(equipmentIndex, sealIndex)).get mustBe Seal(validAnswer, removable = true)
         }
 
         "updating a new seal" in {
           checkArrivalStatus()
           when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-          val userAnswers = emptyUserAnswers.setValue(SealPage(index), Seal("value before update", removable = true))
+          val userAnswers = emptyUserAnswers.setValue(SealPage(equipmentIndex, sealIndex), "value before update")
           setExistingUserAnswers(userAnswers)
 
           val request = FakeRequest(POST, newSealNumberRoute)
@@ -118,14 +117,14 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
           val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(mockSessionRepository).set(userAnswersCaptor.capture())
-          userAnswersCaptor.getValue.get(SealPage(index)).get mustBe Seal(validAnswer, removable = true)
+          userAnswersCaptor.getValue.get(SealPage(equipmentIndex, sealIndex)).get mustBe Seal(validAnswer, removable = true)
         }
 
         "updating an existing seal" in {
           checkArrivalStatus()
           when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-          val userAnswers = emptyUserAnswers.setValue(SealPage(index), Seal("value before update", removable = false))
+          val userAnswers = emptyUserAnswers.setValue(SealPage(equipmentIndex, sealIndex), "value before update")
           setExistingUserAnswers(userAnswers)
 
           val request = FakeRequest(POST, newSealNumberRoute)
@@ -138,7 +137,7 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
           val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(mockSessionRepository).set(userAnswersCaptor.capture())
-          userAnswersCaptor.getValue.get(SealPage(index)).get mustBe Seal(validAnswer, removable = false)
+          userAnswersCaptor.getValue.get(SealPage(equipmentIndex, sealIndex)).get mustBe validAnswer
         }
       }
 
@@ -158,7 +157,7 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
         val view = injector.instanceOf[NewSealNumberView]
 
         contentAsString(result) mustEqual
-          view(boundForm, mrn, arrivalId, index, mode)(request, messages).toString
+          view(boundForm, mrn, arrivalId, equipmentIndex, sealIndex, mode)(request, messages).toString
       }
     }
 

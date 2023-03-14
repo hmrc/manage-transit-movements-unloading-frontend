@@ -18,19 +18,8 @@ package utils
 
 import models.{Index, Link, NormalMode, UserAnswers}
 import pages.sections.{ItemsSection, SealsSection, TransportEquipmentListSection}
-import pages.{
-  ContainerIdentificationNumberPage,
-  GrossWeightPage,
-  ItemDescriptionPage,
-  NetWeightPage,
-  SealPage,
-  UnloadingCommentsPage,
-  VehicleIdentificationNumberPage,
-  VehicleIdentificationTypePage,
-  VehicleRegistrationCountryPage
-}
+import pages._
 import play.api.i18n.Messages
-import play.api.libs.json.{JsArray, JsPath}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewModels.sections.Section
 

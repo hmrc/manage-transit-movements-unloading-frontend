@@ -17,7 +17,7 @@
 package views
 
 import forms.NetWeightFormProvider
-import models.{Index, NormalMode}
+import models.NormalMode
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -26,8 +26,6 @@ import views.behaviours.InputTextViewBehaviours
 import views.html.NetWeightView
 
 class NetWeightViewSpec extends InputTextViewBehaviours[String] {
-
-  private val index = Index(0)
 
   override def form: Form[String] = new NetWeightFormProvider()()
 
