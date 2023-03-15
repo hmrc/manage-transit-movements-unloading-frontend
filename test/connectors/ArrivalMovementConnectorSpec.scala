@@ -115,7 +115,8 @@ class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtu
         val expectedResult = IE043Data(
           MessageData(
             TransitOperation = TransitOperation(MovementReferenceNumber("99IT9876AB88901209").get),
-            Consignment = Consignment(None, None, List.empty)
+            Consignment = Consignment(None, None, List.empty),
+            CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("GB0008")
           )
         )
 

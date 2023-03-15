@@ -65,7 +65,7 @@ class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMo
 
       status(result) mustEqual OK
 
-      val filledForm = form.bind(Map("value" -> validAnswer.toString))
+      val filledForm = form.bind(Map("value" -> validAnswer))
       val view       = injector.instanceOf[TotalNumberOfPackagesView]
 
       contentAsString(result) mustEqual
@@ -80,7 +80,7 @@ class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMo
 
       val request =
         FakeRequest(POST, totalNumberOfPackagesRoute)
-          .withFormUrlEncodedBody(("value", validAnswer.toString))
+          .withFormUrlEncodedBody(("value", validAnswer))
 
       val result = route(app, request).value
 

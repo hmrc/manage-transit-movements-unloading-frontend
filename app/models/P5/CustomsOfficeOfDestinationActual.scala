@@ -18,12 +18,12 @@ package models.P5
 
 import play.api.libs.json.{Json, OFormat}
 
-case class MessageData(
-  TransitOperation: TransitOperation,
-  Consignment: Consignment,
-  CustomsOfficeOfDestinationActual: CustomsOfficeOfDestinationActual
+case class CustomsOfficeOfDestinationActual(
+  referenceNumber: String
 )
 
-object MessageData {
-  implicit val formats: OFormat[MessageData] = Json.format[MessageData]
+object CustomsOfficeOfDestinationActual {
+
+  implicit val formats: OFormat[CustomsOfficeOfDestinationActual] = Json.format[CustomsOfficeOfDestinationActual]
+
 }

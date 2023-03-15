@@ -457,7 +457,8 @@ class IE043DataSpec extends SpecBase {
                 )
               )
             )
-          )
+          ),
+          CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual(referenceNumber = "GB000008")
         )
       )
 

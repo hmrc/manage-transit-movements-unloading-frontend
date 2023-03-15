@@ -41,6 +41,8 @@ class UnloadingFindingsController @Inject() (
       Ok(view(request.userAnswers.mrn, arrivalId, unloadingFindingsViewModel))
   }
 
-  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = ???
+  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
 
+    Redirect(controllers.routes.SessionExpiredController.onPageLoad()) //todo redirect to CYA when built
+  }
 }

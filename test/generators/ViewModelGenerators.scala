@@ -24,6 +24,7 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{Content, Hint, Label, RadioItem}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
+import viewModels.UnloadingFindingsViewModel
 import viewModels.sections.Section
 
 trait ViewModelGenerators {
@@ -151,5 +152,13 @@ trait ViewModelGenerators {
       attributes <- Gen.const(Map.empty[String, String])
       content    <- arbitrary[Content]
     } yield Hint(id, classes, attributes, content)
+  }
+
+  implicit lazy val arbitraryUnloadingFindingsViewModel: Arbitrary[UnloadingFindingsViewModel] = Arbitrary {
+    for {
+      sections           <- arbitrarySections.arbitrary
+      additionalComments <- arbitrarySection.arbitrary
+
+    } yield UnloadingFindingsViewModel(sections, additionalComments)
   }
 }
