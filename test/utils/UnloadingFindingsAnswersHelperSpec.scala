@@ -174,7 +174,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
           result mustBe Some(
             SummaryListRow(
-              key = Key(s"Seal $sealIndex".toText),
+              key = Key(s"Seal ${sealIndex.display}".toText),
               value = Value("123456".toText),
               actions = Some(
                 Actions(
@@ -182,8 +182,59 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
                     ActionItem(
                       content = "Change".toText,
                       href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode).url,
-                      visuallyHiddenText = Some(s"seal $sealIndex - 123456"),
+                      visuallyHiddenText = Some(s"seal ${sealIndex.display} - 123456"),
                       attributes = Map("id" -> s"change-seal-identifier-${sealIndex.display}")
+                    )
+                  )
+                )
+              )
+            )
+          )
+        }
+      }
+    }
+
+    "transportEquipmentNewSeal" - {
+
+      val sealPrefixNumber = 1
+
+
+      "must return None" - {
+        s"when $NewSealPage undefined" in {
+
+          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
+          val result = helper.transportEquipmentNewSeal(index, index, sealPrefixNumber)
+          result mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $NewSealPage defined" in {
+
+          val answers = emptyUserAnswers
+            .setValue(NewSealPage(equipmentIndex, sealIndex), "123456")
+
+          val helper = new UnloadingFindingsAnswersHelper(answers)
+          val result = helper.transportEquipmentNewSeal(equipmentIndex, sealIndex, sealPrefixNumber)
+
+          result mustBe Some(
+            SummaryListRow(
+              key = Key(s"Seal $sealPrefixNumber".toText),
+              value = Value("123456".toText),
+              actions = Some(
+                Actions(
+                  items = List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode, newSeal = true).url,
+                      visuallyHiddenText = Some(s"seal $sealPrefixNumber - 123456"),
+                      attributes = Map("id" -> s"change-new-seal-identifier-$sealPrefixNumber")
+                    ),
+                    ActionItem(
+                      content = "Remove".toText,
+                      href = controllers.routes.ConfirmRemoveSealController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode).url,
+                      visuallyHiddenText = Some(s"seal $sealPrefixNumber - 123456"),
+                      attributes = Map("id" -> s"remove-new-seal-identifier-$sealPrefixNumber")
                     )
                   )
                 )

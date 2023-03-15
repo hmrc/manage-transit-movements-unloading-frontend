@@ -97,6 +97,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.containerIdentificationNumber",
     id = Some(s"change-container-identification-number-${index.display}"),
+    args = None,
     call = Some(controllers.routes.NewContainerIdentificationNumberController.onPageLoad(arrivalId, index, NormalMode))
   )
 
@@ -104,20 +105,21 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
     page = SealPage(equipmentIndex, sealIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.sealIdentifier",
-    args = sealIndex.display,
+    args = Some(Seq(sealIndex.display)),
     id = Some(s"change-seal-identifier-${sealIndex.display}"),
     call = Some(controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode))
   )
 
-  def transportEquipmentNewSeal(equipmentIndex: Index, sealIndex: Index, sealPrefixNumber: Int): Option[SummaryListRow] = getAnswerAndBuildRemovableRow[String](
-    page = NewSealPage(equipmentIndex, sealIndex),
-    formatAnswer = formatAsText,
-    prefix = "unloadingFindings.rowHeadings.sealIdentifier",
-    args = sealPrefixNumber,
-    id = s"change-new-seal-identifier-$sealPrefixNumber",
-    changeCall = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode, newSeal = true),
-    removeCall = controllers.routes.ConfirmRemoveSealController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode)
-  )
+  def transportEquipmentNewSeal(equipmentIndex: Index, sealIndex: Index, sealPrefixNumber: Int): Option[SummaryListRow] =
+    getAnswerAndBuildRemovableRowWithDynamicHiddenText[String](
+      page = NewSealPage(equipmentIndex, sealIndex),
+      formatAnswer = formatAsText,
+      prefix = "unloadingFindings.rowHeadings.sealIdentifier",
+      args = Some(Seq(sealPrefixNumber)),
+      id = s"new-seal-identifier-$sealPrefixNumber",
+      changeCall = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode, newSeal = true),
+      removeCall = controllers.routes.ConfirmRemoveSealController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode)
+    )
 
   def addNewSeal(equipmentIndex: Index, sealIndex: Index): Option[Link] = buildLink(SealsSection(equipmentIndex)) {
     Link(

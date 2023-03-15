@@ -20,7 +20,7 @@ import models.{ArrivalId, Index, Link, UserAnswers}
 import pages.{Page, QuestionPage}
 import pages.sections.Section
 import play.api.i18n.Messages
-import play.api.libs.json.{JsArray, JsObject, JsPath, JsValue, Reads}
+import play.api.libs.json.{__, JsArray, JsObject, JsPath, JsValue, Reads}
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -49,24 +49,48 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
         )
     }
 
+  def parseArguments[T](args: Option[Seq[Any]], answer: T): Seq[Any] = args match {
+    case None            => Seq(answer)
+    case Some(arguments) => arguments.appended(answer)
+  }
+
   def getAnswerAndBuildRowWithDynamicHiddenText[T](
     page: QuestionPage[T],
     formatAnswer: T => Content,
     prefix: String,
     id: Option[String],
     call: Option[Call],
-    args: Any*
+    args: Option[Seq[Any]]
   )(implicit rds: Reads[T]): Option[SummaryListRow] =
     userAnswers.get(page) map {
       answer =>
-        val foo: Seq[Any] = args.appended(answer)
-        buildRowDynamicHiddenText(
+        buildRow(
           prefix = prefix,
           answer = formatAnswer(answer),
           id = id,
           call = call,
-          hiddenAnswer = answer.toString,
-          args = foo: _*
+          args = parseArguments(args, answer): _*
+        )
+    }
+
+  def getAnswerAndBuildRemovableRowWithDynamicHiddenText[T](
+    page: QuestionPage[T],
+    formatAnswer: T => Content,
+    prefix: String,
+    id: String,
+    changeCall: Call,
+    removeCall: Call,
+    args: Option[Seq[Any]]
+  )(implicit rds: Reads[T]): Option[SummaryListRow] =
+    userAnswers.get(page) map {
+      answer =>
+        buildRemovableRow(
+          prefix = prefix,
+          answer = formatAnswer(answer),
+          id = id,
+          changeCall = changeCall,
+          removeCall = removeCall,
+          args = parseArguments(args, answer): _*
         )
     }
 

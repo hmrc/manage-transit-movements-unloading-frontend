@@ -292,6 +292,7 @@ unloadingFindings.rowHeadings.containerIdentificationNumber = Container identifi
 unloadingFindings.rowHeadings.containerIdentificationNumber.change.hidden = container identification number {0}
 unloadingFindings.rowHeadings.sealIdentifier = Seal {0}
 unloadingFindings.rowHeadings.sealIdentifier.change.hidden = seal {0} - {1}
+unloadingFindings.rowHeadings.sealIdentifier.remove.hidden = seal {0} - {1}
 unloadingFindings.addNewSeal.link = Add a new seal identification number
 
 
