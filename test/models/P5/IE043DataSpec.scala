@@ -374,7 +374,7 @@ class IE043DataSpec extends SpecBase {
           |            },
           |            "messageIdentification": "token",
           |            "CustomsOfficeOfDestinationActual": {
-          |                "referenceNumber": "GB000068"
+          |                "referenceNumber": "GB000008"
           |            }
           |        }
           |    }

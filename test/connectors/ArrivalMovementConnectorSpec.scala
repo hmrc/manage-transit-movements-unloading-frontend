@@ -97,6 +97,9 @@ class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtu
           |     },
           |     "Consignment": {
           |       "HouseConsignment": []
+          |     },
+          |     "CustomsOfficeOfDestinationActual": {
+          |       "referenceNumber": "GB0008"
           |     }
           |   }
           | }
