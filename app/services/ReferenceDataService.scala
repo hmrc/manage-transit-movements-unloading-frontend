@@ -18,7 +18,7 @@ package services
 
 import com.google.inject.Inject
 import connectors.ReferenceDataConnector
-import models.reference.Country
+import models.reference.{Country, CustomsOffice}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,6 +34,13 @@ class ReferenceDataServiceImpl @Inject() (connector: ReferenceDataConnector) ext
       case None              => Future.successful(None)
     }
 
+  def getCustomsOfficeByCode(code: Option[String])(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CustomsOffice]] = {
+    code match {
+      case Some(customsOfficeCode) => connector.getCustomsOffice(customsOfficeCode)
+      case None => Future.successful(None)
+    }
+
+  }
   private def sort(countries: Seq[Country]): Seq[Country] =
     countries.sortBy(_.description.toLowerCase)
 }
@@ -41,4 +48,6 @@ class ReferenceDataServiceImpl @Inject() (connector: ReferenceDataConnector) ext
 trait ReferenceDataService {
   def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]]
   def getCountryByCode(code: Option[String])(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[Country]]
+
+  def getCustomsOfficeByCode(code: Option[String])(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CustomsOffice]]
 }
