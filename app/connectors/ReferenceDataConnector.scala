@@ -28,8 +28,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient, metricsService: MetricsService)
-                                         extends Logging {
+class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient, metricsService: MetricsService) extends Logging {
 
   def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] = {
     val serviceUrl = s"${config.referenceDataUrl}/countries"
@@ -45,12 +44,15 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
 
   def getCustomsOffice(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CustomsOffice]] = {
     val serviceUrl = s"${config.referenceDataUrl}/customs-office/$code"
-      http.GET[HttpResponse](serviceUrl)(httpReads, hc, ec).map {
+    http
+      .GET[HttpResponse](serviceUrl)(httpReads, hc, ec)
+      .map {
         case responseMessage if is2xx(responseMessage.status) => Some(responseMessage.json.as[CustomsOffice])
         case _ =>
           logger.error(s"Get Customs Office request failed to return data")
           None
-      }.recover {
+      }
+      .recover {
         case _ => None
       }
   }

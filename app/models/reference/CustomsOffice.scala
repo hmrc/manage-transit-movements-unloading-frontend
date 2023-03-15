@@ -21,12 +21,12 @@ import play.api.libs.json.Reads._
 import play.api.libs.json._
 
 case class CustomsOffice(
-                          id: String,
-                          name: String,
-                          countryId: String,
-                          phoneNumber: Option[String],
-                          roles: Seq[String]
-                        )
+  id: String,
+  name: String,
+  countryId: String,
+  phoneNumber: Option[String],
+  roles: Seq[String]
+)
 
 object CustomsOffice {
 
@@ -39,6 +39,6 @@ object CustomsOffice {
         (__ \ "COUNTRY_ID").read[String] and
         (__ \ "PHONE_NUMBER").readNullable[String] and
         (__ \ "CUSTOMS_OFFICE_ROLES").read[Seq[String]]
-      )(CustomsOffice.apply _)
+    )(CustomsOffice.apply _)
 
 }

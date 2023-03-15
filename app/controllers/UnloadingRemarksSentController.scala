@@ -18,12 +18,14 @@ package controllers
 
 import controllers.actions._
 import forms.VehicleIdentificationNumberFormProvider
+import models.reference.CustomsOffice
 import models.{ArrivalId, Mode, MovementReferenceNumber}
 import navigation.Navigator
 import pages.VehicleIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.ReferenceDataService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.{FrontendBaseController, FrontendController}
 import views.html.UnloadingRemarksSentView
 
@@ -34,13 +36,18 @@ class UnloadingRemarksSentController @Inject() (
   override val messagesApi: MessagesApi,
   actions: Actions,
   identify: IdentifierAction,
+  referendeDataService: ReferenceDataService,
   cc: MessagesControllerComponents,
   view: UnloadingRemarksSentView
-) extends FrontendController(cc)
+)(implicit ec: ExecutionContext)
+    extends FrontendController(cc)
     with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = identify {
+  def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = Action.async {
     implicit request =>
-      Ok(view(mrn))
+      referendeDataService.getCustomsOfficeByCode(Some("")) map {
+        case Some(customsOffice) => Ok(view(mrn, customsOffice))
+        case _                   => Ok(view(mrn, CustomsOffice("", "", "", None, Nil)))
+      }
   }
 }
