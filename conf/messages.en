@@ -304,11 +304,16 @@ unloadingFindings.rowHeadings.totalNetWeight = Total net weight of all items
 unloadingFindings.subsections.item = Item {0}
 unloadingFindings.rowHeadings.item.description = Description
 unloadingFindings.rowHeadings.item.grossWeight = Gross weight
+unloadingFindings.rowHeadings.item.grossWeight.change.hidden = gross weight of item {0}
 unloadingFindings.rowHeadings.item.netWeight = Net weight
+unloadingFindings.rowHeadings.item.netWeight.change.hidden = net weight of item {0}
 
 unloadingFindings.subsections.additionalComments = Additional comments
 unloadingFindings.additionalComments.link = Add comments
+
 unloadingFindings.rowHeadings.additionalComments = Comments
+unloadingFindings.rowHeadings.additionalComments.change.hidden = comments
+unloadingFindings.rowHeadings.additionalComments.remove.hidden = comments
 
 
 
