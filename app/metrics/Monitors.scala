@@ -16,7 +16,7 @@
 
 package metrics
 
-import models.reference.Country
+import models.reference.{Country, CustomsOffice}
 
 trait RequestMonitor[A] {
   val name: String
@@ -33,4 +33,7 @@ case class DefaultRequestMonitor[A](name: String) extends RequestMonitor[A]
 
 object Monitors {
   val getCountryListMonitor: DefaultRequestMonitor[Seq[Country]] = DefaultRequestMonitor[Seq[Country]]("get-country-list")
+
+  val getCustomsOfficeMonitor: DefaultRequestMonitor[CustomsOffice] = DefaultRequestMonitor[CustomsOffice]("get-customs-office")
+
 }
