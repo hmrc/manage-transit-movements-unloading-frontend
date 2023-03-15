@@ -34,7 +34,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
     call = Some(controllers.routes.VehicleIdentificationNumberController.onPageLoad(arrivalId, NormalMode))
   )
 
-  def departureRegisteredCountry: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  def departureRegisteredCountry: Option[SummaryListRow] = getAnswerAndBuildRow[String]( //TODO COUNTRY CODE TO COUNTRY COUNTRY OBJECT
     page = VehicleRegistrationCountryPage,
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.vehicleNationality",
@@ -92,7 +92,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
       sealIndex => transportEquipmentNewSeal(equipmentIndex, sealIndex, sealPrefixNumber + sealIndex.display)
     )
 
-  def containerIdentificationNumber(index: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  def containerIdentificationNumber(index: Index): Option[SummaryListRow] = getAnswerAndBuildRowWithDynamicHiddenText[String](
     page = ContainerIdentificationNumberPage(index),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.containerIdentificationNumber",
@@ -100,7 +100,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
     call = Some(controllers.routes.NewContainerIdentificationNumberController.onPageLoad(arrivalId, index, NormalMode))
   )
 
-  def transportEquipmentSeal(equipmentIndex: Index, sealIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  def transportEquipmentSeal(equipmentIndex: Index, sealIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRowWithDynamicHiddenText[String](
     page = SealPage(equipmentIndex, sealIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.sealIdentifier",

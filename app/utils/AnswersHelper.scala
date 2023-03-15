@@ -49,6 +49,27 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
         )
     }
 
+  def getAnswerAndBuildRowWithDynamicHiddenText[T](
+    page: QuestionPage[T],
+    formatAnswer: T => Content,
+    prefix: String,
+    id: Option[String],
+    call: Option[Call],
+    args: Any*
+  )(implicit rds: Reads[T]): Option[SummaryListRow] =
+    userAnswers.get(page) map {
+      answer =>
+        val foo: Seq[Any] = args.appended(answer)
+        buildRowDynamicHiddenText(
+          prefix = prefix,
+          answer = formatAnswer(answer),
+          id = id,
+          call = call,
+          hiddenAnswer = answer.toString,
+          args = foo: _*
+        )
+    }
+
   def getAnswerAndBuildRowFromPath[T](
     path: JsPath,
     formatAnswer: T => Content,
