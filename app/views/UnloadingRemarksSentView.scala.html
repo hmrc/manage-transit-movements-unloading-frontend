@@ -1,45 +1,46 @@
 @*
- * Copyright 2023 HM Revenue & Customs
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *@
-
+* Copyright 2023 HM Revenue & Customs
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*@
 @import models.MovementReferenceNumber
 @import models.reference.CustomsOffice
 @import views.html.components.Heading
 @import config.FrontendAppConfig
 
 @this(
-mainTemplate: MainTemplate,
-heading: Heading,
-config: FrontendAppConfig,
-govukPanel: GovukPanel
+        mainTemplate: MainTemplate,
+        heading: Heading,
+        config: FrontendAppConfig,
+        govukPanel: GovukPanel
 )
 
 @(mrn: MovementReferenceNumber, viewModel: UnloadingRemarksSentViewModel)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(
-title = messages("unloadingRemarksSent.title"),
-showBackLink = true
-) {
-@govukPanel(Panel(
-title = Text(messages("unloadingRemarksSent.heading")),
-content = Text(messages("unloadingRemarksSent.panel.body", mrn))
-)
-)
-<h2 class="govuk-heading-m">@messages("unloadingRemarksSent.subHeading")</h2>
-<p class="govuk-body"> <a id="hrefId" class="govuk-link" href=view-arrival-notifications>@messages("unloadingRemarksSent.checkStatus")</a> @messages("unloadingRemarksSent.findOut")</p>
-<p class="govuk-body">@{viewModel.foo}</p>
-<p class="govuk-body"><a id="createArrivalId" class="govuk-link" href=create-arrival-notifications>@messages("unloadingRemarksSent.createArrivalNotification")</a></p>
+    @mainTemplate(
+        title = messages("unloadingRemarksSent.title"),
+        showBackLink = true
+    ) {
+        @govukPanel(Panel(
+            title = Text(messages("unloadingRemarksSent.heading")),
+            content = Text(messages("unloadingRemarksSent.panel.body", mrn))
+        )
+        )
+        <h2 class="govuk-heading-m">@messages("unloadingRemarksSent.subHeading")</h2>
+        <p class="govuk-body"> <a id="hrefId" class="govuk-link" href=view-arrival-notifications>@messages("unloadingRemarksSent.checkStatus")</a> @messages("unloadingRemarksSent.findOut")</p>
+        <p class="govuk-body">@{
+            viewModel.foo
+        }</p>
+        <p class="govuk-body"><a id="createArrivalId" class="govuk-link" href=create-arrival-notifications>@messages("unloadingRemarksSent.createArrivalNotification")</a></p>
 
-}
+    }
