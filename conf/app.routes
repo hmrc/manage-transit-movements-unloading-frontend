@@ -95,4 +95,4 @@ POST       /:arrivalId/items/:index/change-number-of-packages                   
 
 GET        /:arrivalId/unloading-permission-pdf                                             controllers.UnloadingPermissionPDFController.getPDF(arrivalId: ArrivalId)
 
-GET       /:mrn/unloading-remarks-sent                                                      controllers.UnloadingRemarksSentController.onPageLoad(mrn: MovementReferenceNumber)
+GET       /:arrivalId/unloading-remarks-sent                                                      controllers.UnloadingRemarksSentController.onPageLoad(arrivalId: ArrivalId)

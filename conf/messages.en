@@ -255,13 +255,13 @@ cannotSendUnloadingRemarks.message =  If you still need to send these unloading 
 cannotSendUnloadingRemarks.contactLink = contact the New Computerised Transit System (NCTS) Helpdesk (opens in a new tab)
 cannotSendUnloadingRemarks.linkText = Back to arrival notification
 
-unloadingRemarksSent.title = Unloading remarks sent – Manage your transit movements – GOV.UK
+unloadingRemarksSent.title = Unloading remarks sent
 unloadingRemarksSent.heading = Unloading remarks sent
-unloadingRemarksSent.body = for Movement Reference Number (MRN) {0}
+unloadingRemarksSent.body = for Movement Reference Number (MRN) {0} {1}
 unloadingRemarksSent.whathappens = What happens next
-unloadingRemarksSent.checkthestatus =  Check the status of arrival notifications
+unloadingRemarksSent.checkthestatus.href = Check the status of arrival notifications
 unloadingRemarksSent.findout =  to find out when goods have been released.
-unloadingRemarksSent.paragraph2 = If the goods are not released when expected or you have another problem, contact Customs at {0} on {1]}.
+unloadingRemarksSent.teleavailable = If the goods are not released when expected or you have another problem, contact Customs at {0} on {1}.
 unloadingRemarksSent.paragraph3 = If the goods are not released when expected or you have another problem, contact Customs at {0}.
 unloadingRemarksSent.paragraph4 = If the goods are not released when expected or you have another problem, contact Customs office {0} on {1}.
 unloadingRemarksSent.paragraph5 = If the goods are not released when expected or you have another problem, contact Customs office {0}.

@@ -26,7 +26,7 @@ config: FrontendAppConfig,
 govukPanel: GovukPanel
 )
 
-@(mrn: MovementReferenceNumber, customsOffice: CustomsOffice)(implicit request: Request[_], messages: Messages)
+@(mrn: MovementReferenceNumber, viewModel: UnloadingRemarksSentViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
 title = messages("unloadingRemarksSent.title"),
@@ -36,9 +36,10 @@ showBackLink = true
 title = Text(messages("unloadingRemarksSent.body", mrn))
 )
 )
-
+@Heading(heading = messages("unloadingRemarksSent.heading"))
 <h2 class="govuk-heading-m">@messages("unloadingRemarksSent.whathappens")</h2>
 <a id="Check the status of arrival notifications" class="govuk-link" href=view-arrival-notifications>@messages("unloadingRemarksSent.checkthestatus") </a>
 <p>@messages("unloadingRemarksSent.findout") <b></b></p>
+<p></p>
 
 }
