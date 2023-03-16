@@ -18,7 +18,7 @@ package utils.cyaHelpers
 
 import base.SpecBase
 import generators.Generators
-import models.{Identification, NormalMode}
+import models.{Identification, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -30,7 +30,7 @@ import utils.UnloadingFindingsAnswersHelper
 
 class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  "UnloadingFindingsAnswersHelper" - { //TODO: Test iterable sections and test links?
+  "UnloadingFindingsAnswersHelper" - {
 
     "departureMeansID" - {
 
@@ -258,7 +258,58 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       }
     }
 
-    "itemsSummarySection" ignore {} //TODO this
+    "itemsSummarySection" - {
+
+      "must return None" - {
+        s"when no items defined" in {
+
+          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
+          val result = helper.itemsSummarySection
+          result.isEmpty mustBe true
+        }
+      }
+
+      "must return Some(Row)s" - {
+        s"when items are defined" in {
+
+          val grossWeight = Gen.double.sample.value
+          val netWeight = Gen.double.sample.value
+          val totalGrossWeight = grossWeight * 2
+          val totalNetWeight = netWeight * 2
+
+          val answers = emptyUserAnswers
+            .setValue(GrossWeightPage(itemIndex), grossWeight)
+            .setValue(NetWeightPage(itemIndex), netWeight)
+            .setValue(GrossWeightPage(Index(1)), grossWeight)
+            .setValue(NetWeightPage(Index(1)), netWeight)
+
+          val helper = new UnloadingFindingsAnswersHelper(answers)
+          val sections = helper.itemsSummarySection.head.rows
+
+          val numberOfItemsRow = sections.head
+          val totalGrossWeightRow = sections(1)
+          val totalNetWeightRow = sections(2)
+
+          numberOfItemsRow mustBe
+              SummaryListRow(
+                key = Key("Total number of items".toText),
+                value = Value("2".toText),
+              )
+
+          totalGrossWeightRow mustBe
+            SummaryListRow(
+              key = Key("Total gross weight of all items".toText),
+              value = Value(s"${totalGrossWeight}kg".toText),
+            )
+
+          totalNetWeightRow mustBe
+            SummaryListRow(
+              key = Key("Total net weight of all items".toText),
+              value = Value(s"${totalNetWeight}kg".toText),
+            )
+        }
+      }
+    }
 
     "numberOfItemsRow" - {
 
@@ -322,8 +373,6 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
         }
       }
     }
-
-    "itemSections" ignore {} // TODO this
 
     "itemDescriptionRow" - {
 
