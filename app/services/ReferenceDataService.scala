@@ -34,10 +34,8 @@ class ReferenceDataServiceImpl @Inject() (connector: ReferenceDataConnector) ext
       case None              => Future.successful(None)
     }
 
-  def getCustomsOfficeByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CustomsOffice]] =
-    code match {
-      case customsOfficeCode => connector.getCustomsOffice(customsOfficeCode)
-    }
+  def getCustomsOfficeByCode(customsOfficeCode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CustomsOffice]] =
+    connector.getCustomsOffice(customsOfficeCode)
 
   private def sort(countries: Seq[Country]): Seq[Country] =
     countries.sortBy(_.description.toLowerCase)

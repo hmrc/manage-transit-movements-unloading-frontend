@@ -37,7 +37,7 @@ class UnloadingRemarksSentController @Inject() (
   override val messagesApi: MessagesApi,
   actions: Actions,
   identify: IdentifierAction,
-  referendeDataService: ReferenceDataService,
+  referenceDataService: ReferenceDataService,
   cc: MessagesControllerComponents,
   view: UnloadingRemarksSentView
 )(implicit ec: ExecutionContext)
@@ -46,12 +46,11 @@ class UnloadingRemarksSentController @Inject() (
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
-      referendeDataService.getCustomsOfficeByCode("CODE-001") map {
-        x =>
-          println(x)
-          val viewModel = UnloadingRemarksSentViewModel(x)
-          Ok(view(request.userAnswers.mrn, viewModel))
-      }
-
+      val officeOfDestination = "CODE-001"
+      referenceDataService
+        .getCustomsOfficeByCode(officeOfDestination)
+        .map(
+          customsOffice => Ok(view(request.userAnswers.mrn, UnloadingRemarksSentViewModel(customsOffice, officeOfDestination)))
+        )
   }
 }
