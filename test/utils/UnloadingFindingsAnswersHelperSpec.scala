@@ -211,9 +211,9 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
                 items = List(
                   ActionItem(
                     content = "Change".toText,
-                    href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode).url,
+                    href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode, newSeal = true).url,
                     visuallyHiddenText = Some(s"seal $seal1IndexToDisplay - $sealIdentifier"),
-                    attributes = Map("id" -> s"change-seal-identifier-$seal1IndexToDisplay")
+                    attributes = Map("id" -> s"change-new-seal-identifier-$seal1IndexToDisplay")
                   ),
                   ActionItem(
                     content = "Remove".toText,
@@ -237,9 +237,9 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
                 items = List(
                   ActionItem(
                     content = "Change".toText,
-                    href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, Index(1), NormalMode).url,
+                    href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, Index(1), NormalMode, newSeal = true).url,
                     visuallyHiddenText = Some(s"seal $seal2IndexToDisplay - $sealIdentifier"),
-                    attributes = Map("id" -> s"change-seal-identifier-$seal2IndexToDisplay")
+                    attributes = Map("id" -> s"change-new-seal-identifier-$seal2IndexToDisplay")
                   ),
                   ActionItem(
                     content = "Remove".toText,
