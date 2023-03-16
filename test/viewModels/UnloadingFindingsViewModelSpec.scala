@@ -27,33 +27,30 @@ import viewModels.UnloadingFindingsViewModel.UnloadingFindingsViewModelProvider
 import viewModels.sections.Section
 
 class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
-  private val mockUnloadingFindingsViewModelProvider = mock[UnloadingFindingsViewModelProvider]
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(inject.bind[UnloadingFindingsViewModelProvider].toInstance(mockUnloadingFindingsViewModelProvider))
 
   "Unloading findings sections" - {
     "must have correct titles" in {
+
       setExistingUserAnswers(ie043UserAnswers)
-      val itemsSummaryTitle            = "Items summary"
-      val itemsOneTitle                = "Item 1"
-      val meansOfTransportSectionTitle = "Means of transport"
-      val transportEquipmentTitle      = "Transport equipment 1"
-      val additionalCommentsTitle      = "Additional comments"
 
-      when(mockUnloadingFindingsViewModelProvider.apply(any())(any()))
-        .thenReturn(UnloadingFindingsViewModel(Nil, ))
+      val viewModelProvider         = new UnloadingFindingsViewModelProvider().apply(ie043UserAnswers)
+      val sections                  = viewModelProvider.section
+      val additionalCommentsSection = viewModelProvider.additionalComments
 
-      val section: Seq[Section] = new UnloadingFindingsViewModelProvider().apply(ie043UserAnswers).section
+      sections.head.sectionTitle.value mustBe "Means of transport"
+      sections(1).sectionTitle.value mustBe "Transport equipment 1"
+      sections(2).sectionTitle.value mustBe "Items summary"
+      sections(3).sectionTitle.value mustBe "Item 1"
+      additionalCommentsSection.sectionTitle.value mustBe "Additional comments"
 
-      section.section.head.sectionTitle.value mustBe meansOfTransportSectionTitle
-      section.section(1).sectionTitle.value mustBe transportEquipmentTitle
-      section.section(2).sectionTitle.value mustBe itemsSummaryTitle
-      section.section(3).sectionTitle.value mustBe itemsOneTitle
-      section.section(4).sectionTitle.value mustBe additionalCommentsTitle
-
+    }
+    
+    "must render Means of Transport section" in {
+      
+      val userAnswers = emptyUserAnswers
+        .setValue()
+      
+      
     }
   }
 
