@@ -203,25 +203,23 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
         val seal1IndexToDisplay = sealIndex.display + 1
 
         newSeal1 mustBe
-          Some(
-            SummaryListRow(
-              key = Key(s"Seal $seal1IndexToDisplay".toText),
-              value = Value(sealIdentifier.toText),
-              actions = Some(
-                Actions(
-                  items = List(
-                    ActionItem(
-                      content = "Change".toText,
-                      href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode).url,
-                      visuallyHiddenText = Some(s"seal $seal1IndexToDisplay - $sealIdentifier"),
-                      attributes = Map("id" -> s"change-seal-identifier-$seal1IndexToDisplay")
-                    ),
-                    ActionItem(
-                      content = "Remove".toText,
-                      href = controllers.routes.ConfirmRemoveSealController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode).url,
-                      visuallyHiddenText = Some(s"seal $seal1IndexToDisplay - $sealIdentifier"),
-                      attributes = Map("id" -> s"remove-new-seal-identifier-$seal1IndexToDisplay")
-                    )
+          SummaryListRow(
+            key = Key(s"Seal $seal1IndexToDisplay".toText),
+            value = Value(sealIdentifier.toText),
+            actions = Some(
+              Actions(
+                items = List(
+                  ActionItem(
+                    content = "Change".toText,
+                    href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode).url,
+                    visuallyHiddenText = Some(s"seal $seal1IndexToDisplay - $sealIdentifier"),
+                    attributes = Map("id" -> s"change-seal-identifier-$seal1IndexToDisplay")
+                  ),
+                  ActionItem(
+                    content = "Remove".toText,
+                    href = controllers.routes.ConfirmRemoveSealController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode).url,
+                    visuallyHiddenText = Some(s"seal $seal1IndexToDisplay - $sealIdentifier"),
+                    attributes = Map("id" -> s"remove-new-seal-identifier-$seal1IndexToDisplay")
                   )
                 )
               )
@@ -231,25 +229,23 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
         val seal2IndexToDisplay = sealIndex.display + 2
 
         newSeal2 mustBe
-          Some(
-            SummaryListRow(
-              key = Key(s"Seal $seal2IndexToDisplay".toText),
-              value = Value(sealIdentifier.toText),
-              actions = Some(
-                Actions(
-                  items = List(
-                    ActionItem(
-                      content = "Change".toText,
-                      href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, Index(1), NormalMode).url,
-                      visuallyHiddenText = Some(s"seal $seal2IndexToDisplay - $sealIdentifier"),
-                      attributes = Map("id" -> s"change-seal-identifier-$seal2IndexToDisplay")
-                    ),
-                    ActionItem(
-                      content = "Remove".toText,
-                      href = controllers.routes.ConfirmRemoveSealController.onPageLoad(arrivalId, equipmentIndex, Index(1), NormalMode).url,
-                      visuallyHiddenText = Some(s"seal $seal2IndexToDisplay - $sealIdentifier"),
-                      attributes = Map("id" -> s"remove-new-seal-identifier-$seal2IndexToDisplay")
-                    )
+          SummaryListRow(
+            key = Key(s"Seal $seal2IndexToDisplay".toText),
+            value = Value(sealIdentifier.toText),
+            actions = Some(
+              Actions(
+                items = List(
+                  ActionItem(
+                    content = "Change".toText,
+                    href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, Index(1), NormalMode).url,
+                    visuallyHiddenText = Some(s"seal $seal2IndexToDisplay - $sealIdentifier"),
+                    attributes = Map("id" -> s"change-seal-identifier-$seal2IndexToDisplay")
+                  ),
+                  ActionItem(
+                    content = "Remove".toText,
+                    href = controllers.routes.ConfirmRemoveSealController.onPageLoad(arrivalId, equipmentIndex, Index(1), NormalMode).url,
+                    visuallyHiddenText = Some(s"seal $seal2IndexToDisplay - $sealIdentifier"),
+                    attributes = Map("id" -> s"remove-new-seal-identifier-$seal2IndexToDisplay")
                   )
                 )
               )
