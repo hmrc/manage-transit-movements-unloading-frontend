@@ -34,10 +34,9 @@ class ReferenceDataServiceImpl @Inject() (connector: ReferenceDataConnector) ext
       case None              => Future.successful(None)
     }
 
-  def getCustomsOfficeByCode(code: Option[String])(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CustomsOffice]] =
+  def getCustomsOfficeByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CustomsOffice]] =
     code match {
-      case Some(customsOfficeCode) => connector.getCustomsOffice(customsOfficeCode)
-      case None                    => Future.successful(None)
+      case customsOfficeCode => connector.getCustomsOffice(customsOfficeCode)
     }
 
   private def sort(countries: Seq[Country]): Seq[Country] =
@@ -48,5 +47,5 @@ trait ReferenceDataService {
   def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]]
   def getCountryByCode(code: Option[String])(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[Country]]
 
-  def getCustomsOfficeByCode(code: Option[String])(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CustomsOffice]]
+  def getCustomsOfficeByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CustomsOffice]]
 }

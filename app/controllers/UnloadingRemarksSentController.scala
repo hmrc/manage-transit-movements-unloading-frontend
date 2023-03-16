@@ -44,11 +44,13 @@ class UnloadingRemarksSentController @Inject() (
     extends FrontendController(cc)
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
-      val customsOffice = referendeDataService.getCustomsOfficeByCode(Some("")) map {
-        val viewModel = UnloadingRemarksSentViewModel(customsOffice)
-        Ok(view(request.userAnswers.mrn, viewModel))
+      referendeDataService.getCustomsOfficeByCode("CODE-001") map {
+        x =>
+          println(x)
+          val viewModel = UnloadingRemarksSentViewModel(x)
+          Ok(view(request.userAnswers.mrn, viewModel))
       }
 
   }
