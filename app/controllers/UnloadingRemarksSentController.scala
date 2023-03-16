@@ -27,6 +27,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.ReferenceDataService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.{FrontendBaseController, FrontendController}
+import models.UnloadingRemarksSentViewModel
 import views.html.UnloadingRemarksSentView
 
 import javax.inject.Inject
@@ -43,11 +44,12 @@ class UnloadingRemarksSentController @Inject() (
     extends FrontendController(cc)
     with I18nSupport {
 
-  def onPageLoad(mrn: MovementReferenceNumber): Action[AnyContent] = Action.async {
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      referendeDataService.getCustomsOfficeByCode(Some("")) map {
-        case Some(customsOffice) => Ok(view(mrn, customsOffice))
-        case _                   => Ok(view(mrn, CustomsOffice("", "", "", None, Nil)))
+      val customsOffice = referendeDataService.getCustomsOfficeByCode(Some("")) map {
+        val viewModel = UnloadingRemarksSentViewModel(customsOffice)
+        Ok(view(request.userAnswers.mrn, viewModel))
       }
+
   }
 }
