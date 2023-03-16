@@ -197,5 +197,5 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
     if (userAnswers.get(answer).isEmpty) Some(link) else None
 
   protected def buildLink(section: Section[JsArray])(link: => Link): Option[Link] =
-    if (userAnswers.get(section).exists(_.isEmpty)) None else Some(link)
+    if (userAnswers.get(section).isEmpty) None else Some(link)
 }

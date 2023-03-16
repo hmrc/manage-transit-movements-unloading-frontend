@@ -17,7 +17,6 @@
 package base
 
 import cats.data.NonEmptyList
-import models.P5.IE043Data
 import models.{ArrivalId, EoriNumber, GoodsItem, Index, MovementReferenceNumber, Packages, ProducedDocument, UserAnswers}
 import org.scalatest._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -29,10 +28,9 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
-import play.api.libs.json.{JsObject, JsValue, Json, Reads, Writes}
+import play.api.libs.json.{Json, Reads, Writes}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import models.P5._
 
 import java.time.Instant
 
@@ -62,7 +60,6 @@ trait SpecBase
   val sealIndex: Index              = Index(0)
   val itemIndex: Index              = Index(0)
   def emptyUserAnswers: UserAnswers = UserAnswers(arrivalId, mrn, eoriNumber, Json.obj(), Json.obj(), Instant.now())
-  def ie043UserAnswers: UserAnswers = UserAnswers(arrivalId, mrn, eoriNumber, ieo43Data, ieo43Data, Instant.now())
 
   protected lazy val packages: Packages = Packages(Some("Ref."), "BX", Some(1), None)
 
@@ -96,85 +93,5 @@ trait SpecBase
     def removeValue(page: QuestionPage[_]): UserAnswers =
       userAnswers.remove(page).success.value
   }
-
-  val ieo43Data: JsObject = Json.toJsObject(
-    MessageData(
-      TransitOperation(
-        MRN = MovementReferenceNumber("38VYQTYFU3T0KUTUM3").get
-      ),
-      Consignment = Consignment(
-        Option(
-          List(
-            TransportEquipment(
-              sequenceNumber = Option("te1"),
-              containerIdentificationNumber = Option("cin-1"),
-              numberOfSeals = Option(103),
-              Seal = Option(
-                List(
-                  Seal(
-                    sequenceNumber = Option("1001"),
-                    identifier = Option("1002")
-                  )
-                )
-              )
-            )
-          )
-        ),
-        DepartureTransportMeans = Option(
-          List(
-            DepartureTransportMeans(
-              sequenceNumber = Option("dtm-1"),
-              typeOfIdentification = Option("4"),
-              identificationNumber = Option("28"),
-              nationality = Option("DE")
-            )
-          )
-        ),
-        HouseConsignment = List(
-          HouseConsignment(
-            Option("hc1"),
-            DepartureTransportMeans = Option(
-              List(
-                DepartureTransportMeans(
-                  sequenceNumber = Option("56"),
-                  typeOfIdentification = Option("2"),
-                  identificationNumber = Option("23"),
-                  nationality = Option("IT")
-                )
-              )
-            ),
-            ConsignmentItem = Option(
-              List(
-                ConsignmentItem(
-                  Option("6"),
-                  Option(100),
-                  Commodity = Option(
-                    Commodity(
-                      Option("shirts"),
-                      GoodsMeasure = Option(
-                        GoodsMeasure(
-                          grossMass = Option(123.45),
-                          netMass = Option(123.45)
-                        )
-                      )
-                    )
-                  ),
-                  Packaging = Option(
-                    List(
-                      Packaging(
-                        Some("5"),
-                        Some(99)
-                      )
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
-      ),
-      CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual(referenceNumber = "GB000008")
-    )
-  )
 
 }
