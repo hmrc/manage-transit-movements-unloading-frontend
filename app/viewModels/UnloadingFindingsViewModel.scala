@@ -18,7 +18,6 @@ package viewModels
 
 import models.UserAnswers
 import play.api.i18n.Messages
-import play.api.libs.json.JsArray
 import utils.UnloadingFindingsAnswersHelper
 import viewModels.sections.Section
 
