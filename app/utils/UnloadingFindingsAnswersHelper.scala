@@ -58,9 +58,8 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
             .getOrElse(0)
 
           val containerRow: Seq[Option[SummaryListRow]] = Seq(containerIdentificationNumber(equipmentIndex))
-
-          val sealRows: Seq[SummaryListRow]    = transportEquipmentSeals(equipmentIndex)
-          val newSealRows: Seq[SummaryListRow] = transportEquipmentNewSeals(equipmentIndex, sealPrefixNumber)
+          val sealRows: Seq[SummaryListRow]             = transportEquipmentSeals(equipmentIndex)
+          val newSealRows: Seq[SummaryListRow]          = transportEquipmentNewSeals(equipmentIndex, sealPrefixNumber)
 
           containerRow.head match {
             case Some(containerRow) =>

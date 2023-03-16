@@ -164,6 +164,100 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       }
     }
 
+    "transportEquipmentSections" - {
+      "must return correct seal prefix when new seals have been added" in {
+
+        val sealIdentifier = "123"
+
+        val answers = emptyUserAnswers
+          .setValue(ContainerIdentificationNumberPage(equipmentIndex), "123456")
+          .setValue(SealPage(equipmentIndex, sealIndex), sealIdentifier)
+          .setValue(NewSealPage(equipmentIndex, sealIndex), sealIdentifier)
+          .setValue(NewSealPage(equipmentIndex, Index(1)), sealIdentifier)
+
+        val helper   = new UnloadingFindingsAnswersHelper(answers)
+        val sections = helper.transportEquipmentSections.head.rows
+
+        val previousSeal = sections(1)
+        val newSeal1     = sections(2)
+        val newSeal2     = sections(3)
+
+        previousSeal mustBe
+          SummaryListRow(
+            key = Key(s"Seal ${sealIndex.display}".toText),
+            value = Value(sealIdentifier.toText),
+            actions = Some(
+              Actions(
+                items = List(
+                  ActionItem(
+                    content = "Change".toText,
+                    href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode).url,
+                    visuallyHiddenText = Some(s"seal ${sealIndex.display} - $sealIdentifier"),
+                    attributes = Map("id" -> s"change-seal-identifier-${sealIndex.display}")
+                  )
+                )
+              )
+            )
+          )
+
+        val seal1IndexToDisplay = sealIndex.display + 1
+
+        newSeal1 mustBe
+          Some(
+            SummaryListRow(
+              key = Key(s"Seal $seal1IndexToDisplay".toText),
+              value = Value(sealIdentifier.toText),
+              actions = Some(
+                Actions(
+                  items = List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode).url,
+                      visuallyHiddenText = Some(s"seal $seal1IndexToDisplay - $sealIdentifier"),
+                      attributes = Map("id" -> s"change-seal-identifier-$seal1IndexToDisplay")
+                    ),
+                    ActionItem(
+                      content = "Remove".toText,
+                      href = controllers.routes.ConfirmRemoveSealController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode).url,
+                      visuallyHiddenText = Some(s"seal $seal1IndexToDisplay - $sealIdentifier"),
+                      attributes = Map("id" -> s"remove-new-seal-identifier-$seal1IndexToDisplay")
+                    )
+                  )
+                )
+              )
+            )
+          )
+
+        val seal2IndexToDisplay = sealIndex.display + 2
+
+        newSeal2 mustBe
+          Some(
+            SummaryListRow(
+              key = Key(s"Seal $seal2IndexToDisplay".toText),
+              value = Value(sealIdentifier.toText),
+              actions = Some(
+                Actions(
+                  items = List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, Index(1), NormalMode).url,
+                      visuallyHiddenText = Some(s"seal $seal2IndexToDisplay - $sealIdentifier"),
+                      attributes = Map("id" -> s"change-seal-identifier-$seal2IndexToDisplay")
+                    ),
+                    ActionItem(
+                      content = "Remove".toText,
+                      href = controllers.routes.ConfirmRemoveSealController.onPageLoad(arrivalId, equipmentIndex, Index(1), NormalMode).url,
+                      visuallyHiddenText = Some(s"seal $seal2IndexToDisplay - $sealIdentifier"),
+                      attributes = Map("id" -> s"remove-new-seal-identifier-$seal2IndexToDisplay")
+                    )
+                  )
+                )
+              )
+            )
+          )
+      }
+    }
+
     "transportEquipmentSeal" - {
 
       val sealIdentifier = Gen.alphaNumStr.sample.value
@@ -272,10 +366,10 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       "must return Some(Row)s" - {
         s"when items are defined" in {
 
-          val grossWeight = Gen.double.sample.value
-          val netWeight = Gen.double.sample.value
+          val grossWeight      = Gen.double.sample.value
+          val netWeight        = Gen.double.sample.value
           val totalGrossWeight = grossWeight * 2
-          val totalNetWeight = netWeight * 2
+          val totalNetWeight   = netWeight * 2
 
           val answers = emptyUserAnswers
             .setValue(GrossWeightPage(itemIndex), grossWeight)
@@ -283,29 +377,29 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             .setValue(GrossWeightPage(Index(1)), grossWeight)
             .setValue(NetWeightPage(Index(1)), netWeight)
 
-          val helper = new UnloadingFindingsAnswersHelper(answers)
+          val helper   = new UnloadingFindingsAnswersHelper(answers)
           val sections = helper.itemsSummarySection.head.rows
 
-          val numberOfItemsRow = sections.head
+          val numberOfItemsRow    = sections.head
           val totalGrossWeightRow = sections(1)
-          val totalNetWeightRow = sections(2)
+          val totalNetWeightRow   = sections(2)
 
           numberOfItemsRow mustBe
-              SummaryListRow(
-                key = Key("Total number of items".toText),
-                value = Value("2".toText),
-              )
+            SummaryListRow(
+              key = Key("Total number of items".toText),
+              value = Value("2".toText)
+            )
 
           totalGrossWeightRow mustBe
             SummaryListRow(
               key = Key("Total gross weight of all items".toText),
-              value = Value(s"${totalGrossWeight}kg".toText),
+              value = Value(s"${totalGrossWeight}kg".toText)
             )
 
           totalNetWeightRow mustBe
             SummaryListRow(
               key = Key("Total net weight of all items".toText),
-              value = Value(s"${totalNetWeight}kg".toText),
+              value = Value(s"${totalNetWeight}kg".toText)
             )
         }
       }
