@@ -21,8 +21,8 @@ import play.api.i18n.Messages
 
 case class UnloadingRemarksSentViewModel(customsOffice: Option[CustomsOffice]) {
 
-  def foo(customsOffice: Option[CustomsOffice])(implicit messages: Messages) = customsOffice match {
-    case Some(CustomsOffice(_, name, _, Some(phone), _)) => messages("unloadingRemarksSent.teleavailable", name, phone)
-    case _                                               => messages("unloadingRemarksSent.teleavailable", "test", "1213242")
+  def foo(implicit messages: Messages) = customsOffice match {
+    case Some(CustomsOffice(_, name, _, Some(phone), _)) => messages("unloadingRemarksSent.telephoneAvailable", name, phone)
+    case _                                               => messages("unloadingRemarksSent.telephoneAvailable", "test", "1213242")
   }
 }
