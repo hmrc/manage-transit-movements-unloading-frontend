@@ -26,7 +26,7 @@ case class UnloadingRemarksSentViewModel(customsOffice: Option[CustomsOffice], o
     case Some(CustomsOffice(_, name, _, None, _))        => messages("unloadingRemarksSent.telephoneNotAvailable", name)
     case Some(CustomsOffice(id, "", _, Some(phone), _))  => messages("unloadingRemarksSent.teleAvailAndOfficeNameNotAvail", id, phone)
     case Some(CustomsOffice(_, "", _, _, _))             => messages("unloadingRemarksSent.teleNotAvailAndOfficeNameNotAvail", officeOfDestination)
-    case _                                               => messages("unloadingRemarksSent.teleNotAvailAndOfficeNameNotAvail", officeOfDestination)
+    case None                                            => messages("unloadingRemarksSent.teleNotAvailAndOfficeNameNotAvail", officeOfDestination)
 
   }
 }

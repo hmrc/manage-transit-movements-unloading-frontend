@@ -36,7 +36,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class UnloadingRemarksSentController @Inject() (
   override val messagesApi: MessagesApi,
   actions: Actions,
-  identify: IdentifierAction,
   referenceDataService: ReferenceDataService,
   cc: MessagesControllerComponents,
   view: UnloadingRemarksSentView
