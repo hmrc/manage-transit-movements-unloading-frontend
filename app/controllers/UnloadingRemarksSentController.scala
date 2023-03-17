@@ -21,13 +21,14 @@ import forms.VehicleIdentificationNumberFormProvider
 import models.reference.CustomsOffice
 import models.{ArrivalId, Mode, MovementReferenceNumber}
 import navigation.Navigator
-import pages.VehicleIdentificationNumberPage
+import pages.{CustomsOfficeOfDestinationPage, VehicleIdentificationNumberPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.ReferenceDataService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.{FrontendBaseController, FrontendController}
 import models.UnloadingRemarksSentViewModel
+import play.api.mvc.Results.Redirect
 import views.html.UnloadingRemarksSentView
 
 import javax.inject.Inject
@@ -45,11 +46,14 @@ class UnloadingRemarksSentController @Inject() (
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
-      val officeOfDestination = "CODE-001"
-      referenceDataService
-        .getCustomsOfficeByCode(officeOfDestination)
-        .map(
-          customsOffice => Ok(view(request.userAnswers.mrn, UnloadingRemarksSentViewModel(customsOffice, officeOfDestination)))
-        )
+      request.userAnswers.get(CustomsOfficeOfDestinationPage) match {
+        case Some(customsOfficeId) =>
+          referenceDataService
+            .getCustomsOfficeByCode(customsOfficeId)
+            .map(
+              customsOffice => Ok(view(request.userAnswers.mrn, UnloadingRemarksSentViewModel(customsOffice, customsOfficeId)))
+            )
+        case None => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      }
   }
 }
