@@ -50,9 +50,10 @@ class UnloadingRemarksSentController @Inject() (
         case Some(customsOfficeId) =>
           referenceDataService
             .getCustomsOfficeByCode(customsOfficeId)
-            .map(
-              customsOffice => Ok(view(request.userAnswers.mrn, UnloadingRemarksSentViewModel(customsOffice, customsOfficeId)))
-            )
+            .map {
+              customsOffice =>
+                Ok(view(request.userAnswers.mrn, UnloadingRemarksSentViewModel(customsOffice, customsOfficeId)))
+            }
         case None => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
       }
   }

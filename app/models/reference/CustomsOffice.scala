@@ -24,8 +24,7 @@ case class CustomsOffice(
   id: String,
   name: String,
   countryId: String,
-  phoneNumber: Option[String],
-  roles: Seq[String]
+  phoneNumber: Option[String]
 )
 
 object CustomsOffice {
@@ -34,11 +33,10 @@ object CustomsOffice {
 
   implicit val readFromFile: Reads[CustomsOffice] =
     (
-      (__ \ "CUST_OFF_ID").read[String] and
-        (__ \ "CUST_OFF_NAM").read[String] and
-        (__ \ "COUNTRY_ID").read[String] and
-        (__ \ "PHONE_NUMBER").readNullable[String] and
-        (__ \ "CUSTOMS_OFFICE_ROLES").read[Seq[String]]
+      (__ \ "id").read[String] and
+        (__ \ "name").read[String] and
+        (__ \ "countryId").read[String] and
+        (__ \ "phoneNumber").readNullable[String]
     )(CustomsOffice.apply _)
 
 }

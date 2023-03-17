@@ -22,9 +22,9 @@ import play.api.i18n.Messages
 case class UnloadingRemarksSentViewModel(customsOffice: Option[CustomsOffice], customsOfficeId: String) {
 
   def fetch(implicit messages: Messages): String = customsOffice match {
-    case Some(CustomsOffice(_, name, _, Some(phone), _)) => messages("unloadingRemarksSent.telephoneAvailable", name, phone)
-    case Some(CustomsOffice(_, name, _, None, _))        => messages("unloadingRemarksSent.telephoneNotAvailable", name)
-    case Some(CustomsOffice(id, "", _, Some(phone), _))  => messages("unloadingRemarksSent.teleAvailAndOfficeNameNotAvail", id, phone)
-    case _                                               => messages("unloadingRemarksSent.teleNotAvailAndOfficeNameNotAvail", customsOfficeId)
+    case Some(CustomsOffice(_, name, _, Some(phone))) => messages("unloadingRemarksSent.telephoneAvailable", name, phone)
+    case Some(CustomsOffice(_, name, _, None))        => messages("unloadingRemarksSent.telephoneNotAvailable", name)
+    case Some(CustomsOffice(id, "", _, Some(phone)))  => messages("unloadingRemarksSent.teleAvailAndOfficeNameNotAvail", id, phone)
+    case _                                            => messages("unloadingRemarksSent.teleNotAvailAndOfficeNameNotAvail", customsOfficeId)
   }
 }
