@@ -254,3 +254,68 @@ cannotSendUnloadingRemarks.declarationNotFound = There is no departure declarati
 cannotSendUnloadingRemarks.message =  If you still need to send these unloading remarks, you must
 cannotSendUnloadingRemarks.contactLink = contact the New Computerised Transit System (NCTS) Helpdesk (opens in a new tab)
 cannotSendUnloadingRemarks.linkText = Back to arrival notification
+
+unloadingFindings.title = What did you find when unloading?
+unloadingFindings.heading = What did you find when unloading?
+unloadingFindings.paragraph = Cross-check the transit with the following information. Change these details if you find something different
+
+unloadingFindings.subsections.transportMeans = Means of transport
+
+unloadingFindings.rowHeadings.identificationType.seaGoingVessel = Name of a sea-going vessel
+unloadingFindings.rowHeadings.identificationType.seaGoingVessel.change.hidden = name of a sea-going vessel
+unloadingFindings.rowHeadings.identificationType.iataFlightNumber = IATA flight number
+unloadingFindings.rowHeadings.identificationType.iataFlightNumber.change.hidden = IATA flight number
+unloadingFindings.rowHeadings.identificationType.inlandWaterwaysVehicle = Name of an inland waterways vehicle
+unloadingFindings.rowHeadings.identificationType.inlandWaterwaysVehicle.change.hidden = name of an inland waterways vehicle
+unloadingFindings.rowHeadings.identificationType.imoShipIdNumber = IMO ship identification number
+unloadingFindings.rowHeadings.identificationType.imoShipIdNumber.change.hidden = IMO ship identification number
+unloadingFindings.rowHeadings.identificationType.wagonNumber = Wagon number
+unloadingFindings.rowHeadings.identificationType.wagonNumber.change.hidden = wagon number
+unloadingFindings.rowHeadings.identificationType.trainNumber = Train number
+unloadingFindings.rowHeadings.identificationType.trainNumber.change.hidden = train number
+unloadingFindings.rowHeadings.identificationType.regNumberRoadVehicle = Registration number of a road vehicle
+unloadingFindings.rowHeadings.identificationType.regNumberRoadVehicle.change.hidden = registration number of a road vehicle
+unloadingFindings.rowHeadings.identificationType.regNumberRoadTrailer = Registration number of a road trailer
+unloadingFindings.rowHeadings.identificationType.regNumberRoadTrailer.change.hidden = registration number of a road trailer
+unloadingFindings.rowHeadings.identificationType.regNumberAircraft = Registration number of an aircraft
+unloadingFindings.rowHeadings.identificationType.regNumberAircraft.change.hidden = registration number of an aircraft
+unloadingFindings.rowHeadings.identificationType.europeanVesselIdNumber = European vessel identification number (ENI code)
+unloadingFindings.rowHeadings.identificationType.europeanVesselIdNumber.change.hidden = European vessel identification number (ENI code)
+unloadingFindings.rowHeadings.identificationType.unknown = Unknown - this can only be used during the transitional period
+unloadingFindings.rowHeadings.identificationType.unknown.change.hidden = unknown - this can only be used during the transitional period
+
+unloadingFindings.rowHeadings.vehicleNationality = Registered country
+unloadingFindings.rowHeadings.vehicleNationality.change.hidden = registered country
+
+unloadingFindings.subsections.transportEquipment = Transport equipment {0}
+unloadingFindings.rowHeadings.containerIdentificationNumber = Container identification number
+unloadingFindings.rowHeadings.containerIdentificationNumber.change.hidden = container identification number {0}
+unloadingFindings.rowHeadings.sealIdentifier = Seal {0}
+unloadingFindings.rowHeadings.sealIdentifier.change.hidden = seal {0} - {1}
+unloadingFindings.rowHeadings.sealIdentifier.remove.hidden = seal {0} - {1}
+unloadingFindings.addNewSeal.link = Add a new seal identification number
+
+
+unloadingFindings.subsections.itemSummary = Items summary
+unloadingFindings.rowHeadings.numberOfItems = Total number of items
+unloadingFindings.rowHeadings.totalGrossWeight = Total gross weight of all items
+unloadingFindings.rowHeadings.totalNetWeight = Total net weight of all items
+
+unloadingFindings.subsections.item = Item {0}
+unloadingFindings.rowHeadings.item.description = Description
+unloadingFindings.rowHeadings.item.grossWeight = Gross weight
+unloadingFindings.rowHeadings.item.grossWeight.change.hidden = gross weight of item {0}
+unloadingFindings.rowHeadings.item.netWeight = Net weight
+unloadingFindings.rowHeadings.item.netWeight.change.hidden = net weight of item {0}
+
+unloadingFindings.subsections.additionalComments = Additional comments
+unloadingFindings.additionalComments.link = Add comments
+
+unloadingFindings.rowHeadings.additionalComments = Comments
+unloadingFindings.rowHeadings.additionalComments.change.hidden = comments
+unloadingFindings.rowHeadings.additionalComments.remove.hidden = comments
+
+
+
+
+

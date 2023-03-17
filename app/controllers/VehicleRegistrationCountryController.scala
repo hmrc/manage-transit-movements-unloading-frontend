@@ -18,6 +18,7 @@ package controllers
 
 import controllers.actions._
 import forms.VehicleRegistrationCountryFormProvider
+import models.reference.Country
 import models.{ArrivalId, Mode}
 import navigation.Navigator
 import pages.VehicleRegistrationCountryPage
@@ -51,7 +52,7 @@ class VehicleRegistrationCountryController @Inject() (
           val form = formProvider(countries)
           val preparedForm = request.userAnswers.get(VehicleRegistrationCountryPage) match {
             case None        => form
-            case Some(value) => form.fill(value)
+            case Some(value) => form.fill(Country(value, "test")) // TODO: Fix this change back to country
           }
           Ok(view(preparedForm, countries, request.userAnswers.mrn, arrivalId, mode))
       }
@@ -68,9 +69,9 @@ class VehicleRegistrationCountryController @Inject() (
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, countries, request.userAnswers.mrn, arrivalId, mode))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleRegistrationCountryPage, value))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleRegistrationCountryPage, value.code)) // TODO: Fix this change back to country
                   _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(VehicleRegistrationCountryPage, mode, updatedAnswers))
+                } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
             )
       }
   }

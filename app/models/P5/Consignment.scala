@@ -13,3 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package models.P5
+
+import play.api.libs.json.{Json, OFormat}
+
+case class Consignment(
+  TransportEquipment: Option[List[TransportEquipment]],
+  DepartureTransportMeans: Option[List[DepartureTransportMeans]],
+  HouseConsignment: List[HouseConsignment]
+)
+
+object Consignment {
+  implicit val formats: OFormat[Consignment] = Json.format[Consignment]
+}

@@ -18,7 +18,7 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.GrossWeightFormProvider
-import models.{Index, NormalMode}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.GrossWeightPage
@@ -33,7 +33,6 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val formProvider                = new GrossWeightFormProvider()
   private val form                        = formProvider()
   private val mode                        = NormalMode
-  private val index                       = Index(0)
   private lazy val GrossWeightAmountRoute = controllers.routes.GrossWeightController.onPageLoad(arrivalId, index, mode).url
 
   "GrossWeightAmount Controller" - {
@@ -57,7 +56,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
-      val userAnswers = emptyUserAnswers.setValue(GrossWeightPage, "123456.123")
+      val userAnswers = emptyUserAnswers.setValue(GrossWeightPage(itemIndex), "123456.123".toDouble)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, GrossWeightAmountRoute)
@@ -87,7 +86,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

@@ -13,3 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package models.P5
+
+import play.api.libs.json.{Json, OFormat}
+
+case class CustomsOfficeOfDestinationActual(
+  referenceNumber: String
+)
+
+object CustomsOfficeOfDestinationActual {
+
+  implicit val formats: OFormat[CustomsOfficeOfDestinationActual] = Json.format[CustomsOfficeOfDestinationActual]
+
+}

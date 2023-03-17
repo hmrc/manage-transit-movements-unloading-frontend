@@ -18,7 +18,7 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.TotalNumberOfPackagesFormProvider
-import models.{Index, NormalMode}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.TotalNumberOfPackagesPage
@@ -29,8 +29,6 @@ import views.html.TotalNumberOfPackagesView
 import scala.concurrent.Future
 
 class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
-
-  private val index = Index(0)
 
   private val formProvider: TotalNumberOfPackagesFormProvider = new TotalNumberOfPackagesFormProvider()
   private val form                                            = formProvider(index)
@@ -67,7 +65,7 @@ class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMo
 
       status(result) mustEqual OK
 
-      val filledForm = form.bind(Map("value" -> validAnswer.toString))
+      val filledForm = form.bind(Map("value" -> validAnswer))
       val view       = injector.instanceOf[TotalNumberOfPackagesView]
 
       contentAsString(result) mustEqual
@@ -82,7 +80,7 @@ class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMo
 
       val request =
         FakeRequest(POST, totalNumberOfPackagesRoute)
-          .withFormUrlEncodedBody(("value", validAnswer.toString))
+          .withFormUrlEncodedBody(("value", validAnswer))
 
       val result = route(app, request).value
 

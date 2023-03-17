@@ -19,11 +19,11 @@ package services.P5
 import base.SpecBase
 import connectors.ArrivalMovementConnector
 import generators.Generators
+import models.MovementReferenceNumber
 import models.P5.ArrivalMessageType.{ArrivalNotification, UnloadingPermission}
-import models.P5.{Message, MessageMetaData, Messages}
+import models.P5._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
-import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDateTime
@@ -76,12 +76,19 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
       "must return latest unloading permission message" in {
 
         val messageMetaData = Messages(List(unloadingPermission1, arrivalNotification, unloadingPermission3, unloadingPermission2))
-        val message         = Message(Json.obj(("foo", "bar")))
+
+        val message = IE043Data(
+          MessageData(
+            TransitOperation = TransitOperation(MovementReferenceNumber("23", "GB", "123")),
+            Consignment = Consignment(None, None, List.empty),
+            CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("GB0008")
+          )
+        )
 
         when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
-        when(mockConnector.getMessage(unloadingPermission1.path)).thenReturn(Future.successful(message))
+        when(mockConnector.getUnloadingPermission(unloadingPermission1.path)).thenReturn(Future.successful(message))
 
-        service.getUnloadingPermissionJson(arrivalId).futureValue mustBe Some(message)
+        service.getUnloadingPermission(arrivalId).futureValue mustBe Some(message)
       }
 
       "must return none when there is no unloading permission message" in {
@@ -90,7 +97,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
 
         when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
 
-        service.getUnloadingPermissionJson(arrivalId).futureValue mustBe None
+        service.getUnloadingPermission(arrivalId).futureValue mustBe None
       }
     }
   }

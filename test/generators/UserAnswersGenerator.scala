@@ -16,7 +16,8 @@
 
 package generators
 
-import models.UserAnswers
+import models.{UserAnswers}
+
 import java.time.Instant
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
@@ -32,7 +33,7 @@ trait UserAnswersGenerator extends TryValues {
       arbitrary[(AreAnySealsBrokenPage.type, JsValue)] ::
       arbitrary[(CanSealsBeReadPage.type, JsValue)] ::
       arbitrary[(SealPage, JsValue)] ::
-      arbitrary[(GrossWeightPage.type, JsValue)] ::
+      arbitrary[(GrossWeightPage, JsValue)] ::
       arbitrary[(VehicleRegistrationCountryPage.type, JsValue)] ::
       arbitrary[(VehicleIdentificationNumberPage.type, JsValue)] ::
       arbitrary[(DateGoodsUnloadedPage.type, JsValue)] ::

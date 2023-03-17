@@ -17,7 +17,7 @@
 package views
 
 import forms.ConfirmRemoveSealFormProvider
-import models.{Index, NormalMode}
+import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -29,7 +29,7 @@ class ConfirmRemoveSealViewSpec extends YesNoViewBehaviours {
   override def form: Form[Boolean] = new ConfirmRemoveSealFormProvider()(sealDescription)
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[ConfirmRemoveSealView].apply(form, mrn, arrivalId, Index(1), sealDescription, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[ConfirmRemoveSealView].apply(form, mrn, arrivalId, equipmentIndex, sealIndex, sealDescription, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "confirmRemoveSeal"
 

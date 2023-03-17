@@ -43,13 +43,12 @@ class UnloadingPermissionAction(arrivalId: ArrivalId, unloadingPermissionMessage
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    (
-      for {
-        unloadingPermission <- OptionT(unloadingPermissionMessageService.getUnloadingPermissionJson(arrivalId))
-        extractMrn <- OptionT.fromOption[Future](
-          (unloadingPermission.body \ "n1:CC043C" \ "TransitOperation" \ "MRN").asOpt[MovementReferenceNumber]
-        )
-      } yield UnloadingPermissionRequest(request, request.eoriNumber, unloadingPermission.body, extractMrn)
-    ).toRight(Redirect(routes.ErrorController.technicalDifficulties())).value
+    OptionT(unloadingPermissionMessageService.getUnloadingPermission(arrivalId))
+      .map {
+        unloadingPermission =>
+          UnloadingPermissionRequest(request, request.eoriNumber, unloadingPermission.data)
+      }
+      .toRight(Redirect(routes.ErrorController.technicalDifficulties()))
+      .value
   }
 }

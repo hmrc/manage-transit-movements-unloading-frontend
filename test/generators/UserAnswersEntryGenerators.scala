@@ -55,10 +55,10 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryGrossWeightAmountReference: Arbitrary[(GrossWeightPage.type, JsValue)] =
+  implicit lazy val arbitraryGrossWeightAmountReference: Arbitrary[(GrossWeightPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[GrossWeightPage.type]
+        page  <- arbitrary[GrossWeightPage]
         value <- arbitrary[String].map(Json.toJson(_))
       } yield (page, value)
     }

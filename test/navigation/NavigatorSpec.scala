@@ -147,7 +147,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
-              .nextPage(SealPage(Index(0)), mode, answers)
+              .nextPage(SealPage(equipmentIndex, sealIndex), mode, answers)
               .mustBe(routes.SessionExpiredController.onPageLoad())
         }
       }
@@ -214,7 +214,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator
-                .nextPage(GrossWeightPage, mode, answers)
+                .nextPage(GrossWeightPage(itemIndex), mode, answers)
                 .mustBe(routes.SessionExpiredController.onPageLoad())
           }
         }
@@ -224,7 +224,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator
-                .nextPage(SealPage(Index(0)), mode, answers)
+                .nextPage(SealPage(equipmentIndex, sealIndex), mode, answers)
                 .mustBe(routes.SessionExpiredController.onPageLoad())
           }
         }

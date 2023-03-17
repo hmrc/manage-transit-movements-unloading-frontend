@@ -16,10 +16,21 @@
 
 package pages
 
-import models.{Index, Seal}
+import models.Index
+import pages.sections.{NewSealsSection, SealsSection}
 import play.api.libs.json.JsPath
 
-final case class SealPage(index: Index) extends QuestionPage[Seal] {
+final case class SealPage(equipmentIndex: Index, sealIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ "seals" \ index.position
+  override def path: JsPath = SealsSection(equipmentIndex).path \ sealIndex.position \ toString
+
+  override def toString: String = "identifier"
+}
+
+final case class NewSealPage(equipmentIndex: Index, sealIndex: Index) extends QuestionPage[String] {
+
+  override def path: JsPath = NewSealsSection(equipmentIndex).path \ sealIndex.position \ toString
+
+  override def toString: String = "identifier"
+
 }

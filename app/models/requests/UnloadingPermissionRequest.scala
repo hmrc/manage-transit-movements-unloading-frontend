@@ -16,13 +16,12 @@
 
 package models.requests
 
-import models.{EoriNumber, MovementReferenceNumber}
-import play.api.libs.json.JsObject
+import models.EoriNumber
+import models.P5.MessageData
 import play.api.mvc.{Request, WrappedRequest}
 
 case class UnloadingPermissionRequest[A](
   request: Request[A],
   eoriNumber: EoriNumber,
-  unloadingPermission: JsObject,
-  movementReferenceNumber: MovementReferenceNumber
+  unloadingPermission: MessageData
 ) extends WrappedRequest[A](request)

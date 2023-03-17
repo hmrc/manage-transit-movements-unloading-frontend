@@ -20,7 +20,7 @@ import play.api.libs.json.JsPath
 
 case object UnloadingCommentsPage extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "UnloadingRemark" \ toString
 
-  override def toString: String = "unloadingReport"
+  override def toString: String = "unloadingRemark"
 }

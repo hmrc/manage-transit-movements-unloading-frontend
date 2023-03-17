@@ -18,10 +18,10 @@ package controllers
 
 import controllers.actions._
 import forms.ConfirmRemoveSealFormProvider
-import models.requests.SpecificDataRequestProvider1
-import models.{ArrivalId, Index, Mode, Seal}
+import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
-import pages.{ConfirmRemoveSealPage, SealPage}
+import pages.NewSealPage
+import pages.sections.NewSealSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -44,32 +44,31 @@ class ConfirmRemoveSealController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] =
-    actions.requireData(arrivalId).andThen(getMandatoryPage(SealPage(index))) {
+  def onPageLoad(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode): Action[AnyContent] =
+    actions.requireData(arrivalId).andThen(getMandatoryPage(NewSealPage(equipmentIndex, sealIndex))) {
       implicit request =>
-        val form = formProvider(sealId)
-        Ok(view(form, request.userAnswers.mrn, arrivalId, index, sealId, mode))
+        val form = formProvider(request.arg)
+        Ok(view(form, request.userAnswers.mrn, arrivalId, equipmentIndex, sealIndex, request.arg, mode))
     }
 
-  def onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] =
-    actions.requireData(arrivalId).andThen(getMandatoryPage(SealPage(index))).async {
+  def onSubmit(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode): Action[AnyContent] =
+    actions.requireData(arrivalId).andThen(getMandatoryPage(NewSealPage(equipmentIndex, sealIndex))).async {
       implicit request =>
-        formProvider(sealId)
+        formProvider(request.arg)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, sealId, mode))),
+            formWithErrors =>
+              Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, equipmentIndex, sealIndex, request.arg, mode))),
             value =>
               if (value) {
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.remove(SealPage(index)))
+                  updatedAnswers <- Future.fromTry(request.userAnswers.remove(NewSealSection(equipmentIndex, sealIndex)))
                   _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(ConfirmRemoveSealPage, mode, updatedAnswers))
+                } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
               } else {
-                Future.successful(Redirect(navigator.nextPage(ConfirmRemoveSealPage, mode, request.userAnswers)))
+                Future.successful(Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId)))
               }
           )
     }
 
-  private def sealId(implicit request: SpecificDataRequestProvider1[Seal]#SpecificDataRequest[_]): String =
-    request.arg.sealId
 }

@@ -32,6 +32,10 @@
             classes = "govuk-!-margin-bottom-9 ctc-add-to-a-list"
         )
     )
+
+    @section.addAnotherLink.map { link =>
+        <p class="govuk-body"><a class="govuk-link" href="@link.href" id="@link.id">@link.text</a></p>
+    }
 } else {
     @html
 }

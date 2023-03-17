@@ -66,7 +66,7 @@ class NewContainerIdentificationNumberController @Inject() (
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(ContainerIdentificationNumberPage(index), value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(controllers.routes.SessionExpiredController.onPageLoad()) // TODO: Implement once navigation is in
+            } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId)) // TODO: Implement once navigation is in
         )
 
   }

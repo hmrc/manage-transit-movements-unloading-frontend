@@ -18,9 +18,9 @@ package controllers
 
 import controllers.actions._
 import forms.NewSealNumberFormProvider
-import models.{ArrivalId, Index, Mode, Seal}
+import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
-import pages.SealPage
+import pages.{NewSealPage, QuestionPage, SealPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -45,32 +45,46 @@ class NewSealNumberController @Inject() (
   private val form = formProvider()
 
   //TODO: Do not allow duplicate seal numbers to be submitted
-  def onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(SealPage(index)) match {
-        case None       => form
-        case Some(seal) => form.fill(seal.sealId)
-      }
+  def onPageLoad(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode, newSeal: Boolean = false): Action[AnyContent] =
+    actions.requireData(arrivalId) {
+      implicit request =>
+        val page: QuestionPage[String] = if (newSeal) {
+          NewSealPage(equipmentIndex, sealIndex)
+        } else {
+          SealPage(equipmentIndex, sealIndex)
+        }
 
-      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, index, mode))
-  }
+        val preparedForm = request.userAnswers.get(page) match {
+          case None       => form
+          case Some(seal) => form.fill(seal)
+        }
 
-  def onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, mode))),
-          value => {
-            Future.successful(BadRequest(view(form, request.userAnswers.mrn, arrivalId, index, mode)))
-            val removable = request.userAnswers.get(SealPage(index)).forall(_.removable)
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(SealPage(index), Seal(value, removable)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(SealPage(index), mode, updatedAnswers))
-          }
-        )
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, equipmentIndex, sealIndex, mode, newSeal = newSeal))
+    }
 
-  }
+  def onSubmit(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode, newSeal: Boolean = false): Action[AnyContent] =
+    actions.requireData(arrivalId).async {
+      implicit request =>
+        val page: QuestionPage[String] = if (newSeal) {
+          NewSealPage(equipmentIndex, sealIndex)
+        } else {
+          SealPage(equipmentIndex, sealIndex)
+        }
+
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors =>
+              Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, equipmentIndex, sealIndex, mode, newSeal = newSeal))),
+            value => {
+              Future.successful(BadRequest(view(form, request.userAnswers.mrn, arrivalId, equipmentIndex, sealIndex, mode, newSeal = newSeal)))
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+            }
+          )
+
+    }
 
 }

@@ -17,7 +17,7 @@
 package views
 
 import forms.NewSealNumberFormProvider
-import models.{Index, NormalMode}
+import models.NormalMode
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -27,10 +27,9 @@ import views.html.NewSealNumberView
 class NewSealNumberViewSpec extends InputTextViewBehaviours[String] {
 
   override def form: Form[String] = new NewSealNumberFormProvider()()
-  private val index: Index        = Index(0)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[NewSealNumberView].apply(form, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[NewSealNumberView].apply(form, mrn, arrivalId, equipmentIndex, sealIndex, NormalMode, false)(fakeRequest, messages)
 
   override val prefix: String = "newSealNumber"
 

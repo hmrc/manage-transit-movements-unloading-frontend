@@ -20,7 +20,7 @@ import cats.data.OptionT
 import connectors.ArrivalMovementConnector
 import models.ArrivalId
 import models.P5.ArrivalMessageType.UnloadingPermission
-import models.P5.{Message, MessageMetaData}
+import models.P5.{IE043Data, MessageData, MessageMetaData}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -39,11 +39,11 @@ class UnloadingPermissionMessageService @Inject() (arrivalMovementConnector: Arr
           .headOption
       )
 
-  def getUnloadingPermissionJson(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[Message]] =
+  def getUnloadingPermission(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[IE043Data]] =
     (
       for {
         unloadingPermissionMessage <- OptionT(getUnloadingPermissionMessage(arrivalId))
-        unloadingPermission        <- OptionT.liftF(arrivalMovementConnector.getMessage(unloadingPermissionMessage.path))
+        unloadingPermission        <- OptionT.liftF(arrivalMovementConnector.getUnloadingPermission(unloadingPermissionMessage.path))
       } yield unloadingPermission
     ).value
 

@@ -193,4 +193,10 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
       val listItems = list.getElementsByTag("li")
       listItems.asScala.map(_.text()) mustEqual expectedListItems
     }
+
+  def pageWithFormAction(expectedUrl: String): Unit =
+    "must render form with action" in {
+      val formAction = getElementByTag(doc, "form").attr("action")
+      formAction mustBe expectedUrl
+    }
 }

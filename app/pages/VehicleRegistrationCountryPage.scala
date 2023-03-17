@@ -19,9 +19,9 @@ package pages
 import models.reference.Country
 import play.api.libs.json.JsPath
 
-case object VehicleRegistrationCountryPage extends QuestionPage[Country] {
+case object VehicleRegistrationCountryPage extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "Consignment" \ "DepartureTransportMeans" \ 0 \ toString
 
-  override def toString: String = "vehicleRegistrationCountry"
+  override def toString: String = "nationality"
 }
