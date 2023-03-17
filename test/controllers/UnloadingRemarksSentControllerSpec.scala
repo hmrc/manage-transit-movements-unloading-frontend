@@ -17,11 +17,13 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import generators.Generators
 import matchers.JsonMatchers
 import models.reference.{Country, CustomsOffice}
 import models.{NormalMode, UnloadingRemarksSentViewModel}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
+import pages.{CustomsOfficeOfDestinationPage, DateOfPreparationPage}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -31,9 +33,10 @@ import play.api.inject.bind
 
 import scala.concurrent.Future
 
-class UnloadingRemarksSentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with JsonMatchers {
+class UnloadingRemarksSentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
+  private val customsOfficeId                        = Some("CODE-001")
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -47,12 +50,12 @@ class UnloadingRemarksSentControllerSpec extends SpecBase with AppWithDefaultMoc
 
   "UnloadingRemarksSent Controller" - {
     "return OK and the correct view for a GET when telephone and office name available" in {
-      val customsOffice       = CustomsOffice("ID", "NAME", "GB", Some("12345"), Nil)
+      val customsOffice       = CustomsOffice("ID", "NAME", "GB", Some("12345"))
       val officeOfDestination = "CODE-001"
       checkArrivalStatus()
       when(mockReferenceDataService.getCustomsOfficeByCode(any())(any(), any())).thenReturn(Future.successful(Some(customsOffice)))
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(emptyUserAnswers.setValue(CustomsOfficeOfDestinationPage, officeOfDestination))
 
       val unloadingRemarksSentViewModel = UnloadingRemarksSentViewModel(Some(customsOffice), officeOfDestination)
 
@@ -68,12 +71,12 @@ class UnloadingRemarksSentControllerSpec extends SpecBase with AppWithDefaultMoc
     }
 
     "return OK and the correct view for a GET when telephone not available and office name available" in {
-      val customsOffice       = CustomsOffice("ID", "NAME", "GB", None, Nil)
+      val customsOffice       = CustomsOffice("ID", "NAME", "GB", None)
       val officeOfDestination = "CODE-001"
       checkArrivalStatus()
       when(mockReferenceDataService.getCustomsOfficeByCode(any())(any(), any())).thenReturn(Future.successful(Some(customsOffice)))
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(emptyUserAnswers.setValue(CustomsOfficeOfDestinationPage, officeOfDestination))
 
       val unloadingRemarksSentViewModel = UnloadingRemarksSentViewModel(Some(customsOffice), officeOfDestination)
 
@@ -89,12 +92,12 @@ class UnloadingRemarksSentControllerSpec extends SpecBase with AppWithDefaultMoc
     }
 
     "return OK and the correct view for a GET when telephone available and office name not available" in {
-      val customsOffice       = CustomsOffice("ID", "", "GB", Some("12345"), Nil)
+      val customsOffice       = CustomsOffice("ID", "", "GB", Some("12345"))
       val officeOfDestination = "CODE-001"
       checkArrivalStatus()
       when(mockReferenceDataService.getCustomsOfficeByCode(any())(any(), any())).thenReturn(Future.successful(Some(customsOffice)))
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(emptyUserAnswers.setValue(CustomsOfficeOfDestinationPage, officeOfDestination))
 
       val unloadingRemarksSentViewModel = UnloadingRemarksSentViewModel(Some(customsOffice), officeOfDestination)
 
@@ -110,12 +113,12 @@ class UnloadingRemarksSentControllerSpec extends SpecBase with AppWithDefaultMoc
     }
 
     "return OK and the correct view for a GET when telephone not available and office name not available" in {
-      val customsOffice       = CustomsOffice("ID", "", "GB", None, Nil)
+      val customsOffice       = CustomsOffice("ID", "", "GB", None)
       val officeOfDestination = "CODE-001"
       checkArrivalStatus()
       when(mockReferenceDataService.getCustomsOfficeByCode(any())(any(), any())).thenReturn(Future.successful(Some(customsOffice)))
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(emptyUserAnswers.setValue(CustomsOfficeOfDestinationPage, officeOfDestination))
 
       val unloadingRemarksSentViewModel = UnloadingRemarksSentViewModel(Some(customsOffice), officeOfDestination)
 
