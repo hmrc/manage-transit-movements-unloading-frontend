@@ -42,27 +42,8 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     }
   }
 
-//  def getCustomsOffice(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CustomsOffice]] = {
-//    val serviceUrl = s"${config.referenceDataUrl}/customs-office/$code"
-//    http
-//      .GET[HttpResponse](serviceUrl)(httpReads, hc, ec)
-//      .map {
-//        case responseMessage if is2xx(responseMessage.status) => Some(responseMessage.json.as[CustomsOffice])
-//        case value =>
-//          println(value)
-//          logger.error(s"\n\n\n******Get Customs Office request failed to return data\n\n\n******")
-//          None
-//      }
-//      .recover {
-//        case _ =>
-//          println("\n\n** recover ** \n\n")
-//          None
-//      }
-//  }
-
   def getCustomsOffice(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CustomsOffice]] = {
     val serviceUrl = s"${config.referenceDataUrl}/customs-office/$code"
-    println("****" + serviceUrl + "****")
     http
       .GET[CustomsOffice](serviceUrl)
       .map(Some(_))
