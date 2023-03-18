@@ -17,7 +17,7 @@
 package services
 
 import connectors.ReferenceDataConnector
-import models.reference.Country
+import models.reference.{Country, CustomsOffice}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.concurrent.ScalaFutures
@@ -40,6 +40,8 @@ class ReferenceDataServiceSpec extends AnyFreeSpec with ScalaFutures with Matche
   private val france  = Country("FR", "France")
 
   private val countries = Seq(uk, andorra, france)
+
+  private val customsOffice = CustomsOffice("ID1", "NAME001", "GB", None)
 
   "ReferenceDataService" - {
 
@@ -88,6 +90,29 @@ class ReferenceDataServiceSpec extends AnyFreeSpec with ScalaFutures with Matche
         )
       }
 
+    }
+
+    "getCustomsOfficeByCode should" - {
+      "return a customsOffice" in {
+
+        when(mockConnector.getCustomsOffice(any())(any(), any())).thenReturn(Future.successful(Some(customsOffice)))
+
+        val service = new ReferenceDataServiceImpl(mockConnector)
+
+        service.getCustomsOfficeByCode("GB00001").futureValue mustBe
+          Some(customsOffice)
+
+        verify(mockConnector).getCustomsOffice(any())(any(), any())
+      }
+
+      "return None if customsOffice can't be found" in {
+
+        when(mockConnector.getCustomsOffice(any())(any(), any())).thenReturn(Future.successful(None))
+
+        val service = new ReferenceDataServiceImpl(mockConnector)
+
+        service.getCustomsOfficeByCode("GB00001").futureValue mustBe None
+      }
     }
 
   }
