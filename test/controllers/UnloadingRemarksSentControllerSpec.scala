@@ -36,7 +36,6 @@ import scala.concurrent.Future
 class UnloadingRemarksSentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
-  private val customsOfficeId                        = Some("CODE-001")
 
   override def beforeEach(): Unit = {
     super.beforeEach()

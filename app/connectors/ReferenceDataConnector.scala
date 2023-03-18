@@ -62,7 +62,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
 
   def getCustomsOffice(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CustomsOffice]] = {
     val serviceUrl = s"${config.referenceDataUrl}/customs-office/$code"
-    println("\n\n\n" + serviceUrl + "\n\n\n")
+    println("****" + serviceUrl + "****")
     http
       .GET[CustomsOffice](serviceUrl)
       .map(Some(_))

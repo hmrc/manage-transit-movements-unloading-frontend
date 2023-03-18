@@ -19,7 +19,7 @@ package connectors
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import connectors.ReferenceDataConnectorSpec._
-import models.reference.Country
+import models.reference.{Country, CustomsOffice}
 import org.scalacheck.Gen
 import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.http.HeaderCarrier
@@ -34,6 +34,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       .configure(conf = "microservice.services.reference-data.port" -> server.port())
 
   private lazy val connector: ReferenceDataConnector = app.injector.instanceOf[ReferenceDataConnector]
+  val code                                           = "GB00001"
 
   implicit private val hc: HeaderCarrier = HeaderCarrier()
 
@@ -41,9 +42,9 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
     "GET" - {
 
-      "should handle a 200 response" in {
+      "should handle a 200 response for countries" in {
         server.stubFor(
-          get(urlEqualTo(uri))
+          get(urlEqualTo(countryUri))
             .willReturn(okJson(countryListResponseJson))
         )
 
@@ -55,13 +56,13 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         connector.getCountries().futureValue mustBe expectedResult
       }
 
-      "should handle client and server errors" in {
+      "should handle client and server errors for countries" in {
         val errorResponseCodes: Gen[Int] = Gen.chooseNum(400: Int, 599: Int)
 
         forAll(errorResponseCodes) {
           errorResponse =>
             server.stubFor(
-              get(urlEqualTo(uri))
+              get(urlEqualTo(countryUri))
                 .willReturn(
                   aResponse()
                     .withStatus(errorResponse)
@@ -71,13 +72,51 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             connector.getCountries().futureValue mustBe Nil
         }
       }
+
+      "should handle a 200 response for customs office with code end point with valid phone number" in {
+        server.stubFor(
+          get(urlEqualTo(s"/transit-movements-trader-reference-data/customs-office/$code"))
+            .willReturn(okJson(customsOfficeResponseJsonWithPhone))
+        )
+
+        val expectedResult = Some(CustomsOffice("ID1", "NAME001", "GB", Some("004412323232345")))
+
+        connector.getCustomsOffice("GB00001").futureValue mustBe expectedResult
+      }
+
+      "should handle a 200 response for customs office with code end point with no phone number" in {
+        server.stubFor(
+          get(urlEqualTo(s"/transit-movements-trader-reference-data/customs-office/$code"))
+            .willReturn(okJson(customsOfficeResponseJsonWithOutPhone))
+        )
+
+        val expectedResult = Some(CustomsOffice("ID1", "NAME001", "GB", None))
+
+        connector.getCustomsOffice("GB00001").futureValue mustBe expectedResult
+      }
+      "should handle client and server errors for customs office end point" in {
+        val errorResponseCodes: Gen[Int] = Gen.chooseNum(400: Int, 599: Int)
+
+        forAll(errorResponseCodes) {
+          errorResponse =>
+            server.stubFor(
+              get(urlEqualTo(s"/transit-movements-trader-reference-data/customs-office/$code"))
+                .willReturn(
+                  aResponse()
+                    .withStatus(errorResponse)
+                )
+            )
+
+            connector.getCustomsOffice("GB00001").futureValue mustBe None
+        }
+      }
     }
   }
 }
 
 object ReferenceDataConnectorSpec {
 
-  private val uri = "/transit-movements-trader-reference-data/countries"
+  private val countryUri = "/transit-movements-trader-reference-data/countries"
 
   private val countryListResponseJson: String =
     """
@@ -93,5 +132,24 @@ object ReferenceDataConnectorSpec {
       |   "description":"Andorra"
       | }
       |]
+      |""".stripMargin
+
+  private val customsOfficeResponseJsonWithPhone: String =
+    """
+      | {
+      |   "id":"ID1",
+      |   "name":"NAME001",
+      |   "countryId":"GB",
+      |   "phoneNumber":"004412323232345"
+      | }
+      |""".stripMargin
+
+  private val customsOfficeResponseJsonWithOutPhone: String =
+    """
+      | {
+      |   "id":"ID1",
+      |   "name":"NAME001",
+      |   "countryId":"GB"
+      | }
       |""".stripMargin
 }
