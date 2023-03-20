@@ -39,6 +39,7 @@ class UnloadingRemarksSentController @Inject() (
   actions: Actions,
   referenceDataService: ReferenceDataService,
   cc: MessagesControllerComponents,
+  sessionRepository: SessionRepository,
   view: UnloadingRemarksSentView
 )(implicit ec: ExecutionContext)
     extends FrontendController(cc)
@@ -52,9 +53,12 @@ class UnloadingRemarksSentController @Inject() (
             .getCustomsOfficeByCode(customsOfficeId)
             .map {
               customsOffice =>
+                sessionRepository.remove(arrivalId)
                 Ok(view(request.userAnswers.mrn, UnloadingRemarksSentViewModel(customsOffice, customsOfficeId)))
             }
-        case None => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+        case None =>
+          sessionRepository.remove(arrivalId)
+          Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
       }
   }
 }
