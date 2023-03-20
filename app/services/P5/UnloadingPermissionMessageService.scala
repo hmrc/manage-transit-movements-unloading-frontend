@@ -20,7 +20,7 @@ import cats.data.OptionT
 import connectors.ArrivalMovementConnector
 import models.ArrivalId
 import models.P5.ArrivalMessageType.UnloadingPermission
-import models.P5.{IE043Data, MessageData, MessageMetaData}
+import models.P5.{IE043Data, MessageMetaData}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject

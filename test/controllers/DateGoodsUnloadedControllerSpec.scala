@@ -25,20 +25,21 @@ import org.mockito.Mockito.when
 import pages.{DateGoodsUnloadedPage, DateOfPreparationPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.DateGoodsUnloadedView
 
-import java.time.{Clock, Instant, LocalDate, ZoneId}
+import java.time.{Clock, Instant, LocalDate, LocalDateTime, ZoneId}
 import scala.concurrent.Future
 
 class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val stubClock         = Clock.fixed(Instant.now, ZoneId.systemDefault)
-  private val dateOfPreparation = LocalDate.now(stubClock).minusDays(6)
-  private val validAnswer       = dateOfPreparation
+  private val stubClock      = Clock.fixed(Instant.now, ZoneId.systemDefault)
+  private val dateTimeOfPrep = LocalDateTime.now(stubClock)
+  private val validAnswer    = dateTimeOfPrep
 
-  private def form = new DateGoodsUnloadedFormProvider(stubClock)(dateOfPreparation)
+  private def form = new DateGoodsUnloadedFormProvider(stubClock)(dateTimeOfPrep.toLocalDate)
 
   private lazy val dateGoodsUnloadedRoute = controllers.routes.DateGoodsUnloadedController.onPageLoad(arrivalId, NormalMode).url
 
@@ -52,9 +53,12 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
   "DateGoodsUnloaded Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      checkArrivalStatus()
 
-      setExistingUserAnswers(emptyUserAnswers.setValue(DateOfPreparationPage, dateOfPreparation))
+      val data = Json.obj("preparationDateAndTime" -> dateTimeOfPrep)
+
+      val userAnswers = emptyUserAnswers.copy(data = data)
+
+      setExistingUserAnswers(userAnswers)
 
       val view = app.injector.instanceOf[DateGoodsUnloadedView]
 
@@ -67,11 +71,13 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers
-        .setValue(DateOfPreparationPage, dateOfPreparation)
-        .setValue(DateGoodsUnloadedPage, validAnswer)
+      val data = Json.obj(
+        "preparationDateAndTime" -> dateTimeOfPrep,
+        "dateGoodsUnloaded"      -> dateTimeOfPrep.toLocalDate
+      )
+
+      val userAnswers = emptyUserAnswers.copy(data = data)
 
       setExistingUserAnswers(userAnswers)
 
@@ -93,8 +99,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
       contentAsString(result) mustBe view(mrn, arrivalId, NormalMode, filledForm)(request, messages).toString
     }
 
-    "must redirect to session expired on a GET when date of preparation is not available" ignore {
-      checkArrivalStatus()
+    "must redirect to session expired on a GET when date of preparation is not available" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -106,10 +111,16 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
     }
 
     "must redirect on to the next page when valid data is submitted" in {
-      checkArrivalStatus()
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      setExistingUserAnswers(emptyUserAnswers.setValue(DateOfPreparationPage, dateOfPreparation))
+      val data = Json.obj(
+        "preparationDateAndTime" -> dateTimeOfPrep,
+        "dateGoodsUnloaded"      -> dateTimeOfPrep
+      )
+
+      val userAnswers = emptyUserAnswers.copy(data = data)
+
+      setExistingUserAnswers(userAnswers)
 
       val postRequest = FakeRequest(POST, dateGoodsUnloadedRoute)
         .withFormUrlEncodedBody(
@@ -125,9 +136,14 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      checkArrivalStatus()
 
-      setExistingUserAnswers(emptyUserAnswers.setValue(DateOfPreparationPage, dateOfPreparation))
+      val data = Json.obj(
+        "preparationDateAndTime" -> dateTimeOfPrep
+      )
+
+      val userAnswers = emptyUserAnswers.copy(data = data)
+
+      setExistingUserAnswers(userAnswers)
 
       val badSubmission = Map(
         "value.day"   -> "invalid value",
@@ -150,11 +166,16 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
     }
 
     "must return a Bad Request and errors when the date is before date of preparation" in {
-      checkArrivalStatus()
 
-      setExistingUserAnswers(emptyUserAnswers.setValue(DateOfPreparationPage, dateOfPreparation))
+      val data = Json.obj(
+        "preparationDateAndTime" -> dateTimeOfPrep
+      )
 
-      val invalidDate = dateOfPreparation.minusDays(1)
+      val userAnswers = emptyUserAnswers.copy(data = data)
+
+      setExistingUserAnswers(userAnswers)
+
+      val invalidDate = dateTimeOfPrep.minusDays(1)
 
       val badSubmission = Map(
         "value.day"   -> invalidDate.getDayOfMonth.toString,
@@ -175,8 +196,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
       contentAsString(result) mustBe view(mrn, arrivalId, NormalMode, boundForm)(request, messages).toString
     }
 
-    "must redirect to session expired on a POST when date of preparation is not available" ignore {
-      checkArrivalStatus()
+    "must redirect to session expired on a POST when date of preparation is not available" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 

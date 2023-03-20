@@ -79,6 +79,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
 
         val message = IE043Data(
           MessageData(
+            preparationDateAndTime = LocalDateTime.now(),
             TransitOperation = TransitOperation(MovementReferenceNumber("23", "GB", "123")),
             Consignment = Consignment(None, None, List.empty),
             CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("GB0008")
