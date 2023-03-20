@@ -43,7 +43,12 @@ object CheckYourAnswersViewModel {
         ).flatten
       )
 
-      new CheckYourAnswersViewModel(Seq(headerSection))
+      val commentsSection = Section(
+        messages("checkYourAnswers.subsections.additionalComments"),
+        Seq(helper.additionalComment).flatten
+      )
+
+      new CheckYourAnswersViewModel(Seq(headerSection) ++ Seq(commentsSection))
     }
   }
 }

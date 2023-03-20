@@ -323,6 +323,10 @@ checkYourAnswers.rowHeadings.canSealsBeRead = Are all of the seal identification
 checkYourAnswers.rowHeadings.canSealsBeRead.change.hidden = if all of the seal identification numbers or marks readable
 checkYourAnswers.rowHeadings.anySealsBroken = Are any of the seals broken?
 checkYourAnswers.rowHeadings.anySealsBroken.change.hidden = if any of the seals are broken
+checkYourAnswers.subsections.additionalComments = Additional comments
+checkYourAnswers.rowHeadings.additionalComments = Comments
+checkYourAnswers.rowHeadings.additionalComments.change.hidden = comments
+
 
 
 

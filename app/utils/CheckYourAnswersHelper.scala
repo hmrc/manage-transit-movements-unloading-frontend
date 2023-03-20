@@ -17,7 +17,7 @@
 package utils
 
 import models.{CheckMode, UserAnswers}
-import pages.{AreAnySealsBrokenPage, DateGoodsUnloadedPage}
+import pages.{AreAnySealsBrokenPage, DateGoodsUnloadedPage, UnloadingCommentsPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
@@ -45,6 +45,14 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     prefix = "checkYourAnswers.rowHeadings.canSealsBeRead",
     id = Some("change-can-seals-be-read"),
     call = Some(controllers.routes.CanSealsBeReadController.onPageLoad(arrivalId, CheckMode))
+  )
+
+  def additionalComment: Option[SummaryListRow] = getAnswerAndBuildRow[String]( //TODO: Does this need to be removable?
+    page = UnloadingCommentsPage,
+    formatAnswer = formatAsText,
+    prefix = "checkYourAnswers.rowHeadings.additionalComments",
+    id = Some("comment"),
+    call = Some(controllers.routes.UnloadingCommentsController.onPageLoad(arrivalId, CheckMode)),
   )
 
 }
