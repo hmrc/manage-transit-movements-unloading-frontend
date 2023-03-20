@@ -27,6 +27,7 @@ error.summary.title = There is a problem
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
 checkYourAnswers.rowHeadings.goodsUnloadedDate = Goods’ unloaded date
+checkYourAnswers.rowHeadings.goodsUnloadedDate.change.hidden = goods’ unloaded date
 
 checkYourAnswers.seals.subHeading = Check official customs seals
 checkYourAnswers.seals.checkYourAnswersLabel = Official customs seal numbers
