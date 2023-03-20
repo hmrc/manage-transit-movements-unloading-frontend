@@ -17,7 +17,7 @@
 package utils
 
 import models.{CheckMode, UserAnswers}
-import pages.DateGoodsUnloadedPage
+import pages.{AreAnySealsBrokenPage, DateGoodsUnloadedPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
@@ -31,6 +31,20 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     prefix = "checkYourAnswers.rowHeadings.goodsUnloadedDate",
     id = Some("change-goods-unloaded-date"),
     call = Some(controllers.routes.DateGoodsUnloadedController.onPageLoad(arrivalId, CheckMode))
+  )
+  def anySealsBroken: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AreAnySealsBrokenPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "checkYourAnswers.rowHeadings.anySealsBroken",
+    id = Some("change-any-seals-broken"),
+    call = Some(controllers.routes.AreAnySealsBrokenController.onPageLoad(arrivalId, CheckMode))
+  )
+  def canSealsBeRead: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AreAnySealsBrokenPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "checkYourAnswers.rowHeadings.canSealsBeRead",
+    id = Some("change-can-seals-be-read"),
+    call = Some(controllers.routes.CanSealsBeReadController.onPageLoad(arrivalId, CheckMode))
   )
 
 }

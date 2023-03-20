@@ -37,7 +37,9 @@ object CheckYourAnswersViewModel {
 
       val headerSection = Section(
         Seq(
-          helper.goodsUnloadedDate
+          helper.goodsUnloadedDate,
+          helper.canSealsBeRead,
+          helper.anySealsBroken
         ).flatten
       )
 
