@@ -75,7 +75,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "should handle a 200 response for customs office with code end point with valid phone number" in {
         server.stubFor(
-          get(urlEqualTo(s"/transit-movements-trader-reference-data/customs-office/$code"))
+          get(urlEqualTo(s"$customsOfficeUri/$code"))
             .willReturn(okJson(customsOfficeResponseJsonWithPhone))
         )
 
@@ -86,7 +86,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "should handle a 200 response for customs office with code end point with no phone number" in {
         server.stubFor(
-          get(urlEqualTo(s"/transit-movements-trader-reference-data/customs-office/$code"))
+          get(urlEqualTo(s"$customsOfficeUri/$code"))
             .willReturn(okJson(customsOfficeResponseJsonWithOutPhone))
         )
 
@@ -100,7 +100,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         forAll(errorResponseCodes) {
           errorResponse =>
             server.stubFor(
-              get(urlEqualTo(s"/transit-movements-trader-reference-data/customs-office/$code"))
+              get(urlEqualTo(s"$customsOfficeUri/$code"))
                 .willReturn(
                   aResponse()
                     .withStatus(errorResponse)
@@ -116,7 +116,8 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
 object ReferenceDataConnectorSpec {
 
-  private val countryUri = "/transit-movements-trader-reference-data/countries"
+  private val countryUri       = "/test-only/transit-movements-trader-reference-data/countries"
+  private val customsOfficeUri = "/test-only/transit-movements-trader-reference-data/customs-office"
 
   private val countryListResponseJson: String =
     """
