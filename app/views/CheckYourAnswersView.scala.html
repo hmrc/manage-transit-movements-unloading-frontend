@@ -16,14 +16,12 @@
 
 @import views.html.components.{AnswerSections, Button, Heading}
 @import views.html.components.HeadingCaption
-@import views.html.components.VisibleSection
 @import viewModels.CheckYourAnswersViewModel
 
 @this(
 mainTemplate: MainTemplate,
 heading: Heading,
 answerSections: AnswerSections,
-visibleSection: VisibleSection,
 button: Button,
 caption: HeadingCaption,
 formHelper: FormWithCSRF
@@ -44,7 +42,12 @@ formHelper: FormWithCSRF
 
     @answerSections(viewModel.sections)
 
+    <h2 class="govuk-heading-m">@messages("checkYourAnswers.sendRemarks")</h2>
+
+    <p class="govuk-body">@messages("checkYourAnswers.paragraph")</p>
+
+
     @formHelper(action = routes.CheckYourAnswersController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
-        @button(attributes = Map("id" -> "submit"))
+        @button(attributes = Map("id" -> "submit"), messageKey = messages("site.confirmAndSend"))
     }
 }

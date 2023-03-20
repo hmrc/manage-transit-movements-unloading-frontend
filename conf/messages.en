@@ -327,6 +327,10 @@ checkYourAnswers.subsections.additionalComments = Additional comments
 checkYourAnswers.rowHeadings.additionalComments = Comments
 checkYourAnswers.rowHeadings.additionalComments.change.hidden = comments
 
+checkYourAnswers.sendRemarks = Send your unloading remarks
+checkYourAnswers.paragraph = By sending this, you are confirming that these details are correct to the best of your knowledge.
+
+
 
 
 
