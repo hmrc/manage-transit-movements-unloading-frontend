@@ -17,13 +17,11 @@
 package connectors
 
 import config.FrontendAppConfig
-import metrics.{MetricsService, Monitors}
-import models.ResponseMovementMessage
-import models.reference.{Country, CustomsOffice}
 import logging.Logging
+import metrics.{MetricsService, Monitors}
+import models.reference.{Country, CustomsOffice}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.HttpReads.is2xx
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
