@@ -135,7 +135,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                     ActionItem(
                       content = "Change".toText,
                       href = routes.CanSealsBeReadController.onPageLoad(arrivalId, CheckMode).url,
-                      visuallyHiddenText = Some("if all of the seal identification numbers or marks readable?"),
+                      visuallyHiddenText = Some("if all of the seal identification numbers or marks are readable?"),
                       attributes = Map("id" -> "change-can-seals-be-read")
                     )
                   )
@@ -160,7 +160,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                     ActionItem(
                       content = "Change".toText,
                       href = routes.CanSealsBeReadController.onPageLoad(arrivalId, CheckMode).url,
-                      visuallyHiddenText = Some("if all of the seal identification numbers or marks readable?"),
+                      visuallyHiddenText = Some("if all of the seal identification numbers or marks are readable?"),
                       attributes = Map("id" -> "change-can-seals-be-read")
                     )
                   )
