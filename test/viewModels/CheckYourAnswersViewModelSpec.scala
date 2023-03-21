@@ -18,12 +18,10 @@ package viewModels
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
-import models.Index
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import viewModels.CheckYourAnswersViewModel.CheckYourAnswersViewModelProvider
-import viewModels.UnloadingFindingsViewModel.UnloadingFindingsViewModelProvider
 
 import java.time.LocalDate
 

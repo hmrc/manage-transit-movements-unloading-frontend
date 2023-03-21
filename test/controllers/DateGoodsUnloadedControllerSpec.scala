@@ -22,15 +22,14 @@ import generators.Generators
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.{DateGoodsUnloadedPage, DateOfPreparationPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.DateGoodsUnloadedView
 
-import java.time.{Clock, Instant, LocalDate, LocalDateTime, ZoneId}
+import java.time.{Clock, Instant, LocalDateTime, ZoneId}
 import scala.concurrent.Future
 
 class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {

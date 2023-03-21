@@ -26,8 +26,6 @@ error.summary.title = There is a problem
 
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
-checkYourAnswers.rowHeadings.goodsUnloadedDate = Goods’ unloaded date
-checkYourAnswers.rowHeadings.goodsUnloadedDate.change.hidden = goods’ unloaded date
 
 checkYourAnswers.seals.subHeading = Check official customs seals
 checkYourAnswers.seals.checkYourAnswersLabel = Official customs seal numbers
@@ -317,10 +315,22 @@ unloadingFindings.rowHeadings.additionalComments = Comments
 unloadingFindings.rowHeadings.additionalComments.change.hidden = comments
 unloadingFindings.rowHeadings.additionalComments.remove.hidden = comments
 
+unloadingRemarksSent.title = Unloading remarks sent
+unloadingRemarksSent.heading = Unloading remarks sent
+unloadingRemarksSent.panel.body = for Movement Reference Number (MRN) {0}
+unloadingRemarksSent.subHeading = What happens next
+unloadingRemarksSent.checkStatus = Check the status of arrival notifications
+unloadingRemarksSent.createArrivalNotification = Create another arrival notification
+unloadingRemarksSent.findOut =  to find out when goods have been released.
+unloadingRemarksSent.telephoneAvailable = If the goods are not released when expected or you have another problem, contact Customs at {0} on {1}.
+unloadingRemarksSent.telephoneNotAvailable = If the goods are not released when expected or you have another problem, contact Customs at {0}.
+unloadingRemarksSent.teleAvailAndOfficeNameNotAvail = If the goods are not released when expected or you have another problem, contact Customs office {0} on {1}.
+unloadingRemarksSent.teleNotAvailAndOfficeNameNotAvail = If the goods are not released when expected or you have another problem, contact Customs office {0}.
+
 checkYourAnswers.rowHeadings.goodsUnloadedDate = Goods’ unloaded date
 checkYourAnswers.rowHeadings.goodsUnloadedDate.change.hidden = goods’ unloaded date
 checkYourAnswers.rowHeadings.canSealsBeRead = Are all of the seal identification numbers or marks readable?
-checkYourAnswers.rowHeadings.canSealsBeRead.change.hidden = are all of the seal identification numbers or marks readable?
+checkYourAnswers.rowHeadings.canSealsBeRead.change.hidden = if all of the seal identification numbers or marks readable?
 checkYourAnswers.rowHeadings.anySealsBroken = Are any of the seals broken?
 checkYourAnswers.rowHeadings.anySealsBroken.change.hidden = if any of the seals are broken
 checkYourAnswers.subsections.additionalComments = Additional comments

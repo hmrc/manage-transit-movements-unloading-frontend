@@ -53,7 +53,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     page = UnloadingCommentsPage,
     formatAnswer = formatAsText,
     prefix = "checkYourAnswers.rowHeadings.additionalComments",
-    id = Some("comment"),
+    id = Some("change-comment"),
     call = Some(controllers.routes.UnloadingCommentsController.onPageLoad(arrivalId, CheckMode))
   )
 
