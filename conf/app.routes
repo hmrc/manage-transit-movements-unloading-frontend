@@ -98,5 +98,6 @@ POST       /:arrivalId/unloading-summary                                        
 
 GET        /:arrivalId/unloading-permission-pdf                                             controllers.UnloadingPermissionPDFController.getPDF(arrivalId: ArrivalId)
 
+GET        /:arrivalId/unloading-remarks-sent                                               controllers.UnloadingRemarksSentController.onPageLoad(arrivalId: ArrivalId)
 GET        /:arrivalId/check-answers                                                        controllers.CheckYourAnswersController.onPageLoad(arrivalId: ArrivalId)
 POST       /:arrivalId/check-answers                                                        controllers.CheckYourAnswersController.onSubmit(arrivalId: ArrivalId)
