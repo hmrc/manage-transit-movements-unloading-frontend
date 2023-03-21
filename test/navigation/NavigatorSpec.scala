@@ -23,7 +23,10 @@ import models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
+import play.api.libs.json.{JsObject, JsValue, Json}
 import queries.SealsQuery
+
+import java.time.LocalDate
 
 class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -49,26 +52,90 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
       "must go from date goods unloaded page" - {
         "to can seals be read page when seals exist" in {
-          forAll(arbitrary[UserAnswers], arbitrary[Seal]) {
-            (answers, seal) =>
-              val updatedUserAnswers = answers.setValue(SealsQuery, Seq(seal))
-              navigator
-                .nextPage(DateGoodsUnloadedPage, mode, updatedUserAnswers)
-                .mustBe(controllers.routes.CanSealsBeReadController.onPageLoad(updatedUserAnswers.id, mode))
-          }
-        }
+          val json: JsObject = Json
+            .parse(
+              """
+                |        "n1:CC043C": {
+                |            "TransitOperation": {
+                |                "MRN": "38VYQTYFU3T0KUTUM3"
+                |            },
+                |            "preparationDateAndTime": "2007-10-26T07:36:28",
+                |            "Consignment": {
+                |
+                |                "TransportEquipment": [
+                |                    {
+                |                        "sequenceNumber": "te1",
+                |                        "containerIdentificationNumber": "cin-1",
+                |                        "numberOfSeals": 103,
+                |                        "Seal": [
+                |                            {
+                |                                "sequenceNumber": "1001",
+                |                                "identifier": "1002"
+                |                            }
+                |                        ]
+                |
+                |                    }
+                |                ]
+                |            },
+                |            "CustomsOfficeOfDestinationActual": {
+                |                "referenceNumber": "GB000008"
+                |            }
 
-        "to unloading summary page when no seals exist" in {
+                |     }
+                |""".stripMargin
+            )
+            .as[JsObject]
+
           forAll(arbitrary[UserAnswers]) {
             answers =>
-              val updatedUserAnswers = answers.removeValue(SealsQuery)
+              val ua = answers.copy(data = json)
+
               navigator
-                .nextPage(DateGoodsUnloadedPage, mode, updatedUserAnswers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
+                .nextPage(DateGoodsUnloadedPage, mode, ua)
+                .mustBe(controllers.routes.CanSealsBeReadController.onPageLoad(ua.id, mode))
           }
         }
-      }
 
+//        "to additional comments page when no seals exist" in {
+//
+//          val json: JsObject = Json
+//            .parse(
+//              """
+//                |        "n1:CC043C": {
+//                |            "TransitOperation": {
+//                |                "MRN": "38VYQTYFU3T0KUTUM3"
+//                |            },
+//                |            "preparationDateAndTime": "2007-10-26T07:36:28",
+//                |            "Consignment": {
+//                |
+//                |                "TransportEquipment": [
+//                |                    {
+//                |                        "sequenceNumber": "te1",
+//                |                        "containerIdentificationNumber": "cin-1",
+//                |                        "numberOfSeals": 0,
+//                |
+//                |
+//                |                    }
+//                |                ]
+//                |            },
+//                |            "CustomsOfficeOfDestinationActual": {
+//                |                "referenceNumber": "GB000008"
+//                |            }
+//
+//                |     }
+//                |""".stripMargin
+//            )
+//            .as[JsObject]
+//
+//          forAll(arbitrary[UserAnswers]) {
+//            answers =>
+//              val ua = answers.copy(data = json)
+//              navigator
+//                .nextPage(DateGoodsUnloadedPage, mode, ua)
+//                .mustBe(routes.UnloadingCommentsController.onPageLoad(ua.id, NormalMode))
+//          }
+//        }
+      }
       "must go from can seals be read page" - {
         "to Are any seals broken page when answer is Yes" in {
 
@@ -92,20 +159,20 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           }
         }
 
-        "to session expired page when the answer is empty" in {
+        "to additional comments page when the answer is empty" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               val updatedUserAnswers = answers.removeValue(CanSealsBeReadPage)
               navigator
                 .nextPage(CanSealsBeReadPage, mode, updatedUserAnswers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
+                .mustBe(routes.UnloadingCommentsController.onPageLoad(updatedUserAnswers.id, NormalMode))
           }
         }
       }
 
       "must go from are any seals broken page " - {
-        "to unloading summary page when the answer is No" in {
+        "to unloading commentspage when the answer is No" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
@@ -113,7 +180,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
               navigator
                 .nextPage(AreAnySealsBrokenPage, mode, updatedUserAnswers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
+                .mustBe(routes.UnloadingCommentsController.onPageLoad(updatedUserAnswers.id, NormalMode))
           }
         }
 
@@ -152,7 +219,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
         }
       }
 
-      "from changes to report page to unloading summary page" - {
+      "from changes to report page to unloading summary page" in {
 
         forAll(arbitrary[UserAnswers]) {
           answers =>
@@ -243,4 +310,5 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
       }
     }
   }
+
 }

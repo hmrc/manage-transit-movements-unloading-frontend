@@ -22,7 +22,9 @@ case class Consignment(
   TransportEquipment: Option[List[TransportEquipment]],
   DepartureTransportMeans: Option[List[DepartureTransportMeans]],
   HouseConsignment: List[HouseConsignment]
-)
+) {
+  def numberOfSeals: Int = TransportEquipment.map(_.map(_.numberOfSeals.getOrElse(0)).sum).getOrElse(0)
+}
 
 object Consignment {
   implicit val formats: OFormat[Consignment] = Json.format[Consignment]
