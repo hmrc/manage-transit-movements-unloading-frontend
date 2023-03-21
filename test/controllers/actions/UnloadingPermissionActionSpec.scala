@@ -31,6 +31,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.P5.UnloadingPermissionMessageService
 
+import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -51,6 +52,7 @@ class UnloadingPermissionActionSpec extends SpecBase with BeforeAndAfterEach wit
 
       val message = IE043Data(
         MessageData(
+          preparationDateAndTime = LocalDateTime.now(),
           TransitOperation = TransitOperation(MovementReferenceNumber("23", "GB", "123")),
           Consignment = Consignment(None, None, List.empty),
           CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("GB0008")

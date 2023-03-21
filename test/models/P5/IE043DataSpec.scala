@@ -20,6 +20,9 @@ import base.SpecBase
 import models.MovementReferenceNumber
 import play.api.libs.json.Json
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 class IE043DataSpec extends SpecBase {
 
   "IE043Data" - {
@@ -384,6 +387,7 @@ class IE043DataSpec extends SpecBase {
 
       val expectedResult: IE043Data = IE043Data(
         MessageData(
+          preparationDateAndTime = LocalDateTime.parse("2007-10-26T07:36:28", DateTimeFormatter.ISO_DATE_TIME),
           TransitOperation(
             MRN = MovementReferenceNumber("38VYQTYFU3T0KUTUM3").get
           ),

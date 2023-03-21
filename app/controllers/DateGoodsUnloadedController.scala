@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.DateGoodsUnloadedFormProvider
 import models.{ArrivalId, Mode}
 import navigation.Navigator
-import pages.DateGoodsUnloadedPage
+import pages.{DateGoodsUnloadedPage, PreparationDateAndTimePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -44,10 +44,11 @@ class DateGoodsUnloadedController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    actions.requireData(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions
+    .requireData(arrivalId)
+    .andThen(getMandatoryPage(PreparationDateAndTimePage)) {
       implicit request =>
-        val form = formProvider(LocalDate.now.minusDays(6)) //todo update when IE043 message work complete
+        val form = formProvider(request.arg.toLocalDate)
         val preparedForm = request.userAnswers.get(DateGoodsUnloadedPage) match {
           case Some(value) => form.fill(value)
           case None        => form
@@ -56,10 +57,12 @@ class DateGoodsUnloadedController @Inject() (
         Ok(view(request.userAnswers.mrn, arrivalId, mode, preparedForm))
     }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    actions.requireData(arrivalId).async {
+  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions
+    .requireData(arrivalId)
+    .andThen(getMandatoryPage(PreparationDateAndTimePage))
+    .async {
       implicit request =>
-        formProvider(LocalDate.now.minusDays(6)) //todo update when IE043 message work complete
+        formProvider(request.arg.toLocalDate)
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(view(request.userAnswers.mrn, arrivalId, mode, formWithErrors))),

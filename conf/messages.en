@@ -24,8 +24,8 @@ site.section = This section is
 error.title.prefix = Error:
 error.summary.title = There is a problem
 
-checkYourAnswers.title = Check your answers before sending these unloading remarks
-checkYourAnswers.heading = Check your answers before sending these unloading remarks
+checkYourAnswers.title = Check your answers
+checkYourAnswers.heading = Check your answers
 
 checkYourAnswers.seals.subHeading = Check official customs seals
 checkYourAnswers.seals.checkYourAnswersLabel = Official customs seal numbers
@@ -326,6 +326,23 @@ unloadingRemarksSent.telephoneAvailable = If the goods are not released when exp
 unloadingRemarksSent.telephoneNotAvailable = If the goods are not released when expected or you have another problem, contact Customs at {0}.
 unloadingRemarksSent.teleAvailAndOfficeNameNotAvail = If the goods are not released when expected or you have another problem, contact Customs office {0} on {1}.
 unloadingRemarksSent.teleNotAvailAndOfficeNameNotAvail = If the goods are not released when expected or you have another problem, contact Customs office {0}.
+
+checkYourAnswers.rowHeadings.goodsUnloadedDate = Goods’ unloaded date
+checkYourAnswers.rowHeadings.goodsUnloadedDate.change.hidden = goods’ unloaded date
+checkYourAnswers.rowHeadings.canSealsBeRead = Are all of the seal identification numbers or marks readable?
+checkYourAnswers.rowHeadings.canSealsBeRead.change.hidden = if all of the seal identification numbers or marks readable?
+checkYourAnswers.rowHeadings.anySealsBroken = Are any of the seals broken?
+checkYourAnswers.rowHeadings.anySealsBroken.change.hidden = if any of the seals are broken
+checkYourAnswers.subsections.additionalComments = Additional comments
+checkYourAnswers.rowHeadings.additionalComments = Comments
+checkYourAnswers.rowHeadings.additionalComments.change.hidden = comments
+
+checkYourAnswers.sendRemarks = Send your unloading remarks
+checkYourAnswers.paragraph = By sending this, you are confirming that these details are correct to the best of your knowledge.
+
+
+
+
 
 
 

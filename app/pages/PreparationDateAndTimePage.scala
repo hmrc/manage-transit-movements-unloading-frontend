@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package models.P5
+package pages
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.JsPath
+import queries.Gettable
 
 import java.time.LocalDateTime
 
-case class MessageData(
-  preparationDateAndTime: LocalDateTime,
-  TransitOperation: TransitOperation,
-  Consignment: Consignment,
-  CustomsOfficeOfDestinationActual: CustomsOfficeOfDestinationActual
-)
+case object PreparationDateAndTimePage extends Gettable[LocalDateTime] {
 
-object MessageData {
-  implicit val formats: OFormat[MessageData] = Json.format[MessageData]
+  override def path: JsPath = JsPath \ "preparationDateAndTime"
+
 }
