@@ -325,7 +325,7 @@ unloadingRemarksSent.findOut =  to find out when goods have been released.
 unloadingRemarksSent.telephoneAvailable = If the goods are not released when expected or you have another problem, contact Customs at {0} on {1}.
 unloadingRemarksSent.telephoneNotAvailable = If the goods are not released when expected or you have another problem, contact Customs at {0}.
 unloadingRemarksSent.teleAvailAndOfficeNameNotAvail = If the goods are not released when expected or you have another problem, contact Customs office {0} on {1}.
-unloadingRemarksSent.teleNotAvailAndOfficeNameNotAvail = If the goods are not released when expected or you have another problem, contact Customs at {0}.
+unloadingRemarksSent.teleNotAvailAndOfficeNameNotAvail = If the goods are not released when expected or you have another problem, contact Customs office {0}.
 
 
 
