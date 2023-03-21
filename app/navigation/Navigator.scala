@@ -18,7 +18,6 @@ package navigation
 
 import com.google.inject.{Inject, Singleton}
 import controllers.routes
-import derivable.DeriveNumberOfSeals
 import models.P5.MessageData
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages._
@@ -31,7 +30,7 @@ class Navigator @Inject() () {
 
     case DateGoodsUnloadedPage =>
       ua => {
-        val sealsExist = ua.data.asOpt[MessageData].map(_.Consignment.sealsExist).getOrElse(false)
+        val sealsExist = ua.data.asOpt[MessageData].exists(_.Consignment.sealsExist)
 
         if (sealsExist) {
           controllers.routes.CanSealsBeReadController.onPageLoad(ua.id, NormalMode)

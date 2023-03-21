@@ -16,7 +16,6 @@
 
 package pages
 
-import models.reference.Country
 import play.api.libs.json.JsPath
 
 case object VehicleRegistrationCountryPage extends QuestionPage[String] {

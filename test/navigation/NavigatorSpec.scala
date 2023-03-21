@@ -19,15 +19,11 @@ package navigation
 import base.SpecBase
 import controllers.routes
 import generators.Generators
-import models.P5._
-import models.{CheckMode, MovementReferenceNumber, NormalMode, UserAnswers}
+import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
-import play.api.libs.json.{JsObject, JsValue, Json}
-
-import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, LocalDateTime}
+import play.api.libs.json.{JsObject, Json}
 
 class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -177,16 +173,15 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
       }
 
       "must go from New Seal Number page to unloading summary page" ignore {
-
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
               .nextPage(SealPage(equipmentIndex, sealIndex), mode, answers)
-              .mustBe(routes.SessionExpiredController.onPageLoad())
+              .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
         }
       }
 
-      "in Check mode" ignore {
+      "in Check mode" - {
 
         val mode = CheckMode
 
@@ -198,7 +193,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               navigator
                 .nextPage(UnknownPage, mode, answers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }
 
@@ -208,7 +203,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               navigator
                 .nextPage(DateGoodsUnloadedPage, mode, answers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }
 
@@ -218,7 +213,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               navigator
                 .nextPage(VehicleIdentificationNumberPage, mode, answers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }
 
@@ -228,7 +223,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               navigator
                 .nextPage(VehicleIdentificationNumberPage, mode, answers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }
 
@@ -238,7 +233,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               navigator
                 .nextPage(GrossWeightPage(itemIndex), mode, answers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }
 
@@ -248,7 +243,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               navigator
                 .nextPage(SealPage(equipmentIndex, sealIndex), mode, answers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }
 
@@ -259,7 +254,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               answers =>
                 navigator
                   .nextPage(ConfirmRemoveCommentsPage, mode, answers)
-                  .mustBe(routes.SessionExpiredController.onPageLoad())
+                  .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
             }
           }
         }

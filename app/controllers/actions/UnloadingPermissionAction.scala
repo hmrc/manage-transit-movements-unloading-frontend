@@ -18,7 +18,7 @@ package controllers.actions
 
 import cats.data.OptionT
 import controllers.routes
-import models.{ArrivalId, MovementReferenceNumber}
+import models.ArrivalId
 import models.requests.{IdentifierRequest, UnloadingPermissionRequest}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
