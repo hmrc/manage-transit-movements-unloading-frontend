@@ -54,7 +54,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
         "to can seals be read page when seals exist" in {
           val json: JsObject = Json
             .parse(
-              """
+              """{
                 |        "n1:CC043C": {
                 |            "TransitOperation": {
                 |                "MRN": "38VYQTYFU3T0KUTUM3"
@@ -82,6 +82,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
                 |            }
 
                 |     }
+                |  }
                 |""".stripMargin
             )
             .as[JsObject]
