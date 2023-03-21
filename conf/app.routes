@@ -78,15 +78,15 @@ POST       /:arrivalId/remove-additional-comments                               
 GET        /:arrivalId/change-remove-additional-comments                                    controllers.ConfirmRemoveCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-remove-additional-comments                                    controllers.ConfirmRemoveCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
+GET        /:arrivalId/add-goods-declaration-differences                                    controllers.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/add-goods-declaration-differences                                    controllers.AddUnloadingCommentsYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-add-goods-declaration-differences                             controllers.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-add-goods-declaration-differences                             controllers.AddUnloadingCommentsYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+
 GET        /:arrivalId/additional-comments                                                  controllers.UnloadingCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/additional-comments                                                  controllers.UnloadingCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
 GET        /:arrivalId/change-additional-comments                                           controllers.UnloadingCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-additional-comments                                           controllers.UnloadingCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
-
-GET        /:arrivalId/confirm-remove-comments                                              controllers.ConfirmRemoveCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/confirm-remove-comments                                              controllers.ConfirmRemoveCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-confirm-remove-comments                                       controllers.ConfirmRemoveCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-confirm-remove-comments                                       controllers.ConfirmRemoveCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
 GET        /:arrivalId/items/:index/number-of-packages                                      controllers.TotalNumberOfPackagesController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
 POST       /:arrivalId/items/:index/number-of-packages                                      controllers.TotalNumberOfPackagesController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)

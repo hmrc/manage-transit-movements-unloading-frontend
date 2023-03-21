@@ -186,6 +186,12 @@ confirmation.para2 = You must wait for the goods to be released.
 confirmation.linkText = Go to arrival notifications
 confirmation.para3 = to see the latest messages.
 
+addUnloadingCommentsYesNo.title = Were there any differences between the goods and the declaration information?
+addUnloadingCommentsYesNo.heading = Were there any differences between the goods and the declaration information?
+addUnloadingCommentsYesNo.paragraph = This includes any changes to the means of transport, items or transport equipment.
+addUnloadingCommentsYesNo.checkYourAnswersLabel = Were there any differences between the goods and the declaration information?
+addUnloadingCommentsYesNo.error.required = Select yes if there were any differences between the goods and the declaration information
+addUnloadingCommentsYesNo.change.hidden = were there any differences between the goods and the declaration information?
 
 changesToReport.title = What comments do you want to add?
 changesToReport.heading = What comments do you want to add?
