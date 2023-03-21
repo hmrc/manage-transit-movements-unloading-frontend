@@ -48,7 +48,7 @@ object CheckYourAnswersViewModel {
         Seq(helper.additionalComment).flatten
       )
 
-      new CheckYourAnswersViewModel(Seq(headerSection) ++ Seq(commentsSection))
+      new CheckYourAnswersViewModel(Seq(headerSection, commentsSection))
     }
   }
 }
