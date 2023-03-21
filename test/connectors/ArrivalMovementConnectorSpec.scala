@@ -92,6 +92,7 @@ class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtu
           |{
           |  "body": {
           |   "n1:CC043C": {
+          |     "preparationDateAndTime": "2022-11-10T15:32:51.459Z",
           |     "TransitOperation": {
           |       "MRN": "99IT9876AB88901209"
           |     },
@@ -117,6 +118,7 @@ class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtu
 
         val expectedResult = IE043Data(
           MessageData(
+            preparationDateAndTime = LocalDateTime.parse("2022-11-10T15:32:51.459Z", DateTimeFormatter.ISO_DATE_TIME),
             TransitOperation = TransitOperation(MovementReferenceNumber("99IT9876AB88901209").get),
             Consignment = Consignment(None, None, List.empty),
             CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("GB0008")
