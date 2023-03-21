@@ -130,76 +130,49 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           .mustBe(controllers.routes.UnloadingCommentsController.onPageLoad(userAnswers.id, mode))
       }
 
-      "must go from can seals be read page" ignore {
+      "must go from can seals be read page" - {
         "to Are any seals broken page when answer is Yes" in {
 
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedUserAnswers = answers.setValue(CanSealsBeReadPage, true)
-              navigator
-                .nextPage(CanSealsBeReadPage, mode, updatedUserAnswers)
-                .mustBe(controllers.routes.AreAnySealsBrokenController.onPageLoad(updatedUserAnswers.id, mode))
-          }
+          val userAnswers = emptyUserAnswers.setValue(CanSealsBeReadPage, true)
+          navigator
+            .nextPage(CanSealsBeReadPage, mode, userAnswers)
+            .mustBe(controllers.routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, mode))
         }
 
         "to Are any seals broken page  when the answer is No" in {
 
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedUserAnswers = answers.setValue(CanSealsBeReadPage, false)
-              navigator
-                .nextPage(CanSealsBeReadPage, mode, updatedUserAnswers)
-                .mustBe(controllers.routes.AreAnySealsBrokenController.onPageLoad(updatedUserAnswers.id, mode))
-          }
-        }
-
-        "to additional comments page when the answer is empty" in {
-
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedUserAnswers = answers.removeValue(CanSealsBeReadPage)
-              navigator
-                .nextPage(CanSealsBeReadPage, mode, updatedUserAnswers)
-                .mustBe(routes.UnloadingCommentsController.onPageLoad(updatedUserAnswers.id, NormalMode))
-          }
+          val userAnswers = emptyUserAnswers.setValue(CanSealsBeReadPage, false)
+          navigator
+            .nextPage(CanSealsBeReadPage, mode, userAnswers)
+            .mustBe(controllers.routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, mode))
         }
       }
 
-      "must go from are any seals broken page " ignore {
-        "to unloading commentspage when the answer is No" in {
+      "must go from can unloading comment page to check your answers page" in {
 
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedUserAnswers = answers.setValue(AreAnySealsBrokenPage, false)
+        val userAnswers = emptyUserAnswers.setValue(UnloadingCommentsPage, "test")
+        navigator
+          .nextPage(UnloadingCommentsPage, mode, userAnswers)
+          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+      }
 
-              navigator
-                .nextPage(AreAnySealsBrokenPage, mode, updatedUserAnswers)
-                .mustBe(routes.UnloadingCommentsController.onPageLoad(updatedUserAnswers.id, NormalMode))
-          }
+      "must go from are any seals broken page " - {
+        "to unloading comments page when the answer is No" in {
+
+          val userAnswers = emptyUserAnswers.setValue(AreAnySealsBrokenPage, false)
+
+          navigator
+            .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
+            .mustBe(routes.UnloadingCommentsController.onPageLoad(userAnswers.id, NormalMode))
         }
 
-        "to unloading summary page when the answer is Yes" in {
+        "to unloading comments page when the answer is Yes" in {
 
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedUserAnswers = answers.setValue(AreAnySealsBrokenPage, true)
+          val userAnswers = emptyUserAnswers.setValue(AreAnySealsBrokenPage, true)
 
-              navigator
-                .nextPage(AreAnySealsBrokenPage, mode, updatedUserAnswers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
-          }
-        }
-
-        "to session expired page when the answer is empty" in {
-
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedUserAnswers = answers.removeValue(AreAnySealsBrokenPage)
-
-              navigator
-                .nextPage(AreAnySealsBrokenPage, mode, updatedUserAnswers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
-          }
+          navigator
+            .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
+            .mustBe(routes.UnloadingCommentsController.onPageLoad(userAnswers.id, NormalMode))
         }
       }
 
@@ -210,17 +183,6 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             navigator
               .nextPage(SealPage(equipmentIndex, sealIndex), mode, answers)
               .mustBe(routes.SessionExpiredController.onPageLoad())
-        }
-      }
-
-      "from changes to report page to unloading summary page" ignore {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(UnloadingCommentsPage, mode, answers)
-              .mustBe(routes.SessionExpiredController.onPageLoad())
-
         }
       }
 
