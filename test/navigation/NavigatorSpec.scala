@@ -61,6 +61,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
                 |            },
                 |            "preparationDateAndTime": "2007-10-26T07:36:28",
                 |            "Consignment": {
+                |               "HouseConsignment": [],
                 |
                 |                "TransportEquipment": [
                 |                    {
@@ -88,7 +89,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
           val userAnswers = emptyUserAnswers.copy(data = json)
 
-          val bar = userAnswers.data.as[MessageData].Consignment.numberOfSeals
+          val bar = userAnswers.data.as[MessageData].Consignment.sealsExist
 
           println("\n\n\n" + bar + "\n\n\n")
 

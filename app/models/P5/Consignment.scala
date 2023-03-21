@@ -23,9 +23,19 @@ case class Consignment(
   DepartureTransportMeans: Option[List[DepartureTransportMeans]],
   HouseConsignment: List[HouseConsignment]
 ) {
-  def numberOfSeals: Int = TransportEquipment.map(_.map(_.Seal))
-}
 
+  def sealsExist =
+    TransportEquipment.map(
+      x =>
+        x.map(
+          y => y.Seal.getOrElse(Nil)
+        )
+    ) match {
+      case Some(x) => x.map(_.length).nonEmpty
+      case None    => false
+    }
+
+}
 
 object Consignment {
   implicit val formats: OFormat[Consignment] = Json.format[Consignment]

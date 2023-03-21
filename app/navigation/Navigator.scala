@@ -31,9 +31,9 @@ class Navigator @Inject() () {
 
     case DateGoodsUnloadedPage =>
       ua => {
-        val numberOfSeals = ua.data.asOpt[MessageData].map(_.Consignment.numberOfSeals).getOrElse(0)
+        val sealsExist = ua.data.asOpt[MessageData].map(_.Consignment.sealsExist).getOrElse(false)
 
-        if (numberOfSeals > 0) {
+        if (sealsExist) {
           controllers.routes.CanSealsBeReadController.onPageLoad(ua.id, NormalMode)
         } else {
           routes.UnloadingCommentsController.onPageLoad(ua.id, NormalMode) //todo will redirect to comments option page
