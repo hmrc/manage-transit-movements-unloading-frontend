@@ -24,17 +24,10 @@ case class Consignment(
   HouseConsignment: List[HouseConsignment]
 ) {
 
-  def sealsExist =
-    TransportEquipment.map(
-      x =>
-        x.map(
-          y => y.Seal.getOrElse(Nil)
-        )
-    ) match {
-      case Some(x) => x.map(_.length).nonEmpty
-      case None    => false
-    }
-
+  def sealsExist = {
+    val sealsCount = TransportEquipment.map(_.map(_.numberOfSeals.getOrElse(0)).sum).getOrElse(0)
+    if (sealsCount > 0) true else false
+  }
 }
 
 object Consignment {

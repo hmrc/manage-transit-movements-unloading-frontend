@@ -89,55 +89,46 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
           val userAnswers = emptyUserAnswers.copy(data = json)
 
-          val bar = userAnswers.data.as[MessageData].Consignment.sealsExist
-
-          println("\n\n\n" + bar + "\n\n\n")
-
           navigator
             .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
             .mustBe(controllers.routes.CanSealsBeReadController.onPageLoad(userAnswers.id, mode))
         }
       }
 
-      //        "to additional comments page when no seals exist" in {
-      //
-      //          val json: JsObject = Json
-      //            .parse(
-      //              """
-      //                |        "n1:CC043C": {
-      //                |            "TransitOperation": {
-      //                |                "MRN": "38VYQTYFU3T0KUTUM3"
-      //                |            },
-      //                |            "preparationDateAndTime": "2007-10-26T07:36:28",
-      //                |            "Consignment": {
-      //                |
-      //                |                "TransportEquipment": [
-      //                |                    {
-      //                |                        "sequenceNumber": "te1",
-      //                |                        "containerIdentificationNumber": "cin-1",
-      //                |                        "numberOfSeals": 0,
-      //                |
-      //                |
-      //                |                    }
-      //                |                ]
-      //                |            },
-      //                |            "CustomsOfficeOfDestinationActual": {
-      //                |                "referenceNumber": "GB000008"
-      //                |            }
-      //
-      //                |     }
-      //                |""".stripMargin
-      //            )
-      //            .as[JsObject]
-      //
-      //          forAll(arbitrary[UserAnswers]) {
-      //            answers =>
-      //              val ua = answers.copy(data = json)
-      //              navigator
-      //                .nextPage(DateGoodsUnloadedPage, mode, ua)
-      //                .mustBe(routes.UnloadingCommentsController.onPageLoad(ua.id, NormalMode))
-      //          }
-      //        }
+      "to additional comments page when seals does not exist" in {
+        val json: JsObject = Json
+          .parse(
+            """{
+              |            "TransitOperation": {
+              |                "MRN": "38VYQTYFU3T0KUTUM3"
+              |            },
+              |            "preparationDateAndTime": "2007-10-26T07:36:28",
+              |            "Consignment": {
+              |               "HouseConsignment": [],
+              |
+              |                "TransportEquipment": [
+              |                    {
+              |                        "sequenceNumber": "te1",
+              |                        "containerIdentificationNumber": "cin-1",
+              |                        "numberOfSeals": 0
+              |                    }
+              |                ]
+              |            },
+              |            "CustomsOfficeOfDestinationActual": {
+              |                "referenceNumber": "GB000008"
+              |            }
+              |
+              |     }
+              |""".stripMargin
+          )
+          .as[JsObject]
+
+        val userAnswers = emptyUserAnswers.copy(data = json)
+
+        navigator
+          .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
+          .mustBe(controllers.routes.UnloadingCommentsController.onPageLoad(userAnswers.id, mode))
+      }
 
       "must go from can seals be read page" ignore {
         "to Are any seals broken page when answer is Yes" in {
