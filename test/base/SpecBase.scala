@@ -17,6 +17,7 @@
 package base
 
 import cats.data.NonEmptyList
+import config.FrontendAppConfig
 import models.{ArrivalId, EoriNumber, GoodsItem, Index, MovementReferenceNumber, Packages, ProducedDocument, UserAnswers}
 import org.scalatest._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -81,6 +82,8 @@ trait SpecBase
 
   def messagesApi: MessagesApi    = app.injector.instanceOf[MessagesApi]
   implicit def messages: Messages = messagesApi.preferred(fakeRequest)
+
+  def frontendAppConfig = injector.instanceOf[FrontendAppConfig]
 
   implicit class RichUserAnswers(userAnswers: UserAnswers) {
 

@@ -38,10 +38,10 @@
         )
         )
         <h2 class="govuk-heading-m">@messages("unloadingRemarksSent.subHeading")</h2>
-        <p class="govuk-body"> <a id="hrefId" class="govuk-link" href=view-arrival-notifications>@messages("unloadingRemarksSent.checkStatus")</a> @messages("unloadingRemarksSent.findOut")</p>
+        <p class="govuk-body"> <a id="viewArrivalId" class="govuk-link" href=@config.viewAllArrivalsUrl>@messages("unloadingRemarksSent.checkStatus")</a> @messages("unloadingRemarksSent.findOut")</p>
         <p class="govuk-body">@{
             viewModel.fetch
         }</p>
-        <p class="govuk-body"><a id="createArrivalId" class="govuk-link" href=create-arrival-notifications>@messages("unloadingRemarksSent.createArrivalNotification")</a></p>
+        <p class="govuk-body"><a id="createArrivalId" class="govuk-link" href=@config.arrivalsFrontendUrl>@messages("unloadingRemarksSent.createArrivalNotification")</a></p>
 
     }

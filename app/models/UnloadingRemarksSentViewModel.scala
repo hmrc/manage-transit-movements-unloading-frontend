@@ -22,10 +22,10 @@ import play.api.i18n.Messages
 case class UnloadingRemarksSentViewModel(customsOffice: Option[CustomsOffice], customsOfficeId: String) {
 
   def fetch(implicit messages: Messages): String = customsOffice match {
-    case Some(CustomsOffice(_, name, _, Some(phone))) if name.length > 0 && phone.length > 0 => messages("unloadingRemarksSent.telephoneAvailable", name, phone)
-    case Some(CustomsOffice(_, name, _, Some(phone))) if name.length > 0 && phone.isEmpty    => messages("unloadingRemarksSent.telephoneNotAvailable", name)
-    case Some(CustomsOffice(_, name, _, None)) if name.length > 0                            => messages("unloadingRemarksSent.telephoneNotAvailable", name)
-    case Some(CustomsOffice(id, "", _, Some(phone))) if phone.length > 0                     => messages("unloadingRemarksSent.teleAvailAndOfficeNameNotAvail", id, phone)
-    case _                                                                                   => messages("unloadingRemarksSent.teleNotAvailAndOfficeNameNotAvail", customsOfficeId)
+    case Some(CustomsOffice(_, name, _, Some(phone))) if name.nonEmpty && phone.nonEmpty => messages("unloadingRemarksSent.telephoneAvailable", name, phone)
+    case Some(CustomsOffice(_, name, _, Some(phone))) if name.nonEmpty && phone.isEmpty  => messages("unloadingRemarksSent.telephoneNotAvailable", name)
+    case Some(CustomsOffice(_, name, _, None)) if name.nonEmpty                          => messages("unloadingRemarksSent.telephoneNotAvailable", name)
+    case Some(CustomsOffice(id, "", _, Some(phone))) if phone.nonEmpty                   => messages("unloadingRemarksSent.teleAvailAndOfficeNameNotAvail", id, phone)
+    case _                                                                               => messages("unloadingRemarksSent.teleNotAvailAndOfficeNameNotAvail", customsOfficeId)
   }
 }

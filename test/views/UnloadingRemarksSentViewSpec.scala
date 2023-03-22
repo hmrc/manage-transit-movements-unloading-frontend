@@ -16,14 +16,14 @@
 
 package views
 
-import models.{ArrivalId, MovementReferenceNumber, UnloadingRemarksSentViewModel}
+import base.SpecBase
 import models.reference.CustomsOffice
-import org.scalacheck.Gen
+import models.{MovementReferenceNumber, UnloadingRemarksSentViewModel}
 import play.twirl.api.HtmlFormat
 import views.behaviours.PanelViewBehaviours
 import views.html.UnloadingRemarksSentView
 
-class UnloadingRemarksSentViewSpec extends PanelViewBehaviours {
+class UnloadingRemarksSentViewSpec extends PanelViewBehaviours with SpecBase {
 
   override val prefix: String = "unloadingRemarksSent"
 
@@ -49,15 +49,15 @@ class UnloadingRemarksSentViewSpec extends PanelViewBehaviours {
   behave like pageWithContent("h2", "What happens next")
 
   behave like pageWithLink(
-    id = "hrefId",
+    id = "viewArrivalId",
     expectedText = "Check the status of arrival notifications",
-    expectedHref = "view-arrival-notifications"
+    expectedHref = frontendAppConfig.viewAllArrivalsUrl
   )
 
   behave like pageWithLink(
     id = "createArrivalId",
     expectedText = "Create another arrival notification",
-    expectedHref = "create-arrival-notifications"
+    expectedHref = frontendAppConfig.arrivalsFrontendUrl
   )
 
   "Customs office with no customsOffice record returned" - {
