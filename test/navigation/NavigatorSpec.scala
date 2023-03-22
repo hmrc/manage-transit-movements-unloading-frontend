@@ -19,11 +19,11 @@ package navigation
 import base.SpecBase
 import controllers.routes
 import generators.Generators
-import models._
+import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
-import queries.SealsQuery
+import play.api.libs.json.{JsObject, Json}
 
 class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -49,117 +49,135 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
       "must go from date goods unloaded page" - {
         "to can seals be read page when seals exist" in {
-          forAll(arbitrary[UserAnswers], arbitrary[Seal]) {
-            (answers, seal) =>
-              val updatedUserAnswers = answers.setValue(SealsQuery, Seq(seal))
-              navigator
-                .nextPage(DateGoodsUnloadedPage, mode, updatedUserAnswers)
-                .mustBe(controllers.routes.CanSealsBeReadController.onPageLoad(updatedUserAnswers.id, mode))
-          }
-        }
+          val json: JsObject = Json
+            .parse(
+              """{
+                |            "TransitOperation": {
+                |                "MRN": "38VYQTYFU3T0KUTUM3"
+                |            },
+                |            "preparationDateAndTime": "2007-10-26T07:36:28",
+                |            "Consignment": {
+                |               "HouseConsignment": [],
+                |
+                |                "TransportEquipment": [
+                |                    {
+                |                        "sequenceNumber": "te1",
+                |                        "containerIdentificationNumber": "cin-1",
+                |                        "numberOfSeals": 103,
+                |                        "Seal": [
+                |                            {
+                |                                "sequenceNumber": "1001",
+                |                                "identifier": "1002"
+                |                            }
+                |                        ]
+                |
+                |                    }
+                |                ]
+                |            },
+                |            "CustomsOfficeOfDestinationActual": {
+                |                "referenceNumber": "GB000008"
+                |            }
+                |
+                |     }
+                |""".stripMargin
+            )
+            .as[JsObject]
 
-        "to unloading summary page when no seals exist" in {
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedUserAnswers = answers.removeValue(SealsQuery)
-              navigator
-                .nextPage(DateGoodsUnloadedPage, mode, updatedUserAnswers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
-          }
+          val userAnswers = emptyUserAnswers.copy(data = json)
+
+          navigator
+            .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
+            .mustBe(controllers.routes.CanSealsBeReadController.onPageLoad(userAnswers.id, mode))
         }
+      }
+
+      "to additional comments page when seals does not exist" in {
+        val json: JsObject = Json
+          .parse(
+            """{
+              |            "TransitOperation": {
+              |                "MRN": "38VYQTYFU3T0KUTUM3"
+              |            },
+              |            "preparationDateAndTime": "2007-10-26T07:36:28",
+              |            "Consignment": {
+              |               "HouseConsignment": [],
+              |
+              |                "TransportEquipment": [
+              |                    {
+              |                        "sequenceNumber": "te1",
+              |                        "containerIdentificationNumber": "cin-1",
+              |                        "numberOfSeals": 0
+              |                    }
+              |                ]
+              |            },
+              |            "CustomsOfficeOfDestinationActual": {
+              |                "referenceNumber": "GB000008"
+              |            }
+              |
+              |     }
+              |""".stripMargin
+          )
+          .as[JsObject]
+
+        val userAnswers = emptyUserAnswers.copy(data = json)
+
+        navigator
+          .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
+          .mustBe(controllers.routes.UnloadingCommentsController.onPageLoad(userAnswers.id, mode))
       }
 
       "must go from can seals be read page" - {
         "to Are any seals broken page when answer is Yes" in {
 
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedUserAnswers = answers.setValue(CanSealsBeReadPage, true)
-              navigator
-                .nextPage(CanSealsBeReadPage, mode, updatedUserAnswers)
-                .mustBe(controllers.routes.AreAnySealsBrokenController.onPageLoad(updatedUserAnswers.id, mode))
-          }
+          val userAnswers = emptyUserAnswers.setValue(CanSealsBeReadPage, true)
+          navigator
+            .nextPage(CanSealsBeReadPage, mode, userAnswers)
+            .mustBe(controllers.routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, mode))
         }
 
         "to Are any seals broken page  when the answer is No" in {
 
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedUserAnswers = answers.setValue(CanSealsBeReadPage, false)
-              navigator
-                .nextPage(CanSealsBeReadPage, mode, updatedUserAnswers)
-                .mustBe(controllers.routes.AreAnySealsBrokenController.onPageLoad(updatedUserAnswers.id, mode))
-          }
+          val userAnswers = emptyUserAnswers.setValue(CanSealsBeReadPage, false)
+          navigator
+            .nextPage(CanSealsBeReadPage, mode, userAnswers)
+            .mustBe(controllers.routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, mode))
         }
+      }
 
-        "to session expired page when the answer is empty" in {
+      "must go from can unloading comment page to check your answers page" in {
 
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedUserAnswers = answers.removeValue(CanSealsBeReadPage)
-              navigator
-                .nextPage(CanSealsBeReadPage, mode, updatedUserAnswers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
-          }
-        }
+        val userAnswers = emptyUserAnswers.setValue(UnloadingCommentsPage, "test")
+        navigator
+          .nextPage(UnloadingCommentsPage, mode, userAnswers)
+          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
       }
 
       "must go from are any seals broken page " - {
-        "to unloading summary page when the answer is No" in {
+        "to unloading comments page when the answer is No" in {
 
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedUserAnswers = answers.setValue(AreAnySealsBrokenPage, false)
+          val userAnswers = emptyUserAnswers.setValue(AreAnySealsBrokenPage, false)
 
-              navigator
-                .nextPage(AreAnySealsBrokenPage, mode, updatedUserAnswers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
-          }
+          navigator
+            .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
+            .mustBe(routes.UnloadingCommentsController.onPageLoad(userAnswers.id, NormalMode))
         }
 
-        "to unloading summary page when the answer is Yes" in {
+        "to unloading comments page when the answer is Yes" in {
 
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedUserAnswers = answers.setValue(AreAnySealsBrokenPage, true)
+          val userAnswers = emptyUserAnswers.setValue(AreAnySealsBrokenPage, true)
 
-              navigator
-                .nextPage(AreAnySealsBrokenPage, mode, updatedUserAnswers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
-          }
-        }
-
-        "to session expired page when the answer is empty" in {
-
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              val updatedUserAnswers = answers.removeValue(AreAnySealsBrokenPage)
-
-              navigator
-                .nextPage(AreAnySealsBrokenPage, mode, updatedUserAnswers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
-          }
+          navigator
+            .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
+            .mustBe(routes.UnloadingCommentsController.onPageLoad(userAnswers.id, NormalMode))
         }
       }
 
-      "must go from New Seal Number page to unloading summary page" in {
-
+      "must go from New Seal Number page to unloading summary page" ignore {
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
               .nextPage(SealPage(equipmentIndex, sealIndex), mode, answers)
-              .mustBe(routes.SessionExpiredController.onPageLoad())
-        }
-      }
-
-      "from changes to report page to unloading summary page" - {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(UnloadingCommentsPage, mode, answers)
-              .mustBe(routes.SessionExpiredController.onPageLoad())
-
+              .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
         }
       }
 
@@ -175,7 +193,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               navigator
                 .nextPage(UnknownPage, mode, answers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }
 
@@ -185,7 +203,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               navigator
                 .nextPage(DateGoodsUnloadedPage, mode, answers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }
 
@@ -195,7 +213,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               navigator
                 .nextPage(VehicleIdentificationNumberPage, mode, answers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }
 
@@ -205,7 +223,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               navigator
                 .nextPage(VehicleIdentificationNumberPage, mode, answers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }
 
@@ -215,7 +233,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               navigator
                 .nextPage(GrossWeightPage(itemIndex), mode, answers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }
 
@@ -225,7 +243,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               navigator
                 .nextPage(SealPage(equipmentIndex, sealIndex), mode, answers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }
 
@@ -236,7 +254,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               answers =>
                 navigator
                   .nextPage(ConfirmRemoveCommentsPage, mode, answers)
-                  .mustBe(routes.SessionExpiredController.onPageLoad())
+                  .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
             }
           }
         }

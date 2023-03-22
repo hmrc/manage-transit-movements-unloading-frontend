@@ -17,18 +17,13 @@
 package controllers
 
 import controllers.actions._
-import forms.VehicleIdentificationNumberFormProvider
-import models.reference.CustomsOffice
-import models.{ArrivalId, Mode, MovementReferenceNumber}
-import navigation.Navigator
-import pages.{CustomsOfficeOfDestinationPage, VehicleIdentificationNumberPage}
+import models.{ArrivalId, UnloadingRemarksSentViewModel}
+import pages.CustomsOfficeOfDestinationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.ReferenceDataService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.{FrontendBaseController, FrontendController}
-import models.UnloadingRemarksSentViewModel
-import play.api.mvc.Results.Redirect
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.UnloadingRemarksSentView
 
 import javax.inject.Inject

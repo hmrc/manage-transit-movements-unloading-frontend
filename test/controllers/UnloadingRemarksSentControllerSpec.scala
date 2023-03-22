@@ -18,18 +18,17 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
-import matchers.JsonMatchers
-import models.reference.{Country, CustomsOffice}
-import models.{NormalMode, UnloadingRemarksSentViewModel}
+import models.UnloadingRemarksSentViewModel
+import models.reference.CustomsOffice
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import pages.{CustomsOfficeOfDestinationPage, DateOfPreparationPage}
+import pages.CustomsOfficeOfDestinationPage
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.ReferenceDataService
-import views.html.{UnloadingGuidanceView, UnloadingRemarksSentView}
-import play.api.inject.bind
+import views.html.UnloadingRemarksSentView
 
 import scala.concurrent.Future
 

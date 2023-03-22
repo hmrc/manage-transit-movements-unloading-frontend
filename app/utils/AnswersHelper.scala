@@ -17,10 +17,10 @@
 package utils
 
 import models.{ArrivalId, Index, Link, UserAnswers}
-import pages.{Page, QuestionPage}
+import pages.QuestionPage
 import pages.sections.Section
 import play.api.i18n.Messages
-import play.api.libs.json.{__, JsArray, JsObject, JsPath, JsValue, Reads}
+import play.api.libs.json.{JsArray, JsPath, JsValue, Reads}
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
