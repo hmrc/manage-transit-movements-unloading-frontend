@@ -50,12 +50,33 @@ class Navigator @Inject() () {
           case _       => routes.SessionExpiredController.onPageLoad() //TODO temporary redirect will be error page
         }
 
+    case AddUnloadingCommentsYesNoPage =>
+      ua =>
+        ua.get(AddUnloadingCommentsYesNoPage) match {
+          case Some(true)  => controllers.routes.UnloadingCommentsController.onPageLoad(ua.id, NormalMode)
+          case Some(false) => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)
+          case _           => routes.SessionExpiredController.onPageLoad()
+        }
+
     case _ =>
       ua => routes.SessionExpiredController.onPageLoad()
 
   }
 
-  private val checkRoutes: Page => UserAnswers => Call = _ => ua => routes.SessionExpiredController.onPageLoad()
+  private val checkRoutes: Page => UserAnswers => Call = {
+    case AddUnloadingCommentsYesNoPage =>
+      ua =>
+        ua.get(AddUnloadingCommentsYesNoPage) match {
+          case Some(true) =>
+            ua.get(UnloadingCommentsPage) match {
+              case Some(_) => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)
+              case _       => controllers.routes.UnloadingCommentsController.onPageLoad(ua.id, CheckMode)
+            }
+          case Some(false) => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)
+          case _           => routes.SessionExpiredController.onPageLoad()
+        }
+    case _ => ua => routes.CheckYourAnswersController.onPageLoad(ua.id)
+  }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
     case NormalMode =>

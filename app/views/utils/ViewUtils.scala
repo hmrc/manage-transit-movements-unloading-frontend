@@ -96,4 +96,8 @@ object ViewUtils {
       }
   }
 
+  implicit class StringImplicits(string: String) {
+    def toParagraph: Html = Html(s"""<p class="govuk-body">$string</p>""")
+  }
+
 }

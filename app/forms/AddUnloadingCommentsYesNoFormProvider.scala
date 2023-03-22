@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import play.api.libs.json.JsPath
+import forms.mappings.Mappings
+import play.api.data.Form
 
-case object VehicleRegistrationCountryPage extends QuestionPage[String] {
+import javax.inject.Inject
 
-  override def path: JsPath = JsPath \ "Consignment" \ "DepartureTransportMeans" \ 0 \ toString
+class AddUnloadingCommentsYesNoFormProvider @Inject() extends Mappings {
 
-  override def toString: String = "nationality"
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("addUnloadingCommentsYesNo.error.required")
+    )
 }

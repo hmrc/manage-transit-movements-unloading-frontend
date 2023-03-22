@@ -45,7 +45,7 @@ object CheckYourAnswersViewModel {
 
       val commentsSection = Section(
         messages("checkYourAnswers.subsections.additionalComments"),
-        Seq(helper.additionalComment).flatten
+        Seq(helper.additionalComment, helper.unloadingCommentsYesNo).flatten
       )
 
       new CheckYourAnswersViewModel(Seq(headerSection, commentsSection))

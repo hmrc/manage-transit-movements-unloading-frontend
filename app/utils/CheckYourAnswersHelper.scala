@@ -17,7 +17,7 @@
 package utils
 
 import models.{CheckMode, UserAnswers}
-import pages.{AreAnySealsBrokenPage, CanSealsBeReadPage, DateGoodsUnloadedPage, UnloadingCommentsPage}
+import pages._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
@@ -47,6 +47,14 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     prefix = "checkYourAnswers.rowHeadings.canSealsBeRead",
     id = Some("change-can-seals-be-read"),
     call = Some(controllers.routes.CanSealsBeReadController.onPageLoad(arrivalId, CheckMode))
+  )
+
+  def unloadingCommentsYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddUnloadingCommentsYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo",
+    id = Some("change-add-unloading-comments-yes-no"),
+    call = Some(controllers.routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, CheckMode))
   )
 
   def additionalComment: Option[SummaryListRow] = getAnswerAndBuildRow[String]( //TODO: Does this need to be removable?

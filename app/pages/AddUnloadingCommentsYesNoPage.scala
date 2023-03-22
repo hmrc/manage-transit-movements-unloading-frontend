@@ -16,11 +16,20 @@
 
 package pages
 
+import models.UserAnswers
 import play.api.libs.json.JsPath
 
-case object VehicleRegistrationCountryPage extends QuestionPage[String] {
+import scala.util.Try
 
-  override def path: JsPath = JsPath \ "Consignment" \ "DepartureTransportMeans" \ 0 \ toString
+case object AddUnloadingCommentsYesNoPage extends QuestionPage[Boolean] {
 
-  override def toString: String = "nationality"
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "addUnloadingCommentsYesNo"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(UnloadingCommentsPage)
+      case _           => super.cleanup(value, userAnswers)
+    }
 }

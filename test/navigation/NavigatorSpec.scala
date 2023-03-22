@@ -175,7 +175,38 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               navigator
                 .nextPage(UnknownPage, mode, answers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId))
+          }
+        }
+
+        "must go from unloading comments yes no page" - {
+          "to check your answers page if no selected" in {
+
+            val userAnswers = emptyUserAnswers
+              .setValue(AddUnloadingCommentsYesNoPage, false)
+
+            navigator
+              .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId))
+          }
+          "to additional comments page if yes is selected and no comments found" in {
+
+            val userAnswers = emptyUserAnswers
+              .setValue(AddUnloadingCommentsYesNoPage, true)
+
+            navigator
+              .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
+              .mustBe(controllers.routes.UnloadingCommentsController.onPageLoad(arrivalId, mode))
+          }
+          "to additional comments page if yes is selected and comments found" in {
+
+            val userAnswers = emptyUserAnswers
+              .setValue(AddUnloadingCommentsYesNoPage, true)
+              .setValue(UnloadingCommentsPage, "comment")
+
+            navigator
+              .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }
 
@@ -185,7 +216,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               navigator
                 .nextPage(DateGoodsUnloadedPage, mode, answers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }
 
@@ -195,7 +226,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               navigator
                 .nextPage(VehicleIdentificationNumberPage, mode, answers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }
 
@@ -205,7 +236,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               navigator
                 .nextPage(VehicleIdentificationNumberPage, mode, answers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }
 
@@ -215,7 +246,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               navigator
                 .nextPage(GrossWeightPage(itemIndex), mode, answers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }
 
@@ -225,7 +256,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               navigator
                 .nextPage(SealPage(equipmentIndex, sealIndex), mode, answers)
-                .mustBe(routes.SessionExpiredController.onPageLoad())
+                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }
 
@@ -236,7 +267,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               answers =>
                 navigator
                   .nextPage(ConfirmRemoveCommentsPage, mode, answers)
-                  .mustBe(routes.SessionExpiredController.onPageLoad())
+                  .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
             }
           }
         }
