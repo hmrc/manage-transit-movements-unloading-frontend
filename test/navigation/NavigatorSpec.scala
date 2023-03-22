@@ -91,7 +91,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
         }
       }
 
-      "to additional comments page when seals does not exist" in {
+      "to additional comments yes no page when seals does not exist" in {
         val json: JsObject = Json
           .parse(
             """{
@@ -123,7 +123,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
         navigator
           .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
-          .mustBe(controllers.routes.UnloadingCommentsController.onPageLoad(userAnswers.id, mode))
+          .mustBe(routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, mode))
       }
 
       "must go from can seals be read page" - {
@@ -153,22 +153,22 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
       }
 
       "must go from are any seals broken page " - {
-        "to unloading comments page when the answer is No" in {
+        "to unloading comments yes no page when the answer is No" in {
 
           val userAnswers = emptyUserAnswers.setValue(AreAnySealsBrokenPage, false)
 
           navigator
             .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-            .mustBe(routes.UnloadingCommentsController.onPageLoad(userAnswers.id, NormalMode))
+            .mustBe(routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, mode))
         }
 
-        "to unloading comments page when the answer is Yes" in {
+        "to unloading comments yes no page when the answer is Yes" in {
 
           val userAnswers = emptyUserAnswers.setValue(AreAnySealsBrokenPage, true)
 
           navigator
             .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-            .mustBe(routes.UnloadingCommentsController.onPageLoad(userAnswers.id, NormalMode))
+            .mustBe(routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, mode))
         }
       }
 

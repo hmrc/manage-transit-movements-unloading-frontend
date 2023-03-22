@@ -17,9 +17,8 @@
 package views
 
 import base.SpecBase
-import models.{ArrivalId, MovementReferenceNumber, UnloadingRemarksSentViewModel}
 import models.reference.CustomsOffice
-import org.scalacheck.Gen
+import models.{MovementReferenceNumber, UnloadingRemarksSentViewModel}
 import play.twirl.api.HtmlFormat
 import views.behaviours.PanelViewBehaviours
 import views.html.UnloadingRemarksSentView

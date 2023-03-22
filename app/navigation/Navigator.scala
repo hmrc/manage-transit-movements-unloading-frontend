@@ -35,13 +35,12 @@ class Navigator @Inject() () {
         if (sealsExist) {
           controllers.routes.CanSealsBeReadController.onPageLoad(ua.id, NormalMode)
         } else {
-          routes.UnloadingCommentsController.onPageLoad(ua.id, NormalMode) //todo will redirect to comments option page
+          routes.AddUnloadingCommentsYesNoController.onPageLoad(ua.id, NormalMode)
         }
       }
 
-
     case CanSealsBeReadPage    => ua => routes.AreAnySealsBrokenController.onPageLoad(ua.id, NormalMode)
-    case AreAnySealsBrokenPage => ua => routes.UnloadingCommentsController.onPageLoad(ua.id, NormalMode) //todo will redirect to comments option page
+    case AreAnySealsBrokenPage => ua => routes.AddUnloadingCommentsYesNoController.onPageLoad(ua.id, NormalMode)
     case UnloadingCommentsPage => ua => routes.CheckYourAnswersController.onPageLoad(ua.id)
     case AddUnloadingCommentsYesNoPage =>
       ua =>
