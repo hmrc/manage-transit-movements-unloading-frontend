@@ -16,6 +16,7 @@
 
 package pages.behaviours
 
+import base.SpecBase
 import generators.Generators
 import models.{Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
@@ -27,12 +28,7 @@ import org.scalatest.{OptionValues, TryValues}
 import pages.QuestionPage
 import play.api.libs.json._
 
-trait PageBehaviours extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with Generators with OptionValues with TryValues {
-
-  val index: Index          = Index(0)
-  val sealIndex: Index      = Index(0)
-  val equipmentIndex: Index = Index(0)
-  val itemIndex: Index      = Index(0)
+trait PageBehaviours extends SpecBase with Matchers with ScalaCheckPropertyChecks with Generators with OptionValues with TryValues {
 
   class BeRetrievable[A] {
 

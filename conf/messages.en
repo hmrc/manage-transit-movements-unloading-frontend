@@ -186,6 +186,10 @@ confirmation.para2 = You must wait for the goods to be released.
 confirmation.linkText = Go to arrival notifications
 confirmation.para3 = to see the latest messages.
 
+addUnloadingCommentsYesNo.title = Were there any differences between the transit and the declaration information?
+addUnloadingCommentsYesNo.heading = Were there any differences between the transit and the declaration information?
+addUnloadingCommentsYesNo.paragraph = This includes any changes to the means of transport, items or transport equipment.
+addUnloadingCommentsYesNo.error.required = Select yes if there were any differences between the transit and the declaration information
 
 changesToReport.title = What comments do you want to add?
 changesToReport.heading = What comments do you want to add?
@@ -329,10 +333,15 @@ unloadingRemarksSent.teleNotAvailAndOfficeNameNotAvail = If the goods are not re
 
 checkYourAnswers.rowHeadings.goodsUnloadedDate = Goods’ unloaded date
 checkYourAnswers.rowHeadings.goodsUnloadedDate.change.hidden = goods’ unloaded date
+
 checkYourAnswers.rowHeadings.canSealsBeRead = Are all of the seal identification numbers or marks readable?
 checkYourAnswers.rowHeadings.canSealsBeRead.change.hidden = if all of the seal identification numbers or marks are readable
+
 checkYourAnswers.rowHeadings.anySealsBroken = Are any of the seals broken?
 checkYourAnswers.rowHeadings.anySealsBroken.change.hidden = if any of the seals are broken
+
+checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo = Were there any differences between the goods and the declaration information?
+checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo.change.hidden = if there were any differences between the goods and the declaration information
 checkYourAnswers.subsections.additionalComments = Additional comments
 checkYourAnswers.rowHeadings.additionalComments = Comments
 checkYourAnswers.rowHeadings.additionalComments.change.hidden = comments

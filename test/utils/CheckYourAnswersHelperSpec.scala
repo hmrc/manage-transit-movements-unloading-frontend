@@ -21,7 +21,7 @@ import controllers.routes
 import models.CheckMode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.{AreAnySealsBrokenPage, CanSealsBeReadPage, DateGoodsUnloadedPage, UnloadingCommentsPage}
+import pages._
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, Value}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Key, SummaryListRow}
@@ -162,6 +162,62 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                       href = routes.CanSealsBeReadController.onPageLoad(arrivalId, CheckMode).url,
                       visuallyHiddenText = Some("if all of the seal identification numbers or marks are readable"),
                       attributes = Map("id" -> "change-can-seals-be-read")
+                    )
+                  )
+                )
+              )
+            )
+          )
+        }
+      }
+    }
+    "unloadingCommentsYesNo" - {
+      "must return row" - {
+        "when answered Yes" in {
+
+          val answers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, true)
+          val helper  = new CheckYourAnswersHelper(answers)
+          val result  = helper.unloadingCommentsYesNo
+
+          result mustBe Some(
+            SummaryListRow(
+              key = Key("Were there any differences between the goods and the declaration information?".toText),
+              value = Value("Yes".toText),
+              actions = Some(
+                Actions(
+                  items = List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, CheckMode).url,
+                      visuallyHiddenText = Some(
+                        "if there were any differences between the goods and the declaration information"
+                      ), //TODO: Update hidden content when Gavin supplies it
+                      attributes = Map("id" -> "change-add-unloading-comments-yes-no")
+                    )
+                  )
+                )
+              )
+            )
+          )
+        }
+        "when answered No" in {
+
+          val answers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, false)
+          val helper  = new CheckYourAnswersHelper(answers)
+          val result  = helper.unloadingCommentsYesNo
+
+          result mustBe Some(
+            SummaryListRow(
+              key = Key("Were there any differences between the goods and the declaration information?".toText),
+              value = Value("No".toText),
+              actions = Some(
+                Actions(
+                  items = List(
+                    ActionItem(
+                      content = "Change".toText,
+                      href = routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, CheckMode).url,
+                      visuallyHiddenText = Some("if there were any differences between the goods and the declaration information"),
+                      attributes = Map("id" -> "change-add-unloading-comments-yes-no")
                     )
                   )
                 )

@@ -19,7 +19,7 @@ package navigation
 import base.SpecBase
 import controllers.routes
 import generators.Generators
-import models.{CheckMode, NormalMode, UserAnswers}
+import models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
@@ -193,7 +193,38 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             answers =>
               navigator
                 .nextPage(UnknownPage, mode, answers)
-                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
+                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId))
+          }
+        }
+
+        "must go from unloading comments yes no page" - {
+          "to check your answers page if no selected" in {
+
+            val userAnswers = emptyUserAnswers
+              .setValue(AddUnloadingCommentsYesNoPage, false)
+
+            navigator
+              .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId))
+          }
+          "to additional comments page if yes is selected and no comments found" in {
+
+            val userAnswers = emptyUserAnswers
+              .setValue(AddUnloadingCommentsYesNoPage, true)
+
+            navigator
+              .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
+              .mustBe(controllers.routes.UnloadingCommentsController.onPageLoad(arrivalId, mode))
+          }
+          "to additional comments page if yes is selected and comments found" in {
+
+            val userAnswers = emptyUserAnswers
+              .setValue(AddUnloadingCommentsYesNoPage, true)
+              .setValue(UnloadingCommentsPage, "comment")
+
+            navigator
+              .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
+              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }
 

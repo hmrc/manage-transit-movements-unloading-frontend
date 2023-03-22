@@ -49,10 +49,10 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
   }
   "comments section" - {
 
-    "must render 1 row if comments completed" in {
+    "must render 1 rows if add comments false" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(UnloadingCommentsPage, "Test")
+        .setValue(AddUnloadingCommentsYesNoPage, false)
 
       setExistingUserAnswers(userAnswers)
 
@@ -61,6 +61,24 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
 
       result.sections.length mustBe 2
       result.sections(1).rows.size mustBe 1
+
+      result.sections(1).sectionTitle.value mustBe "Additional comments"
+
+    }
+
+    "must render 2 rows if add comments true" in {
+
+      val userAnswers = emptyUserAnswers
+        .setValue(AddUnloadingCommentsYesNoPage, true)
+        .setValue(UnloadingCommentsPage, "Test")
+
+      setExistingUserAnswers(userAnswers)
+
+      val viewModelProvider = new CheckYourAnswersViewModelProvider()
+      val result            = viewModelProvider.apply(userAnswers)
+
+      result.sections.length mustBe 2
+      result.sections(1).rows.size mustBe 2
 
       result.sections(1).sectionTitle.value mustBe "Additional comments"
 
