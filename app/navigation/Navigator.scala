@@ -18,7 +18,7 @@ package navigation
 
 import com.google.inject.{Inject, Singleton}
 import controllers.routes
-import derivable.DeriveNumberOfSeals
+import models.P5.MessageData
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages._
 import play.api.mvc.Call
@@ -29,27 +29,19 @@ class Navigator @Inject() () {
   private val normalRoutes: Page => UserAnswers => Call = {
 
     case DateGoodsUnloadedPage =>
-      ua =>
-        if (ua.get(DeriveNumberOfSeals).exists(_ > 0)) {
+      ua => {
+        val sealsExist = ua.data.asOpt[MessageData].exists(_.Consignment.sealsExist)
+
+        if (sealsExist) {
           controllers.routes.CanSealsBeReadController.onPageLoad(ua.id, NormalMode)
         } else {
-          routes.SessionExpiredController.onPageLoad()
+          routes.AddUnloadingCommentsYesNoController.onPageLoad(ua.id, NormalMode)
         }
+      }
 
-    case CanSealsBeReadPage =>
-      ua =>
-        ua.get(CanSealsBeReadPage) match {
-          case Some(_) => controllers.routes.AreAnySealsBrokenController.onPageLoad(ua.id, NormalMode)
-          case _       => routes.SessionExpiredController.onPageLoad() //TODO temporary redirect will be error page
-        }
-
-    case AreAnySealsBrokenPage =>
-      ua =>
-        ua.get(AreAnySealsBrokenPage) match {
-          case Some(_) => routes.SessionExpiredController.onPageLoad()
-          case _       => routes.SessionExpiredController.onPageLoad() //TODO temporary redirect will be error page
-        }
-
+    case CanSealsBeReadPage    => ua => routes.AreAnySealsBrokenController.onPageLoad(ua.id, NormalMode)
+    case AreAnySealsBrokenPage => ua => routes.AddUnloadingCommentsYesNoController.onPageLoad(ua.id, NormalMode)
+    case UnloadingCommentsPage => ua => routes.CheckYourAnswersController.onPageLoad(ua.id)
     case AddUnloadingCommentsYesNoPage =>
       ua =>
         ua.get(AddUnloadingCommentsYesNoPage) match {

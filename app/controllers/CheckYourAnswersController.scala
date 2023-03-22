@@ -43,6 +43,6 @@ class CheckYourAnswersController @Inject() (
   }
 
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
-    Redirect(controllers.routes.SessionExpiredController.onPageLoad()) //todo Add navigation in
+    Redirect(controllers.routes.UnloadingRemarksSentController.onPageLoad(arrivalId))
   }
 }

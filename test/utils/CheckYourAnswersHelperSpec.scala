@@ -181,7 +181,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
           result mustBe Some(
             SummaryListRow(
-              key = Key("Were there any differences between the goods and the declaration information?".toText),
+              key = Key("Were there any differences between the transit and the declaration information?".toText),
               value = Value("Yes".toText),
               actions = Some(
                 Actions(
@@ -190,8 +190,8 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                       content = "Change".toText,
                       href = routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, CheckMode).url,
                       visuallyHiddenText = Some(
-                        "if there were any differences between the goods and the declaration information"
-                      ), //TODO: Update hidden content when Gavin supplies it
+                        "if there were any differences between the transit and the declaration information"
+                      ),
                       attributes = Map("id" -> "change-add-unloading-comments-yes-no")
                     )
                   )
@@ -208,7 +208,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
           result mustBe Some(
             SummaryListRow(
-              key = Key("Were there any differences between the goods and the declaration information?".toText),
+              key = Key("Were there any differences between the transit and the declaration information?".toText),
               value = Value("No".toText),
               actions = Some(
                 Actions(
@@ -216,7 +216,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                     ActionItem(
                       content = "Change".toText,
                       href = routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, CheckMode).url,
-                      visuallyHiddenText = Some("if there were any differences between the goods and the declaration information"),
+                      visuallyHiddenText = Some("if there were any differences between the transit and the declaration information"),
                       attributes = Map("id" -> "change-add-unloading-comments-yes-no")
                     )
                   )
@@ -238,7 +238,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
             result mustBe Some(
               SummaryListRow(
-                key = Key("Comments".toText),
+                key = Key("Differences".toText),
                 value = Value(s"$comments".toText),
                 actions = Some(
                   Actions(
@@ -246,7 +246,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                       ActionItem(
                         content = "Change".toText,
                         href = routes.UnloadingCommentsController.onPageLoad(arrivalId, CheckMode).url,
-                        visuallyHiddenText = Some("comments"),
+                        visuallyHiddenText = Some("differences between the transit and declaration information"),
                         attributes = Map("id" -> "change-comment")
                       )
                     )

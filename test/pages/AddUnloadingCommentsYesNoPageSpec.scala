@@ -17,7 +17,6 @@
 package pages
 
 import pages.behaviours.PageBehaviours
-import play.api.libs.json.Json
 
 class AddUnloadingCommentsYesNoPageSpec extends PageBehaviours {
 
