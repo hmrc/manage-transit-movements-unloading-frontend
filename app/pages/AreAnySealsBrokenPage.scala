@@ -20,7 +20,7 @@ import play.api.libs.json.JsPath
 
 case object AreAnySealsBrokenPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "UnloadingRemark" \ toString
 
   override def toString: String = "areAnySealsBroken"
 }

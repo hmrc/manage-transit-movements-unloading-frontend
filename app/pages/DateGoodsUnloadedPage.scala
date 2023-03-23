@@ -22,7 +22,7 @@ import play.api.libs.json.JsPath
 
 case object DateGoodsUnloadedPage extends QuestionPage[LocalDate] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "UnloadingRemark" \ toString
 
   override def toString: String = "dateGoodsUnloaded"
 }

@@ -18,6 +18,7 @@ package controllers
 
 import controllers.actions.{IdentifierAction, UnloadingPermissionActionProvider}
 import logging.Logging
+import models.P5.submission.IE044Data
 import models.{ArrivalId, UserAnswers}
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
@@ -49,7 +50,7 @@ class IndexController @Inject() (
             mrn = request.unloadingPermission.TransitOperation.MRN,
             eoriNumber = request.eoriNumber,
             ie043Data = Json.toJsObject(request.unloadingPermission),
-            data = Json.toJsObject(request.unloadingPermission),
+            data = Json.toJsObject(IE044Data.fromIE043Data(request.unloadingPermission)),
             lastUpdated = dateTimeService.now
           )
         }

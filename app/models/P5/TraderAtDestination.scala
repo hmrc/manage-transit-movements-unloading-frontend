@@ -14,22 +14,12 @@
  * limitations under the License.
  */
 
-package pages
+package models.P5
 
-import models.UserAnswers
-import play.api.libs.json.JsPath
+import play.api.libs.json.{Json, OFormat}
 
-import scala.util.Try
+case class TraderAtDestination(identificationNumber: String)
 
-case object AddUnloadingCommentsYesNoPage extends QuestionPage[Boolean] {
-
-  override def path: JsPath = JsPath \ "UnloadingRemark" \ toString
-
-  override def toString: String = "addUnloadingCommentsYesNo"
-
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(false) => userAnswers.remove(UnloadingCommentsPage)
-      case _           => super.cleanup(value, userAnswers)
-    }
+object TraderAtDestination {
+  implicit val formats: OFormat[TraderAtDestination] = Json.format[TraderAtDestination]
 }
