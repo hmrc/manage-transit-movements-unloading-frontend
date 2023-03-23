@@ -36,7 +36,7 @@ trait UnloadingFindingsViewSpec extends SummaryListViewBehaviours with Generator
 
   override def view: HtmlFormat.Appendable = viewWithSections(sections)
 
-  val unloadingFindingsViewModel: UnloadingFindingsViewModel = new UnloadingFindingsViewModel(sections, arbitrary[Section].sample.value)
+  val unloadingFindingsViewModel: UnloadingFindingsViewModel = new UnloadingFindingsViewModel(sections)
 
   override def summaryLists: Seq[SummaryList] = sections.map(
     section => SummaryList(section.rows)

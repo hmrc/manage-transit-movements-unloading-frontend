@@ -49,12 +49,11 @@ class UnloadingFindingsControllerSpec extends SpecBase with AppWithDefaultMockFi
       setExistingUserAnswers(emptyUserAnswers)
 
       val sections = arbitrarySections.arbitrary.sample.value
-      val section  = arbitrarySection.arbitrary.sample.value
 
       when(mockUnloadingFindingsViewModelProvider.apply(any())(any()))
-        .thenReturn(UnloadingFindingsViewModel(sections, section))
+        .thenReturn(UnloadingFindingsViewModel(sections))
 
-      val unloadingFindingsViewModel = UnloadingFindingsViewModel(sections, section)
+      val unloadingFindingsViewModel = UnloadingFindingsViewModel(sections)
 
       val request = FakeRequest(GET, unloadingFindingsRoute)
 

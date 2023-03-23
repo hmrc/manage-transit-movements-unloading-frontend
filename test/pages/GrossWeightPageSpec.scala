@@ -22,10 +22,10 @@ class GrossWeightPageSpec extends PageBehaviours {
 
   "GrossWeightAmountPage" - {
 
-    beRetrievable[Double](GrossWeightPage(itemIndex))
+    beRetrievable[Double](GrossWeightPage(index, itemIndex))
 
-    beSettable[Double](GrossWeightPage(itemIndex))
+    beSettable[Double](GrossWeightPage(index, itemIndex))
 
-    beRemovable[Double](GrossWeightPage(itemIndex))
+    beRemovable[Double](GrossWeightPage(index, itemIndex))
   }
 }

@@ -348,58 +348,58 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       }
     }
 
-    "itemsSummarySection" - {
-
-      "must return None" - {
-        s"when no items defined" in {
-
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
-          val result = helper.itemsSummarySection
-          result.isEmpty mustBe true
-        }
-      }
-
-      "must return Some(Row)s" - {
-        s"when items are defined" in {
-
-          val grossWeight      = Gen.double.sample.value
-          val netWeight        = Gen.double.sample.value
-          val totalGrossWeight = grossWeight * 2
-          val totalNetWeight   = netWeight * 2
-
-          val answers = emptyUserAnswers
-            .setValue(GrossWeightPage(itemIndex), grossWeight)
-            .setValue(NetWeightPage(itemIndex), netWeight)
-            .setValue(GrossWeightPage(Index(1)), grossWeight)
-            .setValue(NetWeightPage(Index(1)), netWeight)
-
-          val helper   = new UnloadingFindingsAnswersHelper(answers)
-          val sections = helper.itemsSummarySection.head.rows
-
-          val numberOfItemsRow    = sections.head
-          val totalGrossWeightRow = sections(1)
-          val totalNetWeightRow   = sections(2)
-
-          numberOfItemsRow mustBe
-            SummaryListRow(
-              key = Key("Total number of items".toText),
-              value = Value("2".toText)
-            )
-
-          totalGrossWeightRow mustBe
-            SummaryListRow(
-              key = Key("Total gross weight of all items".toText),
-              value = Value(s"${totalGrossWeight}kg".toText)
-            )
-
-          totalNetWeightRow mustBe
-            SummaryListRow(
-              key = Key("Total net weight of all items".toText),
-              value = Value(s"${totalNetWeight}kg".toText)
-            )
-        }
-      }
-    }
+//    "itemsSummarySection" - {
+//
+//      "must return None" - {
+//        s"when no items defined" in {
+//
+//          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
+//          val result = helper.itemsSummarySection
+//          result.isEmpty mustBe true
+//        }
+//      }
+//
+//      "must return Some(Row)s" - {
+//        s"when items are defined" in {
+//
+//          val grossWeight      = Gen.double.sample.value
+//          val netWeight        = Gen.double.sample.value
+//          val totalGrossWeight = grossWeight * 2
+//          val totalNetWeight   = netWeight * 2
+//
+//          val answers = emptyUserAnswers
+//            .setValue(GrossWeightPage(itemIndex), grossWeight)
+//            .setValue(NetWeightPage(itemIndex), netWeight)
+//            .setValue(GrossWeightPage(Index(1)), grossWeight)
+//            .setValue(NetWeightPage(Index(1)), netWeight)
+//
+//          val helper   = new UnloadingFindingsAnswersHelper(answers)
+//          val sections = helper.itemsSummarySection.head.rows
+//
+//          val numberOfItemsRow    = sections.head
+//          val totalGrossWeightRow = sections(1)
+//          val totalNetWeightRow   = sections(2)
+//
+//          numberOfItemsRow mustBe
+//            SummaryListRow(
+//              key = Key("Total number of items".toText),
+//              value = Value("2".toText)
+//            )
+//
+//          totalGrossWeightRow mustBe
+//            SummaryListRow(
+//              key = Key("Total gross weight of all items".toText),
+//              value = Value(s"${totalGrossWeight}kg".toText)
+//            )
+//
+//          totalNetWeightRow mustBe
+//            SummaryListRow(
+//              key = Key("Total net weight of all items".toText),
+//              value = Value(s"${totalNetWeight}kg".toText)
+//            )
+//        }
+//      }
+//    }
 
     "numberOfItemsRow" - {
 
@@ -472,7 +472,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
         s"when $ItemDescriptionPage undefined" in {
 
           val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
-          val result = helper.itemDescriptionRow(itemIndex)
+          val result = helper.itemDescriptionRow(index, itemIndex)
           result mustBe None
         }
       }
@@ -480,10 +480,10 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       "must return Some(Row)" - {
         s"when $ItemDescriptionPage defined" in {
           val answers = emptyUserAnswers
-            .setValue(ItemDescriptionPage(itemIndex), itemDesc)
+            .setValue(ItemDescriptionPage(index, itemIndex), itemDesc)
 
           val helper = new UnloadingFindingsAnswersHelper(answers)
-          val result = helper.itemDescriptionRow(itemIndex)
+          val result = helper.itemDescriptionRow(index, itemIndex)
 
           result mustBe
             Some(
@@ -505,7 +505,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
         s"when $GrossWeightPage undefined" in {
 
           val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
-          val result = helper.grossWeightRow(itemIndex)
+          val result = helper.grossWeightRow(index, itemIndex)
           result mustBe None
         }
       }
@@ -513,10 +513,10 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       "must return Some(Row)" - {
         s"when $GrossWeightPage defined" in {
           val answers = emptyUserAnswers
-            .setValue(GrossWeightPage(itemIndex), weight)
+            .setValue(GrossWeightPage(index, itemIndex), weight)
 
           val helper = new UnloadingFindingsAnswersHelper(answers)
-          val result = helper.grossWeightRow(itemIndex)
+          val result = helper.grossWeightRow(index, itemIndex)
 
           result mustBe Some(
             SummaryListRow(
@@ -527,7 +527,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
                   items = List(
                     ActionItem(
                       content = "Change".toText,
-                      href = controllers.routes.GrossWeightController.onPageLoad(arrivalId, itemIndex, NormalMode).url,
+                      href = controllers.routes.GrossWeightController.onPageLoad(arrivalId, index, itemIndex, NormalMode).url,
                       visuallyHiddenText = Some(s"gross weight of item ${itemIndex.display}"),
                       attributes = Map("id" -> s"change-gross-weight-${itemIndex.display}")
                     )
@@ -548,7 +548,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
         s"when $NetWeightPage undefined" in {
 
           val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
-          val result = helper.netWeightRow(itemIndex)
+          val result = helper.netWeightRow(index, itemIndex)
           result mustBe None
         }
       }
@@ -556,10 +556,10 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       "must return Some(Row)" - {
         s"when $NetWeightPage defined" in {
           val answers = emptyUserAnswers
-            .setValue(NetWeightPage(itemIndex), weight)
+            .setValue(NetWeightPage(index, itemIndex), weight)
 
           val helper = new UnloadingFindingsAnswersHelper(answers)
-          val result = helper.netWeightRow(itemIndex)
+          val result = helper.netWeightRow(index, itemIndex)
 
           result mustBe Some(
             SummaryListRow(
@@ -570,58 +570,9 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
                   items = List(
                     ActionItem(
                       content = "Change".toText,
-                      href = controllers.routes.NetWeightController.onPageLoad(arrivalId, itemIndex, NormalMode).url,
+                      href = controllers.routes.NetWeightController.onPageLoad(arrivalId, index, itemIndex, NormalMode).url,
                       visuallyHiddenText = Some(s"net weight of item ${itemIndex.display}"),
                       attributes = Map("id" -> s"change-net-weight-${itemIndex.display}")
-                    )
-                  )
-                )
-              )
-            )
-          )
-        }
-      }
-    }
-
-    "additionalComment" - {
-
-      val comment = Gen.alphaNumStr.sample.value
-
-      "must return None" - {
-        s"when $UnloadingCommentsPage undefined" in {
-
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
-          val result = helper.additionalComment
-          result mustBe None
-        }
-      }
-
-      "must return Some(Row)" - {
-        s"when $NetWeightPage defined" in {
-          val answers = emptyUserAnswers
-            .setValue(UnloadingCommentsPage, comment)
-
-          val helper = new UnloadingFindingsAnswersHelper(answers)
-          val result = helper.additionalComment
-
-          result mustBe Some(
-            SummaryListRow(
-              key = Key("Comments".toText),
-              value = Value(comment.toText),
-              actions = Some(
-                Actions(
-                  items = List(
-                    ActionItem(
-                      content = "Change".toText,
-                      href = controllers.routes.UnloadingCommentsController.onPageLoad(arrivalId, NormalMode).url,
-                      visuallyHiddenText = Some("comments"),
-                      attributes = Map("id" -> "change-comment")
-                    ),
-                    ActionItem(
-                      content = "Remove".toText,
-                      href = controllers.routes.ConfirmRemoveCommentsController.onPageLoad(arrivalId, NormalMode).url,
-                      visuallyHiddenText = Some("comments"),
-                      attributes = Map("id" -> "remove-comment")
                     )
                   )
                 )

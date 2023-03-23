@@ -15,7 +15,7 @@
  *@
 
 @import controllers.routes
-@import views.html.components.{Button, Heading, SummaryDetails}
+@import views.html.components.{Button, Heading}
 
 @this(
     mainTemplate: MainTemplate,
@@ -25,11 +25,6 @@
 )
 
 @(mrn: MovementReferenceNumber, arrivalId: ArrivalId)(implicit request: Request[_], messages: Messages)
-
-
-@foo = {
-    <span  class="govuk-heading-m govuk-!-margin-bottom-0" style="float:left; color: #1d70b8">Departure transport means 1</span>
-}
 
 @mainTemplate(
     title = messages("unloadingGuidance.title"),

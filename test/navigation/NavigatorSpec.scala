@@ -263,7 +263,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator
-                .nextPage(GrossWeightPage(itemIndex), mode, answers)
+                .nextPage(GrossWeightPage(index, itemIndex), mode, answers)
                 .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }

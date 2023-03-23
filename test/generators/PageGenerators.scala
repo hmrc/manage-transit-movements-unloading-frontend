@@ -47,7 +47,7 @@ trait PageGenerators {
     Arbitrary(SealPage(Index(0), Index(0)))
 
   implicit lazy val arbitraryGrossWeightAmountPage: Arbitrary[GrossWeightPage] =
-    Arbitrary(GrossWeightPage(Index(0)))
+    Arbitrary(GrossWeightPage(Index(0), Index(0)))
 
   implicit lazy val arbitraryVehicleRegistrationCountryPage: Arbitrary[VehicleRegistrationCountryPage.type] =
     Arbitrary(VehicleRegistrationCountryPage)

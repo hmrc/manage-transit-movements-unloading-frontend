@@ -17,7 +17,7 @@
 package utils
 
 import models.{Index, Link, NormalMode, UserAnswers}
-import pages.sections.{ItemsSection, NewSealsSection, SealsSection, TransportEquipmentListSection}
+import pages.sections.{HouseConsignmentsSection, ItemsSection, NewSealsSection, SealsSection, TransportEquipmentListSection}
 import pages._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -118,12 +118,30 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
       removeCall = controllers.routes.ConfirmRemoveSealController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode)
     )
 
-  def itemsSummarySection: Option[Section] = {
-    val itemArray      = userAnswers.get(ItemsSection)
+//  def houseConsignmentSections: Seq[Section] =
+//    userAnswers.get(HouseConsignmentsSection).mapWithIndex {
+//      (_, houseConsignmentIndex) =>
+//        // call on house consignment name/phone rows
+//        // call itemsWeightSummaryRows to get total weights
+//
+//        val grossAndNetWeightRow: Option[Seq[SummaryListRow]] = houseConsignmentTotalWeightRows(houseConsignmentIndex)
+//
+//    }
+
+  def consignorNameRow(houseConsignmentIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = ConsignorNamePage(houseConsignmentIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.consignorName",
+    id = None,
+    call = None
+  )
+
+  def houseConsignmentTotalWeightRows(houseConsignmentIndex: Index): Option[Seq[SummaryListRow]] = {
+    val itemArray      = userAnswers.get(ItemsSection(houseConsignmentIndex))
     val itemCount: Int = itemArray.map(_.value.length).getOrElse(0)
 
     val itemWeights: Seq[(Double, Double)] = itemArray.mapWithIndex[(Double, Double)](
-      (_, itemIndex) => Some(fetchWeightValues(itemIndex))
+      (_, itemIndex) => Some(fetchWeightValues(houseConsignmentIndex, itemIndex))
     )
 
     if (itemCount == 0) {
@@ -139,17 +157,17 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
           x => x._2
         )
         .sum
-      Some(
-        Section(
-          messages("unloadingFindings.subsections.itemSummary"),
-          Seq(numberOfItemsRow(itemCount), totalGrossWeightRow(grossWeight), totalNetWeightRow(netWeight))
-        )
-      )
+
+      Some(Seq(totalGrossWeightRow(grossWeight), totalNetWeightRow(netWeight)))
+
     }
   }
 
-  def fetchWeightValues(itemIndex: Index): (Double, Double) =
-    (userAnswers.get(GrossWeightPage(itemIndex)).getOrElse(0d), userAnswers.get(NetWeightPage(itemIndex)).getOrElse(0d))
+  def fetchWeightValues(houseConsignmentIndex: Index, itemIndex: Index): (Double, Double) =
+    (
+      userAnswers.get(GrossWeightPage(houseConsignmentIndex, itemIndex)).getOrElse(0d),
+      userAnswers.get(NetWeightPage(houseConsignmentIndex, itemIndex)).getOrElse(0d)
+    )
 
   def numberOfItemsRow(answer: Int): SummaryListRow = buildRowWithNoChangeLink(
     answer = formatAsText(answer),
@@ -169,14 +187,14 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
     args = None
   )
 
-  def itemSections: Seq[Section] =
+  def itemSections(houseConsignmentIndex: Index): Seq[Section] =
     userAnswers
-      .get(ItemsSection)
+      .get(ItemsSection(houseConsignmentIndex))
       .mapWithIndex {
         (_, itemIndex) =>
-          val itemDescription: Option[SummaryListRow] = itemDescriptionRow(itemIndex)
-          val grossWeight: Option[SummaryListRow]     = grossWeightRow(itemIndex)
-          val netWeight: Option[SummaryListRow]       = netWeightRow(itemIndex)
+          val itemDescription: Option[SummaryListRow] = itemDescriptionRow(houseConsignmentIndex, itemIndex)
+          val grossWeight: Option[SummaryListRow]     = grossWeightRow(houseConsignmentIndex, itemIndex)
+          val netWeight: Option[SummaryListRow]       = netWeightRow(houseConsignmentIndex, itemIndex)
 
           Some(
             Section(
@@ -186,54 +204,30 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
           )
       }
 
-  def itemDescriptionRow(itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = ItemDescriptionPage(itemIndex),
+  def itemDescriptionRow(houseConsignmentIndex: Index, itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = ItemDescriptionPage(houseConsignmentIndex, itemIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.item.description",
     id = Some(s"change-item-description-${itemIndex.display}"),
     call = None //TODO: item description change controller
   )
 
-  def grossWeightRow(itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Double](
-    page = GrossWeightPage(itemIndex),
+  def grossWeightRow(houseConsignmentIndex: Index, itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Double](
+    page = GrossWeightPage(houseConsignmentIndex, itemIndex),
     formatAnswer = formatAsWeight,
     prefix = "unloadingFindings.rowHeadings.item.grossWeight",
     args = itemIndex.display,
     id = Some(s"change-gross-weight-${itemIndex.display}"),
-    call = Some(controllers.routes.GrossWeightController.onPageLoad(arrivalId, itemIndex, NormalMode))
+    call = Some(controllers.routes.GrossWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode))
   )
 
-  def netWeightRow(itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Double](
-    page = NetWeightPage(itemIndex),
+  def netWeightRow(houseConsignmentIndex: Index, itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Double](
+    page = NetWeightPage(houseConsignmentIndex, itemIndex),
     formatAnswer = formatAsWeight,
     prefix = "unloadingFindings.rowHeadings.item.netWeight",
     args = itemIndex.display,
     id = Some(s"change-net-weight-${itemIndex.display}"),
-    call = Some(controllers.routes.NetWeightController.onPageLoad(arrivalId, itemIndex, NormalMode))
+    call = Some(controllers.routes.NetWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode))
   )
-
-  def additionalComment: Option[SummaryListRow] = getAnswerAndBuildRemovableRow[String](
-    page = UnloadingCommentsPage,
-    formatAnswer = formatAsText,
-    prefix = "unloadingFindings.rowHeadings.additionalComments",
-    id = "comment",
-    changeCall = controllers.routes.UnloadingCommentsController.onPageLoad(arrivalId, NormalMode),
-    removeCall = controllers.routes.ConfirmRemoveCommentsController.onPageLoad(arrivalId, NormalMode)
-  )
-
-  def addAdditionalComments(): Option[Link] = buildLinkIfAnswerNotPresent(UnloadingCommentsPage) {
-    Link(
-      id = "add-new-comment",
-      text = messages("unloadingFindings.additionalComments.link"),
-      href = controllers.routes.UnloadingCommentsController.onPageLoad(arrivalId, NormalMode).url
-    )
-  }
-
-//  def addNewSeal(equipmentIndex: Index, sealIndex: Index): Option[Link] = buildLink(SealsSection(equipmentIndex)) {
-//    Link(
-//      id = "view",
-//      text = messages("unloadingFindings.addNewSeal.link"),
-//      href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode, newSeal = true).url
-//    )
 
 }

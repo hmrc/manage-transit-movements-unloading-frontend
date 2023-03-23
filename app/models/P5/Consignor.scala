@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package models.P5
 
-import models.Index
-import pages.sections.ItemsSection
-import play.api.libs.json.JsPath
+import play.api.libs.json.{Json, OFormat}
 
-case class ItemDescriptionPage(houseConsignment: Index, itemIndex: Index) extends QuestionPage[String] {
+case class Consignor(
+  identificationNumber: Option[String],
+  name: Option[String]
+)
 
-  override def path: JsPath = ItemsSection(houseConsignment).path \ itemIndex.position \ "Commodity" \ toString
-
-  override def toString: String = "descriptionOfGoods"
+object Consignor {
+  implicit val formats: OFormat[Consignor] = Json.format[Consignor]
 }

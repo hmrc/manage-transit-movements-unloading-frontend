@@ -30,7 +30,7 @@ class GrossWeightViewSpec extends InputTextViewBehaviours[String] {
   override def form: Form[String] = new GrossWeightFormProvider()()
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[GrossWeightView].apply(form, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[GrossWeightView].apply(form, mrn, arrivalId, index, index, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "grossWeight"
 

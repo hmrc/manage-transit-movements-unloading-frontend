@@ -20,9 +20,9 @@ import models.Index
 import pages.sections.ItemsSection
 import play.api.libs.json.JsPath
 
-case class NetWeightPage(itemIndex: Index) extends QuestionPage[Double] {
+case class NetWeightPage(houseConsignment: Index, itemIndex: Index) extends QuestionPage[Double] {
 
-  override def path: JsPath = ItemsSection.path \ itemIndex.position \ "Commodity" \ "GoodsMeasure" \ toString
+  override def path: JsPath = ItemsSection(houseConsignment).path \ itemIndex.position \ "Commodity" \ "GoodsMeasure" \ toString
 
   override def toString: String = "netMass"
 }

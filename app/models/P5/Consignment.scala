@@ -24,7 +24,7 @@ case class Consignment(
   HouseConsignment: List[HouseConsignment]
 ) {
 
-  def sealsExist = {
+  def sealsExist: Boolean = {
     val sealsCount = TransportEquipment.map(_.map(_.numberOfSeals.getOrElse(0)).sum).getOrElse(0)
     if (sealsCount > 0) true else false
   }
