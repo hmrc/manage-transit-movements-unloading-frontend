@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package pages
+package pages.sections
 
-import models.Index
-import pages.sections.TransportMeansListSection
-import play.api.libs.json.JsPath
+import play.api.libs.json.{JsArray, JsPath}
 
-case class VehicleIdentificationTypePage(transportMeansIndex: Index) extends QuestionPage[String] {
+case object TransportMeansListSection extends Section[JsArray] {
 
-  override def path: JsPath = TransportMeansListSection.path \ transportMeansIndex.position \ toString
+  override def path: JsPath = JsPath \ "Consignment" \ toString
 
-  override def toString: String = "typeOfIdentification"
+  override def toString: String = "DepartureTransportMeans"
 }

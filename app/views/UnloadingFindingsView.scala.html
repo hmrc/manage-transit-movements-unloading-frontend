@@ -46,14 +46,7 @@ formHelper: FormWithCSRF
 
     <p class="govuk-body">@messages("unloadingFindings.paragraph")</p>
 
-        <!--
-    answerSections(unloadingFindingsViewModel.section)
-
-    visibleSection(unloadingFindingsViewModel.additionalComments)
-    -->
-
     @summaryDetails(unloadingFindingsViewModel.section)
-
 
     @formHelper(action = routes.UnloadingFindingsController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
         @button(attributes = Map("id" -> "submit"))

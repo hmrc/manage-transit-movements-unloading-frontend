@@ -28,15 +28,15 @@ POST       /:arrivalId/goods-unloaded-date                                      
 GET        /:arrivalId/change-goods-unloaded-date                                           controllers.DateGoodsUnloadedController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-goods-unloaded-date                                           controllers.DateGoodsUnloadedController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/vehicle-identification-number                                        controllers.VehicleIdentificationNumberController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/vehicle-identification-number                                        controllers.VehicleIdentificationNumberController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-vehicle-identification-number                                 controllers.VehicleIdentificationNumberController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-vehicle-identification-number                                 controllers.VehicleIdentificationNumberController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+GET        /:arrivalId/transport-means/:transportMeansIndex/vehicle-identification-number                                        controllers.VehicleIdentificationNumberController.onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode = NormalMode)
+POST       /:arrivalId/transport-means/:transportMeansIndex/vehicle-identification-number                                        controllers.VehicleIdentificationNumberController.onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode = NormalMode)
+GET        /:arrivalId/transport-means/:transportMeansIndex/change-vehicle-identification-number                                 controllers.VehicleIdentificationNumberController.onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode = CheckMode)
+POST       /:arrivalId/transport-means/:transportMeansIndex/change-vehicle-identification-number                                 controllers.VehicleIdentificationNumberController.onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode = CheckMode)
 
-GET        /:arrivalId/vehicle-registered-country                                           controllers.VehicleRegistrationCountryController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/vehicle-registered-country                                           controllers.VehicleRegistrationCountryController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-vehicle-registered-country                                    controllers.VehicleRegistrationCountryController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-vehicle-registered-country                                    controllers.VehicleRegistrationCountryController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+GET        /:arrivalId/transport-means/:transportMeansIndex/vehicle-registered-country                                           controllers.VehicleRegistrationCountryController.onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode = NormalMode)
+POST       /:arrivalId/transport-means/:transportMeansIndex/vehicle-registered-country                                           controllers.VehicleRegistrationCountryController.onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode = NormalMode)
+GET        /:arrivalId/transport-means/:transportMeansIndex/change-vehicle-registered-country                                    controllers.VehicleRegistrationCountryController.onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode = CheckMode)
+POST       /:arrivalId/transport-means/:transportMeansIndex/change-vehicle-registered-country                                    controllers.VehicleRegistrationCountryController.onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode = CheckMode)
 
 GET        /:arrivalId/house-consignment/:houseConsignmentIndex/items/:itemIndex/gross-weight                                            controllers.GrossWeightController.onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode = NormalMode)
 POST       /:arrivalId/house-consignment/:houseConsignmentIndex/items/:itemIndex/gross-weight                                            controllers.GrossWeightController.onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode = NormalMode)

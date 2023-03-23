@@ -17,7 +17,7 @@
 package utils
 
 import models.{Index, Link, NormalMode, UserAnswers}
-import pages.sections.{HouseConsignmentsSection, ItemsSection, NewSealsSection, SealsSection, TransportEquipmentListSection}
+import pages.sections._
 import pages._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -25,21 +25,43 @@ import viewModels.sections.Section
 
 class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
-  def departureMeansID: Option[SummaryListRow] = getAnswerAndBuildRowWithDynamicPrefix[String](
-    answerPath = VehicleIdentificationNumberPage, // TODO loop with index
-    titlePath = VehicleIdentificationTypePage,
+  def transportMeansSections: Seq[Section] =
+    userAnswers.get(TransportMeansListSection).mapWithIndex {
+      (_, transportMeansIndex) =>
+        val transportMeansIDRow           = transportMeansID(transportMeansIndex)
+        val transportRegisteredCountryRow = transportRegisteredCountry(transportMeansIndex)
+
+        val rows = (transportMeansIDRow, transportRegisteredCountryRow) match {
+          case (Some(transportMeansIDRow), Some(transportRegisteredCountryRow)) => Seq(transportMeansIDRow, transportRegisteredCountryRow)
+          case (Some(transportMeansIDRow), None)                                => Seq(transportMeansIDRow)
+          case (None, Some(transportRegisteredCountryRow))                      => Seq(transportRegisteredCountryRow)
+          case (_, _)                                                           => Seq.empty
+        }
+
+        Some(
+          Section(
+            sectionTitle = messages("unloadingFindings.subsections.transportMeans", transportMeansIndex.display),
+            rows
+          )
+        )
+    }
+
+  def transportMeansID(transportMeansIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRowWithDynamicPrefix[String](
+    answerPath = VehicleIdentificationNumberPage(transportMeansIndex),
+    titlePath = VehicleIdentificationTypePage(transportMeansIndex),
     formatAnswer = formatAsText,
     dynamicPrefix = formatIdentificationTypeAsText,
-    id = Some("change-departure-means-id"),
-    call = Some(controllers.routes.VehicleIdentificationNumberController.onPageLoad(arrivalId, NormalMode))
+    id = None,
+    call = None
   )
 
-  def departureRegisteredCountry: Option[SummaryListRow] = getAnswerAndBuildRow[String]( //TODO COUNTRY CODE TO COUNTRY COUNTRY OBJECT
-    page = VehicleRegistrationCountryPage,
+  def transportRegisteredCountry(transportMeansIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    //TODO COUNTRY CODE TO COUNTRY COUNTRY OBJECT
+    page = VehicleRegistrationCountryPage(transportMeansIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.vehicleNationality",
-    id = Some("change-departure-means-country"),
-    call = Some(controllers.routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, NormalMode))
+    id = None,
+    call = None
   )
 
   def transportEquipmentSections: Seq[Section] =
@@ -47,46 +69,26 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
       .get(TransportEquipmentListSection)
       .mapWithIndex {
         (_, equipmentIndex) =>
-          val sealLength = userAnswers
-            .get(NewSealsSection(equipmentIndex))
-            .map(_.value.length)
-            .getOrElse(0)
-
-          val sealPrefixNumber = userAnswers
-            .get(SealsSection(equipmentIndex))
-            .map(_.value.length)
-            .getOrElse(0)
 
           val containerRow: Seq[Option[SummaryListRow]] = Seq(containerIdentificationNumber(equipmentIndex))
           val sealRows: Seq[SummaryListRow]             = transportEquipmentSeals(equipmentIndex)
-          val newSealRows: Seq[SummaryListRow]          = transportEquipmentNewSeals(equipmentIndex, sealPrefixNumber)
 
-          containerRow.head match {
-            case Some(containerRow) =>
-              Some(
-                Section(
-                  messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display),
-                  Seq(containerRow) ++ sealRows ++ newSealRows
-                )
-              )
-            case None =>
-              Some(
-                Section(
-                  messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display),
-                  sealRows ++ newSealRows
-                )
-              )
+          val rows = containerRow.head match {
+            case Some(containerRow) =>Seq(containerRow) ++ sealRows
+            case None => sealRows
           }
+
+        Some(
+          Section(
+            messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display),
+            rows
+          )
+        )
       }
 
   def transportEquipmentSeals(equipmentIndex: Index): Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(SealsSection(equipmentIndex))(
       sealIndex => transportEquipmentSeal(equipmentIndex, sealIndex)
-    )
-
-  def transportEquipmentNewSeals(equipmentIndex: Index, sealPrefixNumber: Int): Seq[SummaryListRow] =
-    getAnswersAndBuildSectionRows(NewSealsSection(equipmentIndex))(
-      sealIndex => transportEquipmentNewSeal(equipmentIndex, sealIndex, sealPrefixNumber + sealIndex.display)
     )
 
   def containerIdentificationNumber(index: Index): Option[SummaryListRow] = getAnswerAndBuildRowWithDynamicHiddenText[String](
@@ -107,31 +109,53 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
     call = Some(controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode))
   )
 
-  def transportEquipmentNewSeal(equipmentIndex: Index, sealIndex: Index, sealPrefixNumber: Int): Option[SummaryListRow] =
-    getAnswerAndBuildRemovableRowWithDynamicHiddenText[String](
-      page = NewSealPage(equipmentIndex, sealIndex),
-      formatAnswer = formatAsText,
-      prefix = "unloadingFindings.rowHeadings.sealIdentifier",
-      args = Some(Seq(sealPrefixNumber)),
-      id = s"new-seal-identifier-$sealPrefixNumber",
-      changeCall = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode, newSeal = true),
-      removeCall = controllers.routes.ConfirmRemoveSealController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode)
-    )
+  def houseConsignmentSections: Seq[Section] =
+    userAnswers.get(HouseConsignmentsSection).mapWithIndex {
+      (_, houseConsignmentIndex) =>
+        val grossAndNetWeightRows: Option[Seq[SummaryListRow]] = houseConsignmentTotalWeightRows(houseConsignmentIndex)
+        val consignorNameRow: Option[SummaryListRow]           = consignorName(houseConsignmentIndex)
+        val consignorIdentificationRow: Option[SummaryListRow] = consignorIdentification(houseConsignmentIndex)
 
-//  def houseConsignmentSections: Seq[Section] =
-//    userAnswers.get(HouseConsignmentsSection).mapWithIndex {
-//      (_, houseConsignmentIndex) =>
-//        // call on house consignment name/phone rows
-//        // call itemsWeightSummaryRows to get total weights
-//
-//        val grossAndNetWeightRow: Option[Seq[SummaryListRow]] = houseConsignmentTotalWeightRows(houseConsignmentIndex)
-//
-//    }
+        val rows = (grossAndNetWeightRows, consignorNameRow, consignorIdentificationRow) match {
+          case (Some(grossAndNetWeightRows), Some(consignorNameRow), Some(consignorIdentificationRow)) =>
+            grossAndNetWeightRows ++ Seq(consignorNameRow, consignorIdentificationRow)
+          case (Some(grossAndNetWeightRows), Some(consignorNameRow), None) =>
+            grossAndNetWeightRows ++ Seq(consignorNameRow)
+          case (Some(grossAndNetWeightRows), None, Some(consignorIdentificationRow)) =>
+            grossAndNetWeightRows ++ Seq(consignorIdentificationRow)
+          case (None, Some(consignorNameRow), Some(consignorIdentificationRow)) =>
+            Seq(consignorNameRow, consignorIdentificationRow)
+          case (_, _, _) =>
+            Seq.empty
+        }
 
-  def consignorNameRow(houseConsignmentIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
+        Some(
+          Section(
+            sectionTitle = messages("unloadingFindings.subsections.houseConsignment", houseConsignmentIndex.display),
+            rows,
+            viewLink = Some(
+              Link(
+                id = s"view-house-consignment-${houseConsignmentIndex.display}",
+                href = controllers.routes.SessionExpiredController.onPageLoad().url
+              )
+            ) //TODO: Add controller route for specific house consignment
+          )
+        )
+
+    }
+
+  def consignorName(houseConsignmentIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = ConsignorNamePage(houseConsignmentIndex),
     formatAnswer = formatAsText,
-    prefix = "unloadingFindings.rowHeadings.consignorName",
+    prefix = "unloadingFindings.rowHeadings.houseConsignment.consignorName",
+    id = None,
+    call = None
+  )
+
+  def consignorIdentification(houseConsignmentIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = ConsignorIdentifierPage(houseConsignmentIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier",
     id = None,
     call = None
   )
@@ -177,13 +201,13 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
 
   def totalGrossWeightRow(answer: Double): SummaryListRow = buildRowWithNoChangeLink(
     answer = formatAsWeight(answer),
-    prefix = "unloadingFindings.rowHeadings.totalGrossWeight",
+    prefix = "unloadingFindings.rowHeadings.houseConsignment.grossWeight",
     args = None
   )
 
   def totalNetWeightRow(answer: Double): SummaryListRow = buildRowWithNoChangeLink(
     answer = formatAsWeight(answer),
-    prefix = "unloadingFindings.rowHeadings.totalNetWeight",
+    prefix = "unloadingFindings.rowHeadings.houseConsignment.netWeight",
     args = None
   )
 

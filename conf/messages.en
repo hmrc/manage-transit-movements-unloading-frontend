@@ -263,7 +263,7 @@ unloadingFindings.title = What did you find when unloading?
 unloadingFindings.heading = What did you find when unloading?
 unloadingFindings.paragraph = Cross-check the transit with the following information. Change these details if you find something different
 
-unloadingFindings.subsections.transportMeans = Means of transport
+unloadingFindings.subsections.transportMeans = Means of transport {0}
 
 unloadingFindings.rowHeadings.identificationType.seaGoingVessel = Name of a sea-going vessel
 unloadingFindings.rowHeadings.identificationType.seaGoingVessel.change.hidden = name of a sea-going vessel
@@ -349,8 +349,11 @@ checkYourAnswers.rowHeadings.additionalComments.change.hidden = differences betw
 checkYourAnswers.sendRemarks = Send your unloading remarks
 checkYourAnswers.paragraph = By sending this, you are confirming that these details are correct to the best of your knowledge.
 
-
-
+unloadingFindings.subsections.houseConsignment = House consignment {0}
+unloadingFindings.rowHeadings.houseConsignment.consignorName = Consignor name
+unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier = Consignor identification number
+unloadingFindings.rowHeadings.houseConsignment.grossWeight = Gross mass
+unloadingFindings.rowHeadings.houseConsignment.netWeight = Net mass
 
 
 

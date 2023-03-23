@@ -22,10 +22,10 @@ class VehicleRegistrationCountryPageSpec extends PageBehaviours {
 
   "VehicleRegistrationCountryPage" - {
 
-    beRetrievable[String](VehicleRegistrationCountryPage)
+    beRetrievable[String](VehicleRegistrationCountryPage(index))
 
-    beSettable[String](VehicleRegistrationCountryPage)
+    beSettable[String](VehicleRegistrationCountryPage(index))
 
-    beRemovable[String](VehicleRegistrationCountryPage)
+    beRemovable[String](VehicleRegistrationCountryPage(index))
   }
 }
