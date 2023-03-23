@@ -52,7 +52,7 @@ object UnloadingFindingsViewModel {
       val additionalCommentsSection = Section(
         sectionTitle = messages("unloadingFindings.subsections.additionalComments"),
         rows = Seq(helper.additionalComment).flatten,
-        addAnotherLink = helper.addAdditionalComments()
+        viewLink = helper.addAdditionalComments()
       )
 
       val sections: Seq[Section] = Seq(transportMeansSection) ++ transportEquipmentSections ++ itemsSummarySection ++ itemsSection

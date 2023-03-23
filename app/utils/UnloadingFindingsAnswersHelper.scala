@@ -178,7 +178,12 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
           val grossWeight: Option[SummaryListRow]     = grossWeightRow(itemIndex)
           val netWeight: Option[SummaryListRow]       = netWeightRow(itemIndex)
 
-          Some(Section(messages("unloadingFindings.subsections.item", itemIndex.display), Seq(itemDescription, grossWeight, netWeight).flatten))
+          Some(
+            Section(
+              messages("unloadingFindings.subsections.item", itemIndex.display),
+              Seq(itemDescription, grossWeight, netWeight).flatten
+            )
+          )
       }
 
   def itemDescriptionRow(itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](

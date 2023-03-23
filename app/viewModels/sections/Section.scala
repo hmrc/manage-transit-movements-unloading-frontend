@@ -28,10 +28,10 @@ object Section {
 
   def apply(row: SummaryListRow): Section = new Section(None, Seq(row), None)
 
-  def apply(sectionTitle: String, rows: Seq[SummaryListRow], addAnotherLink: Option[Link]): Section =
-    new Section(Some(sectionTitle), rows, addAnotherLink)
+  def apply(sectionTitle: String, rows: Seq[SummaryListRow], viewLink: Option[Link]): Section =
+    new Section(Some(sectionTitle), rows, viewLink)
 
-  def apply(sectionTitle: String, rows: SummaryListRow, addAnotherLink: Option[Link]): Section =
-    new Section(Some(sectionTitle), Seq(rows), addAnotherLink)
+  def apply(sectionTitle: String, rows: SummaryListRow, viewLink: Option[Link]): Section =
+    new Section(Some(sectionTitle), Seq(rows), viewLink)
 
 }
