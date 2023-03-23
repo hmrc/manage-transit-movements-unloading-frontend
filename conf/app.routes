@@ -96,8 +96,6 @@ POST       /:arrivalId/items/:index/change-number-of-packages                   
 GET        /:arrivalId/unloading-summary                                                    controllers.UnloadingFindingsController.onPageLoad(arrivalId: ArrivalId)
 POST       /:arrivalId/unloading-summary                                                    controllers.UnloadingFindingsController.onSubmit(arrivalId: ArrivalId)
 
-GET        /:arrivalId/unloading-permission-pdf                                             controllers.UnloadingPermissionPDFController.getPDF(arrivalId: ArrivalId)
-
 GET        /:arrivalId/unloading-remarks-sent                                               controllers.UnloadingRemarksSentController.onPageLoad(arrivalId: ArrivalId)
 
 GET        /:arrivalId/check-answers                                                        controllers.CheckYourAnswersController.onPageLoad(arrivalId: ArrivalId)
