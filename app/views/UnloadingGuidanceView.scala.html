@@ -15,14 +15,14 @@
  *@
 
 @import controllers.routes
-@import views.html.components.{Button, Heading, govukAccordion}
+@import views.html.components.{Button, Heading, SummaryDetails}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     heading: Heading,
     button: Button,
-    accordion: govukAccordion
+        summaryDetails: SummaryDetails
 )
 
 @(mrn: MovementReferenceNumber, arrivalId: ArrivalId)(implicit request: Request[_], messages: Messages)
@@ -47,7 +47,7 @@
         .</p>
 
 
-        @accordion()
+        @summaryDetails()
 
         @button(attributes = Map("id" -> "submit"))
     }

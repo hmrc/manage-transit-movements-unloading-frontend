@@ -9,6 +9,16 @@ $hmrc-assets-path: "/manage-transit-movements/unloading/assets/lib/hmrc-frontend
 .summary-title {
   @extend .govuk-heading-m;
   color: $govuk-link-colour;
+
+}
+
+.govuk-link-view-summary {
+  @extend .govuk-body;
+  @extend .govuk-link;
+  text-align: right;
+  width: 10%;
+  float: right;
+  margin-bottom: 0;
 }
 
 .summary-text {
@@ -38,3 +48,4 @@ $hmrc-assets-path: "/manage-transit-movements/unloading/assets/lib/hmrc-frontend
   width: 10%;
   text-align: right;
 }
+
