@@ -15,49 +15,13 @@
  *@
 
 @import viewModels.sections.Section
+@import views.html.components.SummaryDetail
 
-@this(details: GovukDetails)
+@this(summaryDetail: SummaryDetail)
 
-@()
+@(sections: Seq[Section])
 
-@header = {
-    <div class="summary-text">
-        <span  class="summary-title govuk-!-margin-bottom-0">
-            Departure transport means 1 <a  class="govuk-link-view-summary" href="">View</a>
-        </span>
-    </div>
-}
+    @for(section <- sections) {
+        @summaryDetail(section)()
+    }
 
-@content = {
-    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-        <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-                Type of identification
-            </dt>
-            <dd class="govuk-summary-list__value">
-                AA
-            </dd>
-            <dd class="govuk-summary-list__actions">
-
-            </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-                Registered country
-            </dt>
-            <dd class="govuk-summary-list__value">
-                Austria
-            </dd>
-            <dd class="govuk-summary-list__actions">
-
-            </dd>
-        </div>
-    </dl>
-}
-
-@details(
-    Details(
-        summary = HtmlContent(header),
-        content = HtmlContent(content)
-    )
-)

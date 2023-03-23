@@ -41,7 +41,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
       section.sectionTitle.value mustBe "Means of transport"
       section.rows.size mustBe 2
-      section.addAnotherLink must not be defined
+      section.viewLink must not be defined
     }
 
     "must render transport equipment section" - {
@@ -59,7 +59,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
           section.sectionTitle.value mustBe "Transport equipment 1"
           section.rows.size mustBe 1
-          section.addAnotherLink must not be defined
+          section.viewLink must not be defined
         }
 
         "with seals" in {
@@ -75,7 +75,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
           section.sectionTitle.value mustBe "Transport equipment 1"
           section.rows.size mustBe 2
-          section.addAnotherLink mustBe defined
+          section.viewLink mustBe defined
         }
 
         "with seals and added seals" in {
@@ -92,7 +92,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
           section.sectionTitle.value mustBe "Transport equipment 1"
           section.rows.size mustBe 3
-          section.addAnotherLink mustBe defined
+          section.viewLink mustBe defined
         }
 
       }
@@ -111,7 +111,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
           section.sectionTitle.value mustBe "Transport equipment 2"
           section.rows.size mustBe 1
-          section.addAnotherLink must not be defined
+          section.viewLink must not be defined
         }
 
         "with seals" in {
@@ -129,7 +129,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
           section.sectionTitle.value mustBe "Transport equipment 2"
           section.rows.size mustBe 2
-          section.addAnotherLink mustBe defined
+          section.viewLink mustBe defined
         }
 
         "with seals and added seals" in {
@@ -149,7 +149,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
           section.sectionTitle.value mustBe "Transport equipment 2"
           section.rows.size mustBe 3
-          section.addAnotherLink mustBe defined
+          section.viewLink mustBe defined
         }
       }
     }
@@ -168,7 +168,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
       section.sectionTitle.value mustBe "Items summary"
       section.rows.size mustBe 3
-      section.addAnotherLink must not be defined
+      section.viewLink must not be defined
     }
 
     "must render item section" - {
@@ -186,7 +186,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         section.sectionTitle.value mustBe "Item 1"
         section.rows.size mustBe 3
-        section.addAnotherLink must not be defined
+        section.viewLink must not be defined
       }
 
       "when there is multiple" - {
@@ -206,7 +206,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         section.sectionTitle.value mustBe "Item 2"
         section.rows.size mustBe 3
-        section.addAnotherLink must not be defined
+        section.viewLink must not be defined
       }
     }
 
@@ -222,7 +222,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         section.sectionTitle.value mustBe "Additional comments"
         section.rows.size mustBe 0
-        section.addAnotherLink mustBe defined
+        section.viewLink mustBe defined
       }
 
       "when there is a comment" in {
@@ -237,7 +237,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         section.sectionTitle.value mustBe "Additional comments"
         section.rows.size mustBe 1
-        section.addAnotherLink must not be defined
+        section.viewLink must not be defined
       }
     }
   }

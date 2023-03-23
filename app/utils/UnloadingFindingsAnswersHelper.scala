@@ -66,16 +66,14 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
               Some(
                 Section(
                   messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display),
-                  Seq(containerRow) ++ sealRows ++ newSealRows,
-                  addNewSeal(equipmentIndex, Index(sealLength))
+                  Seq(containerRow) ++ sealRows ++ newSealRows
                 )
               )
             case None =>
               Some(
                 Section(
                   messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display),
-                  sealRows ++ newSealRows,
-                  addNewSeal(equipmentIndex, Index(sealLength))
+                  sealRows ++ newSealRows
                 )
               )
           }
@@ -119,14 +117,6 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
       changeCall = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode, newSeal = true),
       removeCall = controllers.routes.ConfirmRemoveSealController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode)
     )
-
-  def addNewSeal(equipmentIndex: Index, sealIndex: Index): Option[Link] = buildLink(SealsSection(equipmentIndex)) {
-    Link(
-      id = "add-new-seal-identification-number",
-      text = messages("unloadingFindings.addNewSeal.link"),
-      href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode, newSeal = true).url
-    )
-  }
 
   def itemsSummarySection: Option[Section] = {
     val itemArray      = userAnswers.get(ItemsSection)
@@ -233,5 +223,12 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
       href = controllers.routes.UnloadingCommentsController.onPageLoad(arrivalId, NormalMode).url
     )
   }
+
+//  def addNewSeal(equipmentIndex: Index, sealIndex: Index): Option[Link] = buildLink(SealsSection(equipmentIndex)) {
+//    Link(
+//      id = "view",
+//      text = messages("unloadingFindings.addNewSeal.link"),
+//      href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode, newSeal = true).url
+//    )
 
 }

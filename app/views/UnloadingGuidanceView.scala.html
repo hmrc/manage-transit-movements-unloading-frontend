@@ -22,7 +22,6 @@
     formHelper: FormWithCSRF,
     heading: Heading,
     button: Button,
-        summaryDetails: SummaryDetails
 )
 
 @(mrn: MovementReferenceNumber, arrivalId: ArrivalId)(implicit request: Request[_], messages: Messages)
@@ -45,9 +44,6 @@
         <p class="govuk-body">@messages("unloadingGuidance.pdf.preLinkText")
         <a id="download" class="govuk-link" href=@routes.UnloadingPermissionPDFController.getPDF(arrivalId)>@messages("unloadingGuidance.pdf.link")</a>
         .</p>
-
-
-        @summaryDetails()
 
         @button(attributes = Map("id" -> "submit"))
     }

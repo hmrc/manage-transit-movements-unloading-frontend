@@ -18,12 +18,14 @@
 @import views.html.components.HeadingCaption
 @import viewModels.UnloadingFindingsViewModel
 @import views.html.components.VisibleSection
+@import views.html.components.SummaryDetails
 
 @this(
 mainTemplate: MainTemplate,
 heading: Heading,
 answerSections: AnswerSections,
 visibleSection: VisibleSection,
+summaryDetails: SummaryDetails,
 button: Button,
 caption: HeadingCaption,
 formHelper: FormWithCSRF
@@ -44,10 +46,14 @@ formHelper: FormWithCSRF
 
     <p class="govuk-body">@messages("unloadingFindings.paragraph")</p>
 
+        <!--
+    answerSections(unloadingFindingsViewModel.section)
 
-    @answerSections(unloadingFindingsViewModel.section)
+    visibleSection(unloadingFindingsViewModel.additionalComments)
+    -->
 
-    @visibleSection(unloadingFindingsViewModel.additionalComments)
+    @summaryDetails(unloadingFindingsViewModel.section)
+
 
     @formHelper(action = routes.UnloadingFindingsController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
         @button(attributes = Map("id" -> "submit"))
