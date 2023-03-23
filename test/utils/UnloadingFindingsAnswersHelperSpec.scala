@@ -122,20 +122,64 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             SummaryListRow(
               key = Key("Container identification number".toText),
               value = Value(containerIdentificationNumber.toText),
-              actions = Some(
-                Actions(
-                  items = List(
-                    ActionItem(
-                      content = "Change".toText,
-                      href = controllers.routes.NewContainerIdentificationNumberController.onPageLoad(arrivalId, index, NormalMode).url,
-                      visuallyHiddenText = Some(s"container identification number $containerIdentificationNumber"),
-                      attributes = Map("id" -> s"change-container-identification-number-${index.display}")
-                    )
-                  )
-                )
-              )
+              actions = None
             )
           )
+        }
+      }
+    }
+
+    "transportEquipmentSections" - {
+      "must return None" - {
+        s"when no transport equipments defined" in {
+
+          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
+          val result = helper.transportEquipmentSections
+          result.isEmpty mustBe true
+        }
+      }
+
+      "must return Some(Row)s" - {
+        s"when a transport equipment is are defined" in {
+
+          val answers = emptyUserAnswers
+            .setValue(ContainerIdentificationNumberPage(index), "container1")
+            .setValue(SealPage(index, index), "seal1")
+            .setValue(ContainerIdentificationNumberPage(Index(1)), "container2")
+            .setValue(SealPage(Index(1), index), "seal2")
+
+          val helper              = new UnloadingFindingsAnswersHelper(answers)
+          val transportEquipment1 = helper.transportEquipmentSections.head.rows
+          val transportEquipment2 = helper.transportEquipmentSections(1).rows
+
+          val containerRow1 = transportEquipment1.head
+          val sealRow1      = transportEquipment1(1)
+          val containerRow2 = transportEquipment2.head
+          val sealRow2      = transportEquipment2(1)
+
+          containerRow1 mustBe
+            SummaryListRow(
+              key = Key("Container identification number".toText),
+              value = Value("container1".toText)
+            )
+
+          sealRow1 mustBe
+            SummaryListRow(
+              key = Key("Seal 1".toText),
+              value = Value("seal1".toText)
+            )
+
+          containerRow2 mustBe
+            SummaryListRow(
+              key = Key("Container identification number".toText),
+              value = Value("container2".toText)
+            )
+
+          sealRow2 mustBe
+            SummaryListRow(
+              key = Key("Seal 1".toText),
+              value = Value("seal2".toText)
+            )
         }
       }
     }
@@ -165,18 +209,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             SummaryListRow(
               key = Key(s"Seal ${sealIndex.display}".toText),
               value = Value(sealIdentifier.toText),
-              actions = Some(
-                Actions(
-                  items = List(
-                    ActionItem(
-                      content = "Change".toText,
-                      href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode).url,
-                      visuallyHiddenText = Some(s"seal ${sealIndex.display} - $sealIdentifier"),
-                      attributes = Map("id" -> s"change-seal-identifier-${sealIndex.display}")
-                    )
-                  )
-                )
-              )
+              actions = None
             )
           )
         }

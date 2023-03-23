@@ -90,22 +90,22 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
       sealIndex => transportEquipmentSeal(equipmentIndex, sealIndex)
     )
 
-  def containerIdentificationNumber(index: Index): Option[SummaryListRow] = getAnswerAndBuildRowWithDynamicHiddenText[String](
+  def containerIdentificationNumber(index: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = ContainerIdentificationNumberPage(index),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.containerIdentificationNumber",
-    id = Some(s"change-container-identification-number-${index.display}"),
+    id = None,
     args = None,
-    call = Some(controllers.routes.NewContainerIdentificationNumberController.onPageLoad(arrivalId, index, NormalMode))
+    call = None
   )
 
-  def transportEquipmentSeal(equipmentIndex: Index, sealIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRowWithDynamicHiddenText[String](
+  def transportEquipmentSeal(equipmentIndex: Index, sealIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = SealPage(equipmentIndex, sealIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.sealIdentifier",
-    args = Some(Seq(sealIndex.display)),
-    id = Some(s"change-seal-identifier-${sealIndex.display}"),
-    call = Some(controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode))
+    args = sealIndex.display,
+    id = None,
+    call = None
   )
 
   def houseConsignmentSections: Seq[Section] =
