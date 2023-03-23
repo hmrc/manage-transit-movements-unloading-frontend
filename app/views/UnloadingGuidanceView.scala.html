@@ -15,16 +15,22 @@
  *@
 
 @import controllers.routes
-@import views.html.components.{Button, Heading}
+@import views.html.components.{Button, Heading, detailsComponent, detailsBlock, govukAccordion}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     heading: Heading,
-    button: Button
+    button: Button,
+    accordion: govukAccordion
 )
 
 @(mrn: MovementReferenceNumber, arrivalId: ArrivalId)(implicit request: Request[_], messages: Messages)
+
+
+@foo = {
+    <span  class="govuk-heading-m govuk-!-margin-bottom-0" style="float:left; color: #1d70b8">Departure transport means 1</span>
+}
 
 @mainTemplate(
     title = messages("unloadingGuidance.title"),
@@ -39,6 +45,9 @@
         <p class="govuk-body">@messages("unloadingGuidance.pdf.preLinkText")
         <a id="download" class="govuk-link" href=@routes.UnloadingPermissionPDFController.getPDF(arrivalId)>@messages("unloadingGuidance.pdf.link")</a>
         .</p>
+
+
+        @accordion()
 
         @button(attributes = Map("id" -> "submit"))
     }

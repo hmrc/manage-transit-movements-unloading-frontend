@@ -1,0 +1,78 @@
+.accordion-group {
+    margin: 0;
+    padding: 15px 0 15px 10px;
+    border-top: 1px solid;
+
+    &.no-border {
+        border-top: none;
+    }
+
+    &.field-help {
+        border-top: none;
+        padding: 15px 0 5px 0;
+
+        summary,
+        .accordion-group--summary {
+            font-weight: 400;
+        }
+    }
+
+    &[__native="false"]
+    {
+        summary
+        {
+            padding-left: 1.35em;
+            position: relative;
+
+            i.arrow {
+                left: 0;
+                position: absolute;
+            }
+        }
+    }
+
+    &.no-padding-left
+    {
+        padding-left: 0;
+    }
+
+    summary i.arrow {
+        font-size: 0.9em;
+        margin-right: 0.2em;
+    }
+
+    > div
+    {
+        margin-top: 1em;
+    }
+
+    summary
+    {
+        font-weight: 700;
+        margin: 0;
+
+        &.no-underline {
+            text-decoration: none;
+        }
+    }
+}
+
+.accordion-group--summary-label {
+    display: inline;
+    text-decoration: underline;
+    color: #1d70b8;
+    @extend .govuk-heading-m;
+
+    &.form-field {
+        float: none;
+        width: auto;
+    }
+
+    .box-number {
+        width: auto;
+    }
+}
+
+.text-align--right {
+    text-align: right;
+}

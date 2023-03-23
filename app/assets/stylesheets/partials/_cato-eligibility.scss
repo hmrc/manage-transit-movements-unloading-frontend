@@ -1,0 +1,133 @@
+$govuk-assets-path: "/cato/public/lib/govuk-frontend/govuk/assets/";
+$hmrc-assets-path: "/cato/public/lib/hmrc-frontend/hmrc/assets/";
+
+@import "lib/govuk-frontend/govuk/all";
+@import "lib/hmrc-frontend/hmrc/all";
+
+//polyfill children elements not covered by direct styling classes
+.govuk-body a,
+.govuk-details a {
+    @extend .govuk-link;
+}
+
+//polyfill old patterns with new styling
+
+
+//****
+// Phase banner (https://design-system.service.gov.uk/components/phase-banner/)
+//****
+.beta-banner {
+@extend .govuk-phase-banner;
+
+    >p {
+        @extend .govuk-phase-banner__content;
+    }
+
+    .phase-tag {
+        @extend .govuk-tag;
+        @extend .govuk-phase-banner__content__tag;
+    }
+
+    >p>a,
+    >p>span {
+        @extend .govuk-phase-banner__text;
+        margin-right: .3em;
+        display: inline-block;
+    }
+
+    >p>a {
+        @extend .govuk-link;
+    }
+
+}
+
+//****
+// Back link (https://design-system.service.gov.uk/components/phase-banner/)
+//****
+
+#link-back,
+.link-back {
+    @extend .govuk-back-link;
+}
+
+//****
+// Visually hidden components
+//****
+.visuallyhidden {
+    @extend .govuk-visually-hidden;
+}
+
+//****
+// Get help with this service
+// (This is a pattern which uses a number of components)
+//****
+
+.accordion-group.field-help {
+    @extend .govuk-details;
+
+    >.summary {
+        cursor: pointer;
+        display: inline-block;
+        color: $govuk-link-colour;
+        @extend .govuk-details__summary-text;
+        position: relative;
+
+        &:hover {
+            color: $govuk-link-hover-colour;
+        }
+
+        &:focus {
+            @extend .govuk-link:focus;
+            color: $govuk-link-active-colour;
+        }
+    }
+
+    .panel-indent {
+        @extend .govuk-details__text;
+    }
+
+    fieldset {
+        margin-left: 0;
+        margin-right: 0;
+        border: none;
+        padding: 0;
+    }
+
+    .form-group-compound {
+        @extend .govuk-form-group;
+    }
+    .form-field--error {
+        @extend .govuk-form-group--error;
+    }
+
+    .form-label {
+        @extend .govuk-label;
+    }
+    .error-notification {
+        @extend .govuk-error-message;
+    }
+
+    .input--fullwidth,
+    .input--cleared {
+        @extend .govuk-input;
+    }
+
+    .form-field--error .input--fullwidth,
+    .form-field--error .input--cleared {
+        @extend .govuk-input--error;
+    }
+
+    .button {
+        @extend .govuk-button;
+    }
+
+    .cato-help--links-list a {
+        @extend .govuk-link;
+
+        &:after {
+            content: " (opens in a new tab)";
+        }
+    }
+
+}
+

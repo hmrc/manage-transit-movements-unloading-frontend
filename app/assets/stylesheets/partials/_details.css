@@ -1,0 +1,25 @@
+.details--arrow-right {
+  display: list-item;
+}
+
+.details--arrow-right:focus {
+  outline: 3px solid transparent;
+  color: #0b0c0c;
+  background-color: #fd0;
+  box-shadow: 0 -2px #fd0, 0 4px #0b0c0c;
+  text-decoration: none;
+  width: fit-content;
+}
+
+@supports (width: fit-content) or (-moz-width: fit-content) or (-webkit-width: fit-content) {
+  #wrapper summary {
+    display: list-item !important;
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
+    width: fit-content;
+  }
+
+  #wrapper summary .arrow {
+    display: none !important;
+  }
+}

@@ -1,0 +1,92 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@(detailsAttributes: String = "",
+        isAccordionGroup: Boolean = false,
+        isOpen: Boolean = false,
+        summaryAttributes: String = "",
+        summaryCustomCss: String = "",
+        summaryUnderline: Boolean = false,
+        contentAttributes: String = "",
+        contentCustomCss: String = "",
+        contentIsHelp: Boolean = false,
+        contentIsBlackHelp: Boolean = false,
+        contentIsPanel: Boolean = false,
+        noPaddingLeft: Boolean = false,
+        noMarginBottom: Boolean = false,
+        visible: Boolean = true,
+        id: String = "",
+        actionsHtml: Option[Html] = None,
+        detailsCustomCss: String = ""
+)(summary: Html)(content: Html)(implicit messages: Messages)
+
+@contentClass = @{
+    var cssClass = ""
+    if (contentIsHelp) {
+        cssClass += "field-help-content "
+    }
+    if (contentIsBlackHelp) {
+        cssClass += "field-help-content--black "
+    }
+    if (contentIsPanel) {
+        cssClass += "panel-indent "
+    }
+    cssClass
+}
+
+@detailsClass = @{
+    var cssClass = ""
+    if (isAccordionGroup) {
+        cssClass += "accordion-group "
+    }
+    if (noPaddingLeft) {
+        cssClass += "no-padding-left "
+    }
+    if (noMarginBottom) {
+        cssClass += "margin-bottom-none "
+    }
+    cssClass
+}
+
+@summaryClass = @{
+    var cssClass = ""
+    if (summaryUnderline) {
+        cssClass += "accordion-group--summary-label "
+    }
+    cssClass
+}
+
+@if(visible) {
+    @if(actionsHtml.nonEmpty) {
+        <div class="details-group">
+            <div @if(id.nonEmpty) { id="@id-actions" } class="details-actions">
+                @actionsHtml.get
+            </div>
+    }
+
+    <details @if(id.nonEmpty) { id="@id" } class="@detailsClass @detailsCustomCss" @Html(detailsAttributes) @if(isOpen){ open }>
+        <summary id="@{id}Summary" class="@summaryClass @summaryCustomCss" @summaryAttributes>
+            @summary
+        </summary>
+        <div class="@contentClass @contentCustomCss">
+            @content
+        </div>
+    </details>
+
+    @if(actionsHtml.nonEmpty) {
+        </div>
+    }
+}
