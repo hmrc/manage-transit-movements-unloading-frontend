@@ -22,6 +22,7 @@ import models.ArrivalId
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewModels.UnloadingFindingsViewModel
 import viewModels.UnloadingFindingsViewModel.UnloadingFindingsViewModelProvider
 import views.html.UnloadingFindingsView
 
@@ -36,7 +37,7 @@ class UnloadingFindingsController @Inject() (
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val unloadingFindingsViewModel = viewModelProvider.apply(request.userAnswers)
+      val unloadingFindingsViewModel: UnloadingFindingsViewModel = viewModelProvider.apply(request.userAnswers)
 
       Ok(view(request.userAnswers.mrn, arrivalId, unloadingFindingsViewModel))
   }

@@ -55,7 +55,7 @@ object UnloadingFindingsViewModel {
         addAnotherLink = helper.addAdditionalComments()
       )
 
-      val sections = Seq(transportMeansSection) ++ transportEquipmentSections ++ itemsSummarySection ++ itemsSection
+      val sections: Seq[Section] = Seq(transportMeansSection) ++ transportEquipmentSections ++ itemsSummarySection ++ itemsSection
 
       new UnloadingFindingsViewModel(sections, additionalCommentsSection)
     }

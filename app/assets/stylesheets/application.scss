@@ -29,7 +29,7 @@ $hmrc-assets-path: "/manage-transit-movements/unloading/assets/lib/hmrc-frontend
 
 .govuk-details__summary {
   @extend .govuk-details__summary;
-  border-bottom: 1px solid #1d70b8;
+  border-bottom: 1px solid $govuk-link-colour;
   width: 96%;
 }
 
