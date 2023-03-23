@@ -110,6 +110,49 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             connector.getCustomsOffice("GB00001").futureValue mustBe None
         }
       }
+
+      "getCountryByCodeV2" - {
+        val code             = "GB"
+        val countryByCodeUrl = s"/test-only/transit-movements-trader-reference-data/countries/$code"
+        "should handle a 200 response" in {
+
+          val countryCodeResponseJson: String =
+            """
+              |[
+              | {
+              |   "code":"GB",
+              |   "state":"valid",
+              |   "description":"United Kingdom"
+              | }
+              |]
+              |""".stripMargin
+
+          server.stubFor(
+            get(urlEqualTo(countryByCodeUrl))
+              .willReturn(okJson(countryCodeResponseJson))
+          )
+
+          val expectedResult = Country("GB", "United Kingdom")
+
+          connector.getCountryByCodeV2(code).futureValue mustBe expectedResult
+        }
+        "should handle a error response" in {
+          val errorResponseCodes: Gen[Int] = Gen.chooseNum(400: Int, 599: Int)
+
+          forAll(errorResponseCodes) {
+            errorResponse =>
+              server.stubFor(
+                get(urlEqualTo(countryByCodeUrl))
+                  .willReturn(
+                    aResponse()
+                      .withStatus(errorResponse)
+                  )
+              )
+
+              connector.getCountryByCodeV2(code).futureValue mustBe None
+          }
+        }
+      }
     }
   }
 }
