@@ -5,19 +5,6 @@ $hmrc-assets-path: "/manage-transit-movements/unloading/assets/lib/hmrc-frontend
 @import "lib/hmrc-frontend/hmrc/all";
 
 @import "partials/shame";
-@import "partials/accordion-group";
-@import "partials/details";
-@import "partials/cato-eligibility";
-
-.details-group {
-  position: relative;
-}
-
-.details-actions {
-  position: absolute;
-  right: 0;
-  top: 15px;
-}
 
 .summary-title {
   @extend .govuk-heading-m;
