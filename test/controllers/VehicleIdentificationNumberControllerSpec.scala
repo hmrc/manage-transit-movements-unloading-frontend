@@ -34,7 +34,7 @@ class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDef
   private val form         = formProvider()
   private val mode         = NormalMode
 
-  lazy val vehicleIdentificationNumberRoute: String = controllers.routes.VehicleIdentificationNumberController.onPageLoad(arrivalId, mode).url
+  lazy val vehicleIdentificationNumberRoute: String = controllers.routes.VehicleIdentificationNumberController.onPageLoad(arrivalId, index, mode).url
 
   "VehicleIdentificationNumber Controller" - {
 
@@ -52,13 +52,13 @@ class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDef
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, mode)(request, messages).toString
+        view(form, mrn, arrivalId, index, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(VehicleIdentificationNumberPage, "answer")
+      val userAnswers = emptyUserAnswers.setValue(VehicleIdentificationNumberPage(index), "answer")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, vehicleIdentificationNumberRoute)
@@ -72,7 +72,7 @@ class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDef
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, index, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -106,7 +106,7 @@ class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDef
       val view = injector.instanceOf[VehicleIdentificationNumberView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, arrivalId, mode)(request, messages).toString
+        view(boundForm, mrn, arrivalId, index, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

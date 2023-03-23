@@ -69,21 +69,20 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
       .get(TransportEquipmentListSection)
       .mapWithIndex {
         (_, equipmentIndex) =>
-
           val containerRow: Seq[Option[SummaryListRow]] = Seq(containerIdentificationNumber(equipmentIndex))
           val sealRows: Seq[SummaryListRow]             = transportEquipmentSeals(equipmentIndex)
 
           val rows = containerRow.head match {
-            case Some(containerRow) =>Seq(containerRow) ++ sealRows
-            case None => sealRows
+            case Some(containerRow) => Seq(containerRow) ++ sealRows
+            case None               => sealRows
           }
 
-        Some(
-          Section(
-            messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display),
-            rows
+          Some(
+            Section(
+              messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display),
+              rows
+            )
           )
-        )
       }
 
   def transportEquipmentSeals(equipmentIndex: Index): Seq[SummaryListRow] =
@@ -193,12 +192,6 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
       userAnswers.get(NetWeightPage(houseConsignmentIndex, itemIndex)).getOrElse(0d)
     )
 
-  def numberOfItemsRow(answer: Int): SummaryListRow = buildRowWithNoChangeLink(
-    answer = formatAsText(answer),
-    prefix = "unloadingFindings.rowHeadings.numberOfItems",
-    args = None
-  )
-
   def totalGrossWeightRow(answer: Double): SummaryListRow = buildRowWithNoChangeLink(
     answer = formatAsWeight(answer),
     prefix = "unloadingFindings.rowHeadings.houseConsignment.grossWeight",
@@ -232,7 +225,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
     page = ItemDescriptionPage(houseConsignmentIndex, itemIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.item.description",
-    id = Some(s"change-item-description-${itemIndex.display}"),
+    id = None,
     call = None //TODO: item description change controller
   )
 
@@ -241,8 +234,8 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
     formatAnswer = formatAsWeight,
     prefix = "unloadingFindings.rowHeadings.item.grossWeight",
     args = itemIndex.display,
-    id = Some(s"change-gross-weight-${itemIndex.display}"),
-    call = Some(controllers.routes.GrossWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode))
+    id = None,
+    call = None
   )
 
   def netWeightRow(houseConsignmentIndex: Index, itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Double](
@@ -250,8 +243,8 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
     formatAnswer = formatAsWeight,
     prefix = "unloadingFindings.rowHeadings.item.netWeight",
     args = itemIndex.display,
-    id = Some(s"change-net-weight-${itemIndex.display}"),
-    call = Some(controllers.routes.NetWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode))
+    id = None,
+    call = None
   )
 
 }

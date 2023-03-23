@@ -30,7 +30,7 @@ class VehicleRegistrationCountryViewSpec extends InputSelectViewBehaviours[Count
   override def form: Form[Country] = new VehicleRegistrationCountryFormProvider()(values)
 
   override def applyView(form: Form[Country]): HtmlFormat.Appendable =
-    injector.instanceOf[VehicleRegistrationCountryView].apply(form, values, mrn, arrivalId, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[VehicleRegistrationCountryView].apply(form, values, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "vehicleRegistrationCountry"
 

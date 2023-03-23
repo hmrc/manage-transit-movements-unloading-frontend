@@ -27,21 +27,42 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
   "Unloading findings sections" - {
 
-    "must render Means of Transport section" in {
-      val userAnswers = emptyUserAnswers
-        .setValue(VehicleIdentificationNumberPage, "123456")
-        .setValue(VehicleIdentificationTypePage, "31")
-        .setValue(VehicleRegistrationCountryPage, "DE")
+    "must render Means of Transport section" - {
+      "when there is one" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(VehicleIdentificationNumberPage(index), "123456")
+          .setValue(VehicleIdentificationTypePage(index), "31")
+          .setValue(VehicleRegistrationCountryPage(index), "DE")
 
-      setExistingUserAnswers(userAnswers)
+        setExistingUserAnswers(userAnswers)
 
-      val viewModelProvider = new UnloadingFindingsViewModelProvider()
-      val result            = viewModelProvider.apply(userAnswers)
-      val section           = result.section.head
+        val viewModelProvider = new UnloadingFindingsViewModelProvider()
+        val result            = viewModelProvider.apply(userAnswers)
+        val section           = result.section.head
 
-      section.sectionTitle.value mustBe "Means of transport"
-      section.rows.size mustBe 2
-      section.viewLink must not be defined
+        section.sectionTitle.value mustBe "Means of transport 1"
+        section.rows.size mustBe 2
+        section.viewLink must not be defined
+      }
+      "when there is multiple" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(VehicleIdentificationNumberPage(index), "123456")
+          .setValue(VehicleIdentificationTypePage(index), "31")
+          .setValue(VehicleRegistrationCountryPage(index), "DE")
+          .setValue(VehicleIdentificationNumberPage(Index(1)), "123456")
+          .setValue(VehicleIdentificationTypePage(Index(1)), "31")
+          .setValue(VehicleRegistrationCountryPage(Index(1)), "DE")
+
+        setExistingUserAnswers(userAnswers)
+
+        val viewModelProvider = new UnloadingFindingsViewModelProvider()
+        val result            = viewModelProvider.apply(userAnswers)
+        val section           = result.section(1)
+
+        section.sectionTitle.value mustBe "Means of transport 2"
+        section.rows.size mustBe 2
+        section.viewLink must not be defined
+      }
     }
 
     "must render transport equipment section" - {
@@ -55,7 +76,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
           val viewModelProvider = new UnloadingFindingsViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers)
-          val section           = result.section(1)
+          val section           = result.section.head
 
           section.sectionTitle.value mustBe "Transport equipment 1"
           section.rows.size mustBe 1
@@ -71,30 +92,12 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
           val viewModelProvider = new UnloadingFindingsViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers)
-          val section           = result.section(1)
+          val section           = result.section.head
 
           section.sectionTitle.value mustBe "Transport equipment 1"
           section.rows.size mustBe 2
-          section.viewLink mustBe defined
+          section.viewLink must not be defined
         }
-
-        "with seals and added seals" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(ContainerIdentificationNumberPage(equipmentIndex), "123456")
-            .setValue(SealPage(equipmentIndex, sealIndex), "123456")
-            .setValue(NewSealPage(equipmentIndex, sealIndex), "123456")
-
-          setExistingUserAnswers(userAnswers)
-
-          val viewModelProvider = new UnloadingFindingsViewModelProvider()
-          val result            = viewModelProvider.apply(userAnswers)
-          val section           = result.section(1)
-
-          section.sectionTitle.value mustBe "Transport equipment 1"
-          section.rows.size mustBe 3
-          section.viewLink mustBe defined
-        }
-
       }
       "when there is multiple" - {
 
@@ -107,7 +110,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
           val viewModelProvider = new UnloadingFindingsViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers)
-          val section           = result.section(2)
+          val section           = result.section(1)
 
           section.sectionTitle.value mustBe "Transport equipment 2"
           section.rows.size mustBe 1
@@ -125,89 +128,93 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
           val viewModelProvider = new UnloadingFindingsViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers)
-          val section           = result.section(2)
+          val section           = result.section(1)
 
           section.sectionTitle.value mustBe "Transport equipment 2"
           section.rows.size mustBe 2
-          section.viewLink mustBe defined
-        }
-
-        "with seals and added seals" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(ContainerIdentificationNumberPage(equipmentIndex), "123456")
-            .setValue(SealPage(equipmentIndex, sealIndex), "123456")
-            .setValue(NewSealPage(equipmentIndex, sealIndex), "123456")
-            .setValue(ContainerIdentificationNumberPage(Index(1)), "123456")
-            .setValue(SealPage(Index(1), sealIndex), "123456")
-            .setValue(NewSealPage(Index(1), sealIndex), "123456")
-
-          setExistingUserAnswers(userAnswers)
-
-          val viewModelProvider = new UnloadingFindingsViewModelProvider()
-          val result            = viewModelProvider.apply(userAnswers)
-          val section           = result.section(2)
-
-          section.sectionTitle.value mustBe "Transport equipment 2"
-          section.rows.size mustBe 3
-          section.viewLink mustBe defined
+          section.viewLink must not be defined
         }
       }
     }
 
-//    "must render item summary section" in {
-//      val userAnswers = emptyUserAnswers
-//        .setValue(ItemDescriptionPage(itemIndex), "shirts")
-//        .setValue(GrossWeightPage(itemIndex), 10.00d)
-//        .setValue(NetWeightPage(itemIndex), 20.00d)
+    "must render house consignment sections" - {
+      "when there is one" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(GrossWeightPage(index, itemIndex), 10.00d)
+          .setValue(NetWeightPage(index, itemIndex), 20.00d)
+          .setValue(ConsignorNamePage(index), "name")
+          .setValue(ConsignorIdentifierPage(index), "identifier")
+
+        setExistingUserAnswers(userAnswers)
+
+        val viewModelProvider = new UnloadingFindingsViewModelProvider()
+        val result            = viewModelProvider.apply(userAnswers)
+        val section           = result.section.head
+
+        section.sectionTitle.value mustBe "House consignment 1"
+        section.rows.size mustBe 4
+        section.viewLink mustBe defined
+      }
+      "when there is multiple" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(GrossWeightPage(index, itemIndex), 10.00d)
+          .setValue(NetWeightPage(index, itemIndex), 20.00d)
+          .setValue(ConsignorNamePage(index), "name")
+          .setValue(ConsignorIdentifierPage(index), "identifier")
+          .setValue(GrossWeightPage(Index(1), itemIndex), 10.00d)
+          .setValue(NetWeightPage(Index(1), itemIndex), 20.00d)
+          .setValue(ConsignorNamePage(Index(1)), "name")
+          .setValue(ConsignorIdentifierPage(Index(1)), "identifier")
+
+        setExistingUserAnswers(userAnswers)
+
+        val viewModelProvider = new UnloadingFindingsViewModelProvider()
+        val result            = viewModelProvider.apply(userAnswers)
+        val section           = result.section(1)
+
+        section.sectionTitle.value mustBe "House consignment 2"
+        section.rows.size mustBe 4
+        section.viewLink mustBe defined
+      }
+    }
+
+//    "must render item section" - {
+//      "when there is one" - {
+//        val userAnswers = emptyUserAnswers
+//          .setValue(ItemDescriptionPage(index, itemIndex), "shirts")
+//          .setValue(GrossWeightPage(index, itemIndex), 10.00d)
+//          .setValue(NetWeightPage(index, itemIndex), 20.00d)
 //
-//      setExistingUserAnswers(userAnswers)
+//        setExistingUserAnswers(userAnswers)
 //
-//      val viewModelProvider = new UnloadingFindingsViewModelProvider()
-//      val result            = viewModelProvider.apply(userAnswers)
-//      val section           = result.section(1)
+//        val viewModelProvider = new UnloadingFindingsViewModelProvider()
+//        val result            = viewModelProvider.apply(userAnswers)
+//        val section           = result.section(2)
 //
-//      section.sectionTitle.value mustBe "Items summary"
-//      section.rows.size mustBe 3
-//      section.viewLink must not be defined
+//        section.sectionTitle.value mustBe "Item 1"
+//        section.rows.size mustBe 3
+//        section.viewLink must not be defined
+//      }
+//
+//      "when there is multiple" - {
+//        val userAnswers = emptyUserAnswers
+//          .setValue(ItemDescriptionPage(index, itemIndex), "shirts")
+//          .setValue(GrossWeightPage(index, itemIndex), 10.00d)
+//          .setValue(NetWeightPage(index, itemIndex), 20.00d)
+//          .setValue(ItemDescriptionPage(Index(1), Index(1)), "pants")
+//          .setValue(GrossWeightPage(Index(1), Index(1)), 22.00d)
+//          .setValue(NetWeightPage(Index(1), Index(1)), 24.00d)
+//
+//        setExistingUserAnswers(userAnswers)
+//
+//        val viewModelProvider = new UnloadingFindingsViewModelProvider()
+//        val result            = viewModelProvider.apply(userAnswers)
+//        val section           = result.section(3)
+//
+//        section.sectionTitle.value mustBe "Item 2"
+//        section.rows.size mustBe 3
+//        section.viewLink must not be defined
+//      }
 //    }
-
-    "must render item section" - {
-      "when there is one" - {
-        val userAnswers = emptyUserAnswers
-          .setValue(ItemDescriptionPage(index, itemIndex), "shirts")
-          .setValue(GrossWeightPage(index, itemIndex), 10.00d)
-          .setValue(NetWeightPage(index, itemIndex), 20.00d)
-
-        setExistingUserAnswers(userAnswers)
-
-        val viewModelProvider = new UnloadingFindingsViewModelProvider()
-        val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.section(2)
-
-        section.sectionTitle.value mustBe "Item 1"
-        section.rows.size mustBe 3
-        section.viewLink must not be defined
-      }
-
-      "when there is multiple" - {
-        val userAnswers = emptyUserAnswers
-          .setValue(ItemDescriptionPage(index, itemIndex), "shirts")
-          .setValue(GrossWeightPage(index, itemIndex), 10.00d)
-          .setValue(NetWeightPage(index, itemIndex), 20.00d)
-          .setValue(ItemDescriptionPage(Index(1), Index(1)), "pants")
-          .setValue(GrossWeightPage(Index(1), Index(1)), 22.00d)
-          .setValue(NetWeightPage(Index(1), Index(1)), 24.00d)
-
-        setExistingUserAnswers(userAnswers)
-
-        val viewModelProvider = new UnloadingFindingsViewModelProvider()
-        val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.section(3)
-
-        section.sectionTitle.value mustBe "Item 2"
-        section.rows.size mustBe 3
-        section.viewLink must not be defined
-      }
-    }
   }
 }

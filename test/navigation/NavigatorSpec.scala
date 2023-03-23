@@ -238,26 +238,6 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           }
         }
 
-        "must go from Vehicle Name Registration Reference page to check your answers page" in {
-
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              navigator
-                .nextPage(VehicleIdentificationNumberPage, mode, answers)
-                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
-          }
-        }
-
-        "must go from Vehicle Registration Country page to check your answers page" in {
-
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              navigator
-                .nextPage(VehicleIdentificationNumberPage, mode, answers)
-                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
-          }
-        }
-
         "must go from Gross mass amount page to check your answers page" in {
 
           forAll(arbitrary[UserAnswers]) {

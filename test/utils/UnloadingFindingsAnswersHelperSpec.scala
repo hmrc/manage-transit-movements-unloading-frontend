@@ -19,7 +19,6 @@ package utils.cyaHelpers
 import base.SpecBase
 import generators.Generators
 import models.{Identification, Index, NormalMode}
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
@@ -32,19 +31,18 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
   "UnloadingFindingsAnswersHelper" - {
 
-    "departureMeansID" - {
+    "transportMeansID" - {
 
       val vehicleIdentificationNumber = Gen.alphaNumStr.sample.value
       val vehicleIdentificationType   = Gen.oneOf(Identification.values).sample.value
 
-      val identificationTypeMessage       = messages(s"${Identification.messageKeyPrefix}.${vehicleIdentificationType.toString}")
-      val identificationTypeHiddenMessage = messages(s"${Identification.messageKeyPrefix}.${vehicleIdentificationType.toString}.change.hidden")
+      val identificationTypeMessage = messages(s"${Identification.messageKeyPrefix}.${vehicleIdentificationType.toString}")
 
       "must return None" - {
         s"when $VehicleIdentificationNumberPage undefined" in {
 
           val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
-          val result = helper.departureMeansID
+          val result = helper.transportMeansID(index)
           result mustBe None
         }
       }
@@ -52,41 +50,30 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       "must return Some(Row)" - {
         s"when $VehicleIdentificationNumberPage defined" in {
           val answers = emptyUserAnswers
-            .setValue(VehicleIdentificationNumberPage, vehicleIdentificationNumber)
-            .setValue(VehicleIdentificationTypePage, vehicleIdentificationType.identificationType.toString)
+            .setValue(VehicleIdentificationNumberPage(index), vehicleIdentificationNumber)
+            .setValue(VehicleIdentificationTypePage(index), vehicleIdentificationType.identificationType.toString)
 
           val helper = new UnloadingFindingsAnswersHelper(answers)
-          val result = helper.departureMeansID
+          val result = helper.transportMeansID(index)
 
           result mustBe Some(
             SummaryListRow(
               key = Key(identificationTypeMessage.toText),
               value = Value(vehicleIdentificationNumber.toText),
-              actions = Some(
-                Actions(
-                  items = List(
-                    ActionItem(
-                      content = "Change".toText,
-                      href = controllers.routes.VehicleIdentificationNumberController.onPageLoad(arrivalId, NormalMode).url,
-                      visuallyHiddenText = Some(identificationTypeHiddenMessage),
-                      attributes = Map("id" -> "change-departure-means-id")
-                    )
-                  )
-                )
-              )
+              actions = None
             )
           )
         }
       }
     }
 
-    "departureRegisteredCountry" - { // TODO: Change to country codes once implemented
+    "transportRegisteredCountry" - { // TODO: Change to country codes once implemented
 
       "must return None" - {
         s"when $VehicleRegistrationCountryPage undefined" in {
 
           val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
-          val result = helper.departureRegisteredCountry
+          val result = helper.transportRegisteredCountry(index)
           result mustBe None
         }
       }
@@ -94,27 +81,16 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       "must return Some(Row)" - {
         s"when $VehicleRegistrationCountryPage defined" in {
           val answers = emptyUserAnswers
-            .setValue(VehicleRegistrationCountryPage, "DE")
+            .setValue(VehicleRegistrationCountryPage(index), "DE")
 
           val helper = new UnloadingFindingsAnswersHelper(answers)
-          val result = helper.departureRegisteredCountry
+          val result = helper.transportRegisteredCountry(index)
 
           result mustBe Some(
             SummaryListRow(
               key = Key("Registered country".toText),
               value = Value("DE".toText),
-              actions = Some(
-                Actions(
-                  items = List(
-                    ActionItem(
-                      content = "Change".toText,
-                      href = controllers.routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, NormalMode).url,
-                      visuallyHiddenText = Some("registered country"),
-                      attributes = Map("id" -> "change-departure-means-country")
-                    )
-                  )
-                )
-              )
+              actions = None
             )
           )
         }
@@ -164,96 +140,6 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       }
     }
 
-    "transportEquipmentSections" - {
-      "must return correct seal prefix when new seals have been added" in {
-
-        val sealIdentifier = "123"
-
-        val answers = emptyUserAnswers
-          .setValue(ContainerIdentificationNumberPage(equipmentIndex), "123456")
-          .setValue(SealPage(equipmentIndex, sealIndex), sealIdentifier)
-          .setValue(NewSealPage(equipmentIndex, sealIndex), sealIdentifier)
-          .setValue(NewSealPage(equipmentIndex, Index(1)), sealIdentifier)
-
-        val helper   = new UnloadingFindingsAnswersHelper(answers)
-        val sections = helper.transportEquipmentSections.head.rows
-
-        val previousSeal = sections(1)
-        val newSeal1     = sections(2)
-        val newSeal2     = sections(3)
-
-        previousSeal mustBe
-          SummaryListRow(
-            key = Key(s"Seal ${sealIndex.display}".toText),
-            value = Value(sealIdentifier.toText),
-            actions = Some(
-              Actions(
-                items = List(
-                  ActionItem(
-                    content = "Change".toText,
-                    href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode).url,
-                    visuallyHiddenText = Some(s"seal ${sealIndex.display} - $sealIdentifier"),
-                    attributes = Map("id" -> s"change-seal-identifier-${sealIndex.display}")
-                  )
-                )
-              )
-            )
-          )
-
-        val seal1IndexToDisplay = sealIndex.display + 1
-
-        newSeal1 mustBe
-          SummaryListRow(
-            key = Key(s"Seal $seal1IndexToDisplay".toText),
-            value = Value(sealIdentifier.toText),
-            actions = Some(
-              Actions(
-                items = List(
-                  ActionItem(
-                    content = "Change".toText,
-                    href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode, newSeal = true).url,
-                    visuallyHiddenText = Some(s"seal $seal1IndexToDisplay - $sealIdentifier"),
-                    attributes = Map("id" -> s"change-new-seal-identifier-$seal1IndexToDisplay")
-                  ),
-                  ActionItem(
-                    content = "Remove".toText,
-                    href = controllers.routes.ConfirmRemoveSealController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode).url,
-                    visuallyHiddenText = Some(s"seal $seal1IndexToDisplay - $sealIdentifier"),
-                    attributes = Map("id" -> s"remove-new-seal-identifier-$seal1IndexToDisplay")
-                  )
-                )
-              )
-            )
-          )
-
-        val seal2IndexToDisplay = sealIndex.display + 2
-
-        newSeal2 mustBe
-          SummaryListRow(
-            key = Key(s"Seal $seal2IndexToDisplay".toText),
-            value = Value(sealIdentifier.toText),
-            actions = Some(
-              Actions(
-                items = List(
-                  ActionItem(
-                    content = "Change".toText,
-                    href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, Index(1), NormalMode, newSeal = true).url,
-                    visuallyHiddenText = Some(s"seal $seal2IndexToDisplay - $sealIdentifier"),
-                    attributes = Map("id" -> s"change-new-seal-identifier-$seal2IndexToDisplay")
-                  ),
-                  ActionItem(
-                    content = "Remove".toText,
-                    href = controllers.routes.ConfirmRemoveSealController.onPageLoad(arrivalId, equipmentIndex, Index(1), NormalMode).url,
-                    visuallyHiddenText = Some(s"seal $seal2IndexToDisplay - $sealIdentifier"),
-                    attributes = Map("id" -> s"remove-new-seal-identifier-$seal2IndexToDisplay")
-                  )
-                )
-              )
-            )
-          )
-      }
-    }
-
     "transportEquipmentSeal" - {
 
       val sealIdentifier = Gen.alphaNumStr.sample.value
@@ -297,132 +183,69 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       }
     }
 
-    "transportEquipmentNewSeal" - {
-
-      val sealPrefixNumber = 1
-      val sealIdentifier   = Gen.alphaNumStr.sample.value
+    "houseConsignmentSections" - {
 
       "must return None" - {
-        s"when $NewSealPage undefined" in {
+        s"when no house consignments defined" in {
 
           val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
-          val result = helper.transportEquipmentNewSeal(equipmentIndex, sealIndex, sealPrefixNumber)
-          result mustBe None
+          val result = helper.houseConsignmentSections
+          result.isEmpty mustBe true
         }
       }
 
-      "must return Some(Row)" - {
-        s"when $NewSealPage defined" in {
+      "must return Some(Row)s" - {
+        s"when consignments are defined" in {
+
+          val grossWeight      = Gen.double.sample.value
+          val netWeight        = Gen.double.sample.value
+          val totalGrossWeight = grossWeight * 2
+          val totalNetWeight   = netWeight * 2
 
           val answers = emptyUserAnswers
-            .setValue(NewSealPage(equipmentIndex, sealIndex), sealIdentifier)
+            .setValue(GrossWeightPage(index, itemIndex), grossWeight)
+            .setValue(NetWeightPage(index, itemIndex), netWeight)
+            .setValue(GrossWeightPage(index, Index(1)), grossWeight)
+            .setValue(NetWeightPage(index, Index(1)), netWeight)
+            .setValue(ConsignorNamePage(index), "name")
+            .setValue(ConsignorIdentifierPage(index), "identifier")
 
-          val helper = new UnloadingFindingsAnswersHelper(answers)
-          val result = helper.transportEquipmentNewSeal(equipmentIndex, sealIndex, sealPrefixNumber)
+          val helper   = new UnloadingFindingsAnswersHelper(answers)
+          val sections = helper.houseConsignmentSections.head.rows
 
-          result mustBe Some(
+          val grossWeightRow          = sections.head
+          val netWeightRow            = sections(1)
+          val consignorName           = sections(2)
+          val consignorIdentification = sections(3)
+
+          grossWeightRow mustBe
             SummaryListRow(
-              key = Key(s"Seal $sealPrefixNumber".toText),
-              value = Value(sealIdentifier.toText),
-              actions = Some(
-                Actions(
-                  items = List(
-                    ActionItem(
-                      content = "Change".toText,
-                      href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode, newSeal = true).url,
-                      visuallyHiddenText = Some(s"seal $sealPrefixNumber - $sealIdentifier"),
-                      attributes = Map("id" -> s"change-new-seal-identifier-$sealPrefixNumber")
-                    ),
-                    ActionItem(
-                      content = "Remove".toText,
-                      href = controllers.routes.ConfirmRemoveSealController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode).url,
-                      visuallyHiddenText = Some(s"seal $sealPrefixNumber - $sealIdentifier"),
-                      attributes = Map("id" -> s"remove-new-seal-identifier-$sealPrefixNumber")
-                    )
-                  )
-                )
-              )
+              key = Key("Gross mass".toText),
+              value = Value(s"${totalGrossWeight}kg".toText)
             )
-          )
+
+          netWeightRow mustBe
+            SummaryListRow(
+              key = Key("Net mass".toText),
+              value = Value(s"${totalNetWeight}kg".toText)
+            )
+
+          consignorName mustBe
+            SummaryListRow(
+              key = Key("Consignor name".toText),
+              value = Value("name".toText)
+            )
+
+          consignorIdentification mustBe
+            SummaryListRow(
+              key = Key("Consignor identification number".toText),
+              value = Value("identifier".toText)
+            )
         }
       }
     }
 
-//    "itemsSummarySection" - {
-//
-//      "must return None" - {
-//        s"when no items defined" in {
-//
-//          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
-//          val result = helper.itemsSummarySection
-//          result.isEmpty mustBe true
-//        }
-//      }
-//
-//      "must return Some(Row)s" - {
-//        s"when items are defined" in {
-//
-//          val grossWeight      = Gen.double.sample.value
-//          val netWeight        = Gen.double.sample.value
-//          val totalGrossWeight = grossWeight * 2
-//          val totalNetWeight   = netWeight * 2
-//
-//          val answers = emptyUserAnswers
-//            .setValue(GrossWeightPage(itemIndex), grossWeight)
-//            .setValue(NetWeightPage(itemIndex), netWeight)
-//            .setValue(GrossWeightPage(Index(1)), grossWeight)
-//            .setValue(NetWeightPage(Index(1)), netWeight)
-//
-//          val helper   = new UnloadingFindingsAnswersHelper(answers)
-//          val sections = helper.itemsSummarySection.head.rows
-//
-//          val numberOfItemsRow    = sections.head
-//          val totalGrossWeightRow = sections(1)
-//          val totalNetWeightRow   = sections(2)
-//
-//          numberOfItemsRow mustBe
-//            SummaryListRow(
-//              key = Key("Total number of items".toText),
-//              value = Value("2".toText)
-//            )
-//
-//          totalGrossWeightRow mustBe
-//            SummaryListRow(
-//              key = Key("Total gross weight of all items".toText),
-//              value = Value(s"${totalGrossWeight}kg".toText)
-//            )
-//
-//          totalNetWeightRow mustBe
-//            SummaryListRow(
-//              key = Key("Total net weight of all items".toText),
-//              value = Value(s"${totalNetWeight}kg".toText)
-//            )
-//        }
-//      }
-//    }
-
-    "numberOfItemsRow" - {
-
-      val numberOfItems = arbitrary[Int].sample.value
-
-      "must return Some(Row)" - {
-        s"when number of items is passed to numberOfItemsRow" in {
-
-          val answers = emptyUserAnswers
-
-          val helper = new UnloadingFindingsAnswersHelper(answers)
-          val result = helper.numberOfItemsRow(numberOfItems)
-
-          result mustBe SummaryListRow(
-            key = Key("Total number of items".toText),
-            value = Value(s"$numberOfItems".toText),
-            actions = None
-          )
-        }
-      }
-    }
-
-    "totalGrossWeightRow" - {
+    "grossWeightRow" - {
 
       "must return Some(Row)" - {
         s"when total gross weight is passed to totalGrossWeightRow" in {
@@ -435,7 +258,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
           val result = helper.totalGrossWeightRow(totalGrossWeight)
 
           result mustBe SummaryListRow(
-            key = Key("Total gross weight of all items".toText),
+            key = Key("Gross mass".toText),
             value = Value(s"${totalGrossWeight}kg".toText),
             actions = None
           )
@@ -456,7 +279,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
           val result = helper.totalNetWeightRow(totalNetWeight)
 
           result mustBe SummaryListRow(
-            key = Key("Total net weight of all items".toText),
+            key = Key("Net mass".toText),
             value = Value(s"${totalNetWeight}kg".toText),
             actions = None
           )
@@ -490,7 +313,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
               SummaryListRow(
                 key = Key("Description".toText),
                 value = Value(itemDesc.toText),
-                actions = None //TODO : Add change link once page is implemented
+                actions = None
               )
             )
         }
@@ -522,18 +345,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             SummaryListRow(
               key = Key("Gross weight".toText),
               value = Value(s"${weight}kg".toText),
-              actions = Some(
-                Actions(
-                  items = List(
-                    ActionItem(
-                      content = "Change".toText,
-                      href = controllers.routes.GrossWeightController.onPageLoad(arrivalId, index, itemIndex, NormalMode).url,
-                      visuallyHiddenText = Some(s"gross weight of item ${itemIndex.display}"),
-                      attributes = Map("id" -> s"change-gross-weight-${itemIndex.display}")
-                    )
-                  )
-                )
-              )
+              actions = None
             )
           )
         }
@@ -565,18 +377,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             SummaryListRow(
               key = Key("Net weight".toText),
               value = Value(s"${weight}kg".toText),
-              actions = Some(
-                Actions(
-                  items = List(
-                    ActionItem(
-                      content = "Change".toText,
-                      href = controllers.routes.NetWeightController.onPageLoad(arrivalId, index, itemIndex, NormalMode).url,
-                      visuallyHiddenText = Some(s"net weight of item ${itemIndex.display}"),
-                      attributes = Map("id" -> s"change-net-weight-${itemIndex.display}")
-                    )
-                  )
-                )
-              )
+              actions = None
             )
           )
         }
