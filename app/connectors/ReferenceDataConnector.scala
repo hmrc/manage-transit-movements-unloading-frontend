@@ -40,15 +40,15 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     }
   }
 
-  def getCountryByCodeV2(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[Country]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/countries/$code"
-    http
-      .GET[Country](serviceUrl)
-      .map(Some(_))
-      .recover {
+  def getCountryNameByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[String] = {
+
+        val serviceUrl = s"${config.referenceDataUrl}/countries/$code"
+        http
+        .GET[Country] (serviceUrl).map(_.description)
+        .recover {
         case _ =>
-          logger.error(s"Get Country by code request failed to return data")
-          None
+          logger.error (s"Get Country by code request failed to return data")
+           code
       }
   }
 

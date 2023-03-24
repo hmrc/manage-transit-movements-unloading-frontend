@@ -21,6 +21,7 @@ import controllers.actions.Actions
 import models.ArrivalId
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.ReferenceDataService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.UnloadingFindingsViewModel
 import viewModels.UnloadingFindingsViewModel.UnloadingFindingsViewModelProvider
@@ -31,13 +32,14 @@ class UnloadingFindingsController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: UnloadingFindingsView,
-  viewModelProvider: UnloadingFindingsViewModelProvider
+  viewModelProvider: UnloadingFindingsViewModelProvider,
+  referenceDataService: ReferenceDataService
 ) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val unloadingFindingsViewModel: UnloadingFindingsViewModel = viewModelProvider.apply(request.userAnswers)
+      val unloadingFindingsViewModel: UnloadingFindingsViewModel = viewModelProvider.apply(request.userAnswers, referenceDataService)
 
       Ok(view(request.userAnswers.mrn, arrivalId, unloadingFindingsViewModel))
   }

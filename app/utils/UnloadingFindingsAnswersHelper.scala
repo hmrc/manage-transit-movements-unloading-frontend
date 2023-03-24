@@ -16,35 +16,53 @@
 
 package utils
 
+import cats.data.OptionT
+import models.reference.Country
 import models.{Index, Link, NormalMode, UserAnswers}
 import pages.sections._
 import pages._
 import play.api.i18n.Messages
+import services.ReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.http.HeaderCarrier
 import viewModels.sections.Section
+import cats._
+import cats.implicits._
 
-class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
+import scala.concurrent.{ExecutionContext, Future}
 
-  def transportMeansSections: Seq[Section] =
-    userAnswers.get(TransportMeansListSection).mapWithIndex {
+class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages, hc: HeaderCarrier, ec: ExecutionContext)
+                                                                 extends AnswersHelper(userAnswers) {
+
+  def transportMeansSections(referenceDataService: ReferenceDataService): Seq[Nothing] = {
+    val x: Seq[Nothing] = userAnswers.get(TransportMeansListSection).mapWithIndex {
       (_, transportMeansIndex) =>
         val transportMeansIDRow           = transportMeansID(transportMeansIndex)
-        val transportRegisteredCountryRow = transportRegisteredCountry(transportMeansIndex)
 
-        val rows = (transportMeansIDRow, transportRegisteredCountryRow) match {
-          case (Some(transportMeansIDRow), Some(transportRegisteredCountryRow)) => Seq(transportMeansIDRow, transportRegisteredCountryRow)
-          case (Some(transportMeansIDRow), None)                                => Seq(transportMeansIDRow)
-          case (None, Some(transportRegisteredCountryRow))                      => Seq(transportRegisteredCountryRow)
-          case (_, _)                                                           => Seq.empty
-        }
 
-        Some(
-          Section(
-            sectionTitle = messages("unloadingFindings.subsections.transportMeans", transportMeansIndex.display),
-            rows
-          )
+        val foo: Future[Option[SummaryListRow]] = userAnswers.get(VehicleRegistrationCountryPage(transportMeansIndex)).flatTraverse(x =>
+          referenceDataService.getCountryNameByCode(x).map(transportRegisteredCountry)
         )
-    }
+
+
+        foo.map { transportRegisteredCountryRow =>
+          val rows = (transportMeansIDRow, transportRegisteredCountryRow) match {
+            case (Some(transportMeansIDRow), Some(transportRegisteredCountryRow)) => Seq(transportMeansIDRow, transportRegisteredCountryRow)
+            case (Some(transportMeansIDRow), None) => Seq(transportMeansIDRow)
+            case (None, Some(transportRegisteredCountryRow)) => Seq(transportRegisteredCountryRow)
+            case (_, _) => Seq.empty
+          }
+
+          Some(
+            Section(
+              sectionTitle = messages("unloadingFindings.subsections.transportMeans", transportMeansIndex.display),
+              rows
+            )
+          )
+        }
+     }
+  }
+
 
   def transportMeansID(transportMeansIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRowWithDynamicPrefix[String](
     answerPath = VehicleIdentificationNumberPage(transportMeansIndex),
@@ -55,10 +73,10 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
     call = None
   )
 
-  def transportRegisteredCountry(transportMeansIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  def transportRegisteredCountry(answer: String): Option[SummaryListRow] = buildSimpleRow (
     //TODO COUNTRY CODE TO COUNTRY COUNTRY OBJECT
-    page = VehicleRegistrationCountryPage(transportMeansIndex),
-    formatAnswer = formatAsText,
+    answer = answer,
+    label = "key",
     prefix = "unloadingFindings.rowHeadings.vehicleNationality",
     id = None,
     call = None

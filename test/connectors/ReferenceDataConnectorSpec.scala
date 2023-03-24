@@ -132,7 +132,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
           val expectedResult = Country("GB", "United Kingdom")
 
-          connector.getCountryByCodeV2(code).futureValue.value mustBe expectedResult
+          connector.getCountryNameByCode(code).futureValue.value mustBe expectedResult
         }
         "should handle a error response" in {
           val errorResponseCodes: Gen[Int] = Gen.chooseNum(400: Int, 599: Int)
@@ -147,7 +147,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
                   )
               )
 
-              connector.getCountryByCodeV2(code).futureValue mustBe None
+              connector.getCountryNameByCode(code).futureValue mustBe None
           }
         }
       }

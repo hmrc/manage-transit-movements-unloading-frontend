@@ -16,32 +16,38 @@
 
 package viewModels
 
+import connectors.ReferenceDataConnector
 import models.UserAnswers
 import play.api.i18n.Messages
+import services.ReferenceDataService
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.UnloadingFindingsAnswersHelper
 import viewModels.sections.Section
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 case class UnloadingFindingsViewModel(section: Seq[Section])
 
 object UnloadingFindingsViewModel {
 
-  def apply(userAnswers: UserAnswers)(implicit messages: Messages): UnloadingFindingsViewModel =
-    new UnloadingFindingsViewModelProvider()(userAnswers)
+  def apply(userAnswers: UserAnswers, referenceDataService: ReferenceDataService)
+           (implicit messages: Messages, hc: HeaderCarrier, ec: ExecutionContext): UnloadingFindingsViewModel =
+    new UnloadingFindingsViewModelProvider(referenceDataService)(userAnswers)
 
-  class UnloadingFindingsViewModelProvider @Inject() () {
+  class UnloadingFindingsViewModelProvider @Inject() (referenceDataService: ReferenceDataService) {
 
     def apply(userAnswers: UserAnswers)(implicit messages: Messages): UnloadingFindingsViewModel = {
       val helper = new UnloadingFindingsAnswersHelper(userAnswers)
 
-      val transportMeansSections = helper.transportMeansSections
+      val transportMeansSections = helper.transportMeansSections(referenceDataService)
 
       val transportEquipmentSections = helper.transportEquipmentSections
 
       val houseConsignmentSections = helper.houseConsignmentSections
 
       val sections: Seq[Section] = transportMeansSections ++ transportEquipmentSections ++ houseConsignmentSections
+
 
       new UnloadingFindingsViewModel(sections)
     }
