@@ -40,7 +40,95 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
   "UnloadingFindingsAnswersHelper" - {
 
-    "buildTransportSections" ignore {}
+    "buildTransportSections" - {
+      "must return None" - {
+        s"when no transport means defined" in {
+          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
+          val result = helper.buildTransportSections.futureValue
+          result.isEmpty mustBe true
+        }
+      }
+
+      "must return Some(Row)s" - {
+        val vehicleIdentificationNumber = Gen.alphaNumStr.sample.value
+        val vehicleIdentificationType   = Gen.oneOf(Identification.values).sample.value
+        val identificationTypeMessage   = messages(s"${Identification.messageKeyPrefix}.${vehicleIdentificationType.toString}")
+        s"when there is 1 transport means section defined" in {
+
+          val answers = emptyUserAnswers
+            .setValue(VehicleIdentificationNumberPage(index), vehicleIdentificationNumber)
+            .setValue(VehicleIdentificationTypePage(index), vehicleIdentificationType.identificationType.toString)
+            .setValue(VehicleRegistrationCountryPage(index), "GB")
+
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
+
+          val helper          = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
+          val result          = helper.buildTransportSections.futureValue
+          val transportMeans1 = result.head.rows
+
+          val transportMeansIDRow1      = transportMeans1.head
+          val transportMeansCountryRow1 = transportMeans1(1)
+
+          transportMeansIDRow1 mustBe
+            SummaryListRow(
+              key = Key(identificationTypeMessage.toText),
+              value = Value(vehicleIdentificationNumber.toText)
+            )
+
+          transportMeansCountryRow1 mustBe
+            SummaryListRow(
+              key = Key("Registered country".toText),
+              value = Value(countryDesc.toText)
+            )
+        }
+        s"when multiple transport means sections are defined" in {
+
+          val answers = emptyUserAnswers
+            .setValue(VehicleIdentificationNumberPage(index), vehicleIdentificationNumber)
+            .setValue(VehicleIdentificationTypePage(index), vehicleIdentificationType.identificationType.toString)
+            .setValue(VehicleRegistrationCountryPage(index), "GB")
+            .setValue(VehicleIdentificationNumberPage(Index(1)), vehicleIdentificationNumber)
+            .setValue(VehicleIdentificationTypePage(Index(1)), vehicleIdentificationType.identificationType.toString)
+            .setValue(VehicleRegistrationCountryPage(Index(1)), "GB")
+
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
+
+          val helper          = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
+          val result          = helper.buildTransportSections.futureValue
+          val transportMeans1 = result.head.rows
+          val transportMeans2 = result(1).rows
+
+          val transportMeansIDRow1      = transportMeans1.head
+          val transportMeansCountryRow1 = transportMeans1(1)
+          val transportMeansIDRow2      = transportMeans2.head
+          val transportMeansCountryRow2 = transportMeans2(1)
+
+          transportMeansIDRow1 mustBe
+            SummaryListRow(
+              key = Key(identificationTypeMessage.toText),
+              value = Value(vehicleIdentificationNumber.toText)
+            )
+
+          transportMeansCountryRow1 mustBe
+            SummaryListRow(
+              key = Key("Registered country".toText),
+              value = Value(countryDesc.toText)
+            )
+
+          transportMeansIDRow2 mustBe
+            SummaryListRow(
+              key = Key(identificationTypeMessage.toText),
+              value = Value(vehicleIdentificationNumber.toText)
+            )
+
+          transportMeansCountryRow2 mustBe
+            SummaryListRow(
+              key = Key("Registered country".toText),
+              value = Value(countryDesc.toText)
+            )
+        }
+      }
+    }
 
     "transportMeansID" - {
 
@@ -136,8 +224,6 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
     "transportEquipmentSections" - {
       "must return None" - {
         s"when no transport equipments defined" in {
-          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
-
           val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
           val result = helper.transportEquipmentSections
           result.isEmpty mustBe true
@@ -145,7 +231,32 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       }
 
       "must return Some(Row)s" - {
-        s"when a transport equipment is are defined" in {
+        s"when 1 transport equipment section is defined" in {
+
+          val answers = emptyUserAnswers
+            .setValue(ContainerIdentificationNumberPage(index), "container1")
+            .setValue(SealPage(index, index), "seal1")
+
+          val helper              = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
+          val transportEquipment1 = helper.transportEquipmentSections.head.rows
+
+          val containerRow1 = transportEquipment1.head
+          val sealRow1      = transportEquipment1(1)
+
+          containerRow1 mustBe
+            SummaryListRow(
+              key = Key("Container identification number".toText),
+              value = Value("container1".toText)
+            )
+
+          sealRow1 mustBe
+            SummaryListRow(
+              key = Key("Seal 1".toText),
+              value = Value("seal1".toText)
+            )
+
+        }
+        s"when multiple transport equipment sections are defined" in {
 
           val answers = emptyUserAnswers
             .setValue(ContainerIdentificationNumberPage(index), "container1")

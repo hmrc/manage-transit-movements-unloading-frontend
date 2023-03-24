@@ -33,7 +33,9 @@ import play.api.inject.bind
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
+
   val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
+  private val countryDesc                            = "Great Britain"
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -51,7 +53,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(VehicleRegistrationCountryPage(index), "GB")
 
         setExistingUserAnswers(userAnswers)
-        when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful("Great Britian"))
+        when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService)
         val result            = viewModelProvider.apply(userAnswers).futureValue
@@ -71,7 +73,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(VehicleRegistrationCountryPage(Index(1)), "DE")
 
         setExistingUserAnswers(userAnswers)
-        when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful("Great Britian"))
+        when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService)
         val result            = viewModelProvider.apply(userAnswers).futureValue
@@ -91,7 +93,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             .setValue(ContainerIdentificationNumberPage(equipmentIndex), "123456")
 
           setExistingUserAnswers(userAnswers)
-          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful("Great Britian"))
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
           val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService)
           val result            = viewModelProvider.apply(userAnswers).futureValue
@@ -108,7 +110,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             .setValue(SealPage(equipmentIndex, sealIndex), "123456")
 
           setExistingUserAnswers(userAnswers)
-          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful("Great Britian"))
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
           val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService)
           val result            = viewModelProvider.apply(userAnswers).futureValue
@@ -127,7 +129,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             .setValue(ContainerIdentificationNumberPage(Index(1)), "123456")
 
           setExistingUserAnswers(userAnswers)
-          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful("Great Britian"))
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
           val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService)
           val result            = viewModelProvider.apply(userAnswers).futureValue
@@ -146,7 +148,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             .setValue(SealPage(Index(1), sealIndex), "123456")
 
           setExistingUserAnswers(userAnswers)
-          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful("Great Britian"))
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
           val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService)
           val result            = viewModelProvider.apply(userAnswers).futureValue
@@ -168,7 +170,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(ConsignorIdentifierPage(index), "identifier")
 
         setExistingUserAnswers(userAnswers)
-        when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful("Great Britian"))
+        when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService)
         val result            = viewModelProvider.apply(userAnswers).futureValue
@@ -190,7 +192,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(ConsignorIdentifierPage(Index(1)), "identifier")
 
         setExistingUserAnswers(userAnswers)
-        when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful("Great Britian"))
+        when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService)
         val result            = viewModelProvider.apply(userAnswers).futureValue
