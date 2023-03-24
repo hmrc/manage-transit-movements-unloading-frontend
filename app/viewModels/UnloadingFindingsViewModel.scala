@@ -31,8 +31,11 @@ case class UnloadingFindingsViewModel(section: Seq[Section])
 
 object UnloadingFindingsViewModel {
 
-  def apply(userAnswers: UserAnswers, referenceDataService: ReferenceDataService)
-           (implicit messages: Messages, hc: HeaderCarrier, ec: ExecutionContext): UnloadingFindingsViewModel =
+  def apply(userAnswers: UserAnswers, referenceDataService: ReferenceDataService)(implicit
+    messages: Messages,
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): UnloadingFindingsViewModel =
     new UnloadingFindingsViewModelProvider(referenceDataService)(userAnswers)
 
   class UnloadingFindingsViewModelProvider @Inject() (referenceDataService: ReferenceDataService) {
@@ -47,7 +50,6 @@ object UnloadingFindingsViewModel {
       val houseConsignmentSections = helper.houseConsignmentSections
 
       val sections: Seq[Section] = transportMeansSections ++ transportEquipmentSections ++ houseConsignmentSections
-
 
       new UnloadingFindingsViewModel(sections)
     }
