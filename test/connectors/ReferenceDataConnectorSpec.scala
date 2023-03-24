@@ -118,13 +118,11 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
           val countryCodeResponseJson: String =
             """
-              |[
               | {
               |   "code":"GB",
               |   "state":"valid",
               |   "description":"United Kingdom"
               | }
-              |]
               |""".stripMargin
 
           server.stubFor(
@@ -134,7 +132,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
           val expectedResult = Country("GB", "United Kingdom")
 
-          connector.getCountryByCodeV2(code).futureValue mustBe expectedResult
+          connector.getCountryByCodeV2(code).futureValue.value mustBe expectedResult
         }
         "should handle a error response" in {
           val errorResponseCodes: Gen[Int] = Gen.chooseNum(400: Int, 599: Int)
