@@ -168,6 +168,12 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
       grossAndNetWeightRows ++ Seq(consignorIdentificationRow)
     case (None, Some(consignorNameRow), Some(consignorIdentificationRow)) =>
       Seq(consignorNameRow, consignorIdentificationRow)
+    case (None, Some(consignorNameRow), None) =>
+      Seq(consignorNameRow)
+    case (None, None, Some(consignorIdentificationRow)) =>
+      Seq(consignorIdentificationRow)
+    case (Some(grossAndNetWeightRows), None, None) =>
+      grossAndNetWeightRows
     case (_, _, _) =>
       Seq.empty
   }
