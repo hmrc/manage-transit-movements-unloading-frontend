@@ -19,16 +19,28 @@ package utils.cyaHelpers
 import base.SpecBase
 import generators.Generators
 import models.{Identification, Index, NormalMode}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
+import services.ReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.html.components.{ActionItem, Actions}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.UnloadingFindingsAnswersHelper
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
+  val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
+
+  implicit val hc = HeaderCarrier.apply()
+
+  private val countryDesc = "Great Britian"
   "UnloadingFindingsAnswersHelper" - {
 
     "transportMeansID" - {
@@ -41,7 +53,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       "must return None" - {
         s"when $VehicleIdentificationNumberPage undefined" in {
 
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
+          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
           val result = helper.transportMeansID(index)
           result mustBe None
         }
@@ -53,7 +65,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             .setValue(VehicleIdentificationNumberPage(index), vehicleIdentificationNumber)
             .setValue(VehicleIdentificationTypePage(index), vehicleIdentificationType.identificationType.toString)
 
-          val helper = new UnloadingFindingsAnswersHelper(answers)
+          val helper = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
           val result = helper.transportMeansID(index)
 
           result mustBe Some(
@@ -67,32 +79,23 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       }
     }
 
-    "transportRegisteredCountry" - { // TODO: Change to country codes once implemented
-
-      "must return None" - {
-        s"when $VehicleRegistrationCountryPage undefined" in {
-
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
-          val result = helper.transportRegisteredCountry(index)
-          result mustBe None
-        }
-      }
+    "transportRegisteredCountry" - {
 
       "must return Some(Row)" - {
         s"when $VehicleRegistrationCountryPage defined" in {
           val answers = emptyUserAnswers
-            .setValue(VehicleRegistrationCountryPage(index), "DE")
+            .setValue(VehicleRegistrationCountryPage(index), "GB")
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper = new UnloadingFindingsAnswersHelper(answers)
-          val result = helper.transportRegisteredCountry(index)
+          val helper = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
+          val result = helper.transportRegisteredCountry(countryDesc)
 
-          result mustBe Some(
+          result mustBe
             SummaryListRow(
               key = Key("Registered country".toText),
-              value = Value("DE".toText),
+              value = Value(countryDesc.toText),
               actions = None
             )
-          )
         }
       }
     }
@@ -103,8 +106,9 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
       "must return None" - {
         s"when $ContainerIdentificationNumberPage undefined" in {
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
+          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
           val result = helper.containerIdentificationNumber(index)
           result mustBe None
         }
@@ -114,8 +118,9 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
         s"when $ContainerIdentificationNumberPage defined" in {
           val answers = emptyUserAnswers
             .setValue(ContainerIdentificationNumberPage(index), containerIdentificationNumber)
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper = new UnloadingFindingsAnswersHelper(answers)
+          val helper = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
           val result = helper.containerIdentificationNumber(index)
 
           result mustBe Some(
@@ -132,8 +137,9 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
     "transportEquipmentSections" - {
       "must return None" - {
         s"when no transport equipments defined" in {
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
+          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
           val result = helper.transportEquipmentSections
           result.isEmpty mustBe true
         }
@@ -147,8 +153,9 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             .setValue(SealPage(index, index), "seal1")
             .setValue(ContainerIdentificationNumberPage(Index(1)), "container2")
             .setValue(SealPage(Index(1), index), "seal2")
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper              = new UnloadingFindingsAnswersHelper(answers)
+          val helper              = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
           val transportEquipment1 = helper.transportEquipmentSections.head.rows
           val transportEquipment2 = helper.transportEquipmentSections(1).rows
 
@@ -190,8 +197,9 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
       "must return None" - {
         s"when $SealPage undefined" in {
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
+          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
           val result = helper.transportEquipmentSeal(equipmentIndex, sealIndex)
           result mustBe None
         }
@@ -201,8 +209,9 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
         s"when $SealPage defined" in {
           val answers = emptyUserAnswers
             .setValue(SealPage(equipmentIndex, sealIndex), sealIdentifier)
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper = new UnloadingFindingsAnswersHelper(answers)
+          val helper = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
           val result = helper.transportEquipmentSeal(equipmentIndex, sealIndex)
 
           result mustBe Some(
@@ -220,8 +229,9 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
       "must return None" - {
         s"when no house consignments defined" in {
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
+          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
           val result = helper.houseConsignmentSections
           result.isEmpty mustBe true
         }
@@ -242,8 +252,9 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             .setValue(NetWeightPage(index, Index(1)), netWeight)
             .setValue(ConsignorNamePage(index), "name")
             .setValue(ConsignorIdentifierPage(index), "identifier")
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper   = new UnloadingFindingsAnswersHelper(answers)
+          val helper   = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
           val sections = helper.houseConsignmentSections.head.rows
 
           val grossWeightRow          = sections.head
@@ -286,8 +297,9 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
           val totalGrossWeight = Gen.double.sample.value
 
           val answers = emptyUserAnswers
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper = new UnloadingFindingsAnswersHelper(answers)
+          val helper = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
           val result = helper.totalGrossWeightRow(totalGrossWeight)
 
           result mustBe SummaryListRow(
@@ -307,8 +319,9 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
           val totalNetWeight = Gen.double.sample.value
 
           val answers = emptyUserAnswers
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper = new UnloadingFindingsAnswersHelper(answers)
+          val helper = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
           val result = helper.totalNetWeightRow(totalNetWeight)
 
           result mustBe SummaryListRow(
@@ -326,8 +339,9 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
       "must return None" - {
         s"when $ItemDescriptionPage undefined" in {
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
+          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
           val result = helper.itemDescriptionRow(index, itemIndex)
           result mustBe None
         }
@@ -337,8 +351,9 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
         s"when $ItemDescriptionPage defined" in {
           val answers = emptyUserAnswers
             .setValue(ItemDescriptionPage(index, itemIndex), itemDesc)
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper = new UnloadingFindingsAnswersHelper(answers)
+          val helper = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
           val result = helper.itemDescriptionRow(index, itemIndex)
 
           result mustBe
@@ -359,8 +374,9 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
       "must return None" - {
         s"when $GrossWeightPage undefined" in {
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
+          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
           val result = helper.grossWeightRow(index, itemIndex)
           result mustBe None
         }
@@ -370,8 +386,9 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
         s"when $GrossWeightPage defined" in {
           val answers = emptyUserAnswers
             .setValue(GrossWeightPage(index, itemIndex), weight)
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper = new UnloadingFindingsAnswersHelper(answers)
+          val helper = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
           val result = helper.grossWeightRow(index, itemIndex)
 
           result mustBe Some(
@@ -391,8 +408,9 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
       "must return None" - {
         s"when $NetWeightPage undefined" in {
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
+          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
           val result = helper.netWeightRow(index, itemIndex)
           result mustBe None
         }
@@ -402,8 +420,9 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
         s"when $NetWeightPage defined" in {
           val answers = emptyUserAnswers
             .setValue(NetWeightPage(index, itemIndex), weight)
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper = new UnloadingFindingsAnswersHelper(answers)
+          val helper = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
           val result = helper.netWeightRow(index, itemIndex)
 
           result mustBe Some(

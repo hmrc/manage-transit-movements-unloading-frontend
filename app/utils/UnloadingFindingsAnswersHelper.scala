@@ -64,7 +64,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
               nationalityRow =>
                 Section(
                   messages("unloadingFindings.subsections.transportMeans", y._2.display),
-                  buildMeansOfTransportRows(nationalityRow, meansIdRow)
+                  buildMeansOfTransportRows(meansIdRow, nationalityRow)
                 )
             }
         }
@@ -81,9 +81,8 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
   )
 
   def transportRegisteredCountry(answer: String): SummaryListRow = buildSimpleRow(
-    //TODO COUNTRY CODE TO COUNTRY COUNTRY OBJECT
     answer = Text(answer),
-    label = "key",
+    label = messages("unloadingFindings.rowHeadings.vehicleNationality"),
     prefix = "unloadingFindings.rowHeadings.vehicleNationality",
     id = None,
     call = None,
