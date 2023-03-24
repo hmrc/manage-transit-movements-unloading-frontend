@@ -22,7 +22,6 @@ import connectors.ReferenceDataConnectorSpec._
 import models.reference.{Country, CustomsOffice}
 import org.scalacheck.Gen
 import play.api.inject.guice.GuiceApplicationBuilder
-import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -35,8 +34,6 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
   private lazy val connector: ReferenceDataConnector = app.injector.instanceOf[ReferenceDataConnector]
   val code                                           = "GB00001"
-
-  implicit private val hc: HeaderCarrier = HeaderCarrier()
 
   "Reference Data" - {
 

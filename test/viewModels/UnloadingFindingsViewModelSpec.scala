@@ -25,7 +25,6 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import play.api.inject.guice.GuiceApplicationBuilder
 import services.ReferenceDataService
-import uk.gov.hmrc.http.HeaderCarrier
 import viewModels.UnloadingFindingsViewModel.UnloadingFindingsViewModelProvider
 
 import scala.concurrent.Future
@@ -35,8 +34,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
   val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
-
-  implicit val hc = HeaderCarrier.apply()
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

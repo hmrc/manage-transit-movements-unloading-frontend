@@ -17,7 +17,6 @@
 package utils
 
 import cats.data.OptionT
-import cats.implicits
 import cats.implicits._
 import models.{Index, Link, UserAnswers}
 import pages._
@@ -140,18 +139,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
         val consignorNameRow: Option[SummaryListRow]           = consignorName(houseConsignmentIndex)
         val consignorIdentificationRow: Option[SummaryListRow] = consignorIdentification(houseConsignmentIndex)
 
-        val rows = (grossAndNetWeightRows, consignorNameRow, consignorIdentificationRow) match {
-          case (Some(grossAndNetWeightRows), Some(consignorNameRow), Some(consignorIdentificationRow)) =>
-            grossAndNetWeightRows ++ Seq(consignorNameRow, consignorIdentificationRow)
-          case (Some(grossAndNetWeightRows), Some(consignorNameRow), None) =>
-            grossAndNetWeightRows ++ Seq(consignorNameRow)
-          case (Some(grossAndNetWeightRows), None, Some(consignorIdentificationRow)) =>
-            grossAndNetWeightRows ++ Seq(consignorIdentificationRow)
-          case (None, Some(consignorNameRow), Some(consignorIdentificationRow)) =>
-            Seq(consignorNameRow, consignorIdentificationRow)
-          case (_, _, _) =>
-            Seq.empty
-        }
+        val rows = buildHouseConsignmentRows(grossAndNetWeightRows, consignorNameRow, consignorIdentificationRow)
 
         Some(
           Section(
@@ -165,8 +153,24 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
             ) //TODO: Add controller route for specific house consignment
           )
         )
-
     }
+
+  private def buildHouseConsignmentRows(
+    grossAndNetWeightRows: Option[Seq[SummaryListRow]],
+    consignorNameRow: Option[SummaryListRow],
+    consignorIdentificationRow: Option[SummaryListRow]
+  ): Seq[SummaryListRow] = (grossAndNetWeightRows, consignorNameRow, consignorIdentificationRow) match {
+    case (Some(grossAndNetWeightRows), Some(consignorNameRow), Some(consignorIdentificationRow)) =>
+      grossAndNetWeightRows ++ Seq(consignorNameRow, consignorIdentificationRow)
+    case (Some(grossAndNetWeightRows), Some(consignorNameRow), None) =>
+      grossAndNetWeightRows ++ Seq(consignorNameRow)
+    case (Some(grossAndNetWeightRows), None, Some(consignorIdentificationRow)) =>
+      grossAndNetWeightRows ++ Seq(consignorIdentificationRow)
+    case (None, Some(consignorNameRow), Some(consignorIdentificationRow)) =>
+      Seq(consignorNameRow, consignorIdentificationRow)
+    case (_, _, _) =>
+      Seq.empty
+  }
 
   def consignorName(houseConsignmentIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = ConsignorNamePage(houseConsignmentIndex),

@@ -32,6 +32,7 @@ import play.api.inject.Injector
 import play.api.libs.json.{Json, Reads, Writes}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
+import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.Instant
 
@@ -82,6 +83,7 @@ trait SpecBase
 
   def messagesApi: MessagesApi    = app.injector.instanceOf[MessagesApi]
   implicit def messages: Messages = messagesApi.preferred(fakeRequest)
+  implicit val hc: HeaderCarrier  = HeaderCarrier()
 
   def frontendAppConfig = injector.instanceOf[FrontendAppConfig]
 

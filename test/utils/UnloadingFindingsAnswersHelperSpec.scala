@@ -18,7 +18,7 @@ package utils.cyaHelpers
 
 import base.SpecBase
 import generators.Generators
-import models.{Identification, Index, NormalMode}
+import models.{Identification, Index}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Gen
@@ -26,9 +26,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import services.ReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import uk.gov.hmrc.govukfrontend.views.html.components.{ActionItem, Actions}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
-import uk.gov.hmrc.http.HeaderCarrier
 import utils.UnloadingFindingsAnswersHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -38,10 +36,11 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
   val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
-  implicit val hc = HeaderCarrier.apply()
+  private val countryDesc = "Great Britain"
 
-  private val countryDesc = "Great Britian"
   "UnloadingFindingsAnswersHelper" - {
+
+    "buildTransportSections" ignore {}
 
     "transportMeansID" - {
 
