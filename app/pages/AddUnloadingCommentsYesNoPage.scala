@@ -23,7 +23,7 @@ import scala.util.Try
 
 case object AddUnloadingCommentsYesNoPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ "UnloadingRemark" \ toString
+  override def path: JsPath = JsPath \ "navigationData" \ toString
 
   override def toString: String = "addUnloadingCommentsYesNo"
 

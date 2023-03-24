@@ -23,6 +23,6 @@ import java.time.LocalDateTime
 
 case object PreparationDateAndTimePage extends Gettable[LocalDateTime] {
 
-  override def path: JsPath = JsPath \ "n1:CC044C" \ "preparationDateAndTime"
+  override def path: JsPath = JsPath \ "preparationDateAndTime"
 
 }

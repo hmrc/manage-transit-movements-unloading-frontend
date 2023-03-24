@@ -20,6 +20,7 @@ import com.google.inject.Inject
 import controllers.actions.Actions
 import models.ArrivalId
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.CheckYourAnswersViewModel
@@ -38,6 +39,8 @@ class CheckYourAnswersController @Inject() (
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
       val viewModel: CheckYourAnswersViewModel = viewModelProvider.apply(request.userAnswers)
+
+      println(s"\n\n\n Submission data: ${Json.toJson(request.userAnswers.data)} \n\n\n\n")
 
       Ok(view(request.userAnswers.mrn, arrivalId, viewModel))
   }

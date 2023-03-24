@@ -30,7 +30,7 @@ class Navigator @Inject() () {
 
     case DateGoodsUnloadedPage =>
       ua => {
-        val sealsExist = ua.data.asOpt[MessageData].exists(_.Consignment.sealsExist)
+        val sealsExist = ua.`n1:CC044C`.asOpt[MessageData].exists(_.Consignment.sealsExist)
 
         if (sealsExist) {
           controllers.routes.CanSealsBeReadController.onPageLoad(ua.id, NormalMode)
