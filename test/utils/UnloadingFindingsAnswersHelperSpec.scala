@@ -252,7 +252,6 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
       "must return None" - {
         s"when $ContainerIdentificationNumberPage undefined" in {
-          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
           val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
           val result = helper.containerIdentificationNumber(index)
@@ -264,7 +263,6 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
         s"when $ContainerIdentificationNumberPage defined" in {
           val answers = emptyUserAnswers
             .setValue(ContainerIdentificationNumberPage(index), containerIdentificationNumber)
-          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
           val helper = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
           val result = helper.containerIdentificationNumber(index)

@@ -16,11 +16,9 @@
 
 package viewModels
 
-import connectors.ReferenceDataConnector
 import models.UserAnswers
 import play.api.i18n.Messages
 import services.ReferenceDataService
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.UnloadingFindingsAnswersHelper
 import viewModels.sections.Section
