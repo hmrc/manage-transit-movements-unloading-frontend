@@ -59,7 +59,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         val result            = viewModelProvider.apply(userAnswers).futureValue
         val section           = result.section.head
 
-        section.sectionTitle.value mustBe "Means of transport 1"
+        section.sectionTitle.value mustBe "Departure means of transport 1"
         section.rows.size mustBe 2
         section.viewLink must not be defined
       }
@@ -79,7 +79,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         val result            = viewModelProvider.apply(userAnswers).futureValue
         val section           = result.section(1)
 
-        section.sectionTitle.value mustBe "Means of transport 2"
+        section.sectionTitle.value mustBe "Departure means of transport 2"
         section.rows.size mustBe 2
         section.viewLink must not be defined
       }

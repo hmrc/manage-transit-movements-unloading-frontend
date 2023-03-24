@@ -23,12 +23,12 @@
 
 @header = {
     @section.sectionTitle.map { title =>
-        <div class="summary-text">
+        <span class="summary-text">
             <span class="summary-title govuk-!-margin-bottom-0">@title
                 @section.viewLink.map { link =>
-                    <a id="@link.id" class="govuk-link-view-summary" href=@link.href>@link.text</a> }
+                    <a id="@link.id" class="govuk-link-view-summary" href=@link.href>@link.text <span class="govuk-visually-hidden">@title.toLowerCase</span></a> }
             </span>
-        </div>
+        </span>
     }
 }
 

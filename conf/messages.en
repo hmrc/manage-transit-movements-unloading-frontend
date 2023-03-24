@@ -259,11 +259,11 @@ cannotSendUnloadingRemarks.message =  If you still need to send these unloading 
 cannotSendUnloadingRemarks.contactLink = contact the New Computerised Transit System (NCTS) Helpdesk (opens in a new tab)
 cannotSendUnloadingRemarks.linkText = Back to arrival notification
 
-unloadingFindings.title = What did you find when unloading?
-unloadingFindings.heading = What did you find when unloading?
-unloadingFindings.paragraph = Cross-check the transit with the following information. Change these details if you find something different
+unloadingFindings.title = Cross-check the transit with this declaration summary
+unloadingFindings.heading = Cross-check the transit with this declaration summary
+unloadingFindings.paragraph = Compare the transit that arrived with the following information to identify any discrepancies.
 
-unloadingFindings.subsections.transportMeans = Means of transport {0}
+unloadingFindings.subsections.transportMeans = Departure means of transport {0}
 
 unloadingFindings.rowHeadings.identificationType.seaGoingVessel = Name of a sea-going vessel
 unloadingFindings.rowHeadings.identificationType.seaGoingVessel.change.hidden = name of a sea-going vessel
@@ -293,12 +293,13 @@ unloadingFindings.rowHeadings.vehicleNationality.change.hidden = registered coun
 
 unloadingFindings.subsections.transportEquipment = Transport equipment {0}
 unloadingFindings.rowHeadings.containerIdentificationNumber = Container identification number
-unloadingFindings.rowHeadings.containerIdentificationNumber.change.hidden = container identification number {0}
 unloadingFindings.rowHeadings.sealIdentifier = Seal {0}
-unloadingFindings.rowHeadings.sealIdentifier.change.hidden = seal {0} - {1}
-unloadingFindings.rowHeadings.sealIdentifier.remove.hidden = seal {0} - {1}
-unloadingFindings.addNewSeal.link = Add a new seal identification number
 
+unloadingFindings.subsections.houseConsignment = House consignment {0}
+unloadingFindings.rowHeadings.houseConsignment.grossWeight = Gross weight
+unloadingFindings.rowHeadings.houseConsignment.netWeight = Net weight
+unloadingFindings.rowHeadings.houseConsignment.consignorName = Consignor name
+unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier = Consignor EORI number or Trader Identification Number (TIN)
 
 unloadingFindings.subsections.itemSummary = Items summary
 unloadingFindings.rowHeadings.numberOfItems = Total number of items
@@ -348,12 +349,6 @@ checkYourAnswers.rowHeadings.additionalComments.change.hidden = differences betw
 
 checkYourAnswers.sendRemarks = Send your unloading remarks
 checkYourAnswers.paragraph = By sending this, you are confirming that these details are correct to the best of your knowledge.
-
-unloadingFindings.subsections.houseConsignment = House consignment {0}
-unloadingFindings.rowHeadings.houseConsignment.consignorName = Consignor name
-unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier = Consignor identification number
-unloadingFindings.rowHeadings.houseConsignment.grossWeight = Gross mass
-unloadingFindings.rowHeadings.houseConsignment.netWeight = Net mass
 
 
 

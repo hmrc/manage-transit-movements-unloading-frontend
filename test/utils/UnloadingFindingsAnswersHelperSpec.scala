@@ -374,13 +374,13 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
           grossWeightRow mustBe
             SummaryListRow(
-              key = Key("Gross mass".toText),
+              key = Key("Gross weight".toText),
               value = Value(s"${totalGrossWeight}kg".toText)
             )
 
           netWeightRow mustBe
             SummaryListRow(
-              key = Key("Net mass".toText),
+              key = Key("Net weight".toText),
               value = Value(s"${totalNetWeight}kg".toText)
             )
 
@@ -392,7 +392,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
           consignorIdentification mustBe
             SummaryListRow(
-              key = Key("Consignor identification number".toText),
+              key = Key("Consignor EORI number or Trader Identification Number (TIN)".toText),
               value = Value("identifier".toText)
             )
         }
@@ -413,7 +413,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
           val result = helper.totalGrossWeightRow(totalGrossWeight)
 
           result mustBe SummaryListRow(
-            key = Key("Gross mass".toText),
+            key = Key("Gross weight".toText),
             value = Value(s"${totalGrossWeight}kg".toText),
             actions = None
           )
@@ -435,7 +435,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
           val result = helper.totalNetWeightRow(totalNetWeight)
 
           result mustBe SummaryListRow(
-            key = Key("Net mass".toText),
+            key = Key("Net weight".toText),
             value = Value(s"${totalNetWeight}kg".toText),
             actions = None
           )
