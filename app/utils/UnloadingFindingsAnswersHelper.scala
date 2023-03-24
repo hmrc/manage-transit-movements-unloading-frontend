@@ -17,52 +17,59 @@
 package utils
 
 import cats.data.OptionT
-import models.reference.Country
-import models.{Index, Link, NormalMode, UserAnswers}
-import pages.sections._
+import cats.implicits
+import cats.implicits._
+import models.{Index, Link, UserAnswers}
 import pages._
+import pages.sections._
 import play.api.i18n.Messages
 import services.ReferenceDataService
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HeaderCarrier
 import viewModels.sections.Section
-import cats._
-import cats.implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages, hc: HeaderCarrier, ec: ExecutionContext)
-    extends AnswersHelper(userAnswers) {
+class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataService: ReferenceDataService)(implicit
+  messages: Messages,
+  hc: HeaderCarrier,
+  ec: ExecutionContext
+) extends AnswersHelper(userAnswers) {
 
-  def transportMeansSections(referenceDataService: ReferenceDataService): Seq[Nothing] = {
-    val x: Seq[Nothing] = userAnswers.get(TransportMeansListSection).mapWithIndex {
-      (_, transportMeansIndex) =>
-        val transportMeansIDRow = transportMeansID(transportMeansIndex)
+  def buildVehicleNationalityRow(index: Index): Future[Option[SummaryListRow]] =
+    (for {
+      x <- OptionT.fromOption[Future](userAnswers.get(VehicleRegistrationCountryPage(index)))
+      y <- OptionT.liftF(referenceDataService.getCountryNameByCode(x))
+    } yield transportRegisteredCountry(y)).value
 
-        val foo: Future[Option[SummaryListRow]] = userAnswers
-          .get(VehicleRegistrationCountryPage(transportMeansIndex))
-          .flatTraverse(
-            x => referenceDataService.getCountryNameByCode(x).map(transportRegisteredCountry)
-          )
-
-        foo.map {
-          transportRegisteredCountryRow =>
-            val rows = (transportMeansIDRow, transportRegisteredCountryRow) match {
-              case (Some(transportMeansIDRow), Some(transportRegisteredCountryRow)) => Seq(transportMeansIDRow, transportRegisteredCountryRow)
-              case (Some(transportMeansIDRow), None)                                => Seq(transportMeansIDRow)
-              case (None, Some(transportRegisteredCountryRow))                      => Seq(transportRegisteredCountryRow)
-              case (_, _)                                                           => Seq.empty
-            }
-
-            Some(
-              Section(
-                sectionTitle = messages("unloadingFindings.subsections.transportMeans", transportMeansIndex.display),
-                rows
-              )
-            )
-        }
+  def buildMeansOfTransportRows(idRow: Option[SummaryListRow], nationalityRow: Option[SummaryListRow]): Seq[SummaryListRow] =
+    (idRow, nationalityRow) match {
+      case (Some(transportMeansIDRow), Some(transportRegisteredCountryRow)) => Seq(transportMeansIDRow, transportRegisteredCountryRow)
+      case (Some(transportMeansIDRow), None)                                => Seq(transportMeansIDRow)
+      case (None, Some(transportRegisteredCountryRow))                      => Seq(transportRegisteredCountryRow)
+      case (_, _)                                                           => Seq.empty
     }
-  }
+
+  def buildTransportSections: Future[Seq[Section]] =
+    userAnswers
+      .get(TransportMeansListSection)
+      .traverse {
+        _.zipWithIndex.traverse {
+          y =>
+            val nationalityRow: Future[Option[SummaryListRow]] = buildVehicleNationalityRow(y._2)
+            val meansIdRow: Option[SummaryListRow]             = transportMeansID(y._2)
+
+            nationalityRow.map {
+              nationalityRow =>
+                Section(
+                  messages("unloadingFindings.subsections.transportMeans", y._2.display),
+                  buildMeansOfTransportRows(nationalityRow, meansIdRow)
+                )
+            }
+        }
+      }
+      .map(_.getOrElse(Seq.empty))
 
   def transportMeansID(transportMeansIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRowWithDynamicPrefix[String](
     answerPath = VehicleIdentificationNumberPage(transportMeansIndex),
@@ -73,13 +80,14 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
     call = None
   )
 
-  def transportRegisteredCountry(answer: String): Option[SummaryListRow] = buildSimpleRow(
+  def transportRegisteredCountry(answer: String): SummaryListRow = buildSimpleRow(
     //TODO COUNTRY CODE TO COUNTRY COUNTRY OBJECT
-    answer = answer,
+    answer = Text(answer),
     label = "key",
     prefix = "unloadingFindings.rowHeadings.vehicleNationality",
     id = None,
-    call = None
+    call = None,
+    args = Seq.empty
   )
 
   def transportEquipmentSections: Seq[Section] =

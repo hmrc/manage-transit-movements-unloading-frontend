@@ -27,21 +27,28 @@ import viewModels.UnloadingFindingsViewModel
 import viewModels.UnloadingFindingsViewModel.UnloadingFindingsViewModelProvider
 import views.html.UnloadingFindingsView
 
+import scala.concurrent.{ExecutionContext, Future}
+
 class UnloadingFindingsController @Inject() (
   override val messagesApi: MessagesApi,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: UnloadingFindingsView,
-  viewModelProvider: UnloadingFindingsViewModelProvider,
-  referenceDataService: ReferenceDataService
-) extends FrontendBaseController
+  viewModelProvider: UnloadingFindingsViewModelProvider
+)(implicit val executionContext: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
-      val unloadingFindingsViewModel: UnloadingFindingsViewModel = viewModelProvider.apply(request.userAnswers, referenceDataService)
+      val unloadingFindingsViewModel: Future[UnloadingFindingsViewModel] =
+        viewModelProvider.apply(request.userAnswers)
 
-      Ok(view(request.userAnswers.mrn, arrivalId, unloadingFindingsViewModel))
+      unloadingFindingsViewModel.map {
+        x =>
+          Ok(view(request.userAnswers.mrn, arrivalId, x))
+      }
+
   }
 
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
