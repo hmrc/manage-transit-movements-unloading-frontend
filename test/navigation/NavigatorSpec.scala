@@ -171,6 +171,27 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             .mustBe(routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, mode))
         }
       }
+      "must go from unloading comments yes no page" - {
+        "when answer is true to unloading comments controller" in {
+          val userAnswers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, true)
+
+          navigator
+            .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
+            .mustBe(routes.UnloadingCommentsController.onPageLoad(arrivalId, mode))
+        }
+        "when answer is false to check your answers controller" in {
+          val userAnswers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, false)
+
+          navigator
+            .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
+            .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
+        }
+        "to session expired controller when no exisiting answers found" in {
+          navigator
+            .nextPage(AddUnloadingCommentsYesNoPage, mode, emptyUserAnswers)
+            .mustBe(routes.SessionExpiredController.onPageLoad())
+        }
+      }
 
       "must go from New Seal Number page to unloading summary page" ignore {
         forAll(arbitrary[UserAnswers]) {
@@ -225,6 +246,11 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             navigator
               .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
               .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId))
+          }
+          "to session expired controller when no existing answers found" in {
+            navigator
+              .nextPage(AddUnloadingCommentsYesNoPage, mode, emptyUserAnswers)
+              .mustBe(routes.SessionExpiredController.onPageLoad())
           }
         }
 

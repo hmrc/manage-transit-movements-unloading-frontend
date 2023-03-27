@@ -20,7 +20,7 @@ import models.{ArrivalId, Index, Link, UserAnswers}
 import pages.QuestionPage
 import pages.sections.Section
 import play.api.i18n.Messages
-import play.api.libs.json.{JsArray, JsPath, JsValue, Reads}
+import play.api.libs.json.{JsArray, JsValue, Reads}
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -53,65 +53,6 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
     case None            => Seq(answer)
     case Some(arguments) => arguments.appended(answer)
   }
-
-  def getAnswerAndBuildRowWithDynamicHiddenText[T](
-    page: QuestionPage[T],
-    formatAnswer: T => Content,
-    prefix: String,
-    id: Option[String],
-    call: Option[Call],
-    args: Option[Seq[Any]]
-  )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.get(page) map {
-      answer =>
-        buildRow(
-          prefix = prefix,
-          answer = formatAnswer(answer),
-          id = id,
-          call = call,
-          args = parseArguments(args, answer): _*
-        )
-    }
-
-  def getAnswerAndBuildRemovableRowWithDynamicHiddenText[T](
-    page: QuestionPage[T],
-    formatAnswer: T => Content,
-    prefix: String,
-    id: String,
-    changeCall: Call,
-    removeCall: Call,
-    args: Option[Seq[Any]]
-  )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.get(page) map {
-      answer =>
-        buildRemovableRow(
-          prefix = prefix,
-          answer = formatAnswer(answer),
-          id = id,
-          changeCall = changeCall,
-          removeCall = removeCall,
-          args = parseArguments(args, answer): _*
-        )
-    }
-
-  def getAnswerAndBuildRowFromPath[T](
-    path: JsPath,
-    formatAnswer: T => Content,
-    prefix: String,
-    id: Option[String],
-    call: Option[Call],
-    args: Any*
-  )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.getIE043(path) map {
-      answer =>
-        buildRowFromPath(
-          prefix = prefix,
-          answer = formatAnswer(answer),
-          id = id,
-          call = call,
-          args = args: _*
-        )
-    }
 
   def getAnswerAndBuildRowWithDynamicPrefix[T](
     answerPath: QuestionPage[T],
