@@ -45,7 +45,13 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val serviceUrl = s"${config.referenceDataUrl}/countries/$code"
     http
       .GET[Country](serviceUrl)
-      .map(_.description)
+      .map(
+        country =>
+          country.description match {
+            case Some(desc) => desc
+            case None       => country.code
+          }
+      )
       .recover {
         case _ =>
           logger.error(s"Get Country by code request failed to return data")

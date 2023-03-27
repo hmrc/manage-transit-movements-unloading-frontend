@@ -26,8 +26,8 @@ class VehicleRegistrationCountryFormProviderSpec extends StringFieldBehaviours {
   val lengthKey   = "vehicleRegistrationCountry.error.length"
   val maxLength   = 2
 
-  val countries = Seq(Country("AD", "Andorra"))
-  val form      = new VehicleRegistrationCountryFormProvider()(countries)
+  val countries: Seq[Country] = Seq(Country("AD", Some("Andorra")))
+  val form                    = new VehicleRegistrationCountryFormProvider()(countries)
 
   ".value" - {
 

@@ -41,7 +41,13 @@ class ReferenceDataServiceImpl @Inject() (connector: ReferenceDataConnector) ext
     connector.getCountryNameByCode(code)
 
   private def sort(countries: Seq[Country]): Seq[Country] =
-    countries.sortBy(_.description.toLowerCase)
+    countries.sortBy(
+      country =>
+        country.description match {
+          case Some(desc) => desc.toLowerCase()
+          case None       => country.code
+        }
+    )
 }
 
 trait ReferenceDataService {

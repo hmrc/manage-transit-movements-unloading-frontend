@@ -51,8 +51,13 @@ class VehicleRegistrationCountryController @Inject() (
         countries =>
           val form = formProvider(countries)
           val preparedForm = request.userAnswers.get(VehicleRegistrationCountryPage(transportMeansIndex)) match {
-            case None        => form
-            case Some(value) => form.fill(Country(value, "test")) // TODO: Fix this change back to country
+            case None => form
+            case Some(value) =>
+              val country = countries.find(_.code == value) match {
+                case Some(country) => country
+                case None          => Country(value, None)
+              }
+              form.fill(country)
           }
           Ok(view(preparedForm, countries, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode))
       }
@@ -70,7 +75,7 @@ class VehicleRegistrationCountryController @Inject() (
               value =>
                 for {
                   updatedAnswers <- Future
-                    .fromTry(request.userAnswers.set(VehicleRegistrationCountryPage(transportMeansIndex), value.code)) // TODO: Fix this change back to country
+                    .fromTry(request.userAnswers.set(VehicleRegistrationCountryPage(transportMeansIndex), value.code))
                   _ <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
             )

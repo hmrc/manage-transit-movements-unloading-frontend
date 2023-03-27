@@ -35,9 +35,9 @@ class VehicleRegistrationCountryViewSpec extends InputSelectViewBehaviours[Count
   override val prefix: String = "vehicleRegistrationCountry"
 
   override def values: Seq[Country] = Seq(
-    Country("UK", "United Kingdom"),
-    Country("US", "United States"),
-    Country("ES", "Spain")
+    Country("UK", Some("United Kingdom")),
+    Country("US", Some("United States")),
+    Country("ES", Some("Spain"))
   )
 
   behave like pageWithTitle()

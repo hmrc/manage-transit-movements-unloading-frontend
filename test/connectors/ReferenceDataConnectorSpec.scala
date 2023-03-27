@@ -46,8 +46,8 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         )
 
         val expectedResult = Seq(
-          Country("GB", "United Kingdom"),
-          Country("AD", "Andorra")
+          Country("GB", Some("United Kingdom")),
+          Country("AD", Some("Andorra"))
         )
 
         connector.getCountries().futureValue mustBe expectedResult

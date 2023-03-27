@@ -36,8 +36,8 @@ import scala.concurrent.Future
 class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   val formProvider                                   = new VehicleRegistrationCountryFormProvider()
-  private val country: String                        = Country("GB", "United Kingdom").code
-  val countries: Seq[Country]                        = Seq(Country("GB", "United Kingdom"))
+  private val country: String                        = Country("GB", Some("United Kingdom")).code
+  val countries: Seq[Country]                        = Seq(Country("GB", Some("United Kingdom")))
   val form: Form[Country]                            = formProvider(countries)
   val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
   private val mode                                   = NormalMode
