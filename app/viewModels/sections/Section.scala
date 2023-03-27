@@ -26,12 +26,7 @@ object Section {
 
   def apply(rows: Seq[SummaryListRow]): Section = new Section(None, rows, None)
 
-  def apply(row: SummaryListRow): Section = new Section(None, Seq(row), None)
-
   def apply(sectionTitle: String, rows: Seq[SummaryListRow], viewLink: Option[Link]): Section =
     new Section(Some(sectionTitle), rows, viewLink)
-
-  def apply(sectionTitle: String, rows: SummaryListRow, viewLink: Option[Link]): Section =
-    new Section(Some(sectionTitle), Seq(rows), viewLink)
 
 }

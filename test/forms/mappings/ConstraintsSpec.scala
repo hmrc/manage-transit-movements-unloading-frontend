@@ -99,6 +99,17 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
     }
   }
 
+  "inRange" - {
+    "must return Valid for a Int in range" in {
+      val result = inRange(1, 10, "error.length").apply(5)
+      result mustEqual Valid
+    }
+    "must return invalid for a Int outside range" in {
+      val result = inRange(1, 10, "error.invalid").apply(100)
+      result mustEqual Invalid("error.invalid", 1, 10)
+    }
+  }
+
   "maxLength" - {
 
     "must return Valid for a string shorter than the allowed length" in {
