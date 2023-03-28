@@ -18,40 +18,41 @@ package controllers
 
 import com.google.inject.Inject
 import controllers.actions.Actions
-import models.ArrivalId
+import models.{ArrivalId, Index}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.UnloadingFindingsViewModel
+import viewModels.HouseConsignmentViewModel.HouseConsignmentViewModelProvider
+import viewModels.{HouseConsignmentViewModel, UnloadingFindingsViewModel}
 import viewModels.UnloadingFindingsViewModel.UnloadingFindingsViewModelProvider
-import views.html.UnloadingFindingsView
+import views.html.{HouseConsignmentView, UnloadingFindingsView}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UnloadingFindingsController @Inject() (
+class HouseConsignmentController @Inject() (
   override val messagesApi: MessagesApi,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  view: UnloadingFindingsView,
-  viewModelProvider: UnloadingFindingsViewModelProvider
+  view: HouseConsignmentView,
+  viewModelProvider: HouseConsignmentViewModelProvider
 )(implicit val executionContext: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
+  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
-      val unloadingFindingsViewModel: Future[UnloadingFindingsViewModel] =
-        viewModelProvider.apply(request.userAnswers)
+      val houseConsignmentViewModel: Future[HouseConsignmentViewModel] =
+        viewModelProvider.apply(request.userAnswers, houseConsignmentIndex)
 
-      unloadingFindingsViewModel.map {
+      houseConsignmentViewModel.map {
         x =>
-          Ok(view(request.userAnswers.mrn, arrivalId, x))
+          Ok(view(request.userAnswers.mrn, arrivalId, x, houseConsignmentIndex))
       }
 
   }
 
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
 
-    Redirect(controllers.routes.SessionExpiredController.onPageLoad()) //todo redirect to CYA when built
+    Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
   }
 }

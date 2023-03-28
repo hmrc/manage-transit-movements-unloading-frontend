@@ -16,40 +16,42 @@
 
 package viewModels
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import play.api.i18n.Messages
 import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.UnloadingFindingsAnswersHelper
+import utils.{HouseConsignmentAnswersHelper, UnloadingFindingsAnswersHelper}
 import viewModels.sections.Section
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-case class UnloadingFindingsViewModel(section: Seq[Section])
+case class HouseConsignmentViewModel(section: Seq[Section], houseConsignment: Seq[Section])
 
-object UnloadingFindingsViewModel {
+object HouseConsignmentViewModel {
 
-  def apply(userAnswers: UserAnswers, referenceDataService: ReferenceDataService)(implicit
+  def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index, referenceDataService: ReferenceDataService)(implicit
     messages: Messages,
     hc: HeaderCarrier,
     ec: ExecutionContext
-  ): Future[UnloadingFindingsViewModel] = new UnloadingFindingsViewModelProvider(referenceDataService)(userAnswers)
+  ): Future[HouseConsignmentViewModel] = new HouseConsignmentViewModelProvider(referenceDataService)(userAnswers, houseConsignmentIndex)
 
-  class UnloadingFindingsViewModelProvider @Inject() (referenceDataService: ReferenceDataService) {
+  class HouseConsignmentViewModelProvider @Inject() (referenceDataService: ReferenceDataService) {
 
-    def apply(userAnswers: UserAnswers)(implicit messages: Messages, hc: HeaderCarrier, ex: ExecutionContext): Future[UnloadingFindingsViewModel] = {
-      val helper = new UnloadingFindingsAnswersHelper(userAnswers, referenceDataService)
+    def apply(userAnswers: UserAnswers,
+              houseConsignmentIndex: Index
+    )(implicit messages: Messages, hc: HeaderCarrier, ex: ExecutionContext): Future[HouseConsignmentViewModel] = {
+      val helper = new HouseConsignmentAnswersHelper(userAnswers, houseConsignmentIndex: Index, referenceDataService)
 
       helper.buildTransportSections.map {
         meansOfTransportSections =>
-          val transportEquipmentSections: Seq[Section] = helper.transportEquipmentSections
+          val houseConsignmentSection: Seq[Section] = Seq(helper.houseConsignmentSection)
+          val itemSections: Seq[Section]            = helper.itemSections
 
-          val houseConsignmentSections: Seq[Section] = helper.houseConsignmentSections
+          val sections: Seq[Section] = meansOfTransportSections ++ itemSections
 
-          val sections: Seq[Section] = meansOfTransportSections ++ transportEquipmentSections ++ houseConsignmentSections
+          HouseConsignmentViewModel(sections, houseConsignmentSection)
 
-          new UnloadingFindingsViewModel(sections)
       }
     }
   }

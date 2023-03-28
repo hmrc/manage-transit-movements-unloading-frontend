@@ -17,24 +17,24 @@
 package views
 
 import generators.Generators
-import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-import viewModels.UnloadingFindingsViewModel
+import viewModels.HouseConsignmentViewModel
 import viewModels.sections.Section
-import views.behaviours.DetailsListViewBehaviours
-import views.html.UnloadingFindingsView
+import views.behaviours.SummaryListViewBehaviours
+import views.html.HouseConsignmentView
 
-class UnloadingFindingsViewSpec extends DetailsListViewBehaviours with Generators {
+class HouseConsignmentViewSpec extends SummaryListViewBehaviours with Generators {
 
   override val prefix: String = "unloadingFindings"
 
+  override def view: HtmlFormat.Appendable =
+    injector.instanceOf[HouseConsignmentView].apply(mrn, arrivalId, houseConsignmentViewModel, index)(fakeRequest, messages)
+
   lazy val sections: Seq[Section] = arbitrary[List[Section]].sample.value
 
-  override def view: HtmlFormat.Appendable = injector.instanceOf[UnloadingFindingsView].apply(mrn, arrivalId, unloadingFindingsViewModel)(fakeRequest, messages)
-
-  val unloadingFindingsViewModel: UnloadingFindingsViewModel = new UnloadingFindingsViewModel(sections)
+  val houseConsignmentViewModel: HouseConsignmentViewModel = new HouseConsignmentViewModel(sections, sections)
 
   override def summaryLists: Seq[SummaryList] = sections.map(
     section => SummaryList(section.rows)
@@ -48,11 +48,11 @@ class UnloadingFindingsViewSpec extends DetailsListViewBehaviours with Generator
 
   behave like pageWithHeading()
 
-  behave like pageWithSections()
+  behave like pageWithSummaryLists()
 
-  behave like pageWithFormAction(controllers.routes.UnloadingFindingsController.onSubmit(arrivalId).url)
+  behave like pageWithFormAction(controllers.routes.HouseConsignmentController.onSubmit(arrivalId).url)
 
-  behave like pageWithSubmitButton("Continue")
+  behave like pageWithSubmitButton("Back to summary")
 
   "must render section titles when rows are non-empty" - {
     sections.foreach(_.sectionTitle.map {

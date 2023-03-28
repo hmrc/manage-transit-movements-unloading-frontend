@@ -148,9 +148,9 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
             viewLink = Some(
               Link(
                 id = s"view-house-consignment-${houseConsignmentIndex.display}",
-                href = controllers.routes.SessionExpiredController.onPageLoad().url
+                href = controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
               )
-            ) //TODO: Add controller route for specific house consignment
+            )
           )
         )
     }

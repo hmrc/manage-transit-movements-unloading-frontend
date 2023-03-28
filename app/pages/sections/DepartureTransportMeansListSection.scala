@@ -16,11 +16,12 @@
 
 package pages.sections
 
+import models.Index
 import play.api.libs.json.{JsArray, JsPath}
 
-case object TransportMeansListSection extends Section[JsArray] {
+case class DepartureTransportMeansListSection(houseConsignmentIndex: Index) extends Section[JsArray] {
 
-  override def path: JsPath = JsPath \ "Consignment" \ toString
+  override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ toString
 
   override def toString: String = "DepartureTransportMeans"
 }

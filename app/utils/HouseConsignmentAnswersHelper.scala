@@ -30,15 +30,15 @@ import viewModels.sections.Section
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataService: ReferenceDataService)(implicit
+class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: Index, referenceDataService: ReferenceDataService)(implicit
   messages: Messages,
   hc: HeaderCarrier,
   ec: ExecutionContext
 ) extends AnswersHelper(userAnswers) {
 
-  def buildVehicleNationalityRow(index: Index): Future[Option[SummaryListRow]] =
+  def buildVehicleNationalityRow(transportMeansIndex: Index): Future[Option[SummaryListRow]] =
     (for {
-      x <- OptionT.fromOption[Future](userAnswers.get(VehicleRegistrationCountryPage(index)))
+      x <- OptionT.fromOption[Future](userAnswers.get(DepartureTransportMeansCountryPage(houseConsignmentIndex, transportMeansIndex)))
       y <- OptionT.liftF(referenceDataService.getCountryNameByCode(x))
     } yield transportRegisteredCountry(y)).value
 
@@ -52,7 +52,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
 
   def buildTransportSections: Future[Seq[Section]] =
     userAnswers
-      .get(TransportMeansListSection)
+      .get(DepartureTransportMeansListSection(houseConsignmentIndex))
       .traverse {
         _.zipWithIndex.traverse {
           y =>
@@ -71,8 +71,8 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
       .map(_.getOrElse(Seq.empty))
 
   def transportMeansID(transportMeansIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRowWithDynamicPrefix[String](
-    answerPath = VehicleIdentificationNumberPage(transportMeansIndex),
-    titlePath = VehicleIdentificationTypePage(transportMeansIndex),
+    answerPath = DepartureTransportMeansIdentificationNumberPage(houseConsignmentIndex, transportMeansIndex),
+    titlePath = DepartureTransportMeansIdentificationTypePage(houseConsignmentIndex, transportMeansIndex),
     formatAnswer = formatAsText,
     dynamicPrefix = formatIdentificationTypeAsText,
     id = None,
@@ -88,72 +88,19 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
     args = Seq.empty
   )
 
-  def transportEquipmentSections: Seq[Section] =
-    userAnswers
-      .get(TransportEquipmentListSection)
-      .mapWithIndex {
-        (_, equipmentIndex) =>
-          val containerRow: Seq[Option[SummaryListRow]] = Seq(containerIdentificationNumber(equipmentIndex))
-          val sealRows: Seq[SummaryListRow]             = transportEquipmentSeals(equipmentIndex)
+  def houseConsignmentSection: Section = {
 
-          val rows = containerRow.head match {
-            case Some(containerRow) => Seq(containerRow) ++ sealRows
-            case None               => sealRows
-          }
+    val grossAndNetWeightRows: Option[Seq[SummaryListRow]] = houseConsignmentTotalWeightRows
+    val consignorNameRow: Option[SummaryListRow]           = consignorName
+    val consignorIdentificationRow: Option[SummaryListRow] = consignorIdentification
 
-          Some(
-            Section(
-              messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display),
-              rows
-            )
-          )
-      }
+    val rows = buildHouseConsignmentRows(grossAndNetWeightRows, consignorNameRow, consignorIdentificationRow)
 
-  def transportEquipmentSeals(equipmentIndex: Index): Seq[SummaryListRow] =
-    getAnswersAndBuildSectionRows(SealsSection(equipmentIndex))(
-      sealIndex => transportEquipmentSeal(equipmentIndex, sealIndex)
+    Section(
+      sectionTitle = messages("unloadingFindings.subsections.houseConsignment", houseConsignmentIndex.display),
+      rows
     )
-
-  def containerIdentificationNumber(index: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = ContainerIdentificationNumberPage(index),
-    formatAnswer = formatAsText,
-    prefix = "unloadingFindings.rowHeadings.containerIdentificationNumber",
-    id = None,
-    args = None,
-    call = None
-  )
-
-  def transportEquipmentSeal(equipmentIndex: Index, sealIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = SealPage(equipmentIndex, sealIndex),
-    formatAnswer = formatAsText,
-    prefix = "unloadingFindings.rowHeadings.sealIdentifier",
-    args = sealIndex.display,
-    id = None,
-    call = None
-  )
-
-  def houseConsignmentSections: Seq[Section] =
-    userAnswers.get(HouseConsignmentsSection).mapWithIndex {
-      (_, houseConsignmentIndex) =>
-        val grossAndNetWeightRows: Option[Seq[SummaryListRow]] = houseConsignmentTotalWeightRows(houseConsignmentIndex)
-        val consignorNameRow: Option[SummaryListRow]           = consignorName(houseConsignmentIndex)
-        val consignorIdentificationRow: Option[SummaryListRow] = consignorIdentification(houseConsignmentIndex)
-
-        val rows = buildHouseConsignmentRows(grossAndNetWeightRows, consignorNameRow, consignorIdentificationRow)
-
-        Some(
-          Section(
-            sectionTitle = messages("unloadingFindings.subsections.houseConsignment", houseConsignmentIndex.display),
-            rows,
-            viewLink = Some(
-              Link(
-                id = s"view-house-consignment-${houseConsignmentIndex.display}",
-                href = controllers.routes.SessionExpiredController.onPageLoad().url
-              )
-            ) //TODO: Add controller route for specific house consignment
-          )
-        )
-    }
+  }
 
   private def buildHouseConsignmentRows(
     grossAndNetWeightRows: Option[Seq[SummaryListRow]],
@@ -178,7 +125,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
       Seq.empty
   }
 
-  def consignorName(houseConsignmentIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  def consignorName: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = ConsignorNamePage(houseConsignmentIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.houseConsignment.consignorName",
@@ -186,7 +133,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
     call = None
   )
 
-  def consignorIdentification(houseConsignmentIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  def consignorIdentification: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = ConsignorIdentifierPage(houseConsignmentIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier",
@@ -194,12 +141,12 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
     call = None
   )
 
-  def houseConsignmentTotalWeightRows(houseConsignmentIndex: Index): Option[Seq[SummaryListRow]] = {
+  def houseConsignmentTotalWeightRows: Option[Seq[SummaryListRow]] = {
     val itemArray      = userAnswers.get(ItemsSection(houseConsignmentIndex))
     val itemCount: Int = itemArray.map(_.value.length).getOrElse(0)
 
     val itemWeights: Seq[(Double, Double)] = itemArray.mapWithIndex[(Double, Double)](
-      (_, itemIndex) => Some(fetchWeightValues(houseConsignmentIndex, itemIndex))
+      (_, itemIndex) => Some(fetchWeightValues(itemIndex))
     )
 
     if (itemCount == 0) {
@@ -221,7 +168,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
     }
   }
 
-  def fetchWeightValues(houseConsignmentIndex: Index, itemIndex: Index): (Double, Double) =
+  def fetchWeightValues(itemIndex: Index): (Double, Double) =
     (
       userAnswers.get(GrossWeightPage(houseConsignmentIndex, itemIndex)).getOrElse(0d),
       userAnswers.get(NetWeightPage(houseConsignmentIndex, itemIndex)).getOrElse(0d)
@@ -239,14 +186,14 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
     args = None
   )
 
-  def itemSections(houseConsignmentIndex: Index): Seq[Section] =
+  def itemSections: Seq[Section] =
     userAnswers
       .get(ItemsSection(houseConsignmentIndex))
       .mapWithIndex {
         (_, itemIndex) =>
-          val itemDescription: Option[SummaryListRow] = itemDescriptionRow(houseConsignmentIndex, itemIndex)
-          val grossWeight: Option[SummaryListRow]     = grossWeightRow(houseConsignmentIndex, itemIndex)
-          val netWeight: Option[SummaryListRow]       = netWeightRow(houseConsignmentIndex, itemIndex)
+          val itemDescription: Option[SummaryListRow] = itemDescriptionRow(itemIndex)
+          val grossWeight: Option[SummaryListRow]     = grossWeightRow(itemIndex)
+          val netWeight: Option[SummaryListRow]       = netWeightRow(itemIndex)
 
           Some(
             Section(
@@ -256,15 +203,15 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
           )
       }
 
-  def itemDescriptionRow(houseConsignmentIndex: Index, itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  def itemDescriptionRow(itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = ItemDescriptionPage(houseConsignmentIndex, itemIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.item.description",
     id = None,
-    call = None //TODO: item description change controller
+    call = None
   )
 
-  def grossWeightRow(houseConsignmentIndex: Index, itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Double](
+  def grossWeightRow(itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Double](
     page = GrossWeightPage(houseConsignmentIndex, itemIndex),
     formatAnswer = formatAsWeight,
     prefix = "unloadingFindings.rowHeadings.item.grossWeight",
@@ -273,7 +220,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
     call = None
   )
 
-  def netWeightRow(houseConsignmentIndex: Index, itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Double](
+  def netWeightRow(itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Double](
     page = NetWeightPage(houseConsignmentIndex, itemIndex),
     formatAnswer = formatAsWeight,
     prefix = "unloadingFindings.rowHeadings.item.netWeight",

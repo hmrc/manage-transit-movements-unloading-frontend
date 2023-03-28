@@ -20,6 +20,7 @@ site.textarea.char_limit = (Limit is {0} characters)
 site.title.suffix = - Manage your transit movements - GOV.UK
 site.youMust = You must
 site.section = This section is
+site.backToSummary = Back to summary
 
 error.title.prefix = Error:
 error.summary.title = There is a problem
@@ -319,6 +320,13 @@ unloadingFindings.additionalComments.link = Add comments
 unloadingFindings.rowHeadings.additionalComments = Comments
 unloadingFindings.rowHeadings.additionalComments.change.hidden = comments
 unloadingFindings.rowHeadings.additionalComments.remove.hidden = comments
+
+houseConsignment.title = Cross-check the transit with this declaration summary
+houseConsignment.heading = Cross-check the transit with this declaration summary
+houseConsignment.paragraph = Cross-check the transit with the following information to identify any differences.
+houseConsignment.houseConsignmentSubHeading = House consignment{0}
+houseConsignment.departureMeansSubHeading = Departure means of transport {0}
+houseConsignment.itemSubHeading = Item {0}
 
 unloadingRemarksSent.title = Unloading remarks sent
 unloadingRemarksSent.heading = Unloading remarks sent

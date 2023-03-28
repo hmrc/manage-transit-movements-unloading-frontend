@@ -96,6 +96,9 @@ POST       /:arrivalId/items/:index/change-number-of-packages                   
 GET        /:arrivalId/declaration-summary                                                  controllers.UnloadingFindingsController.onPageLoad(arrivalId: ArrivalId)
 POST       /:arrivalId/declaration-summary                                                  controllers.UnloadingFindingsController.onSubmit(arrivalId: ArrivalId)
 
+GET        /:arrivalId/declaration-summary-house-consignment/:index                         controllers.HouseConsignmentController.onPageLoad(arrivalId: ArrivalId, index:Index)
+POST       /:arrivalId/declaration-summary-house-consignment/                               controllers.HouseConsignmentController.onSubmit(arrivalId: ArrivalId)
+
 GET        /:arrivalId/unloading-permission-pdf                                             controllers.UnloadingPermissionPDFController.getPDF(arrivalId: ArrivalId)
 
 GET        /:arrivalId/unloading-remarks-sent                                               controllers.UnloadingRemarksSentController.onPageLoad(arrivalId: ArrivalId)

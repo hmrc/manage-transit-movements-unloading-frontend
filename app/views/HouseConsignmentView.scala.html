@@ -16,7 +16,7 @@
 
 @import views.html.components.{AnswerSections, Button, Heading}
 @import views.html.components.HeadingCaption
-@import viewModels.UnloadingFindingsViewModel
+@import viewModels.HouseConsignmentViewModel
 @import views.html.components.VisibleSection
 @import views.html.components.SummaryDetails
 
@@ -31,24 +31,26 @@ caption: HeadingCaption,
 formHelper: FormWithCSRF
 )
 
-@(mrn: MovementReferenceNumber, arrivalId: ArrivalId, unloadingFindingsViewModel: UnloadingFindingsViewModel)(implicit request: Request[_], messages: Messages)
+@(mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentViewModel: HouseConsignmentViewModel, houseConsignmentIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("unloadingFindings.title"),
+    title = messages("houseConsignment.title"),
     showBackLink = true,
 ) {
 
     @caption(mrn.toString)
 
     @heading(
-    heading = messages("unloadingFindings.heading")
+    heading = messages("houseConsignment.heading")
     )
 
-    <p class="govuk-body">@messages("unloadingFindings.paragraph")</p>
+    <p class="govuk-body">@messages("houseConsignment.paragraph")</p>
 
-    @summaryDetails(unloadingFindingsViewModel.section)
+    @answerSections(houseConsignmentViewModel.houseConsignment)
 
-    @formHelper(action = routes.UnloadingFindingsController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
-        @button(attributes = Map("id" -> "submit"))
+    @summaryDetails(houseConsignmentViewModel.section)
+
+    @formHelper(action = routes.HouseConsignmentController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
+        @button(attributes = Map("id" -> "submit"), messageKey = "site.backToSummary")
     }
 }
