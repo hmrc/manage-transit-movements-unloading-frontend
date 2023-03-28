@@ -25,6 +25,7 @@ import pages.AddUnloadingCommentsYesNoPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.AddUnloadingCommentsYesNoView
+import utils.Format._
 
 import scala.concurrent.Future
 
@@ -58,7 +59,7 @@ class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefau
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, true)
+      val userAnswers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, true)(booleanToIntWrites)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, addUnloadingCommentsRoute)

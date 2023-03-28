@@ -24,10 +24,16 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import play.api.libs.json.{JsObject, Json}
+import utils.Format._
+
+import java.time.{Clock, Instant, LocalDateTime, ZoneId}
 
 class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   val navigator = new Navigator
+
+  private val stubClock      = Clock.fixed(Instant.now, ZoneId.systemDefault)
+  private val dateTimeOfPrep = LocalDateTime.now(stubClock)
 
   "Navigator" - {
 
@@ -76,6 +82,9 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
                 |            },
                 |            "CustomsOfficeOfDestinationActual": {
                 |                "referenceNumber": "GB000008"
+                |            },
+                |            "TraderAtDestination": {
+                |                 "identificationNumber" : "AB123"
                 |            }
                 |
                 |     }
@@ -83,7 +92,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             )
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(data = json)
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
 
           navigator
             .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
@@ -201,7 +210,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           "to check your answers page if no selected" in {
 
             val userAnswers = emptyUserAnswers
-              .setValue(AddUnloadingCommentsYesNoPage, false)
+              .setValue(AddUnloadingCommentsYesNoPage, false)(booleanToIntWrites)
 
             navigator
               .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
@@ -210,7 +219,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           "to additional comments page if yes is selected and no comments found" in {
 
             val userAnswers = emptyUserAnswers
-              .setValue(AddUnloadingCommentsYesNoPage, true)
+              .setValue(AddUnloadingCommentsYesNoPage, true)(booleanToIntWrites)
 
             navigator
               .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
@@ -219,7 +228,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           "to additional comments page if yes is selected and comments found" in {
 
             val userAnswers = emptyUserAnswers
-              .setValue(AddUnloadingCommentsYesNoPage, true)
+              .setValue(AddUnloadingCommentsYesNoPage, true)(booleanToIntWrites)
               .setValue(UnloadingCommentsPage, "comment")
 
             navigator
@@ -232,8 +241,11 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
+              val ie043Data      = Json.obj("preparationDateAndTime" -> dateTimeOfPrep)
+              val updatedAnswers = answers.copy(ie043Data = ie043Data)
+
               navigator
-                .nextPage(DateGoodsUnloadedPage, mode, answers)
+                .nextPage(DateGoodsUnloadedPage, mode, updatedAnswers)
                 .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }

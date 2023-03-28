@@ -16,10 +16,11 @@
 
 package utils
 
-import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, LocalTime}
-
 import logging.Logging
+import play.api.libs.json._
+
+import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, LocalDateTime, LocalTime}
 
 object Format {
 
@@ -30,6 +31,26 @@ object Format {
   def timeFormatted(time: LocalTime): String = time.format(timeFormatter)
 
   val cyaDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
+
+  val dateTimeFormatIE044: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+
+  implicit class RichString(string: String) {
+    def parseWithIE044Format: LocalDateTime = LocalDateTime.parse(string, dateTimeFormatIE044)
+  }
+
+  val booleanToIntWrites: Writes[Boolean] = (result: Boolean) => {
+    val toInt = if (result) "0" else "1"
+    JsString(toInt)
+  }
+
+  val intToBooleanReads: Reads[Boolean] = (json: JsValue) => {
+    json.validate[String].flatMap {
+      case "0"   => JsSuccess(true)
+      case "1"   => JsSuccess(false)
+      case other => JsError(s"Failed to parse $other to boolean")
+    }
+  }
+
 }
 
 object Date extends Logging {

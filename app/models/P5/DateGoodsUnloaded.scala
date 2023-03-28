@@ -14,13 +14,24 @@
  * limitations under the License.
  */
 
-package pages
+package models.P5
 
-import play.api.libs.json.JsPath
+import play.api.libs.json.{JsString, Json, Reads, Writes}
 
-case object UnloadingCommentsPage extends QuestionPage[String] {
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
-  override def path: JsPath = JsPath \ "n1:CC044C" \ "UnloadingRemark" \ toString
+case class DateGoodsUnloaded(date: LocalDate)
 
-  override def toString: String = "unloadingRemark"
+object DateGoodsUnloaded {
+
+  implicit val writes: Writes[DateGoodsUnloaded] = (dateGoodsUnloaded: DateGoodsUnloaded) => {
+
+    val formatterNoMillis: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+
+    JsString(dateGoodsUnloaded.date.atStartOfDay().format(formatterNoMillis))
+  }
+
+  implicit val reads: Reads[DateGoodsUnloaded] = Json.reads[DateGoodsUnloaded]
+
 }

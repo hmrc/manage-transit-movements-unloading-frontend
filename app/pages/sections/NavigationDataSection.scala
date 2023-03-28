@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package pages
+package pages.sections
 
-import play.api.libs.json.JsPath
+import play.api.libs.json.{JsObject, JsPath}
 
-case object UnloadingCommentsPage extends QuestionPage[String] {
+case object NavigationDataSection extends Section[JsObject] {
 
-  override def path: JsPath = JsPath \ "n1:CC044C" \ "UnloadingRemark" \ toString
+  override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "unloadingRemark"
+  override def toString: String = "navigationData"
 }

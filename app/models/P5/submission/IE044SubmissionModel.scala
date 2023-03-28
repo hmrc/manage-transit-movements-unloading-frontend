@@ -18,6 +18,7 @@ package models.P5.submission
 
 import models.P5._
 import play.api.libs.json.{Json, OWrites}
+import utils.Format._
 
 import java.time.LocalDateTime
 
@@ -32,14 +33,18 @@ object IE044MessageData {
   implicit val writes: OWrites[IE044MessageData] = OWrites {
     messageData =>
       Json.obj(
-        "preparationDateAndTime"           -> LocalDateTime.now(), // TODO this might be an issue, should be on submission this is defined maybe?
-        "messageType"                      -> "CC044C",
-        "messageRecipient"                 -> "NCTS", // TODO double check this
-        "messageSender"                    -> "NCTS", // TODO double check this
+        "messageSender"    -> "NCTS", // TODO double check this
+        "messageRecipient" -> "NCTS", // TODO double check this
+        "preparationDateAndTime" -> LocalDateTime
+          .now()
+          .format(dateTimeFormatIE044), // TODO this might be an issue, should be on submission this is defined maybe?
         "messageIdentification"            -> "CC044C", // TODO double check this
+        "messageType"                      -> "CC044C",
+        "@PhaseID"                         -> "NCTS5.0",
         "TransitOperation"                 -> Json.toJsObject(messageData.TransitOperation),
         "TraderAtDestination"              -> Json.toJsObject(messageData.TraderAtDestination),
-        "CustomsOfficeOfDestinationActual" -> Json.toJsObject(messageData.CustomsOfficeOfDestinationActual)
+        "CustomsOfficeOfDestinationActual" -> Json.toJsObject(messageData.CustomsOfficeOfDestinationActual),
+        "UnloadingRemark"                  -> Json.obj("unloadingCompletion" -> "1") // TODO this page is missing
       )
   }
 

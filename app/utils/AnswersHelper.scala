@@ -94,25 +94,6 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
         )
     }
 
-  def getAnswerAndBuildRowFromPath[T](
-    path: JsPath,
-    formatAnswer: T => Content,
-    prefix: String,
-    id: Option[String],
-    call: Option[Call],
-    args: Any*
-  )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.getIE043(path) map {
-      answer =>
-        buildRowFromPath(
-          prefix = prefix,
-          answer = formatAnswer(answer),
-          id = id,
-          call = call,
-          args = args: _*
-        )
-    }
-
   def getAnswerAndBuildRowWithDynamicPrefix[T](
     answerPath: QuestionPage[T],
     titlePath: QuestionPage[T],

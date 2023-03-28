@@ -22,6 +22,7 @@ import models.P5.MessageData
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages._
 import play.api.mvc.Call
+import utils.Format._
 
 @Singleton
 class Navigator @Inject() () {
@@ -30,7 +31,7 @@ class Navigator @Inject() () {
 
     case DateGoodsUnloadedPage =>
       ua => {
-        val sealsExist = ua.`n1:CC044C`.asOpt[MessageData].exists(_.Consignment.sealsExist)
+        val sealsExist = ua.ie043Data.asOpt[MessageData].exists(_.Consignment.sealsExist)
 
         if (sealsExist) {
           controllers.routes.CanSealsBeReadController.onPageLoad(ua.id, NormalMode)
@@ -44,7 +45,7 @@ class Navigator @Inject() () {
     case UnloadingCommentsPage => ua => routes.CheckYourAnswersController.onPageLoad(ua.id)
     case AddUnloadingCommentsYesNoPage =>
       ua =>
-        ua.get(AddUnloadingCommentsYesNoPage) match {
+        ua.get(AddUnloadingCommentsYesNoPage)(intToBooleanReads) match {
           case Some(true)  => controllers.routes.UnloadingCommentsController.onPageLoad(ua.id, NormalMode)
           case Some(false) => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)
           case _           => routes.SessionExpiredController.onPageLoad()
@@ -58,7 +59,7 @@ class Navigator @Inject() () {
   private val checkRoutes: Page => UserAnswers => Call = {
     case AddUnloadingCommentsYesNoPage =>
       ua =>
-        ua.get(AddUnloadingCommentsYesNoPage) match {
+        ua.get(AddUnloadingCommentsYesNoPage)(intToBooleanReads) match {
           case Some(true) =>
             ua.get(UnloadingCommentsPage) match {
               case Some(_) => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)

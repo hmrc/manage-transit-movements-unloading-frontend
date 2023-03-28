@@ -25,7 +25,7 @@ object AuditUserInput {
 
   implicit val writes: Writes[AuditUserInput] = (input: AuditUserInput) => {
     Json.obj(
-      "fullUserAnswers" -> input.userAnswers.`n1:CC044C`
+      "fullUserAnswers" -> input.userAnswers.data
     )
   }
 }

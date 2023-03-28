@@ -462,7 +462,8 @@ class IE043DataSpec extends SpecBase {
               )
             )
           ),
-          CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual(referenceNumber = "GB000008")
+          CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual(referenceNumber = "GB000008"),
+          TraderAtDestination = TraderAtDestination("tad-1")
         )
       )
 
