@@ -45,7 +45,7 @@ object HouseConsignmentViewModel {
 
       helper.buildTransportSections.map {
         meansOfTransportSections =>
-          val houseConsignmentSection: Seq[Section] = Seq(helper.houseConsignmentSection)
+          val houseConsignmentSection: Seq[Section] = helper.houseConsignmentSection
           val itemSections: Seq[Section]            = helper.itemSections
 
           val sections: Seq[Section] = meansOfTransportSections ++ itemSections

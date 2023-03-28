@@ -88,7 +88,7 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
     args = Seq.empty
   )
 
-  def houseConsignmentSection: Section = {
+  def houseConsignmentSection: Seq[Section] = {
 
     val grossAndNetWeightRows: Option[Seq[SummaryListRow]] = houseConsignmentTotalWeightRows
     val consignorNameRow: Option[SummaryListRow]           = consignorName
@@ -96,9 +96,11 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
 
     val rows = buildHouseConsignmentRows(grossAndNetWeightRows, consignorNameRow, consignorIdentificationRow)
 
-    Section(
-      sectionTitle = messages("unloadingFindings.subsections.houseConsignment", houseConsignmentIndex.display),
-      rows
+    Seq(
+      Section(
+        sectionTitle = messages("unloadingFindings.subsections.houseConsignment", houseConsignmentIndex.display),
+        rows
+      )
     )
   }
 
