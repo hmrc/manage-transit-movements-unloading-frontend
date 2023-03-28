@@ -631,7 +631,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       }
     }
 
-    "grossWeightRow" - {
+    "totalGrossWeightRow" - {
 
       "must return Some(Row)" - {
         s"when total gross weight is passed to totalGrossWeightRow" in {
@@ -673,102 +673,6 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       }
     }
 
-    "itemDescriptionRow" - {
-
-      val itemDesc = Gen.alphaNumStr.sample.value
-
-      "must return None" - {
-        s"when $ItemDescriptionPage undefined" in {
-
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
-          val result = helper.itemDescriptionRow(index, itemIndex)
-          result mustBe None
-        }
-      }
-
-      "must return Some(Row)" - {
-        s"when $ItemDescriptionPage defined" in {
-          val answers = emptyUserAnswers
-            .setValue(ItemDescriptionPage(index, itemIndex), itemDesc)
-
-          val helper = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
-          val result = helper.itemDescriptionRow(index, itemIndex)
-
-          result mustBe
-            Some(
-              SummaryListRow(
-                key = Key("Description".toText),
-                value = Value(itemDesc.toText),
-                actions = None
-              )
-            )
-        }
-      }
-    }
-
-    "grossWeightRow" - {
-
-      val weight = Gen.double.sample.value
-
-      "must return None" - {
-        s"when $GrossWeightPage undefined" in {
-
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
-          val result = helper.grossWeightRow(index, itemIndex)
-          result mustBe None
-        }
-      }
-
-      "must return Some(Row)" - {
-        s"when $GrossWeightPage defined" in {
-          val answers = emptyUserAnswers
-            .setValue(GrossWeightPage(index, itemIndex), weight)
-
-          val helper = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
-          val result = helper.grossWeightRow(index, itemIndex)
-
-          result mustBe Some(
-            SummaryListRow(
-              key = Key("Gross weight".toText),
-              value = Value(s"${weight}kg".toText),
-              actions = None
-            )
-          )
-        }
-      }
-    }
-
-    "netWeightRow" - {
-
-      val weight = Gen.double.sample.value
-
-      "must return None" - {
-        s"when $NetWeightPage undefined" in {
-
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
-          val result = helper.netWeightRow(index, itemIndex)
-          result mustBe None
-        }
-      }
-
-      "must return Some(Row)" - {
-        s"when $NetWeightPage defined" in {
-          val answers = emptyUserAnswers
-            .setValue(NetWeightPage(index, itemIndex), weight)
-
-          val helper = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
-          val result = helper.netWeightRow(index, itemIndex)
-
-          result mustBe Some(
-            SummaryListRow(
-              key = Key("Net weight".toText),
-              value = Value(s"${weight}kg".toText),
-              actions = None
-            )
-          )
-        }
-      }
-    }
   }
 
 }

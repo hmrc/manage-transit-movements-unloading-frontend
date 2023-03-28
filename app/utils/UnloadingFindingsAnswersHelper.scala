@@ -239,47 +239,4 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
     args = None
   )
 
-  def itemSections(houseConsignmentIndex: Index): Seq[Section] =
-    userAnswers
-      .get(ItemsSection(houseConsignmentIndex))
-      .mapWithIndex {
-        (_, itemIndex) =>
-          val itemDescription: Option[SummaryListRow] = itemDescriptionRow(houseConsignmentIndex, itemIndex)
-          val grossWeight: Option[SummaryListRow]     = grossWeightRow(houseConsignmentIndex, itemIndex)
-          val netWeight: Option[SummaryListRow]       = netWeightRow(houseConsignmentIndex, itemIndex)
-
-          Some(
-            Section(
-              messages("unloadingFindings.subsections.item", itemIndex.display),
-              Seq(itemDescription, grossWeight, netWeight).flatten
-            )
-          )
-      }
-
-  def itemDescriptionRow(houseConsignmentIndex: Index, itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = ItemDescriptionPage(houseConsignmentIndex, itemIndex),
-    formatAnswer = formatAsText,
-    prefix = "unloadingFindings.rowHeadings.item.description",
-    id = None,
-    call = None //TODO: item description change controller
-  )
-
-  def grossWeightRow(houseConsignmentIndex: Index, itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Double](
-    page = GrossWeightPage(houseConsignmentIndex, itemIndex),
-    formatAnswer = formatAsWeight,
-    prefix = "unloadingFindings.rowHeadings.item.grossWeight",
-    args = itemIndex.display,
-    id = None,
-    call = None
-  )
-
-  def netWeightRow(houseConsignmentIndex: Index, itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Double](
-    page = NetWeightPage(houseConsignmentIndex, itemIndex),
-    formatAnswer = formatAsWeight,
-    prefix = "unloadingFindings.rowHeadings.item.netWeight",
-    args = itemIndex.display,
-    id = None,
-    call = None
-  )
-
 }

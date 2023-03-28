@@ -576,6 +576,97 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
         }
       }
     }
+
+    "ItemsSections" - {
+
+      val weight = Gen.double.sample.value
+
+      "must return none" - {
+        s"when no Items undefined" in {
+
+          val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, index, mockReferenceDataService)
+          val result = helper.itemSections
+          result mustBe Nil
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when an Item is defined" in {
+          val answers = emptyUserAnswers
+            .setValue(ItemDescriptionPage(index, itemIndex), "test")
+            .setValue(GrossWeightPage(index, itemIndex), weight)
+            .setValue(NetWeightPage(index, itemIndex), weight)
+
+          val helper = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+          val result = helper.itemSections.head.rows
+
+          result.head mustBe
+            SummaryListRow(
+              key = Key("Description".toText),
+              value = Value("test".toText),
+              actions = None
+            )
+          result(1) mustBe
+            SummaryListRow(
+              key = Key("Gross weight".toText),
+              value = Value(s"${weight}kg".toText),
+              actions = None
+            )
+          result(2) mustBe
+            SummaryListRow(
+              key = Key("Net weight".toText),
+              value = Value(s"${weight}kg".toText),
+              actions = None
+            )
+        }
+        s"when Net Weight is not defined" in {
+          val answers = emptyUserAnswers
+            .setValue(ItemDescriptionPage(index, itemIndex), "test")
+            .setValue(GrossWeightPage(index, itemIndex), weight)
+
+          val helper = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+          val result = helper.itemSections.head.rows
+
+          result.head mustBe
+            SummaryListRow(
+              key = Key("Description".toText),
+              value = Value("test".toText),
+              actions = None
+            )
+          result(1) mustBe
+            SummaryListRow(
+              key = Key("Gross weight".toText),
+              value = Value(s"${weight}kg".toText),
+              actions = None
+            )
+          result.length mustBe 2
+        }
+        s"when Gross Weight is not defined" in {
+          val answers = emptyUserAnswers
+            .setValue(ItemDescriptionPage(index, itemIndex), "test")
+            .setValue(NetWeightPage(index, itemIndex), weight)
+
+          val helper = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+          val result = helper.itemSections.head.rows
+
+          result.head mustBe
+            SummaryListRow(
+              key = Key("Description".toText),
+              value = Value("test".toText),
+              actions = None
+            )
+          result(1) mustBe
+            SummaryListRow(
+              key = Key("Net weight".toText),
+              value = Value(s"${weight}kg".toText),
+              actions = None
+            )
+          result.length mustBe 2
+        }
+      }
+
+    }
+
   }
 
 }
