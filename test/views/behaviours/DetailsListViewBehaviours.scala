@@ -41,7 +41,6 @@ trait DetailsListViewBehaviours extends ViewBehaviours {
             summaryList.rows.zipWithIndex.foreach {
               case (row, rowIndex) =>
                 val renderedRow = renderedRows(rowIndex)
-                println("\n\n\n" + renderedRow)
                 s"row ${rowIndex + 1}" - {
 
                   "must contain a key" in {

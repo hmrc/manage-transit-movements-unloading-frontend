@@ -57,7 +57,7 @@ class UnloadingFindingsViewSpec extends DetailsListViewBehaviours with Generator
   "must render section titles when rows are non-empty" - {
     sections.foreach(_.sectionTitle.map {
       sectionTitle =>
-        behave like pageWithContent("h2", sectionTitle)
+        behave like pageWithContent("span", sectionTitle)
     })
   }
 

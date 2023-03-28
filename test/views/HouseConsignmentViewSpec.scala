@@ -22,19 +22,18 @@ import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewModels.HouseConsignmentViewModel
 import viewModels.sections.Section
-import views.behaviours.SummaryListViewBehaviours
+import views.behaviours.DetailsListViewBehaviours
 import views.html.HouseConsignmentView
 
-class HouseConsignmentViewSpec extends SummaryListViewBehaviours with Generators {
+class HouseConsignmentViewSpec extends DetailsListViewBehaviours with Generators {
 
   override val prefix: String = "unloadingFindings"
 
+  lazy val sections: Seq[Section]                          = arbitrary[List[Section]].sample.value
+  val houseConsignmentViewModel: HouseConsignmentViewModel = new HouseConsignmentViewModel(sections, sections)
+
   override def view: HtmlFormat.Appendable =
     injector.instanceOf[HouseConsignmentView].apply(mrn, arrivalId, houseConsignmentViewModel, index)(fakeRequest, messages)
-
-  lazy val sections: Seq[Section] = arbitrary[List[Section]].sample.value
-
-  val houseConsignmentViewModel: HouseConsignmentViewModel = new HouseConsignmentViewModel(sections, sections)
 
   override def summaryLists: Seq[SummaryList] = sections.map(
     section => SummaryList(section.rows)
@@ -48,7 +47,7 @@ class HouseConsignmentViewSpec extends SummaryListViewBehaviours with Generators
 
   behave like pageWithHeading()
 
-  behave like pageWithSummaryLists()
+  behave like pageWithSections()
 
   behave like pageWithFormAction(controllers.routes.HouseConsignmentController.onSubmit(arrivalId).url)
 
@@ -57,7 +56,7 @@ class HouseConsignmentViewSpec extends SummaryListViewBehaviours with Generators
   "must render section titles when rows are non-empty" - {
     sections.foreach(_.sectionTitle.map {
       sectionTitle =>
-        behave like pageWithContent("h2", sectionTitle)
+        behave like pageWithContent("span", sectionTitle)
     })
   }
 

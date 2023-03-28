@@ -17,21 +17,18 @@
 package views
 
 import generators.Generators
-import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewModels.CheckYourAnswersViewModel
 import viewModels.sections.Section
-import views.behaviours.SummaryListViewBehaviours
+import views.behaviours.CheckYourAnswersViewBehaviours
 import views.html.CheckYourAnswersView
 
-class CheckYourAnswersViewSpec extends SummaryListViewBehaviours with Generators {
+class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours with Generators {
 
   override val prefix: String = "checkYourAnswers"
 
-  lazy val sections: Seq[Section] = arbitrary[List[Section]].sample.value
-
-  override def view: HtmlFormat.Appendable =
+  override def viewWithSections(sections: Seq[Section]): HtmlFormat.Appendable =
     injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, checkYourAnswersViewModel)(fakeRequest, messages)
 
   val checkYourAnswersViewModel: CheckYourAnswersViewModel = new CheckYourAnswersViewModel(sections)
