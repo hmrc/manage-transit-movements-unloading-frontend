@@ -54,7 +54,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     page = AddUnloadingCommentsYesNoPage,
     formatAnswer = formatAsYesOrNo,
     prefix = "checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo",
-    id = Some("change-add-unloading-comments-yes-no"),
+    id = Some("change-add-unloading-comments"),
     call = Some(controllers.routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, CheckMode))
   )(intToBooleanReads)
 

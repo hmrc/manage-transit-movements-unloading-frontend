@@ -196,7 +196,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                       visuallyHiddenText = Some(
                         "if there were any differences between the transit and the declaration information"
                       ),
-                      attributes = Map("id" -> "change-add-unloading-comments-yes-no")
+                      attributes = Map("id" -> "change-add-unloading-comments")
                     )
                   )
                 )
@@ -221,7 +221,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                       content = "Change".toText,
                       href = routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, CheckMode).url,
                       visuallyHiddenText = Some("if there were any differences between the transit and the declaration information"),
-                      attributes = Map("id" -> "change-add-unloading-comments-yes-no")
+                      attributes = Map("id" -> "change-add-unloading-comments")
                     )
                   )
                 )
