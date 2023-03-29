@@ -130,9 +130,13 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
     val itemArray      = userAnswers.get(ItemsSection(houseConsignmentIndex))
     val itemCount: Int = itemArray.map(_.value.length).getOrElse(0)
 
-    val itemWeights: Seq[(BigDecimal, BigDecimal)] = itemArray.mapWithIndex[(BigDecimal, BigDecimal)](
-      (_, itemIndex) => Some(fetchWeightValues(itemIndex))
+    val itemWeights: Seq[(Option[BigDecimal], Option[BigDecimal])] = itemArray.mapWithIndex[(Option[BigDecimal], Option[BigDecimal])](
+      (_, itemIndex) => fetchWeightValues(itemIndex)
     )
+
+    import cats.implicits._
+
+    val woa: Option[BigDecimal] = itemWeights.traverse(x => x._1).map(_.sum)
 
     if (itemCount == 0) {
       None
@@ -152,8 +156,6 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
         .underlying
         .stripTrailingZeros
 
-      val x = if(netWeight = 0)
-
       (netWeight.toInt, grossWeight.toInt) match {
         case (_, 0) => None
         case (0, _) => Some(Seq(totalNetWeightRow(netWeight)))
@@ -163,12 +165,12 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
     }
   }
 
-  def fetchWeightValues(itemIndex: Index): (BigDecimal, BigDecimal) = {
-    val grossWeightDouble = userAnswers.get(GrossWeightPage(houseConsignmentIndex, itemIndex)).getOrElse(0d)
-    val netWeightDouble   = userAnswers.get(NetWeightPage(houseConsignmentIndex, itemIndex)).getOrElse(0d)
+  def fetchWeightValues(itemIndex: Index): (Option[BigDecimal], Option[BigDecimal]) = {
+    val grossWeightDouble = userAnswers.get(GrossWeightPage(houseConsignmentIndex, itemIndex))
+    val netWeightDouble   = userAnswers.get(NetWeightPage(houseConsignmentIndex, itemIndex))
     (
-      BigDecimal.valueOf(grossWeightDouble),
-      BigDecimal.valueOf(netWeightDouble)
+      grossWeightDouble.map(BigDecimal.valueOf),
+      netWeightDouble.map(BigDecimal.valueOf)
     )
   }
 
