@@ -18,6 +18,7 @@ package utils
 
 import cats.data.OptionT
 import cats.implicits._
+import models.TraderAtDestination.Constants.maxWeightDecimalPlace
 import models.{Index, Link, UserAnswers}
 import pages._
 import pages.sections._
@@ -177,13 +178,13 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
     )
 
   def totalGrossWeightRow(answer: Double): SummaryListRow = buildRowWithNoChangeLink(
-    answer = formatAsWeight(answer),
+    answer = formatAsWeight(BigDecimal(answer).setScale(maxWeightDecimalPlace, BigDecimal.RoundingMode.HALF_UP).toDouble),
     prefix = "unloadingFindings.rowHeadings.houseConsignment.grossWeight",
     args = None
   )
 
   def totalNetWeightRow(answer: Double): SummaryListRow = buildRowWithNoChangeLink(
-    answer = formatAsWeight(answer),
+    answer = formatAsWeight(BigDecimal(answer).setScale(6, BigDecimal.RoundingMode.HALF_UP).toDouble),
     prefix = "unloadingFindings.rowHeadings.houseConsignment.netWeight",
     args = None
   )

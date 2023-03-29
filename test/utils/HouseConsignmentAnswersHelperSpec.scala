@@ -18,6 +18,7 @@ package utils
 
 import base.SpecBase
 import generators.Generators
+import models.TraderAtDestination.Constants.maxWeightDecimalPlace
 import models.{Identification, Index}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -35,7 +36,11 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
 
   val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
-  private val countryDesc = "Great Britain"
+  private val countryDesc   = "Great Britain"
+  private val double        = Gen.double.sample.value
+  private val decimalPlaces = maxWeightDecimalPlace
+  val grossWeight           = BigDecimal(double).setScale(decimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
+  val netWeight             = BigDecimal(double).setScale(decimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
 
   "HouseConsignmentAnswersHelper" - {
 
@@ -245,9 +250,6 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
 
       "must return Some(Row)s" - {
         s"when consignments are defined" in {
-
-          val grossWeight      = Gen.double.sample.value
-          val netWeight        = Gen.double.sample.value
           val totalGrossWeight = grossWeight * 2
           val totalNetWeight   = netWeight * 2
 
@@ -293,9 +295,6 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
         }
         s"when a consignments is defined" - {
           "and consignor identification number is not defined" in {
-
-            val grossWeight = Gen.double.sample.value
-            val netWeight   = Gen.double.sample.value
 
             val answers = emptyUserAnswers
               .setValue(GrossWeightPage(index, itemIndex), grossWeight)
@@ -370,9 +369,6 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
           }
           "and consignor name is not defined" in {
 
-            val grossWeight = Gen.double.sample.value
-            val netWeight   = Gen.double.sample.value
-
             val answers = emptyUserAnswers
               .setValue(GrossWeightPage(index, itemIndex), grossWeight)
               .setValue(NetWeightPage(index, itemIndex), netWeight)
@@ -443,7 +439,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
       "must return Some(Row)" - {
         s"when total gross weight is passed to totalGrossWeightRow" in {
 
-          val totalGrossWeight = Gen.double.sample.value
+          val totalGrossWeight = grossWeight
 
           val answers = emptyUserAnswers
 
@@ -464,7 +460,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
       "must return Some(Row)" - {
         s"when total net weight is passed to totalNetWeightRow" in {
 
-          val totalNetWeight = Gen.double.sample.value
+          val totalNetWeight = netWeight
 
           val answers = emptyUserAnswers
 
@@ -515,7 +511,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
 
     "grossWeightRow" - {
 
-      val weight = Gen.double.sample.value
+      val weight = netWeight
 
       "must return None" - {
         s"when $GrossWeightPage undefined" in {
@@ -547,8 +543,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
 
     "netWeightRow" - {
 
-      val weight = Gen.double.sample.value
-
+      val weight = netWeight
       "must return None" - {
         s"when $NetWeightPage undefined" in {
 
@@ -579,7 +574,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
 
     "ItemsSections" - {
 
-      val weight = Gen.double.sample.value
+      val weight = netWeight
 
       "must return none" - {
         s"when no Items undefined" in {
