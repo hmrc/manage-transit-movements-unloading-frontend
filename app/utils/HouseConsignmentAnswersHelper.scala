@@ -18,8 +18,7 @@ package utils
 
 import cats.data.OptionT
 import cats.implicits._
-import models.TraderAtDestination.Constants.weightMaxDecimalPlace
-import models.{Index, Link, UserAnswers}
+import models.{Index, UserAnswers}
 import pages._
 import pages.sections._
 import play.api.i18n.Messages
@@ -148,7 +147,7 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
     val itemArray      = userAnswers.get(ItemsSection(houseConsignmentIndex))
     val itemCount: Int = itemArray.map(_.value.length).getOrElse(0)
 
-    val itemWeights: Seq[(Double, Double)] = itemArray.mapWithIndex[(Double, Double)](
+    val itemWeights: Seq[(BigDecimal, BigDecimal)] = itemArray.mapWithIndex[(BigDecimal, BigDecimal)](
       (_, itemIndex) => Some(fetchWeightValues(itemIndex))
     )
 
@@ -160,31 +159,38 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
           x => x._1
         )
         .sum
+        .underlying
+        .stripTrailingZeros
       val netWeight = itemWeights
         .map(
           x => x._2
         )
         .sum
+        .underlying
+        .stripTrailingZeros
 
       Some(Seq(totalGrossWeightRow(grossWeight), totalNetWeightRow(netWeight)))
 
     }
   }
 
-  def fetchWeightValues(itemIndex: Index): (Double, Double) =
+  def fetchWeightValues(itemIndex: Index): (BigDecimal, BigDecimal) = {
+    val grossWeightDouble = userAnswers.get(GrossWeightPage(houseConsignmentIndex, itemIndex)).getOrElse(0d)
+    val netWeightDouble   = userAnswers.get(NetWeightPage(houseConsignmentIndex, itemIndex)).getOrElse(0d)
     (
-      userAnswers.get(GrossWeightPage(houseConsignmentIndex, itemIndex)).getOrElse(0d),
-      userAnswers.get(NetWeightPage(houseConsignmentIndex, itemIndex)).getOrElse(0d)
+      BigDecimal.valueOf(grossWeightDouble),
+      BigDecimal.valueOf(netWeightDouble)
     )
+  }
 
-  def totalGrossWeightRow(answer: Double): SummaryListRow = buildRowWithNoChangeLink(
-    answer = formatAsWeight(BigDecimal(answer).setScale(weightMaxDecimalPlace, BigDecimal.RoundingMode.HALF_UP).toDouble),
+  def totalGrossWeightRow(answer: BigDecimal): SummaryListRow = buildRowWithNoChangeLink(
+    answer = formatAsWeight(answer),
     prefix = "unloadingFindings.rowHeadings.houseConsignment.grossWeight",
     args = None
   )
 
-  def totalNetWeightRow(answer: Double): SummaryListRow = buildRowWithNoChangeLink(
-    answer = formatAsWeight(BigDecimal(answer).setScale(6, BigDecimal.RoundingMode.HALF_UP).toDouble),
+  def totalNetWeightRow(answer: BigDecimal): SummaryListRow = buildRowWithNoChangeLink(
+    answer = formatAsWeight(answer),
     prefix = "unloadingFindings.rowHeadings.houseConsignment.netWeight",
     args = None
   )
