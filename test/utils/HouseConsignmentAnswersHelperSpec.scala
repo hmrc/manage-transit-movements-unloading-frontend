@@ -18,7 +18,7 @@ package utils
 
 import base.SpecBase
 import generators.Generators
-import models.TraderAtDestination.Constants.maxWeightDecimalPlace
+import models.TraderAtDestination.Constants.weightMaxDecimalPlace
 import models.{Identification, Index}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -38,9 +38,9 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
 
   private val countryDesc   = "Great Britain"
   private val double        = Gen.double.sample.value
-  private val decimalPlaces = maxWeightDecimalPlace
-  val grossWeight           = BigDecimal(double).setScale(decimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
-  val netWeight             = BigDecimal(double).setScale(decimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
+  private val decimalPlaces = weightMaxDecimalPlace
+  private val grossWeight   = BigDecimal(double).setScale(decimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
+  private val netWeight     = BigDecimal(double).setScale(decimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
 
   "HouseConsignmentAnswersHelper" - {
 

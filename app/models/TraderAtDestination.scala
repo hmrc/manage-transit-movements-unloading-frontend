@@ -46,7 +46,7 @@ object TraderAtDestination {
     val postCodeLength        = 9
     val cityLength            = 35
     val countryCodeLength     = 2
-    val maxWeightDecimalPlace = 6
+    val weightMaxDecimalPlace = 6
   }
 
   implicit def writes: XMLWrites[TraderAtDestination] = XMLWrites[TraderAtDestination] {
