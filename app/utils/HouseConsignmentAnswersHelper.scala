@@ -29,6 +29,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import viewModels.sections.Section
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.math.BigDecimal.javaBigDecimal2bigDecimal
 
 class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: Index, referenceDataService: ReferenceDataService)(implicit
   messages: Messages,
@@ -86,7 +87,7 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
 
   def houseConsignmentSection: Seq[Section] = {
 
-    val grossAndNetWeightRows: Option[Seq[SummaryListRow]] = houseConsignmentTotalWeightRows
+    val grossAndNetWeightRows: Seq[SummaryListRow]         = houseConsignmentTotalWeightRows
     val consignorNameRow: Option[SummaryListRow]           = consignorName
     val consignorIdentificationRow: Option[SummaryListRow] = consignorIdentification
 
@@ -101,12 +102,11 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
   }
 
   private def buildHouseConsignmentRows(
-    grossAndNetWeightRows: Option[Seq[SummaryListRow]],
+    grossAndNetWeightRows: Seq[SummaryListRow],
     consignorNameRow: Option[SummaryListRow],
     consignorIdentificationRow: Option[SummaryListRow]
   ): Seq[SummaryListRow] =
-    grossAndNetWeightRows
-      .getOrElse(Seq.empty) ++ consignorNameRow.map(Seq(_)).getOrElse(Seq.empty) ++ consignorIdentificationRow.map(Seq(_)).getOrElse(Seq.empty)
+    grossAndNetWeightRows ++ consignorNameRow.map(Seq(_)).getOrElse(Seq.empty) ++ consignorIdentificationRow.map(Seq(_)).getOrElse(Seq.empty)
 
   def consignorName: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = ConsignorNamePage(houseConsignmentIndex),
@@ -124,7 +124,7 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
     call = None
   )
 
-  def houseConsignmentTotalWeightRows: Option[Seq[SummaryListRow]] = {
+  def houseConsignmentTotalWeightRows: Seq[SummaryListRow] = {
     val itemArray      = userAnswers.get(ItemsSection(houseConsignmentIndex))
     val itemCount: Int = itemArray.map(_.value.length).getOrElse(0)
 
@@ -132,36 +132,38 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
       (_, itemIndex) => Some(fetchWeightValues(itemIndex))
     )
 
-
     if (itemCount == 0) {
-      None
+      Seq.empty
     } else {
-
-      val totalGrossWeight: Option[BigDecimal] = itemWeights
-        .traverse(
+      val totalGrossWeight = itemWeights
+        .flatMap(
           x => x._1
         )
-        .map(_.sum.underlying.stripTrailingZeros)
+        .sum
+        .underlying
+        .stripTrailingZeros
 
-      val totalNetWeight: Option[BigDecimal] = itemWeights
-        .traverse(
+      val totalNetWeight = itemWeights
+        .flatMap(
           x => x._2
         )
-        .map(_.sum.underlying.stripTrailingZeros)
+        .sum
+        .underlying
+        .stripTrailingZeros
 
       val createTotalGrossWeightRow: Seq[SummaryListRow] = totalGrossWeight match {
 
-        case Some(x) => Seq(totalGrossWeightRow(x))
-        case None    => Seq.empty
+        case x if x.signum() == 1 => Seq(totalGrossWeightRow(x))
+        case _                    => Seq.empty
       }
 
       val createTotalNetWeightRow: Seq[SummaryListRow] = totalNetWeight match {
 
-        case Some(x) => Seq(totalNetWeightRow(x))
-        case None    => Seq.empty
+        case x if x.signum() == 1 => Seq(totalNetWeightRow(x))
+        case _                    => Seq.empty
       }
 
-      Some(createTotalGrossWeightRow ++ createTotalNetWeightRow)
+      createTotalGrossWeightRow ++ createTotalNetWeightRow
 
     }
   }
