@@ -43,12 +43,8 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
     } yield transportRegisteredCountry(y)).value
 
   def buildMeansOfTransportRows(idRow: Option[SummaryListRow], nationalityRow: Option[SummaryListRow]): Seq[SummaryListRow] =
-    (idRow, nationalityRow) match {
-      case (Some(transportMeansIDRow), Some(transportRegisteredCountryRow)) => Seq(transportMeansIDRow, transportRegisteredCountryRow)
-      case (Some(transportMeansIDRow), None)                                => Seq(transportMeansIDRow)
-      case (None, Some(transportRegisteredCountryRow))                      => Seq(transportRegisteredCountryRow)
-      case (_, _)                                                           => Seq.empty
-    }
+    idRow.map(Seq(_)).getOrElse(Seq.empty) ++
+      nationalityRow.map(Seq(_)).getOrElse(Seq.empty)
 
   def buildTransportSections: Future[Seq[Section]] =
     userAnswers

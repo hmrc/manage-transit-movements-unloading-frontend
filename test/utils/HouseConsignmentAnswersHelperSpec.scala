@@ -36,11 +36,11 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
 
   val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
-  private val countryDesc   = "Great Britain"
-  private val double        = Gen.double.sample.value
-  private val decimalPlaces = weightMaxDecimalPlace
-  private val grossWeight   = BigDecimal(double).setScale(decimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
-  private val netWeight     = BigDecimal(double).setScale(decimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
+  private val countryDesc         = "Great Britain"
+  private val double              = Gen.double.sample.value
+  private val decimalPlaces       = weightMaxDecimalPlace
+  private val grossWeight: Double = BigDecimal(double).setScale(decimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
+  private val netWeight           = BigDecimal(double).setScale(decimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
 
   "HouseConsignmentAnswersHelper" - {
 
@@ -303,7 +303,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
 
             val helper   = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
             val sections = helper.houseConsignmentSection.head.rows
-
+            println("\n\n\n\n" + sections)
             val grossWeightRow = sections.head
             val netWeightRow   = sections(1)
             val consignorName  = sections(2)

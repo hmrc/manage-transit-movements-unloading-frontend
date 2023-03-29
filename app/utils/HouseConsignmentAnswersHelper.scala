@@ -29,6 +29,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import viewModels.sections.Section
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.math.BigDecimal
+import scala.math.BigDecimal.javaBigDecimal2bigDecimal
 
 class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: Index, referenceDataService: ReferenceDataService)(implicit
   messages: Messages,
@@ -43,12 +45,8 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
     } yield transportRegisteredCountry(y)).value
 
   def buildMeansOfTransportRows(idRow: Option[SummaryListRow], nationalityRow: Option[SummaryListRow]): Seq[SummaryListRow] =
-    (idRow, nationalityRow) match {
-      case (Some(transportMeansIDRow), Some(transportRegisteredCountryRow)) => Seq(transportMeansIDRow, transportRegisteredCountryRow)
-      case (Some(transportMeansIDRow), None)                                => Seq(transportMeansIDRow)
-      case (None, Some(transportRegisteredCountryRow))                      => Seq(transportRegisteredCountryRow)
-      case (_, _)                                                           => Seq.empty
-    }
+    idRow.map(Seq(_)).getOrElse(Seq.empty) ++
+      nationalityRow.map(Seq(_)).getOrElse(Seq.empty)
 
   def buildTransportSections: Future[Seq[Section]] =
     userAnswers
@@ -108,24 +106,9 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
     grossAndNetWeightRows: Option[Seq[SummaryListRow]],
     consignorNameRow: Option[SummaryListRow],
     consignorIdentificationRow: Option[SummaryListRow]
-  ): Seq[SummaryListRow] = (grossAndNetWeightRows, consignorNameRow, consignorIdentificationRow) match {
-    case (Some(grossAndNetWeightRows), Some(consignorNameRow), Some(consignorIdentificationRow)) =>
-      grossAndNetWeightRows ++ Seq(consignorNameRow, consignorIdentificationRow)
-    case (Some(grossAndNetWeightRows), Some(consignorNameRow), None) =>
-      grossAndNetWeightRows ++ Seq(consignorNameRow)
-    case (Some(grossAndNetWeightRows), None, Some(consignorIdentificationRow)) =>
-      grossAndNetWeightRows ++ Seq(consignorIdentificationRow)
-    case (None, Some(consignorNameRow), Some(consignorIdentificationRow)) =>
-      Seq(consignorNameRow, consignorIdentificationRow)
-    case (None, Some(consignorNameRow), None) =>
-      Seq(consignorNameRow)
-    case (None, None, Some(consignorIdentificationRow)) =>
-      Seq(consignorIdentificationRow)
-    case (Some(grossAndNetWeightRows), None, None) =>
-      grossAndNetWeightRows
-    case (_, _, _) =>
-      Seq.empty
-  }
+  ): Seq[SummaryListRow] =
+    grossAndNetWeightRows
+      .getOrElse(Seq.empty) ++ consignorNameRow.map(Seq(_)).getOrElse(Seq.empty) ++ consignorIdentificationRow.map(Seq(_)).getOrElse(Seq.empty)
 
   def consignorName: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = ConsignorNamePage(houseConsignmentIndex),
@@ -169,8 +152,14 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
         .underlying
         .stripTrailingZeros
 
-      Some(Seq(totalGrossWeightRow(grossWeight), totalNetWeightRow(netWeight)))
+      val x = if(netWeight = 0)
 
+      (netWeight.toInt, grossWeight.toInt) match {
+        case (_, 0) => None
+        case (0, _) => Some(Seq(totalNetWeightRow(netWeight)))
+        case (_, 0) => Some(Seq(totalGrossWeightRow(netWeight)))
+        case (_, _) => Some(Seq(totalGrossWeightRow(grossWeight), totalNetWeightRow(netWeight)))
+      }
     }
   }
 
