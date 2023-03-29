@@ -29,8 +29,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import viewModels.sections.Section
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.math.BigDecimal
-import scala.math.BigDecimal.javaBigDecimal2bigDecimal
 
 class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: Index, referenceDataService: ReferenceDataService)(implicit
   messages: Messages,
@@ -131,37 +129,40 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
     val itemCount: Int = itemArray.map(_.value.length).getOrElse(0)
 
     val itemWeights: Seq[(Option[BigDecimal], Option[BigDecimal])] = itemArray.mapWithIndex[(Option[BigDecimal], Option[BigDecimal])](
-      (_, itemIndex) => fetchWeightValues(itemIndex)
+      (_, itemIndex) => Some(fetchWeightValues(itemIndex))
     )
 
-    import cats.implicits._
-
-    val woa: Option[BigDecimal] = itemWeights.traverse(x => x._1).map(_.sum)
 
     if (itemCount == 0) {
       None
     } else {
-      val grossWeight = itemWeights
-        .map(
+
+      val totalGrossWeight: Option[BigDecimal] = itemWeights
+        .traverse(
           x => x._1
         )
-        .sum
-        .underlying
-        .stripTrailingZeros
-      val netWeight = itemWeights
-        .map(
+        .map(_.sum.underlying.stripTrailingZeros)
+
+      val totalNetWeight: Option[BigDecimal] = itemWeights
+        .traverse(
           x => x._2
         )
-        .sum
-        .underlying
-        .stripTrailingZeros
+        .map(_.sum.underlying.stripTrailingZeros)
 
-      (netWeight.toInt, grossWeight.toInt) match {
-        case (_, 0) => None
-        case (0, _) => Some(Seq(totalNetWeightRow(netWeight)))
-        case (_, 0) => Some(Seq(totalGrossWeightRow(netWeight)))
-        case (_, _) => Some(Seq(totalGrossWeightRow(grossWeight), totalNetWeightRow(netWeight)))
+      val createTotalGrossWeightRow: Seq[SummaryListRow] = totalGrossWeight match {
+
+        case Some(x) => Seq(totalGrossWeightRow(x))
+        case None    => Seq.empty
       }
+
+      val createTotalNetWeightRow: Seq[SummaryListRow] = totalNetWeight match {
+
+        case Some(x) => Seq(totalNetWeightRow(x))
+        case None    => Seq.empty
+      }
+
+      Some(createTotalGrossWeightRow ++ createTotalNetWeightRow)
+
     }
   }
 
