@@ -18,7 +18,6 @@ package views.behaviours
 
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-import viewModels.sections.Section
 
 import scala.jdk.CollectionConverters._
 

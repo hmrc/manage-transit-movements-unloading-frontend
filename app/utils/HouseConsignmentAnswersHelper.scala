@@ -18,7 +18,7 @@ package utils
 
 import cats.data.OptionT
 import cats.implicits._
-import models.{Index, Link, UserAnswers}
+import models.{Index, UserAnswers}
 import pages._
 import pages.sections._
 import play.api.i18n.Messages

@@ -17,7 +17,6 @@
 package views
 
 import generators.Generators
-import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList

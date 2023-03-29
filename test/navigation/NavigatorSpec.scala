@@ -153,22 +153,22 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
       }
 
       "must go from are any seals broken page " - {
-        "to unloading comments yes no page when the answer is No" in {
+        "to unloading findings page when the answer is No" in {
 
           val userAnswers = emptyUserAnswers.setValue(AreAnySealsBrokenPage, false)
 
           navigator
             .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-            .mustBe(routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, mode))
+            .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
         }
 
-        "to unloading comments yes no page when the answer is Yes" in {
+        "to unloading findings page when the answer is Yes" in {
 
           val userAnswers = emptyUserAnswers.setValue(AreAnySealsBrokenPage, true)
 
           navigator
             .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-            .mustBe(routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, mode))
+            .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
         }
       }
       "must go from unloading comments yes no page" - {
