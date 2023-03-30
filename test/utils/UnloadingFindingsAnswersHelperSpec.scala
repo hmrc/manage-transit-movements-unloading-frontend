@@ -18,7 +18,6 @@ package utils.cyaHelpers
 
 import base.SpecBase
 import generators.Generators
-import models.TraderAtDestination.Constants.weightMaxDecimalPlace
 import models.{Identification, Index}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -440,12 +439,10 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       "must return Some(Row)s" - {
         s"when consignments are defined" in {
 
-          val double           = Gen.double.sample.value
-          val decimalPlaces    = weightMaxDecimalPlace
-          val grossWeight      = BigDecimal(double).setScale(decimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
-          val netWeight        = BigDecimal(double).setScale(decimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
-          val totalGrossWeight = grossWeight * 2
-          val totalNetWeight   = netWeight * 2
+          val grossWeight      = Gen.double.sample.value
+          val netWeight        = Gen.double.sample.value
+          val totalGrossWeight = (BigDecimal(grossWeight) + BigDecimal(grossWeight)).underlying().stripTrailingZeros()
+          val totalNetWeight   = (BigDecimal(netWeight) + BigDecimal(netWeight)).underlying().stripTrailingZeros()
 
           val answers = emptyUserAnswers
             .setValue(GrossWeightPage(index, itemIndex), grossWeight)
@@ -490,10 +487,8 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
         s"when a consignments is defined" - {
           "and consignor identification number is not defined" in {
 
-            val double        = Gen.double.sample.value
-            val decimalPlaces = weightMaxDecimalPlace
-            val grossWeight   = BigDecimal(double).setScale(decimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
-            val netWeight     = BigDecimal(double).setScale(decimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
+            val grossWeight = Gen.double.sample.value
+            val netWeight   = Gen.double.sample.value
 
             val answers = emptyUserAnswers
               .setValue(GrossWeightPage(index, itemIndex), grossWeight)
@@ -510,13 +505,13 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             grossWeightRow mustBe
               SummaryListRow(
                 key = Key("Gross weight".toText),
-                value = Value(s"${grossWeight}kg".toText)
+                value = Value(s"${BigDecimal(grossWeight)}kg".toText)
               )
 
             netWeightRow mustBe
               SummaryListRow(
                 key = Key("Net weight".toText),
-                value = Value(s"${netWeight}kg".toText)
+                value = Value(s"${BigDecimal(netWeight)}kg".toText)
               )
 
             consignorName mustBe
@@ -586,13 +581,13 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             grossWeightRow mustBe
               SummaryListRow(
                 key = Key("Gross weight".toText),
-                value = Value(s"${grossWeight}kg".toText)
+                value = Value(s"${BigDecimal(grossWeight)}kg".toText)
               )
 
             netWeightRow mustBe
               SummaryListRow(
                 key = Key("Net weight".toText),
-                value = Value(s"${netWeight}kg".toText)
+                value = Value(s"${BigDecimal(netWeight)}kg".toText)
               )
 
             consignorIdentification mustBe
@@ -650,7 +645,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
           result mustBe SummaryListRow(
             key = Key("Gross weight".toText),
-            value = Value(s"${totalGrossWeight}kg".toText),
+            value = Value(s"${BigDecimal(totalGrossWeight)}kg".toText),
             actions = None
           )
         }
@@ -671,7 +666,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
           result mustBe SummaryListRow(
             key = Key("Net weight".toText),
-            value = Value(s"${totalNetWeight}kg".toText),
+            value = Value(s"${BigDecimal(totalNetWeight)}kg".toText),
             actions = None
           )
         }
