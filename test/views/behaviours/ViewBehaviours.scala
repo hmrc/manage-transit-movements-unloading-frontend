@@ -112,10 +112,10 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
       assert(messages.isDefinedAt(messageKey))
     }
 
-  def pageWithCaption(expectedText: String, hiddenText: Option[String] = Some("MRN: ")): Unit =
+  def pageWithCaption(expectedText: String, suffix: Option[String] = Some("MRN: ")): Unit =
     "must render caption" in {
       val caption = getElementByClass(doc, "govuk-caption-xl")
-      hiddenText match {
+      suffix match {
         case Some(value) => assertElementContainsText(caption, value + expectedText)
         case None        => assertElementContainsText(caption, expectedText)
       }
