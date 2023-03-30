@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import models.Index
-import pages.sections.HouseConsignmentSection
-import play.api.libs.json.JsPath
+trait EnumerableType[T] extends Enumerable.Implicits {
 
-case class DepartureTransportMeansIdentificationTypePage(houseConsignmentIndex: Index, transportMeansIndex: Index) extends QuestionPage[String] {
+  val values: Seq[T]
 
-  override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ "DepartureTransportMeans" \ transportMeansIndex.position \ toString
-
-  override def toString: String = "typeOfIdentification"
+  implicit def enumerable: Enumerable[T] =
+    Enumerable(
+      values.map(
+        v => v.toString -> v
+      ): _*
+    )
 }

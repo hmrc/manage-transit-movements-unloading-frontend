@@ -16,13 +16,12 @@
 
 package pages
 
-import models.Index
-import pages.sections.HouseConsignmentSection
+import models.UnloadingType
 import play.api.libs.json.JsPath
 
-case class DepartureTransportMeansIdentificationTypePage(houseConsignmentIndex: Index, transportMeansIndex: Index) extends QuestionPage[String] {
+case object PartiallyOrFullyUnloadedPage extends QuestionPage[UnloadingType] {
 
-  override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ "DepartureTransportMeans" \ transportMeansIndex.position \ toString
+  override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "typeOfIdentification"
+  override def toString: String = "unloadingType"
 }

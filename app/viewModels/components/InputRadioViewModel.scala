@@ -14,15 +14,23 @@
  * limitations under the License.
  */
 
-package pages
+package viewModels.components
 
-import models.Index
-import pages.sections.HouseConsignmentSection
-import play.api.libs.json.JsPath
+import play.twirl.api.Html
 
-case class DepartureTransportMeansIdentificationTypePage(houseConsignmentIndex: Index, transportMeansIndex: Index) extends QuestionPage[String] {
+sealed trait InputRadioViewModel
 
-  override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ "DepartureTransportMeans" \ transportMeansIndex.position \ toString
+object InputRadioViewModel {
 
-  override def toString: String = "typeOfIdentification"
+  case class Radio(
+    heading: String,
+    caption: Option[String] = None
+  ) extends InputRadioViewModel
+
+  case class RadioWithAdditionalHtml(
+    heading: String,
+    caption: Option[String] = None,
+    additionalHtml: Html
+  ) extends InputRadioViewModel
+      with AdditionalHtmlViewModel
 }

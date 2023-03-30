@@ -22,10 +22,9 @@ import models.{ArrivalId, Index}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewModels.HouseConsignmentViewModel
 import viewModels.HouseConsignmentViewModel.HouseConsignmentViewModelProvider
-import viewModels.{HouseConsignmentViewModel, UnloadingFindingsViewModel}
-import viewModels.UnloadingFindingsViewModel.UnloadingFindingsViewModelProvider
-import views.html.{HouseConsignmentView, UnloadingFindingsView}
+import views.html.HouseConsignmentView
 
 import scala.concurrent.{ExecutionContext, Future}
 

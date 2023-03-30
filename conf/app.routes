@@ -73,6 +73,11 @@ POST       /:arrivalId/any-seals-broken                                         
 GET        /:arrivalId/change-any-seals-broken                                              controllers.AreAnySealsBrokenController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-any-seals-broken                                              controllers.AreAnySealsBrokenController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
+GET        /:arrivalId/fully-partially-unloaded                                             controllers.PartiallyOrFullyUnloadedController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/fully-partially-unloaded                                             controllers.PartiallyOrFullyUnloadedController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-fully-partially-unloaded                                      controllers.PartiallyOrFullyUnloadedController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-fully-partially-unloaded                                      controllers.PartiallyOrFullyUnloadedController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+
 GET        /:arrivalId/remove-additional-comments                                           controllers.ConfirmRemoveCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/remove-additional-comments                                           controllers.ConfirmRemoveCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
 GET        /:arrivalId/change-remove-additional-comments                                    controllers.ConfirmRemoveCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)

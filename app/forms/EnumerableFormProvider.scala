@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import models.Index
-import pages.sections.HouseConsignmentSection
-import play.api.libs.json.JsPath
+import forms.mappings.Mappings
+import models.Enumerable
+import play.api.data.Form
 
-case class DepartureTransportMeansIdentificationTypePage(houseConsignmentIndex: Index, transportMeansIndex: Index) extends QuestionPage[String] {
+import javax.inject.Inject
 
-  override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ "DepartureTransportMeans" \ transportMeansIndex.position \ toString
+class EnumerableFormProvider @Inject() extends Mappings {
 
-  override def toString: String = "typeOfIdentification"
+  def apply[T](prefix: String)(implicit et: Enumerable[T]): Form[T] =
+    Form(
+      "value" -> enumerable[T](s"$prefix.error.required")
+    )
 }

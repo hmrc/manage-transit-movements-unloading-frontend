@@ -17,7 +17,7 @@
 package pages
 
 import models.Index
-import pages.sections.{HouseConsignmentSection, TransportMeansListSection}
+import pages.sections.HouseConsignmentSection
 import play.api.libs.json.JsPath
 
 case class DepartureTransportMeansCountryPage(houseConsignmentIndex: Index, transportMeansIndex: Index) extends QuestionPage[String] {

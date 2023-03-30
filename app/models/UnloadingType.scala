@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import models.Index
-import pages.sections.HouseConsignmentSection
-import play.api.libs.json.JsPath
+sealed trait UnloadingType extends Radioable[UnloadingType] {
+  override val messageKeyPrefix: String = UnloadingType.messageKeyPrefix
+}
 
-case class DepartureTransportMeansIdentificationTypePage(houseConsignmentIndex: Index, transportMeansIndex: Index) extends QuestionPage[String] {
+object UnloadingType extends EnumerableType[UnloadingType] {
 
-  override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ "DepartureTransportMeans" \ transportMeansIndex.position \ toString
+  val messageKeyPrefix: String = "partiallyOrFullyUnloaded.unloadingType"
 
-  override def toString: String = "typeOfIdentification"
+  case object Fully extends WithName("fully") with UnloadingType
+  case object Partially extends WithName("partially") with UnloadingType
+
+  override val values: Seq[UnloadingType] = Seq(
+    Fully,
+    Partially
+  )
 }
