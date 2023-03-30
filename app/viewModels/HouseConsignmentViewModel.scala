@@ -20,7 +20,7 @@ import models.{Index, UserAnswers}
 import play.api.i18n.Messages
 import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.{HouseConsignmentAnswersHelper, UnloadingFindingsAnswersHelper}
+import utils.HouseConsignmentAnswersHelper
 import viewModels.sections.Section
 
 import javax.inject.Inject

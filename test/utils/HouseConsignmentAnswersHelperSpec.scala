@@ -248,8 +248,8 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
 
           val grossWeight      = Gen.double.sample.value
           val netWeight        = Gen.double.sample.value
-          val totalGrossWeight = BigDecimal(grossWeight) + BigDecimal(grossWeight)
-          val totalNetWeight   = BigDecimal(netWeight) + BigDecimal(netWeight)
+          val totalGrossWeight = (BigDecimal(grossWeight) + BigDecimal(grossWeight)).underlying().stripTrailingZeros()
+          val totalNetWeight   = (BigDecimal(netWeight) + BigDecimal(netWeight)).underlying().stripTrailingZeros()
 
           val answers = emptyUserAnswers
             .setValue(GrossWeightPage(index, itemIndex), grossWeight)
