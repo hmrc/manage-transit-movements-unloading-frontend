@@ -117,4 +117,12 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
           )
       }
 
+  def itemDescriptionRow(houseConsignmentIndex: Index, itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = ItemDescriptionPage(houseConsignmentIndex, itemIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.item.description",
+    id = None,
+    call = None
+  )
+
 }

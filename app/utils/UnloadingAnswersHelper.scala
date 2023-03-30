@@ -111,14 +111,6 @@ class UnloadingAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     args = None
   )
 
-  def itemDescriptionRow(houseConsignmentIndex: Index, itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = ItemDescriptionPage(houseConsignmentIndex, itemIndex),
-    formatAnswer = formatAsText,
-    prefix = "unloadingFindings.rowHeadings.item.description",
-    id = None,
-    call = None
-  )
-
   def grossWeightRow(houseConsignmentIndex: Index, itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Double](
     page = GrossWeightPage(houseConsignmentIndex, itemIndex),
     formatAnswer = formatAsWeight,
