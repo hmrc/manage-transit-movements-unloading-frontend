@@ -34,6 +34,13 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
     "in Normal mode" - {
 
       val mode = NormalMode
+      "must go from Unloading type page to unloading date page" in {
+
+        val userAnswers = emptyUserAnswers.setValue(UnloadingTypePage, UnloadingType.Fully)
+        navigator
+          .nextPage(UnloadingTypePage, mode, userAnswers)
+          .mustBe(controllers.routes.DateGoodsUnloadedController.onPageLoad(userAnswers.id, NormalMode))
+      }
 
       "must go from a page that doesn't exist in the route map to unloading summary" in {
 

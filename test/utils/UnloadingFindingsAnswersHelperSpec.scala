@@ -440,12 +440,12 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       "must return Some(Row)s" - {
         s"when consignments are defined" in {
 
-          val double              = Gen.double.sample.value
-          val decimalPlaces       = weightMaxDecimalPlace
-          val grossWeight = BigDecimal(double).setScale(decimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
-          val netWeight           = BigDecimal(double).setScale(decimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
-          val totalGrossWeight    = grossWeight * 2
-          val totalNetWeight      = netWeight * 2
+          val double           = Gen.double.sample.value
+          val decimalPlaces    = weightMaxDecimalPlace
+          val grossWeight      = BigDecimal(double).setScale(decimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
+          val netWeight        = BigDecimal(double).setScale(decimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
+          val totalGrossWeight = grossWeight * 2
+          val totalNetWeight   = netWeight * 2
 
           val answers = emptyUserAnswers
             .setValue(GrossWeightPage(index, itemIndex), grossWeight)
