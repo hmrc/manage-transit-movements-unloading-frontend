@@ -357,7 +357,7 @@ checkYourAnswers.rowHeadings.canSealsBeRead.change.hidden = if all of the seal i
 checkYourAnswers.rowHeadings.anySealsBroken = Are any of the seals broken?
 checkYourAnswers.rowHeadings.anySealsBroken.change.hidden = if any of the seals are broken
 
-checkYourAnswers.subsections.additionalComments = Differences between transit and declaration information
+checkYourAnswers.subsections.additionalComments = What you found when unloading
 checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo = Were there any differences between the transit and the declaration information?
 checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo.change.hidden = if there were any differences between the transit and the declaration information
 checkYourAnswers.rowHeadings.additionalComments = Differences
