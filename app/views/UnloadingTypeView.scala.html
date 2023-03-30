@@ -32,17 +32,17 @@
 @(form: Form[UnloadingType],mrn: MovementReferenceNumber, values: Seq[UnloadingType], arrivalId: ArrivalId, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("partiallyOrFullyUnloaded.title"),
+    title = messages("unloadingType.title"),
     showBackLink = true
 ) {
 
-        @formHelper(action = controllers.routes.PartiallyOrFullyUnloadedController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
+        @formHelper(action = controllers.routes.UnloadingTypeController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputRadio(
             field = form("value"),
-            radioType = Radio(heading = messages("partiallyOrFullyUnloaded.heading")),
+            radioType = Radio(heading = messages("unloadingType.heading")),
             radioItems = fieldId => values.toRadioItems(fieldId, form.value)
         )
 
