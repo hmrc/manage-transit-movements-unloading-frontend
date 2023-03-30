@@ -324,7 +324,7 @@ unloadingFindings.rowHeadings.additionalComments.remove.hidden = comments
 houseConsignment.title = Cross-check the transit with this declaration summary
 houseConsignment.heading = Cross-check the transit with this declaration summary
 houseConsignment.paragraph = Cross-check the transit with the following information to identify any differences.
-houseConsignment.houseConsignmentSubHeading = House consignment{0}
+houseConsignment.houseConsignmentSubHeading = House consignment {0}
 houseConsignment.departureMeansSubHeading = Departure means of transport {0}
 houseConsignment.itemSubHeading = Item {0}
 

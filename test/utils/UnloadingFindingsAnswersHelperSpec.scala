@@ -441,8 +441,8 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
           val grossWeight      = Gen.double.sample.value
           val netWeight        = Gen.double.sample.value
-          val totalGrossWeight = grossWeight * 2
-          val totalNetWeight   = netWeight * 2
+          val totalGrossWeight = (BigDecimal(grossWeight) + BigDecimal(grossWeight)).underlying().stripTrailingZeros()
+          val totalNetWeight   = (BigDecimal(netWeight) + BigDecimal(netWeight)).underlying().stripTrailingZeros()
 
           val answers = emptyUserAnswers
             .setValue(GrossWeightPage(index, itemIndex), grossWeight)
@@ -505,13 +505,13 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             grossWeightRow mustBe
               SummaryListRow(
                 key = Key("Gross weight".toText),
-                value = Value(s"${grossWeight}kg".toText)
+                value = Value(s"${BigDecimal(grossWeight)}kg".toText)
               )
 
             netWeightRow mustBe
               SummaryListRow(
                 key = Key("Net weight".toText),
-                value = Value(s"${netWeight}kg".toText)
+                value = Value(s"${BigDecimal(netWeight)}kg".toText)
               )
 
             consignorName mustBe
@@ -581,13 +581,13 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             grossWeightRow mustBe
               SummaryListRow(
                 key = Key("Gross weight".toText),
-                value = Value(s"${grossWeight}kg".toText)
+                value = Value(s"${BigDecimal(grossWeight)}kg".toText)
               )
 
             netWeightRow mustBe
               SummaryListRow(
                 key = Key("Net weight".toText),
-                value = Value(s"${netWeight}kg".toText)
+                value = Value(s"${BigDecimal(netWeight)}kg".toText)
               )
 
             consignorIdentification mustBe
@@ -645,7 +645,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
           result mustBe SummaryListRow(
             key = Key("Gross weight".toText),
-            value = Value(s"${totalGrossWeight}kg".toText),
+            value = Value(s"${BigDecimal(totalGrossWeight)}kg".toText),
             actions = None
           )
         }
@@ -666,7 +666,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
           result mustBe SummaryListRow(
             key = Key("Net weight".toText),
-            value = Value(s"${totalNetWeight}kg".toText),
+            value = Value(s"${BigDecimal(totalNetWeight)}kg".toText),
             actions = None
           )
         }
