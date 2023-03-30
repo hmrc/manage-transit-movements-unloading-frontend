@@ -442,7 +442,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
           val double              = Gen.double.sample.value
           val decimalPlaces       = weightMaxDecimalPlace
-          val grossWeight: Double = BigDecimal(double).setScale(decimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
+          val grossWeight = BigDecimal(double).setScale(decimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
           val netWeight           = BigDecimal(double).setScale(decimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
           val totalGrossWeight    = grossWeight * 2
           val totalNetWeight      = netWeight * 2
@@ -490,10 +490,10 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
         s"when a consignments is defined" - {
           "and consignor identification number is not defined" in {
 
-            val double              = Gen.double.sample.value
-            val decimalPlaces       = weightMaxDecimalPlace
-            val grossWeight: Double = BigDecimal(double).setScale(decimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
-            val netWeight           = BigDecimal(double).setScale(decimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
+            val double        = Gen.double.sample.value
+            val decimalPlaces = weightMaxDecimalPlace
+            val grossWeight   = BigDecimal(double).setScale(decimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
+            val netWeight     = BigDecimal(double).setScale(decimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
 
             val answers = emptyUserAnswers
               .setValue(GrossWeightPage(index, itemIndex), grossWeight)

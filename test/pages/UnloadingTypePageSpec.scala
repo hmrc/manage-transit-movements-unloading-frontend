@@ -17,11 +17,17 @@
 package pages
 
 import models.UnloadingType
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case object PartiallyOrFullyUnloadedPage extends QuestionPage[UnloadingType] {
+class UnloadingTypePageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "ProcedureTypePage" - {
 
-  override def toString: String = "unloadingType"
+    beRetrievable[UnloadingType](UnloadingTypePage)
+
+    beSettable[UnloadingType](UnloadingTypePage)
+
+    beRemovable[UnloadingType](UnloadingTypePage)
+
+  }
 }

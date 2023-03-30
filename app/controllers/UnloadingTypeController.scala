@@ -20,34 +20,34 @@ import controllers.actions._
 import forms.EnumerableFormProvider
 import models.{ArrivalId, Mode, UnloadingType}
 import navigation.Navigator
-import pages.PartiallyOrFullyUnloadedPage
+import pages.UnloadingTypePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.PartiallyOrFullyUnloadedView
+import views.html.UnloadingTypeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PartiallyOrFullyUnloadedController @Inject() (
+class UnloadingTypeController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: PartiallyOrFullyUnloadedView
+  view: UnloadingTypeView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[UnloadingType]("partiallyOrFullyUnloaded")
+  private val form = formProvider[UnloadingType]("unloadingType")
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val preparedForm: Form[UnloadingType] = request.userAnswers.get(PartiallyOrFullyUnloadedPage) match {
+      val preparedForm: Form[UnloadingType] = request.userAnswers.get(UnloadingTypePage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -63,9 +63,9 @@ class PartiallyOrFullyUnloadedController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, UnloadingType.values, arrivalId, mode))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(PartiallyOrFullyUnloadedPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(UnloadingTypePage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(PartiallyOrFullyUnloadedPage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(UnloadingTypePage, mode, updatedAnswers))
         )
   }
 }

@@ -21,21 +21,21 @@ import forms.EnumerableFormProvider
 import models.{NormalMode, UnloadingType}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.PartiallyOrFullyUnloadedPage
+import pages.UnloadingTypePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.PartiallyOrFullyUnloadedView
+import views.html.UnloadingTypeView
 
 import scala.concurrent.Future
 
-class PartiallyOrFullyUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class UnloadingTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider = new EnumerableFormProvider()
-  private val form         = formProvider[UnloadingType]("partiallyOrFullyUnloaded")
+  private val form         = formProvider[UnloadingType]("unloadingType")
   private val validAnswer  = UnloadingType.values.head
   private val mode         = NormalMode
 
-  lazy val partiallyOrFullyUnloadedRoute: String = controllers.routes.PartiallyOrFullyUnloadedController.onPageLoad(arrivalId, mode).url
+  lazy val unloadingTypeRoute: String = controllers.routes.UnloadingTypeController.onPageLoad(arrivalId, mode).url
 
   "AddUnloadingCommentsYesNoController" - {
 
@@ -44,13 +44,13 @@ class PartiallyOrFullyUnloadedControllerSpec extends SpecBase with AppWithDefaul
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, partiallyOrFullyUnloadedRoute)
+      val request = FakeRequest(GET, unloadingTypeRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual OK
 
-      val view = injector.instanceOf[PartiallyOrFullyUnloadedView]
+      val view = injector.instanceOf[UnloadingTypeView]
 
       contentAsString(result) mustEqual
         view(form, mrn, UnloadingType.values, arrivalId, mode)(request, messages).toString
@@ -59,10 +59,10 @@ class PartiallyOrFullyUnloadedControllerSpec extends SpecBase with AppWithDefaul
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(PartiallyOrFullyUnloadedPage, validAnswer)
+      val userAnswers = emptyUserAnswers.setValue(UnloadingTypePage, validAnswer)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, partiallyOrFullyUnloadedRoute)
+      val request = FakeRequest(GET, unloadingTypeRoute)
 
       val result = route(app, request).value
 
@@ -70,7 +70,7 @@ class PartiallyOrFullyUnloadedControllerSpec extends SpecBase with AppWithDefaul
 
       val filledForm = form.bind(Map("value" -> UnloadingType.values.head.toString))
 
-      val view = injector.instanceOf[PartiallyOrFullyUnloadedView]
+      val view = injector.instanceOf[UnloadingTypeView]
 
       status(result) mustEqual OK
 
@@ -85,7 +85,7 @@ class PartiallyOrFullyUnloadedControllerSpec extends SpecBase with AppWithDefaul
       setExistingUserAnswers(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, partiallyOrFullyUnloadedRoute)
+        FakeRequest(POST, unloadingTypeRoute)
           .withFormUrlEncodedBody(("value", UnloadingType.values.head.toString))
 
       val result = route(app, request).value
@@ -100,14 +100,14 @@ class PartiallyOrFullyUnloadedControllerSpec extends SpecBase with AppWithDefaul
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, partiallyOrFullyUnloadedRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val request   = FakeRequest(POST, unloadingTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[PartiallyOrFullyUnloadedView]
+      val view = injector.instanceOf[UnloadingTypeView]
 
       contentAsString(result) mustEqual
         view(boundForm, mrn, UnloadingType.values, arrivalId, mode)(request, messages).toString
@@ -117,7 +117,7 @@ class PartiallyOrFullyUnloadedControllerSpec extends SpecBase with AppWithDefaul
       checkArrivalStatus()
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, partiallyOrFullyUnloadedRoute)
+      val request = FakeRequest(GET, unloadingTypeRoute)
 
       val result = route(app, request).value
 
@@ -131,7 +131,7 @@ class PartiallyOrFullyUnloadedControllerSpec extends SpecBase with AppWithDefaul
       setNoExistingUserAnswers()
 
       val request =
-        FakeRequest(POST, partiallyOrFullyUnloadedRoute)
+        FakeRequest(POST, unloadingTypeRoute)
           .withFormUrlEncodedBody(("value", UnloadingType.values.head.toString))
 
       val result = route(app, request).value

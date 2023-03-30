@@ -50,6 +50,11 @@ trait ModelGenerators {
       } yield EoriNumber(number)
     }
 
+  implicit lazy val arbitraryUnloadingType: Arbitrary[UnloadingType] =
+    Arbitrary {
+      Gen.oneOf(UnloadingType.values)
+    }
+
   implicit lazy val arbitrarySensitiveGoodsInformation: Arbitrary[SensitiveGoodsInformation] =
     Arbitrary {
       for {
