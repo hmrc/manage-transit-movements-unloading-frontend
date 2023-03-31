@@ -62,7 +62,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       result.sections.length mustBe 2
       result.sections(1).rows.size mustBe 1
 
-      result.sections(1).sectionTitle.value mustBe "What you found when unloading"
+      result.sections(1).sectionTitle.value mustBe "Differences between transit and declaration information"
 
     }
 
@@ -80,7 +80,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       result.sections.length mustBe 2
       result.sections(1).rows.size mustBe 2
 
-      result.sections(1).sectionTitle.value mustBe "What you found when unloading"
+      result.sections(1).sectionTitle.value mustBe "Differences between transit and declaration information"
 
     }
 
