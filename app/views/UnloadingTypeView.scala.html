@@ -15,7 +15,7 @@
  *@
 
 @import models.MovementReferenceNumber
-@import views.html.components.{Button, ErrorSummary, InputRadio}
+@import views.html.components.{Button, ErrorSummary,HeadingCaption, InputRadio}
 @import viewModels.components.InputRadioViewModel
 @import viewModels.components.InputRadioViewModel._
 
@@ -23,6 +23,7 @@
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputRadio: InputRadio,
+    caption: HeadingCaption,
     errorSummary: ErrorSummary,
     button: Button
 )
@@ -37,6 +38,8 @@
         @formHelper(action = controllers.routes.UnloadingTypeController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
+
+        @caption(mrn.toString)
 
         @inputRadio(
             field = form("value"),
