@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-package pages
+package pages.sections
 
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{JsArray, JsPath}
 
-class VehicleNameRegistrationReferencePageSpec extends PageBehaviours {
+case object HouseConsignmentsSection extends Section[JsArray] {
 
-  "VehicleNameRegistrationReferencePage" - {
+  override def path: JsPath = JsPath \ "Consignment" \ toString
 
-    beRetrievable[String](VehicleIdentificationNumberPage(index))
-
-    beSettable[String](VehicleIdentificationNumberPage(index))
-
-    beRemovable[String](VehicleIdentificationNumberPage(index))
-  }
+  override def toString: String = "HouseConsignment"
 }

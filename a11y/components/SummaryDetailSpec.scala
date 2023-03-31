@@ -18,21 +18,23 @@ package components
 
 import a11ySpecBase.A11ySpecBase
 import org.scalacheck.Arbitrary.arbitrary
+import play.twirl.api.Html
 import viewModels.sections.Section
-import views.html.components.VisibleSection
+import views.html.components.SummaryDetail
 import views.html.templates.MainTemplate
 
-class VisibleSectionSpec extends A11ySpecBase {
+class SummaryDetailSpec extends A11ySpecBase {
 
   "the 'answer section' component" must {
     val template  = app.injector.instanceOf[MainTemplate]
-    val component = app.injector.instanceOf[VisibleSection]
+    val component = app.injector.instanceOf[SummaryDetail]
 
     val title   = nonEmptyString.sample.value
     val section = arbitrary[Section].sample.value
+    val html    = arbitrary[Html].sample.value
 
     val content = template.apply(title) {
-      component.apply(section).withHeading(title)
+      component.apply(section)(html).withHeading(title)
     }
 
     "pass accessibility checks" in {

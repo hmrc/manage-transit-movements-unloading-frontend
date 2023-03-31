@@ -24,7 +24,6 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.BeforeAndAfterEach
-import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -39,8 +38,6 @@ class UnloadingPermissionServiceSpec extends SpecBase with BeforeAndAfterEach wi
     super.beforeEach()
     reset(mockConnector)
   }
-
-  implicit private val hc: HeaderCarrier = HeaderCarrier()
 
   "UnloadingPermissionService" - {
 

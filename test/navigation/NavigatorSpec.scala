@@ -171,6 +171,27 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             .mustBe(routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, mode))
         }
       }
+      "must go from unloading comments yes no page" - {
+        "when answer is true to unloading comments controller" in {
+          val userAnswers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, true)
+
+          navigator
+            .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
+            .mustBe(routes.UnloadingCommentsController.onPageLoad(arrivalId, mode))
+        }
+        "when answer is false to check your answers controller" in {
+          val userAnswers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, false)
+
+          navigator
+            .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
+            .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
+        }
+        "to session expired controller when no exisiting answers found" in {
+          navigator
+            .nextPage(AddUnloadingCommentsYesNoPage, mode, emptyUserAnswers)
+            .mustBe(routes.SessionExpiredController.onPageLoad())
+        }
+      }
 
       "must go from New Seal Number page to unloading summary page" ignore {
         forAll(arbitrary[UserAnswers]) {
@@ -226,6 +247,11 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
               .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
+          "to session expired controller when no existing answers found" in {
+            navigator
+              .nextPage(AddUnloadingCommentsYesNoPage, mode, emptyUserAnswers)
+              .mustBe(routes.SessionExpiredController.onPageLoad())
+          }
         }
 
         "must go from date goods unloaded page to check your answers page" in {
@@ -238,32 +264,12 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           }
         }
 
-        "must go from Vehicle Name Registration Reference page to check your answers page" in {
-
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              navigator
-                .nextPage(VehicleIdentificationNumberPage, mode, answers)
-                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
-          }
-        }
-
-        "must go from Vehicle Registration Country page to check your answers page" in {
-
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              navigator
-                .nextPage(VehicleIdentificationNumberPage, mode, answers)
-                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
-          }
-        }
-
         "must go from Gross mass amount page to check your answers page" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator
-                .nextPage(GrossWeightPage(itemIndex), mode, answers)
+                .nextPage(GrossWeightPage(index, itemIndex), mode, answers)
                 .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }

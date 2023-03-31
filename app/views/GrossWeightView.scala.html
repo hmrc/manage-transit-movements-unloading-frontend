@@ -27,10 +27,10 @@
     caption: HeadingCaption
 )
 
-@(form: Form[_], mrn: MovementReferenceNumber, arrivalId: ArrivalId, index: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("grossWeight.title", index.display),
+    title = messages("grossWeight.title", itemIndex.display),
     showBackLink = true
 ) {
 
@@ -38,12 +38,12 @@
 
         @caption(mrn.toString)
 
-        @formHelper(action = controllers.routes.GrossWeightController.onSubmit(arrivalId, index, mode), Symbol("autoComplete") -> "off") {
+        @formHelper(action = controllers.routes.GrossWeightController.onSubmit(arrivalId, houseConsignmentIndex, itemIndex, mode), Symbol("autoComplete") -> "off") {
 
         @inputText(
             field = form("value"),
             inputTextType = TextInputWithHiddenLabel(
-                heading = messages("grossWeight.heading", index.display),
+                heading = messages("grossWeight.heading", itemIndex.display),
                 additionalHtml = Html(s"""<p class="govuk-body">${messages("grossWeight.paragraph")}</p>""")
             ),
             hint = Some(messages("grossWeight.hint")),

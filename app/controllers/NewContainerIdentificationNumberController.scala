@@ -44,8 +44,6 @@ class NewContainerIdentificationNumberController @Inject() (
 
   private val form = formProvider()
 
-  //TODO: Do not allow duplicate container identification numbers to be submitted
-
   def onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
       val preparedForm = request.userAnswers.get(ContainerIdentificationNumberPage(index)) match {

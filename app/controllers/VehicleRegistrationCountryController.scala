@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import forms.VehicleRegistrationCountryFormProvider
 import models.reference.Country
-import models.{ArrivalId, Mode}
+import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
 import pages.VehicleRegistrationCountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -45,20 +45,25 @@ class VehicleRegistrationCountryController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
+  def onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       referenceDataService.getCountries() map {
         countries =>
           val form = formProvider(countries)
-          val preparedForm = request.userAnswers.get(VehicleRegistrationCountryPage) match {
-            case None        => form
-            case Some(value) => form.fill(Country(value, "test")) // TODO: Fix this change back to country
+          val preparedForm = request.userAnswers.get(VehicleRegistrationCountryPage(transportMeansIndex)) match {
+            case None => form
+            case Some(value) =>
+              val country = countries.find(_.code == value) match {
+                case Some(country) => country
+                case None          => Country(value, None)
+              }
+              form.fill(country)
           }
-          Ok(view(preparedForm, countries, request.userAnswers.mrn, arrivalId, mode))
+          Ok(view(preparedForm, countries, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode))
       }
   }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
+  def onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       referenceDataService.getCountries() flatMap {
         countries =>
@@ -66,11 +71,12 @@ class VehicleRegistrationCountryController @Inject() (
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, countries, request.userAnswers.mrn, arrivalId, mode))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, countries, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode))),
               value =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleRegistrationCountryPage, value.code)) // TODO: Fix this change back to country
-                  _              <- sessionRepository.set(updatedAnswers)
+                  updatedAnswers <- Future
+                    .fromTry(request.userAnswers.set(VehicleRegistrationCountryPage(transportMeansIndex), value.code))
+                  _ <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
             )
       }

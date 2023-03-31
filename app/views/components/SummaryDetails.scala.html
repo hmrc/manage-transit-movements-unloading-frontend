@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,20 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package pages
+@import viewModels.sections.Section
+@import views.html.components.SummaryDetail
 
-import pages.behaviours.PageBehaviours
+@this(summaryDetail: SummaryDetail)
 
-class VehicleNameRegistrationReferencePageSpec extends PageBehaviours {
+@(sections: Seq[Section])
 
-  "VehicleNameRegistrationReferencePage" - {
+    @for(section <- sections) {
+        @summaryDetail(section)()
+    }
 
-    beRetrievable[String](VehicleIdentificationNumberPage(index))
-
-    beSettable[String](VehicleIdentificationNumberPage(index))
-
-    beRemovable[String](VehicleIdentificationNumberPage(index))
-  }
-}

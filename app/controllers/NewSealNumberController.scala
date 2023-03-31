@@ -44,7 +44,6 @@ class NewSealNumberController @Inject() (
 
   private val form = formProvider()
 
-  //TODO: Do not allow duplicate seal numbers to be submitted
   def onPageLoad(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode, newSeal: Boolean = false): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>

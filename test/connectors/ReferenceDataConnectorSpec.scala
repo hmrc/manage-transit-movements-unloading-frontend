@@ -22,7 +22,6 @@ import connectors.ReferenceDataConnectorSpec._
 import models.reference.{Country, CustomsOffice}
 import org.scalacheck.Gen
 import play.api.inject.guice.GuiceApplicationBuilder
-import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -36,8 +35,6 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
   private lazy val connector: ReferenceDataConnector = app.injector.instanceOf[ReferenceDataConnector]
   val code                                           = "GB00001"
 
-  implicit private val hc: HeaderCarrier = HeaderCarrier()
-
   "Reference Data" - {
 
     "GET" - {
@@ -49,8 +46,8 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         )
 
         val expectedResult = Seq(
-          Country("GB", "United Kingdom"),
-          Country("AD", "Andorra")
+          Country("GB", Some("United Kingdom")),
+          Country("AD", Some("Andorra"))
         )
 
         connector.getCountries().futureValue mustBe expectedResult
@@ -108,6 +105,47 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             )
 
             connector.getCustomsOffice("GB00001").futureValue mustBe None
+        }
+      }
+
+      "getCountryByCodeV2" - {
+        val code             = "GB"
+        val countryByCodeUrl = s"/test-only/transit-movements-trader-reference-data/countries/$code"
+        "should handle a 200 response" in {
+
+          val countryCodeResponseJson: String =
+            """
+              | {
+              |   "code":"GB",
+              |   "state":"valid",
+              |   "description":"United Kingdom"
+              | }
+              |""".stripMargin
+
+          server.stubFor(
+            get(urlEqualTo(countryByCodeUrl))
+              .willReturn(okJson(countryCodeResponseJson))
+          )
+
+          val expectedResult = "United Kingdom"
+
+          connector.getCountryNameByCode(code).futureValue mustBe expectedResult
+        }
+        "should handle a error response" in {
+          val errorResponseCodes: Gen[Int] = Gen.chooseNum(400: Int, 599: Int)
+
+          forAll(errorResponseCodes) {
+            errorResponse =>
+              server.stubFor(
+                get(urlEqualTo(countryByCodeUrl))
+                  .willReturn(
+                    aResponse()
+                      .withStatus(errorResponse)
+                  )
+              )
+
+              connector.getCountryNameByCode(code).futureValue mustBe "GB"
+          }
         }
       }
     }

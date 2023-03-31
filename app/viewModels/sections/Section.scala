@@ -19,19 +19,14 @@ package viewModels.sections
 import models.Link
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-case class Section(sectionTitle: Option[String], rows: Seq[SummaryListRow], addAnotherLink: Option[Link] = None)
+case class Section(sectionTitle: Option[String], rows: Seq[SummaryListRow], viewLink: Option[Link] = None)
 
 object Section {
   def apply(sectionTitle: String, rows: Seq[SummaryListRow]): Section = new Section(Some(sectionTitle), rows)
 
   def apply(rows: Seq[SummaryListRow]): Section = new Section(None, rows, None)
 
-  def apply(row: SummaryListRow): Section = new Section(None, Seq(row), None)
-
-  def apply(sectionTitle: String, rows: Seq[SummaryListRow], addAnotherLink: Option[Link]): Section =
-    new Section(Some(sectionTitle), rows, addAnotherLink)
-
-  def apply(sectionTitle: String, rows: SummaryListRow, addAnotherLink: Option[Link]): Section =
-    new Section(Some(sectionTitle), Seq(rows), addAnotherLink)
+  def apply(sectionTitle: String, rows: Seq[SummaryListRow], viewLink: Option[Link]): Section =
+    new Section(Some(sectionTitle), rows, viewLink)
 
 }

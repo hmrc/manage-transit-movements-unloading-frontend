@@ -16,16 +16,13 @@
 
 package pages
 
-import pages.behaviours.PageBehaviours
+import models.Index
+import pages.sections.HouseConsignmentSection
+import play.api.libs.json.JsPath
 
-class VehicleNameRegistrationReferencePageSpec extends PageBehaviours {
+case class ConsignorNamePage(houseConsignmentIndex: Index) extends QuestionPage[String] {
 
-  "VehicleNameRegistrationReferencePage" - {
+  override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ "Consignor" \ toString
 
-    beRetrievable[String](VehicleIdentificationNumberPage(index))
-
-    beSettable[String](VehicleIdentificationNumberPage(index))
-
-    beRemovable[String](VehicleIdentificationNumberPage(index))
-  }
+  override def toString: String = "name"
 }

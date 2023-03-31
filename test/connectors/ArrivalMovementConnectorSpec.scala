@@ -22,7 +22,6 @@ import generators.Generators
 import models.MovementReferenceNumber
 import models.P5._
 import play.api.inject.guice.GuiceApplicationBuilder
-import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -36,8 +35,6 @@ class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtu
       .configure(conf = "microservice.services.common-transit-convention-traders.port" -> server.port())
 
   private lazy val connector: ArrivalMovementConnector = app.injector.instanceOf[ArrivalMovementConnector]
-
-  implicit private val hc: HeaderCarrier = HeaderCarrier()
 
   "ArrivalMovementConnectorSpec" - {
 

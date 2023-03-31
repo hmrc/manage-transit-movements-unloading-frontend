@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package queries
+package pages.sections
 
-import models.Seal
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import play.api.libs.json.{JsArray, JsPath}
 
-case object SealsQuery extends QuestionPage[Seq[Seal]] {
-  override def path: JsPath = JsPath \ "seals"
+case object TransportMeansListSection extends Section[JsArray] {
+
+  override def path: JsPath = JsPath \ "Consignment" \ toString
+
+  override def toString: String = "DepartureTransportMeans"
 }

@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package models.P5
 
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{Json, OFormat}
 
-class VehicleNameRegistrationReferencePageSpec extends PageBehaviours {
+case class Consignor(
+  identificationNumber: Option[String],
+  name: Option[String]
+)
 
-  "VehicleNameRegistrationReferencePage" - {
-
-    beRetrievable[String](VehicleIdentificationNumberPage(index))
-
-    beSettable[String](VehicleIdentificationNumberPage(index))
-
-    beRemovable[String](VehicleIdentificationNumberPage(index))
-  }
+object Consignor {
+  implicit val formats: OFormat[Consignor] = Json.format[Consignor]
 }

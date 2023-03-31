@@ -29,7 +29,6 @@ import play.api.http.Status._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json._
 import play.api.libs.ws.WSResponse
-import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -43,8 +42,6 @@ class UnloadingConnectorSpec extends SpecBase with AppWithDefaultMockFixtures wi
       .configure(conf = "microservice.services.arrivals-backend.port" -> server.port())
 
   private lazy val connector: UnloadingConnector = app.injector.instanceOf[UnloadingConnector]
-
-  implicit private val hc: HeaderCarrier = HeaderCarrier()
 
   "UnloadingConnectorSpec" - {
 

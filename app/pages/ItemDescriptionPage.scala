@@ -20,9 +20,9 @@ import models.Index
 import pages.sections.ItemsSection
 import play.api.libs.json.JsPath
 
-case class ItemDescriptionPage(itemIndex: Index) extends QuestionPage[String] {
+case class ItemDescriptionPage(houseConsignment: Index, itemIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = ItemsSection.path \ itemIndex.position \ "Commodity" \ toString
+  override def path: JsPath = ItemsSection(houseConsignment).path \ itemIndex.position \ "Commodity" \ toString
 
   override def toString: String = "descriptionOfGoods"
 }

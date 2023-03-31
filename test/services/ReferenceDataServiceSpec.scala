@@ -35,9 +35,9 @@ class ReferenceDataServiceSpec extends AnyFreeSpec with ScalaFutures with Matche
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private val uk      = Country("GB", "United Kingdom")
-  private val andorra = Country("AD", "Andorra")
-  private val france  = Country("FR", "France")
+  private val uk      = Country("GB", Some("United Kingdom"))
+  private val andorra = Country("AD", Some("Andorra"))
+  private val france  = Country("FR", Some("France"))
 
   private val countries = Seq(uk, andorra, france)
 
@@ -86,7 +86,7 @@ class ReferenceDataServiceSpec extends AnyFreeSpec with ScalaFutures with Matche
         val service = new ReferenceDataServiceImpl(mockConnector)
 
         service.getCountryByCode(Some("GB")).futureValue mustBe Some(
-          Country("GB", "United Kingdom")
+          Country("GB", Some("United Kingdom"))
         )
       }
 

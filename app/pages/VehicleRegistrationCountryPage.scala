@@ -16,11 +16,13 @@
 
 package pages
 
+import models.Index
+import pages.sections.TransportMeansListSection
 import play.api.libs.json.JsPath
 
-case object VehicleRegistrationCountryPage extends QuestionPage[String] {
+case class VehicleRegistrationCountryPage(transportMeansIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ "Consignment" \ "DepartureTransportMeans" \ 0 \ toString
+  override def path: JsPath = TransportMeansListSection.path \ transportMeansIndex.position \ toString
 
   override def toString: String = "nationality"
 }

@@ -20,6 +20,7 @@ import play.api.libs.json.{Json, OFormat}
 
 case class HouseConsignment(
   sequenceNumber: Option[String],
+  Consignor: Option[Consignor],
   DepartureTransportMeans: Option[List[DepartureTransportMeans]],
   ConsignmentItem: Option[List[ConsignmentItem]]
 )

@@ -33,7 +33,7 @@
         )
     )
 
-    @section.addAnotherLink.map { link =>
+    @section.viewLink.map { link =>
         <p class="govuk-body"><a class="govuk-link" href="@link.href" id="@link.id">@link.text</a></p>
     }
 } else {
