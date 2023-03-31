@@ -22,6 +22,7 @@ import com.lucidchart.open.xtract.{__, XmlReader}
 import models.XMLWrites._
 import models.{Seals, TraderAtDestination, XMLWrites}
 
+import scala.util.matching.Regex
 import scala.xml.{Elem, Node, NodeSeq}
 
 case class UnloadingRemarksRequest(
@@ -43,7 +44,7 @@ object UnloadingRemarksRequest {
   val newSealNumberMaximumLength                    = 20
   val vehicleIdentificationNumberMaxLength          = 35
   val alphaNumericRegex                             = "^[a-zA-Z0-9 ]*$"
-  val stringFieldRegex                              = "^[a-zA-Z0-9&'@/.\\%? -]*$"
+  val stringFieldRegex: Regex                       = "[\\sa-zA-Z0-9&'@/.\\-? ]*".r
   val weightRegex                                   = "^(\\d{1,16}|(\\d{0,15}\\.{1}\\d{1,6}){1})$"
   val weightLength                                  = 16
   val weightCharsRegex                              = "^([[0-9])(\\.])*"
