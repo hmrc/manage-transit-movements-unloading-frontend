@@ -25,7 +25,7 @@ import play.api.libs.json.{JsError, JsString, Json}
 
 class UnloadingTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
 
-  "ProcedureType" - {
+  "UnloadingType" - {
 
     "must deserialise valid values" in {
 
