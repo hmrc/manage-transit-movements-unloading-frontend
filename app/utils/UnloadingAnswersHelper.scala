@@ -27,9 +27,13 @@ class UnloadingAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
   def buildHouseConsignmentRows(
     grossAndNetWeightRows: Seq[SummaryListRow],
     consignorNameRow: Option[SummaryListRow],
-    consignorIdentificationRow: Option[SummaryListRow]
+    consignorIdentificationRow: Option[SummaryListRow],
+    consigneeNameRow: Option[SummaryListRow],
+    consigneeIdentificationRow: Option[SummaryListRow]
   ): Seq[SummaryListRow] =
-    grossAndNetWeightRows ++ consignorNameRow.map(Seq(_)).getOrElse(Seq.empty) ++ consignorIdentificationRow.map(Seq(_)).getOrElse(Seq.empty)
+    grossAndNetWeightRows ++ consignorNameRow.map(Seq(_)).getOrElse(Seq.empty) ++ consignorIdentificationRow
+      .map(Seq(_))
+      .getOrElse(Seq.empty) ++ consigneeNameRow.map(Seq(_)).getOrElse(Seq.empty) ++ consigneeIdentificationRow.map(Seq(_)).getOrElse(Seq.empty)
 
   def consignorName(houseConsignmentIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = ConsignorNamePage(houseConsignmentIndex),
@@ -43,6 +47,22 @@ class UnloadingAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     page = ConsignorIdentifierPage(houseConsignmentIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier",
+    id = None,
+    call = None
+  )
+
+  def consigneeName(houseConsignmentIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = ConsigneeNamePage(houseConsignmentIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.houseConsignment.consigneeName",
+    id = None,
+    call = None
+  )
+
+  def consigneeIdentification(houseConsignmentIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = ConsigneeIdentifierPage(houseConsignmentIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.houseConsignment.consigneeIdentifier",
     id = None,
     call = None
   )

@@ -89,7 +89,9 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
     val rows = buildHouseConsignmentRows(
       houseConsignmentTotalWeightRows(houseConsignmentIndex),
       consignorName(houseConsignmentIndex),
-      consignorIdentification(houseConsignmentIndex)
+      consignorIdentification(houseConsignmentIndex),
+      consigneeName(houseConsignmentIndex),
+      consigneeIdentification(houseConsignmentIndex)
     )
 
     Seq(
