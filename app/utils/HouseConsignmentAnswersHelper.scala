@@ -18,7 +18,7 @@ package utils
 
 import cats.data.OptionT
 import cats.implicits._
-import models.{Index, Link, UserAnswers}
+import models.{Index, UserAnswers}
 import pages._
 import pages.sections._
 import play.api.i18n.Messages
@@ -30,15 +30,15 @@ import viewModels.sections.Section
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataService: ReferenceDataService)(implicit
+class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: Index, referenceDataService: ReferenceDataService)(implicit
   messages: Messages,
   hc: HeaderCarrier,
   ec: ExecutionContext
 ) extends UnloadingAnswersHelper(userAnswers) {
 
-  def buildVehicleNationalityRow(index: Index): Future[Option[SummaryListRow]] =
+  def buildVehicleNationalityRow(transportMeansIndex: Index): Future[Option[SummaryListRow]] =
     (for {
-      x <- OptionT.fromOption[Future](userAnswers.get(VehicleRegistrationCountryPage(index)))
+      x <- OptionT.fromOption[Future](userAnswers.get(DepartureTransportMeansCountryPage(houseConsignmentIndex, transportMeansIndex)))
       y <- OptionT.liftF(referenceDataService.getCountryNameByCode(x))
     } yield transportRegisteredCountry(y)).value
 
@@ -48,7 +48,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
 
   def buildTransportSections: Future[Seq[Section]] =
     userAnswers
-      .get(TransportMeansListSection)
+      .get(DepartureTransportMeansListSection(houseConsignmentIndex))
       .traverse {
         _.zipWithIndex.traverse {
           y =>
@@ -67,8 +67,8 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
       .map(_.getOrElse(Seq.empty))
 
   def transportMeansID(transportMeansIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRowWithDynamicPrefix[String](
-    answerPath = VehicleIdentificationNumberPage(transportMeansIndex),
-    titlePath = VehicleIdentificationTypePage(transportMeansIndex),
+    answerPath = DepartureTransportMeansIdentificationNumberPage(houseConsignmentIndex, transportMeansIndex),
+    titlePath = DepartureTransportMeansIdentificationTypePage(houseConsignmentIndex, transportMeansIndex),
     formatAnswer = formatAsText,
     dynamicPrefix = formatIdentificationTypeAsText,
     id = None,
@@ -84,72 +84,47 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
     args = Seq.empty
   )
 
-  def transportEquipmentSections: Seq[Section] =
-    userAnswers
-      .get(TransportEquipmentListSection)
-      .mapWithIndex {
-        (_, equipmentIndex) =>
-          val containerRow: Seq[Option[SummaryListRow]] = Seq(containerIdentificationNumber(equipmentIndex))
-          val sealRows: Seq[SummaryListRow]             = transportEquipmentSeals(equipmentIndex)
+  def houseConsignmentSection: Seq[Section] = {
 
-          val rows = containerRow.head match {
-            case Some(containerRow) => Seq(containerRow) ++ sealRows
-            case None               => sealRows
-          }
+    val rows = buildHouseConsignmentRows(
+      houseConsignmentTotalWeightRows(houseConsignmentIndex),
+      consignorName(houseConsignmentIndex),
+      consignorIdentification(houseConsignmentIndex),
+      consigneeName(houseConsignmentIndex),
+      consigneeIdentification(houseConsignmentIndex)
+    )
+
+    Seq(
+      Section(
+        sectionTitle = messages("unloadingFindings.subsections.houseConsignment", houseConsignmentIndex.display),
+        rows
+      )
+    )
+  }
+
+  def itemSections: Seq[Section] =
+    userAnswers
+      .get(ItemsSection(houseConsignmentIndex))
+      .mapWithIndex {
+        (_, itemIndex) =>
+          val itemDescription: Option[SummaryListRow] = itemDescriptionRow(houseConsignmentIndex, itemIndex)
+          val grossWeight: Option[SummaryListRow]     = grossWeightRow(houseConsignmentIndex, itemIndex)
+          val netWeight: Option[SummaryListRow]       = netWeightRow(houseConsignmentIndex, itemIndex)
 
           Some(
             Section(
-              messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display),
-              rows
+              messages("unloadingFindings.subsections.item", itemIndex.display),
+              Seq(itemDescription, grossWeight, netWeight).flatten
             )
           )
       }
 
-  def transportEquipmentSeals(equipmentIndex: Index): Seq[SummaryListRow] =
-    getAnswersAndBuildSectionRows(SealsSection(equipmentIndex))(
-      sealIndex => transportEquipmentSeal(equipmentIndex, sealIndex)
-    )
-
-  def containerIdentificationNumber(index: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = ContainerIdentificationNumberPage(index),
+  def itemDescriptionRow(houseConsignmentIndex: Index, itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = ItemDescriptionPage(houseConsignmentIndex, itemIndex),
     formatAnswer = formatAsText,
-    prefix = "unloadingFindings.rowHeadings.containerIdentificationNumber",
-    id = None,
-    args = None,
-    call = None
-  )
-
-  def transportEquipmentSeal(equipmentIndex: Index, sealIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = SealPage(equipmentIndex, sealIndex),
-    formatAnswer = formatAsText,
-    prefix = "unloadingFindings.rowHeadings.sealIdentifier",
-    args = sealIndex.display,
+    prefix = "unloadingFindings.rowHeadings.item.description",
     id = None,
     call = None
   )
 
-  def houseConsignmentSections: Seq[Section] =
-    userAnswers.get(HouseConsignmentsSection).mapWithIndex {
-      (_, houseConsignmentIndex) =>
-        val rows = buildHouseConsignmentRows(
-          houseConsignmentTotalWeightRows(houseConsignmentIndex),
-          consignorName(houseConsignmentIndex),
-          consignorIdentification(houseConsignmentIndex),
-          consigneeName(houseConsignmentIndex),
-          consigneeIdentification(houseConsignmentIndex)
-        )
-
-        Some(
-          Section(
-            sectionTitle = messages("unloadingFindings.subsections.houseConsignment", houseConsignmentIndex.display),
-            rows,
-            viewLink = Some(
-              Link(
-                id = s"view-house-consignment-${houseConsignmentIndex.display}",
-                href = controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
-              )
-            )
-          )
-        )
-    }
 }

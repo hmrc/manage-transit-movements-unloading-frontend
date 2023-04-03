@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils.cyaHelpers
+package utils
 
 import base.SpecBase
 import generators.Generators
@@ -27,23 +27,22 @@ import pages._
 import services.ReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
-import utils.UnloadingFindingsAnswersHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   private val countryDesc = "Great Britain"
 
-  "UnloadingFindingsAnswersHelper" - {
+  "HouseConsignmentAnswersHelper" - {
 
     "buildTransportSections" - {
       "must return None" - {
         s"when no transport means defined" in {
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
+          val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, index, mockReferenceDataService)
           val result = helper.buildTransportSections.futureValue
           result.isEmpty mustBe true
         }
@@ -56,13 +55,13 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
         s"when there is 1 transport means section defined" in {
 
           val answers = emptyUserAnswers
-            .setValue(VehicleIdentificationNumberPage(index), vehicleIdentificationNumber)
-            .setValue(VehicleIdentificationTypePage(index), vehicleIdentificationType.identificationType.toString)
-            .setValue(VehicleRegistrationCountryPage(index), "GB")
+            .setValue(DepartureTransportMeansIdentificationNumberPage(index, index), vehicleIdentificationNumber)
+            .setValue(DepartureTransportMeansIdentificationTypePage(index, index), vehicleIdentificationType.identificationType.toString)
+            .setValue(DepartureTransportMeansCountryPage(index, index), "GB")
 
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper          = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
+          val helper          = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
           val result          = helper.buildTransportSections.futureValue
           val transportMeans1 = result.head.rows
 
@@ -84,12 +83,12 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
         s"when only identification type and number defined" in {
 
           val answers = emptyUserAnswers
-            .setValue(VehicleIdentificationNumberPage(index), vehicleIdentificationNumber)
-            .setValue(VehicleIdentificationTypePage(index), vehicleIdentificationType.identificationType.toString)
+            .setValue(DepartureTransportMeansIdentificationNumberPage(index, index), vehicleIdentificationNumber)
+            .setValue(DepartureTransportMeansIdentificationTypePage(index, index), vehicleIdentificationType.identificationType.toString)
 
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper          = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
+          val helper          = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
           val result          = helper.buildTransportSections.futureValue
           val transportMeans1 = result.head.rows
 
@@ -106,12 +105,10 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
         }
         s"when only country is defined" in {
 
-          val answers = emptyUserAnswers
-            .setValue(VehicleRegistrationCountryPage(index), "GB")
-
+          val answers = emptyUserAnswers.setValue(DepartureTransportMeansCountryPage(index, index), "GB")
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper          = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
+          val helper          = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
           val result          = helper.buildTransportSections.futureValue
           val transportMeans1 = result.head.rows
 
@@ -128,12 +125,11 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
         }
         s"when only number is defined" in {
 
-          val answers = emptyUserAnswers
-            .setValue(VehicleIdentificationNumberPage(index), vehicleIdentificationNumber)
+          val answers = emptyUserAnswers.setValue(DepartureTransportMeansIdentificationNumberPage(index, index), vehicleIdentificationNumber)
 
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper          = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
+          val helper          = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
           val result          = helper.buildTransportSections.futureValue
           val transportMeans1 = result.head.rows
 
@@ -143,16 +139,16 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
         s"when multiple transport means sections are defined" in {
 
           val answers = emptyUserAnswers
-            .setValue(VehicleIdentificationNumberPage(index), vehicleIdentificationNumber)
-            .setValue(VehicleIdentificationTypePage(index), vehicleIdentificationType.identificationType.toString)
-            .setValue(VehicleRegistrationCountryPage(index), "GB")
-            .setValue(VehicleIdentificationNumberPage(Index(1)), vehicleIdentificationNumber)
-            .setValue(VehicleIdentificationTypePage(Index(1)), vehicleIdentificationType.identificationType.toString)
-            .setValue(VehicleRegistrationCountryPage(Index(1)), "GB")
+            .setValue(DepartureTransportMeansIdentificationNumberPage(index, index), vehicleIdentificationNumber)
+            .setValue(DepartureTransportMeansIdentificationTypePage(index, index), vehicleIdentificationType.identificationType.toString)
+            .setValue(DepartureTransportMeansCountryPage(index, index), "GB")
+            .setValue(DepartureTransportMeansIdentificationNumberPage(index, Index(1)), vehicleIdentificationNumber)
+            .setValue(DepartureTransportMeansIdentificationTypePage(index, Index(1)), vehicleIdentificationType.identificationType.toString)
+            .setValue(DepartureTransportMeansCountryPage(index, Index(1)), "GB")
 
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper          = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
+          val helper          = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
           val result          = helper.buildTransportSections.futureValue
           val transportMeans1 = result.head.rows
           val transportMeans2 = result(1).rows
@@ -197,21 +193,21 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       val identificationTypeMessage = messages(s"${Identification.messageKeyPrefix}.${vehicleIdentificationType.toString}")
 
       "must return None" - {
-        s"when $VehicleIdentificationNumberPage undefined" in {
+        s"when $DepartureTransportMeansIdentificationNumberPage undefined" in {
 
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
+          val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, index, mockReferenceDataService)
           val result = helper.transportMeansID(index)
           result mustBe None
         }
       }
 
       "must return Some(Row)" - {
-        s"when $VehicleIdentificationNumberPage defined" in {
+        s"when $DepartureTransportMeansIdentificationNumberPage defined" in {
           val answers = emptyUserAnswers
-            .setValue(VehicleIdentificationNumberPage(index), vehicleIdentificationNumber)
-            .setValue(VehicleIdentificationTypePage(index), vehicleIdentificationType.identificationType.toString)
+            .setValue(DepartureTransportMeansIdentificationNumberPage(index, index), vehicleIdentificationNumber)
+            .setValue(DepartureTransportMeansIdentificationTypePage(index, index), vehicleIdentificationType.identificationType.toString)
 
-          val helper = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
+          val helper = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
           val result = helper.transportMeansID(index)
 
           result mustBe Some(
@@ -229,11 +225,10 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
       "must return Some(Row)" - {
         s"when $VehicleRegistrationCountryPage defined" in {
-          val answers = emptyUserAnswers
-            .setValue(VehicleRegistrationCountryPage(index), "GB")
+          val answers = emptyUserAnswers.setValue(DepartureTransportMeansCountryPage(index, index), "GB")
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
+          val helper = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
           val result = helper.transportRegisteredCountry(countryDesc)
 
           result mustBe
@@ -246,195 +241,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       }
     }
 
-    "containerIdentificationNumber" - {
-
-      val containerIdentificationNumber = Gen.alphaNumStr.sample.value
-
-      "must return None" - {
-        s"when $ContainerIdentificationNumberPage undefined" in {
-
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
-          val result = helper.containerIdentificationNumber(index)
-          result mustBe None
-        }
-      }
-
-      "must return Some(Row)" - {
-        s"when $ContainerIdentificationNumberPage defined" in {
-          val answers = emptyUserAnswers
-            .setValue(ContainerIdentificationNumberPage(index), containerIdentificationNumber)
-
-          val helper = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
-          val result = helper.containerIdentificationNumber(index)
-
-          result mustBe Some(
-            SummaryListRow(
-              key = Key("Container identification number".toText),
-              value = Value(containerIdentificationNumber.toText),
-              actions = None
-            )
-          )
-        }
-      }
-    }
-
-    "transportEquipmentSections" - {
-      "must return None" - {
-        s"when no transport equipments defined" in {
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
-          val result = helper.transportEquipmentSections
-          result.isEmpty mustBe true
-        }
-      }
-
-      "must return Some(Row)s" - {
-        "when container row is not defined" in {
-          val answers = emptyUserAnswers
-            .setValue(SealPage(index, index), "seal1")
-
-          val helper              = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
-          val transportEquipment1 = helper.transportEquipmentSections.head.rows
-
-          val sealRow1 = transportEquipment1.head
-
-          sealRow1 mustBe
-            SummaryListRow(
-              key = Key("Seal 1".toText),
-              value = Value("seal1".toText)
-            )
-
-          transportEquipment1.length mustBe 1
-
-        }
-        "when no seals are defined" in {
-          val answers = emptyUserAnswers
-            .setValue(ContainerIdentificationNumberPage(index), "container1")
-
-          val helper              = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
-          val transportEquipment1 = helper.transportEquipmentSections.head.rows
-
-          val containerRow1 = transportEquipment1.head
-
-          containerRow1 mustBe
-            SummaryListRow(
-              key = Key("Container identification number".toText),
-              value = Value("container1".toText)
-            )
-
-          transportEquipment1.length mustBe 1
-
-        }
-        s"when 1 transport equipment section is defined" in {
-
-          val answers = emptyUserAnswers
-            .setValue(ContainerIdentificationNumberPage(index), "container1")
-            .setValue(SealPage(index, index), "seal1")
-
-          val helper              = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
-          val transportEquipment1 = helper.transportEquipmentSections.head.rows
-
-          val containerRow1 = transportEquipment1.head
-          val sealRow1      = transportEquipment1(1)
-
-          containerRow1 mustBe
-            SummaryListRow(
-              key = Key("Container identification number".toText),
-              value = Value("container1".toText)
-            )
-
-          sealRow1 mustBe
-            SummaryListRow(
-              key = Key("Seal 1".toText),
-              value = Value("seal1".toText)
-            )
-
-        }
-        s"when multiple transport equipment sections are defined" in {
-
-          val answers = emptyUserAnswers
-            .setValue(ContainerIdentificationNumberPage(index), "container1")
-            .setValue(SealPage(index, index), "seal1")
-            .setValue(ContainerIdentificationNumberPage(Index(1)), "container2")
-            .setValue(SealPage(Index(1), index), "seal2")
-
-          val helper              = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
-          val transportEquipment1 = helper.transportEquipmentSections.head.rows
-          val transportEquipment2 = helper.transportEquipmentSections(1).rows
-
-          val containerRow1 = transportEquipment1.head
-          val sealRow1      = transportEquipment1(1)
-          val containerRow2 = transportEquipment2.head
-          val sealRow2      = transportEquipment2(1)
-
-          containerRow1 mustBe
-            SummaryListRow(
-              key = Key("Container identification number".toText),
-              value = Value("container1".toText)
-            )
-
-          sealRow1 mustBe
-            SummaryListRow(
-              key = Key("Seal 1".toText),
-              value = Value("seal1".toText)
-            )
-
-          containerRow2 mustBe
-            SummaryListRow(
-              key = Key("Container identification number".toText),
-              value = Value("container2".toText)
-            )
-
-          sealRow2 mustBe
-            SummaryListRow(
-              key = Key("Seal 1".toText),
-              value = Value("seal2".toText)
-            )
-        }
-      }
-    }
-
-    "transportEquipmentSeal" - {
-
-      val sealIdentifier = Gen.alphaNumStr.sample.value
-
-      "must return None" - {
-        s"when $SealPage undefined" in {
-
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
-          val result = helper.transportEquipmentSeal(equipmentIndex, sealIndex)
-          result mustBe None
-        }
-      }
-
-      "must return Some(Row)" - {
-        s"when $SealPage defined" in {
-          val answers = emptyUserAnswers
-            .setValue(SealPage(equipmentIndex, sealIndex), sealIdentifier)
-
-          val helper = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
-          val result = helper.transportEquipmentSeal(equipmentIndex, sealIndex)
-
-          result mustBe Some(
-            SummaryListRow(
-              key = Key(s"Seal ${sealIndex.display}".toText),
-              value = Value(sealIdentifier.toText),
-              actions = None
-            )
-          )
-        }
-      }
-    }
-
     "houseConsignmentSections" - {
-
-      "must return None" - {
-        s"when no house consignments defined" in {
-
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
-          val result = helper.houseConsignmentSections
-          result.isEmpty mustBe true
-        }
-      }
 
       "must return Some(Row)s" - {
         s"when consignments are defined" in {
@@ -451,11 +258,11 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             .setValue(NetWeightPage(index, Index(1)), netWeight)
             .setValue(ConsignorNamePage(index), "name")
             .setValue(ConsignorIdentifierPage(index), "identifier")
-            .setValue(ConsigneeNamePage(index), "name2")
-            .setValue(ConsigneeIdentifierPage(index), "identifier2")
+            .setValue(ConsigneeNamePage(index), "name")
+            .setValue(ConsigneeIdentifierPage(index), "identifier")
 
-          val helper   = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
-          val sections = helper.houseConsignmentSections.head.rows
+          val helper   = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+          val sections = helper.houseConsignmentSection.head.rows
 
           val grossWeightRow          = sections.head
           val netWeightRow            = sections(1)
@@ -491,13 +298,13 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
           consigneeName mustBe
             SummaryListRow(
               key = Key("Consignee name".toText),
-              value = Value("name2".toText)
+              value = Value("name".toText)
             )
 
           consigneeIdentification mustBe
             SummaryListRow(
               key = Key("Consignee EORI number or Trader Identification Number (TIN)".toText),
-              value = Value("identifier2".toText)
+              value = Value("identifier".toText)
             )
         }
         s"when a consignments is defined" - {
@@ -510,13 +317,17 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
               .setValue(GrossWeightPage(index, itemIndex), grossWeight)
               .setValue(NetWeightPage(index, itemIndex), netWeight)
               .setValue(ConsignorNamePage(index), "name")
+              .setValue(ConsigneeNamePage(index), "name")
+              .setValue(ConsigneeIdentifierPage(index), "identifier")
 
-            val helper   = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
-            val sections = helper.houseConsignmentSections.head.rows
+            val helper   = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+            val sections = helper.houseConsignmentSection.head.rows
 
-            val grossWeightRow = sections.head
-            val netWeightRow   = sections(1)
-            val consignorName  = sections(2)
+            val grossWeightRow          = sections.head
+            val netWeightRow            = sections(1)
+            val consignorName           = sections(2)
+            val consigneeName           = sections(3)
+            val consigneeIdentification = sections(4)
 
             grossWeightRow mustBe
               SummaryListRow(
@@ -535,8 +346,19 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
                 key = Key("Consignor name".toText),
                 value = Value("name".toText)
               )
+            consigneeName mustBe
+              SummaryListRow(
+                key = Key("Consignee name".toText),
+                value = Value("name".toText)
+              )
 
-            sections.length mustBe 3
+            consigneeIdentification mustBe
+              SummaryListRow(
+                key = Key("Consignee EORI number or Trader Identification Number (TIN)".toText),
+                value = Value("identifier".toText)
+              )
+
+            sections.length mustBe 5
 
           }
           "and only consignor name is defined" in {
@@ -544,8 +366,8 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             val answers = emptyUserAnswers
               .setValue(ConsignorNamePage(index), "name")
 
-            val helper   = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
-            val sections = helper.houseConsignmentSections.head.rows
+            val helper   = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+            val sections = helper.houseConsignmentSection.head.rows
 
             val consignorName = sections.head
 
@@ -563,8 +385,8 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             val answers = emptyUserAnswers
               .setValue(ConsignorIdentifierPage(index), "identifier")
 
-            val helper   = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
-            val sections = helper.houseConsignmentSections.head.rows
+            val helper   = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+            val sections = helper.houseConsignmentSection.head.rows
 
             val consignorIdentification = sections.head
 
@@ -587,8 +409,8 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
               .setValue(NetWeightPage(index, itemIndex), netWeight)
               .setValue(ConsignorIdentifierPage(index), "identifier")
 
-            val helper   = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
-            val sections = helper.houseConsignmentSections.head.rows
+            val helper   = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+            val sections = helper.houseConsignmentSection.head.rows
 
             val grossWeightRow          = sections.head
             val netWeightRow            = sections(1)
@@ -615,51 +437,13 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             sections.length mustBe 3
 
           }
-          "and consignee identification number is not defined" in {
-
-            val grossWeight = Gen.double.sample.value
-            val netWeight   = Gen.double.sample.value
-
-            val answers = emptyUserAnswers
-              .setValue(GrossWeightPage(index, itemIndex), grossWeight)
-              .setValue(NetWeightPage(index, itemIndex), netWeight)
-              .setValue(ConsigneeNamePage(index), "name")
-
-            val helper   = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
-            val sections = helper.houseConsignmentSections.head.rows
-
-            val grossWeightRow = sections.head
-            val netWeightRow   = sections(1)
-            val consigneeName  = sections(2)
-
-            grossWeightRow mustBe
-              SummaryListRow(
-                key = Key("Gross weight".toText),
-                value = Value(s"${BigDecimal(grossWeight)}kg".toText)
-              )
-
-            netWeightRow mustBe
-              SummaryListRow(
-                key = Key("Net weight".toText),
-                value = Value(s"${BigDecimal(netWeight)}kg".toText)
-              )
-
-            consigneeName mustBe
-              SummaryListRow(
-                key = Key("Consignee name".toText),
-                value = Value("name".toText)
-              )
-
-            sections.length mustBe 3
-
-          }
           "and only consignee name is defined" in {
 
             val answers = emptyUserAnswers
               .setValue(ConsigneeNamePage(index), "name")
 
-            val helper   = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
-            val sections = helper.houseConsignmentSections.head.rows
+            val helper   = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+            val sections = helper.houseConsignmentSection.head.rows
 
             val consigneeName = sections.head
 
@@ -677,8 +461,8 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             val answers = emptyUserAnswers
               .setValue(ConsigneeIdentifierPage(index), "identifier")
 
-            val helper   = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
-            val sections = helper.houseConsignmentSections.head.rows
+            val helper   = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+            val sections = helper.houseConsignmentSection.head.rows
 
             val consigneeIdentification = sections.head
 
@@ -701,8 +485,8 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
               .setValue(NetWeightPage(index, itemIndex), netWeight)
               .setValue(ConsigneeIdentifierPage(index), "identifier")
 
-            val helper   = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
-            val sections = helper.houseConsignmentSections.head.rows
+            val helper   = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+            val sections = helper.houseConsignmentSection.head.rows
 
             val grossWeightRow          = sections.head
             val netWeightRow            = sections(1)
@@ -735,8 +519,8 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
               .setValue(ConsignorNamePage(index), "name")
               .setValue(ConsignorIdentifierPage(index), "identifier")
 
-            val helper   = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
-            val sections = helper.houseConsignmentSections.head.rows
+            val helper   = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+            val sections = helper.houseConsignmentSection.head.rows
 
             val consignorName           = sections.head
             val consignorIdentification = sections(1)
@@ -761,21 +545,21 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       }
     }
 
-    "totalGrossWeightRow" - {
+    "grossWeightRow" - {
 
       "must return Some(Row)" - {
         s"when total gross weight is passed to totalGrossWeightRow" in {
 
-          val totalGrossWeight = Gen.double.sample.value
+          val grossWeight = BigDecimal(Gen.double.sample.value)
 
           val answers = emptyUserAnswers
 
-          val helper = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
-          val result = helper.totalGrossWeightRow(totalGrossWeight)
+          val helper = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+          val result = helper.totalGrossWeightRow(grossWeight)
 
           result mustBe SummaryListRow(
             key = Key("Gross weight".toText),
-            value = Value(s"${BigDecimal(totalGrossWeight)}kg".toText),
+            value = Value(s"${grossWeight}kg".toText),
             actions = None
           )
         }
@@ -787,20 +571,207 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       "must return Some(Row)" - {
         s"when total net weight is passed to totalNetWeightRow" in {
 
-          val totalNetWeight = Gen.double.sample.value
+          val netWeight = BigDecimal(Gen.double.sample.value)
 
           val answers = emptyUserAnswers
 
-          val helper = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
-          val result = helper.totalNetWeightRow(totalNetWeight)
+          val helper = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+          val result = helper.totalNetWeightRow(netWeight)
 
           result mustBe SummaryListRow(
             key = Key("Net weight".toText),
-            value = Value(s"${BigDecimal(totalNetWeight)}kg".toText),
+            value = Value(s"${netWeight}kg".toText),
             actions = None
           )
         }
       }
+    }
+
+    "itemDescriptionRow" - {
+
+      val itemDesc = Gen.alphaNumStr.sample.value
+
+      "must return None" - {
+        s"when $ItemDescriptionPage undefined" in {
+
+          val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, index, mockReferenceDataService)
+          val result = helper.itemDescriptionRow(index, itemIndex)
+          result mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $ItemDescriptionPage defined" in {
+          val answers = emptyUserAnswers
+            .setValue(ItemDescriptionPage(index, itemIndex), itemDesc)
+
+          val helper = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+          val result = helper.itemDescriptionRow(index, itemIndex)
+
+          result mustBe
+            Some(
+              SummaryListRow(
+                key = Key("Description".toText),
+                value = Value(itemDesc.toText),
+                actions = None
+              )
+            )
+        }
+      }
+    }
+
+    "grossWeightRow" - {
+
+      val grossWeight = Gen.double.sample.value
+
+      "must return None" - {
+        s"when $GrossWeightPage undefined" in {
+
+          val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, index, mockReferenceDataService)
+          val result = helper.grossWeightRow(index, itemIndex)
+          result mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $GrossWeightPage defined" in {
+          val answers = emptyUserAnswers
+            .setValue(GrossWeightPage(index, itemIndex), grossWeight)
+
+          val helper = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+          val result = helper.grossWeightRow(index, itemIndex)
+
+          result mustBe Some(
+            SummaryListRow(
+              key = Key("Gross weight".toText),
+              value = Value(s"${grossWeight}kg".toText),
+              actions = None
+            )
+          )
+        }
+      }
+    }
+
+    "netWeightRow" - {
+
+      val netWeight = Gen.double.sample.value
+
+      "must return None" - {
+        s"when $NetWeightPage undefined" in {
+
+          val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, index, mockReferenceDataService)
+          val result = helper.netWeightRow(index, itemIndex)
+          result mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $NetWeightPage defined" in {
+          val answers = emptyUserAnswers
+            .setValue(NetWeightPage(index, itemIndex), netWeight)
+
+          val helper = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+          val result = helper.netWeightRow(index, itemIndex)
+
+          result mustBe Some(
+            SummaryListRow(
+              key = Key("Net weight".toText),
+              value = Value(s"${netWeight}kg".toText),
+              actions = None
+            )
+          )
+        }
+      }
+    }
+
+    "ItemsSections" - {
+
+      val weight = Gen.double.sample.value
+
+      "must return none" - {
+        s"when no Items undefined" in {
+
+          val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, index, mockReferenceDataService)
+          val result = helper.itemSections
+          result mustBe Nil
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when an Item is defined" in {
+          val answers = emptyUserAnswers
+            .setValue(ItemDescriptionPage(index, itemIndex), "test")
+            .setValue(GrossWeightPage(index, itemIndex), weight)
+            .setValue(NetWeightPage(index, itemIndex), weight)
+
+          val helper = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+          val result = helper.itemSections.head.rows
+
+          result.head mustBe
+            SummaryListRow(
+              key = Key("Description".toText),
+              value = Value("test".toText),
+              actions = None
+            )
+          result(1) mustBe
+            SummaryListRow(
+              key = Key("Gross weight".toText),
+              value = Value(s"${weight}kg".toText),
+              actions = None
+            )
+          result(2) mustBe
+            SummaryListRow(
+              key = Key("Net weight".toText),
+              value = Value(s"${weight}kg".toText),
+              actions = None
+            )
+        }
+        s"when Net Weight is not defined" in {
+          val answers = emptyUserAnswers
+            .setValue(ItemDescriptionPage(index, itemIndex), "test")
+            .setValue(GrossWeightPage(index, itemIndex), weight)
+
+          val helper = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+          val result = helper.itemSections.head.rows
+
+          result.head mustBe
+            SummaryListRow(
+              key = Key("Description".toText),
+              value = Value("test".toText),
+              actions = None
+            )
+          result(1) mustBe
+            SummaryListRow(
+              key = Key("Gross weight".toText),
+              value = Value(s"${weight}kg".toText),
+              actions = None
+            )
+          result.length mustBe 2
+        }
+        s"when Gross Weight is not defined" in {
+          val answers = emptyUserAnswers
+            .setValue(ItemDescriptionPage(index, itemIndex), "test")
+            .setValue(NetWeightPage(index, itemIndex), weight)
+
+          val helper = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+          val result = helper.itemSections.head.rows
+
+          result.head mustBe
+            SummaryListRow(
+              key = Key("Description".toText),
+              value = Value("test".toText),
+              actions = None
+            )
+          result(1) mustBe
+            SummaryListRow(
+              key = Key("Net weight".toText),
+              value = Value(s"${weight}kg".toText),
+              actions = None
+            )
+          result.length mustBe 2
+        }
+      }
+
     }
 
   }

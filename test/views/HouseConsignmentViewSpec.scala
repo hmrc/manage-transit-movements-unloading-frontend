@@ -17,21 +17,23 @@
 package views
 
 import generators.Generators
+import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-import viewModels.CheckYourAnswersViewModel
+import viewModels.HouseConsignmentViewModel
 import viewModels.sections.Section
-import views.behaviours.CheckYourAnswersViewBehaviours
-import views.html.CheckYourAnswersView
+import views.behaviours.DetailsListViewBehaviours
+import views.html.HouseConsignmentView
 
-class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours with Generators {
+class HouseConsignmentViewSpec extends DetailsListViewBehaviours with Generators {
 
-  override val prefix: String = "checkYourAnswers"
+  override val prefix: String = "unloadingFindings"
 
-  override def viewWithSections(sections: Seq[Section]): HtmlFormat.Appendable =
-    injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, checkYourAnswersViewModel)(fakeRequest, messages)
+  lazy val sections: Seq[Section]                          = arbitrary[List[Section]].sample.value
+  val houseConsignmentViewModel: HouseConsignmentViewModel = new HouseConsignmentViewModel(sections, sections)
 
-  val checkYourAnswersViewModel: CheckYourAnswersViewModel = new CheckYourAnswersViewModel(sections)
+  override def view: HtmlFormat.Appendable =
+    injector.instanceOf[HouseConsignmentView].apply(mrn, arrivalId, houseConsignmentViewModel, index)(fakeRequest, messages)
 
   override def summaryLists: Seq[SummaryList] = sections.map(
     section => SummaryList(section.rows)
@@ -45,16 +47,16 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours with Gener
 
   behave like pageWithHeading()
 
-  behave like pageWithSummaryLists()
+  behave like pageWithSections()
 
-  behave like pageWithFormAction(controllers.routes.CheckYourAnswersController.onSubmit(arrivalId).url)
+  behave like pageWithFormAction(controllers.routes.HouseConsignmentController.onSubmit(arrivalId).url)
 
-  behave like pageWithSubmitButton("Confirm and send")
+  behave like pageWithSubmitButton("Back to summary")
 
   "must render section titles when rows are non-empty" - {
     sections.foreach(_.sectionTitle.map {
       sectionTitle =>
-        behave like pageWithContent("h2", sectionTitle)
+        behave like pageWithContent("span", sectionTitle)
     })
   }
 
