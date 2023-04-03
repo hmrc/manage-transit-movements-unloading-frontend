@@ -134,7 +134,9 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
         val rows = buildHouseConsignmentRows(
           houseConsignmentTotalWeightRows(houseConsignmentIndex),
           consignorName(houseConsignmentIndex),
-          consignorIdentification(houseConsignmentIndex)
+          consignorIdentification(houseConsignmentIndex),
+          consigneeName(houseConsignmentIndex),
+          consigneeIdentification(houseConsignmentIndex)
         )
 
         Some(

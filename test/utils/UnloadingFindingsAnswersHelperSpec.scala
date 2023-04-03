@@ -451,6 +451,8 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             .setValue(NetWeightPage(index, Index(1)), netWeight)
             .setValue(ConsignorNamePage(index), "name")
             .setValue(ConsignorIdentifierPage(index), "identifier")
+            .setValue(ConsigneeNamePage(index), "name2")
+            .setValue(ConsigneeIdentifierPage(index), "identifier2")
 
           val helper   = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
           val sections = helper.houseConsignmentSections.head.rows
@@ -459,6 +461,8 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
           val netWeightRow            = sections(1)
           val consignorName           = sections(2)
           val consignorIdentification = sections(3)
+          val consigneeName           = sections(4)
+          val consigneeIdentification = sections(5)
 
           grossWeightRow mustBe
             SummaryListRow(
@@ -482,6 +486,18 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             SummaryListRow(
               key = Key("Consignor EORI number or Trader Identification Number (TIN)".toText),
               value = Value("identifier".toText)
+            )
+
+          consigneeName mustBe
+            SummaryListRow(
+              key = Key("Consignee name".toText),
+              value = Value("name2".toText)
+            )
+
+          consigneeIdentification mustBe
+            SummaryListRow(
+              key = Key("Consignee EORI number or Trader Identification Number (TIN)".toText),
+              value = Value("identifier2".toText)
             )
         }
         s"when a consignments is defined" - {
@@ -593,6 +609,120 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             consignorIdentification mustBe
               SummaryListRow(
                 key = Key("Consignor EORI number or Trader Identification Number (TIN)".toText),
+                value = Value("identifier".toText)
+              )
+
+            sections.length mustBe 3
+
+          }
+          "and consignee identification number is not defined" in {
+
+            val grossWeight = Gen.double.sample.value
+            val netWeight   = Gen.double.sample.value
+
+            val answers = emptyUserAnswers
+              .setValue(GrossWeightPage(index, itemIndex), grossWeight)
+              .setValue(NetWeightPage(index, itemIndex), netWeight)
+              .setValue(ConsigneeNamePage(index), "name")
+
+            val helper   = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
+            val sections = helper.houseConsignmentSections.head.rows
+
+            val grossWeightRow = sections.head
+            val netWeightRow   = sections(1)
+            val consigneeName  = sections(2)
+
+            grossWeightRow mustBe
+              SummaryListRow(
+                key = Key("Gross weight".toText),
+                value = Value(s"${BigDecimal(grossWeight)}kg".toText)
+              )
+
+            netWeightRow mustBe
+              SummaryListRow(
+                key = Key("Net weight".toText),
+                value = Value(s"${BigDecimal(netWeight)}kg".toText)
+              )
+
+            consigneeName mustBe
+              SummaryListRow(
+                key = Key("Consignee name".toText),
+                value = Value("name".toText)
+              )
+
+            sections.length mustBe 3
+
+          }
+          "and only consignee name is defined" in {
+
+            val answers = emptyUserAnswers
+              .setValue(ConsigneeNamePage(index), "name")
+
+            val helper   = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
+            val sections = helper.houseConsignmentSections.head.rows
+
+            val consigneeName = sections.head
+
+            consigneeName mustBe
+              SummaryListRow(
+                key = Key("Consignee name".toText),
+                value = Value("name".toText)
+              )
+
+            sections.length mustBe 1
+
+          }
+          "and only consignee identification number is defined" in {
+
+            val answers = emptyUserAnswers
+              .setValue(ConsigneeIdentifierPage(index), "identifier")
+
+            val helper   = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
+            val sections = helper.houseConsignmentSections.head.rows
+
+            val consigneeIdentification = sections.head
+
+            consigneeIdentification mustBe
+              SummaryListRow(
+                key = Key("Consignee EORI number or Trader Identification Number (TIN)".toText),
+                value = Value("identifier".toText)
+              )
+
+            sections.length mustBe 1
+
+          }
+          "and consignee name is not defined" in {
+
+            val grossWeight = Gen.double.sample.value
+            val netWeight   = Gen.double.sample.value
+
+            val answers = emptyUserAnswers
+              .setValue(GrossWeightPage(index, itemIndex), grossWeight)
+              .setValue(NetWeightPage(index, itemIndex), netWeight)
+              .setValue(ConsigneeIdentifierPage(index), "identifier")
+
+            val helper   = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
+            val sections = helper.houseConsignmentSections.head.rows
+
+            val grossWeightRow          = sections.head
+            val netWeightRow            = sections(1)
+            val consigneeIdentification = sections(2)
+
+            grossWeightRow mustBe
+              SummaryListRow(
+                key = Key("Gross weight".toText),
+                value = Value(s"${BigDecimal(grossWeight)}kg".toText)
+              )
+
+            netWeightRow mustBe
+              SummaryListRow(
+                key = Key("Net weight".toText),
+                value = Value(s"${BigDecimal(netWeight)}kg".toText)
+              )
+
+            consigneeIdentification mustBe
+              SummaryListRow(
+                key = Key("Consignee EORI number or Trader Identification Number (TIN)".toText),
                 value = Value("identifier".toText)
               )
 
