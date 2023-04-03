@@ -37,6 +37,7 @@ object CheckYourAnswersViewModel {
 
       val headerSection = Section(
         Seq(
+          helper.unloadingType,
           helper.goodsUnloadedDate,
           helper.canSealsBeRead,
           helper.anySealsBroken

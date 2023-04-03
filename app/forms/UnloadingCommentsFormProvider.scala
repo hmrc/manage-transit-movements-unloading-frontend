@@ -28,6 +28,6 @@ class UnloadingCommentsFormProvider @Inject() extends Mappings {
     Form(
       "value" -> text("changesToReport.error.required")
         .verifying(maxLength(RemarksNonConform.unloadingRemarkLength, "changesToReport.error.length"))
-        .verifying(regexp(stringFieldRegex.r, "changesToReport.error.invalid", Seq.empty))
+        .verifying(regexp(stringFieldRegex, "changesToReport.error.invalid", Seq.empty))
     )
 }

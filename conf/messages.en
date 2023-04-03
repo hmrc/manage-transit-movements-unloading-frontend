@@ -174,11 +174,12 @@ canSealsBeRead.change.hidden = if all the seal identification numbers or marks a
 
 unloadingType.title = Have you fully or partially unloaded the goods?
 unloadingType.heading = Have you fully or partially unloaded the goods?
+unloadingType.checkYourAnswers = Have you fully or partially unloaded the goods?
 unloadingType.checkYourAnswersLabel = Are any of the seals broken?
 unloadingType.fully = Fully unloaded
 unloadingType.partially = Partially unloaded
 unloadingType.error.required = Select whether you have fully or partially unloaded the goods
-unloadingType.change.hidden = if any of the seals are broken
+unloadingType.checkYourAnswers.change.hidden = whether you fully or partially unloaded the goods
 
 areAnySealsBroken.title = Are any of the seals broken?
 areAnySealsBroken.heading = Are any of the seals broken?
