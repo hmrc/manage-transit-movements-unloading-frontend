@@ -33,8 +33,6 @@ class ApiConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with Wir
 
   private lazy val connector: ApiConnector = app.injector.instanceOf[ApiConnector]
 
-  implicit private val hc: HeaderCarrier = HeaderCarrier()
-
   val uri = s"/movements/arrivals/${arrivalId.value}/messages"
 
   "ApiConnector" - {
