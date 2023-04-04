@@ -42,8 +42,7 @@ object IE044MessageData {
         "@PhaseID"                         -> "NCTS5.0",
         "TransitOperation"                 -> Json.toJsObject(messageData.TransitOperation),
         "TraderAtDestination"              -> Json.toJsObject(messageData.TraderAtDestination),
-        "CustomsOfficeOfDestinationActual" -> Json.toJsObject(messageData.CustomsOfficeOfDestinationActual),
-        "UnloadingRemark"                  -> Json.obj("unloadingCompletion" -> "1") // TODO this page is missing, need to be remove when page is created
+        "CustomsOfficeOfDestinationActual" -> Json.toJsObject(messageData.CustomsOfficeOfDestinationActual)
       )
   }
 

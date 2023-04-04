@@ -52,10 +52,8 @@ class CheckYourAnswersController @Inject() (
     implicit request =>
       for {
         userAnswers <- Future.fromTry(UserAnswersSubmissionService.userAnswersToSubmission(request.userAnswers))
-        result <- {
-          println(s"\n\n\n ${userAnswers.data} \n\n\n")
-          apiConnector.submit(userAnswers, arrivalId)
-        }
+        result      <- apiConnector.submit(userAnswers, arrivalId)
+
       } yield result match {
         case Left(BadRequest) => Redirect(controllers.routes.ErrorController.badRequest())
         case Left(_)          => Redirect(controllers.routes.ErrorController.technicalDifficulties())

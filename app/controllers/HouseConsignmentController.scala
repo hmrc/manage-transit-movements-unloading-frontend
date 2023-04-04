@@ -44,8 +44,8 @@ class HouseConsignmentController @Inject() (
         viewModelProvider.apply(request.userAnswers, houseConsignmentIndex)
 
       houseConsignmentViewModel.map {
-        x =>
-          Ok(view(request.userAnswers.mrn, arrivalId, x, houseConsignmentIndex))
+        viewModel =>
+          Ok(view(request.userAnswers.mrn, arrivalId, viewModel, houseConsignmentIndex))
       }
 
   }

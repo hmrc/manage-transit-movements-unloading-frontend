@@ -44,8 +44,8 @@ class UnloadingFindingsController @Inject() (
         viewModelProvider.apply(request.userAnswers)
 
       unloadingFindingsViewModel.map {
-        x =>
-          Ok(view(request.userAnswers.mrn, arrivalId, x))
+        viewModel =>
+          Ok(view(request.userAnswers.mrn, arrivalId, viewModel))
       }
 
   }

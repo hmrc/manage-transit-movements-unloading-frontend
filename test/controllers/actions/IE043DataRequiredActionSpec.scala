@@ -37,7 +37,7 @@ class IE043DataRequiredActionSpec extends SpecBase {
     def callRefine[A](
       request: DataRequest[A]
     ): Future[Either[Result, SpecificDataRequestProvider1[T1]#SpecificDataRequest[A]]] =
-      refi  ne(request)
+      refine(request)
   }
 
   private class Harness2[T1, T2](page: Gettable[T2])(implicit rds: Reads[T2]) extends IE043DataRequiredAction2[T1, T2](page) {

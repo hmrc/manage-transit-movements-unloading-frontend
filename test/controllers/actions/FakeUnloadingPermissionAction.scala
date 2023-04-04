@@ -26,11 +26,8 @@ import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-
-class FakeUnloadingPermissionAction(
-                                     arrivalId: ArrivalId,
-                                     unloadingPermissionMessageService: UnloadingPermissionMessageService)
-  extends UnloadingPermissionAction(arrivalId, unloadingPermissionMessageService) {
+class FakeUnloadingPermissionAction(arrivalId: ArrivalId, unloadingPermissionMessageService: UnloadingPermissionMessageService)
+    extends UnloadingPermissionAction(arrivalId, unloadingPermissionMessageService) {
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, UnloadingPermissionRequest[A]]] = {
 

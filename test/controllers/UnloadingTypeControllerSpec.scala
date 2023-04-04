@@ -21,12 +21,11 @@ import forms.EnumerableFormProvider
 import models.{NormalMode, UnloadingType}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.UnloadingTypePage
+import pages.AddUnloadingCommentsYesNoPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.UnloadingTypeView
-import views.html.AddUnloadingCommentsYesNoView
 import utils.Format._
+import views.html.UnloadingTypeView
 
 import scala.concurrent.Future
 
@@ -34,7 +33,6 @@ class UnloadingTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
   private val formProvider = new EnumerableFormProvider()
   private val form         = formProvider[UnloadingType]("unloadingType")
-  private val validAnswer  = UnloadingType.values.head
   private val mode         = NormalMode
 
   lazy val unloadingTypeRoute: String = controllers.routes.UnloadingTypeController.onPageLoad(arrivalId, mode).url

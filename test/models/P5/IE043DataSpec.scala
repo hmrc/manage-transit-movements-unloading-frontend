@@ -428,6 +428,12 @@ class IE043DataSpec extends SpecBase {
                     name = Option("michael doe")
                   )
                 ),
+                Consignee = Option(
+                  Consignee(
+                    identificationNumber = Option("csgee1"),
+                    name = Option("John Smith")
+                  )
+                ),
                 DepartureTransportMeans = Option(
                   List(
                     DepartureTransportMeans(
