@@ -21,6 +21,7 @@ import generators.Generators
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
+import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
@@ -39,16 +40,31 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
       "must return Some(Row)s" - {
         "when consignorName is defined" in {
-          val answers = emptyUserAnswers
-            .setValue(ConsignorNamePage(index), "name")
 
-          val helper        = new UnloadingAnswersHelper(answers)
+          val json: JsObject = Json
+            .parse(s"""
+                 | {
+                 |    "Consignment" : {
+                 |      "HouseConsignment" : [
+                 |        {
+                 |          "Consignor" : {
+                 |              "name" : "john doe"
+                 |          }
+                 |        }
+                 |      ]
+                 |    }
+                 |}
+                 |""".stripMargin)
+            .as[JsObject]
+
+          val userAnswers   = emptyUserAnswers.copy(ie043Data = json)
+          val helper        = new UnloadingAnswersHelper(userAnswers)
           val consignorName = helper.consignorName(index).head
 
           consignorName mustBe
             SummaryListRow(
               key = Key("Consignor name".toText),
-              value = Value("name".toText)
+              value = Value("john doe".toText)
             )
 
         }
@@ -66,16 +82,31 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
       "must return Some(Row)s" - {
         "when consignorIdentification is defined" in {
-          val answers = emptyUserAnswers
-            .setValue(ConsignorIdentifierPage(index), "identifier")
+          val json: JsObject = Json
+            .parse(s"""
+                 | {
+                 |    "Consignment" : {
+                 |      "HouseConsignment" : [
+                 |        {
+                 |          "Consignor" : {
+                 |              "identificationNumber" : "csgor1"
+                 |          }
+                 |        }
+                 |      ]
+                 |    }
+                 |}
+                 |""".stripMargin)
+            .as[JsObject]
 
-          val helper        = new UnloadingAnswersHelper(answers)
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+
+          val helper        = new UnloadingAnswersHelper(userAnswers)
           val consignorName = helper.consignorIdentification(index).head
 
           consignorName mustBe
             SummaryListRow(
               key = Key("Consignor EORI number or Trader Identification Number (TIN)".toText),
-              value = Value("identifier".toText)
+              value = Value("csgor1".toText)
             )
 
         }
@@ -99,11 +130,33 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
         val netWeightBigDecimal   = BigDecimal.valueOf(netWeight)
 
         "when gross and net weight are defined" in {
-          val answers = emptyUserAnswers
-            .setValue(GrossWeightPage(index, index), grossWeight)
-            .setValue(NetWeightPage(index, index), netWeight)
 
-          val helper = new UnloadingAnswersHelper(answers)
+          val json: JsObject = Json
+            .parse(s"""
+                 | {
+                 |    "Consignment" : {
+                 |      "HouseConsignment" : [
+                 |        {
+                 |          "ConsignmentItem" : [
+                 |              {
+                 |                  "Commodity" : {
+                 |                      "GoodsMeasure" : {
+                 |                          "grossMass" : $grossWeight,
+                 |                          "netMass" : $netWeight
+                 |                      }
+                 |                  }
+                 |              }
+                 |          ]
+                 |        }
+                 |      ]
+                 |    }
+                 |}
+                 |""".stripMargin)
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+
+          val helper = new UnloadingAnswersHelper(userAnswers)
           val rows   = helper.houseConsignmentTotalWeightRows(index)
 
           rows.head mustBe
@@ -120,10 +173,32 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
         }
         "when only gross weight is defined" in {
-          val answers = emptyUserAnswers
-            .setValue(GrossWeightPage(index, index), grossWeight)
 
-          val helper = new UnloadingAnswersHelper(answers)
+          val json: JsObject = Json
+            .parse(s"""
+                 | {
+                 |    "Consignment" : {
+                 |      "HouseConsignment" : [
+                 |        {
+                 |          "ConsignmentItem" : [
+                 |              {
+                 |                  "Commodity" : {
+                 |                      "GoodsMeasure" : {
+                 |                          "grossMass" : $grossWeight
+                 |                      }
+                 |                  }
+                 |              }
+                 |          ]
+                 |        }
+                 |      ]
+                 |    }
+                 |}
+                 |""".stripMargin)
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+
+          val helper = new UnloadingAnswersHelper(userAnswers)
           val rows   = helper.houseConsignmentTotalWeightRows(index)
 
           rows.head mustBe
@@ -135,11 +210,32 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           rows.length mustBe 1
         }
         "when only net weight is defined" in {
-          val answers = emptyUserAnswers
-            .setValue(NetWeightPage(index, index), netWeight)
 
-          val helper = new UnloadingAnswersHelper(answers)
-          val rows   = helper.houseConsignmentTotalWeightRows(index)
+          val json: JsObject = Json
+            .parse(s"""
+                 | {
+                 |    "Consignment" : {
+                 |      "HouseConsignment" : [
+                 |        {
+                 |          "ConsignmentItem" : [
+                 |              {
+                 |                  "Commodity" : {
+                 |                      "GoodsMeasure" : {
+                 |                          "netMass" : $netWeight
+                 |                      }
+                 |                  }
+                 |              }
+                 |          ]
+                 |        }
+                 |      ]
+                 |    }
+                 |}
+                 |""".stripMargin)
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val helper      = new UnloadingAnswersHelper(userAnswers)
+          val rows        = helper.houseConsignmentTotalWeightRows(index)
 
           rows.head mustBe
             SummaryListRow(
@@ -151,11 +247,32 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
         }
 
         "when the values of gross/net weight are both 0kg" in {
-          val answers = emptyUserAnswers
-            .setValue(GrossWeightPage(index, index), 0d)
-            .setValue(NetWeightPage(index, index), 0d)
+          val json: JsObject = Json
+            .parse(s"""
+                 | {
+                 |    "Consignment" : {
+                 |      "HouseConsignment" : [
+                 |        {
+                 |          "ConsignmentItem" : [
+                 |              {
+                 |                  "Commodity" : {
+                 |                      "GoodsMeasure" : {
+                 |                          "grossMass" : 0.00,
+                 |                          "netMass" : 0.00
+                 |                      }
+                 |                  }
+                 |              }
+                 |          ]
+                 |        }
+                 |      ]
+                 |    }
+                 |}
+                 |""".stripMargin)
+            .as[JsObject]
 
-          val helper = new UnloadingAnswersHelper(answers)
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+
+          val helper = new UnloadingAnswersHelper(userAnswers)
           val rows   = helper.houseConsignmentTotalWeightRows(index)
 
           rows.isEmpty mustBe true
@@ -168,11 +285,32 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
         val grossWeight = Gen.double.sample.value
         val netWeight   = Gen.double.sample.value
 
-        val answers = emptyUserAnswers
-          .setValue(GrossWeightPage(index, index), grossWeight)
-          .setValue(NetWeightPage(index, index), netWeight)
+        val json: JsObject = Json
+          .parse(s"""
+               | {
+               |    "Consignment" : {
+               |      "HouseConsignment" : [
+               |        {
+               |          "ConsignmentItem" : [
+               |              {
+               |                  "Commodity" : {
+               |                      "GoodsMeasure" : {
+               |                          "grossMass" : $grossWeight,
+               |                          "netMass" : $netWeight
+               |                      }
+               |                  }
+               |              }
+               |          ]
+               |        }
+               |      ]
+               |    }
+               |}
+               |""".stripMargin)
+          .as[JsObject]
 
-        val helper = new UnloadingAnswersHelper(answers)
+        val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+
+        val helper = new UnloadingAnswersHelper(userAnswers)
         val result = helper.fetchWeightValues(index, index)
 
         result mustBe (Some(BigDecimal.valueOf(grossWeight)), Some(BigDecimal.valueOf(netWeight)))
@@ -181,10 +319,31 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
       "must return (Option[BigDecimal], None) when only gross weight is defined" in {
         val grossWeight = Gen.double.sample.value
 
-        val answers = emptyUserAnswers
-          .setValue(GrossWeightPage(index, index), grossWeight)
+        val json: JsObject = Json
+          .parse(s"""
+               | {
+               |    "Consignment" : {
+               |      "HouseConsignment" : [
+               |        {
+               |          "ConsignmentItem" : [
+               |              {
+               |                  "Commodity" : {
+               |                      "GoodsMeasure" : {
+               |                          "grossMass" : $grossWeight
+               |                      }
+               |                  }
+               |              }
+               |          ]
+               |        }
+               |      ]
+               |    }
+               |}
+               |""".stripMargin)
+          .as[JsObject]
 
-        val helper = new UnloadingAnswersHelper(answers)
+        val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+
+        val helper = new UnloadingAnswersHelper(userAnswers)
         val result = helper.fetchWeightValues(index, index)
 
         result mustBe (Some(BigDecimal.valueOf(grossWeight)), None)
@@ -193,11 +352,31 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
       "must return (None, Option[BigDecimal]) when only net weight is defined" in {
         val netWeight = Gen.double.sample.value
 
-        val answers = emptyUserAnswers
-          .setValue(NetWeightPage(index, index), netWeight)
+        val json: JsObject = Json
+          .parse(s"""
+               | {
+               |    "Consignment" : {
+               |      "HouseConsignment" : [
+               |        {
+               |          "ConsignmentItem" : [
+               |              {
+               |                  "Commodity" : {
+               |                      "GoodsMeasure" : {
+               |                          "netMass" : $netWeight
+               |                      }
+               |                  }
+               |              }
+               |          ]
+               |        }
+               |      ]
+               |    }
+               |}
+               |""".stripMargin)
+          .as[JsObject]
 
-        val helper = new UnloadingAnswersHelper(answers)
-        val result = helper.fetchWeightValues(index, index)
+        val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+        val helper      = new UnloadingAnswersHelper(userAnswers)
+        val result      = helper.fetchWeightValues(index, index)
 
         result mustBe (None, Some(BigDecimal.valueOf(netWeight)))
 
@@ -228,10 +407,31 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           val grossWeight           = Gen.double.sample.value
           val grossWeightBigDecimal = BigDecimal.valueOf(grossWeight)
 
-          val answers = emptyUserAnswers
-            .setValue(GrossWeightPage(index, index), grossWeight)
+          val json: JsObject = Json
+            .parse(s"""
+                 | {
+                 |    "Consignment" : {
+                 |      "HouseConsignment" : [
+                 |        {
+                 |          "ConsignmentItem" : [
+                 |              {
+                 |                  "Commodity" : {
+                 |                      "GoodsMeasure" : {
+                 |                          "grossMass" : $grossWeight
+                 |                      }
+                 |                  }
+                 |              }
+                 |          ]
+                 |        }
+                 |      ]
+                 |    }
+                 |}
+                 |""".stripMargin)
+            .as[JsObject]
 
-          val helper         = new UnloadingAnswersHelper(answers)
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+
+          val helper         = new UnloadingAnswersHelper(userAnswers)
           val grossWeightRow = helper.grossWeightRow(index, index).head
 
           grossWeightRow mustBe
@@ -259,10 +459,31 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           val netWeight           = Gen.double.sample.value
           val netWeightBigDecimal = BigDecimal.valueOf(netWeight)
 
-          val answers = emptyUserAnswers
-            .setValue(NetWeightPage(index, index), netWeight)
+          val json: JsObject = Json
+            .parse(s"""
+                 | {
+                 |    "Consignment" : {
+                 |      "HouseConsignment" : [
+                 |        {
+                 |          "ConsignmentItem" : [
+                 |              {
+                 |                  "Commodity" : {
+                 |                      "GoodsMeasure" : {
+                 |                          "netMass" : $netWeight
+                 |                      }
+                 |                  }
+                 |              }
+                 |          ]
+                 |        }
+                 |      ]
+                 |    }
+                 |}
+                 |""".stripMargin)
+            .as[JsObject]
 
-          val helper       = new UnloadingAnswersHelper(answers)
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+
+          val helper       = new UnloadingAnswersHelper(userAnswers)
           val netWeightRow = helper.netWeightRow(index, index).head
 
           netWeightRow mustBe

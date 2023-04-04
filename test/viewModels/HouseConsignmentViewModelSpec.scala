@@ -18,13 +18,13 @@ package viewModels
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
-import models.Index
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
+import play.api.libs.json.{JsObject, Json}
 import services.ReferenceDataService
 import viewModels.HouseConsignmentViewModel.HouseConsignmentViewModelProvider
 
@@ -46,10 +46,28 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
     "must render Means of Transport section" - {
       "when there is one" in {
 
-        val userAnswers = emptyUserAnswers
-          .setValue(DepartureTransportMeansIdentificationNumberPage(index, index), "123456")
-          .setValue(DepartureTransportMeansIdentificationTypePage(index, index), "31")
-          .setValue(DepartureTransportMeansCountryPage(index, index), "GB")
+        val json: JsObject = Json
+          .parse("""
+                   | {
+                   |    "Consignment" : {
+                   |      "HouseConsignment" : [
+                   |        {
+                   |         "DepartureTransportMeans" : [
+                   |             {
+                   |                 "sequenceNumber" : "56",
+                   |                 "typeOfIdentification" : "2",
+                   |                 "identificationNumber" : "23",
+                   |                 "nationality" : "IT"
+                   |             }
+                   |         ]
+                   |        }
+                   |      ]
+                   |    }
+                   |}
+            |""".stripMargin)
+          .as[JsObject]
+
+        val userAnswers = emptyUserAnswers.copy(ie043Data = json)
 
         setExistingUserAnswers(userAnswers)
         when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -62,14 +80,37 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         section.rows.size mustBe 2
         section.viewLink must not be defined
       }
+
       "when there is multiple" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(DepartureTransportMeansIdentificationNumberPage(index, index), "123456")
-          .setValue(DepartureTransportMeansIdentificationTypePage(index, index), "31")
-          .setValue(DepartureTransportMeansCountryPage(index, index), "DE")
-          .setValue(DepartureTransportMeansIdentificationNumberPage(index, Index(1)), "123456")
-          .setValue(DepartureTransportMeansIdentificationTypePage(index, Index(1)), "31")
-          .setValue(DepartureTransportMeansCountryPage(index, Index(1)), "DE")
+
+        val json: JsObject = Json
+          .parse("""
+                   | {
+                   |    "Consignment" : {
+                   |      "HouseConsignment" : [
+                   |        {
+                   |         "DepartureTransportMeans" : [
+                   |             {
+                   |                 "sequenceNumber" : "56",
+                   |                 "typeOfIdentification" : "2",
+                   |                 "identificationNumber" : "23",
+                   |                 "nationality" : "IT"
+                   |             },
+                   |             {
+                   |                 "sequenceNumber" : "56",
+                   |                 "typeOfIdentification" : "2",
+                   |                 "identificationNumber" : "23",
+                   |                 "nationality" : "IT"
+                   |             }
+                   |          ]
+                   |        }
+                   |      ]
+                   |    }
+                   |}
+                   |""".stripMargin)
+          .as[JsObject]
+
+        val userAnswers = emptyUserAnswers.copy(ie043Data = json)
 
         setExistingUserAnswers(userAnswers)
         when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -86,11 +127,42 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
 
     "must render house consignment section" - {
       "when there is one" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(GrossWeightPage(index, itemIndex), 10.00d)
-          .setValue(NetWeightPage(index, itemIndex), 20.00d)
-          .setValue(ConsignorNamePage(index), "name")
-          .setValue(ConsignorIdentifierPage(index), "identifier")
+
+        val json: JsObject = Json
+          .parse("""
+                   | {
+                   |    "Consignment" : {
+                   |      "HouseConsignment" : [
+                   |        {
+                   |          "Consignor" : {
+                   |              "identificationNumber" : "csgr1",
+                   |              "name" : "michael doe"
+                   |          },
+                   |          "Consignee" : {
+                   |              "identificationNumber" : "csgee1",
+                   |              "name" : "John Smith"
+                   |          },
+                   |          "ConsignmentItem" : [
+                   |              {
+                   |                  "goodsItemNumber" : "6",
+                   |                  "declarationGoodsItemNumber" : 100,
+                   |                  "Commodity" : {
+                   |                      "descriptionOfGoods" : "shirts",
+                   |                      "GoodsMeasure" : {
+                   |                          "grossMass" : 123.45,
+                   |                          "netMass" : 123.45
+                   |                      }
+                   |                  }
+                   |              }
+                   |          ]
+                   |        }
+                   |      ]
+                   |    }
+                   |}
+                   |""".stripMargin)
+          .as[JsObject]
+
+        val userAnswers = emptyUserAnswers.copy(ie043Data = json)
 
         setExistingUserAnswers(userAnswers)
         when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -100,16 +172,38 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         val section           = result.houseConsignment.head
 
         section.sectionTitle.value mustBe "House consignment 1"
-        section.rows.size mustBe 4
+        section.rows.size mustBe 6
       }
     }
 
     "must render item section" - {
       "when there is one" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(ItemDescriptionPage(index, itemIndex), "shirts")
-          .setValue(GrossWeightPage(index, itemIndex), 10.00d)
-          .setValue(NetWeightPage(index, itemIndex), 20.00d)
+
+        val json: JsObject = Json
+          .parse("""
+                   | {
+                   |    "Consignment" : {
+                   |      "HouseConsignment" : [
+                   |        {
+                   |          "ConsignmentItem" : [
+                   |           {
+                   |               "Commodity" : {
+                   |                   "descriptionOfGoods" : "shirts",
+                   |                   "GoodsMeasure" : {
+                   |                       "grossMass" : 123.45,
+                   |                       "netMass" : 123.45
+                   |                   }
+                   |               }
+                   |           }
+                   |          ]
+                   |        }
+                   |      ]
+                   |    }
+                   |}
+                   |""".stripMargin)
+          .as[JsObject]
+
+        val userAnswers = emptyUserAnswers.copy(ie043Data = json)
 
         setExistingUserAnswers(userAnswers)
 
@@ -122,13 +216,41 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       }
 
       "when there are multiple" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(ItemDescriptionPage(index, itemIndex), "shirts")
-          .setValue(GrossWeightPage(index, itemIndex), 10.00d)
-          .setValue(NetWeightPage(index, itemIndex), 20.00d)
-          .setValue(ItemDescriptionPage(index, Index(1)), "pants")
-          .setValue(GrossWeightPage(index, Index(1)), 22.00d)
-          .setValue(NetWeightPage(index, Index(1)), 24.00d)
+
+        val json: JsObject = Json
+          .parse("""
+                   | {
+                   |    "Consignment" : {
+                   |      "HouseConsignment" : [
+                   |        {
+                   |          "ConsignmentItem" : [
+                   |           {
+                   |               "Commodity" : {
+                   |                   "descriptionOfGoods" : "shirts",
+                   |                   "GoodsMeasure" : {
+                   |                       "grossMass" : 123.45,
+                   |                       "netMass" : 123.45
+                   |                   }
+                   |               }
+                   |           },
+                   |           {
+                   |               "Commodity" : {
+                   |                   "descriptionOfGoods" : "shirts",
+                   |                   "GoodsMeasure" : {
+                   |                       "grossMass" : 123.45,
+                   |                       "netMass" : 123.45
+                   |                   }
+                   |               }
+                   |           }
+                   |          ]
+                   |        }
+                   |      ]
+                   |    }
+                   |}
+                   |""".stripMargin)
+          .as[JsObject]
+
+        val userAnswers = emptyUserAnswers.copy(ie043Data = json)
 
         setExistingUserAnswers(userAnswers)
 

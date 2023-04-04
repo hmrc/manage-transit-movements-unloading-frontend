@@ -41,7 +41,6 @@ class IE044MessageData extends SpecBase {
 
       val expectedResult: JsValue = Json.parse(s"""
           |{
-          |   ""
           |   "messageSender" : "NCTS",
           |   "messageRecipient" : "NCTS",
           |   "preparationDateAndTime" : "${prepDateTime.format(dateTimeFormatIE044)}",
@@ -51,14 +50,11 @@ class IE044MessageData extends SpecBase {
           |   "TransitOperation" : {
           |       "MRN" : "99IT9876AB889012096"
           |   },
-          |   "TraderAtDestination" : {
+          |   "TraderAtDestinaAddUnloadingCommentsYesNoControllertion" : {
           |       "identificationNumber" : "tad-1"
           |   },
           |   "CustomsOfficeOfDestinationActual" : {
           |       "referenceNumber" : "GB000068"
-          |   },
-          |   "UnloadingRemark" : {
-          |       "unloadingCompletion" : "1"
           |   }
           |}
           |""".stripMargin)

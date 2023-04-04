@@ -87,9 +87,6 @@ class IE044Data extends SpecBase {
            |       },
            |       "CustomsOfficeOfDestinationActual" : {
            |           "referenceNumber" : "GB000068"
-           |       },
-           |       "UnloadingRemark" : {
-           |           "unloadingCompletion" : "1"
            |       }
            |   }
            |}
