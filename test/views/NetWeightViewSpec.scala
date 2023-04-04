@@ -30,7 +30,7 @@ class NetWeightViewSpec extends InputTextViewBehaviours[String] {
   override def form: Form[String] = new NetWeightFormProvider()()
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[NetWeightView].apply(form, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[NetWeightView].apply(form, mrn, arrivalId, index, index, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "netWeight"
 

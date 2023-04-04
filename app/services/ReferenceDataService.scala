@@ -37,8 +37,17 @@ class ReferenceDataServiceImpl @Inject() (connector: ReferenceDataConnector) ext
   def getCustomsOfficeByCode(customsOfficeCode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CustomsOffice]] =
     connector.getCustomsOffice(customsOfficeCode)
 
+  def getCountryNameByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[String] =
+    connector.getCountryNameByCode(code)
+
   private def sort(countries: Seq[Country]): Seq[Country] =
-    countries.sortBy(_.description.toLowerCase)
+    countries.sortBy(
+      country =>
+        country.description match {
+          case Some(desc) => desc.toLowerCase()
+          case None       => country.code
+        }
+    )
 }
 
 trait ReferenceDataService {
@@ -46,4 +55,6 @@ trait ReferenceDataService {
   def getCountryByCode(code: Option[String])(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[Country]]
 
   def getCustomsOfficeByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CustomsOffice]]
+
+  def getCountryNameByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[String]
 }

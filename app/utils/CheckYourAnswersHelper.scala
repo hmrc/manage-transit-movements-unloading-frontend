@@ -16,7 +16,7 @@
 
 package utils
 
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, UnloadingType, UserAnswers}
 import pages._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
@@ -25,6 +25,15 @@ import utils.Format._
 import java.time.LocalDate
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
+
+  def unloadingType: Option[SummaryListRow] = getAnswerAndBuildRow[UnloadingType](
+    page = UnloadingTypePage,
+    formatAnswer = formatEnumAsText(UnloadingType.messageKeyPrefix),
+    prefix = "unloadingType.checkYourAnswers",
+    args = messages("unloadingType.hidden"),
+    id = Some("change-unloaded-type"),
+    call = Some(controllers.routes.UnloadingTypeController.onPageLoad(arrivalId, CheckMode))
+  )
 
   def goodsUnloadedDate: Option[SummaryListRow] = getAnswerAndBuildRow[LocalDate](
     page = DateGoodsUnloadedPage,

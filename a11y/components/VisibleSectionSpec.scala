@@ -18,9 +18,8 @@ package components
 
 import a11ySpecBase.A11ySpecBase
 import org.scalacheck.Arbitrary.arbitrary
-import play.twirl.api.Html
 import viewModels.sections.Section
-import views.html.components.{AnswerSection, VisibleSection}
+import views.html.components.VisibleSection
 import views.html.templates.MainTemplate
 
 class VisibleSectionSpec extends A11ySpecBase {
@@ -31,7 +30,6 @@ class VisibleSectionSpec extends A11ySpecBase {
 
     val title   = nonEmptyString.sample.value
     val section = arbitrary[Section].sample.value
-    val html    = arbitrary[Html].sample.value
 
     val content = template.apply(title) {
       component.apply(section).withHeading(title)

@@ -18,6 +18,7 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
+import models.NormalMode
 import play.api.inject.bind
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -49,12 +50,10 @@ class UnloadingFindingsControllerSpec extends SpecBase with AppWithDefaultMockFi
       setExistingUserAnswers(emptyUserAnswers)
 
       val sections = arbitrarySections.arbitrary.sample.value
-      val section  = arbitrarySection.arbitrary.sample.value
 
-      when(mockUnloadingFindingsViewModelProvider.apply(any())(any()))
-        .thenReturn(UnloadingFindingsViewModel(sections, section))
+      when(mockUnloadingFindingsViewModelProvider.apply(any())(any(), any(), any())).thenReturn(Future.successful(UnloadingFindingsViewModel(sections)))
 
-      val unloadingFindingsViewModel = UnloadingFindingsViewModel(sections, section)
+      val unloadingFindingsViewModel = UnloadingFindingsViewModel(sections)
 
       val request = FakeRequest(GET, unloadingFindingsRoute)
 
@@ -82,7 +81,7 @@ class UnloadingFindingsControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, NormalMode).url
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

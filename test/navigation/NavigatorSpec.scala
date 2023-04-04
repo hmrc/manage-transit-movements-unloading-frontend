@@ -40,6 +40,13 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
     "in Normal mode" - {
 
       val mode = NormalMode
+      "must go from Unloading type page to unloading date page" in {
+
+        val userAnswers = emptyUserAnswers.setValue(UnloadingTypePage, UnloadingType.Fully)
+        navigator
+          .nextPage(UnloadingTypePage, mode, userAnswers)
+          .mustBe(controllers.routes.DateGoodsUnloadedController.onPageLoad(userAnswers.id, NormalMode))
+      }
 
       "must go from a page that doesn't exist in the route map to unloading summary" in {
 
@@ -162,22 +169,43 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
       }
 
       "must go from are any seals broken page " - {
-        "to unloading comments yes no page when the answer is No" in {
+        "to unloading findings page when the answer is No" in {
 
           val userAnswers = emptyUserAnswers.setValue(AreAnySealsBrokenPage, false)
 
           navigator
             .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-            .mustBe(routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, mode))
+            .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
         }
 
-        "to unloading comments yes no page when the answer is Yes" in {
+        "to unloading findings page when the answer is Yes" in {
 
           val userAnswers = emptyUserAnswers.setValue(AreAnySealsBrokenPage, true)
 
           navigator
             .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-            .mustBe(routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, mode))
+            .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
+        }
+      }
+      "must go from unloading comments yes no page" - {
+        "when answer is true to unloading comments controller" in {
+          val userAnswers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, true)
+
+          navigator
+            .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
+            .mustBe(routes.UnloadingCommentsController.onPageLoad(arrivalId, mode))
+        }
+        "when answer is false to check your answers controller" in {
+          val userAnswers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, false)
+
+          navigator
+            .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
+            .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
+        }
+        "to session expired controller when no exisiting answers found" in {
+          navigator
+            .nextPage(AddUnloadingCommentsYesNoPage, mode, emptyUserAnswers)
+            .mustBe(routes.SessionExpiredController.onPageLoad())
         }
       }
 
@@ -235,6 +263,11 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
               .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
+          "to session expired controller when no existing answers found" in {
+            navigator
+              .nextPage(AddUnloadingCommentsYesNoPage, mode, emptyUserAnswers)
+              .mustBe(routes.SessionExpiredController.onPageLoad())
+          }
         }
 
         "must go from date goods unloaded page to check your answers page" in {
@@ -250,32 +283,12 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           }
         }
 
-        "must go from Vehicle Name Registration Reference page to check your answers page" in {
-
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              navigator
-                .nextPage(VehicleIdentificationNumberPage, mode, answers)
-                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
-          }
-        }
-
-        "must go from Vehicle Registration Country page to check your answers page" in {
-
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              navigator
-                .nextPage(VehicleIdentificationNumberPage, mode, answers)
-                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
-          }
-        }
-
         "must go from Gross mass amount page to check your answers page" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator
-                .nextPage(GrossWeightPage(itemIndex), mode, answers)
+                .nextPage(GrossWeightPage(index, itemIndex), mode, answers)
                 .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }

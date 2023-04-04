@@ -422,6 +422,12 @@ class IE043DataSpec extends SpecBase {
             HouseConsignment = List(
               HouseConsignment(
                 Option("hc1"),
+                Consignor = Option(
+                  Consignor(
+                    identificationNumber = Option("csgr1"),
+                    name = Option("michael doe")
+                  )
+                ),
                 DepartureTransportMeans = Option(
                   List(
                     DepartureTransportMeans(

@@ -24,7 +24,6 @@ import models.P5.ArrivalMessageType.{ArrivalNotification, UnloadingPermission}
 import models.P5._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
-import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -40,8 +39,6 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
     super.beforeEach()
     reset(mockConnector)
   }
-
-  implicit private val hc: HeaderCarrier = HeaderCarrier()
 
   private val unloadingPermission1 = MessageMetaData(LocalDateTime.now(), UnloadingPermission, "path/url")
   private val unloadingPermission2 = MessageMetaData(LocalDateTime.now().minusDays(1), UnloadingPermission, "path/url")

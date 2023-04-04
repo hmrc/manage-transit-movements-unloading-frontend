@@ -16,30 +16,72 @@
 
 package utils
 
-import models.{Index, Link, NormalMode, UserAnswers}
-import pages.sections.{ItemsSection, NewSealsSection, SealsSection, TransportEquipmentListSection}
+import cats.data.OptionT
+import cats.implicits._
+import models.{Index, Link, UserAnswers}
 import pages._
+import pages.sections._
 import play.api.i18n.Messages
+import services.ReferenceDataService
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.http.HeaderCarrier
 import viewModels.sections.Section
 
-class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
+import scala.concurrent.{ExecutionContext, Future}
 
-  def departureMeansID: Option[SummaryListRow] = getAnswerAndBuildRowWithDynamicPrefix[String](
-    answerPath = VehicleIdentificationNumberPage, // TODO loop with index
-    titlePath = VehicleIdentificationTypePage,
+class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataService: ReferenceDataService)(implicit
+  messages: Messages,
+  hc: HeaderCarrier,
+  ec: ExecutionContext
+) extends UnloadingAnswersHelper(userAnswers) {
+
+  def buildVehicleNationalityRow(index: Index): Future[Option[SummaryListRow]] =
+    (for {
+      x <- OptionT.fromOption[Future](userAnswers.get(VehicleRegistrationCountryPage(index)))
+      y <- OptionT.liftF(referenceDataService.getCountryNameByCode(x))
+    } yield transportRegisteredCountry(y)).value
+
+  def buildMeansOfTransportRows(idRow: Option[SummaryListRow], nationalityRow: Option[SummaryListRow]): Seq[SummaryListRow] =
+    idRow.map(Seq(_)).getOrElse(Seq.empty) ++
+      nationalityRow.map(Seq(_)).getOrElse(Seq.empty)
+
+  def buildTransportSections: Future[Seq[Section]] =
+    userAnswers
+      .get(TransportMeansListSection)
+      .traverse {
+        _.zipWithIndex.traverse {
+          y =>
+            val nationalityRow: Future[Option[SummaryListRow]] = buildVehicleNationalityRow(y._2)
+            val meansIdRow: Option[SummaryListRow]             = transportMeansID(y._2)
+
+            nationalityRow.map {
+              nationalityRow =>
+                Section(
+                  messages("unloadingFindings.subsections.transportMeans", y._2.display),
+                  buildMeansOfTransportRows(meansIdRow, nationalityRow)
+                )
+            }
+        }
+      }
+      .map(_.getOrElse(Seq.empty))
+
+  def transportMeansID(transportMeansIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRowWithDynamicPrefix[String](
+    answerPath = VehicleIdentificationNumberPage(transportMeansIndex),
+    titlePath = VehicleIdentificationTypePage(transportMeansIndex),
     formatAnswer = formatAsText,
     dynamicPrefix = formatIdentificationTypeAsText,
-    id = Some("change-departure-means-id"),
-    call = Some(controllers.routes.VehicleIdentificationNumberController.onPageLoad(arrivalId, NormalMode))
+    id = None,
+    call = None
   )
 
-  def departureRegisteredCountry: Option[SummaryListRow] = getAnswerAndBuildRow[String]( //TODO COUNTRY CODE TO COUNTRY COUNTRY OBJECT
-    page = VehicleRegistrationCountryPage,
-    formatAnswer = formatAsText,
+  def transportRegisteredCountry(answer: String): SummaryListRow = buildSimpleRow(
+    answer = Text(answer),
+    label = messages("unloadingFindings.rowHeadings.vehicleNationality"),
     prefix = "unloadingFindings.rowHeadings.vehicleNationality",
-    id = Some("change-departure-means-country"),
-    call = Some(controllers.routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, NormalMode))
+    id = None,
+    call = None,
+    args = Seq.empty
   )
 
   def transportEquipmentSections: Seq[Section] =
@@ -47,38 +89,20 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
       .get(TransportEquipmentListSection)
       .mapWithIndex {
         (_, equipmentIndex) =>
-          val sealLength = userAnswers
-            .get(NewSealsSection(equipmentIndex))
-            .map(_.value.length)
-            .getOrElse(0)
-
-          val sealPrefixNumber = userAnswers
-            .get(SealsSection(equipmentIndex))
-            .map(_.value.length)
-            .getOrElse(0)
-
           val containerRow: Seq[Option[SummaryListRow]] = Seq(containerIdentificationNumber(equipmentIndex))
           val sealRows: Seq[SummaryListRow]             = transportEquipmentSeals(equipmentIndex)
-          val newSealRows: Seq[SummaryListRow]          = transportEquipmentNewSeals(equipmentIndex, sealPrefixNumber)
 
-          containerRow.head match {
-            case Some(containerRow) =>
-              Some(
-                Section(
-                  messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display),
-                  Seq(containerRow) ++ sealRows ++ newSealRows,
-                  addNewSeal(equipmentIndex, Index(sealLength))
-                )
-              )
-            case None =>
-              Some(
-                Section(
-                  messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display),
-                  sealRows ++ newSealRows,
-                  addNewSeal(equipmentIndex, Index(sealLength))
-                )
-              )
+          val rows = containerRow.head match {
+            case Some(containerRow) => Seq(containerRow) ++ sealRows
+            case None               => sealRows
           }
+
+          Some(
+            Section(
+              messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display),
+              rows
+            )
+          )
       }
 
   def transportEquipmentSeals(equipmentIndex: Index): Seq[SummaryListRow] =
@@ -86,152 +110,46 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
       sealIndex => transportEquipmentSeal(equipmentIndex, sealIndex)
     )
 
-  def transportEquipmentNewSeals(equipmentIndex: Index, sealPrefixNumber: Int): Seq[SummaryListRow] =
-    getAnswersAndBuildSectionRows(NewSealsSection(equipmentIndex))(
-      sealIndex => transportEquipmentNewSeal(equipmentIndex, sealIndex, sealPrefixNumber + sealIndex.display)
-    )
-
-  def containerIdentificationNumber(index: Index): Option[SummaryListRow] = getAnswerAndBuildRowWithDynamicHiddenText[String](
+  def containerIdentificationNumber(index: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = ContainerIdentificationNumberPage(index),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.containerIdentificationNumber",
-    id = Some(s"change-container-identification-number-${index.display}"),
+    id = None,
     args = None,
-    call = Some(controllers.routes.NewContainerIdentificationNumberController.onPageLoad(arrivalId, index, NormalMode))
+    call = None
   )
 
-  def transportEquipmentSeal(equipmentIndex: Index, sealIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRowWithDynamicHiddenText[String](
+  def transportEquipmentSeal(equipmentIndex: Index, sealIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = SealPage(equipmentIndex, sealIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.sealIdentifier",
-    args = Some(Seq(sealIndex.display)),
-    id = Some(s"change-seal-identifier-${sealIndex.display}"),
-    call = Some(controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode))
+    args = sealIndex.display,
+    id = None,
+    call = None
   )
 
-  def transportEquipmentNewSeal(equipmentIndex: Index, sealIndex: Index, sealPrefixNumber: Int): Option[SummaryListRow] =
-    getAnswerAndBuildRemovableRowWithDynamicHiddenText[String](
-      page = NewSealPage(equipmentIndex, sealIndex),
-      formatAnswer = formatAsText,
-      prefix = "unloadingFindings.rowHeadings.sealIdentifier",
-      args = Some(Seq(sealPrefixNumber)),
-      id = s"new-seal-identifier-$sealPrefixNumber",
-      changeCall = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode, newSeal = true),
-      removeCall = controllers.routes.ConfirmRemoveSealController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode)
-    )
-
-  def addNewSeal(equipmentIndex: Index, sealIndex: Index): Option[Link] = buildLink(SealsSection(equipmentIndex)) {
-    Link(
-      id = "add-new-seal-identification-number",
-      text = messages("unloadingFindings.addNewSeal.link"),
-      href = controllers.routes.NewSealNumberController.onPageLoad(arrivalId, equipmentIndex, sealIndex, NormalMode, newSeal = true).url
-    )
-  }
-
-  def itemsSummarySection: Option[Section] = {
-    val itemArray      = userAnswers.get(ItemsSection)
-    val itemCount: Int = itemArray.map(_.value.length).getOrElse(0)
-
-    val itemWeights: Seq[(Double, Double)] = itemArray.mapWithIndex[(Double, Double)](
-      (_, itemIndex) => Some(fetchWeightValues(itemIndex))
-    )
-
-    if (itemCount == 0) {
-      None
-    } else {
-      val grossWeight = itemWeights
-        .map(
-          x => x._1
+  def houseConsignmentSections: Seq[Section] =
+    userAnswers.get(HouseConsignmentsSection).mapWithIndex {
+      (_, houseConsignmentIndex) =>
+        val rows = buildHouseConsignmentRows(
+          houseConsignmentTotalWeightRows(houseConsignmentIndex),
+          consignorName(houseConsignmentIndex),
+          consignorIdentification(houseConsignmentIndex),
+          consigneeName(houseConsignmentIndex),
+          consigneeIdentification(houseConsignmentIndex)
         )
-        .sum
-      val netWeight = itemWeights
-        .map(
-          x => x._2
+
+        Some(
+          Section(
+            sectionTitle = messages("unloadingFindings.subsections.houseConsignment", houseConsignmentIndex.display),
+            rows,
+            viewLink = Some(
+              Link(
+                id = s"view-house-consignment-${houseConsignmentIndex.display}",
+                href = controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
+              )
+            )
+          )
         )
-        .sum
-      Some(
-        Section(
-          messages("unloadingFindings.subsections.itemSummary"),
-          Seq(numberOfItemsRow(itemCount), totalGrossWeightRow(grossWeight), totalNetWeightRow(netWeight))
-        )
-      )
     }
-  }
-
-  def fetchWeightValues(itemIndex: Index): (Double, Double) =
-    (userAnswers.get(GrossWeightPage(itemIndex)).getOrElse(0d), userAnswers.get(NetWeightPage(itemIndex)).getOrElse(0d))
-
-  def numberOfItemsRow(answer: Int): SummaryListRow = buildRowWithNoChangeLink(
-    answer = formatAsText(answer),
-    prefix = "unloadingFindings.rowHeadings.numberOfItems",
-    args = None
-  )
-
-  def totalGrossWeightRow(answer: Double): SummaryListRow = buildRowWithNoChangeLink(
-    answer = formatAsWeight(answer),
-    prefix = "unloadingFindings.rowHeadings.totalGrossWeight",
-    args = None
-  )
-
-  def totalNetWeightRow(answer: Double): SummaryListRow = buildRowWithNoChangeLink(
-    answer = formatAsWeight(answer),
-    prefix = "unloadingFindings.rowHeadings.totalNetWeight",
-    args = None
-  )
-
-  def itemSections: Seq[Section] =
-    userAnswers
-      .get(ItemsSection)
-      .mapWithIndex {
-        (_, itemIndex) =>
-          val itemDescription: Option[SummaryListRow] = itemDescriptionRow(itemIndex)
-          val grossWeight: Option[SummaryListRow]     = grossWeightRow(itemIndex)
-          val netWeight: Option[SummaryListRow]       = netWeightRow(itemIndex)
-
-          Some(Section(messages("unloadingFindings.subsections.item", itemIndex.display), Seq(itemDescription, grossWeight, netWeight).flatten))
-      }
-
-  def itemDescriptionRow(itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = ItemDescriptionPage(itemIndex),
-    formatAnswer = formatAsText,
-    prefix = "unloadingFindings.rowHeadings.item.description",
-    id = Some(s"change-item-description-${itemIndex.display}"),
-    call = None //TODO: item description change controller
-  )
-
-  def grossWeightRow(itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Double](
-    page = GrossWeightPage(itemIndex),
-    formatAnswer = formatAsWeight,
-    prefix = "unloadingFindings.rowHeadings.item.grossWeight",
-    args = itemIndex.display,
-    id = Some(s"change-gross-weight-${itemIndex.display}"),
-    call = Some(controllers.routes.GrossWeightController.onPageLoad(arrivalId, itemIndex, NormalMode))
-  )
-
-  def netWeightRow(itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Double](
-    page = NetWeightPage(itemIndex),
-    formatAnswer = formatAsWeight,
-    prefix = "unloadingFindings.rowHeadings.item.netWeight",
-    args = itemIndex.display,
-    id = Some(s"change-net-weight-${itemIndex.display}"),
-    call = Some(controllers.routes.NetWeightController.onPageLoad(arrivalId, itemIndex, NormalMode))
-  )
-
-  def additionalComment: Option[SummaryListRow] = getAnswerAndBuildRemovableRow[String](
-    page = UnloadingCommentsPage,
-    formatAnswer = formatAsText,
-    prefix = "unloadingFindings.rowHeadings.additionalComments",
-    id = "comment",
-    changeCall = controllers.routes.UnloadingCommentsController.onPageLoad(arrivalId, NormalMode),
-    removeCall = controllers.routes.ConfirmRemoveCommentsController.onPageLoad(arrivalId, NormalMode)
-  )
-
-  def addAdditionalComments(): Option[Link] = buildLinkIfAnswerNotPresent(UnloadingCommentsPage) {
-    Link(
-      id = "add-new-comment",
-      text = messages("unloadingFindings.additionalComments.link"),
-      href = controllers.routes.UnloadingCommentsController.onPageLoad(arrivalId, NormalMode).url
-    )
-  }
-
 }

@@ -156,9 +156,7 @@ trait ViewModelGenerators {
 
   implicit lazy val arbitraryUnloadingFindingsViewModel: Arbitrary[UnloadingFindingsViewModel] = Arbitrary {
     for {
-      sections           <- arbitrarySections.arbitrary
-      additionalComments <- arbitrarySection.arbitrary
-
-    } yield UnloadingFindingsViewModel(sections, additionalComments)
+      sections <- arbitrarySections.arbitrary
+    } yield UnloadingFindingsViewModel(sections)
   }
 }

@@ -26,7 +26,6 @@ import org.mockito.Mockito.{doNothing, reset, verify}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -42,8 +41,6 @@ class AuditEventSubmissionServiceSpec extends SpecBase with BeforeAndAfterEach w
   }
 
   private val service = new AuditEventSubmissionService(mockAuditConnector)
-
-  implicit private val hc: HeaderCarrier = HeaderCarrier()
 
   "AuditEventSubmissionService" - {
     "auditUnloadingRemarks" - {

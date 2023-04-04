@@ -29,7 +29,7 @@ class VehicleIdentificationNumberViewSpec extends InputTextViewBehaviours[String
   override def form: Form[String] = new VehicleIdentificationNumberFormProvider()()
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[VehicleIdentificationNumberView].apply(form, mrn, arrivalId, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[VehicleIdentificationNumberView].apply(form, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "vehicleIdentificationNumber"
 

@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions._
 import forms.VehicleIdentificationNumberFormProvider
-import models.{ArrivalId, Mode}
+import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
 import pages.VehicleIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -44,25 +44,25 @@ class VehicleIdentificationNumberController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(VehicleIdentificationNumberPage) match {
+      val preparedForm = request.userAnswers.get(VehicleIdentificationNumberPage(transportMeansIndex)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode))
+      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode))
   }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
+  def onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleIdentificationNumberPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleIdentificationNumberPage(transportMeansIndex), value))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
         )

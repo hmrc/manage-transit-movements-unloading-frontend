@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
-package queries
+package pages
 
-import pages.QuestionPage
+import models.Index
+import pages.sections.HouseConsignmentSection
 import play.api.libs.json.JsPath
 
-case object GoodsItemsQuery extends QuestionPage[Seq[String]] {
-  override def path: JsPath = JsPath \ "goodsItems"
+case class DepartureTransportMeansIdentificationTypePage(houseConsignmentIndex: Index, transportMeansIndex: Index) extends QuestionPage[String] {
+
+  override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ "DepartureTransportMeans" \ transportMeansIndex.position \ toString
+
+  override def toString: String = "typeOfIdentification"
 }

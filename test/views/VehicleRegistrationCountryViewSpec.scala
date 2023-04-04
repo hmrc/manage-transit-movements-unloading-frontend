@@ -30,14 +30,14 @@ class VehicleRegistrationCountryViewSpec extends InputSelectViewBehaviours[Count
   override def form: Form[Country] = new VehicleRegistrationCountryFormProvider()(values)
 
   override def applyView(form: Form[Country]): HtmlFormat.Appendable =
-    injector.instanceOf[VehicleRegistrationCountryView].apply(form, values, mrn, arrivalId, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[VehicleRegistrationCountryView].apply(form, values, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "vehicleRegistrationCountry"
 
   override def values: Seq[Country] = Seq(
-    Country("UK", "United Kingdom"),
-    Country("US", "United States"),
-    Country("ES", "Spain")
+    Country("UK", Some("United Kingdom")),
+    Country("US", Some("United States")),
+    Country("ES", Some("Spain"))
   )
 
   behave like pageWithTitle()

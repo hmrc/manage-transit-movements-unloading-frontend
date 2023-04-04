@@ -22,8 +22,6 @@ import generators.Generators
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HeaderCarrier
-
 import scala.concurrent.Future
 
 class EnrolmentStoreConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ScalaCheckPropertyChecks with WireMockSuite {
@@ -34,8 +32,6 @@ class EnrolmentStoreConnectorSpec extends SpecBase with AppWithDefaultMockFixtur
       .configure(conf = "microservice.services.enrolment-store-proxy.port" -> server.port())
 
   private lazy val connector: EnrolmentStoreConnector = app.injector.instanceOf[EnrolmentStoreConnector]
-
-  implicit private val hc: HeaderCarrier = HeaderCarrier()
 
   val credId        = "testCredId"
   val groupId       = "testGroupId"

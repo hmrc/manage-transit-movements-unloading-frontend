@@ -44,25 +44,25 @@ class GrossWeightController @Inject() (
 
   private def form(itemIndex: Index) = formProvider(itemIndex)
 
-  def onPageLoad(arrivalId: ArrivalId, itemIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, houseConsignment: Index, itemIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(GrossWeightPage(itemIndex)) match {
+      val preparedForm = request.userAnswers.get(GrossWeightPage(houseConsignment, itemIndex)) match {
         case None        => form(itemIndex)
         case Some(value) => form(itemIndex).fill(value.toString)
       }
 
-      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, itemIndex, mode))
+      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignment, itemIndex, mode))
   }
 
-  def onSubmit(arrivalId: ArrivalId, itemIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
+  def onSubmit(arrivalId: ArrivalId, houseConsignment: Index, itemIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       form(itemIndex)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, itemIndex, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignment, itemIndex, mode))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(GrossWeightPage(itemIndex), value.toDouble))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(GrossWeightPage(houseConsignment, itemIndex), value.toDouble))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
         )

@@ -17,22 +17,19 @@
 package views
 
 import generators.Generators
-import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewModels.CheckYourAnswersViewModel
 import viewModels.sections.Section
-import views.behaviours.SummaryListViewBehaviours
+import views.behaviours.CheckYourAnswersViewBehaviours
+import views.html.CheckYourAnswersView
 
-trait CheckYourAnswersViewSpec extends SummaryListViewBehaviours with Generators {
+class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours with Generators {
 
   override val prefix: String = "checkYourAnswers"
 
-  def viewWithSections(sections: Seq[Section]): HtmlFormat.Appendable
-
-  lazy val sections: Seq[Section] = arbitrary[List[Section]].sample.value
-
-  override def view: HtmlFormat.Appendable = viewWithSections(sections)
+  override def viewWithSections(sections: Seq[Section]): HtmlFormat.Appendable =
+    injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, checkYourAnswersViewModel)(fakeRequest, messages)
 
   val checkYourAnswersViewModel: CheckYourAnswersViewModel = new CheckYourAnswersViewModel(sections)
 
@@ -52,7 +49,7 @@ trait CheckYourAnswersViewSpec extends SummaryListViewBehaviours with Generators
 
   behave like pageWithFormAction(controllers.routes.CheckYourAnswersController.onSubmit(arrivalId).url)
 
-  behave like pageWithSubmitButton("Continue")
+  behave like pageWithSubmitButton("Confirm and send")
 
   "must render section titles when rows are non-empty" - {
     sections.foreach(_.sectionTitle.map {

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package derivable
+package pages.sections
 
-import models.Seal
-import play.api.libs.json.JsPath
-import queries.SealsQuery
+import models.Index
+import play.api.libs.json.{JsArray, JsPath}
 
-case object DeriveNumberOfSeals extends Derivable[List[Seal], Int] {
-  override val derive: List[Seal] => Int = _.size
+case class DepartureTransportMeansListSection(houseConsignmentIndex: Index) extends Section[JsArray] {
 
-  override def path: JsPath = SealsQuery.path
+  override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ toString
+
+  override def toString: String = "DepartureTransportMeans"
 }

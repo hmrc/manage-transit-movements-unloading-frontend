@@ -39,6 +39,6 @@ class UnloadingGuidanceController @Inject() (
   }
 
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
-    _ => Redirect(controllers.routes.DateGoodsUnloadedController.onPageLoad(arrivalId, NormalMode))
+    _ => Redirect(controllers.routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode))
   }
 }

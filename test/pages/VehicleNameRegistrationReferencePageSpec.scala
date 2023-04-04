@@ -22,10 +22,10 @@ class VehicleNameRegistrationReferencePageSpec extends PageBehaviours {
 
   "VehicleNameRegistrationReferencePage" - {
 
-    beRetrievable[String](VehicleIdentificationNumberPage)
+    beRetrievable[String](VehicleIdentificationNumberPage(index))
 
-    beSettable[String](VehicleIdentificationNumberPage)
+    beSettable[String](VehicleIdentificationNumberPage(index))
 
-    beRemovable[String](VehicleIdentificationNumberPage)
+    beRemovable[String](VehicleIdentificationNumberPage(index))
   }
 }

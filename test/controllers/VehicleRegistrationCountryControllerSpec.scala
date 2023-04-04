@@ -36,12 +36,12 @@ import scala.concurrent.Future
 class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   val formProvider                                   = new VehicleRegistrationCountryFormProvider()
-  private val country: String                        = Country("GB", "United Kingdom").code
-  val countries: Seq[Country]                        = Seq(Country("GB", "United Kingdom"))
+  private val country: String                        = Country("GB", Some("United Kingdom")).code
+  val countries: Seq[Country]                        = Seq(Country("GB", Some("United Kingdom")))
   val form: Form[Country]                            = formProvider(countries)
   val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
   private val mode                                   = NormalMode
-  lazy val vehicleRegistrationCountryRoute: String   = controllers.routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, mode).url
+  lazy val vehicleRegistrationCountryRoute: String   = controllers.routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, index, mode).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -73,7 +73,7 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, countries, mrn, arrivalId, mode)(request, messages).toString
+        view(form, countries, mrn, arrivalId, index, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -83,7 +83,7 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
         Future.successful(countries)
       )
 
-      val userAnswers = emptyUserAnswers.setValue(VehicleRegistrationCountryPage, country)
+      val userAnswers = emptyUserAnswers.setValue(VehicleRegistrationCountryPage(index), country)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, vehicleRegistrationCountryRoute)
@@ -96,7 +96,7 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, countries, mrn, arrivalId, mode)(request, messages).toString
+        view(filledForm, countries, mrn, arrivalId, index, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -132,7 +132,7 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
       val view = injector.instanceOf[VehicleRegistrationCountryView]
 
       contentAsString(result) mustEqual
-        view(boundForm, countries, mrn, arrivalId, mode)(request, messages).toString
+        view(boundForm, countries, mrn, arrivalId, index, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

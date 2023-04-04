@@ -50,6 +50,11 @@ trait ModelGenerators {
       } yield EoriNumber(number)
     }
 
+  implicit lazy val arbitraryUnloadingType: Arbitrary[UnloadingType] =
+    Arbitrary {
+      Gen.oneOf(UnloadingType.values)
+    }
+
   implicit lazy val arbitrarySensitiveGoodsInformation: Arbitrary[SensitiveGoodsInformation] =
     Arbitrary {
       for {
@@ -170,7 +175,7 @@ trait ModelGenerators {
       for {
         code <- Gen.pick(2, 'A' to 'Z')
         name <- nonEmptyString
-      } yield Country(code.mkString, name)
+      } yield Country(code.mkString, Some(name))
     }
 
   implicit lazy val arbitraryDifferentValuesFound: Arbitrary[IndicatorValue] =

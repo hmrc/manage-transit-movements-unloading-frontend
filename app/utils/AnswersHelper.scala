@@ -16,11 +16,11 @@
 
 package utils
 
-import models.{ArrivalId, Index, Link, UserAnswers}
-import pages.QuestionPage
+import models.{ArrivalId, Index, UserAnswers}
+import pages._
 import pages.sections.Section
 import play.api.i18n.Messages
-import play.api.libs.json.{JsArray, JsPath, JsValue, Reads}
+import play.api.libs.json.{JsArray, JsValue, Reads}
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -28,7 +28,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends SummaryListRowHelper {
 
   def arrivalId: ArrivalId = userAnswers.id
-  def itemsIndex: Index    = Index(0)
 
   def getAnswerAndBuildRow[T](
     page: QuestionPage[T],
@@ -173,10 +172,4 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
       .mapWithIndex {
         (_, index) => f(index)
       }
-
-  protected def buildLinkIfAnswerNotPresent[T](answer: QuestionPage[String])(link: => Link): Option[Link] =
-    if (userAnswers.get(answer).isEmpty) Some(link) else None
-
-  protected def buildLink(section: Section[JsArray])(link: => Link): Option[Link] =
-    if (userAnswers.get(section).isEmpty) None else Some(link)
 }

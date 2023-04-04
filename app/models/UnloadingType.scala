@@ -14,12 +14,21 @@
  * limitations under the License.
  */
 
-package queries
+package models
 
-import models.Seal
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+sealed trait UnloadingType extends Radioable[UnloadingType] {
+  override val messageKeyPrefix: String = UnloadingType.messageKeyPrefix
+}
 
-case object SealsQuery extends QuestionPage[Seq[Seal]] {
-  override def path: JsPath = JsPath \ "seals"
+object UnloadingType extends EnumerableType[UnloadingType] {
+
+  val messageKeyPrefix: String = "unloadingType"
+
+  case object Fully extends WithName("fully") with UnloadingType
+  case object Partially extends WithName("partially") with UnloadingType
+
+  override val values: Seq[UnloadingType] = Seq(
+    Fully,
+    Partially
+  )
 }
