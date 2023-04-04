@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 
-package forms
+package viewModels.components
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import models.messages.RemarksNonConform
-import play.api.data.Form
-import models.messages.UnloadingRemarksRequest.stringFieldRegex
+import play.twirl.api.Html
 
-class UnloadingCommentsFormProvider @Inject() extends Mappings {
+sealed trait InputRadioViewModel
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("changesToReport.error.required")
-        .verifying(maxLength(RemarksNonConform.unloadingRemarkLength, "changesToReport.error.length"))
-        .verifying(regexp(stringFieldRegex, "changesToReport.error.invalid", Seq.empty))
-    )
+object InputRadioViewModel {
+
+  case class Radio(
+    heading: String,
+    caption: Option[String] = None
+  ) extends InputRadioViewModel
+
+  case class RadioWithAdditionalHtml(
+    heading: String,
+    caption: Option[String] = None,
+    additionalHtml: Html
+  ) extends InputRadioViewModel
+      with AdditionalHtmlViewModel
 }

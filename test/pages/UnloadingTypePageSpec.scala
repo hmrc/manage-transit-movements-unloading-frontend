@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import models.messages.RemarksNonConform
-import play.api.data.Form
-import models.messages.UnloadingRemarksRequest.stringFieldRegex
+import models.UnloadingType
+import pages.behaviours.PageBehaviours
 
-class UnloadingCommentsFormProvider @Inject() extends Mappings {
+class UnloadingTypePageSpec extends PageBehaviours {
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("changesToReport.error.required")
-        .verifying(maxLength(RemarksNonConform.unloadingRemarkLength, "changesToReport.error.length"))
-        .verifying(regexp(stringFieldRegex, "changesToReport.error.invalid", Seq.empty))
-    )
+  "ProcedureTypePage" - {
+
+    beRetrievable[UnloadingType](UnloadingTypePage)
+
+    beSettable[UnloadingType](UnloadingTypePage)
+
+    beRemovable[UnloadingType](UnloadingTypePage)
+
+  }
 }

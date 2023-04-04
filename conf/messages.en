@@ -172,6 +172,15 @@ canSealsBeRead.checkYourAnswersLabel = Are all the seal identification numbers o
 canSealsBeRead.error.required = Select yes if all the seal identification numbers and marks are readable
 canSealsBeRead.change.hidden = if all the seal identification numbers or marks are readable
 
+unloadingType.title = Have you fully or partially unloaded the goods?
+unloadingType.heading = Have you fully or partially unloaded the goods?
+unloadingType.checkYourAnswers = Have you fully or partially unloaded the goods?
+unloadingType.checkYourAnswersLabel = Are any of the seals broken?
+unloadingType.fully = Fully unloaded
+unloadingType.partially = Partially unloaded
+unloadingType.error.required = Select whether you have fully or partially unloaded the goods
+unloadingType.checkYourAnswers.change.hidden = whether you fully or partially unloaded the goods
+
 areAnySealsBroken.title = Are any of the seals broken?
 areAnySealsBroken.heading = Are any of the seals broken?
 areAnySealsBroken.checkYourAnswersLabel = Are any of the seals broken?

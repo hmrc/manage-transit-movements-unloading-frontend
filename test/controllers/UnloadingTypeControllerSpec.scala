@@ -17,24 +17,25 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.AddUnloadingCommentsYesNoFormProvider
-import models.NormalMode
+import forms.EnumerableFormProvider
+import models.{NormalMode, UnloadingType}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.AddUnloadingCommentsYesNoPage
+import pages.UnloadingTypePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.AddUnloadingCommentsYesNoView
+import views.html.UnloadingTypeView
 
 import scala.concurrent.Future
 
-class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class UnloadingTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider = new AddUnloadingCommentsYesNoFormProvider()
-  private val form         = formProvider()
+  private val formProvider = new EnumerableFormProvider()
+  private val form         = formProvider[UnloadingType]("unloadingType")
+  private val validAnswer  = UnloadingType.values.head
   private val mode         = NormalMode
 
-  lazy val addUnloadingCommentsRoute: String = controllers.routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, mode).url
+  lazy val unloadingTypeRoute: String = controllers.routes.UnloadingTypeController.onPageLoad(arrivalId, mode).url
 
   "AddUnloadingCommentsYesNoController" - {
 
@@ -43,38 +44,38 @@ class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefau
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, addUnloadingCommentsRoute)
+      val request = FakeRequest(GET, unloadingTypeRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual OK
 
-      val view = injector.instanceOf[AddUnloadingCommentsYesNoView]
+      val view = injector.instanceOf[UnloadingTypeView]
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, mode)(request, messages).toString
+        view(form, mrn, UnloadingType.values, arrivalId, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, true)
+      val userAnswers = emptyUserAnswers.setValue(UnloadingTypePage, validAnswer)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, addUnloadingCommentsRoute)
+      val request = FakeRequest(GET, unloadingTypeRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual OK
 
-      val filledForm = form.bind(Map("value" -> "true"))
+      val filledForm = form.bind(Map("value" -> UnloadingType.values.head.toString))
 
-      val view = injector.instanceOf[AddUnloadingCommentsYesNoView]
+      val view = injector.instanceOf[UnloadingTypeView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, mode)(request, messages).toString
+        view(filledForm, mrn, UnloadingType.values, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -84,8 +85,8 @@ class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefau
       setExistingUserAnswers(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, addUnloadingCommentsRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, unloadingTypeRoute)
+          .withFormUrlEncodedBody(("value", UnloadingType.values.head.toString))
 
       val result = route(app, request).value
 
@@ -99,24 +100,24 @@ class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefau
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, addUnloadingCommentsRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val request   = FakeRequest(POST, unloadingTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val boundForm = form.bind(Map("value" -> "invalid value"))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AddUnloadingCommentsYesNoView]
+      val view = injector.instanceOf[UnloadingTypeView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, arrivalId, mode)(request, messages).toString
+        view(boundForm, mrn, UnloadingType.values, arrivalId, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, addUnloadingCommentsRoute)
+      val request = FakeRequest(GET, unloadingTypeRoute)
 
       val result = route(app, request).value
 
@@ -130,8 +131,8 @@ class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefau
       setNoExistingUserAnswers()
 
       val request =
-        FakeRequest(POST, addUnloadingCommentsRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, unloadingTypeRoute)
+          .withFormUrlEncodedBody(("value", UnloadingType.values.head.toString))
 
       val result = route(app, request).value
 

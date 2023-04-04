@@ -54,7 +54,7 @@ class UnloadingGuidanceControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.DateGoodsUnloadedController.onPageLoad(arrivalId, NormalMode).url
+      redirectLocation(result).value mustEqual controllers.routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode).url
     }
   }
 }

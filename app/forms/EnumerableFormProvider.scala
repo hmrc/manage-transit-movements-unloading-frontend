@@ -17,17 +17,15 @@
 package forms
 
 import forms.mappings.Mappings
-import javax.inject.Inject
-import models.messages.RemarksNonConform
+import models.Enumerable
 import play.api.data.Form
-import models.messages.UnloadingRemarksRequest.stringFieldRegex
 
-class UnloadingCommentsFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
 
-  def apply(): Form[String] =
+class EnumerableFormProvider @Inject() extends Mappings {
+
+  def apply[T](prefix: String)(implicit et: Enumerable[T]): Form[T] =
     Form(
-      "value" -> text("changesToReport.error.required")
-        .verifying(maxLength(RemarksNonConform.unloadingRemarkLength, "changesToReport.error.length"))
-        .verifying(regexp(stringFieldRegex, "changesToReport.error.invalid", Seq.empty))
+      "value" -> enumerable[T](s"$prefix.error.required")
     )
 }

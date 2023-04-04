@@ -28,6 +28,7 @@ class Navigator @Inject() () {
 
   private val normalRoutes: Page => UserAnswers => Call = {
 
+    case UnloadingTypePage => ua => routes.DateGoodsUnloadedController.onPageLoad(ua.id, NormalMode)
     case DateGoodsUnloadedPage =>
       ua => {
         val sealsExist = ua.data.asOpt[MessageData].exists(_.Consignment.sealsExist)

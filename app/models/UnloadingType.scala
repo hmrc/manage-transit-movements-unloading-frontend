@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package forms
+package models
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import models.messages.RemarksNonConform
-import play.api.data.Form
-import models.messages.UnloadingRemarksRequest.stringFieldRegex
+sealed trait UnloadingType extends Radioable[UnloadingType] {
+  override val messageKeyPrefix: String = UnloadingType.messageKeyPrefix
+}
 
-class UnloadingCommentsFormProvider @Inject() extends Mappings {
+object UnloadingType extends EnumerableType[UnloadingType] {
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("changesToReport.error.required")
-        .verifying(maxLength(RemarksNonConform.unloadingRemarkLength, "changesToReport.error.length"))
-        .verifying(regexp(stringFieldRegex, "changesToReport.error.invalid", Seq.empty))
-    )
+  val messageKeyPrefix: String = "unloadingType"
+
+  case object Fully extends WithName("fully") with UnloadingType
+  case object Partially extends WithName("partially") with UnloadingType
+
+  override val values: Seq[UnloadingType] = Seq(
+    Fully,
+    Partially
+  )
 }
