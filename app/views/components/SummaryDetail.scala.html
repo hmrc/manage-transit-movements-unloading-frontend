@@ -25,15 +25,13 @@
     @section.sectionTitle.map { title =>
         <span class="summary-text">
             <span class="summary-title govuk-!-margin-bottom-0">@title
-                @section.viewLink.map { link =>
-                    <a id="@link.id" class="govuk-link-view-summary" href=@link.href>@link.text <span class="govuk-visually-hidden">@title.toLowerCase</span></a> }
             </span>
         </span>
     }
 }
 
 @content = {
-    <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+    <dl class="govuk-summary-list govuk-!-margin-bottom-5">
         @section.rows.map{row =>
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -45,6 +43,11 @@
             </div>
         }
     </dl>
+
+    @section.viewLink.map { link =>
+        <p class="govuk-body"><a class="govuk-link " href=@link.href id="view_link.id">More details</a></p>
+      }
+
 }
 
 @if(section.rows.nonEmpty) {

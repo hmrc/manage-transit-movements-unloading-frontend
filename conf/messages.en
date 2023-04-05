@@ -28,6 +28,8 @@ error.summary.title = There is a problem
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
 
+viewLink = View
+
 checkYourAnswers.seals.subHeading = Check official customs seals
 checkYourAnswers.seals.checkYourAnswersLabel = Official customs seal numbers
 checkYourAnswers.subHeading = What you found when unloading
