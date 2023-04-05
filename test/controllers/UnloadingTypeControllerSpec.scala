@@ -18,10 +18,11 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
+import models.UnloadingType.Fully
 import models.{NormalMode, UnloadingType}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.AddUnloadingCommentsYesNoPage
+import pages.{AddUnloadingCommentsYesNoPage, UnloadingTypePage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.Format._
@@ -59,7 +60,7 @@ class UnloadingTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, true)(booleanToIntWrites)
+      val userAnswers = emptyUserAnswers.setValue(UnloadingTypePage, UnloadingType.values.head)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, unloadingTypeRoute)

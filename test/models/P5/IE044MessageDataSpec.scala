@@ -24,7 +24,7 @@ import utils.Format.dateTimeFormatIE044
 
 import java.time.LocalDateTime
 
-class IE044MessageData extends SpecBase {
+class IE044MessageDataSpec extends SpecBase {
 
   "IE044MessageData" - {
 
@@ -50,7 +50,7 @@ class IE044MessageData extends SpecBase {
           |   "TransitOperation" : {
           |       "MRN" : "99IT9876AB889012096"
           |   },
-          |   "TraderAtDestinaAddUnloadingCommentsYesNoControllertion" : {
+          |   "TraderAtDestination" : {
           |       "identificationNumber" : "tad-1"
           |   },
           |   "CustomsOfficeOfDestinationActual" : {
