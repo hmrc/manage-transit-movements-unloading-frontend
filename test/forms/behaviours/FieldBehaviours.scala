@@ -19,8 +19,10 @@ package forms.behaviours
 import forms.FormSpec
 import generators.Generators
 import org.scalacheck.Gen
+import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.data.{Form, FormError}
+import play.api.data.{Field, Form, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Generators {
 
@@ -31,6 +33,18 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
         dataItem: String =>
           val result = form.bind(Map(fieldName -> dataItem)).apply(fieldName)
           result.value.value shouldBe dataItem
+      }
+    }
+
+  def fieldWithInvalidCharacters(form: Form[_], fieldName: String, error: FormError, length: Int): Unit =
+    "must not bind strings with invalid characters" in {
+
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~<>,±üçñèé]{$length}")
+
+      forAll(generator) {
+        invalidString =>
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(error)
       }
     }
 
