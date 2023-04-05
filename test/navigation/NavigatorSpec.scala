@@ -189,14 +189,14 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
       }
       "must go from unloading comments yes no page" - {
         "when answer is true to unloading comments controller" in {
-          val userAnswers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, true)
+          val userAnswers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, true)(booleanToIntWrites)
 
           navigator
             .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
             .mustBe(routes.UnloadingCommentsController.onPageLoad(arrivalId, mode))
         }
         "when answer is false to check your answers controller" in {
-          val userAnswers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, false)
+          val userAnswers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, false)(booleanToIntWrites)
 
           navigator
             .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
