@@ -17,13 +17,14 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.actions.FakeUnloadingPermissionAction
 import generators.Generators
-import models.{UnloadingPermission, UserAnswers}
+import models.P5.submission.IE044Data
+import models.{ArrivalId, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
-import org.scalacheck.Arbitrary.arbitrary
-import play.api.mvc.Result
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
@@ -31,85 +32,67 @@ import scala.concurrent.Future
 
 class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  val sampleUnloadingPermission: UnloadingPermission = arbitrary[UnloadingPermission].sample.value
-
   private lazy val nextPage = controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId).url
 
-  "Index Controller" ignore { // TODO fix this
+  "Index Controller" - {
 
     "unloadingRemarks" - {
       "must redirect to onward route for a GET when there are no UserAnswers and prepopulated data" in {
-        checkArrivalStatus()
-        val unloadingPermission = sampleUnloadingPermission.copy(movementReferenceNumber = mrn.toString)
+        val request = FakeRequest(GET, routes.IndexController.unloadingRemarks(arrivalId).url)
 
-        val userAnswers = emptyUserAnswers
+        val unloadingAction: FakeUnloadingPermissionAction = new FakeUnloadingPermissionAction(
+          ArrivalId("AB123"),
+          mockUnloadingPermissionMessageService
+        )
 
+        when(mockSessionRepository.get(any(), any())) thenReturn Future.successful(None)
         when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+
+        when(mockUnloadingPermissionActionProvider.apply(any())) thenReturn unloadingAction
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-        setNoExistingUserAnswers()
-
-        val request                = FakeRequest(GET, routes.IndexController.unloadingRemarks(arrivalId).url)
-        val result: Future[Result] = route(app, request).value
+        val result = route(app, request).value
 
         status(result) mustEqual SEE_OTHER
+
         redirectLocation(result).value mustEqual nextPage
 
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
 
-        userAnswersCaptor.getValue mustBe userAnswers
+        val expectedUnloadingPermission = Json.toJsObject(unloadingAction.messageData)
+        val expectedData                = Json.toJsObject(IE044Data.fromIE043Data(unloadingAction.messageData))
+
+        userAnswersCaptor.getValue.data mustBe expectedData
+        userAnswersCaptor.getValue.ie043Data mustBe expectedUnloadingPermission
       }
 
       "must redirect to onward route when there are UserAnswers" in {
-        checkArrivalStatus()
-        setExistingUserAnswers(emptyUserAnswers)
 
         val request = FakeRequest(GET, routes.IndexController.unloadingRemarks(arrivalId).url)
-        val result  = route(app, request).value
+
+        val unloadingAction: FakeUnloadingPermissionAction = new FakeUnloadingPermissionAction(
+          ArrivalId("AB123"),
+          mockUnloadingPermissionMessageService
+        )
+
+        when(mockSessionRepository.get(any(), any())) thenReturn Future.successful(Some(emptyUserAnswers))
+        when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+
+        when(mockUnloadingPermissionActionProvider.apply(any())) thenReturn unloadingAction
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+
+        val result = route(app, request).value
 
         status(result) mustEqual SEE_OTHER
+
         redirectLocation(result).value mustEqual nextPage
-      }
 
-      "must redirect to session expired when no response for arrivalId" in {
-        checkArrivalStatus()
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
 
-        setNoExistingUserAnswers()
-
-        val request = FakeRequest(GET, routes.IndexController.unloadingRemarks(arrivalId).url)
-        val result  = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
-      }
-
-      "must redirect to session expired when bad mrn received" in {
-        checkArrivalStatus()
-        val badUnloadingPermission = sampleUnloadingPermission.copy(movementReferenceNumber = "")
-
-        when(mockSessionRepository.set(any()))
-          .thenReturn(Future.successful(true))
-
-        setNoExistingUserAnswers()
-
-        val request = FakeRequest(GET, routes.IndexController.unloadingRemarks(arrivalId).url)
-        val result  = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
-      }
-
-      "must redirect to session expired when extractor fails" in {
-        checkArrivalStatus()
-
-        setNoExistingUserAnswers()
-
-        val request = FakeRequest(GET, routes.IndexController.unloadingRemarks(arrivalId).url)
-        val result  = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+        userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
+        userAnswersCaptor.getValue.ie043Data mustBe emptyUserAnswers.ie043Data
       }
     }
   }

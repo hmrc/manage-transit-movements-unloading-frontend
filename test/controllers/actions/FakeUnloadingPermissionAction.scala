@@ -29,17 +29,15 @@ import scala.concurrent.Future
 class FakeUnloadingPermissionAction(arrivalId: ArrivalId, unloadingPermissionMessageService: UnloadingPermissionMessageService)
     extends UnloadingPermissionAction(arrivalId, unloadingPermissionMessageService) {
 
-  override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, UnloadingPermissionRequest[A]]] = {
+  val messageData: MessageData = MessageData(
+    LocalDateTime.now(),
+    TransitOperation = TransitOperation(MovementReferenceNumber("99", "IT", "9876AB88901209")),
+    TraderAtDestination = TraderAtDestination("identificationNumber"),
+    Consignment = Consignment(None, None, List.empty),
+    CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("referenceNumber")
+  )
 
-    val messageData = MessageData(
-      LocalDateTime.now(),
-      TransitOperation = TransitOperation(MovementReferenceNumber("99", "IT", "9876AB88901209")),
-      TraderAtDestination = TraderAtDestination("identificationNumber"),
-      Consignment = Consignment(None, None, List.empty),
-      CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("referenceNumber")
-    )
-
+  override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, UnloadingPermissionRequest[A]]] =
     Future.successful(Right(UnloadingPermissionRequest(request, EoriNumber("AB123"), messageData)))
-  }
 
 }

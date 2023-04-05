@@ -17,8 +17,9 @@
 package base
 
 import controllers.actions._
-import models.UserAnswers
+import models.P5._
 import models.requests.IdentifierRequest
+import models.{MovementReferenceNumber, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -30,18 +31,44 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{ActionFilter, Call, Result}
 import repositories.SessionRepository
+import services.P5.UnloadingPermissionMessageService
 
+import java.time.LocalDateTime
 import scala.concurrent.{ExecutionContext, Future}
 
 trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerSuite with GuiceFakeApplicationFactory with MockitoSugar {
   self: TestSuite =>
 
   override def beforeEach(): Unit = {
-    reset(mockSessionRepository); reset(mockDataRetrievalActionProvider)
+    reset(mockSessionRepository)
+    reset(mockDataRetrievalActionProvider)
+    reset(mockUnloadingPermissionMessageService)
+
+    when(mockUnloadingPermissionMessageService.getUnloadingPermissionMessage(any())(any(), any()))
+      .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), ArrivalMessageType.UnloadingPermission, "foo/bar"))))
+
+    when(mockUnloadingPermissionMessageService.getUnloadingPermission(any())(any(), any())).thenReturn(
+      Future.successful(
+        Some(
+          IE043Data(
+            MessageData(
+              LocalDateTime.now(),
+              TransitOperation = TransitOperation(MovementReferenceNumber("99IT9876AB88901209").get),
+              TraderAtDestination = TraderAtDestination("identificationNumber"),
+              Consignment = Consignment(None, None, List.empty),
+              CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("referenceNumber")
+            )
+          )
+        )
+      )
+    )
+
   }
 
   final val mockSessionRepository: SessionRepository = mock[SessionRepository]
   final val mockDataRetrievalActionProvider          = mock[DataRetrievalActionProvider]
+  final val mockUnloadingPermissionMessageService    = mock[UnloadingPermissionMessageService]
+  final val mockUnloadingPermissionActionProvider    = mock[UnloadingPermissionActionProvider]
 
   final override def fakeApplication(): Application =
     guiceApplicationBuilder()
@@ -73,6 +100,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[IdentifierAction].to[FakeIdentifierAction],
         bind[SessionRepository].toInstance(mockSessionRepository),
+        bind[UnloadingPermissionActionProvider].toInstance(mockUnloadingPermissionActionProvider),
+        bind[UnloadingPermissionMessageService].toInstance(mockUnloadingPermissionMessageService),
         bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),
         bind[Navigator].toInstance(fakeNavigator)
       )
