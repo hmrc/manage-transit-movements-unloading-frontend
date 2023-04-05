@@ -61,7 +61,7 @@ class UnloadingCommentsFormProviderSpec extends StringFieldBehaviours {
     }
 
     "must bind strings that do match regex" in {
-      val generator: Gen[String] = RegexpGen.from("[a-zA-Z0-9&'@/.?% -]{1,350}")
+      val generator: Gen[String] = RegexpGen.from("[a-zA-Z0-9&'@\\/.?% -]{1,350}")
       val expectedError          = FormError(fieldName, invalidKey)
 
       forAll(generator) {

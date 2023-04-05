@@ -34,17 +34,16 @@ formHelper: FormWithCSRF
 @(mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentViewModel: HouseConsignmentViewModel, houseConsignmentIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("houseConsignment.title"),
+    title = messages("houseConsignment.title", houseConsignmentIndex.display),
     showBackLink = true,
 ) {
 
     @caption(mrn.toString)
 
     @heading(
-    heading = messages("houseConsignment.heading")
+    heading = messages("houseConsignment.heading", houseConsignmentIndex.display)
     )
 
-    <p class="govuk-body">@messages("houseConsignment.paragraph")</p>
 
     @answerSections(houseConsignmentViewModel.houseConsignment)
 
