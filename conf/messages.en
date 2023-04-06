@@ -25,6 +25,8 @@ site.backToSummary = Back to summary
 error.title.prefix = Error:
 error.summary.title = There is a problem
 
+summaryDetails.link = More details
+
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
 

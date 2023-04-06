@@ -49,13 +49,16 @@ class UnloadingCommentsFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+    "must not bind strings with invalid characters" in {
 
-    behave like fieldWithInvalidCharacters(
-      form,
-      fieldName,
-      error = FormError(fieldName, invalidKey, Seq(stringFieldRegex.toString())),
-      maxLength
-    )
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~<>,±üçñèé]{$length}")
+
+      forAll(generator) {
+        invalidString =>
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(FormError(fieldName, invalidKey, Seq(stringFieldRegex.toString())))
+      }
+    }
 
     s"must not bind strings longer than $maxLength characters" in {
       val invalidString = Random.alphanumeric.take(maxLength + 1).mkString

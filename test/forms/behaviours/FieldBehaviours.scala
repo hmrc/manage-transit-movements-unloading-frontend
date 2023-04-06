@@ -36,18 +36,6 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
       }
     }
 
-  def fieldWithInvalidCharacters(form: Form[_], fieldName: String, error: FormError, length: Int): Unit =
-    "must not bind strings with invalid characters" in {
-
-      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~<>,±üçñèé]{$length}")
-
-      forAll(generator) {
-        invalidString =>
-          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors must contain(error)
-      }
-    }
-
   def mandatoryField(form: Form[_], fieldName: String, requiredError: FormError): Unit = {
 
     "must not bind when key is not present at all" in {
