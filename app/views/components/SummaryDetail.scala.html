@@ -16,10 +16,8 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import viewModels.sections.Section
-
 @this(details: GovukDetails)
-
-@(section: Section)(html: Html = Html(""))
+@(section: Section)(html: Html = Html(""))(implicit request: Request[_], messages: Messages)
 
 @header = {
     @section.sectionTitle.map { title =>
@@ -45,7 +43,7 @@
     </dl>
 
     @section.viewLink.map { link =>
-        <p class="govuk-body"><a class="govuk-link " href=@link.href id="view_link.id">messages("summaryDetails.link")</a></p>
+        <p class="govuk-body"><a class="govuk-link " href=@link.href id="view_link.id">@messages("summaryDetails.link")</a></p>
       }
 
 }

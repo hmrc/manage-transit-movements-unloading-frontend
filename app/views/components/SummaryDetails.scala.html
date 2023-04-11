@@ -19,7 +19,7 @@
 
 @this(summaryDetail: SummaryDetail)
 
-@(sections: Seq[Section])
+@(sections: Seq[Section])(implicit request: Request[_], messages: Messages)
 
     @for(section <- sections) {
         @summaryDetail(section)()
