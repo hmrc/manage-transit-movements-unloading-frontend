@@ -46,7 +46,5 @@ class UnloadingGuidanceViewSpec extends ViewBehaviours {
     expectedHref = routes.UnloadingPermissionPDFController.getPDF(arrivalId).url
   )
 
-  behave like pageWithSubmitButton("Continue")
-
   behave like pageWithLinkAsButton("Continue", controllers.routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode).url)
 }
