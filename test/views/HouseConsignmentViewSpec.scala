@@ -49,9 +49,7 @@ class HouseConsignmentViewSpec extends DetailsListViewBehaviours with Generators
 
   behave like pageWithSections()
 
-  behave like pageWithFormAction(controllers.routes.HouseConsignmentController.onSubmit(arrivalId).url)
-
-  behave like pageWithSubmitButton("Back to summary")
+  behave like pageWithLinkAsButton("Back to summary", controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url)
 
   "must render section titles when rows are non-empty" - {
     sections.foreach(_.sectionTitle.map {

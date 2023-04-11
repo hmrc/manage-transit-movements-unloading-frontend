@@ -17,6 +17,7 @@
 package views
 
 import controllers.routes
+import models.NormalMode
 import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
 import views.html.UnloadingGuidanceView
@@ -46,4 +47,6 @@ class UnloadingGuidanceViewSpec extends ViewBehaviours {
   )
 
   behave like pageWithSubmitButton("Continue")
+
+  behave like pageWithLinkAsButton("Continue", controllers.routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode).url)
 }

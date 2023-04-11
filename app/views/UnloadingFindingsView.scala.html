@@ -48,7 +48,10 @@ formHelper: FormWithCSRF
 
     @summaryDetails(unloadingFindingsViewModel.section)
 
-    @formHelper(action = routes.UnloadingFindingsController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
-        @button(attributes = Map("id" -> "submit"))
-    }
+    <div>
+        <a class="govuk-button" id="submit" href=@controllers.routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, NormalMode).url>
+        @messages("site.continue")
+        </a>
+    </div>
+
 }

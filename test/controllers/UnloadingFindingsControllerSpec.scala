@@ -67,43 +67,11 @@ class UnloadingFindingsControllerSpec extends SpecBase with AppWithDefaultMockFi
         view(mrn, arrivalId, unloadingFindingsViewModel)(request, messages).toString
     }
 
-    "must redirect to the next page when valid data is submitted" in {
-      checkArrivalStatus()
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request =
-        FakeRequest(POST, unloadingFindingsRoute)
-          .withFormUrlEncodedBody(("value", "true"))
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual controllers.routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, NormalMode).url
-    }
-
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, unloadingFindingsRoute)
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
-    }
-
-    "must redirect to Session Expired for a POST if no existing data is found" in {
-      checkArrivalStatus()
-      setNoExistingUserAnswers()
-
-      val request =
-        FakeRequest(POST, unloadingFindingsRoute)
-          .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 

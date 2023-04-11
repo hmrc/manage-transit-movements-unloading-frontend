@@ -43,18 +43,5 @@ class UnloadingGuidanceControllerSpec extends SpecBase with AppWithDefaultMockFi
       contentAsString(result) mustEqual view(mrn, arrivalId)(request, messages).toString
     }
 
-    "must redirect to 'date goods unloaded' for a POST" in {
-      checkArrivalStatus()
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request = FakeRequest(POST, routes.UnloadingGuidanceController.onSubmit(arrivalId).url)
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual controllers.routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode).url
-    }
   }
 }
