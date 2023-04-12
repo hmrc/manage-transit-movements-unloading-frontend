@@ -149,7 +149,8 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
                 href = controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url,
                 visuallyHidden = messages("summaryDetails.visuallyHidden", houseConsignmentIndex.display)
               )
-            )
+            ),
+            id = Some(s"houseConsignment${houseConsignmentIndex.display}")
           )
         )
     }
