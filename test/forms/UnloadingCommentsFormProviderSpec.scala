@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import models.messages.UnloadingRemarksRequest.stringFieldRegex
 import org.scalacheck.Gen
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.data.{Field, FormError}
@@ -48,26 +49,14 @@ class UnloadingCommentsFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+    "must not bind strings with invalid characters" in {
 
-    "must not bind strings that do not match regex" in {
-      val expectedError          = FormError(fieldName, invalidKey)
-      val generator: Gen[String] = RegexpGen.from("[!£^*(){}_+=:;|`~,±üçñèé@]{350}")
-
-      forAll(generator) {
-        invalidString =>
-          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors must contain(expectedError)
-      }
-    }
-
-    "must bind strings that do match regex" in {
-      val generator: Gen[String] = RegexpGen.from("[a-zA-Z0-9&'@/.?% -]{1,350}")
-      val expectedError          = FormError(fieldName, invalidKey)
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~<>,±üçñèé]{$length}")
 
       forAll(generator) {
         invalidString =>
           val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors must contain(expectedError)
+          result.errors must contain(FormError(fieldName, invalidKey, Seq(stringFieldRegex.toString())))
       }
     }
 

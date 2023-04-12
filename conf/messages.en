@@ -25,8 +25,13 @@ site.backToSummary = Back to summary
 error.title.prefix = Error:
 error.summary.title = There is a problem
 
+summaryDetails.link = More details
+summaryDetails.visuallyHidden = on house consignment {0}
+
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
+
+viewLink = View
 
 checkYourAnswers.seals.subHeading = Check official customs seals
 checkYourAnswers.seals.checkYourAnswersLabel = Official customs seal numbers
@@ -332,10 +337,8 @@ unloadingFindings.rowHeadings.additionalComments = Comments
 unloadingFindings.rowHeadings.additionalComments.change.hidden = comments
 unloadingFindings.rowHeadings.additionalComments.remove.hidden = comments
 
-houseConsignment.title = Cross-check the transit with this declaration summary
-houseConsignment.heading = Cross-check the transit with this declaration summary
-houseConsignment.paragraph = Cross-check the transit with the following information to identify any differences.
-houseConsignment.houseConsignmentSubHeading = House consignment {0}
+houseConsignment.title = Cross-check the transit with house consignment {0}
+houseConsignment.heading = Cross-check the transit with house consignment {0}
 houseConsignment.departureMeansSubHeading = Departure means of transport {0}
 houseConsignment.itemSubHeading = Item {0}
 

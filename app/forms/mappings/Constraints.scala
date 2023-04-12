@@ -76,6 +76,9 @@ trait Constraints {
         Invalid(errorKey, regex)
     }
 
+  protected def regexp(regex: Regex, errorKey: String): Constraint[String] =
+    regexp(regex, errorKey, Seq(regex.regex))
+
   protected def regexp(regex: Regex, errorKey: String, args: Seq[Any]): Constraint[String] =
     Constraint {
       case str if str.matches(regex.pattern.pattern()) =>
