@@ -26,6 +26,7 @@ error.title.prefix = Error:
 error.summary.title = There is a problem
 
 summaryDetails.link = More details
+summaryDetails.visuallyHidden = more details on house consignment {0}
 
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers

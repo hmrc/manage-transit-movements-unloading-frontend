@@ -30,7 +30,7 @@
 
 @content = {
     <dl class="govuk-summary-list govuk-!-margin-bottom-5">
-        @section.rows.map{row =>
+        @section.rows.zipWithIndex.map{case(row, index) =>
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
                     @row.key.content.asHtml.toString()
@@ -43,9 +43,9 @@
     </dl>
 
     @section.viewLink.map { link =>
-        <p class="govuk-body"><a class="govuk-link " href=@link.href id="view_link.id">@messages("summaryDetails.link")</a></p>
+        <p class="govuk-body"><a class="govuk-link " href=@link.href id="view_link.id">@messages("summaryDetails.link")<span class="govuk-visually-hidden"> @messages("summaryDetails.visuallyHidden", args = index)</span>
+        </a></p>
       }
-
 }
 
 @if(section.rows.nonEmpty) {
