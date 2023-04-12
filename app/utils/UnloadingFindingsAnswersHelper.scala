@@ -146,7 +146,8 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
             viewLink = Some(
               Link(
                 id = s"view-house-consignment-${houseConsignmentIndex.display}",
-                href = controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
+                href = controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url,
+                visuallyHidden = messages("summaryDetails.visuallyHidden", houseConsignmentIndex.display)
               )
             )
           )
