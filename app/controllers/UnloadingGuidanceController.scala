@@ -17,7 +17,7 @@
 package controllers
 
 import controllers.actions._
-import models.{ArrivalId, NormalMode}
+import models.ArrivalId
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -36,9 +36,5 @@ class UnloadingGuidanceController @Inject() (
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
       Ok(view(request.userAnswers.mrn, arrivalId))
-  }
-
-  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
-    _ => Redirect(controllers.routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode))
   }
 }

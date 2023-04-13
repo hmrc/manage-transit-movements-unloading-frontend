@@ -34,23 +34,24 @@ formHelper: FormWithCSRF
 @(mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentViewModel: HouseConsignmentViewModel, houseConsignmentIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("houseConsignment.title"),
+    title = messages("houseConsignment.title", houseConsignmentIndex.display),
     showBackLink = true,
 ) {
 
     @caption(mrn.toString)
 
     @heading(
-    heading = messages("houseConsignment.heading")
+    heading = messages("houseConsignment.heading", houseConsignmentIndex.display)
     )
 
-    <p class="govuk-body">@messages("houseConsignment.paragraph")</p>
 
     @answerSections(houseConsignmentViewModel.houseConsignment)
 
     @summaryDetails(houseConsignmentViewModel.section)
 
-    @formHelper(action = routes.HouseConsignmentController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
-        @button(attributes = Map("id" -> "submit"), messageKey = "site.backToSummary")
-    }
+    <div>
+        <a class="govuk-button" id="submit" href=@controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url>
+        @messages("site.backToSummary")
+        </a>
+    </div>
 }

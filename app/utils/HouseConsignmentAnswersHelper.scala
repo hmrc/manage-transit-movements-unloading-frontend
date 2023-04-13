@@ -94,12 +94,7 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
       consigneeIdentification(houseConsignmentIndex)
     )
 
-    Seq(
-      Section(
-        sectionTitle = messages("unloadingFindings.subsections.houseConsignment", houseConsignmentIndex.display),
-        rows
-      )
-    )
+    Seq(Section(rows))
   }
 
   def itemSections: Seq[Section] =

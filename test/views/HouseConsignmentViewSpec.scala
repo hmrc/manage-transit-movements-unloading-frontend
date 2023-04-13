@@ -27,7 +27,7 @@ import views.html.HouseConsignmentView
 
 class HouseConsignmentViewSpec extends DetailsListViewBehaviours with Generators {
 
-  override val prefix: String = "unloadingFindings"
+  override val prefix: String = "houseConsignment"
 
   lazy val sections: Seq[Section]                          = arbitrary[List[Section]].sample.value
   val houseConsignmentViewModel: HouseConsignmentViewModel = new HouseConsignmentViewModel(sections, sections)
@@ -39,19 +39,17 @@ class HouseConsignmentViewSpec extends DetailsListViewBehaviours with Generators
     section => SummaryList(section.rows)
   )
 
-  behave like pageWithTitle()
+  behave like pageWithTitle("1")
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(mrn.toString)
 
-  behave like pageWithHeading()
+  behave like pageWithHeading("1")
 
   behave like pageWithSections()
 
-  behave like pageWithFormAction(controllers.routes.HouseConsignmentController.onSubmit(arrivalId).url)
-
-  behave like pageWithSubmitButton("Back to summary")
+  behave like pageWithLinkAsButton("Back to summary", controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url)
 
   "must render section titles when rows are non-empty" - {
     sections.foreach(_.sectionTitle.map {

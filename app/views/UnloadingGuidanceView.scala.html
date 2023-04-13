@@ -31,15 +31,17 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = controllers.routes.UnloadingGuidanceController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
-        @heading(messages("unloadingGuidance.heading"))
+    @heading(messages("unloadingGuidance.heading"))
 
-        <p class="govuk-body">@messages("unloadingGuidance.para", mrn)</p>
+    <p class="govuk-body">@messages("unloadingGuidance.para", mrn)</p>
 
-        <p class="govuk-body">@messages("unloadingGuidance.pdf.preLinkText")
-        <a id="download" class="govuk-link" href="???">@messages("unloadingGuidance.pdf.link")</a>
-        .</p>
+    <p class="govuk-body">@messages("unloadingGuidance.pdf.preLinkText")
+    <a id="download" class="govuk-link" href=@routes.UnloadingPermissionPDFController.getPDF(arrivalId)>@messages("unloadingGuidance.pdf.link")</a>
+    .</p>
 
-        @button(attributes = Map("id" -> "submit"))
-    }
+    <div>
+        <a class="govuk-button" id="submit" href=@controllers.routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode).url>
+            @messages("site.continue")
+        </a>
+    </div>
 }
