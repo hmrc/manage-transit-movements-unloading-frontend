@@ -23,6 +23,7 @@ import java.time.LocalDateTime
 case class MessageData(
   preparationDateAndTime: LocalDateTime,
   TransitOperation: TransitOperation,
+  TraderAtDestination: TraderAtDestination,
   Consignment: Consignment,
   CustomsOfficeOfDestinationActual: CustomsOfficeOfDestinationActual
 )

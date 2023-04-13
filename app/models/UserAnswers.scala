@@ -37,8 +37,8 @@ final case class UserAnswers(
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
 
-  def getIE043[A](path: JsPath)(implicit rds: Reads[A]): Option[A] =
-    Reads.optionNoError(Reads.at(path)).reads(ie043Data).getOrElse(None)
+  def getIE043[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
+    Reads.optionNoError(Reads.at(page.path)).reads(ie043Data).getOrElse(None)
 
   def get[A, B](derivable: Derivable[A, B])(implicit rds: Reads[A]): Option[B] =
     get(derivable: Gettable[A]).map(derivable.derive)

@@ -22,6 +22,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import viewModels.CheckYourAnswersViewModel.CheckYourAnswersViewModelProvider
+import utils.Format.booleanToIntWrites
 
 import java.time.LocalDate
 
@@ -52,7 +53,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
     "must render 1 rows if add comments false" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(AddUnloadingCommentsYesNoPage, false)
+        .setValue(AddUnloadingCommentsYesNoPage, false)(booleanToIntWrites)
 
       setExistingUserAnswers(userAnswers)
 
@@ -69,7 +70,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
     "must render 2 rows if add comments true" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(AddUnloadingCommentsYesNoPage, true)
+        .setValue(AddUnloadingCommentsYesNoPage, true)(booleanToIntWrites)
         .setValue(UnloadingCommentsPage, "Test")
 
       setExistingUserAnswers(userAnswers)

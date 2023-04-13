@@ -38,7 +38,7 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
 
   def buildVehicleNationalityRow(transportMeansIndex: Index): Future[Option[SummaryListRow]] =
     (for {
-      x <- OptionT.fromOption[Future](userAnswers.get(DepartureTransportMeansCountryPage(houseConsignmentIndex, transportMeansIndex)))
+      x <- OptionT.fromOption[Future](userAnswers.getIE043(DepartureTransportMeansCountryPage(houseConsignmentIndex, transportMeansIndex)))
       y <- OptionT.liftF(referenceDataService.getCountryNameByCode(x))
     } yield transportRegisteredCountry(y)).value
 
@@ -48,7 +48,7 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
 
   def buildTransportSections: Future[Seq[Section]] =
     userAnswers
-      .get(DepartureTransportMeansListSection(houseConsignmentIndex))
+      .getIE043(DepartureTransportMeansListSection(houseConsignmentIndex))
       .traverse {
         _.zipWithIndex.traverse {
           y =>
@@ -99,7 +99,7 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
 
   def itemSections: Seq[Section] =
     userAnswers
-      .get(ItemsSection(houseConsignmentIndex))
+      .getIE043(ItemsSection(houseConsignmentIndex))
       .mapWithIndex {
         (_, itemIndex) =>
           val itemDescription: Option[SummaryListRow] = itemDescriptionRow(houseConsignmentIndex, itemIndex)

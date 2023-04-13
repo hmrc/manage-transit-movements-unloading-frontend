@@ -378,7 +378,8 @@ class IE043DataSpec extends SpecBase {
           |            "messageIdentification": "token",
           |            "CustomsOfficeOfDestinationActual": {
           |                "referenceNumber": "GB000008"
-          |            }
+          |            },
+          |            "UnloadingRemark":{"unloadingCompletion":"1"}
           |        }
           |    }
           |}
@@ -428,6 +429,12 @@ class IE043DataSpec extends SpecBase {
                     name = Option("michael doe")
                   )
                 ),
+                Consignee = Option(
+                  Consignee(
+                    identificationNumber = Option("csgee1"),
+                    name = Option("John Smith")
+                  )
+                ),
                 DepartureTransportMeans = Option(
                   List(
                     DepartureTransportMeans(
@@ -468,7 +475,8 @@ class IE043DataSpec extends SpecBase {
               )
             )
           ),
-          CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual(referenceNumber = "GB000008")
+          CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual(referenceNumber = "GB000008"),
+          TraderAtDestination = TraderAtDestination("tad-1")
         )
       )
 

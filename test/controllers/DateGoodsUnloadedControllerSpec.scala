@@ -22,6 +22,7 @@ import generators.Generators
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import pages.DateGoodsUnloadedPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
@@ -53,9 +54,9 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must return OK and the correct view for a GET" in {
 
-      val data = Json.obj("preparationDateAndTime" -> dateTimeOfPrep)
+      val ie043Data = Json.obj("preparationDateAndTime" -> dateTimeOfPrep)
 
-      val userAnswers = emptyUserAnswers.copy(data = data)
+      val userAnswers = emptyUserAnswers.copy(ie043Data = ie043Data)
 
       setExistingUserAnswers(userAnswers)
 
@@ -71,14 +72,12 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val data = Json.obj(
-        "preparationDateAndTime" -> dateTimeOfPrep,
-        "dateGoodsUnloaded"      -> dateTimeOfPrep.toLocalDate
-      )
+      val userAnswers = emptyUserAnswers.set(DateGoodsUnloadedPage, dateTimeOfPrep.toLocalDate).success.value
+      val ie043Data   = Json.obj("preparationDateAndTime" -> dateTimeOfPrep)
 
-      val userAnswers = emptyUserAnswers.copy(data = data)
+      val userAnswersWithIe043Data = userAnswers.copy(ie043Data = ie043Data)
 
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(userAnswersWithIe043Data)
 
       val view = app.injector.instanceOf[DateGoodsUnloadedView]
 
@@ -112,14 +111,12 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
     "must redirect on to the next page when valid data is submitted" in {
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val data = Json.obj(
-        "preparationDateAndTime" -> dateTimeOfPrep,
-        "dateGoodsUnloaded"      -> dateTimeOfPrep
-      )
+      val userAnswers = emptyUserAnswers.set(DateGoodsUnloadedPage, dateTimeOfPrep.toLocalDate).success.value
+      val ie043Data   = Json.obj("preparationDateAndTime" -> dateTimeOfPrep)
 
-      val userAnswers = emptyUserAnswers.copy(data = data)
+      val userAnswersWithIe043Data = userAnswers.copy(ie043Data = ie043Data)
 
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(userAnswersWithIe043Data)
 
       val postRequest = FakeRequest(POST, dateGoodsUnloadedRoute)
         .withFormUrlEncodedBody(
@@ -136,11 +133,9 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val data = Json.obj(
-        "preparationDateAndTime" -> dateTimeOfPrep
-      )
+      val ie043Data = Json.obj("preparationDateAndTime" -> dateTimeOfPrep)
 
-      val userAnswers = emptyUserAnswers.copy(data = data)
+      val userAnswers = emptyUserAnswers.copy(ie043Data = ie043Data)
 
       setExistingUserAnswers(userAnswers)
 
@@ -166,11 +161,9 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must return a Bad Request and errors when the date is before date of preparation" in {
 
-      val data = Json.obj(
-        "preparationDateAndTime" -> dateTimeOfPrep
-      )
+      val ie043Data = Json.obj("preparationDateAndTime" -> dateTimeOfPrep)
 
-      val userAnswers = emptyUserAnswers.copy(data = data)
+      val userAnswers = emptyUserAnswers.copy(ie043Data = ie043Data)
 
       setExistingUserAnswers(userAnswers)
 

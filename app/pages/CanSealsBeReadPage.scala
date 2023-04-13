@@ -20,7 +20,7 @@ import play.api.libs.json.JsPath
 
 case object CanSealsBeReadPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "navigationData" \ toString
 
   override def toString: String = "canSealsBeRead"
 }

@@ -25,6 +25,7 @@ import org.mockito.Mockito.{reset, when}
 import pages.CustomsOfficeOfDestinationPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.ReferenceDataService
@@ -47,75 +48,22 @@ class UnloadingRemarksSentControllerSpec extends SpecBase with AppWithDefaultMoc
       .guiceApplicationBuilder()
       .overrides(bind[ReferenceDataService].toInstance(mockReferenceDataService))
 
+  val setCustomsOfficeOfDestination: JsObject = Json.obj(
+    "CustomsOfficeOfDestinationActual" -> Json.obj(
+      "referenceNumber" -> "CODE-001"
+    )
+  )
+
   "UnloadingRemarksSent Controller" - {
-    "return OK and the correct view for a GET when telephone and office name available" in {
-      val officeOfDestination = "CODE-001"
+    "return OK and the correct view" in {
+
       checkArrivalStatus()
+
       when(mockReferenceDataService.getCustomsOfficeByCode(any())(any(), any())).thenReturn(Future.successful(Some(customsOffice)))
 
-      setExistingUserAnswers(emptyUserAnswers.setValue(CustomsOfficeOfDestinationPage, officeOfDestination))
+      setExistingUserAnswers(emptyUserAnswers.copy(ie043Data = setCustomsOfficeOfDestination))
 
-      val unloadingRemarksSentViewModel = UnloadingRemarksSentViewModel(Some(customsOffice), officeOfDestination)
-
-      val request = FakeRequest(GET, routes.UnloadingRemarksSentController.onPageLoad(arrivalId).url)
-
-      val result = route(app, request).value
-
-      val view = app.injector.instanceOf[UnloadingRemarksSentView]
-
-      status(result) mustBe OK
-
-      contentAsString(result) mustEqual view(mrn, unloadingRemarksSentViewModel)(request, messages).toString
-    }
-
-    "return OK and the correct view for a GET when telephone not available and office name available" in {
-      val officeOfDestination = "CODE-001"
-      checkArrivalStatus()
-      when(mockReferenceDataService.getCustomsOfficeByCode(any())(any(), any())).thenReturn(Future.successful(Some(customsOffice)))
-
-      setExistingUserAnswers(emptyUserAnswers.setValue(CustomsOfficeOfDestinationPage, officeOfDestination))
-
-      val unloadingRemarksSentViewModel = UnloadingRemarksSentViewModel(Some(customsOffice), officeOfDestination)
-
-      val request = FakeRequest(GET, routes.UnloadingRemarksSentController.onPageLoad(arrivalId).url)
-
-      val result = route(app, request).value
-
-      val view = app.injector.instanceOf[UnloadingRemarksSentView]
-
-      status(result) mustBe OK
-
-      contentAsString(result) mustEqual view(mrn, unloadingRemarksSentViewModel)(request, messages).toString
-    }
-
-    "return OK and the correct view for a GET when telephone available and office name not available" in {
-      val officeOfDestination = "CODE-001"
-      checkArrivalStatus()
-      when(mockReferenceDataService.getCustomsOfficeByCode(any())(any(), any())).thenReturn(Future.successful(Some(customsOffice)))
-
-      setExistingUserAnswers(emptyUserAnswers.setValue(CustomsOfficeOfDestinationPage, officeOfDestination))
-
-      val unloadingRemarksSentViewModel = UnloadingRemarksSentViewModel(Some(customsOffice), officeOfDestination)
-
-      val request = FakeRequest(GET, routes.UnloadingRemarksSentController.onPageLoad(arrivalId).url)
-
-      val result = route(app, request).value
-
-      val view = app.injector.instanceOf[UnloadingRemarksSentView]
-
-      status(result) mustBe OK
-
-      contentAsString(result) mustEqual view(mrn, unloadingRemarksSentViewModel)(request, messages).toString
-    }
-
-    "return OK and the correct view for a GET when telephone not available and office name not available" in {
-      val officeOfDestination = "CODE-001"
-      checkArrivalStatus()
-      when(mockReferenceDataService.getCustomsOfficeByCode(any())(any(), any())).thenReturn(Future.successful(Some(customsOffice)))
-
-      setExistingUserAnswers(emptyUserAnswers.setValue(CustomsOfficeOfDestinationPage, officeOfDestination))
-
-      val unloadingRemarksSentViewModel = UnloadingRemarksSentViewModel(Some(customsOffice), officeOfDestination)
+      val unloadingRemarksSentViewModel = UnloadingRemarksSentViewModel(Some(customsOffice), "CODE-001")
 
       val request = FakeRequest(GET, routes.UnloadingRemarksSentController.onPageLoad(arrivalId).url)
 

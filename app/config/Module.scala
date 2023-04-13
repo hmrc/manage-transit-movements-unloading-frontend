@@ -17,7 +17,6 @@
 package config
 
 import com.google.inject.AbstractModule
-import connectors.{UnloadingConnector, UnloadingConnectorImpl}
 import controllers.actions._
 import services._
 
@@ -31,12 +30,11 @@ class Module extends AbstractModule {
 
     bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
 
+    bind(classOf[IE043DataRequiredActionProvider]).to(classOf[IE043DataRequiredActionImpl]).asEagerSingleton()
     bind(classOf[SpecificDataRequiredActionProvider]).to(classOf[SpecificDataRequiredActionImpl]).asEagerSingleton()
 
     // For session based storage instead of cred based, change to SessionIdentifierAction
     bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction]).asEagerSingleton()
-
-    bind(classOf[UnloadingConnector]).to(classOf[UnloadingConnectorImpl]).asEagerSingleton()
 
     bind(classOf[ReferenceDataService]).to(classOf[ReferenceDataServiceImpl]).asEagerSingleton()
 
@@ -45,8 +43,6 @@ class Module extends AbstractModule {
     bind(classOf[MetaService]).to(classOf[MetaServiceImpl]).asEagerSingleton()
 
     bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
-
-    bind(classOf[UnloadingPermissionService]).to(classOf[UnloadingPermissionServiceImpl]).asEagerSingleton()
 
   }
 

@@ -18,7 +18,7 @@ package controllers.actions
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
-import models.P5.{Consignment, CustomsOfficeOfDestinationActual, IE043Data, MessageData, TransitOperation}
+import models.P5.{Consignment, CustomsOfficeOfDestinationActual, IE043Data, MessageData, TraderAtDestination, TransitOperation}
 import models.requests.IdentifierRequest
 import models.{EoriNumber, MovementReferenceNumber}
 import org.mockito.ArgumentMatchers.any
@@ -55,7 +55,8 @@ class UnloadingPermissionActionSpec extends SpecBase with BeforeAndAfterEach wit
           preparationDateAndTime = LocalDateTime.now(),
           TransitOperation = TransitOperation(MovementReferenceNumber("23", "GB", "123")),
           Consignment = Consignment(None, None, List.empty),
-          CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("GB0008")
+          CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("GB0008"),
+          TraderAtDestination = TraderAtDestination("AB123")
         )
       )
 

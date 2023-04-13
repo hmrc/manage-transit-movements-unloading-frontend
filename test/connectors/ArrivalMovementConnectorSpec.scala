@@ -96,6 +96,9 @@ class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtu
           |     "Consignment": {
           |       "HouseConsignment": []
           |     },
+          |     "TraderAtDestination": {
+          |       "identificationNumber": "AB123"
+          |     },
           |     "CustomsOfficeOfDestinationActual": {
           |       "referenceNumber": "GB0008"
           |     }
@@ -118,7 +121,8 @@ class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtu
             preparationDateAndTime = LocalDateTime.parse("2022-11-10T15:32:51.459Z", DateTimeFormatter.ISO_DATE_TIME),
             TransitOperation = TransitOperation(MovementReferenceNumber("99IT9876AB88901209").get),
             Consignment = Consignment(None, None, List.empty),
-            CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("GB0008")
+            CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("GB0008"),
+            TraderAtDestination = TraderAtDestination("AB123")
           )
         )
 

@@ -23,9 +23,9 @@ import scala.util.Try
 
 case object AddUnloadingCommentsYesNoPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "n1:CC044C" \ "UnloadingRemark" \ toString
 
-  override def toString: String = "addUnloadingCommentsYesNo"
+  override def toString: String = "conform"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {

@@ -34,7 +34,7 @@ class DateGoodsUnloadedController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
+  getMandatoryPage: IE043DataRequiredActionProvider,
   navigator: Navigator,
   formProvider: DateGoodsUnloadedFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -48,6 +48,7 @@ class DateGoodsUnloadedController @Inject() (
     .andThen(getMandatoryPage(PreparationDateAndTimePage)) {
       implicit request =>
         val form = formProvider(request.arg.toLocalDate)
+
         val preparedForm = request.userAnswers.get(DateGoodsUnloadedPage) match {
           case Some(value) => form.fill(value)
           case None        => form

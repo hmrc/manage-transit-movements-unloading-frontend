@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 
-package models
+package models.P5
 
-sealed trait UnloadingType extends Radioable[UnloadingType] {
-  override val messageKeyPrefix: String = UnloadingType.messageKeyPrefix
-}
+import play.api.libs.json.{Json, OFormat}
 
-object UnloadingType extends EnumerableType[UnloadingType] {
+case class TraderAtDestination(identificationNumber: String)
 
-  val messageKeyPrefix: String = "unloadingType"
-
-  case object Fully extends WithName("1") with UnloadingType
-  case object Partially extends WithName("0") with UnloadingType
-
-  override val values: Seq[UnloadingType] = Seq(
-    Fully,
-    Partially
-  )
+object TraderAtDestination {
+  implicit val formats: OFormat[TraderAtDestination] = Json.format[TraderAtDestination]
 }

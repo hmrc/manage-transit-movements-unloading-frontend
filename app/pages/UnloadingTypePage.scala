@@ -21,7 +21,7 @@ import play.api.libs.json.JsPath
 
 case object UnloadingTypePage extends QuestionPage[UnloadingType] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "n1:CC044C" \ "UnloadingRemark" \ toString
 
-  override def toString: String = "unloadingType"
+  override def toString: String = "unloadingCompletion"
 }

@@ -22,7 +22,7 @@ import pages.sections.ItemsSection
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-class UnloadingAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
+class UnloadingAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends IE043DataHelper(userAnswers) {
 
   def buildHouseConsignmentRows(
     grossAndNetWeightRows: Seq[SummaryListRow],
@@ -68,7 +68,7 @@ class UnloadingAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
   )
 
   def houseConsignmentTotalWeightRows(houseConsignmentIndex: Index): Seq[SummaryListRow] = {
-    val itemArray      = userAnswers.get(ItemsSection(houseConsignmentIndex))
+    val itemArray      = userAnswers.getIE043(ItemsSection(houseConsignmentIndex))
     val itemCount: Int = itemArray.map(_.value.length).getOrElse(0)
 
     val itemWeights: Seq[(Option[BigDecimal], Option[BigDecimal])] = itemArray.mapWithIndex[(Option[BigDecimal], Option[BigDecimal])](
@@ -111,8 +111,8 @@ class UnloadingAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
   }
 
   def fetchWeightValues(houseConsignmentIndex: Index, itemIndex: Index): (Option[BigDecimal], Option[BigDecimal]) = {
-    val grossWeightDouble = userAnswers.get(GrossWeightPage(houseConsignmentIndex, itemIndex))
-    val netWeightDouble   = userAnswers.get(NetWeightPage(houseConsignmentIndex, itemIndex))
+    val grossWeightDouble = userAnswers.getIE043(GrossWeightPage(houseConsignmentIndex, itemIndex))
+    val netWeightDouble   = userAnswers.getIE043(NetWeightPage(houseConsignmentIndex, itemIndex))
     (
       grossWeightDouble.map(BigDecimal.valueOf),
       netWeightDouble.map(BigDecimal.valueOf)

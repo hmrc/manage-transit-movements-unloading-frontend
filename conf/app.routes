@@ -101,8 +101,6 @@ GET        /:arrivalId/declaration-summary                                      
 
 GET        /:arrivalId/declaration-summary-house-consignment/:index                         controllers.HouseConsignmentController.onPageLoad(arrivalId: ArrivalId, index:Index)
 
-GET        /:arrivalId/unloading-permission-pdf                                             controllers.UnloadingPermissionPDFController.getPDF(arrivalId: ArrivalId)
-
 GET        /:arrivalId/unloading-remarks-sent                                               controllers.UnloadingRemarksSentController.onPageLoad(arrivalId: ArrivalId)
 
 GET        /:arrivalId/check-answers                                                        controllers.CheckYourAnswersController.onPageLoad(arrivalId: ArrivalId)

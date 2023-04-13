@@ -25,7 +25,7 @@ import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends SummaryListRowHelper {
+class IE043DataHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends SummaryListRowHelper {
 
   def arrivalId: ArrivalId = userAnswers.id
 
@@ -37,7 +37,7 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
     call: Option[Call],
     args: Any*
   )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.get(page) map {
+    userAnswers.getIE043(page) map {
       answer =>
         buildRow(
           prefix = prefix,
@@ -61,7 +61,7 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
     call: Option[Call],
     args: Option[Seq[Any]]
   )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.get(page) map {
+    userAnswers.getIE043(page) map {
       answer =>
         buildRow(
           prefix = prefix,
@@ -81,7 +81,7 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
     removeCall: Call,
     args: Option[Seq[Any]]
   )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.get(page) map {
+    userAnswers.getIE043(page) map {
       answer =>
         buildRemovableRow(
           prefix = prefix,
@@ -103,8 +103,8 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
     args: Any*
   )(implicit rds: Reads[T]): Option[SummaryListRow] =
     for {
-      answer <- userAnswers.get(answerPath)
-      title  <- userAnswers.get(titlePath)
+      answer <- userAnswers.getIE043(answerPath)
+      title  <- userAnswers.getIE043(titlePath)
     } yield buildRowFromPath(
       prefix = dynamicPrefix(title),
       answer = formatAnswer(answer),
@@ -122,7 +122,7 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
     removeCall: Call,
     args: Any*
   )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.get(page) map {
+    userAnswers.getIE043(page) map {
       answer =>
         buildRemovableRow(
           prefix = prefix,
@@ -168,7 +168,7 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
 
   def getAnswersAndBuildSectionRows(section: Section[JsArray])(f: Index => Option[SummaryListRow]): Seq[SummaryListRow] =
     userAnswers
-      .get(section)
+      .getIE043(section)
       .mapWithIndex {
         (_, index) => f(index)
       }

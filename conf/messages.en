@@ -181,8 +181,8 @@ unloadingType.title = Have you fully or partially unloaded the goods?
 unloadingType.heading = Have you fully or partially unloaded the goods?
 unloadingType.checkYourAnswers = Have you fully or partially unloaded the goods?
 unloadingType.checkYourAnswersLabel = Are any of the seals broken?
-unloadingType.fully = Fully unloaded
-unloadingType.partially = Partially unloaded
+unloadingType.1 = Fully unloaded
+unloadingType.0 = Partially unloaded
 unloadingType.error.required = Select whether you have fully or partially unloaded the goods
 unloadingType.checkYourAnswers.change.hidden = whether you fully or partially unloaded the goods
 

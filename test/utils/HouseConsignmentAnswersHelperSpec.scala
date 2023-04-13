@@ -24,6 +24,7 @@ import org.mockito.Mockito.when
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
+import play.api.libs.json.{JsObject, Json}
 import services.ReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
@@ -52,16 +53,35 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
         val vehicleIdentificationNumber = Gen.alphaNumStr.sample.value
         val vehicleIdentificationType   = Gen.oneOf(Identification.values).sample.value
         val identificationTypeMessage   = messages(s"${Identification.messageKeyPrefix}.${vehicleIdentificationType.toString}")
+
         s"when there is 1 transport means section defined" in {
 
-          val answers = emptyUserAnswers
-            .setValue(DepartureTransportMeansIdentificationNumberPage(index, index), vehicleIdentificationNumber)
-            .setValue(DepartureTransportMeansIdentificationTypePage(index, index), vehicleIdentificationType.identificationType.toString)
-            .setValue(DepartureTransportMeansCountryPage(index, index), "GB")
+          val json: JsObject = Json
+            .parse(s"""
+                 | {
+                 |    "Consignment" : {
+                 |      "HouseConsignment" : [
+                 |        {
+                 |         "DepartureTransportMeans" : [
+                 |             {
+                 |                 "sequenceNumber" : "56",
+                 |                 "typeOfIdentification" : "${vehicleIdentificationType.identificationType}",
+                 |                 "identificationNumber" : "$vehicleIdentificationNumber",
+                 |                 "nationality" : "GB"
+                 |             }
+                 |         ]
+                 |        }
+                 |      ]
+                 |    }
+                 |}
+                 |""".stripMargin)
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
 
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper          = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+          val helper          = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
           val result          = helper.buildTransportSections.futureValue
           val transportMeans1 = result.head.rows
 
@@ -82,13 +102,31 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
         }
         s"when only identification type and number defined" in {
 
-          val answers = emptyUserAnswers
-            .setValue(DepartureTransportMeansIdentificationNumberPage(index, index), vehicleIdentificationNumber)
-            .setValue(DepartureTransportMeansIdentificationTypePage(index, index), vehicleIdentificationType.identificationType.toString)
+          val json: JsObject = Json
+            .parse(s"""
+                 | {
+                 |    "Consignment" : {
+                 |      "HouseConsignment" : [
+                 |        {
+                 |         "DepartureTransportMeans" : [
+                 |             {
+                 |                 "sequenceNumber" : "56",
+                 |                 "typeOfIdentification" : "${vehicleIdentificationType.identificationType}",
+                 |                 "identificationNumber" : "$vehicleIdentificationNumber"
+                 |             }
+                 |         ]
+                 |        }
+                 |      ]
+                 |    }
+                 |}
+                 |""".stripMargin)
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
 
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper          = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+          val helper          = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
           val result          = helper.buildTransportSections.futureValue
           val transportMeans1 = result.head.rows
 
@@ -105,10 +143,30 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
         }
         s"when only country is defined" in {
 
-          val answers = emptyUserAnswers.setValue(DepartureTransportMeansCountryPage(index, index), "GB")
+          val json: JsObject = Json
+            .parse(s"""
+                 | {
+                 |    "Consignment" : {
+                 |      "HouseConsignment" : [
+                 |        {
+                 |         "DepartureTransportMeans" : [
+                 |             {
+                 |                 "sequenceNumber" : "56",
+                 |                 "nationality" : "GB"
+                 |             }
+                 |         ]
+                 |        }
+                 |      ]
+                 |    }
+                 |}
+                 |""".stripMargin)
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper          = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+          val helper          = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
           val result          = helper.buildTransportSections.futureValue
           val transportMeans1 = result.head.rows
 
@@ -125,11 +183,30 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
         }
         s"when only number is defined" in {
 
-          val answers = emptyUserAnswers.setValue(DepartureTransportMeansIdentificationNumberPage(index, index), vehicleIdentificationNumber)
+          val json: JsObject = Json
+            .parse(s"""
+                 | {
+                 |    "Consignment" : {
+                 |      "HouseConsignment" : [
+                 |        {
+                 |         "DepartureTransportMeans" : [
+                 |             {
+                 |                 "sequenceNumber" : "56",
+                 |                 "identificationNumber" : "$vehicleIdentificationNumber"
+                 |             }
+                 |         ]
+                 |        }
+                 |      ]
+                 |    }
+                 |}
+                 |""".stripMargin)
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
 
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper          = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+          val helper          = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
           val result          = helper.buildTransportSections.futureValue
           val transportMeans1 = result.head.rows
 
@@ -138,17 +215,38 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
         }
         s"when multiple transport means sections are defined" in {
 
-          val answers = emptyUserAnswers
-            .setValue(DepartureTransportMeansIdentificationNumberPage(index, index), vehicleIdentificationNumber)
-            .setValue(DepartureTransportMeansIdentificationTypePage(index, index), vehicleIdentificationType.identificationType.toString)
-            .setValue(DepartureTransportMeansCountryPage(index, index), "GB")
-            .setValue(DepartureTransportMeansIdentificationNumberPage(index, Index(1)), vehicleIdentificationNumber)
-            .setValue(DepartureTransportMeansIdentificationTypePage(index, Index(1)), vehicleIdentificationType.identificationType.toString)
-            .setValue(DepartureTransportMeansCountryPage(index, Index(1)), "GB")
+          val json: JsObject = Json
+            .parse(s"""
+                 | {
+                 |    "Consignment" : {
+                 |      "HouseConsignment" : [
+                 |        {
+                 |         "DepartureTransportMeans" : [
+                 |             {
+                 |                 "sequenceNumber" : "56",
+                 |                 "typeOfIdentification" : "${vehicleIdentificationType.identificationType}",
+                 |                 "identificationNumber" : "$vehicleIdentificationNumber",
+                 |                 "nationality" : "GB"
+                 |             },
+                 |             {
+                 |                 "sequenceNumber" : "56",
+                 |                 "typeOfIdentification" : "${vehicleIdentificationType.identificationType}",
+                 |                 "identificationNumber" : "$vehicleIdentificationNumber",
+                 |                 "nationality" : "GB"
+                 |             }
+                 |         ]
+                 |        }
+                 |      ]
+                 |    }
+                 |}
+                 |""".stripMargin)
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
 
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper          = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+          val helper          = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
           val result          = helper.buildTransportSections.futureValue
           val transportMeans1 = result.head.rows
           val transportMeans2 = result(1).rows
@@ -203,11 +301,31 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
 
       "must return Some(Row)" - {
         s"when $DepartureTransportMeansIdentificationNumberPage defined" in {
-          val answers = emptyUserAnswers
-            .setValue(DepartureTransportMeansIdentificationNumberPage(index, index), vehicleIdentificationNumber)
-            .setValue(DepartureTransportMeansIdentificationTypePage(index, index), vehicleIdentificationType.identificationType.toString)
 
-          val helper = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+          val json: JsObject = Json
+            .parse(s"""
+                 | {
+                 |    "Consignment" : {
+                 |      "HouseConsignment" : [
+                 |        {
+                 |         "DepartureTransportMeans" : [
+                 |             {
+                 |                 "sequenceNumber" : "56",
+                 |                 "typeOfIdentification" : "${vehicleIdentificationType.identificationType}",
+                 |                 "identificationNumber" : "$vehicleIdentificationNumber",
+                 |                 "nationality" : "GB"
+                 |             }
+                 |         ]
+                 |        }
+                 |      ]
+                 |    }
+                 |}
+                 |""".stripMargin)
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+
+          val helper = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
           val result = helper.transportMeansID(index)
 
           result mustBe Some(
@@ -225,10 +343,31 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
 
       "must return Some(Row)" - {
         s"when $VehicleRegistrationCountryPage defined" in {
-          val answers = emptyUserAnswers.setValue(DepartureTransportMeansCountryPage(index, index), "GB")
+
+          val json: JsObject = Json
+            .parse(s"""
+                 | {
+                 |    "Consignment" : {
+                 |      "HouseConsignment" : [
+                 |        {
+                 |         "DepartureTransportMeans" : [
+                 |             {
+                 |                 "sequenceNumber" : "56",
+                 |                 "nationality" : "GB"
+                 |             }
+                 |         ]
+                 |        }
+                 |      ]
+                 |    }
+                 |}
+                 |""".stripMargin)
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+          val helper = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
           val result = helper.transportRegisteredCountry(countryDesc)
 
           result mustBe
@@ -251,17 +390,54 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
           val totalGrossWeight = (BigDecimal(grossWeight) + BigDecimal(grossWeight)).underlying().stripTrailingZeros()
           val totalNetWeight   = (BigDecimal(netWeight) + BigDecimal(netWeight)).underlying().stripTrailingZeros()
 
-          val answers = emptyUserAnswers
-            .setValue(GrossWeightPage(index, itemIndex), grossWeight)
-            .setValue(NetWeightPage(index, itemIndex), netWeight)
-            .setValue(GrossWeightPage(index, Index(1)), grossWeight)
-            .setValue(NetWeightPage(index, Index(1)), netWeight)
-            .setValue(ConsignorNamePage(index), "name")
-            .setValue(ConsignorIdentifierPage(index), "identifier")
-            .setValue(ConsigneeNamePage(index), "name")
-            .setValue(ConsigneeIdentifierPage(index), "identifier")
+          val json: JsObject = Json
+            .parse(s"""
+                 | {
+                 |    "Consignment" : {
+                 |      "HouseConsignment" : [
+                 |        {
+                 |          "Consignor" : {
+                 |              "identificationNumber" : "csgr1",
+                 |              "name" : "michael doe"
+                 |          },
+                 |          "Consignee" : {
+                 |              "identificationNumber" : "csgee1",
+                 |              "name" : "John Smith"
+                 |          },
+                 |          "ConsignmentItem" : [
+                 |              {
+                 |                  "goodsItemNumber" : "6",
+                 |                  "declarationGoodsItemNumber" : 100,
+                 |                  "Commodity" : {
+                 |                      "descriptionOfGoods" : "shirts",
+                 |                      "GoodsMeasure" : {
+                 |                          "grossMass" : $grossWeight,
+                 |                          "netMass" : $netWeight
+                 |                      }
+                 |                  }
+                 |              },
+                 |                            {
+                 |                  "goodsItemNumber" : "6",
+                 |                  "declarationGoodsItemNumber" : 100,
+                 |                  "Commodity" : {
+                 |                      "descriptionOfGoods" : "shirts",
+                 |                      "GoodsMeasure" : {
+                 |                          "grossMass" : $grossWeight,
+                 |                          "netMass" : $netWeight
+                 |                      }
+                 |                  }
+                 |              }
+                 |          ]
+                 |        }
+                 |      ]
+                 |    }
+                 |}
+                 |""".stripMargin)
+            .as[JsObject]
 
-          val helper   = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+
+          val helper   = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
           val sections = helper.houseConsignmentSection.head.rows
 
           val grossWeightRow          = sections.head
@@ -286,25 +462,25 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
           consignorName mustBe
             SummaryListRow(
               key = Key("Consignor name".toText),
-              value = Value("name".toText)
+              value = Value("michael doe".toText)
             )
 
           consignorIdentification mustBe
             SummaryListRow(
               key = Key("Consignor EORI number or Trader Identification Number (TIN)".toText),
-              value = Value("identifier".toText)
+              value = Value("csgr1".toText)
             )
 
           consigneeName mustBe
             SummaryListRow(
               key = Key("Consignee name".toText),
-              value = Value("name".toText)
+              value = Value("John Smith".toText)
             )
 
           consigneeIdentification mustBe
             SummaryListRow(
               key = Key("Consignee EORI number or Trader Identification Number (TIN)".toText),
-              value = Value("identifier".toText)
+              value = Value("csgee1".toText)
             )
         }
         s"when a consignments is defined" - {
@@ -313,14 +489,42 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
             val grossWeight = Gen.double.sample.value
             val netWeight   = Gen.double.sample.value
 
-            val answers = emptyUserAnswers
-              .setValue(GrossWeightPage(index, itemIndex), grossWeight)
-              .setValue(NetWeightPage(index, itemIndex), netWeight)
-              .setValue(ConsignorNamePage(index), "name")
-              .setValue(ConsigneeNamePage(index), "name")
-              .setValue(ConsigneeIdentifierPage(index), "identifier")
+            val json: JsObject = Json
+              .parse(s"""
+                   | {
+                   |    "Consignment" : {
+                   |      "HouseConsignment" : [
+                   |        {
+                   |          "Consignor" : {
+                   |              "name" : "michael doe"
+                   |          },
+                   |          "Consignee" : {
+                   |              "identificationNumber" : "csgee1",
+                   |              "name" : "John Smith"
+                   |          },
+                   |          "ConsignmentItem" : [
+                   |              {
+                   |                  "goodsItemNumber" : "6",
+                   |                  "declarationGoodsItemNumber" : 100,
+                   |                  "Commodity" : {
+                   |                      "descriptionOfGoods" : "shirts",
+                   |                      "GoodsMeasure" : {
+                   |                          "grossMass" : $grossWeight,
+                   |                          "netMass" : $netWeight
+                   |                      }
+                   |                  }
+                   |              }
+                   |          ]
+                   |        }
+                   |      ]
+                   |    }
+                   |}
+                   |""".stripMargin)
+              .as[JsObject]
 
-            val helper   = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+            val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+
+            val helper   = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
             val sections = helper.houseConsignmentSection.head.rows
 
             val grossWeightRow          = sections.head
@@ -344,18 +548,18 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
             consignorName mustBe
               SummaryListRow(
                 key = Key("Consignor name".toText),
-                value = Value("name".toText)
+                value = Value("michael doe".toText)
               )
             consigneeName mustBe
               SummaryListRow(
                 key = Key("Consignee name".toText),
-                value = Value("name".toText)
+                value = Value("John Smith".toText)
               )
 
             consigneeIdentification mustBe
               SummaryListRow(
                 key = Key("Consignee EORI number or Trader Identification Number (TIN)".toText),
-                value = Value("identifier".toText)
+                value = Value("csgee1".toText)
               )
 
             sections.length mustBe 5
@@ -363,10 +567,25 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
           }
           "and only consignor name is defined" in {
 
-            val answers = emptyUserAnswers
-              .setValue(ConsignorNamePage(index), "name")
+            val json: JsObject = Json
+              .parse(s"""
+                   | {
+                   |    "Consignment" : {
+                   |      "HouseConsignment" : [
+                   |        {
+                   |          "Consignor" : {
+                   |              "name" : "michael doe"
+                   |          }
+                   |        }
+                   |      ]
+                   |    }
+                   |}
+                   |""".stripMargin)
+              .as[JsObject]
 
-            val helper   = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+            val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+
+            val helper   = new HouseConsignmentAnswersHelper(userAnswers = userAnswers, index, mockReferenceDataService)
             val sections = helper.houseConsignmentSection.head.rows
 
             val consignorName = sections.head
@@ -374,7 +593,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
             consignorName mustBe
               SummaryListRow(
                 key = Key("Consignor name".toText),
-                value = Value("name".toText)
+                value = Value("michael doe".toText)
               )
 
             sections.length mustBe 1
@@ -382,10 +601,25 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
           }
           "and only consignor identification number is defined" in {
 
-            val answers = emptyUserAnswers
-              .setValue(ConsignorIdentifierPage(index), "identifier")
+            val json: JsObject = Json
+              .parse(s"""
+                   | {
+                   |    "Consignment" : {
+                   |      "HouseConsignment" : [
+                   |        {
+                   |          "Consignor" : {
+                   |              "identificationNumber" : "csgor1"
+                   |          }
+                   |        }
+                   |      ]
+                   |    }
+                   |}
+                   |""".stripMargin)
+              .as[JsObject]
 
-            val helper   = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+            val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+
+            val helper   = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
             val sections = helper.houseConsignmentSection.head.rows
 
             val consignorIdentification = sections.head
@@ -393,7 +627,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
             consignorIdentification mustBe
               SummaryListRow(
                 key = Key("Consignor EORI number or Trader Identification Number (TIN)".toText),
-                value = Value("identifier".toText)
+                value = Value("csgor1".toText)
               )
 
             sections.length mustBe 1
@@ -404,12 +638,38 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
             val grossWeight = Gen.double.sample.value
             val netWeight   = Gen.double.sample.value
 
-            val answers = emptyUserAnswers
-              .setValue(GrossWeightPage(index, itemIndex), grossWeight)
-              .setValue(NetWeightPage(index, itemIndex), netWeight)
-              .setValue(ConsignorIdentifierPage(index), "identifier")
+            val json: JsObject = Json
+              .parse(s"""
+                   | {
+                   |    "Consignment" : {
+                   |      "HouseConsignment" : [
+                   |        {
+                   |          "Consignor" : {
+                   |              "identificationNumber" : "csgor1"
+                   |          },
+                   |          "ConsignmentItem" : [
+                   |              {
+                   |                  "goodsItemNumber" : "6",
+                   |                  "declarationGoodsItemNumber" : 100,
+                   |                  "Commodity" : {
+                   |                      "descriptionOfGoods" : "shirts",
+                   |                      "GoodsMeasure" : {
+                   |                          "grossMass" : $grossWeight,
+                   |                          "netMass" : $netWeight
+                   |                      }
+                   |                  }
+                   |              }
+                   |          ]
+                   |        }
+                   |      ]
+                   |    }
+                   |}
+                   |""".stripMargin)
+              .as[JsObject]
 
-            val helper   = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+            val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+
+            val helper   = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
             val sections = helper.houseConsignmentSection.head.rows
 
             val grossWeightRow          = sections.head
@@ -431,18 +691,34 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
             consignorIdentification mustBe
               SummaryListRow(
                 key = Key("Consignor EORI number or Trader Identification Number (TIN)".toText),
-                value = Value("identifier".toText)
+                value = Value("csgor1".toText)
               )
 
             sections.length mustBe 3
 
           }
+
           "and only consignee name is defined" in {
 
-            val answers = emptyUserAnswers
-              .setValue(ConsigneeNamePage(index), "name")
+            val json: JsObject = Json
+              .parse(s"""
+                   | {
+                   |    "Consignment" : {
+                   |      "HouseConsignment" : [
+                   |        {
+                   |          "Consignee" : {
+                   |              "name" : "michael doe"
+                   |          }
+                   |        }
+                   |      ]
+                   |    }
+                   |}
+                   |""".stripMargin)
+              .as[JsObject]
 
-            val helper   = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+            val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+
+            val helper   = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
             val sections = helper.houseConsignmentSection.head.rows
 
             val consigneeName = sections.head
@@ -450,18 +726,34 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
             consigneeName mustBe
               SummaryListRow(
                 key = Key("Consignee name".toText),
-                value = Value("name".toText)
+                value = Value("michael doe".toText)
               )
 
             sections.length mustBe 1
 
           }
+
           "and only consignee identification number is defined" in {
 
-            val answers = emptyUserAnswers
-              .setValue(ConsigneeIdentifierPage(index), "identifier")
+            val json: JsObject = Json
+              .parse(s"""
+                   | {
+                   |    "Consignment" : {
+                   |      "HouseConsignment" : [
+                   |        {
+                   |          "Consignee" : {
+                   |              "identificationNumber" : "csgee1"
+                   |          }
+                   |        }
+                   |      ]
+                   |    }
+                   |}
+                   |""".stripMargin)
+              .as[JsObject]
 
-            val helper   = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+            val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+
+            val helper   = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
             val sections = helper.houseConsignmentSection.head.rows
 
             val consigneeIdentification = sections.head
@@ -469,23 +761,50 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
             consigneeIdentification mustBe
               SummaryListRow(
                 key = Key("Consignee EORI number or Trader Identification Number (TIN)".toText),
-                value = Value("identifier".toText)
+                value = Value("csgee1".toText)
               )
 
             sections.length mustBe 1
 
           }
+
           "and consignee name is not defined" in {
 
             val grossWeight = Gen.double.sample.value
             val netWeight   = Gen.double.sample.value
 
-            val answers = emptyUserAnswers
-              .setValue(GrossWeightPage(index, itemIndex), grossWeight)
-              .setValue(NetWeightPage(index, itemIndex), netWeight)
-              .setValue(ConsigneeIdentifierPage(index), "identifier")
+            val json: JsObject = Json
+              .parse(s"""
+                   | {
+                   |    "Consignment" : {
+                   |      "HouseConsignment" : [
+                   |        {
+                   |          "Consignee" : {
+                   |              "identificationNumber" : "csgee1"
+                   |          },
+                   |          "ConsignmentItem" : [
+                   |              {
+                   |                  "goodsItemNumber" : "6",
+                   |                  "declarationGoodsItemNumber" : 100,
+                   |                  "Commodity" : {
+                   |                      "descriptionOfGoods" : "shirts",
+                   |                      "GoodsMeasure" : {
+                   |                          "grossMass" : $grossWeight,
+                   |                          "netMass" : $netWeight
+                   |                      }
+                   |                  }
+                   |              }
+                   |          ]
+                   |        }
+                   |      ]
+                   |    }
+                   |}
+                   |""".stripMargin)
+              .as[JsObject]
 
-            val helper   = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+            val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+
+            val helper   = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
             val sections = helper.houseConsignmentSection.head.rows
 
             val grossWeightRow          = sections.head
@@ -507,19 +826,35 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
             consigneeIdentification mustBe
               SummaryListRow(
                 key = Key("Consignee EORI number or Trader Identification Number (TIN)".toText),
-                value = Value("identifier".toText)
+                value = Value("csgee1".toText)
               )
 
             sections.length mustBe 3
 
           }
+
           "and gross or net weight not defined" in {
 
-            val answers = emptyUserAnswers
-              .setValue(ConsignorNamePage(index), "name")
-              .setValue(ConsignorIdentifierPage(index), "identifier")
+            val json: JsObject = Json
+              .parse(s"""
+                   | {
+                   |    "Consignment" : {
+                   |      "HouseConsignment" : [
+                   |        {
+                   |          "Consignor" : {
+                   |              "identificationNumber" : "csgor1",
+                   |              "name": "john doe"
+                   |          }
+                   |        }
+                   |      ]
+                   |    }
+                   |}
+                   |""".stripMargin)
+              .as[JsObject]
 
-            val helper   = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+            val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+
+            val helper   = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
             val sections = helper.houseConsignmentSection.head.rows
 
             val consignorName           = sections.head
@@ -528,13 +863,13 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
             consignorName mustBe
               SummaryListRow(
                 key = Key("Consignor name".toText),
-                value = Value("name".toText)
+                value = Value("john doe".toText)
               )
 
             consignorIdentification mustBe
               SummaryListRow(
                 key = Key("Consignor EORI number or Trader Identification Number (TIN)".toText),
-                value = Value("identifier".toText)
+                value = Value("csgor1".toText)
               )
 
             sections.length mustBe 2
@@ -602,10 +937,30 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
 
       "must return Some(Row)" - {
         s"when $ItemDescriptionPage defined" in {
-          val answers = emptyUserAnswers
-            .setValue(ItemDescriptionPage(index, itemIndex), itemDesc)
 
-          val helper = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+          val json: JsObject = Json
+            .parse(s"""
+                 | {
+                 |    "Consignment" : {
+                 |      "HouseConsignment" : [
+                 |        {
+                 |          "ConsignmentItem" : [
+                 |              {
+                 |                  "Commodity" : {
+                 |                      "descriptionOfGoods" : "$itemDesc"
+                 |                  }
+                 |              }
+                 |          ]
+                 |        }
+                 |      ]
+                 |    }
+                 |}
+                 |""".stripMargin)
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+
+          val helper = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
           val result = helper.itemDescriptionRow(index, itemIndex)
 
           result mustBe
@@ -635,10 +990,32 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
 
       "must return Some(Row)" - {
         s"when $GrossWeightPage defined" in {
-          val answers = emptyUserAnswers
-            .setValue(GrossWeightPage(index, itemIndex), grossWeight)
 
-          val helper = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+          val json: JsObject = Json
+            .parse(s"""
+                 | {
+                 |    "Consignment" : {
+                 |      "HouseConsignment" : [
+                 |        {
+                 |          "ConsignmentItem" : [
+                 |              {
+                 |                  "Commodity" : {
+                 |                      "GoodsMeasure" : {
+                 |                          "grossMass" : $grossWeight
+                 |                      }
+                 |                  }
+                 |              }
+                 |          ]
+                 |        }
+                 |      ]
+                 |    }
+                 |}
+                 |""".stripMargin)
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+
+          val helper = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
           val result = helper.grossWeightRow(index, itemIndex)
 
           result mustBe Some(
@@ -667,10 +1044,32 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
 
       "must return Some(Row)" - {
         s"when $NetWeightPage defined" in {
-          val answers = emptyUserAnswers
-            .setValue(NetWeightPage(index, itemIndex), netWeight)
 
-          val helper = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+          val json: JsObject = Json
+            .parse(s"""
+                 | {
+                 |    "Consignment" : {
+                 |      "HouseConsignment" : [
+                 |        {
+                 |          "ConsignmentItem" : [
+                 |              {
+                 |                  "Commodity" : {
+                 |                      "GoodsMeasure" : {
+                 |                          "netMass" : $netWeight
+                 |                      }
+                 |                  }
+                 |              }
+                 |          ]
+                 |        }
+                 |      ]
+                 |    }
+                 |}
+                 |""".stripMargin)
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+
+          val helper = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
           val result = helper.netWeightRow(index, itemIndex)
 
           result mustBe Some(
@@ -699,12 +1098,34 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
 
       "must return Some(Row)" - {
         s"when an Item is defined" in {
-          val answers = emptyUserAnswers
-            .setValue(ItemDescriptionPage(index, itemIndex), "test")
-            .setValue(GrossWeightPage(index, itemIndex), weight)
-            .setValue(NetWeightPage(index, itemIndex), weight)
 
-          val helper = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
+          val json: JsObject = Json
+            .parse(s"""
+                 | {
+                 |    "Consignment" : {
+                 |      "HouseConsignment" : [
+                 |        {
+                 |          "ConsignmentItem" : [
+                 |              {
+                 |                  "Commodity" : {
+                 |                      "descriptionOfGoods" : "test",
+                 |                      "GoodsMeasure" : {
+                 |                          "grossMass" : $weight,
+                 |                          "netMass" : $weight
+                 |                      }
+                 |                  }
+                 |              }
+                 |          ]
+                 |        }
+                 |      ]
+                 |    }
+                 |}
+                 |""".stripMargin)
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+
+          val helper = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
           val result = helper.itemSections.head.rows
 
           result.head mustBe
@@ -727,12 +1148,33 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
             )
         }
         s"when Net Weight is not defined" in {
-          val answers = emptyUserAnswers
-            .setValue(ItemDescriptionPage(index, itemIndex), "test")
-            .setValue(GrossWeightPage(index, itemIndex), weight)
 
-          val helper = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
-          val result = helper.itemSections.head.rows
+          val json: JsObject = Json
+            .parse(s"""
+                 | {
+                 |    "Consignment" : {
+                 |      "HouseConsignment" : [
+                 |        {
+                 |          "ConsignmentItem" : [
+                 |              {
+                 |                  "Commodity" : {
+                 |                      "descriptionOfGoods" : "test",
+                 |                      "GoodsMeasure" : {
+                 |                          "grossMass" : $weight
+                 |                      }
+                 |                  }
+                 |              }
+                 |          ]
+                 |        }
+                 |      ]
+                 |    }
+                 |}
+                 |""".stripMargin)
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val helper      = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
+          val result      = helper.itemSections.head.rows
 
           result.head mustBe
             SummaryListRow(
@@ -749,12 +1191,32 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
           result.length mustBe 2
         }
         s"when Gross Weight is not defined" in {
-          val answers = emptyUserAnswers
-            .setValue(ItemDescriptionPage(index, itemIndex), "test")
-            .setValue(NetWeightPage(index, itemIndex), weight)
+          val json: JsObject = Json
+            .parse(s"""
+                 | {
+                 |    "Consignment" : {
+                 |      "HouseConsignment" : [
+                 |        {
+                 |          "ConsignmentItem" : [
+                 |              {
+                 |                  "Commodity" : {
+                 |                      "descriptionOfGoods" : "test",
+                 |                      "GoodsMeasure" : {
+                 |                          "netMass" : $weight
+                 |                      }
+                 |                  }
+                 |              }
+                 |          ]
+                 |        }
+                 |      ]
+                 |    }
+                 |}
+                 |""".stripMargin)
+            .as[JsObject]
 
-          val helper = new HouseConsignmentAnswersHelper(answers, index, mockReferenceDataService)
-          val result = helper.itemSections.head.rows
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val helper      = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
+          val result      = helper.itemSections.head.rows
 
           result.head mustBe
             SummaryListRow(

@@ -14,21 +14,24 @@
  * limitations under the License.
  */
 
-package models
+package models.P5
 
-sealed trait UnloadingType extends Radioable[UnloadingType] {
-  override val messageKeyPrefix: String = UnloadingType.messageKeyPrefix
-}
+import play.api.libs.json.{JsString, Json, Reads, Writes}
 
-object UnloadingType extends EnumerableType[UnloadingType] {
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
-  val messageKeyPrefix: String = "unloadingType"
+case class DateGoodsUnloaded(date: LocalDate)
 
-  case object Fully extends WithName("1") with UnloadingType
-  case object Partially extends WithName("0") with UnloadingType
+object DateGoodsUnloaded {
 
-  override val values: Seq[UnloadingType] = Seq(
-    Fully,
-    Partially
-  )
+  implicit val writes: Writes[DateGoodsUnloaded] = (dateGoodsUnloaded: DateGoodsUnloaded) => {
+
+    val formatterNoMillis: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+
+    JsString(dateGoodsUnloaded.date.atStartOfDay().format(formatterNoMillis))
+  }
+
+  implicit val reads: Reads[DateGoodsUnloaded] = Json.reads[DateGoodsUnloaded]
+
 }

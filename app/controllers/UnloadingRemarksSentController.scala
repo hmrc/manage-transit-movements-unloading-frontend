@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions._
 import models.{ArrivalId, UnloadingRemarksSentViewModel}
-import pages.CustomsOfficeOfDestinationPage
+import pages.{CustomsOfficeOfDestinationPage, PreparationDateAndTimePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -35,25 +35,23 @@ class UnloadingRemarksSentController @Inject() (
   referenceDataService: ReferenceDataService,
   cc: MessagesControllerComponents,
   sessionRepository: SessionRepository,
+  getMandatoryPage: IE043DataRequiredActionProvider,
   view: UnloadingRemarksSentView
 )(implicit ec: ExecutionContext)
     extends FrontendController(cc)
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
-    implicit request =>
-      request.userAnswers.get(CustomsOfficeOfDestinationPage) match {
-        case Some(customsOfficeId) =>
-          referenceDataService
-            .getCustomsOfficeByCode(customsOfficeId)
-            .map {
-              customsOffice =>
-                sessionRepository.remove(arrivalId)
-                Ok(view(request.userAnswers.mrn, UnloadingRemarksSentViewModel(customsOffice, customsOfficeId)))
-            }
-        case None =>
-          sessionRepository.remove(arrivalId)
-          Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
-      }
-  }
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions
+    .requireData(arrivalId)
+    .andThen(getMandatoryPage(CustomsOfficeOfDestinationPage))
+    .async {
+      implicit request =>
+        referenceDataService
+          .getCustomsOfficeByCode(request.arg)
+          .map {
+            customsOffice =>
+              sessionRepository.remove(arrivalId)
+              Ok(view(request.userAnswers.mrn, UnloadingRemarksSentViewModel(customsOffice, request.arg)))
+          }
+    }
 }

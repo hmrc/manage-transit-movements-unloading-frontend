@@ -29,6 +29,7 @@ import viewModels.UnloadingFindingsViewModel.UnloadingFindingsViewModelProvider
 
 import scala.concurrent.Future
 import play.api.inject.bind
+import play.api.libs.json.{JsObject, Json}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -47,10 +48,27 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
     "must render Means of Transport section" - {
       "when there is one" in {
 
-        val userAnswers = emptyUserAnswers
-          .setValue(VehicleIdentificationNumberPage(index), "123456")
-          .setValue(VehicleIdentificationTypePage(index), "31")
-          .setValue(VehicleRegistrationCountryPage(index), "GB")
+        val json = Json
+          .parse(
+            """
+            |{
+            |   "Consignment" : {
+            |       "DepartureTransportMeans" : [
+            |           {
+            |               "sequenceNumber" : "dtm-1",
+            |               "typeOfIdentification" : "4",
+            |               "identificationNumber" : "28",
+            |               "nationality" : "GB"
+            |           }
+            |       ]
+            |   }
+            |}
+            |
+            |""".stripMargin
+          )
+          .as[JsObject]
+
+        val userAnswers = emptyUserAnswers.copy(ie043Data = json)
 
         setExistingUserAnswers(userAnswers)
         when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -63,14 +81,36 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         section.rows.size mustBe 2
         section.viewLink must not be defined
       }
+
       "when there is multiple" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(VehicleIdentificationNumberPage(index), "123456")
-          .setValue(VehicleIdentificationTypePage(index), "31")
-          .setValue(VehicleRegistrationCountryPage(index), "DE")
-          .setValue(VehicleIdentificationNumberPage(Index(1)), "123456")
-          .setValue(VehicleIdentificationTypePage(Index(1)), "31")
-          .setValue(VehicleRegistrationCountryPage(Index(1)), "DE")
+
+        val json = Json
+          .parse(
+            """
+              |{
+              |   "Consignment" : {
+              |       "DepartureTransportMeans" : [
+              |           {
+              |               "sequenceNumber" : "dtm-1",
+              |               "typeOfIdentification" : "4",
+              |               "identificationNumber" : "28",
+              |               "nationality" : "GB"
+              |           },
+              |           {
+              |               "sequenceNumber" : "dtm-1",
+              |               "typeOfIdentification" : "4",
+              |               "identificationNumber" : "28",
+              |               "nationality" : "GB"
+              |           }
+              |       ]
+              |   }
+              |}
+              |
+              |""".stripMargin
+          )
+          .as[JsObject]
+
+        val userAnswers = emptyUserAnswers.copy(ie043Data = json)
 
         setExistingUserAnswers(userAnswers)
         when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -89,8 +129,26 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
       "when there is one" - {
 
         "with no seals" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(ContainerIdentificationNumberPage(equipmentIndex), "123456")
+
+          val json = Json
+            .parse(
+              """
+                |{
+                |   "Consignment" : {
+                |       "TransportEquipment" : [
+                |           {
+                |               "sequenceNumber" : "te1",
+                |               "containerIdentificationNumber" : "cin-1"
+                |           }
+                |       ]
+                |   }
+                |}
+                |
+                |""".stripMargin
+            )
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
 
           setExistingUserAnswers(userAnswers)
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -105,9 +163,33 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         }
 
         "with seals" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(ContainerIdentificationNumberPage(equipmentIndex), "123456")
-            .setValue(SealPage(equipmentIndex, sealIndex), "123456")
+
+          val json = Json
+            .parse(
+              """
+                |{
+                |   "Consignment" : {
+                |       "TransportEquipment" : [
+                |           {
+                |               "sequenceNumber" : "te1",
+                |               "containerIdentificationNumber" : "cin-1",
+                |               "numberOfSeals" : 103,
+                |               "Seal" : [
+                |                   {
+                |                       "sequenceNumber" : "1001",
+                |                       "identifier" : "1002"
+                |                   }
+                |               ]
+                |           }
+                |       ]
+                |   }
+                |}
+                |
+                |""".stripMargin
+            )
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
 
           setExistingUserAnswers(userAnswers)
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -124,9 +206,30 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
       "when there is multiple" - {
 
         "with no seals" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(ContainerIdentificationNumberPage(equipmentIndex), "123456")
-            .setValue(ContainerIdentificationNumberPage(Index(1)), "123456")
+
+          val json = Json
+            .parse(
+              """
+                |{
+                |   "Consignment" : {
+                |       "TransportEquipment" : [
+                |           {
+                |               "sequenceNumber" : "te1",
+                |               "containerIdentificationNumber" : "cin-1"
+                |           },
+                |           {
+                |               "sequenceNumber" : "te1",
+                |               "containerIdentificationNumber" : "cin-1"
+                |           }
+                |       ]
+                |   }
+                |}
+                |
+                |""".stripMargin
+            )
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
 
           setExistingUserAnswers(userAnswers)
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -141,11 +244,44 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         }
 
         "with seals" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(ContainerIdentificationNumberPage(equipmentIndex), "123456")
-            .setValue(SealPage(equipmentIndex, sealIndex), "123456")
-            .setValue(ContainerIdentificationNumberPage(Index(1)), "123456")
-            .setValue(SealPage(Index(1), sealIndex), "123456")
+
+          val json = Json
+            .parse(
+              """
+                |{
+                |   "Consignment" : {
+                |       "TransportEquipment" : [
+                |           {
+                |               "sequenceNumber" : "te1",
+                |               "containerIdentificationNumber" : "cin-1",
+                |               "numberOfSeals" : 103,
+                |               "Seal" : [
+                |                   {
+                |                       "sequenceNumber" : "1001",
+                |                       "identifier" : "1002"
+                |                   }
+                |               ]
+                |           },
+                |           {
+                |               "sequenceNumber" : "te1",
+                |               "containerIdentificationNumber" : "cin-1",
+                |               "numberOfSeals" : 103,
+                |               "Seal" : [
+                |                   {
+                |                       "sequenceNumber" : "1001",
+                |                       "identifier" : "1002"
+                |                   }
+                |               ]
+                |           }
+                |       ]
+                |   }
+                |}
+                |
+                |""".stripMargin
+            )
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
 
           setExistingUserAnswers(userAnswers)
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -163,11 +299,54 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
     "must render house consignment sections" - {
       "when there is one" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(GrossWeightPage(index, itemIndex), 10.00d)
-          .setValue(NetWeightPage(index, itemIndex), 20.00d)
-          .setValue(ConsignorNamePage(index), "name")
-          .setValue(ConsignorIdentifierPage(index), "identifier")
+
+        val json = Json
+          .parse(
+            """
+            |{
+            |   "Consignment" : {
+            |       "HouseConsignment" : [
+            |           {
+            |               "sequenceNumber" : "hc1",
+            |               "Consignor" : {
+            |                   "identificationNumber" : "csgr1",
+            |                   "name" : "michael doe"
+            |               },
+            |               "Consignee" : {
+            |                   "identificationNumber" : "csgee1",
+            |                   "name" : "John Smith"
+            |               },
+            |               "DepartureTransportMeans" : [
+            |                   {
+            |                       "sequenceNumber" : "56",
+            |                       "typeOfIdentification" : "2",
+            |                       "identificationNumber" : "23",
+            |                       "nationality" : "IT"
+            |                   }
+            |               ],
+            |               "ConsignmentItem" : [
+            |                   {
+            |                       "goodsItemNumber" : "6",
+            |                       "declarationGoodsItemNumber" : 100,
+            |                       "Commodity" : {
+            |                           "descriptionOfGoods" : "shirts",
+            |                           "GoodsMeasure" : {
+            |                               "grossMass" : 123.45,
+            |                               "netMass" : 123.45
+            |                           }
+            |                       }
+            |                   }
+            |               ]
+            |           }
+            |       ]
+            |   }
+            |}
+            |
+            |""".stripMargin
+          )
+          .as[JsObject]
+
+        val userAnswers = emptyUserAnswers.copy(ie043Data = json)
 
         setExistingUserAnswers(userAnswers)
         when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -177,19 +356,89 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         val section           = result.section.head
 
         section.sectionTitle.value mustBe "House consignment 1"
-        section.rows.size mustBe 4
+        section.rows.size mustBe 6
         section.viewLink mustBe defined
       }
       "when there is multiple" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(GrossWeightPage(index, itemIndex), 10.00d)
-          .setValue(NetWeightPage(index, itemIndex), 20.00d)
-          .setValue(ConsignorNamePage(index), "name")
-          .setValue(ConsignorIdentifierPage(index), "identifier")
-          .setValue(GrossWeightPage(Index(1), itemIndex), 10.00d)
-          .setValue(NetWeightPage(Index(1), itemIndex), 20.00d)
-          .setValue(ConsignorNamePage(Index(1)), "name")
-          .setValue(ConsignorIdentifierPage(Index(1)), "identifier")
+        val json = Json
+          .parse(
+            """
+            |{
+            |   "Consignment" : {
+            |       "HouseConsignment" : [
+            |           {
+            |               "sequenceNumber" : "hc1",
+            |               "Consignor" : {
+            |                   "identificationNumber" : "csgr1",
+            |                   "name" : "michael doe"
+            |               },
+            |               "Consignee" : {
+            |                   "identificationNumber" : "csgee1",
+            |                   "name" : "John Smith"
+            |               },
+            |               "DepartureTransportMeans" : [
+            |                   {
+            |                       "sequenceNumber" : "56",
+            |                       "typeOfIdentification" : "2",
+            |                       "identificationNumber" : "23",
+            |                       "nationality" : "IT"
+            |                   }
+            |               ],
+            |               "ConsignmentItem" : [
+            |                   {
+            |                       "goodsItemNumber" : "6",
+            |                       "declarationGoodsItemNumber" : 100,
+            |                       "Commodity" : {
+            |                           "descriptionOfGoods" : "shirts",
+            |                           "GoodsMeasure" : {
+            |                               "grossMass" : 123.45,
+            |                               "netMass" : 123.45
+            |                           }
+            |                       }
+            |                   }
+            |               ]
+            |           },
+            |           {
+            |               "sequenceNumber" : "hc1",
+            |               "Consignor" : {
+            |                   "identificationNumber" : "csgr1",
+            |                   "name" : "michael doe"
+            |               },
+            |               "Consignee" : {
+            |                   "identificationNumber" : "csgee1",
+            |                   "name" : "John Smith"
+            |               },
+            |               "DepartureTransportMeans" : [
+            |                   {
+            |                       "sequenceNumber" : "56",
+            |                       "typeOfIdentification" : "2",
+            |                       "identificationNumber" : "23",
+            |                       "nationality" : "IT"
+            |                   }
+            |               ],
+            |               "ConsignmentItem" : [
+            |                   {
+            |                       "goodsItemNumber" : "6",
+            |                       "declarationGoodsItemNumber" : 100,
+            |                       "Commodity" : {
+            |                           "descriptionOfGoods" : "shirts",
+            |                           "GoodsMeasure" : {
+            |                               "grossMass" : 123.45,
+            |                               "netMass" : 123.45
+            |                           }
+            |                       }
+            |                   }
+            |               ]
+            |           }
+            |       ]
+            |   }
+            |}
+            |
+            |""".stripMargin
+          )
+          .as[JsObject]
+
+        val userAnswers = emptyUserAnswers.copy(ie043Data = json)
 
         setExistingUserAnswers(userAnswers)
         when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -199,48 +448,9 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         val section           = result.section(1)
 
         section.sectionTitle.value mustBe "House consignment 2"
-        section.rows.size mustBe 4
+        section.rows.size mustBe 6
         section.viewLink mustBe defined
       }
     }
-
-//    "must render item section" - {
-//      "when there is one" - {
-//        val userAnswers = emptyUserAnswers
-//          .setValue(ItemDescriptionPage(index, itemIndex), "shirts")
-//          .setValue(GrossWeightPage(index, itemIndex), 10.00d)
-//          .setValue(NetWeightPage(index, itemIndex), 20.00d)
-//
-//        setExistingUserAnswers(userAnswers)
-//
-//        val viewModelProvider = new UnloadingFindingsViewModelProvider()
-//        val result            = viewModelProvider.apply(userAnswers)
-//        val section           = result.section(2)
-//
-//        section.sectionTitle.value mustBe "Item 1"
-//        section.rows.size mustBe 3
-//        section.viewLink must not be defined
-//      }
-//
-//      "when there is multiple" - {
-//        val userAnswers = emptyUserAnswers
-//          .setValue(ItemDescriptionPage(index, itemIndex), "shirts")
-//          .setValue(GrossWeightPage(index, itemIndex), 10.00d)
-//          .setValue(NetWeightPage(index, itemIndex), 20.00d)
-//          .setValue(ItemDescriptionPage(Index(1), Index(1)), "pants")
-//          .setValue(GrossWeightPage(Index(1), Index(1)), 22.00d)
-//          .setValue(NetWeightPage(Index(1), Index(1)), 24.00d)
-//
-//        setExistingUserAnswers(userAnswers)
-//
-//        val viewModelProvider = new UnloadingFindingsViewModelProvider()
-//        val result            = viewModelProvider.apply(userAnswers)
-//        val section           = result.section(3)
-//
-//        section.sectionTitle.value mustBe "Item 2"
-//        section.rows.size mustBe 3
-//        section.viewLink must not be defined
-//      }
-//    }
   }
 }
