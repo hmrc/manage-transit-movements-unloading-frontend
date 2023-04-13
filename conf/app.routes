@@ -21,7 +21,6 @@ GET        /data/keep-alive                                                     
 GET        /data/:arrivalId/keep-alive                                                      controllers.KeepAliveController.keepAlive(arrivalId: Option[ArrivalId])
 
 GET        /:arrivalId/unloading-guidance                                                   controllers.UnloadingGuidanceController.onPageLoad(arrivalId: ArrivalId)
-POST       /:arrivalId/unloading-guidance                                                   controllers.UnloadingGuidanceController.onSubmit(arrivalId: ArrivalId)
 
 GET        /:arrivalId/goods-unloaded-date                                                  controllers.DateGoodsUnloadedController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/goods-unloaded-date                                                  controllers.DateGoodsUnloadedController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
@@ -99,10 +98,8 @@ GET        /:arrivalId/items/:index/change-number-of-packages                   
 POST       /:arrivalId/items/:index/change-number-of-packages                               controllers.TotalNumberOfPackagesController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
 
 GET        /:arrivalId/declaration-summary                                                  controllers.UnloadingFindingsController.onPageLoad(arrivalId: ArrivalId)
-POST       /:arrivalId/declaration-summary                                                  controllers.UnloadingFindingsController.onSubmit(arrivalId: ArrivalId)
 
 GET        /:arrivalId/declaration-summary-house-consignment/:index                         controllers.HouseConsignmentController.onPageLoad(arrivalId: ArrivalId, index:Index)
-POST       /:arrivalId/declaration-summary-house-consignment/                               controllers.HouseConsignmentController.onSubmit(arrivalId: ArrivalId)
 
 GET        /:arrivalId/unloading-permission-pdf                                             controllers.UnloadingPermissionPDFController.getPDF(arrivalId: ArrivalId)
 

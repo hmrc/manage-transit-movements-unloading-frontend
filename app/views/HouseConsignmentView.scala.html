@@ -49,7 +49,9 @@ formHelper: FormWithCSRF
 
     @summaryDetails(houseConsignmentViewModel.section)
 
-    @formHelper(action = routes.HouseConsignmentController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
-        @button(attributes = Map("id" -> "submit"), messageKey = "site.backToSummary")
-    }
+    <div>
+        <a class="govuk-button" id="submit" href=@controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url>
+        @messages("site.backToSummary")
+        </a>
+    </div>
 }

@@ -17,6 +17,7 @@
 package views
 
 import generators.Generators
+import models.NormalMode
 import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
@@ -49,9 +50,7 @@ class UnloadingFindingsViewSpec extends DetailsListViewBehaviours with Generator
 
   behave like pageWithSections()
 
-  behave like pageWithFormAction(controllers.routes.UnloadingFindingsController.onSubmit(arrivalId).url)
-
-  behave like pageWithSubmitButton("Continue")
+  behave like pageWithLinkAsButton("Continue", controllers.routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, NormalMode).url)
 
   "must render section titles when rows are non-empty" - {
     sections.foreach(_.sectionTitle.map {

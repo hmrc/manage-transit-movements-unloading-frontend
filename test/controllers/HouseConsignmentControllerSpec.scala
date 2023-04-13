@@ -67,21 +67,6 @@ class HouseConsignmentControllerSpec extends SpecBase with AppWithDefaultMockFix
         view(mrn, arrivalId, houseConsignmentViewModel, index)(request, messages).toString
     }
 
-    "must redirect to the next page when valid data is submitted" in {
-      checkArrivalStatus()
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request = FakeRequest(POST, routes.HouseConsignmentController.onSubmit(arrivalId).url)
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
-
-    }
-
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
       setNoExistingUserAnswers()
@@ -93,21 +78,6 @@ class HouseConsignmentControllerSpec extends SpecBase with AppWithDefaultMockFix
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
-    }
-
-    "must redirect to Session Expired for a POST if no existing data is found" in {
-      checkArrivalStatus()
-      setNoExistingUserAnswers()
-
-      val request =
-        FakeRequest(POST, houseConsignmentRoute)
-          .withFormUrlEncodedBody(("value", "true"))
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.ErrorController.notFound().url
-
     }
   }
 }
