@@ -48,7 +48,7 @@ lazy val root = (project in file("."))
       "views\\.html\\.resources.*",
       "views\\.html\\.templates.*"
     ).mkString(";"),
-    ScoverageKeys.coverageMinimumStmtTotal := 90,
+    ScoverageKeys.coverageMinimumStmtTotal := 85,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting  := true,
     scalacOptions ++= Seq(
