@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import controllers.routes
 @import views.html.components.{Button, Heading}
 
 @this(
@@ -38,7 +37,7 @@
     <p class="govuk-body">@messages("unloadingGuidance.pdf.preLinkText")
     <a id="download" class="govuk-link" href="???">@messages("unloadingGuidance.pdf.link")</a>
     .</p>
-    
+
     <div>
         <a class="govuk-button" id="submit" href=@controllers.routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode).url>
             @messages("site.continue")
