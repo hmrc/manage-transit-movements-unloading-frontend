@@ -60,7 +60,7 @@ POST       /:arrivalId/transport-equipment/:equipmentIndex/seal/:sealIndex/chang
 GET        /:arrivalId/container/:index/container-identification-number                     controllers.NewContainerIdentificationNumberController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
 POST       /:arrivalId/container/:index/container-identification-number                     controllers.NewContainerIdentificationNumberController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
 GET        /:arrivalId/container/:index/change-container-identification-number              controllers.NewContainerIdentificationNumberController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
-POST       /:arrivalId/container/:index/change-container-identification-numbe               controllers.NewContainerIdentificationNumberController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
+POST       /:arrivalId/container/:index/change-container-identification-number              controllers.NewContainerIdentificationNumberController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
 
 GET        /:arrivalId/seals-readable                                                       controllers.CanSealsBeReadController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/seals-readable                                                       controllers.CanSealsBeReadController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
