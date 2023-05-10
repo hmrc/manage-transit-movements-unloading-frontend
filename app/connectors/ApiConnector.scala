@@ -20,7 +20,6 @@ import config.FrontendAppConfig
 import models.{ArrivalId, UserAnswers}
 import play.api.Logging
 import play.api.http.HeaderNames
-import play.api.libs.json.JsObject
 import play.api.mvc.Result
 import play.api.mvc.Results.{BadRequest, InternalServerError}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpErrorFunctions, HttpResponse}

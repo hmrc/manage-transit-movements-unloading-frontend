@@ -22,7 +22,6 @@ import models.UnloadingRemarksSentViewModel
 import models.reference.CustomsOffice
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import pages.CustomsOfficeOfDestinationPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}

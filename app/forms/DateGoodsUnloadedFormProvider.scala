@@ -16,13 +16,12 @@
 
 package forms
 
-import java.time.{Clock, LocalDate}
 import forms.mappings.Mappings
-import models.P5.DateGoodsUnloaded
-
-import javax.inject.Inject
 import play.api.data.Form
 import utils.Format.cyaDateFormatter
+
+import java.time.{Clock, LocalDate}
+import javax.inject.Inject
 
 class DateGoodsUnloadedFormProvider @Inject() (clock: Clock) extends Mappings {
 

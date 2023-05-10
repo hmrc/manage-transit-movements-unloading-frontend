@@ -18,14 +18,12 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
-import models.UnloadingType.Fully
 import models.{NormalMode, UnloadingType}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.{AddUnloadingCommentsYesNoPage, UnloadingTypePage}
+import pages.UnloadingTypePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.Format._
 import views.html.UnloadingTypeView
 
 import scala.concurrent.Future
