@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions._
 import models.{ArrivalId, UnloadingRemarksSentViewModel}
-import pages.{CustomsOfficeOfDestinationPage, PreparationDateAndTimePage}
+import pages.CustomsOfficeOfDestinationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -27,7 +27,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.UnloadingRemarksSentView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class UnloadingRemarksSentController @Inject() (
   override val messagesApi: MessagesApi,

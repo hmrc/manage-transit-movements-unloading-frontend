@@ -19,4 +19,4 @@
 @()(implicit request: Request[_])
 
 <script src='@routes.Assets.versioned("javascripts/application.min.js")' @{CSPNonce.attr}></script>
-@autocompleteJavascript(CSPNonce.get)
+@autocompleteJavascript()
