@@ -29,6 +29,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import services.DateTimeService
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class InterchangeControlReferenceIdRepositorySpec
@@ -42,7 +43,7 @@ class InterchangeControlReferenceIdRepositorySpec
 
   private val mockTimeService: DateTimeService = mock[DateTimeService]
 
-  override protected def repository = new InterchangeControlReferenceIdRepository(mongoComponent, mockTimeService)
+  override protected val repository = new InterchangeControlReferenceIdRepository(mongoComponent, mockTimeService)
 
   implicit override lazy val app: Application = new GuiceApplicationBuilder()
     .overrides(
