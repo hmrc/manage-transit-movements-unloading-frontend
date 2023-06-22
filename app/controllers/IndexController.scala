@@ -41,7 +41,7 @@ class IndexController @Inject() (
     with I18nSupport
     with Logging {
 
-  def unloadingRemarks(arrivalId: ArrivalId): Action[AnyContent] = (identify andThen unloadingPermission(arrivalId)).async {
+  def unloadingRemarks(arrivalId: ArrivalId, messageId: String): Action[AnyContent] = (identify andThen unloadingPermission(arrivalId)).async {
     implicit request =>
       for {
         getUserAnswer <- sessionRepository.get(arrivalId, request.eoriNumber) map {
@@ -55,6 +55,6 @@ class IndexController @Inject() (
           )
         }
         _ <- sessionRepository.set(getUserAnswer)
-      } yield Redirect(controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId))
+      } yield Redirect(controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId, messageId))
   }
 }

@@ -33,8 +33,8 @@ class UnloadingGuidanceController @Inject() (
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, messageId: String): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      Ok(view(request.userAnswers.mrn, arrivalId))
+      Ok(view(request.userAnswers.mrn, arrivalId, messageId))
   }
 }
