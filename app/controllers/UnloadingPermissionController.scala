@@ -35,7 +35,7 @@ class UnloadingPermissionController @Inject() (
     extends FrontendController(cc)
     with I18nSupport {
 
-  def getUnloadingPermissionDocument(messageId: String, arrivalId: ArrivalId): Action[AnyContent] = (Action andThen identify).async {
+  def getUnloadingPermissionDocument(messageId: String, arrivalId: String): Action[AnyContent] = (Action andThen identify).async {
     implicit request =>
       connector.getUnloadingPermission(messageId, arrivalId).map {
         result =>

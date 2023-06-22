@@ -27,7 +27,7 @@ import scala.concurrent.Future
 
 class ManageDocumentsConnector @Inject() (config: FrontendAppConfig, wsClient: WSClient) extends Logging {
 
-  def getUnloadingPermission(messageId: String, arrivalId: ArrivalId)(implicit hc: HeaderCarrier): Future[WSResponse] = {
+  def getUnloadingPermission(messageId: String, arrivalId: String)(implicit hc: HeaderCarrier): Future[WSResponse] = {
 
     val serviceUrl: String = s"${config.manageDocumentsUrl}/$arrivalId/unloading-permission-document/$messageId"
     val headers            = hc.headers(HMRCHeaderNames.explicitlyIncludedHeaders)
