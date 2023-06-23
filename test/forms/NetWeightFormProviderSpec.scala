@@ -19,7 +19,6 @@ package forms
 import forms.behaviours.StringFieldBehaviours
 import models.Index
 import models.messages.UnloadingRemarksRequest
-import models.messages.UnloadingRemarksRequest.weightCharsRegex
 import play.api.data.{Field, FormError}
 
 class NetWeightFormProviderSpec extends StringFieldBehaviours {

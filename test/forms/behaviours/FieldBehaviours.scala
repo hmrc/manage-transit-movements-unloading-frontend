@@ -19,10 +19,8 @@ package forms.behaviours
 import forms.FormSpec
 import generators.Generators
 import org.scalacheck.Gen
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.data.{Field, Form, FormError}
-import wolfendale.scalacheck.regexp.RegexpGen
+import play.api.data.{Form, FormError}
 
 trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Generators {
 

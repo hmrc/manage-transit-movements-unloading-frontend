@@ -49,6 +49,7 @@ trait SpecBase
     with GuiceOneAppPerSuite {
 
   val arrivalId: ArrivalId = ArrivalId("AB123")
+  val messageId: String    = "12344565gf"
 
   val configKey = "config"
 
