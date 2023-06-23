@@ -18,7 +18,6 @@ package connectors
 
 import config.FrontendAppConfig
 import logging.Logging
-import models.ArrivalId
 import play.api.libs.ws.{WSClient, WSResponse}
 import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames => HMRCHeaderNames}
 

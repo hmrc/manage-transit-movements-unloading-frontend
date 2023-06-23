@@ -42,7 +42,7 @@ class UnloadingGuidanceViewSpec extends ViewBehaviours {
   behave like pageWithLink(
     id = "download",
     expectedText = "download the Unloading Permission PDF",
-    expectedHref = controllers.routes.UnloadingPermissionController.getUnloadingPermissionDocument(messageId, arrivalId).url
+    expectedHref = controllers.routes.UnloadingPermissionController.getUnloadingPermissionDocument(messageId, arrivalId.value).url
   )
 
   behave like pageWithLinkAsButton("Continue", controllers.routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode).url)
