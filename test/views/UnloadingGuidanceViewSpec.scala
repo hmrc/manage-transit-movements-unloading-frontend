@@ -16,7 +16,6 @@
 
 package views
 
-import controllers.routes
 import models.NormalMode
 import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
@@ -25,7 +24,7 @@ import views.html.UnloadingGuidanceView
 class UnloadingGuidanceViewSpec extends ViewBehaviours {
 
   override def view: HtmlFormat.Appendable =
-    injector.instanceOf[UnloadingGuidanceView].apply(mrn, arrivalId)(fakeRequest, messages)
+    injector.instanceOf[UnloadingGuidanceView].apply(mrn, arrivalId, messageId)(fakeRequest, messages)
 
   override val prefix: String = "unloadingGuidance"
 
@@ -43,7 +42,7 @@ class UnloadingGuidanceViewSpec extends ViewBehaviours {
   behave like pageWithLink(
     id = "download",
     expectedText = "download the Unloading Permission PDF",
-    expectedHref = "???"
+    expectedHref = controllers.routes.UnloadingPermissionController.getUnloadingPermissionDocument(messageId, arrivalId.value).url
   )
 
   behave like pageWithLinkAsButton("Continue", controllers.routes.UnloadingTypeController.onPageLoad(arrivalId, NormalMode).url)

@@ -32,7 +32,7 @@ class UnloadingGuidanceControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, routes.UnloadingGuidanceController.onPageLoad(arrivalId).url)
+      val request = FakeRequest(GET, routes.UnloadingGuidanceController.onPageLoad(arrivalId, messageId).url)
 
       val result = route(app, request).value
 
@@ -40,7 +40,7 @@ class UnloadingGuidanceControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       status(result) mustBe OK
 
-      contentAsString(result) mustEqual view(mrn, arrivalId)(request, messages).toString
+      contentAsString(result) mustEqual view(mrn, arrivalId, messageId)(request, messages).toString
     }
 
   }

@@ -18,7 +18,6 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
-import models.NormalMode
 import play.api.inject.bind
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

@@ -2,7 +2,7 @@
 
 ->         /hmrc-frontend                                                                   hmrcfrontend.Routes
 
-GET        /:arrivalId                                                                      controllers.IndexController.unloadingRemarks(arrivalId: ArrivalId)
+GET        /:arrivalId/unloading-remarks/:messageId                                         controllers.IndexController.unloadingRemarks(arrivalId: ArrivalId, messageId: String)
 
 GET        /assets/*file                                                                    controllers.Assets.versioned(path="/public", file: Asset)
 
@@ -20,7 +20,7 @@ GET        /unauthorised-group-access                                           
 GET        /data/keep-alive                                                                 controllers.KeepAliveController.keepAlive(arrivalId: Option[ArrivalId] = None)
 GET        /data/:arrivalId/keep-alive                                                      controllers.KeepAliveController.keepAlive(arrivalId: Option[ArrivalId])
 
-GET        /:arrivalId/unloading-guidance                                                   controllers.UnloadingGuidanceController.onPageLoad(arrivalId: ArrivalId)
+GET        /:arrivalId/unloading-guidance/:messageId                                        controllers.UnloadingGuidanceController.onPageLoad(arrivalId: ArrivalId, messageId: String)
 
 GET        /:arrivalId/goods-unloaded-date                                                  controllers.DateGoodsUnloadedController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/goods-unloaded-date                                                  controllers.DateGoodsUnloadedController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
@@ -96,6 +96,8 @@ GET        /:arrivalId/items/:index/number-of-packages                          
 POST       /:arrivalId/items/:index/number-of-packages                                      controllers.TotalNumberOfPackagesController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
 GET        /:arrivalId/items/:index/change-number-of-packages                               controllers.TotalNumberOfPackagesController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
 POST       /:arrivalId/items/:index/change-number-of-packages                               controllers.TotalNumberOfPackagesController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
+
+GET        /:arrivalId/unloading-permission-document/:messageId                             controllers.UnloadingPermissionController.getUnloadingPermissionDocument(messageId: String, arrivalId: String)
 
 GET        /:arrivalId/declaration-summary                                                  controllers.UnloadingFindingsController.onPageLoad(arrivalId: ArrivalId)
 

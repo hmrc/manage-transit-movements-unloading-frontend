@@ -23,7 +23,7 @@
     button: Button,
 )
 
-@(mrn: MovementReferenceNumber, arrivalId: ArrivalId)(implicit request: Request[_], messages: Messages)
+@(mrn: MovementReferenceNumber, arrivalId: ArrivalId, messageId: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("unloadingGuidance.title"),
@@ -35,7 +35,8 @@
     <p class="govuk-body">@messages("unloadingGuidance.para", mrn)</p>
 
     <p class="govuk-body">@messages("unloadingGuidance.pdf.preLinkText")
-    <a id="download" class="govuk-link" href="???">@messages("unloadingGuidance.pdf.link")</a>
+
+    <a id="download" class="govuk-link" href=@controllers.routes.UnloadingPermissionController.getUnloadingPermissionDocument(messageId, arrivalId.value).url>@messages("unloadingGuidance.pdf.link")</a>
     .</p>
 
     <div>
