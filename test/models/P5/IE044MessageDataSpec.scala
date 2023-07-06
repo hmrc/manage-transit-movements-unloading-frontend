@@ -42,7 +42,7 @@ class IE044MessageDataSpec extends SpecBase {
       val expectedResult: JsValue = Json.parse(s"""
           |{
           |   "messageSender" : "NCTS",
-          |   "messageRecipient" : "NCTS",
+          |   "messageRecipient" : "NTA.GB",
           |   "preparationDateAndTime" : "${prepDateTime.format(dateTimeFormatIE044)}",
           |   "messageIdentification" : "CC044C",
           |   "messageType" : "CC044C",

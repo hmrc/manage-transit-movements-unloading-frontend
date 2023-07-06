@@ -74,7 +74,7 @@ class IE044Data extends SpecBase {
            |{
            |   "n1:CC044C" : {
            |       "messageSender" : "NCTS",
-           |       "messageRecipient" : "NCTS",
+           |       "messageRecipient" : "NTA.GB",
            |       "preparationDateAndTime" : "${prepDateTime.format(dateTimeFormatIE044)}",
            |       "messageIdentification" : "CC044C",
            |       "messageType" : "CC044C",
