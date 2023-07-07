@@ -35,7 +35,7 @@ object IE044MessageData {
     messageData =>
       Json.obj(
         "messageSender"                    -> "NCTS", // TODO double check this
-        "messageRecipient"                 -> "NCTS", // TODO double check this
+        "messageRecipient"                 -> s"NTA.${messageData.CustomsOfficeOfDestinationActual.countryCode}",
         "preparationDateAndTime"           -> messageData.preparationDateAndTime.format(dateTimeFormatIE044),
         "messageIdentification"            -> "CC044C", // TODO double check this
         "messageType"                      -> "CC044C",
