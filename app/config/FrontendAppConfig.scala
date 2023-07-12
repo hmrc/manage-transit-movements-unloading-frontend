@@ -66,7 +66,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val serviceUrl: String                = s"$manageTransitMovementsUrl/what-do-you-want-to-do"
   lazy val viewArrivals: String              = s"$manageTransitMovementsUrl/view-arrivals"
 
-  lazy val referenceDataUrl: String = configuration.get[Service]("microservice.services.reference-data").fullServiceUrl
+  lazy val referenceDataUrl: String = configuration.get[Service]("microservice.services.customs-reference-data").fullServiceUrl
 
   lazy val manageDocumentsUrl: String = configuration.get[Service]("microservice.services.manage-documents").fullServiceUrl
 
