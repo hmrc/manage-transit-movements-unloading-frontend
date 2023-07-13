@@ -34,11 +34,26 @@ class ReferenceDataServiceImpl @Inject() (connector: ReferenceDataConnector) ext
       case None              => Future.successful(None)
     }
 
-  def getCustomsOfficeByCode(customsOfficeCode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CustomsOffice]] =
-    connector.getCustomsOffice(customsOfficeCode)
+  def getCustomsOfficeByCode(customsOfficeCode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CustomsOffice]] = {
+    val customsOfficesResult: Future[Seq[CustomsOffice]] = connector.getCustomsOffice(customsOfficeCode)
 
-  def getCountryNameByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[String] =
-    connector.getCountryNameByCode(code)
+    customsOfficesResult.flatMap(
+      offices => Future.successful(offices.headOption)
+    )
+  }
+
+  def getCountryNameByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[String] = {
+    val countriesResult: Future[Seq[Country]] = connector.getCountryNameByCode(code)
+
+    countriesResult.flatMap(
+      countries =>
+        if (countries.isEmpty) {
+          throw new IllegalArgumentException("Get country by code request failed to return data")
+        } else {
+          Future.successful(countries.head.code)
+        }
+    )
+  }
 
   private def sort(countries: Seq[Country]): Seq[Country] =
     countries.sortBy(

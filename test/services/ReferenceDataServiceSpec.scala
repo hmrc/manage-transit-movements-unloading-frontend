@@ -95,7 +95,7 @@ class ReferenceDataServiceSpec extends AnyFreeSpec with ScalaFutures with Matche
     "getCustomsOfficeByCode should" - {
       "return a customsOffice" in {
 
-        when(mockConnector.getCustomsOffice(any())(any(), any())).thenReturn(Future.successful(Some(customsOffice)))
+        when(mockConnector.getCustomsOffice(any())(any(), any())).thenReturn(Future.successful(Seq(customsOffice)))
 
         val service = new ReferenceDataServiceImpl(mockConnector)
 
@@ -107,7 +107,7 @@ class ReferenceDataServiceSpec extends AnyFreeSpec with ScalaFutures with Matche
 
       "return None if customsOffice can't be found" in {
 
-        when(mockConnector.getCustomsOffice(any())(any(), any())).thenReturn(Future.successful(None))
+        when(mockConnector.getCustomsOffice(any())(any(), any())).thenReturn(Future.successful(Nil))
 
         val service = new ReferenceDataServiceImpl(mockConnector)
 
