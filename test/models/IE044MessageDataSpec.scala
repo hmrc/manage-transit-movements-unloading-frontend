@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package models.P5
+package models
 
 import base.SpecBase
-import models.MovementReferenceNumber
-import models.P5.submission.IE044MessageData
+import models.submission.IE044MessageData
 import play.api.libs.json.{JsValue, Json}
 import utils.Format.dateTimeFormatIE044
 

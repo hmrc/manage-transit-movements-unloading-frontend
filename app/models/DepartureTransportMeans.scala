@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package models.P5
+package models
 
 import play.api.libs.json.{Json, OFormat}
 
-case class GoodsMeasure(
-  grossMass: Option[Double],
-  netMass: Option[Double]
+case class DepartureTransportMeans(
+  sequenceNumber: Option[String],
+  typeOfIdentification: Option[String],
+  identificationNumber: Option[String],
+  nationality: Option[String]
 )
 
-object GoodsMeasure {
-  implicit val formats: OFormat[GoodsMeasure] = Json.format[GoodsMeasure]
+object DepartureTransportMeans {
+  implicit val formats: OFormat[DepartureTransportMeans] = Json.format[DepartureTransportMeans]
 }

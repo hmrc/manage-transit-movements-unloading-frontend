@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package models.P5
+package models
 
 import play.api.libs.json.{Json, OFormat}
 
-case class Packaging(
-  sequenceNumber: Option[String],
-  numberOfPackages: Option[Int]
-)
+case class TraderAtDestination(identificationNumber: String)
 
-object Packaging {
-  implicit val formats: OFormat[Packaging] = Json.format[Packaging]
+object TraderAtDestination {
+  implicit val formats: OFormat[TraderAtDestination] = Json.format[TraderAtDestination]
 }

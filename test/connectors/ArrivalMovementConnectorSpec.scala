@@ -19,8 +19,18 @@ package connectors
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock._
 import generators.Generators
-import models.MovementReferenceNumber
-import models.P5._
+import models.{
+  ArrivalMessageType,
+  Consignment,
+  CustomsOfficeOfDestinationActual,
+  IE043Data,
+  MessageData,
+  MessageMetaData,
+  Messages,
+  MovementReferenceNumber,
+  TraderAtDestination,
+  TransitOperation
+}
 import play.api.inject.guice.GuiceApplicationBuilder
 
 import java.time.LocalDateTime

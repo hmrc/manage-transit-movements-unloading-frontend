@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package models.P5
+package models
 
 import play.api.libs.json.{Json, OFormat}
 
-case class DepartureTransportMeans(
+case class HouseConsignment(
   sequenceNumber: Option[String],
-  typeOfIdentification: Option[String],
-  identificationNumber: Option[String],
-  nationality: Option[String]
+  Consignor: Option[Consignor],
+  Consignee: Option[Consignee],
+  DepartureTransportMeans: Option[List[DepartureTransportMeans]],
+  ConsignmentItem: Option[List[ConsignmentItem]]
 )
 
-object DepartureTransportMeans {
-  implicit val formats: OFormat[DepartureTransportMeans] = Json.format[DepartureTransportMeans]
+object HouseConsignment {
+  implicit val formats: OFormat[HouseConsignment] = Json.format[HouseConsignment]
 }

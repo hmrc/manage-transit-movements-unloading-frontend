@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package models.P5
+package models
 
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json.{Json, OFormat}
 
-case class Messages(messages: List[MessageMetaData])
+case class Consignor(
+  identificationNumber: Option[String],
+  name: Option[String]
+)
 
-object Messages {
-  implicit val reads: Reads[Messages] = Json.reads[Messages]
+object Consignor {
+  implicit val formats: OFormat[Consignor] = Json.format[Consignor]
 }

@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package models.P5
+package models
 
 import play.api.libs.json.{Json, OFormat}
 
-case class ConsignmentItem(
-  goodsItemNumber: Option[String],
-  declarationGoodsItemNumber: Option[Int],
-  Commodity: Option[Commodity],
-  Packaging: Option[List[Packaging]]
+case class Commodity(
+  descriptionOfGoods: Option[String],
+  GoodsMeasure: Option[GoodsMeasure]
 )
 
-object ConsignmentItem {
-  implicit val formats: OFormat[ConsignmentItem] = Json.format[ConsignmentItem]
+object Commodity {
+  implicit val formats: OFormat[Commodity] = Json.format[Commodity]
 }

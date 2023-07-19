@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package models.P5.submission
+package models.submission
 
-import models.P5.MessageData
+import models.MessageData
 import play.api.libs.json.{Json, OWrites}
 
 import java.time.LocalDateTime

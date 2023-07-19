@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-package models.P5
+package models
 
 import play.api.libs.json.{Json, OFormat}
 
-import java.time.LocalDateTime
-
-case class MessageData(
-  preparationDateAndTime: LocalDateTime,
-  TransitOperation: TransitOperation,
-  TraderAtDestination: TraderAtDestination,
-  Consignment: Consignment,
-  CustomsOfficeOfDestinationActual: CustomsOfficeOfDestinationActual
+case class Consignee(
+  identificationNumber: Option[String],
+  name: Option[String]
 )
 
-object MessageData {
-  implicit val formats: OFormat[MessageData] = Json.format[MessageData]
+object Consignee {
+  implicit val formats: OFormat[Consignee] = Json.format[Consignee]
 }

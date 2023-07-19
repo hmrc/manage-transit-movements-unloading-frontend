@@ -16,9 +16,17 @@
 
 package controllers.actions
 
-import models.P5._
 import models.requests.{IdentifierRequest, UnloadingPermissionRequest}
-import models.{ArrivalId, EoriNumber, MovementReferenceNumber}
+import models.{
+  ArrivalId,
+  Consignment,
+  CustomsOfficeOfDestinationActual,
+  EoriNumber,
+  MessageData,
+  MovementReferenceNumber,
+  TraderAtDestination,
+  TransitOperation
+}
 import play.api.mvc.Result
 import services.P5.UnloadingPermissionMessageService
 

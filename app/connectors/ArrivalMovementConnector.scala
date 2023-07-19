@@ -18,7 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import models.ArrivalId
-import models.P5.{IE043Data, Messages}
+import models.{IE043Data, Messages}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 

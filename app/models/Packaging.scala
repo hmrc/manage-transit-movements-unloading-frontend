@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-package models.P5
+package models
 
 import play.api.libs.json.{Json, OFormat}
 
-case class Consignment(
-  TransportEquipment: Option[List[TransportEquipment]],
-  DepartureTransportMeans: Option[List[DepartureTransportMeans]],
-  HouseConsignment: List[HouseConsignment]
-) {
+case class Packaging(
+  sequenceNumber: Option[String],
+  numberOfPackages: Option[Int]
+)
 
-  def sealsExist: Boolean = {
-    val sealsCount = TransportEquipment.map(_.map(_.numberOfSeals.getOrElse(0)).sum).getOrElse(0)
-    if (sealsCount > 0) true else false
-  }
-}
-
-object Consignment {
-  implicit val formats: OFormat[Consignment] = Json.format[Consignment]
+object Packaging {
+  implicit val formats: OFormat[Packaging] = Json.format[Packaging]
 }

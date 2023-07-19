@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package models.P5.submission
+package models.submission
 
-import models.P5._
+import models._
+import models.{TraderAtDestination, TransitOperation}
 import play.api.libs.json.{Json, OWrites}
 import utils.Format._
 

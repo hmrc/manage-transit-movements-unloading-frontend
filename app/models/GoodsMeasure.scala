@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package models.P5
+package models
 
 import play.api.libs.json.{Json, OFormat}
 
-case class CustomsOfficeOfDestinationActual(
-  referenceNumber: String
-) {
-  val countryCode: String = referenceNumber.take(2)
-}
+case class GoodsMeasure(
+  grossMass: Option[Double],
+  netMass: Option[Double]
+)
 
-object CustomsOfficeOfDestinationActual {
-
-  implicit val formats: OFormat[CustomsOfficeOfDestinationActual] = Json.format[CustomsOfficeOfDestinationActual]
-
+object GoodsMeasure {
+  implicit val formats: OFormat[GoodsMeasure] = Json.format[GoodsMeasure]
 }

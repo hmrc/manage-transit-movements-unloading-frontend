@@ -16,8 +16,7 @@
 
 package models.requests
 
-import models.EoriNumber
-import models.P5.MessageData
+import models.{EoriNumber, MessageData}
 import play.api.mvc.{Request, WrappedRequest}
 
 case class UnloadingPermissionRequest[A](

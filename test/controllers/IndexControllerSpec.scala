@@ -19,7 +19,7 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.actions.FakeUnloadingPermissionAction
 import generators.Generators
-import models.P5.submission.IE044Data
+import models.submission.IE044Data
 import models.{ArrivalId, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any

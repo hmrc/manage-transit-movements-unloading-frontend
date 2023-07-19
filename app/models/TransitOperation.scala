@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package models.P5
+package models
 
 import play.api.libs.json.{Json, OFormat}
 
-case class Consignor(
-  identificationNumber: Option[String],
-  name: Option[String]
-)
+case class TransitOperation(MRN: MovementReferenceNumber)
 
-object Consignor {
-  implicit val formats: OFormat[Consignor] = Json.format[Consignor]
+object TransitOperation {
+  implicit val formats: OFormat[TransitOperation] = Json.format[TransitOperation]
 }

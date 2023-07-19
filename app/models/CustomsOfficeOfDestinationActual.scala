@@ -14,24 +14,18 @@
  * limitations under the License.
  */
 
-package models.P5
+package models
 
-import play.api.libs.json.{__, Reads}
+import play.api.libs.json.{Json, OFormat}
 
-import java.time.LocalDateTime
+case class CustomsOfficeOfDestinationActual(
+  referenceNumber: String
+) {
+  val countryCode: String = referenceNumber.take(2)
+}
 
-case class MessageMetaData(received: LocalDateTime, messageType: ArrivalMessageType, path: String)
+object CustomsOfficeOfDestinationActual {
 
-object MessageMetaData {
+  implicit val formats: OFormat[CustomsOfficeOfDestinationActual] = Json.format[CustomsOfficeOfDestinationActual]
 
-  implicit lazy val reads: Reads[MessageMetaData] = {
-    import play.api.libs.functional.syntax._
-    (
-      (__ \ "received").read[LocalDateTime] and
-        (__ \ "type").read[ArrivalMessageType] and
-        (__ \ "_links" \ "self" \ "href")
-          .read[String]
-          .map(_.replace("/customs/transits/", ""))
-    )(MessageMetaData.apply _)
-  }
 }

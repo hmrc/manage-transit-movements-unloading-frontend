@@ -19,9 +19,18 @@ package services.P5
 import base.SpecBase
 import connectors.ArrivalMovementConnector
 import generators.Generators
-import models.MovementReferenceNumber
-import models.P5.ArrivalMessageType.{ArrivalNotification, UnloadingPermission}
-import models.P5._
+import models.ArrivalMessageType.{ArrivalNotification, UnloadingPermission}
+import models.{
+  Consignment,
+  CustomsOfficeOfDestinationActual,
+  IE043Data,
+  MessageData,
+  MessageMetaData,
+  Messages,
+  MovementReferenceNumber,
+  TraderAtDestination,
+  TransitOperation
+}
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 

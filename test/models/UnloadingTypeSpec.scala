@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package models.P5
+package models
 
 import base.SpecBase
-import models.UnloadingType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks

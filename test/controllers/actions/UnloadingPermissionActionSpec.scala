@@ -18,9 +18,17 @@ package controllers.actions
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
-import models.P5._
 import models.requests.IdentifierRequest
-import models.{EoriNumber, MovementReferenceNumber}
+import models.{
+  Consignment,
+  CustomsOfficeOfDestinationActual,
+  EoriNumber,
+  IE043Data,
+  MessageData,
+  MovementReferenceNumber,
+  TraderAtDestination,
+  TransitOperation
+}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.mockito.Mockito.when

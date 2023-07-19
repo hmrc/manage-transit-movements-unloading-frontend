@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-package models.P5
-
-import models.{Enumerable, WithName}
+package models
 
 trait ArrivalMessageType extends WithName
-
-trait ErrorMessageType extends ArrivalMessageType
 
 object ArrivalMessageType extends Enumerable.Implicits {
 

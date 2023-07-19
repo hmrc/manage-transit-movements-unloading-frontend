@@ -14,24 +14,13 @@
  * limitations under the License.
  */
 
-package models.P5
+package models
 
-import play.api.libs.json.{JsString, Json, Reads, Writes}
+import play.api.libs.json.{__, Json, OWrites, Reads}
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+case class IE043Data(data: MessageData)
 
-case class DateGoodsUnloaded(date: LocalDate)
-
-object DateGoodsUnloaded {
-
-  implicit val writes: Writes[DateGoodsUnloaded] = (dateGoodsUnloaded: DateGoodsUnloaded) => {
-
-    val formatterNoMillis: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
-
-    JsString(dateGoodsUnloaded.date.atStartOfDay().format(formatterNoMillis))
-  }
-
-  implicit val reads: Reads[DateGoodsUnloaded] = Json.reads[DateGoodsUnloaded]
-
+object IE043Data {
+  implicit val reads: Reads[IE043Data]    = (__ \ "body" \ "n1:CC043C").read[MessageData].map(IE043Data.apply)
+  implicit val writes: OWrites[IE043Data] = Json.writes[IE043Data]
 }

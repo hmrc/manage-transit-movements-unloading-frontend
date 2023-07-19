@@ -14,15 +14,24 @@
  * limitations under the License.
  */
 
-package models.P5
+package models
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{JsString, Json, Reads, Writes}
 
-case class Consignee(
-  identificationNumber: Option[String],
-  name: Option[String]
-)
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
-object Consignee {
-  implicit val formats: OFormat[Consignee] = Json.format[Consignee]
+case class DateGoodsUnloaded(date: LocalDate)
+
+object DateGoodsUnloaded {
+
+  implicit val writes: Writes[DateGoodsUnloaded] = (dateGoodsUnloaded: DateGoodsUnloaded) => {
+
+    val formatterNoMillis: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+
+    JsString(dateGoodsUnloaded.date.atStartOfDay().format(formatterNoMillis))
+  }
+
+  implicit val reads: Reads[DateGoodsUnloaded] = Json.reads[DateGoodsUnloaded]
+
 }

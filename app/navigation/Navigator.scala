@@ -18,8 +18,7 @@ package navigation
 
 import com.google.inject.{Inject, Singleton}
 import controllers.routes
-import models.P5.MessageData
-import models.{CheckMode, Mode, NormalMode, UserAnswers}
+import models.{CheckMode, MessageData, Mode, NormalMode, UserAnswers}
 import pages._
 import play.api.mvc.Call
 import utils.Format._

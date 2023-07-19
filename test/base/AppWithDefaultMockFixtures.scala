@@ -17,9 +17,8 @@
 package base
 
 import controllers.actions._
-import models.P5._
+import models._
 import models.requests.IdentifierRequest
-import models.{MovementReferenceNumber, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}

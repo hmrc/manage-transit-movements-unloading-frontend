@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package models.P5
+package models
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Json, Reads}
 
-case class TransportEquipment(
-  sequenceNumber: Option[String],
-  containerIdentificationNumber: Option[String],
-  numberOfSeals: Option[Int],
-  Seal: Option[List[Seal]]
-)
+case class Messages(messages: List[MessageMetaData])
 
-object TransportEquipment {
-  implicit val formats: OFormat[TransportEquipment] = Json.format[TransportEquipment]
+object Messages {
+  implicit val reads: Reads[Messages] = Json.reads[Messages]
 }

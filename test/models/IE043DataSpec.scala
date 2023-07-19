@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package models.P5
+package models
 
 import base.SpecBase
-import models.MovementReferenceNumber
 import play.api.libs.json.Json
 
 import java.time.LocalDateTime

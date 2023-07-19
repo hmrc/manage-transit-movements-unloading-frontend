@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package models.P5
+package models
 
-import play.api.libs.json.{__, Json, OWrites, Reads}
+import play.api.libs.json.{Json, OFormat}
 
-case class IE043Data(data: MessageData)
+case class TransportEquipment(
+  sequenceNumber: Option[String],
+  containerIdentificationNumber: Option[String],
+  numberOfSeals: Option[Int],
+  Seal: Option[List[Seal]]
+)
 
-object IE043Data {
-  implicit val reads: Reads[IE043Data]    = (__ \ "body" \ "n1:CC043C").read[MessageData].map(IE043Data.apply)
-  implicit val writes: OWrites[IE043Data] = Json.writes[IE043Data]
+object TransportEquipment {
+  implicit val formats: OFormat[TransportEquipment] = Json.format[TransportEquipment]
 }

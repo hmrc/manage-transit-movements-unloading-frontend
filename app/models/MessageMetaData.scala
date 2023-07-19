@@ -14,15 +14,24 @@
  * limitations under the License.
  */
 
-package models.P5
+package models
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{__, Reads}
 
-case class Seal(
-  sequenceNumber: Option[String],
-  identifier: Option[String]
-)
+import java.time.LocalDateTime
 
-object Seal {
-  implicit val formats: OFormat[Seal] = Json.format[Seal]
+case class MessageMetaData(received: LocalDateTime, messageType: ArrivalMessageType, path: String)
+
+object MessageMetaData {
+
+  implicit lazy val reads: Reads[MessageMetaData] = {
+    import play.api.libs.functional.syntax._
+    (
+      (__ \ "received").read[LocalDateTime] and
+        (__ \ "type").read[ArrivalMessageType] and
+        (__ \ "_links" \ "self" \ "href")
+          .read[String]
+          .map(_.replace("/customs/transits/", ""))
+    )(MessageMetaData.apply _)
+  }
 }

@@ -16,10 +16,13 @@
 
 package models
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Json, OFormat}
 
-case class Seal(sealId: String, removable: Boolean)
+case class Seal(
+  sequenceNumber: Option[String],
+  identifier: Option[String]
+)
 
 object Seal {
-  implicit val format: Format[Seal] = Json.format[Seal]
+  implicit val formats: OFormat[Seal] = Json.format[Seal]
 }
