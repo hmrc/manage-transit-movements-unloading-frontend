@@ -19,8 +19,7 @@ package forms
 import forms.mappings.Mappings
 
 import javax.inject.Inject
-import models.messages.RemarksNonConform
-import models.messages.UnloadingRemarksRequest.stringFieldRegex
+import models.Constants._
 import play.api.data.Form
 
 class UnloadingCommentsFormProvider @Inject() extends Mappings {
@@ -29,7 +28,7 @@ class UnloadingCommentsFormProvider @Inject() extends Mappings {
     Form(
       "value" -> text("changesToReport.error.required")
         .verifying(
-          forms.StopOnFirstFail[String](maxLength(RemarksNonConform.unloadingRemarkLength, "changesToReport.error.length"),
+          forms.StopOnFirstFail[String](maxLength(unloadingRemarkLength, "changesToReport.error.length"),
                                         regexp(stringFieldRegex, "changesToReport.error.invalid")
           )
         )

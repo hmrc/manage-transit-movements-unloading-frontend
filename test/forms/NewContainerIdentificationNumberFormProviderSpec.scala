@@ -17,7 +17,7 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import models.messages.UnloadingRemarksRequest
+import models.Constants._
 import org.scalacheck.Gen
 import play.api.data.{Field, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
@@ -25,7 +25,7 @@ import wolfendale.scalacheck.regexp.RegexpGen
 class NewContainerIdentificationNumberFormProviderSpec extends StringFieldBehaviours {
 
   private val requiredKey = "newContainerIdentificationNumber.error.required"
-  private val maxLength   = UnloadingRemarksRequest.newSealNumberMaximumLength
+  private val maxLength   = newSealNumberMaximumLength
   private val invalidKey  = "newContainerIdentificationNumber.error.characters"
 
   private val form      = new NewContainerIdentificationNumberFormProvider()()
@@ -49,7 +49,7 @@ class NewContainerIdentificationNumberFormProviderSpec extends StringFieldBehavi
   "must not bind strings that do not match regex" in {
 
     val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±<>]{20}")
-    val validRegex: String     = UnloadingRemarksRequest.alphaNumericRegex
+    val validRegex: String     = alphaNumericRegex
     val expectedError          = FormError(fieldName, invalidKey, Seq(validRegex))
 
     forAll(generator) {

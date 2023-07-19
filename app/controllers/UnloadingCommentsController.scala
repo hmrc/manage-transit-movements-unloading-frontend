@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions._
 import forms.UnloadingCommentsFormProvider
-import models.messages.RemarksNonConform._
+import models.Constants._
 import models.{ArrivalId, Mode}
 import navigation.Navigator
 import pages.UnloadingCommentsPage

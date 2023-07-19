@@ -19,7 +19,7 @@ package forms
 import javax.inject.Inject
 import forms.mappings.Mappings
 import models.Index
-import models.messages.UnloadingRemarksRequest
+import models.Constants._
 import play.api.data.Form
 
 class GrossWeightFormProvider @Inject() extends Mappings {
@@ -29,9 +29,9 @@ class GrossWeightFormProvider @Inject() extends Mappings {
       "value" -> text(s"grossWeight.error.required", args = Seq(s"${index.display}"))
         .verifying(
           StopOnFirstFail[String](
-            maxLength(UnloadingRemarksRequest.weightLength, "grossWeight.error.length"),
-            regexp(UnloadingRemarksRequest.weightCharsRegex, "grossWeight.error.characters"),
-            regexp(UnloadingRemarksRequest.weightRegex, "grossWeight.error.decimal")
+            maxLength(weightLength, "grossWeight.error.length"),
+            regexp(weightCharsRegex, "grossWeight.error.characters"),
+            regexp(weightRegex, "grossWeight.error.decimal")
           )
         )
     )

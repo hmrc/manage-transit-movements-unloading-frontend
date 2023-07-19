@@ -17,7 +17,7 @@
 package forms
 
 import forms.mappings.Mappings
-import models.messages.UnloadingRemarksRequest
+import models.Constants._
 import play.api.data.Form
 
 import javax.inject.Inject
@@ -28,11 +28,11 @@ class NewContainerIdentificationNumberFormProvider @Inject() extends Mappings {
     Form(
       "value" -> text("newContainerIdentificationNumber.error.required")
         .verifying(
-          maxLength(UnloadingRemarksRequest.newContainerIdentificationNumberMaximumLength, "newContainerIdentificationNumber.error.length")
+          maxLength(newContainerIdentificationNumberMaximumLength, "newContainerIdentificationNumber.error.length")
         )
         .verifying(
           regexp(
-            UnloadingRemarksRequest.alphaNumericRegex,
+            alphaNumericRegex,
             "newContainerIdentificationNumber.error.characters"
           )
         )

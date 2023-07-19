@@ -20,7 +20,7 @@ import forms.mappings.Mappings
 import models.Index
 
 import javax.inject.Inject
-import models.messages.UnloadingRemarksRequest
+import models.Constants._
 import play.api.data.Form
 
 class TotalNumberOfPackagesFormProvider @Inject() extends Mappings {
@@ -30,8 +30,8 @@ class TotalNumberOfPackagesFormProvider @Inject() extends Mappings {
       "value" -> text("totalNumberOfPackages.error.required", Seq(index.display.toString))
         .verifying(
           forms.StopOnFirstFail[String](
-            regexp(UnloadingRemarksRequest.numericRegex, "totalNumberOfPackages.error.nonNumeric", Seq(index.display)),
-            maxLength(UnloadingRemarksRequest.numberOfPackagesLength, "totalNumberOfPackages.error.outOfRange")
+            regexp(numericRegex, "totalNumberOfPackages.error.nonNumeric", Seq(index.display)),
+            maxLength(numberOfPackagesLength, "totalNumberOfPackages.error.outOfRange")
           )
         )
     )

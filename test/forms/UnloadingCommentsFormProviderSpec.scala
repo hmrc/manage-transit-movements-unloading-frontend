@@ -17,7 +17,7 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import models.messages.UnloadingRemarksRequest.stringFieldRegex
+import models.Constants._
 import org.scalacheck.Gen
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.data.{Field, FormError}

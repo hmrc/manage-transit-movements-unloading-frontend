@@ -19,7 +19,7 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.UnloadingCommentsFormProvider
 import models.NormalMode
-import models.messages.RemarksNonConform._
+import models.Constants._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.UnloadingCommentsPage

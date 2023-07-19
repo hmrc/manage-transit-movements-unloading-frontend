@@ -40,8 +40,6 @@ class Module extends AbstractModule {
 
     bind(classOf[DateTimeService]).to(classOf[DateTimeServiceImpl]).asEagerSingleton()
 
-    bind(classOf[MetaService]).to(classOf[MetaServiceImpl]).asEagerSingleton()
-
     bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
 
   }

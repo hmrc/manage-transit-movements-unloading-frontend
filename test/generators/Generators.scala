@@ -25,13 +25,7 @@ import wolfendale.scalacheck.regexp.RegexpGen
 import java.time._
 import scala.util.matching.Regex
 
-trait Generators
-    extends UserAnswersGenerator
-    with PageGenerators
-    with ModelGenerators
-    with UserAnswersEntryGenerators
-    with ViewModelGenerators
-    with MessagesModelGenerators {
+trait Generators extends UserAnswersGenerator with PageGenerators with ModelGenerators with UserAnswersEntryGenerators with ViewModelGenerators {
 
   implicit val dontShrink: Shrink[String] = Shrink.shrinkAny
   private val maxListLength               = 10

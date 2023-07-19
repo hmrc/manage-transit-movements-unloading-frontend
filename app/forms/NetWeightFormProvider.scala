@@ -18,7 +18,7 @@ package forms
 
 import forms.mappings.Mappings
 import models.Index
-import models.messages.UnloadingRemarksRequest
+import models.Constants._
 import play.api.data.Form
 
 import javax.inject.Inject
@@ -30,9 +30,9 @@ class NetWeightFormProvider @Inject() extends Mappings {
       "value" -> text(s"netWeight.error.required", args = Seq(s"${index.display}"))
         .verifying(
           StopOnFirstFail[String](
-            maxLength(UnloadingRemarksRequest.weightLength, "netWeight.error.length"),
-            regexp(UnloadingRemarksRequest.weightCharsRegex, "netWeight.error.characters"),
-            regexp(UnloadingRemarksRequest.weightRegex, "netWeight.error.decimal")
+            maxLength(weightLength, "netWeight.error.length"),
+            regexp(weightCharsRegex, "netWeight.error.characters"),
+            regexp(weightRegex, "netWeight.error.decimal")
           )
         )
     )

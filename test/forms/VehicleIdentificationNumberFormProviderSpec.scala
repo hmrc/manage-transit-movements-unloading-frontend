@@ -17,7 +17,7 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import models.messages.UnloadingRemarksRequest
+import models.Constants._
 import org.scalacheck.Gen
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.data.{Field, FormError}
@@ -26,7 +26,7 @@ import wolfendale.scalacheck.regexp.RegexpGen
 class VehicleIdentificationNumberFormProviderSpec extends StringFieldBehaviours {
 
   private val requiredKey = "vehicleIdentificationNumber.error.required"
-  private val maxLength   = UnloadingRemarksRequest.vehicleIdentificationNumberMaxLength
+  private val maxLength   = vehicleIdentificationNumberMaxLength
   private val invalidKey  = "vehicleIdentificationNumber.error.invalid"
 
   private val form      = new VehicleIdentificationNumberFormProvider()()

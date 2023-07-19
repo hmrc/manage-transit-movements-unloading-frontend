@@ -19,7 +19,7 @@ package forms
 import forms.behaviours.StringFieldBehaviours
 import generators.Generators
 import models.Index
-import models.messages.UnloadingRemarksRequest
+import models.Constants._
 import org.scalacheck.Gen
 import play.api.data.{Field, FormError}
 
@@ -29,7 +29,7 @@ class TotalNumberOfPackagesFormProviderSpec extends StringFieldBehaviours with G
 
   private val requiredKey = "totalNumberOfPackages.error.required"
   private val invalidKey  = "totalNumberOfPackages.error.nonNumeric"
-  private val maxLength   = UnloadingRemarksRequest.numberOfPackagesLength
+  private val maxLength   = numberOfPackagesLength
 
   private val index = Index(0)
 

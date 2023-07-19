@@ -17,17 +17,17 @@
 package forms
 
 import forms.mappings.Mappings
-import javax.inject.Inject
-import models.messages.UnloadingRemarksRequest
-import models.messages.UnloadingRemarksRequest.alphaNumericRegex
+import models.Constants._
 import play.api.data.Form
+
+import javax.inject.Inject
 
 class VehicleIdentificationNumberFormProvider @Inject() extends Mappings {
 
   def apply(): Form[String] =
     Form(
       "value" -> text("vehicleIdentificationNumber.error.required")
-        .verifying(maxLength(UnloadingRemarksRequest.vehicleIdentificationNumberMaxLength, "vehicleIdentificationNumber.error.length"))
+        .verifying(maxLength(vehicleIdentificationNumberMaxLength, "vehicleIdentificationNumber.error.length"))
         .verifying(regexp(alphaNumericRegex.r, "vehicleIdentificationNumber.error.invalid", Seq.empty))
     )
 }

@@ -18,9 +18,8 @@ package forms
 
 import javax.inject.Inject
 import forms.mappings.Mappings
-import models.messages.UnloadingRemarksRequest
+import models.Constants._
 import play.api.data.Form
-import models.Seals
 
 class NewSealNumberFormProvider @Inject() extends Mappings {
 
@@ -28,13 +27,10 @@ class NewSealNumberFormProvider @Inject() extends Mappings {
     Form(
       "value" -> text("newSealNumber.error.required")
         .verifying(
-          maxLength(UnloadingRemarksRequest.newSealNumberMaximumLength, "newSealNumber.error.length")
+          maxLength(newSealNumberMaximumLength, "newSealNumber.error.length")
         )
         .verifying(
-          regexp(
-            Seals.sealIdRegex,
-            "newSealNumber.error.characters"
-          )
+          regexp(sealIdRegex, "newSealNumber.error.characters")
         )
     )
 }

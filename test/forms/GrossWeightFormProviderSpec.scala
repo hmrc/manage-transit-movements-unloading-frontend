@@ -18,7 +18,7 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import models.Index
-import models.messages.UnloadingRemarksRequest
+import models.Constants._
 import play.api.data.{Field, FormError}
 
 class GrossWeightFormProviderSpec extends StringFieldBehaviours {
@@ -26,7 +26,7 @@ class GrossWeightFormProviderSpec extends StringFieldBehaviours {
   private val requiredKey       = "grossWeight.error.required"
   private val invalidCharacters = "grossWeight.error.characters"
   private val decimalPoint      = "grossWeight.error.decimal"
-  private val maxLength         = UnloadingRemarksRequest.weightLength
+  private val maxLength         = weightLength
 
   private val form      = new GrossWeightFormProvider()()
   private val fieldName = "value"
@@ -49,7 +49,7 @@ class GrossWeightFormProviderSpec extends StringFieldBehaviours {
   "must not bind strings wth too many decimal places" in {
 
     val invalidString      = "1.1234567"
-    val validRegex: String = UnloadingRemarksRequest.weightRegex
+    val validRegex: String = weightRegex
     val expectedError      = FormError(fieldName, decimalPoint, Seq(validRegex))
 
     val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
@@ -59,7 +59,7 @@ class GrossWeightFormProviderSpec extends StringFieldBehaviours {
   "must not bind strings wth invalid characters" in {
 
     val invalidString      = "abc"
-    val validRegex: String = UnloadingRemarksRequest.weightCharsRegex
+    val validRegex: String = weightCharsRegex
     val expectedError      = FormError(fieldName, invalidCharacters, Seq(validRegex))
 
     val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
