@@ -17,10 +17,10 @@
 package forms
 
 import forms.mappings.Mappings
-
-import javax.inject.Inject
 import models.Constants._
 import play.api.data.Form
+
+import javax.inject.Inject
 
 class UnloadingCommentsFormProvider @Inject() extends Mappings {
 

@@ -17,11 +17,11 @@
 package forms
 
 import forms.mappings.Mappings
+import models.Constants._
 import models.Index
+import play.api.data.Form
 
 import javax.inject.Inject
-import models.Constants._
-import play.api.data.Form
 
 class TotalNumberOfPackagesFormProvider @Inject() extends Mappings {
 

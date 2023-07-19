@@ -17,8 +17,8 @@
 package services.P5
 
 import models.UserAnswers
-import pages.sections.NavigationDataSection
 import pages._
+import pages.sections.NavigationDataSection
 
 import scala.util.{Success, Try}
 

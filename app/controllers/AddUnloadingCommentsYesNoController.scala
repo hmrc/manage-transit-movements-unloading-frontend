@@ -25,11 +25,11 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.Format._
 import views.html.AddUnloadingCommentsYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import utils.Format._
 
 class AddUnloadingCommentsYesNoController @Inject() (
   override val messagesApi: MessagesApi,

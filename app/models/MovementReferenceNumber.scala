@@ -16,13 +16,12 @@
 
 package models
 
-import java.util.InvalidPropertiesFormatException
-
 import com.lucidchart.open.xtract.{XmlReader, __ => XmlPath}
 import logging.Logging
 import play.api.libs.json._
 import play.api.mvc.PathBindable
 
+import java.util.InvalidPropertiesFormatException
 import scala.math.pow
 
 final case class MovementReferenceNumber(year: String, countryCode: String, serial: String) {

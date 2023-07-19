@@ -16,9 +16,9 @@
 
 package forms.mappings
 
-import java.time.LocalDate
 import play.api.data.validation.{Constraint, Invalid, Valid}
 
+import java.time.LocalDate
 import scala.util.matching.Regex
 
 trait Constraints {

@@ -16,11 +16,12 @@
 
 package forms
 
-import javax.inject.Inject
 import forms.mappings.Mappings
-import models.Index
 import models.Constants._
+import models.Index
 import play.api.data.Form
+
+import javax.inject.Inject
 
 class GrossWeightFormProvider @Inject() extends Mappings {
 
