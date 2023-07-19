@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package services.P5
+package services
 
 import base.SpecBase
 import play.api.libs.json.Json

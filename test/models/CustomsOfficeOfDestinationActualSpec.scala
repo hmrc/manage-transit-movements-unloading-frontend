@@ -16,7 +16,6 @@
 
 package models
 
-import models.CustomsOfficeOfDestinationActual
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package services.P5
+package services
 
 import models.UserAnswers
-import pages._
 import pages.sections.NavigationDataSection
+import pages.{AreAnySealsBrokenPage, CanSealsBeReadPage, StateOfSealsPage}
 
 import scala.util.{Success, Try}
 

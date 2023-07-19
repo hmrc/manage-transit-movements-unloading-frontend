@@ -22,7 +22,7 @@ import models.ArrivalId
 import models.requests.{IdentifierRequest, UnloadingPermissionRequest}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
-import services.P5.UnloadingPermissionMessageService
+import services.UnloadingPermissionMessageService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 

@@ -30,7 +30,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{ActionFilter, Call, Result}
 import repositories.SessionRepository
-import services.P5.UnloadingPermissionMessageService
+import services.UnloadingPermissionMessageService
 
 import java.time.LocalDateTime
 import scala.concurrent.{ExecutionContext, Future}
