@@ -18,8 +18,8 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.UnloadingCommentsFormProvider
-import models.NormalMode
 import models.Constants._
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.UnloadingCommentsPage

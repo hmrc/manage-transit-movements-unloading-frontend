@@ -16,8 +16,8 @@
 
 package forms
 
-import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.OptionValues
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.data.{Form, FormError}
 

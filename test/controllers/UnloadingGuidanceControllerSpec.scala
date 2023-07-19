@@ -17,9 +17,7 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import matchers.JsonMatchers
-import models.NormalMode
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.UnloadingGuidanceView

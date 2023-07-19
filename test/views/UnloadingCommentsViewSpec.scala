@@ -17,8 +17,8 @@
 package views
 
 import forms.UnloadingCommentsFormProvider
-import models.NormalMode
 import models.Constants._
+import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.CharacterCountViewBehaviours

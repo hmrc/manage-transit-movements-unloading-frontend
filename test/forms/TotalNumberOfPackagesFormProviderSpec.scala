@@ -18,8 +18,8 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import generators.Generators
-import models.Index
 import models.Constants._
+import models.Index
 import org.scalacheck.Gen
 import play.api.data.{Field, FormError}
 

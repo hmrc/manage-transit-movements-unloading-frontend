@@ -25,8 +25,7 @@ import pages._
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, Value}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Key, SummaryListRow}
-import utils.Format.cyaDateFormatter
-import utils.Format.booleanToIntWrites
+import utils.Format.{booleanToIntWrites, cyaDateFormatter}
 
 import java.time.LocalDate
 

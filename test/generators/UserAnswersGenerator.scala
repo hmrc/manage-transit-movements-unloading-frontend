@@ -16,14 +16,14 @@
 
 package generators
 
-import models.{UserAnswers}
-
-import java.time.Instant
+import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
 import play.api.libs.json.{JsObject, JsValue, Json}
+
+import java.time.Instant
 
 trait UserAnswersGenerator extends TryValues {
   self: Generators =>

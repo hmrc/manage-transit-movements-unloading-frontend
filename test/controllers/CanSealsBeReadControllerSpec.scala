@@ -17,7 +17,6 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import forms.CanSealsBeReadFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any

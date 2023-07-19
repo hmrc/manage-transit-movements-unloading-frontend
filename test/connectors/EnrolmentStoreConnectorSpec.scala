@@ -22,6 +22,7 @@ import generators.Generators
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
+
 import scala.concurrent.Future
 
 class EnrolmentStoreConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ScalaCheckPropertyChecks with WireMockSuite {

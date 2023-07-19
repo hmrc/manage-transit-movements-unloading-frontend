@@ -21,8 +21,8 @@ import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
-import viewModels.CheckYourAnswersViewModel.CheckYourAnswersViewModelProvider
 import utils.Format.booleanToIntWrites
+import viewModels.CheckYourAnswersViewModel.CheckYourAnswersViewModelProvider
 
 import java.time.LocalDate
 

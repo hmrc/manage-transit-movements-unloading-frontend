@@ -28,7 +28,6 @@ import play.api.libs.json.{JsObject, Json}
 import services.ReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
-import utils.UnloadingFindingsAnswersHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

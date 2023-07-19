@@ -17,8 +17,8 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import models.Index
 import models.Constants._
+import models.Index
 import play.api.data.{Field, FormError}
 
 class GrossWeightFormProviderSpec extends StringFieldBehaviours {
