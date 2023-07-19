@@ -20,7 +20,6 @@ import base.SpecBase
 import generators.Generators
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages._
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._

@@ -18,20 +18,17 @@ package viewModels
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
-import models.Index
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages._
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.{JsObject, Json}
 import services.ReferenceDataService
 import viewModels.UnloadingFindingsViewModel.UnloadingFindingsViewModelProvider
 
-import scala.concurrent.Future
-import play.api.inject.bind
-import play.api.libs.json.{JsObject, Json}
-
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 

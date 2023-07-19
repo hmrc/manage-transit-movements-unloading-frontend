@@ -18,7 +18,7 @@ package utils
 
 import base.SpecBase
 import generators.Generators
-import models.{Identification, Index}
+import models.Identification
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Gen
