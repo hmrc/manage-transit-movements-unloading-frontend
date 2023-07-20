@@ -25,7 +25,7 @@ import org.scalacheck.Gen
 import org.scalatest.{Assertion, BeforeAndAfterEach}
 import play.api.inject.guice.GuiceApplicationBuilder
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
