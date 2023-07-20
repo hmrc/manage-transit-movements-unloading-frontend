@@ -18,7 +18,6 @@ package controllers
 
 import connectors.ManageDocumentsConnector
 import controllers.actions.IdentifierAction
-import models.ArrivalId
 import play.api.i18n.I18nSupport
 import play.api.libs.ws.WSResponse
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
