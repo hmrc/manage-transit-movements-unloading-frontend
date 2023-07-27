@@ -61,9 +61,9 @@ technicalDifficulties.contact.link = contact the New Computerised Transit System
 
 unloadingGuidance.title = Unload the goods before you make unloading remarks
 unloadingGuidance.heading = Unload the goods before you make unloading remarks
-unloadingGuidance.para = When unloading, check that the goods match the information in the transit declaration for Movement Reference Number (MRN) {0}.
+unloadingGuidance.para = When unloading, check that the goods match the Unloading Permission for Movement Reference Number (MRN) {0}.
 unloadingGuidance.pdf.preLinkText = For further guidance,
-unloadingGuidance.pdf.link = download the Unloading Permission PDF
+unloadingGuidance.pdf.link = Download the Unloading Permission PDF
 
 dateGoodsUnloaded.title = When were the goods unloaded?
 dateGoodsUnloaded.heading = When were the goods unloaded?
