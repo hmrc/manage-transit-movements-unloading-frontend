@@ -21,6 +21,7 @@ GET        /data/keep-alive                                                     
 GET        /data/:arrivalId/keep-alive                                                      controllers.KeepAliveController.keepAlive(arrivalId: Option[ArrivalId])
 
 GET        /:arrivalId/unloading-guidance/:messageId                                        controllers.UnloadingGuidanceController.onPageLoad(arrivalId: ArrivalId, messageId: String)
+GET        /:arrivalId/cannot-send-unloading-remarks/:messageId                             controllers.CannotSendUnloadingRemarksController.onPageLoad(arrivalId: ArrivalId, messageId: String)
 
 GET        /:arrivalId/goods-unloaded-date                                                  controllers.DateGoodsUnloadedController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/goods-unloaded-date                                                  controllers.DateGoodsUnloadedController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
