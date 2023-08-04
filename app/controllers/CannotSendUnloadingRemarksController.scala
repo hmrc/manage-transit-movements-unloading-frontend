@@ -39,7 +39,7 @@ class CannotSendUnloadingRemarksController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, messageId: String): Action[AnyContent] = actions
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions
     .requireData(arrivalId)
     .andThen(getMandatoryPage(CustomsOfficeOfDestinationPage))
     .async {
@@ -48,7 +48,7 @@ class CannotSendUnloadingRemarksController @Inject() (
           .getCustomsOfficeByCode(request.arg)
           .map {
             customsOffice =>
-              Ok(view(request.userAnswers.mrn, arrivalId, messageId, CannotSendUnloadingRemarksViewModel(customsOffice, request.arg)))
+              Ok(view(request.userAnswers.mrn, arrivalId, CannotSendUnloadingRemarksViewModel(customsOffice, request.arg)))
           }
     }
 }

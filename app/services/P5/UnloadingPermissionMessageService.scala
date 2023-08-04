@@ -39,6 +39,16 @@ class UnloadingPermissionMessageService @Inject() (arrivalMovementConnector: Arr
           .headOption
       )
 
+  def getMessageHead(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[MessageMetaData]] =
+    arrivalMovementConnector
+      .getMessageMetaData(arrivalId)
+      .map(
+        _.messages
+          .sortBy(_.received)
+          .reverse
+          .headOption
+      )
+
   def getUnloadingPermission(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[IE043Data]] =
     (
       for {

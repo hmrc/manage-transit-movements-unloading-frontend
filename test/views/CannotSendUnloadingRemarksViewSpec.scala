@@ -27,7 +27,7 @@ class CannotSendUnloadingRemarksViewSpec extends ViewBehaviours {
   override def view: HtmlFormat.Appendable =
     injector
       .instanceOf[CannotSendUnloadingRemarksView]
-      .apply(mrn, arrivalId, messageId, CannotSendUnloadingRemarksViewModel(None, "GB000060"))(fakeRequest, messages)
+      .apply(mrn, arrivalId, CannotSendUnloadingRemarksViewModel(None, "GB000060"))(fakeRequest, messages)
 
   override val prefix: String = "cannotSendUnloadingRemarks"
 
@@ -53,7 +53,7 @@ class CannotSendUnloadingRemarksViewSpec extends ViewBehaviours {
     val customsOfficeId = "id"
     val view = injector
       .instanceOf[CannotSendUnloadingRemarksView]
-      .apply(mrn, arrivalId, "test", CannotSendUnloadingRemarksViewModel(None, customsOfficeId))(fakeRequest, messages)
+      .apply(mrn, arrivalId, CannotSendUnloadingRemarksViewModel(None, customsOfficeId))(fakeRequest, messages)
 
     val doc = parseView(view)
 
@@ -68,9 +68,7 @@ class CannotSendUnloadingRemarksViewSpec extends ViewBehaviours {
   "Customs office with a name and no telephone" - {
     val view = injector
       .instanceOf[CannotSendUnloadingRemarksView]
-      .apply(mrn, arrivalId, "test", CannotSendUnloadingRemarksViewModel(Some(CustomsOffice("id", "OfficeName", "countryId", None)), "GB000060"))(fakeRequest,
-                                                                                                                                                  messages
-      )
+      .apply(mrn, arrivalId, CannotSendUnloadingRemarksViewModel(Some(CustomsOffice("id", "OfficeName", "countryId", None)), "GB000060"))(fakeRequest, messages)
 
     val doc = parseView(view)
 
@@ -85,9 +83,7 @@ class CannotSendUnloadingRemarksViewSpec extends ViewBehaviours {
   "Customs office with no name and a telephone" - {
     val view = injector
       .instanceOf[CannotSendUnloadingRemarksView]
-      .apply(mrn, arrivalId, "test", CannotSendUnloadingRemarksViewModel(Some(CustomsOffice("id", "", "countryId", Some("12234"))), "GB000060"))(fakeRequest,
-                                                                                                                                                 messages
-      )
+      .apply(mrn, arrivalId, CannotSendUnloadingRemarksViewModel(Some(CustomsOffice("id", "", "countryId", Some("12234"))), "GB000060"))(fakeRequest, messages)
 
     val doc = parseView(view)
 
@@ -102,7 +98,7 @@ class CannotSendUnloadingRemarksViewSpec extends ViewBehaviours {
   "Customs office with no name and no telephone" - {
     val view = injector
       .instanceOf[CannotSendUnloadingRemarksView]
-      .apply(mrn, arrivalId, "test", CannotSendUnloadingRemarksViewModel(Some(CustomsOffice("id", "", "countryId", None)), "GB000060"))(fakeRequest, messages)
+      .apply(mrn, arrivalId, CannotSendUnloadingRemarksViewModel(Some(CustomsOffice("id", "", "countryId", None)), "GB000060"))(fakeRequest, messages)
 
     val doc = parseView(view)
 

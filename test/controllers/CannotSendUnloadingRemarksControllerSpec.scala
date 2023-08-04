@@ -60,18 +60,19 @@ class CannotSendUnloadingRemarksControllerSpec extends SpecBase with AppWithDefa
       checkArrivalStatus()
 
       when(mockReferenceDataService.getCustomsOfficeByCode(any())(any(), any())).thenReturn(Future.successful(Some(customsOffice)))
+      when(mockReferenceDataService.getCustomsOfficeByCode(any())(any(), any())).thenReturn(Future.successful(Some(customsOffice)))
 
       setExistingUserAnswers(emptyUserAnswers.copy(ie043Data = setCustomsOfficeOfDestination))
 
-      val request = FakeRequest(GET, routes.CannotSendUnloadingRemarksController.onPageLoad(arrivalId, messageId).url)
+      val request = FakeRequest(GET, routes.CannotSendUnloadingRemarksController.onPageLoad(arrivalId).url)
 
       val result = route(app, request).value
 
       val view = app.injector.instanceOf[CannotSendUnloadingRemarksView]
 
-      // status(result) mustBe OK
+      status(result) mustBe OK
 
-      contentAsString(result) mustEqual view(mrn, arrivalId, messageId, CannotSendUnloadingRemarksViewModel(None, "CODE-001"))(request, messages).toString
+      contentAsString(result) mustEqual view(mrn, arrivalId, CannotSendUnloadingRemarksViewModel(None, "CODE-001"))(request, messages).toString
     }
 
   }

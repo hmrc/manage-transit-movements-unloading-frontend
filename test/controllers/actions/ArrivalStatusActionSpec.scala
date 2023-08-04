@@ -14,61 +14,61 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.actions
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
-import matchers.JsonMatchers
+import models.EoriNumber
 import models.P5.ArrivalMessageType.UnloadingPermission
 import models.P5.{ArrivalMessageType, MessageMetaData}
+import models.requests.IdentifierRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalatest.BeforeAndAfterEach
+import play.api.mvc.Results._
+import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.UnloadingGuidanceView
 
 import java.time.LocalDateTime
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppWithDefaultMockFixtures with JsonMatchers {
+class ArrivalStatusActionSpec extends SpecBase with BeforeAndAfterEach with Generators with AppWithDefaultMockFixtures {
 
-  "UnloadingGuidance Controller" - {
-    "return OK and the correct view for a GET when message is Unloading Permission(IE043)" in {
-      checkArrivalStatus()
+  private def fakeOkResult[A]: A => Future[Result] =
+    _ => Future.successful(Ok)
+
+  "ArrivalStatusAction" - {
+    "must return None when an unloading permission is available" in {
       when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
         .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val checkArrivalStatusProvider = new CheckArrivalStatusProvider(mockUnloadingPermissionMessageService)
 
-      val request = FakeRequest(GET, routes.UnloadingGuidanceController.onPageLoad(arrivalId, messageId).url)
+      val testRequest = IdentifierRequest(FakeRequest(GET, "/"), EoriNumber("eori"))
 
-      val result = route(app, request).value
+      val result: Future[Result] = checkArrivalStatusProvider.apply(arrivalId).invokeBlock(testRequest, fakeOkResult)
 
-      val view = app.injector.instanceOf[UnloadingGuidanceView]
-
-      status(result) mustBe OK
-
-      contentAsString(result) mustEqual view(mrn, arrivalId, messageId)(request, messages).toString
+      status(result) mustEqual OK
     }
 
-    "return OK and the correct view for a GET when message is not Unloading Permission(IE043)" in {
-      checkArrivalStatus()
+    "must return 303 and redirect to CannotSendUnloadingRemarks when no unloading permission is available" in {
+
       val messageType = arbitrary[ArrivalMessageType].retryUntil(_ != UnloadingPermission).sample.value
       when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
         .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), messageType, ""))))
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val checkArrivalStatusProvider = new CheckArrivalStatusProvider(mockUnloadingPermissionMessageService)
 
-      val request = FakeRequest(GET, routes.UnloadingGuidanceController.onPageLoad(arrivalId, messageId).url)
+      val testRequest = IdentifierRequest(FakeRequest(GET, "/"), EoriNumber("eori"))
 
-      val result = route(app, request).value
+      val result: Future[Result] = checkArrivalStatusProvider.apply(arrivalId).invokeBlock(testRequest, fakeOkResult)
 
-      status(result) mustBe SEE_OTHER
+      status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.CannotSendUnloadingRemarksController.onPageLoad(arrivalId).url
-
+      redirectLocation(result).value mustBe controllers.routes.CannotSendUnloadingRemarksController.onPageLoad(arrivalId).url
     }
-
   }
 }
