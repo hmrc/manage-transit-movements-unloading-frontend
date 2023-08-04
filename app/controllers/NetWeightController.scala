@@ -35,6 +35,8 @@ class NetWeightController @Inject() (
   sessionRepository: SessionRepository,
   navigator: Navigator,
   actions: Actions,
+  identify: IdentifierAction,
+  checkArrivalStatusProvider: CheckArrivalStatusProvider,
   formProvider: NetWeightFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: NetWeightView
@@ -44,27 +46,29 @@ class NetWeightController @Inject() (
 
   private def form(itemIndex: Index) = formProvider(itemIndex)
 
-  def onPageLoad(arrivalId: ArrivalId, houseConsignment: Index, itemIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(NetWeightPage(houseConsignment, itemIndex)) match {
-        case None        => form(itemIndex)
-        case Some(value) => form(itemIndex).fill(value.toString)
-      }
+  def onPageLoad(arrivalId: ArrivalId, houseConsignment: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)) {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(NetWeightPage(houseConsignment, itemIndex)) match {
+          case None        => form(itemIndex)
+          case Some(value) => form(itemIndex).fill(value.toString)
+        }
 
-      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignment, itemIndex, mode))
-  }
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignment, itemIndex, mode))
+    }
 
-  def onSubmit(arrivalId: ArrivalId, houseConsignment: Index, itemIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
-    implicit request =>
-      form(itemIndex)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignment, itemIndex, mode))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(NetWeightPage(houseConsignment, itemIndex), value.toDouble))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
-        )
-  }
+  def onSubmit(arrivalId: ArrivalId, houseConsignment: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)).async {
+      implicit request =>
+        form(itemIndex)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignment, itemIndex, mode))),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(NetWeightPage(houseConsignment, itemIndex), value.toDouble))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+          )
+    }
 }

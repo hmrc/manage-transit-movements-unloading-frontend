@@ -36,6 +36,8 @@ class VehicleIdentificationNumberController @Inject() (
   navigator: Navigator,
   actions: Actions,
   formProvider: VehicleIdentificationNumberFormProvider,
+  identify: IdentifierAction,
+  checkArrivalStatusProvider: CheckArrivalStatusProvider,
   val controllerComponents: MessagesControllerComponents,
   view: VehicleIdentificationNumberView
 )(implicit ec: ExecutionContext)
@@ -44,27 +46,29 @@ class VehicleIdentificationNumberController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(VehicleIdentificationNumberPage(transportMeansIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)) {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(VehicleIdentificationNumberPage(transportMeansIndex)) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
 
-      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode))
-  }
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode))
+    }
 
-  def onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleIdentificationNumberPage(transportMeansIndex), value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
-        )
-  }
+  def onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)).async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode))),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleIdentificationNumberPage(transportMeansIndex), value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+          )
+    }
 }

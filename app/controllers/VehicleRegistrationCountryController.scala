@@ -39,46 +39,50 @@ class VehicleRegistrationCountryController @Inject() (
   actions: Actions,
   formProvider: VehicleRegistrationCountryFormProvider,
   referenceDataService: ReferenceDataService,
+  identify: IdentifierAction,
+  checkArrivalStatusProvider: CheckArrivalStatusProvider,
   val controllerComponents: MessagesControllerComponents,
   view: VehicleRegistrationCountryView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
-    implicit request =>
-      referenceDataService.getCountries() map {
-        countries =>
-          val form = formProvider(countries)
-          val preparedForm = request.userAnswers.get(VehicleRegistrationCountryPage(transportMeansIndex)) match {
-            case None => form
-            case Some(value) =>
-              val country = countries.find(_.code == value) match {
-                case Some(country) => country
-                case None          => Country(value, None)
-              }
-              form.fill(country)
-          }
-          Ok(view(preparedForm, countries, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode))
-      }
-  }
+  def onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)).async {
+      implicit request =>
+        referenceDataService.getCountries() map {
+          countries =>
+            val form = formProvider(countries)
+            val preparedForm = request.userAnswers.get(VehicleRegistrationCountryPage(transportMeansIndex)) match {
+              case None => form
+              case Some(value) =>
+                val country = countries.find(_.code == value) match {
+                  case Some(country) => country
+                  case None          => Country(value, None)
+                }
+                form.fill(country)
+            }
+            Ok(view(preparedForm, countries, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode))
+        }
+    }
 
-  def onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
-    implicit request =>
-      referenceDataService.getCountries() flatMap {
-        countries =>
-          val form = formProvider(countries)
-          form
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, countries, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode))),
-              value =>
-                for {
-                  updatedAnswers <- Future
-                    .fromTry(request.userAnswers.set(VehicleRegistrationCountryPage(transportMeansIndex), value.code))
-                  _ <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
-            )
-      }
-  }
+  def onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
+    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)).async {
+      implicit request =>
+        referenceDataService.getCountries() flatMap {
+          countries =>
+            val form = formProvider(countries)
+            form
+              .bindFromRequest()
+              .fold(
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, countries, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode))),
+                value =>
+                  for {
+                    updatedAnswers <- Future
+                      .fromTry(request.userAnswers.set(VehicleRegistrationCountryPage(transportMeansIndex), value.code))
+                    _ <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+              )
+        }
+    }
 }

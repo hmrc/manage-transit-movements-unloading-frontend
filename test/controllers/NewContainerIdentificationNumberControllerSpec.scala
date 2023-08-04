@@ -18,13 +18,22 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NewContainerIdentificationNumberFormProvider
+import generators.Generators
 import models.NormalMode
+import models.P5.ArrivalMessageType.UnloadingPermission
+import models.P5.{ArrivalMessageType, MessageMetaData}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import org.scalacheck.Arbitrary.arbitrary
 import pages.ContainerIdentificationNumberPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.NewContainerIdentificationNumberView
 
-class NewContainerIdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+import java.time.LocalDateTime
+import scala.concurrent.Future
+
+class NewContainerIdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider = new NewContainerIdentificationNumberFormProvider()
   private val form         = formProvider()
@@ -39,6 +48,8 @@ class NewContainerIdentificationNumberControllerSpec extends SpecBase with AppWi
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -56,7 +67,8 @@ class NewContainerIdentificationNumberControllerSpec extends SpecBase with AppWi
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
-
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       val userAnswers = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(index), validAnswer)
 
       setExistingUserAnswers(userAnswers)
@@ -87,6 +99,8 @@ class NewContainerIdentificationNumberControllerSpec extends SpecBase with AppWi
       "must return a Bad Request and errors when invalid data is submitted" in {
         val invalidAnswer = ""
         checkArrivalStatus()
+        when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+          .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -106,6 +120,8 @@ class NewContainerIdentificationNumberControllerSpec extends SpecBase with AppWi
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, newContainerIdentificationNumberRoute)
@@ -119,6 +135,8 @@ class NewContainerIdentificationNumberControllerSpec extends SpecBase with AppWi
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
       checkArrivalStatus()
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, newContainerIdentificationNumberRoute)
@@ -129,6 +147,24 @@ class NewContainerIdentificationNumberControllerSpec extends SpecBase with AppWi
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+    }
+
+    "return OK and the correct view for a GET when message is not Unloading Permission(IE043)" in {
+      checkArrivalStatus()
+      val messageType = arbitrary[ArrivalMessageType].retryUntil(_ != UnloadingPermission).sample.value
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), messageType, ""))))
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(GET, routes.NewContainerIdentificationNumberController.onPageLoad(arrivalId, index, NormalMode).url)
+
+      val result = route(app, request).value
+
+      status(result) mustBe SEE_OTHER
+
+      redirectLocation(result).value mustEqual controllers.routes.CannotSendUnloadingRemarksController.onPageLoad(arrivalId).url
+
     }
   }
 }

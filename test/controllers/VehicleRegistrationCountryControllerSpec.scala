@@ -18,7 +18,10 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.VehicleRegistrationCountryFormProvider
+import generators.Generators
 import models.NormalMode
+import models.P5.ArrivalMessageType.UnloadingPermission
+import models.P5.{ArrivalMessageType, MessageMetaData}
 import models.reference.Country
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -30,10 +33,12 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.ReferenceDataService
 import views.html.VehicleRegistrationCountryView
+import org.scalacheck.Arbitrary.arbitrary
 
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
-class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   val formProvider                                   = new VehicleRegistrationCountryFormProvider()
   private val country: String                        = Country("GB", Some("United Kingdom")).code
@@ -57,7 +62,8 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
-
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       when(mockReferenceDataService.getCountries()(any(), any())).thenReturn(Future.successful(countries))
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -78,7 +84,8 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
-
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       when(mockReferenceDataService.getCountries()(any(), any())).thenReturn(
         Future.successful(countries)
       )
@@ -101,6 +108,8 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
 
     "must redirect to the next page when valid data is submitted" in {
       checkArrivalStatus()
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
       when(mockReferenceDataService.getCountries()(any(), any())).thenReturn(Future.successful(countries))
 
@@ -118,6 +127,8 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
 
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       when(mockReferenceDataService.getCountries()(any(), any())).thenReturn(Future.successful(countries))
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -137,6 +148,8 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, vehicleRegistrationCountryRoute)
@@ -150,6 +163,8 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
       checkArrivalStatus()
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       setNoExistingUserAnswers()
 
       val request =
@@ -162,5 +177,24 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
+
+    "return OK and the correct view for a GET when message is not Unloading Permission(IE043)" in {
+      checkArrivalStatus()
+      val messageType = arbitrary[ArrivalMessageType].retryUntil(_ != UnloadingPermission).sample.value
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), messageType, ""))))
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(GET, routes.VehicleIdentificationNumberController.onPageLoad(arrivalId, index, NormalMode).url)
+
+      val result = route(app, request).value
+
+      status(result) mustBe SEE_OTHER
+
+      redirectLocation(result).value mustEqual controllers.routes.CannotSendUnloadingRemarksController.onPageLoad(arrivalId).url
+
+    }
+
   }
 }

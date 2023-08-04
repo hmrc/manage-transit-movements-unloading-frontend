@@ -18,17 +18,22 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.ConfirmRemoveSealFormProvider
+import generators.Generators
 import models.NormalMode
+import models.P5.ArrivalMessageType.UnloadingPermission
+import models.P5.{ArrivalMessageType, MessageMetaData}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.NewSealPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.ConfirmRemoveSealView
+import org.scalacheck.Arbitrary.arbitrary
 
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
-class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider                = new ConfirmRemoveSealFormProvider()
   private val form                        = formProvider("seal 1")
@@ -40,7 +45,8 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
-
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       val userAnswers = emptyUserAnswers.setValue(NewSealPage(equipmentIndex, sealIndex), seal)
 
       setExistingUserAnswers(userAnswers)
@@ -58,6 +64,9 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must redirect to the next page when valid data is submitted" in {
       checkArrivalStatus()
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val userAnswers = emptyUserAnswers.setValue(NewSealPage(equipmentIndex, sealIndex), seal)
@@ -77,7 +86,8 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
-
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       val userAnswers = emptyUserAnswers.setValue(NewSealPage(equipmentIndex, sealIndex), seal)
 
       setExistingUserAnswers(userAnswers)
@@ -90,13 +100,16 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
       status(result) mustEqual BAD_REQUEST
 
       val view = injector.instanceOf[ConfirmRemoveSealView]
-
+      println("\n\n\nContent\n\n" + contentAsString(result))
+      println("\n\n\nMust equal\n\n" + view(boundForm, mrn, arrivalId, equipmentIndex, sealIndex, seal, mode)(request, messages).toString)
       contentAsString(result) mustEqual
         view(boundForm, mrn, arrivalId, equipmentIndex, sealIndex, seal, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, confirmRemoveSealRoute)
@@ -110,6 +123,8 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must redirect to Session Expired for a GET if NewSealNumberPage is undefined" in {
       checkArrivalStatus()
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, confirmRemoveSealRoute)
@@ -123,6 +138,8 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
       checkArrivalStatus()
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       setNoExistingUserAnswers()
 
       val request =
@@ -138,6 +155,8 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must redirect to Session Expired for a POST if NewSealNumberPage is undefined" in {
       checkArrivalStatus()
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request =
@@ -149,6 +168,24 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+    }
+
+    "return OK and the correct view for a GET when message is not Unloading Permission(IE043)" in {
+      checkArrivalStatus()
+      val messageType = arbitrary[ArrivalMessageType].retryUntil(_ != UnloadingPermission).sample.value
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), messageType, ""))))
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(GET, routes.ConfirmRemoveSealController.onPageLoad(arrivalId, index, index, NormalMode).url)
+
+      val result = route(app, request).value
+
+      status(result) mustBe SEE_OTHER
+
+      redirectLocation(result).value mustEqual controllers.routes.CannotSendUnloadingRemarksController.onPageLoad(arrivalId).url
+
     }
   }
 }

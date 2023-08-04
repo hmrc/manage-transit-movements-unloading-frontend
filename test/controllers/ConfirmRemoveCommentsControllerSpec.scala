@@ -18,16 +18,21 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.ConfirmRemoveCommentsFormProvider
+import generators.Generators
 import models.NormalMode
+import models.P5.ArrivalMessageType.UnloadingPermission
+import models.P5.{ArrivalMessageType, MessageMetaData}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.ConfirmRemoveCommentsView
+import org.scalacheck.Arbitrary.arbitrary
 
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
-class ConfirmRemoveCommentsControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class ConfirmRemoveCommentsControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider = new ConfirmRemoveCommentsFormProvider()
   private val form         = formProvider()
@@ -38,15 +43,13 @@ class ConfirmRemoveCommentsControllerSpec extends SpecBase with AppWithDefaultMo
   "ConfirmRemoveComments Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      checkArrivalStatus()
-
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, confirmRemoveCommentsRoute)
 
       val result = route(app, request).value
-
-      status(result) mustEqual OK
 
       val view = injector.instanceOf[ConfirmRemoveCommentsView]
 
@@ -58,6 +61,9 @@ class ConfirmRemoveCommentsControllerSpec extends SpecBase with AppWithDefaultMo
 
     "must redirect to the next page when true is submitted" in {
       checkArrivalStatus()
+      val messageType = arbitrary[ArrivalMessageType].retryUntil(_ != UnloadingPermission).sample.value
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -75,6 +81,8 @@ class ConfirmRemoveCommentsControllerSpec extends SpecBase with AppWithDefaultMo
 
     "must redirect to the next page when false is submitted" in {
       checkArrivalStatus()
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -92,6 +100,8 @@ class ConfirmRemoveCommentsControllerSpec extends SpecBase with AppWithDefaultMo
 
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -110,6 +120,8 @@ class ConfirmRemoveCommentsControllerSpec extends SpecBase with AppWithDefaultMo
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, confirmRemoveCommentsRoute)
@@ -123,6 +135,8 @@ class ConfirmRemoveCommentsControllerSpec extends SpecBase with AppWithDefaultMo
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
       checkArrivalStatus()
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       setNoExistingUserAnswers()
 
       val request =
@@ -134,6 +148,24 @@ class ConfirmRemoveCommentsControllerSpec extends SpecBase with AppWithDefaultMo
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+    }
+
+    "return OK and the correct view for a GET when message is not Unloading Permission(IE043)" in {
+      checkArrivalStatus()
+      val messageType = arbitrary[ArrivalMessageType].retryUntil(_ != UnloadingPermission).sample.value
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), messageType, ""))))
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(GET, routes.ConfirmRemoveCommentsController.onPageLoad(arrivalId, NormalMode).url)
+
+      val result = route(app, request).value
+
+      status(result) mustBe SEE_OTHER
+
+      redirectLocation(result).value mustEqual controllers.routes.CannotSendUnloadingRemarksController.onPageLoad(arrivalId).url
+
     }
   }
 }

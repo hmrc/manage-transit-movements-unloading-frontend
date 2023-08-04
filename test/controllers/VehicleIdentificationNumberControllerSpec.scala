@@ -18,17 +18,22 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.VehicleIdentificationNumberFormProvider
+import generators.Generators
 import models.NormalMode
+import models.P5.ArrivalMessageType.UnloadingPermission
+import models.P5.{ArrivalMessageType, MessageMetaData}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.VehicleIdentificationNumberPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.VehicleIdentificationNumberView
+import org.scalacheck.Arbitrary.arbitrary
 
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
-class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider = new VehicleIdentificationNumberFormProvider()
   private val form         = formProvider()
@@ -40,7 +45,8 @@ class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDef
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
-
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, vehicleIdentificationNumberRoute)
@@ -57,7 +63,8 @@ class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDef
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
-
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       val userAnswers = emptyUserAnswers.setValue(VehicleIdentificationNumberPage(index), "answer")
       setExistingUserAnswers(userAnswers)
 
@@ -77,6 +84,8 @@ class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDef
 
     "must redirect to the next page when valid data is submitted" in {
       checkArrivalStatus()
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -93,7 +102,8 @@ class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDef
 
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
-
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, vehicleIdentificationNumberRoute).withFormUrlEncodedBody(("value", ""))
@@ -111,6 +121,8 @@ class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDef
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, vehicleIdentificationNumberRoute)
@@ -124,6 +136,8 @@ class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDef
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
       checkArrivalStatus()
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
       setNoExistingUserAnswers()
 
       val request =
@@ -135,6 +149,24 @@ class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDef
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+    }
+
+    "return OK and the correct view for a GET when message is not Unloading Permission(IE043)" in {
+      checkArrivalStatus()
+      val messageType = arbitrary[ArrivalMessageType].retryUntil(_ != UnloadingPermission).sample.value
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), messageType, ""))))
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(GET, routes.VehicleIdentificationNumberController.onPageLoad(arrivalId, index, NormalMode).url)
+
+      val result = route(app, request).value
+
+      status(result) mustBe SEE_OTHER
+
+      redirectLocation(result).value mustEqual controllers.routes.CannotSendUnloadingRemarksController.onPageLoad(arrivalId).url
+
     }
   }
 }

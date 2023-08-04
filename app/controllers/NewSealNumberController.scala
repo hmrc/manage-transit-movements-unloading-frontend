@@ -36,6 +36,8 @@ class NewSealNumberController @Inject() (
   navigator: Navigator,
   actions: Actions,
   formProvider: NewSealNumberFormProvider,
+  identify: IdentifierAction,
+  checkArrivalStatusProvider: CheckArrivalStatusProvider,
   val controllerComponents: MessagesControllerComponents,
   view: NewSealNumberView
 )(implicit ec: ExecutionContext)
@@ -45,7 +47,7 @@ class NewSealNumberController @Inject() (
   private val form = formProvider()
 
   def onPageLoad(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode, newSeal: Boolean = false): Action[AnyContent] =
-    actions.requireData(arrivalId) {
+    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)) {
       implicit request =>
         val page: QuestionPage[String] = if (newSeal) {
           NewSealPage(equipmentIndex, sealIndex)
@@ -62,28 +64,29 @@ class NewSealNumberController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode, newSeal: Boolean = false): Action[AnyContent] =
-    actions.requireData(arrivalId).async {
-      implicit request =>
-        val page: QuestionPage[String] = if (newSeal) {
-          NewSealPage(equipmentIndex, sealIndex)
-        } else {
-          SealPage(equipmentIndex, sealIndex)
-        }
+    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId))
+      .async {
+        implicit request =>
+          val page: QuestionPage[String] = if (newSeal) {
+            NewSealPage(equipmentIndex, sealIndex)
+          } else {
+            SealPage(equipmentIndex, sealIndex)
+          }
 
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, equipmentIndex, sealIndex, mode, newSeal = newSeal))),
-            value => {
-              Future.successful(BadRequest(view(form, request.userAnswers.mrn, arrivalId, equipmentIndex, sealIndex, mode, newSeal = newSeal)))
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
-            }
-          )
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors =>
+                Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, equipmentIndex, sealIndex, mode, newSeal = newSeal))),
+              value => {
+                Future.successful(BadRequest(view(form, request.userAnswers.mrn, arrivalId, equipmentIndex, sealIndex, mode, newSeal = newSeal)))
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+              }
+            )
 
-    }
+      }
 
 }

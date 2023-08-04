@@ -18,7 +18,7 @@ package controllers
 
 import com.google.inject.Inject
 import connectors.ApiConnector
-import controllers.actions.Actions
+import controllers.actions.{Actions, CheckArrivalStatusProvider, IdentifierAction}
 import models.ArrivalId
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,28 +36,32 @@ class CheckYourAnswersController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: CheckYourAnswersView,
   viewModelProvider: CheckYourAnswersViewModelProvider,
+  identify: IdentifierAction,
+  checkArrivalStatusProvider: CheckArrivalStatusProvider,
   apiConnector: ApiConnector
 )(implicit val executionContext: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
-    implicit request =>
-      val viewModel: CheckYourAnswersViewModel = viewModelProvider.apply(request.userAnswers)
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
+    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)) {
+      implicit request =>
+        val viewModel: CheckYourAnswersViewModel = viewModelProvider.apply(request.userAnswers)
 
-      Ok(view(request.userAnswers.mrn, arrivalId, viewModel))
-  }
+        Ok(view(request.userAnswers.mrn, arrivalId, viewModel))
+    }
 
-  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
-    implicit request =>
-      for {
-        userAnswers <- Future.fromTry(UserAnswersSubmissionService.userAnswersToSubmission(request.userAnswers))
-        result      <- apiConnector.submit(userAnswers, arrivalId)
+  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =
+    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)).async {
+      implicit request =>
+        for {
+          userAnswers <- Future.fromTry(UserAnswersSubmissionService.userAnswersToSubmission(request.userAnswers))
+          result      <- apiConnector.submit(userAnswers, arrivalId)
 
-      } yield result match {
-        case Left(BadRequest) => Redirect(controllers.routes.ErrorController.badRequest())
-        case Left(_)          => Redirect(controllers.routes.ErrorController.technicalDifficulties())
-        case Right(_)         => Redirect(controllers.routes.UnloadingRemarksSentController.onPageLoad(arrivalId))
-      }
-  }
+        } yield result match {
+          case Left(BadRequest) => Redirect(controllers.routes.ErrorController.badRequest())
+          case Left(_)          => Redirect(controllers.routes.ErrorController.technicalDifficulties())
+          case Right(_)         => Redirect(controllers.routes.UnloadingRemarksSentController.onPageLoad(arrivalId))
+        }
+    }
 }

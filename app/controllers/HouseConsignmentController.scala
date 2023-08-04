@@ -17,7 +17,7 @@
 package controllers
 
 import com.google.inject.Inject
-import controllers.actions.Actions
+import controllers.actions.{Actions, CheckArrivalStatusProvider, IdentifierAction}
 import models.{ArrivalId, Index}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,20 +33,23 @@ class HouseConsignmentController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: HouseConsignmentView,
+  identify: IdentifierAction,
+  checkArrivalStatusProvider: CheckArrivalStatusProvider,
   viewModelProvider: HouseConsignmentViewModelProvider
 )(implicit val executionContext: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId).async {
-    implicit request =>
-      val houseConsignmentViewModel: Future[HouseConsignmentViewModel] =
-        viewModelProvider.apply(request.userAnswers, houseConsignmentIndex)
+  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index): Action[AnyContent] =
+    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)).async {
+      implicit request =>
+        val houseConsignmentViewModel: Future[HouseConsignmentViewModel] =
+          viewModelProvider.apply(request.userAnswers, houseConsignmentIndex)
 
-      houseConsignmentViewModel.map {
-        viewModel =>
-          Ok(view(request.userAnswers.mrn, arrivalId, viewModel, houseConsignmentIndex))
-      }
-  }
+        houseConsignmentViewModel.map {
+          viewModel =>
+            Ok(view(request.userAnswers.mrn, arrivalId, viewModel, houseConsignmentIndex))
+        }
+    }
 
 }
