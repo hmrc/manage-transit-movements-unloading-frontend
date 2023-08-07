@@ -35,6 +35,8 @@ class CannotSendUnloadingRemarksViewSpec extends ViewBehaviours {
 
   behave like pageWithBackLink()
 
+  behave like pageWithCaption(s"MRN:$mrn")
+
   behave like pageWithHeading()
 
   behave like pageWithoutHint()

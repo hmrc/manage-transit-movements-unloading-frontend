@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import views.html.components.{Button, Heading}
+@import views.html.components.{Button, Heading, HeadingCaption}
 @import config.FrontendAppConfig
 
 @this(
@@ -22,8 +22,9 @@
     formHelper: FormWithCSRF,
     heading: Heading,
     button: Button,
-    config: FrontendAppConfig
-)
+    config: FrontendAppConfig,
+    caption: HeadingCaption
+    )
 
 @(mrn: MovementReferenceNumber, arrivalId: ArrivalId, viewModel: CannotSendUnloadingRemarksViewModel)(implicit request: Request[_], messages: Messages)
 
@@ -31,6 +32,8 @@
     title = messages("cannotSendUnloadingRemarks.title"),
     showBackLink = true
 ) {
+
+    @caption("MRN:" + mrn.toString)
 
     @heading(messages("cannotSendUnloadingRemarks.heading"))
 
