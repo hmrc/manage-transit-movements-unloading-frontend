@@ -35,7 +35,6 @@ viewLink = View
 
 checkYourAnswers.seals.subHeading = Check official customs seals
 checkYourAnswers.seals.checkYourAnswersLabel = Official customs seal numbers
-checkYourAnswers.subHeading = What you found when unloading
 
 checkYourAnswers.confirmation.heading = Now send your unloading remarks
 checkYourAnswers.confirmation.paragraph = By sending this you are confirming that the details you are providing are correct, to the best of your knowledge.
@@ -201,13 +200,13 @@ confirmation.para2 = You must wait for the goods to be released.
 confirmation.linkText = Go to arrival notifications
 confirmation.para3 = to see the latest messages.
 
-addUnloadingCommentsYesNo.title = Were there any differences between the transit and the declaration information?
-addUnloadingCommentsYesNo.heading = Were there any differences between the transit and the declaration information?
+addUnloadingCommentsYesNo.title = Were there any discrepancies between the transit and the declaration summary?
+addUnloadingCommentsYesNo.heading = Were there any discrepancies between the transit and the declaration summary?
 addUnloadingCommentsYesNo.paragraph = This includes any changes to the means of transport, items or transport equipment.
 addUnloadingCommentsYesNo.error.required = Select yes if there were any differences between the transit and the declaration information
 
-changesToReport.title = What comments do you want to add?
-changesToReport.heading = What comments do you want to add?
+changesToReport.title = Describe the discrepancies between the transit and the declaration summary
+changesToReport.heading = Describe the discrepancies between the transit and the declaration summary
 changesToReport.checkYourAnswersLabel = What comments do you want to add?
 changesToReport.error.required = Enter the comments you want to add
 changesToReport.error.length = Your comments must be 512 characters or less
@@ -339,8 +338,8 @@ unloadingFindings.rowHeadings.additionalComments.remove.hidden = comments
 
 houseConsignment.title = Cross-check the transit with house consignment {0}
 houseConsignment.heading = Cross-check the transit with house consignment {0}
+houseConsignment.paragraph = Compare the transit that arrived with the following information to identify any discrepancies.
 houseConsignment.departureMeansSubHeading = Departure means of transport {0}
-houseConsignment.itemSubHeading = Item {0}
 
 unloadingRemarksSent.title = Unloading remarks sent
 unloadingRemarksSent.heading = Unloading remarks sent
@@ -363,11 +362,11 @@ checkYourAnswers.rowHeadings.canSealsBeRead.change.hidden = if all of the seal i
 checkYourAnswers.rowHeadings.anySealsBroken = Are any of the seals broken?
 checkYourAnswers.rowHeadings.anySealsBroken.change.hidden = if any of the seals are broken
 
-checkYourAnswers.subsections.additionalComments = What you found when unloading
-checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo = Were there any differences between the transit and the declaration information?
-checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo.change.hidden = if there were any differences between the transit and the declaration information
-checkYourAnswers.rowHeadings.additionalComments = Differences
-checkYourAnswers.rowHeadings.additionalComments.change.hidden = differences between the transit and declaration information
+checkYourAnswers.subsections.additionalComments = Transit and declaration summary cross-check
+checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo = Were there any discrepancies between the transit and the declaration summary?
+checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo.change.hidden = if there were any discrepancies between the transit and the declaration summary
+checkYourAnswers.rowHeadings.additionalComments = Discrepancies
+checkYourAnswers.rowHeadings.additionalComments.change.hidden = discrepancies between the transit and declaration summary
 
 checkYourAnswers.sendRemarks = Send your unloading remarks
 checkYourAnswers.paragraph = By sending this, you are confirming that these details are correct to the best of your knowledge.
