@@ -49,7 +49,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getCustomsOffice(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[CustomsOffice]] = {
 
     val queryParams: Seq[(String, String)] = Seq(
-      "data.countryId" -> code
+      "data.id" -> code
     )
 
     val serviceUrl = s"${config.referenceDataUrl}/filtered-lists/CustomsOffices"

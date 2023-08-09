@@ -48,7 +48,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
   val countryCode                                    = "GB"
 
   private val queryParamsCustomsOffice: Seq[(String, StringValuePattern)] = Seq(
-    "data.countryId" -> equalTo(code)
+    "data.id" -> equalTo(code)
   )
 
   private val queryParamsCustomsCountry: Seq[(String, StringValuePattern)] = Seq(
