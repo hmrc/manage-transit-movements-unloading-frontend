@@ -61,8 +61,7 @@ class UnloadingRemarksSentControllerSpec extends SpecBase with AppWithDefaultMoc
     "return OK and the correct view" in {
 
       checkArrivalStatus()
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       when(mockReferenceDataService.getCustomsOfficeByCode(any())(any(), any())).thenReturn(Future.successful(Some(customsOffice)))
 
       setExistingUserAnswers(emptyUserAnswers.copy(ie043Data = setCustomsOfficeOfDestination))
@@ -82,8 +81,7 @@ class UnloadingRemarksSentControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must redirect to Session Expired for a GET if no CustomsOfficeOfDestination data is found" in {
       checkArrivalStatus()
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       setExistingUserAnswers(emptyUserAnswers)
 
       when(mockReferenceDataService.getCustomsOfficeByCode(any())(any(), any())).thenReturn(Future.successful(Some(customsOffice)))

@@ -78,8 +78,7 @@ class UnloadingFindingsControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, unloadingFindingsRoute)

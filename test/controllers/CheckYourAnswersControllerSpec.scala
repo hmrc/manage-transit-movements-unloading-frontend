@@ -18,11 +18,11 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
-import models.NormalMode
 import models.P5.ArrivalMessageType.UnloadingPermission
 import models.P5.{ArrivalMessageType, MessageMetaData}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -31,7 +31,6 @@ import play.api.test.Helpers._
 import viewModels.CheckYourAnswersViewModel
 import viewModels.CheckYourAnswersViewModel.CheckYourAnswersViewModelProvider
 import views.html.CheckYourAnswersView
-import org.scalacheck.Arbitrary.arbitrary
 
 import java.time.LocalDateTime
 import scala.concurrent.Future
@@ -51,8 +50,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       setExistingUserAnswers(emptyUserAnswers)
 
       val sections = arbitrarySections.arbitrary.sample.value
@@ -76,8 +74,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
     "must redirect to the next page when valid data is submitted" ignore {
       checkArrivalStatus()
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -95,8 +92,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, checkYourAnswersRoute)
@@ -110,8 +106,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
     "must redirect to Session Expired for a POST if no existing data is found" ignore {
       checkArrivalStatus()
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       setNoExistingUserAnswers()
 
       val request =

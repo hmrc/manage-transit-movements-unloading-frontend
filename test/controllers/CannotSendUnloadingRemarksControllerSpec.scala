@@ -20,8 +20,6 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import matchers.JsonMatchers
 import models.CannotSendUnloadingRemarksViewModel
-import models.P5.ArrivalMessageType.UnloadingPermission
-import models.P5.MessageMetaData
 import models.reference.CustomsOffice
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -33,7 +31,6 @@ import play.api.test.Helpers._
 import services.ReferenceDataService
 import views.html.CannotSendUnloadingRemarksView
 
-import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class CannotSendUnloadingRemarksControllerSpec extends SpecBase with AppWithDefaultMockFixtures with JsonMatchers with Generators {
@@ -61,8 +58,7 @@ class CannotSendUnloadingRemarksControllerSpec extends SpecBase with AppWithDefa
   "CannotSendUnloadingRemarksController" - {
     "return OK and the correct view for a GET" in {
       checkArrivalStatus()
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       when(mockReferenceDataService.getCustomsOfficeByCode(any())(any(), any())).thenReturn(Future.successful(Some(customsOffice)))
 
       setExistingUserAnswers(emptyUserAnswers.copy(ie043Data = setCustomsOfficeOfDestination))

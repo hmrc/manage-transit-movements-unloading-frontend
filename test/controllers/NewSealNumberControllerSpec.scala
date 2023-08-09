@@ -48,8 +48,7 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, newSealNumberRoute)
@@ -66,8 +65,7 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       val userAnswers = emptyUserAnswers.setValue(SealPage(equipmentIndex, sealIndex), validAnswer)
 
       setExistingUserAnswers(userAnswers)
@@ -177,8 +175,7 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, newSealNumberRoute)
@@ -192,8 +189,7 @@ class NewSealNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
       checkArrivalStatus()
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, newSealNumberRoute)

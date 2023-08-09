@@ -46,8 +46,6 @@ class CanSealsBeReadControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     "must return OK and the correct view for a GET" in {
 
       checkArrivalStatus()
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -64,8 +62,7 @@ class CanSealsBeReadControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       val userAnswers = emptyUserAnswers.setValue(CanSealsBeReadPage, true)
       setExistingUserAnswers(userAnswers)
 
@@ -84,8 +81,7 @@ class CanSealsBeReadControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "must redirect to the next page when valid data is submitted" in {
       checkArrivalStatus()
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -103,8 +99,7 @@ class CanSealsBeReadControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, canSealsBeReadRoute).withFormUrlEncodedBody(("value", ""))
@@ -121,8 +116,7 @@ class CanSealsBeReadControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, canSealsBeReadRoute)
@@ -136,8 +130,7 @@ class CanSealsBeReadControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
       checkArrivalStatus()
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       setNoExistingUserAnswers()
 
       val request =

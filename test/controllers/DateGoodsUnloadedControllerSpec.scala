@@ -55,8 +55,6 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
   "DateGoodsUnloaded Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
 
       val ie043Data = Json.obj("preparationDateAndTime" -> dateTimeOfPrep)
 
@@ -80,8 +78,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
       val ie043Data   = Json.obj("preparationDateAndTime" -> dateTimeOfPrep)
 
       val userAnswersWithIe043Data = userAnswers.copy(ie043Data = ie043Data)
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       setExistingUserAnswers(userAnswersWithIe043Data)
 
       val view = app.injector.instanceOf[DateGoodsUnloadedView]
@@ -103,8 +100,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
     }
 
     "must redirect to session expired on a GET when date of preparation is not available" in {
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       setExistingUserAnswers(emptyUserAnswers)
 
       val result = route(app, FakeRequest(GET, dateGoodsUnloadedRoute)).value
@@ -115,8 +111,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
     }
 
     "must redirect on to the next page when valid data is submitted" in {
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val userAnswers = emptyUserAnswers.set(DateGoodsUnloadedPage, dateTimeOfPrep.toLocalDate).success.value
@@ -140,8 +135,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       val ie043Data = Json.obj("preparationDateAndTime" -> dateTimeOfPrep)
 
       val userAnswers = emptyUserAnswers.copy(ie043Data = ie043Data)
@@ -169,8 +163,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
     }
 
     "must return a Bad Request and errors when the date is before date of preparation" in {
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       val ie043Data = Json.obj("preparationDateAndTime" -> dateTimeOfPrep)
 
       val userAnswers = emptyUserAnswers.copy(ie043Data = ie043Data)
@@ -199,8 +192,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
     }
 
     "must redirect to session expired on a POST when date of preparation is not available" in {
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       setExistingUserAnswers(emptyUserAnswers)
 
       val postRequest = FakeRequest(POST, dateGoodsUnloadedRoute)

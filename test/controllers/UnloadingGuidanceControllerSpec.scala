@@ -36,8 +36,6 @@ class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppW
   "UnloadingGuidance Controller" - {
     "return OK and the correct view for a GET when message is Unloading Permission(IE043)" in {
       checkArrivalStatus()
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
 
       setExistingUserAnswers(emptyUserAnswers)
 

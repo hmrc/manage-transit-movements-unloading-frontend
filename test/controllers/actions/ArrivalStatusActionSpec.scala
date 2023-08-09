@@ -42,8 +42,6 @@ class ArrivalStatusActionSpec extends SpecBase with BeforeAndAfterEach with Gene
 
   "ArrivalStatusAction" - {
     "must return None when an unloading permission is available" in {
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
 
       val checkArrivalStatusProvider = new CheckArrivalStatusProvider(mockUnloadingPermissionMessageService)
 

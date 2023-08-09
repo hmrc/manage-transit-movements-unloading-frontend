@@ -25,7 +25,7 @@ import models.P5.{ArrivalMessageType, MessageMetaData}
 import models.{NormalMode, UnloadingType}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalacheck.Arbitrary
+import org.scalacheck.Arbitrary.arbitrary
 import pages.UnloadingTypePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -33,7 +33,6 @@ import views.html.UnloadingTypeView
 
 import java.time.LocalDateTime
 import scala.concurrent.Future
-import org.scalacheck.Arbitrary.arbitrary
 
 class UnloadingTypeControllerSpec extends SpecBase with Generators with AppWithDefaultMockFixtures with JsonMatchers {
 
@@ -47,8 +46,7 @@ class UnloadingTypeControllerSpec extends SpecBase with Generators with AppWithD
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, unloadingTypeRoute)
@@ -65,8 +63,7 @@ class UnloadingTypeControllerSpec extends SpecBase with Generators with AppWithD
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       val userAnswers = emptyUserAnswers.setValue(UnloadingTypePage, UnloadingType.values.head)
       setExistingUserAnswers(userAnswers)
 
@@ -88,8 +85,7 @@ class UnloadingTypeControllerSpec extends SpecBase with Generators with AppWithD
 
     "must redirect to the next page when valid data is submitted" in {
       checkArrivalStatus()
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -107,8 +103,7 @@ class UnloadingTypeControllerSpec extends SpecBase with Generators with AppWithD
 
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, unloadingTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))
@@ -126,8 +121,7 @@ class UnloadingTypeControllerSpec extends SpecBase with Generators with AppWithD
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, unloadingTypeRoute)
@@ -141,8 +135,7 @@ class UnloadingTypeControllerSpec extends SpecBase with Generators with AppWithD
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
       checkArrivalStatus()
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
+
       setNoExistingUserAnswers()
 
       val request =
