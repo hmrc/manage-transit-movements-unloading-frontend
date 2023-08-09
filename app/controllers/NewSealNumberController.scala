@@ -19,7 +19,6 @@ package controllers
 import controllers.actions._
 import forms.NewSealNumberFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigator
 import pages.{NewSealPage, QuestionPage, SealPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,11 +32,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class NewSealNumberController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
   actions: Actions,
   formProvider: NewSealNumberFormProvider,
-  identify: IdentifierAction,
-  checkArrivalStatusProvider: CheckArrivalStatusProvider,
   val controllerComponents: MessagesControllerComponents,
   view: NewSealNumberView
 )(implicit ec: ExecutionContext)
@@ -47,7 +43,7 @@ class NewSealNumberController @Inject() (
   private val form = formProvider()
 
   def onPageLoad(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode, newSeal: Boolean = false): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)) {
+    actions.getStatus(arrivalId) {
       implicit request =>
         val page: QuestionPage[String] = if (newSeal) {
           NewSealPage(equipmentIndex, sealIndex)
@@ -64,7 +60,8 @@ class NewSealNumberController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode, newSeal: Boolean = false): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId))
+    actions
+      .getStatus(arrivalId)
       .async {
         implicit request =>
           val page: QuestionPage[String] = if (newSeal) {

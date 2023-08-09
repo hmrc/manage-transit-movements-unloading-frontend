@@ -19,7 +19,6 @@ package controllers
 import controllers.actions._
 import forms.ConfirmRemoveSealFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigator
 import pages.NewSealPage
 import pages.sections.NewSealSection
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -34,12 +33,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class ConfirmRemoveSealController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: ConfirmRemoveSealFormProvider,
-  identify: IdentifierAction,
-  checkArrivalStatusProvider: CheckArrivalStatusProvider,
   val controllerComponents: MessagesControllerComponents,
   view: ConfirmRemoveSealView
 )(implicit ec: ExecutionContext)
@@ -47,7 +43,7 @@ class ConfirmRemoveSealController @Inject() (
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)
+    (actions.getStatus(arrivalId)
       andThen getMandatoryPage(NewSealPage(equipmentIndex, sealIndex))) {
       implicit request =>
         val form = formProvider(request.arg)
@@ -55,7 +51,7 @@ class ConfirmRemoveSealController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)
+    (actions.getStatus(arrivalId)
       andThen getMandatoryPage(NewSealPage(equipmentIndex, sealIndex)))
       .async {
         implicit request =>

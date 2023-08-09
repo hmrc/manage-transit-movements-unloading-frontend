@@ -40,7 +40,7 @@ class CannotSendUnloadingRemarksController @Inject() (
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions
-    .requireData(arrivalId)
+    .getStatus(arrivalId)
     .andThen(getMandatoryPage(CustomsOfficeOfDestinationPage))
     .async {
       implicit request =>

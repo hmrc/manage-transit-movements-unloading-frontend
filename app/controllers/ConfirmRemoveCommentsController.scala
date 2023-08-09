@@ -36,8 +36,6 @@ class ConfirmRemoveCommentsController @Inject() (
   navigator: Navigator,
   actions: Actions,
   formProvider: ConfirmRemoveCommentsFormProvider,
-  identify: IdentifierAction,
-  checkArrivalStatusProvider: CheckArrivalStatusProvider,
   val controllerComponents: MessagesControllerComponents,
   view: ConfirmRemoveCommentsView
 )(implicit ec: ExecutionContext)
@@ -47,12 +45,12 @@ class ConfirmRemoveCommentsController @Inject() (
   private val form = formProvider()
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)) {
+    actions.getStatus(arrivalId) {
       implicit request => Ok(view(form, request.userAnswers.mrn, arrivalId, mode))
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)).async {
+    actions.getStatus(arrivalId).async {
       implicit request =>
         form
           .bindFromRequest()

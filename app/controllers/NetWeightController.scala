@@ -19,7 +19,6 @@ package controllers
 import controllers.actions._
 import forms.NetWeightFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigator
 import pages.NetWeightPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,10 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class NetWeightController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
   actions: Actions,
-  identify: IdentifierAction,
-  checkArrivalStatusProvider: CheckArrivalStatusProvider,
   formProvider: NetWeightFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: NetWeightView
@@ -47,7 +43,7 @@ class NetWeightController @Inject() (
   private def form(itemIndex: Index) = formProvider(itemIndex)
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignment: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)) {
+    actions.getStatus(arrivalId) {
       implicit request =>
         val preparedForm = request.userAnswers.get(NetWeightPage(houseConsignment, itemIndex)) match {
           case None        => form(itemIndex)
@@ -58,7 +54,7 @@ class NetWeightController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, houseConsignment: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)).async {
+    actions.getStatus(arrivalId).async {
       implicit request =>
         form(itemIndex)
           .bindFromRequest()

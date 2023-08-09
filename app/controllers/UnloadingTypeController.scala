@@ -36,8 +36,6 @@ class UnloadingTypeController @Inject() (
   sessionRepository: SessionRepository,
   navigator: Navigator,
   actions: Actions,
-  identify: IdentifierAction,
-  checkArrivalStatusProvider: CheckArrivalStatusProvider,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: UnloadingTypeView
@@ -48,7 +46,7 @@ class UnloadingTypeController @Inject() (
   private val form = formProvider[UnloadingType]("unloadingType")
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)) {
+    actions.getStatus(arrivalId) {
       implicit request =>
         val preparedForm: Form[UnloadingType] = request.userAnswers.get(UnloadingTypePage) match {
           case None        => form
@@ -59,7 +57,7 @@ class UnloadingTypeController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)).async {
+    actions.getStatus(arrivalId).async {
       implicit request =>
         form
           .bindFromRequest()

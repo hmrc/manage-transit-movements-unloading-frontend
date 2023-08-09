@@ -36,8 +36,6 @@ class DateGoodsUnloadedController @Inject() (
   actions: Actions,
   getMandatoryPage: IE043DataRequiredActionProvider,
   navigator: Navigator,
-  identify: IdentifierAction,
-  checkArrivalStatusProvider: CheckArrivalStatusProvider,
   formProvider: DateGoodsUnloadedFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: DateGoodsUnloadedView
@@ -46,7 +44,7 @@ class DateGoodsUnloadedController @Inject() (
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)
+    (actions.getStatus(arrivalId)
       andThen getMandatoryPage(PreparationDateAndTimePage)) {
       implicit request =>
         val form = formProvider(request.arg.toLocalDate)
@@ -60,7 +58,7 @@ class DateGoodsUnloadedController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)
+    (actions.getStatus(arrivalId)
       andThen getMandatoryPage(PreparationDateAndTimePage)).async {
       implicit request =>
         formProvider(request.arg.toLocalDate)

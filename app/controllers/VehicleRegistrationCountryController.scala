@@ -20,7 +20,6 @@ import controllers.actions._
 import forms.VehicleRegistrationCountryFormProvider
 import models.reference.Country
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigator
 import pages.VehicleRegistrationCountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -35,12 +34,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class VehicleRegistrationCountryController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
   actions: Actions,
   formProvider: VehicleRegistrationCountryFormProvider,
   referenceDataService: ReferenceDataService,
-  identify: IdentifierAction,
-  checkArrivalStatusProvider: CheckArrivalStatusProvider,
   val controllerComponents: MessagesControllerComponents,
   view: VehicleRegistrationCountryView
 )(implicit ec: ExecutionContext)
@@ -48,7 +44,7 @@ class VehicleRegistrationCountryController @Inject() (
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)).async {
+    actions.getStatus(arrivalId).async {
       implicit request =>
         referenceDataService.getCountries() map {
           countries =>
@@ -67,7 +63,7 @@ class VehicleRegistrationCountryController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)).async {
+    actions.getStatus(arrivalId).async {
       implicit request =>
         referenceDataService.getCountries() flatMap {
           countries =>

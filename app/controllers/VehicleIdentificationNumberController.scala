@@ -19,7 +19,6 @@ package controllers
 import controllers.actions._
 import forms.VehicleIdentificationNumberFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigator
 import pages.VehicleIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,11 +32,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class VehicleIdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
   actions: Actions,
   formProvider: VehicleIdentificationNumberFormProvider,
-  identify: IdentifierAction,
-  checkArrivalStatusProvider: CheckArrivalStatusProvider,
   val controllerComponents: MessagesControllerComponents,
   view: VehicleIdentificationNumberView
 )(implicit ec: ExecutionContext)
@@ -47,7 +43,7 @@ class VehicleIdentificationNumberController @Inject() (
   private val form = formProvider()
 
   def onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)) {
+    actions.getStatus(arrivalId) {
       implicit request =>
         val preparedForm = request.userAnswers.get(VehicleIdentificationNumberPage(transportMeansIndex)) match {
           case None        => form
@@ -58,7 +54,7 @@ class VehicleIdentificationNumberController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)).async {
+    actions.getStatus(arrivalId).async {
       implicit request =>
         form
           .bindFromRequest()

@@ -36,15 +36,13 @@ class UnloadingRemarksSentController @Inject() (
   cc: MessagesControllerComponents,
   sessionRepository: SessionRepository,
   getMandatoryPage: IE043DataRequiredActionProvider,
-  identify: IdentifierAction,
-  checkArrivalStatusProvider: CheckArrivalStatusProvider,
   view: UnloadingRemarksSentView
 )(implicit ec: ExecutionContext)
     extends FrontendController(cc)
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)
+    (actions.getStatus(arrivalId)
       andThen getMandatoryPage(CustomsOfficeOfDestinationPage))
       .async {
         implicit request =>

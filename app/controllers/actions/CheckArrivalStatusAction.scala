@@ -17,7 +17,7 @@
 package controllers.actions
 
 import models.ArrivalId
-import models.P5.ArrivalMessageType.{RejectionFromOfficeOfDestination, UnloadingPermission}
+import models.P5.ArrivalMessageType.UnloadingPermission
 import models.requests.IdentifierRequest
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionFilter, Result}
@@ -43,13 +43,13 @@ class ArrivalStatusAction(
   override protected def filter[A](request: IdentifierRequest[A]): Future[Option[Result]] = {
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-    unloadingPermissionMessageService.getMessageHead(arrivalId).flatMap {
+    unloadingPermissionMessageService.getMessageHead(arrivalId).map {
       case Some(messageMetaData) =>
         messageMetaData.messageType match {
-          case UnloadingPermission => Future.successful(None)
-          case _                   => Future.successful(Option(Redirect(controllers.routes.CannotSendUnloadingRemarksController.onPageLoad(arrivalId))))
+          case UnloadingPermission => None
+          case _                   => Option(Redirect(controllers.routes.CannotSendUnloadingRemarksController.onPageLoad(arrivalId)))
         }
-      case _ => Future.successful(Option(Redirect(controllers.routes.CannotSendUnloadingRemarksController.onPageLoad(arrivalId))))
+      case _ => Option(Redirect(controllers.routes.CannotSendUnloadingRemarksController.onPageLoad(arrivalId)))
 
     }
   }

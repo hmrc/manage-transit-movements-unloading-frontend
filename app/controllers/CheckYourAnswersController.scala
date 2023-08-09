@@ -18,7 +18,7 @@ package controllers
 
 import com.google.inject.Inject
 import connectors.ApiConnector
-import controllers.actions.{Actions, CheckArrivalStatusProvider, IdentifierAction}
+import controllers.actions.Actions
 import models.ArrivalId
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,15 +36,13 @@ class CheckYourAnswersController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: CheckYourAnswersView,
   viewModelProvider: CheckYourAnswersViewModelProvider,
-  identify: IdentifierAction,
-  checkArrivalStatusProvider: CheckArrivalStatusProvider,
   apiConnector: ApiConnector
 )(implicit val executionContext: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)) {
+    actions.getStatus(arrivalId) {
       implicit request =>
         val viewModel: CheckYourAnswersViewModel = viewModelProvider.apply(request.userAnswers)
 
@@ -52,7 +50,7 @@ class CheckYourAnswersController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)).async {
+    actions.getStatus(arrivalId).async {
       implicit request =>
         for {
           userAnswers <- Future.fromTry(UserAnswersSubmissionService.userAnswersToSubmission(request.userAnswers))

@@ -19,7 +19,6 @@ package controllers
 import controllers.actions._
 import forms.GrossWeightFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigator
 import pages.GrossWeightPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,11 +32,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class GrossWeightController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
   actions: Actions,
   formProvider: GrossWeightFormProvider,
-  identify: IdentifierAction,
-  checkArrivalStatusProvider: CheckArrivalStatusProvider,
   val controllerComponents: MessagesControllerComponents,
   view: GrossWeightView
 )(implicit ec: ExecutionContext)
@@ -47,7 +43,7 @@ class GrossWeightController @Inject() (
   private def form(itemIndex: Index) = formProvider(itemIndex)
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignment: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)) {
+    (actions.getStatus(arrivalId)) {
       implicit request =>
         val preparedForm = request.userAnswers.get(GrossWeightPage(houseConsignment, itemIndex)) match {
           case None        => form(itemIndex)
@@ -58,7 +54,8 @@ class GrossWeightController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, houseConsignment: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId))
+    actions
+      .getStatus(arrivalId)
       .async {
         implicit request =>
           form(itemIndex)
@@ -71,5 +68,6 @@ class GrossWeightController @Inject() (
                   _              <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
             )
+
       }
 }

@@ -45,7 +45,7 @@ class TotalNumberOfPackagesController @Inject() (
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)) {
+    actions.getStatus(arrivalId) {
       implicit request =>
         val form = formProvider(index)
 
@@ -58,7 +58,7 @@ class TotalNumberOfPackagesController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)).async {
+    actions.getStatus(arrivalId).async {
       implicit request =>
         val form = formProvider(index)
 

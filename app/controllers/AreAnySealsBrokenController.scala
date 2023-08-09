@@ -36,8 +36,6 @@ class AreAnySealsBrokenController @Inject() (
   navigator: Navigator,
   actions: Actions,
   formProvider: AreAnySealsBrokenFormProvider,
-  identify: IdentifierAction,
-  checkArrivalStatusProvider: CheckArrivalStatusProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AreAnySealsBrokenView
 )(implicit ec: ExecutionContext)
@@ -47,7 +45,7 @@ class AreAnySealsBrokenController @Inject() (
   private val form = formProvider()
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)) {
+    actions.getStatus(arrivalId) {
       implicit request =>
         val preparedForm = request.userAnswers.get(AreAnySealsBrokenPage) match {
           case None        => form
@@ -58,7 +56,7 @@ class AreAnySealsBrokenController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)).async {
+    actions.getStatus(arrivalId).async {
       implicit request =>
         form
           .bindFromRequest()

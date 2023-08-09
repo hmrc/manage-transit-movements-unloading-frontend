@@ -19,7 +19,6 @@ package controllers
 import controllers.actions._
 import forms.NewContainerIdentificationNumberFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigator
 import pages.ContainerIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,11 +32,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class NewContainerIdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
   actions: Actions,
   formProvider: NewContainerIdentificationNumberFormProvider,
-  identify: IdentifierAction,
-  checkArrivalStatusProvider: CheckArrivalStatusProvider,
   val controllerComponents: MessagesControllerComponents,
   view: NewContainerIdentificationNumberView
 )(implicit ec: ExecutionContext)
@@ -47,7 +43,7 @@ class NewContainerIdentificationNumberController @Inject() (
   private val form = formProvider()
 
   def onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)) {
+    actions.getStatus(arrivalId) {
       implicit request =>
         val preparedForm = request.userAnswers.get(ContainerIdentificationNumberPage(index)) match {
           case None                       => form
@@ -58,7 +54,8 @@ class NewContainerIdentificationNumberController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId))
+    actions
+      .getStatus(arrivalId)
       .async {
         implicit request =>
           form

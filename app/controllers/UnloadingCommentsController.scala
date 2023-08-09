@@ -37,8 +37,6 @@ class UnloadingCommentsController @Inject() (
   navigator: Navigator,
   actions: Actions,
   formProvider: UnloadingCommentsFormProvider,
-  identify: IdentifierAction,
-  checkArrivalStatusProvider: CheckArrivalStatusProvider,
   val controllerComponents: MessagesControllerComponents,
   view: UnloadingCommentsView
 )(implicit ec: ExecutionContext)
@@ -48,7 +46,7 @@ class UnloadingCommentsController @Inject() (
   private val form = formProvider()
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)) {
+    actions.getStatus(arrivalId) {
       implicit request =>
         val preparedForm = request.userAnswers.get(UnloadingCommentsPage) match {
           case None        => form
@@ -59,7 +57,7 @@ class UnloadingCommentsController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    (identify andThen checkArrivalStatusProvider(arrivalId) andThen actions.requireData(arrivalId)).async {
+    actions.getStatus(arrivalId).async {
       implicit request =>
         form
           .bindFromRequest()
