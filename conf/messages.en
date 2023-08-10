@@ -203,14 +203,14 @@ confirmation.para3 = to see the latest messages.
 addUnloadingCommentsYesNo.title = Were there any discrepancies between the transit and the declaration summary?
 addUnloadingCommentsYesNo.heading = Were there any discrepancies between the transit and the declaration summary?
 addUnloadingCommentsYesNo.paragraph = This includes any changes to the means of transport, items or transport equipment.
-addUnloadingCommentsYesNo.error.required = Select yes if there were any differences between the transit and the declaration information
+addUnloadingCommentsYesNo.error.required = Select yes if there were any discrepancies between the transit and the declaration summary
 
 changesToReport.title = Describe the discrepancies between the transit and the declaration summary
 changesToReport.heading = Describe the discrepancies between the transit and the declaration summary
 changesToReport.checkYourAnswersLabel = What comments do you want to add?
-changesToReport.error.required = Enter the comments you want to add
-changesToReport.error.length = Your comments must be 512 characters or less
-changesToReport.error.invalid = Your comments must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+changesToReport.error.required = Describe the discrepancies between the transit and the declaration summary
+changesToReport.error.length = Your description must be 512 characters or less
+changesToReport.error.invalid = Your description must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 
 confirmRemoveComments.title = Are you sure you want to remove your comments?
 confirmRemoveComments.heading = Are you sure you want to remove your comments?
