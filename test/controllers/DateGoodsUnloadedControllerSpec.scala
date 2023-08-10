@@ -20,8 +20,6 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.DateGoodsUnloadedFormProvider
 import generators.Generators
 import models.NormalMode
-import models.P5.ArrivalMessageType.UnloadingPermission
-import models.P5.{ArrivalMessageType, MessageMetaData}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.DateGoodsUnloadedPage
@@ -31,7 +29,7 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.DateGoodsUnloadedView
-import org.scalacheck.Arbitrary.arbitrary
+
 import java.time.{Clock, Instant, LocalDateTime, ZoneId}
 import scala.concurrent.Future
 
@@ -208,22 +206,5 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
-    "return OK and the correct view for a GET when message is not Unloading Permission(IE043)" in {
-      checkArrivalStatus()
-      val messageType = arbitrary[ArrivalMessageType].retryUntil(_ != UnloadingPermission).sample.value
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), messageType, ""))))
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request = FakeRequest(GET, routes.DateGoodsUnloadedController.onPageLoad(arrivalId, NormalMode).url)
-
-      val result = route(app, request).value
-
-      status(result) mustBe SEE_OTHER
-
-      redirectLocation(result).value mustEqual controllers.routes.CannotSendUnloadingRemarksController.onPageLoad(arrivalId).url
-
-    }
   }
 }

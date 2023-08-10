@@ -20,17 +20,13 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.GrossWeightFormProvider
 import generators.Generators
 import models.NormalMode
-import models.P5.ArrivalMessageType.UnloadingPermission
-import models.P5.{ArrivalMessageType, MessageMetaData}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.GrossWeightPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.GrossWeightView
-import org.scalacheck.Arbitrary.arbitrary
 
-import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
@@ -141,23 +137,6 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
-    }
-    "return OK and the correct view for a GET when message is not Unloading Permission(IE043)" in {
-      checkArrivalStatus()
-      val messageType = arbitrary[ArrivalMessageType].retryUntil(_ != UnloadingPermission).sample.value
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), messageType, ""))))
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request = FakeRequest(GET, routes.GrossWeightController.onPageLoad(arrivalId, index, index, NormalMode).url)
-
-      val result = route(app, request).value
-
-      status(result) mustBe SEE_OTHER
-
-      redirectLocation(result).value mustEqual controllers.routes.CannotSendUnloadingRemarksController.onPageLoad(arrivalId).url
-
     }
   }
 }

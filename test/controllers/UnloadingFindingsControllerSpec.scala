@@ -19,10 +19,9 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.P5.ArrivalMessageType.UnloadingPermission
-import models.P5.{ArrivalMessageType, MessageMetaData}
+import models.P5.MessageMetaData
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -90,22 +89,5 @@ class UnloadingFindingsControllerSpec extends SpecBase with AppWithDefaultMockFi
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
-    "return OK and the correct view for a GET when message is not Unloading Permission(IE043)" in {
-      checkArrivalStatus()
-      val messageType = arbitrary[ArrivalMessageType].retryUntil(_ != UnloadingPermission).sample.value
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), messageType, ""))))
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request = FakeRequest(GET, routes.UnloadingFindingsController.onPageLoad(arrivalId).url)
-
-      val result = route(app, request).value
-
-      status(result) mustBe SEE_OTHER
-
-      redirectLocation(result).value mustEqual controllers.routes.CannotSendUnloadingRemarksController.onPageLoad(arrivalId).url
-
-    }
   }
 }

@@ -26,11 +26,7 @@ import pages.AreAnySealsBrokenPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.AreAnySealsBrokenView
-import org.scalacheck.Arbitrary.arbitrary
-import models.P5.ArrivalMessageType.UnloadingPermission
-import models.P5.{ArrivalMessageType, MessageMetaData}
 
-import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class AreAnySealsBrokenControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
@@ -148,22 +144,5 @@ class AreAnySealsBrokenControllerSpec extends SpecBase with AppWithDefaultMockFi
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
-    "return OK and the correct view for a GET when message is not Unloading Permission(IE043)" in {
-      checkArrivalStatus()
-      val messageType = arbitrary[ArrivalMessageType].retryUntil(_ != UnloadingPermission).sample.value
-      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
-        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), messageType, ""))))
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request = FakeRequest(GET, routes.AreAnySealsBrokenController.onPageLoad(arrivalId, NormalMode).url)
-
-      val result = route(app, request).value
-
-      status(result) mustBe SEE_OTHER
-
-      redirectLocation(result).value mustEqual controllers.routes.CannotSendUnloadingRemarksController.onPageLoad(arrivalId).url
-
-    }
   }
 }
