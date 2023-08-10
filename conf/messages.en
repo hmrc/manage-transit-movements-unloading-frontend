@@ -244,7 +244,7 @@ unloadingRemarksRejection.title = There is a problem with these unloading remark
 unloadingRemarksRejection.heading = There is a problem with these unloading remarks
 unloadingRemarksRejection.contact.message = If this information is correct, you will need to
 unloadingRemarksRejection.conflicting.information = There is conflicting information that must be fixed before you can continue.
-unloadingRemarksRejection.create.unloadingRemarks = create new unloading remarks
+unloadingRemarksRejection.create.unloadingRemarks = make new unloading remarks
 
 unloadingRemarksRejection.review = You must review the errors and
 unloadingRemarksRejection.newUnloadingRemarks = send new unloading remarks with the right information
@@ -347,7 +347,7 @@ unloadingRemarksSent.heading = Unloading remarks sent
 unloadingRemarksSent.panel.body = for Movement Reference Number (MRN) {0}
 unloadingRemarksSent.subHeading = What happens next
 unloadingRemarksSent.checkStatus = Check the status of arrival notifications
-unloadingRemarksSent.createArrivalNotification = Create another arrival notification
+unloadingRemarksSent.createArrivalNotification = Make another arrival notification
 unloadingRemarksSent.findOut =  to find out when goods have been released.
 unloadingRemarksSent.telephoneAvailable = If the goods are not released when expected or you have another problem, contact Customs at {0} on {1}.
 unloadingRemarksSent.telephoneNotAvailable = If the goods are not released when expected or you have another problem, contact Customs at {0}.
