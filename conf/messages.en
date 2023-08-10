@@ -210,7 +210,7 @@ changesToReport.heading = Describe the discrepancies between the transit and the
 changesToReport.checkYourAnswersLabel = What comments do you want to add?
 changesToReport.error.required = Describe the discrepancies between the transit and the declaration summary
 changesToReport.error.length = Your description must be 512 characters or less
-changesToReport.error.invalid = Your description must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+changesToReport.error.invalid = Your description must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 
 confirmRemoveComments.title = Are you sure you want to remove your comments?
 confirmRemoveComments.heading = Are you sure you want to remove your comments?
