@@ -185,7 +185,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
           result mustBe Some(
             SummaryListRow(
-              key = Key("Were there any differences between the transit and the declaration information?".toText),
+              key = Key("Were there any discrepancies between the transit and the declaration summary?".toText),
               value = Value("Yes".toText),
               actions = Some(
                 Actions(
@@ -194,7 +194,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                       content = "Change".toText,
                       href = routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, CheckMode).url,
                       visuallyHiddenText = Some(
-                        "if there were any differences between the transit and the declaration information"
+                        "if there were any discrepancies between the transit and the declaration summary"
                       ),
                       attributes = Map("id" -> "change-add-unloading-comments")
                     )
@@ -212,7 +212,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
           result mustBe Some(
             SummaryListRow(
-              key = Key("Were there any differences between the transit and the declaration information?".toText),
+              key = Key("Were there any discrepancies between the transit and the declaration summary?".toText),
               value = Value("No".toText),
               actions = Some(
                 Actions(
@@ -220,7 +220,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                     ActionItem(
                       content = "Change".toText,
                       href = routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, CheckMode).url,
-                      visuallyHiddenText = Some("if there were any differences between the transit and the declaration information"),
+                      visuallyHiddenText = Some("if there were any discrepancies between the transit and the declaration summary"),
                       attributes = Map("id" -> "change-add-unloading-comments")
                     )
                   )
@@ -243,7 +243,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
             result mustBe Some(
               SummaryListRow(
-                key = Key("Differences".toText),
+                key = Key("Discrepancies".toText),
                 value = Value(s"$comments".toText),
                 actions = Some(
                   Actions(
@@ -251,7 +251,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                       ActionItem(
                         content = "Change".toText,
                         href = routes.UnloadingCommentsController.onPageLoad(arrivalId, CheckMode).url,
-                        visuallyHiddenText = Some("differences between the transit and declaration information"),
+                        visuallyHiddenText = Some("discrepancies between the transit and declaration summary"),
                         attributes = Map("id" -> "change-comment")
                       )
                     )

@@ -47,6 +47,8 @@ class HouseConsignmentViewSpec extends DetailsListViewBehaviours with Generators
 
   behave like pageWithHeading("1")
 
+  behave like pageWithContent("p", "Compare the transit that arrived with the following information to identify any discrepancies.")
+
   behave like pageWithSections()
 
   behave like pageWithLinkAsButton("Back to summary", controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url)

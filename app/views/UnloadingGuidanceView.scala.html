@@ -14,13 +14,14 @@
  * limitations under the License.
  *@
 
-@import views.html.components.{Button, Heading}
+@import views.html.components.{Button, Heading, HeadingCaption}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     heading: Heading,
     button: Button,
+    caption: HeadingCaption
 )
 
 @(mrn: MovementReferenceNumber, arrivalId: ArrivalId, messageId: String)(implicit request: Request[_], messages: Messages)
@@ -29,6 +30,8 @@
     title = messages("unloadingGuidance.title"),
     showBackLink = true
 ) {
+
+    @caption(mrn.toString)
 
     @heading(messages("unloadingGuidance.heading"))
 
