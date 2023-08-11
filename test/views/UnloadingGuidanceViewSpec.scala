@@ -32,6 +32,8 @@ class UnloadingGuidanceViewSpec extends ViewBehaviours {
 
   behave like pageWithBackLink()
 
+  behave like pageWithCaption(mrn.toString)
+
   behave like pageWithHeading()
 
   behave like pageWithContent("p", s"When unloading, check that the goods match the Unloading Permission for Movement Reference Number (MRN) $mrn.")
