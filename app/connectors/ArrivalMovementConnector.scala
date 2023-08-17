@@ -29,28 +29,10 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ArrivalMovementConnector @Inject() (config: FrontendAppConfig, http: HttpClient) extends Logging {
 
-  def getMessageMetaData(arrivalId: ArrivalId, messageId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[MessageMetaData]] = {
+  def getUnloadingPermission(arrivalId: ArrivalId, messageId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[IE043Data] = {
     val headers = hc.withExtraHeaders(("Accept", "application/vnd.hmrc.2.0+json"))
 
     val serviceUrl = s"${config.commonTransitConventionTradersUrl}movements/arrivals/${arrivalId.value}/messages/$messageId"
-
-    http
-      .GET[MessageMetaData](serviceUrl)(implicitly, headers, ec)
-      .map {
-        case response => Some(response)
-        case _        => None
-      }
-      .recover {
-        case e =>
-          logger.error(s"Failed to get arrival movements with error: $e")
-          None
-      }
-  }
-
-  def getUnloadingPermission(path: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[IE043Data] = {
-    val headers = hc.withExtraHeaders(("Accept", "application/vnd.hmrc.2.0+json"))
-
-    val serviceUrl = s"${config.commonTransitConventionTradersUrl}$path"
 
     http.GET[IE043Data](serviceUrl)(implicitly, headers, ec)
   }

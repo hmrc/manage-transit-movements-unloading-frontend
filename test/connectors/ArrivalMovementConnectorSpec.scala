@@ -38,51 +38,18 @@ class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtu
 
   "ArrivalMovementConnectorSpec" - {
 
-    "getMessageMetaData" - {
-
-      val url = s"/movements/arrivals/${arrivalId.value}/messages/$messageId"
-
-      val expectedResponse =
-        """
-
-          |    {
-          |      "_links": {
-          |        "self": {
-          |          "href": "/customs/transits/movements/arrivals/63498209a2d89ad8/messages/634982098f02f00a"
-          |        }
-          |      },
-          |      "received": "2022-11-10T15:32:51.459Z",
-          |      "type": "IE007"
-          |    }
-          |""".stripMargin
-
-      "should return Messages" in {
-        server.stubFor(
-          get(url)
-            .withHeader("Accept", containing("application/vnd.hmrc.2.0+json"))
-            .willReturn(okJson(expectedResponse))
-        )
-
-        val result = connector.getMessageMetaData(arrivalId, messageId).futureValue
-
-        val expectedResult =
-          Some(
-            MessageMetaData(
-              LocalDateTime.parse("2022-11-10T15:32:51.459Z", DateTimeFormatter.ISO_DATE_TIME),
-              ArrivalMessageType.ArrivalNotification,
-              "movements/arrivals/63498209a2d89ad8/messages/634982098f02f00a"
-            )
-          )
-
-        result mustBe expectedResult
-      }
-    }
-
     "getUnloadingPermission" - {
 
       val expectedResponse =
         """
           |{
+          |"_links": {
+          |        "self": {
+          |          "href": "/customs/transits/movements/arrivals/63498209a2d89ad8/messages/634982098f02f00a"
+          |   }
+          |},
+          |      "received": "2022-11-10T15:32:51.459Z",
+          |      "type": "IE007",
           |  "body": {
           |   "n1:CC043C": {
           |     "preparationDateAndTime": "2022-11-10T15:32:51.459Z",
@@ -104,13 +71,15 @@ class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtu
           |""".stripMargin
 
       "should return Message" in {
+        val url = s"/movements/arrivals/${arrivalId.value}/messages/$messageId"
+
         server.stubFor(
-          get("/path/url")
+          get(url)
             .withHeader("Accept", containing("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(expectedResponse))
         )
 
-        val result = connector.getUnloadingPermission("path/url").futureValue
+        val result = connector.getUnloadingPermission(arrivalId, messageId).futureValue
 
         val expectedResult = IE043Data(
           MessageData(

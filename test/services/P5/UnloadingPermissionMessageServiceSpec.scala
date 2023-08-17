@@ -45,58 +45,25 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
   private val unloadingPermission3 = MessageMetaData(LocalDateTime.now().minusDays(2), UnloadingPermission, "path/url")
   private val arrivalNotification  = MessageMetaData(LocalDateTime.now(), ArrivalNotification, "path/url")
 
+  val message = IE043Data(
+    MessageData(
+      preparationDateAndTime = LocalDateTime.now(),
+      TransitOperation = TransitOperation(MovementReferenceNumber("23", "GB", "123")),
+      Consignment = Consignment(None, None, List.empty),
+      CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("GB0008"),
+      TraderAtDestination = TraderAtDestination("AB123")
+    )
+  )
+
   "UnloadingPermissionMessageService" - {
-
-    "getUnloadingPermissionMessage" - {
-
-      "must return latest unloading permission" in {
-
-        val messageMetaData = Messages(List(unloadingPermission1, arrivalNotification, unloadingPermission3, unloadingPermission2))
-
-        when(mockConnector.getMessageMetaData(arrivalId, messageId)).thenReturn(Future.successful(Some(unloadingPermission1)))
-
-        service.getUnloadingPermissionMessage(arrivalId, messageId).futureValue mustBe Some(unloadingPermission1)
-      }
-
-      "must return none when there is no unloading permission" in {
-
-        val messageMetaData = Messages(List(arrivalNotification))
-
-        when(mockConnector.getMessageMetaData(arrivalId, messageId)).thenReturn(Future.successful(None))
-
-        service.getUnloadingPermissionMessage(arrivalId, messageId).futureValue mustBe None
-      }
-    }
 
     "getUnloadingPermissionJson" - {
 
       "must return latest unloading permission message" in {
 
-        val messageMetaData = Messages(List(unloadingPermission1, arrivalNotification, unloadingPermission3, unloadingPermission2))
-
-        val message = IE043Data(
-          MessageData(
-            preparationDateAndTime = LocalDateTime.now(),
-            TransitOperation = TransitOperation(MovementReferenceNumber("23", "GB", "123")),
-            Consignment = Consignment(None, None, List.empty),
-            CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("GB0008"),
-            TraderAtDestination = TraderAtDestination("AB123")
-          )
-        )
-
-        when(mockConnector.getMessageMetaData(arrivalId, messageId)).thenReturn(Future.successful(Some(unloadingPermission1)))
-        when(mockConnector.getUnloadingPermission(unloadingPermission1.path)).thenReturn(Future.successful(message))
+        when(mockConnector.getUnloadingPermission(arrivalId, messageId)).thenReturn(Future.successful(message))
 
         service.getUnloadingPermission(arrivalId, messageId).futureValue mustBe Some(message)
-      }
-
-      "must return none when there is no unloading permission message" in {
-
-        val messageMetaData = Messages(List(arrivalNotification))
-
-        when(mockConnector.getMessageMetaData(arrivalId, messageId)).thenReturn(Future.successful(None))
-
-        service.getUnloadingPermission(arrivalId, messageId).futureValue mustBe None
       }
     }
   }
