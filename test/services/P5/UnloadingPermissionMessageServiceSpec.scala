@@ -20,7 +20,6 @@ import base.SpecBase
 import connectors.ArrivalMovementConnector
 import generators.Generators
 import models.MovementReferenceNumber
-import models.P5.ArrivalMessageType.{ArrivalNotification, UnloadingPermission}
 import models.P5._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -40,12 +39,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
     reset(mockConnector)
   }
 
-  private val unloadingPermission1 = MessageMetaData(LocalDateTime.now(), UnloadingPermission, "path/url")
-  private val unloadingPermission2 = MessageMetaData(LocalDateTime.now().minusDays(1), UnloadingPermission, "path/url")
-  private val unloadingPermission3 = MessageMetaData(LocalDateTime.now().minusDays(2), UnloadingPermission, "path/url")
-  private val arrivalNotification  = MessageMetaData(LocalDateTime.now(), ArrivalNotification, "path/url")
-
-  val message = IE043Data(
+  val message: IE043Data = IE043Data(
     MessageData(
       preparationDateAndTime = LocalDateTime.now(),
       TransitOperation = TransitOperation(MovementReferenceNumber("23", "GB", "123")),
@@ -63,7 +57,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
 
         when(mockConnector.getUnloadingPermission(arrivalId, messageId)).thenReturn(Future.successful(message))
 
-        service.getUnloadingPermission(arrivalId, messageId).futureValue mustBe Some(message)
+        service.getUnloadingPermission(arrivalId, messageId).futureValue mustBe message
       }
     }
   }

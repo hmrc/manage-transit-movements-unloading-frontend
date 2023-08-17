@@ -16,8 +16,8 @@
 
 package controllers.actions
 
-import cats.data.OptionT
 import controllers.routes
+import logging.Logging
 import models.ArrivalId
 import models.requests.{IdentifierRequest, UnloadingPermissionRequest}
 import play.api.mvc.Results.Redirect
@@ -29,7 +29,8 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class UnloadingPermissionActionProvider @Inject() (unloadingPermissionMessageService: UnloadingPermissionMessageService)(implicit ec: ExecutionContext) {
+class UnloadingPermissionActionProvider @Inject() (unloadingPermissionMessageService: UnloadingPermissionMessageService)(implicit ec: ExecutionContext)
+    extends Logging {
 
   def apply(arrivalId: ArrivalId, messageId: String): ActionRefiner[IdentifierRequest, UnloadingPermissionRequest] =
     new UnloadingPermissionAction(arrivalId, messageId, unloadingPermissionMessageService)
@@ -37,18 +38,24 @@ class UnloadingPermissionActionProvider @Inject() (unloadingPermissionMessageSer
 
 class UnloadingPermissionAction(arrivalId: ArrivalId, messageId: String, unloadingPermissionMessageService: UnloadingPermissionMessageService)(implicit
   protected val executionContext: ExecutionContext
-) extends ActionRefiner[IdentifierRequest, UnloadingPermissionRequest] {
+) extends ActionRefiner[IdentifierRequest, UnloadingPermissionRequest]
+    with Logging {
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, UnloadingPermissionRequest[A]]] = {
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    OptionT(unloadingPermissionMessageService.getUnloadingPermission(arrivalId, messageId))
+    unloadingPermissionMessageService
+      .getUnloadingPermission(arrivalId, messageId)
       .map {
         unloadingPermission =>
-          UnloadingPermissionRequest(request, request.eoriNumber, unloadingPermission.data)
+          Right(UnloadingPermissionRequest(request, request.eoriNumber, unloadingPermission.data))
       }
-      .toRight(Redirect(routes.ErrorController.technicalDifficulties()))
-      .value
+      .recover {
+        _ =>
+          logger.error("Retreiving UnloadingPermission failed.")
+          Left(Redirect(routes.ErrorController.technicalDifficulties()))
+      }
+
   }
 }

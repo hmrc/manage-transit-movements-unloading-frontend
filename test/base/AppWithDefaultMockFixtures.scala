@@ -46,15 +46,13 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
     when(mockUnloadingPermissionMessageService.getUnloadingPermission(any(), any())(any(), any())).thenReturn(
       Future.successful(
-        Some(
-          IE043Data(
-            MessageData(
-              LocalDateTime.now(),
-              TransitOperation = TransitOperation(MovementReferenceNumber("99IT9876AB88901209").get),
-              TraderAtDestination = TraderAtDestination("identificationNumber"),
-              Consignment = Consignment(None, None, List.empty),
-              CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("referenceNumber")
-            )
+        IE043Data(
+          MessageData(
+            LocalDateTime.now(),
+            TransitOperation = TransitOperation(MovementReferenceNumber("99IT9876AB88901209").get),
+            TraderAtDestination = TraderAtDestination("identificationNumber"),
+            Consignment = Consignment(None, None, List.empty),
+            CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("referenceNumber")
           )
         )
       )
