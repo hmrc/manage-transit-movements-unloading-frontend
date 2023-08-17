@@ -53,18 +53,18 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
 
         val messageMetaData = Messages(List(unloadingPermission1, arrivalNotification, unloadingPermission3, unloadingPermission2))
 
-        when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
+        when(mockConnector.getMessageMetaData(arrivalId, messageId)).thenReturn(Future.successful(Some(unloadingPermission1)))
 
-        service.getUnloadingPermissionMessage(arrivalId).futureValue mustBe Some(unloadingPermission1)
+        service.getUnloadingPermissionMessage(arrivalId, messageId).futureValue mustBe Some(unloadingPermission1)
       }
 
       "must return none when there is no unloading permission" in {
 
         val messageMetaData = Messages(List(arrivalNotification))
 
-        when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
+        when(mockConnector.getMessageMetaData(arrivalId, messageId)).thenReturn(Future.successful(None))
 
-        service.getUnloadingPermissionMessage(arrivalId).futureValue mustBe None
+        service.getUnloadingPermissionMessage(arrivalId, messageId).futureValue mustBe None
       }
     }
 
@@ -84,19 +84,19 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
           )
         )
 
-        when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
+        when(mockConnector.getMessageMetaData(arrivalId, messageId)).thenReturn(Future.successful(Some(unloadingPermission1)))
         when(mockConnector.getUnloadingPermission(unloadingPermission1.path)).thenReturn(Future.successful(message))
 
-        service.getUnloadingPermission(arrivalId).futureValue mustBe Some(message)
+        service.getUnloadingPermission(arrivalId, messageId).futureValue mustBe Some(message)
       }
 
       "must return none when there is no unloading permission message" in {
 
         val messageMetaData = Messages(List(arrivalNotification))
 
-        when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
+        when(mockConnector.getMessageMetaData(arrivalId, messageId)).thenReturn(Future.successful(None))
 
-        service.getUnloadingPermission(arrivalId).futureValue mustBe None
+        service.getUnloadingPermission(arrivalId, messageId).futureValue mustBe None
       }
     }
   }

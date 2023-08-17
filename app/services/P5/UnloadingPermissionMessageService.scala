@@ -28,21 +28,17 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class UnloadingPermissionMessageService @Inject() (arrivalMovementConnector: ArrivalMovementConnector) {
 
-  def getUnloadingPermissionMessage(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[MessageMetaData]] =
+  def getUnloadingPermissionMessage(arrivalId: ArrivalId, messageId: String)(implicit
+    ec: ExecutionContext,
+    hc: HeaderCarrier
+  ): Future[Option[MessageMetaData]] =
     arrivalMovementConnector
-      .getMessageMetaData(arrivalId)
-      .map(
-        _.messages
-          .filter(_.messageType == UnloadingPermission)
-          .sortBy(_.received)
-          .reverse
-          .headOption
-      )
+      .getMessageMetaData(arrivalId, messageId)
 
-  def getUnloadingPermission(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[IE043Data]] =
+  def getUnloadingPermission(arrivalId: ArrivalId, messageId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[IE043Data]] =
     (
       for {
-        unloadingPermissionMessage <- OptionT(getUnloadingPermissionMessage(arrivalId))
+        unloadingPermissionMessage <- OptionT(getUnloadingPermissionMessage(arrivalId, messageId))
         unloadingPermission        <- OptionT.liftF(arrivalMovementConnector.getUnloadingPermission(unloadingPermissionMessage.path))
       } yield unloadingPermission
     ).value

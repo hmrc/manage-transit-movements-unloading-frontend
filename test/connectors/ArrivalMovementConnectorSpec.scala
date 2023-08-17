@@ -40,12 +40,11 @@ class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "getMessageMetaData" - {
 
-      val url = s"/movements/arrivals/${arrivalId.value}/messages"
+      val url = s"/movements/arrivals/${arrivalId.value}/messages/$messageId"
 
       val expectedResponse =
         """
-          |{
-          |  "messages": [
+
           |    {
           |      "_links": {
           |        "self": {
@@ -55,8 +54,6 @@ class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtu
           |      "received": "2022-11-10T15:32:51.459Z",
           |      "type": "IE007"
           |    }
-          |  ]
-          |}
           |""".stripMargin
 
       "should return Messages" in {
@@ -66,17 +63,16 @@ class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtu
             .willReturn(okJson(expectedResponse))
         )
 
-        val result = connector.getMessageMetaData(arrivalId).futureValue
+        val result = connector.getMessageMetaData(arrivalId, messageId).futureValue
 
-        val expectedResult = Messages(
-          List(
+        val expectedResult =
+          Some(
             MessageMetaData(
               LocalDateTime.parse("2022-11-10T15:32:51.459Z", DateTimeFormatter.ISO_DATE_TIME),
               ArrivalMessageType.ArrivalNotification,
               "movements/arrivals/63498209a2d89ad8/messages/634982098f02f00a"
             )
           )
-        )
 
         result mustBe expectedResult
       }

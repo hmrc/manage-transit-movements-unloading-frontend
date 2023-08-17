@@ -26,8 +26,8 @@ import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class FakeUnloadingPermissionAction(arrivalId: ArrivalId, unloadingPermissionMessageService: UnloadingPermissionMessageService)
-    extends UnloadingPermissionAction(arrivalId, unloadingPermissionMessageService) {
+class FakeUnloadingPermissionAction(arrivalId: ArrivalId, messageId: String, unloadingPermissionMessageService: UnloadingPermissionMessageService)
+    extends UnloadingPermissionAction(arrivalId, messageId, unloadingPermissionMessageService) {
 
   val messageData: MessageData = MessageData(
     LocalDateTime.now(),

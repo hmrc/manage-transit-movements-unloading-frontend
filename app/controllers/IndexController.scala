@@ -41,7 +41,7 @@ class IndexController @Inject() (
     with I18nSupport
     with Logging {
 
-  def unloadingRemarks(arrivalId: ArrivalId, messageId: String): Action[AnyContent] = (identify andThen unloadingPermission(arrivalId)).async {
+  def unloadingRemarks(arrivalId: ArrivalId, messageId: String): Action[AnyContent] = (identify andThen unloadingPermission(arrivalId, messageId)).async {
     implicit request =>
       for {
         getUserAnswer <- sessionRepository.get(arrivalId, request.eoriNumber) map {

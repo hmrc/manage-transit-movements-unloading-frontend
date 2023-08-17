@@ -31,11 +31,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class UnloadingPermissionActionProvider @Inject() (unloadingPermissionMessageService: UnloadingPermissionMessageService)(implicit ec: ExecutionContext) {
 
-  def apply(arrivalId: ArrivalId): ActionRefiner[IdentifierRequest, UnloadingPermissionRequest] =
-    new UnloadingPermissionAction(arrivalId, unloadingPermissionMessageService)
+  def apply(arrivalId: ArrivalId, messageId: String): ActionRefiner[IdentifierRequest, UnloadingPermissionRequest] =
+    new UnloadingPermissionAction(arrivalId, messageId, unloadingPermissionMessageService)
 }
 
-class UnloadingPermissionAction(arrivalId: ArrivalId, unloadingPermissionMessageService: UnloadingPermissionMessageService)(implicit
+class UnloadingPermissionAction(arrivalId: ArrivalId, messageId: String, unloadingPermissionMessageService: UnloadingPermissionMessageService)(implicit
   protected val executionContext: ExecutionContext
 ) extends ActionRefiner[IdentifierRequest, UnloadingPermissionRequest] {
 
@@ -43,7 +43,7 @@ class UnloadingPermissionAction(arrivalId: ArrivalId, unloadingPermissionMessage
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    OptionT(unloadingPermissionMessageService.getUnloadingPermission(arrivalId))
+    OptionT(unloadingPermissionMessageService.getUnloadingPermission(arrivalId, messageId))
       .map {
         unloadingPermission =>
           UnloadingPermissionRequest(request, request.eoriNumber, unloadingPermission.data)

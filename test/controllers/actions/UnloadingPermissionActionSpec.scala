@@ -60,9 +60,9 @@ class UnloadingPermissionActionSpec extends SpecBase with BeforeAndAfterEach wit
         )
       )
 
-      when(mockService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(Some(message)))
+      when(mockService.getUnloadingPermission(any(), any())(any(), any())).thenReturn(Future.successful(Some(message)))
 
-      val unloadingPermissionProvider = (new UnloadingPermissionActionProvider(mockService)(implicitly))(arrivalId)
+      val unloadingPermissionProvider = (new UnloadingPermissionActionProvider(mockService)(implicitly))(arrivalId, messageId)
 
       val testRequest = IdentifierRequest(FakeRequest(GET, "/"), EoriNumber("eori"))
 
@@ -73,9 +73,9 @@ class UnloadingPermissionActionSpec extends SpecBase with BeforeAndAfterEach wit
 
     "must return 303 and redirect to technical difficulties when no unloading permission is available" in {
 
-      when(mockService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockService.getUnloadingPermission(any(), any())(any(), any())).thenReturn(Future.successful(None))
 
-      val unloadingPermissionProvider = (new UnloadingPermissionActionProvider(mockService)(implicitly))(arrivalId)
+      val unloadingPermissionProvider = (new UnloadingPermissionActionProvider(mockService)(implicitly))(arrivalId, messageId)
 
       val testRequest = IdentifierRequest(FakeRequest(GET, "/"), EoriNumber("eori"))
 

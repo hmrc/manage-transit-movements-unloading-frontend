@@ -16,23 +16,35 @@
 
 package connectors
 
+import akka.event.Logging
 import config.FrontendAppConfig
+import logging.Logging
 import models.ArrivalId
-import models.P5.{IE043Data, Messages}
+import models.P5.{IE043Data, MessageMetaData, Messages}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ArrivalMovementConnector @Inject() (config: FrontendAppConfig, http: HttpClient) {
+class ArrivalMovementConnector @Inject() (config: FrontendAppConfig, http: HttpClient) extends Logging {
 
-  def getMessageMetaData(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Messages] = {
+  def getMessageMetaData(arrivalId: ArrivalId, messageId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[MessageMetaData]] = {
     val headers = hc.withExtraHeaders(("Accept", "application/vnd.hmrc.2.0+json"))
 
-    val serviceUrl = s"${config.commonTransitConventionTradersUrl}movements/arrivals/${arrivalId.value}/messages"
+    val serviceUrl = s"${config.commonTransitConventionTradersUrl}movements/arrivals/${arrivalId.value}/messages/$messageId"
 
-    http.GET[Messages](serviceUrl)(implicitly, headers, ec)
+    http
+      .GET[MessageMetaData](serviceUrl)(implicitly, headers, ec)
+      .map {
+        case response => Some(response)
+        case _        => None
+      }
+      .recover {
+        case e =>
+          logger.error(s"Failed to get arrival movements with error: $e")
+          None
+      }
   }
 
   def getUnloadingPermission(path: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[IE043Data] = {
