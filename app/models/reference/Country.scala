@@ -21,6 +21,8 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 case class Country(code: String, description: Option[String]) extends Selectable {
 
+  override val value: String = code
+
   override def toString: String = description match {
     case Some(description) => description
     case None              => code

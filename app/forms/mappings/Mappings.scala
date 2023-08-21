@@ -16,11 +16,12 @@
 
 package forms.mappings
 
-import java.time.LocalDate
+import models.reference.Selectable
 
+import java.time.LocalDate
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
-import models.Enumerable
+import models.{Enumerable, SelectableList}
 
 trait Mappings extends Formatters with Constraints {
 
@@ -46,4 +47,11 @@ trait Mappings extends Formatters with Constraints {
                           args: Seq[String] = Seq.empty
   ): FieldMapping[LocalDate] =
     of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, args))
+
+  protected def selectable[T <: Selectable](
+    selectableList: SelectableList[T],
+    errorKey: String = "error.required",
+    args: Seq[Any] = Seq.empty
+  ): FieldMapping[T] =
+    of(selectableFormatter[T](selectableList, errorKey, args))
 }

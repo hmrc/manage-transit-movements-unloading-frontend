@@ -50,39 +50,6 @@ trait ModelGenerators {
       } yield EoriNumber(number)
     }
 
-
-  implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice] =
-    Arbitrary {
-      for {
-        id <- nonEmptyString
-        name <- nonEmptyString
-        phoneNumber <- Gen.option(Gen.alphaNumStr)
-      } yield CustomsOffice(id, name, phoneNumber)
-    }
-
-  lazy val arbitraryXiCustomsOffice: Arbitrary[CustomsOffice] =
-    Arbitrary {
-      for {
-        id <- stringsWithMaxLength(stringMaxLength)
-        name <- stringsWithMaxLength(stringMaxLength)
-        phoneNumber <- Gen.option(stringsWithMaxLength(stringMaxLength))
-      } yield CustomsOffice(id, name, phoneNumber)
-    }
-
-  lazy val arbitraryGbCustomsOffice: Arbitrary[CustomsOffice] =
-    Arbitrary {
-      for {
-        id <- stringsWithMaxLength(stringMaxLength)
-        name <- stringsWithMaxLength(stringMaxLength)
-        phoneNumber <- Gen.option(stringsWithMaxLength(stringMaxLength))
-      } yield CustomsOffice(id, name, phoneNumber)
-    }
-
-  lazy val arbitraryOfficeOfDeparture: Arbitrary[CustomsOffice] =
-    Arbitrary {
-      Gen.oneOf(arbitraryGbCustomsOffice.arbitrary, arbitraryXiCustomsOffice.arbitrary)
-    }
-
   implicit lazy val arbitraryUnloadingType: Arbitrary[UnloadingType] =
     Arbitrary {
       Gen.oneOf(UnloadingType.values)

@@ -20,17 +20,15 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
 
-case class CustomsOffice (
+case class CustomsOffice(
   id: String,
   name: String,
   countryId: String,
   phoneNumber: Option[String]
-) extends Selectable {
+) {
 
   override def toString: String = s"$name ($id)"
-  val countryCode: String = id.take(2)
-
-  override val value: String = id
+  val countryCode: String       = id.take(2)
 
 }
 

@@ -16,7 +16,8 @@
 
 package forms.mappings
 
-import models.Enumerable
+import models.{Enumerable, SelectableList}
+import models.reference.Selectable
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -166,4 +167,43 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
       result.errors must contain(FormError("value", "error.required"))
     }
   }
+
+  "selectable" - {
+
+    case class Foo(value: String) extends Selectable
+
+    val foo            = Foo("foo")
+    val selectableList = SelectableList(Seq(foo))
+
+    val testForm: Form[Foo] =
+      Form(
+        "value" -> selectable[Foo](selectableList)
+      )
+
+    "must bind a valid string" in {
+      val result = testForm.bind(Map("value" -> "foo"))
+      result.get mustEqual foo
+    }
+
+    "must not bind an empty string" in {
+      val result = testForm.bind(Map("value" -> ""))
+      result.errors must contain(FormError("value", "error.required"))
+    }
+
+    "must not bind an empty map" in {
+      val result = testForm.bind(Map.empty[String, String])
+      result.errors must contain(FormError("value", "error.required"))
+    }
+
+    "must not bind a country not in the list" in {
+      val result = testForm.bind(Map("value" -> "FR"))
+      result.errors must contain(FormError("value", "error.required"))
+    }
+
+    "must unbind a valid value" in {
+      val result = testForm.fill(foo)
+      result.apply("value").value.value mustEqual "foo"
+    }
+  }
+
 }
