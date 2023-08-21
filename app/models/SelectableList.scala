@@ -14,22 +14,8 @@
  * limitations under the License.
  */
 
-package models.reference
+package models
 
-import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
+import models.reference.Selectable
 
-trait Selectable {
-  val value: String
-
-  def toSelectItem(selected: Boolean = false): SelectItem = SelectItem(Some(value), this.toString, selected)
-}
-
-object Selectable {
-
-  implicit class Selectables(selectables: Seq[Selectable]) {
-
-    def toSelectItems(selectedValue: Option[Selectable]): Seq[SelectItem] = selectables.map(
-      x => x.toSelectItem(selectedValue.contains(x))
-    )
-  }
-}
+case class SelectableList[T <: Selectable](values: Seq[T])

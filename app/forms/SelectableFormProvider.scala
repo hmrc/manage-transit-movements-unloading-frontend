@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-package models.reference
+package forms
 
-import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
+import forms.mappings.Mappings
+import models.SelectableList
+import play.api.data.Form
 
-trait Selectable {
-  val value: String
+import javax.inject.Inject
 
-  def toSelectItem(selected: Boolean = false): SelectItem = SelectItem(Some(value), this.toString, selected)
-}
+class SelectableFormProvider @Inject() extends Mappings {
 
-object Selectable {
-
-  implicit class Selectables(selectables: Seq[Selectable]) {
-
-    def toSelectItems(selectedValue: Option[Selectable]): Seq[SelectItem] = selectables.map(
-      x => x.toSelectItem(selectedValue.contains(x))
+  def apply[T <: Selectable](prefix: String, selectableList: SelectableList[T], args: Any*): Form[T] =
+    Form(
+      "value" -> selectable[T](selectableList, s"$prefix.error.required", args)
     )
-  }
 }

@@ -35,6 +35,7 @@ trait Generators
 
   implicit val dontShrink: Shrink[String] = Shrink.shrinkAny
   private val maxListLength               = 10
+  lazy val stringMaxLength = 36
 
   def genIntersperseString(gen: Gen[String], value: String, frequencyV: Int = 1, frequencyN: Int = 10): Gen[String] = {
 

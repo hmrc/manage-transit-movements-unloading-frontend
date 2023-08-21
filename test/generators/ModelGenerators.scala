@@ -17,7 +17,7 @@
 package generators
 
 import models.messages._
-import models.reference.Country
+import models.reference.{Country, CustomsOffice, Selectable}
 import models.{UnloadingPermission, _}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen.choose
@@ -50,10 +50,49 @@ trait ModelGenerators {
       } yield EoriNumber(number)
     }
 
+
+  implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice] =
+    Arbitrary {
+      for {
+        id <- nonEmptyString
+        name <- nonEmptyString
+        phoneNumber <- Gen.option(Gen.alphaNumStr)
+      } yield CustomsOffice(id, name, phoneNumber)
+    }
+
+  lazy val arbitraryXiCustomsOffice: Arbitrary[CustomsOffice] =
+    Arbitrary {
+      for {
+        id <- stringsWithMaxLength(stringMaxLength)
+        name <- stringsWithMaxLength(stringMaxLength)
+        phoneNumber <- Gen.option(stringsWithMaxLength(stringMaxLength))
+      } yield CustomsOffice(id, name, phoneNumber)
+    }
+
+  lazy val arbitraryGbCustomsOffice: Arbitrary[CustomsOffice] =
+    Arbitrary {
+      for {
+        id <- stringsWithMaxLength(stringMaxLength)
+        name <- stringsWithMaxLength(stringMaxLength)
+        phoneNumber <- Gen.option(stringsWithMaxLength(stringMaxLength))
+      } yield CustomsOffice(id, name, phoneNumber)
+    }
+
+  lazy val arbitraryOfficeOfDeparture: Arbitrary[CustomsOffice] =
+    Arbitrary {
+      Gen.oneOf(arbitraryGbCustomsOffice.arbitrary, arbitraryXiCustomsOffice.arbitrary)
+    }
+
   implicit lazy val arbitraryUnloadingType: Arbitrary[UnloadingType] =
     Arbitrary {
       Gen.oneOf(UnloadingType.values)
     }
+
+  implicit def arbitrarySelectableList[T <: Selectable](implicit arbitrary: Arbitrary[T]): Arbitrary[SelectableList[T]] = Arbitrary {
+    for {
+      values <- listWithMaxLength[T]()
+    } yield SelectableList(values.distinctBy(_.value))
+  }
 
   implicit lazy val arbitrarySensitiveGoodsInformation: Arbitrary[SensitiveGoodsInformation] =
     Arbitrary {
