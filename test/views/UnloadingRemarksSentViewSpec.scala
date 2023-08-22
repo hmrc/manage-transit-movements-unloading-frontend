@@ -56,7 +56,7 @@ class UnloadingRemarksSentViewSpec extends PanelViewBehaviours with SpecBase {
 
   behave like pageWithLink(
     id = "createArrivalId",
-    expectedText = "Create another arrival notification",
+    expectedText = "Make another arrival notification",
     expectedHref = frontendAppConfig.arrivalsFrontendUrl
   )
 
