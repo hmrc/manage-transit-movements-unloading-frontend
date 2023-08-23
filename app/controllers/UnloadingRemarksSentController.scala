@@ -41,18 +41,18 @@ class UnloadingRemarksSentController @Inject() (
     extends FrontendController(cc)
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
-    (actions.getStatus(arrivalId)
-      andThen getMandatoryPage(CustomsOfficeOfDestinationPage))
-      .async {
-        implicit request =>
-          referenceDataService
-            .getCustomsOfficeByCode(request.arg)
-            .map {
-              customsOffice =>
-                sessionRepository.remove(arrivalId)
-                Ok(view(request.userAnswers.mrn, UnloadingRemarksSentViewModel(customsOffice, request.arg)))
-            }
-      }
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions
+    .requireData(arrivalId)
+    .andThen(getMandatoryPage(CustomsOfficeOfDestinationPage))
+    .async {
+      implicit request =>
+        referenceDataService
+          .getCustomsOfficeByCode(request.arg)
+          .map {
+            customsOffice =>
+              sessionRepository.remove(arrivalId)
+              Ok(view(request.userAnswers.mrn, UnloadingRemarksSentViewModel(customsOffice, request.arg)))
+          }
+    }
 
 }
