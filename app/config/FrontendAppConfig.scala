@@ -72,10 +72,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   lazy val commonTransitConventionTradersUrl: String = configuration.get[Service]("microservice.services.common-transit-convention-traders").fullServiceUrl
 
-  lazy val arrivalsBackend: String         = configuration.get[Service]("microservice.services.arrivals-backend").fullServiceUrl
-  lazy val arrivalsBackendBaseUrl: String  = configuration.get[Service]("microservice.services.arrivals-backend").baseUrl
-  lazy val arrivalNotificationsUrl: String = configuration.get[String]("urls.arrivalNotifications")
-
   lazy val languageTranslationEnabled: Boolean = configuration.get[Boolean]("microservice.services.features.welsh-translation")
 
   lazy val cacheTtl: Int               = configuration.get[Int]("mongodb.timeToLiveInSeconds")

@@ -35,7 +35,6 @@ viewLink = View
 
 checkYourAnswers.seals.subHeading = Check official customs seals
 checkYourAnswers.seals.checkYourAnswersLabel = Official customs seal numbers
-checkYourAnswers.subHeading = What you found when unloading
 
 checkYourAnswers.confirmation.heading = Now send your unloading remarks
 checkYourAnswers.confirmation.paragraph = By sending this you are confirming that the details you are providing are correct, to the best of your knowledge.
@@ -61,9 +60,9 @@ technicalDifficulties.contact.link = contact the New Computerised Transit System
 
 unloadingGuidance.title = Unload the goods before you make unloading remarks
 unloadingGuidance.heading = Unload the goods before you make unloading remarks
-unloadingGuidance.para = When unloading, check that the goods match the information in the transit declaration for Movement Reference Number (MRN) {0}.
+unloadingGuidance.para = When unloading, check that the goods match the Unloading Permission for Movement Reference Number (MRN) {0}.
 unloadingGuidance.pdf.preLinkText = For further guidance,
-unloadingGuidance.pdf.link = download the Unloading Permission PDF
+unloadingGuidance.pdf.link = Download the Unloading Permission PDF
 
 dateGoodsUnloaded.title = When were the goods unloaded?
 dateGoodsUnloaded.heading = When were the goods unloaded?
@@ -201,17 +200,17 @@ confirmation.para2 = You must wait for the goods to be released.
 confirmation.linkText = Go to arrival notifications
 confirmation.para3 = to see the latest messages.
 
-addUnloadingCommentsYesNo.title = Were there any differences between the transit and the declaration information?
-addUnloadingCommentsYesNo.heading = Were there any differences between the transit and the declaration information?
+addUnloadingCommentsYesNo.title = Were there any discrepancies between the transit and the declaration summary?
+addUnloadingCommentsYesNo.heading = Were there any discrepancies between the transit and the declaration summary?
 addUnloadingCommentsYesNo.paragraph = This includes any changes to the means of transport, items or transport equipment.
-addUnloadingCommentsYesNo.error.required = Select yes if there were any differences between the transit and the declaration information
+addUnloadingCommentsYesNo.error.required = Select yes if there were any discrepancies between the transit and the declaration summary
 
-changesToReport.title = What comments do you want to add?
-changesToReport.heading = What comments do you want to add?
+changesToReport.title = Describe the discrepancies between the transit and the declaration summary
+changesToReport.heading = Describe the discrepancies between the transit and the declaration summary
 changesToReport.checkYourAnswersLabel = What comments do you want to add?
-changesToReport.error.required = Enter the comments you want to add
-changesToReport.error.length = Your comments must be 512 characters or less
-changesToReport.error.invalid = Your comments must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+changesToReport.error.required = Describe the discrepancies between the transit and the declaration summary
+changesToReport.error.length = Your description must be 512 characters or less
+changesToReport.error.invalid = Your description must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 
 confirmRemoveComments.title = Are you sure you want to remove your comments?
 confirmRemoveComments.heading = Are you sure you want to remove your comments?
@@ -244,7 +243,7 @@ unloadingRemarksRejection.title = There is a problem with these unloading remark
 unloadingRemarksRejection.heading = There is a problem with these unloading remarks
 unloadingRemarksRejection.contact.message = If this information is correct, you will need to
 unloadingRemarksRejection.conflicting.information = There is conflicting information that must be fixed before you can continue.
-unloadingRemarksRejection.create.unloadingRemarks = create new unloading remarks
+unloadingRemarksRejection.create.unloadingRemarks = make new unloading remarks
 
 unloadingRemarksRejection.review = You must review the errors and
 unloadingRemarksRejection.newUnloadingRemarks = send new unloading remarks with the right information
@@ -340,15 +339,15 @@ unloadingFindings.rowHeadings.additionalComments.remove.hidden = comments
 
 houseConsignment.title = Cross-check the transit with house consignment {0}
 houseConsignment.heading = Cross-check the transit with house consignment {0}
+houseConsignment.paragraph = Compare the transit that arrived with the following information to identify any discrepancies.
 houseConsignment.departureMeansSubHeading = Departure means of transport {0}
-houseConsignment.itemSubHeading = Item {0}
 
 unloadingRemarksSent.title = Unloading remarks sent
 unloadingRemarksSent.heading = Unloading remarks sent
 unloadingRemarksSent.panel.body = for Movement Reference Number (MRN) {0}
 unloadingRemarksSent.subHeading = What happens next
 unloadingRemarksSent.checkStatus = Check the status of arrival notifications
-unloadingRemarksSent.createArrivalNotification = Create another arrival notification
+unloadingRemarksSent.createArrivalNotification = Make another arrival notification
 unloadingRemarksSent.findOut =  to find out when goods have been released.
 unloadingRemarksSent.telephoneAvailable = If the goods are not released when expected or you have another problem, contact Customs at {0} on {1}.
 unloadingRemarksSent.telephoneNotAvailable = If the goods are not released when expected or you have another problem, contact Customs at {0}.
@@ -364,11 +363,11 @@ checkYourAnswers.rowHeadings.canSealsBeRead.change.hidden = if all of the seal i
 checkYourAnswers.rowHeadings.anySealsBroken = Are any of the seals broken?
 checkYourAnswers.rowHeadings.anySealsBroken.change.hidden = if any of the seals are broken
 
-checkYourAnswers.subsections.additionalComments = What you found when unloading
-checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo = Were there any differences between the transit and the declaration information?
-checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo.change.hidden = if there were any differences between the transit and the declaration information
-checkYourAnswers.rowHeadings.additionalComments = Differences
-checkYourAnswers.rowHeadings.additionalComments.change.hidden = differences between the transit and declaration information
+checkYourAnswers.subsections.additionalComments = Transit and declaration summary cross-check
+checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo = Were there any discrepancies between the transit and the declaration summary?
+checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo.change.hidden = if there were any discrepancies between the transit and the declaration summary
+checkYourAnswers.rowHeadings.additionalComments = Discrepancies
+checkYourAnswers.rowHeadings.additionalComments.change.hidden = discrepancies between the transit and declaration summary
 
 checkYourAnswers.sendRemarks = Send your unloading remarks
 checkYourAnswers.paragraph = By sending this, you are confirming that these details are correct to the best of your knowledge.
