@@ -18,7 +18,6 @@ package base
 
 import controllers.actions._
 import models.P5._
-import models.requests.IdentifierRequest
 import models.{MovementReferenceNumber, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
@@ -29,12 +28,12 @@ import org.scalatestplus.play.guice.{GuiceFakeApplicationFactory, GuiceOneAppPer
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.{ActionFilter, Call, Result}
+import play.api.mvc.Call
 import repositories.SessionRepository
 import services.P5.UnloadingPermissionMessageService
 
 import java.time.LocalDateTime
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerSuite with GuiceFakeApplicationFactory with MockitoSugar {
   self: TestSuite =>
@@ -80,15 +79,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected def setNoExistingUserAnswers(): Unit =
     when(mockDataRetrievalActionProvider.apply(any())) thenReturn new FakeDataRetrievalAction(None)
 
-  protected def checkArrivalStatus(): Unit = {
-    val fakeCheckArrivalStatusAction = new ActionFilter[IdentifierRequest] {
-      override protected def filter[A](request: IdentifierRequest[A]): Future[Option[Result]] =
-        Future.successful(None)
-
-      override protected def executionContext: ExecutionContext = scala.concurrent.ExecutionContext.global
-    }
-
-  }
+  // TODO - delete?
+  protected def checkArrivalStatus(): Unit = ()
 
   protected val onwardRoute: Call = Call("GET", "/foo")
 
