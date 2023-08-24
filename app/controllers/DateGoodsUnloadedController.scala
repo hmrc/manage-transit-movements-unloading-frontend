@@ -43,9 +43,9 @@ class DateGoodsUnloadedController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions
-    .requireData(arrivalId)
-    .andThen(getMandatoryPage(PreparationDateAndTimePage)) {
+  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
+    (actions.getStatus(arrivalId)
+      andThen getMandatoryPage(PreparationDateAndTimePage)) {
       implicit request =>
         val form = formProvider(request.arg.toLocalDate)
 
@@ -57,10 +57,9 @@ class DateGoodsUnloadedController @Inject() (
         Ok(view(request.userAnswers.mrn, arrivalId, mode, preparedForm))
     }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions
-    .requireData(arrivalId)
-    .andThen(getMandatoryPage(PreparationDateAndTimePage))
-    .async {
+  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
+    (actions.getStatus(arrivalId)
+      andThen getMandatoryPage(PreparationDateAndTimePage)).async {
       implicit request =>
         formProvider(request.arg.toLocalDate)
           .bindFromRequest()

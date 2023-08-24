@@ -45,27 +45,29 @@ class UnloadingTypeController @Inject() (
 
   private val form = formProvider[UnloadingType]("unloadingType")
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
-    implicit request =>
-      val preparedForm: Form[UnloadingType] = request.userAnswers.get(UnloadingTypePage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
+    actions.getStatus(arrivalId) {
+      implicit request =>
+        val preparedForm: Form[UnloadingType] = request.userAnswers.get(UnloadingTypePage) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
 
-      Ok(view(preparedForm, request.userAnswers.mrn, UnloadingType.values, arrivalId, mode))
-  }
+        Ok(view(preparedForm, request.userAnswers.mrn, UnloadingType.values, arrivalId, mode))
+    }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, UnloadingType.values, arrivalId, mode))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(UnloadingTypePage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(UnloadingTypePage, mode, updatedAnswers))
-        )
-  }
+  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
+    actions.getStatus(arrivalId).async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, UnloadingType.values, arrivalId, mode))),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(UnloadingTypePage, value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(UnloadingTypePage, mode, updatedAnswers))
+          )
+    }
 }

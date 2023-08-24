@@ -27,14 +27,16 @@ import javax.inject.Inject
 
 class UnloadingGuidanceController @Inject() (
   override val messagesApi: MessagesApi,
-  actions: Actions,
   val controllerComponents: MessagesControllerComponents,
+  actions: Actions,
   view: UnloadingGuidanceView
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, messageId: String): Action[AnyContent] = actions.requireData(arrivalId) {
-    implicit request =>
-      Ok(view(request.userAnswers.mrn, arrivalId, messageId))
-  }
+  def onPageLoad(arrivalId: ArrivalId, messageId: String): Action[AnyContent] =
+    actions.getStatus(arrivalId) {
+      implicit request =>
+        Ok(view(request.userAnswers.mrn, arrivalId, messageId))
+    }
+
 }

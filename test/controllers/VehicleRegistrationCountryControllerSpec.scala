@@ -18,6 +18,7 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.VehicleRegistrationCountryFormProvider
+import generators.Generators
 import models.NormalMode
 import models.reference.Country
 import org.mockito.ArgumentMatchers.any
@@ -33,7 +34,7 @@ import views.html.VehicleRegistrationCountryView
 
 import scala.concurrent.Future
 
-class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   val formProvider                                   = new VehicleRegistrationCountryFormProvider()
   private val country: String                        = Country("GB", Some("United Kingdom")).code
@@ -101,6 +102,7 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
 
     "must redirect to the next page when valid data is submitted" in {
       checkArrivalStatus()
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
       when(mockReferenceDataService.getCountries()(any(), any())).thenReturn(Future.successful(countries))
 
@@ -118,6 +120,7 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
 
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
+
       when(mockReferenceDataService.getCountries()(any(), any())).thenReturn(Future.successful(countries))
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -137,6 +140,7 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
+
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, vehicleRegistrationCountryRoute)
@@ -150,6 +154,7 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
       checkArrivalStatus()
+
       setNoExistingUserAnswers()
 
       val request =
@@ -162,5 +167,6 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
+
   }
 }

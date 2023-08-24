@@ -18,6 +18,7 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AreAnySealsBrokenFormProvider
+import generators.Generators
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -28,7 +29,7 @@ import views.html.AreAnySealsBrokenView
 
 import scala.concurrent.Future
 
-class AreAnySealsBrokenControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class AreAnySealsBrokenControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider = new AreAnySealsBrokenFormProvider()
   private val form         = formProvider()
@@ -79,6 +80,7 @@ class AreAnySealsBrokenControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must redirect to the next page when valid data is submitted" in {
       checkArrivalStatus()
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -114,6 +116,7 @@ class AreAnySealsBrokenControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
+
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, areAnySealsBrokenRoute)
@@ -127,6 +130,7 @@ class AreAnySealsBrokenControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
       checkArrivalStatus()
+
       setNoExistingUserAnswers()
 
       val request =
@@ -139,5 +143,6 @@ class AreAnySealsBrokenControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
+
   }
 }

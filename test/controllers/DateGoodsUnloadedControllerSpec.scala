@@ -109,6 +109,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
     }
 
     "must redirect on to the next page when valid data is submitted" in {
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val userAnswers = emptyUserAnswers.set(DateGoodsUnloadedPage, dateTimeOfPrep.toLocalDate).success.value
@@ -204,5 +205,6 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
+
   }
 }

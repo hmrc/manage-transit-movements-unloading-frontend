@@ -18,6 +18,7 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.ConfirmRemoveSealFormProvider
+import generators.Generators
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -28,7 +29,7 @@ import views.html.ConfirmRemoveSealView
 
 import scala.concurrent.Future
 
-class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider                = new ConfirmRemoveSealFormProvider()
   private val form                        = formProvider("seal 1")
@@ -58,6 +59,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must redirect to the next page when valid data is submitted" in {
       checkArrivalStatus()
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val userAnswers = emptyUserAnswers.setValue(NewSealPage(equipmentIndex, sealIndex), seal)
@@ -90,13 +92,15 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
       status(result) mustEqual BAD_REQUEST
 
       val view = injector.instanceOf[ConfirmRemoveSealView]
-
+      println("\n\n\nContent\n\n" + contentAsString(result))
+      println("\n\n\nMust equal\n\n" + view(boundForm, mrn, arrivalId, equipmentIndex, sealIndex, seal, mode)(request, messages).toString)
       contentAsString(result) mustEqual
         view(boundForm, mrn, arrivalId, equipmentIndex, sealIndex, seal, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
+
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, confirmRemoveSealRoute)
@@ -110,6 +114,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must redirect to Session Expired for a GET if NewSealNumberPage is undefined" in {
       checkArrivalStatus()
+
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, confirmRemoveSealRoute)
@@ -123,6 +128,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
       checkArrivalStatus()
+
       setNoExistingUserAnswers()
 
       val request =
@@ -138,6 +144,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must redirect to Session Expired for a POST if NewSealNumberPage is undefined" in {
       checkArrivalStatus()
+
       setExistingUserAnswers(emptyUserAnswers)
 
       val request =
@@ -150,5 +157,6 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
+
   }
 }

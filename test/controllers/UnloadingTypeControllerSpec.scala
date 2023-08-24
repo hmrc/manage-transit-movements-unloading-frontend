@@ -18,6 +18,8 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
+import generators.Generators
+import matchers.JsonMatchers
 import models.{NormalMode, UnloadingType}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -28,7 +30,7 @@ import views.html.UnloadingTypeView
 
 import scala.concurrent.Future
 
-class UnloadingTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class UnloadingTypeControllerSpec extends SpecBase with Generators with AppWithDefaultMockFixtures with JsonMatchers {
 
   private val formProvider = new EnumerableFormProvider()
   private val form         = formProvider[UnloadingType]("unloadingType")
@@ -79,6 +81,7 @@ class UnloadingTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
     "must redirect to the next page when valid data is submitted" in {
       checkArrivalStatus()
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -114,6 +117,7 @@ class UnloadingTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
+
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, unloadingTypeRoute)
@@ -127,6 +131,7 @@ class UnloadingTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
       checkArrivalStatus()
+
       setNoExistingUserAnswers()
 
       val request =
@@ -139,5 +144,6 @@ class UnloadingTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
+
   }
 }

@@ -38,16 +38,17 @@ class UnloadingFindingsController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
-    implicit request =>
-      val unloadingFindingsViewModel: Future[UnloadingFindingsViewModel] =
-        viewModelProvider.apply(request.userAnswers)
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
+    actions.getStatus(arrivalId).async {
+      implicit request =>
+        val unloadingFindingsViewModel: Future[UnloadingFindingsViewModel] =
+          viewModelProvider.apply(request.userAnswers)
 
-      unloadingFindingsViewModel.map {
-        viewModel =>
-          Ok(view(request.userAnswers.mrn, arrivalId, viewModel))
-      }
+        unloadingFindingsViewModel.map {
+          viewModel =>
+            Ok(view(request.userAnswers.mrn, arrivalId, viewModel))
+        }
 
-  }
+    }
 
 }

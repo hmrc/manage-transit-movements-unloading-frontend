@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.ArrivalMovementConnector
 import generators.Generators
 import models.MovementReferenceNumber
-import models.P5.ArrivalMessageType.{ArrivalNotification, UnloadingPermission}
+import models.P5.ArrivalMessageType.{ArrivalNotification, RejectionFromOfficeOfDestination, UnloadingPermission}
 import models.P5._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -65,6 +65,23 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
         when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
 
         service.getUnloadingPermissionMessage(arrivalId).futureValue mustBe None
+      }
+    }
+
+    "getMessageHead" - {
+
+      val rejectionFromOfficeOfDestination = MessageMetaData(LocalDateTime.now(), RejectionFromOfficeOfDestination, "path/url")
+      val unloadingPermission2             = MessageMetaData(LocalDateTime.now().minusDays(1), UnloadingPermission, "path/url")
+      val unloadingPermission1             = MessageMetaData(LocalDateTime.now().minusDays(3), UnloadingPermission, "path/url")
+      val arrivalNotification              = MessageMetaData(LocalDateTime.now().minusDays(4), ArrivalNotification, "path/url")
+
+      "must return latest message" in {
+
+        val messageMetaData = Messages(List(rejectionFromOfficeOfDestination, arrivalNotification, unloadingPermission1, unloadingPermission2))
+
+        when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
+
+        service.getMessageHead(arrivalId).futureValue mustBe Some(rejectionFromOfficeOfDestination)
       }
     }
 

@@ -20,7 +20,6 @@ import controllers.actions._
 import forms.VehicleRegistrationCountryFormProvider
 import models.reference.Country
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigator
 import pages.VehicleRegistrationCountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -35,7 +34,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class VehicleRegistrationCountryController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
   actions: Actions,
   formProvider: VehicleRegistrationCountryFormProvider,
   referenceDataService: ReferenceDataService,
@@ -45,40 +43,42 @@ class VehicleRegistrationCountryController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
-    implicit request =>
-      referenceDataService.getCountries() map {
-        countries =>
-          val form = formProvider(countries)
-          val preparedForm = request.userAnswers.get(VehicleRegistrationCountryPage(transportMeansIndex)) match {
-            case None => form
-            case Some(value) =>
-              val country = countries.find(_.code == value) match {
-                case Some(country) => country
-                case None          => Country(value, None)
-              }
-              form.fill(country)
-          }
-          Ok(view(preparedForm, countries, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode))
-      }
-  }
+  def onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
+    actions.getStatus(arrivalId).async {
+      implicit request =>
+        referenceDataService.getCountries() map {
+          countries =>
+            val form = formProvider(countries)
+            val preparedForm = request.userAnswers.get(VehicleRegistrationCountryPage(transportMeansIndex)) match {
+              case None => form
+              case Some(value) =>
+                val country = countries.find(_.code == value) match {
+                  case Some(country) => country
+                  case None          => Country(value, None)
+                }
+                form.fill(country)
+            }
+            Ok(view(preparedForm, countries, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode))
+        }
+    }
 
-  def onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
-    implicit request =>
-      referenceDataService.getCountries() flatMap {
-        countries =>
-          val form = formProvider(countries)
-          form
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, countries, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode))),
-              value =>
-                for {
-                  updatedAnswers <- Future
-                    .fromTry(request.userAnswers.set(VehicleRegistrationCountryPage(transportMeansIndex), value.code))
-                  _ <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
-            )
-      }
-  }
+  def onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
+    actions.getStatus(arrivalId).async {
+      implicit request =>
+        referenceDataService.getCountries() flatMap {
+          countries =>
+            val form = formProvider(countries)
+            form
+              .bindFromRequest()
+              .fold(
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, countries, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode))),
+                value =>
+                  for {
+                    updatedAnswers <- Future
+                      .fromTry(request.userAnswers.set(VehicleRegistrationCountryPage(transportMeansIndex), value.code))
+                    _ <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+              )
+        }
+    }
 }
