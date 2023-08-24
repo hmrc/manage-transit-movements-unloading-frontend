@@ -44,27 +44,29 @@ class AreAnySealsBrokenController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(AreAnySealsBrokenPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
+    actions.getStatus(arrivalId) {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(AreAnySealsBrokenPage) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
 
-      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode))
-  }
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode))
+    }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AreAnySealsBrokenPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AreAnySealsBrokenPage, mode, updatedAnswers))
-        )
-  }
+  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
+    actions.getStatus(arrivalId).async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AreAnySealsBrokenPage, value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(AreAnySealsBrokenPage, mode, updatedAnswers))
+          )
+    }
 }

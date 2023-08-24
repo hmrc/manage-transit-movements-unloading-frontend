@@ -18,17 +18,22 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NetWeightFormProvider
+import generators.Generators
 import models.NormalMode
+import models.P5.ArrivalMessageType.UnloadingPermission
+import models.P5.{ArrivalMessageType, MessageMetaData}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.NetWeightPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.NetWeightView
+import org.scalacheck.Arbitrary.arbitrary
 
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
-class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider        = new NetWeightFormProvider()
   private val form                = formProvider()
@@ -56,6 +61,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
+
       val userAnswers = emptyUserAnswers.setValue(NetWeightPage(index, itemIndex), "123456.123".toDouble)
       setExistingUserAnswers(userAnswers)
 
@@ -75,6 +81,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     "must redirect to the next page when valid data is submitted" in {
       checkArrivalStatus()
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -108,6 +115,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
+
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, NetWeightRoute)
@@ -121,6 +129,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
       checkArrivalStatus()
+
       setNoExistingUserAnswers()
 
       val request =
@@ -132,6 +141,24 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+    }
+
+    "return OK and the correct view for a GET when message is not Unloading Permission(IE043)" in {
+      checkArrivalStatus()
+      val messageType = arbitrary[ArrivalMessageType].retryUntil(_ != UnloadingPermission).sample.value
+      when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+        .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), messageType, ""))))
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(GET, routes.NetWeightController.onPageLoad(arrivalId, index, index, NormalMode).url)
+
+      val result = route(app, request).value
+
+      status(result) mustBe SEE_OTHER
+
+      redirectLocation(result).value mustEqual controllers.routes.CannotSendUnloadingRemarksController.onPageLoad(arrivalId).url
+
     }
   }
 }

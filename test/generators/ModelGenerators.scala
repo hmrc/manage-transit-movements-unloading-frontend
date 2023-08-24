@@ -16,6 +16,7 @@
 
 package generators
 
+import models.P5.ArrivalMessageType
 import models.messages._
 import models.reference.Country
 import models.{UnloadingPermission, _}
@@ -53,6 +54,11 @@ trait ModelGenerators {
   implicit lazy val arbitraryUnloadingType: Arbitrary[UnloadingType] =
     Arbitrary {
       Gen.oneOf(UnloadingType.values)
+    }
+
+  implicit lazy val arbitraryArrivalMessageType: Arbitrary[ArrivalMessageType] =
+    Arbitrary {
+      Gen.oneOf(ArrivalMessageType.values)
     }
 
   implicit lazy val arbitrarySensitiveGoodsInformation: Arbitrary[SensitiveGoodsInformation] =

@@ -19,7 +19,6 @@ package controllers
 import controllers.actions._
 import forms.ConfirmRemoveSealFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigator
 import pages.NewSealPage
 import pages.sections.NewSealSection
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -34,7 +33,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class ConfirmRemoveSealController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: ConfirmRemoveSealFormProvider,
@@ -45,30 +43,33 @@ class ConfirmRemoveSealController @Inject() (
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode): Action[AnyContent] =
-    actions.requireData(arrivalId).andThen(getMandatoryPage(NewSealPage(equipmentIndex, sealIndex))) {
+    (actions.getStatus(arrivalId)
+      andThen getMandatoryPage(NewSealPage(equipmentIndex, sealIndex))) {
       implicit request =>
         val form = formProvider(request.arg)
         Ok(view(form, request.userAnswers.mrn, arrivalId, equipmentIndex, sealIndex, request.arg, mode))
     }
 
   def onSubmit(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode): Action[AnyContent] =
-    actions.requireData(arrivalId).andThen(getMandatoryPage(NewSealPage(equipmentIndex, sealIndex))).async {
-      implicit request =>
-        formProvider(request.arg)
-          .bindFromRequest()
-          .fold(
-            formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, equipmentIndex, sealIndex, request.arg, mode))),
-            value =>
-              if (value) {
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.remove(NewSealSection(equipmentIndex, sealIndex)))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
-              } else {
-                Future.successful(Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId)))
-              }
-          )
-    }
+    (actions.getStatus(arrivalId)
+      andThen getMandatoryPage(NewSealPage(equipmentIndex, sealIndex)))
+      .async {
+        implicit request =>
+          formProvider(request.arg)
+            .bindFromRequest()
+            .fold(
+              formWithErrors =>
+                Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, equipmentIndex, sealIndex, request.arg, mode))),
+              value =>
+                if (value) {
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.remove(NewSealSection(equipmentIndex, sealIndex)))
+                    _              <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+                } else {
+                  Future.successful(Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId)))
+                }
+            )
+      }
 
 }

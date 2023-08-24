@@ -17,15 +17,16 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import generators.Generators
 import matchers.JsonMatchers
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.UnloadingGuidanceView
 
-class UnloadingGuidanceControllerSpec extends SpecBase with AppWithDefaultMockFixtures with JsonMatchers {
+class UnloadingGuidanceControllerSpec extends SpecBase with Generators with AppWithDefaultMockFixtures with JsonMatchers {
 
   "UnloadingGuidance Controller" - {
-    "return OK and the correct view for a GET" in {
+    "return OK and the correct view for a GET when message is Unloading Permission(IE043)" in {
       checkArrivalStatus()
 
       setExistingUserAnswers(emptyUserAnswers)

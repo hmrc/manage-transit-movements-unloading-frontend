@@ -17,8 +17,8 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import forms.CanSealsBeReadFormProvider
+import generators.Generators
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -29,7 +29,7 @@ import views.html.CanSealsBeReadView
 
 import scala.concurrent.Future
 
-class CanSealsBeReadControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class CanSealsBeReadControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider = new CanSealsBeReadFormProvider()
   private val form         = formProvider()
@@ -112,6 +112,7 @@ class CanSealsBeReadControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
+
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, canSealsBeReadRoute)
@@ -125,6 +126,7 @@ class CanSealsBeReadControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
       checkArrivalStatus()
+
       setNoExistingUserAnswers()
 
       val request =
@@ -137,5 +139,6 @@ class CanSealsBeReadControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
+
   }
 }

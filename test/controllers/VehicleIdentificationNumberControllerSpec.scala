@@ -18,6 +18,7 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.VehicleIdentificationNumberFormProvider
+import generators.Generators
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -28,7 +29,7 @@ import views.html.VehicleIdentificationNumberView
 
 import scala.concurrent.Future
 
-class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider = new VehicleIdentificationNumberFormProvider()
   private val form         = formProvider()
@@ -77,6 +78,7 @@ class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDef
 
     "must redirect to the next page when valid data is submitted" in {
       checkArrivalStatus()
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -111,6 +113,7 @@ class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDef
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
+
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, vehicleIdentificationNumberRoute)
@@ -124,6 +127,7 @@ class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDef
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
       checkArrivalStatus()
+
       setNoExistingUserAnswers()
 
       val request =
@@ -136,5 +140,6 @@ class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDef
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
+
   }
 }

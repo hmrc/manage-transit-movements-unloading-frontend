@@ -41,23 +41,25 @@ class CheckYourAnswersController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId) {
-    implicit request =>
-      val viewModel: CheckYourAnswersViewModel = viewModelProvider.apply(request.userAnswers)
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
+    actions.getStatus(arrivalId) {
+      implicit request =>
+        val viewModel: CheckYourAnswersViewModel = viewModelProvider.apply(request.userAnswers)
 
-      Ok(view(request.userAnswers.mrn, arrivalId, viewModel))
-  }
+        Ok(view(request.userAnswers.mrn, arrivalId, viewModel))
+    }
 
-  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] = actions.requireData(arrivalId).async {
-    implicit request =>
-      for {
-        userAnswers <- Future.fromTry(UserAnswersSubmissionService.userAnswersToSubmission(request.userAnswers))
-        result      <- apiConnector.submit(userAnswers, arrivalId)
+  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =
+    actions.getStatus(arrivalId).async {
+      implicit request =>
+        for {
+          userAnswers <- Future.fromTry(UserAnswersSubmissionService.userAnswersToSubmission(request.userAnswers))
+          result      <- apiConnector.submit(userAnswers, arrivalId)
 
-      } yield result match {
-        case Left(BadRequest) => Redirect(controllers.routes.ErrorController.badRequest())
-        case Left(_)          => Redirect(controllers.routes.ErrorController.technicalDifficulties())
-        case Right(_)         => Redirect(controllers.routes.UnloadingRemarksSentController.onPageLoad(arrivalId))
-      }
-  }
+        } yield result match {
+          case Left(BadRequest) => Redirect(controllers.routes.ErrorController.badRequest())
+          case Left(_)          => Redirect(controllers.routes.ErrorController.technicalDifficulties())
+          case Right(_)         => Redirect(controllers.routes.UnloadingRemarksSentController.onPageLoad(arrivalId))
+        }
+    }
 }

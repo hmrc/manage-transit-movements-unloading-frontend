@@ -18,6 +18,7 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.TotalNumberOfPackagesFormProvider
+import generators.Generators
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -28,7 +29,7 @@ import views.html.TotalNumberOfPackagesView
 
 import scala.concurrent.Future
 
-class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider: TotalNumberOfPackagesFormProvider = new TotalNumberOfPackagesFormProvider()
   private val form                                            = formProvider(index)
@@ -74,6 +75,7 @@ class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMo
 
     "must redirect to the next page when valid data is submitted" in {
       checkArrivalStatus()
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -108,6 +110,7 @@ class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMo
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
+
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, totalNumberOfPackagesRoute)
@@ -120,11 +123,12 @@ class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMo
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
       checkArrivalStatus()
+
       setNoExistingUserAnswers()
 
       val request =
         FakeRequest(POST, totalNumberOfPackagesRoute)
-          .withFormUrlEncodedBody(("value", validAnswer.toString))
+          .withFormUrlEncodedBody(("value", validAnswer))
 
       val result = route(app, request).value
 

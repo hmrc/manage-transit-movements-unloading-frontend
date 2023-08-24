@@ -18,13 +18,21 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NewContainerIdentificationNumberFormProvider
+import generators.Generators
 import models.NormalMode
+import models.P5.ArrivalMessageType.UnloadingPermission
+import models.P5.MessageMetaData
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import pages.ContainerIdentificationNumberPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.NewContainerIdentificationNumberView
 
-class NewContainerIdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+import java.time.LocalDateTime
+import scala.concurrent.Future
+
+class NewContainerIdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider = new NewContainerIdentificationNumberFormProvider()
   private val form         = formProvider()
@@ -87,6 +95,8 @@ class NewContainerIdentificationNumberControllerSpec extends SpecBase with AppWi
       "must return a Bad Request and errors when invalid data is submitted" in {
         val invalidAnswer = ""
         checkArrivalStatus()
+        when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+          .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -106,6 +116,7 @@ class NewContainerIdentificationNumberControllerSpec extends SpecBase with AppWi
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
+
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, newContainerIdentificationNumberRoute)
@@ -119,6 +130,7 @@ class NewContainerIdentificationNumberControllerSpec extends SpecBase with AppWi
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
       checkArrivalStatus()
+
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, newContainerIdentificationNumberRoute)
@@ -130,5 +142,6 @@ class NewContainerIdentificationNumberControllerSpec extends SpecBase with AppWi
 
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
+
   }
 }

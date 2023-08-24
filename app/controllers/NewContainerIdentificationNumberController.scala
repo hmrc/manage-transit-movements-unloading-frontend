@@ -19,7 +19,6 @@ package controllers
 import controllers.actions._
 import forms.NewContainerIdentificationNumberFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigator
 import pages.ContainerIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,7 +32,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class NewContainerIdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
   actions: Actions,
   formProvider: NewContainerIdentificationNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -44,29 +42,33 @@ class NewContainerIdentificationNumberController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(ContainerIdentificationNumberPage(index)) match {
-        case None                       => form
-        case Some(identificationNumber) => form.fill(identificationNumber)
+  def onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] =
+    actions.getStatus(arrivalId) {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(ContainerIdentificationNumberPage(index)) match {
+          case None                       => form
+          case Some(identificationNumber) => form.fill(identificationNumber)
+        }
+
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, index, mode))
+    }
+
+  def onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] =
+    actions
+      .getStatus(arrivalId)
+      .async {
+        implicit request =>
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, mode))),
+              value =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(ContainerIdentificationNumberPage(index), value))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId)) // TODO: Implement once navigation is in
+            )
+
       }
-
-      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, index, mode))
-  }
-
-  def onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, index, mode))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(ContainerIdentificationNumberPage(index), value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId)) // TODO: Implement once navigation is in
-        )
-
-  }
 
 }

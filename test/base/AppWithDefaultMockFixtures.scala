@@ -17,6 +17,7 @@
 package base
 
 import controllers.actions._
+import models.P5.ArrivalMessageType.UnloadingPermission
 import models.P5._
 import models.{MovementReferenceNumber, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
@@ -42,6 +43,9 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
     reset(mockSessionRepository)
     reset(mockDataRetrievalActionProvider)
     reset(mockUnloadingPermissionMessageService)
+
+    when(mockUnloadingPermissionMessageService.getMessageHead(any())(any(), any()))
+      .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), UnloadingPermission, ""))))
 
     when(mockUnloadingPermissionMessageService.getUnloadingPermissionMessage(any())(any(), any()))
       .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), ArrivalMessageType.UnloadingPermission, "foo/bar"))))

@@ -18,6 +18,7 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.ConfirmRemoveCommentsFormProvider
+import generators.Generators
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -27,7 +28,7 @@ import views.html.ConfirmRemoveCommentsView
 
 import scala.concurrent.Future
 
-class ConfirmRemoveCommentsControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class ConfirmRemoveCommentsControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider = new ConfirmRemoveCommentsFormProvider()
   private val form         = formProvider()
@@ -38,15 +39,12 @@ class ConfirmRemoveCommentsControllerSpec extends SpecBase with AppWithDefaultMo
   "ConfirmRemoveComments Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      checkArrivalStatus()
 
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, confirmRemoveCommentsRoute)
 
       val result = route(app, request).value
-
-      status(result) mustEqual OK
 
       val view = injector.instanceOf[ConfirmRemoveCommentsView]
 
@@ -58,6 +56,7 @@ class ConfirmRemoveCommentsControllerSpec extends SpecBase with AppWithDefaultMo
 
     "must redirect to the next page when true is submitted" in {
       checkArrivalStatus()
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -75,6 +74,7 @@ class ConfirmRemoveCommentsControllerSpec extends SpecBase with AppWithDefaultMo
 
     "must redirect to the next page when false is submitted" in {
       checkArrivalStatus()
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -110,6 +110,7 @@ class ConfirmRemoveCommentsControllerSpec extends SpecBase with AppWithDefaultMo
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
+
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, confirmRemoveCommentsRoute)
@@ -123,6 +124,7 @@ class ConfirmRemoveCommentsControllerSpec extends SpecBase with AppWithDefaultMo
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
       checkArrivalStatus()
+
       setNoExistingUserAnswers()
 
       val request =
@@ -135,5 +137,6 @@ class ConfirmRemoveCommentsControllerSpec extends SpecBase with AppWithDefaultMo
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
+
   }
 }

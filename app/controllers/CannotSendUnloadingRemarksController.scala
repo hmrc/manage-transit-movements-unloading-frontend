@@ -16,38 +16,39 @@
 
 package controllers
 
-import com.google.inject.Inject
-import controllers.actions.Actions
-import models.{ArrivalId, Index}
+import controllers.actions._
+import models.{ArrivalId, CannotSendUnloadingRemarksViewModel}
+import pages.CustomsOfficeOfDestinationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.ReferenceDataService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.HouseConsignmentViewModel
-import viewModels.HouseConsignmentViewModel.HouseConsignmentViewModelProvider
-import views.html.HouseConsignmentView
+import views.html.CannotSendUnloadingRemarksView
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
-class HouseConsignmentController @Inject() (
+class CannotSendUnloadingRemarksController @Inject() (
   override val messagesApi: MessagesApi,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  view: HouseConsignmentView,
-  viewModelProvider: HouseConsignmentViewModelProvider
-)(implicit val executionContext: ExecutionContext)
+  getMandatoryPage: IE043DataRequiredActionProvider,
+  referenceDataService: ReferenceDataService,
+  view: CannotSendUnloadingRemarksView
+)(implicit executionContext: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions
+    .requireData(arrivalId)
+    .andThen(getMandatoryPage(CustomsOfficeOfDestinationPage))
+    .async {
       implicit request =>
-        val houseConsignmentViewModel: Future[HouseConsignmentViewModel] =
-          viewModelProvider.apply(request.userAnswers, houseConsignmentIndex)
-
-        houseConsignmentViewModel.map {
-          viewModel =>
-            Ok(view(request.userAnswers.mrn, arrivalId, viewModel, houseConsignmentIndex))
-        }
+        referenceDataService
+          .getCustomsOfficeByCode(request.arg)
+          .map {
+            customsOffice =>
+              Ok(view(request.userAnswers.mrn, arrivalId, CannotSendUnloadingRemarksViewModel(customsOffice, request.arg)))
+          }
     }
-
 }

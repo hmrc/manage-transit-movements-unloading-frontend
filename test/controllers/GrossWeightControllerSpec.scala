@@ -18,6 +18,7 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.GrossWeightFormProvider
+import generators.Generators
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -28,7 +29,7 @@ import views.html.GrossWeightView
 
 import scala.concurrent.Future
 
-class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider                = new GrossWeightFormProvider()
   private val form                        = formProvider()
@@ -56,6 +57,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
+
       val userAnswers = emptyUserAnswers.setValue(GrossWeightPage(index, itemIndex), "123456.123".toDouble)
       setExistingUserAnswers(userAnswers)
 
@@ -75,6 +77,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
     "must redirect to the next page when valid data is submitted" in {
       checkArrivalStatus()
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -108,6 +111,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
+
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, GrossWeightAmountRoute)
@@ -121,6 +125,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
       checkArrivalStatus()
+
       setNoExistingUserAnswers()
 
       val request =

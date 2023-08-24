@@ -315,8 +315,9 @@ unloadingFindings.rowHeadings.houseConsignment.netWeight = Net weight
 unloadingFindings.rowHeadings.houseConsignment.consignorName = Consignor name
 unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier = Consignor EORI number or Trader Identification Number (TIN)
 unloadingFindings.rowHeadings.houseConsignment.consigneeName = Consignee name
-unloadingFindings.rowHeadings.houseConsignment.consigneeIdentifier = Consignee EORI number or Trader Identification Number (TIN)
 
+
+unloadingFindings.rowHeadings.houseConsignment.consigneeIdentifier = Consignee EORI number or Trader Identification Number (TIN)
 unloadingFindings.subsections.itemSummary = Items summary
 unloadingFindings.rowHeadings.numberOfItems = Total number of items
 unloadingFindings.rowHeadings.totalGrossWeight = Total gross weight of all items
@@ -371,6 +372,12 @@ checkYourAnswers.rowHeadings.additionalComments.change.hidden = discrepancies be
 checkYourAnswers.sendRemarks = Send your unloading remarks
 checkYourAnswers.paragraph = By sending this, you are confirming that these details are correct to the best of your knowledge.
 
-
-
-
+cannotSendUnloadingRemarks.title = You cannot send these unloading remarks
+cannotSendUnloadingRemarks.heading = You cannot send these unloading remarks
+cannotSendUnloadingRemarks.paragraph1 = This may be because the unloading remarks have already been sent or the office of destination has rejected the notification.
+cannotSendUnloadingRemarks.officeNameAvailableAndPhoneNumberAvailable  = If you have any questions, contact Customs at {0} on {1}.
+cannotSendUnloadingRemarks.officeNameAvailableButNoPhoneNumberAvailable  = If you have any questions, contact Customs at {0}.
+cannotSendUnloadingRemarks.officeNameNotAvailAndPhoneNumberAvailable  = If you have any questions, contact Customs office {0} on {1}.
+cannotSendUnloadingRemarks.officeNameNotAvailAndPhoneNumberNotAvailable  = If you have any questions, contact Customs office {0}.
+cannotSendUnloadingRemarks.officeNotAvailable  = If you have any questions, contact Customs office {0}.
+cannotSendUnloadingRemarks.linkText = View the status of this notification

@@ -19,7 +19,6 @@ package controllers
 import controllers.actions._
 import forms.NewSealNumberFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigator
 import pages.{NewSealPage, QuestionPage, SealPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,7 +32,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class NewSealNumberController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
   actions: Actions,
   formProvider: NewSealNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -45,7 +43,7 @@ class NewSealNumberController @Inject() (
   private val form = formProvider()
 
   def onPageLoad(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode, newSeal: Boolean = false): Action[AnyContent] =
-    actions.requireData(arrivalId) {
+    actions.getStatus(arrivalId) {
       implicit request =>
         val page: QuestionPage[String] = if (newSeal) {
           NewSealPage(equipmentIndex, sealIndex)
@@ -62,28 +60,30 @@ class NewSealNumberController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode, newSeal: Boolean = false): Action[AnyContent] =
-    actions.requireData(arrivalId).async {
-      implicit request =>
-        val page: QuestionPage[String] = if (newSeal) {
-          NewSealPage(equipmentIndex, sealIndex)
-        } else {
-          SealPage(equipmentIndex, sealIndex)
-        }
+    actions
+      .getStatus(arrivalId)
+      .async {
+        implicit request =>
+          val page: QuestionPage[String] = if (newSeal) {
+            NewSealPage(equipmentIndex, sealIndex)
+          } else {
+            SealPage(equipmentIndex, sealIndex)
+          }
 
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, equipmentIndex, sealIndex, mode, newSeal = newSeal))),
-            value => {
-              Future.successful(BadRequest(view(form, request.userAnswers.mrn, arrivalId, equipmentIndex, sealIndex, mode, newSeal = newSeal)))
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
-            }
-          )
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors =>
+                Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, equipmentIndex, sealIndex, mode, newSeal = newSeal))),
+              value => {
+                Future.successful(BadRequest(view(form, request.userAnswers.mrn, arrivalId, equipmentIndex, sealIndex, mode, newSeal = newSeal)))
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
+                  _              <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+              }
+            )
 
-    }
+      }
 
 }

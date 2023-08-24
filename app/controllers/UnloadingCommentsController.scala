@@ -45,27 +45,29 @@ class UnloadingCommentsController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(UnloadingCommentsPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
+    actions.getStatus(arrivalId) {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(UnloadingCommentsPage) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
 
-      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, unloadingRemarkLength, mode))
-  }
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, unloadingRemarkLength, mode))
+    }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, unloadingRemarkLength, mode))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(UnloadingCommentsPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(UnloadingCommentsPage, mode, updatedAnswers))
-        )
-  }
+  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
+    actions.getStatus(arrivalId).async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, unloadingRemarkLength, mode))),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(UnloadingCommentsPage, value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(UnloadingCommentsPage, mode, updatedAnswers))
+          )
+    }
 }

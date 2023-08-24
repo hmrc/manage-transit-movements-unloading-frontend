@@ -18,6 +18,7 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.UnloadingCommentsFormProvider
+import generators.Generators
 import models.NormalMode
 import models.messages.RemarksNonConform._
 import org.mockito.ArgumentMatchers.any
@@ -29,7 +30,7 @@ import views.html.UnloadingCommentsView
 
 import scala.concurrent.Future
 
-class UnloadingCommentsControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class UnloadingCommentsControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider = new UnloadingCommentsFormProvider()
   private val form         = formProvider()
@@ -76,6 +77,7 @@ class UnloadingCommentsControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must redirect to the next page when valid data is submitted" in {
       checkArrivalStatus()
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -108,6 +110,7 @@ class UnloadingCommentsControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       checkArrivalStatus()
+
       setNoExistingUserAnswers()
 
       val request = FakeRequest(GET, changesToReportRoute)
@@ -121,6 +124,7 @@ class UnloadingCommentsControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
       checkArrivalStatus()
+
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, changesToReportRoute)
@@ -132,5 +136,6 @@ class UnloadingCommentsControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
+
   }
 }
