@@ -19,9 +19,8 @@
 
 @this(summaryDetail: SummaryDetail)
 
-@(sections: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(sections: Seq[Section])(implicit messages: Messages)
 
-    @for(section <- sections) {
-        @summaryDetail(section)()
-    }
-
+@for(section <- sections) {
+    @summaryDetail(section)()
+}

@@ -16,9 +16,9 @@
 
 package controllers.actions
 
-import models.P5.{Consignment, CustomsOfficeOfDestinationActual, MessageData, TraderAtDestination, TransitOperation}
-import models.{ArrivalId, EoriNumber, MovementReferenceNumber}
+import models.P5._
 import models.requests.{IdentifierRequest, UnloadingPermissionRequest}
+import models.{ArrivalId, EoriNumber, MovementReferenceNumber}
 import play.api.mvc.Result
 import services.P5.UnloadingPermissionMessageService
 
@@ -30,7 +30,7 @@ class FakeUnloadingPermissionAction(arrivalId: ArrivalId, unloadingPermissionMes
     extends UnloadingPermissionAction(arrivalId, unloadingPermissionMessageService) {
 
   val messageData: MessageData = MessageData(
-    LocalDateTime.now(),
+    preparationDateAndTime = LocalDateTime.now(),
     TransitOperation = TransitOperation(MovementReferenceNumber("99", "IT", "9876AB88901209")),
     TraderAtDestination = TraderAtDestination("identificationNumber"),
     Consignment = Consignment(None, None, List.empty),

@@ -24,7 +24,7 @@ import utils.Format.dateTimeFormatIE044
 
 import java.time.LocalDateTime
 
-class IE044Data extends SpecBase {
+class IE044DataSpec extends SpecBase {
 
   "IE044Data" - {
 

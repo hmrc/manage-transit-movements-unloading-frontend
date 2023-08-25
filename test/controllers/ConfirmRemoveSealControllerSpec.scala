@@ -92,8 +92,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
       status(result) mustEqual BAD_REQUEST
 
       val view = injector.instanceOf[ConfirmRemoveSealView]
-      println("\n\n\nContent\n\n" + contentAsString(result))
-      println("\n\n\nMust equal\n\n" + view(boundForm, mrn, arrivalId, equipmentIndex, sealIndex, seal, mode)(request, messages).toString)
+
       contentAsString(result) mustEqual
         view(boundForm, mrn, arrivalId, equipmentIndex, sealIndex, seal, mode)(request, messages).toString
     }
