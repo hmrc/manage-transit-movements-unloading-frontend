@@ -24,15 +24,36 @@ import models.{ArrivalId, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.DateTimeService
 
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private lazy val nextPage = controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId, messageId).url
+
+  private val mockDateTimeService: DateTimeService = mock[DateTimeService]
+
+  private val dateTime = LocalDateTime.of(2023: Int, 1, 1, 0, 0)
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(
+        bind[DateTimeService].toInstance(mockDateTimeService)
+      )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockDateTimeService)
+    when(mockDateTimeService.currentDateTime).thenReturn(dateTime)
+  }
 
   "Index Controller" - {
 
@@ -61,7 +82,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
 
         val expectedUnloadingPermission = Json.toJsObject(unloadingAction.messageData)
-        val expectedData                = Json.toJsObject(IE044Data.fromIE043Data(unloadingAction.messageData))
+        val expectedData                = Json.toJsObject(IE044Data.fromIE043Data(unloadingAction.messageData, dateTime))
 
         userAnswersCaptor.getValue.data mustBe expectedData
         userAnswersCaptor.getValue.ie043Data mustBe expectedUnloadingPermission

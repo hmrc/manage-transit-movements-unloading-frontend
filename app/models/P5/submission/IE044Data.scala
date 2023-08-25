@@ -25,7 +25,7 @@ case class IE044Data(`n1:CC044C`: IE044MessageData)
 
 object IE044Data {
 
-  def fromIE043Data(messageData: MessageData, preparationDateAndTime: LocalDateTime = LocalDateTime.now()): IE044Data =
+  def fromIE043Data(messageData: MessageData, preparationDateAndTime: LocalDateTime): IE044Data =
     messageData match {
       case messageData =>
         IE044Data(

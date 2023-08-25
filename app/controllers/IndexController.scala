@@ -50,7 +50,7 @@ class IndexController @Inject() (
             mrn = request.unloadingPermission.TransitOperation.MRN,
             eoriNumber = request.eoriNumber,
             ie043Data = Json.toJsObject(request.unloadingPermission),
-            data = Json.toJsObject(IE044Data.fromIE043Data(request.unloadingPermission)),
+            data = Json.toJsObject(IE044Data.fromIE043Data(request.unloadingPermission, dateTimeService.currentDateTime)),
             lastUpdated = dateTimeService.now
           )
         }

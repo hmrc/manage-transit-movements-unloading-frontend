@@ -29,10 +29,8 @@ import scala.concurrent.Future
 class FakeUnloadingPermissionAction(arrivalId: ArrivalId, unloadingPermissionMessageService: UnloadingPermissionMessageService)
     extends UnloadingPermissionAction(arrivalId, unloadingPermissionMessageService) {
 
-  private val preparationDateAndTime = LocalDateTime.now()
-
   val messageData: MessageData = MessageData(
-    preparationDateAndTime = preparationDateAndTime,
+    preparationDateAndTime = LocalDateTime.now(),
     TransitOperation = TransitOperation(MovementReferenceNumber("99", "IT", "9876AB88901209")),
     TraderAtDestination = TraderAtDestination("identificationNumber"),
     Consignment = Consignment(None, None, List.empty),
