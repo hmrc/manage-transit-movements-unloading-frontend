@@ -22,7 +22,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 case class Country(code: String, description: Option[String]) extends Selectable {
 
   override def toString: String = description match {
-    case Some(description) => description
+    case Some(description) => s"$description - $code"
     case None              => code
   }
 
