@@ -20,10 +20,12 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcLayout
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.timeoutdialog.TimeoutDialog
 @import views.utils.ViewUtils._
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardPage
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
 
 @this(
     appConfig: FrontendAppConfig,
-    hmrcLayout: HmrcLayout,
+        hmrcStandardPage: HmrcStandardPage,
     hmrcInternalHead: HmrcInternalHead,
     hmrcTimeoutDialog: HmrcTimeoutDialog,
     standardBetaBanner: StandardBetaBanner,
@@ -59,16 +61,22 @@
     @hmrcReportTechnicalIssueHelper()
 }
 
-@hmrcLayout(
-    pageTitle = Some(breadCrumbTitle(title, mainContent)),
-    additionalHeadBlock = Some(hmrcInternalHead(
-        headBlock = Some(headScripts)
-    )),
-    userResearchBannerUrl = if (appConfig.showUserResearchBanner) Some(appConfig.userResearchUrl) else None,
-    serviceName = Some(messages("site.service_name")),
-    serviceUrl = Some(appConfig.serviceUrl),
-    signOutUrl = if (canSignOut) Some(appConfig.signOutUrl) else None,
-    phaseBanner = Some(standardBetaBanner(url = appConfig.feedbackUrl)),
-    backLinkUrl = if (showBackLink) Some("#") else None, // This is overridden in ctc.js
-    additionalScriptsBlock = Some(javascripts())
+@hmrcStandardPage(
+    HmrcStandardPageParams(
+        serviceURLs = ServiceURLs(
+            serviceUrl = Some(appConfig.serviceUrl),
+            signOutUrl = if (canSignOut) Some(appConfig.signOutUrl) else None
+        ),
+        banners = Banners(
+            phaseBanner = Some(standardBetaBanner(url = appConfig.feedbackUrl)),
+            userResearchBanner = if (appConfig.showUserResearchBanner) Some(UserResearchBanner(url = appConfig.userResearchUrl)) else None
+        ),
+        templateOverrides = TemplateOverrides(
+            additionalHeadBlock = Some(headScripts),
+            additionalScriptsBlock = Some(javascripts())
+        ),
+        pageTitle = Some(breadCrumbTitle(title, mainContent)),
+        serviceName = Some(messages("site.service_name")),
+        backLink = if (showBackLink) Some(BackLink.withDefaultText(href = "#")) else None, // This is overridden in ctc.js
+    )
 )(mainContentWithGetHelp)
