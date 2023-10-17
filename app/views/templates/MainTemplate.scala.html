@@ -17,11 +17,11 @@
 @import config.FrontendAppConfig
 @import resources._
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcLayout
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.timeoutdialog.TimeoutDialog
 @import views.utils.ViewUtils._
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardPage
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
+@import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 
 @this(
     appConfig: FrontendAppConfig,
@@ -33,7 +33,7 @@
     javascripts: Javascripts,
     govukBackLink: GovukBackLink,
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
-)
+)(implicit cfConfig: ContactFrontendConfig)
 
 @(
     title: String,
@@ -68,7 +68,7 @@
             signOutUrl = if (canSignOut) Some(appConfig.signOutUrl) else None
         ),
         banners = Banners(
-            phaseBanner = Some(standardBetaBanner(url = appConfig.feedbackUrl)),
+            phaseBanner = Some(standardBetaBanner()),
             userResearchBanner = if (appConfig.showUserResearchBanner) Some(UserResearchBanner(url = appConfig.userResearchUrl)) else None
         ),
         templateOverrides = TemplateOverrides(

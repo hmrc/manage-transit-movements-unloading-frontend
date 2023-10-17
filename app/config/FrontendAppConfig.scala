@@ -29,19 +29,10 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   lazy val contactHost: String = configuration.get[String]("contact-frontend.host")
 
-  val contactFormServiceIdentifier: String = "CTCTraders"
-
   val showPhaseBanner: Boolean        = configuration.get[Boolean]("banners.showPhase")
   val userResearchUrl: String         = configuration.get[String]("urls.userResearch")
   val showUserResearchBanner: Boolean = configuration.get[Boolean]("banners.showUserResearch")
   lazy val nctsHelpdeskUrl: String    = configuration.get[String]("urls.nctsHelpdesk")
-
-  private val host: String = configuration.get[String]("host")
-
-  private val encodeURL: String => String = URLEncoder.encode(_: String, "UTF-8")
-
-  def feedbackUrl(implicit request: RequestHeader): String =
-    s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=${encodeURL(host + request.uri)}"
 
   val signOutUrl: String = configuration.get[String]("urls.logoutContinue") + configuration.get[String]("urls.feedback")
 
