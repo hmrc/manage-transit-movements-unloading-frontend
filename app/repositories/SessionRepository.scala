@@ -17,7 +17,7 @@
 package repositories
 
 import config.FrontendAppConfig
-import models.{ArrivalId, EoriNumber, UserAnswers}
+import models.{ArrivalId, EoriNumber, SensitiveFormats, UserAnswers}
 import org.mongodb.scala.model.Indexes.{ascending, compoundIndex}
 import org.mongodb.scala.model._
 import services.DateTimeService
@@ -33,7 +33,7 @@ class SessionRepository @Inject() (
   mongoComponent: MongoComponent,
   appConfig: FrontendAppConfig,
   dateTimeService: DateTimeService
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, sensitiveFormats: SensitiveFormats)
     extends PlayMongoRepository[UserAnswers](
       mongoComponent = mongoComponent,
       collectionName = "user-answers",
