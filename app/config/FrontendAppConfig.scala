@@ -17,10 +17,8 @@
 package config
 
 import com.google.inject.{Inject, Singleton}
+import models.ArrivalId
 import play.api.Configuration
-import play.api.mvc.RequestHeader
-
-import java.net.URLEncoder
 
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration) {
@@ -60,9 +58,10 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val serviceUrl: String                = s"$manageTransitMovementsUrl/what-do-you-want-to-do"
   lazy val viewArrivals: String              = s"$manageTransitMovementsUrl/view-arrivals"
 
-  lazy val referenceDataUrl: String = configuration.get[Service]("microservice.services.customs-reference-data").fullServiceUrl
+  def unloadingPermissionDocumentUrl(arrivalId: ArrivalId, messageId: String): String =
+    s"$manageTransitMovementsUrl/${arrivalId.value}/unloading-permission-document/$messageId"
 
-  lazy val manageDocumentsUrl: String = configuration.get[Service]("microservice.services.manage-documents").fullServiceUrl
+  lazy val referenceDataUrl: String = configuration.get[Service]("microservice.services.customs-reference-data").fullServiceUrl
 
   lazy val commonTransitConventionTradersUrl: String = configuration.get[Service]("microservice.services.common-transit-convention-traders").fullServiceUrl
 
@@ -71,4 +70,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val cacheTtl: Int               = configuration.get[Int]("mongodb.timeToLiveInSeconds")
   lazy val arrivalsFrontendUrl: String = configuration.get[String]("urls.manageTransitMovementsArrivalFrontend")
   lazy val viewAllArrivalsUrl: String  = configuration.get[String]("urls.viewAllArrivals")
+
+  val encryptionKey: String      = configuration.get[String]("encryption.key")
+  val encryptionEnabled: Boolean = configuration.get[Boolean]("encryption.enabled")
 }
