@@ -17,6 +17,7 @@
 package config
 
 import com.google.inject.{Inject, Singleton}
+import models.ArrivalId
 import play.api.Configuration
 
 @Singleton
@@ -57,9 +58,10 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val serviceUrl: String                = s"$manageTransitMovementsUrl/what-do-you-want-to-do"
   lazy val viewArrivals: String              = s"$manageTransitMovementsUrl/view-arrivals"
 
-  lazy val referenceDataUrl: String = configuration.get[Service]("microservice.services.customs-reference-data").fullServiceUrl
+  def unloadingPermissionDocumentUrl(arrivalId: ArrivalId, messageId: String): String =
+    s"$manageTransitMovementsUrl/test-only/${arrivalId.value}/unloading-permission-document/$messageId"
 
-  lazy val manageDocumentsUrl: String = configuration.get[Service]("microservice.services.manage-documents").fullServiceUrl
+  lazy val referenceDataUrl: String = configuration.get[Service]("microservice.services.customs-reference-data").fullServiceUrl
 
   lazy val commonTransitConventionTradersUrl: String = configuration.get[Service]("microservice.services.common-transit-convention-traders").fullServiceUrl
 
