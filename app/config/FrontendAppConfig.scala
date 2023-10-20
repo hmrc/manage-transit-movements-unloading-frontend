@@ -18,9 +18,6 @@ package config
 
 import com.google.inject.{Inject, Singleton}
 import play.api.Configuration
-import play.api.mvc.RequestHeader
-
-import java.net.URLEncoder
 
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration) {
@@ -71,4 +68,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val cacheTtl: Int               = configuration.get[Int]("mongodb.timeToLiveInSeconds")
   lazy val arrivalsFrontendUrl: String = configuration.get[String]("urls.manageTransitMovementsArrivalFrontend")
   lazy val viewAllArrivalsUrl: String  = configuration.get[String]("urls.viewAllArrivals")
+
+  val encryptionKey: String      = configuration.get[String]("encryption.key")
+  val encryptionEnabled: Boolean = configuration.get[Boolean]("encryption.enabled")
 }
