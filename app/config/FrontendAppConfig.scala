@@ -59,7 +59,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val viewArrivals: String              = s"$manageTransitMovementsUrl/view-arrivals"
 
   def unloadingPermissionDocumentUrl(arrivalId: ArrivalId, messageId: String): String =
-    s"$manageTransitMovementsUrl/test-only/${arrivalId.value}/unloading-permission-document/$messageId"
+    s"$manageTransitMovementsUrl/${arrivalId.value}/unloading-permission-document/$messageId"
 
   lazy val referenceDataUrl: String = configuration.get[Service]("microservice.services.customs-reference-data").fullServiceUrl
 
