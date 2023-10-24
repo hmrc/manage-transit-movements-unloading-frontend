@@ -5,26 +5,14 @@ This service allows a user to report that transit movement goods have been unloa
 
 Service manager port: 10123
 
-## How to run this service locally
+### Running manually or for journey tests
 
-### Start service manager with the following command
-    sm --start CTC_TRADERS_PRELODGE --appendArgs '{"MANAGE_TRANSIT_MOVEMENTS_UNLOADING_FRONTEND":["-Dmicroservice.services.arrivals-backend.port=9481", "-Dmicroservice.services.arrivals-backend.uri=/common-transit-convention-trader-at-destination"], "MANAGE_TRANSIT_MOVEMENTS_FRONTEND":["-Dmicroservice.services.destination.port=9481", "-Dmicroservice.services.destination.startUrl=common-transit-convention-trader-at-destination"], "MANAGE_TRANSIT_MOVEMENTS_ARRIVAL_FRONTEND":["-Dmicroservice.services.destination.port=9481","-Dmicroservice.services.destination.startUrl=common-transit-convention-trader-at-destination"]}' -r
+    sm --start CTC_TRADERS_P5_ACCEPTANCE -r
+    sm --stop MANAGE_TRANSIT_MOVEMENTS_UNLOADING_FRONTEND
+    sbt run
 
-### Change the port and start URL inside application.conf to
-     arrivals-backend {
-      host = "localhost"
-      port = 9481
-      protocol = "http"
-      startUrl = "common-transit-convention-trader-at-destination"
-    }
-    
-
-### Stop Unloading frontend and start this with sbt instead
-    sm --start MANAGE_TRANSIT_MOVEMENTS_UNLOADING_FRONTEND
-
-You now should be able to access [View arrivals]("http://localhost:9485/manage-transit-movements/view-arrivals")  
-and access */manage-transit-movements/unloading* locally
-    
+We then need to post an IE007 (Arrival Notification) followed by a IE043 (Unloading Permission). From the `/view-arrival-notifications` page click the `Make unloading remarks` link for the relevant movement.
+  
 ### License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
