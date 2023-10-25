@@ -48,7 +48,7 @@ class CannotSendUnloadingRemarksViewSpec extends ViewBehaviours {
   behave like pageWithLink(
     id = "viewStatus",
     expectedText = "View the status of this notification",
-    expectedHref = frontendAppConfig.viewAllArrivalsUrl
+    expectedHref = "http://localhost:9485/manage-transit-movements/view-arrival-notifications"
   )
 
   "Customs office with no customsOffice record returned" - {

@@ -51,7 +51,7 @@ class UnloadingRemarksSentViewSpec extends PanelViewBehaviours with SpecBase {
   behave like pageWithLink(
     id = "viewArrivalId",
     expectedText = "Check the status of arrival notifications",
-    expectedHref = frontendAppConfig.viewAllArrivalsUrl
+    expectedHref = "http://localhost:9485/manage-transit-movements/view-arrival-notifications"
   )
 
   behave like pageWithLink(
