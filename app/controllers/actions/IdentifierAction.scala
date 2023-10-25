@@ -44,29 +44,32 @@ class AuthenticatedIdentifierAction @Inject() (
     extends IdentifierAction
     with AuthorisedFunctions {
 
+  // scalastyle:off cyclomatic.complexity
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
 
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter
+      .fromRequestAndSession(request, request.session)
 
     authorised(EmptyPredicate)
       .retrieve(Retrievals.allEnrolments and Retrievals.groupIdentifier) {
         case enrolments ~ maybeGroupId =>
-          val newEnrolment: Option[Enrolment]    = enrolments.enrolments.filter(_.isActivated).find(_.key.equals(config.newEnrolmentKey))
-          val legacyEnrolment: Option[Enrolment] = enrolments.enrolments.filter(_.isActivated).find(_.key.equals(config.legacyEnrolmentKey))
-
-          val enrolment = newEnrolment orElse legacyEnrolment
-          enrolment match {
-            case Some(_) =>
-              val newEnrolmentId: Option[EnrolmentIdentifier]    = newEnrolment.flatMap(_.getIdentifier(config.newEnrolmentIdentifierKey))
-              val legacyEnrolmentId: Option[EnrolmentIdentifier] = legacyEnrolment.flatMap(_.getIdentifier(config.legacyEnrolmentIdentifierKey))
-
-              val identifier = newEnrolmentId orElse legacyEnrolmentId
-              identifier match {
-                case Some(eoriNumber) =>
-                  block(IdentifierRequest(request, EoriNumber(eoriNumber.value)))
-                case _ => Future.successful(Redirect(routes.UnauthorisedController.onPageLoad()))
+          enrolments.enrolments.filter(_.isActivated).find(_.key.equals(config.enrolmentKey)) match {
+            case Some(enrolment) =>
+              enrolment.getIdentifier(config.enrolmentIdentifierKey) match {
+                case Some(enrolmentIdentifier) =>
+                  block(IdentifierRequest(request, EoriNumber(enrolmentIdentifier.value)))
+                case None =>
+                  Future.successful(Redirect(routes.UnauthorisedController.onPageLoad()))
               }
-            case None => checkForGroupEnrolment(maybeGroupId, config)
+            case None =>
+              maybeGroupId match {
+                case Some(groupId) =>
+                  enrolmentStoreConnector.checkGroupEnrolments(groupId, config.enrolmentKey).map {
+                    case true  => Redirect(controllers.routes.UnauthorisedWithGroupAccessController.onPageLoad())
+                    case false => Redirect(config.eccEnrolmentSplashPage)
+                  }
+                case _ => Future.successful(Redirect(config.eccEnrolmentSplashPage))
+              }
           }
       }
   } recover {
@@ -75,24 +78,6 @@ class AuthenticatedIdentifierAction @Inject() (
     case _: AuthorisationException =>
       Redirect(routes.UnauthorisedController.onPageLoad())
   }
+  // scalastyle:on cyclomatic.complexity
 
-  private def checkForGroupEnrolment[A](
-    maybeGroupId: Option[String],
-    config: FrontendAppConfig
-  )(implicit hc: HeaderCarrier): Future[Result] =
-    maybeGroupId match {
-      case Some(groupId) =>
-        val hasGroupEnrolment = for {
-          newGroupEnrolment <- enrolmentStoreConnector.checkGroupEnrolments(groupId, config.newEnrolmentKey)
-          legacyGroupEnrolment <-
-            if (newGroupEnrolment) { Future.successful(newGroupEnrolment) }
-            else { enrolmentStoreConnector.checkGroupEnrolments(groupId, config.legacyEnrolmentKey) }
-        } yield newGroupEnrolment || legacyGroupEnrolment
-
-        hasGroupEnrolment map {
-          case true  => Redirect(controllers.routes.UnauthorisedWithGroupAccessController.onPageLoad())
-          case false => Redirect(config.eccEnrolmentSplashPage)
-        }
-      case _ => Future.successful(Redirect(config.eccEnrolmentSplashPage))
-    }
 }

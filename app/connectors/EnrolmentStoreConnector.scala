@@ -17,13 +17,12 @@
 package connectors
 
 import config.FrontendAppConfig
-import javax.inject.Inject
 import logging.Logging
 import models.QueryGroupsEnrolmentsResponseModel
 import play.api.http.Status._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class EnrolmentStoreConnector @Inject() (val config: FrontendAppConfig, val http: HttpClient)(implicit ec: ExecutionContext) extends Logging {
@@ -34,16 +33,14 @@ class EnrolmentStoreConnector @Inject() (val config: FrontendAppConfig, val http
     http.GET[HttpResponse](serviceUrl).map {
       response =>
         response.status match {
-          case OK         => response.json.as[QueryGroupsEnrolmentsResponseModel].enrolments.exists(_.service.contains(enrolmentKey))
-          case NO_CONTENT => false
-          case other =>
-            logger.info(s"[EnrolmentStoreProxyConnector][checkSaGroup] Enrolment Store Proxy error with status $other")
+          case OK =>
+            response.json.as[QueryGroupsEnrolmentsResponseModel].enrolments.exists(_.service.contains(enrolmentKey))
+          case NO_CONTENT | NOT_FOUND =>
             false
+          case other =>
+            logger.info(s"[EnrolmentStoreConnector][checkGroupEnrolments] Enrolment Store Proxy error with status $other")
+            throw new Exception(s"Call to enrolment store failed: $other - ${response.body}")
         }
-    } recover {
-      case exception =>
-        logger.info("[EnrolmentStoreProxyConnector][checkSaGroup] Enrolment Store Proxy error", exception)
-        false
     }
   }
 }
