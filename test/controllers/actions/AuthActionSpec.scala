@@ -56,10 +56,8 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
       .overrides(bind[AuthConnector].toInstance(mockAuthConnector))
       .overrides(bind[EnrolmentStoreConnector].toInstance(mockEnrolmentStoreConnector))
 
-  val LEGACY_ENROLMENT_KEY    = "HMCE-NCTS-ORG"
-  val LEGACY_ENROLMENT_ID_KEY = "VATRegNoTURN"
-  val NEW_ENROLMENT_KEY       = "HMRC-CTC-ORG"
-  val NEW_ENROLMENT_ID_KEY    = "EORINumber"
+  val ENROLMENT_KEY    = "HMRC-CTC-ORG"
+  val ENROLMENT_ID_KEY = "EORINumber"
 
   private def createEnrolment(key: String, identifierKey: Option[String], id: String, state: String) =
     Enrolment(
@@ -74,7 +72,6 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
   "Auth Action" - {
 
     "when the user hasn't logged in" - {
-
       "must redirect the user to log in " in {
 
         setNoExistingUserAnswers()
@@ -99,7 +96,6 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
     }
 
     "when the user's session has expired" - {
-
       "must redirect the user to log in " in {
 
         setNoExistingUserAnswers()
@@ -123,7 +119,6 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
     }
 
     "when the user doesn't have sufficient enrolments" - {
-
       "must redirect the user to the unauthorised page" in {
 
         setNoExistingUserAnswers()
@@ -148,7 +143,6 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
     }
 
     "when the user doesn't have sufficient confidence level" - {
-
       "must redirect the user to the unauthorised page" in {
 
         setNoExistingUserAnswers()
@@ -173,7 +167,6 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
     }
 
     "when the user used an unaccepted auth provider" - {
-
       "must redirect the user to the unauthorised page" in {
 
         setNoExistingUserAnswers()
@@ -198,7 +191,6 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
     }
 
     "when the user has an unsupported affinity group" - {
-
       "must redirect the user to the unauthorised page" in {
 
         setNoExistingUserAnswers()
@@ -223,7 +215,6 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
     }
 
     "when the user has an unsupported credential role" - {
-
       "must redirect the user to the unauthorised page" in {
 
         setNoExistingUserAnswers()
@@ -247,36 +238,12 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
       }
     }
 
-    "AuthAction" - {
-      "must redirect to unauthorised page when given legacy enrolments without eori" in {
-        val legacyEnrolmentsWithoutEori: Enrolments = Enrolments(
-          Set(
-            createEnrolment("IR-CT", Some("UTR"), "456", "Activated"),
-            createEnrolment(LEGACY_ENROLMENT_KEY, None, "123", "Activated"),
-            createEnrolment("IR-SA", Some("UTR"), "123", "Activated")
-          )
-        )
-
-        when(mockAuthConnector.authorise[Enrolments ~ Option[String]](any(), any())(any(), any()))
-          .thenReturn(Future.successful(legacyEnrolmentsWithoutEori ~ Some("testName")))
-
-        val bodyParsers       = app.injector.instanceOf[BodyParsers.Default]
-        val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-
-        val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, frontendAppConfig, bodyParsers, mockEnrolmentStoreConnector)
-        val controller = new Harness(authAction)
-        val result     = controller.onPageLoad()(fakeRequest)
-
-        status(result) mustBe SEE_OTHER
-
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
-      }
-
-      "must redirect to unauthorised page when given new enrolments without eori" in {
+    "when given new enrolments without eori" - {
+      "must redirect to unauthorised page" in {
         val newEnrolmentsWithoutEori: Enrolments = Enrolments(
           Set(
             createEnrolment("IR-SA", Some("UTR"), "123", "Activated"),
-            createEnrolment(NEW_ENROLMENT_KEY, None, "999", "Activated"),
+            createEnrolment(ENROLMENT_KEY, None, "999", "Activated"),
             createEnrolment("IR-CT", Some("UTR"), "456", "Activated")
           )
         )
@@ -295,63 +262,13 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
       }
+    }
 
-      "must redirect to unauthorised page with group access when given user has no active legacy enrolments but new group has" in {
-        val legacyEnrolmentsWithEoriButNoActivated: Enrolments = Enrolments(
-          Set(
-            createEnrolment("IR-CT", Some("UTR"), "456", "Activated"),
-            createEnrolment(LEGACY_ENROLMENT_KEY, Some(LEGACY_ENROLMENT_ID_KEY), "999", "NotYetActivated")
-          )
-        )
-
-        when(mockAuthConnector.authorise[Enrolments ~ Option[String]](any(), any())(any(), any()))
-          .thenReturn(Future.successful(legacyEnrolmentsWithEoriButNoActivated ~ Some("testName")))
-        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(NEW_ENROLMENT_KEY))(any())).thenReturn(Future.successful(true))
-        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(LEGACY_ENROLMENT_KEY))(any())).thenReturn(Future.successful(false))
-
-        val bodyParsers       = app.injector.instanceOf[BodyParsers.Default]
-        val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-
-        val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, frontendAppConfig, bodyParsers, mockEnrolmentStoreConnector)
-        val controller = new Harness(authAction)
-        val result     = controller.onPageLoad()(fakeRequest)
-
-        status(result) mustBe SEE_OTHER
-
-        redirectLocation(result).value mustBe controllers.routes.UnauthorisedWithGroupAccessController.onPageLoad().url
-
-      }
-
-      "must redirect to unauthorised page with group access when given user has no active legacy enrolments but legacy group has" in {
-        val legacyEnrolmentsWithEoriButNoActivated: Enrolments = Enrolments(
-          Set(
-            createEnrolment("IR-CT", Some("UTR"), "456", "Activated"),
-            createEnrolment(LEGACY_ENROLMENT_KEY, Some(LEGACY_ENROLMENT_ID_KEY), "999", "NotYetActivated")
-          )
-        )
-
-        when(mockAuthConnector.authorise[Enrolments ~ Option[String]](any(), any())(any(), any()))
-          .thenReturn(Future.successful(legacyEnrolmentsWithEoriButNoActivated ~ Some("testName")))
-        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(NEW_ENROLMENT_KEY))(any())).thenReturn(Future.successful(false))
-        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(LEGACY_ENROLMENT_KEY))(any())).thenReturn(Future.successful(true))
-
-        val bodyParsers       = app.injector.instanceOf[BodyParsers.Default]
-        val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-
-        val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, frontendAppConfig, bodyParsers, mockEnrolmentStoreConnector)
-        val controller = new Harness(authAction)
-        val result     = controller.onPageLoad()(fakeRequest)
-
-        status(result) mustBe SEE_OTHER
-
-        redirectLocation(result).value mustBe controllers.routes.UnauthorisedWithGroupAccessController.onPageLoad().url
-      }
-
-      "must redirect to unauthorised page with group access when given user has no active new enrolments but new group has" in {
+    "when given user has no active new enrolments but new group has" - {
+      "must redirect to unauthorised page with group access" in {
         when(mockAuthConnector.authorise[Enrolments ~ Option[String]](any(), any())(any(), any()))
           .thenReturn(Future.successful(Enrolments(Set.empty) ~ Some("testName")))
-        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(NEW_ENROLMENT_KEY))(any())).thenReturn(Future.successful(true))
-        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(LEGACY_ENROLMENT_KEY))(any())).thenReturn(Future.successful(false))
+        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(ENROLMENT_KEY))(any())).thenReturn(Future.successful(true))
 
         val bodyParsers       = app.injector.instanceOf[BodyParsers.Default]
         val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
@@ -364,37 +281,13 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         redirectLocation(result).value mustBe controllers.routes.UnauthorisedWithGroupAccessController.onPageLoad().url
       }
+    }
 
-      "must redirect to unauthorised page with group access when given user has no active new enrolments but legacy group has" in {
-        val newEnrolmentsWithEoriButNoActivated: Enrolments = Enrolments(
-          Set(
-            createEnrolment("IR-SA", Some("UTR"), "123", "Activated"),
-            createEnrolment(NEW_ENROLMENT_KEY, Some(NEW_ENROLMENT_ID_KEY), "123", "NotYetActivated")
-          )
-        )
-
-        when(mockAuthConnector.authorise[Enrolments ~ Option[String]](any(), any())(any(), any()))
-          .thenReturn(Future.successful(newEnrolmentsWithEoriButNoActivated ~ Some("testName")))
-        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(NEW_ENROLMENT_KEY))(any())).thenReturn(Future.successful(false))
-        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(LEGACY_ENROLMENT_KEY))(any())).thenReturn(Future.successful(true))
-
-        val bodyParsers       = app.injector.instanceOf[BodyParsers.Default]
-        val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-
-        val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, frontendAppConfig, bodyParsers, mockEnrolmentStoreConnector)
-        val controller = new Harness(authAction)
-        val result     = controller.onPageLoad()(fakeRequest)
-
-        status(result) mustBe SEE_OTHER
-
-        redirectLocation(result).value mustBe controllers.routes.UnauthorisedWithGroupAccessController.onPageLoad().url
-      }
-
-      "must redirect to unauthorised page with group access when given user has no enrolments but group has" in {
+    "when given user has no enrolments but group has" - {
+      "must redirect to unauthorised page with group access" in {
         when(mockAuthConnector.authorise[Enrolments ~ Option[String]](any(), any())(any(), any()))
           .thenReturn(Future.successful(Enrolments(Set.empty) ~ Some("testName")))
-        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(NEW_ENROLMENT_KEY))(any())).thenReturn(Future.successful(true))
-        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(LEGACY_ENROLMENT_KEY))(any())).thenReturn(Future.successful(false))
+        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(ENROLMENT_KEY))(any())).thenReturn(Future.successful(true))
 
         val bodyParsers       = app.injector.instanceOf[BodyParsers.Default]
         val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
@@ -407,12 +300,13 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         redirectLocation(result).value mustBe controllers.routes.UnauthorisedWithGroupAccessController.onPageLoad().url
       }
+    }
 
-      "must redirect to unauthorised page without group access when given both user and group has no enrolments" in {
+    "when given both user and group has no enrolments" - {
+      "must redirect to unauthorised page without group access" in {
         when(mockAuthConnector.authorise[Enrolments ~ Option[String]](any(), any())(any(), any()))
           .thenReturn(Future.successful(Enrolments(Set.empty) ~ Some("testName")))
-        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(NEW_ENROLMENT_KEY))(any())).thenReturn(Future.successful(false))
-        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(LEGACY_ENROLMENT_KEY))(any())).thenReturn(Future.successful(false))
+        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(ENROLMENT_KEY))(any())).thenReturn(Future.successful(false))
 
         val bodyParsers       = app.injector.instanceOf[BodyParsers.Default]
         val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
@@ -424,13 +318,14 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(frontendAppConfig.eccEnrolmentSplashPage)
       }
+    }
 
-      "must redirect to unauthorised page without group access when given user has no enrolments and there is no group" in {
+    "when given user has no enrolments and there is no group" - {
+      "must redirect to unauthorised page without group access" in {
         when(mockAuthConnector.authorise[Enrolments ~ Option[String]](any(), any())(any(), any()))
           .thenReturn(Future.successful(Enrolments(Set.empty) ~ None))
 
-        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(NEW_ENROLMENT_KEY))(any())).thenReturn(Future.successful(false))
-        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(LEGACY_ENROLMENT_KEY))(any())).thenReturn(Future.successful(false))
+        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(ENROLMENT_KEY))(any())).thenReturn(Future.successful(false))
 
         val bodyParsers       = app.injector.instanceOf[BodyParsers.Default]
         val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
@@ -442,99 +337,15 @@ class AuthActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(frontendAppConfig.eccEnrolmentSplashPage)
       }
+    }
 
-      "must return Ok when given legacy enrolments with eori" in {
-        val legacyEnrolmentsWithEori: Enrolments = Enrolments(
-          Set(
-            createEnrolment("IR-CT", Some("UTR"), "456", "Activated"),
-            createEnrolment(LEGACY_ENROLMENT_KEY, Some(LEGACY_ENROLMENT_ID_KEY), "123", "NotYetActivated"),
-            createEnrolment(LEGACY_ENROLMENT_KEY, Some(LEGACY_ENROLMENT_ID_KEY), "999", "Activated"),
-            createEnrolment("IR-SA", Some("UTR"), "123", "Activated")
-          )
-        )
-
-        when(mockAuthConnector.authorise[Enrolments ~ Some[String]](any(), any())(any(), any()))
-          .thenReturn(Future.successful(legacyEnrolmentsWithEori ~ Some("testName")))
-
-        val bodyParsers       = app.injector.instanceOf[BodyParsers.Default]
-        val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-
-        val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, frontendAppConfig, bodyParsers, mockEnrolmentStoreConnector)
-        val controller = new Harness(authAction)
-        val result     = controller.onPageLoad()(fakeRequest)
-
-        status(result) mustBe OK
-      }
-
-      "must return Ok when given both new and legacy enrolments with eori" in {
-        val newAndLegacyEnrolmentsWithEori: Enrolments = Enrolments(
-          Set(
-            createEnrolment(LEGACY_ENROLMENT_KEY, Some(LEGACY_ENROLMENT_ID_KEY), "123", "Activated"),
-            createEnrolment(NEW_ENROLMENT_KEY, Some(NEW_ENROLMENT_ID_KEY), "456", "Activated")
-          )
-        )
-
-        when(mockAuthConnector.authorise[Enrolments ~ Some[String]](any(), any())(any(), any()))
-          .thenReturn(Future.successful(newAndLegacyEnrolmentsWithEori ~ Some("testName")))
-
-        val bodyParsers       = app.injector.instanceOf[BodyParsers.Default]
-        val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-
-        val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, frontendAppConfig, bodyParsers, mockEnrolmentStoreConnector)
-        val controller = new Harness(authAction)
-        val result     = controller.onPageLoad()(fakeRequest)
-
-        status(result) mustBe OK
-      }
-
-      "must return Ok when given a new enrolment without a key, and a legacy enrolment with eori" in {
-        val newWithoutEoriLegacyWithEori: Enrolments = Enrolments(
-          Set(
-            createEnrolment(LEGACY_ENROLMENT_KEY, Some(LEGACY_ENROLMENT_ID_KEY), "123", "Activated"),
-            createEnrolment(NEW_ENROLMENT_KEY, None, "456", "Activated")
-          )
-        )
-
-        when(mockAuthConnector.authorise[Enrolments ~ Some[String]](any(), any())(any(), any()))
-          .thenReturn(Future.successful(newWithoutEoriLegacyWithEori ~ Some("testName")))
-
-        val bodyParsers       = app.injector.instanceOf[BodyParsers.Default]
-        val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-
-        val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, frontendAppConfig, bodyParsers, mockEnrolmentStoreConnector)
-        val controller = new Harness(authAction)
-        val result     = controller.onPageLoad()(fakeRequest)
-
-        status(result) mustBe OK
-      }
-
-      "must return Ok when given a legacy enrolment without a key, and a new enrolment with eori" in {
-        val newWithEoriLegacyWithoutEori: Enrolments = Enrolments(
-          Set(
-            createEnrolment(LEGACY_ENROLMENT_KEY, None, "123", "Activated"),
-            createEnrolment(NEW_ENROLMENT_KEY, Some(NEW_ENROLMENT_ID_KEY), "456", "Activated")
-          )
-        )
-
-        when(mockAuthConnector.authorise[Enrolments ~ Some[String]](any(), any())(any(), any()))
-          .thenReturn(Future.successful(newWithEoriLegacyWithoutEori ~ Some("testName")))
-
-        val bodyParsers       = app.injector.instanceOf[BodyParsers.Default]
-        val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-
-        val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, frontendAppConfig, bodyParsers, mockEnrolmentStoreConnector)
-        val controller = new Harness(authAction)
-        val result     = controller.onPageLoad()(fakeRequest)
-
-        status(result) mustBe OK
-      }
-
-      "must return Ok when given new enrolments with eori" in {
+    "when given new enrolments with eori" - {
+      "must return Ok" in {
         val newEnrolmentsWithEori: Enrolments = Enrolments(
           Set(
             createEnrolment("IR-SA", Some("UTR"), "123", "Activated"),
-            createEnrolment(NEW_ENROLMENT_KEY, Some(NEW_ENROLMENT_ID_KEY), "123", "NotYetActivated"),
-            createEnrolment(NEW_ENROLMENT_KEY, Some(NEW_ENROLMENT_ID_KEY), "456", "Activated")
+            createEnrolment(ENROLMENT_KEY, Some(ENROLMENT_ID_KEY), "123", "NotYetActivated"),
+            createEnrolment(ENROLMENT_KEY, Some(ENROLMENT_ID_KEY), "456", "Activated")
           )
         )
 

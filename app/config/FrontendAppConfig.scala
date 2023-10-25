@@ -37,11 +37,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val loginUrl: String         = configuration.get[String]("microservice.services.auth.login")
   lazy val loginContinueUrl: String = configuration.get[String]("microservice.services.auth.loginContinue")
 
-  lazy val legacyEnrolmentKey: String           = configuration.get[String]("microservice.services.auth.legacy.enrolmentKey")
-  lazy val legacyEnrolmentIdentifierKey: String = configuration.get[String]("microservice.services.auth.legacy.enrolmentIdentifierKey")
-
-  lazy val newEnrolmentKey: String           = configuration.get[String]("microservice.services.auth.enrolmentKey")
-  lazy val newEnrolmentIdentifierKey: String = configuration.get[String]("microservice.services.auth.enrolmentIdentifierKey")
+  lazy val enrolmentKey: String           = configuration.get[String]("enrolment.key")
+  lazy val enrolmentIdentifierKey: String = configuration.get[String]("enrolment.identifierKey")
 
   lazy val eccEnrolmentSplashPage: String = configuration.get[String]("urls.eccEnrolmentSplashPage")
 
