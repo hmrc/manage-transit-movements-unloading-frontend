@@ -140,6 +140,11 @@ trait Generators
       seq    <- listOfN(length, arbitrary[A])
     } yield seq
 
+  def distinctListWithMaxLength[A, B](maxLength: Int = maxListLength)(f: A => B)(implicit a: Arbitrary[A]): Gen[List[A]] =
+    for {
+      values <- listWithMaxLength[A](maxLength)
+    } yield values.distinctBy(f)
+
   def listWithMaxSize[T](maxSize: Int, gen: Gen[T]): Gen[Seq[T]] =
     for {
       size  <- Gen.choose(0, maxSize)

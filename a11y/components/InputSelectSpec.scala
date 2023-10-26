@@ -34,7 +34,7 @@ class InputSelectSpec extends A11ySpecBase {
 
     val title          = nonEmptyString.sample.value
     val caption        = Gen.option(nonEmptyString).sample.value
-    val countries      = listWithMaxLength[Country]().sample.value
+    val countries      = distinctListWithMaxLength[Country, String]()(_.code).sample.value
     val label          = nonEmptyString.sample.value
     val hint           = Gen.option(nonEmptyString).sample.value
     val placeholder    = nonEmptyString.sample.value
