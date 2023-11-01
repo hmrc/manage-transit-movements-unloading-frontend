@@ -41,7 +41,7 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours with Gener
 
   behave like pageWithBackLink()
 
-  behave like pageWithCaption(mrn.toString)
+  behave like pageWithCaption(s"This notification is MRN ${mrn.toString}")
 
   behave like pageWithHeading()
 

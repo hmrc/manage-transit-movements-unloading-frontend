@@ -15,18 +15,17 @@
  *@
 
 @import models.MovementReferenceNumber
-@import models.reference.{Country, Selectable}
 @import models.reference.Selectable._
+@import models.reference.{Country, Selectable}
 @import viewModels.components.InputSelectViewModel._
-@import views.html.components.{ErrorSummary, Button, InputSelect, HeadingCaption}
+@import views.html.components.{Button, ErrorSummary, InputSelect}
 
 @this(
     mainTemplate: MainTemplate,
     errorSummary: ErrorSummary,
     select: InputSelect,
     button: Button,
-    formHelper: FormWithCSRF,
-    caption: HeadingCaption
+    formHelper: FormWithCSRF
 )
 
 @(form: Form[Country], countryList: Seq[Selectable], mrn: MovementReferenceNumber, arrivalId: ArrivalId,transportMeansIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -38,15 +37,13 @@
 
     @errorSummary(form.errors)
 
-    @caption(mrn.toString)
-
     @formHelper(action = controllers.routes.VehicleRegistrationCountryController.onSubmit(arrivalId,transportMeansIndex, mode), Symbol("autoComplete") -> "off") {
-
 
         @select(
             field = form("value"),
             selectType = OrdinarySelect(
-                heading = messages("vehicleRegistrationCountry.heading")
+                heading = messages("vehicleRegistrationCountry.heading"),
+                caption = Some(messages("site.caption", mrn.toString))
             ),
             selectItems = countryList.toSelectItems(form.value),
             placeholder = messages("vehicleRegistrationCountry.placeholder")

@@ -16,18 +16,17 @@
 
 @import models.MovementReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo, HeadingCaption}
+@import views.html.components.{Button, ErrorSummary, InputYesNo}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
-    button: Button,
-    caption: HeadingCaption
+    button: Button
 )
 
-@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("areAnySealsBroken.title"),
@@ -36,14 +35,13 @@
 
         @errorSummary(form.errors)
 
-        @caption(mrn.toString)
-
         @formHelper(action = controllers.routes.AreAnySealsBrokenController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
         @inputYesNo(
             field = form("value"),
             yesNoType = OrdinaryYesNo(
-                heading = messages("areAnySealsBroken.heading")
+                heading = messages("areAnySealsBroken.heading"),
+                caption = Some(messages("site.caption", mrn.toString))
             )
         )
 

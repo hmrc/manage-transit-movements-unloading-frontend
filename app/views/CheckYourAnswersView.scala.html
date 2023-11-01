@@ -14,16 +14,14 @@
  * limitations under the License.
  *@
 
-@import views.html.components.{AnswerSections, Button, Heading}
-@import views.html.components.HeadingCaption
 @import viewModels.CheckYourAnswersViewModel
+@import views.html.components.{AnswerSections, Button, Heading}
 
 @this(
 mainTemplate: MainTemplate,
 heading: Heading,
 answerSections: AnswerSections,
 button: Button,
-caption: HeadingCaption,
 formHelper: FormWithCSRF
 )
 
@@ -34,10 +32,9 @@ formHelper: FormWithCSRF
     showBackLink = true,
 ) {
 
-    @caption(mrn.toString)
-
     @heading(
-    heading = messages("checkYourAnswers.heading")
+        heading = messages("checkYourAnswers.heading"),
+        caption = Some(messages("site.caption", mrn.toString))
     )
 
     @answerSections(viewModel.sections)

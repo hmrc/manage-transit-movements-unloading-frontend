@@ -21,8 +21,9 @@ import play.api.i18n.Messages
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.input.Input
-import uk.gov.hmrc.hmrcfrontend.views.implicits.RichErrorSummarySupport
+import uk.gov.hmrc.hmrcfrontend.views.implicits.{RichDateInputSupport, RichErrorSummarySupport}
 
 import java.time.LocalDate
 
@@ -98,6 +99,18 @@ object ViewUtils {
 
   implicit class StringImplicits(string: String) {
     def toParagraph: Html = Html(s"""<p class="govuk-body">$string</p>""")
+  }
+
+  implicit class DateInputImplicits(dateInput: DateInput)(implicit messages: Messages) extends RichDateInputSupport {
+
+    def withHeadingAndCaption(heading: String, caption: Option[String]): DateInput =
+      caption match {
+        case Some(value) => dateInput.withHeadingAndSectionCaption(Text(heading), Text(value))
+        case None        => dateInput.withHeading(Text(heading))
+      }
+
+    def withVisuallyHiddenLegend(legend: String): DateInput =
+      dateInput.copy(fieldset = Some(Fieldset(legend = Some(Legend(content = Text(legend), isPageHeading = false, classes = "govuk-visually-hidden")))))
   }
 
 }

@@ -15,7 +15,6 @@
  *@
 
 @import models.MovementReferenceNumber
-@import models.reference.CustomsOffice
 @import views.html.components.Heading
 @import config.FrontendAppConfig
 
@@ -28,20 +27,20 @@
 
 @(mrn: MovementReferenceNumber, viewModel: UnloadingRemarksSentViewModel)(implicit request: Request[_], messages: Messages)
 
-    @mainTemplate(
-        title = messages("unloadingRemarksSent.title"),
-        showBackLink = false
-    ) {
-        @govukPanel(Panel(
-            title = Text(messages("unloadingRemarksSent.heading")),
-            content = Text(messages("unloadingRemarksSent.panel.body", mrn))
-        )
-        )
-        <h2 class="govuk-heading-m">@messages("unloadingRemarksSent.subHeading")</h2>
-        <p class="govuk-body"> <a id="viewArrivalId" class="govuk-link" href=@config.viewAllArrivalsUrl>@messages("unloadingRemarksSent.checkStatus")</a> @messages("unloadingRemarksSent.findOut")</p>
-        <p class="govuk-body">@{
-            viewModel.fetch
-        }</p>
-        <p class="govuk-body"><a id="createArrivalId" class="govuk-link" href=@config.arrivalsFrontendUrl>@messages("unloadingRemarksSent.createArrivalNotification")</a></p>
+@mainTemplate(
+    title = messages("unloadingRemarksSent.title"),
+    showBackLink = false
+) {
+    @govukPanel(Panel(
+        title = Text(messages("unloadingRemarksSent.heading")),
+        content = Text(messages("unloadingRemarksSent.panel.body", mrn))
+    )
+    )
+    <h2 class="govuk-heading-m">@messages("unloadingRemarksSent.subHeading")</h2>
+    <p class="govuk-body"> <a id="viewArrivalId" class="govuk-link" href=@config.viewAllArrivalsUrl>@messages("unloadingRemarksSent.checkStatus")</a> @messages("unloadingRemarksSent.findOut")</p>
+    <p class="govuk-body">@{
+        viewModel.fetch
+    }</p>
+    <p class="govuk-body"><a id="createArrivalId" class="govuk-link" href=@config.arrivalsFrontendUrl>@messages("unloadingRemarksSent.createArrivalNotification")</a></p>
 
-    }
+}
