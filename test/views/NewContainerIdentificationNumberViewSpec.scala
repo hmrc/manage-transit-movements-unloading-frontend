@@ -39,7 +39,7 @@ class NewContainerIdentificationNumberViewSpec extends InputTextViewBehaviours[S
 
   behave like pageWithBackLink()
 
-  behave like pageWithCaption(s"This notification is MRN ${mrn.toString}")
+  behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
   behave like pageWithHeading()
 

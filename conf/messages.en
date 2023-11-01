@@ -21,7 +21,7 @@ site.title.suffix = - Manage your transit movements - GOV.UK
 site.youMust = You must
 this.section.is = This notification is
 site.backToSummary = Back to summary
-site.caption = MRN {0}
+site.caption = MRN: {0}
 
 error.title.prefix = Error:
 error.summary.title = There is a problem

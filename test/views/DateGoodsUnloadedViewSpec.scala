@@ -38,7 +38,7 @@ class DateGoodsUnloadedViewSpec extends DateInputViewBehaviour {
 
   behave like pageWithBackLink()
 
-  behave like pageWithCaption(s"This notification is MRN ${mrn.toString}")
+  behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
   behave like pageWithHeading()
 
