@@ -41,7 +41,7 @@ class NewSealNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading()
 
-  behave like pageWithCaption(mrn.toString)
+  behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
   behave like pageWithHint("This can be up to 20 characters long and include both letters and numbers.")
 

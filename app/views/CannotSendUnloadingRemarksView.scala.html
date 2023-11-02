@@ -14,17 +14,16 @@
  * limitations under the License.
  *@
 
-@import views.html.components.{Button, Heading, HeadingCaption}
 @import config.FrontendAppConfig
+@import views.html.components.{Button, Heading}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     heading: Heading,
     button: Button,
-    config: FrontendAppConfig,
-    caption: HeadingCaption
-    )
+    config: FrontendAppConfig
+)
 
 @(mrn: MovementReferenceNumber, arrivalId: ArrivalId, viewModel: CannotSendUnloadingRemarksViewModel)(implicit request: Request[_], messages: Messages)
 
@@ -33,9 +32,7 @@
     showBackLink = true
 ) {
 
-    @caption(mrn.toString)
-
-    @heading(messages("cannotSendUnloadingRemarks.heading"))
+    @heading(messages("cannotSendUnloadingRemarks.heading"), Some(messages("site.caption", mrn.toString)))
 
     <p class="govuk-body">@messages("cannotSendUnloadingRemarks.paragraph1")</p>
 

@@ -14,15 +14,14 @@
  * limitations under the License.
  *@
 
+@import views.html.components.{Button, Heading}
 @import config.FrontendAppConfig
-@import views.html.components.{Button, Heading, HeadingCaption}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     heading: Heading,
     button: Button,
-    caption: HeadingCaption,
     config: FrontendAppConfig
 )
 
@@ -33,9 +32,7 @@
     showBackLink = true
 ) {
 
-    @caption(mrn.toString)
-
-    @heading(messages("unloadingGuidance.heading"))
+    @heading(messages("unloadingGuidance.heading"), caption = Some(messages("site.caption", mrn.toString)))
 
     <p class="govuk-body">@messages("unloadingGuidance.para", mrn)</p>
 

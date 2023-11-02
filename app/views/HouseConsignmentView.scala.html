@@ -14,11 +14,8 @@
  * limitations under the License.
  *@
 
-@import views.html.components.{AnswerSections, Button, Heading}
-@import views.html.components.HeadingCaption
 @import viewModels.HouseConsignmentViewModel
-@import views.html.components.VisibleSection
-@import views.html.components.SummaryDetails
+@import views.html.components.{AnswerSections, Button, Heading, SummaryDetails, VisibleSection}
 
 @this(
 mainTemplate: MainTemplate,
@@ -27,7 +24,6 @@ answerSections: AnswerSections,
 visibleSection: VisibleSection,
 summaryDetails: SummaryDetails,
 button: Button,
-caption: HeadingCaption,
 formHelper: FormWithCSRF
 )
 
@@ -38,10 +34,9 @@ formHelper: FormWithCSRF
     showBackLink = true,
 ) {
 
-    @caption(mrn.toString)
-
     @heading(
-    heading = messages("houseConsignment.heading", houseConsignmentIndex.display)
+        heading = messages("houseConsignment.heading", houseConsignmentIndex.display),
+        caption = Some(messages("site.caption", mrn.toString))
     )
 
     <p class="govuk-body">@messages("houseConsignment.paragraph")</p>

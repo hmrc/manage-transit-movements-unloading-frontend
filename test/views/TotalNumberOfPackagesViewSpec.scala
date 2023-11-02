@@ -42,7 +42,7 @@ class TotalNumberOfPackagesViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading(index.display.toString)
 
-  behave like pageWithCaption(mrn.toString)
+  behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
   behave like pageWithoutHint()
 

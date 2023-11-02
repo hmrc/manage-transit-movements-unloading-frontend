@@ -44,7 +44,7 @@ class UnloadingFindingsViewSpec extends DetailsListViewBehaviours with Generator
 
   behave like pageWithBackLink()
 
-  behave like pageWithCaption(mrn.toString)
+  behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
   behave like pageWithHeading()
 

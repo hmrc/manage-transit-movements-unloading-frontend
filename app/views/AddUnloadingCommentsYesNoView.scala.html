@@ -16,7 +16,7 @@
 
 @import models.MovementReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo, HeadingCaption}
+@import views.html.components.{Button, ErrorSummary, InputYesNo}
 @import views.utils.ViewUtils.StringImplicits
 
 @this(
@@ -24,8 +24,7 @@ mainTemplate: MainTemplate,
 formHelper: FormWithCSRF,
 inputYesNo: InputYesNo,
 errorSummary: ErrorSummary,
-button: Button,
-caption: HeadingCaption
+button: Button
 )
 
 @(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -37,15 +36,13 @@ caption: HeadingCaption
 
         @errorSummary(form.errors)
 
-        @caption(mrn.toString)
-
         @formHelper(action = controllers.routes.AddUnloadingCommentsYesNoController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
         @inputYesNo(
             field = form("value"),
             yesNoType = YesNoWithAdditionalHtml(
                 heading = messages("addUnloadingCommentsYesNo.heading"),
-                caption = None,
+                caption = Some(messages("site.caption", mrn.toString)),
                 additionalHtml = messages("addUnloadingCommentsYesNo.paragraph").toParagraph
             )
         )

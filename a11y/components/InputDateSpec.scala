@@ -20,6 +20,8 @@ import a11ySpecBase.A11ySpecBase
 import forms.DateGoodsUnloadedFormProvider
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import play.twirl.api.Html
+import viewModels.components.InputDateViewModel.{DateInputWithAdditionalHtml, OrdinaryDateInput}
 import views.html.components.InputDate
 import views.html.templates.MainTemplate
 
@@ -32,30 +34,32 @@ class InputDateSpec extends A11ySpecBase {
     val component = app.injector.instanceOf[InputDate]
     val clock     = app.injector.instanceOf[Clock]
 
-    val minDate     = arbitrary[LocalDate].sample.value
-    val title       = nonEmptyString.sample.value
-    val legend      = nonEmptyString.sample.value
-    val legendClass = Gen.alphaNumStr.sample.value
-    val hint        = Gen.option(nonEmptyString).sample.value
-    val form        = new DateGoodsUnloadedFormProvider(clock)(minDate)
+    val minDate = arbitrary[LocalDate].sample.value
+    val title   = nonEmptyString.sample.value
+    val hint    = Gen.option(nonEmptyString).sample.value
+    val caption = Gen.option(nonEmptyString).sample.value
+    val form    = new DateGoodsUnloadedFormProvider(clock)(minDate)
 
-    "pass accessibility checks" when {
+    val html = Html("<p>test</p>")
 
-      "legend is heading" in {
-        val content = template.apply(title) {
-          val legendIsHeading = true
-          component.apply(form("value"), legend, legendClass, hint, legendIsHeading)
-        }
-        content.toString() must passAccessibilityChecks
+    "pass accessibility checks for OrdinaryDateInput" in {
+
+      val viewModel = OrdinaryDateInput(title, caption)
+
+      val content = template.apply(title) {
+        component.apply(form = form, dateType = viewModel, hint = hint)
       }
+      content.toString() must passAccessibilityChecks
+    }
 
-      "legend isn't heading" in {
-        val content = template.apply(title) {
-          val legendIsHeading = false
-          component.apply(form("value"), legend, legendClass, hint, legendIsHeading).withHeading(title)
-        }
-        content.toString() must passAccessibilityChecks
+    "pass accessibility checks for DateInputWithAdditionalHtml" in {
+
+      val viewModel = DateInputWithAdditionalHtml(title, caption, html)
+
+      val content = template.apply(title) {
+        component.apply(form = form, dateType = viewModel, hint = hint)
       }
+      content.toString() must passAccessibilityChecks
     }
   }
 }

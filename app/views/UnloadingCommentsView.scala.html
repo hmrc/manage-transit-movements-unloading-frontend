@@ -15,7 +15,7 @@
  *@
 
 @import models.MovementReferenceNumber
-@import views.html.components.{Button, ErrorSummary, Heading, InputYesNo, HeadingCaption, InputCharacterCount}
+@import views.html.components.{Button, ErrorSummary, Heading, InputCharacterCount, InputYesNo}
 
 @this(
     mainTemplate: MainTemplate,
@@ -24,7 +24,6 @@
     inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
     button: Button,
-    caption: HeadingCaption,
     inputCharacterCount: InputCharacterCount
 )
 
@@ -37,15 +36,14 @@
 
     @errorSummary(form.errors)
 
-    @caption(mrn.toString)
-
     @formHelper(action = controllers.routes.UnloadingCommentsController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
 
         @inputCharacterCount(
           field = form("value"),
           label = messages("changesToReport.title"),
-          maxLength = maxLength
+          maxLength = maxLength,
+          caption = Some(messages("site.caption", mrn.toString))
         )
 
         @button(attributes = Map("id" -> "submit"))

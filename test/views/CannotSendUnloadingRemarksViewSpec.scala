@@ -35,7 +35,7 @@ class CannotSendUnloadingRemarksViewSpec extends ViewBehaviours {
 
   behave like pageWithBackLink()
 
-  behave like pageWithCaption(mrn.toString)
+  behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
   behave like pageWithHeading()
 

@@ -15,15 +15,13 @@
  *@
 
 @import models.MovementReferenceNumber
-@import views.html.components.{Button, ErrorSummary,HeadingCaption, InputRadio}
-@import viewModels.components.InputRadioViewModel
 @import viewModels.components.InputRadioViewModel._
+@import views.html.components.{Button, ErrorSummary, InputRadio}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputRadio: InputRadio,
-    caption: HeadingCaption,
     errorSummary: ErrorSummary,
     button: Button
 )
@@ -39,11 +37,9 @@
 
         @errorSummary(form.errors)
 
-        @caption(mrn.toString)
-
         @inputRadio(
             field = form("value"),
-            radioType = Radio(heading = messages("unloadingType.heading")),
+            radioType = Radio(heading = messages("unloadingType.heading"), caption = Some(messages("site.caption", mrn.toString))),
             radioItems = fieldId => values.toRadioItems(fieldId, form.value)
         )
 

@@ -15,55 +15,63 @@
  *@
 
 @import views.utils.ViewUtils._
+@import viewModels.components.InputDateViewModel.OrdinaryDateInput
+@import viewModels.components.InputDateViewModel.DateInputWithAdditionalHtml
+@import viewModels.components.InputDateViewModel
+@import views.html.components.Heading
+@import java.time.LocalDate
 
 @this(
-    govukDateInput: GovukDateInput
+        govukDateInput: GovukDateInput,
+        hmrcHeading: Heading
 )
 
 @(
-    field: Field,
-    legend: String,
-    legendClass: String = "govuk-fieldset__legend--xl",
-    hint: Option[String] = None,
-    legendAsHeading: Boolean = false
+        form: Form[LocalDate],
+        fieldId: String = "value",
+        dateType: InputDateViewModel,
+        hint: Option[String] = None
 )(implicit messages: Messages)
 
-@govukDateInput(
+@dateInput = @{
     DateInput(
-        fieldset = Some(Fieldset(
-            legend = Some(
-                Legend(
-                    content = Text(messages(legend)),
-                    isPageHeading = legendAsHeading,
-                    classes = legendClass
-                )
-            )
-        )),
-        id = field.id,
+        fieldset = None,
+        id = form(s"${fieldId}").id,
         items = Seq(
             InputItem(
-                classes = s"govuk-input--width-2 ${errorClass(field.error, "day")}",
-                name = s"${field.id}.day",
+                classes = s"govuk-input--width-2 ${errorClass(form(fieldId).error, "day")}",
+                name = s"${fieldId}.day",
                 label = Some(messages("date.day.capitalized")),
-                value = field("day").value,
-                id = s"${field.id}_day"
+                value = form(s"${fieldId}.day").value,
+                id = s"${fieldId}_day"
             ),
             InputItem(
-                classes = s"govuk-input--width-2 ${errorClass(field.error, "month")}",
-                name = s"${field.id}.month",
+                classes = s"govuk-input--width-2 ${errorClass(form(fieldId).error, "month")}",
+                name = s"${fieldId}.month",
                 label = Some(messages("date.month.capitalized")),
-                value = field("month").value,
-                id = s"${field.id}_month"
+                value = form(s"${fieldId}.month").value,
+                id = s"${fieldId}_month"
             ),
             InputItem(
-                classes = s"govuk-input--width-4 ${errorClass(field.error, "year")}",
-                name = s"${field.id}.year",
+                classes = s"govuk-input--width-4 ${errorClass(form(fieldId).error, "year")}",
+                name = s"${fieldId}.year",
                 label = Some(messages("date.year.capitalized")),
-                value = field("year").value,
-                id = s"${field.id}_year"
+                value = form(s"${fieldId}.year").value,
+                id = s"${fieldId}_year"
             )
         ),
         hint = hint.map(hint => Hint(content = Text(messages(hint)))),
-        errorMessage = field.error.map(err => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(err.message, err.args: _*))))
+        errorMessage = form(fieldId).error.map(err => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(err.message, err.args: _*))))
     )
-)
+}
+
+@dateType match {
+    case OrdinaryDateInput(heading, caption) => {
+        @govukDateInput(dateInput.withHeadingAndCaption(heading, caption))
+    }
+    case x@DateInputWithAdditionalHtml(heading, caption, additionalHtml) => {
+        @hmrcHeading(heading, caption, Some(x.headingClasses))
+        @additionalHtml
+        @govukDateInput(dateInput.withVisuallyHiddenLegend(heading))
+    }
+}

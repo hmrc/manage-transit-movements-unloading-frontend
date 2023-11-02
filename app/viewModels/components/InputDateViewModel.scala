@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,26 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this()
+package viewModels.components
 
-@(caption: String, suffix: Option[String] = Some("MRN: "), visuallyHiddenClass: String = "govuk-visually-hidden")
+import play.twirl.api.Html
 
-<h2 class="govuk-caption-xl hmrc-caption-xl">@suffix@caption</h2>
+sealed trait InputDateViewModel
+
+object InputDateViewModel {
+
+  case class OrdinaryDateInput(
+    heading: String,
+    caption: Option[String] = None
+  ) extends InputDateViewModel
+
+  case class DateInputWithAdditionalHtml(
+    heading: String,
+    caption: Option[String] = None,
+    additionalHtml: Html
+  ) extends InputDateViewModel
+      with AdditionalHtmlViewModel
+
+}

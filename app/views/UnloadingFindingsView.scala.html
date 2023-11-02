@@ -14,44 +14,39 @@
  * limitations under the License.
  *@
 
-@import views.html.components.{AnswerSections, Button, Heading}
-@import views.html.components.HeadingCaption
 @import viewModels.UnloadingFindingsViewModel
-@import views.html.components.VisibleSection
-@import views.html.components.SummaryDetails
+@import views.html.components.{AnswerSections, Button, Heading, SummaryDetails, VisibleSection}
 
 @this(
-mainTemplate: MainTemplate,
-heading: Heading,
-answerSections: AnswerSections,
-visibleSection: VisibleSection,
-summaryDetails: SummaryDetails,
-button: Button,
-caption: HeadingCaption,
-formHelper: FormWithCSRF
+        mainTemplate: MainTemplate,
+        heading: Heading,
+        answerSections: AnswerSections,
+        visibleSection: VisibleSection,
+        summaryDetails: SummaryDetails,
+        button: Button,
+        formHelper: FormWithCSRF
 )
 
 @(mrn: MovementReferenceNumber, arrivalId: ArrivalId, unloadingFindingsViewModel: UnloadingFindingsViewModel)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(
-    title = messages("unloadingFindings.title"),
-    showBackLink = true,
-) {
+    @mainTemplate(
+        title = messages("unloadingFindings.title"),
+        showBackLink = true,
+    ) {
 
-    @caption(mrn.toString)
+        @heading(
+            heading = messages("unloadingFindings.heading"),
+            caption = Some(messages("site.caption", mrn.toString))
+        )
 
-    @heading(
-    heading = messages("unloadingFindings.heading")
-    )
+        <p class="govuk-body">@messages("unloadingFindings.paragraph")</p>
 
-    <p class="govuk-body">@messages("unloadingFindings.paragraph")</p>
+        @summaryDetails(unloadingFindingsViewModel.section)
 
-    @summaryDetails(unloadingFindingsViewModel.section)
+        <div>
+            <a class="govuk-button" id="submit" href=@controllers.routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, NormalMode).url>
+            @messages("site.continue")
+            </a>
+        </div>
 
-    <div>
-        <a class="govuk-button" id="submit" href=@controllers.routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, NormalMode).url>
-        @messages("site.continue")
-        </a>
-    </div>
-
-}
+    }

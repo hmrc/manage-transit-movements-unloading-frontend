@@ -14,17 +14,17 @@
  * limitations under the License.
  *@
 
-@import views.html.components.{ErrorSummary, InputDate, Button, HeadingCaption}
+@import viewModels.components.InputDateViewModel.OrdinaryDateInput
+@import views.html.components.{Button, DateErrorSummary, InputDate}
+
 @import java.time.LocalDate
-@import views.html.components.DateErrorSummary
 
 @this(
     mainTemplate: MainTemplate,
     errorSummary: DateErrorSummary,
     formHelper: FormWithCSRF,
     inputDate: InputDate,
-    button: Button,
-    caption: HeadingCaption
+    button: Button
 )
 
 @(mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode, form: Form[LocalDate])(implicit request: Request[_], messages: Messages)
@@ -36,16 +36,15 @@
 
         @errorSummary(form)
 
-        @caption(mrn.toString)
-
         @formHelper(action = controllers.routes.DateGoodsUnloadedController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
-
         @inputDate(
-            field = form("value"),
-            legend = messages("dateGoodsUnloaded.heading"),
-            hint = Some(messages("dateGoodsUnloaded.hint")),
-            legendAsHeading = true
+            form = form,
+            dateType = OrdinaryDateInput(
+                heading = messages("dateGoodsUnloaded.heading"),
+                caption = Some(messages("site.caption", mrn.toString))
+            ),
+            hint = Some(messages("dateGoodsUnloaded.hint"))
         )
 
         @button(attributes = Map("id" -> "submit"))

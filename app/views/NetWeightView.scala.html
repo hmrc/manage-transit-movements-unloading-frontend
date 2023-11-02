@@ -14,18 +14,16 @@
  * limitations under the License.
  *@
 
-@import models.{MovementReferenceNumber, ArrivalId}
+@import models.{ArrivalId, MovementReferenceNumber}
 @import viewModels.components.InputTextViewModel._
-@import views.html.components.{Button, ErrorSummary, InputText, HeadingCaption}
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import views.html.components.{Button, ErrorSummary, InputText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     button: Button,
     inputText: InputText,
-    errorSummary: ErrorSummary,
-    caption: HeadingCaption
+    errorSummary: ErrorSummary
 )
 
 @(form: Form[_], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -37,19 +35,17 @@
 
         @errorSummary(form.errors)
 
-        @caption(mrn.toString)
-
         @formHelper(action = controllers.routes.NetWeightController.onSubmit(arrivalId, houseConsignmentIndex, itemIndex, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
-
 
         @inputText(
             field = form("value"),
             inputTextType = TextInputWithHiddenLabel(
                 heading = messages("netWeight.heading", itemIndex.display),
-                additionalHtml = Html(s"""<p class="govuk-body">${messages("netWeight.paragraph")}</p>""")
-                 ),
+                additionalHtml = Html(s"""<p class="govuk-body">${messages("netWeight.paragraph")}</p>"""),
+                caption = Some(messages("site.caption", mrn.toString))
+            ),
             hint = Some(messages("netWeight.hint")),
             inputClass = InputSize.Width10,
             suffix = Some("kg")
