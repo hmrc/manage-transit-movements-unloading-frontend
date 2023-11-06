@@ -18,14 +18,13 @@ package connectors
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock._
-import com.github.tomakehurst.wiremock.matching.StringValuePattern
+import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import connectors.ReferenceDataConnectorSpec._
 import models.reference.{Country, CustomsOffice}
 import org.scalacheck.Gen
 import org.scalatest.{Assertion, BeforeAndAfterEach}
 import play.api.inject.guice.GuiceApplicationBuilder
 
-import scala.jdk.CollectionConverters._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -44,24 +43,17 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       .configure(conf = "microservice.services.customs-reference-data.port" -> server.port())
 
   private lazy val connector: ReferenceDataConnector = app.injector.instanceOf[ReferenceDataConnector]
-  val code                                           = "GB00001"
-  val countryCode                                    = "GB"
-
-  private val queryParamsCustomsOffice: Seq[(String, StringValuePattern)] = Seq(
-    "data.id" -> equalTo(code)
-  )
-
-  private val queryParamsCustomsCountry: Seq[(String, StringValuePattern)] = Seq(
-    "data.code" -> equalTo(countryCode)
-  )
+  private val code                                           = "GB00001"
+  private val countryCode                                    = "GB"
 
   "Reference Data" - {
 
-    "GET" - {
+    "getCountries" - {
+      val url = s"/$baseUrl/lists/CountryCodesFullList"
 
       "should handle a 200 response for countries" in {
         server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/lists/CountryCodesFullList"))
+          get(urlEqualTo(url))
             .willReturn(okJson(countryListResponseJson))
         )
 
@@ -73,14 +65,21 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         connector.getCountries().futureValue mustBe expectedResult
       }
 
-      "should handle client and server errors for countries" in {
-        checkErrorResponse(s"/$baseUrl/lists/CountryCodesFullList", connector.getCountries())
+      "should throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getCountries())
       }
+
+      "should handle client and server errors for countries" in {
+        checkErrorResponse(url, connector.getCountries())
+      }
+    }
+
+    "getCustomsOffice" - {
+      val url = s"/$baseUrl/filtered-lists/CustomsOffices?data.id=$code"
 
       "should handle a 200 response for customs office with code end point with valid phone number" in {
         server.stubFor(
-          get(urlPathMatching(s"/$baseUrl/filtered-lists/CustomsOffices"))
-            .withQueryParams(queryParamsCustomsOffice.toMap.asJava)
+          get(urlEqualTo(url))
             .willReturn(okJson(customsOfficeResponseJsonWithPhone))
         )
 
@@ -91,8 +90,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "should handle a 200 response for customs office with code end point with no phone number" in {
         server.stubFor(
-          get(urlPathMatching(s"/$baseUrl/filtered-lists/CustomsOffices"))
-            .withQueryParams(queryParamsCustomsOffice.toMap.asJava)
+          get(urlEqualTo(url))
             .willReturn(okJson(customsOfficeResponseJsonWithOutPhone))
         )
 
@@ -101,35 +99,53 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         connector.getCustomsOffice(code).futureValue mustBe expectedResult
       }
 
-      "should handle client and server errors for customs office end point" in {
-        checkErrorResponse(s"/$baseUrl/filtered-lists/CustomsOffices", connector.getCustomsOffice(code))
+      "should throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getCustomsOffice(code))
       }
 
-      "getCountryByCode" - {
-        "should handle a 200 response" in {
+      "should handle client and server errors for customs office end point" in {
+        checkErrorResponse(url, connector.getCustomsOffice(code))
+      }
+    }
 
-          server.stubFor(
-            get(urlPathMatching(s"/$baseUrl/filtered-lists/CountryCodesFullList"))
-              .withQueryParams(queryParamsCustomsCountry.toMap.asJava)
-              .willReturn(okJson(countryCodeResponseJson))
-          )
+    "getCountryByCode" - {
+      val url = s"/$baseUrl/filtered-lists/CountryCodesFullList?data.code=$countryCode"
 
-          val expectedResult = Seq(Country(countryCode, Some("United Kingdom")))
+      "should handle a 200 response" in {
 
-          connector.getCountryNameByCode(countryCode).futureValue mustBe expectedResult
-        }
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(countryCodeResponseJson))
+        )
 
-        "should handle a error response" in {
-          checkErrorResponse(s"/$baseUrl/filtered-lists/CountryCodesFullList", connector.getCountryNameByCode(countryCode))
-        }
+        val expectedResult = Seq(Country(countryCode, Some("United Kingdom")))
+
+        connector.getCountryNameByCode(countryCode).futureValue mustBe expectedResult
+      }
+
+      "should throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getCountryNameByCode(countryCode))
+      }
+
+      "should handle a error response" in {
+        checkErrorResponse(url, connector.getCountryNameByCode(countryCode))
       }
     }
   }
 
+  private def checkNoReferenceDataFoundResponse(url: String, result: => Future[_]): Assertion = {
+    server.stubFor(
+      get(urlEqualTo(url))
+        .willReturn(okJson(emptyResponseJson))
+    )
+
+    whenReady[Throwable, Assertion](result.failed) {
+      _ mustBe a[NoReferenceDataFoundException]
+    }
+  }
+
   private def checkErrorResponse(url: String, result: => Future[_]): Assertion = {
-    val errorResponses: Gen[Int] = Gen
-      .chooseNum(400: Int, 599: Int)
-      .suchThat(_ != 404)
+    val errorResponses: Gen[Int] = Gen.chooseNum(400: Int, 599: Int)
 
     forAll(errorResponses) {
       errorResponse =>
@@ -141,7 +157,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             )
         )
 
-        whenReady(result.failed) {
+        whenReady[Throwable, Assertion](result.failed) {
           _ mustBe an[Exception]
         }
     }
@@ -209,6 +225,13 @@ object ReferenceDataConnectorSpec {
       |    "description":"United Kingdom"
       |  }
       | ]
+      |}
+      |""".stripMargin
+
+  private val emptyResponseJson: String =
+    """
+      |{
+      |  "data": []
       |}
       |""".stripMargin
 }
