@@ -43,8 +43,8 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       .configure(conf = "microservice.services.customs-reference-data.port" -> server.port())
 
   private lazy val connector: ReferenceDataConnector = app.injector.instanceOf[ReferenceDataConnector]
-  private val code                                           = "GB00001"
-  private val countryCode                                    = "GB"
+  private val code                                   = "GB00001"
+  private val countryCode                            = "GB"
 
   "Reference Data" - {
 
