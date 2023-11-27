@@ -1,20 +1,17 @@
-$govuk-assets-path: "/manage-transit-movements/unloading/assets/lib/govuk-frontend/govuk/assets/";
-$hmrc-assets-path: "/manage-transit-movements/unloading/assets/lib/hmrc-frontend/hmrc/assets/";
-
-@import "lib/govuk-frontend/govuk/all";
-@import "lib/hmrc-frontend/hmrc/all";
+$govuk-include-default-font-face: false;
+@import "lib/govuk-frontend/govuk/base";
 
 @import "partials/shame";
 
 .summary-title {
-  @extend .govuk-heading-m;
+  @extend .govuk-heading-m !optional;
   color: $govuk-link-colour;
 
 }
 
 .govuk-link-view-summary {
-  @extend .govuk-body;
-  @extend .govuk-link;
+  @extend .govuk-body !optional;
+  @extend .govuk-link !optional;
   text-align: right;
   width: 10%;
   float: right;
