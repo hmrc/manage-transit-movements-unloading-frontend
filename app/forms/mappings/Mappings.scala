@@ -27,9 +27,10 @@ trait Mappings extends Formatters with Constraints {
   protected def text(errorKey: String = "error.required", args: Seq[String] = Seq.empty): FieldMapping[String] =
     of(stringFormatter(errorKey, args))
 
-  protected def int(requiredKey: String = "error.required",
-                    wholeNumberKey: String = "error.wholeNumber",
-                    nonNumericKey: String = "error.nonNumeric"
+  protected def int(
+    requiredKey: String = "error.required",
+    wholeNumberKey: String = "error.wholeNumber",
+    nonNumericKey: String = "error.nonNumeric"
   ): FieldMapping[Int] =
     of(intFormatter(requiredKey, wholeNumberKey, nonNumericKey))
 
@@ -39,11 +40,10 @@ trait Mappings extends Formatters with Constraints {
   protected def enumerable[A](requiredKey: String = "error.required", invalidKey: String = "error.invalid")(implicit ev: Enumerable[A]): FieldMapping[A] =
     of(enumerableFormatter[A](requiredKey, invalidKey))
 
-  protected def localDate(invalidKey: String,
-                          allRequiredKey: String,
-                          twoRequiredKey: String,
-                          requiredKey: String,
-                          args: Seq[String] = Seq.empty
+  protected def localDate(
+    invalidKey: String,
+    requiredKey: String,
+    args: Seq[String] = Seq.empty
   ): FieldMapping[LocalDate] =
-    of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, args))
+    of(new LocalDateFormatter(invalidKey, requiredKey, args))
 }

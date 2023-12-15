@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,25 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-@import java.time.LocalDate
-@import views.utils.ViewUtils._
+package forms
 
-@this(
-    govUkErrorSummary: GovukErrorSummary
-)
+package object mappings {
 
-@(form: Form[LocalDate], fieldName: String = "value")(implicit messages: Messages)
+  implicit class RichSeq[A](value: Seq[A]) {
 
-@if(form.errors.nonEmpty) {
-    @govUkErrorSummary(
-        ErrorSummary(
-            errorList = form.errors
-                    .map(err => err.copy(key = err.key, args = err.args))
-                    .toErrorLinks,
-            title = Text(messages("error.summary.title"))
-        )
-    )
+    def groupByPreserveOrder[K](f: A => K): Seq[(K, Iterable[A])] = {
+      val keys   = value.map(f).distinct
+      val groups = value.groupBy(f)
+      keys.map {
+        key => key -> groups(key)
+      }
+    }
+  }
 }

@@ -36,7 +36,7 @@ class DateGoodsUnloadedFormProviderSpec extends DateBehaviours {
 
     behave like dateField(form, "value", validData)
 
-    behave like mandatoryDateField(form, "value", "dateGoodsUnloaded.error.required.all")
+    behave like mandatoryDateField(form, "value", "dateGoodsUnloaded.error.required.all", Seq("day", "month", "year"))
 
     behave like dateFieldWithMin(form, "value", min = minDate, FormError("value", "dateGoodsUnloaded.error.min.date", Seq(minDateAsString)))
 

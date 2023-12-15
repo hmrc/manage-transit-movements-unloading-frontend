@@ -58,7 +58,7 @@ trait Formatters {
 
       val decimalRegexp = """^-?(\d*\.\d*)$"""
 
-      private val baseFormatter = stringFormatter(requiredKey)
+      private val baseFormatter = stringFormatter(requiredKey, args)
 
       override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Int] =
         baseFormatter

@@ -31,8 +31,6 @@ class DateGoodsUnloadedFormProvider @Inject() (clock: Clock) extends Mappings {
     Form(
       "value" -> localDate(
         invalidKey = "dateGoodsUnloaded.error.invalid",
-        allRequiredKey = "dateGoodsUnloaded.error.required.all",
-        twoRequiredKey = "dateGoodsUnloaded.error.required.two",
         requiredKey = "dateGoodsUnloaded.error.required"
       ).verifying(
         minDate(dateOfPrep, "dateGoodsUnloaded.error.min.date", dateOfPrep.format(cyaDateFormatter)),

@@ -16,80 +16,71 @@
 
 package forms.mappings
 
-import java.time.LocalDate
-
+import forms.mappings.LocalDateFormatter._
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
+import java.time.LocalDate
 import scala.util.{Failure, Success, Try}
 
 private[mappings] class LocalDateFormatter(
   invalidKey: String,
-  allRequiredKey: String,
-  twoRequiredKey: String,
   requiredKey: String,
   args: Seq[String] = Seq.empty
 ) extends Formatter[LocalDate]
     with Formatters {
-
-  private val fieldKeys: List[String] = List("day", "month", "year")
 
   private def toDate(key: String, day: Int, month: Int, year: Int): Either[Seq[FormError], LocalDate] =
     Try(LocalDate.of(year, month, day)) match {
       case Success(date) =>
         Right(date)
       case Failure(_) =>
-        Left(Seq(FormError(key, invalidKey, args)))
+        Left(Seq(FormError(key, s"$invalidKey.all", fieldKeys)))
     }
 
-  private def formatDate(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
-
-    val int = intFormatter(
-      requiredKey = invalidKey,
-      wholeNumberKey = invalidKey,
-      nonNumericKey = invalidKey,
-      args
-    )
-
-    for {
-      day   <- int.bind(s"$key.day".replaceAll("\\s", ""), data)
-      month <- int.bind(s"$key.month".replaceAll("\\s", ""), data)
-      year  <- int.bind(s"$key.year".replaceAll("\\s", ""), data)
-      date  <- toDate(key, day, month, year)
-
-    } yield date
-  }
-
   override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
+    def binding(fieldKey: String): Either[Seq[FormError], Int] =
+      intFormatter(requiredKey, invalidKey, invalidKey, Seq(fieldKey)).bind(s"$key.$fieldKey", data)
 
-    val fields: Map[String, Option[String]] = fieldKeys.map {
-      field =>
-        field -> data.get(s"$key.$field").filter(_.nonEmpty).map(_.replaceAll("\\s", ""))
-    }.toMap
+    val dayBinding   = binding(dayField)
+    val monthBinding = binding(monthField)
+    val yearBinding  = binding(yearField)
 
-    lazy val missingFields = fields
-      .withFilter(_._2.isEmpty)
-      .map(_._1)
-      .toList
-
-    fields.count(_._2.isDefined) match {
-      case 3 =>
-        formatDate(key, data).left.map {
-          _.map(_.copy(key = key, args = args))
-        }
-      case 2 =>
-        Left(List(FormError(key, requiredKey, missingFields ++ args)))
-      case 1 =>
-        Left(List(FormError(key, twoRequiredKey, missingFields ++ args)))
+    (dayBinding, monthBinding, yearBinding) match {
+      case (Right(day), Right(month), Right(year)) =>
+        toDate(key, day, month, year)
       case _ =>
-        Left(List(FormError(key, allRequiredKey, args)))
+        Left {
+          Seq(dayBinding, monthBinding, yearBinding)
+            .collect {
+              case Left(formErrors) => formErrors
+            }
+            .flatten
+            .groupByPreserveOrder(_.message)
+            .map {
+              case (errorKey, formErrors) => errorKey -> formErrors.toSeq.flatMap(_.args)
+            }
+            .flatMap {
+              case (errorKey, args) if args.size == 3 => Seq(FormError(key, s"$errorKey.all", args))
+              case (errorKey, args) if args.size == 2 => Seq(FormError(key, s"$errorKey.multiple", args))
+              case (errorKey, args) if args.size == 1 => Seq(FormError(key, errorKey, args))
+              case _                                  => Nil
+            }
+        }
     }
   }
 
   override def unbind(key: String, value: LocalDate): Map[String, String] =
     Map(
-      s"$key.day"   -> value.getDayOfMonth.toString.replaceAll("\\s", ""),
-      s"$key.month" -> value.getMonthValue.toString.replaceAll("\\s", ""),
-      s"$key.year"  -> value.getYear.toString.replaceAll("\\s", "")
+      s"$key.day"   -> value.getDayOfMonth.toString,
+      s"$key.month" -> value.getMonthValue.toString,
+      s"$key.year"  -> value.getYear.toString
     )
+}
+
+object LocalDateFormatter {
+  val dayField: String        = "day"
+  val monthField: String      = "month"
+  val yearField: String       = "year"
+  val fieldKeys: List[String] = List(dayField, monthField, yearField)
 }
