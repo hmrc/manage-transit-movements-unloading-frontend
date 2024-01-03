@@ -55,7 +55,7 @@ trait SpecBase
 
   def injector: Injector = app.injector
 
-  val mrn: MovementReferenceNumber = MovementReferenceNumber("19", "GB", "1234567890123")
+  val mrn: MovementReferenceNumber = MovementReferenceNumber("19GB1234567890123")
   val eoriNumber: EoriNumber       = EoriNumber("id")
 
   val index: Index                  = Index(0)

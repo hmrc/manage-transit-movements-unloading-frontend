@@ -31,7 +31,7 @@ class FakeUnloadingPermissionAction(arrivalId: ArrivalId, unloadingPermissionMes
 
   val messageData: MessageData = MessageData(
     preparationDateAndTime = LocalDateTime.now(),
-    TransitOperation = TransitOperation(MovementReferenceNumber("99", "IT", "9876AB88901209")),
+    TransitOperation = TransitOperation(MovementReferenceNumber("99IT9876AB889012096")),
     TraderAtDestination = TraderAtDestination("identificationNumber"),
     Consignment = Consignment(None, None, List.empty),
     CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("referenceNumber")

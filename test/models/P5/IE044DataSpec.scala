@@ -36,7 +36,7 @@ class IE044DataSpec extends SpecBase {
 
         val ie043Data = MessageData(
           preparationDateAndTime = prepDateTime,
-          TransitOperation = TransitOperation(MovementReferenceNumber("99", "IT", "9876AB88901209")),
+          TransitOperation = TransitOperation(MovementReferenceNumber("99IT9876AB889012096")),
           TraderAtDestination = TraderAtDestination("tad-1"),
           Consignment = Consignment(None, None, List.empty),
           CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("GB000068")
@@ -45,7 +45,7 @@ class IE044DataSpec extends SpecBase {
         val expectedResult = IE044Data(
           IE044MessageData(
             preparationDateAndTime = prepDateTime,
-            TransitOperation = TransitOperation(MovementReferenceNumber("99", "IT", "9876AB88901209")),
+            TransitOperation = TransitOperation(MovementReferenceNumber("99IT9876AB889012096")),
             TraderAtDestination = TraderAtDestination("tad-1"),
             CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("GB000068")
           )
@@ -63,7 +63,7 @@ class IE044DataSpec extends SpecBase {
       val ie043Data = IE044Data(
         IE044MessageData(
           preparationDateAndTime = prepDateTime,
-          TransitOperation = TransitOperation(MovementReferenceNumber("99", "IT", "9876AB88901209")),
+          TransitOperation = TransitOperation(MovementReferenceNumber("99IT9876AB889012096")),
           TraderAtDestination = TraderAtDestination("tad-1"),
           CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("GB000068")
         )

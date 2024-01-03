@@ -34,7 +34,7 @@ class IE044MessageDataSpec extends SpecBase {
 
       val data = IE044MessageData(
         preparationDateAndTime = prepDateTime,
-        TransitOperation = TransitOperation(MovementReferenceNumber("99", "IT", "9876AB88901209")),
+        TransitOperation = TransitOperation(MovementReferenceNumber("99IT9876AB889012096")),
         TraderAtDestination = TraderAtDestination("tad-1"),
         CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("GB000068")
       )

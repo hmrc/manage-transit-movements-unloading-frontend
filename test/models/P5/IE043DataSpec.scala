@@ -390,7 +390,7 @@ class IE043DataSpec extends SpecBase {
         MessageData(
           preparationDateAndTime = LocalDateTime.parse("2007-10-26T07:36:28", DateTimeFormatter.ISO_DATE_TIME),
           TransitOperation(
-            MRN = MovementReferenceNumber("38VYQTYFU3T0KUTUM3").get
+            MRN = MovementReferenceNumber("38VYQTYFU3T0KUTUM3")
           ),
           Consignment = Consignment(
             Option(
