@@ -25,7 +25,7 @@ import models.Enumerable
 trait Mappings extends Formatters with Constraints {
 
   protected def text(errorKey: String = "error.required", args: Seq[String] = Seq.empty): FieldMapping[String] =
-    of(stringFormatter(errorKey, args))
+    of(stringFormatter(errorKey, args)(identity))
 
   protected def int(
     requiredKey: String = "error.required",

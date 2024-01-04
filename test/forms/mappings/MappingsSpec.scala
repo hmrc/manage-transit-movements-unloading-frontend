@@ -57,6 +57,11 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
       result.get mustEqual "foobar"
     }
 
+    "must bind a valid string with trailing whitespace" in {
+      val result = testForm.bind(Map("value" -> "foobar   "))
+      result.get mustEqual "foobar"
+    }
+
     "must not bind an empty string" in {
       val result = testForm.bind(Map("value" -> ""))
       result.errors must contain(FormError("value", "error.required"))
@@ -127,6 +132,16 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
     "must bind a valid integer" in {
       val result = testForm.bind(Map("value" -> "1"))
       result.get mustEqual 1
+    }
+
+    "must bind a valid integer with comma separators" in {
+      val result = testForm.bind(Map("value" -> "1,000"))
+      result.get mustEqual 1000
+    }
+
+    "must bind a valid integer spaces" in {
+      val result = testForm.bind(Map("value" -> "1 000 000"))
+      result.get mustEqual 1000000
     }
 
     "must not bind an empty value" in {
