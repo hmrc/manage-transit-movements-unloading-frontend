@@ -48,7 +48,7 @@ class SessionRepositorySpec
 
   private val userAnswers1 = UserAnswers(
     id = ArrivalId("0"),
-    mrn = MovementReferenceNumber("99IT9876AB88901209").get,
+    mrn = MovementReferenceNumber("99IT9876AB889012096"),
     eoriNumber = EoriNumber("EoriNumber1"),
     ie043Data = Json.obj("foo" -> "bar"),
     data = Json.obj("bar" -> "foo"),
@@ -57,7 +57,7 @@ class SessionRepositorySpec
 
   private val userAnswers2 = UserAnswers(
     id = ArrivalId("1"),
-    mrn = MovementReferenceNumber("18GB0000601001EB15").get,
+    mrn = MovementReferenceNumber("18GB0000601001EB15"),
     eoriNumber = EoriNumber("EoriNumber2"),
     ie043Data = Json.obj("bar" -> "foo"),
     data = Json.obj("foo" -> "bar"),
@@ -105,7 +105,7 @@ class SessionRepositorySpec
 
         val userAnswers = UserAnswers(
           id = ArrivalId("3"),
-          mrn = MovementReferenceNumber("18GB0000601001EBD1").get,
+          mrn = MovementReferenceNumber("18GB0000601001EBD1"),
           eoriNumber = EoriNumber("EoriNumber3"),
           ie043Data = Json.obj("foo" -> "bar"),
           data = Json.obj("bar" -> "foo"),

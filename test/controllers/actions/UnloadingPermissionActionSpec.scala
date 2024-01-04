@@ -53,7 +53,7 @@ class UnloadingPermissionActionSpec extends SpecBase with BeforeAndAfterEach wit
       val message = IE043Data(
         MessageData(
           preparationDateAndTime = LocalDateTime.now(),
-          TransitOperation = TransitOperation(MovementReferenceNumber("23", "GB", "123")),
+          TransitOperation = TransitOperation(MovementReferenceNumber("23GB123")),
           Consignment = Consignment(None, None, List.empty),
           CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("GB0008"),
           TraderAtDestination = TraderAtDestination("AB123")
