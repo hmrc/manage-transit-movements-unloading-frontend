@@ -23,15 +23,11 @@ final case class ArrivalId(value: String)
 
 object ArrivalId {
 
-  implicit val formatsArrivalId: Format[ArrivalId] = new Format[ArrivalId] {
+  implicit val arrivalIdWrites: Writes[ArrivalId] = (arrivalId: ArrivalId) => JsString(arrivalId.value)
 
-    override def reads(json: JsValue): JsResult[ArrivalId] = json match {
-      case JsString(value) => JsSuccess(ArrivalId(value))
-      case e =>
-        JsError(s"Error in deserialization of Json value to an ArrivalId, expected JsString got ${e.getClass}")
-    }
-
-    override def writes(o: ArrivalId): JsString = JsString(o.value)
+  implicit val arrivalIdReads: Reads[ArrivalId] = {
+    case JsString(value) => JsSuccess(ArrivalId(value))
+    case e               => JsError(s"Error in deserialization of Json value to an ArrivalId, expected JsString got ${e.getClass}")
   }
 
   implicit lazy val pathBindable: PathBindable[ArrivalId] = new PathBindable[ArrivalId] {
