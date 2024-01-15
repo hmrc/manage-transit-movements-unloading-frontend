@@ -94,12 +94,18 @@ object UserAnswers {
     )(UserAnswers.apply _)
 
   implicit def writes(implicit sensitiveFormats: SensitiveFormats): OWrites[UserAnswers] =
+    writes(sensitiveFormats.jsObjectWrites)
+
+  val auditWrites: OWrites[UserAnswers] =
+    writes(SensitiveFormats.nonSensitiveJsObjectWrites)
+
+  private def writes(jsObjectWrites: Writes[JsObject]): OWrites[UserAnswers] =
     (
       (__ \ "_id").write[ArrivalId] and
         (__ \ "mrn").write[MovementReferenceNumber] and
         (__ \ "eoriNumber").write[EoriNumber] and
-        (__ \ "ie043Data").write[JsObject](sensitiveFormats.jsObjectWrites) and
-        (__ \ "data").write[JsObject](sensitiveFormats.jsObjectWrites) and
+        (__ \ "ie043Data").write[JsObject](jsObjectWrites) and
+        (__ \ "data").write[JsObject](jsObjectWrites) and
         (__ \ "lastUpdated").write(MongoJavatimeFormats.instantWrites)
     )(unlift(UserAnswers.unapply))
 

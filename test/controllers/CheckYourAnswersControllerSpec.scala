@@ -18,13 +18,15 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import models.AuditType.UnloadingRemarks
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{verify, when}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.AuditService
 import viewModels.CheckYourAnswersViewModel
 import viewModels.CheckYourAnswersViewModel.CheckYourAnswersViewModelProvider
 import views.html.CheckYourAnswersView
@@ -35,12 +37,17 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
   private val mockCheckYourAnswersViewModelProvider = mock[CheckYourAnswersViewModelProvider]
 
+  private val mockAuditService = mock[AuditService]
+
   lazy val checkYourAnswersRoute: String = controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[CheckYourAnswersViewModelProvider].toInstance(mockCheckYourAnswersViewModelProvider))
+      .overrides(
+        bind[CheckYourAnswersViewModelProvider].toInstance(mockCheckYourAnswersViewModelProvider),
+        bind[AuditService].toInstance(mockAuditService)
+      )
 
   "UnloadingFindingsController Controller" - {
 
@@ -73,7 +80,8 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers
+      setExistingUserAnswers(userAnswers)
 
       val request =
         FakeRequest(POST, checkYourAnswersRoute)
@@ -84,6 +92,8 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual controllers.routes.UnloadingRemarksSentController.onPageLoad(arrivalId).url
+
+      verify(mockAuditService).audit(eqTo(UnloadingRemarks), eqTo(userAnswers))(any())
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
