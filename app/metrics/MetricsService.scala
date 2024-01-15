@@ -20,16 +20,15 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 import com.codahale.metrics.MetricRegistry
 import com.codahale.metrics.Timer.Context
-import com.kenshoo.play.metrics.Metrics
 import javax.inject.Inject
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.util.control.NonFatal
 
-class MetricsService @Inject() (metrics: Metrics) {
+class MetricsService @Inject() (metrics: MetricRegistry) {
 
-  private val registry: MetricRegistry = metrics.defaultRegistry
+  private val registry: MetricRegistry = metrics
 
   private def startTimer(metric: Timer): Context = registry.timer(metric.path).time()
 
