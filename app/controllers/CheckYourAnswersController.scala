@@ -20,8 +20,10 @@ import com.google.inject.Inject
 import connectors.ApiConnector
 import controllers.actions.Actions
 import models.ArrivalId
+import models.AuditType.UnloadingRemarks
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.AuditService
 import services.P5.UserAnswersSubmissionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.CheckYourAnswersViewModel
@@ -36,7 +38,8 @@ class CheckYourAnswersController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: CheckYourAnswersView,
   viewModelProvider: CheckYourAnswersViewModelProvider,
-  apiConnector: ApiConnector
+  apiConnector: ApiConnector,
+  auditService: AuditService
 )(implicit val executionContext: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -57,9 +60,13 @@ class CheckYourAnswersController @Inject() (
           result      <- apiConnector.submit(userAnswers, arrivalId)
 
         } yield result match {
-          case Left(BadRequest) => Redirect(controllers.routes.ErrorController.badRequest())
-          case Left(_)          => Redirect(controllers.routes.ErrorController.technicalDifficulties())
-          case Right(_)         => Redirect(controllers.routes.UnloadingRemarksSentController.onPageLoad(arrivalId))
+          case Left(BadRequest) =>
+            Redirect(controllers.routes.ErrorController.badRequest())
+          case Left(_) =>
+            Redirect(controllers.routes.ErrorController.technicalDifficulties())
+          case Right(_) =>
+            auditService.audit(UnloadingRemarks, userAnswers)
+            Redirect(controllers.routes.UnloadingRemarksSentController.onPageLoad(arrivalId))
         }
     }
 }

@@ -159,5 +159,41 @@ class UserAnswersSpec extends SpecBase with AppWithDefaultMockFixtures {
         }
       }
     }
+
+    "auditWrites" - {
+      "must write data as unencrypted" in {
+        val userAnswers = UserAnswers(
+          id = arrivalId,
+          mrn = mrn,
+          eoriNumber = eoriNumber,
+          ie043Data = Json.obj("foo" -> "bar"),
+          data = Json.obj("bar" -> "baz"),
+          lastUpdated = Instant.ofEpochMilli(1662546803472L)
+        )
+
+        val result = Json.toJson(userAnswers)(UserAnswers.auditWrites)
+
+        val json: JsValue = Json.parse(s"""
+             |{
+             |  "_id" : "${arrivalId.value}",
+             |  "mrn" : "$mrn",
+             |  "eoriNumber" : "${eoriNumber.value}",
+             |  "ie043Data" : {
+             |    "foo" : "bar"
+             |  },
+             |  "data" : {
+             |    "bar" : "baz"
+             |  },
+             |  "lastUpdated" : {
+             |    "$$date" : {
+             |      "$$numberLong" : "1662546803472"
+             |    }
+             |  }
+             |}
+             |""".stripMargin)
+
+        result mustBe json
+      }
+    }
   }
 }

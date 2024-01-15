@@ -31,6 +31,11 @@ class SensitiveFormats(encryptionEnabled: Boolean)(implicit crypto: Encrypter wi
     if (encryptionEnabled) {
       JsonEncryption.sensitiveEncrypter[String, SensitiveString].contramap(_.encrypt)
     } else {
-      implicitly[Writes[JsObject]]
+      SensitiveFormats.nonSensitiveJsObjectWrites
     }
+}
+
+object SensitiveFormats {
+
+  val nonSensitiveJsObjectWrites: Writes[JsObject] = implicitly[Writes[JsObject]]
 }
