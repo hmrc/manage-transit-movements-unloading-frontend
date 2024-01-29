@@ -16,13 +16,14 @@
 
 package models
 
-import generated.{CC043C, CC043CType}
+import generated.CC043CType
 import play.api.libs.json._
-import scalaxb.`package`.{fromXML, toScope, toXML}
+import scalaxb.`package`.fromXML
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 import uk.gov.hmrc.crypto.json.JsonEncryption
 import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
 
+import scala.util.{Failure, Success, Try}
 import scala.xml.XML
 
 class SensitiveFormats(encryptionEnabled: Boolean)(implicit crypto: Encrypter with Decrypter) {
@@ -42,9 +43,18 @@ class SensitiveFormats(encryptionEnabled: Boolean)(implicit crypto: Encrypter wi
     }
 
   val cc043cReads: Reads[CC043CType] = {
-    val reads = JsonEncryption.sensitiveDecrypter(SensitiveString.apply).map(_.decryptedValue) orElse implicitly[Reads[String]]
-    reads.map {
-      xml => fromXML[CC043CType](XML.loadString(xml))
+    def parseXml(xml: String): CC043CType = fromXML[CC043CType](XML.loadString(xml))
+
+    implicitly[Reads[String]].flatMap {
+      xml =>
+        Try(parseXml(xml)) match {
+          case Success(value) =>
+            Reads {
+              _ => JsSuccess(value)
+            }
+          case Failure(_) =>
+            JsonEncryption.sensitiveDecrypter(SensitiveString.apply).map(_.decryptedValue).map(parseXml)
+        }
     }
   }
 
@@ -52,8 +62,7 @@ class SensitiveFormats(encryptionEnabled: Boolean)(implicit crypto: Encrypter wi
     if (encryptionEnabled) {
       JsonEncryption.sensitiveEncrypter[String, SensitiveString].contramap {
         cc034cType =>
-          val x = toXML(cc034cType, CC043C.toString, toScope())
-          SensitiveString(x.toString())
+          SensitiveString(cc034cType.toXML.toString())
       }
     } else {
       SensitiveFormats.nonSensitiveCc043cTypeWrites
@@ -81,8 +90,6 @@ object SensitiveFormats {
 
   val nonSensitiveCc043cTypeWrites: Writes[CC043CType] = Writes {
     cc034cType =>
-      // TODO - logic shared with cc043cWrites
-      val x = toXML(cc034cType, CC043C.toString, toScope())
-      JsString(x.toString())
+      JsString(cc034cType.toXML.toString())
   }
 }

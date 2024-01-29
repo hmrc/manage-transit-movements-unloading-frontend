@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
+import generated.{CC043C, CC043CType}
 import play.api.libs.json._
+import scalaxb.`package`.toScope
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 
 import java.time.LocalDate
 import javax.xml.datatype.XMLGregorianCalendar
 import scala.annotation.nowarn
+import scala.xml.NodeSeq
 
 package object models {
 
@@ -170,6 +173,11 @@ package object models {
         (acc, c) =>
           acc + c.toString.trim
       }
+  }
+
+  implicit class RichCC043CType(value: CC043CType) {
+
+    def toXML: NodeSeq = scalaxb.toXML(value, CC043C.toString, toScope())
   }
 
   implicit class RichXMLGregorianCalendar(value: XMLGregorianCalendar) {
