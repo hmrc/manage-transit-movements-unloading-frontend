@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,17 @@
  * limitations under the License.
  */
 
-package models
+package pages.departureTransportMeans
 
-sealed trait UnloadingType extends Radioable[UnloadingType] {
-  override val messageKeyPrefix: String = UnloadingType.messageKeyPrefix
-}
+import models.departureTransportMeans.TransportMeansIdentification
+import models.{Mode, UserAnswers}
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-object UnloadingType extends EnumerableType[UnloadingType] {
+object TransportMeansIdentificationPage extends QuestionPage[TransportMeansIdentification] {
 
-  val messageKeyPrefix: String = "unloadingType"
+  override def path: JsPath = TransportMeansSection.path \ toString
 
-  case object Fully extends UnloadingType {
-    override val code: String = "1"
-  }
-
-  case object Partially extends UnloadingType {
-    override val code: String = "0"
-  }
-
-  override val values: Seq[UnloadingType] = Seq(
-    Fully,
-    Partially
-  )
+  override def toString: String = "identification"
 }

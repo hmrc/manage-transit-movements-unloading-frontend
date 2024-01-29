@@ -16,10 +16,14 @@
 
 package connectors
 
+import cats.Order
+import cats.data.NonEmptySet
 import config.FrontendAppConfig
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import logging.Logging
 import metrics.MetricsService
+import models.departureTransportMeans.TransportMeansIdentification
+import models.reference.transport.TransportMode
 import models.reference.{Country, CustomsOffice}
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, Reads}
@@ -34,6 +38,21 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] = {
     val serviceUrl = s"${config.referenceDataUrl}/lists/CountryCodesFullList"
     http.GET[Seq[Country]](serviceUrl, headers = version2Header)
+  }
+
+  def getTransportModeCodes[T <: TransportMode[T]]()(implicit
+    ec: ExecutionContext,
+    hc: HeaderCarrier,
+    rds: Reads[T],
+    order: Order[T]
+  ): Future[Seq[T]] = {
+    val url = s"${config.referenceDataUrl}/lists/TransportModeCode"
+    http.GET[Seq[T]](url, headers = version2Header)
+  }
+
+  def getMeansOfTransportIdentificationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[TransportMeansIdentification]] = {
+    val url = s"${config.referenceDataUrl}/lists/TypeOfIdentificationOfMeansOfTransport"
+    http.GET[Seq[TransportMeansIdentification]](url, headers = version2Header)
   }
 
   def getCountryNameByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] = {

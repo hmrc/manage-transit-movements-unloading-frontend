@@ -14,26 +14,14 @@
  * limitations under the License.
  */
 
-package models
+package pages.sections.equipment
 
-sealed trait UnloadingType extends Radioable[UnloadingType] {
-  override val messageKeyPrefix: String = UnloadingType.messageKeyPrefix
-}
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-object UnloadingType extends EnumerableType[UnloadingType] {
+case object TransportSection extends Section[JsObject] {
 
-  val messageKeyPrefix: String = "unloadingType"
+  override def path: JsPath = JsPath \ toString
 
-  case object Fully extends UnloadingType {
-    override val code: String = "1"
-  }
-
-  case object Partially extends UnloadingType {
-    override val code: String = "0"
-  }
-
-  override val values: Seq[UnloadingType] = Seq(
-    Fully,
-    Partially
-  )
+  override def toString: String = "transport"
 }

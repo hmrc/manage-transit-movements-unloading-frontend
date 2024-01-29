@@ -16,24 +16,12 @@
 
 package models
 
-sealed trait UnloadingType extends Radioable[UnloadingType] {
-  override val messageKeyPrefix: String = UnloadingType.messageKeyPrefix
-}
+trait DynamicEnumerableType[T <: Radioable[T]] extends Enumerable.Implicits {
 
-object UnloadingType extends EnumerableType[UnloadingType] {
-
-  val messageKeyPrefix: String = "unloadingType"
-
-  case object Fully extends UnloadingType {
-    override val code: String = "1"
-  }
-
-  case object Partially extends UnloadingType {
-    override val code: String = "0"
-  }
-
-  override val values: Seq[UnloadingType] = Seq(
-    Fully,
-    Partially
-  )
+  implicit def enumerable(values: Seq[T]): Enumerable[T] =
+    Enumerable(
+      values.map(
+        v => v.toString -> v
+      ): _*
+    )
 }
