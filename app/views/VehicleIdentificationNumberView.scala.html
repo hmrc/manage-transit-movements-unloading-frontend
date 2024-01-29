@@ -43,7 +43,8 @@
             inputTextType = OrdinaryTextInput(
                 heading = messages("vehicleIdentificationNumber.heading"),
                 caption = Some(messages("site.caption", mrn.toString))
-            )
+            ),
+            hint = Some(messages("vehicleIdentificationNumber.hint"))
         )
 
         @button(attributes = Map("id" -> "submit"))

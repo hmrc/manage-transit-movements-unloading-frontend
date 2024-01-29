@@ -43,7 +43,7 @@ class VehicleIdentificationNumberViewSpec extends InputTextViewBehaviours[String
 
   behave like pageWithHeading()
 
-  behave like pageWithoutHint()
+  behave like pageWithHint("This can be up to 35 characters long and include both letters and numbers.")
 
   behave like pageWithInputText()
 
