@@ -19,7 +19,6 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.actions.FakeUnloadingPermissionAction
 import generators.Generators
-import models.P5.submission.IE044Data
 import models.{ArrivalId, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -81,11 +80,10 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
 
-        val expectedUnloadingPermission = Json.toJsObject(unloadingAction.messageData)
-        val expectedData                = Json.toJsObject(IE044Data.fromIE043Data(unloadingAction.messageData, dateTime))
+        val expectedData = Json.obj()
 
         userAnswersCaptor.getValue.data mustBe expectedData
-        userAnswersCaptor.getValue.ie043Data mustBe expectedUnloadingPermission
+        userAnswersCaptor.getValue.ie043Data mustBe basicIe043
       }
 
       "must redirect to onward route when there are UserAnswers" in {

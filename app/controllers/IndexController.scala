@@ -18,8 +18,7 @@ package controllers
 
 import controllers.actions.{IdentifierAction, UnloadingPermissionActionProvider}
 import logging.Logging
-import models.P5.submission.IE044Data
-import models.{ArrivalId, UserAnswers}
+import models.{ArrivalId, MovementReferenceNumber, UserAnswers}
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -47,10 +46,10 @@ class IndexController @Inject() (
         getUserAnswer <- sessionRepository.get(arrivalId, request.eoriNumber) map {
           _ getOrElse UserAnswers(
             id = arrivalId,
-            mrn = request.unloadingPermission.TransitOperation.MRN,
+            mrn = MovementReferenceNumber(request.unloadingPermission.TransitOperation.MRN),
             eoriNumber = request.eoriNumber,
-            ie043Data = Json.toJsObject(request.unloadingPermission),
-            data = Json.toJsObject(IE044Data.fromIE043Data(request.unloadingPermission, dateTimeService.currentDateTime)),
+            ie043Data = request.unloadingPermission,
+            data = Json.obj(), // TODO - map CC043CType to UserAnswers
             lastUpdated = dateTimeService.now
           )
         }

@@ -134,6 +134,31 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
         )
     }
 
+  implicit class RichSeq[T](value: Seq[T]) {
+
+    def zipWithIndex: Seq[(T, Index)] =
+      value.zipWithIndex.map {
+        x => (x._1, Index(x._2))
+      }
+
+    def mapWithIndex(f: => (T, Index) => Option[T]): Seq[T] =
+      value.zipWithIndex.flatMap {
+        case (value, i) => f(value, Index(i))
+      }
+  }
+
+  implicit class RichOptionalSeq[T](value: Option[Seq[T]]) {
+
+    def mapWithIndex(f: => (T, Index) => Option[T]): Seq[T] =
+      value
+        .map {
+          _.zipWithIndex.flatMap {
+            case (value, i) => f(value, Index(i))
+          }
+        }
+        .getOrElse(Nil)
+  }
+
   implicit class RichJsArray(arr: JsArray) {
 
     def zipWithIndex: List[(JsValue, Index)] = arr.value.toList.zipWithIndex.map(

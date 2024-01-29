@@ -17,6 +17,8 @@
 package models
 
 import derivable.Derivable
+import generated.CC043CType
+import models.SensitiveFormats.SensitiveWrites
 import pages._
 import play.api.libs.json._
 import queries.Gettable
@@ -29,16 +31,13 @@ final case class UserAnswers(
   id: ArrivalId,
   mrn: MovementReferenceNumber,
   eoriNumber: EoriNumber,
-  ie043Data: JsObject,
+  ie043Data: CC043CType,
   data: JsObject,
   lastUpdated: Instant
 ) {
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
-
-  def getIE043[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
-    Reads.optionNoError(Reads.at(page.path)).reads(ie043Data).getOrElse(None)
 
   def get[A, B](derivable: Derivable[A, B])(implicit rds: Reads[A]): Option[B] =
     get(derivable: Gettable[A]).map(derivable.derive)
@@ -88,24 +87,24 @@ object UserAnswers {
       (__ \ "_id").read[ArrivalId] and
         (__ \ "mrn").read[MovementReferenceNumber] and
         (__ \ "eoriNumber").read[EoriNumber] and
-        (__ \ "ie043Data").read[JsObject](sensitiveFormats.jsObjectReads) and
+        (__ \ "ie043Data").read[CC043CType](sensitiveFormats.cc043cReads) and
         (__ \ "data").read[JsObject](sensitiveFormats.jsObjectReads) and
         (__ \ "lastUpdated").read(MongoJavatimeFormats.instantReads)
     )(UserAnswers.apply _)
 
   implicit def writes(implicit sensitiveFormats: SensitiveFormats): OWrites[UserAnswers] =
-    writes(sensitiveFormats.jsObjectWrites)
+    writes(SensitiveWrites(sensitiveFormats))
 
   val auditWrites: OWrites[UserAnswers] =
-    writes(SensitiveFormats.nonSensitiveJsObjectWrites)
+    writes(SensitiveWrites())
 
-  private def writes(jsObjectWrites: Writes[JsObject]): OWrites[UserAnswers] =
+  private def writes(sensitiveWrites: SensitiveWrites): OWrites[UserAnswers] =
     (
       (__ \ "_id").write[ArrivalId] and
         (__ \ "mrn").write[MovementReferenceNumber] and
         (__ \ "eoriNumber").write[EoriNumber] and
-        (__ \ "ie043Data").write[JsObject](jsObjectWrites) and
-        (__ \ "data").write[JsObject](jsObjectWrites) and
+        (__ \ "ie043Data").write[CC043CType](sensitiveWrites.cc043cTypeWrites) and
+        (__ \ "data").write[JsObject](sensitiveWrites.jsObjectWrites) and
         (__ \ "lastUpdated").write(MongoJavatimeFormats.instantWrites)
     )(unlift(UserAnswers.unapply))
 

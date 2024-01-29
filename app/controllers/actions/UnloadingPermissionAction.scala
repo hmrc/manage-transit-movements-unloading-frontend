@@ -43,10 +43,10 @@ class UnloadingPermissionAction(arrivalId: ArrivalId, unloadingPermissionMessage
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    OptionT(unloadingPermissionMessageService.getUnloadingPermission(arrivalId))
+    OptionT(unloadingPermissionMessageService.getUnloadingPermissionXml(arrivalId))
       .map {
         unloadingPermission =>
-          UnloadingPermissionRequest(request, request.eoriNumber, unloadingPermission.data)
+          UnloadingPermissionRequest(request, request.eoriNumber, unloadingPermission)
       }
       .toRight(Redirect(routes.ErrorController.technicalDifficulties()))
       .value

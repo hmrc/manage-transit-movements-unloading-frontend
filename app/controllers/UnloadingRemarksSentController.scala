@@ -18,7 +18,6 @@ package controllers
 
 import controllers.actions._
 import models.{ArrivalId, UnloadingRemarksSentViewModel}
-import pages.CustomsOfficeOfDestinationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -35,7 +34,6 @@ class UnloadingRemarksSentController @Inject() (
   referenceDataService: ReferenceDataService,
   cc: MessagesControllerComponents,
   sessionRepository: SessionRepository,
-  getMandatoryPage: IE043DataRequiredActionProvider,
   view: UnloadingRemarksSentView
 )(implicit ec: ExecutionContext)
     extends FrontendController(cc)
@@ -43,15 +41,15 @@ class UnloadingRemarksSentController @Inject() (
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions
     .requireData(arrivalId)
-    .andThen(getMandatoryPage(CustomsOfficeOfDestinationPage))
     .async {
       implicit request =>
+        val customsOfficeId = request.userAnswers.ie043Data.CustomsOfficeOfDestinationActual.referenceNumber
         referenceDataService
-          .getCustomsOfficeByCode(request.arg)
+          .getCustomsOfficeByCode(customsOfficeId)
           .map {
             customsOffice =>
               sessionRepository.remove(arrivalId)
-              Ok(view(request.userAnswers.mrn, UnloadingRemarksSentViewModel(customsOffice, request.arg)))
+              Ok(view(request.userAnswers.mrn, UnloadingRemarksSentViewModel(customsOffice, customsOfficeId)))
           }
     }
 

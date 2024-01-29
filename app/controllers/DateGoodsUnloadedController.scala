@@ -18,9 +18,9 @@ package controllers
 
 import controllers.actions._
 import forms.DateGoodsUnloadedFormProvider
-import models.{ArrivalId, Mode}
+import models.{ArrivalId, Mode, RichCC043CType}
 import navigation.Navigator
-import pages.{DateGoodsUnloadedPage, PreparationDateAndTimePage}
+import pages.DateGoodsUnloadedPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -34,7 +34,6 @@ class DateGoodsUnloadedController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
-  getMandatoryPage: IE043DataRequiredActionProvider,
   navigator: Navigator,
   formProvider: DateGoodsUnloadedFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -43,11 +42,10 @@ class DateGoodsUnloadedController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    (actions.getStatus(arrivalId)
-      andThen getMandatoryPage(PreparationDateAndTimePage)) {
+  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions
+    .getStatus(arrivalId) {
       implicit request =>
-        val form = formProvider(request.arg.toLocalDate)
+        val form = formProvider(request.userAnswers.ie043Data.preparationDateAndTime)
 
         val preparedForm = request.userAnswers.get(DateGoodsUnloadedPage) match {
           case Some(value) => form.fill(value)
@@ -57,11 +55,11 @@ class DateGoodsUnloadedController @Inject() (
         Ok(view(request.userAnswers.mrn, arrivalId, mode, preparedForm))
     }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
-    (actions.getStatus(arrivalId)
-      andThen getMandatoryPage(PreparationDateAndTimePage)).async {
+  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions
+    .getStatus(arrivalId)
+    .async {
       implicit request =>
-        formProvider(request.arg.toLocalDate)
+        formProvider(request.userAnswers.ie043Data.preparationDateAndTime)
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(view(request.userAnswers.mrn, arrivalId, mode, formWithErrors))),

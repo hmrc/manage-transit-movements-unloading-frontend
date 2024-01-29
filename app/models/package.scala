@@ -178,6 +178,12 @@ package object models {
   implicit class RichCC043CType(value: CC043CType) {
 
     def toXML: NodeSeq = scalaxb.toXML(value, CC043C.toString, toScope())
+
+    def preparationDateAndTime: LocalDate =
+      value.messageSequence1.messagE_1Sequence2.preparationDateAndTime.toLocalDate
+
+    def sealsExist: Boolean =
+      value.Consignment.exists(_.TransportEquipment.exists(_.Seal.nonEmpty))
   }
 
   implicit class RichXMLGregorianCalendar(value: XMLGregorianCalendar) {

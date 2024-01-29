@@ -38,7 +38,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
 
   def buildVehicleNationalityRow(index: Index): Future[Option[SummaryListRow]] =
     (for {
-      x <- OptionT.fromOption[Future](userAnswers.getIE043(VehicleRegistrationCountryPage(index)))
+      x <- OptionT.fromOption[Future](userAnswers.get(VehicleRegistrationCountryPage(index)))
       y <- OptionT.liftF(referenceDataService.getCountryNameByCode(x))
     } yield transportRegisteredCountry(y)).value
 
@@ -48,7 +48,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
 
   def buildTransportSections: Future[Seq[Section]] =
     userAnswers
-      .getIE043(TransportMeansListSection)
+      .get(TransportMeansListSection)
       .traverse {
         _.zipWithIndex.traverse {
           y =>
@@ -86,7 +86,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
 
   def transportEquipmentSections: Seq[Section] =
     userAnswers
-      .getIE043(TransportEquipmentListSection)
+      .get(TransportEquipmentListSection)
       .mapWithIndex {
         (_, equipmentIndex) =>
           val containerRow: Seq[Option[SummaryListRow]] = Seq(containerIdentificationNumber(equipmentIndex))
@@ -129,7 +129,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
   )
 
   def houseConsignmentSections: Seq[Section] =
-    userAnswers.getIE043(HouseConsignmentsSection).mapWithIndex {
+    userAnswers.get(HouseConsignmentsSection).mapWithIndex {
       (_, houseConsignmentIndex) =>
         val rows = buildHouseConsignmentRows(
           houseConsignmentTotalWeightRows(houseConsignmentIndex),

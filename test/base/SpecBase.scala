@@ -46,7 +46,8 @@ trait SpecBase
     with ScalaFutures
     with IntegrationPatience
     with MockitoSugar
-    with GuiceOneAppPerSuite {
+    with GuiceOneAppPerSuite
+    with TestMessageData {
 
   val arrivalId: ArrivalId = ArrivalId("AB123")
   val messageId: String    = "12344565gf"
@@ -62,7 +63,7 @@ trait SpecBase
   val equipmentIndex: Index         = Index(0)
   val sealIndex: Index              = Index(0)
   val itemIndex: Index              = Index(0)
-  def emptyUserAnswers: UserAnswers = UserAnswers(arrivalId, mrn, eoriNumber, Json.obj(), Json.obj(), Instant.now())
+  def emptyUserAnswers: UserAnswers = UserAnswers(arrivalId, mrn, eoriNumber, basicIe043, Json.obj(), Instant.now())
 
   protected lazy val packages: Packages = Packages(Some("Ref."), "BX", Some(1), None)
 

@@ -77,7 +77,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                  |""".stripMargin)
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
@@ -122,7 +122,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                  |""".stripMargin)
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
@@ -162,7 +162,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                  |""".stripMargin)
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
@@ -202,7 +202,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                  |""".stripMargin)
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
@@ -242,7 +242,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                  |""".stripMargin)
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
@@ -323,7 +323,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                  |""".stripMargin)
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           val helper = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
           val result = helper.transportMeansID(index)
@@ -363,7 +363,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                  |""".stripMargin)
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
@@ -435,7 +435,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                  |""".stripMargin)
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           val helper   = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
           val sections = helper.houseConsignmentSection.head.rows
@@ -522,7 +522,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                    |""".stripMargin)
               .as[JsObject]
 
-            val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+            val userAnswers = emptyUserAnswers.copy(data = json)
 
             val helper   = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
             val sections = helper.houseConsignmentSection.head.rows
@@ -583,7 +583,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                    |""".stripMargin)
               .as[JsObject]
 
-            val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+            val userAnswers = emptyUserAnswers.copy(data = json)
 
             val helper   = new HouseConsignmentAnswersHelper(userAnswers = userAnswers, index, mockReferenceDataService)
             val sections = helper.houseConsignmentSection.head.rows
@@ -617,7 +617,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                    |""".stripMargin)
               .as[JsObject]
 
-            val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+            val userAnswers = emptyUserAnswers.copy(data = json)
 
             val helper   = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
             val sections = helper.houseConsignmentSection.head.rows
@@ -667,7 +667,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                    |""".stripMargin)
               .as[JsObject]
 
-            val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+            val userAnswers = emptyUserAnswers.copy(data = json)
 
             val helper   = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
             val sections = helper.houseConsignmentSection.head.rows
@@ -716,7 +716,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                    |""".stripMargin)
               .as[JsObject]
 
-            val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+            val userAnswers = emptyUserAnswers.copy(data = json)
 
             val helper   = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
             val sections = helper.houseConsignmentSection.head.rows
@@ -751,7 +751,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                    |""".stripMargin)
               .as[JsObject]
 
-            val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+            val userAnswers = emptyUserAnswers.copy(data = json)
 
             val helper   = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
             val sections = helper.houseConsignmentSection.head.rows
@@ -802,7 +802,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                    |""".stripMargin)
               .as[JsObject]
 
-            val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+            val userAnswers = emptyUserAnswers.copy(data = json)
 
             val helper   = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
             val sections = helper.houseConsignmentSection.head.rows
@@ -852,7 +852,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                    |""".stripMargin)
               .as[JsObject]
 
-            val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+            val userAnswers = emptyUserAnswers.copy(data = json)
 
             val helper   = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
             val sections = helper.houseConsignmentSection.head.rows
@@ -958,7 +958,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                  |""".stripMargin)
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           val helper = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
           val result = helper.itemDescriptionRow(index, itemIndex)
@@ -1013,7 +1013,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                  |""".stripMargin)
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           val helper = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
           val result = helper.grossWeightRow(index, itemIndex)
@@ -1067,7 +1067,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                  |""".stripMargin)
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           val helper = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
           val result = helper.netWeightRow(index, itemIndex)
@@ -1123,7 +1123,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                  |""".stripMargin)
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           val helper = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
           val result = helper.itemSections.head.rows
@@ -1172,7 +1172,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                  |""".stripMargin)
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
           val helper      = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
           val result      = helper.itemSections.head.rows
 
@@ -1214,7 +1214,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                  |""".stripMargin)
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
           val helper      = new HouseConsignmentAnswersHelper(userAnswers, index, mockReferenceDataService)
           val result      = helper.itemSections.head.rows
 
