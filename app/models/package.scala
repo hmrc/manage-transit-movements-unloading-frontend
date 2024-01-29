@@ -17,6 +17,8 @@
 import play.api.libs.json._
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 
+import java.time.LocalDate
+import javax.xml.datatype.XMLGregorianCalendar
 import scala.annotation.nowarn
 
 package object models {
@@ -168,5 +170,11 @@ package object models {
         (acc, c) =>
           acc + c.toString.trim
       }
+  }
+
+  implicit class RichXMLGregorianCalendar(value: XMLGregorianCalendar) {
+
+    def toLocalDate: LocalDate =
+      value.toGregorianCalendar.toZonedDateTime.toLocalDate
   }
 }
