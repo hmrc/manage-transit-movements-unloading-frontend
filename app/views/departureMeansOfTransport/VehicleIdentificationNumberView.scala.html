@@ -17,6 +17,7 @@
 @import models.MovementReferenceNumber
 @import viewModels.components.InputTextViewModel._
 @import views.html.components.{Button, ErrorSummary, InputText}
+@import controllers.departureMeansOfTransport.routes
 
 @this(
     mainTemplate: MainTemplate,
@@ -35,7 +36,7 @@
 
     @errorSummary(form.errors)
 
-    @formHelper(action = controllers.routes.VehicleIdentificationNumberController.onSubmit(arrivalId,transportMeansIndex, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.VehicleIdentificationNumberController.onSubmit(arrivalId,transportMeansIndex, mode), Symbol("autoComplete") -> "off") {
 
 
         @inputText(

@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.departureMeansOfTransport
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.routes
 import forms.VehicleIdentificationNumberFormProvider
 import generators.Generators
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.VehicleIdentificationNumberPage
+import pages.departureMeansOfTransport.VehicleIdentificationNumberPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.VehicleIdentificationNumberView
+import views.html.departureMeansOfTransport.VehicleIdentificationNumberView
 
 import scala.concurrent.Future
 
@@ -35,7 +36,8 @@ class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDef
   private val form         = formProvider()
   private val mode         = NormalMode
 
-  lazy val vehicleIdentificationNumberRoute: String = controllers.routes.VehicleIdentificationNumberController.onPageLoad(arrivalId, index, mode).url
+  lazy val vehicleIdentificationNumberRoute: String =
+    controllers.departureMeansOfTransport.routes.VehicleIdentificationNumberController.onPageLoad(arrivalId, index, mode).url
 
   "VehicleIdentificationNumber Controller" - {
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.departureMeansOfTransport
 
 import forms.VehicleIdentificationNumberFormProvider
 import models.NormalMode
@@ -22,7 +22,7 @@ import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.InputTextViewBehaviours
-import views.html.VehicleIdentificationNumberView
+import views.html.departureMeansOfTransport.VehicleIdentificationNumberView
 
 class VehicleIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
