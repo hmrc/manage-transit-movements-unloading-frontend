@@ -18,9 +18,8 @@ package controllers.actions
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
-import models.P5.{Consignment, CustomsOfficeOfDestinationActual, IE043Data, MessageData, TraderAtDestination, TransitOperation}
+import models.EoriNumber
 import models.requests.IdentifierRequest
-import models.{EoriNumber, MovementReferenceNumber}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.mockito.Mockito.when
@@ -31,7 +30,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.P5.UnloadingPermissionMessageService
 
-import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -50,17 +48,7 @@ class UnloadingPermissionActionSpec extends SpecBase with BeforeAndAfterEach wit
   "UnloadingPermissionAction" - {
     "must return 200 when an unloading permission is available" in {
 
-      val message = IE043Data(
-        MessageData(
-          preparationDateAndTime = LocalDateTime.now(),
-          TransitOperation = TransitOperation(MovementReferenceNumber("23GB123")),
-          Consignment = Consignment(None, None, List.empty),
-          CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("GB0008"),
-          TraderAtDestination = TraderAtDestination("AB123")
-        )
-      )
-
-      when(mockService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(Some(message)))
+      when(mockService.getUnloadingPermissionXml(any())(any(), any())).thenReturn(Future.successful(Some(basicIe043)))
 
       val unloadingPermissionProvider = (new UnloadingPermissionActionProvider(mockService)(implicitly))(arrivalId)
 
@@ -73,7 +61,7 @@ class UnloadingPermissionActionSpec extends SpecBase with BeforeAndAfterEach wit
 
     "must return 303 and redirect to technical difficulties when no unloading permission is available" in {
 
-      when(mockService.getUnloadingPermission(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockService.getUnloadingPermissionXml(any())(any(), any())).thenReturn(Future.successful(None))
 
       val unloadingPermissionProvider = (new UnloadingPermissionActionProvider(mockService)(implicitly))(arrivalId)
 

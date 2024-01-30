@@ -56,7 +56,7 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                  |""".stripMargin)
             .as[JsObject]
 
-          val userAnswers   = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers   = emptyUserAnswers.copy(data = json)
           val helper        = new UnloadingAnswersHelper(userAnswers)
           val consignorName = helper.consignorName(index).head
 
@@ -97,7 +97,7 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                  |""".stripMargin)
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           val helper        = new UnloadingAnswersHelper(userAnswers)
           val consignorName = helper.consignorIdentification(index).head
@@ -153,7 +153,7 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                  |""".stripMargin)
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           val helper = new UnloadingAnswersHelper(userAnswers)
           val rows   = helper.houseConsignmentTotalWeightRows(index)
@@ -195,7 +195,7 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                  |""".stripMargin)
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           val helper = new UnloadingAnswersHelper(userAnswers)
           val rows   = helper.houseConsignmentTotalWeightRows(index)
@@ -232,7 +232,7 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                  |""".stripMargin)
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
           val helper      = new UnloadingAnswersHelper(userAnswers)
           val rows        = helper.houseConsignmentTotalWeightRows(index)
 
@@ -269,7 +269,7 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                  |""".stripMargin)
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           val helper = new UnloadingAnswersHelper(userAnswers)
           val rows   = helper.houseConsignmentTotalWeightRows(index)
@@ -307,7 +307,7 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                |""".stripMargin)
           .as[JsObject]
 
-        val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+        val userAnswers = emptyUserAnswers.copy(data = json)
 
         val helper = new UnloadingAnswersHelper(userAnswers)
         val result = helper.fetchWeightValues(index, index)
@@ -340,7 +340,7 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                |""".stripMargin)
           .as[JsObject]
 
-        val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+        val userAnswers = emptyUserAnswers.copy(data = json)
 
         val helper = new UnloadingAnswersHelper(userAnswers)
         val result = helper.fetchWeightValues(index, index)
@@ -373,7 +373,7 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                |""".stripMargin)
           .as[JsObject]
 
-        val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+        val userAnswers = emptyUserAnswers.copy(data = json)
         val helper      = new UnloadingAnswersHelper(userAnswers)
         val result      = helper.fetchWeightValues(index, index)
 
@@ -428,7 +428,7 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                  |""".stripMargin)
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           val helper         = new UnloadingAnswersHelper(userAnswers)
           val grossWeightRow = helper.grossWeightRow(index, index).head
@@ -480,7 +480,7 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                  |""".stripMargin)
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           val helper       = new UnloadingAnswersHelper(userAnswers)
           val netWeightRow = helper.netWeightRow(index, index).head

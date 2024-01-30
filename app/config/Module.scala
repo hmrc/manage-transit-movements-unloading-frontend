@@ -30,7 +30,6 @@ class Module extends AbstractModule {
 
     bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
 
-    bind(classOf[IE043DataRequiredActionProvider]).to(classOf[IE043DataRequiredActionImpl]).asEagerSingleton()
     bind(classOf[SpecificDataRequiredActionProvider]).to(classOf[SpecificDataRequiredActionImpl]).asEagerSingleton()
 
     // For session based storage instead of cred based, change to SessionIdentifierAction

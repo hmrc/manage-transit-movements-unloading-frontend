@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
+import generated.{CC043C, CC043CType}
 import play.api.libs.json._
+import scalaxb.`package`.toScope
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 
+import java.time.LocalDate
+import javax.xml.datatype.XMLGregorianCalendar
 import scala.annotation.nowarn
+import scala.xml.NodeSeq
 
 package object models {
 
@@ -168,5 +173,22 @@ package object models {
         (acc, c) =>
           acc + c.toString.trim
       }
+  }
+
+  implicit class RichCC043CType(value: CC043CType) {
+
+    def toXML: NodeSeq = scalaxb.toXML(value, CC043C.toString, toScope())
+
+    def preparationDateAndTime: LocalDate =
+      value.messageSequence1.messagE_1Sequence2.preparationDateAndTime.toLocalDate
+
+    def sealsExist: Boolean =
+      value.Consignment.exists(_.TransportEquipment.exists(_.Seal.nonEmpty))
+  }
+
+  implicit class RichXMLGregorianCalendar(value: XMLGregorianCalendar) {
+
+    def toLocalDate: LocalDate =
+      value.toGregorianCalendar.toZonedDateTime.toLocalDate
   }
 }

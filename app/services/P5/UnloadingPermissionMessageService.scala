@@ -18,9 +18,11 @@ package services.P5
 
 import cats.data.OptionT
 import connectors.ArrivalMovementConnector
+import generated.CC043CType
 import models.ArrivalId
 import models.P5.ArrivalMessageType.UnloadingPermission
 import models.P5.{IE043Data, MessageMetaData}
+import scalaxb.`package`.fromXML
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -55,6 +57,14 @@ class UnloadingPermissionMessageService @Inject() (arrivalMovementConnector: Arr
         unloadingPermissionMessage <- OptionT(getUnloadingPermissionMessage(arrivalId))
         unloadingPermission        <- OptionT.liftF(arrivalMovementConnector.getUnloadingPermission(unloadingPermissionMessage.path))
       } yield unloadingPermission
+    ).value
+
+  def getUnloadingPermissionXml(arrivalId: ArrivalId)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CC043CType]] =
+    (
+      for {
+        unloadingPermissionMessage <- OptionT(getUnloadingPermissionMessage(arrivalId))
+        unloadingPermission        <- OptionT.liftF(arrivalMovementConnector.getUnloadingPermissionXml(unloadingPermissionMessage.path))
+      } yield fromXML[CC043CType](unloadingPermission)
     ).value
 
 }

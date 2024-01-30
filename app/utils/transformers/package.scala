@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package pages
+package utils
 
-import play.api.libs.json.JsPath
+import scala.concurrent.{ExecutionContext, Future}
+import scala.language.implicitConversions
+import scala.util.Try
 
-import java.time.LocalDate
+package object transformers {
 
-case object DateOfPreparationPage extends QuestionPage[LocalDate] {
+  implicit class TryOps[A](tryValue: Try[A]) {
+    def asFuture: Future[A] = Future.fromTry(tryValue)
+  }
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "dateOfPreparation"
+  implicit def liftToFuture[A](f: A => Future[A])(implicit ec: ExecutionContext): Future[A] => Future[A] = _ flatMap f
 }

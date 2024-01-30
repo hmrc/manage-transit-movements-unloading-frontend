@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
-package pages
+package pages.sections
 
-case object ConfirmRemoveSealPage extends Page
+import models.Index
+import play.api.libs.json.{JsObject, JsPath}
+
+case class TransportEquipmentSection(equipmentIndex: Index) extends Section[JsObject] {
+
+  override def path: JsPath = TransportEquipmentListSection.path \ equipmentIndex.position
+}

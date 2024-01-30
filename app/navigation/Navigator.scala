@@ -18,8 +18,7 @@ package navigation
 
 import com.google.inject.{Inject, Singleton}
 import controllers.routes
-import models.P5.MessageData
-import models.{CheckMode, Mode, NormalMode, UserAnswers}
+import models.{CheckMode, Mode, NormalMode, RichCC043CType, UserAnswers}
 import pages._
 import play.api.mvc.Call
 import utils.Format._
@@ -31,15 +30,12 @@ class Navigator @Inject() () {
 
     case UnloadingTypePage => ua => routes.DateGoodsUnloadedController.onPageLoad(ua.id, NormalMode)
     case DateGoodsUnloadedPage =>
-      ua => {
-        val sealsExist = ua.ie043Data.asOpt[MessageData].exists(_.Consignment.sealsExist)
-
-        if (sealsExist) {
+      ua =>
+        if (ua.ie043Data.sealsExist) {
           controllers.routes.CanSealsBeReadController.onPageLoad(ua.id, NormalMode)
         } else {
           routes.AddUnloadingCommentsYesNoController.onPageLoad(ua.id, NormalMode)
         }
-      }
 
     case CanSealsBeReadPage    => ua => routes.AreAnySealsBrokenController.onPageLoad(ua.id, NormalMode)
     case AreAnySealsBrokenPage => ua => routes.UnloadingFindingsController.onPageLoad(ua.id)
