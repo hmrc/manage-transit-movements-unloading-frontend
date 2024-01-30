@@ -207,15 +207,15 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           InlandMode("2", "Rail Transport")
         )
 
-        connector.getTransportModeCodes[InlandMode]().futureValue mustEqual expectedResult
+        connector.getTransportModeCodes[InlandMode].futureValue mustEqual expectedResult
       }
 
       "must throw a NoReferenceDataFoundException for an empty response" in {
-        checkNoReferenceDataFoundResponse(url, connector.getTransportModeCodes[InlandMode]())
+        checkNoReferenceDataFoundResponse(url, connector.getTransportModeCodes[InlandMode])
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(url, connector.getTransportModeCodes[InlandMode]())
+        checkErrorResponse(url, connector.getTransportModeCodes[InlandMode])
       }
     }
 
@@ -262,15 +262,15 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           BorderMode("2", "Rail Transport")
         )
 
-        connector.getTransportModeCodes[BorderMode]().futureValue mustEqual expectedResult
+        connector.getTransportModeCodes[BorderMode].futureValue mustEqual expectedResult
       }
 
       "must throw a NoReferenceDataFoundException for an empty response" in {
-        checkNoReferenceDataFoundResponse(url, connector.getTransportModeCodes[BorderMode]())
+        checkNoReferenceDataFoundResponse(url, connector.getTransportModeCodes[BorderMode])
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(url, connector.getTransportModeCodes[BorderMode]())
+        checkErrorResponse(url, connector.getTransportModeCodes[BorderMode])
       }
     }
   }
