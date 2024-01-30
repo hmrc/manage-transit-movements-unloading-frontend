@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 
-package pages
+package utils.transformers
 
-import pages.behaviours.PageBehaviours
+import models.UserAnswers
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
-import java.time.LocalDate
+import javax.inject.Inject
+import scala.concurrent.Future
 
-class DateOfPreparationPageSpec extends PageBehaviours {
+class IE043Transformer @Inject() (
+  consignmentTransformer: ConsignmentTransformer
+) extends FrontendHeaderCarrierProvider {
 
-  "DateOfPreparationPage" - {
+  def transform(userAnswers: UserAnswers): Future[UserAnswers] = {
 
-    beRetrievable[LocalDate](DateOfPreparationPage)
+    val transformerPipeline =
+      consignmentTransformer.transform(userAnswers.ie043Data.Consignment)
 
-    beSettable[LocalDate](DateOfPreparationPage)
-
-    beRemovable[LocalDate](DateOfPreparationPage)
+    transformerPipeline(userAnswers)
   }
 }

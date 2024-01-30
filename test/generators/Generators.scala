@@ -53,6 +53,10 @@ trait Generators
 
   def positiveInts: Gen[Int] = Gen.choose(0, Int.MaxValue)
 
+  def positiveBigInts: Gen[BigInt] = Gen.choose(0, 1000)
+
+  def positiveBigDecimals: Gen[BigDecimal] = Gen.choose(0, 1000)
+
   def intsInRangeWithCommas(min: Int, max: Int): Gen[String] = {
     val numberGen = choose[Int](min, max)
     genIntersperseString(numberGen.toString, ",")

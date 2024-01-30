@@ -47,7 +47,7 @@ class ArrivalMovementConnector @Inject() (config: FrontendAppConfig, http: HttpC
   def getUnloadingPermissionXml(path: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Node] = {
     val headers = hc.withExtraHeaders(("Accept", "application/vnd.hmrc.2.0+xml"))
 
-    val url = s"${config.commonTransitConventionTradersUrl}$path"
+    val url = s"${config.commonTransitConventionTradersUrl}$path/body"
 
     http.GET[HttpResponse](url)(readRaw, headers, ec).map(_.body).map(XML.loadString)
   }

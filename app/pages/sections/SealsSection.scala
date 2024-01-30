@@ -21,14 +21,14 @@ import play.api.libs.json.{JsArray, JsPath}
 
 case class SealsSection(equipmentIndex: Index) extends Section[JsArray] {
 
-  override def path: JsPath = TransportEquipmentListSection.path \ equipmentIndex.position \ toString
+  override def path: JsPath = TransportEquipmentSection(equipmentIndex).path \ toString
 
   override def toString: String = "Seal"
 }
 
 case class NewSealsSection(equipmentIndex: Index) extends Section[JsArray] {
 
-  override def path: JsPath = TransportEquipmentListSection.path \ equipmentIndex.position \ toString
+  override def path: JsPath = TransportEquipmentSection(equipmentIndex).path \ toString
 
   override def toString: String = "NewSeal"
 }

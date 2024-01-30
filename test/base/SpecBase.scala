@@ -60,6 +60,7 @@ trait SpecBase
   val eoriNumber: EoriNumber       = EoriNumber("id")
 
   val index: Index                  = Index(0)
+  val hcIndex: Index                = Index(0)
   val equipmentIndex: Index         = Index(0)
   val sealIndex: Index              = Index(0)
   val itemIndex: Index              = Index(0)

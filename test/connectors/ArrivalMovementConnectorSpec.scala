@@ -140,7 +140,7 @@ class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtu
 
       "should return Message" in {
         server.stubFor(
-          get("/path/url")
+          get("/path/url/body")
             .withHeader("Accept", containing("application/vnd.hmrc.2.0+xml"))
             .willReturn(ok(xml.toString()))
         )

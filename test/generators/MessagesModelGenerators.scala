@@ -305,7 +305,7 @@ trait MessagesModelGenerators {
   implicit lazy val arbitraryCTLControlType: Arbitrary[CTLControlType] =
     Arbitrary {
       for {
-        continueUnloading <- arbitrary[BigInt]
+        continueUnloading <- positiveBigInts
       } yield CTLControlType(
         continueUnloading = continueUnloading
       )
@@ -317,7 +317,7 @@ trait MessagesModelGenerators {
         countryOfDestination  <- Gen.option(Gen.alphaNumStr)
         containerIndicator    <- arbitrary[Flag]
         inlandModeOfTransport <- Gen.option(Gen.alphaNumStr)
-        grossMass             <- Gen.option(arbitrary[BigDecimal])
+        grossMass             <- Gen.option(positiveBigDecimals)
         consignor             <- Gen.option(arbitrary[ConsignorType05])
         consignee             <- Gen.option(arbitrary[ConsigneeType04])
         transportEquipment    <- arbitrary[Seq[TransportEquipmentType05]]
@@ -337,6 +337,31 @@ trait MessagesModelGenerators {
         AdditionalInformation = Nil,
         Incident = Nil,
         HouseConsignment = Nil
+      )
+    }
+
+  implicit lazy val arbitraryHouseConsignmentType04: Arbitrary[HouseConsignmentType04] =
+    Arbitrary {
+      for {
+        sequenceNumber          <- Gen.alphaNumStr
+        grossMass               <- positiveBigDecimals
+        consignor               <- Gen.option(arbitrary[ConsignorType06])
+        consignee               <- Gen.option(arbitrary[ConsigneeType04])
+        departureTransportMeans <- arbitrary[Seq[DepartureTransportMeansType02]]
+        consignmentItems        <- arbitrary[Seq[ConsignmentItemType04]]
+      } yield HouseConsignmentType04(
+        sequenceNumber = sequenceNumber,
+        grossMass = grossMass,
+        securityIndicatorFromExportDeclaration = None,
+        Consignor = consignor,
+        Consignee = consignee,
+        DepartureTransportMeans = departureTransportMeans,
+        PreviousDocument = Nil,
+        SupportingDocument = Nil,
+        TransportDocument = Nil,
+        AdditionalReference = Nil,
+        AdditionalInformation = Nil,
+        ConsignmentItem = consignmentItems
       )
     }
 
@@ -363,6 +388,34 @@ trait MessagesModelGenerators {
         identificationNumber = identificationNumber,
         name = name,
         Address = address
+      )
+    }
+
+  implicit lazy val arbitraryConsignorType06: Arbitrary[ConsignorType06] =
+    Arbitrary {
+      for {
+        identificationNumber <- Gen.option(Gen.alphaNumStr)
+        name                 <- Gen.option(Gen.alphaNumStr)
+        address              <- Gen.option(arbitrary[AddressType07])
+      } yield ConsignorType06(
+        identificationNumber = identificationNumber,
+        name = name,
+        Address = address
+      )
+    }
+
+  implicit lazy val arbitraryDepartureTransportMeansType02: Arbitrary[DepartureTransportMeansType02] =
+    Arbitrary {
+      for {
+        sequenceNumber       <- Gen.alphaNumStr
+        typeOfIdentification <- Gen.alphaNumStr
+        identificationNumber <- Gen.alphaNumStr
+        nationality          <- Gen.alphaNumStr
+      } yield DepartureTransportMeansType02(
+        sequenceNumber = sequenceNumber,
+        typeOfIdentification = typeOfIdentification,
+        identificationNumber = identificationNumber,
+        nationality = nationality
       )
     }
 
@@ -397,10 +450,82 @@ trait MessagesModelGenerators {
     Arbitrary {
       for {
         sequenceNumber             <- Gen.alphaNumStr
-        declarationGoodsItemNumber <- arbitrary[BigInt]
+        declarationGoodsItemNumber <- positiveBigInts
       } yield GoodsReferenceType02(
         sequenceNumber = sequenceNumber,
         declarationGoodsItemNumber = declarationGoodsItemNumber
+      )
+    }
+
+  implicit lazy val arbitraryCommodityType08: Arbitrary[CommodityType08] =
+    Arbitrary {
+      for {
+        descriptionOfGoods <- Gen.alphaNumStr
+        cusCode            <- Gen.option(Gen.alphaNumStr)
+        commodityCode      <- Gen.option(arbitrary[CommodityCodeType05])
+        dangerousGoods     <- arbitrary[Seq[DangerousGoodsType01]]
+        goodsMeasure       <- Gen.option(arbitrary[GoodsMeasureType03])
+      } yield CommodityType08(
+        descriptionOfGoods = descriptionOfGoods,
+        cusCode = cusCode,
+        CommodityCode = commodityCode,
+        DangerousGoods = dangerousGoods,
+        GoodsMeasure = goodsMeasure
+      )
+    }
+
+  implicit lazy val arbitraryCommodityCodeType05: Arbitrary[CommodityCodeType05] =
+    Arbitrary {
+      for {
+        harmonizedSystemSubHeadingCode <- Gen.alphaNumStr
+        combinedNomenclatureCode       <- Gen.option(Gen.alphaNumStr)
+      } yield CommodityCodeType05(
+        harmonizedSystemSubHeadingCode = harmonizedSystemSubHeadingCode,
+        combinedNomenclatureCode = combinedNomenclatureCode
+      )
+    }
+
+  implicit lazy val arbitraryDangerousGoodsType01: Arbitrary[DangerousGoodsType01] =
+    Arbitrary {
+      for {
+        sequenceNumber <- Gen.alphaNumStr
+        unNumber       <- Gen.alphaNumStr
+      } yield DangerousGoodsType01(
+        sequenceNumber = sequenceNumber,
+        UNNumber = unNumber
+      )
+    }
+
+  implicit lazy val arbitraryGoodsMeasureType03: Arbitrary[GoodsMeasureType03] =
+    Arbitrary {
+      for {
+        grossMass <- positiveBigDecimals
+        netMass   <- Gen.option(positiveBigDecimals)
+      } yield GoodsMeasureType03(
+        grossMass = grossMass,
+        netMass = netMass
+      )
+    }
+
+  implicit lazy val arbitraryConsignmentItemType04: Arbitrary[ConsignmentItemType04] =
+    Arbitrary {
+      for {
+        goodsItemNumber            <- Gen.alphaNumStr
+        declarationGoodsItemNumber <- positiveBigInts
+        commodity                  <- arbitrary[CommodityType08]
+      } yield ConsignmentItemType04(
+        goodsItemNumber = goodsItemNumber,
+        declarationGoodsItemNumber = declarationGoodsItemNumber,
+        declarationType = None,
+        countryOfDestination = None,
+        Consignee = None,
+        Commodity = commodity,
+        Packaging = Nil,
+        PreviousDocument = Nil,
+        SupportingDocument = Nil,
+        TransportDocument = Nil,
+        AdditionalReference = Nil,
+        AdditionalInformation = Nil
       )
     }
 
