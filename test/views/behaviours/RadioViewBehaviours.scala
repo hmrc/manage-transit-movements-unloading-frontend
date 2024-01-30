@@ -16,10 +16,12 @@
 
 package views.behaviours
 
+import org.jsoup.nodes.Document
 import uk.gov.hmrc.govukfrontend.views.html.components._
 
 trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
 
+  val getValue: T => String
   val fieldId: String = "value"
 
   def radioItems(fieldId: String, checkedValue: Option[T] = None): Seq[RadioItem]
@@ -29,7 +31,7 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
   def pageWithRadioItems(
     legendIsHeading: Boolean = true,
     hintTextPrefix: Option[String] = None,
-    args: Seq[String] = Nil,
+    args: Seq[Any] = Nil,
     legendIsVisible: Boolean = true
   ): Unit =
     "page with a radio question" - {
@@ -52,10 +54,21 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
           }
         }
 
-        radioItems(fieldId) foreach {
-          radioItem =>
+        radioItems(fieldId).zipWithIndex.foreach {
+          case (radioItem, index) =>
             s"must contain an input for the value ${radioItem.value.get}" in {
               assertRenderedById(doc, radioItem.id.get)
+            }
+
+            radioItem.hint.foreach {
+              hint =>
+                s"must contain a hint for the value ${radioItem.value.get}" in {
+                  val element = {
+                    val id = if (index == 0) s"$fieldId-item-hint" else s"${fieldId}_$index-item-hint"
+                    getElementById(doc, id)
+                  }
+                  assertElementContainsText(element, hint.content.asHtml.toString())
+                }
             }
 
             s"must not have ${radioItem.value.get} checked when rendered with no form" in {
@@ -84,7 +97,7 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
 
     radioItems(fieldId, Some(answer)) foreach {
       radioItem =>
-        if (radioItem.value.get == answer.toString) {
+        if (radioItem.value.get == getValue(answer)) {
           s"must have ${radioItem.value.get} checked" in {
             assert(doc.getElementById(radioItem.id.get).hasAttr("checked"))
           }
@@ -97,4 +110,15 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
 
     behave like pageWithoutErrorSummary()
   }
+
+  def pageWithoutRadioItems(doc: Document): Unit =
+    "page without radio items" - {
+      "must not render radio inputs" in {
+        assertElementDoesNotExist(doc, "govuk-radios__input")
+      }
+
+      "must not render a hint" in {
+        assertElementDoesNotExist(doc, "govuk-hint")
+      }
+    }
 }

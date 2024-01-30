@@ -21,6 +21,7 @@ import cats.implicits._
 import models.{Index, UserAnswers}
 import pages._
 import pages.sections._
+import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
 import play.api.i18n.Messages
 import services.ReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text

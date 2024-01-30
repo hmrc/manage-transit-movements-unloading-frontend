@@ -23,6 +23,8 @@ import connectors.ReferenceDataConnectorSpec._
 import models.reference.{Country, CustomsOffice}
 import org.scalacheck.Gen
 import org.scalatest.{Assertion, BeforeAndAfterEach}
+import cats.data.NonEmptySet
+import models.reference.transport.TransportMode.{BorderMode, InlandMode}
 import play.api.inject.guice.GuiceApplicationBuilder
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -57,7 +59,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(countryListResponseJson))
         )
 
-        val expectedResult = Seq(
+        val expectedResult = NonEmptySet.of(
           Country("GB", Some("United Kingdom")),
           Country("AD", Some("Andorra"))
         )
@@ -83,7 +85,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(customsOfficeResponseJsonWithPhone))
         )
 
-        val expectedResult = Seq(CustomsOffice("ID1", "NAME001", "GB", Some("004412323232345")))
+        val expectedResult = NonEmptySet.of(CustomsOffice("ID1", "NAME001", "GB", Some("004412323232345")))
 
         connector.getCustomsOffice(code).futureValue mustBe expectedResult
       }
@@ -94,7 +96,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(customsOfficeResponseJsonWithOutPhone))
         )
 
-        val expectedResult = Seq(CustomsOffice("ID1", "NAME001", "GB", None))
+        val expectedResult = NonEmptySet.of(CustomsOffice("ID1", "NAME001", "GB", None))
 
         connector.getCustomsOffice(code).futureValue mustBe expectedResult
       }
@@ -118,7 +120,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(countryCodeResponseJson))
         )
 
-        val expectedResult = Seq(Country(countryCode, Some("United Kingdom")))
+        val expectedResult = NonEmptySet.of(Country(countryCode, Some("United Kingdom")))
 
         connector.getCountryNameByCode(countryCode).futureValue mustBe expectedResult
       }
@@ -162,6 +164,117 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         }
     }
   }
+
+  "getTransportModeCodes" - {
+    val url: String = s"/$baseUrl/lists/TransportModeCode"
+
+    "when inland modes" - {
+
+      "must return Seq of inland modes when successful" in {
+        val responseJson: String =
+          """
+            |{
+            |  "_links": {
+            |    "self": {
+            |      "href": "/customs-reference-data/lists/TransportModeCode"
+            |    }
+            |  },
+            |  "meta": {
+            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+            |    "snapshotDate": "2023-01-01"
+            |  },
+            |  "id": "TransportModeCode",
+            |  "data": [
+            |    {
+            |      "code": "1",
+            |      "description": "Maritime Transport"
+            |    },
+            |    {
+            |      "code": "2",
+            |      "description": "Rail Transport"
+            |    }
+            |  ]
+            |}
+            |""".stripMargin
+
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(responseJson))
+        )
+
+        val expectedResult = NonEmptySet.of(
+          InlandMode("1", "Maritime Transport"),
+          InlandMode("2", "Rail Transport")
+        )
+
+        connector.getTransportModeCodes[InlandMode].futureValue mustEqual expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getTransportModeCodes[InlandMode])
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getTransportModeCodes[InlandMode])
+      }
+    }
+
+    "when border modes" - {
+
+      "must return Seq of border modes when successful" in {
+        val responseJson: String =
+          """
+            |{
+            |  "_links": {
+            |    "self": {
+            |      "href": "/customs-reference-data/lists/TransportModeCode"
+            |    }
+            |  },
+            |  "meta": {
+            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+            |    "snapshotDate": "2023-01-01"
+            |  },
+            |  "id": "TransportModeCode",
+            |  "data": [
+            |    {
+            |      "code": "1",
+            |      "description": "Maritime Transport"
+            |    },
+            |    {
+            |      "code": "1",
+            |      "description": "Maritime Transport"
+            |    },
+            |    {
+            |      "code": "2",
+            |      "description": "Rail Transport"
+            |    }
+            |  ]
+            |}
+            |""".stripMargin
+
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(responseJson))
+        )
+
+        val expectedResult = NonEmptySet.of(
+          BorderMode("1", "Maritime Transport"),
+          BorderMode("2", "Rail Transport")
+        )
+
+        connector.getTransportModeCodes[BorderMode].futureValue mustEqual expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getTransportModeCodes[BorderMode])
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getTransportModeCodes[BorderMode])
+      }
+    }
+  }
+
 }
 
 object ReferenceDataConnectorSpec {

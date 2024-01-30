@@ -17,6 +17,7 @@
 package generators
 
 import models.P5.ArrivalMessageType
+import models.departureTransportMeans.TransportMeansIdentification
 import models.messages._
 import models.reference.Country
 import models.{UnloadingPermission, _}
@@ -36,6 +37,14 @@ trait ModelGenerators {
       for {
         mrn <- Gen.alphaNumStr
       } yield MovementReferenceNumber(mrn)
+    }
+
+  implicit lazy val arbitraryTransportMeansIdentification: Arbitrary[TransportMeansIdentification] =
+    Arbitrary {
+      for {
+        code        <- Gen.oneOf("10", "11", "21", "30", "40", "41", "80", "81")
+        description <- nonEmptyString
+      } yield TransportMeansIdentification(code, description)
     }
 
   implicit lazy val arbitraryEoriNumber: Arbitrary[EoriNumber] =

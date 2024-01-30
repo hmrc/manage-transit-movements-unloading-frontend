@@ -16,7 +16,7 @@
 
 package forms.mappings
 
-import models.Enumerable
+import models.{Enumerable, Radioable}
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -24,9 +24,17 @@ import play.api.data.{Form, FormError}
 
 object MappingsSpec {
 
-  sealed trait Foo
-  case object Bar extends Foo
-  case object Baz extends Foo
+  sealed trait Foo extends Radioable[Foo]
+
+  case object Bar extends Foo {
+    override val code: String             = "1"
+    override val messageKeyPrefix: String = "bar"
+  }
+
+  case object Baz extends Foo {
+    override val code: String             = "2"
+    override val messageKeyPrefix: String = "baz"
+  }
 
   object Foo {
 

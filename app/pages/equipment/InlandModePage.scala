@@ -14,26 +14,16 @@
  * limitations under the License.
  */
 
-package models
+package pages.equipment
 
-sealed trait UnloadingType extends Radioable[UnloadingType] {
-  override val messageKeyPrefix: String = UnloadingType.messageKeyPrefix
-}
+import models.reference.transport.TransportMode.InlandMode
+import pages.QuestionPage
+import pages.sections.equipment.TransportSection
+import play.api.libs.json.JsPath
 
-object UnloadingType extends EnumerableType[UnloadingType] {
+case object InlandModePage extends QuestionPage[InlandMode] {
 
-  val messageKeyPrefix: String = "unloadingType"
+  override def path: JsPath = TransportSection.path \ toString
 
-  case object Fully extends WithName("1") with UnloadingType {
-    override val code: String = this.toString
-  }
-
-  case object Partially extends WithName("0") with UnloadingType {
-    override val code: String = this.toString
-  }
-
-  override val values: Seq[UnloadingType] = Seq(
-    Fully,
-    Partially
-  )
+  override def toString: String = "inlandModeOfTransport"
 }
