@@ -19,7 +19,7 @@ package generators
 import models.Index
 import org.scalacheck.Arbitrary
 import pages._
-import pages.departureMeansOfTransport.CountryPage
+import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
 
 trait PageGenerators {
 

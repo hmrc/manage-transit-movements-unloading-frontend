@@ -23,7 +23,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
-import pages.departureMeansOfTransport.CountryPage
+import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
 import play.api.libs.json.{JsObject, JsValue, Json}
 
 trait UserAnswersGenerator extends TryValues {

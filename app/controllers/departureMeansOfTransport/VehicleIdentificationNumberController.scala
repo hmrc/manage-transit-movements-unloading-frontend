@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.departureMeansOfTransport
 
 import controllers.actions._
 import forms.VehicleIdentificationNumberFormProvider
 import models.{ArrivalId, Index, Mode}
-import pages.VehicleIdentificationNumberPage
+import pages.departureMeansOfTransport.VehicleIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.VehicleIdentificationNumberView
+import views.html.departureMeansOfTransport.VehicleIdentificationNumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

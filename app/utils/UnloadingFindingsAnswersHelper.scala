@@ -20,7 +20,7 @@ import cats.data.OptionT
 import cats.implicits._
 import models.{Index, Link, UserAnswers}
 import pages._
-import pages.departureMeansOfTransport.CountryPage
+import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
 import pages.sections._
 import play.api.i18n.Messages
 import services.ReferenceDataService

@@ -79,10 +79,11 @@ dateGoodsUnloaded.error.min.date = The date must be on or after {0}
 dateGoodsUnloaded.error.max.date = The date must be today or in the past
 dateGoodsUnloaded.change.hidden = the date when the goods were unloaded
 
-vehicleIdentificationNumber.title = What is the identification number for the new vehicle?
-vehicleIdentificationNumber.heading = What is the identification number for the new vehicle?
+vehicleIdentificationNumber.title = What is the identification number for the new departure means of transport?
+vehicleIdentificationNumber.heading = What is the identification number for the new departure means of transport?
+vehicleIdentificationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
 vehicleIdentificationNumber.checkYourAnswersLabel = What is the identification number for the new vehicle?
-vehicleIdentificationNumber.error.required = Enter the identification number for the new vehicle
+vehicleIdentificationNumber.error.required = Enter the identification number for the new departure means of transport
 vehicleIdentificationNumber.error.length = The identification number must be 35 characters or less
 vehicleIdentificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
 vehicleIdentificationNumber.change.hidden = the identification number for the new vehicle

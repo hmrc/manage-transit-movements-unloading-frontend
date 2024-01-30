@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package pages.departureTransportMeans
+package pages.departureMeansOfTransport
 
-import pages.sections.Section
-import play.api.libs.json.{JsObject, JsPath}
+import pages.behaviours.PageBehaviours
 
-case object TransportMeansSection extends Section[JsObject] {
+class VehicleNameRegistrationReferencePageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "VehicleNameRegistrationReferencePage" - {
 
-  override def toString: String = "transportMeans"
+    beRetrievable[String](VehicleIdentificationNumberPage(index))
 
+    beSettable[String](VehicleIdentificationNumberPage(index))
+
+    beRemovable[String](VehicleIdentificationNumberPage(index))
+  }
 }

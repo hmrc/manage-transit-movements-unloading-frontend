@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.departureMeansOfTransport
 
 import forms.VehicleIdentificationNumberFormProvider
 import models.NormalMode
@@ -22,7 +22,7 @@ import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.InputTextViewBehaviours
-import views.html.VehicleIdentificationNumberView
+import views.html.departureMeansOfTransport.VehicleIdentificationNumberView
 
 class VehicleIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
@@ -43,7 +43,7 @@ class VehicleIdentificationNumberViewSpec extends InputTextViewBehaviours[String
 
   behave like pageWithHeading()
 
-  behave like pageWithoutHint()
+  behave like pageWithHint("This can be up to 35 characters long and include both letters and numbers.")
 
   behave like pageWithInputText()
 

@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package pages.departureMeansOfTransport
 
-import pages.behaviours.PageBehaviours
+import models.Index
+import pages.QuestionPage
+import pages.sections.TransportMeansListSection
+import play.api.libs.json.JsPath
 
-class VehicleNameRegistrationReferencePageSpec extends PageBehaviours {
+case class VehicleIdentificationNumberPage(transportMeansIndex: Index) extends QuestionPage[String] {
 
-  "VehicleNameRegistrationReferencePage" - {
-
-    beRetrievable[String](VehicleIdentificationNumberPage(index))
-
-    beSettable[String](VehicleIdentificationNumberPage(index))
-
-    beRemovable[String](VehicleIdentificationNumberPage(index))
-  }
+  override def path: JsPath     = TransportMeansListSection.path \ transportMeansIndex.position \ toString
+  override def toString: String = "identificationNumber"
 }
