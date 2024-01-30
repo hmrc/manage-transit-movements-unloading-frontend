@@ -28,13 +28,13 @@ class TransportModeCodesService @Inject() (referenceDataConnector: ReferenceData
 
   def getBorderModes()(implicit hc: HeaderCarrier): Future[Seq[BorderMode]] =
     referenceDataConnector
-      .getTransportModeCodes[BorderMode]()
+      .getTransportModeCodes[BorderMode]
       .map(_.toSeq)
       .map(_.filter(_.isOneOf(Maritime, Rail, Road, Air)))
 
   def getInlandModes()(implicit hc: HeaderCarrier): Future[Seq[InlandMode]] =
     referenceDataConnector
-      .getTransportModeCodes[InlandMode]()
+      .getTransportModeCodes[InlandMode]
       .map(_.toSeq)
       .map(_.filter(_.isNotOneOf(Unknown)))
 }

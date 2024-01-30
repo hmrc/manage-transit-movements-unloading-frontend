@@ -40,7 +40,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[NonEmptySet[Country]](serviceUrl, headers = version2Header)
   }
 
-  def getTransportModeCodes[T <: TransportMode[T]]()(implicit
+  def getTransportModeCodes[T <: TransportMode[T]](implicit
     ec: ExecutionContext,
     hc: HeaderCarrier,
     rds: Reads[T],

@@ -58,8 +58,7 @@ class MeansOfTransportIdentificationTypesService @Inject() (
                     .get(TransportMeansIdentificationPage(transportMeansIndex))
                     .flatMap {
                       inlandMode =>
-                        val found = inlandModes.find(_.code == inlandMode.code)
-                        found
+                        inlandModes.find(_.code == inlandMode.code)
                     }
               }
             )
