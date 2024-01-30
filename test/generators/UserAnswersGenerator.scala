@@ -16,13 +16,14 @@
 
 package generators
 
-import models.{UserAnswers}
+import models.UserAnswers
 
 import java.time.Instant
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
+import pages.departureMeansOfTransport.CountryPage
 import play.api.libs.json.{JsObject, JsValue, Json}
 
 trait UserAnswersGenerator extends TryValues {
@@ -34,7 +35,7 @@ trait UserAnswersGenerator extends TryValues {
       arbitrary[(CanSealsBeReadPage.type, JsValue)] ::
       arbitrary[(SealPage, JsValue)] ::
       arbitrary[(GrossWeightPage, JsValue)] ::
-      arbitrary[(DepartureMeansOfTransportCountryPage, JsValue)] ::
+      arbitrary[(CountryPage, JsValue)] ::
       arbitrary[(VehicleIdentificationNumberPage, JsValue)] ::
       arbitrary[(DateGoodsUnloadedPage.type, JsValue)] ::
       Nil

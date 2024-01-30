@@ -19,6 +19,7 @@ package generators
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
+import pages.departureMeansOfTransport.CountryPage
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators {
@@ -63,10 +64,10 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryDepartureMeansOfTransportCountryReference: Arbitrary[(DepartureMeansOfTransportCountryPage, JsValue)] =
+  implicit lazy val arbitraryDepartureMeansOfTransportCountryReference: Arbitrary[(CountryPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[DepartureMeansOfTransportCountryPage]
+        page  <- arbitrary[CountryPage]
         value <- arbitrary[String].map(Json.toJson(_))
       } yield (page, value)
     }

@@ -24,6 +24,7 @@ import org.mockito.Mockito.when
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
+import pages.departureMeansOfTransport.CountryPage
 import play.api.libs.json.{JsObject, Json}
 import services.ReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
@@ -342,7 +343,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
     "transportRegisteredCountry" - {
 
       "must return Some(Row)" - {
-        s"when $DepartureMeansOfTransportCountryPage defined" in {
+        s"when $CountryPage defined" in {
 
           val json: JsObject = Json
             .parse(s"""

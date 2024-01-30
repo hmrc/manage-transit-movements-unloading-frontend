@@ -14,27 +14,28 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.departureMeansOfTransport
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.routes
 import forms.DepartureMeansOfTransportCountryFormProvider
 import generators.Generators
 import models.NormalMode
 import models.reference.Country
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import pages.DepartureMeansOfTransportCountryPage
+import pages.departureMeansOfTransport.CountryPage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.ReferenceDataService
-import views.html.DepartureMeansOfTransportCountryView
+import views.html.departureMeansOfTransport.CountryView
 
 import scala.concurrent.Future
 
-class DepartureMeansOfTransportCountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   val formProvider                                       = new DepartureMeansOfTransportCountryFormProvider()
   private val country: String                            = Country("GB", Some("United Kingdom")).code
@@ -42,7 +43,7 @@ class DepartureMeansOfTransportCountryControllerSpec extends SpecBase with AppWi
   val form: Form[Country]                                = formProvider(countries)
   val mockReferenceDataService: ReferenceDataService     = mock[ReferenceDataService]
   private val mode                                       = NormalMode
-  lazy val DepartureMeansOfTransportCountryRoute: String = controllers.routes.DepartureMeansOfTransportCountryController.onPageLoad(arrivalId, index, mode).url
+  lazy val DepartureMeansOfTransportCountryRoute: String = controllers.departureMeansOfTransport.routes.CountryController.onPageLoad(arrivalId, index, mode).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -69,7 +70,7 @@ class DepartureMeansOfTransportCountryControllerSpec extends SpecBase with AppWi
 
       status(result) mustEqual OK
 
-      val view = injector.instanceOf[DepartureMeansOfTransportCountryView]
+      val view = injector.instanceOf[CountryView]
 
       status(result) mustEqual OK
 
@@ -84,7 +85,7 @@ class DepartureMeansOfTransportCountryControllerSpec extends SpecBase with AppWi
         Future.successful(countries)
       )
 
-      val userAnswers = emptyUserAnswers.setValue(DepartureMeansOfTransportCountryPage(index), country)
+      val userAnswers = emptyUserAnswers.setValue(CountryPage(index), country)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, DepartureMeansOfTransportCountryRoute)
@@ -92,7 +93,7 @@ class DepartureMeansOfTransportCountryControllerSpec extends SpecBase with AppWi
 
       val filledForm = form.bind(Map("value" -> "GB"))
 
-      val view = injector.instanceOf[DepartureMeansOfTransportCountryView]
+      val view = injector.instanceOf[CountryView]
 
       status(result) mustEqual OK
 
@@ -132,7 +133,7 @@ class DepartureMeansOfTransportCountryControllerSpec extends SpecBase with AppWi
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[DepartureMeansOfTransportCountryView]
+      val view = injector.instanceOf[CountryView]
 
       contentAsString(result) mustEqual
         view(boundForm, countries, mrn, arrivalId, index, mode)(request, messages).toString

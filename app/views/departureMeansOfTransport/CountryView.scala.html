@@ -19,6 +19,7 @@
 @import models.reference.{Country, Selectable}
 @import viewModels.components.InputSelectViewModel._
 @import views.html.components.{Button, ErrorSummary, InputSelect}
+@import controllers.departureMeansOfTransport.routes
 
 @this(
     mainTemplate: MainTemplate,
@@ -35,9 +36,10 @@
     showBackLink = true
 ) {
 
-    @errorSummary(form.errors)
+        @formHelper(action = routes.CountryController.onSubmit(arrivalId,transportMeansIndex, mode), Symbol("autoComplete") -> "off") {
 
-    @formHelper(action = controllers.routes.DepartureMeansOfTransportCountryController.onSubmit(arrivalId,transportMeansIndex, mode), Symbol("autoComplete") -> "off") {
+        @errorSummary(form.errors)
+
 
         @select(
             field = form("value"),

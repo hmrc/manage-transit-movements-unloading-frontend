@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package pages.departureMeansOfTransport
 
-import models.Index
-import pages.sections.TransportMeansListSection
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
+import pages.departureMeansOfTransport.CountryPage
 
-case class DepartureMeansOfTransportCountryPage(transportMeansIndex: Index) extends QuestionPage[String] {
+class DepartureMeansOfTransportCountryPageSpec extends PageBehaviours {
 
-  override def path: JsPath = TransportMeansListSection.path \ transportMeansIndex.position \ toString
+  "CountryPage" - {
 
-  override def toString: String = "nationality"
+    beRetrievable[String](CountryPage(index))
+
+    beSettable[String](CountryPage(index))
+
+    beRemovable[String](CountryPage(index))
+  }
 }

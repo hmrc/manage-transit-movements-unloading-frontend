@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.departureMeansOfTransport
 
 import forms.DepartureMeansOfTransportCountryFormProvider
 import generators.Generators
@@ -23,14 +23,14 @@ import models.reference.Country
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.InputSelectViewBehaviours
-import views.html.DepartureMeansOfTransportCountryView
+import views.html.departureMeansOfTransport.CountryView
 
-class DepartureMeansOfTransportCountryViewSpec extends InputSelectViewBehaviours[Country] with Generators {
+class CountryViewSpec extends InputSelectViewBehaviours[Country] with Generators {
 
   override def form: Form[Country] = new DepartureMeansOfTransportCountryFormProvider()(values)
 
   override def applyView(form: Form[Country]): HtmlFormat.Appendable =
-    injector.instanceOf[DepartureMeansOfTransportCountryView].apply(form, values, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[CountryView].apply(form, values, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "departureMeansOfTransportCountry"
 

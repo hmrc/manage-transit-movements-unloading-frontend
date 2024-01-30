@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.departureMeansOfTransport
 
 import controllers.actions._
 import forms.DepartureMeansOfTransportCountryFormProvider
 import models.reference.Country
 import models.{ArrivalId, Index, Mode}
-import pages.DepartureMeansOfTransportCountryPage
+import pages.departureMeansOfTransport.CountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import repositories.SessionRepository
 import services.ReferenceDataService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.DepartureMeansOfTransportCountryView
+import views.html.departureMeansOfTransport.CountryView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DepartureMeansOfTransportCountryController @Inject() (
+class CountryController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: DepartureMeansOfTransportCountryFormProvider,
   referenceDataService: ReferenceDataService,
   val controllerComponents: MessagesControllerComponents,
-  view: DepartureMeansOfTransportCountryView
+  view: CountryView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -49,7 +49,7 @@ class DepartureMeansOfTransportCountryController @Inject() (
         referenceDataService.getCountries() map {
           countries =>
             val form = formProvider(countries)
-            val preparedForm = request.userAnswers.get(DepartureMeansOfTransportCountryPage(transportMeansIndex)) match {
+            val preparedForm = request.userAnswers.get(CountryPage(transportMeansIndex)) match {
               case None => form
               case Some(value) =>
                 val country = countries.find(_.code == value) match {
@@ -75,7 +75,7 @@ class DepartureMeansOfTransportCountryController @Inject() (
                 value =>
                   for {
                     updatedAnswers <- Future
-                      .fromTry(request.userAnswers.set(DepartureMeansOfTransportCountryPage(transportMeansIndex), value.code))
+                      .fromTry(request.userAnswers.set(CountryPage(transportMeansIndex), value.code))
                     _ <- sessionRepository.set(updatedAnswers)
                   } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
               )
