@@ -17,32 +17,41 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import models.messages.UnloadingRemarksRequest
+import models.Index
+import models.messages.UnloadingRemarksRequest.commodityCodeLength
 import org.scalacheck.Gen
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
-import play.api.data.{Field, FormError}
+import play.api.data.{Field, Form, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
 
-class VehicleIdentificationNumberFormProviderSpec extends StringFieldBehaviours {
+class CommodityCodeFormProviderSpec extends StringFieldBehaviours {
 
-  private val requiredKey = "vehicleIdentificationNumber.error.required"
-  private val maxLength   = UnloadingRemarksRequest.vehicleIdentificationNumberMaxLength
-  private val invalidKey  = "vehicleIdentificationNumber.error.invalid"
-  private val form        = new VehicleIdentificationNumberFormProvider()()
-  private val fieldName   = "value"
+  private val requiredKey = "commodityCode.error.required"
+  private val lengthKey   = "commodityCode.error.length"
+  private val invalidKey  = "commodityCode.error.invalid"
+
+  def form: Form[String] = new CommodityCodeFormProvider()(Index(0), Index(0))
+  private val fieldName  = "value"
 
   ".value" - {
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsWithMaxLength(commodityCodeLength)
+    )
+
+    behave like fieldWithExactLength(
+      form,
+      fieldName,
+      exactLength = commodityCodeLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(commodityCodeLength))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(Index(0).display.toString, Index(0).display.toString))
     )
 
     "must not bind strings that do not match regex" in {

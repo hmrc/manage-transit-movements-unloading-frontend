@@ -386,3 +386,12 @@ cannotSendUnloadingRemarks.officeNameNotAvailAndPhoneNumberAvailable  = If you h
 cannotSendUnloadingRemarks.officeNameNotAvailAndPhoneNumberNotAvailable  = If you have any questions, contact Customs office {0}.
 cannotSendUnloadingRemarks.officeNotAvailable  = If you have any questions, contact Customs office {0}.
 cannotSendUnloadingRemarks.linkText = View the status of this notification
+
+commodityCode.title = What is the new commodity code for item {0} in house consignment {1}?
+commodityCode.heading = What is the new commodity code for item {0} in house consignment {1}?
+commodityCode.xi.paragraph = The combination of your commodity code and combined nomenclature code must be a valid code in TARIC. This is the European Union’s database for classifying goods and determining the amount of duties required.
+commodityCode.hint = This will be 6 characters long and include both letters and numbers, for example 0G23AB.
+commodityCode.error.required = Enter the new commodity code of item {0} in house consignment {1}
+commodityCode.error.invalid = The commodity code must only include letters a to z and numbers 0 to 9
+commodityCode.error.length = The commodity code must be 6 characters long
+

@@ -1,6 +1,7 @@
 # microservice specific routes
 
 ->         /                                            app.departureMeansOfTransport.Routes
+->         /                                            app.houseConsignment.Routes
 
 
 ->         /hmrc-frontend                                                                                            hmrcfrontend.Routes

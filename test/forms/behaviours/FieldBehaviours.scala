@@ -21,16 +21,27 @@ import generators.Generators
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.{Form, FormError}
+import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 
 trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Generators {
 
   def fieldThatBindsValidData(form: Form[_], fieldName: String, validDataGenerator: Gen[String]): Unit =
-    "must bind valid data" in {
+    "bind valid data" in {
 
       forAll(validDataGenerator -> "validDataItem") {
         dataItem: String =>
           val result = form.bind(Map(fieldName -> dataItem)).apply(fieldName)
-          result.value.value shouldBe dataItem
+          result.value.value mustBe dataItem
+      }
+    }
+
+  def fieldWithExactLength(form: Form[_], fieldName: String, exactLength: Int, lengthError: FormError): Unit =
+    s"must not bind strings where the length is not equal to $exactLength" in {
+
+      forAll(stringsWithLengthNotEqual(exactLength, Gen.numChar) -> "incorrectLength") {
+        string =>
+          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+          result.errors mustEqual Seq(lengthError)
       }
     }
 

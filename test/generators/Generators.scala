@@ -58,6 +58,12 @@ trait Generators
     genIntersperseString(numberGen.toString, ",")
   }
 
+  def stringsWithLengthNotEqual(length: Int, charGen: Gen[Char] = Gen.alphaNumChar): Gen[String] =
+    for {
+      len   <- Gen.posNum[Int].filter(_ != length)
+      chars <- listOfN(len, charGen)
+    } yield chars.mkString
+
   def intsLargerThanMaxValue: Gen[BigInt] =
     arbitrary[BigInt] suchThat (
       x => x > Int.MaxValue
