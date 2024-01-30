@@ -27,7 +27,7 @@
     errorSummary: ErrorSummary
 )
 
-@(form: Form[_], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, isXI:Boolean,  mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("commodityCode.title", houseConsignmentIndex.display, itemIndex.display),
@@ -38,16 +38,26 @@
 
     @formHelper(action = routes.CommodityCodeController.onSubmit(arrivalId, houseConsignmentIndex, itemIndex, mode), Symbol("autoComplete") -> "off") {
 
-
+@if(isXI){
         @inputText(
             field = form("value"),
-            inputTextType = OrdinaryTextInput(
+            inputTextType = TextInputWithHiddenLabel(
                 heading = messages("commodityCode.heading", houseConsignmentIndex.display, itemIndex.display),
-                caption = Some(messages("site.caption", mrn.toString))
+                caption = Some(messages("site.caption", mrn.toString)),
+                additionalHtml = Html(s"""<p class="govuk-body">${messages("commodityCode.xi.paragraph")}</p>"""),
             ),
             hint = Some(messages("commodityCode.hint"))
-        )
-
+            )
+        } else {
+            @inputText(
+            field = form("value"),
+            inputTextType = OrdinaryTextInput(
+            heading = messages("commodityCode.heading", houseConsignmentIndex.display, itemIndex.display),
+            caption = Some(messages("site.caption", mrn.toString))
+            ),
+            hint = Some(messages("commodityCode.hint"))
+            )
+        }
         @button(attributes = Map("id" -> "submit"))
     }
 }

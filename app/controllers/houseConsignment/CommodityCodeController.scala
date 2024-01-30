@@ -18,6 +18,7 @@ package controllers.houseConsignment
 
 import controllers.actions._
 import forms.CommodityCodeFormProvider
+import models.P5.{CustomsOfficeOfDestinationActual, MessageData}
 import models.{ArrivalId, Index, Mode}
 import pages.houseConsignment.CommodityCodePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -43,21 +44,25 @@ class CommodityCodeController @Inject() (
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId) {
       implicit request =>
+        val isXI: Boolean = true
         val preparedForm = request.userAnswers.get(CommodityCodePage(houseConsignmentIndex, itemIndex)) match {
           case None        => formProvider(houseConsignmentIndex, itemIndex)
           case Some(value) => formProvider(houseConsignmentIndex, itemIndex).fill(value)
         }
 
-        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, isXI, mode))
     }
 
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
+        val isXI: Boolean = true
+
         formProvider(houseConsignmentIndex, itemIndex)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))),
+            formWithErrors =>
+              Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, isXI, mode))),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(CommodityCodePage(houseConsignmentIndex, itemIndex), value))
