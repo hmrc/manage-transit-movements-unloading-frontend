@@ -17,7 +17,7 @@
 package components
 
 import a11ySpecBase.A11ySpecBase
-import forms.VehicleRegistrationCountryFormProvider
+import forms.DepartureMeansOfTransportCountryFormProvider
 import models.reference.Country
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -41,7 +41,7 @@ class InputSelectSpec extends A11ySpecBase {
     val selectedValue  = Gen.oneOf(None, Some(countries.head)).sample.value
     val selectItems    = countries.toSelectItems(selectedValue)
     val additionalHtml = arbitrary[Html].sample.value
-    val form           = new VehicleRegistrationCountryFormProvider()(countries)
+    val form           = new DepartureMeansOfTransportCountryFormProvider()(countries)
     val preparedForm = selectedValue match {
       case Some(customsOffice) => form.fill(customsOffice)
       case None                => form
