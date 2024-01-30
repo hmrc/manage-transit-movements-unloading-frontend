@@ -20,14 +20,14 @@ import forms.behaviours.StringFieldBehaviours
 import models.reference.Country
 import play.api.data.FormError
 
-class VehicleRegistrationCountryFormProviderSpec extends StringFieldBehaviours {
+class DepartureMeansOfTransportCountryFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "vehicleRegistrationCountry.error.required"
-  val lengthKey   = "vehicleRegistrationCountry.error.length"
+  val requiredKey = "departureMeansOfTransportCountry.error.required"
+  val lengthKey   = "departureMeansOfTransportCountry.error.length"
   val maxLength   = 2
 
   val countries: Seq[Country] = Seq(Country("AD", Some("Andorra")))
-  val form                    = new VehicleRegistrationCountryFormProvider()(countries)
+  val form                    = new DepartureMeansOfTransportCountryFormProvider()(countries)
 
   ".value" - {
 

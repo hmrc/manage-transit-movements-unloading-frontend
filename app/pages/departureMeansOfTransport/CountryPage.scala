@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.departureMeansOfTransport
 
 import models.Index
+import pages.QuestionPage
 import pages.sections.TransportMeansListSection
 import play.api.libs.json.JsPath
 
-case class VehicleRegistrationCountryPage(transportMeansIndex: Index) extends QuestionPage[String] {
+case class CountryPage(transportMeansIndex: Index) extends QuestionPage[String] {
 
   override def path: JsPath = TransportMeansListSection.path \ transportMeansIndex.position \ toString
 
