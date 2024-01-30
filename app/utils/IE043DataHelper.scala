@@ -37,7 +37,7 @@ class IE043DataHelper(userAnswers: UserAnswers)(implicit messages: Messages) ext
     call: Option[Call],
     args: Any*
   )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.getIE043(page) map {
+    userAnswers.get(page) map {
       answer =>
         buildRow(
           prefix = prefix,
@@ -61,7 +61,7 @@ class IE043DataHelper(userAnswers: UserAnswers)(implicit messages: Messages) ext
     call: Option[Call],
     args: Option[Seq[Any]]
   )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.getIE043(page) map {
+    userAnswers.get(page) map {
       answer =>
         buildRow(
           prefix = prefix,
@@ -81,7 +81,7 @@ class IE043DataHelper(userAnswers: UserAnswers)(implicit messages: Messages) ext
     removeCall: Call,
     args: Option[Seq[Any]]
   )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.getIE043(page) map {
+    userAnswers.get(page) map {
       answer =>
         buildRemovableRow(
           prefix = prefix,
@@ -103,8 +103,8 @@ class IE043DataHelper(userAnswers: UserAnswers)(implicit messages: Messages) ext
     args: Any*
   )(implicit rds: Reads[T]): Option[SummaryListRow] =
     for {
-      answer <- userAnswers.getIE043(answerPath)
-      title  <- userAnswers.getIE043(titlePath)
+      answer <- userAnswers.get(answerPath)
+      title  <- userAnswers.get(titlePath)
     } yield buildRowFromPath(
       prefix = dynamicPrefix(title),
       answer = formatAnswer(answer),
@@ -122,7 +122,7 @@ class IE043DataHelper(userAnswers: UserAnswers)(implicit messages: Messages) ext
     removeCall: Call,
     args: Any*
   )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.getIE043(page) map {
+    userAnswers.get(page) map {
       answer =>
         buildRemovableRow(
           prefix = prefix,
@@ -168,7 +168,7 @@ class IE043DataHelper(userAnswers: UserAnswers)(implicit messages: Messages) ext
 
   def getAnswersAndBuildSectionRows(section: Section[JsArray])(f: Index => Option[SummaryListRow]): Seq[SummaryListRow] =
     userAnswers
-      .getIE043(section)
+      .get(section)
       .mapWithIndex {
         (_, index) => f(index)
       }

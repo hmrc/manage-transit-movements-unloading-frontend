@@ -67,7 +67,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
             |""".stripMargin)
           .as[JsObject]
 
-        val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+        val userAnswers = emptyUserAnswers.copy(data = json)
 
         setExistingUserAnswers(userAnswers)
         when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -110,7 +110,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
                    |""".stripMargin)
           .as[JsObject]
 
-        val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+        val userAnswers = emptyUserAnswers.copy(data = json)
 
         setExistingUserAnswers(userAnswers)
         when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -162,7 +162,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
                    |""".stripMargin)
           .as[JsObject]
 
-        val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+        val userAnswers = emptyUserAnswers.copy(data = json)
 
         setExistingUserAnswers(userAnswers)
         when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -202,7 +202,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
                    |""".stripMargin)
           .as[JsObject]
 
-        val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+        val userAnswers = emptyUserAnswers.copy(data = json)
 
         setExistingUserAnswers(userAnswers)
 
@@ -249,7 +249,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
                    |""".stripMargin)
           .as[JsObject]
 
-        val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+        val userAnswers = emptyUserAnswers.copy(data = json)
 
         setExistingUserAnswers(userAnswers)
 

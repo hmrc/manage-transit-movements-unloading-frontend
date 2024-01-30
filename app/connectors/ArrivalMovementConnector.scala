@@ -20,10 +20,11 @@ import config.FrontendAppConfig
 import models.ArrivalId
 import models.P5.{IE043Data, Messages}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.xml.{Node, XML}
 
 class ArrivalMovementConnector @Inject() (config: FrontendAppConfig, http: HttpClient) {
 
@@ -41,5 +42,13 @@ class ArrivalMovementConnector @Inject() (config: FrontendAppConfig, http: HttpC
     val serviceUrl = s"${config.commonTransitConventionTradersUrl}$path"
 
     http.GET[IE043Data](serviceUrl)(implicitly, headers, ec)
+  }
+
+  def getUnloadingPermissionXml(path: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Node] = {
+    val headers = hc.withExtraHeaders(("Accept", "application/vnd.hmrc.2.0+xml"))
+
+    val url = s"${config.commonTransitConventionTradersUrl}$path/body"
+
+    http.GET[HttpResponse](url)(readRaw, headers, ec).map(_.body).map(XML.loadString)
   }
 }

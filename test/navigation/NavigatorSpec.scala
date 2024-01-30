@@ -18,22 +18,17 @@ package navigation
 
 import base.SpecBase
 import controllers.routes
+import generated.CC043CType
 import generators.Generators
 import models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
-import play.api.libs.json.{JsObject, Json}
 import utils.Format._
-
-import java.time.{Clock, Instant, LocalDateTime, ZoneId}
 
 class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   val navigator = new Navigator
-
-  private val stubClock      = Clock.fixed(Instant.now, ZoneId.systemDefault)
-  private val dateTimeOfPrep = LocalDateTime.now(stubClock)
 
   "Navigator" - {
 
@@ -62,44 +57,9 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
       "must go from date goods unloaded page" - {
         "to can seals be read page when seals exist" in {
-          val json: JsObject = Json
-            .parse(
-              """{
-                |            "TransitOperation": {
-                |                "MRN": "38VYQTYFU3T0KUTUM3"
-                |            },
-                |            "preparationDateAndTime": "2007-10-26T07:36:28",
-                |            "Consignment": {
-                |               "HouseConsignment": [],
-                |
-                |                "TransportEquipment": [
-                |                    {
-                |                        "sequenceNumber": "te1",
-                |                        "containerIdentificationNumber": "cin-1",
-                |                        "numberOfSeals": 103,
-                |                        "Seal": [
-                |                            {
-                |                                "sequenceNumber": "1001",
-                |                                "identifier": "1002"
-                |                            }
-                |                        ]
-                |
-                |                    }
-                |                ]
-                |            },
-                |            "CustomsOfficeOfDestinationActual": {
-                |                "referenceNumber": "GB000008"
-                |            },
-                |            "TraderAtDestination": {
-                |                 "identificationNumber" : "AB123"
-                |            }
-                |
-                |     }
-                |""".stripMargin
-            )
-            .as[JsObject]
+          val ie043 = arbitrary[CC043CType].retryUntil(_.sealsExist).sample.value
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(ie043Data = ie043)
 
           navigator
             .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
@@ -108,34 +68,9 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
       }
 
       "to additional comments yes no page when seals does not exist" in {
-        val json: JsObject = Json
-          .parse(
-            """{
-              |            "TransitOperation": {
-              |                "MRN": "38VYQTYFU3T0KUTUM3"
-              |            },
-              |            "preparationDateAndTime": "2007-10-26T07:36:28",
-              |            "Consignment": {
-              |               "HouseConsignment": [],
-              |
-              |                "TransportEquipment": [
-              |                    {
-              |                        "sequenceNumber": "te1",
-              |                        "containerIdentificationNumber": "cin-1",
-              |                        "numberOfSeals": 0
-              |                    }
-              |                ]
-              |            },
-              |            "CustomsOfficeOfDestinationActual": {
-              |                "referenceNumber": "GB000008"
-              |            }
-              |
-              |     }
-              |""".stripMargin
-          )
-          .as[JsObject]
+        val ie043 = arbitrary[CC043CType].map(_.copy(Consignment = None)).sample.value
 
-        val userAnswers = emptyUserAnswers.copy(data = json)
+        val userAnswers = emptyUserAnswers.copy(ie043Data = ie043)
 
         navigator
           .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
@@ -274,11 +209,8 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
-              val ie043Data      = Json.obj("preparationDateAndTime" -> dateTimeOfPrep)
-              val updatedAnswers = answers.copy(ie043Data = ie043Data)
-
               navigator
-                .nextPage(DateGoodsUnloadedPage, mode, updatedAnswers)
+                .nextPage(DateGoodsUnloadedPage, mode, answers)
                 .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }

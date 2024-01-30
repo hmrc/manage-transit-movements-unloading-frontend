@@ -19,7 +19,6 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.actions.FakeUnloadingPermissionAction
 import generators.Generators
-import models.P5.submission.IE044Data
 import models.{ArrivalId, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -30,6 +29,7 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.DateTimeService
+import utils.transformers.IE043Transformer
 
 import java.time.LocalDateTime
 import scala.concurrent.Future
@@ -40,19 +40,28 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
   private val mockDateTimeService: DateTimeService = mock[DateTimeService]
 
+  private lazy val mockIE043Transformer = mock[IE043Transformer]
+
   private val dateTime = LocalDateTime.of(2023: Int, 1, 1, 0, 0)
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[DateTimeService].toInstance(mockDateTimeService)
+        bind[DateTimeService].toInstance(mockDateTimeService),
+        bind[IE043Transformer].toInstance(mockIE043Transformer)
       )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
+
     reset(mockDateTimeService)
+    reset(mockIE043Transformer)
+
     when(mockDateTimeService.currentDateTime).thenReturn(dateTime)
+
+    when(mockIE043Transformer.transform(any()))
+      .thenReturn(Future.successful(emptyUserAnswers.copy(data = Json.obj("foo" -> "bar"))))
   }
 
   "Index Controller" - {
@@ -79,13 +88,12 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
         redirectLocation(result).value mustEqual nextPage
 
+        verify(mockIE043Transformer).transform(userAnswersCaptor.capture())
+        userAnswersCaptor.getValue.data mustBe Json.obj()
+
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
-
-        val expectedUnloadingPermission = Json.toJsObject(unloadingAction.messageData)
-        val expectedData                = Json.toJsObject(IE044Data.fromIE043Data(unloadingAction.messageData, dateTime))
-
-        userAnswersCaptor.getValue.data mustBe expectedData
-        userAnswersCaptor.getValue.ie043Data mustBe expectedUnloadingPermission
+        userAnswersCaptor.getValue.data mustBe Json.obj("foo" -> "bar")
+        userAnswersCaptor.getValue.ie043Data mustBe basicIe043
       }
 
       "must redirect to onward route when there are UserAnswers" in {
@@ -110,8 +118,9 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
         redirectLocation(result).value mustEqual nextPage
 
-        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+        verifyNoInteractions(mockIE043Transformer)
 
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
         userAnswersCaptor.getValue.data mustBe emptyUserAnswers.data
         userAnswersCaptor.getValue.ie043Data mustBe emptyUserAnswers.ie043Data
       }

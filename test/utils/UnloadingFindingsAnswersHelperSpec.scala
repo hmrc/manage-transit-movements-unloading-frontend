@@ -29,7 +29,6 @@ import play.api.libs.json.{JsObject, Json}
 import services.ReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
-import utils.UnloadingFindingsAnswersHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -77,7 +76,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             )
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
@@ -121,7 +120,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             )
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
@@ -160,7 +159,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             )
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
@@ -199,7 +198,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             )
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
@@ -238,7 +237,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             )
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
@@ -317,7 +316,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             )
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           val helper = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
           val result = helper.transportMeansID(index)
@@ -388,7 +387,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             )
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           val helper = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
           val result = helper.containerIdentificationNumber(index)
@@ -439,7 +438,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             )
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           val helper              = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
           val transportEquipment1 = helper.transportEquipmentSections.head.rows
@@ -474,7 +473,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             )
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           val helper              = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
           val transportEquipment1 = helper.transportEquipmentSections.head.rows
@@ -516,7 +515,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             )
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           val helper              = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
           val transportEquipment1 = helper.transportEquipmentSections.head.rows
@@ -574,7 +573,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             )
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           val helper              = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
           val transportEquipment1 = helper.transportEquipmentSections.head.rows
@@ -652,7 +651,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             )
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           val helper = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
           val result = helper.transportEquipmentSeal(equipmentIndex, sealIndex)
@@ -744,7 +743,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             )
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           val helper   = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
           val sections = helper.houseConsignmentSections.head.rows
@@ -831,7 +830,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
               )
               .as[JsObject]
 
-            val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+            val userAnswers = emptyUserAnswers.copy(data = json)
 
             val helper   = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
             val sections = helper.houseConsignmentSections.head.rows
@@ -883,7 +882,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
               )
               .as[JsObject]
 
-            val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+            val userAnswers = emptyUserAnswers.copy(data = json)
 
             val helper   = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
             val sections = helper.houseConsignmentSections.head.rows
@@ -921,7 +920,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
               )
               .as[JsObject]
 
-            val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+            val userAnswers = emptyUserAnswers.copy(data = json)
 
             val helper   = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
             val sections = helper.houseConsignmentSections.head.rows
@@ -974,7 +973,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
               )
               .as[JsObject]
 
-            val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+            val userAnswers = emptyUserAnswers.copy(data = json)
 
             val helper   = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
             val sections = helper.houseConsignmentSections.head.rows
@@ -1042,7 +1041,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
               )
               .as[JsObject]
 
-            val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+            val userAnswers = emptyUserAnswers.copy(data = json)
 
             val helper   = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
             val sections = helper.houseConsignmentSections.head.rows
@@ -1094,7 +1093,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
               )
               .as[JsObject]
 
-            val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+            val userAnswers = emptyUserAnswers.copy(data = json)
 
             val helper   = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
             val sections = helper.houseConsignmentSections.head.rows
@@ -1132,7 +1131,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
               )
               .as[JsObject]
 
-            val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+            val userAnswers = emptyUserAnswers.copy(data = json)
 
             val helper   = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
             val sections = helper.houseConsignmentSections.head.rows
@@ -1186,7 +1185,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
               )
               .as[JsObject]
 
-            val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+            val userAnswers = emptyUserAnswers.copy(data = json)
 
             val helper   = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
             val sections = helper.houseConsignmentSections.head.rows
@@ -1248,7 +1247,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
               )
               .as[JsObject]
 
-            val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+            val userAnswers = emptyUserAnswers.copy(data = json)
 
             val helper   = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
             val sections = helper.houseConsignmentSections.head.rows

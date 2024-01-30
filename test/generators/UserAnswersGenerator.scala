@@ -16,15 +16,16 @@
 
 package generators
 
+import generated.CC043CType
 import models.UserAnswers
-
-import java.time.Instant
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
 import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
-import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.json.{JsValue, Json}
+
+import java.time.Instant
 
 trait UserAnswersGenerator extends TryValues {
   self: Generators =>
@@ -48,6 +49,7 @@ trait UserAnswersGenerator extends TryValues {
       for {
         mrn        <- arbitrary[MovementReferenceNumber]
         eoriNumber <- arbitrary[EoriNumber]
+        ie043Data  <- arbitrary[CC043CType]
         data <- generators match {
           case Nil => Gen.const(Map[QuestionPage[_], JsValue]())
           case _   => Gen.mapOf(oneOf(generators))
@@ -56,7 +58,7 @@ trait UserAnswersGenerator extends TryValues {
         id = ArrivalId("AB123"),
         mrn = mrn,
         eoriNumber = eoriNumber,
-        ie043Data = JsObject.empty,
+        ie043Data = ie043Data,
         data = data.foldLeft(Json.obj()) {
           case (obj, (path, value)) =>
             obj.setObject(path.path, value).get

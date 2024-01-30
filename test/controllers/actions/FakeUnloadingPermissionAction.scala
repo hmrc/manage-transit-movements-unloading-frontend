@@ -16,28 +16,20 @@
 
 package controllers.actions
 
-import models.P5._
+import base.TestMessageData
 import models.requests.{IdentifierRequest, UnloadingPermissionRequest}
-import models.{ArrivalId, EoriNumber, MovementReferenceNumber}
+import models.{ArrivalId, EoriNumber}
 import play.api.mvc.Result
 import services.P5.UnloadingPermissionMessageService
 
-import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class FakeUnloadingPermissionAction(arrivalId: ArrivalId, unloadingPermissionMessageService: UnloadingPermissionMessageService)
-    extends UnloadingPermissionAction(arrivalId, unloadingPermissionMessageService) {
-
-  val messageData: MessageData = MessageData(
-    preparationDateAndTime = LocalDateTime.now(),
-    TransitOperation = TransitOperation(MovementReferenceNumber("99IT9876AB889012096")),
-    TraderAtDestination = TraderAtDestination("identificationNumber"),
-    Consignment = Consignment(None, None, List.empty),
-    CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("referenceNumber")
-  )
+    extends UnloadingPermissionAction(arrivalId, unloadingPermissionMessageService)
+    with TestMessageData {
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, UnloadingPermissionRequest[A]]] =
-    Future.successful(Right(UnloadingPermissionRequest(request, EoriNumber("AB123"), messageData)))
+    Future.successful(Right(UnloadingPermissionRequest(request, EoriNumber("AB123"), basicIe043)))
 
 }

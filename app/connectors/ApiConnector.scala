@@ -34,6 +34,7 @@ class ApiConnector @Inject() (httpClient: HttpClient, appConfig: FrontendAppConf
     HeaderNames.CONTENT_TYPE -> "application/json"
   )
 
+  // TODO - refactor to use CC044CType
   def submit(userAnswers: UserAnswers, arrivalId: ArrivalId)(implicit hc: HeaderCarrier): Future[Either[Result, HttpResponse]] = {
 
     val serviceUrl = s"${appConfig.commonTransitConventionTradersUrl}movements/arrivals/${arrivalId.value}/messages"
