@@ -18,14 +18,14 @@ package pages
 
 import pages.behaviours.PageBehaviours
 
-class VehicleRegistrationCountryPageSpec extends PageBehaviours {
+class DepartureMeansOfTransportCountryPageSpec extends PageBehaviours {
 
-  "VehicleRegistrationCountryPage" - {
+  "DepartureMeansOfTransportCountryPage" - {
 
-    beRetrievable[String](VehicleRegistrationCountryPage(index))
+    beRetrievable[String](DepartureMeansOfTransportCountryPage(index))
 
-    beSettable[String](VehicleRegistrationCountryPage(index))
+    beSettable[String](DepartureMeansOfTransportCountryPage(index))
 
-    beRemovable[String](VehicleRegistrationCountryPage(index))
+    beRemovable[String](DepartureMeansOfTransportCountryPage(index))
   }
 }

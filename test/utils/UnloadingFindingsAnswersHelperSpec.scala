@@ -335,9 +335,9 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
     "transportRegisteredCountry" - {
 
       "must return Some(Row)" - {
-        s"when $VehicleRegistrationCountryPage defined" in {
+        s"when $DepartureMeansOfTransportCountryPage defined" in {
           val answers = emptyUserAnswers
-            .setValue(VehicleRegistrationCountryPage(index), "GB")
+            .setValue(DepartureMeansOfTransportCountryPage(index), "GB")
 
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 

@@ -63,10 +63,10 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryVehicleRegistrationCountryReference: Arbitrary[(VehicleRegistrationCountryPage, JsValue)] =
+  implicit lazy val arbitraryDepartureMeansOfTransportCountryReference: Arbitrary[(DepartureMeansOfTransportCountryPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[VehicleRegistrationCountryPage]
+        page  <- arbitrary[DepartureMeansOfTransportCountryPage]
         value <- arbitrary[String].map(Json.toJson(_))
       } yield (page, value)
     }

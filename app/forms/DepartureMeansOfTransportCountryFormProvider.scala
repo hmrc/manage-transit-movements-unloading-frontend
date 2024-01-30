@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import models.Index
-import pages.sections.TransportMeansListSection
-import play.api.libs.json.JsPath
+import javax.inject.Inject
+import forms.mappings.Mappings
+import models.reference.Country
+import play.api.data.Form
 
-case class VehicleRegistrationCountryPage(transportMeansIndex: Index) extends QuestionPage[String] {
+class DepartureMeansOfTransportCountryFormProvider @Inject() extends Mappings {
 
-  override def path: JsPath = TransportMeansListSection.path \ transportMeansIndex.position \ toString
-
-  override def toString: String = "nationality"
+  def apply(countries: Seq[Country]): Form[Country] =
+    Form(
+      "value" -> text("departureMeansOfTransportCountry.error.required")
+        .verifying("departureMeansOfTransportCountry.error.required", value => countries.exists(_.code == value))
+        .transform[Country](value => countries.find(_.code == value).get, _.code)
+    )
 }

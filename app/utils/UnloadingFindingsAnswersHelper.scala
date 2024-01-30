@@ -38,7 +38,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
 
   def buildVehicleNationalityRow(index: Index): Future[Option[SummaryListRow]] =
     (for {
-      x <- OptionT.fromOption[Future](userAnswers.getIE043(VehicleRegistrationCountryPage(index)))
+      x <- OptionT.fromOption[Future](userAnswers.getIE043(DepartureMeansOfTransportCountryPage(index)))
       y <- OptionT.liftF(referenceDataService.getCountryNameByCode(x))
     } yield transportRegisteredCountry(y)).value
 

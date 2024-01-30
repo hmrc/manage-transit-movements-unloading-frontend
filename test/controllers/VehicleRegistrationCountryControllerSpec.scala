@@ -17,32 +17,32 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.VehicleRegistrationCountryFormProvider
+import forms.DepartureMeansOfTransportCountryFormProvider
 import generators.Generators
 import models.NormalMode
 import models.reference.Country
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import pages.VehicleRegistrationCountryPage
+import pages.DepartureMeansOfTransportCountryPage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.ReferenceDataService
-import views.html.VehicleRegistrationCountryView
+import views.html.DepartureMeansOfTransportCountryView
 
 import scala.concurrent.Future
 
-class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class DepartureMeansOfTransportCountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  val formProvider                                   = new VehicleRegistrationCountryFormProvider()
-  private val country: String                        = Country("GB", Some("United Kingdom")).code
-  val countries: Seq[Country]                        = Seq(Country("GB", Some("United Kingdom")))
-  val form: Form[Country]                            = formProvider(countries)
-  val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
-  private val mode                                   = NormalMode
-  lazy val vehicleRegistrationCountryRoute: String   = controllers.routes.VehicleRegistrationCountryController.onPageLoad(arrivalId, index, mode).url
+  val formProvider                                       = new DepartureMeansOfTransportCountryFormProvider()
+  private val country: String                            = Country("GB", Some("United Kingdom")).code
+  val countries: Seq[Country]                            = Seq(Country("GB", Some("United Kingdom")))
+  val form: Form[Country]                                = formProvider(countries)
+  val mockReferenceDataService: ReferenceDataService     = mock[ReferenceDataService]
+  private val mode                                       = NormalMode
+  lazy val DepartureMeansOfTransportCountryRoute: String = controllers.routes.DepartureMeansOfTransportCountryController.onPageLoad(arrivalId, index, mode).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -54,7 +54,7 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
       .guiceApplicationBuilder()
       .overrides(bind[ReferenceDataService].toInstance(mockReferenceDataService))
 
-  "VehicleRegistrationCountry Controller" - {
+  "departureMeansOfTransportCountry Controller" - {
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
@@ -63,13 +63,13 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, vehicleRegistrationCountryRoute)
+      val request = FakeRequest(GET, DepartureMeansOfTransportCountryRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual OK
 
-      val view = injector.instanceOf[VehicleRegistrationCountryView]
+      val view = injector.instanceOf[DepartureMeansOfTransportCountryView]
 
       status(result) mustEqual OK
 
@@ -84,15 +84,15 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
         Future.successful(countries)
       )
 
-      val userAnswers = emptyUserAnswers.setValue(VehicleRegistrationCountryPage(index), country)
+      val userAnswers = emptyUserAnswers.setValue(DepartureMeansOfTransportCountryPage(index), country)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, vehicleRegistrationCountryRoute)
+      val request = FakeRequest(GET, DepartureMeansOfTransportCountryRoute)
       val result  = route(app, request).value
 
       val filledForm = form.bind(Map("value" -> "GB"))
 
-      val view = injector.instanceOf[VehicleRegistrationCountryView]
+      val view = injector.instanceOf[DepartureMeansOfTransportCountryView]
 
       status(result) mustEqual OK
 
@@ -109,7 +109,7 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
       setExistingUserAnswers(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, vehicleRegistrationCountryRoute)
+        FakeRequest(POST, DepartureMeansOfTransportCountryRoute)
           .withFormUrlEncodedBody(("value", "GB"))
 
       val result = route(app, request).value
@@ -125,14 +125,14 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, vehicleRegistrationCountryRoute).withFormUrlEncodedBody(("value", ""))
+      val request   = FakeRequest(POST, DepartureMeansOfTransportCountryRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[VehicleRegistrationCountryView]
+      val view = injector.instanceOf[DepartureMeansOfTransportCountryView]
 
       contentAsString(result) mustEqual
         view(boundForm, countries, mrn, arrivalId, index, mode)(request, messages).toString
@@ -143,7 +143,7 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, vehicleRegistrationCountryRoute)
+      val request = FakeRequest(GET, DepartureMeansOfTransportCountryRoute)
 
       val result = route(app, request).value
 
@@ -158,7 +158,7 @@ class VehicleRegistrationCountryControllerSpec extends SpecBase with AppWithDefa
       setNoExistingUserAnswers()
 
       val request =
-        FakeRequest(POST, vehicleRegistrationCountryRoute)
+        FakeRequest(POST, DepartureMeansOfTransportCountryRoute)
           .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(app, request).value

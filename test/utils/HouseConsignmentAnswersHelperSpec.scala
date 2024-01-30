@@ -342,7 +342,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
     "transportRegisteredCountry" - {
 
       "must return Some(Row)" - {
-        s"when $VehicleRegistrationCountryPage defined" in {
+        s"when $DepartureMeansOfTransportCountryPage defined" in {
 
           val json: JsObject = Json
             .parse(s"""
