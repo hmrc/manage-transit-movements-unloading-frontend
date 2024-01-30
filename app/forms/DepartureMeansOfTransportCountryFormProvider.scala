@@ -21,12 +21,12 @@ import forms.mappings.Mappings
 import models.reference.Country
 import play.api.data.Form
 
-class VehicleRegistrationCountryFormProvider @Inject() extends Mappings {
+class DepartureMeansOfTransportCountryFormProvider @Inject() extends Mappings {
 
   def apply(countries: Seq[Country]): Form[Country] =
     Form(
-      "value" -> text("vehicleRegistrationCountry.error.required")
-        .verifying("vehicleRegistrationCountry.error.required", value => countries.exists(_.code == value))
+      "value" -> text("departureMeansOfTransportCountry.error.required")
+        .verifying("departureMeansOfTransportCountry.error.required", value => countries.exists(_.code == value))
         .transform[Country](value => countries.find(_.code == value).get, _.code)
     )
 }

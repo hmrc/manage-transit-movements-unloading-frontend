@@ -19,6 +19,7 @@ package generators
 import models.Index
 import org.scalacheck.Arbitrary
 import pages._
+import pages.departureMeansOfTransport.CountryPage
 
 trait PageGenerators {
 
@@ -49,8 +50,8 @@ trait PageGenerators {
   implicit lazy val arbitraryGrossWeightAmountPage: Arbitrary[GrossWeightPage] =
     Arbitrary(GrossWeightPage(Index(0), Index(0)))
 
-  implicit lazy val arbitraryVehicleRegistrationCountryPage: Arbitrary[VehicleRegistrationCountryPage] =
-    Arbitrary(VehicleRegistrationCountryPage(Index(0)))
+  implicit lazy val arbitraryDepartureMeansOfTransportCountryPage: Arbitrary[CountryPage] =
+    Arbitrary(CountryPage(Index(0)))
 
   implicit lazy val arbitraryVehicleNameRegistrationReferencePage: Arbitrary[VehicleIdentificationNumberPage] =
     Arbitrary(VehicleIdentificationNumberPage(Index(0)))

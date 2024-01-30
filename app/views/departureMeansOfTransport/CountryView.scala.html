@@ -19,6 +19,7 @@
 @import models.reference.{Country, Selectable}
 @import viewModels.components.InputSelectViewModel._
 @import views.html.components.{Button, ErrorSummary, InputSelect}
+@import controllers.departureMeansOfTransport.routes
 
 @this(
     mainTemplate: MainTemplate,
@@ -31,22 +32,24 @@
 @(form: Form[Country], countryList: Seq[Selectable], mrn: MovementReferenceNumber, arrivalId: ArrivalId,transportMeansIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("vehicleRegistrationCountry.title"),
+    title = messages("departureMeansOfTransportCountry.title"),
     showBackLink = true
 ) {
 
-    @errorSummary(form.errors)
+        @formHelper(action = routes.CountryController.onSubmit(arrivalId,transportMeansIndex, mode), Symbol("autoComplete") -> "off") {
 
-    @formHelper(action = controllers.routes.VehicleRegistrationCountryController.onSubmit(arrivalId,transportMeansIndex, mode), Symbol("autoComplete") -> "off") {
+        @errorSummary(form.errors)
+
 
         @select(
             field = form("value"),
             selectType = OrdinarySelect(
-                heading = messages("vehicleRegistrationCountry.heading"),
+                heading = messages("departureMeansOfTransportCountry.heading"),
                 caption = Some(messages("site.caption", mrn.toString))
             ),
             selectItems = countryList.toSelectItems(form.value),
-            placeholder = messages("vehicleRegistrationCountry.placeholder")
+            placeholder = messages("departureMeansOfTransportCountry.placeholder"),
+            hint = Some(messages("departureMeansOfTransportCountry.hint"))
         )
 
         @button(attributes = Map("id" -> "submit"))
