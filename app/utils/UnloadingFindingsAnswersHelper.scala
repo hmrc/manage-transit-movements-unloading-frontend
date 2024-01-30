@@ -20,6 +20,7 @@ import cats.data.OptionT
 import cats.implicits._
 import models.{Index, Link, UserAnswers}
 import pages._
+import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
 import pages.sections._
 import play.api.i18n.Messages
 import services.ReferenceDataService
@@ -38,7 +39,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
 
   def buildVehicleNationalityRow(index: Index): Future[Option[SummaryListRow]] =
     (for {
-      x <- OptionT.fromOption[Future](userAnswers.get(VehicleRegistrationCountryPage(index)))
+      x <- OptionT.fromOption[Future](userAnswers.get(CountryPage(index)))
       y <- OptionT.liftF(referenceDataService.getCountryNameByCode(x))
     } yield transportRegisteredCountry(y)).value
 

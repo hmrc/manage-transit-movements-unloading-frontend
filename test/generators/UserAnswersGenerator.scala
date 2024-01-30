@@ -22,6 +22,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
+import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
 import play.api.libs.json.{JsValue, Json}
 
 import java.time.Instant
@@ -35,7 +36,7 @@ trait UserAnswersGenerator extends TryValues {
       arbitrary[(CanSealsBeReadPage.type, JsValue)] ::
       arbitrary[(SealPage, JsValue)] ::
       arbitrary[(GrossWeightPage, JsValue)] ::
-      arbitrary[(VehicleRegistrationCountryPage, JsValue)] ::
+      arbitrary[(CountryPage, JsValue)] ::
       arbitrary[(VehicleIdentificationNumberPage, JsValue)] ::
       arbitrary[(DateGoodsUnloadedPage.type, JsValue)] ::
       Nil

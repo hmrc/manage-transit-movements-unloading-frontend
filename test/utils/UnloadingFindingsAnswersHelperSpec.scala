@@ -24,6 +24,7 @@ import org.mockito.Mockito.when
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
+import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
 import play.api.libs.json.{JsObject, Json}
 import services.ReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
@@ -334,9 +335,9 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
     "transportRegisteredCountry" - {
 
       "must return Some(Row)" - {
-        s"when $VehicleRegistrationCountryPage defined" in {
+        s"when $CountryPage defined" in {
           val answers = emptyUserAnswers
-            .setValue(VehicleRegistrationCountryPage(index), "GB")
+            .setValue(CountryPage(index), "GB")
 
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 

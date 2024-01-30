@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package views
+package views.departureMeansOfTransport
 
-import forms.VehicleRegistrationCountryFormProvider
+import forms.DepartureMeansOfTransportCountryFormProvider
 import generators.Generators
 import models.NormalMode
 import models.reference.Country
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.InputSelectViewBehaviours
-import views.html.VehicleRegistrationCountryView
+import views.html.departureMeansOfTransport.CountryView
 
-class VehicleRegistrationCountryViewSpec extends InputSelectViewBehaviours[Country] with Generators {
+class CountryViewSpec extends InputSelectViewBehaviours[Country] with Generators {
 
-  override def form: Form[Country] = new VehicleRegistrationCountryFormProvider()(values)
+  override def form: Form[Country] = new DepartureMeansOfTransportCountryFormProvider()(values)
 
   override def applyView(form: Form[Country]): HtmlFormat.Appendable =
-    injector.instanceOf[VehicleRegistrationCountryView].apply(form, values, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[CountryView].apply(form, values, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "vehicleRegistrationCountry"
+  override val prefix: String = "departureMeansOfTransportCountry"
 
   override def values: Seq[Country] = Seq(
     Country("UK", Some("United Kingdom")),
@@ -48,7 +48,7 @@ class VehicleRegistrationCountryViewSpec extends InputSelectViewBehaviours[Count
 
   behave like pageWithSelect()
 
-  behave like pageWithoutHint()
+  behave like pageWithHint("Enter the country or code, like Austria or AT.")
 
   behave like pageWithSubmitButton("Continue")
 }

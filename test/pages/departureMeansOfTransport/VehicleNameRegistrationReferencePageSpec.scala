@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.departureMeansOfTransport
 
 import pages.behaviours.PageBehaviours
 
-class VehicleRegistrationCountryPageSpec extends PageBehaviours {
+class VehicleNameRegistrationReferencePageSpec extends PageBehaviours {
 
-  "VehicleRegistrationCountryPage" - {
+  "VehicleNameRegistrationReferencePage" - {
 
-    beRetrievable[String](VehicleRegistrationCountryPage(index))
+    beRetrievable[String](VehicleIdentificationNumberPage(index))
 
-    beSettable[String](VehicleRegistrationCountryPage(index))
+    beSettable[String](VehicleIdentificationNumberPage(index))
 
-    beRemovable[String](VehicleRegistrationCountryPage(index))
+    beRemovable[String](VehicleIdentificationNumberPage(index))
   }
 }
