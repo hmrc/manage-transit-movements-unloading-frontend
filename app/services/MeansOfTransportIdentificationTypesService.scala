@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package services.departureTransportMeans
+package services
 
 import config.Constants.MeansOfTransportIdentification.UnknownIdentification
 import config.Constants.{Fixed, Unknown}
@@ -22,9 +22,9 @@ import connectors.ReferenceDataConnector
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.transport.TransportMode.InlandMode
 import models.requests.DataRequest
+import pages.departureTransportMeans.TransportMeansIdentificationPage
 import pages.equipment.InlandModePage
 import play.api.mvc.AnyContent
-import services.transport.TransportModeCodesService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -55,10 +55,12 @@ class MeansOfTransportIdentificationTypesService @Inject() (
               transportModeCodesService.getInlandModes().map {
                 inlandModes =>
                   request.userAnswers
-                    .get(InlandModePage)
-                    .flatMap(
-                      inlandMode => inlandModes.find(_.code == inlandMode.code)
-                    )
+                    .get(TransportMeansIdentificationPage)
+                    .flatMap {
+                      inlandMode =>
+                        val found = inlandModes.find(_.code == inlandMode.code)
+                        found
+                    }
               }
             )
           )

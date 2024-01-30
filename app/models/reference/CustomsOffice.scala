@@ -16,6 +16,7 @@
 
 package models.reference
 
+import cats.Order
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
@@ -38,5 +39,7 @@ object CustomsOffice {
         (__ \ "countryId").read[String] and
         (__ \ "phoneNumber").readNullable[String]
     )(CustomsOffice.apply _)
+
+  implicit val order: Order[CustomsOffice] = (x: CustomsOffice, y: CustomsOffice) => x.name.compareToIgnoreCase(y.name)
 
 }

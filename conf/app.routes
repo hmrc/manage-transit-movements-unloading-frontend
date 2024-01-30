@@ -109,3 +109,5 @@ POST       /:arrivalId/check-answers                                            
 
 GET        /:arrivalId/departure-means-of-transport/identification                          controllers.departureTransportMeans.TransportMeansIdentificationController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/departure-means-of-transport/identification                          controllers.departureTransportMeans.TransportMeansIdentificationController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/departure-means-of-transport/change-identification                   controllers.departureTransportMeans.TransportMeansIdentificationController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/departure-means-of-transport/change-identification                   controllers.departureTransportMeans.TransportMeansIdentificationController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)

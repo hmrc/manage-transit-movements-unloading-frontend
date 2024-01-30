@@ -27,7 +27,7 @@ case class TransportMeansIdentification(`type`: String, description: String) ext
 
   override val messageKeyPrefix: String = TransportMeansIdentification.messageKeyPrefix
 
-  val code: String = `type`
+  override val code: String = `type`
 
 }
 
@@ -37,5 +37,5 @@ object TransportMeansIdentification extends DynamicEnumerableType[TransportMeans
   implicit val order: Order[TransportMeansIdentification] = (x: TransportMeansIdentification, y: TransportMeansIdentification) =>
     x.code.compareToIgnoreCase(y.code)
 
-  val messageKeyPrefix = "houseConsignment.index.departureTransportMeans.identification"
+  val messageKeyPrefix = "departureTransportMeans.identification"
 }

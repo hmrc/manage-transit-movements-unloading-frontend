@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package pages.departureTransportMeans
+import cats.data.NonEmptySet
 
-import models.departureTransportMeans.TransportMeansIdentification
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+package object services {
 
-object TransportMeansIdentificationPage extends QuestionPage[TransportMeansIdentification] {
+  implicit class RichNonEmptySet[T](value: NonEmptySet[T]) {
 
-  override def path: JsPath = TransportMeansSection.path \ toString
-
-  override def toString: String = "identification"
+    def toSeq: Seq[T] =
+      value.toNonEmptyList.toList
+  }
 }

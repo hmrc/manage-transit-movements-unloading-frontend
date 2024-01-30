@@ -17,22 +17,11 @@
 package config
 
 object Constants {
-  val GB  = "GB"
-  val XI  = "XI"
-  val AD  = "AD"
-  val XXX = "XXX"
+  val GB = "GB"
+  val AD = "AD"
 
-  val STANDARD    = "A"
-  val `PRE-LODGE` = "D"
-
-  val TIR = "TIR"
-  val T2  = "T2"
-  val T   = "T"
-
-  val NoSecurityDetails                             = "0"
-  val EntrySummaryDeclarationSecurityDetails        = "1"
-  val ExitSummaryDeclarationSecurityDetails         = "2"
-  val EntryAndExitSummaryDeclarationSecurityDetails = "3"
+  val T2 = "T2"
+  val T  = "T"
 
   val Maritime = "1"
   val Rail     = "2"
@@ -42,21 +31,7 @@ object Constants {
   val Fixed    = "7"
   val Unknown  = "9"
 
-  val CustomsOfficeIdentifier       = "V"
-  val EoriNumberIdentifier          = "X"
-  val AuthorisationNumberIdentifier = "Y"
-  val UnlocodeIdentifier            = "U"
-  val CoordinatesIdentifier         = "W"
-  val AddressIdentifier             = "Z"
-  val PostalCodeIdentifier          = "T"
-
-  val DesignatedLocation = "A"
-  val AuthorisedPlace    = "B"
-  val ApprovedPlace      = "C"
-  val Other              = "D"
-
-  lazy val maxEoriNumberLength: Int        = 17
-  lazy val maxContainerIdNumberLength: Int = 17
+  val Other = "D"
 
   object MeansOfTransportIdentification {
     val UnknownIdentification = "99"

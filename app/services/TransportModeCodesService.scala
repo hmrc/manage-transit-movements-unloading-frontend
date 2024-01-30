@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package services.transport
+package services
 
-import config.Constants.{Air, Maritime, Rail, Road, Unknown}
+import config.Constants._
 import connectors.ReferenceDataConnector
 import models.reference.transport.TransportMode.{BorderMode, InlandMode}
 import uk.gov.hmrc.http.HeaderCarrier

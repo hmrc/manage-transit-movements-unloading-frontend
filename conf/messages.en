@@ -384,3 +384,7 @@ cannotSendUnloadingRemarks.officeNameNotAvailAndPhoneNumberAvailable  = If you h
 cannotSendUnloadingRemarks.officeNameNotAvailAndPhoneNumberNotAvailable  = If you have any questions, contact Customs office {0}.
 cannotSendUnloadingRemarks.officeNotAvailable  = If you have any questions, contact Customs office {0}.
 cannotSendUnloadingRemarks.linkText = View the status of this notification
+
+departureTransportMeans.identification.heading=Which identification do you want to use for the new departure means of transport?
+departureTransportMeans.identification.title=Which identification do you want to use for the new departure means of transport?
+departureTransportMeans.identification.error.required=Select which identification you want to use for the new departure means of transport

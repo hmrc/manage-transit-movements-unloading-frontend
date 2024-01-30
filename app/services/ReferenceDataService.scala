@@ -16,11 +16,12 @@
 
 package services
 
-import com.google.inject.Inject
+import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import models.reference.{Country, CustomsOffice}
 import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ReferenceDataServiceImpl @Inject() (connector: ReferenceDataConnector) extends ReferenceDataService {
@@ -35,28 +36,23 @@ class ReferenceDataServiceImpl @Inject() (connector: ReferenceDataConnector) ext
     }
 
   def getCustomsOfficeByCode(customsOfficeCode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CustomsOffice]] = {
-    val customsOfficesResult: Future[Seq[CustomsOffice]] = connector.getCustomsOffice(customsOfficeCode)
+    val customsOfficesResult: Future[NonEmptySet[CustomsOffice]] = connector.getCustomsOffice(customsOfficeCode)
 
     customsOfficesResult.flatMap(
-      offices => Future.successful(offices.headOption)
+      offices => Future.successful(offices.toSeq.headOption)
     )
   }
 
   def getCountryNameByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[String] = {
-    val countriesResult: Future[Seq[Country]] = connector.getCountryNameByCode(code)
+    val countriesResult: Future[NonEmptySet[Country]] = connector.getCountryNameByCode(code)
 
     countriesResult.flatMap(
-      countries =>
-        if (countries.isEmpty) {
-          throw new IllegalArgumentException("Get country by code request failed to return data")
-        } else {
-          Future.successful(countries.head.code)
-        }
+      countries => Future.successful(countries.head.code)
     )
   }
 
-  private def sort(countries: Seq[Country]): Seq[Country] =
-    countries.sortBy(
+  private def sort(countries: NonEmptySet[Country]): Seq[Country] =
+    countries.toSeq.sortBy(
       country =>
         country.description match {
           case Some(desc) => desc.toLowerCase()

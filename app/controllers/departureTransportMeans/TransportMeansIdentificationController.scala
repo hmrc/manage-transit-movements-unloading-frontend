@@ -21,13 +21,14 @@ import forms.EnumerableFormProvider
 import models.{ArrivalId, Mode}
 import models.departureTransportMeans.TransportMeansIdentification
 import models.requests.MandatoryDataRequest
+import navigation.Navigator
 import pages.departureTransportMeans.TransportMeansIdentificationPage
 import pages.equipment.InlandModePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
-import services.departureTransportMeans.MeansOfTransportIdentificationTypesService
+import services.MeansOfTransportIdentificationTypesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.departureTransportMeans.TransportMeansIdentificationView
 
@@ -41,13 +42,14 @@ class TransportMeansIdentificationController @Inject() (
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: TransportMeansIdentificationView,
+  navigator: Navigator,
   service: MeansOfTransportIdentificationTypesService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   private def form(identificationTypes: Seq[TransportMeansIdentification]): Form[TransportMeansIdentification] =
-    formProvider[TransportMeansIdentification]("consignment.departureTransportMeans.identification", identificationTypes)
+    formProvider[TransportMeansIdentification]("departureTransportMeans.identification", identificationTypes)
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId).async {
@@ -75,18 +77,17 @@ class TransportMeansIdentificationController @Inject() (
                   Future.successful(
                     BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, identifiers, mode))
                   ),
-                value => redirect(value, arrivalId, mode)
+                value => redirect(value, mode)
               )
         }
     }
 
   private def redirect(
     value: TransportMeansIdentification,
-    arrivalId: ArrivalId,
     mode: Mode
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansIdentificationPage, value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(???)
+    } yield Redirect(navigator.nextPage(TransportMeansIdentificationPage, mode, request.userAnswers))
 }
