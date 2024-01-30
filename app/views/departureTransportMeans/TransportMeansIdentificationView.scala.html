@@ -27,14 +27,14 @@
    button: Button
 )
 
-@(form: Form[TransportMeansIdentification], mrn: MovementReferenceNumber, arrivalId: ArrivalId, identifiers: Seq[TransportMeansIdentification], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[TransportMeansIdentification], mrn: MovementReferenceNumber, arrivalId: ArrivalId, transportMeansIndex: Index, identifiers: Seq[TransportMeansIdentification], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
    title = messages("departureTransportMeans.identification.title"),
    showBackLink = true
 ) {
 
-   @formHelper(action = controllers.departureTransportMeans.routes.TransportMeansIdentificationController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
+   @formHelper(action = controllers.departureTransportMeans.routes.TransportMeansIdentificationController.onSubmit(arrivalId, transportMeansIndex, mode), Symbol("autoComplete") -> "off") {
 
       @errorSummary(form.errors)
 

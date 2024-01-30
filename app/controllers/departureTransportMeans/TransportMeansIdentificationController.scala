@@ -18,11 +18,11 @@ package controllers.departureTransportMeans
 
 import controllers.actions._
 import forms.EnumerableFormProvider
-import models.{ArrivalId, Mode}
+import models.{ArrivalId, Index, Mode}
 import models.departureTransportMeans.TransportMeansIdentification
 import models.requests.MandatoryDataRequest
 import navigation.Navigator
-import pages.departureTransportMeans.TransportMeansIdentificationPage
+import pages.departureMeansOfTransport.TransportMeansIdentificationPage
 import pages.equipment.InlandModePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -51,43 +51,44 @@ class TransportMeansIdentificationController @Inject() (
   private def form(identificationTypes: Seq[TransportMeansIdentification]): Form[TransportMeansIdentification] =
     formProvider[TransportMeansIdentification]("departureTransportMeans.identification", identificationTypes)
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
+  def onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
-        service.getMeansOfTransportIdentificationTypes(request.userAnswers.get(InlandModePage)).flatMap {
+        service.getMeansOfTransportIdentificationTypes(request.userAnswers.get(InlandModePage), transportMeansIndex).flatMap {
           identifiers =>
-            val preparedForm = request.userAnswers.get(TransportMeansIdentificationPage) match {
+            val preparedForm = request.userAnswers.get(TransportMeansIdentificationPage(transportMeansIndex)) match {
               case None        => form(identifiers)
               case Some(value) => form(identifiers).fill(value)
             }
 
-            Future.successful(Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, identifiers, mode)))
+            Future.successful(Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, transportMeansIndex, identifiers, mode)))
         }
     }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
+  def onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
-        service.getMeansOfTransportIdentificationTypes(request.userAnswers.get(InlandModePage)).flatMap {
+        service.getMeansOfTransportIdentificationTypes(request.userAnswers.get(InlandModePage), transportMeansIndex).flatMap {
           identifiers =>
             form(identifiers)
               .bindFromRequest()
               .fold(
                 formWithErrors =>
                   Future.successful(
-                    BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, identifiers, mode))
+                    BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, transportMeansIndex, identifiers, mode))
                   ),
-                value => redirect(value, mode)
+                value => redirect(value, transportMeansIndex, mode)
               )
         }
     }
 
   private def redirect(
     value: TransportMeansIdentification,
+    transportMeansIndex: Index,
     mode: Mode
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansIdentificationPage, value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansIdentificationPage(transportMeansIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(TransportMeansIdentificationPage, mode, request.userAnswers))
+    } yield Redirect(navigator.nextPage(TransportMeansIdentificationPage(transportMeansIndex), mode, request.userAnswers))
 }

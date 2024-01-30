@@ -19,10 +19,11 @@ package services
 import config.Constants.MeansOfTransportIdentification.UnknownIdentification
 import config.Constants.{Fixed, Unknown}
 import connectors.ReferenceDataConnector
+import models.Index
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.transport.TransportMode.InlandMode
 import models.requests.DataRequest
-import pages.departureTransportMeans.TransportMeansIdentificationPage
+import pages.departureMeansOfTransport.TransportMeansIdentificationPage
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -34,7 +35,7 @@ class MeansOfTransportIdentificationTypesService @Inject() (
   transportModeCodesService: TransportModeCodesService
 )(implicit ec: ExecutionContext) {
 
-  def getMeansOfTransportIdentificationTypes(inlandMode: Option[InlandMode])(implicit
+  def getMeansOfTransportIdentificationTypes(inlandMode: Option[InlandMode], transportMeansIndex: Index)(implicit
     hc: HeaderCarrier,
     request: DataRequest[AnyContent]
   ): Future[Seq[TransportMeansIdentification]] =
@@ -54,7 +55,7 @@ class MeansOfTransportIdentificationTypesService @Inject() (
               transportModeCodesService.getInlandModes().map {
                 inlandModes =>
                   request.userAnswers
-                    .get(TransportMeansIdentificationPage)
+                    .get(TransportMeansIdentificationPage(transportMeansIndex))
                     .flatMap {
                       inlandMode =>
                         val found = inlandModes.find(_.code == inlandMode.code)

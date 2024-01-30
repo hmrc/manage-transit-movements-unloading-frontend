@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package pages.departureTransportMeans
+package pages.departureMeansOfTransport
 
+import models.Index
 import models.departureTransportMeans.TransportMeansIdentification
 import pages.QuestionPage
+import pages.sections.TransportMeansListSection
 import play.api.libs.json.JsPath
 
-object TransportMeansIdentificationPage extends QuestionPage[TransportMeansIdentification] {
+case class TransportMeansIdentificationPage(transportMeansIndex: Index) extends QuestionPage[TransportMeansIdentification] {
 
-  override def path: JsPath = TransportMeansSection.path \ toString
+  override def path: JsPath = TransportMeansListSection.path \ transportMeansIndex.position \ toString
 
   override def toString: String = "identification"
 }
