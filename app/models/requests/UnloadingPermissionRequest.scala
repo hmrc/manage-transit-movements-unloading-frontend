@@ -16,12 +16,12 @@
 
 package models.requests
 
+import generated.CC043CType
 import models.EoriNumber
-import models.P5.MessageData
 import play.api.mvc.{Request, WrappedRequest}
 
 case class UnloadingPermissionRequest[A](
   request: Request[A],
   eoriNumber: EoriNumber,
-  unloadingPermission: MessageData
+  unloadingPermission: CC043CType
 ) extends WrappedRequest[A](request)

@@ -7,7 +7,7 @@ import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 lazy val appName: String = "manage-transit-movements-unloading-frontend"
 
 lazy val root = (project in file("."))
-  .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtDistributablesPlugin)
+  .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtDistributablesPlugin, ScalaxbPlugin)
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .configs(IntegrationTest)
   .settings(inConfig(IntegrationTest)(itSettings): _*)
@@ -45,7 +45,9 @@ lazy val root = (project in file("."))
     ScoverageKeys.coverageExcludedPackages := Seq(
       "views\\.html\\.components.*",
       "views\\.html\\.resources.*",
-      "views\\.html\\.templates.*"
+      "views\\.html\\.templates.*",
+      ".*scalaxb.*",
+      ".*generated.*"
     ).mkString(";"),
     ScoverageKeys.coverageMinimumStmtTotal := 85,
     ScoverageKeys.coverageFailOnMinimum := true,
@@ -53,7 +55,8 @@ lazy val root = (project in file("."))
     scalacOptions ++= Seq(
       "-feature",
       "-Wconf:src=routes/.*:s",
-      "-Wconf:cat=unused-imports&src=html/.*:s"
+      "-Wconf:cat=unused-imports&src=html/.*:s",
+      "-Wconf:src=src_managed/.*:s"
     ),
     libraryDependencies ++= AppDependencies(),
     dependencyOverrides ++= AppDependencies.overrides,
@@ -69,6 +72,11 @@ lazy val root = (project in file("."))
     uglify / includeFilter  := GlobFilter("application.js"),
     ThisBuild / useSuperShell := false,
     ThisBuild / scalafmtOnCompile  := true
+  )
+  .settings(
+    Compile / scalaxb / scalaxbXsdSource := new File("./conf/xsd"),
+    Compile / scalaxb / scalaxbDispatchVersion := "1.1.3",
+    Compile / scalaxb / scalaxbPackageName := "generated"
   )
 
 lazy val testSettings: Seq[Def.Setting[_]] = Seq(

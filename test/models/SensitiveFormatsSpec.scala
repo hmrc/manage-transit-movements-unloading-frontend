@@ -17,7 +17,8 @@
 package models
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import play.api.libs.json.{JsObject, Json}
+import generated._
+import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Helpers.running
 
 class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
@@ -105,6 +106,95 @@ class SensitiveFormatsSpec extends SpecBase with AppWithDefaultMockFixtures {
             val sensitiveFormats = app.injector.instanceOf[SensitiveFormats]
             val result           = Json.toJson(decryptedValue)(sensitiveFormats.jsObjectWrites)
             result mustBe decryptedValue
+          }
+        }
+      }
+    }
+  }
+
+  "CC043CType" - {
+    val encryptedValue = encryptedIe043
+    val decryptedValue = basicIe043
+
+    "reads" - {
+      "when encryption enabled" - {
+        "must read an encrypted value" in {
+          val app = guiceApplicationBuilder()
+            .configure("encryption.enabled" -> true)
+            .build()
+
+          running(app) {
+            val sensitiveFormats = app.injector.instanceOf[SensitiveFormats]
+            val result           = JsString(encryptedValue).as[CC043CType](sensitiveFormats.cc043cReads)
+            result mustBe decryptedValue
+          }
+        }
+
+        "must read a decrypted value" in {
+          val app = guiceApplicationBuilder()
+            .configure("encryption.enabled" -> true)
+            .build()
+
+          running(app) {
+            val sensitiveFormats = app.injector.instanceOf[SensitiveFormats]
+            val result           = JsString(decryptedValue.toXML.toString()).as[CC043CType](sensitiveFormats.cc043cReads)
+            result mustBe decryptedValue
+          }
+        }
+      }
+
+      "when encryption disabled" - {
+        "must read an encrypted value" in {
+          val app = guiceApplicationBuilder()
+            .configure("encryption.enabled" -> false)
+            .build()
+
+          running(app) {
+            val sensitiveFormats = app.injector.instanceOf[SensitiveFormats]
+            val result           = JsString(encryptedValue).as[CC043CType](sensitiveFormats.cc043cReads)
+            result mustBe decryptedValue
+          }
+        }
+
+        "must read a decrypted value" in {
+          val app = guiceApplicationBuilder()
+            .configure("encryption.enabled" -> false)
+            .build()
+
+          running(app) {
+            val sensitiveFormats = app.injector.instanceOf[SensitiveFormats]
+            val result           = JsString(decryptedValue.toXML.toString()).as[CC043CType](sensitiveFormats.cc043cReads)
+            result mustBe decryptedValue
+          }
+        }
+      }
+    }
+
+    "writes" - {
+      "when encryption enabled" - {
+        "must write and encrypt the value" in {
+          val app = guiceApplicationBuilder()
+            .configure("encryption.enabled" -> true)
+            .build()
+
+          running(app) {
+            val sensitiveFormats = app.injector.instanceOf[SensitiveFormats]
+            val result           = Json.toJson(decryptedValue)(sensitiveFormats.cc043cWrites)
+            result.as[JsString].value must not startWith "<CC043C>"
+          }
+        }
+      }
+
+      "encryption disabled" - {
+        "must write and not encrypt the value" in {
+          val app = guiceApplicationBuilder()
+            .configure("encryption.enabled" -> false)
+            .build()
+
+          running(app) {
+            val sensitiveFormats = app.injector.instanceOf[SensitiveFormats]
+            val result           = Json.toJson(decryptedValue)(sensitiveFormats.cc043cWrites)
+            result.as[JsString].value must startWith("<CC043C>")
           }
         }
       }

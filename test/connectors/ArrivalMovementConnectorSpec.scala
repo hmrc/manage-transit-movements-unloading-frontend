@@ -26,6 +26,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.xml.Node
 
 class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockSuite with Generators {
 
@@ -130,6 +131,24 @@ class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtu
       }
     }
 
-  }
+    "getUnloadingPermissionXml" - {
 
+      val xml: Node =
+        <ncts:CC043C PhaseID="NCTS5.0" xmlns:ncts="http://ncts.dgtaxud.ec">
+          <messageSender>token</messageSender>
+        </ncts:CC043C>
+
+      "should return Message" in {
+        server.stubFor(
+          get("/path/url/body")
+            .withHeader("Accept", containing("application/vnd.hmrc.2.0+xml"))
+            .willReturn(ok(xml.toString()))
+        )
+
+        val result = connector.getUnloadingPermissionXml("path/url").futureValue
+
+        result mustBe xml
+      }
+    }
+  }
 }

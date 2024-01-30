@@ -65,7 +65,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           )
           .as[JsObject]
 
-        val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+        val userAnswers = emptyUserAnswers.copy(data = json)
 
         setExistingUserAnswers(userAnswers)
         when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -107,7 +107,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           )
           .as[JsObject]
 
-        val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+        val userAnswers = emptyUserAnswers.copy(data = json)
 
         setExistingUserAnswers(userAnswers)
         when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -145,7 +145,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             )
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           setExistingUserAnswers(userAnswers)
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -186,7 +186,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             )
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           setExistingUserAnswers(userAnswers)
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -226,7 +226,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             )
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           setExistingUserAnswers(userAnswers)
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -278,7 +278,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             )
             .as[JsObject]
 
-          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+          val userAnswers = emptyUserAnswers.copy(data = json)
 
           setExistingUserAnswers(userAnswers)
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -343,7 +343,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           )
           .as[JsObject]
 
-        val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+        val userAnswers = emptyUserAnswers.copy(data = json)
 
         setExistingUserAnswers(userAnswers)
         when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -435,7 +435,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           )
           .as[JsObject]
 
-        val userAnswers = emptyUserAnswers.copy(ie043Data = json)
+        val userAnswers = emptyUserAnswers.copy(data = json)
 
         setExistingUserAnswers(userAnswers)
         when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))

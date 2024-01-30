@@ -25,7 +25,6 @@ import org.mockito.Mockito.when
 import pages.DateGoodsUnloadedPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.DateGoodsUnloadedView
@@ -54,9 +53,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must return OK and the correct view for a GET" in {
 
-      val ie043Data = Json.obj("preparationDateAndTime" -> dateTimeOfPrep)
-
-      val userAnswers = emptyUserAnswers.copy(ie043Data = ie043Data)
+      val userAnswers = emptyUserAnswers.copy(ie043Data = basicIe043)
 
       setExistingUserAnswers(userAnswers)
 
@@ -73,9 +70,8 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers.set(DateGoodsUnloadedPage, dateTimeOfPrep.toLocalDate).success.value
-      val ie043Data   = Json.obj("preparationDateAndTime" -> dateTimeOfPrep)
 
-      val userAnswersWithIe043Data = userAnswers.copy(ie043Data = ie043Data)
+      val userAnswersWithIe043Data = userAnswers.copy(ie043Data = basicIe043)
 
       setExistingUserAnswers(userAnswersWithIe043Data)
 
@@ -97,25 +93,13 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
       contentAsString(result) mustBe view(mrn, arrivalId, NormalMode, filledForm)(request, messages).toString
     }
 
-    "must redirect to session expired on a GET when date of preparation is not available" in {
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val result = route(app, FakeRequest(GET, dateGoodsUnloadedRoute)).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
-    }
-
     "must redirect on to the next page when valid data is submitted" in {
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val userAnswers = emptyUserAnswers.set(DateGoodsUnloadedPage, dateTimeOfPrep.toLocalDate).success.value
-      val ie043Data   = Json.obj("preparationDateAndTime" -> dateTimeOfPrep)
 
-      val userAnswersWithIe043Data = userAnswers.copy(ie043Data = ie043Data)
+      val userAnswersWithIe043Data = userAnswers.copy(ie043Data = basicIe043)
 
       setExistingUserAnswers(userAnswersWithIe043Data)
 
@@ -134,9 +118,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val ie043Data = Json.obj("preparationDateAndTime" -> dateTimeOfPrep)
-
-      val userAnswers = emptyUserAnswers.copy(ie043Data = ie043Data)
+      val userAnswers = emptyUserAnswers.copy(ie043Data = basicIe043)
 
       setExistingUserAnswers(userAnswers)
 
@@ -162,9 +144,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must return a Bad Request and errors when the date is before date of preparation" in {
 
-      val ie043Data = Json.obj("preparationDateAndTime" -> dateTimeOfPrep)
-
-      val userAnswers = emptyUserAnswers.copy(ie043Data = ie043Data)
+      val userAnswers = emptyUserAnswers.copy(ie043Data = basicIe043)
 
       setExistingUserAnswers(userAnswers)
 
@@ -188,23 +168,5 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       contentAsString(result) mustBe view(mrn, arrivalId, NormalMode, boundForm)(request, messages).toString
     }
-
-    "must redirect to session expired on a POST when date of preparation is not available" in {
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val postRequest = FakeRequest(POST, dateGoodsUnloadedRoute)
-        .withFormUrlEncodedBody(
-          "value.day"   -> validAnswer.getDayOfMonth.toString,
-          "value.month" -> validAnswer.getMonthValue.toString,
-          "value.year"  -> validAnswer.getYear.toString
-        )
-      val result = route(app, postRequest).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
-    }
-
   }
 }

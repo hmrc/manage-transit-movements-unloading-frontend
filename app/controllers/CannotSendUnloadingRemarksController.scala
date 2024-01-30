@@ -18,7 +18,6 @@ package controllers
 
 import controllers.actions._
 import models.{ArrivalId, CannotSendUnloadingRemarksViewModel}
-import pages.CustomsOfficeOfDestinationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.ReferenceDataService
@@ -32,7 +31,6 @@ class CannotSendUnloadingRemarksController @Inject() (
   override val messagesApi: MessagesApi,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  getMandatoryPage: IE043DataRequiredActionProvider,
   referenceDataService: ReferenceDataService,
   view: CannotSendUnloadingRemarksView
 )(implicit executionContext: ExecutionContext)
@@ -41,14 +39,14 @@ class CannotSendUnloadingRemarksController @Inject() (
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] = actions
     .requireData(arrivalId)
-    .andThen(getMandatoryPage(CustomsOfficeOfDestinationPage))
     .async {
       implicit request =>
+        val customsOfficeId = request.userAnswers.ie043Data.CustomsOfficeOfDestinationActual.referenceNumber
         referenceDataService
-          .getCustomsOfficeByCode(request.arg)
+          .getCustomsOfficeByCode(customsOfficeId)
           .map {
             customsOffice =>
-              Ok(view(request.userAnswers.mrn, arrivalId, CannotSendUnloadingRemarksViewModel(customsOffice, request.arg)))
+              Ok(view(request.userAnswers.mrn, arrivalId, CannotSendUnloadingRemarksViewModel(customsOffice, customsOfficeId)))
           }
     }
 }

@@ -17,6 +17,7 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import generated.CustomsOfficeOfDestinationActualType03
 import generators.Generators
 import models.UnloadingRemarksSentViewModel
 import models.reference.CustomsOffice
@@ -24,7 +25,6 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.ReferenceDataService
@@ -35,7 +35,6 @@ import scala.concurrent.Future
 class UnloadingRemarksSentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
-  private val customsOffice                          = CustomsOffice("ID", "", "GB", None)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -47,11 +46,9 @@ class UnloadingRemarksSentControllerSpec extends SpecBase with AppWithDefaultMoc
       .guiceApplicationBuilder()
       .overrides(bind[ReferenceDataService].toInstance(mockReferenceDataService))
 
-  val setCustomsOfficeOfDestination: JsObject = Json.obj(
-    "CustomsOfficeOfDestinationActual" -> Json.obj(
-      "referenceNumber" -> "CODE-001"
-    )
-  )
+  private val customsOfficeId = "CODE-001"
+
+  private val customsOffice = CustomsOffice(customsOfficeId, "", "GB", None)
 
   "UnloadingRemarksSent Controller" - {
     "return OK and the correct view" in {
@@ -60,7 +57,8 @@ class UnloadingRemarksSentControllerSpec extends SpecBase with AppWithDefaultMoc
 
       when(mockReferenceDataService.getCustomsOfficeByCode(any())(any(), any())).thenReturn(Future.successful(Some(customsOffice)))
 
-      setExistingUserAnswers(emptyUserAnswers.copy(ie043Data = setCustomsOfficeOfDestination))
+      val ie043Data = basicIe043.copy(CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActualType03(customsOfficeId))
+      setExistingUserAnswers(emptyUserAnswers.copy(ie043Data = ie043Data))
 
       val unloadingRemarksSentViewModel = UnloadingRemarksSentViewModel(Some(customsOffice), "CODE-001")
 
@@ -73,22 +71,6 @@ class UnloadingRemarksSentControllerSpec extends SpecBase with AppWithDefaultMoc
       status(result) mustBe OK
 
       contentAsString(result) mustEqual view(mrn, unloadingRemarksSentViewModel)(request, messages).toString
-    }
-
-    "must redirect to Session Expired for a GET if no CustomsOfficeOfDestination data is found" in {
-      checkArrivalStatus()
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      when(mockReferenceDataService.getCustomsOfficeByCode(any())(any(), any())).thenReturn(Future.successful(Some(customsOffice)))
-
-      val request = FakeRequest(GET, routes.UnloadingRemarksSentController.onPageLoad(arrivalId).url)
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
   }
