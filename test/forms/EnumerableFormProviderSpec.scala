@@ -27,16 +27,15 @@ class EnumerableFormProviderSpec extends OptionFieldBehaviours {
 
   sealed private trait FakeEnum extends Radioable[FakeEnum] {
     override lazy val messageKeyPrefix: String = FakeEnum.messageKeyPrefix
-    override val code: String                  = "1"
   }
 
   private object FakeEnum extends EnumerableType[FakeEnum] {
     lazy val messageKeyPrefix: String = prefix
 
-    case object Foo extends FakeEnum
-    case object Bar extends FakeEnum
+    case class Foo(code: String) extends FakeEnum
+    case class Bar(code: String) extends FakeEnum
 
-    override val values: Seq[FakeEnum] = Seq(Foo, Bar)
+    override val values: Seq[FakeEnum] = Seq(Foo("foo"), Bar("bar"))
   }
 
   private val formProvider = new EnumerableFormProvider()

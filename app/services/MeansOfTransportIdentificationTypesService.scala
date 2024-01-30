@@ -23,7 +23,6 @@ import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.transport.TransportMode.InlandMode
 import models.requests.DataRequest
 import pages.departureTransportMeans.TransportMeansIdentificationPage
-import pages.equipment.InlandModePage
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.http.HeaderCarrier
 
