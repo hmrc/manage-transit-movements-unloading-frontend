@@ -1,5 +1,8 @@
 # microservice specific routes
 
+->         /                                            app.departureMeansOfTransport.Routes
+
+
 ->         /hmrc-frontend                                                                                            hmrcfrontend.Routes
 
 GET        /:arrivalId/unloading-remarks/:messageId                                                                  controllers.IndexController.unloadingRemarks(arrivalId: ArrivalId, messageId: String)
@@ -33,10 +36,6 @@ POST       /:arrivalId/transport-means/:transportMeansIndex/vehicle-identificati
 GET        /:arrivalId/transport-means/:transportMeansIndex/change-vehicle-identification-number                     controllers.VehicleIdentificationNumberController.onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode = CheckMode)
 POST       /:arrivalId/transport-means/:transportMeansIndex/change-vehicle-identification-number                     controllers.VehicleIdentificationNumberController.onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode = CheckMode)
 
-GET        /:arrivalId/departure-means-of-transport/:transportMeansIndex/country                                     controllers.departureMeansOfTransport.CountryController.onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode = NormalMode)
-POST       /:arrivalId/departure-means-of-transport/:transportMeansIndex/country                                     controllers.departureMeansOfTransport.CountryController.onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode = NormalMode)
-GET        /:arrivalId/departure-means-of-transport/:transportMeansIndex/country                                     controllers.departureMeansOfTransport.CountryController.onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode = CheckMode)
-POST       /:arrivalId/departure-means-of-transport/:transportMeansIndex/country                                     controllers.departureMeansOfTransport.CountryController.onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode = CheckMode)
 
 GET        /:arrivalId/house-consignment/:houseConsignmentIndex/items/:itemIndex/gross-weight                        controllers.GrossWeightController.onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode = NormalMode)
 POST       /:arrivalId/house-consignment/:houseConsignmentIndex/items/:itemIndex/gross-weight                        controllers.GrossWeightController.onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode = NormalMode)
