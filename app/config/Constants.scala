@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
-package pages
+package config
 
-import models.Index
-import pages.sections.ItemsSection
-import play.api.libs.json.JsPath
+object Constants {
 
-case class ItemDescriptionPage(houseConsignment: Index, itemIndex: Index) extends QuestionPage[String] {
+  lazy val maxItemDescriptionLength: Int = 512
 
-  override def path: JsPath = ItemsSection(houseConsignment).path \ itemIndex.position \ "Commodity" \ toString
-
-  override def toString: String = "descriptionOfGoods"
 }

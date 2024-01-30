@@ -15,6 +15,7 @@
  *@
 
 @import models.MovementReferenceNumber
+@import viewModels.components.InputCharacterCountViewModel._
 @import views.html.components.{Button, ErrorSummary, Heading, InputCharacterCount, InputYesNo}
 
 @this(
@@ -41,9 +42,12 @@
 
         @inputCharacterCount(
           field = form("value"),
+          inputCharacterCountType = OrdinaryInputCharacterCount(
+              heading = messages("changesToReport.title"),
+              caption = Some(messages("site.caption", mrn.toString)),
+        ),
           label = messages("changesToReport.title"),
           maxLength = maxLength,
-          caption = Some(messages("site.caption", mrn.toString))
         )
 
         @button(attributes = Map("id" -> "submit"))
