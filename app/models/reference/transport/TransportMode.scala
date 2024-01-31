@@ -18,15 +18,15 @@ package models.reference.transport
 
 import cats.Order
 import models.{DynamicEnumerableType, Radioable}
+import org.apache.commons.text.StringEscapeUtils
 import play.api.libs.json.{Format, Json}
-import play.twirl.api.utils.StringEscapeUtils
 
 trait TransportMode[T] extends Radioable[T] {
 
   val code: String
   val description: String
 
-  override def toString: String = StringEscapeUtils.escapeXml11(description)
+  override def toString: String = StringEscapeUtils.unescapeXml(description)
 
   def isOneOf(codes: String*): Boolean    = codes.contains(code)
   def isNotOneOf(codes: String*): Boolean = !isOneOf(codes: _*)
