@@ -16,6 +16,7 @@
 
 package views.houseConsignment
 
+import base.SpecBase
 import forms.CommodityCodeFormProvider
 import models.NormalMode
 import org.scalacheck.{Arbitrary, Gen}
@@ -24,15 +25,18 @@ import play.twirl.api.HtmlFormat
 import views.behaviours.InputTextViewBehaviours
 import views.html.houseConsignment.CommodityCodeView
 
-class CommodityCodeViewSpec extends InputTextViewBehaviours[String] {
+class CommodityCodeViewSpec extends InputTextViewBehaviours[String] with SpecBase {
 
   override def form: Form[String] = new CommodityCodeFormProvider()(index, index)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[CommodityCodeView].apply(form, mrn, arrivalId, index, index, isXI, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[CommodityCodeView].apply(form, mrn, arrivalId, index, index, isXI = true, NormalMode)(fakeRequest, messages)
 
   override val prefix: String                         = "commodityCode"
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
+
+  private val paragraph =
+    "The combination of your commodity code and combined nomenclature code must be a valid code in TARIC. This is the European Union’s database for classifying goods and determining the amount of duties required."
 
   behave like pageWithTitle(index.display.toString, index.display.toString)
 
@@ -48,12 +52,15 @@ class CommodityCodeViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithSubmitButton("Continue")
 
-  if (isXI) {
+  "when isXI is true" - {
 
-    behave like pageWithContent(
-      "p",
-      "The combination of your commodity code and combined nomenclature code must be a valid code in TARIC. This is the European Union’s database for classifying goods and determining the amount of duties required."
-    )
+    behave like pageWithContent("p", paragraph)
+  }
+
+  "when isXI is false" - {
+    val view = injector.instanceOf[CommodityCodeView]
+    val doc  = parseView(view.apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, isXI = false, NormalMode)(fakeRequest, messages))
+    behave like pageWithoutContent(doc, "p", paragraph)
   }
 
 }
