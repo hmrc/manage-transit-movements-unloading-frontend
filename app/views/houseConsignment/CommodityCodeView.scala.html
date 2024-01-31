@@ -15,7 +15,7 @@
  *@
 
 @import models.MovementReferenceNumber
-@import viewModels.components.InputTextViewModel._
+@import viewModels.components.InputTextViewModel
 @import views.html.components.{Button, ErrorSummary, InputText}
 @import controllers.houseConsignment.routes
 
@@ -38,26 +38,16 @@
 
     @formHelper(action = routes.CommodityCodeController.onSubmit(arrivalId, houseConsignmentIndex, itemIndex, mode), Symbol("autoComplete") -> "off") {
 
-@if(isXI){
         @inputText(
             field = form("value"),
-            inputTextType = TextInputWithHiddenLabel(
+            inputTextType = InputTextViewModel(
                 heading = messages("commodityCode.heading", houseConsignmentIndex.display, itemIndex.display),
                 caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = Html(s"""<p class="govuk-body">${messages("commodityCode.xi.paragraph")}</p>"""),
+                additionalHtml = if (isXI) Some(messages("commodityCode.xi.paragraph").toParagraph) else None,
             ),
             hint = Some(messages("commodityCode.hint"))
-            )
-        } else {
-            @inputText(
-            field = form("value"),
-            inputTextType = OrdinaryTextInput(
-            heading = messages("commodityCode.heading", houseConsignmentIndex.display, itemIndex.display),
-            caption = Some(messages("site.caption", mrn.toString))
-            ),
-            hint = Some(messages("commodityCode.hint"))
-            )
-        }
+        )
+
         @button(attributes = Map("id" -> "submit"))
     }
 }
