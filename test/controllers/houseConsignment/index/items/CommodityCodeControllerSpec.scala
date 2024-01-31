@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.houseConsignment
+package controllers.houseConsignment.index.items
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
@@ -23,10 +23,10 @@ import generators.Generators
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.houseConsignment.CommodityCodePage
+import pages.houseConsignment.index.items.CommodityCodePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.houseConsignment.CommodityCodeView
+import views.html.houseConsignment.index.items.CommodityCodeView
 
 import scala.concurrent.Future
 
@@ -37,7 +37,7 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
   private val mode         = NormalMode
 
   lazy val commodityCodeControllerRoute: String =
-    controllers.houseConsignment.routes.CommodityCodeController.onPageLoad(arrivalId, index, index, mode).url
+    controllers.houseConsignment.index.items.routes.CommodityCodeController.onPageLoad(arrivalId, index, index, mode).url
 
   "CommodityCodeController" - {
 

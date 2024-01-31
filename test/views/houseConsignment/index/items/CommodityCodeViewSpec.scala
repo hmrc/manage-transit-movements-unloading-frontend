@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.houseConsignment
+package views.houseConsignment.index.items
 
 import base.SpecBase
 import forms.CommodityCodeFormProvider
@@ -23,7 +23,7 @@ import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.InputTextViewBehaviours
-import views.html.houseConsignment.CommodityCodeView
+import views.html.houseConsignment.index.items.CommodityCodeView
 
 class CommodityCodeViewSpec extends InputTextViewBehaviours[String] with SpecBase {
 

@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package pages.houseConsignment
+package pages.houseConsignment.index.items
 
-import pages.behaviours.PageBehaviours
+import models.Index
+import pages.QuestionPage
+import pages.sections.TransportMeansListSection
+import play.api.libs.json.JsPath
 
-class CommodityCodePageSpec extends PageBehaviours {
+case class CommodityCodePage(houseConsignmentIndex: Index, itemIndex: Index) extends QuestionPage[String] {
 
-  "CommodityCodePage" - {
-
-    beRetrievable[String](CommodityCodePage(index, index))
-
-    beSettable[String](CommodityCodePage(index, index))
-
-    beRemovable[String](CommodityCodePage(index, index))
-  }
+  override def path: JsPath     = TransportMeansListSection.path \ houseConsignmentIndex.position \ toString
+  override def toString: String = "commodityCode"
 }

@@ -2,7 +2,6 @@
 
 ->         /                                            app.departureMeansOfTransport.Routes
 ->         /                                            app.houseConsignment.index.items.Routes
-->         /                                            app.houseConsignment.Routes
 
 
 ->         /hmrc-frontend                                                                                            hmrcfrontend.Routes
