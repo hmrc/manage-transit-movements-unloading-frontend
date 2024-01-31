@@ -17,6 +17,7 @@
 @import models.{ArrivalId, MovementReferenceNumber}
 @import viewModels.components.InputTextViewModel._
 @import views.html.components.{Button, ErrorSummary, InputText}
+@import views.utils.ViewUtils.StringImplicits
 
 @this(
     mainTemplate: MainTemplate,
@@ -43,7 +44,7 @@
             field = form("value"),
             inputTextType = TextInputWithHiddenLabel(
                 heading = messages("netWeight.heading", itemIndex.display, houseConsignmentIndex.display),
-                additionalHtml = Html(s"""<p class="govuk-body">${messages("netWeight.paragraph")}</p>"""),
+                additionalHtml = messages("netWeight.paragraph").toParagraph,
                 caption = Some(messages("site.caption", mrn.toString))
             ),
             hint = Some(messages("netWeight.hint")),
