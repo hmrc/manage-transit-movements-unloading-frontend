@@ -29,7 +29,7 @@ class CommodityCodeViewSpec extends InputTextViewBehaviours[String] {
   override def form: Form[String] = new CommodityCodeFormProvider()(index, index)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[CommodityCodeView].apply(form, mrn, arrivalId, index, index, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[CommodityCodeView].apply(form, mrn, arrivalId, index, index, isXI, NormalMode)(fakeRequest, messages)
 
   override val prefix: String                         = "commodityCode"
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
@@ -47,4 +47,13 @@ class CommodityCodeViewSpec extends InputTextViewBehaviours[String] {
   behave like pageWithInputText()
 
   behave like pageWithSubmitButton("Continue")
+
+  if (isXI) {
+
+    behave like pageWithContent(
+      "p",
+      "The combination of your commodity code and combined nomenclature code must be a valid code in TARIC. This is the European Union’s database for classifying goods and determining the amount of duties required."
+    )
+  }
+
 }

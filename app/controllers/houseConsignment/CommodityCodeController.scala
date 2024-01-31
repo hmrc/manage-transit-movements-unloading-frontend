@@ -44,7 +44,7 @@ class CommodityCodeController @Inject() (
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId) {
       implicit request =>
-        val isXI: Boolean = true
+        val isXI: Boolean = request.userAnswers.ie043Data.CustomsOfficeOfDestinationActual.referenceNumber.startsWith("XI")
         val preparedForm = request.userAnswers.get(CommodityCodePage(houseConsignmentIndex, itemIndex)) match {
           case None        => formProvider(houseConsignmentIndex, itemIndex)
           case Some(value) => formProvider(houseConsignmentIndex, itemIndex).fill(value)

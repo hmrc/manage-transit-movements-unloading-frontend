@@ -55,7 +55,7 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, index, index, mode)(request, messages).toString
+        view(form, mrn, arrivalId, index, index, isXI = false, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -75,7 +75,7 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, index, index, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, index, index, isXI = false, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -110,7 +110,7 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       val view = injector.instanceOf[CommodityCodeView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, arrivalId, index, index, mode)(request, messages).toString
+        view(boundForm, mrn, arrivalId, index, index, isXI, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
