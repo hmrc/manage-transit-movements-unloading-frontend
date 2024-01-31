@@ -28,7 +28,7 @@ class NetWeightFormProviderSpec extends StringFieldBehaviours {
   private val decimalPoint      = "netWeight.error.decimal"
   private val maxLength         = UnloadingRemarksRequest.weightLength
 
-  private val form      = new NetWeightFormProvider()()
+  private val form      = new NetWeightFormProvider()(Index(0), Index(1))
   private val fieldName = "value"
 
   ".value" - {
@@ -42,7 +42,7 @@ class NetWeightFormProviderSpec extends StringFieldBehaviours {
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(Index(0).display.toString))
+      requiredError = FormError(fieldName, requiredKey, Seq(Index(0).display.toString, Index(1).display.toString))
     )
   }
 

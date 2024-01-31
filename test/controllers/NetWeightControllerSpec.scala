@@ -36,7 +36,7 @@ import scala.concurrent.Future
 class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider        = new NetWeightFormProvider()
-  private val form                = formProvider()
+  private val form                = formProvider(index, hcIndex)
   private val mode                = NormalMode
   private lazy val NetWeightRoute = controllers.routes.NetWeightController.onPageLoad(arrivalId, index, index, mode).url
 

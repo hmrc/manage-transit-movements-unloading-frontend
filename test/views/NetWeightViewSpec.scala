@@ -27,7 +27,7 @@ import views.html.NetWeightView
 
 class NetWeightViewSpec extends InputTextViewBehaviours[String] {
 
-  override def form: Form[String] = new NetWeightFormProvider()()
+  override def form: Form[String] = new NetWeightFormProvider()(index, hcIndex)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector.instanceOf[NetWeightView].apply(form, mrn, arrivalId, index, index, NormalMode)(fakeRequest, messages)
@@ -36,13 +36,13 @@ class NetWeightViewSpec extends InputTextViewBehaviours[String] {
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
-  behave like pageWithTitle(index.display.toString)
+  behave like pageWithTitle(index.display.toString, hcIndex.display.toString)
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithHeading(index.display.toString)
+  behave like pageWithHeading(index.display.toString, hcIndex.display.toString)
 
   behave like pageWithContent("p", "This is the weight of the item’s goods, excluding all packaging.")
 
