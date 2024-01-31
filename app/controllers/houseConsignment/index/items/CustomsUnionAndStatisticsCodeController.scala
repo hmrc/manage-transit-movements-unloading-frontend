@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items
 import controllers.actions._
 import forms.CUSCodeFormProvider
 import models.{ArrivalId, Index, Mode}
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import navigation.Navigator
 import pages.houseConsignment.index.items.CustomsUnionAndStatisticsCodePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -28,6 +28,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.houseConsignment.index.items.CustomsUnionAndStatisticsCodeView
 import models.requests.MandatoryDataRequest
+import services.ReferenceDataService
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,6 +38,7 @@ class CustomsUnionAndStatisticsCodeController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigator: Navigator,
   formProvider: CUSCodeFormProvider,
+  service: ReferenceDataService,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: CustomsUnionAndStatisticsCodeView
@@ -62,7 +64,14 @@ class CustomsUnionAndStatisticsCodeController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode, houseConsignmentIndex, itemIndex))),
-          value => redirect(value, houseConsignmentIndex, itemIndex, mode)
+          value =>
+            service.doesCUSCodeExist(value).flatMap {
+              case true => redirect(value, houseConsignmentIndex, itemIndex, mode)
+              case false =>
+                val formWithErrors =
+                  form(houseConsignmentIndex, itemIndex).withError(FormError("value", "houseConsignment.item.customsUnionAndStatisticsCode.error.not.exists"))
+                Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode, houseConsignmentIndex, itemIndex)))
+            }
         )
   }
 

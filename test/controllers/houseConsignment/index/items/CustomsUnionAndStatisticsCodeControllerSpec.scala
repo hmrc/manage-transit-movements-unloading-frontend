@@ -20,21 +20,24 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.CUSCodeFormProvider
 import models.NormalMode
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.items.CustomsUnionAndStatisticsCodePage
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.ReferenceDataService
 import views.html.houseConsignment.index.items.CustomsUnionAndStatisticsCodeView
 
 import scala.concurrent.Future
 
 class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider = new CUSCodeFormProvider()
-  private val form         = formProvider("houseConsignment.item.customsUnionAndStatisticsCode", itemIndex.display, houseConsignmentIndex.display)
-  private val mode         = NormalMode
+  private val formProvider                                   = new CUSCodeFormProvider()
+  private val form                                           = formProvider("houseConsignment.item.customsUnionAndStatisticsCode", itemIndex.display, houseConsignmentIndex.display)
+  private val mode                                           = NormalMode
+  private val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   private lazy val customsUnionAndStatisticsCodeRoute =
     controllers.houseConsignment.index.items.routes.CustomsUnionAndStatisticsCodeController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex).url
@@ -42,6 +45,7 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(bind[ReferenceDataService].toInstance(mockReferenceDataService))
 
   "CustomsUnionAndStatisticsCode Controller" - {
 
@@ -81,6 +85,7 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
     }
 
     "must redirect to the next page when valid data is submitted" in {
+      when(mockReferenceDataService.doesCUSCodeExist(anyString())(any(), any())).thenReturn(Future.successful(true))
 
       setExistingUserAnswers(emptyUserAnswers)
 

@@ -405,3 +405,4 @@ houseConsignment.item.customsUnionAndStatisticsCode.hint = This will be 9 charac
 houseConsignment.item.customsUnionAndStatisticsCode.error.required = Enter the new Customs Union and Statistics (CUS) code for item {0} in house consignment {1}
 houseConsignment.item.customsUnionAndStatisticsCode.error.length = The Customs Union and Statistics (CUS) code must be 9 characters long
 houseConsignment.item.customsUnionAndStatisticsCode.error.invalidCharacters = The Customs Union and Statistics (CUS) code must only include letters a to z and numbers 0 to 9
+houseConsignment.item.customsUnionAndStatisticsCode.error.not.exists = Please enter a valid Customs Union and Statistics (CUS) code. This will be 9 characters long and include both letters and numbers.
