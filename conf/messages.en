@@ -105,12 +105,12 @@ grossWeight.error.characters = The new gross weight must only include numbers 0 
 grossWeight.error.decimal = The new gross weight must only include 6 decimal places or less
 grossWeight.change.hidden = the new total gross weight
 
-netWeight.title = What is the new net weight of item {0}?
-netWeight.heading = What is the new net weight of item {0}?
-netWeight.checkYourAnswersLabel = What is the net net weight of item {0}?
+netWeight.title = What is the new net weight of item {0} in house consignment {1}?
+netWeight.heading = What is the new net weight of item {0} in house consignment {1}?
+netWeight.checkYourAnswersLabel = What is the net net weight of item {0} in house consignment {1}?
 netWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
 netWeight.paragraph = This is the weight of the item’s goods, excluding all packaging.
-netWeight.error.required = Enter the new net weight of item {0}
+netWeight.error.required = Enter the new net weight of item {0} in house consignment {1}
 netWeight.error.length = The new net weight must be 16 characters or less
 netWeight.error.characters = The new net weight must only include numbers 0 to 9 and a decimal point
 netWeight.error.decimal = The new net weight must only include 6 decimal places or less
