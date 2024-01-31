@@ -398,3 +398,10 @@ houseConsignment.item.description.error.length = The description must be 512 cha
 houseConsignment.item.description.error.required = Enter the new description of item {0} in house consignment {1}
 houseConsignment.item.description.error.length = The description must be 512 characters or less
 houseConsignment.item.description.error.invalidCharacters = The description must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+
+houseConsignment.item.customsUnionAndStatisticsCode.title = What is the new Customs Union and Statistics (CUS) code for item {0} in house consignment {1}
+houseConsignment.item.customsUnionAndStatisticsCode.heading = What is the new Customs Union and Statistics (CUS) code for item {0} in house consignment {1}
+houseConsignment.item.customsUnionAndStatisticsCode.hint = This will be 9 characters long and include both letters and numbers.
+houseConsignment.item.customsUnionAndStatisticsCode.error.required = Enter the new Customs Union and Statistics (CUS) code for item {0} in house consignment {1}
+houseConsignment.item.customsUnionAndStatisticsCode.error.length = The Customs Union and Statistics (CUS) code must be 9 characters long
+houseConsignment.item.customsUnionAndStatisticsCode.error.invalidCharacters = The Customs Union and Statistics (CUS) code must only include letters a to z and numbers 0 to 9

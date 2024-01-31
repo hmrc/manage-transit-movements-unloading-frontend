@@ -24,7 +24,7 @@ import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
-import pages.houseConsignment.index.items.ItemDescriptionPage
+import pages.houseConsignment.index.items.{CustomsUnionAndStatisticsCodePage, ItemDescriptionPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, JsPath, Json}
@@ -56,9 +56,13 @@ class CommodityTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
             ua => Future.successful(ua.setValue(FakeGoodsMeasureSection, Json.obj("foo" -> "bar")))
           }
 
-        val result = transformer.transform(commodity, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
+        val commodityWithCUSCode = commodity.copy(cusCode = Some("baz"))
+
+        val result  = transformer.transform(commodity, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
+        val result1 = transformer.transform(commodityWithCUSCode, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
 
         result.getValue(ItemDescriptionPage(hcIndex, itemIndex)) mustBe commodity.descriptionOfGoods
+        result1.getValue(CustomsUnionAndStatisticsCodePage(hcIndex, itemIndex)) mustBe "baz"
         result.getValue(FakeGoodsMeasureSection) mustBe Json.obj("foo" -> "bar")
     }
   }

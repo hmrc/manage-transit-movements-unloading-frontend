@@ -95,6 +95,17 @@ trait Constraints {
         Invalid(errorKey, maximum)
     }
 
+  protected def exactLength(exact: Int, errorKey: String): Constraint[String] =
+    lengthConstraint(errorKey, _.length == exact, Seq(exact))
+
+  private def lengthConstraint(errorKey: String, predicate: String => Boolean, args: Seq[Any]): Constraint[String] =
+    Constraint {
+      case str if predicate(str) =>
+        Valid
+      case _ =>
+        Invalid(errorKey, args: _*)
+    }
+
   protected def maxDate(maximum: LocalDate, errorKey: String, args: Any*): Constraint[LocalDate] =
     Constraint {
       case date if date.isAfter(maximum) =>

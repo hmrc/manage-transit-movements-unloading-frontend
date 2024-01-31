@@ -16,14 +16,14 @@
 
 @import controllers.houseConsignment.index.items.routes
 @import models.MovementReferenceNumber
-@import viewModels.components.InputCharacterCountViewModel._
-@import views.html.components.{Button, ErrorSummary, InputCharacterCount}
-@import forms.Constants.maxItemDescriptionLength
+@import viewModels.components.InputTextViewModel._
+@import viewModels.InputSize
+@import views.html.components.{Button, ErrorSummary, InputText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    inputCharacterCount: InputCharacterCount,
+    inputText: InputText,
     errorSummary: ErrorSummary,
     button: Button
 )
@@ -31,23 +31,22 @@
 @(form: Form[String], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("houseConsignment.item.description.title", itemIndex.display, houseConsignmentIndex.display),
+    title = messages("houseConsignment.item.customsUnionAndStatisticsCode.title", itemIndex.display, houseConsignmentIndex.display),
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.DescriptionController.onSubmit(arrivalId, mode, houseConsignmentIndex, itemIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.CustomsUnionAndStatisticsCodeController.onSubmit(arrivalId, mode, houseConsignmentIndex, itemIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
-        @inputCharacterCount(
+        @inputText(
             field = form("value"),
-            inputCharacterCountType = InputCharacterCountWithAdditionalHtml(
-                heading = messages("houseConsignment.item.description.heading", itemIndex.display, houseConsignmentIndex.display),
-                caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = messages("houseConsignment.item.description.paragraph").toParagraph
+            inputTextType = OrdinaryTextInput(
+                heading = messages("houseConsignment.item.customsUnionAndStatisticsCode.heading", itemIndex.display, houseConsignmentIndex.display),
+                caption = Some(messages("site.caption", mrn.toString))
             ),
-            label = messages("houseConsignment.item.description.heading", itemIndex.display, houseConsignmentIndex.display),
-            maxLength = maxItemDescriptionLength
+            hint = Some(messages("houseConsignment.item.customsUnionAndStatisticsCode.hint")),
+            inputClass = InputSize.Width20
         )
 
         @button(attributes = Map("id" -> "submit"))
