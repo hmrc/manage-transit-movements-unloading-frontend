@@ -18,7 +18,10 @@ package components
 
 import a11ySpecBase.A11ySpecBase
 import forms.UnloadingCommentsFormProvider
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import play.twirl.api.Html
+import viewModels.components.InputCharacterCountViewModel.{InputCharacterCountWithAdditionalHtml, OrdinaryInputCharacterCount}
 import views.html.components.InputCharacterCount
 import views.html.templates.MainTemplate
 
@@ -28,20 +31,30 @@ class InputCharacterCountSpec extends A11ySpecBase {
     val template  = app.injector.instanceOf[MainTemplate]
     val component = app.injector.instanceOf[InputCharacterCount]
 
-    val title     = nonEmptyString.sample.value
-    val label     = nonEmptyString.sample.value
-    val maxLength = positiveInts.sample.value
-    val caption   = Gen.option(nonEmptyString).sample.value
-    val hint      = Gen.option(nonEmptyString).sample.value
-    val rows      = positiveInts.sample.value
-    val form      = new UnloadingCommentsFormProvider()()
+    val title          = nonEmptyString.sample.value
+    val label          = nonEmptyString.sample.value
+    val maxLength      = positiveInts.sample.value
+    val caption        = Gen.option(nonEmptyString).sample.value
+    val hint           = Gen.option(nonEmptyString).sample.value
+    val rows           = positiveInts.sample.value
+    val form           = new UnloadingCommentsFormProvider()()
+    val additionalHtml = arbitrary[Html].sample.value
 
-    val content = template.apply(title) {
-      component.apply(form("value"), label, maxLength, caption, hint, rows)
-    }
+    "pass accessibility checks" when {
 
-    "pass accessibility checks" in {
-      content.toString() must passAccessibilityChecks
+      "ordinary input character count" in {
+        val content = template.apply(title) {
+          component.apply(form("value"), label, maxLength, caption, hint, rows, OrdinaryInputCharacterCount(title, caption))
+        }
+        content.toString() must passAccessibilityChecks
+      }
+
+      "input character count with additional html" in {
+        val content = template.apply(title) {
+          component.apply(form("value"), label, maxLength, caption, hint, rows, InputCharacterCountWithAdditionalHtml(title, caption, additionalHtml))
+        }
+        content.toString() must passAccessibilityChecks
+      }
     }
   }
 }

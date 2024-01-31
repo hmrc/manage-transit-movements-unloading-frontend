@@ -18,7 +18,7 @@ package utils.transformers
 
 import generated.CommodityType08
 import models.{Index, UserAnswers}
-import pages.ItemDescriptionPage
+import pages.houseConsignment.index.items.ItemDescriptionPage
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

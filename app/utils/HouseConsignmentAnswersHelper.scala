@@ -20,6 +20,7 @@ import cats.data.OptionT
 import cats.implicits._
 import models.{Index, UserAnswers}
 import pages._
+import pages.houseConsignment.index.items.ItemDescriptionPage
 import pages.sections._
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
 import play.api.i18n.Messages
