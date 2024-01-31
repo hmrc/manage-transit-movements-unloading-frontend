@@ -16,23 +16,22 @@
 
 package forms
 
+import config.Constants.maxItemDescriptionLength
 import forms.mappings.Mappings
-import models.Index
-import models.messages.UnloadingRemarksRequest
+import models.messages.UnloadingRemarksRequest.stringFieldRegexComma
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class NetWeightFormProvider @Inject() extends Mappings {
+class DescriptionFormProvider @Inject() () extends Mappings {
 
-  def apply(houseConsignmentIndex: Index = Index(0), index: Index = Index(0)): Form[String] =
+  def apply(prefix: String, args: Any*): Form[String] =
     Form(
-      "value" -> text(s"netWeight.error.required", args = Seq(s"${index.display}", s"${houseConsignmentIndex.display}"))
+      "value" -> text(s"$prefix.error.required", args = args.map(_.toString))
         .verifying(
-          StopOnFirstFail[String](
-            maxLength(UnloadingRemarksRequest.weightLength, "netWeight.error.length"),
-            regexp(UnloadingRemarksRequest.weightCharsRegex, "netWeight.error.characters"),
-            regexp(UnloadingRemarksRequest.weightRegex, "netWeight.error.decimal")
+          forms.StopOnFirstFail[String](
+            regexp(stringFieldRegexComma, s"$prefix.error.invalidCharacters"),
+            maxLength(maxItemDescriptionLength, s"$prefix.error.length")
           )
         )
     )

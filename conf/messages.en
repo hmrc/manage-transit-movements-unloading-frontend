@@ -105,12 +105,12 @@ grossWeight.error.characters = The new gross weight must only include numbers 0 
 grossWeight.error.decimal = The new gross weight must only include 6 decimal places or less
 grossWeight.change.hidden = the new total gross weight
 
-netWeight.title = What is the new net weight of item {0}?
-netWeight.heading = What is the new net weight of item {0}?
-netWeight.checkYourAnswersLabel = What is the net net weight of item {0}?
+netWeight.title = What is the new net weight of item {0} in house consignment {1}?
+netWeight.heading = What is the new net weight of item {0} in house consignment {1}?
+netWeight.checkYourAnswersLabel = What is the net net weight of item {0} in house consignment {1}?
 netWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
 netWeight.paragraph = This is the weight of the item’s goods, excluding all packaging.
-netWeight.error.required = Enter the new net weight of item {0}
+netWeight.error.required = Enter the new net weight of item {0} in house consignment {1}
 netWeight.error.length = The new net weight must be 16 characters or less
 netWeight.error.characters = The new net weight must only include numbers 0 to 9 and a decimal point
 netWeight.error.decimal = The new net weight must only include 6 decimal places or less
@@ -390,6 +390,14 @@ cannotSendUnloadingRemarks.linkText = View the status of this notification
 departureTransportMeans.identification.heading=Which identification do you want to use for the new departure means of transport?
 departureTransportMeans.identification.title=Which identification do you want to use for the new departure means of transport?
 departureTransportMeans.identification.error.required=Select which identification you want to use for the new departure means of transport
+
+houseConsignment.item.description.title = Enter the new description of item {0} in house consignment {1}
+houseConsignment.item.description.heading = Enter the new description of item {0} in house consignment {1}
+houseConsignment.item.description.paragraph = This should be clear and detailed enough for anyone involved in the transit movement to understand its contents.
+houseConsignment.item.description.error.length = The description must be 512 characters or less
+houseConsignment.item.description.error.required = Enter the new description of item {0} in house consignment {1}
+houseConsignment.item.description.error.length = The description must be 512 characters or less
+houseConsignment.item.description.error.invalidCharacters = The description must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 
 commodityCode.title = What is the new commodity code for item {0} in house consignment {1}?
 commodityCode.heading = What is the new commodity code for item {0} in house consignment {1}?

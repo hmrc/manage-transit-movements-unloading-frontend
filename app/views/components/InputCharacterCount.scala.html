@@ -16,10 +16,13 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.charactercount.CharacterCount
-@import views.utils.ViewUtils._
-@import views.html.components.Heading
+@import viewModels.components.InputCharacterCountViewModel
+@import viewModels.components.InputCharacterCountViewModel._
 
-@this(govukCharacterCount: GovukCharacterCount)
+@this(
+    govukCharacterCount: GovukCharacterCount,
+    hmrcHeading: Heading
+)
 
 @(
     field: Field,
@@ -27,10 +30,11 @@
     maxLength: Int,
     caption: Option[String] = None,
     hint: Option[String] = None,
-    rows: Int = 5
+    rows: Int = 5,
+    inputCharacterCountType: InputCharacterCountViewModel
 )(implicit messages: Messages)
 
-@govukCharacterCount(
+@inputCharacterCount = @{
     CharacterCount(
         id = field.id,
         name = field.id,
@@ -39,9 +43,20 @@
         maxLength = Some(maxLength),
         hint = hint.map(x => Hint(content = HtmlContent(messages(x)))),
         errorMessage = field.error.map { e =>
-            ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args: _*)))
+        ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args: _*)))
         }
     )
     .withFormField(field)
     .withHeadingAndCaption(label, caption)
-)
+}
+
+@inputCharacterCountType match {
+    case OrdinaryInputCharacterCount(heading, caption) => {
+        @govukCharacterCount(inputCharacterCount.withHeadingAndCaption(heading, caption))
+    }
+    case x @ InputCharacterCountWithAdditionalHtml(heading, caption, additionalHtml) => {
+        @hmrcHeading(heading, caption, Some(x.headingClasses))
+        @additionalHtml
+        @govukCharacterCount(inputCharacterCount.copy(label = Label(isPageHeading = false, content = Text(heading), classes = "govuk-visually-hidden")))
+    }
+}

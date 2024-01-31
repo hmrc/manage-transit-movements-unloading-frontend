@@ -97,7 +97,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     )
   }
 
-  def pageWithTitle(args: String*): Unit =
+  def pageWithTitle(args: Any*): Unit =
     "must render title" in {
       val title      = doc.title()
       val messageKey = s"$prefix.title"
@@ -105,7 +105,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
       assert(messages.isDefinedAt(messageKey))
     }
 
-  def pageWithHeading(args: String*): Unit =
+  def pageWithHeading(args: Any*): Unit =
     "must render heading" in {
       val heading    = getElementByTag(doc, "h1")
       val messageKey = s"$prefix.heading"

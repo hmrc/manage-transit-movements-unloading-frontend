@@ -1,0 +1,55 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.houseConsignment.index.items.routes
+@import models.MovementReferenceNumber
+@import viewModels.components.InputCharacterCountViewModel._
+@import views.html.components.{Button, ErrorSummary, InputCharacterCount}
+@import config.Constants.maxItemDescriptionLength
+
+@this(
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    inputCharacterCount: InputCharacterCount,
+    errorSummary: ErrorSummary,
+    button: Button
+)
+
+@(form: Form[String], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit request: Request[_], messages: Messages)
+
+@mainTemplate(
+    title = messages("houseConsignment.item.description.title", itemIndex.display, houseConsignmentIndex.display),
+    showBackLink = true
+) {
+
+    @formHelper(action = routes.DescriptionController.onSubmit(arrivalId, mode, houseConsignmentIndex, itemIndex), Symbol("autoComplete") -> "off") {
+
+        @errorSummary(form.errors)
+
+        @inputCharacterCount(
+            field = form("value"),
+            inputCharacterCountType = InputCharacterCountWithAdditionalHtml(
+                heading = messages("houseConsignment.item.description.heading", itemIndex.display, houseConsignmentIndex.display),
+                caption = Some(messages("site.caption", mrn.toString)),
+                additionalHtml = messages("houseConsignment.item.description.paragraph").toParagraph
+            ),
+            label = messages("houseConsignment.item.description.heading", itemIndex.display, houseConsignmentIndex.display),
+            maxLength = maxItemDescriptionLength
+        )
+
+        @button(attributes = Map("id" -> "submit"))
+    }
+}

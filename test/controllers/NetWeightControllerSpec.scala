@@ -36,9 +36,9 @@ import scala.concurrent.Future
 class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider        = new NetWeightFormProvider()
-  private val form                = formProvider()
+  private val form                = formProvider(hcIndex, itemIndex)
   private val mode                = NormalMode
-  private lazy val NetWeightRoute = controllers.routes.NetWeightController.onPageLoad(arrivalId, index, index, mode).url
+  private lazy val NetWeightRoute = controllers.routes.NetWeightController.onPageLoad(arrivalId, hcIndex, itemIndex, mode).url
 
   "NetWeightAmount Controller" - {
 
@@ -56,13 +56,13 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, index, index, mode)(request, messages).toString
+        view(form, mrn, arrivalId, hcIndex, itemIndex, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(NetWeightPage(index, itemIndex), "123456.123".toDouble)
+      val userAnswers = emptyUserAnswers.setValue(NetWeightPage(hcIndex, itemIndex), "123456.123".toDouble)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, NetWeightRoute)
@@ -76,7 +76,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
       val view = injector.instanceOf[NetWeightView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, index, itemIndex, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, hcIndex, itemIndex, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -110,7 +110,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
       val view = injector.instanceOf[NetWeightView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, arrivalId, index, itemIndex, mode)(request, messages).toString
+        view(boundForm, mrn, arrivalId, hcIndex, itemIndex, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -151,7 +151,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, routes.NetWeightController.onPageLoad(arrivalId, index, index, NormalMode).url)
+      val request = FakeRequest(GET, routes.NetWeightController.onPageLoad(arrivalId, hcIndex, itemIndex, NormalMode).url)
 
       val result = route(app, request).value
 
