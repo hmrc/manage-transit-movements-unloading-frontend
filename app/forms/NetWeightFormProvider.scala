@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 class NetWeightFormProvider @Inject() extends Mappings {
 
-  def apply(index: Index = Index(0), houseConsignmentIndex: Index): Form[String] =
+  def apply(houseConsignmentIndex: Index = Index(0), index: Index = Index(0)): Form[String] =
     Form(
       "value" -> text(s"netWeight.error.required", args = Seq(s"${index.display}", s"${houseConsignmentIndex.display}"))
         .verifying(

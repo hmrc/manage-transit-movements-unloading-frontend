@@ -40,14 +40,14 @@ class NetWeightController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(itemIndex: Index, houseConsignmentIndex: Index) = formProvider(itemIndex, houseConsignmentIndex)
+  private def form(houseConsignmentIndex: Index, itemIndex: Index) = formProvider(houseConsignmentIndex, itemIndex)
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId) {
       implicit request =>
         val preparedForm = request.userAnswers.get(NetWeightPage(houseConsignmentIndex, itemIndex)) match {
-          case None        => form(itemIndex, houseConsignmentIndex)
-          case Some(value) => form(itemIndex, houseConsignmentIndex).fill(value.toString)
+          case None        => form(houseConsignmentIndex, itemIndex)
+          case Some(value) => form(houseConsignmentIndex, itemIndex).fill(value.toString)
         }
 
         Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))
@@ -56,7 +56,7 @@ class NetWeightController @Inject() (
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
-        form(itemIndex, houseConsignmentIndex)
+        form(houseConsignmentIndex, itemIndex)
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))),

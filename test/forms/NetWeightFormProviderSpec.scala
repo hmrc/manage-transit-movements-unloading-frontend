@@ -42,7 +42,7 @@ class NetWeightFormProviderSpec extends StringFieldBehaviours {
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(Index(0).display.toString, Index(1).display.toString))
+      requiredError = FormError(fieldName, requiredKey, Seq(Index(1).display.toString, Index(0).display.toString))
     )
   }
 
