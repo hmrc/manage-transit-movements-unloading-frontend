@@ -19,18 +19,12 @@ package generators
 import models.Index
 import org.scalacheck.Arbitrary
 import pages._
-import pages.departureMeansOfTransport.CountryPage
+import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
 
 trait PageGenerators {
 
   implicit lazy val arbitraryTotalNumberOfPackagesPage: Arbitrary[TotalNumberOfPackagesPage.type] =
     Arbitrary(TotalNumberOfPackagesPage)
-
-  implicit lazy val arbitraryTotalNumberOfItemsPage: Arbitrary[TotalNumberOfItemsPage.type] =
-    Arbitrary(TotalNumberOfItemsPage)
-
-  implicit lazy val arbitraryConfirmRemoveSealPage: Arbitrary[ConfirmRemoveSealPage.type] =
-    Arbitrary(ConfirmRemoveSealPage)
 
   implicit lazy val arbitraryConfirmRemoveCommentsPage: Arbitrary[ConfirmRemoveCommentsPage.type] =
     Arbitrary(ConfirmRemoveCommentsPage)

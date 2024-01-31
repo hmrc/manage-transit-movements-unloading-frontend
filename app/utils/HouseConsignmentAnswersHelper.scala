@@ -22,6 +22,7 @@ import models.{Index, UserAnswers}
 import pages._
 import pages.houseConsignment.index.items.ItemDescriptionPage
 import pages.sections._
+import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
 import play.api.i18n.Messages
 import services.ReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
@@ -39,7 +40,7 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
 
   def buildVehicleNationalityRow(transportMeansIndex: Index): Future[Option[SummaryListRow]] =
     (for {
-      x <- OptionT.fromOption[Future](userAnswers.getIE043(DepartureTransportMeansCountryPage(houseConsignmentIndex, transportMeansIndex)))
+      x <- OptionT.fromOption[Future](userAnswers.get(DepartureTransportMeansCountryPage(houseConsignmentIndex, transportMeansIndex)))
       y <- OptionT.liftF(referenceDataService.getCountryNameByCode(x))
     } yield transportRegisteredCountry(y)).value
 
@@ -49,17 +50,17 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
 
   def buildTransportSections: Future[Seq[Section]] =
     userAnswers
-      .getIE043(DepartureTransportMeansListSection(houseConsignmentIndex))
+      .get(DepartureTransportMeansListSection(houseConsignmentIndex))
       .traverse {
         _.zipWithIndex.traverse {
-          y =>
-            val nationalityRow: Future[Option[SummaryListRow]] = buildVehicleNationalityRow(y._2)
-            val meansIdRow: Option[SummaryListRow]             = transportMeansID(y._2)
+          case (_, index) =>
+            val nationalityRow: Future[Option[SummaryListRow]] = buildVehicleNationalityRow(index)
+            val meansIdRow: Option[SummaryListRow]             = transportMeansID(index)
 
             nationalityRow.map {
               nationalityRow =>
                 Section(
-                  messages("unloadingFindings.subsections.transportMeans", y._2.display),
+                  messages("unloadingFindings.subsections.transportMeans", index.display),
                   buildMeansOfTransportRows(meansIdRow, nationalityRow)
                 )
             }
@@ -100,7 +101,7 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
 
   def itemSections: Seq[Section] =
     userAnswers
-      .getIE043(ItemsSection(houseConsignmentIndex))
+      .get(ItemsSection(houseConsignmentIndex))
       .mapWithIndex {
         (_, itemIndex) =>
           val itemDescription: Option[SummaryListRow] = itemDescriptionRow(houseConsignmentIndex, itemIndex)

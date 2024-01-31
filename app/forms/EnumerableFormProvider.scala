@@ -17,15 +17,24 @@
 package forms
 
 import forms.mappings.Mappings
-import models.Enumerable
+import models.{Enumerable, Radioable}
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class EnumerableFormProvider @Inject() extends Mappings {
 
-  def apply[T](prefix: String)(implicit et: Enumerable[T]): Form[T] =
+  def apply[T <: Radioable[T]](prefix: String, args: Any*)(implicit et: Enumerable[T]): Form[T] = {
+    val flattenedArgs = args.flatMap {
+      case seq: Seq[_] => seq
+      case other       => Seq(other)
+    }
+
     Form(
-      "value" -> enumerable[T](s"$prefix.error.required")
+      "value" -> enumerable[T](s"$prefix.error.required", args = flattenedArgs)
     )
+  }
+
+  def apply[T <: Radioable[T]](prefix: String, values: Seq[T], args: Any*)(implicit et: Seq[T] => Enumerable[T]): Form[T] =
+    apply(prefix, args)(et(values))
 }

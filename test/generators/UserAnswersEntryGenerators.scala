@@ -19,7 +19,7 @@ package generators
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
-import pages.departureMeansOfTransport.CountryPage
+import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators {

@@ -17,6 +17,18 @@
 package repositories
 
 import config.FrontendAppConfig
+import generated.{
+  CC043C,
+  CC043CType,
+  CORRELATION_IDENTIFIERSequence,
+  CustomsOfficeOfDestinationActualType03,
+  MESSAGESequence,
+  MESSAGE_1Sequence,
+  MESSAGE_TYPESequence,
+  Number0,
+  TraderAtDestinationType03,
+  TransitOperationType14
+}
 import models.{ArrivalId, EoriNumber, MovementReferenceNumber, SensitiveFormats, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
@@ -24,6 +36,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.Json
+import scalaxb.XMLCalendar
 import services.DateTimeService
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
@@ -46,11 +59,45 @@ class SessionRepositorySpec
 
   override protected val repository = new SessionRepository(mongoComponent, config, dateTimeService)
 
+  private val ie043: CC043CType = CC043CType(
+    messageSequence1 = MESSAGESequence(
+      messageSender = "",
+      messagE_1Sequence2 = MESSAGE_1Sequence(
+        messageRecipient = "",
+        preparationDateAndTime = XMLCalendar("2022-02-03T08:45:00.000000"),
+        messageIdentification = ""
+      ),
+      messagE_TYPESequence3 = MESSAGE_TYPESequence(
+        messageType = CC043C
+      ),
+      correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence(
+        correlationIdentifier = None
+      )
+    ),
+    TransitOperation = TransitOperationType14(
+      MRN = "MRN",
+      declarationType = None,
+      declarationAcceptanceDate = None,
+      security = "0",
+      reducedDatasetIndicator = Number0
+    ),
+    CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActualType03(
+      referenceNumber = "cooda"
+    ),
+    HolderOfTheTransitProcedure = None,
+    TraderAtDestination = TraderAtDestinationType03(
+      identificationNumber = "tad"
+    ),
+    CTLControl = None,
+    Consignment = None,
+    attributes = Map.empty
+  )
+
   private val userAnswers1 = UserAnswers(
     id = ArrivalId("0"),
     mrn = MovementReferenceNumber("99IT9876AB889012096"),
     eoriNumber = EoriNumber("EoriNumber1"),
-    ie043Data = Json.obj("foo" -> "bar"),
+    ie043Data = ie043,
     data = Json.obj("bar" -> "foo"),
     lastUpdated = dateTimeService.now
   )
@@ -59,7 +106,7 @@ class SessionRepositorySpec
     id = ArrivalId("1"),
     mrn = MovementReferenceNumber("18GB0000601001EB15"),
     eoriNumber = EoriNumber("EoriNumber2"),
-    ie043Data = Json.obj("bar" -> "foo"),
+    ie043Data = ie043,
     data = Json.obj("foo" -> "bar"),
     lastUpdated = dateTimeService.now
   )
@@ -107,7 +154,7 @@ class SessionRepositorySpec
           id = ArrivalId("3"),
           mrn = MovementReferenceNumber("18GB0000601001EBD1"),
           eoriNumber = EoriNumber("EoriNumber3"),
-          ie043Data = Json.obj("foo" -> "bar"),
+          ie043Data = ie043,
           data = Json.obj("bar" -> "foo"),
           lastUpdated = dateTimeService.now
         )

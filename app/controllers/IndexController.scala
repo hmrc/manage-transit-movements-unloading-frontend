@@ -18,24 +18,25 @@ package controllers
 
 import controllers.actions.{IdentifierAction, UnloadingPermissionActionProvider}
 import logging.Logging
-import models.P5.submission.IE044Data
-import models.{ArrivalId, UserAnswers}
+import models.{ArrivalId, MovementReferenceNumber, UserAnswers}
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.DateTimeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.transformers.IE043Transformer
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class IndexController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   identify: IdentifierAction,
   unloadingPermission: UnloadingPermissionActionProvider,
   sessionRepository: SessionRepository,
-  dateTimeService: DateTimeService
+  dateTimeService: DateTimeService,
+  dataTransformer: IE043Transformer
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -44,17 +45,21 @@ class IndexController @Inject() (
   def unloadingRemarks(arrivalId: ArrivalId, messageId: String): Action[AnyContent] = (identify andThen unloadingPermission(arrivalId)).async {
     implicit request =>
       for {
-        getUserAnswer <- sessionRepository.get(arrivalId, request.eoriNumber) map {
-          _ getOrElse UserAnswers(
-            id = arrivalId,
-            mrn = request.unloadingPermission.TransitOperation.MRN,
-            eoriNumber = request.eoriNumber,
-            ie043Data = Json.toJsObject(request.unloadingPermission),
-            data = Json.toJsObject(IE044Data.fromIE043Data(request.unloadingPermission, dateTimeService.currentDateTime)),
-            lastUpdated = dateTimeService.now
-          )
+        userAnswers <- sessionRepository.get(arrivalId, request.eoriNumber).flatMap {
+          case Some(value) =>
+            Future.successful(value)
+          case None =>
+            val userAnswers = UserAnswers(
+              id = arrivalId,
+              mrn = MovementReferenceNumber(request.unloadingPermission.TransitOperation.MRN),
+              eoriNumber = request.eoriNumber,
+              ie043Data = request.unloadingPermission,
+              data = Json.obj(),
+              lastUpdated = dateTimeService.now
+            )
+            dataTransformer.transform(userAnswers)
         }
-        _ <- sessionRepository.set(getUserAnswer)
+        _ <- sessionRepository.set(userAnswers)
       } yield Redirect(controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId, messageId))
   }
 }

@@ -24,8 +24,13 @@ object UnloadingType extends EnumerableType[UnloadingType] {
 
   val messageKeyPrefix: String = "unloadingType"
 
-  case object Fully extends WithName("1") with UnloadingType
-  case object Partially extends WithName("0") with UnloadingType
+  case object Fully extends WithName("1") with UnloadingType {
+    override val code: String = this.toString
+  }
+
+  case object Partially extends WithName("0") with UnloadingType {
+    override val code: String = this.toString
+  }
 
   override val values: Seq[UnloadingType] = Seq(
     Fully,

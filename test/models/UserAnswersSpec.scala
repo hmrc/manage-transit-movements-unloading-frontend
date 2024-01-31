@@ -35,14 +35,14 @@ class UserAnswersSpec extends SpecBase with AppWithDefaultMockFixtures {
 
       "must return data when defined" in {
 
-        val userAnswers = UserAnswers(arrivalId, mrn, eoriNumber, Json.obj(), JsObject(Map("foo" -> JsString("bar"))), Instant.now())
+        val userAnswers = UserAnswers(arrivalId, mrn, eoriNumber, basicIe043, JsObject(Map("foo" -> JsString("bar"))), Instant.now())
 
         userAnswers.get(TestPage) mustBe Some("bar")
       }
 
       "must return None when not defined" in {
 
-        val userAnswers = UserAnswers(arrivalId, mrn, eoriNumber, Json.obj(), Json.obj(), Instant.now())
+        val userAnswers = UserAnswers(arrivalId, mrn, eoriNumber, basicIe043, Json.obj(), Instant.now())
 
         userAnswers.get(TestPage) mustBe None
       }
@@ -52,7 +52,7 @@ class UserAnswersSpec extends SpecBase with AppWithDefaultMockFixtures {
 
       "must set data" in {
 
-        val userAnswers = UserAnswers(arrivalId, mrn, eoriNumber, Json.obj(), Json.obj(), Instant.now())
+        val userAnswers = UserAnswers(arrivalId, mrn, eoriNumber, basicIe043, Json.obj(), Instant.now())
 
         val expectedUserAnswers = userAnswers.copy(data = JsObject(Map("foo" -> JsString("bar"))))
 
@@ -66,7 +66,7 @@ class UserAnswersSpec extends SpecBase with AppWithDefaultMockFixtures {
 
       "must remove data" in {
 
-        val userAnswers = UserAnswers(arrivalId, mrn, eoriNumber, Json.obj(), JsObject(Map("foo" -> JsString("bar"))), Instant.now())
+        val userAnswers = UserAnswers(arrivalId, mrn, eoriNumber, basicIe043, JsObject(Map("foo" -> JsString("bar"))), Instant.now())
 
         val expectedUserAnswers = userAnswers.copy(data = Json.obj())
 
@@ -82,7 +82,7 @@ class UserAnswersSpec extends SpecBase with AppWithDefaultMockFixtures {
         id = arrivalId,
         mrn = mrn,
         eoriNumber = eoriNumber,
-        ie043Data = Json.obj(),
+        ie043Data = basicIe043,
         data = Json.obj(),
         lastUpdated = Instant.ofEpochMilli(1662546803472L)
       )
@@ -101,7 +101,7 @@ class UserAnswersSpec extends SpecBase with AppWithDefaultMockFixtures {
                |  "_id" : "${arrivalId.value}",
                |  "mrn" : "$mrn",
                |  "eoriNumber" : "${eoriNumber.value}",
-               |  "ie043Data" : "T+FWrvLPJMKyRZ1aoW8rdZmETyL89CdpWxaog0joG6B/hxCF",
+               |  "ie043Data" : "$encryptedIe043",
                |  "data" : "T+FWrvLPJMKyRZ1aoW8rdZmETyL89CdpWxaog0joG6B/hxCF",
                |  "lastUpdated" : {
                |    "$$date" : {
@@ -137,7 +137,7 @@ class UserAnswersSpec extends SpecBase with AppWithDefaultMockFixtures {
                |  "_id" : "${arrivalId.value}",
                |  "mrn" : "$mrn",
                |  "eoriNumber" : "${eoriNumber.value}",
-               |  "ie043Data" : {},
+               |  "ie043Data" : "${basicIe043.toXML.toString()}",
                |  "data" : {},
                |  "lastUpdated" : {
                |    "$$date" : {
@@ -166,7 +166,7 @@ class UserAnswersSpec extends SpecBase with AppWithDefaultMockFixtures {
           id = arrivalId,
           mrn = mrn,
           eoriNumber = eoriNumber,
-          ie043Data = Json.obj("foo" -> "bar"),
+          ie043Data = basicIe043,
           data = Json.obj("bar" -> "baz"),
           lastUpdated = Instant.ofEpochMilli(1662546803472L)
         )
@@ -178,9 +178,7 @@ class UserAnswersSpec extends SpecBase with AppWithDefaultMockFixtures {
              |  "_id" : "${arrivalId.value}",
              |  "mrn" : "$mrn",
              |  "eoriNumber" : "${eoriNumber.value}",
-             |  "ie043Data" : {
-             |    "foo" : "bar"
-             |  },
+             |  "ie043Data" : "${basicIe043.toXML.toString()}",
              |  "data" : {
              |    "bar" : "baz"
              |  },
