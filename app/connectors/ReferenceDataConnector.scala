@@ -16,10 +16,14 @@
 
 package connectors
 
+import cats.Order
+import cats.data.NonEmptySet
 import config.FrontendAppConfig
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import logging.Logging
 import metrics.MetricsService
+import models.departureTransportMeans.TransportMeansIdentification
+import models.reference.transport.TransportMode
 import models.reference.{Country, CustomsOffice}
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, Reads}
@@ -31,12 +35,27 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient, metricsService: MetricsService) extends Logging {
 
-  def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] = {
+  def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Country]] = {
     val serviceUrl = s"${config.referenceDataUrl}/lists/CountryCodesFullList"
-    http.GET[Seq[Country]](serviceUrl, headers = version2Header)
+    http.GET[NonEmptySet[Country]](serviceUrl, headers = version2Header)
   }
 
-  def getCountryNameByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] = {
+  def getTransportModeCodes[T <: TransportMode[T]](implicit
+    ec: ExecutionContext,
+    hc: HeaderCarrier,
+    rds: Reads[T],
+    order: Order[T]
+  ): Future[NonEmptySet[T]] = {
+    val url = s"${config.referenceDataUrl}/lists/TransportModeCode"
+    http.GET[NonEmptySet[T]](url, headers = version2Header)
+  }
+
+  def getMeansOfTransportIdentificationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[TransportMeansIdentification]] = {
+    val url = s"${config.referenceDataUrl}/lists/TypeOfIdentificationOfMeansOfTransport"
+    http.GET[NonEmptySet[TransportMeansIdentification]](url, headers = version2Header)
+  }
+
+  def getCountryNameByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Country]] = {
 
     val queryParams: Seq[(String, String)] = Seq(
       "data.code" -> code
@@ -44,10 +63,10 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
 
     val serviceUrl = s"${config.referenceDataUrl}/filtered-lists/CountryCodesFullList"
 
-    http.GET[Seq[Country]](serviceUrl, headers = version2Header, queryParams = queryParams)
+    http.GET[NonEmptySet[Country]](serviceUrl, headers = version2Header, queryParams = queryParams)
   }
 
-  def getCustomsOffice(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[CustomsOffice]] = {
+  def getCustomsOffice(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[CustomsOffice]] = {
 
     val queryParams: Seq[(String, String)] = Seq(
       "data.id" -> code
@@ -55,22 +74,22 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
 
     val serviceUrl = s"${config.referenceDataUrl}/filtered-lists/CustomsOffices"
 
-    http.GET[Seq[CustomsOffice]](serviceUrl, headers = version2Header, queryParams = queryParams)
+    http.GET[NonEmptySet[CustomsOffice]](serviceUrl, headers = version2Header, queryParams = queryParams)
   }
 
   private def version2Header: Seq[(String, String)] = Seq(
     HeaderNames.Accept -> "application/vnd.hmrc.2.0+json"
   )
 
-  implicit def responseHandlerGeneric[A](implicit reads: Reads[A]): HttpReads[Seq[A]] =
+  implicit def responseHandlerGeneric[A](implicit reads: Reads[A], order: Order[A]): HttpReads[NonEmptySet[A]] =
     (_: String, _: String, response: HttpResponse) => {
       response.status match {
         case OK =>
-          (response.json \ "data").validate[Seq[A]] match {
+          (response.json \ "data").validate[List[A]] match {
             case JsSuccess(Nil, _) =>
               throw new NoReferenceDataFoundException
-            case JsSuccess(value, _) =>
-              value
+            case JsSuccess(head :: tail, _) =>
+              NonEmptySet.of(head, tail: _*)
             case JsError(errors) =>
               throw JsResultException(errors)
           }

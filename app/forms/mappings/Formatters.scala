@@ -16,7 +16,7 @@
 
 package forms.mappings
 
-import models.{Enumerable, RichString}
+import models.{Enumerable, Radioable, RichString}
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
@@ -82,18 +82,20 @@ trait Formatters {
         baseFormatter.unbind(key, value.toString)
     }
 
-  private[mappings] def enumerableFormatter[A](requiredKey: String, invalidKey: String)(implicit ev: Enumerable[A]): Formatter[A] =
+  private[mappings] def enumerableFormatter[A <: Radioable[A]](requiredKey: String, invalidKey: String, args: Seq[Any] = Seq.empty)(implicit
+    ev: Enumerable[A]
+  ): Formatter[A] =
     new Formatter[A] {
 
-      private val baseFormatter = stringFormatter(requiredKey)(identity)
+      private val baseFormatter = stringFormatter(requiredKey, args)(identity)
 
       override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], A] =
         baseFormatter.bind(key, data).flatMap {
           str =>
-            ev.withName(str).map(Right.apply).getOrElse(Left(Seq(FormError(key, invalidKey))))
+            ev.withName(str).map(Right.apply).getOrElse(Left(Seq(FormError(key, invalidKey, args))))
         }
 
       override def unbind(key: String, value: A): Map[String, String] =
-        baseFormatter.unbind(key, value.toString)
+        baseFormatter.unbind(key, value.code)
     }
 }

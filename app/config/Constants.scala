@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package models
+package config
 
-sealed trait UnloadingType extends Radioable[UnloadingType] {
-  override val messageKeyPrefix: String = UnloadingType.messageKeyPrefix
-}
+object Constants {
+  val GB = "GB"
+  val AD = "AD"
 
-object UnloadingType extends EnumerableType[UnloadingType] {
+  val T2 = "T2"
+  val T  = "T"
 
-  val messageKeyPrefix: String = "unloadingType"
+  val Maritime = "1"
+  val Rail     = "2"
+  val Road     = "3"
+  val Air      = "4"
+  val Mail     = "5"
+  val Fixed    = "7"
+  val Unknown  = "9"
 
-  case object Fully extends WithName("1") with UnloadingType {
-    override val code: String = this.toString
+  val Other = "D"
+
+  object MeansOfTransportIdentification {
+    val UnknownIdentification = "99"
   }
-
-  case object Partially extends WithName("0") with UnloadingType {
-    override val code: String = this.toString
-  }
-
-  override val values: Seq[UnloadingType] = Seq(
-    Fully,
-    Partially
-  )
 }

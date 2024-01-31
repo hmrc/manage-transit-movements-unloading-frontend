@@ -14,26 +14,10 @@
  * limitations under the License.
  */
 
-package models
+package views.behaviours
 
-sealed trait UnloadingType extends Radioable[UnloadingType] {
-  override val messageKeyPrefix: String = UnloadingType.messageKeyPrefix
-}
+import models.Radioable
 
-object UnloadingType extends EnumerableType[UnloadingType] {
-
-  val messageKeyPrefix: String = "unloadingType"
-
-  case object Fully extends WithName("1") with UnloadingType {
-    override val code: String = this.toString
-  }
-
-  case object Partially extends WithName("0") with UnloadingType {
-    override val code: String = this.toString
-  }
-
-  override val values: Seq[UnloadingType] = Seq(
-    Fully,
-    Partially
-  )
+trait EnumerableViewBehaviours[T <: Radioable[T]] extends RadioViewBehaviours[T] {
+  override val getValue: T => String = _.code
 }

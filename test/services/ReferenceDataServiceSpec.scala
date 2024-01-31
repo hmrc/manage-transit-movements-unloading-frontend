@@ -16,6 +16,7 @@
 
 package services
 
+import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import models.reference.{Country, CustomsOffice}
 import org.mockito.ArgumentMatchers.any
@@ -39,7 +40,7 @@ class ReferenceDataServiceSpec extends AnyFreeSpec with ScalaFutures with Matche
   private val andorra = Country("AD", Some("Andorra"))
   private val france  = Country("FR", Some("France"))
 
-  private val countries = Seq(uk, andorra, france)
+  private val countries = NonEmptySet.of(uk, andorra, france)
 
   private val customsOffice = CustomsOffice("ID1", "NAME001", "GB", None)
 
@@ -61,24 +62,6 @@ class ReferenceDataServiceSpec extends AnyFreeSpec with ScalaFutures with Matche
 
     "getCountryByCode should" - {
 
-      "return None if country can't be found" in {
-
-        when(mockConnector.getCountries()).thenReturn(Future.successful(Nil))
-
-        val service = new ReferenceDataServiceImpl(mockConnector)
-
-        service.getCountryByCode(Some("GB")).futureValue mustBe None
-      }
-
-      "return None if country code is not passed in" in {
-
-        when(mockConnector.getCountries()).thenReturn(Future.successful(Nil))
-
-        val service = new ReferenceDataServiceImpl(mockConnector)
-
-        service.getCountryByCode(None).futureValue mustBe None
-      }
-
       "return Country if country code exists" in {
 
         when(mockConnector.getCountries()).thenReturn(Future.successful(countries))
@@ -95,7 +78,7 @@ class ReferenceDataServiceSpec extends AnyFreeSpec with ScalaFutures with Matche
     "getCustomsOfficeByCode should" - {
       "return a customsOffice" in {
 
-        when(mockConnector.getCustomsOffice(any())(any(), any())).thenReturn(Future.successful(Seq(customsOffice)))
+        when(mockConnector.getCustomsOffice(any())(any(), any())).thenReturn(Future.successful(NonEmptySet.of(customsOffice)))
 
         val service = new ReferenceDataServiceImpl(mockConnector)
 
@@ -105,16 +88,6 @@ class ReferenceDataServiceSpec extends AnyFreeSpec with ScalaFutures with Matche
         verify(mockConnector).getCustomsOffice(any())(any(), any())
       }
 
-      "return None if customsOffice can't be found" in {
-
-        when(mockConnector.getCustomsOffice(any())(any(), any())).thenReturn(Future.successful(Nil))
-
-        val service = new ReferenceDataServiceImpl(mockConnector)
-
-        service.getCustomsOfficeByCode("GB00001").futureValue mustBe None
-      }
     }
-
   }
-
 }
