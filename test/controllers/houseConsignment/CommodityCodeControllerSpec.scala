@@ -110,7 +110,7 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       val view = injector.instanceOf[CommodityCodeView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, arrivalId, index, index, isXI, mode)(request, messages).toString
+        view(boundForm, mrn, arrivalId, index, index, isXI = false, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

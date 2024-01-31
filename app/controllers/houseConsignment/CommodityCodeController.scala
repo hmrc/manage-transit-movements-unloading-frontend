@@ -18,7 +18,7 @@ package controllers.houseConsignment
 
 import controllers.actions._
 import forms.CommodityCodeFormProvider
-import models.P5.{CustomsOfficeOfDestinationActual, MessageData}
+import models.requests.DataRequest
 import models.{ArrivalId, Index, Mode}
 import pages.houseConsignment.CommodityCodePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -44,7 +44,6 @@ class CommodityCodeController @Inject() (
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId) {
       implicit request =>
-        val isXI: Boolean = request.userAnswers.ie043Data.CustomsOfficeOfDestinationActual.referenceNumber.startsWith("XI")
         val preparedForm = request.userAnswers.get(CommodityCodePage(houseConsignmentIndex, itemIndex)) match {
           case None        => formProvider(houseConsignmentIndex, itemIndex)
           case Some(value) => formProvider(houseConsignmentIndex, itemIndex).fill(value)
@@ -56,8 +55,6 @@ class CommodityCodeController @Inject() (
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
-        val isXI: Boolean = true
-
         formProvider(houseConsignmentIndex, itemIndex)
           .bindFromRequest()
           .fold(
@@ -70,4 +67,7 @@ class CommodityCodeController @Inject() (
               } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
           )
     }
+
+  private def isXI(implicit request: DataRequest[_]): Boolean =
+    request.userAnswers.ie043Data.CustomsOfficeOfDestinationActual.referenceNumber.startsWith("XI")
 }
