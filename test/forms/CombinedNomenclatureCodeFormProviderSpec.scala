@@ -26,9 +26,9 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class CombinedNomenclatureCodeFormProviderSpec extends StringFieldBehaviours {
 
-  private val requiredKey = "combinedNomenclatureCode.error.required"
-  private val lengthKey   = "combinedNomenclatureCode.error.length"
-  private val invalidKey  = "combinedNomenclatureCode.error.invalid"
+  private val requiredKey = "houseConsignment.combinedNomenclatureCode.error.required"
+  private val lengthKey   = "houseConsignment.combinedNomenclatureCode.error.length"
+  private val invalidKey  = "houseConsignment.combinedNomenclatureCode.error.invalid"
 
   def form: Form[String] = new CombinedNomenclatureCodeFormProvider()(Index(0), Index(0))
   private val fieldName  = "value"

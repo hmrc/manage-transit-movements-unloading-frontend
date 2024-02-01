@@ -26,9 +26,9 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 class CommodityCodeFormProviderSpec extends StringFieldBehaviours {
 
-  private val requiredKey = "commodityCode.error.required"
-  private val lengthKey   = "commodityCode.error.length"
-  private val invalidKey  = "commodityCode.error.invalid"
+  private val requiredKey = "houseConsignment.commodityCode.error.required"
+  private val lengthKey   = "houseConsignment.commodityCode.error.length"
+  private val invalidKey  = "houseConsignment.commodityCode.error.invalid"
 
   def form: Form[String] = new CommodityCodeFormProvider()(Index(0), Index(0))
   private val fieldName  = "value"
