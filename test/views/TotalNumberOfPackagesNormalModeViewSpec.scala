@@ -16,31 +16,31 @@
 
 package views
 
-import forms.TotalNumberOfPackagesFormProvider
+import forms.NumberOfPackagesFormProvider
 import models.NormalMode
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.TotalNumberOfPackagesView
+import views.html.houseConsignment.index.items.NumberOfPackagesView
 
-class TotalNumberOfPackagesViewSpec extends InputTextViewBehaviours[String] {
+class TotalNumberOfPackagesNormalViewSpec extends InputTextViewBehaviours[String] {
 
-  override def form: Form[String] = new TotalNumberOfPackagesFormProvider()(index)
+  override def form: Form[String] = new NumberOfPackagesFormProvider()(NormalMode, hcIndex, itemIndex)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[TotalNumberOfPackagesView].apply(form, arrivalId, mrn, index, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[NumberOfPackagesView].apply(form, arrivalId, mrn, hcIndex, itemIndex, index, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "totalNumberOfPackages"
+  override val prefix: String = "numberOfPackages.normalMode"
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.oneOf(1 to 100).toString)
 
-  behave like pageWithTitle(index.display.toString)
+  behave like pageWithTitle(hcIndex.display.toString, itemIndex.display.toString)
 
   behave like pageWithBackLink()
 
-  behave like pageWithHeading(index.display.toString)
+  behave like pageWithHeading(hcIndex.display.toString, itemIndex.display.toString)
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 

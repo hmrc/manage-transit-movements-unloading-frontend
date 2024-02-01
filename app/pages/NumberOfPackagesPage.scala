@@ -16,16 +16,13 @@
 
 package pages
 
-import pages.behaviours.PageBehaviours
+import models.Index
+import pages.sections.ItemsSection
+import play.api.libs.json.JsPath
 
-class TotalNumberOfPackagesPageSpec extends PageBehaviours {
+case class NumberOfPackagesPage(houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index) extends QuestionPage[String] {
 
-  "TotalNumberOfPackagesPage" - {
+  override def path: JsPath = ItemsSection(houseConsignmentIndex).path \ itemIndex.position \ "Packaging" \ packageIndex.position \ toString
 
-    beRetrievable[String](TotalNumberOfPackagesPage)
-
-    beSettable[String](TotalNumberOfPackagesPage)
-
-    beRemovable[String](TotalNumberOfPackagesPage)
-  }
+  override def toString: String = "numberOfPackages"
 }

@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package pages.houseConsignment.index.items
 
-import play.api.libs.json.JsPath
+import pages.NumberOfPackagesPage
+import pages.behaviours.PageBehaviours
 
-case object TotalNumberOfPackagesPage extends QuestionPage[String] {
+class NumberOfPackagesPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "NumberOfPackagesPage" - {
 
-  override def toString: String = "totalNumberOfPackages"
+    beRetrievable[String](NumberOfPackagesPage(hcIndex, itemIndex, index))
+
+    beSettable[String](NumberOfPackagesPage(hcIndex, itemIndex, index))
+
+    beRemovable[String](NumberOfPackagesPage(hcIndex, itemIndex, index))
+  }
 }

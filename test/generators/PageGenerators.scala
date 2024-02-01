@@ -23,8 +23,8 @@ import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumber
 
 trait PageGenerators {
 
-  implicit lazy val arbitraryTotalNumberOfPackagesPage: Arbitrary[TotalNumberOfPackagesPage.type] =
-    Arbitrary(TotalNumberOfPackagesPage)
+  implicit lazy val arbitraryTotalNumberOfPackagesPage: Arbitrary[NumberOfPackagesPage.type] =
+    Arbitrary(NumberOfPackagesPage)
 
   implicit lazy val arbitraryConfirmRemoveCommentsPage: Arbitrary[ConfirmRemoveCommentsPage.type] =
     Arbitrary(ConfirmRemoveCommentsPage)

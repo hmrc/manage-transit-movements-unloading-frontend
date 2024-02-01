@@ -17,21 +17,26 @@
 package forms
 
 import forms.mappings.Mappings
-import models.Index
+import models.messages.UnloadingRemarksRequest
+import models.{Index, Mode}
+import play.api.data.Form
+import play.api.i18n.Messages
+import viewModels.houseConsignment.index.items.NumberOfPackagesViewModel
 
 import javax.inject.Inject
-import models.messages.UnloadingRemarksRequest
-import play.api.data.Form
 
-class TotalNumberOfPackagesFormProvider @Inject() extends Mappings {
+class NumberOfPackagesFormProvider @Inject() extends Mappings {
 
-  def apply(index: Index): Form[String] =
+  def apply(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): Form[String] =
     Form(
-      "value" -> text("totalNumberOfPackages.error.required", Seq(index.display.toString))
+      "value" -> text(NumberOfPackagesViewModel.requiredError(mode, houseConsignmentIndex, itemIndex))
         .verifying(
           forms.StopOnFirstFail[String](
-            regexp(UnloadingRemarksRequest.numericRegex, "totalNumberOfPackages.error.nonNumeric", Seq(index.display)),
-            maxLength(UnloadingRemarksRequest.numberOfPackagesLength, "totalNumberOfPackages.error.outOfRange")
+            regexp(UnloadingRemarksRequest.numericRegex,
+                   "numberOfPackages.error.nonNumeric",
+                   Seq(houseConsignmentIndex.display.toString, itemIndex.display.toString)
+            ),
+            maxLength(UnloadingRemarksRequest.numberOfPackagesLength, "numberOfPackages.error.outOfRange")
           )
         )
     )
