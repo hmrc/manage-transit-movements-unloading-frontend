@@ -20,6 +20,7 @@ import forms.Constants.exactCUSCodeLength
 import forms.mappings.Mappings
 import models.messages.UnloadingRemarksRequest.alphaNumericRegex
 import play.api.data.Form
+import models.RichString
 
 import javax.inject.Inject
 
@@ -27,7 +28,7 @@ class CUSCodeFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String, args: Any*): Form[String] =
     Form(
-      "value" -> textWithSpacesRemoved(s"$prefix.error.required", args = args.map(_.toString))
+      "value" -> adaptedText(s"$prefix.error.required", args = args.map(_.toString))(_.removeSpaces())
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),

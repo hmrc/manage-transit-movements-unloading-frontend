@@ -39,21 +39,6 @@ trait Formatters {
       Map(key -> value)
   }
 
-  private[mappings] def spacelessStringFormatter(errorKey: String, args: Seq[Any] = Seq.empty): Formatter[String] = new Formatter[String] {
-
-    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] = {
-      lazy val error = Left(Seq(FormError(key, errorKey, args)))
-      data.get(key) match {
-        case None                                => error
-        case Some(s) if s.removeSpaces().isEmpty => error
-        case Some(s)                             => Right(s.removeSpaces())
-      }
-    }
-
-    override def unbind(key: String, value: String): Map[String, String] =
-      Map(key -> value)
-  }
-
   private[mappings] def booleanFormatter(requiredKey: String, invalidKey: String, args: Seq[String] = Seq.empty): Formatter[Boolean] =
     new Formatter[Boolean] {
 
