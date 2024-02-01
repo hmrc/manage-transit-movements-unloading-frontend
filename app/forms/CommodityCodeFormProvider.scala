@@ -28,8 +28,8 @@ class CommodityCodeFormProvider @Inject() extends Mappings {
 
   def apply(houseConsignmentIndex: Index, itemIndex: Index): Form[String] =
     Form(
-      "value" -> text("commodityCode.error.required", Seq(houseConsignmentIndex.display.toString, itemIndex.display.toString))
-        .verifying(exactLength(UnloadingRemarksRequest.commodityCodeLength, "commodityCode.error.length"))
-        .verifying(regexp(alphaNumericRegex.r, "commodityCode.error.invalid", Seq.empty))
+      "value" -> text("houseConsignment.commodityCode.error.required", Seq(houseConsignmentIndex.display.toString, itemIndex.display.toString))
+        .verifying(exactLength(UnloadingRemarksRequest.commodityCodeLength, "houseConsignment.commodityCode.error.length"))
+        .verifying(regexp(alphaNumericRegex.r, "houseConsignment.commodityCode.error.invalid", Seq.empty))
     )
 }

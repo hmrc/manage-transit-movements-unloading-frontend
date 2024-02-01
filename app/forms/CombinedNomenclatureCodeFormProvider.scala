@@ -28,8 +28,8 @@ class CombinedNomenclatureCodeFormProvider @Inject() extends Mappings {
 
   def apply(houseConsignmentIndex: Index, itemIndex: Index): Form[String] =
     Form(
-      "value" -> text("combinedNomenclatureCode.error.required", Seq(houseConsignmentIndex.display.toString, itemIndex.display.toString))
-        .verifying(exactLength(UnloadingRemarksRequest.combinedNomenclatureCodeLength, "combinedNomenclatureCode.error.length"))
-        .verifying(regexp(alphaNumericRegex.r, "combinedNomenclatureCode.error.invalid", Seq.empty))
+      "value" -> text("houseConsignment.combinedNomenclatureCode.error.required", Seq(houseConsignmentIndex.display.toString, itemIndex.display.toString))
+        .verifying(exactLength(UnloadingRemarksRequest.combinedNomenclatureCodeLength, "houseConsignment.combinedNomenclatureCode.error.length"))
+        .verifying(regexp(alphaNumericRegex.r, "houseConsignment.combinedNomenclatureCode.error.invalid", Seq.empty))
     )
 }
