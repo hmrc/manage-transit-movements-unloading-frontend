@@ -23,20 +23,20 @@ case object NumberOfPackagesViewModel {
 
   def heading(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
     mode match {
-      case CheckMode  => Messages("numberOfPackages.checkMode.heading")
-      case NormalMode => messages("numberOfPackages.normalMode.heading", houseConsignmentIndex.display, itemIndex.display)
+      case NormalMode => Messages("numberOfPackages.normalMode.heading")
+      case CheckMode  => messages("numberOfPackages.checkMode.heading", houseConsignmentIndex.display, itemIndex.display)
     }
 
   def title(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
     mode match {
-      case CheckMode  => messages("numberOfPackages.checkMode.title")
-      case NormalMode => messages("numberOfPackages.normalMode.title", houseConsignmentIndex.display, itemIndex.display)
+      case NormalMode => messages("numberOfPackages.normalMode.title")
+      case CheckMode  => messages("numberOfPackages.checkMode.title", houseConsignmentIndex.display, itemIndex.display)
     }
 
   def requiredError(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
     mode match {
-      case CheckMode  => messages("numberOfPackages.checkMode.error.required")
-      case NormalMode => messages("numberOfPackages.normalMode.error.required", houseConsignmentIndex.display, itemIndex.display)
+      case NormalMode => messages("numberOfPackages.normalMode.error.required")
+      case CheckMode  => messages("numberOfPackages.checkMode.error.required", houseConsignmentIndex.display, itemIndex.display)
     }
 
 }

@@ -25,7 +25,7 @@ import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
 import views.html.houseConsignment.index.items.NumberOfPackagesView
 
-class TotalNumberOfPackagesNormalViewSpec extends InputTextViewBehaviours[String] {
+class TotalNumberOfPackagesNormalModeViewSpec extends InputTextViewBehaviours[String] {
 
   override def form: Form[String] = new NumberOfPackagesFormProvider()(NormalMode, hcIndex, itemIndex)
 
@@ -36,11 +36,11 @@ class TotalNumberOfPackagesNormalViewSpec extends InputTextViewBehaviours[String
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.oneOf(1 to 100).toString)
 
-  behave like pageWithTitle(hcIndex.display.toString, itemIndex.display.toString)
+  behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
-  behave like pageWithHeading(hcIndex.display.toString, itemIndex.display.toString)
+  behave like pageWithHeading()
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 

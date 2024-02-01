@@ -31,8 +31,7 @@ import scala.util.matching.Regex
 
 class NumberOfPackagesFormProviderSpec extends FieldBehaviours with Generators {
 
-  private val maxLength = UnloadingRemarksRequest.numberOfPackagesLength
-
+  private val maxLength  = UnloadingRemarksRequest.numberOfPackagesLength
   private val invalidKey = "numberOfPackages.error.nonNumeric"
 
   def fakeApplication(): Application =
@@ -45,11 +44,11 @@ class NumberOfPackagesFormProviderSpec extends FieldBehaviours with Generators {
   private val hcIndex   = Index(0)
   private val itemIndex = Index(0)
 
-  "In Normal Mode" - {
+  "In Check Mode" - {
 
-    val requiredKey = "numberOfPackages.normalMode.error.required"
+    val requiredKey = "numberOfPackages.checkMode.error.required"
 
-    val form      = new NumberOfPackagesFormProvider()(NormalMode, hcIndex, itemIndex)(messages)
+    val form      = new NumberOfPackagesFormProvider()(CheckMode, hcIndex, itemIndex)(messages)
     val fieldName = "value"
 
     ".value" - {
@@ -81,11 +80,11 @@ class NumberOfPackagesFormProviderSpec extends FieldBehaviours with Generators {
     }
   }
 
-  "In Check Mode" - {
+  "In Normal Mode" - {
 
-    val requiredKey = "numberOfPackages.checkMode.error.required"
+    val requiredKey = "numberOfPackages.normalMode.error.required"
 
-    val form      = new NumberOfPackagesFormProvider()(CheckMode, hcIndex, itemIndex)(messages)
+    val form      = new NumberOfPackagesFormProvider()(NormalMode, hcIndex, itemIndex)(messages)
     val fieldName = "value"
 
     ".value" - {

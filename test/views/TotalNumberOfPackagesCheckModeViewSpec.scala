@@ -36,11 +36,11 @@ class TotalNumberOfPackagesCheckModeViewSpec extends InputTextViewBehaviours[Str
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.oneOf(1 to 100).toString)
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(hcIndex.display.toString, itemIndex.display.toString)
 
   behave like pageWithBackLink()
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(hcIndex.display.toString, itemIndex.display.toString)
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
