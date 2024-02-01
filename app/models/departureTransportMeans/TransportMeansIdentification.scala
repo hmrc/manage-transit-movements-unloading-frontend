@@ -18,8 +18,8 @@ package models.departureTransportMeans
 
 import cats.Order
 import models.{DynamicEnumerableType, Radioable}
-import play.api.libs.json.{Format, Json}
 import org.apache.commons.text.StringEscapeUtils
+import play.api.libs.json.{Format, Json}
 
 case class TransportMeansIdentification(`type`: String, description: String) extends Radioable[TransportMeansIdentification] {
 
