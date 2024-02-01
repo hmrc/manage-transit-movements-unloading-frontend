@@ -23,16 +23,6 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 trait StringFieldBehaviours extends FieldBehaviours {
 
-  def fieldWithExactLength(form: Form[_], fieldName: String, exactLength: Int, lengthError: FormError): Unit =
-    s"must not bind strings where the length is not equal to $exactLength" in {
-
-      forAll(stringsWithLengthNotEqual(exactLength, Gen.numChar) -> "incorrectLength") {
-        string =>
-          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-          result.errors mustEqual Seq(lengthError)
-      }
-    }
-
   def fieldWithMaxLength(form: Form[_], fieldName: String, maxLength: Int, lengthError: FormError): Unit =
     s"must not bind strings longer than $maxLength characters" in {
 

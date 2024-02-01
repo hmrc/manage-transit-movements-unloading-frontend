@@ -23,6 +23,9 @@ this.section.is = This notification is
 site.backToSummary = Back to summary
 site.caption = MRN: {0}
 
+site.email.link = If you have any questions or issues, email us at {0}
+site.email.subject = NCTS Phase 5 - Help with testing
+
 error.title.prefix = Error:
 error.summary.title = There is a problem
 
@@ -398,6 +401,14 @@ houseConsignment.item.description.error.length = The description must be 512 cha
 houseConsignment.item.description.error.required = Enter the new description of item {0} in house consignment {1}
 houseConsignment.item.description.error.length = The description must be 512 characters or less
 houseConsignment.item.description.error.invalidCharacters = The description must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+
+commodityCode.title = What is the new commodity code for item {0} in house consignment {1}?
+commodityCode.heading = What is the new commodity code for item {0} in house consignment {1}?
+commodityCode.xi.paragraph = The combination of your commodity code and combined nomenclature code must be a valid code in TARIC. This is the European Union’s database for classifying goods and determining the amount of duties required.
+commodityCode.hint = This will be 6 characters long and include both letters and numbers, for example 0G23AB.
+commodityCode.error.required = Enter the new commodity code of item {0} in house consignment {1}
+commodityCode.error.invalid = The commodity code must only include letters a to z and numbers 0 to 9
+commodityCode.error.length = The commodity code must be 6 characters long
 
 houseConsignment.item.customsUnionAndStatisticsCode.title = What is the new Customs Union and Statistics (CUS) code for item {0} in house consignment {1}
 houseConsignment.item.customsUnionAndStatisticsCode.heading = What is the new Customs Union and Statistics (CUS) code for item {0} in house consignment {1}
