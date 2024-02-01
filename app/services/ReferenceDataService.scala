@@ -18,6 +18,7 @@ package services
 
 import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
+import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.reference.{Country, CustomsOffice}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -51,6 +52,14 @@ class ReferenceDataServiceImpl @Inject() (connector: ReferenceDataConnector) ext
     )
   }
 
+  def doesCUSCodeExist(cusCode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Boolean] =
+    connector
+      .getCUSCode(cusCode)
+      .map(_.toSeq.nonEmpty)
+      .recover {
+        case _: NoReferenceDataFoundException => false
+      }
+
   private def sort(countries: NonEmptySet[Country]): Seq[Country] =
     countries.toSeq.sortBy(
       country =>
@@ -64,8 +73,7 @@ class ReferenceDataServiceImpl @Inject() (connector: ReferenceDataConnector) ext
 trait ReferenceDataService {
   def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]]
   def getCountryByCode(code: Option[String])(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[Country]]
-
   def getCustomsOfficeByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[CustomsOffice]]
-
   def getCountryNameByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[String]
+  def doesCUSCodeExist(cusCode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Boolean]
 }

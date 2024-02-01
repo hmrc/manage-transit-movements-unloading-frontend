@@ -18,19 +18,22 @@ package services
 
 import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
-import models.reference.{Country, CustomsOffice}
+import connectors.ReferenceDataConnector.NoReferenceDataFoundException
+import models.reference.{CUSCode, Country, CustomsOffice}
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.http.HeaderCarrier
+import org.scalatest.BeforeAndAfterEach
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ReferenceDataServiceSpec extends AnyFreeSpec with ScalaFutures with Matchers with MockitoSugar {
+class ReferenceDataServiceSpec extends AnyFreeSpec with ScalaFutures with Matchers with MockitoSugar with BeforeAndAfterEach {
 
   private val mockConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
@@ -43,6 +46,13 @@ class ReferenceDataServiceSpec extends AnyFreeSpec with ScalaFutures with Matche
   private val countries = NonEmptySet.of(uk, andorra, france)
 
   private val customsOffice = CustomsOffice("ID1", "NAME001", "GB", None)
+
+  private val cusCode = CUSCode("0010001-6")
+
+  override def beforeEach(): Unit = {
+    reset(mockConnector)
+    super.beforeEach()
+  }
 
   "ReferenceDataService" - {
 
@@ -86,6 +96,34 @@ class ReferenceDataServiceSpec extends AnyFreeSpec with ScalaFutures with Matche
           Some(customsOffice)
 
         verify(mockConnector).getCustomsOffice(any())(any(), any())
+      }
+
+    }
+
+    "doesCUSCodeExist should" - {
+      "return true when cusCode exists" in {
+
+        when(mockConnector.getCUSCode(any())(any(), any())).thenReturn(Future.successful(NonEmptySet.of(cusCode)))
+
+        val service = new ReferenceDataServiceImpl(mockConnector)
+
+        service.doesCUSCodeExist("0010001-6").futureValue mustBe
+          true
+
+        verify(mockConnector).getCUSCode(any())(any(), any())
+      }
+
+      "return false when cusCode does not exist" in {
+        val cusCode = "0010001-6"
+
+        when(mockConnector.getCUSCode(any())(any(), any())).thenReturn(Future.failed(new NoReferenceDataFoundException))
+
+        val service = new ReferenceDataServiceImpl(mockConnector)
+
+        service.doesCUSCodeExist(cusCode).futureValue mustBe
+          false
+
+        verify(mockConnector).getCUSCode(ArgumentMatchers.eq(cusCode))(any(), any())
       }
 
     }

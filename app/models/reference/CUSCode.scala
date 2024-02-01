@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 
-package pages.houseConsignment.index.items
+package models.reference
 
-import models.Index
-import pages.QuestionPage
-import pages.sections.ItemsSection
-import play.api.libs.json.JsPath
+import cats.Order
+import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-case class ItemDescriptionPage(houseConsignmentIndex: Index, itemIndex: Index) extends QuestionPage[String] {
+case class CUSCode(code: String) extends Selectable {
 
-  override def path: JsPath = ItemsSection(houseConsignmentIndex).path \ itemIndex.position \ "Commodity" \ toString
+  override def toString: String = code
 
-  override def toString: String = "descriptionOfGoods"
+  override def toSelectItem(selected: Boolean): SelectItem = SelectItem(Some(code), this.toString, selected)
+}
+
+object CUSCode {
+  implicit val format: OFormat[CUSCode] = Json.format[CUSCode]
+
+  implicit val order: Order[CUSCode] = (x: CUSCode, y: CUSCode) => x.code.compareToIgnoreCase(y.code)
 }

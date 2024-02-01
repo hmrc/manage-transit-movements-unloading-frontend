@@ -16,14 +16,16 @@
 
 package pages.houseConsignment.index.items
 
-import models.Index
-import pages.QuestionPage
-import pages.sections.ItemsSection
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case class ItemDescriptionPage(houseConsignmentIndex: Index, itemIndex: Index) extends QuestionPage[String] {
+class CustomsUnionAndStatisticsCodePageSpec extends PageBehaviours {
 
-  override def path: JsPath = ItemsSection(houseConsignmentIndex).path \ itemIndex.position \ "Commodity" \ toString
+  "CustomsUnionAndStatisticsCodePage" - {
 
-  override def toString: String = "descriptionOfGoods"
+    beRetrievable[String](CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex))
+
+    beSettable[String](CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex))
+
+    beRemovable[String](CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex))
+  }
 }

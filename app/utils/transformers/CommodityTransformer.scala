@@ -18,7 +18,7 @@ package utils.transformers
 
 import generated.CommodityType08
 import models.{Index, UserAnswers}
-import pages.houseConsignment.index.items.ItemDescriptionPage
+import pages.houseConsignment.index.items.{CustomsUnionAndStatisticsCodePage, ItemDescriptionPage}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,9 +30,10 @@ class CommodityTransformer @Inject() (
 
   def transform(commodity: CommodityType08, hcIndex: Index, itemIndex: Index): UserAnswers => Future[UserAnswers] = userAnswers =>
     commodity match {
-      case CommodityType08(descriptionOfGoods, _, _, _, goodsMeasure) =>
+      case CommodityType08(descriptionOfGoods, cusCode, _, _, goodsMeasure) =>
         lazy val pipeline: UserAnswers => Future[UserAnswers] =
           set(ItemDescriptionPage(hcIndex, itemIndex), descriptionOfGoods) andThen
+            set(CustomsUnionAndStatisticsCodePage(hcIndex, itemIndex), cusCode) andThen
             goodsMeasureTransformer.transform(goodsMeasure, hcIndex, itemIndex)
 
         pipeline(userAnswers)
