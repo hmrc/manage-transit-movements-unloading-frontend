@@ -34,6 +34,15 @@ object InputTextViewModel {
   ) extends InputTextViewModel
       with AdditionalHtmlViewModel
 
+  def apply(
+    heading: String,
+    caption: Option[String] = None,
+    additionalHtml: Option[Html]
+  ): InputTextViewModel = additionalHtml match {
+    case Some(value) => TextInputWithHiddenLabel(heading, caption, value)
+    case None        => OrdinaryTextInput(heading, caption)
+  }
+
   case class TextInputWithStatementHeading(
     heading: String,
     caption: Option[String] = None,

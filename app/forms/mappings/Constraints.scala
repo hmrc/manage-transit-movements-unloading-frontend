@@ -111,6 +111,17 @@ trait Constraints {
         Valid
     }
 
+  protected def exactLength(exact: Int, errorKey: String): Constraint[String] =
+    lengthConstraint(errorKey, _.length == exact, Seq(exact))
+
+  private def lengthConstraint(errorKey: String, predicate: String => Boolean, args: Seq[Any]): Constraint[String] =
+    Constraint {
+      case str if predicate(str) =>
+        Valid
+      case _ =>
+        Invalid(errorKey, args: _*)
+    }
+
   protected def nonEmptySet(errorKey: String): Constraint[Set[_]] =
     Constraint {
       case set if set.nonEmpty =>
