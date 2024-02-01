@@ -14,29 +14,16 @@
  * limitations under the License.
  */
 
-package config
+package pages.houseConsignment.index.items
 
-object Constants {
-  val GB = "GB"
-  val AD = "AD"
+import models.Index
+import pages.QuestionPage
+import pages.sections.ItemsSection
+import play.api.libs.json.JsPath
 
-  val T2 = "T2"
-  val T  = "T"
+case class PackageShippingMarkPage(houseConsignment: Index, itemIndex: Index, packageIndex: Index) extends QuestionPage[String] {
 
-  val Maritime = "1"
-  val Rail     = "2"
-  val Road     = "3"
-  val Air      = "4"
-  val Mail     = "5"
-  val Fixed    = "7"
-  val Unknown  = "9"
+  override def path: JsPath = ItemsSection(houseConsignment).path \ itemIndex.position \ "Commodity" \ toString
 
-  val Other = "D"
-
-  lazy val maxItemDescriptionLength: Int     = 512
-  lazy val maxPackageShippingMarkLength: Int = 512
-
-  object MeansOfTransportIdentification {
-    val UnknownIdentification = "99"
-  }
+  override def toString: String = "packageShippingMarkIndex"
 }
