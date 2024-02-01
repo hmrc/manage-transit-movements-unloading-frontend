@@ -17,6 +17,7 @@
 package generators
 
 import cats.data.NonEmptyList
+import models.{CheckMode, Mode, NormalMode}
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen, Shrink}

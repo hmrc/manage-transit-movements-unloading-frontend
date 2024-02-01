@@ -19,6 +19,7 @@
 @import viewModels.components.InputCharacterCountViewModel._
 @import views.html.components.{Button, ErrorSummary, InputCharacterCount}
 @import config.Constants.maxItemDescriptionLength
+@import viewModels.PackagesViewModel._
 
 @this(
     mainTemplate: MainTemplate,
@@ -31,7 +32,7 @@
 @(form: Form[String], mrn: MovementReferenceNumber, arrivalId: ArrivalId,  houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("houseConsignment.item.packageShippingMark.title", itemIndex.display, houseConsignmentIndex.display, packageIndex.display),
+    title = title(mode, houseConsignmentIndex, itemIndex),
     showBackLink = true
 ) {
 
@@ -41,10 +42,9 @@
 
         @inputCharacterCount(
             field = form("value"),
-            inputCharacterCountType = InputCharacterCountWithAdditionalHtml(
-                heading = messages("houseConsignment.item.packageShippingMark.heading", itemIndex.display, houseConsignmentIndex.display, packageIndex.display),
-                caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = messages("houseConsignment.item.packageShippingMark.paragraph").toParagraph
+            inputCharacterCountType = OrdinaryInputCharacterCount(
+                heading = heading(mode, houseConsignmentIndex, itemIndex),
+                caption = Some(messages("site.caption", mrn.toString))
             ),
             label = messages("houseConsignment.item.packageShippingMark.heading", itemIndex.display, houseConsignmentIndex.display, packageIndex.display),
             maxLength = maxItemDescriptionLength

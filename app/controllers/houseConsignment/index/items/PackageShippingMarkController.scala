@@ -17,12 +17,11 @@
 package controllers.houseConsignment.index.items
 
 import controllers.actions._
-import forms.DescriptionFormProvider
+import forms.PackageShippingMarkFormProvider
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
 import pages.houseConsignment.index.items.PackageShippingMarkPage
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -38,21 +37,20 @@ class PackageShippingMarkController @Inject() (
   actions: Actions,
   navigator: Navigator,
   val controllerComponents: MessagesControllerComponents,
-  formProvider: DescriptionFormProvider,
+  formProvider: PackageShippingMarkFormProvider,
   view: PackageShippingMarkView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index): Form[String] =
-    formProvider("houseConsignment.index.item.packageShippingMark", itemIndex.display, houseConsignmentIndex.display, packageIndex.display)
-
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
+        val form = formProvider(mode, houseConsignmentIndex, itemIndex)
+
         val preparedForm = request.userAnswers.get(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex)) match {
-          case None        => form(houseConsignmentIndex, itemIndex, packageIndex)
-          case Some(value) => form(houseConsignmentIndex, itemIndex, packageIndex).fill(value)
+          case None        => form
+          case Some(value) => form.fill(value)
         }
         Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode))
     }
@@ -60,11 +58,14 @@ class PackageShippingMarkController @Inject() (
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
-        form(houseConsignmentIndex, itemIndex, packageIndex)
+        val form = formProvider(mode, houseConsignmentIndex, itemIndex)
+        form
           .bindFromRequest()
           .fold(
             formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode))),
+              Future.successful(
+                BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode))
+              ),
             value => redirect(value, houseConsignmentIndex, itemIndex, packageIndex, mode)
           )
     }
