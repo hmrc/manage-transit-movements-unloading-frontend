@@ -38,6 +38,13 @@ trait ModelGenerators {
       } yield MovementReferenceNumber(mrn)
     }
 
+  implicit lazy val arbitraryArrivalId: Arbitrary[ArrivalId] =
+    Arbitrary {
+      for {
+        value <- Gen.alphaNumStr
+      } yield ArrivalId(value)
+    }
+
   implicit lazy val arbitraryEoriNumber: Arbitrary[EoriNumber] =
     Arbitrary {
       for {
