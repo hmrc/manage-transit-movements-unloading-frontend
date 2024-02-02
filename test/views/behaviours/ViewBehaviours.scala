@@ -21,8 +21,8 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Assertion
 import play.twirl.api.HtmlFormat
-import views.assertions.ViewSpecAssertions
 import play.twirl.api.TwirlHelperImports._
+import views.assertions.ViewSpecAssertions
 
 import scala.jdk.CollectionConverters._
 
@@ -97,21 +97,39 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     )
   }
 
+  def pageWithTitle(text: String): Unit =
+    "must render title" in {
+      checkTitle(text)
+    }
+
   def pageWithTitle(args: Any*): Unit =
     "must render title" in {
-      val title      = doc.title()
       val messageKey = s"$prefix.title"
-      title mustBe s"${messages(messageKey, args: _*)} - Manage your transit movements - GOV.UK"
+      checkTitle(messages(messageKey, args: _*))
       assert(messages.isDefinedAt(messageKey))
+    }
+
+  private def checkTitle(text: String): Assertion = {
+    val title = doc.title()
+    title mustBe s"$text - Manage your transit movements - GOV.UK"
+  }
+
+  def pageWithHeading(text: String): Unit =
+    "must render heading" in {
+      checkHeading(text)
     }
 
   def pageWithHeading(args: Any*): Unit =
     "must render heading" in {
-      val heading    = getElementByTag(doc, "h1")
       val messageKey = s"$prefix.heading"
-      assertElementIncludesText(heading, messages(messageKey, args: _*))
+      checkHeading(messages(messageKey, args: _*))
       assert(messages.isDefinedAt(messageKey))
     }
+
+  private def checkHeading(text: String): Assertion = {
+    val heading = getElementByTag(doc, "h1")
+    assertElementIncludesText(heading, text)
+  }
 
   def pageWithCaption(expectedText: String): Unit =
     "must render caption" in {

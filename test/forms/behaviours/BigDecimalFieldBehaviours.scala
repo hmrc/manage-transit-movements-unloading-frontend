@@ -16,7 +16,6 @@
 
 package forms.behaviours
 
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.data.{Form, FormError}
 
 trait BigDecimalFieldBehaviours extends FieldBehaviours {

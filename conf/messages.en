@@ -394,10 +394,10 @@ cannotSendUnloadingRemarks.officeNameNotAvailAndPhoneNumberNotAvailable  = If yo
 cannotSendUnloadingRemarks.officeNotAvailable  = If you have any questions, contact Customs office {0}.
 cannotSendUnloadingRemarks.linkText = View the status of this notification
 
-departureTransportMeans.identification.heading=Which identification do you want to use for the new departure means of transport?
-departureTransportMeans.identification.title=Which identification do you want to use for the new departure means of transport?
-departureTransportMeans.identification.error.required=Select which identification you want to use for the new departure means of transport
-departureTransportMeans.identification.paragraph=This is the means of transport used from the UK office of departure to a UK port or airport.
+departureTransportMeans.identification.heading = Which identification do you want to use for the new departure means of transport?
+departureTransportMeans.identification.title = Which identification do you want to use for the new departure means of transport?
+departureTransportMeans.identification.error.required = Select which identification you want to use for the new departure means of transport
+departureTransportMeans.identification.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
 
 houseConsignment.item.description.title = Enter the new description of item {0} in house consignment {1}
 houseConsignment.item.description.heading = Enter the new description of item {0} in house consignment {1}
@@ -431,3 +431,15 @@ houseConsignment.item.customsUnionAndStatisticsCode.error.required = Enter the n
 houseConsignment.item.customsUnionAndStatisticsCode.error.length = The Customs Union and Statistics (CUS) code must be 9 characters long
 houseConsignment.item.customsUnionAndStatisticsCode.error.invalidCharacters = The Customs Union and Statistics (CUS) code must only include letters a to z and numbers 0 to 9
 houseConsignment.item.customsUnionAndStatisticsCode.error.not.exists = Please enter a valid Customs Union and Statistics (CUS) code. This will be 9 characters long and include both letters and numbers.
+
+houseConsignment.item.packageShippingMark.checkMode.title = What is the new shipping mark for item {0} in house consignment {1}?
+houseConsignment.item.packageShippingMark.normalMode.title = What is the shipping mark?
+houseConsignment.item.packageShippingMark.checkMode.heading = What is the new shipping mark for item {0} in house consignment {1}?
+houseConsignment.item.packageShippingMark.normalMode.heading = What is the shipping mark?
+houseConsignment.item.packageShippingMark.label.underLimit = You have {0}} characters remaining
+houseConsignment.item.packageShippingMark.label.overLimit = You have {0}} characters too many
+houseConsignment.item.packageShippingMark.checkMode.error.required = Enter the new shipping mark for item {0} in house consignment {1}
+houseConsignment.item.packageShippingMark.normalMode.error.required = Enter the shipping mark
+houseConsignment.item.packageShippingMark.error.invalid = The shipping mark must only include letters a to z and numbers 0 to 9
+houseConsignment.item.packageShippingMark.error.length = The shipping mark must be 512 characters or less
+

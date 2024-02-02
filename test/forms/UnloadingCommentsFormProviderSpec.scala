@@ -19,7 +19,6 @@ package forms
 import forms.behaviours.StringFieldBehaviours
 import models.messages.UnloadingRemarksRequest.stringFieldRegexComma
 import org.scalacheck.Gen
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.data.{Field, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
 
