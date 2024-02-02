@@ -21,21 +21,16 @@ import generators.Generators
 import models.messages.UnloadingRemarksRequest
 import org.scalacheck.Gen
 import play.api.data.{Field, Form, FormError}
-import viewModels.houseConsignment.index.items.NumberOfPackagesViewModel
 
 import scala.util.matching.Regex
 
 class NumberOfPackagesFormProviderSpec extends FieldBehaviours with Generators {
 
-  private val maxLength  = UnloadingRemarksRequest.numberOfPackagesLength
-  private val invalidKey = "numberOfPackages.error.nonNumeric"
-  val requiredKey        = "numberOfPackages.normalMode.error.required"
-  val titleKey           = "numberOfPackages.normalMode.title"
-  val headingKey         = "numberOfPackages.normalMode.heading"
+  private val maxLength   = UnloadingRemarksRequest.numberOfPackagesLength
+  private val invalidKey  = "numberOfPackages.error.nonNumeric"
+  private val requiredKey = "numberOfPackages.error.required"
 
-  private val viewModel = NumberOfPackagesViewModel(headingKey, titleKey, requiredKey)
-
-  val form: Form[String] = new NumberOfPackagesFormProvider()(viewModel.requiredError)
+  val form: Form[String] = new NumberOfPackagesFormProvider()(requiredKey)
   val fieldName          = "value"
 
   ".value" - {

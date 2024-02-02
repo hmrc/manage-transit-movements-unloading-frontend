@@ -20,15 +20,18 @@ import forms.Constants.maxPackageShippingMarkLength
 import forms.PackageShippingMarkFormProvider
 import generators.Generators
 import models.NormalMode
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.PackageShippingMarksViewModel
+import viewModels.houseConsignment.index.items.PackageShippingMarksViewModel
 import views.behaviours.CharacterCountViewBehaviours
 import views.html.houseConsignment.index.items.PackageShippingMarkView
 
-class PackageShippingMarkViewNormalModeSpec extends CharacterCountViewBehaviours with Generators {
+class PackageShippingMarkViewSpec extends CharacterCountViewBehaviours with Generators {
 
-  val viewModel: PackageShippingMarksViewModel = PackageShippingMarksViewModel(hcIndex, itemIndex, NormalMode)
+  private val viewModel: PackageShippingMarksViewModel =
+    arbitrary[PackageShippingMarksViewModel].sample.value
 
   def form: Form[String] = new PackageShippingMarkFormProvider()(viewModel.requiredError)
 
@@ -37,15 +40,21 @@ class PackageShippingMarkViewNormalModeSpec extends CharacterCountViewBehaviours
       .instanceOf[PackageShippingMarkView]
       .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, NormalMode, viewModel)(fakeRequest, messages)
 
-  val prefix: String = "houseConsignment.item.packageShippingMark.normalMode"
+  override val prefix: String = Gen
+    .oneOf(
+      "houseConsignment.item.packageShippingMark.normalMode",
+      "houseConsignment.item.packageShippingMark.checkMode"
+    )
+    .sample
+    .value
 
-  behave like pageWithTitle(args = itemIndex.display, houseConsignmentIndex.display)
+  behave like pageWithTitle(text = viewModel.title)
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithHeading(args = itemIndex.display, houseConsignmentIndex.display)
+  behave like pageWithHeading(text = viewModel.heading)
 
   behave like pageWithHint("You can enter up to 512 characters")
 

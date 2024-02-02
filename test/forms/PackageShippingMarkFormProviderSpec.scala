@@ -19,72 +19,37 @@ package forms
 import forms.Constants.maxPackageShippingMarkLength
 import forms.behaviours.StringFieldBehaviours
 import models.messages.UnloadingRemarksRequest.alphaNumericRegex
-import models.{CheckMode, NormalMode}
 import org.scalacheck.Gen
 import play.api.data.FormError
-import viewModels.PackageShippingMarksViewModel
 
 class PackageShippingMarkFormProviderSpec extends StringFieldBehaviours {
 
-  private val invalidKey = "houseConsignment.item.packageShippingMark.error.invalid"
+  private val invalidKey  = "houseConsignment.item.packageShippingMark.error.invalid"
+  private val requiredKey = "houseConsignment.item.packageShippingMark.error.required"
 
   private val fieldName = "value"
 
-  "In Normal Mode" - {
+  val form = new PackageShippingMarkFormProvider()(requiredKey)
 
-    val viewModel   = PackageShippingMarksViewModel(hcIndex, itemIndex, NormalMode)
-    val form        = new PackageShippingMarkFormProvider()(viewModel.requiredError)
-    val requiredKey = "houseConsignment.item.packageShippingMark.normalMode.error.required"
+  ".value" - {
 
-    ".value" - {
-
-      behave like fieldThatBindsValidData(
-        form,
-        fieldName,
-        Gen.chooseNum(0, maxPackageShippingMarkLength).toString
-      )
-
-      behave like mandatoryField(
-        form,
-        fieldName,
-        requiredError = FormError(fieldName, messages(requiredKey))
-      )
-    }
-
-    behave like fieldWithInvalidCharacters(
+    behave like fieldThatBindsValidData(
       form,
       fieldName,
-      error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex)),
-      maxPackageShippingMarkLength
+      Gen.chooseNum(0, maxPackageShippingMarkLength).toString
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, messages(requiredKey))
     )
   }
 
-  "In Check Mode" - {
-
-    val viewModel   = PackageShippingMarksViewModel(hcIndex, itemIndex, CheckMode)
-    val requiredKey = "houseConsignment.item.packageShippingMark.checkMode.error.required"
-    val form        = new PackageShippingMarkFormProvider()(viewModel.requiredError)
-
-    ".value" - {
-
-      behave like fieldThatBindsValidData(
-        form,
-        fieldName,
-        Gen.chooseNum(0, maxPackageShippingMarkLength).toString
-      )
-
-      behave like mandatoryField(
-        form,
-        fieldName,
-        requiredError = FormError(fieldName, messages(requiredKey, hcIndex.display, itemIndex.display))
-      )
-
-      behave like fieldWithInvalidCharacters(
-        form,
-        fieldName,
-        error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex)),
-        maxPackageShippingMarkLength
-      )
-    }
-  }
+  behave like fieldWithInvalidCharacters(
+    form,
+    fieldName,
+    error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex)),
+    maxPackageShippingMarkLength
+  )
 }

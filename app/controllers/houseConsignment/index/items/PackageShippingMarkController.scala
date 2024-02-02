@@ -26,7 +26,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.PackageShippingMarksViewModel.PackageShippingMarksViewModelProvider
+import viewModels.houseConsignment.index.items.PackageShippingMarksViewModel.PackageShippingMarksViewModelProvider
 import views.html.houseConsignment.index.items.PackageShippingMarkView
 
 import javax.inject.Inject

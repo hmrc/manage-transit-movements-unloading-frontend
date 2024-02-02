@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewModels.transportMeans.departure
+package viewModels.houseConsignment.index.items
 
 import base.SpecBase
 import generators.Generators

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package viewModels
+package viewModels.houseConsignment.index.items
 
 import base.SpecBase
 import generators.Generators
 import models.{CheckMode, NormalMode}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import viewModels.PackageShippingMarksViewModel.PackageShippingMarksViewModelProvider
+import viewModels.houseConsignment.index.items.PackageShippingMarksViewModel.PackageShippingMarksViewModelProvider
 
 class PackageShippingMarksViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

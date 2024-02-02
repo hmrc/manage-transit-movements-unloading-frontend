@@ -17,34 +17,48 @@
 package controllers.houseConsignment.index.items
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import forms.PackageShippingMarkFormProvider
+import generators.Generators
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.houseConsignment.index.items.PackageShippingMarkPage
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewModels.PackageShippingMarksViewModel
+import viewModels.houseConsignment.index.items.PackageShippingMarksViewModel
+import viewModels.houseConsignment.index.items.PackageShippingMarksViewModel.PackageShippingMarksViewModelProvider
 import views.html.houseConsignment.index.items.PackageShippingMarkView
 
 import scala.concurrent.Future
 
-class PackageShippingMarkControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
-  private lazy val mode         = NormalMode
-  private lazy val formProvider = new PackageShippingMarkFormProvider()
-  private lazy val viewModel    = PackageShippingMarksViewModel(hcIndex, itemIndex, mode)
-  private lazy val form         = formProvider(viewModel.requiredError)
+class PackageShippingMarkControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private lazy val packageShippingMarkRoute =
-    controllers.houseConsignment.index.items.routes.PackageShippingMarkController
-      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)
-      .url
+  private lazy val formProvider     = new PackageShippingMarkFormProvider()
+  private val mockViewModelProvider = mock[PackageShippingMarksViewModelProvider]
+  private val viewModel             = arbitrary[PackageShippingMarksViewModel].sample.value
+  private lazy val mode             = NormalMode
+  private lazy val form             = formProvider(viewModel.requiredError)
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(bind[PackageShippingMarksViewModelProvider].toInstance(mockViewModelProvider))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockViewModelProvider)
+
+    when(mockViewModelProvider.apply(any(), any(), any())(any()))
+      .thenReturn(viewModel)
+  }
+
+  private lazy val packageShippingMarkRoute =
+    routes.PackageShippingMarkController
+      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)
+      .url
 
   "PackageShippingMarkController" - {
 
@@ -127,7 +141,7 @@ class PackageShippingMarkControllerSpec extends SpecBase with AppWithDefaultMock
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -141,7 +155,7 @@ class PackageShippingMarkControllerSpec extends SpecBase with AppWithDefaultMock
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
   }
 }

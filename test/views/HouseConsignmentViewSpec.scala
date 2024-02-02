@@ -39,13 +39,13 @@ class HouseConsignmentViewSpec extends DetailsListViewBehaviours with Generators
     section => SummaryList(section.rows)
   )
 
-  behave like pageWithTitle("1")
+  behave like pageWithTitle(args = "1")
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithHeading("1")
+  behave like pageWithHeading(args = "1")
 
   behave like pageWithContent("p", "Compare the transit that arrived with the following information to identify any discrepancies.")
 
