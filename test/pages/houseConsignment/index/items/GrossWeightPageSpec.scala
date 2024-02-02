@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.houseConsignment.index.items
 
-import models.Index
-import pages.sections.ItemsSection
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case class GrossWeightPage(houseConsignment: Index, itemIndex: Index) extends QuestionPage[Double] {
+class GrossWeightPageSpec extends PageBehaviours {
 
-  override def path: JsPath = ItemsSection(houseConsignment).path \ itemIndex.position \ "Commodity" \ "GoodsMeasure" \ toString
+  "GrossWeightPage" - {
 
-  override def toString: String = "grossMass"
+    beRetrievable[BigDecimal](GrossWeightPage(houseConsignmentIndex, itemIndex))
+
+    beSettable[BigDecimal](GrossWeightPage(houseConsignmentIndex, itemIndex))
+
+    beRemovable[BigDecimal](GrossWeightPage(houseConsignmentIndex, itemIndex))
+  }
 }

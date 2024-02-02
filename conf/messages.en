@@ -98,15 +98,15 @@ departureMeansOfTransportCountry.error.required = Select the country the new dep
 departureMeansOfTransportCountry.placeHolder = Select a country
 departureMeansOfTransportCountry.hint  = Enter the country or code, like Austria or AT.
 
-grossWeight.title = What is the new gross weight of item {0}?
-grossWeight.heading = What is the new gross weight of item {0}?
-grossWeight.paragraph = This is the combined weight of the item’s goods and packaging.
-grossWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
-grossWeight.error.required = Enter the new gross weight of item {0}
-grossWeight.error.length = The new gross weight must be 16 characters or less
-grossWeight.error.characters = The new gross weight must only include numbers 0 to 9 and a decimal point
-grossWeight.error.decimal = The new gross weight must only include 6 decimal places or less
-grossWeight.change.hidden = the new total gross weight
+houseConsignment.item.grossWeight.title = What is the new gross weight of item {0} in house consignment {1}?
+houseConsignment.item.grossWeight.heading = What is the new gross weight of item {0} in house consignment {1}?
+houseConsignment.item.grossWeight.paragraph = This is the combined weight of the item’s goods and packaging.
+houseConsignment.item.grossWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
+houseConsignment.item.grossWeight.error.required = Enter the new gross weight of item {0}  in house consignment {1}
+houseConsignment.item.grossWeight.error.invalidValue = The new gross weight must be 16 characters or less
+houseConsignment.item.grossWeight.error.invalidCharacters = The new gross weight must only include numbers 0 to 9 and a decimal point
+houseConsignment.item.grossWeight.error.invalidFormat = The new gross weight must only include 6 decimal places or less
+houseConsignment.item.grossWeight.change.hidden = the new total gross weight
 
 netWeight.title = What is the new net weight of item {0} in house consignment {1}?
 netWeight.heading = What is the new net weight of item {0} in house consignment {1}?
