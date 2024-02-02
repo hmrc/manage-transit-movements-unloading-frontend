@@ -40,29 +40,29 @@ class NetWeightController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(itemIndex: Index) = formProvider(itemIndex)
+  private def form(houseConsignmentIndex: Index, itemIndex: Index) = formProvider(houseConsignmentIndex, itemIndex)
 
-  def onPageLoad(arrivalId: ArrivalId, houseConsignment: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId) {
       implicit request =>
-        val preparedForm = request.userAnswers.get(NetWeightPage(houseConsignment, itemIndex)) match {
-          case None        => form(itemIndex)
-          case Some(value) => form(itemIndex).fill(value.toString)
+        val preparedForm = request.userAnswers.get(NetWeightPage(houseConsignmentIndex, itemIndex)) match {
+          case None        => form(houseConsignmentIndex, itemIndex)
+          case Some(value) => form(houseConsignmentIndex, itemIndex).fill(value.toString)
         }
 
-        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignment, itemIndex, mode))
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))
     }
 
-  def onSubmit(arrivalId: ArrivalId, houseConsignment: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
-        form(itemIndex)
+        form(houseConsignmentIndex, itemIndex)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignment, itemIndex, mode))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))),
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(NetWeightPage(houseConsignment, itemIndex), value.toDouble))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(NetWeightPage(houseConsignmentIndex, itemIndex), value.toDouble))
                 _              <- sessionRepository.set(updatedAnswers)
               } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
           )

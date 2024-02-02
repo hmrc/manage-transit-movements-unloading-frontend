@@ -63,6 +63,7 @@ trait SpecBase
   val hcIndex: Index                = Index(0)
   val equipmentIndex: Index         = Index(0)
   val sealIndex: Index              = Index(0)
+  val houseConsignmentIndex: Index  = Index(0)
   val itemIndex: Index              = Index(0)
   def emptyUserAnswers: UserAnswers = UserAnswers(arrivalId, mrn, eoriNumber, basicIe043, Json.obj(), Instant.now())
 
@@ -88,7 +89,7 @@ trait SpecBase
   implicit def messages: Messages = messagesApi.preferred(fakeRequest)
   implicit val hc: HeaderCarrier  = HeaderCarrier()
 
-  def frontendAppConfig = injector.instanceOf[FrontendAppConfig]
+  def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
 
   implicit class RichUserAnswers(userAnswers: UserAnswers) {
 

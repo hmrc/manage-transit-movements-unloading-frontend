@@ -23,7 +23,8 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.{ItemDescriptionPage, QuestionPage}
+import pages.QuestionPage
+import pages.houseConsignment.index.items.{CustomsUnionAndStatisticsCodePage, ItemDescriptionPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, JsPath, Json}
@@ -58,6 +59,7 @@ class CommodityTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
         val result = transformer.transform(commodity, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
 
         result.getValue(ItemDescriptionPage(hcIndex, itemIndex)) mustBe commodity.descriptionOfGoods
+        result.get(CustomsUnionAndStatisticsCodePage(hcIndex, itemIndex)) mustBe commodity.cusCode
         result.getValue(FakeGoodsMeasureSection) mustBe Json.obj("foo" -> "bar")
     }
   }

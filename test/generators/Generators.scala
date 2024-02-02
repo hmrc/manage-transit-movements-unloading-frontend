@@ -109,11 +109,17 @@ trait Generators
       chars  <- listOfN(length, alphaNumChar)
     } yield chars.mkString
 
-  def stringsLongerThan(minLength: Int): Gen[String] =
+  def stringsLongerThan(minLength: Int, charGen: Gen[Char] = Gen.alphaNumChar): Gen[String] =
     for {
       maxLength <- (minLength * 2).max(100)
       length    <- Gen.chooseNum(minLength + 1, maxLength)
-      chars     <- listOfN(length, arbitrary[Char])
+      chars     <- listOfN(length, charGen)
+    } yield chars.mkString
+
+  def stringsWithLengthNotEqual(length: Int, charGen: Gen[Char] = Gen.alphaNumChar): Gen[String] =
+    for {
+      len   <- Gen.posNum[Int].filter(_ != length)
+      chars <- listOfN(len, charGen)
     } yield chars.mkString
 
   def stringsExceptSpecificValues(excluded: Seq[String]): Gen[String] =

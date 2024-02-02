@@ -28,9 +28,8 @@ class VehicleIdentificationNumberFormProviderSpec extends StringFieldBehaviours 
   private val requiredKey = "vehicleIdentificationNumber.error.required"
   private val maxLength   = UnloadingRemarksRequest.vehicleIdentificationNumberMaxLength
   private val invalidKey  = "vehicleIdentificationNumber.error.invalid"
-
-  private val form      = new VehicleIdentificationNumberFormProvider()()
-  private val fieldName = "value"
+  private val form        = new VehicleIdentificationNumberFormProvider()()
+  private val fieldName   = "value"
 
   ".value" - {
 

@@ -23,6 +23,9 @@ this.section.is = This notification is
 site.backToSummary = Back to summary
 site.caption = MRN: {0}
 
+site.email.link = If you have any questions or issues, email us at {0}
+site.email.subject = NCTS Phase 5 - Help with testing
+
 error.title.prefix = Error:
 error.summary.title = There is a problem
 
@@ -105,12 +108,12 @@ grossWeight.error.characters = The new gross weight must only include numbers 0 
 grossWeight.error.decimal = The new gross weight must only include 6 decimal places or less
 grossWeight.change.hidden = the new total gross weight
 
-netWeight.title = What is the new net weight of item {0}?
-netWeight.heading = What is the new net weight of item {0}?
-netWeight.checkYourAnswersLabel = What is the net net weight of item {0}?
+netWeight.title = What is the new net weight of item {0} in house consignment {1}?
+netWeight.heading = What is the new net weight of item {0} in house consignment {1}?
+netWeight.checkYourAnswersLabel = What is the net net weight of item {0} in house consignment {1}?
 netWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
 netWeight.paragraph = This is the weight of the item’s goods, excluding all packaging.
-netWeight.error.required = Enter the new net weight of item {0}
+netWeight.error.required = Enter the new net weight of item {0} in house consignment {1}
 netWeight.error.length = The new net weight must be 16 characters or less
 netWeight.error.characters = The new net weight must only include numbers 0 to 9 and a decimal point
 netWeight.error.decimal = The new net weight must only include 6 decimal places or less
@@ -390,3 +393,27 @@ cannotSendUnloadingRemarks.linkText = View the status of this notification
 departureTransportMeans.identification.heading=Which identification do you want to use for the new departure means of transport?
 departureTransportMeans.identification.title=Which identification do you want to use for the new departure means of transport?
 departureTransportMeans.identification.error.required=Select which identification you want to use for the new departure means of transport
+
+houseConsignment.item.description.title = Enter the new description of item {0} in house consignment {1}
+houseConsignment.item.description.heading = Enter the new description of item {0} in house consignment {1}
+houseConsignment.item.description.paragraph = This should be clear and detailed enough for anyone involved in the transit movement to understand its contents.
+houseConsignment.item.description.error.length = The description must be 512 characters or less
+houseConsignment.item.description.error.required = Enter the new description of item {0} in house consignment {1}
+houseConsignment.item.description.error.length = The description must be 512 characters or less
+houseConsignment.item.description.error.invalidCharacters = The description must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+
+commodityCode.title = What is the new commodity code for item {0} in house consignment {1}?
+commodityCode.heading = What is the new commodity code for item {0} in house consignment {1}?
+commodityCode.xi.paragraph = The combination of your commodity code and combined nomenclature code must be a valid code in TARIC. This is the European Union’s database for classifying goods and determining the amount of duties required.
+commodityCode.hint = This will be 6 characters long and include both letters and numbers, for example 0G23AB.
+commodityCode.error.required = Enter the new commodity code of item {0} in house consignment {1}
+commodityCode.error.invalid = The commodity code must only include letters a to z and numbers 0 to 9
+commodityCode.error.length = The commodity code must be 6 characters long
+
+houseConsignment.item.customsUnionAndStatisticsCode.title = What is the new Customs Union and Statistics (CUS) code for item {0} in house consignment {1}
+houseConsignment.item.customsUnionAndStatisticsCode.heading = What is the new Customs Union and Statistics (CUS) code for item {0} in house consignment {1}
+houseConsignment.item.customsUnionAndStatisticsCode.hint = This will be 9 characters long and include both letters and numbers.
+houseConsignment.item.customsUnionAndStatisticsCode.error.required = Enter the new Customs Union and Statistics (CUS) code for item {0} in house consignment {1}
+houseConsignment.item.customsUnionAndStatisticsCode.error.length = The Customs Union and Statistics (CUS) code must be 9 characters long
+houseConsignment.item.customsUnionAndStatisticsCode.error.invalidCharacters = The Customs Union and Statistics (CUS) code must only include letters a to z and numbers 0 to 9
+houseConsignment.item.customsUnionAndStatisticsCode.error.not.exists = Please enter a valid Customs Union and Statistics (CUS) code. This will be 9 characters long and include both letters and numbers.
