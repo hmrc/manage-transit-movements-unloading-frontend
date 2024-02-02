@@ -57,7 +57,7 @@ class CombinedNomenclatureCodeFormProviderSpec extends StringFieldBehaviours {
     "must not bind strings that do not match regex" in {
 
       val expectedError          = FormError(fieldName, invalidKey)
-      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{35}")
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{2}")
 
       forAll(generator) {
         invalidString =>
