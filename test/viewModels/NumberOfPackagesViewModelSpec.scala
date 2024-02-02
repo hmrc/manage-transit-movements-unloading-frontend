@@ -25,22 +25,18 @@ import viewModels.houseConsignment.index.items.NumberOfPackagesViewModel.NumberO
 class NumberOfPackagesViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "must create view model in normalMode" - {
-    "when identification type is defined" in {
-      val viewModelProvider = new NumberOfPackagesViewModelProvider()
-      val result            = viewModelProvider.apply(hcIndex, itemIndex, NormalMode)(messages)
+    val viewModelProvider = new NumberOfPackagesViewModelProvider()
+    val result            = viewModelProvider.apply(hcIndex, itemIndex, NormalMode)(messages)
 
-      result.title mustBe messages("numberOfPackages.normalMode.title")
-      result.heading mustBe messages("numberOfPackages.normalMode.heading")
-    }
+    result.title mustBe messages("numberOfPackages.normalMode.title")
+    result.heading mustBe messages("numberOfPackages.normalMode.heading")
   }
 
   "must create view model in checkMode" - {
-    "when identification type is defined" in {
-      val viewModelProvider = new NumberOfPackagesViewModelProvider()
-      val result            = viewModelProvider.apply(hcIndex, itemIndex, CheckMode)(messages)
+    val viewModelProvider = new NumberOfPackagesViewModelProvider()
+    val result            = viewModelProvider.apply(hcIndex, itemIndex, CheckMode)(messages)
 
-      result.title mustBe messages("numberOfPackages.checkMode.title", hcIndex.display, itemIndex.display)
-      result.heading mustBe messages("numberOfPackages.checkMode.heading", hcIndex.display, itemIndex.display)
-    }
+    result.title mustBe messages("numberOfPackages.checkMode.title", hcIndex.display, itemIndex.display)
+    result.heading mustBe messages("numberOfPackages.checkMode.heading", hcIndex.display, itemIndex.display)
   }
 }
