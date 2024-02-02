@@ -56,7 +56,7 @@ class PackageTypeController @Inject() (
       implicit request =>
         service.getPackageTypes().map {
           packageTypeList =>
-            val form      = formProvider(mode, houseConsignmentIndex, itemIndex, prefix, packageTypeList)
+            val form      = formProvider(mode, prefix, packageTypeList, houseConsignmentIndex.display, itemIndex.display)
             val viewModel = viewModelProvider.apply(mode, itemIndex, houseConsignmentIndex)
             val preparedForm = request.userAnswers.get(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex)) match {
               case None        => form
@@ -71,7 +71,7 @@ class PackageTypeController @Inject() (
       implicit request =>
         service.getPackageTypes().flatMap {
           packagesTypeList =>
-            val form: Form[PackageType] = formProvider(mode, houseConsignmentIndex, itemIndex, prefix, packagesTypeList)
+            val form: Form[PackageType] = formProvider(mode, prefix, packagesTypeList, houseConsignmentIndex.display, itemIndex.display)
             val viewModel               = viewModelProvider.apply(mode, itemIndex, houseConsignmentIndex)
             form
               .bindFromRequest()

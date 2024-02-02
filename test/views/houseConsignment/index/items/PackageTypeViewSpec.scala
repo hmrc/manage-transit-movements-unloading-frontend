@@ -28,7 +28,7 @@ import views.html.houseConsignment.index.items.PackageTypeView
 
 class PackageTypeViewSpec extends InputSelectViewBehaviours[PackageType] {
 
-  override def form: Form[PackageType] = new SelectableFormProvider().apply(NormalMode, houseConsignmentIndex, itemIndex, prefix, SelectableList(values))
+  override def form: Form[PackageType] = new SelectableFormProvider().apply(NormalMode, prefix, SelectableList(values))
 
   val viewModel: PackageTypeViewModel = PackageTypeViewModel(NormalMode, itemIndex, houseConsignmentIndex)
 

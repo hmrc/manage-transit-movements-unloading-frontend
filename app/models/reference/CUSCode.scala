@@ -24,8 +24,6 @@ case class CUSCode(code: String) extends Selectable {
 
   override def toString: String = code
 
-  override def toSelectItem(selected: Boolean): SelectItem = SelectItem(Some(code), this.toString, selected)
-
   override val value: String = code
 }
 

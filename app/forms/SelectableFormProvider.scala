@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 class SelectableFormProvider @Inject() extends Mappings {
 
-  def apply[T <: Selectable](mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, prefix: String, selectableList: SelectableList[T], args: Any*)(implicit
+  def apply[T <: Selectable](mode: Mode, prefix: String, selectableList: SelectableList[T], args: Any*)(implicit
     messages: Messages
   ): Form[T] = {
 
@@ -37,7 +37,7 @@ class SelectableFormProvider @Inject() extends Mappings {
     }
 
     Form(
-      "value" -> selectable[T](selectableList, messages(s"$prefixMode.error.required", itemIndex.display, houseConsignmentIndex.display), args)
+      "value" -> selectable[T](selectableList, messages(s"$prefixMode.error.required", args: _*), args)
     )
   }
 }
