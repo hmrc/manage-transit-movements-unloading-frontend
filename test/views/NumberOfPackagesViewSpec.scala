@@ -18,7 +18,7 @@ package views
 
 import forms.NumberOfPackagesFormProvider
 import viewModels.houseConsignment.index.items.NumberOfPackagesViewModel
-import models.CheckMode
+import models.NormalMode
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -26,25 +26,28 @@ import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
 import views.html.houseConsignment.index.items.NumberOfPackagesView
 
-class NumberOfPackagesCheckModeViewSpec extends InputTextViewBehaviours[String] {
+class NumberOfPackagesViewSpec extends InputTextViewBehaviours[String] {
 
-  private val viewModel           = NumberOfPackagesViewModel(hcIndex, itemIndex, CheckMode)
+  private val viewModel = NumberOfPackagesViewModel(messages("numberOfPackages.normalMode.heading"),
+                                                    messages("numberOfPackages.normalMode.title"),
+                                                    messages("numberOfPackages.normalMode.error.required")
+  )
   override def form: Form[String] = new NumberOfPackagesFormProvider()(viewModel.requiredError)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector
       .instanceOf[NumberOfPackagesView]
-      .apply(form, arrivalId, mrn, hcIndex, itemIndex, index, CheckMode, viewModel)(fakeRequest, messages)
+      .apply(form, arrivalId, mrn, hcIndex, itemIndex, index, NormalMode, viewModel)(fakeRequest, messages)
 
-  override val prefix: String = "numberOfPackages.checkMode"
+  override val prefix: String = "numberOfPackages.normalMode"
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.oneOf(1 to 100).toString)
 
-  behave like pageWithTitle(hcIndex.display.toString, itemIndex.display.toString)
+  behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
-  behave like pageWithHeading(hcIndex.display.toString, itemIndex.display.toString)
+  behave like pageWithHeading()
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 

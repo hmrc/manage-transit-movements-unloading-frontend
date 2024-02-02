@@ -22,10 +22,14 @@ import generators.Generators
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalacheck.Arbitrary.arbitrary
 import pages.NumberOfPackagesPage
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewModels.houseConsignment.index.items.NumberOfPackagesViewModel
+import viewModels.houseConsignment.index.items.NumberOfPackagesViewModel.NumberOfPackagesViewModelProvider
 import views.html.houseConsignment.index.items.NumberOfPackagesView
 
 import scala.concurrent.Future
@@ -33,10 +37,19 @@ import scala.concurrent.Future
 class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider: NumberOfPackagesFormProvider = new NumberOfPackagesFormProvider()
-  private val viewModel                                  = NumberOfPackagesViewModel(hcIndex, itemIndex, NormalMode)
+  private val mockViewModelProvider                      = mock[NumberOfPackagesViewModelProvider]
+  private val viewModel                                  = arbitrary[NumberOfPackagesViewModel].sample.value
   private val mode                                       = NormalMode
   private val form                                       = formProvider(viewModel.requiredError)
   private val validAnswer                                = "1"
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind[NumberOfPackagesViewModelProvider].toInstance(mockViewModelProvider))
+
+  when(mockViewModelProvider.apply(any(), any(), any())(any()))
+    .thenReturn(viewModel)
 
   lazy val totalNumberOfPackagesRoute: String =
     controllers.houseConsignment.index.items.routes.NumberOfPackagesController.onPageLoad(arrivalId, hcIndex, itemIndex, index, NormalMode).url

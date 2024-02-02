@@ -18,7 +18,6 @@ package forms
 
 import forms.behaviours.FieldBehaviours
 import generators.Generators
-import models.{Index, NormalMode}
 import models.messages.UnloadingRemarksRequest
 import org.scalacheck.Gen
 import play.api.Application
@@ -34,8 +33,11 @@ class NumberOfPackagesFormProviderSpec extends FieldBehaviours with Generators {
 
   private val maxLength  = UnloadingRemarksRequest.numberOfPackagesLength
   private val invalidKey = "numberOfPackages.error.nonNumeric"
+  val requiredKey        = "numberOfPackages.normalMode.error.required"
+  val titleKey           = "numberOfPackages.normalMode.title"
+  val headingKey         = "numberOfPackages.normalMode.heading"
 
-  private val viewModel = NumberOfPackagesViewModel(hcIndex, itemIndex, NormalMode)
+  private val viewModel = NumberOfPackagesViewModel(headingKey, titleKey, requiredKey)
 
   def fakeApplication: Application =
     new GuiceApplicationBuilder()
@@ -44,11 +46,6 @@ class NumberOfPackagesFormProviderSpec extends FieldBehaviours with Generators {
 
   def messagesApi: MessagesApi    = fakeApplication.injector.instanceOf[MessagesApi]
   implicit val messages: Messages = MessagesImpl(defaultLang, messagesApi)
-
-  private val hcIndex   = Index(0)
-  private val itemIndex = Index(0)
-
-  val requiredKey = "numberOfPackages.normalMode.error.required"
 
   val form: Form[String] = new NumberOfPackagesFormProvider()(viewModel.requiredError)
   val fieldName          = "value"
@@ -64,7 +61,7 @@ class NumberOfPackagesFormProviderSpec extends FieldBehaviours with Generators {
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, messages(requiredKey))
+      requiredError = FormError(fieldName, requiredKey)
     )
   }
 
