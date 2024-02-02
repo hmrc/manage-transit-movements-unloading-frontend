@@ -16,7 +16,7 @@
 
 package views.houseConsignment.index.items
 
-import config.Constants.maxPackageShippingMarkLength
+import forms.Constants.maxPackageShippingMarkLength
 import forms.PackageShippingMarkFormProvider
 import generators.Generators
 import models.NormalMode

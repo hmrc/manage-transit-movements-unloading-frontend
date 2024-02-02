@@ -48,6 +48,8 @@ class TransportMeansIdentificationViewSpec extends EnumerableViewBehaviours[Tran
 
   behave like pageWithHeading()
 
+  behave like pageWithContent("p", "This is the means of transport used from the UK office of departure to a UK port or airport.")
+
   behave like pageWithRadioItems(args = Seq(index.display))
 
   behave like pageWithSubmitButton("Continue")

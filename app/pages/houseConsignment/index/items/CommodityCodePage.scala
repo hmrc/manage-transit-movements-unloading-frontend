@@ -18,7 +18,7 @@ package pages.houseConsignment.index.items
 
 import models.Index
 import pages.QuestionPage
-import pages.sections.{ItemsSection, TransportMeansListSection}
+import pages.sections.ItemsSection
 import play.api.libs.json.JsPath
 
 case class CommodityCodePage(houseConsignmentIndex: Index, itemIndex: Index) extends QuestionPage[String] {

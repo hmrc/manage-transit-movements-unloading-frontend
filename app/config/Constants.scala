@@ -33,9 +33,6 @@ object Constants {
 
   val Other = "D"
 
-  lazy val maxItemDescriptionLength: Int     = 512
-  lazy val maxPackageShippingMarkLength: Int = 512
-
   object MeansOfTransportIdentification {
     val UnknownIdentification = "99"
   }

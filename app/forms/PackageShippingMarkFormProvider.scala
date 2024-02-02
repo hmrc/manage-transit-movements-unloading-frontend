@@ -16,7 +16,7 @@
 
 package forms
 
-import config.Constants.maxPackageShippingMarkLength
+import forms.Constants.maxPackageShippingMarkLength
 import forms.mappings.Mappings
 import models.messages.UnloadingRemarksRequest.alphaNumericRegex
 import play.api.data.Form

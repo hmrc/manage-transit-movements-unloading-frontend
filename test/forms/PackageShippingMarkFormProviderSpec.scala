@@ -16,34 +16,19 @@
 
 package forms
 
-import config.Constants.maxPackageShippingMarkLength
+import forms.Constants.maxPackageShippingMarkLength
 import forms.behaviours.StringFieldBehaviours
 import models.messages.UnloadingRemarksRequest.alphaNumericRegex
-import models.{CheckMode, Index, NormalMode}
+import models.{CheckMode, NormalMode}
 import org.scalacheck.Gen
-import play.api.Application
 import play.api.data.FormError
-import play.api.i18n.Lang.defaultLang
-import play.api.i18n.{Messages, MessagesApi, MessagesImpl}
-import play.api.inject.guice.GuiceApplicationBuilder
 import viewModels.PackageShippingMarksViewModel
 
 class PackageShippingMarkFormProviderSpec extends StringFieldBehaviours {
 
   private val invalidKey = "houseConsignment.item.packageShippingMark.error.invalid"
-  private val hcIndex    = Index(0)
-  private val itemIndex  = Index(0)
-  private val fieldName  = "value"
 
-  def fakeApplication(): Application =
-    new GuiceApplicationBuilder()
-      .configure()
-      .build()
-
-  def messagesApi: MessagesApi = fakeApplication.injector.instanceOf[MessagesApi]
-
-  implicit val messages: Messages = MessagesImpl(defaultLang, messagesApi)
-  val overLength: Gen[String]     = stringsLongerThan(maxPackageShippingMarkLength)
+  private val fieldName = "value"
 
   "In Normal Mode" - {
 

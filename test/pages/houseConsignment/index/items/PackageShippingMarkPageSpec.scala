@@ -20,7 +20,7 @@ import pages.behaviours.PageBehaviours
 
 class PackageShippingMarkPageSpec extends PageBehaviours {
 
-  "CommodityCodePage" - {
+  "PackageShippingMarkPage" - {
 
     beRetrievable[String](PackageShippingMarkPage(index, index, index))
 

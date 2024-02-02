@@ -19,4 +19,6 @@ package forms
 object Constants {
   lazy val maxItemDescriptionLength: Int = 512
   lazy val exactCUSCodeLength: Int       = 9
+
+  lazy val maxPackageShippingMarkLength: Int = 512
 }

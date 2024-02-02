@@ -25,5 +25,5 @@ case class PackageShippingMarkPage(houseConsignment: Index, itemIndex: Index, pa
 
   override def path: JsPath = ItemsSection(houseConsignment).path \ itemIndex.position \ "Packaging" \ packageIndex.position \ toString
 
-  override def toString: String = "packageShippingMarkIndex"
+  override def toString: String = "shippingMarks"
 }

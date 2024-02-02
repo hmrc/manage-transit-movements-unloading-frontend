@@ -17,7 +17,6 @@
 package forms.behaviours
 
 import org.scalacheck.Gen
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.data.{Field, Form, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
 
@@ -29,7 +28,7 @@ trait StringFieldBehaviours extends FieldBehaviours {
       forAll(stringsLongerThan(maxLength) -> "longString") {
         string =>
           val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-          result.errors shouldEqual Seq(lengthError)
+          result.errors mustEqual Seq(lengthError)
       }
     }
 

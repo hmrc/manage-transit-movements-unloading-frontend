@@ -390,9 +390,10 @@ cannotSendUnloadingRemarks.officeNameNotAvailAndPhoneNumberNotAvailable  = If yo
 cannotSendUnloadingRemarks.officeNotAvailable  = If you have any questions, contact Customs office {0}.
 cannotSendUnloadingRemarks.linkText = View the status of this notification
 
-departureTransportMeans.identification.heading=Which identification do you want to use for the new departure means of transport?
-departureTransportMeans.identification.title=Which identification do you want to use for the new departure means of transport?
-departureTransportMeans.identification.error.required=Select which identification you want to use for the new departure means of transport
+departureTransportMeans.identification.heading = Which identification do you want to use for the new departure means of transport?
+departureTransportMeans.identification.title = Which identification do you want to use for the new departure means of transport?
+departureTransportMeans.identification.error.required = Select which identification you want to use for the new departure means of transport
+departureTransportMeans.identification.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
 
 houseConsignment.item.description.title = Enter the new description of item {0} in house consignment {1}
 houseConsignment.item.description.heading = Enter the new description of item {0} in house consignment {1}
