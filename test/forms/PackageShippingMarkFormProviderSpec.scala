@@ -31,7 +31,9 @@ import viewModels.PackagesViewModel
 class PackageShippingMarkFormProviderSpec extends StringFieldBehaviours {
 
   private val invalidKey = "houseConsignment.item.packageShippingMark.error.invalid"
-  private val lengthKey  = "houseConsignment.item.packageShippingMark.error.length"
+  private val hcIndex    = Index(0)
+  private val itemIndex  = Index(0)
+  private val fieldName  = "value"
 
   def fakeApplication(): Application =
     new GuiceApplicationBuilder()
@@ -44,14 +46,12 @@ class PackageShippingMarkFormProviderSpec extends StringFieldBehaviours {
   val overLength: Gen[String]     = stringsLongerThan(maxPackageShippingMarkLength)
 
   "In Normal Mode" - {
-    val hcIndex   = Index(0)
-    val itemIndex = Index(0)
-    val viewModel = PackagesViewModel(hcIndex, itemIndex, NormalMode)
-    val form      = new PackageShippingMarkFormProvider()(viewModel.requiredError)
-    val fieldName = "value"
+
+    val viewModel   = PackagesViewModel(hcIndex, itemIndex, NormalMode)
+    val form        = new PackageShippingMarkFormProvider()(viewModel.requiredError)
+    val requiredKey = "houseConsignment.item.packageShippingMark.normalMode.error.required"
 
     ".value" - {
-      val requiredKey = "houseConsignment.item.packageShippingMark.normalMode.error.required"
 
       behave like fieldThatBindsValidData(
         form,
@@ -62,7 +62,7 @@ class PackageShippingMarkFormProviderSpec extends StringFieldBehaviours {
       behave like mandatoryField(
         form,
         fieldName,
-        requiredError = FormError(fieldName, messages(requiredKey, hcIndex.display.toString, itemIndex.display.toString))
+        requiredError = FormError(fieldName, messages(requiredKey))
       )
     }
 
@@ -76,14 +76,9 @@ class PackageShippingMarkFormProviderSpec extends StringFieldBehaviours {
 
   "In Check Mode" - {
 
-    val hcIndex   = Index(0)
-    val itemIndex = Index(0)
-    val viewModel = PackagesViewModel(hcIndex, itemIndex, CheckMode)
-
+    val viewModel   = PackagesViewModel(hcIndex, itemIndex, CheckMode)
     val requiredKey = "houseConsignment.item.packageShippingMark.checkMode.error.required"
-
-    val form      = new PackageShippingMarkFormProvider()(viewModel.requiredError)
-    val fieldName = "value"
+    val form        = new PackageShippingMarkFormProvider()(viewModel.requiredError)
 
     ".value" - {
 
