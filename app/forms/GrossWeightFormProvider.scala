@@ -16,23 +16,23 @@
 
 package forms
 
-import javax.inject.Inject
 import forms.mappings.Mappings
-import models.Index
-import models.messages.UnloadingRemarksRequest
 import play.api.data.Form
+
+import javax.inject.Inject
 
 class GrossWeightFormProvider @Inject() extends Mappings {
 
-  def apply(index: Index = Index(0)): Form[String] = //todo update
+  def apply(prefix: String, decimalPlaceCount: Int, characterCount: Int, args: Any*): Form[BigDecimal] =
     Form(
-      "value" -> text(s"grossWeight.error.required", args = Seq(s"${index.display}"))
-        .verifying(
-          StopOnFirstFail[String](
-            maxLength(UnloadingRemarksRequest.weightLength, "grossWeight.error.length"),
-            regexp(UnloadingRemarksRequest.weightCharsRegex, "grossWeight.error.characters"),
-            regexp(UnloadingRemarksRequest.weightRegex, "grossWeight.error.decimal")
-          )
-        )
+      "value" -> bigDecimal(
+        decimalPlaceCount,
+        characterCount,
+        s"$prefix.error.required",
+        s"$prefix.error.invalidCharacters",
+        s"$prefix.error.invalidFormat",
+        s"$prefix.error.invalidValue",
+        args = args.map(_.toString)
+      )
     )
 }

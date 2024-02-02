@@ -14,35 +14,38 @@
  * limitations under the License.
  */
 
-package views
+package views.houseConsignment.index.items
 
 import forms.GrossWeightFormProvider
 import models.NormalMode
-import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.GrossWeightView
+import views.html.houseConsignment.index.items.GrossWeightView
 
-class GrossWeightViewSpec extends InputTextViewBehaviours[String] {
+class GrossWeightViewSpec extends InputTextViewBehaviours[BigDecimal] {
 
-  override def form: Form[String] = new GrossWeightFormProvider()()
+  private val decimalPlace: Int   = positiveInts.sample.value
+  private val characterCount: Int = positiveInts.sample.value
 
-  override def applyView(form: Form[String]): HtmlFormat.Appendable =
+  override def form: Form[BigDecimal] = app.injector.instanceOf[GrossWeightFormProvider].apply(prefix, decimalPlace, characterCount)
+
+  override def applyView(form: Form[BigDecimal]): HtmlFormat.Appendable =
     injector.instanceOf[GrossWeightView].apply(form, mrn, arrivalId, index, index, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "grossWeight"
+  override val prefix: String = "houseConsignment.item.grossWeight"
 
-  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
+  implicit override val arbitraryT: Arbitrary[BigDecimal] = Arbitrary(positiveBigDecimals)
 
-  behave like pageWithTitle(index.display.toString)
+  behave like pageWithTitle(args = itemIndex.display, houseConsignmentIndex.display)
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithHeading(index.display.toString)
+  behave like pageWithHeading(args = itemIndex.display, houseConsignmentIndex.display)
 
   behave like pageWithContent("p", "This is the combined weight of the item’s goods and packaging.")
 

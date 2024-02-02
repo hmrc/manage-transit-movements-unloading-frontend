@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package pages
+package pages.houseConsignment.index.items
 
+import models.Index
+import pages.QuestionPage
+import pages.sections.ItemsSection
 import play.api.libs.json.JsPath
 
-case object TotalNumberOfPackagesPage extends QuestionPage[String] {
+case class GrossWeightPage(houseConsignment: Index, itemIndex: Index) extends QuestionPage[BigDecimal] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = ItemsSection(houseConsignment).path \ itemIndex.position \ "Commodity" \ "GoodsMeasure" \ toString
 
-  override def toString: String = "totalNumberOfPackages"
+  override def toString: String = "grossMass"
 }

@@ -16,19 +16,22 @@
 
 package forms
 
-import forms.behaviours.StringFieldBehaviours
-import models.Index
-import models.messages.UnloadingRemarksRequest
-import play.api.data.{Field, FormError}
+import forms.Constants._
+import forms.behaviours.BigDecimalFieldBehaviours
+import org.scalacheck.Gen
+import play.api.data.FormError
 
-class GrossWeightFormProviderSpec extends StringFieldBehaviours {
+class GrossWeightFormProviderSpec extends BigDecimalFieldBehaviours {
 
-  private val requiredKey       = "grossWeight.error.required"
-  private val invalidCharacters = "grossWeight.error.characters"
-  private val decimalPoint      = "grossWeight.error.decimal"
-  private val maxLength         = UnloadingRemarksRequest.weightLength
+  private val prefix            = Gen.alphaNumStr.sample.value
+  private val requiredKey       = s"$prefix.error.required"
+  private val invalidCharacters = s"$prefix.error.invalidCharacters"
+  private val invalidFormat     = s"$prefix.error.invalidFormat"
+  private val invalidValue      = s"$prefix.error.invalidValue"
 
-  private val form      = new GrossWeightFormProvider()()
+  val generatedBigDecimal: Gen[BigDecimal] = Gen.choose(BigDecimal(1), maxValue)
+
+  private val form      = new GrossWeightFormProvider()(prefix, grossWeightDecimalPlaces, grossWeightCharacterCount)
   private val fieldName = "value"
 
   ".value" - {
@@ -36,34 +39,21 @@ class GrossWeightFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      generatedBigDecimal.toString
+    )
+
+    behave like bigDecimalField(
+      form,
+      fieldName,
+      invalidCharactersError = FormError(fieldName, invalidCharacters),
+      invalidFormatError = FormError(fieldName, invalidFormat),
+      invalidValueError = FormError(fieldName, invalidValue)
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(Index(0).display.toString))
+      requiredError = FormError(fieldName, requiredKey)
     )
   }
-
-  "must not bind strings wth too many decimal places" in {
-
-    val invalidString      = "1.1234567"
-    val validRegex: String = UnloadingRemarksRequest.weightRegex
-    val expectedError      = FormError(fieldName, decimalPoint, Seq(validRegex))
-
-    val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-    result.errors must contain(expectedError)
-  }
-
-  "must not bind strings wth invalid characters" in {
-
-    val invalidString      = "abc"
-    val validRegex: String = UnloadingRemarksRequest.weightCharsRegex
-    val expectedError      = FormError(fieldName, invalidCharacters, Seq(validRegex))
-
-    val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-    result.errors must contain(expectedError)
-  }
-
 }
