@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,25 @@
 
 package views.houseConsignment.index.items
 
-import forms.Constants.maxItemDescriptionLength
-import forms.DescriptionFormProvider
+import forms.CUSCodeFormProvider
 import models.NormalMode
+import org.scalacheck.{Arbitrary, Gen}
+import viewModels.InputSize
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.CharacterCountViewBehaviours
-import views.html.houseConsignment.index.items.DescriptionView
+import views.behaviours.InputTextViewBehaviours
+import views.html.houseConsignment.index.items.CustomsUnionAndStatisticsCodeView
 
-class DescriptionViewSpec extends CharacterCountViewBehaviours {
+class CustomsUnionAndStatisticsCodeViewSpec extends InputTextViewBehaviours[String] {
 
-  private val formProvider = new DescriptionFormProvider()
+  override val prefix: String = "houseConsignment.item.customsUnionAndStatisticsCode"
 
-  override def form: Form[String] = formProvider(prefix, itemIndex.display, houseConsignmentIndex.display)
+  override def form: Form[String] = new CUSCodeFormProvider()(prefix, itemIndex.display, houseConsignmentIndex.display)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[DescriptionView].apply(form, mrn, arrivalId, NormalMode, houseConsignmentIndex, itemIndex)(fakeRequest, messages)
+    injector.instanceOf[CustomsUnionAndStatisticsCodeView].apply(form, mrn, arrivalId, NormalMode, houseConsignmentIndex, itemIndex)(fakeRequest, messages)
 
-  override val prefix: String = "houseConsignment.item.description"
+  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
   behave like pageWithTitle(args = itemIndex.display, houseConsignmentIndex.display)
 
@@ -43,9 +44,9 @@ class DescriptionViewSpec extends CharacterCountViewBehaviours {
 
   behave like pageWithHeading(args = itemIndex.display, houseConsignmentIndex.display)
 
-  behave like pageWithContent("p", "This should be clear and detailed enough for anyone involved in the transit movement to understand its contents.")
+  behave like pageWithHint("This will be 9 characters long and include both letters and numbers.")
 
-  behave like pageWithCharacterCount(maxItemDescriptionLength)
+  behave like pageWithInputText(Some(InputSize.Width20))
 
   behave like pageWithSubmitButton("Continue")
 }

@@ -16,7 +16,7 @@
 
 package forms
 
-import config.Constants.maxItemDescriptionLength
+import forms.Constants.maxItemDescriptionLength
 import forms.behaviours.StringFieldBehaviours
 import models.messages.UnloadingRemarksRequest.stringFieldRegexComma
 import org.scalacheck.Gen

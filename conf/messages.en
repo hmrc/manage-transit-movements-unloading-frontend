@@ -23,6 +23,9 @@ this.section.is = This notification is
 site.backToSummary = Back to summary
 site.caption = MRN: {0}
 
+site.email.link = If you have any questions or issues, email us at {0}
+site.email.subject = NCTS Phase 5 - Help with testing
+
 error.title.prefix = Error:
 error.summary.title = There is a problem
 
@@ -406,6 +409,14 @@ commodityCode.hint = This will be 6 characters long and include both letters and
 commodityCode.error.required = Enter the new commodity code of item {0} in house consignment {1}
 commodityCode.error.invalid = The commodity code must only include letters a to z and numbers 0 to 9
 commodityCode.error.length = The commodity code must be 6 characters long
+
+houseConsignment.item.customsUnionAndStatisticsCode.title = What is the new Customs Union and Statistics (CUS) code for item {0} in house consignment {1}
+houseConsignment.item.customsUnionAndStatisticsCode.heading = What is the new Customs Union and Statistics (CUS) code for item {0} in house consignment {1}
+houseConsignment.item.customsUnionAndStatisticsCode.hint = This will be 9 characters long and include both letters and numbers.
+houseConsignment.item.customsUnionAndStatisticsCode.error.required = Enter the new Customs Union and Statistics (CUS) code for item {0} in house consignment {1}
+houseConsignment.item.customsUnionAndStatisticsCode.error.length = The Customs Union and Statistics (CUS) code must be 9 characters long
+houseConsignment.item.customsUnionAndStatisticsCode.error.invalidCharacters = The Customs Union and Statistics (CUS) code must only include letters a to z and numbers 0 to 9
+houseConsignment.item.customsUnionAndStatisticsCode.error.not.exists = Please enter a valid Customs Union and Statistics (CUS) code. This will be 9 characters long and include both letters and numbers.
 
 houseConsignment.item.packageShippingMark.checkMode.title = What is the new shipping mark for item {0} in house consignment {1}?
 houseConsignment.item.packageShippingMark.normalMode.title = What is the shipping mark?
