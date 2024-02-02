@@ -51,6 +51,7 @@ object UnloadingRemarksRequest {
   val newContainerIdentificationNumberMaximumLength = 17
   val numericRegex: Regex                           = "^[0-9]*$".r
   val commodityCodeLength                           = 6
+  val combinedNomenclatureCodeLength                = 2
 
   implicit def writes: XMLWrites[UnloadingRemarksRequest] = XMLWrites[UnloadingRemarksRequest] {
     unloadingRemarksRequest =>

@@ -18,19 +18,19 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import models.Index
-import models.messages.UnloadingRemarksRequest.commodityCodeLength
+import models.messages.UnloadingRemarksRequest.combinedNomenclatureCodeLength
 import org.scalacheck.Gen
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.data.{Field, Form, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
 
-class CommodityCodeFormProviderSpec extends StringFieldBehaviours {
+class CombinedNomenclatureCodeFormProviderSpec extends StringFieldBehaviours {
 
-  private val requiredKey = "houseConsignment.commodityCode.error.required"
-  private val lengthKey   = "houseConsignment.commodityCode.error.length"
-  private val invalidKey  = "houseConsignment.commodityCode.error.invalid"
+  private val requiredKey = "houseConsignment.combinedNomenclatureCode.error.required"
+  private val lengthKey   = "houseConsignment.combinedNomenclatureCode.error.length"
+  private val invalidKey  = "houseConsignment.combinedNomenclatureCode.error.invalid"
 
-  def form: Form[String] = new CommodityCodeFormProvider()(Index(0), Index(0))
+  def form: Form[String] = new CombinedNomenclatureCodeFormProvider()(Index(0), Index(0))
   private val fieldName  = "value"
 
   ".value" - {
@@ -38,14 +38,14 @@ class CommodityCodeFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(commodityCodeLength)
+      stringsWithMaxLength(combinedNomenclatureCodeLength)
     )
 
     behave like fieldWithExactLength(
       form,
       fieldName,
-      exactLength = commodityCodeLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(commodityCodeLength))
+      exactLength = combinedNomenclatureCodeLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(combinedNomenclatureCodeLength))
     )
 
     behave like mandatoryField(
@@ -57,7 +57,7 @@ class CommodityCodeFormProviderSpec extends StringFieldBehaviours {
     "must not bind strings that do not match regex" in {
 
       val expectedError          = FormError(fieldName, invalidKey)
-      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{6}")
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~,±üçñèé@]{2}")
 
       forAll(generator) {
         invalidString =>
