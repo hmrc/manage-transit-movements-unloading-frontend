@@ -33,9 +33,6 @@
     title = messages("netWeight.title", itemIndex.display, houseConsignmentIndex.display),
     showBackLink = true
 ) {
-
-        @errorSummary(form.errors)
-
         @formHelper(action = controllers.routes.NetWeightController.onSubmit(arrivalId, houseConsignmentIndex, itemIndex, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
