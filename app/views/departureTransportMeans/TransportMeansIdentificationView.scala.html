@@ -40,9 +40,10 @@
 
       @inputRadio(
          field = form("value"),
-         radioType = Radio(
+         radioType = RadioWithAdditionalHtml(
                caption = Some(s"MRN: $mrn"),
-               heading = messages("departureTransportMeans.identification.heading")
+               heading = messages("departureTransportMeans.identification.heading"),
+               additionalHtml = messages("departureTransportMeans.identification.paragraph").toParagraph
          ),
          radioItems = fieldId => identifiers.toRadioItems(fieldId, form.value)
       )
