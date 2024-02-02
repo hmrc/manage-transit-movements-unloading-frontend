@@ -19,7 +19,8 @@ package models.reference
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 trait Selectable {
-  def toSelectItem(selected: Boolean = false): SelectItem
+  val value: String
+  def toSelectItem(selected: Boolean = false): SelectItem = SelectItem(Some(value), this.toString, selected)
 }
 
 object Selectable {

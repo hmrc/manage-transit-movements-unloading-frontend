@@ -24,7 +24,7 @@ import logging.Logging
 import metrics.MetricsService
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.transport.TransportMode
-import models.reference.{Country, CustomsOffice}
+import models.reference.{Country, CustomsOffice, PackageType}
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, Reads}
 import sttp.model.HeaderNames
@@ -75,6 +75,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val serviceUrl = s"${config.referenceDataUrl}/filtered-lists/CustomsOffices"
 
     http.GET[NonEmptySet[CustomsOffice]](serviceUrl, headers = version2Header, queryParams = queryParams)
+  }
+
+  def getPackageTypes(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[PackageType]] = {
+    val serviceUrl = s"${config.referenceDataUrl}/lists/KindOfPackages"
+    http.GET[NonEmptySet[PackageType]](serviceUrl, headers = version2Header)(responseHandlerGeneric(PackageType.format, PackageType.order), hc, ec)
   }
 
   private def version2Header: Seq[(String, String)] = Seq(

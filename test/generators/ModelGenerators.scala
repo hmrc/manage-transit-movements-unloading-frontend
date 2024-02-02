@@ -19,7 +19,7 @@ package generators
 import models.P5.ArrivalMessageType
 import models.departureTransportMeans.TransportMeansIdentification
 import models.messages._
-import models.reference.Country
+import models.reference.{Country, PackageType}
 import models.{UnloadingPermission, _}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen.choose
@@ -259,5 +259,13 @@ trait ModelGenerators {
   implicit lazy val arbitraryMode: Arbitrary[Mode] =
     Arbitrary {
       Gen.oneOf(NormalMode, CheckMode)
+    }
+
+  implicit lazy val arbitraryPackageType: Arbitrary[PackageType] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+        desc <- Gen.option(nonEmptyString)
+      } yield PackageType(code, desc)
     }
 }

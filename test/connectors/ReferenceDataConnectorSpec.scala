@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import connectors.ReferenceDataConnectorSpec._
-import models.reference.{Country, CustomsOffice}
+import models.reference.{Country, CustomsOffice, PackageType}
 import org.scalacheck.Gen
 import org.scalatest.{Assertion, BeforeAndAfterEach}
 import cats.data.NonEmptySet
@@ -131,6 +131,32 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "should handle a error response" in {
         checkErrorResponse(url, connector.getCountryNameByCode(countryCode))
+      }
+    }
+
+    "getPackageTypes" - {
+      val url = s"/$baseUrl/lists/KindOfPackages"
+
+      "should handle a 200 response for countries" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(packageListResponseJson))
+        )
+
+        val expectedResult = NonEmptySet.of(
+          PackageType("1A", Some("Drum, aluminum")),
+          PackageType("1B", Some("Drum, plywood"))
+        )
+
+        connector.getPackageTypes.futureValue mustBe expectedResult
+      }
+
+      "should throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getPackageTypes)
+      }
+
+      "should handle client and server errors for countries" in {
+        checkErrorResponse(url, connector.getPackageTypes)
       }
     }
   }
@@ -336,6 +362,23 @@ object ReferenceDataConnectorSpec {
       |    "code":"GB",
       |    "state":"valid",
       |    "description":"United Kingdom"
+      |  }
+      | ]
+      |}
+      |""".stripMargin
+
+  private val packageListResponseJson: String =
+    """
+      |{
+      | "data":
+      | [
+      |  {
+      |    "code":"1A",
+      |    "description":"Drum, aluminum"
+      |  },
+      |  {
+      |    "code":"1B",
+      |    "description":"Drum, plywood"
       |  }
       | ]
       |}

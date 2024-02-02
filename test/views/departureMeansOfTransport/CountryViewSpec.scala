@@ -20,6 +20,7 @@ import forms.DepartureMeansOfTransportCountryFormProvider
 import generators.Generators
 import models.NormalMode
 import models.reference.Country
+import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.InputSelectViewBehaviours
@@ -34,7 +35,9 @@ class CountryViewSpec extends InputSelectViewBehaviours[Country] with Generators
 
   override val prefix: String = "departureMeansOfTransportCountry"
 
-  override def values: Seq[Country] = Seq(
+  implicit override val arbitraryT: Arbitrary[Country] = arbitraryCountry
+
+  override lazy val values: Seq[Country] = Seq(
     Country("UK", Some("United Kingdom")),
     Country("US", Some("United States")),
     Country("ES", Some("Spain"))
@@ -51,4 +54,5 @@ class CountryViewSpec extends InputSelectViewBehaviours[Country] with Generators
   behave like pageWithHint("Enter the country or code, like Austria or AT.")
 
   behave like pageWithSubmitButton("Continue")
+
 }

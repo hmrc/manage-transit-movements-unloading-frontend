@@ -65,6 +65,7 @@ trait SpecBase
   val sealIndex: Index              = Index(0)
   val houseConsignmentIndex: Index  = Index(0)
   val itemIndex: Index              = Index(0)
+  val packageIndex: Index           = Index(0)
   def emptyUserAnswers: UserAnswers = UserAnswers(arrivalId, mrn, eoriNumber, basicIe043, Json.obj(), Instant.now())
 
   protected lazy val packages: Packages = Packages(Some("Ref."), "BX", Some(1), None)
