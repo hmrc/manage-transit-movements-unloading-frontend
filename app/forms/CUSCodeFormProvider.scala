@@ -16,22 +16,23 @@
 
 package forms
 
-import forms.Constants.maxItemDescriptionLength
+import forms.Constants.exactCUSCodeLength
 import forms.mappings.Mappings
-import models.messages.UnloadingRemarksRequest.stringFieldRegexComma
+import models.messages.UnloadingRemarksRequest.alphaNumericRegex
 import play.api.data.Form
+import models.RichString
 
 import javax.inject.Inject
 
-class DescriptionFormProvider @Inject() () extends Mappings {
+class CUSCodeFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String, args: Any*): Form[String] =
     Form(
-      "value" -> text(s"$prefix.error.required", args = args.map(_.toString))
+      "value" -> adaptedText(s"$prefix.error.required", args = args.map(_.toString))(_.removeSpaces())
         .verifying(
           forms.StopOnFirstFail[String](
-            regexp(stringFieldRegexComma, s"$prefix.error.invalidCharacters"),
-            maxLength(maxItemDescriptionLength, s"$prefix.error.length")
+            regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
+            exactLength(exactCUSCodeLength, s"$prefix.error.length")
           )
         )
     )
