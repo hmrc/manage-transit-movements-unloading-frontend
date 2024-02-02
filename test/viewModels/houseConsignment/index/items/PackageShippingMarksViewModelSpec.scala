@@ -24,19 +24,21 @@ import viewModels.houseConsignment.index.items.PackageShippingMarksViewModel.Pac
 
 class PackageShippingMarksViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  "must create view model in normalMode" in {
-    val viewModelProvider = new PackageShippingMarksViewModelProvider()
-    val result            = viewModelProvider.apply(hcIndex, itemIndex, NormalMode)
-    result.title mustBe messages("houseConsignment.item.packageShippingMark.normalMode.title")
-    result.heading mustBe messages("houseConsignment.item.packageShippingMark.normalMode.title")
-  }
+  "must create view model" - {
+    "when NormalMode" in {
+      val viewModelProvider = new PackageShippingMarksViewModelProvider()
+      val result            = viewModelProvider.apply(hcIndex, itemIndex, NormalMode)
 
-  "must create view model in checkMode" in {
-    val viewModelProvider = new PackageShippingMarksViewModelProvider()
-    val result            = viewModelProvider.apply(hcIndex, itemIndex, CheckMode)
+      result.title mustBe messages("houseConsignment.item.packageShippingMark.normalMode.title")
+      result.heading mustBe messages("houseConsignment.item.packageShippingMark.normalMode.title")
+    }
 
-    result.title mustBe messages("houseConsignment.item.packageShippingMark.checkMode.title", hcIndex.display, itemIndex.display)
-    result.heading mustBe messages("houseConsignment.item.packageShippingMark.checkMode.heading", hcIndex.display, itemIndex.display)
+    "when CheckMode" in {
+      val viewModelProvider = new PackageShippingMarksViewModelProvider()
+      val result            = viewModelProvider.apply(hcIndex, itemIndex, CheckMode)
 
+      result.title mustBe messages("houseConsignment.item.packageShippingMark.checkMode.title", hcIndex.display, itemIndex.display)
+      result.heading mustBe messages("houseConsignment.item.packageShippingMark.checkMode.heading", hcIndex.display, itemIndex.display)
+    }
   }
 }
