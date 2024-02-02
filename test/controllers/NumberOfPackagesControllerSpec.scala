@@ -17,25 +17,42 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.TotalNumberOfPackagesFormProvider
+import forms.NumberOfPackagesFormProvider
 import generators.Generators
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.TotalNumberOfPackagesPage
+import org.scalacheck.Arbitrary.arbitrary
+import pages.NumberOfPackagesPage
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.TotalNumberOfPackagesView
+import viewModels.houseConsignment.index.items.NumberOfPackagesViewModel
+import viewModels.houseConsignment.index.items.NumberOfPackagesViewModel.NumberOfPackagesViewModelProvider
+import views.html.houseConsignment.index.items.NumberOfPackagesView
 
 import scala.concurrent.Future
 
-class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val formProvider: TotalNumberOfPackagesFormProvider = new TotalNumberOfPackagesFormProvider()
-  private val form                                            = formProvider(index)
-  private val mode                                            = NormalMode
-  private val validAnswer                                     = "1"
-  lazy val totalNumberOfPackagesRoute: String                 = controllers.routes.TotalNumberOfPackagesController.onPageLoad(arrivalId, index, NormalMode).url
+  private val formProvider: NumberOfPackagesFormProvider = new NumberOfPackagesFormProvider()
+  private val mockViewModelProvider                      = mock[NumberOfPackagesViewModelProvider]
+  private val viewModel                                  = arbitrary[NumberOfPackagesViewModel].sample.value
+  private val mode                                       = NormalMode
+  private val form                                       = formProvider(viewModel.requiredError)
+  private val validAnswer                                = "1"
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind[NumberOfPackagesViewModelProvider].toInstance(mockViewModelProvider))
+
+  when(mockViewModelProvider.apply(any(), any(), any())(any()))
+    .thenReturn(viewModel)
+
+  lazy val totalNumberOfPackagesRoute: String =
+    controllers.houseConsignment.index.items.routes.NumberOfPackagesController.onPageLoad(arrivalId, hcIndex, itemIndex, index, NormalMode).url
 
   "TotalNumberOfPackages Controller" - {
 
@@ -46,18 +63,18 @@ class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMo
 
       val request = FakeRequest(GET, totalNumberOfPackagesRoute)
       val result  = route(app, request).value
-      val view    = injector.instanceOf[TotalNumberOfPackagesView]
+      val view    = injector.instanceOf[NumberOfPackagesView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, arrivalId, mrn, index, mode)(request, messages).toString
+        view(form, arrivalId, mrn, hcIndex, itemIndex, index, NormalMode, viewModel)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, validAnswer)
+      val userAnswers = emptyUserAnswers.setValue(NumberOfPackagesPage(hcIndex, itemIndex, index), validAnswer)
 
       setExistingUserAnswers(userAnswers)
 
@@ -67,10 +84,10 @@ class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMo
       status(result) mustEqual OK
 
       val filledForm = form.bind(Map("value" -> validAnswer))
-      val view       = injector.instanceOf[TotalNumberOfPackagesView]
+      val view       = injector.instanceOf[NumberOfPackagesView]
 
       contentAsString(result) mustEqual
-        view(filledForm, arrivalId, mrn, index, mode)(request, messages).toString
+        view(filledForm, arrivalId, mrn, hcIndex, itemIndex, index, mode, viewModel)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -102,10 +119,10 @@ class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMo
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[TotalNumberOfPackagesView]
+      val view = injector.instanceOf[NumberOfPackagesView]
 
       contentAsString(result) mustEqual
-        view(boundForm, arrivalId, mrn, index, mode)(request, messages).toString
+        view(boundForm, arrivalId, mrn, hcIndex, itemIndex, index, mode, viewModel)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

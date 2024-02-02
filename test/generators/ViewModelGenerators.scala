@@ -25,6 +25,7 @@ import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import viewModels.UnloadingFindingsViewModel
+import viewModels.houseConsignment.index.items.NumberOfPackagesViewModel
 import viewModels.sections.Section
 
 trait ViewModelGenerators {
@@ -158,5 +159,13 @@ trait ViewModelGenerators {
     for {
       sections <- arbitrarySections.arbitrary
     } yield UnloadingFindingsViewModel(sections)
+  }
+
+  implicit lazy val arbitraryNumberOfPackagesViewModel: Arbitrary[NumberOfPackagesViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+    } yield NumberOfPackagesViewModel(heading, title, requiredError)
   }
 }

@@ -239,13 +239,17 @@ totalNumberOfItems.error.wholeNumber = = Total number of items must only include
 totalNumberOfItems.error.outOfRange = Total number of items must be 99999 or less
 totalNumberOfItems.change.hidden = the new total number of items
 
-totalNumberOfPackages.title = What is the new number of packages for item {0}?
-totalNumberOfPackages.heading = What is the new number of packages for item {0}?
-totalNumberOfPackages.checkYourAnswersLabel = What is the new number of packages for item {0}?
-totalNumberOfPackages.error.nonNumeric = The new number of packages must only include numbers 0 to 9
-totalNumberOfPackages.error.required = Enter the new number of packages for item {0}
-totalNumberOfPackages.error.outOfRange = The new number of packages must be 99,999,999 or less
-totalNumberOfPackages.change.hidden = the new total number of packages
+numberOfPackages.checkMode.title = How many of this package are you using for item {0} in house consignment {1}?
+numberOfPackages.checkMode.heading = How many of this package are you using for item {0} in house consignment {1}?
+numberOfPackages.normalMode.title = How many of this package are you using?
+numberOfPackages.normalMode.heading = How many of this package are you using?
+numberOfPackages.normalMode.error.required = Enter the quantity of the package type
+numberOfPackages.error.nonNumeric = The quantity of the package type must only include numbers 0 to 9
+numberOfPackages.checkMode.error.required = Enter the quantity of the package type you are using for item {0} in house consignment {1}
+numberOfPackages.checkYourAnswersLabel = What is the new number of packages for item {0}?
+numberOfPackages.error.outOfRange = The quantity of the package type must be 99,999,999 or less
+numberOfPackages.change.CL182 = The quantity of the package type must be 1 or more
+numberOfPackages.change.hidden = Enter the quantity of the package type
 
 unloadingRemarksRejection.title = There is a problem with these unloading remarks
 unloadingRemarksRejection.heading = There is a problem with these unloading remarks
