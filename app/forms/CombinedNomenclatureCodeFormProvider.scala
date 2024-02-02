@@ -24,15 +24,15 @@ import play.api.data.Form
 
 import javax.inject.Inject
 
-class CommodityCodeFormProvider @Inject() extends Mappings {
+class CombinedNomenclatureCodeFormProvider @Inject() extends Mappings {
 
   def apply(houseConsignmentIndex: Index, itemIndex: Index): Form[String] =
     Form(
-      "value" -> text("houseConsignment.commodityCode.error.required", Seq(houseConsignmentIndex.display.toString, itemIndex.display.toString))
+      "value" -> text("houseConsignment.combinedNomenclatureCode.error.required", Seq(houseConsignmentIndex.display.toString, itemIndex.display.toString))
         .verifying(
           StopOnFirstFail[String](
-            exactLength(UnloadingRemarksRequest.commodityCodeLength, "houseConsignment.commodityCode.error.length"),
-            regexp(alphaNumericRegex.r, "houseConsignment.commodityCode.error.invalid", Seq.empty)
+            exactLength(UnloadingRemarksRequest.combinedNomenclatureCodeLength, "houseConsignment.combinedNomenclatureCode.error.length"),
+            regexp(alphaNumericRegex.r, "houseConsignment.combinedNomenclatureCode.error.invalid", Seq.empty)
           )
         )
     )
