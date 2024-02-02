@@ -25,5 +25,5 @@ case class CustomsUnionAndStatisticsCodePage(houseConsignmentIndex: Index, itemI
 
   override def path: JsPath = ItemsSection(houseConsignmentIndex).path \ itemIndex.position \ "Commodity" \ toString
 
-  override def toString: String = "customsUnionAndStatisticsCode"
+  override def toString: String = "cusCode"
 }

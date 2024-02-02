@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package pages.houseConsignment.index.items
 
+import pages.NumberOfPackagesPage
 import pages.behaviours.PageBehaviours
 
-class GrossWeightPageSpec extends PageBehaviours {
+class NumberOfPackagesPageSpec extends PageBehaviours {
 
-  "GrossWeightAmountPage" - {
+  "NumberOfPackagesPage" - {
 
-    beRetrievable[Double](GrossWeightPage(index, itemIndex))
+    beRetrievable[String](NumberOfPackagesPage(hcIndex, itemIndex, index))
 
-    beSettable[Double](GrossWeightPage(index, itemIndex))
+    beSettable[String](NumberOfPackagesPage(hcIndex, itemIndex, index))
 
-    beRemovable[Double](GrossWeightPage(index, itemIndex))
+    beRemovable[String](NumberOfPackagesPage(hcIndex, itemIndex, index))
   }
 }

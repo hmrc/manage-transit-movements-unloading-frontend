@@ -18,20 +18,21 @@ package forms
 
 import forms.mappings.Mappings
 import models.Index
-
-import javax.inject.Inject
 import models.messages.UnloadingRemarksRequest
+import models.messages.UnloadingRemarksRequest.alphaNumericRegex
 import play.api.data.Form
 
-class TotalNumberOfPackagesFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
 
-  def apply(index: Index): Form[String] =
+class CombinedNomenclatureCodeFormProvider @Inject() extends Mappings {
+
+  def apply(houseConsignmentIndex: Index, itemIndex: Index): Form[String] =
     Form(
-      "value" -> text("totalNumberOfPackages.error.required", Seq(index.display.toString))
+      "value" -> text("houseConsignment.combinedNomenclatureCode.error.required", Seq(houseConsignmentIndex.display.toString, itemIndex.display.toString))
         .verifying(
-          forms.StopOnFirstFail[String](
-            regexp(UnloadingRemarksRequest.numericRegex, "totalNumberOfPackages.error.nonNumeric", Seq(index.display)),
-            maxLength(UnloadingRemarksRequest.numberOfPackagesLength, "totalNumberOfPackages.error.outOfRange")
+          StopOnFirstFail[String](
+            exactLength(UnloadingRemarksRequest.combinedNomenclatureCodeLength, "houseConsignment.combinedNomenclatureCode.error.length"),
+            regexp(alphaNumericRegex.r, "houseConsignment.combinedNomenclatureCode.error.invalid", Seq.empty)
           )
         )
     )

@@ -32,11 +32,6 @@ POST       /:arrivalId/goods-unloaded-date                                      
 GET        /:arrivalId/change-goods-unloaded-date                                                                    controllers.DateGoodsUnloadedController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-goods-unloaded-date                                                                    controllers.DateGoodsUnloadedController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/house-consignment/:houseConsignmentIndex/items/:itemIndex/gross-weight                        controllers.GrossWeightController.onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode = NormalMode)
-POST       /:arrivalId/house-consignment/:houseConsignmentIndex/items/:itemIndex/gross-weight                        controllers.GrossWeightController.onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode = NormalMode)
-GET        /:arrivalId/house-consignment/:houseConsignmentIndex/items/:itemIndex/change-gross-weight                 controllers.GrossWeightController.onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode = CheckMode)
-POST       /:arrivalId/house-consignment/:houseConsignmentIndex/items/:itemIndex/change-gross-weight                 controllers.GrossWeightController.onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode = CheckMode)
-
 GET        /:arrivalId/house-consignment/:houseConsignmentIndex/items/:itemIndex/net-weight                          controllers.NetWeightController.onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode = NormalMode)
 POST       /:arrivalId/house-consignment/:houseConsignmentIndex/items/:itemIndex/net-weight                          controllers.NetWeightController.onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode = NormalMode)
 GET        /:arrivalId/house-consignment/:houseConsignmentIndex/items/:itemIndex/change-net-weight                   controllers.NetWeightController.onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode = CheckMode)
@@ -86,11 +81,6 @@ GET        /:arrivalId/transit-declaration-discrepancies                        
 POST       /:arrivalId/transit-declaration-discrepancies                                                             controllers.UnloadingCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
 GET        /:arrivalId/change-transit-declaration-discrepancies                                                      controllers.UnloadingCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-transit-declaration-discrepancies                                                      controllers.UnloadingCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
-
-GET        /:arrivalId/items/:index/number-of-packages                                                               controllers.TotalNumberOfPackagesController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
-POST       /:arrivalId/items/:index/number-of-packages                                                               controllers.TotalNumberOfPackagesController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
-GET        /:arrivalId/items/:index/change-number-of-packages                                                        controllers.TotalNumberOfPackagesController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
-POST       /:arrivalId/items/:index/change-number-of-packages                                                        controllers.TotalNumberOfPackagesController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)
 
 GET        /:arrivalId/declaration-summary                                                                           controllers.UnloadingFindingsController.onPageLoad(arrivalId: ArrivalId)
 

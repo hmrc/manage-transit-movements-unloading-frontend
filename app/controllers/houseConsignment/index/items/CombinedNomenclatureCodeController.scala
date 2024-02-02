@@ -17,25 +17,25 @@
 package controllers.houseConsignment.index.items
 
 import controllers.actions._
-import forms.CommodityCodeFormProvider
+import forms.CombinedNomenclatureCodeFormProvider
 import models.{ArrivalId, Index, Mode, RichCC043CType}
-import pages.houseConsignment.index.items.CommodityCodePage
+import pages.houseConsignment.index.items.CombinedNomenclatureCodePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.houseConsignment.index.items.CommodityCodeView
+import views.html.houseConsignment.index.items.CombinedNomenclatureCodeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CommodityCodeController @Inject() (
+class CombinedNomenclatureCodeController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
-  formProvider: CommodityCodeFormProvider,
+  formProvider: CombinedNomenclatureCodeFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: CommodityCodeView
+  view: CombinedNomenclatureCodeView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -44,7 +44,7 @@ class CommodityCodeController @Inject() (
     actions.getStatus(arrivalId) {
       implicit request =>
         val isXI = request.userAnswers.ie043Data.hasXIOfficeOfDestination
-        val preparedForm = request.userAnswers.get(CommodityCodePage(houseConsignmentIndex, itemIndex)) match {
+        val preparedForm = request.userAnswers.get(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex)) match {
           case None        => formProvider(houseConsignmentIndex, itemIndex)
           case Some(value) => formProvider(houseConsignmentIndex, itemIndex).fill(value)
         }
@@ -56,7 +56,6 @@ class CommodityCodeController @Inject() (
     actions.getStatus(arrivalId).async {
       implicit request =>
         val isXI = request.userAnswers.ie043Data.hasXIOfficeOfDestination
-
         formProvider(houseConsignmentIndex, itemIndex)
           .bindFromRequest()
           .fold(
@@ -64,7 +63,7 @@ class CommodityCodeController @Inject() (
               Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, isXI, mode))),
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(CommodityCodePage(houseConsignmentIndex, itemIndex), value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex), value))
                 _              <- sessionRepository.set(updatedAnswers)
               } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
           )

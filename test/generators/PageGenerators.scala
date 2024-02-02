@@ -20,11 +20,12 @@ import models.Index
 import org.scalacheck.Arbitrary
 import pages._
 import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
+import pages.houseConsignment.index.items.GrossWeightPage
 
 trait PageGenerators {
 
-  implicit lazy val arbitraryTotalNumberOfPackagesPage: Arbitrary[TotalNumberOfPackagesPage.type] =
-    Arbitrary(TotalNumberOfPackagesPage)
+  implicit lazy val arbitraryTotalNumberOfPackagesPage: Arbitrary[NumberOfPackagesPage.type] =
+    Arbitrary(NumberOfPackagesPage)
 
   implicit lazy val arbitraryConfirmRemoveCommentsPage: Arbitrary[ConfirmRemoveCommentsPage.type] =
     Arbitrary(ConfirmRemoveCommentsPage)

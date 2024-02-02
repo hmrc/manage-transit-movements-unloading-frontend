@@ -24,6 +24,7 @@ import models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
+import pages.houseConsignment.index.items.GrossWeightPage
 import utils.Format._
 
 class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {

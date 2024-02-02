@@ -14,25 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package pages.houseConsignment.index.items
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import pages.behaviours.PageBehaviours
 
-import javax.inject.Inject
+class CombinedNomenclatureCodePageSpec extends PageBehaviours {
 
-class GrossWeightFormProvider @Inject() extends Mappings {
+  "CommodityCodePage" - {
 
-  def apply(prefix: String, decimalPlaceCount: Int, characterCount: Int, args: Any*): Form[BigDecimal] =
-    Form(
-      "value" -> bigDecimal(
-        decimalPlaceCount,
-        characterCount,
-        s"$prefix.error.required",
-        s"$prefix.error.invalidCharacters",
-        s"$prefix.error.invalidFormat",
-        s"$prefix.error.invalidValue",
-        args = args.map(_.toString)
-      )
-    )
+    beRetrievable[String](CombinedNomenclatureCodePage(index, index))
+
+    beSettable[String](CombinedNomenclatureCodePage(index, index))
+
+    beRemovable[String](CombinedNomenclatureCodePage(index, index))
+  }
 }

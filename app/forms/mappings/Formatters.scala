@@ -83,6 +83,37 @@ trait Formatters {
         baseFormatter.unbind(key, value.toString)
     }
 
+  private[mappings] def bigDecimalFormatter(
+    decimalPlaces: Int,
+    characterCount: Int,
+    requiredKey: String = "error.required",
+    invalidCharactersKey: String = "error.invalidCharacters",
+    invalidFormatKey: String = "error.invalidFormat",
+    invalidValueKey: String = "error.invalidValue",
+    args: Seq[String] = Seq.empty
+  ): Formatter[BigDecimal] =
+    new Formatter[BigDecimal] {
+
+      private val invalidCharactersRegex = """^[0-9.]*$"""
+      private val invalidFormatRegex     = s"""^[0-9]*(\\.[0-9]{1,$decimalPlaces})?$$"""
+      private val invalidValueRegex      = s"""^[0-9.]{1,$characterCount}$$"""
+
+      private val baseFormatter = stringFormatter(requiredKey, args)(_.replace(",", "").removeSpaces())
+
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], BigDecimal] =
+        baseFormatter
+          .bind(key, data)
+          .flatMap {
+            case s if !s.matches(invalidCharactersRegex) => Left(Seq(FormError(key, invalidCharactersKey)))
+            case s if !s.matches(invalidFormatRegex)     => Left(Seq(FormError(key, invalidFormatKey)))
+            case s if !s.matches(invalidValueRegex)      => Left(Seq(FormError(key, invalidValueKey)))
+            case s                                       => Right(BigDecimal(s))
+          }
+
+      override def unbind(key: String, value: BigDecimal): Map[String, String] =
+        baseFormatter.unbind(key, value.toString())
+    }
+
   private[mappings] def enumerableFormatter[A <: Radioable[A]](requiredKey: String, invalidKey: String, args: Seq[Any] = Seq.empty)(implicit
     ev: Enumerable[A]
   ): Formatter[A] =

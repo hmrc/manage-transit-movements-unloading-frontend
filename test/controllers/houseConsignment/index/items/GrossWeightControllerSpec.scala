@@ -14,63 +14,70 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.houseConsignment.index.items
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.TotalNumberOfPackagesFormProvider
+import controllers.routes
+import forms.GrossWeightFormProvider
 import generators.Generators
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.TotalNumberOfPackagesPage
+import pages.houseConsignment.index.items.GrossWeightPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.TotalNumberOfPackagesView
+import views.html.houseConsignment.index.items.GrossWeightView
 
 import scala.concurrent.Future
 
-class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+  private val decimalPlace   = positiveInts.sample.value
+  private val characterCount = positiveInts.sample.value
+  private val formProvider   = new GrossWeightFormProvider()
+  private val form           = formProvider("houseConsignment.item.grossWeight", decimalPlace, characterCount, itemIndex.display, houseConsignmentIndex.display)
+  private val mode           = NormalMode
+  private val validAnswer    = BigDecimal(1)
 
-  private val formProvider: TotalNumberOfPackagesFormProvider = new TotalNumberOfPackagesFormProvider()
-  private val form                                            = formProvider(index)
-  private val mode                                            = NormalMode
-  private val validAnswer                                     = "1"
-  lazy val totalNumberOfPackagesRoute: String                 = controllers.routes.TotalNumberOfPackagesController.onPageLoad(arrivalId, index, NormalMode).url
+  private lazy val GrossWeightAmountRoute =
+    controllers.houseConsignment.index.items.routes.GrossWeightController.onPageLoad(arrivalId, index, index, mode).url
 
-  "TotalNumberOfPackages Controller" - {
+  "GrossWeightAmount Controller" - {
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, totalNumberOfPackagesRoute)
-      val result  = route(app, request).value
-      val view    = injector.instanceOf[TotalNumberOfPackagesView]
+      val request = FakeRequest(GET, GrossWeightAmountRoute)
+
+      val result = route(app, request).value
+
+      val view = injector.instanceOf[GrossWeightView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, arrivalId, mrn, index, mode)(request, messages).toString
+        view(form, mrn, arrivalId, index, index, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(TotalNumberOfPackagesPage, validAnswer)
-
+      val userAnswers = emptyUserAnswers.setValue(GrossWeightPage(index, itemIndex), validAnswer)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, totalNumberOfPackagesRoute)
-      val result  = route(app, request).value
+      val request = FakeRequest(GET, GrossWeightAmountRoute)
+
+      val result = route(app, request).value
 
       status(result) mustEqual OK
 
-      val filledForm = form.bind(Map("value" -> validAnswer))
-      val view       = injector.instanceOf[TotalNumberOfPackagesView]
+      val filledForm = form.bind(Map("value" -> validAnswer.toString))
+
+      val view = injector.instanceOf[GrossWeightView]
 
       contentAsString(result) mustEqual
-        view(filledForm, arrivalId, mrn, index, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, index, index, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -81,13 +88,12 @@ class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMo
       setExistingUserAnswers(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, totalNumberOfPackagesRoute)
-          .withFormUrlEncodedBody(("value", validAnswer))
+        FakeRequest(POST, GrossWeightAmountRoute)
+          .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual onwardRoute.url
     }
 
@@ -96,16 +102,16 @@ class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMo
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, totalNumberOfPackagesRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
-      val result    = route(app, request).value
+      val request   = FakeRequest(POST, GrossWeightAmountRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
+
+      val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
-
-      val view = injector.instanceOf[TotalNumberOfPackagesView]
+      val view = injector.instanceOf[GrossWeightView]
 
       contentAsString(result) mustEqual
-        view(boundForm, arrivalId, mrn, index, mode)(request, messages).toString
+        view(boundForm, mrn, arrivalId, index, index, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -113,11 +119,12 @@ class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMo
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, totalNumberOfPackagesRoute)
+      val request = FakeRequest(GET, GrossWeightAmountRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
@@ -127,8 +134,8 @@ class TotalNumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMo
       setNoExistingUserAnswers()
 
       val request =
-        FakeRequest(POST, totalNumberOfPackagesRoute)
-          .withFormUrlEncodedBody(("value", validAnswer))
+        FakeRequest(POST, GrossWeightAmountRoute)
+          .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(app, request).value
 

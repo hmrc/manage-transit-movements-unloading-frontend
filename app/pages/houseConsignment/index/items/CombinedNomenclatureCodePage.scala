@@ -14,25 +14,16 @@
  * limitations under the License.
  */
 
-package forms
+package pages.houseConsignment.index.items
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import models.Index
+import pages.QuestionPage
+import pages.sections.ItemsSection
+import play.api.libs.json.JsPath
 
-import javax.inject.Inject
+case class CombinedNomenclatureCodePage(houseConsignmentIndex: Index, itemIndex: Index) extends QuestionPage[String] {
 
-class GrossWeightFormProvider @Inject() extends Mappings {
+  override def path: JsPath = ItemsSection(houseConsignmentIndex).path \ itemIndex.position \ "Commodity" \ "CommodityCode" \ toString
 
-  def apply(prefix: String, decimalPlaceCount: Int, characterCount: Int, args: Any*): Form[BigDecimal] =
-    Form(
-      "value" -> bigDecimal(
-        decimalPlaceCount,
-        characterCount,
-        s"$prefix.error.required",
-        s"$prefix.error.invalidCharacters",
-        s"$prefix.error.invalidFormat",
-        s"$prefix.error.invalidValue",
-        args = args.map(_.toString)
-      )
-    )
+  override def toString: String = "combinedNomenclatureCode"
 }

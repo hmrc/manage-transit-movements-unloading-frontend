@@ -17,6 +17,8 @@
 package forms
 
 object Constants {
-  lazy val maxItemDescriptionLength: Int = 512
-  lazy val exactCUSCodeLength: Int       = 9
+  lazy val maxItemDescriptionLength: Int  = 512
+  lazy val exactCUSCodeLength: Int        = 9
+  lazy val grossWeightDecimalPlaces: Int  = 6
+  lazy val grossWeightCharacterCount: Int = 16
 }
