@@ -26,15 +26,16 @@ import pages.houseConsignment.index.items.PackageShippingMarkPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import viewModels.PackagesViewModel
 import views.html.houseConsignment.index.items.PackageShippingMarkView
 
 import scala.concurrent.Future
 
 class PackageShippingMarkControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
-
+  private lazy val mode         = NormalMode
   private lazy val formProvider = new PackageShippingMarkFormProvider()
-  private lazy val form         = formProvider(mode, houseConsignmentIndex, itemIndex)
-  private val mode              = NormalMode
+  private lazy val viewModel    = PackagesViewModel(hcIndex, itemIndex, mode)
+  private lazy val form         = formProvider(viewModel.requiredError)
 
   private lazy val packageShippingMarkRoute =
     controllers.houseConsignment.index.items.routes.PackageShippingMarkController
@@ -59,7 +60,7 @@ class PackageShippingMarkControllerSpec extends SpecBase with AppWithDefaultMock
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)(request, messages).toString
+        view(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode, viewModel)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -78,7 +79,7 @@ class PackageShippingMarkControllerSpec extends SpecBase with AppWithDefaultMock
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode, viewModel)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -113,7 +114,7 @@ class PackageShippingMarkControllerSpec extends SpecBase with AppWithDefaultMock
       val view = injector.instanceOf[PackageShippingMarkView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode, viewModel)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

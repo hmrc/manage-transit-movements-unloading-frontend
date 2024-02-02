@@ -26,6 +26,7 @@ import play.api.data.FormError
 import play.api.i18n.Lang.defaultLang
 import play.api.i18n.{Messages, MessagesApi, MessagesImpl}
 import play.api.inject.guice.GuiceApplicationBuilder
+import viewModels.PackagesViewModel
 
 class PackageShippingMarkFormProviderSpec extends StringFieldBehaviours {
 
@@ -36,18 +37,17 @@ class PackageShippingMarkFormProviderSpec extends StringFieldBehaviours {
     new GuiceApplicationBuilder()
       .configure()
       .build()
-  def messagesApi: MessagesApi    = fakeApplication.injector.instanceOf[MessagesApi]
+
+  def messagesApi: MessagesApi = fakeApplication.injector.instanceOf[MessagesApi]
+
   implicit val messages: Messages = MessagesImpl(defaultLang, messagesApi)
-
-  private val hcIndex   = Index(0)
-  private val itemIndex = Index(0)
-  val mode              = Gen.oneOf(NormalMode, CheckMode)
-
-  val overLength: Gen[String] = stringsLongerThan(maxPackageShippingMarkLength)
+  val overLength: Gen[String]     = stringsLongerThan(maxPackageShippingMarkLength)
 
   "In Normal Mode" - {
-
-    val form      = new PackageShippingMarkFormProvider()(NormalMode, hcIndex, itemIndex)(messages)
+    val hcIndex   = Index(0)
+    val itemIndex = Index(0)
+    val viewModel = PackagesViewModel(hcIndex, itemIndex, NormalMode)
+    val form      = new PackageShippingMarkFormProvider()(viewModel.requiredError)
     val fieldName = "value"
 
     ".value" - {
@@ -76,9 +76,13 @@ class PackageShippingMarkFormProviderSpec extends StringFieldBehaviours {
 
   "In Check Mode" - {
 
+    val hcIndex   = Index(0)
+    val itemIndex = Index(0)
+    val viewModel = PackagesViewModel(hcIndex, itemIndex, CheckMode)
+
     val requiredKey = "houseConsignment.item.packageShippingMark.checkMode.error.required"
 
-    val form      = new PackageShippingMarkFormProvider()(CheckMode, hcIndex, itemIndex)(messages)
+    val form      = new PackageShippingMarkFormProvider()(viewModel.requiredError)
     val fieldName = "value"
 
     ".value" - {
@@ -94,13 +98,13 @@ class PackageShippingMarkFormProviderSpec extends StringFieldBehaviours {
         fieldName,
         requiredError = FormError(fieldName, messages(requiredKey, hcIndex.display, itemIndex.display))
       )
-    }
 
-    behave like fieldWithInvalidCharacters(
-      form,
-      fieldName,
-      error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex)),
-      maxPackageShippingMarkLength
-    )
+      behave like fieldWithInvalidCharacters(
+        form,
+        fieldName,
+        error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex)),
+        maxPackageShippingMarkLength
+      )
+    }
   }
 }

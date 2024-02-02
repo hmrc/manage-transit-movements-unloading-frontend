@@ -19,22 +19,25 @@ package views.houseConsignment.index.items
 import config.Constants.maxPackageShippingMarkLength
 import forms.PackageShippingMarkFormProvider
 import generators.Generators
-import models.NormalMode
+import models.CheckMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import viewModels.PackagesViewModel
 import views.behaviours.CharacterCountViewBehaviours
 import views.html.houseConsignment.index.items.PackageShippingMarkView
 
-class PackageShippingMarkViewSpec extends CharacterCountViewBehaviours with Generators {
+class PackageShippingMarkViewCheckModeSpec extends CharacterCountViewBehaviours with Generators {
 
-  def form: Form[String] = new PackageShippingMarkFormProvider()(NormalMode, hcIndex, itemIndex)
+  val viewModel: PackagesViewModel = PackagesViewModel(hcIndex, itemIndex, CheckMode)
+
+  def form: Form[String] = new PackageShippingMarkFormProvider()(viewModel.requiredError)
 
   def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector
       .instanceOf[PackageShippingMarkView]
-      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, NormalMode)(fakeRequest, messages)
+      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, CheckMode, viewModel)(fakeRequest, messages)
 
-  val prefix: String = "houseConsignment.item.packageShippingMark.normalMode"
+  val prefix: String = "houseConsignment.item.packageShippingMark.checkMode"
 
   behave like pageWithTitle(args = itemIndex.display, houseConsignmentIndex.display)
 

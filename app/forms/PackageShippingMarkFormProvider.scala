@@ -19,18 +19,15 @@ package forms
 import config.Constants.maxPackageShippingMarkLength
 import forms.mappings.Mappings
 import models.messages.UnloadingRemarksRequest.alphaNumericRegex
-import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.Messages
-import viewModels.PackagesViewModel
 
 import javax.inject.Inject
 
 class PackageShippingMarkFormProvider @Inject() () extends Mappings {
 
-  def apply(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): Form[String] =
+  def apply(requiredError: String): Form[String] =
     Form(
-      "value" -> text(PackagesViewModel.requiredError(mode, houseConsignmentIndex, itemIndex))
+      "value" -> text(requiredError)
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(alphaNumericRegex, "houseConsignment.item.packageShippingMark.error.invalid"),
