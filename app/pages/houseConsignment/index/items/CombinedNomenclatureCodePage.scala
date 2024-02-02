@@ -21,9 +21,9 @@ import pages.QuestionPage
 import pages.sections.ItemsSection
 import play.api.libs.json.JsPath
 
-case class CustomsUnionAndStatisticsCodePage(houseConsignmentIndex: Index, itemIndex: Index) extends QuestionPage[String] {
+case class CombinedNomenclatureCodePage(houseConsignmentIndex: Index, itemIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = ItemsSection(houseConsignmentIndex).path \ itemIndex.position \ "Commodity" \ toString
+  override def path: JsPath = ItemsSection(houseConsignmentIndex).path \ itemIndex.position \ "Commodity" \ "CommodityCode" \ toString
 
-  override def toString: String = "cusCode"
+  override def toString: String = "combinedNomenclatureCode"
 }
