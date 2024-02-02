@@ -21,9 +21,9 @@ import pages.QuestionPage
 import pages.sections.ItemsSection
 import play.api.libs.json.JsPath
 
-case class PackageShippingMarkPage(houseConsignment: Index, itemIndex: Index, packageIndex: Index) extends QuestionPage[String] {
+case class PackageShippingMarkPage(houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = ItemsSection(houseConsignment).path \ itemIndex.position \ "Packaging" \ packageIndex.position \ toString
+  override def path: JsPath = ItemsSection(houseConsignmentIndex).path \ itemIndex.position \ "Packaging" \ packageIndex.position \ toString
 
   override def toString: String = "packageShippingMarkIndex"
 }
