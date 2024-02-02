@@ -17,7 +17,6 @@
 package views.houseConsignment.index.items
 
 import forms.SelectableFormProvider
-import generators.Generators
 import models.reference.PackageType
 import models.{NormalMode, SelectableList}
 import org.scalacheck.Arbitrary

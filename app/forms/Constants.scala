@@ -14,16 +14,9 @@
  * limitations under the License.
  */
 
-package pages.houseConsignment.index.items
+package forms
 
-import models.Index
-import pages.QuestionPage
-import pages.sections.ItemsSection
-import play.api.libs.json.JsPath
-
-case class ItemDescriptionPage(houseConsignmentIndex: Index, itemIndex: Index) extends QuestionPage[String] {
-
-  override def path: JsPath = ItemsSection(houseConsignmentIndex).path \ itemIndex.position \ "Commodity" \ toString
-
-  override def toString: String = "descriptionOfGoods"
+object Constants {
+  lazy val maxItemDescriptionLength: Int = 512
+  lazy val exactCUSCodeLength: Int       = 9
 }

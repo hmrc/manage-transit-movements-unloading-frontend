@@ -24,7 +24,7 @@ import logging.Logging
 import metrics.MetricsService
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.transport.TransportMode
-import models.reference.{Country, CustomsOffice, PackageType}
+import models.reference.{CUSCode, Country, CustomsOffice, PackageType}
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, Reads}
 import sttp.model.HeaderNames
@@ -64,6 +64,13 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val serviceUrl = s"${config.referenceDataUrl}/filtered-lists/CountryCodesFullList"
 
     http.GET[NonEmptySet[Country]](serviceUrl, headers = version2Header, queryParams = queryParams)
+  }
+
+  def getCUSCode(cusCode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[CUSCode]] = {
+    val queryParams: Seq[(String, String)] = Seq("data.code" -> cusCode)
+
+    val serviceUrl = s"${config.referenceDataUrl}/filtered-lists/CUSCode"
+    http.GET[NonEmptySet[CUSCode]](serviceUrl, headers = version2Header, queryParams = queryParams)
   }
 
   def getCustomsOffice(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[CustomsOffice]] = {

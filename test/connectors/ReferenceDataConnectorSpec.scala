@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import connectors.ReferenceDataConnectorSpec._
-import models.reference.{Country, CustomsOffice, PackageType}
+import models.reference.{CUSCode, Country, CustomsOffice, PackageType}
 import org.scalacheck.Gen
 import org.scalatest.{Assertion, BeforeAndAfterEach}
 import cats.data.NonEmptySet
@@ -107,6 +107,24 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "should handle client and server errors for customs office end point" in {
         checkErrorResponse(url, connector.getCustomsOffice(code))
+      }
+    }
+
+    "getCusCode" - {
+      val cusCode = "0010001-6"
+      val url     = s"/$baseUrl/filtered-lists/CUSCode?data.code=$cusCode"
+
+      "must return CUSCode when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(cusCodeResponseJson))
+        )
+
+        val expectedResult: NonEmptySet[CUSCode] = NonEmptySet.of(
+          CUSCode(cusCode)
+        )
+
+        connector.getCUSCode(cusCode).futureValue mustEqual expectedResult
       }
     }
 
@@ -364,6 +382,27 @@ object ReferenceDataConnectorSpec {
       |    "description":"United Kingdom"
       |  }
       | ]
+      |}
+      |""".stripMargin
+
+  private val cusCodeResponseJson: String =
+    """
+      |{
+      |  "_links": {
+      |    "self": {
+      |      "href": "/customs-reference-data/filtered-lists/CUSCode"
+      |    }
+      |  },
+      |  "meta": {
+      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+      |    "snapshotDate": "2023-01-01"
+      |  },
+      |  "id": "CUSCode",
+      |  "data": [
+      |    {
+      |      "code": "0010001-6"
+      |    }
+      |  ]
       |}
       |""".stripMargin
 
