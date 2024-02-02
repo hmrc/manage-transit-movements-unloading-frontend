@@ -21,22 +21,25 @@ import play.api.i18n.Messages
 
 case object PackagesViewModel {
 
+  private val normalMode = "houseConsignment.item.packageShippingMark.normalMode"
+  private val checkMode  = "houseConsignment.item.packageShippingMark.checkMode"
+
   def heading(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
     mode match {
-      case NormalMode => Messages("houseConsignment.item.packageShippingMark.normalMode.heading")
-      case CheckMode  => messages("houseConsignment.item.packageShippingMark.checkMode.heading", houseConsignmentIndex.display, itemIndex.display)
+      case NormalMode => Messages(s"$normalMode.heading")
+      case CheckMode  => messages(s"$checkMode.heading", houseConsignmentIndex.display, itemIndex.display)
     }
 
   def title(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
     mode match {
-      case NormalMode => messages("houseConsignment.item.packageShippingMark.normalMode.title")
-      case CheckMode  => messages("houseConsignment.item.packageShippingMark.checkMode.title", houseConsignmentIndex.display, itemIndex.display)
+      case NormalMode => messages(s"$normalMode.title")
+      case CheckMode  => messages(s"$checkMode.title", houseConsignmentIndex.display, itemIndex.display)
     }
 
   def requiredError(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
     mode match {
-      case NormalMode => messages("houseConsignment.item.packageShippingMark.normalMode.error.required")
-      case CheckMode  => messages("houseConsignment.item.packageShippingMark.checkMode.error.required", houseConsignmentIndex.display, itemIndex.display)
+      case NormalMode => messages(s"$normalMode.error.required")
+      case CheckMode  => messages(s"$checkMode.error.required", houseConsignmentIndex.display, itemIndex.display)
     }
 
 }
