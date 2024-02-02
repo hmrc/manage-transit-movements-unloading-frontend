@@ -18,6 +18,7 @@ package utils
 
 import models.{Index, UserAnswers}
 import pages._
+import pages.houseConsignment.index.items.GrossWeightPage
 import pages.sections.ItemsSection
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -111,10 +112,10 @@ class UnloadingAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
   }
 
   def fetchWeightValues(houseConsignmentIndex: Index, itemIndex: Index): (Option[BigDecimal], Option[BigDecimal]) = {
-    val grossWeightDouble = userAnswers.get(GrossWeightPage(houseConsignmentIndex, itemIndex))
-    val netWeightDouble   = userAnswers.get(NetWeightPage(houseConsignmentIndex, itemIndex))
+    val grossWeight     = userAnswers.get(GrossWeightPage(houseConsignmentIndex, itemIndex))
+    val netWeightDouble = userAnswers.get(NetWeightPage(houseConsignmentIndex, itemIndex))
     (
-      grossWeightDouble.map(BigDecimal.valueOf),
+      grossWeight,
       netWeightDouble.map(BigDecimal.valueOf)
     )
   }
@@ -131,7 +132,7 @@ class UnloadingAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     args = None
   )
 
-  def grossWeightRow(houseConsignmentIndex: Index, itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Double](
+  def grossWeightRow(houseConsignmentIndex: Index, itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
     page = GrossWeightPage(houseConsignmentIndex, itemIndex),
     formatAnswer = formatAsWeight,
     prefix = "unloadingFindings.rowHeadings.item.grossWeight",

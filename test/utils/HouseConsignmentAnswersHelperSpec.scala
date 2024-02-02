@@ -25,7 +25,7 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import pages.departureMeansOfTransport.CountryPage
-import pages.houseConsignment.index.items.ItemDescriptionPage
+import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage}
 import play.api.libs.json.{JsObject, Json}
 import services.ReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
