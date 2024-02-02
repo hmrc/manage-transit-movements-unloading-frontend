@@ -17,6 +17,7 @@
 package views
 
 import forms.NumberOfPackagesFormProvider
+import viewModels.houseConsignment.index.items.NumberOfPackagesViewModel
 import models.CheckMode
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
@@ -25,12 +26,15 @@ import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
 import views.html.houseConsignment.index.items.NumberOfPackagesView
 
-class TotalNumberOfPackagesCheckModeViewSpec extends InputTextViewBehaviours[String] {
+class NumberOfPackagesCheckModeViewSpec extends InputTextViewBehaviours[String] {
 
-  override def form: Form[String] = new NumberOfPackagesFormProvider()(CheckMode, hcIndex, itemIndex)
+  private val viewModel           = NumberOfPackagesViewModel(hcIndex, itemIndex, CheckMode)
+  override def form: Form[String] = new NumberOfPackagesFormProvider()(viewModel.requiredError)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[NumberOfPackagesView].apply(form, arrivalId, mrn, hcIndex, itemIndex, index, CheckMode)(fakeRequest, messages)
+    injector
+      .instanceOf[NumberOfPackagesView]
+      .apply(form, arrivalId, mrn, hcIndex, itemIndex, index, CheckMode, viewModel)(fakeRequest, messages)
 
   override val prefix: String = "numberOfPackages.checkMode"
 

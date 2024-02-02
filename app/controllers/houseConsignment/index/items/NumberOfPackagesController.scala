@@ -25,6 +25,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewModels.houseConsignment.index.items.NumberOfPackagesViewModel.NumberOfPackagesViewModelProvider
 import views.html.houseConsignment.index.items.NumberOfPackagesView
 
 import javax.inject.Inject
@@ -36,6 +37,7 @@ class NumberOfPackagesController @Inject() (
   navigator: Navigator,
   actions: Actions,
   formProvider: NumberOfPackagesFormProvider,
+  viewModelProvider: NumberOfPackagesViewModelProvider,
   val controllerComponents: MessagesControllerComponents,
   view: NumberOfPackagesView
 )(implicit ec: ExecutionContext)
@@ -45,8 +47,8 @@ class NumberOfPackagesController @Inject() (
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId) {
       implicit request =>
-        val form = formProvider(mode, houseConsignmentIndex, itemIndex)
-
+        val viewModel = viewModelProvider.apply(houseConsignmentIndex, itemIndex, mode)
+        val form      = formProvider(viewModel.requiredError)
         val preparedForm = request.userAnswers.get(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
@@ -59,7 +61,8 @@ class NumberOfPackagesController @Inject() (
             houseConsignmentIndex,
             itemIndex,
             packageIndex,
-            mode
+            mode,
+            viewModel
           )
         )
 
@@ -68,8 +71,8 @@ class NumberOfPackagesController @Inject() (
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
-        val form = formProvider(mode, houseConsignmentIndex, itemIndex)
-
+        val viewModel = viewModelProvider.apply(houseConsignmentIndex, itemIndex, mode)
+        val form      = formProvider(viewModel.requiredError)
         form
           .bindFromRequest()
           .fold(
@@ -83,7 +86,8 @@ class NumberOfPackagesController @Inject() (
                     houseConsignmentIndex,
                     itemIndex,
                     packageIndex,
-                    mode
+                    mode,
+                    viewModel
                   )
                 )
               ),

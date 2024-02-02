@@ -19,24 +19,35 @@ package viewModels.houseConsignment.index.items
 import models.{CheckMode, Index, Mode, NormalMode}
 import play.api.i18n.Messages
 
-case object NumberOfPackagesViewModel {
+import javax.inject.Inject
 
-  def heading(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
+case class NumberOfPackagesViewModel(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode) {
+
+  def heading(implicit messages: Messages): String =
     mode match {
       case NormalMode => Messages("numberOfPackages.normalMode.heading")
       case CheckMode  => messages("numberOfPackages.checkMode.heading", houseConsignmentIndex.display, itemIndex.display)
     }
 
-  def title(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
+  def title(implicit messages: Messages): String =
     mode match {
       case NormalMode => messages("numberOfPackages.normalMode.title")
       case CheckMode  => messages("numberOfPackages.checkMode.title", houseConsignmentIndex.display, itemIndex.display)
     }
 
-  def requiredError(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
+  def requiredError(implicit messages: Messages): String =
     mode match {
       case NormalMode => messages("numberOfPackages.normalMode.error.required")
       case CheckMode  => messages("numberOfPackages.checkMode.error.required", houseConsignmentIndex.display, itemIndex.display)
     }
 
+}
+
+object NumberOfPackagesViewModel {
+
+  class NumberOfPackagesViewModelProvider @Inject() () {
+
+    def apply(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): NumberOfPackagesViewModel =
+      new NumberOfPackagesViewModel(houseConsignmentIndex, itemIndex, mode)
+  }
 }

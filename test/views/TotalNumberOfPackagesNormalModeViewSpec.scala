@@ -22,15 +22,20 @@ import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
+import viewModels.houseConsignment.index.items.NumberOfPackagesViewModel
 import views.behaviours.InputTextViewBehaviours
 import views.html.houseConsignment.index.items.NumberOfPackagesView
 
 class TotalNumberOfPackagesNormalModeViewSpec extends InputTextViewBehaviours[String] {
 
-  override def form: Form[String] = new NumberOfPackagesFormProvider()(NormalMode, hcIndex, itemIndex)
+  private val viewModel = NumberOfPackagesViewModel(hcIndex, itemIndex, NormalMode)
+
+  override def form: Form[String] = new NumberOfPackagesFormProvider()(viewModel.requiredError)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[NumberOfPackagesView].apply(form, arrivalId, mrn, hcIndex, itemIndex, index, NormalMode)(fakeRequest, messages)
+    injector
+      .instanceOf[NumberOfPackagesView]
+      .apply(form, arrivalId, mrn, hcIndex, itemIndex, index, NormalMode, viewModel)(fakeRequest, messages)
 
   override val prefix: String = "numberOfPackages.normalMode"
 

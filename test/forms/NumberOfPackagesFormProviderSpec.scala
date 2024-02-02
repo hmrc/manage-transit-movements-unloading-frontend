@@ -18,14 +18,15 @@ package forms
 
 import forms.behaviours.FieldBehaviours
 import generators.Generators
+import models.{Index, NormalMode}
 import models.messages.UnloadingRemarksRequest
-import models.{CheckMode, Index, NormalMode}
 import org.scalacheck.Gen
 import play.api.Application
-import play.api.data.{Field, FormError}
+import play.api.data.{Field, Form, FormError}
 import play.api.i18n.Lang.defaultLang
 import play.api.i18n.{Messages, MessagesApi, MessagesImpl}
 import play.api.inject.guice.GuiceApplicationBuilder
+import viewModels.houseConsignment.index.items.NumberOfPackagesViewModel
 
 import scala.util.matching.Regex
 
@@ -34,86 +35,48 @@ class NumberOfPackagesFormProviderSpec extends FieldBehaviours with Generators {
   private val maxLength  = UnloadingRemarksRequest.numberOfPackagesLength
   private val invalidKey = "numberOfPackages.error.nonNumeric"
 
-  def fakeApplication(): Application =
+  private val viewModel = NumberOfPackagesViewModel(hcIndex, itemIndex, NormalMode)
+
+  def fakeApplication: Application =
     new GuiceApplicationBuilder()
       .configure()
       .build()
+
   def messagesApi: MessagesApi    = fakeApplication.injector.instanceOf[MessagesApi]
   implicit val messages: Messages = MessagesImpl(defaultLang, messagesApi)
 
   private val hcIndex   = Index(0)
   private val itemIndex = Index(0)
 
-  "In Check Mode" - {
+  val requiredKey = "numberOfPackages.normalMode.error.required"
 
-    val requiredKey = "numberOfPackages.checkMode.error.required"
+  val form: Form[String] = new NumberOfPackagesFormProvider()(viewModel.requiredError)
+  val fieldName          = "value"
 
-    val form      = new NumberOfPackagesFormProvider()(CheckMode, hcIndex, itemIndex)(messages)
-    val fieldName = "value"
+  ".value" - {
 
-    ".value" - {
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      Gen.chooseNum(0, maxLength).toString
+    )
 
-      behave like fieldThatBindsValidData(
-        form,
-        fieldName,
-        Gen.chooseNum(0, maxLength).toString
-      )
-
-      behave like mandatoryField(
-        form,
-        fieldName,
-        requiredError = FormError(fieldName, messages(requiredKey, hcIndex.display.toString, itemIndex.display.toString))
-      )
-    }
-
-    "must not bind strings that do not match regex" in {
-
-      val expectedError = FormError(fieldName, invalidKey, Seq(hcIndex.display.toString, itemIndex.display.toString))
-      val regex         = new Regex("[A-Za-z@~{}><!*&%$]{5}")
-
-      forAll(stringsThatMatchRegex(regex)) {
-        invalidString =>
-          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors should contain(expectedError)
-      }
-
-    }
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, messages(requiredKey))
+    )
   }
 
-  "In Normal Mode" - {
+  "must not bind strings that do not match regex" in {
 
-    val requiredKey = "numberOfPackages.normalMode.error.required"
+    val expectedError = FormError(fieldName, invalidKey, Seq(UnloadingRemarksRequest.numericRegex.regex))
+    val regex         = new Regex("[A-Za-z@~{}><!*&%$]{5}")
 
-    val form      = new NumberOfPackagesFormProvider()(NormalMode, hcIndex, itemIndex)(messages)
-    val fieldName = "value"
-
-    ".value" - {
-
-      behave like fieldThatBindsValidData(
-        form,
-        fieldName,
-        Gen.chooseNum(0, maxLength).toString
-      )
-
-      behave like mandatoryField(
-        form,
-        fieldName,
-        requiredError = FormError(fieldName, messages(requiredKey))
-      )
-    }
-
-    "must not bind strings that do not match regex" in {
-
-      val expectedError = FormError(fieldName, invalidKey, Seq(hcIndex.display.toString, itemIndex.display.toString))
-      val regex         = new Regex("[A-Za-z@~{}><!*&%$]{5}")
-
-      forAll(stringsThatMatchRegex(regex)) {
-        invalidString =>
-          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors should contain(expectedError)
-      }
-
+    forAll(stringsThatMatchRegex(regex)) {
+      invalidString =>
+        val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+        result.errors should contain(expectedError)
     }
   }
-
 }
