@@ -20,11 +20,7 @@ import forms.behaviours.FieldBehaviours
 import generators.Generators
 import models.messages.UnloadingRemarksRequest
 import org.scalacheck.Gen
-import play.api.Application
 import play.api.data.{Field, Form, FormError}
-import play.api.i18n.Lang.defaultLang
-import play.api.i18n.{Messages, MessagesApi, MessagesImpl}
-import play.api.inject.guice.GuiceApplicationBuilder
 import viewModels.houseConsignment.index.items.NumberOfPackagesViewModel
 
 import scala.util.matching.Regex
@@ -38,14 +34,6 @@ class NumberOfPackagesFormProviderSpec extends FieldBehaviours with Generators {
   val headingKey         = "numberOfPackages.normalMode.heading"
 
   private val viewModel = NumberOfPackagesViewModel(headingKey, titleKey, requiredKey)
-
-  def fakeApplication: Application =
-    new GuiceApplicationBuilder()
-      .configure()
-      .build()
-
-  def messagesApi: MessagesApi    = fakeApplication.injector.instanceOf[MessagesApi]
-  implicit val messages: Messages = MessagesImpl(defaultLang, messagesApi)
 
   val form: Form[String] = new NumberOfPackagesFormProvider()(viewModel.requiredError)
   val fieldName          = "value"
@@ -73,7 +61,7 @@ class NumberOfPackagesFormProviderSpec extends FieldBehaviours with Generators {
     forAll(stringsThatMatchRegex(regex)) {
       invalidString =>
         val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-        result.errors should contain(expectedError)
+        result.errors must contain(expectedError)
     }
   }
 }
