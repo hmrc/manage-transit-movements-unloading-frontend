@@ -19,7 +19,7 @@
 @import viewModels.components.InputCharacterCountViewModel._
 @import views.html.components.{Button, ErrorSummary, InputCharacterCount}
 @import config.Constants.maxItemDescriptionLength
-@import viewModels.PackagesViewModel
+@import viewModels.PackageShippingMarksViewModel
 
 @this(
     mainTemplate: MainTemplate,
@@ -29,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[String], mrn: MovementReferenceNumber, arrivalId: ArrivalId,  houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode, viewModel: PackagesViewModel)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], mrn: MovementReferenceNumber, arrivalId: ArrivalId,  houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode, viewModel: PackageShippingMarksViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = viewModel.title,

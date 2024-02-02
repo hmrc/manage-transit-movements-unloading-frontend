@@ -26,7 +26,7 @@ import play.api.data.FormError
 import play.api.i18n.Lang.defaultLang
 import play.api.i18n.{Messages, MessagesApi, MessagesImpl}
 import play.api.inject.guice.GuiceApplicationBuilder
-import viewModels.PackagesViewModel
+import viewModels.PackageShippingMarksViewModel
 
 class PackageShippingMarkFormProviderSpec extends StringFieldBehaviours {
 
@@ -47,7 +47,7 @@ class PackageShippingMarkFormProviderSpec extends StringFieldBehaviours {
 
   "In Normal Mode" - {
 
-    val viewModel   = PackagesViewModel(hcIndex, itemIndex, NormalMode)
+    val viewModel   = PackageShippingMarksViewModel(hcIndex, itemIndex, NormalMode)
     val form        = new PackageShippingMarkFormProvider()(viewModel.requiredError)
     val requiredKey = "houseConsignment.item.packageShippingMark.normalMode.error.required"
 
@@ -76,7 +76,7 @@ class PackageShippingMarkFormProviderSpec extends StringFieldBehaviours {
 
   "In Check Mode" - {
 
-    val viewModel   = PackagesViewModel(hcIndex, itemIndex, CheckMode)
+    val viewModel   = PackageShippingMarksViewModel(hcIndex, itemIndex, CheckMode)
     val requiredKey = "houseConsignment.item.packageShippingMark.checkMode.error.required"
     val form        = new PackageShippingMarkFormProvider()(viewModel.requiredError)
 

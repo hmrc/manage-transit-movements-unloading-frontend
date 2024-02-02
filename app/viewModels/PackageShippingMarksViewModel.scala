@@ -21,7 +21,7 @@ import play.api.i18n.Messages
 
 import javax.inject.Inject
 
-case class PackagesViewModel(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode) {
+case class PackageShippingMarksViewModel(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode) {
 
   private val normalMode = "houseConsignment.item.packageShippingMark.normalMode"
   private val checkMode  = "houseConsignment.item.packageShippingMark.checkMode"
@@ -46,11 +46,11 @@ case class PackagesViewModel(houseConsignmentIndex: Index, itemIndex: Index, mod
 
 }
 
-object PackagesViewModel {
+object PackageShippingMarksViewModel {
 
-  class PackagesViewModelProvider @Inject() () {
+  class PackageShippingMarksViewModelProvider @Inject() () {
 
-    def apply(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): PackagesViewModel =
-      new PackagesViewModel(houseConsignmentIndex, itemIndex, mode)
+    def apply(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): PackageShippingMarksViewModel =
+      new PackageShippingMarksViewModel(houseConsignmentIndex, itemIndex, mode)
   }
 }

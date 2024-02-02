@@ -26,7 +26,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.PackagesViewModel.PackagesViewModelProvider
+import viewModels.PackageShippingMarksViewModel.PackageShippingMarksViewModelProvider
 import views.html.houseConsignment.index.items.PackageShippingMarkView
 
 import javax.inject.Inject
@@ -39,7 +39,7 @@ class PackageShippingMarkController @Inject() (
   navigator: Navigator,
   val controllerComponents: MessagesControllerComponents,
   formProvider: PackageShippingMarkFormProvider,
-  viewModelProvider: PackagesViewModelProvider,
+  viewModelProvider: PackageShippingMarksViewModelProvider,
   view: PackageShippingMarkView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController

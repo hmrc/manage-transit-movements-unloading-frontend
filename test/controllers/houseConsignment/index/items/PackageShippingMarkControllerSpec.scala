@@ -26,7 +26,7 @@ import pages.houseConsignment.index.items.PackageShippingMarkPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewModels.PackagesViewModel
+import viewModels.PackageShippingMarksViewModel
 import views.html.houseConsignment.index.items.PackageShippingMarkView
 
 import scala.concurrent.Future
@@ -34,7 +34,7 @@ import scala.concurrent.Future
 class PackageShippingMarkControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
   private lazy val mode         = NormalMode
   private lazy val formProvider = new PackageShippingMarkFormProvider()
-  private lazy val viewModel    = PackagesViewModel(hcIndex, itemIndex, mode)
+  private lazy val viewModel    = PackageShippingMarksViewModel(hcIndex, itemIndex, mode)
   private lazy val form         = formProvider(viewModel.requiredError)
 
   private lazy val packageShippingMarkRoute =

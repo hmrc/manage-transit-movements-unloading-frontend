@@ -22,13 +22,13 @@ import generators.Generators
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.PackagesViewModel
+import viewModels.PackageShippingMarksViewModel
 import views.behaviours.CharacterCountViewBehaviours
 import views.html.houseConsignment.index.items.PackageShippingMarkView
 
 class PackageShippingMarkViewNormalModeSpec extends CharacterCountViewBehaviours with Generators {
 
-  val viewModel: PackagesViewModel = PackagesViewModel(hcIndex, itemIndex, NormalMode)
+  val viewModel: PackageShippingMarksViewModel = PackageShippingMarksViewModel(hcIndex, itemIndex, NormalMode)
 
   def form: Form[String] = new PackageShippingMarkFormProvider()(viewModel.requiredError)
 
