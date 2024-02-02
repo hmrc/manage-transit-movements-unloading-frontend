@@ -33,6 +33,7 @@ import views.html.houseConsignment.index.items.PackageTypeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import viewModels.houseConsignment.index.items.PackageTypeViewModel.PackageTypeViewModelProvider
 
 class PackageTypeController @Inject() (
   override val messagesApi: MessagesApi,
@@ -42,7 +43,8 @@ class PackageTypeController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   formProvider: SelectableFormProvider,
   service: PackagesService,
-  view: PackageTypeView
+  view: PackageTypeView,
+  viewModelProvider: PackageTypeViewModelProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -54,12 +56,13 @@ class PackageTypeController @Inject() (
       implicit request =>
         service.getPackageTypes().map {
           packageTypeList =>
-            val form = formProvider(prefix, packageTypeList)
+            val form      = formProvider(mode, houseConsignmentIndex, itemIndex, prefix, packageTypeList)
+            val viewModel = viewModelProvider.apply(mode, itemIndex, houseConsignmentIndex)
             val preparedForm = request.userAnswers.get(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex)) match {
               case None        => form
               case Some(value) => form.fill(value)
             }
-            Ok(view(preparedForm, request.userAnswers.id, packageTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex))
+            Ok(view(viewModel, preparedForm, request.userAnswers.id, packageTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex))
         }
     }
 
@@ -68,14 +71,16 @@ class PackageTypeController @Inject() (
       implicit request =>
         service.getPackageTypes().flatMap {
           packagesTypeList =>
-            val form: Form[PackageType] = formProvider(prefix, packagesTypeList)
-
+            val form: Form[PackageType] = formProvider(mode, houseConsignmentIndex, itemIndex, prefix, packagesTypeList)
+            val viewModel               = viewModelProvider.apply(mode, itemIndex, houseConsignmentIndex)
             form
               .bindFromRequest()
               .fold(
                 formWithErrors =>
                   Future.successful(
-                    BadRequest(view(formWithErrors, request.userAnswers.id, packagesTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex))
+                    BadRequest(
+                      view(viewModel, formWithErrors, request.userAnswers.id, packagesTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex)
+                    )
                   ),
                 value => redirect(value, houseConsignmentIndex, itemIndex, packageIndex, mode)
               )

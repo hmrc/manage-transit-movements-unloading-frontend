@@ -23,6 +23,5 @@ package object services {
     def toSeq: Seq[T] =
       value.toNonEmptyList.toList
 
-    def toVector: Vector[T] = value.toVector
   }
 }

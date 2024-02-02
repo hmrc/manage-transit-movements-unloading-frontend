@@ -22,15 +22,20 @@ import models.{NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import viewModels.houseConsignment.index.items.PackageTypeViewModel
 import views.behaviours.InputSelectViewBehaviours
 import views.html.houseConsignment.index.items.PackageTypeView
 
 class PackageTypeViewSpec extends InputSelectViewBehaviours[PackageType] {
 
-  override def form: Form[PackageType] = new SelectableFormProvider()(prefix, SelectableList(values))
+  override def form: Form[PackageType] = new SelectableFormProvider().apply(NormalMode, houseConsignmentIndex, itemIndex, prefix, SelectableList(values))
+
+  val viewModel: PackageTypeViewModel = PackageTypeViewModel(NormalMode, itemIndex, houseConsignmentIndex)
 
   override def applyView(form: Form[PackageType]): HtmlFormat.Appendable =
-    injector.instanceOf[PackageTypeView].apply(form, arrivalId, values, NormalMode, houseConsignmentIndex, itemIndex, packageIndex)(fakeRequest, messages)
+    injector
+      .instanceOf[PackageTypeView]
+      .apply(viewModel, form, arrivalId, values, NormalMode, houseConsignmentIndex, itemIndex, packageIndex)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[PackageType] = arbitraryPackageType
 

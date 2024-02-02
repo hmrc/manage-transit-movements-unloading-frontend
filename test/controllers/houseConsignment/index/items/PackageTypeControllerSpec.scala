@@ -28,6 +28,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.PackagesService
+import viewModels.houseConsignment.index.items.PackageTypeViewModel
 import views.html.houseConsignment.index.items.PackageTypeView
 
 import scala.concurrent.Future
@@ -38,10 +39,6 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val packageType2    = arbitraryPackageType.arbitrary.sample.get
   private val packageTypeList = SelectableList(Seq(packageType1, packageType2))
 
-  private val formProvider = new SelectableFormProvider()
-  private val form         = formProvider("houseConsignment.index.item.packageType", packageTypeList)
-  private val mode         = NormalMode
-
   private val mockPreviousDocumentService: PackagesService = mock[PackagesService]
 
   private lazy val packageTypeRoute =
@@ -51,6 +48,12 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[PackagesService]).toInstance(mockPreviousDocumentService))
+
+  private val formProvider = new SelectableFormProvider()
+  private val mode         = NormalMode
+
+  private val form                    = formProvider(mode, houseConsignmentIndex, itemIndex, "houseConsignment.index.item.packageType", packageTypeList)
+  val viewModel: PackageTypeViewModel = PackageTypeViewModel(mode, itemIndex, houseConsignmentIndex)
 
   "PackageType Controller" - {
 
@@ -68,7 +71,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, arrivalId, packageTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex)(request, messages).toString
+        view(viewModel, form, arrivalId, packageTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -88,7 +91,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, arrivalId, packageTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex)(request, messages).toString
+        view(viewModel, filledForm, arrivalId, packageTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -123,7 +126,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, arrivalId, packageTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex)(request, messages).toString
+        view(viewModel, boundForm, arrivalId, packageTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

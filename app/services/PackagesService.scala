@@ -28,10 +28,9 @@ class PackagesService @Inject() (referenceDataConnector: ReferenceDataConnector)
 
   def getPackageTypes()(implicit hc: HeaderCarrier): Future[SelectableList[PackageType]] =
     referenceDataConnector.getPackageTypes
-      .map(
-        xs => sort(xs.toVector)
-      )
+      .map(_.toSeq)
+      .map(sort)
 
-  private def sort(packageTypes: Vector[PackageType]): SelectableList[PackageType] =
+  private def sort(packageTypes: Seq[PackageType]): SelectableList[PackageType] =
     SelectableList(packageTypes.sortBy(_.description.map(_.toLowerCase)))
 }

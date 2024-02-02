@@ -403,10 +403,14 @@ houseConsignment.item.description.error.required = Enter the new description of 
 houseConsignment.item.description.error.invalidCharacters = The description must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 
 houseConsignment.index.item.packageType.title = What type of package are you using for the item?
+houseConsignment.index.item.packageType.check.title = What is the new package type for item {0} in house consignment {1}?
 houseConsignment.index.item.packageType.heading = What type of package are you using for the item?
+houseConsignment.index.item.packageType.check.heading = What is the new package type for item {0} in house consignment {1}?
 houseConsignment.index.item.packageType.hint = Enter the package or code, like cylinder or CY.
 houseConsignment.index.item.packageType.paragraph = This means the packaging used to store and protect the item during transit.
-houseConsignment.packageType.error.required = Enter the type of package you are using for the item
+houseConsignment.index.item.packageType.error.required = Enter the type of package you are using for the item
+houseConsignment.index.item.packageType.check.error.required = Enter the new package type for item {0} in house consignment {1}
+houseConsignment.index.item.packageType.placeholder = Select a package type
 
 commodityCode.title = What is the new commodity code for item {0} in house consignment {1}?
 commodityCode.heading = What is the new commodity code for item {0} in house consignment {1}?
