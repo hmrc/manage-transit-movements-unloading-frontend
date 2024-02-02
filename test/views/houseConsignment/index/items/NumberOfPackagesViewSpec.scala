@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package views
+package views.houseConsignment.index.items
 
 import forms.NumberOfPackagesFormProvider
-import viewModels.houseConsignment.index.items.NumberOfPackagesViewModel
 import models.NormalMode
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
+import viewModels.houseConsignment.index.items.NumberOfPackagesViewModel
 import views.behaviours.InputTextViewBehaviours
 import views.html.houseConsignment.index.items.NumberOfPackagesView
 
 class NumberOfPackagesViewSpec extends InputTextViewBehaviours[String] {
 
-  private val viewModel = NumberOfPackagesViewModel(messages("numberOfPackages.normalMode.heading"),
-                                                    messages("numberOfPackages.normalMode.title"),
-                                                    messages("numberOfPackages.normalMode.error.required")
-  )
+  private val viewModel: NumberOfPackagesViewModel =
+    arbitrary[NumberOfPackagesViewModel].sample.value
+
   override def form: Form[String] = new NumberOfPackagesFormProvider()(viewModel.requiredError)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
@@ -39,15 +39,21 @@ class NumberOfPackagesViewSpec extends InputTextViewBehaviours[String] {
       .instanceOf[NumberOfPackagesView]
       .apply(form, arrivalId, mrn, hcIndex, itemIndex, index, NormalMode, viewModel)(fakeRequest, messages)
 
-  override val prefix: String = "numberOfPackages.normalMode"
+  override val prefix: String = Gen
+    .oneOf(
+      "numberOfPackages.normalMode",
+      "numberOfPackages.checkMode"
+    )
+    .sample
+    .value
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.oneOf(1 to 100).toString)
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(text = viewModel.title)
 
   behave like pageWithBackLink()
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(text = viewModel.heading)
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 

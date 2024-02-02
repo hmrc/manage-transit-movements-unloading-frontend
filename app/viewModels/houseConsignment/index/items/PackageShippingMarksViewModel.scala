@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,32 +21,35 @@ import play.api.i18n.Messages
 
 import javax.inject.Inject
 
-case class NumberOfPackagesViewModel(heading: String, title: String, requiredError: String)
+case class PackageShippingMarksViewModel(heading: String, title: String, requiredError: String)
 
-object NumberOfPackagesViewModel {
+object PackageShippingMarksViewModel {
 
-  class NumberOfPackagesViewModelProvider @Inject() () {
+  class PackageShippingMarksViewModelProvider @Inject() () {
+
+    private val normalMode = "houseConsignment.item.packageShippingMark.normalMode"
+    private val checkMode  = "houseConsignment.item.packageShippingMark.checkMode"
 
     private def heading(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): String =
       mode match {
-        case NormalMode => messages("numberOfPackages.normalMode.heading")
-        case CheckMode  => messages("numberOfPackages.checkMode.heading", houseConsignmentIndex.display, itemIndex.display)
+        case NormalMode => messages(s"$normalMode.heading")
+        case CheckMode  => messages(s"$checkMode.heading", houseConsignmentIndex.display, itemIndex.display)
       }
 
     private def title(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): String =
       mode match {
-        case NormalMode => messages("numberOfPackages.normalMode.title")
-        case CheckMode  => messages("numberOfPackages.checkMode.title", houseConsignmentIndex.display, itemIndex.display)
+        case NormalMode => messages(s"$normalMode.title")
+        case CheckMode  => messages(s"$checkMode.title", houseConsignmentIndex.display, itemIndex.display)
       }
 
     private def requiredError(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): String =
       mode match {
-        case NormalMode => messages("numberOfPackages.normalMode.error.required")
-        case CheckMode  => messages("numberOfPackages.checkMode.error.required", houseConsignmentIndex.display, itemIndex.display)
+        case NormalMode => messages(s"$normalMode.error.required")
+        case CheckMode  => messages(s"$checkMode.error.required", houseConsignmentIndex.display, itemIndex.display)
       }
 
-    def apply(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): NumberOfPackagesViewModel =
-      new NumberOfPackagesViewModel(
+    def apply(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): PackageShippingMarksViewModel =
+      new PackageShippingMarksViewModel(
         heading(houseConsignmentIndex, itemIndex, mode),
         title(houseConsignmentIndex, itemIndex, mode),
         requiredError(houseConsignmentIndex, itemIndex, mode)

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.houseConsignment.index.items
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NumberOfPackagesFormProvider
 import generators.Generators
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.NumberOfPackagesPage
 import play.api.inject.bind
@@ -48,11 +48,16 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
       .guiceApplicationBuilder()
       .overrides(bind[NumberOfPackagesViewModelProvider].toInstance(mockViewModelProvider))
 
-  when(mockViewModelProvider.apply(any(), any(), any())(any()))
-    .thenReturn(viewModel)
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockViewModelProvider)
+
+    when(mockViewModelProvider.apply(any(), any(), any())(any()))
+      .thenReturn(viewModel)
+  }
 
   lazy val totalNumberOfPackagesRoute: String =
-    controllers.houseConsignment.index.items.routes.NumberOfPackagesController.onPageLoad(arrivalId, hcIndex, itemIndex, index, NormalMode).url
+    routes.NumberOfPackagesController.onPageLoad(arrivalId, hcIndex, itemIndex, index, NormalMode).url
 
   "TotalNumberOfPackages Controller" - {
 
@@ -135,7 +140,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -151,7 +156,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
   }
 }

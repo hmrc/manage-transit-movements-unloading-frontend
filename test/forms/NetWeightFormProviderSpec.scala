@@ -53,7 +53,7 @@ class NetWeightFormProviderSpec extends StringFieldBehaviours {
     val expectedError      = FormError(fieldName, decimalPoint, Seq(validRegex))
 
     val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-    result.errors should contain(expectedError)
+    result.errors must contain(expectedError)
   }
 
   "must not bind strings wth invalid characters" in {
@@ -63,7 +63,7 @@ class NetWeightFormProviderSpec extends StringFieldBehaviours {
     val expectedError      = FormError(fieldName, invalidCharacters, Seq(validRegex))
 
     val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-    result.errors should contain(expectedError)
+    result.errors must contain(expectedError)
   }
 
 }

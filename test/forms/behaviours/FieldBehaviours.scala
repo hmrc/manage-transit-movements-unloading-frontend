@@ -21,7 +21,6 @@ import generators.Generators
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.{Form, FormError}
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 
 trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Generators {
 
@@ -50,13 +49,13 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
     "must not bind when key is not present at all" in {
 
       val result = form.bind(emptyForm).apply(fieldName)
-      result.errors shouldEqual Seq(requiredError)
+      result.errors mustEqual Seq(requiredError)
     }
 
     "must not bind blank values" in {
 
       val result = form.bind(Map(fieldName -> "")).apply(fieldName)
-      result.errors shouldEqual Seq(requiredError)
+      result.errors mustEqual Seq(requiredError)
     }
   }
 }

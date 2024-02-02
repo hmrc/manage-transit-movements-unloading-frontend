@@ -20,7 +20,6 @@ import forms.behaviours.StringFieldBehaviours
 import models.Index
 import models.messages.UnloadingRemarksRequest.combinedNomenclatureCodeLength
 import org.scalacheck.Gen
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import play.api.data.{Field, Form, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
 

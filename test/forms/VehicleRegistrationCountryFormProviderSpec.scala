@@ -49,14 +49,14 @@ class DepartureMeansOfTransportCountryFormProviderSpec extends StringFieldBehavi
 
       val boundForm = form.bind(Map("value" -> "foobar"))
       val field     = boundForm("value")
-      field.errors shouldNot be(empty)
+      field.errors mustNot be(empty)
     }
 
     "bind a country code which is in the list" in {
 
       val boundForm = form.bind(Map("value" -> "AD"))
       val field     = boundForm("value")
-      field.errors should be(empty)
+      field.errors must be(empty)
     }
   }
 }

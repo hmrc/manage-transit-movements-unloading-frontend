@@ -55,7 +55,7 @@ class NewContainerIdentificationNumberFormProviderSpec extends StringFieldBehavi
     forAll(generator) {
       invalidString =>
         val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-        result.errors should contain(expectedError)
+        result.errors must contain(expectedError)
     }
   }
 }
