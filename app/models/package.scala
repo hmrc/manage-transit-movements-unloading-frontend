@@ -184,6 +184,8 @@ package object models {
 
     def sealsExist: Boolean =
       value.Consignment.exists(_.TransportEquipment.exists(_.Seal.nonEmpty))
+
+    def hasXIOfficeOfDestination: Boolean = value.CustomsOfficeOfDestinationActual.referenceNumber.startsWith("XI")
   }
 
   implicit class RichXMLGregorianCalendar(value: XMLGregorianCalendar) {
@@ -191,4 +193,5 @@ package object models {
     def toLocalDate: LocalDate =
       value.toGregorianCalendar.toZonedDateTime.toLocalDate
   }
+
 }
