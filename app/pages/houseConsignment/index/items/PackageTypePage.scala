@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package models.reference
+package pages.houseConsignment.index.items
 
-import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
+import models.Index
+import models.reference.PackageType
+import pages.QuestionPage
+import pages.sections.ItemsSection
+import play.api.libs.json.JsPath
 
-trait Selectable {
-  val value: String
-  def toSelectItem(selected: Boolean = false): SelectItem = SelectItem(Some(value), this.toString, selected)
-}
+case class PackageTypePage(houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index) extends QuestionPage[PackageType] {
 
-object Selectable {
+  override def path: JsPath = ItemsSection(houseConsignmentIndex).path \ itemIndex.position \ "Packaging" \ packageIndex.position \ toString
 
-  implicit class Selectables(selectables: Seq[Selectable]) {
+  override def toString: String = "typeOfPackages"
 
-    def toSelectItems(selectedValue: Option[Selectable]): Seq[SelectItem] = selectables.map(
-      x => x.toSelectItem(selectedValue.contains(x))
-    )
-  }
 }

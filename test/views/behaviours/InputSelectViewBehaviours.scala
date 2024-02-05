@@ -16,11 +16,14 @@
 
 package views.behaviours
 
+import generators.Generators
 import models.reference.Selectable
+import org.scalacheck.Arbitrary
 
-trait InputSelectViewBehaviours[T <: Selectable] extends QuestionViewBehaviours[T] {
+trait InputSelectViewBehaviours[T <: Selectable] extends QuestionViewBehaviours[T] with Generators {
 
-  def values: Seq[T]
+  implicit val arbitraryT: Arbitrary[T]
+  lazy val values: Seq[T] = listWithMaxLength[T]().sample.value
 
   def pageWithSelect(): Unit =
     "behave like a page with a select element" - {

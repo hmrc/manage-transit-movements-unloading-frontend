@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,8 @@
  * limitations under the License.
  */
 
-package models.reference
+package models
 
-import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
+import models.reference.Selectable
 
-trait Selectable {
-  val value: String
-  def toSelectItem(selected: Boolean = false): SelectItem = SelectItem(Some(value), this.toString, selected)
-}
-
-object Selectable {
-
-  implicit class Selectables(selectables: Seq[Selectable]) {
-
-    def toSelectItems(selectedValue: Option[Selectable]): Seq[SelectItem] = selectables.map(
-      x => x.toSelectItem(selectedValue.contains(x))
-    )
-  }
-}
+case class SelectableList[T <: Selectable](values: Seq[T])

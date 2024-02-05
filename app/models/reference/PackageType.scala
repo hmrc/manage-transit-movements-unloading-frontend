@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,19 +19,18 @@ package models.reference
 import cats.Order
 import play.api.libs.json.{Json, OFormat}
 
-case class Country(code: String, description: Option[String]) extends Selectable {
+case class PackageType(code: String, description: Option[String]) extends Selectable {
 
   override def toString: String = description match {
-    case Some(description) => s"$description - $code"
-    case None              => code
+    case Some(value) if value.trim.nonEmpty => s"($code) $value"
+    case _                                  => code
   }
 
   override val value: String = code
 }
 
-object Country {
-  implicit val format: OFormat[Country] = Json.format[Country]
+object PackageType {
+  implicit val format: OFormat[PackageType] = Json.format[PackageType]
 
-  implicit val order: Order[Country] = (x: Country, y: Country) => x.code.compareToIgnoreCase(y.code)
-
+  implicit val order: Order[PackageType] = (x: PackageType, y: PackageType) => x.code.compareToIgnoreCase(y.code)
 }

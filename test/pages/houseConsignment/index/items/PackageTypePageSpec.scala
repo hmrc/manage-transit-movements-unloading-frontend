@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
-package models.reference
+package pages.houseConsignment.index.items
 
-import cats.Order
-import play.api.libs.json.{Json, OFormat}
+import models.reference.PackageType
+import pages.behaviours.PageBehaviours
 
-case class Country(code: String, description: Option[String]) extends Selectable {
+class PackageTypePageSpec extends PageBehaviours {
 
-  override def toString: String = description match {
-    case Some(description) => s"$description - $code"
-    case None              => code
+  "PackageTypePage" - {
+
+    beRetrievable[PackageType](PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex))
+
+    beSettable[PackageType](PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex))
+
+    beRemovable[PackageType](PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex))
+
   }
-
-  override val value: String = code
-}
-
-object Country {
-  implicit val format: OFormat[Country] = Json.format[Country]
-
-  implicit val order: Order[Country] = (x: Country, y: Country) => x.code.compareToIgnoreCase(y.code)
-
 }

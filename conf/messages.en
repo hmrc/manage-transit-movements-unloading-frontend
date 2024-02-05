@@ -404,8 +404,26 @@ houseConsignment.item.description.heading = Enter the new description of item {0
 houseConsignment.item.description.paragraph = This should be clear and detailed enough for anyone involved in the transit movement to understand its contents.
 houseConsignment.item.description.error.length = The description must be 512 characters or less
 houseConsignment.item.description.error.required = Enter the new description of item {0} in house consignment {1}
-houseConsignment.item.description.error.length = The description must be 512 characters or less
 houseConsignment.item.description.error.invalidCharacters = The description must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+
+houseConsignment.index.item.packageType.title = What type of package are you using for the item?
+houseConsignment.index.item.packageType.check.title = What is the new package type for item {0} in house consignment {1}?
+houseConsignment.index.item.packageType.heading = What type of package are you using for the item?
+houseConsignment.index.item.packageType.check.heading = What is the new package type for item {0} in house consignment {1}?
+houseConsignment.index.item.packageType.hint = Enter the package or code, like cylinder or CY.
+houseConsignment.index.item.packageType.paragraph = This means the packaging used to store and protect the item during transit.
+houseConsignment.index.item.packageType.error.required = Enter the type of package you are using for the item
+houseConsignment.index.item.packageType.check.error.required = Enter the new package type for item {0} in house consignment {1}
+houseConsignment.index.item.packageType.placeholder = Select a package type
+
+commodityCode.title = What is the new commodity code for item {0} in house consignment {1}?
+commodityCode.heading = What is the new commodity code for item {0} in house consignment {1}?
+commodityCode.xi.paragraph = The combination of your commodity code and combined nomenclature code must be a valid code in TARIC. This is the European Union’s database for classifying goods and determining the amount of duties required.
+commodityCode.hint = This will be 6 characters long and include both letters and numbers, for example 0G23AB.
+commodityCode.error.required = Enter the new commodity code of item {0} in house consignment {1}
+commodityCode.error.invalid = The commodity code must only include letters a to z and numbers 0 to 9
+commodityCode.error.length = The commodity code must be 6 characters long
+
 
 houseConsignment.commodityCode.title = What is the new commodity code for item {0} in house consignment {1}?
 houseConsignment.commodityCode.heading = What is the new commodity code for item {0} in house consignment {1}?

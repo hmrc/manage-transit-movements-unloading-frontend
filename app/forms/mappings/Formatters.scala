@@ -16,7 +16,8 @@
 
 package forms.mappings
 
-import models.{Enumerable, Radioable, RichString}
+import models.reference.Selectable
+import models.{Enumerable, Radioable, RichString, SelectableList}
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
@@ -129,4 +130,27 @@ trait Formatters {
       override def unbind(key: String, value: A): Map[String, String] =
         baseFormatter.unbind(key, value.code)
     }
+
+  private[mappings] def selectableFormatter[T <: Selectable](
+    selectableList: SelectableList[T],
+    errorKey: String,
+    args: Seq[Any] = Seq.empty
+  ): Formatter[T] = new Formatter[T] {
+
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], T] = {
+      lazy val error = Left(Seq(FormError(key, errorKey, args)))
+      data.get(key) match {
+        case None =>
+          error
+        case Some(value) =>
+          selectableList.values.find(_.value == value) match {
+            case Some(selectable) => Right(selectable)
+            case None             => error
+          }
+      }
+    }
+
+    override def unbind(key: String, selectable: T): Map[String, String] =
+      Map(key -> selectable.value)
+  }
 }
