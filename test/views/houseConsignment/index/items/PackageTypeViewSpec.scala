@@ -19,7 +19,8 @@ package views.houseConsignment.index.items
 import forms.SelectableFormProvider
 import models.reference.PackageType
 import models.{NormalMode, SelectableList}
-import org.scalacheck.Arbitrary
+import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.houseConsignment.index.items.PackageTypeViewModel
@@ -28,9 +29,10 @@ import views.html.houseConsignment.index.items.PackageTypeView
 
 class PackageTypeViewSpec extends InputSelectViewBehaviours[PackageType] {
 
-  override def form: Form[PackageType] = new SelectableFormProvider().apply(NormalMode, prefix, SelectableList(values))
+  private val viewModel: PackageTypeViewModel =
+    arbitrary[PackageTypeViewModel].sample.value
 
-  val viewModel: PackageTypeViewModel = PackageTypeViewModel(NormalMode, itemIndex, houseConsignmentIndex)
+  override def form: Form[PackageType] = new SelectableFormProvider().apply(NormalMode, prefix, SelectableList(values))
 
   override def applyView(form: Form[PackageType]): HtmlFormat.Appendable =
     injector
@@ -39,13 +41,19 @@ class PackageTypeViewSpec extends InputSelectViewBehaviours[PackageType] {
 
   implicit override val arbitraryT: Arbitrary[PackageType] = arbitraryPackageType
 
-  override val prefix: String = "houseConsignment.index.item.packageType"
+  override val prefix: String = Gen
+    .oneOf(
+      "houseConsignment.index.item.packageType",
+      "houseConsignment.index.item.packageType.check"
+    )
+    .sample
+    .value
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(text = viewModel.title)
 
   behave like pageWithBackLink()
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(text = viewModel.heading)
 
   behave like pageWithHint("Enter the package or code, like cylinder or CY.")
 

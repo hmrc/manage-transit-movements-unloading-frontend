@@ -29,7 +29,6 @@ class PackageTypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks wi
       val viewModelProvider = new PackageTypeViewModelProvider()
       val result            = viewModelProvider.apply(NormalMode, itemIndex, houseConsignmentIndex)
 
-      result.prefix mustBe "houseConsignment.index.item.packageType"
       result.title mustBe "What type of package are you using for the item?"
       result.heading mustBe "What type of package are you using for the item?"
     }
@@ -38,7 +37,6 @@ class PackageTypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks wi
       val viewModelProvider = new PackageTypeViewModelProvider()
       val result            = viewModelProvider.apply(CheckMode, itemIndex, houseConsignmentIndex)
 
-      result.prefix mustBe "houseConsignment.index.item.packageType.check"
       result.title mustBe "What is the new package type for item 1 in house consignment 1?"
       result.heading mustBe "What is the new package type for item 1 in house consignment 1?"
     }

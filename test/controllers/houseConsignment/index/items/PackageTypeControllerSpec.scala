@@ -21,7 +21,7 @@ import forms.SelectableFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
 import pages.houseConsignment.index.items.PackageTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -29,7 +29,9 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.PackagesService
 import viewModels.houseConsignment.index.items.PackageTypeViewModel
+import viewModels.houseConsignment.index.items.PackageTypeViewModel.PackageTypeViewModelProvider
 import views.html.houseConsignment.index.items.PackageTypeView
+import org.scalacheck.Arbitrary.arbitrary
 
 import scala.concurrent.Future
 
@@ -39,7 +41,10 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val packageType2    = arbitraryPackageType.arbitrary.sample.get
   private val packageTypeList = SelectableList(Seq(packageType1, packageType2))
 
-  private val mockPreviousDocumentService: PackagesService = mock[PackagesService]
+  private val mockViewModelProvider = mock[PackageTypeViewModelProvider]
+  private val viewModel             = arbitrary[PackageTypeViewModel].sample.value
+
+  private val mockPackagesService: PackagesService = mock[PackagesService]
 
   private lazy val packageTypeRoute =
     controllers.houseConsignment.index.items.routes.PackageTypeController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode).url
@@ -47,19 +52,27 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[PackagesService]).toInstance(mockPreviousDocumentService))
+      .overrides(bind(classOf[PackageTypeViewModelProvider]).toInstance(mockViewModelProvider))
+      .overrides(bind(classOf[PackagesService]).toInstance(mockPackagesService))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockViewModelProvider)
+
+    when(mockViewModelProvider.apply(any(), any(), any())(any()))
+      .thenReturn(viewModel)
+  }
 
   private val formProvider = new SelectableFormProvider()
   private val mode         = NormalMode
 
-  private val form                    = formProvider(mode, "houseConsignment.index.item.packageType", packageTypeList)
-  val viewModel: PackageTypeViewModel = PackageTypeViewModel(mode, itemIndex, houseConsignmentIndex)
+  private val form = formProvider(mode, "houseConsignment.index.item.packageType", packageTypeList)
 
   "PackageType Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockPreviousDocumentService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
+      when(mockPackagesService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, packageTypeRoute)
@@ -76,7 +89,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockPreviousDocumentService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
+      when(mockPackagesService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
       val userAnswers = emptyUserAnswers.setValue(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex), packageType1)
       setExistingUserAnswers(userAnswers)
 
@@ -96,7 +109,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockPreviousDocumentService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
+      when(mockPackagesService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -113,7 +126,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockPreviousDocumentService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
+      when(mockPackagesService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, packageTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))

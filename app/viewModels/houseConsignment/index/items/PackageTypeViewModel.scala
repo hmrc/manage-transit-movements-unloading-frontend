@@ -21,24 +21,24 @@ import play.api.i18n.Messages
 
 import javax.inject.Inject
 
-case class PackageTypeViewModel(mode: Mode, itemIndex: Index, houseConsignmentIndex: Index) {
-
-  def prefix: String = mode match {
-    case NormalMode => "houseConsignment.index.item.packageType"
-    case CheckMode  => "houseConsignment.index.item.packageType.check"
-
-  }
-  def title(implicit messages: Messages): String = messages(s"$prefix.title", itemIndex.display, houseConsignmentIndex.display)
-
-  def heading(implicit messages: Messages): String = messages(s"$prefix.heading", itemIndex.display, houseConsignmentIndex.display)
-
-}
+case class PackageTypeViewModel(heading: String, title: String)
 
 object PackageTypeViewModel {
 
   class PackageTypeViewModelProvider @Inject() () {
 
-    def apply(mode: Mode, itemIndex: Index, houseConsignmentIndex: Index): PackageTypeViewModel =
-      new PackageTypeViewModel(mode, itemIndex, houseConsignmentIndex)
+    private def prefix(mode: Mode): String = mode match {
+      case NormalMode => "houseConsignment.index.item.packageType"
+      case CheckMode  => "houseConsignment.index.item.packageType.check"
+    }
+
+    private def title(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): String =
+      messages(s"${prefix(mode)}.title", itemIndex.display, houseConsignmentIndex.display)
+
+    private def heading(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): String =
+      messages(s"${prefix(mode)}.heading", itemIndex.display, houseConsignmentIndex.display)
+
+    def apply(mode: Mode, itemIndex: Index, houseConsignmentIndex: Index)(implicit messages: Messages): PackageTypeViewModel =
+      new PackageTypeViewModel(heading(houseConsignmentIndex, itemIndex, mode), title(houseConsignmentIndex, itemIndex, mode))
   }
 }
