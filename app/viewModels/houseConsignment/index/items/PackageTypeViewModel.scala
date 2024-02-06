@@ -16,29 +16,42 @@
 
 package viewModels.houseConsignment.index.items
 
-import models.{CheckMode, Index, Mode, NormalMode}
+import models.{Index, Mode}
 import play.api.i18n.Messages
+import viewModels.houseConsignment.index.items.ModeViewModel.ModeViewModelProvider
 
 import javax.inject.Inject
 
-case class PackageTypeViewModel(heading: String, title: String)
+case class PackageTypeViewModel(heading: String, title: String, requiredError: String)
 
 object PackageTypeViewModel {
 
   class PackageTypeViewModelProvider @Inject() () {
 
-    private def prefix(mode: Mode): String = mode match {
-      case NormalMode => "houseConsignment.index.item.packageType"
-      case CheckMode  => "houseConsignment.index.item.packageType.check"
-    }
+    private def prefix = "houseConsignment.index.item.packageType"
 
-    private def title(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): String =
-      messages(s"${prefix(mode)}.title", itemIndex.display, houseConsignmentIndex.display)
+    private def title(modeViewModelProvider: ModeViewModelProvider, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit
+      messages: Messages
+    ): String =
+      modeViewModelProvider.apply(prefix, houseConsignmentIndex, itemIndex, mode).title
 
-    private def heading(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): String =
-      messages(s"${prefix(mode)}.heading", itemIndex.display, houseConsignmentIndex.display)
+    private def heading(modeViewModelProvider: ModeViewModelProvider, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit
+      messages: Messages
+    ): String =
+      modeViewModelProvider.apply(prefix, houseConsignmentIndex, itemIndex, mode).heading
 
-    def apply(mode: Mode, itemIndex: Index, houseConsignmentIndex: Index)(implicit messages: Messages): PackageTypeViewModel =
-      new PackageTypeViewModel(heading(houseConsignmentIndex, itemIndex, mode), title(houseConsignmentIndex, itemIndex, mode))
+    private def requiredError(modeViewModelProvider: ModeViewModelProvider, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit
+      messages: Messages
+    ): String =
+      modeViewModelProvider.apply(prefix, houseConsignmentIndex, itemIndex, mode).requiredError
+
+    def apply(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode, modeViewModelProvider: ModeViewModelProvider)(implicit
+      message: Messages
+    ): PackageTypeViewModel =
+      new PackageTypeViewModel(
+        heading(modeViewModelProvider, houseConsignmentIndex, itemIndex, mode),
+        title(modeViewModelProvider, houseConsignmentIndex, itemIndex, mode),
+        requiredError(modeViewModelProvider, houseConsignmentIndex, itemIndex, mode)
+      )
   }
 }

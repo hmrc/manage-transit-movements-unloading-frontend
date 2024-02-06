@@ -20,25 +20,30 @@ import base.SpecBase
 import generators.Generators
 import models.{CheckMode, NormalMode}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import viewModels.houseConsignment.index.items.ModeViewModel.ModeViewModelProvider
 import viewModels.houseConsignment.index.items.PackageShippingMarksViewModel.PackageShippingMarksViewModelProvider
 
 class PackageShippingMarksViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "must create view model" - {
     "when NormalMode" in {
-      val viewModelProvider = new PackageShippingMarksViewModelProvider()
-      val result            = viewModelProvider.apply(hcIndex, itemIndex, NormalMode)
+      val viewModelProvider     = new PackageShippingMarksViewModelProvider()
+      val modeViewModelProvider = new ModeViewModelProvider()
 
-      result.title mustBe messages("houseConsignment.item.packageShippingMark.normalMode.title")
-      result.heading mustBe messages("houseConsignment.item.packageShippingMark.normalMode.title")
+      val result = viewModelProvider.apply(hcIndex, itemIndex, NormalMode, modeViewModelProvider)
+
+      result.title mustBe messages("houseConsignment.item.packageShippingMark.NormalMode.title")
+      result.heading mustBe messages("houseConsignment.item.packageShippingMark.NormalMode.title")
     }
 
     "when CheckMode" in {
-      val viewModelProvider = new PackageShippingMarksViewModelProvider()
-      val result            = viewModelProvider.apply(hcIndex, itemIndex, CheckMode)
+      val viewModelProvider     = new PackageShippingMarksViewModelProvider()
+      val modeViewModelProvider = new ModeViewModelProvider()
 
-      result.title mustBe messages("houseConsignment.item.packageShippingMark.checkMode.title", hcIndex.display, itemIndex.display)
-      result.heading mustBe messages("houseConsignment.item.packageShippingMark.checkMode.heading", hcIndex.display, itemIndex.display)
+      val result = viewModelProvider.apply(hcIndex, itemIndex, CheckMode, modeViewModelProvider)
+
+      result.title mustBe messages("houseConsignment.item.packageShippingMark.CheckMode.title", hcIndex.display, itemIndex.display)
+      result.heading mustBe messages("houseConsignment.item.packageShippingMark.CheckMode.heading", hcIndex.display, itemIndex.display)
     }
   }
 }

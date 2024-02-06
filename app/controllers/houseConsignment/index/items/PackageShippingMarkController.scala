@@ -26,6 +26,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewModels.houseConsignment.index.items.ModeViewModel.ModeViewModelProvider
 import viewModels.houseConsignment.index.items.PackageShippingMarksViewModel.PackageShippingMarksViewModelProvider
 import views.html.houseConsignment.index.items.PackageShippingMarkView
 
@@ -40,7 +41,8 @@ class PackageShippingMarkController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   formProvider: PackageShippingMarkFormProvider,
   viewModelProvider: PackageShippingMarksViewModelProvider,
-  view: PackageShippingMarkView
+  view: PackageShippingMarkView,
+  modeViewModelProvider: ModeViewModelProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -48,7 +50,7 @@ class PackageShippingMarkController @Inject() (
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
-        val viewModel = viewModelProvider.apply(houseConsignmentIndex, itemIndex, mode)
+        val viewModel = viewModelProvider.apply(houseConsignmentIndex, itemIndex, mode, modeViewModelProvider)
         val form      = formProvider(viewModel.requiredError)
         val preparedForm = request.userAnswers.get(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex)) match {
           case None        => form
@@ -60,7 +62,7 @@ class PackageShippingMarkController @Inject() (
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
-        val viewModel = viewModelProvider.apply(houseConsignmentIndex, itemIndex, mode)
+        val viewModel = viewModelProvider.apply(houseConsignmentIndex, itemIndex, mode, modeViewModelProvider)
         val form      = formProvider(viewModel.requiredError)
         form
           .bindFromRequest()
