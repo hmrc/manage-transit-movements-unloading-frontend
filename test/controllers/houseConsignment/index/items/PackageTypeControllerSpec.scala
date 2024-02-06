@@ -59,7 +59,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
     super.beforeEach()
     reset(mockViewModelProvider)
 
-    when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
+    when(mockViewModelProvider.apply(any(), any(), any())(any()))
       .thenReturn(viewModel)
   }
 

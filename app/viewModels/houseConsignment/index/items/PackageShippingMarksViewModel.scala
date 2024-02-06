@@ -16,9 +16,8 @@
 
 package viewModels.houseConsignment.index.items
 
-import models.{CheckMode, Index, Mode, NormalMode}
+import models.{Index, Mode}
 import play.api.i18n.Messages
-import viewModels.houseConsignment.index.items.ModeViewModel.ModeViewModelProvider
 
 import javax.inject.Inject
 
@@ -26,32 +25,15 @@ case class PackageShippingMarksViewModel(heading: String, title: String, require
 
 object PackageShippingMarksViewModel {
 
-  class PackageShippingMarksViewModelProvider @Inject() () {
+  class PackageShippingMarksViewModelProvider @Inject() extends ModeViewModelProvider {
 
-    private val prefix = "houseConsignment.index.item.packageShippingMark"
+    override def prefix = "houseConsignment.index.item.packageShippingMark"
 
-    private def heading(prefix: String, modeViewModelProvider: ModeViewModelProvider, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit
-      messages: Messages
-    ): String =
-      modeViewModelProvider.apply(prefix, houseConsignmentIndex, itemIndex, mode).heading
-
-    private def title(prefix: String, modeViewModelProvider: ModeViewModelProvider, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit
-      messages: Messages
-    ): String =
-      modeViewModelProvider.apply(prefix, houseConsignmentIndex, itemIndex, mode).title
-
-    private def requiredError(prefix: String, modeViewModelProvider: ModeViewModelProvider, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit
-      messages: Messages
-    ): String =
-      modeViewModelProvider.apply(prefix, houseConsignmentIndex, itemIndex, mode).requiredError
-
-    def apply(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode, modeViewModelProvider: ModeViewModelProvider)(implicit
-      messages: Messages
-    ): PackageShippingMarksViewModel =
+    def apply(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit message: Messages): PackageShippingMarksViewModel =
       new PackageShippingMarksViewModel(
-        heading(prefix, modeViewModelProvider, houseConsignmentIndex, itemIndex, mode),
-        title(prefix, modeViewModelProvider, houseConsignmentIndex, itemIndex, mode),
-        requiredError(prefix, modeViewModelProvider, houseConsignmentIndex, itemIndex, mode)
+        heading(mode, houseConsignmentIndex, itemIndex),
+        title(mode, houseConsignmentIndex, itemIndex),
+        requiredError(mode, houseConsignmentIndex, itemIndex)
       )
   }
 }

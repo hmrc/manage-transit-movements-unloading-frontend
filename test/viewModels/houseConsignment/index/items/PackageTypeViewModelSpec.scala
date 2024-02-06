@@ -20,26 +20,23 @@ import base.SpecBase
 import generators.Generators
 import models.{CheckMode, NormalMode}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import viewModels.houseConsignment.index.items.ModeViewModel.ModeViewModelProvider
 import viewModels.houseConsignment.index.items.PackageTypeViewModel.PackageTypeViewModelProvider
 
 class PackageTypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "must create view model" - {
     "when Normal mode" in {
-      val viewModelProvider     = new PackageTypeViewModelProvider()
-      val modeViewModelProvider = new ModeViewModelProvider()
-      val result                = viewModelProvider.apply(itemIndex, houseConsignmentIndex, NormalMode, modeViewModelProvider)
+      val viewModelProvider = new PackageTypeViewModelProvider()
+      val result            = viewModelProvider.apply(itemIndex, houseConsignmentIndex, NormalMode)
 
       result.title mustBe "What type of package are you using for the item?"
       result.heading mustBe "What type of package are you using for the item?"
     }
 
     "when Check mode" in {
-      val viewModelProvider     = new PackageTypeViewModelProvider()
-      val modeViewModelProvider = new ModeViewModelProvider()
+      val viewModelProvider = new PackageTypeViewModelProvider()
 
-      val result = viewModelProvider.apply(itemIndex, houseConsignmentIndex, CheckMode, modeViewModelProvider)
+      val result = viewModelProvider.apply(itemIndex, houseConsignmentIndex, CheckMode)
 
       result.title mustBe "What is the new package type for item 1 in house consignment 1?"
       result.heading mustBe "What is the new package type for item 1 in house consignment 1?"

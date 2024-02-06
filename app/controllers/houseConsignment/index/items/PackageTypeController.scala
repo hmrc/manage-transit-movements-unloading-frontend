@@ -29,12 +29,11 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.PackagesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.houseConsignment.index.items.ModeViewModel.ModeViewModelProvider
+import viewModels.houseConsignment.index.items.PackageTypeViewModel.PackageTypeViewModelProvider
 import views.html.houseConsignment.index.items.PackageTypeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import viewModels.houseConsignment.index.items.PackageTypeViewModel.PackageTypeViewModelProvider
 
 class PackageTypeController @Inject() (
   override val messagesApi: MessagesApi,
@@ -45,8 +44,7 @@ class PackageTypeController @Inject() (
   formProvider: SelectableFormProvider,
   service: PackagesService,
   view: PackageTypeView,
-  viewModelProvider: PackageTypeViewModelProvider,
-  modeViewModelProvider: ModeViewModelProvider
+  viewModelProvider: PackageTypeViewModelProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -59,7 +57,7 @@ class PackageTypeController @Inject() (
         service.getPackageTypes().map {
           packageTypeList =>
             val form      = formProvider(mode, prefix, packageTypeList, houseConsignmentIndex.display, itemIndex.display)
-            val viewModel = viewModelProvider.apply(houseConsignmentIndex, itemIndex, mode, modeViewModelProvider)
+            val viewModel = viewModelProvider.apply(houseConsignmentIndex, itemIndex, mode)
             val preparedForm = request.userAnswers.get(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex)) match {
               case None        => form
               case Some(value) => form.fill(value)
@@ -73,7 +71,7 @@ class PackageTypeController @Inject() (
       implicit request =>
         service.getPackageTypes().flatMap {
           packagesTypeList =>
-            val viewModel               = viewModelProvider.apply(houseConsignmentIndex, itemIndex, mode, modeViewModelProvider)
+            val viewModel               = viewModelProvider.apply(houseConsignmentIndex, itemIndex, mode)
             val form: Form[PackageType] = formProvider(mode, prefix, packagesTypeList, houseConsignmentIndex.display, itemIndex.display)
             form
               .bindFromRequest()

@@ -19,21 +19,17 @@ package viewModels.houseConsignment.index.items
 import models.{Index, Mode}
 import play.api.i18n.Messages
 
-import javax.inject.Inject
+trait ModeViewModelProvider {
 
-case class NumberOfPackagesViewModel(heading: String, title: String, requiredError: String)
+  def prefix: String
 
-object NumberOfPackagesViewModel {
+  def heading(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
+    messages(s"$prefix.${mode.toString}.heading", houseConsignmentIndex.display, itemIndex.display)
 
-  class NumberOfPackagesViewModelProvider @Inject() extends ModeViewModelProvider {
+  def title(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
+    messages(s"$prefix.${mode.toString}.title", houseConsignmentIndex.display, itemIndex.display)
 
-    override def prefix = "houseConsignment.index.item.numberOfPackages"
+  def requiredError(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
+    messages(s"$prefix.${mode.toString}.errorRequired", houseConsignmentIndex.display, itemIndex.display)
 
-    def apply(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit message: Messages): NumberOfPackagesViewModel =
-      new NumberOfPackagesViewModel(
-        heading(mode, houseConsignmentIndex, itemIndex),
-        title(mode, houseConsignmentIndex, itemIndex),
-        requiredError(mode, houseConsignmentIndex, itemIndex)
-      )
-  }
 }
