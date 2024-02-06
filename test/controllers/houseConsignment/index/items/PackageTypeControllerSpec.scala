@@ -84,7 +84,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(viewModel, form, arrivalId, packageTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex)(request, messages).toString
+        view(viewModel, form, mrn, arrivalId, packageTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -104,7 +104,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(viewModel, filledForm, arrivalId, packageTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex)(request, messages).toString
+        view(viewModel, filledForm, mrn, arrivalId, packageTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -139,7 +139,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(viewModel, boundForm, arrivalId, packageTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex)(request, messages).toString
+        view(viewModel, boundForm, mrn, arrivalId, packageTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
