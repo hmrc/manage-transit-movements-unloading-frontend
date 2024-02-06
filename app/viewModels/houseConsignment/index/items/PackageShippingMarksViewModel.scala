@@ -16,8 +16,9 @@
 
 package viewModels.houseConsignment.index.items
 
-import models.{CheckMode, Index, Mode, NormalMode}
+import models.{Index, Mode}
 import play.api.i18n.Messages
+import viewModels.ModeViewModelProvider
 
 import javax.inject.Inject
 
@@ -25,34 +26,15 @@ case class PackageShippingMarksViewModel(heading: String, title: String, require
 
 object PackageShippingMarksViewModel {
 
-  class PackageShippingMarksViewModelProvider @Inject() () {
+  class PackageShippingMarksViewModelProvider @Inject() extends ModeViewModelProvider {
 
-    private val normalMode = "houseConsignment.item.packageShippingMark.normalMode"
-    private val checkMode  = "houseConsignment.item.packageShippingMark.checkMode"
+    override def prefix = "houseConsignment.index.item.packageShippingMark"
 
-    private def heading(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): String =
-      mode match {
-        case NormalMode => messages(s"$normalMode.heading")
-        case CheckMode  => messages(s"$checkMode.heading", houseConsignmentIndex.display, itemIndex.display)
-      }
-
-    private def title(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): String =
-      mode match {
-        case NormalMode => messages(s"$normalMode.title")
-        case CheckMode  => messages(s"$checkMode.title", houseConsignmentIndex.display, itemIndex.display)
-      }
-
-    private def requiredError(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): String =
-      mode match {
-        case NormalMode => messages(s"$normalMode.error.required")
-        case CheckMode  => messages(s"$checkMode.error.required", houseConsignmentIndex.display, itemIndex.display)
-      }
-
-    def apply(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): PackageShippingMarksViewModel =
+    def apply(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit message: Messages): PackageShippingMarksViewModel =
       new PackageShippingMarksViewModel(
-        heading(houseConsignmentIndex, itemIndex, mode),
-        title(houseConsignmentIndex, itemIndex, mode),
-        requiredError(houseConsignmentIndex, itemIndex, mode)
+        heading(mode, houseConsignmentIndex, itemIndex),
+        title(mode, houseConsignmentIndex, itemIndex),
+        requiredError(mode, houseConsignmentIndex, itemIndex)
       )
   }
 }

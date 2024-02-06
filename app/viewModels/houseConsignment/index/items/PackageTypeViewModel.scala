@@ -16,29 +16,25 @@
 
 package viewModels.houseConsignment.index.items
 
-import models.{CheckMode, Index, Mode, NormalMode}
+import models.{Index, Mode}
 import play.api.i18n.Messages
+import viewModels.ModeViewModelProvider
 
 import javax.inject.Inject
 
-case class PackageTypeViewModel(heading: String, title: String)
+case class PackageTypeViewModel(heading: String, title: String, requiredError: String)
 
 object PackageTypeViewModel {
 
-  class PackageTypeViewModelProvider @Inject() () {
+  class PackageTypeViewModelProvider @Inject() extends ModeViewModelProvider {
 
-    private def prefix(mode: Mode): String = mode match {
-      case NormalMode => "houseConsignment.index.item.packageType"
-      case CheckMode  => "houseConsignment.index.item.packageType.check"
-    }
+    override def prefix = "houseConsignment.index.item.packageType"
 
-    private def title(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): String =
-      messages(s"${prefix(mode)}.title", itemIndex.display, houseConsignmentIndex.display)
-
-    private def heading(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): String =
-      messages(s"${prefix(mode)}.heading", itemIndex.display, houseConsignmentIndex.display)
-
-    def apply(mode: Mode, itemIndex: Index, houseConsignmentIndex: Index)(implicit messages: Messages): PackageTypeViewModel =
-      new PackageTypeViewModel(heading(houseConsignmentIndex, itemIndex, mode), title(houseConsignmentIndex, itemIndex, mode))
+    def apply(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit message: Messages): PackageTypeViewModel =
+      new PackageTypeViewModel(
+        heading(mode, houseConsignmentIndex, itemIndex),
+        title(mode, houseConsignmentIndex, itemIndex),
+        requiredError(mode, houseConsignmentIndex, itemIndex)
+      )
   }
 }

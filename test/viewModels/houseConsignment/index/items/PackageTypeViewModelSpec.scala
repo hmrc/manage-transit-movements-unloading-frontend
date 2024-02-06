@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewModels
+package viewModels.houseConsignment.index.items
 
 import base.SpecBase
 import generators.Generators
@@ -27,7 +27,7 @@ class PackageTypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks wi
   "must create view model" - {
     "when Normal mode" in {
       val viewModelProvider = new PackageTypeViewModelProvider()
-      val result            = viewModelProvider.apply(NormalMode, itemIndex, houseConsignmentIndex)
+      val result            = viewModelProvider.apply(itemIndex, houseConsignmentIndex, NormalMode)
 
       result.title mustBe "What type of package are you using for the item?"
       result.heading mustBe "What type of package are you using for the item?"
@@ -35,7 +35,8 @@ class PackageTypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
     "when Check mode" in {
       val viewModelProvider = new PackageTypeViewModelProvider()
-      val result            = viewModelProvider.apply(CheckMode, itemIndex, houseConsignmentIndex)
+
+      val result = viewModelProvider.apply(itemIndex, houseConsignmentIndex, CheckMode)
 
       result.title mustBe "What is the new package type for item 1 in house consignment 1?"
       result.heading mustBe "What is the new package type for item 1 in house consignment 1?"

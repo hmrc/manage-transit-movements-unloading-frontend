@@ -16,8 +16,9 @@
 
 package viewModels.houseConsignment.index.items
 
-import models.{CheckMode, Index, Mode, NormalMode}
+import models.{Index, Mode}
 import play.api.i18n.Messages
+import viewModels.ModeViewModelProvider
 
 import javax.inject.Inject
 
@@ -25,31 +26,15 @@ case class NumberOfPackagesViewModel(heading: String, title: String, requiredErr
 
 object NumberOfPackagesViewModel {
 
-  class NumberOfPackagesViewModelProvider @Inject() () {
+  class NumberOfPackagesViewModelProvider @Inject() extends ModeViewModelProvider {
 
-    private def heading(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): String =
-      mode match {
-        case NormalMode => messages("numberOfPackages.normalMode.heading")
-        case CheckMode  => messages("numberOfPackages.checkMode.heading", houseConsignmentIndex.display, itemIndex.display)
-      }
+    override def prefix = "houseConsignment.index.item.numberOfPackages"
 
-    private def title(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): String =
-      mode match {
-        case NormalMode => messages("numberOfPackages.normalMode.title")
-        case CheckMode  => messages("numberOfPackages.checkMode.title", houseConsignmentIndex.display, itemIndex.display)
-      }
-
-    private def requiredError(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): String =
-      mode match {
-        case NormalMode => messages("numberOfPackages.normalMode.error.required")
-        case CheckMode  => messages("numberOfPackages.checkMode.error.required", houseConsignmentIndex.display, itemIndex.display)
-      }
-
-    def apply(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): NumberOfPackagesViewModel =
+    def apply(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit message: Messages): NumberOfPackagesViewModel =
       new NumberOfPackagesViewModel(
-        heading(houseConsignmentIndex, itemIndex, mode),
-        title(houseConsignmentIndex, itemIndex, mode),
-        requiredError(houseConsignmentIndex, itemIndex, mode)
+        heading(mode, houseConsignmentIndex, itemIndex),
+        title(mode, houseConsignmentIndex, itemIndex),
+        requiredError(mode, houseConsignmentIndex, itemIndex)
       )
   }
 }
