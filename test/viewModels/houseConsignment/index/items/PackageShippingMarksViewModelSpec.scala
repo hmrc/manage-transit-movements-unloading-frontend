@@ -32,8 +32,8 @@ class PackageShippingMarksViewModelSpec extends SpecBase with ScalaCheckProperty
 
       val result = viewModelProvider.apply(hcIndex, itemIndex, NormalMode, modeViewModelProvider)
 
-      result.title mustBe messages("houseConsignment.item.packageShippingMark.NormalMode.title")
-      result.heading mustBe messages("houseConsignment.item.packageShippingMark.NormalMode.title")
+      result.title mustBe messages("houseConsignment.index.item.packageShippingMark.NormalMode.title")
+      result.heading mustBe messages("houseConsignment.index.item.packageShippingMark.NormalMode.heading")
     }
 
     "when CheckMode" in {
@@ -42,8 +42,8 @@ class PackageShippingMarksViewModelSpec extends SpecBase with ScalaCheckProperty
 
       val result = viewModelProvider.apply(hcIndex, itemIndex, CheckMode, modeViewModelProvider)
 
-      result.title mustBe messages("houseConsignment.item.packageShippingMark.CheckMode.title", hcIndex.display, itemIndex.display)
-      result.heading mustBe messages("houseConsignment.item.packageShippingMark.CheckMode.heading", hcIndex.display, itemIndex.display)
+      result.title mustBe messages("houseConsignment.index.item.packageShippingMark.CheckMode.title", hcIndex.display, itemIndex.display)
+      result.heading mustBe messages("houseConsignment.index.item.packageShippingMark.CheckMode.heading", hcIndex.display, itemIndex.display)
     }
   }
 }

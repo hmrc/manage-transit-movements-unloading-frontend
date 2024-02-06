@@ -28,7 +28,7 @@ object PackageShippingMarksViewModel {
 
   class PackageShippingMarksViewModelProvider @Inject() () {
 
-    private val prefix = "houseConsignment.item.packageShippingMark"
+    private val prefix = "houseConsignment.index.item.packageShippingMark"
 
     private def heading(prefix: String, modeViewModelProvider: ModeViewModelProvider, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit
       messages: Messages
