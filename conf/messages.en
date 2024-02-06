@@ -413,8 +413,7 @@ houseConsignment.index.item.packageType.NormalMode.heading = What type of packag
 houseConsignment.index.item.packageType.CheckMode.heading = What is the new package type for item {0} in house consignment {1}?
 houseConsignment.index.item.packageType.hint = Enter the package or code, like cylinder or CY.
 houseConsignment.index.item.packageType.paragraph = This means the packaging used to store and protect the item during transit.
-houseConsignment.index.item.packageType.NormalMode.errorRequired = Enter the type of package you are using for the item
-houseConsignment.index.item.packageType.CheckMode.errorRequired = Enter the type of package you are using for the item
+houseConsignment.index.item.packageType.error.required = Enter the type of package you are using for the item
 houseConsignment.index.item.packageType.check.error.required = Enter the new package type for item {0} in house consignment {1}
 houseConsignment.index.item.packageType.placeholder = Select a package type
 
