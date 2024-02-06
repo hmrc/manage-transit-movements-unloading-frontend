@@ -18,7 +18,7 @@ package forms
 
 import forms.mappings.Mappings
 import models.reference.Selectable
-import models.{CheckMode, Index, Mode, NormalMode, SelectableList}
+import models.{CheckMode, Mode, NormalMode, SelectableList}
 import play.api.data.Form
 import play.api.i18n.Messages
 
