@@ -25,20 +25,15 @@ case class PackageTypeViewModel(heading: String, title: String)
 
 object PackageTypeViewModel {
 
-  class PackageTypeViewModelProvider @Inject() () {
+  class PackageTypeViewModelProvider @Inject() () extends ViewModelProvider {
 
-    private def prefix(mode: Mode): String = mode match {
+    override def prefix(mode: Mode): String = mode match {
       case NormalMode => "houseConsignment.index.item.packageType"
       case CheckMode  => "houseConsignment.index.item.packageType.check"
     }
 
-    private def title(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): String =
-      messages(s"${prefix(mode)}.title", itemIndex.display, houseConsignmentIndex.display)
-
-    private def heading(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): String =
-      messages(s"${prefix(mode)}.heading", itemIndex.display, houseConsignmentIndex.display)
-
     def apply(mode: Mode, itemIndex: Index, houseConsignmentIndex: Index)(implicit messages: Messages): PackageTypeViewModel =
       new PackageTypeViewModel(heading(houseConsignmentIndex, itemIndex, mode), title(houseConsignmentIndex, itemIndex, mode))
+
   }
 }

@@ -25,28 +25,12 @@ case class PackageShippingMarksViewModel(heading: String, title: String, require
 
 object PackageShippingMarksViewModel {
 
-  class PackageShippingMarksViewModelProvider @Inject() () {
+  class PackageShippingMarksViewModelProvider @Inject() () extends ViewModelProvider {
 
-    private val normalMode = "houseConsignment.item.packageShippingMark.normalMode"
-    private val checkMode  = "houseConsignment.item.packageShippingMark.checkMode"
-
-    private def heading(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): String =
-      mode match {
-        case NormalMode => messages(s"$normalMode.heading")
-        case CheckMode  => messages(s"$checkMode.heading", houseConsignmentIndex.display, itemIndex.display)
-      }
-
-    private def title(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): String =
-      mode match {
-        case NormalMode => messages(s"$normalMode.title")
-        case CheckMode  => messages(s"$checkMode.title", houseConsignmentIndex.display, itemIndex.display)
-      }
-
-    private def requiredError(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): String =
-      mode match {
-        case NormalMode => messages(s"$normalMode.error.required")
-        case CheckMode  => messages(s"$checkMode.error.required", houseConsignmentIndex.display, itemIndex.display)
-      }
+    override def prefix(mode: Mode): String = mode match {
+      case CheckMode  => "houseConsignment.item.packageShippingMark.checkMode"
+      case NormalMode => "houseConsignment.item.packageShippingMark.normalMode"
+    }
 
     def apply(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): PackageShippingMarksViewModel =
       new PackageShippingMarksViewModel(

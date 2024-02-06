@@ -25,25 +25,12 @@ case class NumberOfPackagesViewModel(heading: String, title: String, requiredErr
 
 object NumberOfPackagesViewModel {
 
-  class NumberOfPackagesViewModelProvider @Inject() () {
+  class NumberOfPackagesViewModelProvider @Inject() () extends ViewModelProvider {
 
-    private def heading(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): String =
-      mode match {
-        case NormalMode => messages("numberOfPackages.normalMode.heading")
-        case CheckMode  => messages("numberOfPackages.checkMode.heading", houseConsignmentIndex.display, itemIndex.display)
-      }
-
-    private def title(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): String =
-      mode match {
-        case NormalMode => messages("numberOfPackages.normalMode.title")
-        case CheckMode  => messages("numberOfPackages.checkMode.title", houseConsignmentIndex.display, itemIndex.display)
-      }
-
-    private def requiredError(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): String =
-      mode match {
-        case NormalMode => messages("numberOfPackages.normalMode.error.required")
-        case CheckMode  => messages("numberOfPackages.checkMode.error.required", houseConsignmentIndex.display, itemIndex.display)
-      }
+    override def prefix(mode: Mode): String = mode match {
+      case CheckMode  => "numberOfPackages.checkMode"
+      case NormalMode => "numberOfPackages.normalMode"
+    }
 
     def apply(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit messages: Messages): NumberOfPackagesViewModel =
       new NumberOfPackagesViewModel(
