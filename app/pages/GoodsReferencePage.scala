@@ -25,5 +25,5 @@ final case class GoodsReferencePage(equipmentIndex: Index) extends QuestionPage[
 
   override def path: JsPath = TransportEquipmentSection(equipmentIndex).path \ "GoodsReference" \ toString
 
-  override def toString: String = "consignmentItem"
+  override def toString: String = "goodsReference"
 }

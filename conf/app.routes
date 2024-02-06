@@ -47,7 +47,6 @@ POST       /:arrivalId/transport-equipment/:equipmentIndex/items                
 GET        /:arrivalId/transport-equipment/:equipmentIndex/change-items                                              controllers.transport.equipment.GoodsReferenceController.onPageLoad(arrivalId: ArrivalId, equipmentIndex:Index, mode: Mode = CheckMode)
 POST       /:arrivalId/transport-equipment/:equipmentIndex/change-items                                              controllers.transport.equipment.GoodsReferenceController.onSubmit(arrivalId: ArrivalId,  equipmentIndex:Index, mode: Mode = CheckMode)
 
-
 GET        /:arrivalId/transport-equipment/:equipmentIndex/seal/:sealIndex/remove-seal-identification-number         controllers.ConfirmRemoveSealController.onPageLoad(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode = NormalMode)
 POST       /:arrivalId/transport-equipment/:equipmentIndex/seal/:sealIndex/remove-seal-identification-number         controllers.ConfirmRemoveSealController.onSubmit(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode = NormalMode)
 GET        /:arrivalId/transport-equipment/:equipmentIndex/seal/:sealIndex/change-remove-seal-identification-number  controllers.ConfirmRemoveSealController.onPageLoad(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode = CheckMode)
