@@ -18,6 +18,7 @@ package viewModels.houseConsignment.index.items
 
 import models.{Index, Mode}
 import play.api.i18n.Messages
+import viewModels.ModeViewModelProvider
 
 import javax.inject.Inject
 
