@@ -172,9 +172,10 @@ trait ViewModelGenerators {
 
   implicit lazy val arbitraryPackageTypeViewModel: Arbitrary[PackageTypeViewModel] = Arbitrary {
     for {
-      heading <- nonEmptyString
-      title   <- nonEmptyString
-    } yield PackageTypeViewModel(heading, title)
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+    } yield PackageTypeViewModel(heading, title, requiredError)
   }
 
   implicit lazy val arbitraryPackageShippingMarksViewModel: Arbitrary[PackageShippingMarksViewModel] = Arbitrary {

@@ -27,18 +27,20 @@ class PackageShippingMarksViewModelSpec extends SpecBase with ScalaCheckProperty
   "must create view model" - {
     "when NormalMode" in {
       val viewModelProvider = new PackageShippingMarksViewModelProvider()
-      val result            = viewModelProvider.apply(hcIndex, itemIndex, NormalMode)
 
-      result.title mustBe messages("houseConsignment.item.packageShippingMark.normalMode.title")
-      result.heading mustBe messages("houseConsignment.item.packageShippingMark.normalMode.title")
+      val result = viewModelProvider.apply(hcIndex, itemIndex, NormalMode)
+
+      result.title mustBe "What is the shipping mark?"
+      result.heading mustBe "What is the shipping mark?"
     }
 
     "when CheckMode" in {
       val viewModelProvider = new PackageShippingMarksViewModelProvider()
-      val result            = viewModelProvider.apply(hcIndex, itemIndex, CheckMode)
 
-      result.title mustBe messages("houseConsignment.item.packageShippingMark.checkMode.title", hcIndex.display, itemIndex.display)
-      result.heading mustBe messages("houseConsignment.item.packageShippingMark.checkMode.heading", hcIndex.display, itemIndex.display)
+      val result = viewModelProvider.apply(hcIndex, itemIndex, CheckMode)
+
+      result.title mustBe "What is the new shipping mark for item 1 in house consignment 1?"
+      result.heading mustBe "What is the new shipping mark for item 1 in house consignment 1?"
     }
   }
 }
