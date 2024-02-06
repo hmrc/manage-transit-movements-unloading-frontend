@@ -18,6 +18,7 @@ package models.reference
 
 import cats.Order
 import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 case class Country(code: String, description: Option[String]) extends Selectable {
 
@@ -25,6 +26,8 @@ case class Country(code: String, description: Option[String]) extends Selectable
     case Some(description) => s"$description - $code"
     case None              => code
   }
+
+  override def toSelectItem(selected: Boolean): SelectItem = SelectItem(Some(code), this.toString, selected)
 
   override val value: String = code
 }

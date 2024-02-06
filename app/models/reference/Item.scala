@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,14 @@
 
 package models.reference
 
-import cats.Order
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-case class CUSCode(code: String) extends Selectable {
+case class Item(declarationGoodsItemNumber: Int, sequenceNumber: String) extends Selectable {
+  override def toString: String = s"$declarationGoodsItemNumber - $sequenceNumber"
 
-  override def toString: String = code
-
-  override def toSelectItem(selected: Boolean): SelectItem = SelectItem(Some(code), this.toString, selected)
-
-  override val value: String = code
+  override val value: String = declarationGoodsItemNumber.toString
 }
 
-object CUSCode {
-  implicit val format: OFormat[CUSCode] = Json.format[CUSCode]
-
-  implicit val order: Order[CUSCode] = (x: CUSCode, y: CUSCode) => x.code.compareToIgnoreCase(y.code)
+object Item {
+  implicit val format: OFormat[Item] = Json.format[Item]
 }

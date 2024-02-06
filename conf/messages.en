@@ -461,3 +461,10 @@ houseConsignment.item.packageShippingMark.normalMode.error.required = Enter the 
 houseConsignment.item.packageShippingMark.error.invalid = The shipping mark must only include letters a to z and numbers 0 to 9
 houseConsignment.item.packageShippingMark.error.length = The shipping mark must be 512 characters or less
 
+transport.equipment.selectItems.title = Which item does this transport equipment apply to?
+transport.equipment.selectItems.heading = Which item does this transport equipment apply to?
+transport.equipment.selectItems.paragraph = You can only select from the items added when making the declaration.
+transport.equipment.selectItems.label = Search your {0} items.
+transport.equipment.selectItems.error.required = Select which item this transport equipment applies to
+transport.equipment.selectItems.placeholder = Select an item
+

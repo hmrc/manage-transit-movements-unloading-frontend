@@ -94,6 +94,8 @@ object ViewUtils {
 
   implicit class StringImplicits(string: String) {
     def toParagraph: Html = Html(s"""<p class="govuk-body">$string</p>""")
+
+    def toParagraphString = s"""<p class="govuk-body">$string</p>"""
   }
 
   implicit class DateInputImplicits(dateInput: DateInput)(implicit messages: Messages) extends RichDateInputSupport {
