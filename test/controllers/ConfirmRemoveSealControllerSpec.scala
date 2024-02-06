@@ -22,7 +22,7 @@ import generators.Generators
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.NewSealPage
+import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.ConfirmRemoveSealView
@@ -42,7 +42,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(NewSealPage(equipmentIndex, sealIndex), seal)
+      val userAnswers = emptyUserAnswers.setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), seal)
 
       setExistingUserAnswers(userAnswers)
 
@@ -62,7 +62,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val userAnswers = emptyUserAnswers.setValue(NewSealPage(equipmentIndex, sealIndex), seal)
+      val userAnswers = emptyUserAnswers.setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), seal)
 
       setExistingUserAnswers(userAnswers)
 
@@ -80,7 +80,7 @@ class ConfirmRemoveSealControllerSpec extends SpecBase with AppWithDefaultMockFi
     "must return a Bad Request and errors when invalid data is submitted" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(NewSealPage(equipmentIndex, sealIndex), seal)
+      val userAnswers = emptyUserAnswers.setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), seal)
 
       setExistingUserAnswers(userAnswers)
 

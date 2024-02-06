@@ -194,4 +194,10 @@ package object models {
       value.toGregorianCalendar.toZonedDateTime.toLocalDate
   }
 
+  implicit class RichOptionalJsArray(arr: Option[JsArray]) {
+
+    def length: Int = arr.getOrElse(JsArray()).value.length
+
+  }
+
 }

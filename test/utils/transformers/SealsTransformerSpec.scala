@@ -22,7 +22,7 @@ import generators.Generators
 import models.Index
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages._
+import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 
 class SealsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
@@ -35,7 +35,7 @@ class SealsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
           case (seal, i) =>
             val result = transformer.transform(seals, equipmentIndex).apply(emptyUserAnswers).futureValue
 
-            result.getValue(SealPage(equipmentIndex, Index(i))) mustBe seal.identifier
+            result.getValue(SealIdentificationNumberPage(equipmentIndex, Index(i))) mustBe seal.identifier
         }
     }
   }

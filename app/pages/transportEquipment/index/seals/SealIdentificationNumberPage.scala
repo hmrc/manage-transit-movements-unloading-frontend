@@ -14,27 +14,16 @@
  * limitations under the License.
  */
 
-package forms
+package pages.transportEquipment.index.seals
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import models.messages.UnloadingRemarksRequest
-import play.api.data.Form
-import models.Seals
+import models.Index
+import pages.QuestionPage
+import pages.sections.SealsSection
+import play.api.libs.json.JsPath
 
-class NewSealNumberFormProvider @Inject() extends Mappings {
+case class SealIdentificationNumberPage(equipmentIndex: Index, sealIndex: Index) extends QuestionPage[String] {
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("newSealNumber.error.required")
-        .verifying(
-          maxLength(UnloadingRemarksRequest.newSealNumberMaximumLength, "newSealNumber.error.length")
-        )
-        .verifying(
-          regexp(
-            Seals.sealIdRegex,
-            "newSealNumber.error.characters"
-          )
-        )
-    )
+  override def path: JsPath = SealsSection(equipmentIndex).path \ sealIndex.position \ toString
+
+  override def toString: String = "identifier"
 }

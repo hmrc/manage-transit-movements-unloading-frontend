@@ -21,6 +21,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import pages._
 import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
 import pages.houseConsignment.index.items.GrossWeightPage
+import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators {
@@ -49,10 +50,10 @@ trait UserAnswersEntryGenerators extends PageGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitrarySealNumberReference: Arbitrary[(SealPage, JsValue)] =
+  implicit lazy val arbitrarySealIdentificationNumber: Arbitrary[(SealIdentificationNumberPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[SealPage]
+        page  <- arbitrary[SealIdentificationNumberPage]
         value <- arbitrary[String].map(Json.toJson(_))
       } yield (page, value)
     }

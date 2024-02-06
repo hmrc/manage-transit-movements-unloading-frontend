@@ -14,32 +14,43 @@
  * limitations under the License.
  */
 
-package views
+package views.transportEquipment.index.seals
 
-import forms.NewSealNumberFormProvider
+import forms.SealIdentificationNumberFormProvider
 import models.NormalMode
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
 import views.behaviours.InputTextViewBehaviours
-import views.html.NewSealNumberView
+import views.html.transportEquipment.index.seals.SealIdentificationNumberView
 
-class NewSealNumberViewSpec extends InputTextViewBehaviours[String] {
+class SealIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
-  override def form: Form[String] = new NewSealNumberFormProvider()()
+  private val viewModel: SealIdentificationNumberViewModel =
+    arbitrary[SealIdentificationNumberViewModel].sample.value
+
+  override def form: Form[String] = new SealIdentificationNumberFormProvider()(prefix, Seq.empty)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[NewSealNumberView].apply(form, mrn, arrivalId, equipmentIndex, sealIndex, NormalMode, false)(fakeRequest, messages)
+    injector.instanceOf[SealIdentificationNumberView].apply(form, mrn, arrivalId, NormalMode, viewModel, equipmentIndex, sealIndex)(fakeRequest, messages)
 
-  override val prefix: String = "newSealNumber"
+  override val prefix: String = Gen
+    .oneOf(
+      "transportEquipment.index.seal.identificationNumber",
+      "transportEquipment.index.seal.identificationNumber.check"
+    )
+    .sample
+    .value
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(text = viewModel.title)
 
   behave like pageWithBackLink()
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(text = viewModel.heading)
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 

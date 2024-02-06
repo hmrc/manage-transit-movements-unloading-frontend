@@ -18,7 +18,7 @@ package utils.transformers
 
 import generated.SealType04
 import models.{Index, UserAnswers}
-import pages.SealPage
+import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,7 +32,7 @@ class SealsTransformer @Inject() (implicit ec: ExecutionContext) extends PageTra
           userAnswers =>
             val sealIndex: Index = Index(i)
             val pipeline: UserAnswers => Future[UserAnswers] =
-              set(SealPage(equipmentIndex, sealIndex), identifier)
+              set(SealIdentificationNumberPage(equipmentIndex, sealIndex), identifier)
 
             pipeline(userAnswers)
         }

@@ -22,4 +22,5 @@ object Constants {
   lazy val grossWeightDecimalPlaces: Int     = 6
   lazy val grossWeightCharacterCount: Int    = 16
   lazy val maxPackageShippingMarkLength: Int = 512
+  lazy val maxSealIdentificationLength: Int  = 20
 }

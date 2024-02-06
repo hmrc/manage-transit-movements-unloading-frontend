@@ -18,7 +18,6 @@ package models.reference
 
 import cats.Order
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 case class CUSCode(code: String) extends Selectable {
 
