@@ -18,8 +18,6 @@ package models
 
 object Seals {
 
-  val maxSeals     = 9999
-  val sealIdLength = 20
-  val sealIdRegex  = "^[a-zA-Z0-9&'@/.\\%? -]*$"
+  val sealIdRegex = "^[a-zA-Z0-9&'@/.\\%? -]*$"
 
 }
