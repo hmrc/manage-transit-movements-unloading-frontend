@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package pages.sections
+package pages.transportEquipment.index
 
-import models.Index
-import play.api.libs.json.{JsArray, JsPath}
+import models.reference.Item
+import pages.behaviours.PageBehaviours
 
-case class SealsSection(equipmentIndex: Index) extends Section[JsArray] {
+class GoodsReferencePageSpec extends PageBehaviours {
 
-  override def path: JsPath = TransportEquipmentSection(equipmentIndex).path \ toString
+  "GoodsReferencePage" - {
 
-  override def toString: String = "Seal"
+    beRetrievable[Item](GoodsReferencePage(equipmentIndex))
+
+    beSettable[Item](GoodsReferencePage(equipmentIndex))
+
+    beRemovable[Item](GoodsReferencePage(equipmentIndex))
+  }
 }

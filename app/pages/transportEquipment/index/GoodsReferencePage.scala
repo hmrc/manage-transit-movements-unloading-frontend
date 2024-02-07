@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transportEquipment.index
 
 import models.Index
 import models.reference.Item
+import pages.QuestionPage
 import pages.sections.TransportEquipmentSection
 import play.api.libs.json.JsPath
 
-final case class GoodsReferencePage(equipmentIndex: Index) extends QuestionPage[Item] {
+case class GoodsReferencePage(equipmentIndex: Index) extends QuestionPage[Item] {
 
   override def path: JsPath = TransportEquipmentSection(equipmentIndex).path \ "GoodsReference" \ toString
 
