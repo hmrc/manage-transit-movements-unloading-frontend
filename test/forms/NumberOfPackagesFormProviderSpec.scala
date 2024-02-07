@@ -27,8 +27,8 @@ import scala.util.matching.Regex
 class NumberOfPackagesFormProviderSpec extends FieldBehaviours with Generators {
 
   private val maxLength   = UnloadingRemarksRequest.numberOfPackagesLength
-  private val invalidKey  = "numberOfPackages.error.nonNumeric"
-  private val requiredKey = "numberOfPackages.error.required"
+  private val invalidKey  = "houseConsignment.index.item.numberOfPackages.error.nonNumeric"
+  private val requiredKey = "houseConsignment.index.item.numberOfPackages.error.required"
 
   val form: Form[String] = new NumberOfPackagesFormProvider()(requiredKey)
   val fieldName          = "value"
