@@ -82,25 +82,35 @@ dateGoodsUnloaded.error.min.date = The date must be on or after {0}
 dateGoodsUnloaded.error.max.date = The date must be today or in the past
 dateGoodsUnloaded.change.hidden = the date when the goods were unloaded
 
-departureMeansOfTransport.identificationNumber.title = What is the identification number for the new departure means of transport?
-departureMeansOfTransport.identificationNumber.heading = What is the identification number for the new departure means of transport?
+departureMeansOfTransport.identificationNumber.NormalMode.title = What is the identification number for this vehicle?
+departureMeansOfTransport.identificationNumber.CheckMode.title = What is the identification number for the new departure means of transport?
+departureMeansOfTransport.identificationNumber.NormalMode.heading = What is the identification number for this vehicle?
+departureMeansOfTransport.identificationNumber.CheckMode.heading = What is the identification number for the new departure means of transport?
 departureMeansOfTransport.identificationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
 departureMeansOfTransport.identificationNumber.checkYourAnswersLabel = What is the identification number for the new vehicle?
-departureMeansOfTransport.identificationNumber.error.required = Enter the identification number for the new departure means of transport
+departureMeansOfTransport.identificationNumber.NormalMode.error.required = Enter the identification number for this vehicle
+departureMeansOfTransport.identificationNumber.CheckMode.error.required = Enter the identification number for the new departure means of transport
 departureMeansOfTransport.identificationNumber.error.length = The identification number must be 35 characters or less
 departureMeansOfTransport.identificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
 departureMeansOfTransport.identificationNumber.change.hidden = the identification number for the new vehicle
 
-departureMeansOfTransport.country.title = What country is the new departure means of transport registered to?
-departureMeansOfTransport.country.heading = What country is the new departure means of transport registered to?
+departureMeansOfTransport.country.NormalMode.title = What country is the new departure means of transport registered to?
+departureMeansOfTransport.country.CheckMode.title = What country is this vehicle registered to?
+departureMeansOfTransport.country.NormalMode.heading = What country is the new departure means of transport registered to?
+departureMeansOfTransport.country.CheckMode.heading = What country is this vehicle registered to?
 departureMeansOfTransport.country.checkYourAnswersLabel = What country is the new departure means of transport registered to?
-departureMeansOfTransport.country.error.required = Select the country the new departure means of transport is registered to
+departureMeansOfTransport.country.NormalMode.error.required = Select the country the new departure means of transport is registered to
+departureMeansOfTransport.country.CheckMode.error.required = Select the country the vehicle is registered to
 departureMeansOfTransport.country.placeHolder = Select a country
 departureMeansOfTransport.country.hint  = Enter the country or code, like Austria or AT.
 
-departureMeansOfTransport.identification.heading = Which identification do you want to use for the new departure means of transport?
+departureMeansOfTransport.identification.NormalMode.title = Which identification do you want to use for the departure means of transport?
+departureMeansOfTransport.identification.CheckMode.title = Which identification do you want to use for the new departure means of transport?
+departureMeansOfTransport.identification.NormalMode.heading = Which identification do you want to use for the departure means of transport?
+departureMeansOfTransport.identification.CheckMode.heading = Which identification do you want to use for the new departure means of transport?
 departureMeansOfTransport.identification.title = Which identification do you want to use for the new departure means of transport?
-departureMeansOfTransport.identification.error.required = Select which identification you want to use for the new departure means of transport
+departureMeansOfTransport.identification.error.NormalMode.required = Select which identification you want to use for the departure means of transport
+departureMeansOfTransport.identification.error.CheckMode.required = Select which identification you want to use for the new departure means of transport
 departureMeansOfTransport.identification.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
 
 houseConsignment.item.grossWeight.title = What is the new gross weight of item {0} in house consignment {1}?
