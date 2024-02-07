@@ -16,53 +16,8 @@
 
 package models
 
-import com.lucidchart.open.xtract.{__, XmlReader}
-import com.lucidchart.open.xtract.XmlReader._
-import cats.syntax.all._
-
-import scala.xml.NodeSeq
-
-case class Packages(
-  marksAndNumberPackage: Option[String],
-  kindOfPackage: String,
-  numberOfPackages: Option[Int],
-  numberOfPieces: Option[Int]
-)
-
 object Packages {
 
   val marksAndNumberPackageLength = 42
   val kindOfPackageLength         = 3
-
-  implicit val xmlReader: XmlReader[Packages] = (
-    (__ \ "MarNumOfPacGS21").read[String].optional,
-    (__ \ "KinOfPacGS23").read[String],
-    (__ \ "NumOfPacGS24").read[Int].optional,
-    (__ \ "NumOfPieGS25").read[Int].optional
-  ).mapN(apply)
-
-  implicit def writes: XMLWrites[Packages] = XMLWrites[Packages] {
-    packages =>
-      <PACGS2>
-        {
-        packages.marksAndNumberPackage.fold(NodeSeq.Empty) {
-          marksAndNumberPackage =>
-            <MarNumOfPacGS21>{marksAndNumberPackage}</MarNumOfPacGS21>
-              <MarNumOfPacGS21LNG>{LanguageCodeEnglish.code}</MarNumOfPacGS21LNG>
-        }
-      }
-        <KinOfPacGS23>{packages.kindOfPackage}</KinOfPacGS23>
-        {
-        packages.numberOfPackages.fold(NodeSeq.Empty) {
-          numberOfPackages =>
-            <NumOfPacGS24>{numberOfPackages}</NumOfPacGS24>
-        } ++
-          packages.numberOfPieces.fold(NodeSeq.Empty) {
-            numberOfPieces =>
-              <NumOfPieGS25>{numberOfPieces}</NumOfPieGS25>
-          }
-      }
-
-      </PACGS2>
-  }
 }
