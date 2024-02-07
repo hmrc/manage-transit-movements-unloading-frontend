@@ -20,6 +20,8 @@
 @import viewModels.components.InputSelectViewModel._
 @import views.html.components.{Button, ErrorSummary, InputSelect}
 @import controllers.departureMeansOfTransport.routes
+@import viewModels.departureTransportMeans.CountryViewModel
+
 
 @this(
     mainTemplate: MainTemplate,
@@ -29,10 +31,10 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[Country], countryList: Seq[Selectable], mrn: MovementReferenceNumber, arrivalId: ArrivalId,transportMeansIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Country], countryList: Seq[Selectable], mrn: MovementReferenceNumber, arrivalId: ArrivalId,transportMeansIndex: Index, mode: Mode, viewModel: CountryViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("departureMeansOfTransport.country.title"),
+    title = viewModel.title,
     showBackLink = true
 ) {
 
@@ -44,7 +46,7 @@
         @select(
             field = form("value"),
             selectType = OrdinarySelect(
-                heading = messages("departureMeansOfTransport.country.heading"),
+                heading = viewModel.heading,
                 caption = Some(messages("site.caption", mrn.toString))
             ),
             selectItems = countryList.toSelectItems(form.value),

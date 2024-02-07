@@ -100,7 +100,7 @@ class IE043DataSpec extends SpecBase {
           |                        ]
           |                    }
           |                ],
-          |                "DepartureTransportMeans": [
+          |                "departureTransportMeans": [
           |                    {
           |                        "sequenceNumber": "dtm-1",
           |                        "typeOfIdentification": "4",
@@ -224,7 +224,7 @@ class IE043DataSpec extends SpecBase {
           |                                "country": "DE"
           |                            }
           |                        },
-          |                        "DepartureTransportMeans": [
+          |                        "departureTransportMeans": [
           |                            {
           |                                "sequenceNumber": "56",
           |                                "typeOfIdentification": "2",

@@ -26,6 +26,7 @@ import play.api.mvc._
 import repositories.SessionRepository
 import services.ReferenceDataService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewModels.departureTransportMeans.CountryViewModel.CountryViewModelProvider
 import views.html.departureMeansOfTransport.CountryView
 
 import javax.inject.Inject
@@ -38,7 +39,8 @@ class CountryController @Inject() (
   formProvider: DepartureMeansOfTransportCountryFormProvider,
   referenceDataService: ReferenceDataService,
   val controllerComponents: MessagesControllerComponents,
-  view: CountryView
+  view: CountryView,
+  countryViewModelProvider: CountryViewModelProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -48,7 +50,8 @@ class CountryController @Inject() (
       implicit request =>
         referenceDataService.getCountries() map {
           countries =>
-            val form = formProvider(countries)
+            val viewModel = countryViewModelProvider.apply(mode)
+            val form      = formProvider(countries)
             val preparedForm = request.userAnswers.get(CountryPage(transportMeansIndex)) match {
               case None => form
               case Some(value) =>
@@ -58,7 +61,7 @@ class CountryController @Inject() (
                 }
                 form.fill(country)
             }
-            Ok(view(preparedForm, countries, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode))
+            Ok(view(preparedForm, countries, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode, viewModel))
         }
     }
 
@@ -67,11 +70,13 @@ class CountryController @Inject() (
       implicit request =>
         referenceDataService.getCountries() flatMap {
           countries =>
-            val form = formProvider(countries)
+            val viewModel = countryViewModelProvider.apply(mode)
+            val form      = formProvider(countries)
             form
               .bindFromRequest()
               .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, countries, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode))),
+                formWithErrors =>
+                  Future.successful(BadRequest(view(formWithErrors, countries, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode, viewModel))),
                 value =>
                   for {
                     updatedAnswers <- Future

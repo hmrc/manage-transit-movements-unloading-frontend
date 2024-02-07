@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-package viewModels.DepartureTransportMeans
+package viewModels.departureTransportMeans
 
-import models.{Index, Mode}
+import models.Mode
 import play.api.i18n.Messages
 import viewModels.ModeViewModelProvider
 
 import javax.inject.Inject
 
-case class IdentificationViewModel(heading: String, title: String, requiredError: String)
+case class IdentificationNumberViewModel(heading: String, title: String, requiredError: String)
 
-object IdentificationViewModel {
+object IdentificationNumberViewModel {
 
-  class IdentificationViewModelProvider @Inject() extends ModeViewModelProvider {
+  class IdentificationNumberViewModelProvider @Inject() extends ModeViewModelProvider {
 
-    override def prefix = "departureMeansOfTransport.identification"
+    override def prefix = "departureMeansOfTransport.identificationNumber"
 
-    def apply(mode: Mode, transportMeansIndex: Index)(implicit message: Messages): IdentificationViewModel =
-      new IdentificationViewModel(
-        heading(mode, transportMeansIndex),
-        title(mode, transportMeansIndex),
-        requiredError(mode, transportMeansIndex)
+    def apply(mode: Mode)(implicit message: Messages): IdentificationNumberViewModel =
+      new IdentificationNumberViewModel(
+        heading(mode),
+        title(mode),
+        requiredError(mode)
       )
   }
 }

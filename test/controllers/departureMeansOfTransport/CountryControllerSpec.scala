@@ -31,15 +31,21 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.ReferenceDataService
+import viewModels.departureTransportMeans.CountryViewModel
 import views.html.departureMeansOfTransport.CountryView
+import org.scalacheck.Arbitrary.arbitrary
+import viewModels.departureTransportMeans.CountryViewModel.CountryViewModelProvider
 
 import scala.concurrent.Future
 
 class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  val formProvider                                       = new DepartureMeansOfTransportCountryFormProvider()
-  private val country: String                            = Country("GB", Some("United Kingdom")).code
-  val countries: Seq[Country]                            = Seq(Country("GB", Some("United Kingdom")))
+  val formProvider                        = new DepartureMeansOfTransportCountryFormProvider()
+  private val country: String             = Country("GB", Some("United Kingdom")).code
+  val countries: Seq[Country]             = Seq(Country("GB", Some("United Kingdom")))
+  private val mockViewModelProvider       = mock[CountryViewModelProvider]
+  private val viewModel: CountryViewModel = arbitrary[CountryViewModel].sample.value
+
   val form: Form[Country]                                = formProvider(countries)
   val mockReferenceDataService: ReferenceDataService     = mock[ReferenceDataService]
   private val mode                                       = NormalMode
@@ -48,12 +54,15 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockReferenceDataService)
+    reset(mockViewModelProvider)
+    when(mockViewModelProvider.apply(any())(any())).thenReturn(viewModel)
   }
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind[ReferenceDataService].toInstance(mockReferenceDataService))
+      .overrides(bind[CountryViewModelProvider].toInstance(mockViewModelProvider))
 
   "departureMeansOfTransportCountry Controller" - {
 
@@ -73,9 +82,8 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       val view = injector.instanceOf[CountryView]
 
       status(result) mustEqual OK
-
       contentAsString(result) mustEqual
-        view(form, countries, mrn, arrivalId, index, mode)(request, messages).toString
+        view(form, countries, mrn, arrivalId, index, mode, viewModel)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -98,7 +106,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, countries, mrn, arrivalId, index, mode)(request, messages).toString
+        view(filledForm, countries, mrn, arrivalId, index, mode, viewModel)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -136,7 +144,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       val view = injector.instanceOf[CountryView]
 
       contentAsString(result) mustEqual
-        view(boundForm, countries, mrn, arrivalId, index, mode)(request, messages).toString
+        view(boundForm, countries, mrn, arrivalId, index, mode, viewModel)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

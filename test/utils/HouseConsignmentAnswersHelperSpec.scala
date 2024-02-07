@@ -64,7 +64,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                  |    "Consignment" : {
                  |      "HouseConsignment" : [
                  |        {
-                 |         "DepartureTransportMeans" : [
+                 |         "departureTransportMeans" : [
                  |             {
                  |                 "sequenceNumber" : "56",
                  |                 "typeOfIdentification" : "${vehicleIdentificationType.identificationType}",
@@ -110,7 +110,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                  |    "Consignment" : {
                  |      "HouseConsignment" : [
                  |        {
-                 |         "DepartureTransportMeans" : [
+                 |         "departureTransportMeans" : [
                  |             {
                  |                 "sequenceNumber" : "56",
                  |                 "typeOfIdentification" : "${vehicleIdentificationType.identificationType}",
@@ -151,7 +151,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                  |    "Consignment" : {
                  |      "HouseConsignment" : [
                  |        {
-                 |         "DepartureTransportMeans" : [
+                 |         "departureTransportMeans" : [
                  |             {
                  |                 "sequenceNumber" : "56",
                  |                 "nationality" : "GB"
@@ -191,7 +191,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                  |    "Consignment" : {
                  |      "HouseConsignment" : [
                  |        {
-                 |         "DepartureTransportMeans" : [
+                 |         "departureTransportMeans" : [
                  |             {
                  |                 "sequenceNumber" : "56",
                  |                 "identificationNumber" : "$vehicleIdentificationNumber"
@@ -223,7 +223,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                  |    "Consignment" : {
                  |      "HouseConsignment" : [
                  |        {
-                 |         "DepartureTransportMeans" : [
+                 |         "departureTransportMeans" : [
                  |             {
                  |                 "sequenceNumber" : "56",
                  |                 "typeOfIdentification" : "${vehicleIdentificationType.identificationType}",
@@ -310,7 +310,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                  |    "Consignment" : {
                  |      "HouseConsignment" : [
                  |        {
-                 |         "DepartureTransportMeans" : [
+                 |         "departureTransportMeans" : [
                  |             {
                  |                 "sequenceNumber" : "56",
                  |                 "typeOfIdentification" : "${vehicleIdentificationType.identificationType}",
@@ -352,7 +352,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                  |    "Consignment" : {
                  |      "HouseConsignment" : [
                  |        {
-                 |         "DepartureTransportMeans" : [
+                 |         "departureTransportMeans" : [
                  |             {
                  |                 "sequenceNumber" : "56",
                  |                 "nationality" : "GB"

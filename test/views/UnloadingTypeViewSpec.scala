@@ -27,8 +27,8 @@ import views.html.UnloadingTypeView
 class UnloadingTypeViewSpec extends RadioViewBehaviours[UnloadingType] {
 
   override val getValue: UnloadingType => String = _.toString
-
-  override def form: Form[UnloadingType] = new EnumerableFormProvider()(prefix)
+  private val mode                               = NormalMode
+  override def form: Form[UnloadingType]         = new EnumerableFormProvider()(mode, prefix)
 
   override def applyView(form: Form[UnloadingType]): HtmlFormat.Appendable =
     injector.instanceOf[UnloadingTypeView].apply(form, mrn, UnloadingType.values, arrivalId, NormalMode)(fakeRequest, messages)

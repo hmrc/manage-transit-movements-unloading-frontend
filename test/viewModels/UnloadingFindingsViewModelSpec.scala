@@ -50,7 +50,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             """
             |{
             |   "Consignment" : {
-            |       "DepartureTransportMeans" : [
+            |       "departureTransportMeans" : [
             |           {
             |               "sequenceNumber" : "dtm-1",
             |               "typeOfIdentification" : "4",
@@ -86,7 +86,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             """
               |{
               |   "Consignment" : {
-              |       "DepartureTransportMeans" : [
+              |       "departureTransportMeans" : [
               |           {
               |               "sequenceNumber" : "dtm-1",
               |               "typeOfIdentification" : "4",
@@ -313,7 +313,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             |                   "identificationNumber" : "csgee1",
             |                   "name" : "John Smith"
             |               },
-            |               "DepartureTransportMeans" : [
+            |               "departureTransportMeans" : [
             |                   {
             |                       "sequenceNumber" : "56",
             |                       "typeOfIdentification" : "2",
@@ -373,7 +373,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             |                   "identificationNumber" : "csgee1",
             |                   "name" : "John Smith"
             |               },
-            |               "DepartureTransportMeans" : [
+            |               "departureTransportMeans" : [
             |                   {
             |                       "sequenceNumber" : "56",
             |                       "typeOfIdentification" : "2",
@@ -405,7 +405,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             |                   "identificationNumber" : "csgee1",
             |                   "name" : "John Smith"
             |               },
-            |               "DepartureTransportMeans" : [
+            |               "departureTransportMeans" : [
             |                   {
             |                       "sequenceNumber" : "56",
             |                       "typeOfIdentification" : "2",

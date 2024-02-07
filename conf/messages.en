@@ -94,13 +94,13 @@ departureMeansOfTransport.identificationNumber.error.length = The identification
 departureMeansOfTransport.identificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
 departureMeansOfTransport.identificationNumber.change.hidden = the identification number for the new vehicle
 
-departureMeansOfTransport.country.NormalMode.title = What country is the new departure means of transport registered to?
-departureMeansOfTransport.country.CheckMode.title = What country is this vehicle registered to?
-departureMeansOfTransport.country.NormalMode.heading = What country is the new departure means of transport registered to?
-departureMeansOfTransport.country.CheckMode.heading = What country is this vehicle registered to?
+departureMeansOfTransport.country.NormalMode.title = What country is this vehicle registered to?
+departureMeansOfTransport.country.CheckMode.title = What country is the new departure means of transport registered to?
+departureMeansOfTransport.country.NormalMode.heading = What country is this vehicle registered to?
+departureMeansOfTransport.country.CheckMode.heading = What country is the new departure means of transport registered to?
 departureMeansOfTransport.country.checkYourAnswersLabel = What country is the new departure means of transport registered to?
-departureMeansOfTransport.country.NormalMode.error.required = Select the country the new departure means of transport is registered to
-departureMeansOfTransport.country.CheckMode.error.required = Select the country the vehicle is registered to
+departureMeansOfTransport.country.NormalMode.error.required = Select the country the vehicle is registered to
+departureMeansOfTransport.country.CheckMode.error.required = Select the country the new departure means of transport is registered to
 departureMeansOfTransport.country.placeHolder = Select a country
 departureMeansOfTransport.country.hint  = Enter the country or code, like Austria or AT.
 

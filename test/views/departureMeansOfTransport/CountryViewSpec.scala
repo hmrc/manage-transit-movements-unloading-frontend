@@ -21,17 +21,20 @@ import generators.Generators
 import models.NormalMode
 import models.reference.Country
 import org.scalacheck.Arbitrary
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import viewModels.departureTransportMeans.CountryViewModel
 import views.behaviours.InputSelectViewBehaviours
 import views.html.departureMeansOfTransport.CountryView
 
 class CountryViewSpec extends InputSelectViewBehaviours[Country] with Generators {
 
-  override def form: Form[Country] = new DepartureMeansOfTransportCountryFormProvider()(values)
+  override def form: Form[Country]        = new DepartureMeansOfTransportCountryFormProvider()(values)
+  private val viewModel: CountryViewModel = arbitrary[CountryViewModel].sample.value
 
   override def applyView(form: Form[Country]): HtmlFormat.Appendable =
-    injector.instanceOf[CountryView].apply(form, values, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[CountryView].apply(form, values, mrn, arrivalId, index, NormalMode, viewModel)(fakeRequest, messages)
 
   override val prefix: String = "departureMeansOfTransport.country"
 
@@ -43,11 +46,11 @@ class CountryViewSpec extends InputSelectViewBehaviours[Country] with Generators
     Country("ES", Some("Spain"))
   )
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(text = viewModel.title)
 
   behave like pageWithBackLink()
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(text = viewModel.heading)
 
   behave like pageWithSelect()
 

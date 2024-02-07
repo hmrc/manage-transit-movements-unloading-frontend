@@ -30,6 +30,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.MeansOfTransportIdentificationTypesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewModels.departureTransportMeans.IdentificationViewModel.IdentificationViewModelProvider
 import views.html.departureMeansOfTransport.IdentificationView
 
 import javax.inject.Inject
@@ -43,25 +44,26 @@ class IdentificationController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: IdentificationView,
   navigator: Navigator,
-  service: MeansOfTransportIdentificationTypesService
+  service: MeansOfTransportIdentificationTypesService,
+  identificationViewModelProvider: IdentificationViewModelProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(identificationTypes: Seq[TransportMeansIdentification]): Form[TransportMeansIdentification] =
-    formProvider[TransportMeansIdentification]("departureTransportMeans.identification", identificationTypes)
+  private def form(mode: Mode, identificationTypes: Seq[TransportMeansIdentification]): Form[TransportMeansIdentification] =
+    formProvider[TransportMeansIdentification](mode, "departureTransportMeans.identification", identificationTypes)
 
   def onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
         service.getMeansOfTransportIdentificationTypes(request.userAnswers.get(InlandModePage), transportMeansIndex).flatMap {
           identifiers =>
+            val viewModel = identificationViewModelProvider.apply(mode)
             val preparedForm = request.userAnswers.get(TransportMeansIdentificationPage(transportMeansIndex)) match {
-              case None        => form(identifiers)
-              case Some(value) => form(identifiers).fill(value)
+              case None        => form(mode, identifiers)
+              case Some(value) => form(mode, identifiers).fill(value)
             }
-
-            Future.successful(Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, transportMeansIndex, identifiers, mode)))
+            Future.successful(Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, transportMeansIndex, identifiers, mode, viewModel)))
         }
     }
 
@@ -70,12 +72,13 @@ class IdentificationController @Inject() (
       implicit request =>
         service.getMeansOfTransportIdentificationTypes(request.userAnswers.get(InlandModePage), transportMeansIndex).flatMap {
           identifiers =>
-            form(identifiers)
+            val viewModel = identificationViewModelProvider.apply(mode)
+            form(mode, identifiers)
               .bindFromRequest()
               .fold(
                 formWithErrors =>
                   Future.successful(
-                    BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, transportMeansIndex, identifiers, mode))
+                    BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, transportMeansIndex, identifiers, mode, viewModel))
                   ),
                 value => redirect(value, transportMeansIndex, mode)
               )
