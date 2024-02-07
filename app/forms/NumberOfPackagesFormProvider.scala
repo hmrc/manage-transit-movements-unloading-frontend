@@ -29,8 +29,8 @@ class NumberOfPackagesFormProvider @Inject() extends Mappings {
       "value" -> text(requiredError)
         .verifying(
           forms.StopOnFirstFail[String](
-            regexp(UnloadingRemarksRequest.numericRegex, "numberOfPackages.error.nonNumeric"),
-            maxLength(UnloadingRemarksRequest.numberOfPackagesLength, "numberOfPackages.error.outOfRange")
+            regexp(UnloadingRemarksRequest.numericRegex, "houseConsignment.index.item.numberOfPackages.error.nonNumeric"),
+            maxLength(UnloadingRemarksRequest.numberOfPackagesLength, "houseConsignment.index.item.numberOfPackages.error.outOfRange")
           )
         )
     )
