@@ -19,7 +19,7 @@ package base
 import controllers.actions._
 import models.P5.ArrivalMessageType.UnloadingPermission
 import models.P5._
-import models.{MovementReferenceNumber, UserAnswers}
+import models.UserAnswers
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -49,22 +49,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
     when(mockUnloadingPermissionMessageService.getUnloadingPermissionMessage(any())(any(), any()))
       .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), ArrivalMessageType.UnloadingPermission, "foo/bar"))))
-
-    when(mockUnloadingPermissionMessageService.getUnloadingPermission(any())(any(), any())).thenReturn(
-      Future.successful(
-        Some(
-          IE043Data(
-            MessageData(
-              LocalDateTime.now(),
-              TransitOperation = TransitOperation(MovementReferenceNumber("99IT9876AB889012096")),
-              TraderAtDestination = TraderAtDestination("identificationNumber"),
-              Consignment = Consignment(None, None, List.empty),
-              CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("referenceNumber")
-            )
-          )
-        )
-      )
-    )
 
   }
 

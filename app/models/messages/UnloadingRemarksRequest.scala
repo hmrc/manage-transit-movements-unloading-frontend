@@ -16,24 +16,7 @@
 
 package models.messages
 
-import cats.syntax.all._
-import com.lucidchart.open.xtract.XmlReader.strictReadSeq
-import com.lucidchart.open.xtract.{__, XmlReader}
-import models.XMLWrites._
-import models.{Seals, TraderAtDestination, XMLWrites}
-
 import scala.util.matching.Regex
-import scala.xml.{Elem, Node, NodeSeq}
-
-case class UnloadingRemarksRequest(
-  meta: Meta,
-  header: Header,
-  traderAtDestination: TraderAtDestination,
-  presentationOffice: String,
-  unloadingRemark: Remarks,
-  resultOfControl: Seq[ResultsOfControl],
-  seals: Option[Seals]
-)
 
 object UnloadingRemarksRequest {
 
@@ -53,45 +36,4 @@ object UnloadingRemarksRequest {
   val numericRegex: Regex                           = "^[0-9]*$".r
   val commodityCodeLength                           = 6
   val combinedNomenclatureCodeLength                = 2
-
-  implicit def writes: XMLWrites[UnloadingRemarksRequest] = XMLWrites[UnloadingRemarksRequest] {
-    unloadingRemarksRequest =>
-      val UnloadingRemarksRequest(meta, header, traderAtDestination, presentationOffice, unloadingRemark, resultOfControl, seals) = unloadingRemarksRequest
-
-      val parentNode: Node = <CC044A></CC044A>
-
-      val childNodes: NodeSeq = {
-        meta.toXml ++
-          header.toXml ++
-          traderAtDestination.toXml ++
-          <CUSOFFPREOFFRES><RefNumRES1>{presentationOffice}</RefNumRES1></CUSOFFPREOFFRES> ++
-          unloadingRemarkNode(unloadingRemark) ++
-          resultOfControlNode(resultOfControl) ++
-          seals.map(_.toXml).getOrElse(NodeSeq.Empty)
-      }
-
-      Elem(parentNode.prefix, parentNode.label, parentNode.attributes, parentNode.scope, parentNode.child.isEmpty, parentNode.child ++ childNodes: _*)
-  }
-
-  implicit val reads: XmlReader[UnloadingRemarksRequest] =
-    (__.read[Meta],
-     (__ \ "HEAHEA").read[Header],
-     (__ \ "TRADESTRD").read[TraderAtDestination],
-     (__ \ "CUSOFFPREOFFRES" \ "RefNumRES1").read[String],
-     (__ \ "UNLREMREM").read[Remarks],
-     (__ \ "RESOFCON534").read(strictReadSeq[ResultsOfControl]),
-     (__ \ "SEAINFSLI").read[Seals].optional
-    ) mapN apply
-
-  private def resultOfControlNode(resultsOfControl: Seq[ResultsOfControl]): NodeSeq =
-    resultsOfControl.flatMap {
-      case y: ResultsOfControlOther           => y.toXml
-      case y: ResultsOfControlDifferentValues => y.toXml
-    }
-
-  private def unloadingRemarkNode(unloadingRemark: Remarks): NodeSeq = unloadingRemark match {
-    case remarksConform: RemarksConform                   => remarksConform.toXml
-    case remarksConformWithSeals: RemarksConformWithSeals => remarksConformWithSeals.toXml
-    case remarksNonConform: RemarksNonConform             => remarksNonConform.toXml
-  }
 }

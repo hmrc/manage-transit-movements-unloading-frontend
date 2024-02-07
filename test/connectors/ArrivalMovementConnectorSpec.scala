@@ -19,7 +19,6 @@ package connectors
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock._
 import generators.Generators
-import models.MovementReferenceNumber
 import models.P5._
 import play.api.inject.guice.GuiceApplicationBuilder
 
@@ -76,54 +75,6 @@ class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtu
               ArrivalMessageType.ArrivalNotification,
               "movements/arrivals/63498209a2d89ad8/messages/634982098f02f00a"
             )
-          )
-        )
-
-        result mustBe expectedResult
-      }
-    }
-
-    "getUnloadingPermission" - {
-
-      val expectedResponse =
-        """
-          |{
-          |  "body": {
-          |   "n1:CC043C": {
-          |     "preparationDateAndTime": "2022-11-10T15:32:51.459Z",
-          |     "TransitOperation": {
-          |       "MRN": "99IT9876AB88901209"
-          |     },
-          |     "Consignment": {
-          |       "HouseConsignment": []
-          |     },
-          |     "TraderAtDestination": {
-          |       "identificationNumber": "AB123"
-          |     },
-          |     "CustomsOfficeOfDestinationActual": {
-          |       "referenceNumber": "GB0008"
-          |     }
-          |   }
-          | }
-          |}
-          |""".stripMargin
-
-      "should return Message" in {
-        server.stubFor(
-          get("/path/url")
-            .withHeader("Accept", containing("application/vnd.hmrc.2.0+json"))
-            .willReturn(okJson(expectedResponse))
-        )
-
-        val result = connector.getUnloadingPermission("path/url").futureValue
-
-        val expectedResult = IE043Data(
-          MessageData(
-            preparationDateAndTime = LocalDateTime.parse("2022-11-10T15:32:51.459Z", DateTimeFormatter.ISO_DATE_TIME),
-            TransitOperation = TransitOperation(MovementReferenceNumber("99IT9876AB88901209")),
-            Consignment = Consignment(None, None, List.empty),
-            CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("GB0008"),
-            TraderAtDestination = TraderAtDestination("AB123")
           )
         )
 

@@ -20,7 +20,6 @@ import base.SpecBase
 import connectors.ArrivalMovementConnector
 import generated._
 import generators.Generators
-import models.MovementReferenceNumber
 import models.P5.ArrivalMessageType.{ArrivalNotification, RejectionFromOfficeOfDestination, UnloadingPermission}
 import models.P5._
 import org.mockito.Mockito.{reset, when}
@@ -84,38 +83,6 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
         when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
 
         service.getMessageHead(arrivalId).futureValue mustBe Some(rejectionFromOfficeOfDestination)
-      }
-    }
-
-    "getUnloadingPermissionJson" - {
-
-      "must return latest unloading permission message" in {
-
-        val messageMetaData = Messages(List(unloadingPermission1, arrivalNotification, unloadingPermission3, unloadingPermission2))
-
-        val message = IE043Data(
-          MessageData(
-            preparationDateAndTime = LocalDateTime.now(),
-            TransitOperation = TransitOperation(MovementReferenceNumber("23GB123")),
-            Consignment = Consignment(None, None, List.empty),
-            CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("GB0008"),
-            TraderAtDestination = TraderAtDestination("AB123")
-          )
-        )
-
-        when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
-        when(mockConnector.getUnloadingPermission(unloadingPermission1.path)).thenReturn(Future.successful(message))
-
-        service.getUnloadingPermission(arrivalId).futureValue mustBe Some(message)
-      }
-
-      "must return none when there is no unloading permission message" in {
-
-        val messageMetaData = Messages(List(arrivalNotification))
-
-        when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
-
-        service.getUnloadingPermission(arrivalId).futureValue mustBe None
       }
     }
 
