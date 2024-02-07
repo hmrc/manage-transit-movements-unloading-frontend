@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.departureTransportMeans
+package controllers.departureMeansOfTransport
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
@@ -33,11 +33,11 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.MeansOfTransportIdentificationTypesService
-import views.html.departureTransportMeans.TransportMeansIdentificationView
+import views.html.departureMeansOfTransport.IdentificationView
 
 import scala.concurrent.Future
 
-class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
+class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val identificationType1 = TransportMeansIdentification("40", "IATA flight number")
   private val identificationType2 = TransportMeansIdentification("41", "Registration Number of the Aircraft")
@@ -48,7 +48,7 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
   private val mode         = NormalMode
 
   private lazy val identificationRoute =
-    controllers.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(arrivalId, index, mode).url
+    controllers.departureMeansOfTransport.routes.IdentificationController.onPageLoad(arrivalId, index, mode).url
 
   private val mockMeansOfTransportIdentificationTypesService: MeansOfTransportIdentificationTypesService =
     mock[MeansOfTransportIdentificationTypesService]
@@ -77,7 +77,7 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[TransportMeansIdentificationView]
+      val view = injector.instanceOf[IdentificationView]
 
       status(result) mustEqual OK
 
@@ -100,7 +100,7 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
 
       val filledForm = form.bind(Map("value" -> identificationType1.code))
 
-      val view = injector.instanceOf[TransportMeansIdentificationView]
+      val view = injector.instanceOf[IdentificationView]
 
       status(result) mustEqual OK
 
@@ -141,7 +141,7 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[TransportMeansIdentificationView]
+      val view = injector.instanceOf[IdentificationView]
 
       status(result) mustEqual BAD_REQUEST
 

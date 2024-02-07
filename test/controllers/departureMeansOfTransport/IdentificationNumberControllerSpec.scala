@@ -26,20 +26,20 @@ import org.mockito.Mockito.when
 import pages.departureMeansOfTransport.VehicleIdentificationNumberPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.departureMeansOfTransport.VehicleIdentificationNumberView
+import views.html.departureMeansOfTransport.IdentificationNumberView
 
 import scala.concurrent.Future
 
-class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider = new VehicleIdentificationNumberFormProvider()
   private val form         = formProvider()
   private val mode         = NormalMode
 
   lazy val vehicleIdentificationNumberRoute: String =
-    controllers.departureMeansOfTransport.routes.VehicleIdentificationNumberController.onPageLoad(arrivalId, index, mode).url
+    controllers.departureMeansOfTransport.routes.IdentificationNumberController.onPageLoad(arrivalId, index, mode).url
 
-  "VehicleIdentificationNumber Controller" - {
+  "departureMeansOfTransport.identificationNumber Controller" - {
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()
@@ -50,7 +50,7 @@ class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDef
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[VehicleIdentificationNumberView]
+      val view = injector.instanceOf[IdentificationNumberView]
 
       status(result) mustEqual OK
 
@@ -70,7 +70,7 @@ class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDef
 
       val filledForm = form.bind(Map("value" -> "answer"))
 
-      val view = injector.instanceOf[VehicleIdentificationNumberView]
+      val view = injector.instanceOf[IdentificationNumberView]
 
       status(result) mustEqual OK
 
@@ -107,7 +107,7 @@ class VehicleIdentificationNumberControllerSpec extends SpecBase with AppWithDef
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[VehicleIdentificationNumberView]
+      val view = injector.instanceOf[IdentificationNumberView]
 
       contentAsString(result) mustEqual
         view(boundForm, mrn, arrivalId, index, mode)(request, messages).toString

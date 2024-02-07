@@ -25,8 +25,8 @@ class DepartureMeansOfTransportCountryFormProvider @Inject() extends Mappings {
 
   def apply(countries: Seq[Country]): Form[Country] =
     Form(
-      "value" -> text("departureMeansOfTransportCountry.error.required")
-        .verifying("departureMeansOfTransportCountry.error.required", value => countries.exists(_.code == value))
+      "value" -> text("departureMeansOfTransport.country.error.required")
+        .verifying("departureMeansOfTransport.country.error.required", value => countries.exists(_.code == value))
         .transform[Country](value => countries.find(_.code == value).get, _.code)
     )
 }

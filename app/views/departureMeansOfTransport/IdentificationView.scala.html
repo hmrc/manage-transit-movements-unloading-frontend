@@ -30,11 +30,11 @@
 @(form: Form[TransportMeansIdentification], mrn: MovementReferenceNumber, arrivalId: ArrivalId, transportMeansIndex: Index, identifiers: Seq[TransportMeansIdentification], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-   title = messages("departureTransportMeans.identification.title"),
+   title = messages("departureMeansOfTransport.identification.title"),
    showBackLink = true
 ) {
 
-   @formHelper(action = controllers.departureTransportMeans.routes.TransportMeansIdentificationController.onSubmit(arrivalId, transportMeansIndex, mode), Symbol("autoComplete") -> "off") {
+   @formHelper(action = controllers.departureMeansOfTransport.routes.IdentificationController.onSubmit(arrivalId, transportMeansIndex, mode), Symbol("autoComplete") -> "off") {
 
       @errorSummary(form.errors)
 
@@ -42,8 +42,8 @@
          field = form("value"),
          radioType = RadioWithAdditionalHtml(
                caption = Some(s"MRN: $mrn"),
-               heading = messages("departureTransportMeans.identification.heading"),
-               additionalHtml = messages("departureTransportMeans.identification.paragraph").toParagraph
+               heading = messages("departureMeansOfTransport.identification.heading"),
+               additionalHtml = messages("departureMeansOfTransport.identification.paragraph").toParagraph
          ),
          radioItems = fieldId => identifiers.toRadioItems(fieldId, form.value)
       )

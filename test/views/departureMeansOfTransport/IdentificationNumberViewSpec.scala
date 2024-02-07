@@ -22,16 +22,16 @@ import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.InputTextViewBehaviours
-import views.html.departureMeansOfTransport.VehicleIdentificationNumberView
+import views.html.departureMeansOfTransport.IdentificationNumberView
 
-class VehicleIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
+class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   override def form: Form[String] = new VehicleIdentificationNumberFormProvider()()
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[VehicleIdentificationNumberView].apply(form, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[IdentificationNumberView].apply(form, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "vehicleIdentificationNumber"
+  override val prefix: String = "departureMeansOfTransport.identificationNumber"
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 

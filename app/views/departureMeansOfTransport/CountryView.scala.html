@@ -32,7 +32,7 @@
 @(form: Form[Country], countryList: Seq[Selectable], mrn: MovementReferenceNumber, arrivalId: ArrivalId,transportMeansIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("departureMeansOfTransportCountry.title"),
+    title = messages("departureMeansOfTransport.country.title"),
     showBackLink = true
 ) {
 
@@ -44,12 +44,12 @@
         @select(
             field = form("value"),
             selectType = OrdinarySelect(
-                heading = messages("departureMeansOfTransportCountry.heading"),
+                heading = messages("departureMeansOfTransport.country.heading"),
                 caption = Some(messages("site.caption", mrn.toString))
             ),
             selectItems = countryList.toSelectItems(form.value),
-            placeholder = messages("departureMeansOfTransportCountry.placeholder"),
-            hint = Some(messages("departureMeansOfTransportCountry.hint"))
+            placeholder = messages("departureMeansOfTransport.country.placeholder"),
+            hint = Some(messages("departureMeansOfTransport.country.hint"))
         )
 
         @button(attributes = Map("id" -> "submit"))

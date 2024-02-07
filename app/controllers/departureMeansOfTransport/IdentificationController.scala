@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.departureTransportMeans
+package controllers.departureMeansOfTransport
 
 import controllers.actions._
 import forms.EnumerableFormProvider
-import models.{ArrivalId, Index, Mode}
 import models.departureTransportMeans.TransportMeansIdentification
 import models.requests.MandatoryDataRequest
+import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
 import pages.departureMeansOfTransport.TransportMeansIdentificationPage
 import pages.equipment.InlandModePage
@@ -30,18 +30,18 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.MeansOfTransportIdentificationTypesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.departureTransportMeans.TransportMeansIdentificationView
+import views.html.departureMeansOfTransport.IdentificationView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TransportMeansIdentificationController @Inject() (
+class IdentificationController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: TransportMeansIdentificationView,
+  view: IdentificationView,
   navigator: Navigator,
   service: MeansOfTransportIdentificationTypesService
 )(implicit ec: ExecutionContext)

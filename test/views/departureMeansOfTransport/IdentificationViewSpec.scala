@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.departureTransportMeans
+package views.departureMeansOfTransport
 
 import forms.EnumerableFormProvider
 import models.NormalMode
@@ -23,16 +23,16 @@ import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import views.behaviours.EnumerableViewBehaviours
-import views.html.departureTransportMeans.TransportMeansIdentificationView
+import views.html.departureMeansOfTransport.IdentificationView
 
-class TransportMeansIdentificationViewSpec extends EnumerableViewBehaviours[TransportMeansIdentification] {
+class IdentificationViewSpec extends EnumerableViewBehaviours[TransportMeansIdentification] {
 
   override def form: Form[TransportMeansIdentification] = new EnumerableFormProvider()(prefix, values)
 
   override def applyView(form: Form[TransportMeansIdentification]): HtmlFormat.Appendable =
-    injector.instanceOf[TransportMeansIdentificationView].apply(form, mrn, arrivalId, index, values, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[IdentificationView].apply(form, mrn, arrivalId, index, values, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "departureTransportMeans.identification"
+  override val prefix: String = "departureMeansOfTransport.identification"
 
   override def radioItems(fieldId: String, checkedValue: Option[TransportMeansIdentification] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)

@@ -33,7 +33,7 @@ class CountryViewSpec extends InputSelectViewBehaviours[Country] with Generators
   override def applyView(form: Form[Country]): HtmlFormat.Appendable =
     injector.instanceOf[CountryView].apply(form, values, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "departureMeansOfTransportCountry"
+  override val prefix: String = "departureMeansOfTransport.country"
 
   implicit override val arbitraryT: Arbitrary[Country] = arbitraryCountry
 

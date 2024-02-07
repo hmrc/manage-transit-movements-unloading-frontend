@@ -22,8 +22,8 @@ import play.api.data.FormError
 
 class DepartureMeansOfTransportCountryFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "departureMeansOfTransportCountry.error.required"
-  val lengthKey   = "departureMeansOfTransportCountry.error.length"
+  val requiredKey = "departureMeansOfTransport.country.error.required"
+  val lengthKey   = "departureMeansOfTransport.country.error.length"
   val maxLength   = 2
 
   val countries: Seq[Country] = Seq(Country("AD", Some("Andorra")))
