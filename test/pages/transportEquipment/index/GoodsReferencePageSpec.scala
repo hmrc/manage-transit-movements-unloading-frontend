@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transportEquipment.index
 
+import models.reference.Item
 import pages.behaviours.PageBehaviours
 
-class SealPageSpec extends PageBehaviours {
+class GoodsReferencePageSpec extends PageBehaviours {
 
-  "NewSealNumberPage" - {
+  "GoodsReferencePage" - {
 
-    beRetrievable[String](SealPage(equipmentIndex, sealIndex))
+    beRetrievable[Item](GoodsReferencePage(equipmentIndex))
 
-    beSettable[String](SealPage(equipmentIndex, sealIndex))
+    beSettable[Item](GoodsReferencePage(equipmentIndex))
 
-    beRemovable[String](SealPage(equipmentIndex, sealIndex))
+    beRemovable[Item](GoodsReferencePage(equipmentIndex))
   }
 }

@@ -14,27 +14,23 @@
  * limitations under the License.
  */
 
-package viewModels.houseConsignment.index.items
+package viewModels.transportEquipment.index.seals
 
-import models.{Index, Mode}
+import models.Mode
 import play.api.i18n.Messages
 import viewModels.ModeViewModelProvider
 
 import javax.inject.Inject
 
-case class PackageTypeViewModel(heading: String, title: String, requiredError: String)
+case class SealIdentificationNumberViewModel(heading: String, title: String, requiredError: String)
 
-object PackageTypeViewModel {
+object SealIdentificationNumberViewModel {
 
-  class PackageTypeViewModelProvider @Inject() extends ModeViewModelProvider {
+  class SealIdentificationNumberViewModelProvider @Inject() extends ModeViewModelProvider {
 
-    override val prefix = "houseConsignment.index.item.packageType"
+    override val prefix = "transportEquipment.index.seal.identificationNumber"
 
-    def apply(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit message: Messages): PackageTypeViewModel =
-      new PackageTypeViewModel(
-        heading(mode, houseConsignmentIndex, itemIndex),
-        title(mode, houseConsignmentIndex, itemIndex),
-        requiredError(mode, houseConsignmentIndex, itemIndex)
-      )
+    def apply(mode: Mode)(implicit messages: Messages): SealIdentificationNumberViewModel =
+      new SealIdentificationNumberViewModel(heading(mode), title(mode), requiredError(mode))
   }
 }

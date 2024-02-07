@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package views.transportEquipment
+package views.transportEquipment.index
 
 import forms.SelectableFormProvider
-import generated.{ConsignmentType05, GoodsReferenceType02, TransportEquipmentType05}
+import generated.{CC043CType, ConsignmentType05, GoodsReferenceType02, TransportEquipmentType05}
 import models.reference.Item
 import models.{Index, NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.transportEquipment.GoodsReferenceViewModel
+import viewModels.transportEquipment.index.GoodsReferenceViewModel
 import views.behaviours.InputSelectViewBehaviours
-import views.html.houseConsignment.index.items.GoodsReferenceView
+import views.html.transportEquipment.index.GoodsReferenceView
 
 class GoodsReferenceViewSpec extends InputSelectViewBehaviours[Item] {
 
@@ -33,7 +33,7 @@ class GoodsReferenceViewSpec extends InputSelectViewBehaviours[Item] {
 
   override lazy val values: Seq[Item] = Seq(Item(123, "seq1"))
 
-  val ie043Answers = emptyUserAnswers.ie043Data.copy(Consignment =
+  val ie043Answers: CC043CType = emptyUserAnswers.ie043Data.copy(Consignment =
     Some(
       ConsignmentType05(
         TransportEquipment = Seq(TransportEquipmentType05("seq1", None, 0, Nil, Seq(GoodsReferenceType02("seq1", 123)))),

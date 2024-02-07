@@ -19,8 +19,8 @@ package pages.sections
 import models.Index
 import play.api.libs.json.{JsArray, JsPath}
 
-case class NewSealSection(equipmentIndex: Index, sealIndex: Index) extends Section[JsArray] {
+case class SealSection(equipmentIndex: Index, sealIndex: Index) extends Section[JsArray] {
 
-  override def path: JsPath = NewSealsSection(equipmentIndex).path \ sealIndex.position
+  override def path: JsPath = SealsSection(equipmentIndex).path \ sealIndex.position
 
 }

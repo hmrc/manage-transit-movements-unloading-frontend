@@ -21,6 +21,7 @@ import org.scalacheck.Arbitrary
 import pages._
 import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
 import pages.houseConsignment.index.items.GrossWeightPage
+import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 
 trait PageGenerators {
 
@@ -39,8 +40,8 @@ trait PageGenerators {
   implicit lazy val arbitraryCanSealsBeReadPage: Arbitrary[CanSealsBeReadPage.type] =
     Arbitrary(CanSealsBeReadPage)
 
-  implicit lazy val arbitrarySealNumberPage: Arbitrary[SealPage] =
-    Arbitrary(SealPage(Index(0), Index(0)))
+  implicit lazy val arbitrarySealNumberPage: Arbitrary[SealIdentificationNumberPage] =
+    Arbitrary(SealIdentificationNumberPage(Index(0), Index(0)))
 
   implicit lazy val arbitraryGrossWeightAmountPage: Arbitrary[GrossWeightPage] =
     Arbitrary(GrossWeightPage(Index(0), Index(0)))

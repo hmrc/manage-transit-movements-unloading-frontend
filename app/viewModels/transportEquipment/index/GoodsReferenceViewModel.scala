@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewModels.transportEquipment
+package viewModels.transportEquipment.index
 
 import models.reference.Item
 import models.{SelectableList, UserAnswers}

@@ -25,6 +25,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import pages.houseConsignment.index.items.GrossWeightPage
+import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import utils.Format._
 
 class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -149,7 +150,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
-              .nextPage(SealPage(equipmentIndex, sealIndex), mode, answers)
+              .nextPage(SealIdentificationNumberPage(equipmentIndex, sealIndex), mode, answers)
               .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
         }
       }
@@ -231,7 +232,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator
-                .nextPage(SealPage(equipmentIndex, sealIndex), mode, answers)
+                .nextPage(SealIdentificationNumberPage(equipmentIndex, sealIndex), mode, answers)
                 .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
           }
         }

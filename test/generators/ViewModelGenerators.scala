@@ -27,6 +27,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import viewModels.UnloadingFindingsViewModel
 import viewModels.houseConsignment.index.items.{NumberOfPackagesViewModel, PackageShippingMarksViewModel, PackageTypeViewModel}
 import viewModels.sections.Section
+import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
 
 trait ViewModelGenerators {
   self: Generators =>
@@ -183,5 +184,13 @@ trait ViewModelGenerators {
       title         <- nonEmptyString
       requiredError <- nonEmptyString
     } yield PackageShippingMarksViewModel(heading, title, requiredError)
+  }
+
+  implicit lazy val arbitrarySealIdentificationNumberViewModel: Arbitrary[SealIdentificationNumberViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+    } yield SealIdentificationNumberViewModel(heading, title, requiredError)
   }
 }

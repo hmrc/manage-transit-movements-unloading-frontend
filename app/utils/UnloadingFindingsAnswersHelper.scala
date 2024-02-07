@@ -22,6 +22,7 @@ import models.{Index, Link, UserAnswers}
 import pages._
 import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
 import pages.sections._
+import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.i18n.Messages
 import services.ReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
@@ -121,7 +122,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
   )
 
   def transportEquipmentSeal(equipmentIndex: Index, sealIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = SealPage(equipmentIndex, sealIndex),
+    page = SealIdentificationNumberPage(equipmentIndex, sealIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.sealIdentifier",
     args = sealIndex.display,

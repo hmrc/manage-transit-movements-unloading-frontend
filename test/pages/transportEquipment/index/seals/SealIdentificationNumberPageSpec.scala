@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transportEquipment.index.seals
 
-import models.Index
-import pages.sections.{NewSealsSection, SealsSection}
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-final case class SealPage(equipmentIndex: Index, sealIndex: Index) extends QuestionPage[String] {
+class SealIdentificationNumberPageSpec extends PageBehaviours {
 
-  override def path: JsPath = SealsSection(equipmentIndex).path \ sealIndex.position \ toString
+  "NewSealNumberPage" - {
 
-  override def toString: String = "identifier"
-}
+    beRetrievable[String](SealIdentificationNumberPage(equipmentIndex, sealIndex))
 
-final case class NewSealPage(equipmentIndex: Index, sealIndex: Index) extends QuestionPage[String] {
+    beSettable[String](SealIdentificationNumberPage(equipmentIndex, sealIndex))
 
-  override def path: JsPath = NewSealsSection(equipmentIndex).path \ sealIndex.position \ toString
-
-  override def toString: String = "identifier"
-
+    beRemovable[String](SealIdentificationNumberPage(equipmentIndex, sealIndex))
+  }
 }

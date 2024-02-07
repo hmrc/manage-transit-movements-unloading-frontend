@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.transport.equipment
+package controllers.transportEquipment.index
 
 import controllers.actions._
 import forms.SelectableFormProvider
 import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
-import pages.GoodsReferencePage
+import pages.transportEquipment.index.GoodsReferencePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.transportEquipment.GoodsReferenceViewModel
-import views.html.houseConsignment.index.items.GoodsReferenceView
+import viewModels.transportEquipment.index.GoodsReferenceViewModel
+import views.html.transportEquipment.index.GoodsReferenceView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
