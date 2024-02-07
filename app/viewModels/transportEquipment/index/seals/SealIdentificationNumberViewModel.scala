@@ -16,8 +16,9 @@
 
 package viewModels.transportEquipment.index.seals
 
-import models.{CheckMode, Mode, NormalMode}
+import models.Mode
 import play.api.i18n.Messages
+import viewModels.ModeViewModelProvider
 
 import javax.inject.Inject
 
@@ -25,21 +26,9 @@ case class SealIdentificationNumberViewModel(heading: String, title: String, req
 
 object SealIdentificationNumberViewModel {
 
-  class SealIdentificationNumberViewModelProvider @Inject() () {
+  class SealIdentificationNumberViewModelProvider @Inject() extends ModeViewModelProvider {
 
-    private def prefix(mode: Mode): String = mode match {
-      case NormalMode => "transportEquipment.index.seal.identificationNumber"
-      case CheckMode  => "transportEquipment.index.seal.identificationNumber.check"
-    }
-
-    private def title(mode: Mode)(implicit messages: Messages): String =
-      messages(s"${prefix(mode)}.title")
-
-    private def heading(mode: Mode)(implicit messages: Messages): String =
-      messages(s"${prefix(mode)}.heading")
-
-    private def requiredError(mode: Mode)(implicit messages: Messages): String =
-      messages(s"${prefix(mode)}.error.required")
+    override val prefix = "transportEquipment.index.seal.identificationNumber"
 
     def apply(mode: Mode)(implicit messages: Messages): SealIdentificationNumberViewModel =
       new SealIdentificationNumberViewModel(heading(mode), title(mode), requiredError(mode))

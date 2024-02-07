@@ -28,7 +28,7 @@ object PackageTypeViewModel {
 
   class PackageTypeViewModelProvider @Inject() extends ModeViewModelProvider {
 
-    override def prefix = "houseConsignment.index.item.packageType"
+    override val prefix = "houseConsignment.index.item.packageType"
 
     def apply(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit message: Messages): PackageTypeViewModel =
       new PackageTypeViewModel(

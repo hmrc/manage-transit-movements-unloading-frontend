@@ -38,8 +38,8 @@ class SealIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   override val prefix: String = Gen
     .oneOf(
-      "transportEquipment.index.seal.identificationNumber",
-      "transportEquipment.index.seal.identificationNumber.check"
+      "transportEquipment.index.seal.identificationNumber.NormalMode",
+      "transportEquipment.index.seal.identificationNumber.CheckMode"
     )
     .sample
     .value

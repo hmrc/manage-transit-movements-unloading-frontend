@@ -47,8 +47,8 @@ class SealIdentificationNumberController @Inject() (
     with I18nSupport {
 
   private def prefix(mode: Mode): String = mode match {
-    case NormalMode => "transportEquipment.index.seal.identificationNumber"
-    case CheckMode  => "transportEquipment.index.seal.identificationNumber.check"
+    case NormalMode => "transportEquipment.index.seal.identificationNumber.NormalMode"
+    case CheckMode  => "transportEquipment.index.seal.identificationNumber.CheckMode"
   }
 
   private def form(mode: Mode, equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[_]) =
