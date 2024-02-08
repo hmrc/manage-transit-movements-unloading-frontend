@@ -62,7 +62,18 @@ class PackageTypeController @Inject() (
               case None        => form
               case Some(value) => form.fill(value)
             }
-            Ok(view(viewModel, preparedForm, request.userAnswers.id, packageTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex))
+            Ok(
+              view(viewModel,
+                   preparedForm,
+                   request.userAnswers.mrn,
+                   request.userAnswers.id,
+                   packageTypeList.values,
+                   mode,
+                   houseConsignmentIndex,
+                   itemIndex,
+                   packageIndex
+              )
+            )
         }
     }
 
@@ -79,7 +90,16 @@ class PackageTypeController @Inject() (
                 formWithErrors =>
                   Future.successful(
                     BadRequest(
-                      view(viewModel, formWithErrors, request.userAnswers.id, packagesTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex)
+                      view(viewModel,
+                           formWithErrors,
+                           request.userAnswers.mrn,
+                           request.userAnswers.id,
+                           packagesTypeList.values,
+                           mode,
+                           houseConsignmentIndex,
+                           itemIndex,
+                           packageIndex
+                      )
                     )
                   ),
                 value => redirect(value, houseConsignmentIndex, itemIndex, packageIndex, mode)

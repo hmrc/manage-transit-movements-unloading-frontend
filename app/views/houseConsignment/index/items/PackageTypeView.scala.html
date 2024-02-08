@@ -32,7 +32,7 @@
     button: Button
 )
 
-@(viewModel: PackageTypeViewModel,form: Form[PackageType], arrivalId: ArrivalId, packageTypes: Seq[PackageType], mode: Mode,houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index)(implicit request: Request[_], messages: Messages)
+@(viewModel: PackageTypeViewModel,form: Form[PackageType],mrn: MovementReferenceNumber, arrivalId: ArrivalId, packageTypes: Seq[PackageType], mode: Mode,houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = viewModel.title,
@@ -47,7 +47,7 @@
                 field = form("value"),
                 selectType = SelectWithAdditionalHtml(
                     heading = viewModel.heading,
-                    caption = Some(messages("site.caption", itemIndex.display)),
+                    caption = Some(messages("site.caption", mrn.toString)),
                 additionalHtml = messages("houseConsignment.index.item.packageType.paragraph").toParagraph
             ),
                 hint = Some(messages("houseConsignment.index.item.packageType.hint")),
