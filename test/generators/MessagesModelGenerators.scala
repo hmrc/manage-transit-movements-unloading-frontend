@@ -398,6 +398,34 @@ trait MessagesModelGenerators {
       )
     }
 
+  implicit lazy val arbitrarySupportingDocumentType02: Arbitrary[SupportingDocumentType02] =
+    Arbitrary {
+      for {
+        sequenceNumber          <- Gen.alphaNumStr
+        typeValue               <- Gen.alphaNumStr
+        referenceNumber         <- Gen.alphaNumStr
+        complementOfInformation <- Gen.option(Gen.alphaNumStr)
+      } yield SupportingDocumentType02(
+        sequenceNumber = sequenceNumber,
+        typeValue = typeValue,
+        referenceNumber = referenceNumber,
+        complementOfInformation = complementOfInformation
+      )
+    }
+
+  implicit lazy val arbitraryTransportDocumentType02: Arbitrary[TransportDocumentType02] =
+    Arbitrary {
+      for {
+        sequenceNumber  <- Gen.alphaNumStr
+        typeValue       <- Gen.alphaNumStr
+        referenceNumber <- Gen.alphaNumStr
+      } yield TransportDocumentType02(
+        sequenceNumber = sequenceNumber,
+        typeValue = typeValue,
+        referenceNumber = referenceNumber
+      )
+    }
+
   implicit lazy val arbitraryXMLGregorianCalendar: Arbitrary[XMLGregorianCalendar] =
     Arbitrary {
       Gen.const(XMLCalendar("2022-07-15"))

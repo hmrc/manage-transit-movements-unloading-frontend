@@ -25,6 +25,7 @@ import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import viewModels.UnloadingFindingsViewModel
+import viewModels.documents.DocumentReferenceNumberViewModel
 import viewModels.houseConsignment.index.items.{NumberOfPackagesViewModel, PackageShippingMarksViewModel, PackageTypeViewModel}
 import viewModels.sections.Section
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
@@ -193,4 +194,13 @@ trait ViewModelGenerators {
       requiredError <- nonEmptyString
     } yield SealIdentificationNumberViewModel(heading, title, requiredError)
   }
+
+  implicit lazy val arbitraryDocumentReferenceNumberViewModel: Arbitrary[DocumentReferenceNumberViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+    } yield DocumentReferenceNumberViewModel(heading, title, requiredError)
+  }
+
 }

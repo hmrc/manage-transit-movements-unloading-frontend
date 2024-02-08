@@ -475,3 +475,15 @@ transport.equipment.selectItems.label = Search your {0} items.
 transport.equipment.selectItems.error.required = Select which item this transport equipment applies to
 transport.equipment.selectItems.placeholder = Select an item
 
+document.referenceNumber.NormalMode.title = What is the document’s reference number?
+document.referenceNumber.CheckMode.title = What is the document’s new reference number?
+document.referenceNumber.NormalMode.heading = What is the document’s reference number?
+document.referenceNumber.CheckMode.heading = What is the document’s new reference number?
+document.referenceNumber.hint = This can be up to 70 characters long and include both letters and numbers.
+document.referenceNumber.checkYourAnswersLabel = What is the new document reference number?
+document.referenceNumber.NormalMode.error.required = Enter the document’s reference number
+document.referenceNumber.CheckMode.error.required = Enter the document’s new reference number
+document.referenceNumber.NormalMode.error.length = The reference number must be 70 characters or less
+document.referenceNumber.CheckMode.error.length = The reference number must be 70 characters or less
+document.referenceNumber.NormalMode.error.invalidCharacters = The reference number must only include letters a to z and numbers 0 to 9
+document.referenceNumber.CheckMode.error.invalidCharacters = The reference number must only include letters a to z and numbers 0 to 9

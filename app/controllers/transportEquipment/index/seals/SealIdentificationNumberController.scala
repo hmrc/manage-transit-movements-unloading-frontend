@@ -78,7 +78,7 @@ class SealIdentificationNumberController @Inject() (
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index, sealIndex: Index): Action[AnyContent] =
     actions
-      .getStatus(arrivalId)
+      .requireData(arrivalId)
       .async {
         implicit request =>
           val viewModel = viewModelProvider.apply(mode)

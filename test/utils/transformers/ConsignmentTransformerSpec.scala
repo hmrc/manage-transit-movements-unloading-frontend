@@ -36,6 +36,8 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
 
   private lazy val mockTransportEquipmentTransformer      = mock[TransportEquipmentTransformer]
   private lazy val mockDepartureTransportMeansTransformer = mock[DepartureTransportMeansTransformer]
+  private lazy val mockSupportingDocumentTransformer      = mock[SupportingDocumentTransformer]
+  private lazy val mockTransportDocumentTransformer       = mock[TransportDocumentTransformer]
   private lazy val mockHouseConsignmentTransformer        = mock[HouseConsignmentTransformer]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -44,6 +46,8 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
       .overrides(
         bind[TransportEquipmentTransformer].toInstance(mockTransportEquipmentTransformer),
         bind[DepartureTransportMeansTransformer].toInstance(mockDepartureTransportMeansTransformer),
+        bind[SupportingDocumentTransformer].toInstance(mockSupportingDocumentTransformer),
+        bind[TransportDocumentTransformer].toInstance(mockTransportDocumentTransformer),
         bind[HouseConsignmentTransformer].toInstance(mockHouseConsignmentTransformer)
       )
 
@@ -53,6 +57,14 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
 
   private case object FakeDepartureTransportMeansSection extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ "departureTransportMeans"
+  }
+
+  private case object FakeSupportingDocumentSection extends QuestionPage[JsObject] {
+    override def path: JsPath = JsPath \ "supportingDocument"
+  }
+
+  private case object FakeTransportDocumentSection extends QuestionPage[JsObject] {
+    override def path: JsPath = JsPath \ "transportDocument"
   }
 
   private case object FakeHouseConsignmentSection extends QuestionPage[JsObject] {
@@ -73,6 +85,16 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
               ua => Future.successful(ua.setValue(FakeDepartureTransportMeansSection, Json.obj("foo" -> "bar")))
             }
 
+          when(mockSupportingDocumentTransformer.transform(any()))
+            .thenReturn {
+              ua => Future.successful(ua.setValue(FakeSupportingDocumentSection, Json.obj("foo" -> "bar")))
+            }
+
+          when(mockTransportDocumentTransformer.transform(any()))
+            .thenReturn {
+              ua => Future.successful(ua.setValue(FakeTransportDocumentSection, Json.obj("foo" -> "bar")))
+            }
+
           when(mockHouseConsignmentTransformer.transform(any()))
             .thenReturn {
               ua => Future.successful(ua.setValue(FakeHouseConsignmentSection, Json.obj("foo" -> "bar")))
@@ -82,6 +104,8 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
 
           result.getValue(FakeTransportEquipmentSection) mustBe Json.obj("foo" -> "bar")
           result.getValue(FakeDepartureTransportMeansSection) mustBe Json.obj("foo" -> "bar")
+          result.getValue(FakeSupportingDocumentSection) mustBe Json.obj("foo" -> "bar")
+          result.getValue(FakeTransportDocumentSection) mustBe Json.obj("foo" -> "bar")
           result.getValue(FakeHouseConsignmentSection) mustBe Json.obj("foo" -> "bar")
       }
     }
@@ -91,6 +115,8 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
 
       result.get(FakeTransportEquipmentSection) must not be defined
       result.get(FakeDepartureTransportMeansSection) must not be defined
+      result.get(FakeSupportingDocumentSection) must not be defined
+      result.get(FakeTransportDocumentSection) must not be defined
       result.get(FakeHouseConsignmentSection) must not be defined
     }
   }
