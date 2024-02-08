@@ -22,7 +22,7 @@ import play.api.libs.json.JsPath
 
 case class DepartureTransportMeansCountryPage(houseConsignmentIndex: Index, transportMeansIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ "departureTransportMeans" \ transportMeansIndex.position \ toString
+  override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ "DepartureTransportMeans" \ transportMeansIndex.position \ toString
 
-  override def toString: String = "departureTransportMeans.nationality"
+  override def toString: String = "nationality"
 }
