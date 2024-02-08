@@ -18,7 +18,7 @@ package viewModels.transportEquipment
 
 import config.FrontendAppConfig
 import controllers.transport.equipment.routes
-import models.{ArrivalId, Index, Mode, UserAnswers}
+import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, UserAnswers}
 import pages.sections.ItemsSection
 import pages.transport.equipment.ItemPage
 import play.api.i18n.Messages
@@ -58,6 +58,16 @@ object ApplyAnotherItemViewModel {
       messages: Messages
     ): ApplyAnotherItemViewModel = {
 
+      val changeOrRemoveUrl: String = mode match {
+        case CheckMode  => controllers.transportEquipment.index.routes.GoodsReferenceController.onSubmit(ArrivalId(arrivalId), equipmentIndex, mode).url
+        case NormalMode => "" //TODO Some(routes.RemoveItemController.onPageLoad(departureId, mode, equipmentIndex, itemIndex).url)
+      }
+
+      val changePrefix: String = mode match {
+        case CheckMode  => "site.edit"
+        case NormalMode => "site.delete"
+      }
+
       val listItems = userAnswers
         .get(ItemsSection(equipmentIndex))
         .getOrElse(JsArray())
@@ -73,15 +83,12 @@ object ApplyAnotherItemViewModel {
               name =>
                 ListItem(
                   name = name,
-                  changeUrl = controllers.transportEquipment.index.routes.GoodsReferenceController.onSubmit(ArrivalId(arrivalId), equipmentIndex, mode).url,
-                  removeUrl = Some(
-                    controllers.transportEquipment.index.routes.GoodsReferenceController.onSubmit(ArrivalId(arrivalId), equipmentIndex, mode).url
-                  ) //TODO Some(routes.RemoveItemController.onPageLoad(departureId, mode, equipmentIndex, itemIndex).url)
+                  changeOrRemoveUrl = changeOrRemoveUrl,
+                  prefix = changePrefix
                 )
             }
         }
         .toSeq
-        .checkRemoveLinks(predicate = true)
 
       new ApplyAnotherItemViewModel(
         listItems,

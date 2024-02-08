@@ -18,6 +18,6 @@ package viewModels
 
 case class ListItem(
   name: String,
-  changeUrl: String,
-  removeUrl: Option[String]
+  changeOrRemoveUrl: String,
+  prefix: String
 )
