@@ -17,7 +17,7 @@
 package views.departureMeansOfTransport
 
 import forms.VehicleIdentificationNumberFormProvider
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
@@ -27,7 +27,7 @@ import views.behaviours.InputTextViewBehaviours
 import views.html.departureMeansOfTransport.IdentificationNumberView
 
 class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
-  private val mode = NormalMode
+  private val mode = Gen.oneOf(NormalMode, CheckMode).sample.value
 
   override def form: Form[String] = new VehicleIdentificationNumberFormProvider()(mode)
   private val viewModel           = arbitrary[IdentificationNumberViewModel].sample.value

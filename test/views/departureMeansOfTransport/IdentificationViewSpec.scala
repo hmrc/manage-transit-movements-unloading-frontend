@@ -18,9 +18,10 @@ package views.departureMeansOfTransport
 
 import forms.EnumerableFormProvider
 import generators.Generators
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import models.departureTransportMeans.TransportMeansIdentification
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
@@ -29,14 +30,14 @@ import views.behaviours.EnumerableViewBehaviours
 import views.html.departureMeansOfTransport.IdentificationView
 
 class IdentificationViewSpec extends EnumerableViewBehaviours[TransportMeansIdentification] with Generators {
-  private val mode                                      = NormalMode
+  private val mode                                      = Gen.oneOf(NormalMode, CheckMode).sample.value
   override def form: Form[TransportMeansIdentification] = new EnumerableFormProvider()(mode, prefix, values)
   private val viewModel: IdentificationViewModel        = arbitrary[IdentificationViewModel].sample.value
 
   override def applyView(form: Form[TransportMeansIdentification]): HtmlFormat.Appendable =
     injector.instanceOf[IdentificationView].apply(form, mrn, arrivalId, index, values, NormalMode, viewModel)(fakeRequest, messages)
 
-  override val prefix: String = "departureMeansOfTransport.identification.NormalMode"
+  override val prefix: String = "test"
 
   override def radioItems(fieldId: String, checkedValue: Option[TransportMeansIdentification] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)

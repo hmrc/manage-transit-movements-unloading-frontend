@@ -18,9 +18,9 @@ package views.departureMeansOfTransport
 
 import forms.DepartureMeansOfTransportCountryFormProvider
 import generators.Generators
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import models.reference.Country
-import org.scalacheck.Arbitrary
+import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -29,7 +29,7 @@ import views.behaviours.InputSelectViewBehaviours
 import views.html.departureMeansOfTransport.CountryView
 
 class CountryViewSpec extends InputSelectViewBehaviours[Country] with Generators {
-  private val mode                        = NormalMode
+  private val mode                        = Gen.oneOf(NormalMode, CheckMode).sample.value
   override def form: Form[Country]        = new DepartureMeansOfTransportCountryFormProvider()(mode, values)
   private val viewModel: CountryViewModel = arbitrary[CountryViewModel].sample.value
 
