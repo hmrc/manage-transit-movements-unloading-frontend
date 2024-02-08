@@ -28,6 +28,7 @@ import viewModels.UnloadingFindingsViewModel
 import viewModels.houseConsignment.index.items.{NumberOfPackagesViewModel, PackageShippingMarksViewModel, PackageTypeViewModel}
 import viewModels.sections.Section
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
+import viewModels.transportEquipment.index.ContainerIdentificationNumberViewModel
 
 trait ViewModelGenerators {
   self: Generators =>
@@ -192,5 +193,14 @@ trait ViewModelGenerators {
       title         <- nonEmptyString
       requiredError <- nonEmptyString
     } yield SealIdentificationNumberViewModel(heading, title, requiredError)
+  }
+
+  implicit lazy val arbitraryContainerIdentificationNumberViewModel: Arbitrary[ContainerIdentificationNumberViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+      packages      <- nonEmptyString
+    } yield ContainerIdentificationNumberViewModel(heading, title, requiredError, packages)
   }
 }

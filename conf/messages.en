@@ -143,6 +143,19 @@ newContainerIdentificationNumber.error.length = The identification number must b
 newContainerIdentificationNumber.error.characters = The identification number must only include letters a to z and numbers 0 to 9
 newContainerIdentificationNumber.error.alreadyEntered = This identification number has already been submitted. Enter a unique container identification number
 
+containerIdentificationNumber.NormalMode.title = What is the container identification number?
+containerIdentificationNumber.CheckMode.title = What is the new container identification number?
+containerIdentificationNumber.NormalMode.heading = What is the container identification number?
+containerIdentificationNumber.CheckMode.heading = What is the new container identification number?
+containerIdentificationNumber.NormalMode.paragraph=
+containerIdentificationNumber.CheckMode.paragraph = This is a unique number used to identify the container.
+containerIdentificationNumber.hint = This can be up to 17 characters long and include both letters and numbers, for example AABB3322110.
+containerIdentificationNumber.NormalMode.error.required = Enter the container identification number
+containerIdentificationNumber.CheckMode.error.required = Enter the new container identification number
+containerIdentificationNumber.error.length = The identification number must be 17 characters or less
+containerIdentificationNumber.error.characters = The identification number must only include letters a to z and numbers 0 to 9
+containerIdentificationNumber.error.duplicate = This identification number has already been submitted. Enter a unique container identification number
+
 unloadingSummary.title = Check what you found against the transit declaration
 unloadingSummary.heading = Check what you found against the transit declaration
 unloadingSummary.addSeal.link.text = Add a new official customs seal number

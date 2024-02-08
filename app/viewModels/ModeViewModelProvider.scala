@@ -41,4 +41,6 @@ trait ModeViewModelProvider {
   def requiredError(mode: Mode)(implicit messages: Messages): String =
     messages(s"$prefix.${mode.toString}.error.required")
 
+  def paragraph(mode: Mode)(implicit messages: Messages): String =
+    messages(s"$prefix.${mode.toString}.paragraph")
 }
