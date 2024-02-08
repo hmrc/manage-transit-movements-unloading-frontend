@@ -62,7 +62,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
               s"""
                  |{
                  |   "Consignment" : {
-                 |       "departureTransportMeans" : [
+                 |       "DepartureTransportMeans" : [
                  |           {
                  |               "sequenceNumber" : "dtm-1",
                  |               "typeOfIdentification" : "${vehicleIdentificationType.identificationType}",
@@ -107,7 +107,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
               s"""
                  |{
                  |   "Consignment" : {
-                 |       "departureTransportMeans" : [
+                 |       "DepartureTransportMeans" : [
                  |           {
                  |               "sequenceNumber" : "dtm-1",
                  |               "typeOfIdentification" : "${vehicleIdentificationType.identificationType}",
@@ -147,7 +147,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
               s"""
                  |{
                  |   "Consignment" : {
-                 |       "departureTransportMeans" : [
+                 |       "DepartureTransportMeans" : [
                  |           {
                  |               "sequenceNumber" : "dtm-1",
                  |               "nationality" : "GB"
@@ -186,7 +186,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
               s"""
                  |{
                  |   "Consignment" : {
-                 |       "departureTransportMeans" : [
+                 |       "DepartureTransportMeans" : [
                  |           {
                  |               "sequenceNumber" : "dtm-1",
                  |               "identificationNumber" : "$vehicleIdentificationNumber"
@@ -217,7 +217,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
               s"""
                  |{
                  |   "Consignment" : {
-                 |       "departureTransportMeans" : [
+                 |       "DepartureTransportMeans" : [
                  |           {
                  |               "sequenceNumber" : "dtm-1",
                  |               "typeOfIdentification" : "${vehicleIdentificationType.identificationType}",
@@ -303,7 +303,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
               s"""
                  |{
                  |   "Consignment" : {
-                 |       "departureTransportMeans" : [
+                 |       "DepartureTransportMeans" : [
                  |           {
                  |               "sequenceNumber" : "dtm-1",
                  |               "typeOfIdentification" : "${vehicleIdentificationType.identificationType}",
@@ -703,7 +703,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
                  |                   "identificationNumber" : "identifier2",
                  |                   "name" : "name2"
                  |               },
-                 |               "departureTransportMeans" : [
+                 |               "DepartureTransportMeans" : [
                  |                   {
                  |                       "sequenceNumber" : "56",
                  |                       "typeOfIdentification" : "2",
