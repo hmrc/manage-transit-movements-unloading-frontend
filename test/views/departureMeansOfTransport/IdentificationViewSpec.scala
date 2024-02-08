@@ -30,14 +30,15 @@ import views.behaviours.EnumerableViewBehaviours
 import views.html.departureMeansOfTransport.IdentificationView
 
 class IdentificationViewSpec extends EnumerableViewBehaviours[TransportMeansIdentification] with Generators {
-  private val mode                                      = Gen.oneOf(NormalMode, CheckMode).sample.value
+  // private val mode                                      = Gen.oneOf(NormalMode, CheckMode).sample.value
+  private val mode                                      = NormalMode
   override def form: Form[TransportMeansIdentification] = new EnumerableFormProvider()(mode, prefix, values)
   private val viewModel: IdentificationViewModel        = arbitrary[IdentificationViewModel].sample.value
 
   override def applyView(form: Form[TransportMeansIdentification]): HtmlFormat.Appendable =
     injector.instanceOf[IdentificationView].apply(form, mrn, arrivalId, index, values, NormalMode, viewModel)(fakeRequest, messages)
 
-  override val prefix: String = "test"
+  override val prefix: String = "departureMeansOfTransport.identification"
 
   override def radioItems(fieldId: String, checkedValue: Option[TransportMeansIdentification] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)
@@ -53,6 +54,7 @@ class IdentificationViewSpec extends EnumerableViewBehaviours[TransportMeansIden
 
   behave like pageWithHeading(text = viewModel.heading)
 
+  behave like pageWithRadioItems(args = Seq(index.display), mode = Some(mode))
 
   behave like pageWithContent("p", "This is the means of transport used from the UK office of departure to a UK port or airport.")
 

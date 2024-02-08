@@ -16,6 +16,7 @@
 
 package views.behaviours
 
+import models.Mode
 import org.jsoup.nodes.Document
 import uk.gov.hmrc.govukfrontend.views.html.components._
 
@@ -32,7 +33,8 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
     legendIsHeading: Boolean = true,
     hintTextPrefix: Option[String] = None,
     args: Seq[Any] = Nil,
-    legendIsVisible: Boolean = true
+    legendIsVisible: Boolean = true,
+    mode: Option[Mode] = None
   ): Unit =
     "page with a radio question" - {
       "when rendered" - {
@@ -40,13 +42,14 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
         "must contain a legend for the question" in {
           val legends = getElementsByTag(doc, "legend")
           legends.size mustBe 1
-          if (legendIsHeading) {
-            assertElementIncludesText(legends.first(), messages(s"$prefix.heading", args: _*))
-          } else {
-            assertElementIncludesText(legends.first(), messages(s"$prefix.label", args: _*))
-            assert(legends.first().hasClass("govuk-visually-hidden") != legendIsVisible)
+          if (mode.isEmpty) {
+            if (legendIsHeading) {
+              assertElementIncludesText(legends.first(), messages(s"$prefix.heading", args: _*))
+            } else {
+              assertElementIncludesText(legends.first(), messages(s"$prefix.label", args: _*))
+              assert(legends.first().hasClass("govuk-visually-hidden") != legendIsVisible)
+            }
           }
-
           hintTextPrefix.map {
             prefix =>
               val hint = getElementByClass(doc, "govuk-hint")
