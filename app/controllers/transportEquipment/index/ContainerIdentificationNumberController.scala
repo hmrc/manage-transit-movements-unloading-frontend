@@ -18,7 +18,7 @@ package controllers.transportEquipment.index
 
 import controllers.actions._
 import forms.ContainerIdentificationNumberFormProvider
-import models.requests.{DataRequest, MandatoryDataRequest}
+import models.requests.DataRequest
 import models.{ArrivalId, Index, Mode, RichOptionalJsArray}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
