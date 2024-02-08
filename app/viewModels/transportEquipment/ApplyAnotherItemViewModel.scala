@@ -18,7 +18,7 @@ package viewModels.transportEquipment
 
 import config.FrontendAppConfig
 import controllers.transport.equipment.routes
-import models.{Index, Mode, UserAnswers}
+import models.{ArrivalId, Index, Mode, UserAnswers}
 import pages.sections.ItemsSection
 import pages.transport.equipment.ItemPage
 import play.api.i18n.Messages
@@ -54,11 +54,10 @@ object ApplyAnotherItemViewModel {
 
   class ApplyAnotherItemViewModelProvider() {
 
-    def apply(userAnswers: UserAnswers, departureId: String, mode: Mode, equipmentIndex: Index, isNumberItemsZero: Boolean)(implicit
+    def apply(userAnswers: UserAnswers, arrivalId: String, mode: Mode, equipmentIndex: Index, isNumberItemsZero: Boolean)(implicit
       messages: Messages
     ): ApplyAnotherItemViewModel = {
 
-//      val listItems: Seq[ListItem] = ???
       val listItems = userAnswers
         .get(ItemsSection(equipmentIndex))
         .getOrElse(JsArray())
@@ -74,8 +73,10 @@ object ApplyAnotherItemViewModel {
               name =>
                 ListItem(
                   name = name,
-                  changeUrl = "", //TODO routes.SelectItemsController.onSubmit(departureId, mode, equipmentIndex, itemIndex).url,
-                  removeUrl = None //TODO Some(routes.RemoveItemController.onPageLoad(departureId, mode, equipmentIndex, itemIndex).url)
+                  changeUrl = controllers.transportEquipment.index.routes.GoodsReferenceController.onSubmit(ArrivalId(arrivalId), equipmentIndex, mode).url,
+                  removeUrl = Some(
+                    controllers.transportEquipment.index.routes.GoodsReferenceController.onSubmit(ArrivalId(arrivalId), equipmentIndex, mode).url
+                  ) //TODO Some(routes.RemoveItemController.onPageLoad(departureId, mode, equipmentIndex, itemIndex).url)
                 )
             }
         }
@@ -84,7 +85,7 @@ object ApplyAnotherItemViewModel {
 
       new ApplyAnotherItemViewModel(
         listItems,
-        onSubmitCall = routes.ApplyAnotherItemController.onSubmit(departureId, mode, equipmentIndex),
+        onSubmitCall = routes.ApplyAnotherItemController.onSubmit(arrivalId, mode, equipmentIndex),
         equipmentIndex,
         isNumberItemsZero
       )
