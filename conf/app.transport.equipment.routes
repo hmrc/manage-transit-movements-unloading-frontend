@@ -1,0 +1,7 @@
+
+# These routes must come before the ApplyAnotherItemController routes due to regex matching
+GET        /transport-equipment/:equipmentIndex/items/apply-another/:arrivalId                                                    controllers.transport.equipment.ApplyAnotherItemController.onPageLoad(arrivalId: String, mode: Mode = NormalMode, equipmentIndex: Index)
+POST       /transport-equipment/:equipmentIndex/items/apply-another/:arrivalId                                                    controllers.transport.equipment.ApplyAnotherItemController.onSubmit(arrivalId: String, mode: Mode = NormalMode, equipmentIndex: Index)
+GET        /transport-equipment/:equipmentIndex/items/change-apply-another/:arrivalId                                             controllers.transport.equipment.ApplyAnotherItemController.onPageLoad(arrivalId: String, mode: Mode = CheckMode, equipmentIndex: Index)
+POST       /transport-equipment/:equipmentIndex/items/change-apply-another/:arrivalId                                             controllers.transport.equipment.ApplyAnotherItemController.onSubmit(arrivalId: String, mode: Mode = CheckMode, equipmentIndex: Index)
+
