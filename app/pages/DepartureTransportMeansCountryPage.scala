@@ -24,5 +24,5 @@ case class DepartureTransportMeansCountryPage(houseConsignmentIndex: Index, tran
 
   override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ "departureTransportMeans" \ transportMeansIndex.position \ toString
 
-  override def toString: String = "nationality"
+  override def toString: String = "departureTransportMeans.nationality"
 }
