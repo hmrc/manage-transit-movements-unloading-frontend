@@ -28,7 +28,7 @@ object IdentificationNumberViewModel {
 
   class IdentificationNumberViewModelProvider @Inject() extends ModeViewModelProvider {
 
-    override def prefix = "departureMeansOfTransport.identificationNumber"
+    override val prefix = "departureMeansOfTransport.identificationNumber"
 
     def apply(mode: Mode)(implicit message: Messages): IdentificationNumberViewModel =
       new IdentificationNumberViewModel(

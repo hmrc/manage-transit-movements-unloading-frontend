@@ -19,8 +19,8 @@ package controllers
 import controllers.actions._
 import forms.ConfirmRemoveSealFormProvider
 import models.{ArrivalId, Index, Mode}
-import pages.NewSealPage
-import pages.sections.NewSealSection
+import pages.sections.SealSection
+import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -44,7 +44,7 @@ class ConfirmRemoveSealController @Inject() (
 
   def onPageLoad(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode): Action[AnyContent] =
     (actions.getStatus(arrivalId)
-      andThen getMandatoryPage(NewSealPage(equipmentIndex, sealIndex))) {
+      andThen getMandatoryPage(SealIdentificationNumberPage(equipmentIndex, sealIndex))) {
       implicit request =>
         val form = formProvider(request.arg)
         Ok(view(form, request.userAnswers.mrn, arrivalId, equipmentIndex, sealIndex, request.arg, mode))
@@ -52,7 +52,7 @@ class ConfirmRemoveSealController @Inject() (
 
   def onSubmit(arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, mode: Mode): Action[AnyContent] =
     (actions.getStatus(arrivalId)
-      andThen getMandatoryPage(NewSealPage(equipmentIndex, sealIndex)))
+      andThen getMandatoryPage(SealIdentificationNumberPage(equipmentIndex, sealIndex)))
       .async {
         implicit request =>
           formProvider(request.arg)
@@ -63,7 +63,7 @@ class ConfirmRemoveSealController @Inject() (
               value =>
                 if (value) {
                   for {
-                    updatedAnswers <- Future.fromTry(request.userAnswers.remove(NewSealSection(equipmentIndex, sealIndex)))
+                    updatedAnswers <- Future.fromTry(request.userAnswers.remove(SealSection(equipmentIndex, sealIndex)))
                     _              <- sessionRepository.set(updatedAnswers)
                   } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
                 } else {

@@ -24,6 +24,7 @@ import org.scalatest.TryValues
 import pages._
 import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
 import pages.houseConsignment.index.items.GrossWeightPage
+import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.libs.json.{JsValue, Json}
 
 import java.time.Instant
@@ -35,7 +36,7 @@ trait UserAnswersGenerator extends TryValues {
     arbitrary[(UnloadingCommentsPage.type, JsValue)] ::
       arbitrary[(AreAnySealsBrokenPage.type, JsValue)] ::
       arbitrary[(CanSealsBeReadPage.type, JsValue)] ::
-      arbitrary[(SealPage, JsValue)] ::
+      arbitrary[(SealIdentificationNumberPage, JsValue)] ::
       arbitrary[(GrossWeightPage, JsValue)] ::
       arbitrary[(CountryPage, JsValue)] ::
       arbitrary[(VehicleIdentificationNumberPage, JsValue)] ::

@@ -28,7 +28,7 @@ object CountryViewModel {
 
   class CountryViewModelProvider @Inject() extends ModeViewModelProvider {
 
-    override def prefix = "departureMeansOfTransport.country"
+    override val prefix = "departureMeansOfTransport.country"
 
     def apply(mode: Mode)(implicit message: Messages): CountryViewModel =
       new CountryViewModel(

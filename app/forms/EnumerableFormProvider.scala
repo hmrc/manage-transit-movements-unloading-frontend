@@ -17,10 +17,8 @@
 package forms
 
 import forms.mappings.Mappings
-import models.reference.Selectable
-import models.{CheckMode, Enumerable, Mode, NormalMode, Radioable, SelectableList}
+import models.{CheckMode, Enumerable, Mode, NormalMode, Radioable}
 import play.api.data.Form
-import play.api.i18n.Messages
 
 import javax.inject.Inject
 

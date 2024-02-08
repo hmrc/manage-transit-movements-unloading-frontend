@@ -22,11 +22,11 @@ import forms.SelectableFormProvider
 import generators.Generators
 import models.reference.Item
 import models.{Index, NormalMode, SelectableList}
-import pages.GoodsReferencePage
+import pages.transportEquipment.index.GoodsReferencePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewModels.transportEquipment.GoodsReferenceViewModel
-import views.html.houseConsignment.index.items.GoodsReferenceView
+import viewModels.transportEquipment.index.GoodsReferenceViewModel
+import views.html.transportEquipment.index.GoodsReferenceView
 
 class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
@@ -38,7 +38,7 @@ class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private val mode         = NormalMode
   private val form         = formProvider(mode, "transport.equipment.selectItems", items)
 
-  private lazy val controllerRoute = controllers.transport.equipment.routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), mode).url
+  private lazy val controllerRoute = controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), mode).url
 
   "GoodsReferenceController" - {
 

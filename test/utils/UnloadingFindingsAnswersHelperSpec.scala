@@ -25,6 +25,7 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
+import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.libs.json.{JsObject, Json}
 import services.ReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
@@ -616,7 +617,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       val sealIdentifier = Gen.alphaNumStr.sample.value
 
       "must return None" - {
-        s"when $SealPage undefined" in {
+        s"when $SealIdentificationNumberPage undefined" in {
 
           val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
           val result = helper.transportEquipmentSeal(equipmentIndex, sealIndex)
@@ -625,7 +626,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       }
 
       "must return Some(Row)" - {
-        s"when $SealPage defined" in {
+        s"when $SealIdentificationNumberPage defined" in {
 
           val json = Json
             .parse(

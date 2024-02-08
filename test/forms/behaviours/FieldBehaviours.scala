@@ -44,6 +44,21 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
       }
     }
 
+  def fieldThatRemovesSpaces(form: Form[_], fieldName: String, validDataGenerator: Gen[String]): Unit =
+    "must bind valid data and remove spaces" in {
+
+      forAll(validDataGenerator -> "validDataItem") {
+        dataItem: String =>
+          val dataItemWithSpaces = dataItem.foldLeft("")({
+            case (acc, c) =>
+              acc + " " + c.toString + " "
+          })
+          dataItemWithSpaces must not be dataItem
+          val result = form.bind(Map(fieldName -> dataItemWithSpaces))
+          result.value.value mustBe dataItem
+      }
+    }
+
   def mandatoryField(form: Form[_], fieldName: String, requiredError: FormError): Unit = {
 
     "must not bind when key is not present at all" in {

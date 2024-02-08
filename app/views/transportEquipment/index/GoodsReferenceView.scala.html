@@ -1,0 +1,62 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.transportEquipment.index.routes
+@import models.reference.Selectable._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import viewModels.components.InputSelectViewModel._
+@import views.html.components.{Button, ErrorSummary, InputSelect}
+@import models.reference.Item
+@import viewModels.transportEquipment.index.GoodsReferenceViewModel
+
+@this(
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    inputSelect: InputSelect,
+    errorSummary: ErrorSummary,
+    button: Button
+)
+
+@(form: Form[Item], arrivalId: ArrivalId, equipmentIndex: Index, mrn: MovementReferenceNumber, viewModel: GoodsReferenceViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
+
+@mainTemplate(
+    title = messages("transport.equipment.selectItems.title"),
+    showBackLink = true
+) {
+
+        @formHelper(action = routes.GoodsReferenceController.onSubmit(arrivalId, equipmentIndex, mode), Symbol("autoComplete") -> "off") {
+
+        @errorSummary(form.errors)
+
+        @inputSelect(
+            field = form("value"),
+            selectType = SelectWithAdditionalHtml(
+                heading = messages("transport.equipment.selectItems.heading"),
+                caption = Some(messages(s"MRN: $mrn")),
+                additionalHtml = {
+                    (
+                        messages("transport.equipment.selectItems.paragraph").toParagraphString ++
+                        messages("transport.equipment.selectItems.label", viewModel.items.values.length).toParagraphString
+                    ).toParagraph
+                }
+            ),
+            selectItems = viewModel.items.values.toSelectItems(form.value),
+            placeholder = messages("transport.equipment.selectItems.placeholder")
+        )
+
+        @button(messageKey = "site.continue", attributes = Map("id" -> "submit"))
+    }
+}
