@@ -52,7 +52,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
                    |    "Consignment" : {
                    |      "HouseConsignment" : [
                    |        {
-                   |         "departureTransportMeans" : [
+                   |         "DepartureTransportMeans" : [
                    |             {
                    |                 "sequenceNumber" : "56",
                    |                 "typeOfIdentification" : "2",
@@ -89,7 +89,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
                    |    "Consignment" : {
                    |      "HouseConsignment" : [
                    |        {
-                   |         "departureTransportMeans" : [
+                   |         "DepartureTransportMeans" : [
                    |             {
                    |                 "sequenceNumber" : "56",
                    |                 "typeOfIdentification" : "2",
