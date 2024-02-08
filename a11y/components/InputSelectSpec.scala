@@ -18,6 +18,7 @@ package components
 
 import a11ySpecBase.A11ySpecBase
 import forms.DepartureMeansOfTransportCountryFormProvider
+import models.{CheckMode, NormalMode}
 import models.reference.Country
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -31,6 +32,7 @@ class InputSelectSpec extends A11ySpecBase {
   "the 'input select' component" must {
     val template  = app.injector.instanceOf[MainTemplate]
     val component = app.injector.instanceOf[InputSelect]
+    val mode      = Gen.oneOf(NormalMode, CheckMode).sample.value
 
     val title          = nonEmptyString.sample.value
     val caption        = Gen.option(nonEmptyString).sample.value
@@ -41,7 +43,7 @@ class InputSelectSpec extends A11ySpecBase {
     val selectedValue  = Gen.oneOf(None, Some(countries.head)).sample.value
     val selectItems    = countries.toSelectItems(selectedValue)
     val additionalHtml = arbitrary[Html].sample.value
-    val form           = new DepartureMeansOfTransportCountryFormProvider()(countries)
+    val form           = new DepartureMeansOfTransportCountryFormProvider()(mode, countries)
     val preparedForm = selectedValue match {
       case Some(customsOffice) => form.fill(customsOffice)
       case None                => form
