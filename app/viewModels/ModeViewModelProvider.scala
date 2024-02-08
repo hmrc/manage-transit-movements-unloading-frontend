@@ -32,14 +32,14 @@ trait ModeViewModelProvider {
   def requiredError(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
     messages(s"$prefix.${mode.toString}.error.required", houseConsignmentIndex.display, itemIndex.display)
 
-  def title(mode: Mode)(implicit messages: Messages): String =
-    messages(s"$prefix.${mode.toString}.title")
-
   def heading(mode: Mode)(implicit messages: Messages): String =
     messages(s"$prefix.${mode.toString}.heading")
 
+  def title(mode: Mode)(implicit messages: Messages): String =
+    messages(s"$prefix.${mode.toString}.title")
+
   def requiredError(mode: Mode)(implicit messages: Messages): String =
-    messages(s"$prefix.${mode.toString}.error.required")
+    messages(s"$prefix.${mode.toString}.error.Required")
 
   def paragraph(mode: Mode)(implicit messages: Messages): String =
     messages(s"$prefix.${mode.toString}.paragraph")

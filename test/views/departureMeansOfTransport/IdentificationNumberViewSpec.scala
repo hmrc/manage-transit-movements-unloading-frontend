@@ -17,31 +17,35 @@
 package views.departureMeansOfTransport
 
 import forms.VehicleIdentificationNumberFormProvider
-import models.NormalMode
+import models.{CheckMode, NormalMode}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import viewModels.departureTransportMeans.IdentificationNumberViewModel
 import views.behaviours.InputTextViewBehaviours
-import views.html.departureMeansOfTransport.VehicleIdentificationNumberView
+import views.html.departureMeansOfTransport.IdentificationNumberView
 
-class VehicleIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
+class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
+  private val mode = Gen.oneOf(NormalMode, CheckMode).sample.value
 
-  override def form: Form[String] = new VehicleIdentificationNumberFormProvider()()
+  override def form: Form[String] = new VehicleIdentificationNumberFormProvider()(mode)
+  private val viewModel           = arbitrary[IdentificationNumberViewModel].sample.value
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[VehicleIdentificationNumberView].apply(form, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[IdentificationNumberView].apply(form, mrn, arrivalId, index, NormalMode, viewModel)(fakeRequest, messages)
 
-  override val prefix: String = "vehicleIdentificationNumber"
+  override val prefix: String = "departureMeansOfTransport.identificationNumber"
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(text = viewModel.title)
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(text = viewModel.heading)
 
   behave like pageWithHint("This can be up to 35 characters long and include both letters and numbers.")
 
