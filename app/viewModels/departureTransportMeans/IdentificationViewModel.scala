@@ -14,20 +14,27 @@
  * limitations under the License.
  */
 
-package forms
+package viewModels.departureTransportMeans
+
+import models.Mode
+import play.api.i18n.Messages
+import viewModels.ModeViewModelProvider
 
 import javax.inject.Inject
-import forms.mappings.Mappings
-import models.Mode
-import models.reference.Country
-import play.api.data.Form
 
-class DepartureMeansOfTransportCountryFormProvider @Inject() extends Mappings {
+case class IdentificationViewModel(heading: String, title: String, requiredError: String)
 
-  def apply(mode: Mode, countries: Seq[Country]): Form[Country] =
-    Form(
-      "value" -> text(s"departureMeansOfTransport.country.${mode.toString}.error.required")
-        .verifying("departureMeansOfTransport.country.error..required", value => countries.exists(_.code == value))
-        .transform[Country](value => countries.find(_.code == value).get, _.code)
-    )
+object IdentificationViewModel {
+
+  class IdentificationViewModelProvider @Inject() extends ModeViewModelProvider {
+
+    override val prefix = "departureMeansOfTransport.identification"
+
+    def apply(mode: Mode)(implicit message: Messages): IdentificationViewModel =
+      new IdentificationViewModel(
+        heading(mode),
+        title(mode),
+        requiredError(mode)
+      )
+  }
 }

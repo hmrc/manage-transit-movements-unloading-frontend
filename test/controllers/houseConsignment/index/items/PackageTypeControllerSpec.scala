@@ -22,6 +22,7 @@ import generators.Generators
 import models.{NormalMode, SelectableList}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.houseConsignment.index.items.PackageTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -31,7 +32,6 @@ import services.PackagesService
 import viewModels.houseConsignment.index.items.PackageTypeViewModel
 import viewModels.houseConsignment.index.items.PackageTypeViewModel.PackageTypeViewModelProvider
 import views.html.houseConsignment.index.items.PackageTypeView
-import org.scalacheck.Arbitrary.arbitrary
 
 import scala.concurrent.Future
 

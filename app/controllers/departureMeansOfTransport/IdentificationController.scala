@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.departureTransportMeans
+package controllers.departureMeansOfTransport
 
 import controllers.actions._
 import forms.EnumerableFormProvider
-import models.{ArrivalId, Index, Mode}
 import models.departureTransportMeans.TransportMeansIdentification
 import models.requests.MandatoryDataRequest
+import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
 import pages.departureMeansOfTransport.TransportMeansIdentificationPage
 import pages.equipment.InlandModePage
@@ -30,38 +30,40 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.MeansOfTransportIdentificationTypesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.departureTransportMeans.TransportMeansIdentificationView
+import viewModels.departureTransportMeans.IdentificationViewModel.IdentificationViewModelProvider
+import views.html.departureMeansOfTransport.IdentificationView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TransportMeansIdentificationController @Inject() (
+class IdentificationController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: TransportMeansIdentificationView,
+  view: IdentificationView,
   navigator: Navigator,
-  service: MeansOfTransportIdentificationTypesService
+  service: MeansOfTransportIdentificationTypesService,
+  identificationViewModelProvider: IdentificationViewModelProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(identificationTypes: Seq[TransportMeansIdentification]): Form[TransportMeansIdentification] =
-    formProvider[TransportMeansIdentification]("departureTransportMeans.identification", identificationTypes)
+  private def form(mode: Mode, identificationTypes: Seq[TransportMeansIdentification]): Form[TransportMeansIdentification] =
+    formProvider[TransportMeansIdentification](mode, "departureMeansOfTransport.identification", identificationTypes)
 
   def onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
         service.getMeansOfTransportIdentificationTypes(request.userAnswers.get(InlandModePage), transportMeansIndex).flatMap {
           identifiers =>
+            val viewModel = identificationViewModelProvider.apply(mode)
             val preparedForm = request.userAnswers.get(TransportMeansIdentificationPage(transportMeansIndex)) match {
-              case None        => form(identifiers)
-              case Some(value) => form(identifiers).fill(value)
+              case None        => form(mode, identifiers)
+              case Some(value) => form(mode, identifiers).fill(value)
             }
-
-            Future.successful(Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, transportMeansIndex, identifiers, mode)))
+            Future.successful(Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, transportMeansIndex, identifiers, mode, viewModel)))
         }
     }
 
@@ -70,12 +72,13 @@ class TransportMeansIdentificationController @Inject() (
       implicit request =>
         service.getMeansOfTransportIdentificationTypes(request.userAnswers.get(InlandModePage), transportMeansIndex).flatMap {
           identifiers =>
-            form(identifiers)
+            val viewModel = identificationViewModelProvider.apply(mode)
+            form(mode, identifiers)
               .bindFromRequest()
               .fold(
                 formWithErrors =>
                   Future.successful(
-                    BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, transportMeansIndex, identifiers, mode))
+                    BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, transportMeansIndex, identifiers, mode, viewModel))
                   ),
                 value => redirect(value, transportMeansIndex, mode)
               )

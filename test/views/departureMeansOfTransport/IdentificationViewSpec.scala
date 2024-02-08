@@ -14,25 +14,30 @@
  * limitations under the License.
  */
 
-package views.departureTransportMeans
+package views.departureMeansOfTransport
 
 import forms.EnumerableFormProvider
-import models.NormalMode
+import generators.Generators
+import models.{CheckMode, NormalMode}
 import models.departureTransportMeans.TransportMeansIdentification
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
+import viewModels.departureTransportMeans.IdentificationViewModel
 import views.behaviours.EnumerableViewBehaviours
-import views.html.departureTransportMeans.TransportMeansIdentificationView
+import views.html.departureMeansOfTransport.IdentificationView
 
-class TransportMeansIdentificationViewSpec extends EnumerableViewBehaviours[TransportMeansIdentification] {
-
-  override def form: Form[TransportMeansIdentification] = new EnumerableFormProvider()(prefix, values)
+class IdentificationViewSpec extends EnumerableViewBehaviours[TransportMeansIdentification] with Generators {
+  private val mode                                      = Gen.oneOf(NormalMode, CheckMode).sample.value
+  override def form: Form[TransportMeansIdentification] = new EnumerableFormProvider()(mode, prefix, values)
+  private val viewModel: IdentificationViewModel        = arbitrary[IdentificationViewModel].sample.value
 
   override def applyView(form: Form[TransportMeansIdentification]): HtmlFormat.Appendable =
-    injector.instanceOf[TransportMeansIdentificationView].apply(form, mrn, arrivalId, index, values, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[IdentificationView].apply(form, mrn, arrivalId, index, values, NormalMode, viewModel)(fakeRequest, messages)
 
-  override val prefix: String = "departureTransportMeans.identification"
+  override val prefix: String = "departureMeansOfTransport.identification"
 
   override def radioItems(fieldId: String, checkedValue: Option[TransportMeansIdentification] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)
@@ -42,15 +47,15 @@ class TransportMeansIdentificationViewSpec extends EnumerableViewBehaviours[Tran
     TransportMeansIdentification("81", "Name of an inland waterways vehicle")
   )
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(text = viewModel.title)
 
   behave like pageWithBackLink()
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(text = viewModel.heading)
+
+  behave like pageWithRadioItems(args = Seq(index.display), mode = Some(mode))
 
   behave like pageWithContent("p", "This is the means of transport used from the UK office of departure to a UK port or airport.")
-
-  behave like pageWithRadioItems(args = Seq(index.display))
 
   behave like pageWithSubmitButton("Continue")
 }

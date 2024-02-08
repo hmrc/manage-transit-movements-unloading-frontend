@@ -17,6 +17,8 @@
 package forms
 
 import forms.mappings.Mappings
+import models.Mode
+
 import javax.inject.Inject
 import models.messages.UnloadingRemarksRequest
 import models.messages.UnloadingRemarksRequest.alphaNumericRegex
@@ -24,13 +26,13 @@ import play.api.data.Form
 
 class VehicleIdentificationNumberFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def apply(mode: Mode): Form[String] =
     Form(
-      "value" -> text("vehicleIdentificationNumber.error.required")
+      "value" -> text(s"departureMeansOfTransport.identificationNumber.$mode.error.required")
         .verifying(
           StopOnFirstFail[String](
-            maxLength(UnloadingRemarksRequest.vehicleIdentificationNumberMaxLength, "vehicleIdentificationNumber.error.length"),
-            regexp(alphaNumericRegex.r, "vehicleIdentificationNumber.error.invalid", Seq.empty)
+            maxLength(UnloadingRemarksRequest.vehicleIdentificationNumberMaxLength, "departureMeansOfTransport.identificationNumber.error.length"),
+            regexp(alphaNumericRegex.r, "departureMeansOfTransport.identificationNumber.error.invalid", Seq.empty)
           )
         )
     )
