@@ -9689,7 +9689,7 @@
     </xs:sequence>
   </xs:complexType>
   <!--================================================================================-->
-  <!--===== departureTransportMeans                                                         -->
+  <!--===== DepartureTransportMeans                                                         -->
   <!--================================================================================-->
   <xs:complexType name="DepartureTransportMeansType01">
     <xs:annotation>

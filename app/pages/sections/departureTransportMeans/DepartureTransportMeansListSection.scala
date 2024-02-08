@@ -24,5 +24,5 @@ case class DepartureTransportMeansListSection(houseConsignmentIndex: Index) exte
 
   override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ toString
 
-  override def toString: String = "departureTransportMeans"
+  override def toString: String = "DepartureTransportMeans"
 }

@@ -22,5 +22,5 @@ case object TransportMeansListSection extends Section[JsArray] {
 
   override def path: JsPath = JsPath \ "Consignment" \ toString
 
-  override def toString: String = "departureTransportMeans"
+  override def toString: String = "DepartureTransportMeans"
 }
