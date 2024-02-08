@@ -22,19 +22,39 @@ import forms.VehicleIdentificationNumberFormProvider
 import generators.Generators
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
 import pages.departureMeansOfTransport.VehicleIdentificationNumberPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.departureMeansOfTransport.IdentificationNumberView
+import org.scalacheck.Arbitrary.arbitrary
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.inject.bind
+import viewModels.departureTransportMeans.IdentificationNumberViewModel
+import viewModels.departureTransportMeans.IdentificationNumberViewModel.IdentificationNumberViewModelProvider
 
 import scala.concurrent.Future
 
 class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val formProvider = new VehicleIdentificationNumberFormProvider()
-  private val form         = formProvider()
-  private val mode         = NormalMode
+  private val formProvider          = new VehicleIdentificationNumberFormProvider()
+  private val form                  = formProvider()
+  private val mode                  = NormalMode
+  private val viewModel             = arbitrary[IdentificationNumberViewModel].sample.value
+  private val mockViewModelProvider = mock[IdentificationNumberViewModelProvider]
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind[IdentificationNumberViewModelProvider].toInstance(mockViewModelProvider))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockViewModelProvider)
+
+    when(mockViewModelProvider.apply(any())(any()))
+      .thenReturn(viewModel)
+  }
 
   lazy val vehicleIdentificationNumberRoute: String =
     controllers.departureMeansOfTransport.routes.IdentificationNumberController.onPageLoad(arrivalId, index, mode).url
@@ -55,7 +75,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, index, mode)(request, messages).toString
+        view(form, mrn, arrivalId, index, mode, viewModel)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -75,7 +95,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, index, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, index, mode, viewModel)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -110,7 +130,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
       val view = injector.instanceOf[IdentificationNumberView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, arrivalId, index, mode)(request, messages).toString
+        view(boundForm, mrn, arrivalId, index, mode, viewModel)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

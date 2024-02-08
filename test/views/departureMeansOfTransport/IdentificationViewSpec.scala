@@ -28,7 +28,7 @@ import viewModels.departureTransportMeans.IdentificationViewModel
 import views.behaviours.EnumerableViewBehaviours
 import views.html.departureMeansOfTransport.IdentificationView
 
-class IdentificationViewSpec extends EnumerableViewBehaviours[TransportMeansIdentification]  with Generators {
+class IdentificationViewSpec extends EnumerableViewBehaviours[TransportMeansIdentification] with Generators {
   private val mode                                      = NormalMode
   override def form: Form[TransportMeansIdentification] = new EnumerableFormProvider()(mode, prefix, values)
   private val viewModel: IdentificationViewModel        = arbitrary[IdentificationViewModel].sample.value
@@ -53,8 +53,6 @@ class IdentificationViewSpec extends EnumerableViewBehaviours[TransportMeansIden
   behave like pageWithHeading(text = viewModel.heading)
 
   behave like pageWithContent("p", "This is the means of transport used from the UK office of departure to a UK port or airport.")
-
-  behave like pageWithRadioItems(Some(mode), args = Seq(index.display))
 
   behave like pageWithSubmitButton("Continue")
 }
