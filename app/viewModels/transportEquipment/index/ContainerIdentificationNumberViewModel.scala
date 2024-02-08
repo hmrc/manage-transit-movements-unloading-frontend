@@ -16,13 +16,13 @@
 
 package viewModels.transportEquipment.index
 
-import models.Mode
+import models.{CheckMode, Mode, NormalMode}
 import play.api.i18n.Messages
 import viewModels.ModeViewModelProvider
 
 import javax.inject.Inject
 
-case class ContainerIdentificationNumberViewModel(heading: String, title: String, requiredError: String, paragraph: String)
+case class ContainerIdentificationNumberViewModel(heading: String, title: String, requiredError: String, paragraph: Option[String])
 
 object ContainerIdentificationNumberViewModel {
 
@@ -32,6 +32,11 @@ object ContainerIdentificationNumberViewModel {
 
     def apply(mode: Mode)(implicit messages: Messages): ContainerIdentificationNumberViewModel =
       new ContainerIdentificationNumberViewModel(heading(mode), title(mode), requiredError(mode), paragraph(mode))
+
+    def paragraph(mode: Mode)(implicit messages: Messages): Option[String] = mode match {
+      case NormalMode => None
+      case CheckMode  => Some(messages(s"$prefix.${mode.toString}.paragraph"))
+    }
 
   }
 }

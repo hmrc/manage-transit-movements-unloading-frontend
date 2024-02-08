@@ -40,7 +40,4 @@ trait ModeViewModelProvider {
 
   def requiredError(mode: Mode)(implicit messages: Messages): String =
     messages(s"$prefix.${mode.toString}.error.Required")
-
-  def paragraph(mode: Mode)(implicit messages: Messages): String =
-    messages(s"$prefix.${mode.toString}.paragraph")
 }

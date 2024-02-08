@@ -54,7 +54,9 @@ class ContainerIdentificationNumberViewSpec extends InputTextViewBehaviours[Stri
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithContent("p", viewModel.paragraph)
+  if (viewModel.paragraph.isDefined) {
+    behave like pageWithContent("p", viewModel.paragraph.get)
+  }
 
   behave like pageWithHint("This can be up to 17 characters long and include both letters and numbers, for example AABB3322110.")
 

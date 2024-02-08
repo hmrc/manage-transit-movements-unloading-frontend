@@ -41,10 +41,17 @@
 
         @inputText(
             field = form("value"),
-            inputTextType = TextInputWithHiddenLabel(
+            inputTextType =
+        if (viewModel.paragraph.isDefined)
+            TextInputWithHiddenLabel(
                 heading = viewModel.heading,
                 caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = viewModel.paragraph.toParagraph
+                additionalHtml = viewModel.paragraph.map(_.toParagraph).get
+            )
+        else
+            OrdinaryTextInput(
+                heading = viewModel.heading,
+                caption = Some(messages("site.caption", mrn.toString))
             ),
             hint = Some(messages("containerIdentificationNumber.hint"))
         )

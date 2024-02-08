@@ -225,7 +225,7 @@ trait ViewModelGenerators {
       heading       <- nonEmptyString
       title         <- nonEmptyString
       requiredError <- nonEmptyString
-      packages      <- nonEmptyString
-    } yield ContainerIdentificationNumberViewModel(heading, title, requiredError, packages)
+      paragraph     <- nonEmptyString
+    } yield ContainerIdentificationNumberViewModel(heading, title, requiredError, Some(paragraph))
   }
 }

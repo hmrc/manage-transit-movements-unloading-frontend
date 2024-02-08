@@ -162,7 +162,6 @@ containerIdentificationNumber.NormalMode.title = What is the container identific
 containerIdentificationNumber.CheckMode.title = What is the new container identification number?
 containerIdentificationNumber.NormalMode.heading = What is the container identification number?
 containerIdentificationNumber.CheckMode.heading = What is the new container identification number?
-containerIdentificationNumber.NormalMode.paragraph=
 containerIdentificationNumber.CheckMode.paragraph = This is a unique number used to identify the container.
 containerIdentificationNumber.hint = This can be up to 17 characters long and include both letters and numbers, for example AABB3322110.
 containerIdentificationNumber.NormalMode.error.Required = Enter the container identification number

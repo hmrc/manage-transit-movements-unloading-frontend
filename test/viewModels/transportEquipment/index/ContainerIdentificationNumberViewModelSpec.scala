@@ -33,7 +33,7 @@ class ContainerIdentificationNumberViewModelSpec extends SpecBase with ScalaChec
       result.title mustBe "What is the container identification number?"
       result.heading mustBe "What is the container identification number?"
       result.requiredError mustBe "Enter the container identification number"
-      result.paragraph mustBe ""
+      result.paragraph mustBe None
     }
 
     "when CheckMode" in {
@@ -43,7 +43,7 @@ class ContainerIdentificationNumberViewModelSpec extends SpecBase with ScalaChec
       result.title mustBe "What is the new container identification number?"
       result.heading mustBe "What is the new container identification number?"
       result.requiredError mustBe "Enter the new container identification number"
-      result.paragraph mustBe "This is a unique number used to identify the container."
+      result.paragraph.get mustBe "This is a unique number used to identify the container."
     }
 
   }
