@@ -40,15 +40,14 @@ import scala.concurrent.Future
 
 class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  val formProvider                        = new DepartureMeansOfTransportCountryFormProvider()
-  private val country: String             = Country("GB", Some("United Kingdom")).code
-  val countries: Seq[Country]             = Seq(Country("GB", Some("United Kingdom")))
-  private val mockViewModelProvider       = mock[CountryViewModelProvider]
-  private val viewModel: CountryViewModel = arbitrary[CountryViewModel].sample.value
-
-  val form: Form[Country]                                = formProvider(countries)
-  val mockReferenceDataService: ReferenceDataService     = mock[ReferenceDataService]
+  val formProvider                                       = new DepartureMeansOfTransportCountryFormProvider()
+  private val country: String                            = Country("GB", Some("United Kingdom")).code
+  val countries: Seq[Country]                            = Seq(Country("GB", Some("United Kingdom")))
+  private val mockViewModelProvider                      = mock[CountryViewModelProvider]
+  private val viewModel: CountryViewModel                = arbitrary[CountryViewModel].sample.value
   private val mode                                       = NormalMode
+  val form: Form[Country]                                = formProvider(mode, countries)
+  val mockReferenceDataService: ReferenceDataService     = mock[ReferenceDataService]
   lazy val DepartureMeansOfTransportCountryRoute: String = controllers.departureMeansOfTransport.routes.CountryController.onPageLoad(arrivalId, index, mode).url
 
   override def beforeEach(): Unit = {

@@ -17,17 +17,18 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import models.NormalMode
 import models.reference.Country
 import play.api.data.FormError
 
 class DepartureMeansOfTransportCountryFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "departureMeansOfTransport.country.error.required"
-  val lengthKey   = "departureMeansOfTransport.country.error.length"
-  val maxLength   = 2
-
+  private val mode            = NormalMode
+  val requiredKey             = "departureMeansOfTransport.country.NormalMode.error.required"
+  val lengthKey               = "departureMeansOfTransport.country.error.length"
+  val maxLength               = 2
   val countries: Seq[Country] = Seq(Country("AD", Some("Andorra")))
-  val form                    = new DepartureMeansOfTransportCountryFormProvider()(countries)
+  val form                    = new DepartureMeansOfTransportCountryFormProvider()(mode, countries)
 
   ".value" - {
 

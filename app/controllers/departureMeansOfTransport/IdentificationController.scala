@@ -51,7 +51,7 @@ class IdentificationController @Inject() (
     with I18nSupport {
 
   private def form(mode: Mode, identificationTypes: Seq[TransportMeansIdentification]): Form[TransportMeansIdentification] =
-    formProvider[TransportMeansIdentification](mode, "departureTransportMeans.identification", identificationTypes)
+    formProvider[TransportMeansIdentification](mode, "departureMeansOfTransport.identification", identificationTypes)
 
   def onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId).async {

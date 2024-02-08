@@ -38,8 +38,8 @@ import scala.concurrent.Future
 class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider          = new VehicleIdentificationNumberFormProvider()
-  private val form                  = formProvider()
   private val mode                  = NormalMode
+  private val form                  = formProvider(mode)
   private val viewModel             = arbitrary[IdentificationNumberViewModel].sample.value
   private val mockViewModelProvider = mock[IdentificationNumberViewModelProvider]
 

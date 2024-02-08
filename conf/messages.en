@@ -109,8 +109,8 @@ departureMeansOfTransport.identification.CheckMode.title = Which identification 
 departureMeansOfTransport.identification.NormalMode.heading = Which identification do you want to use for the departure means of transport?
 departureMeansOfTransport.identification.CheckMode.heading = Which identification do you want to use for the new departure means of transport?
 departureMeansOfTransport.identification.title = Which identification do you want to use for the new departure means of transport?
-departureMeansOfTransport.identification.error.NormalMode.required = Select which identification you want to use for the departure means of transport
-departureMeansOfTransport.identification.error.CheckMode.required = Select which identification you want to use for the new departure means of transport
+departureMeansOfTransport.identification.check.error.required = Select which identification you want to use for the departure means of transport
+departureMeansOfTransport.identification.error.required = Select which identification you want to use for the new departure means of transport
 departureMeansOfTransport.identification.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
 
 houseConsignment.item.grossWeight.title = What is the new gross weight of item {0} in house consignment {1}?

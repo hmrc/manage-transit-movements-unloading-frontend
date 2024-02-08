@@ -29,8 +29,8 @@ import views.behaviours.InputSelectViewBehaviours
 import views.html.departureMeansOfTransport.CountryView
 
 class CountryViewSpec extends InputSelectViewBehaviours[Country] with Generators {
-
-  override def form: Form[Country]        = new DepartureMeansOfTransportCountryFormProvider()(values)
+  private val mode                        = NormalMode
+  override def form: Form[Country]        = new DepartureMeansOfTransportCountryFormProvider()(mode, values)
   private val viewModel: CountryViewModel = arbitrary[CountryViewModel].sample.value
 
   override def applyView(form: Form[Country]): HtmlFormat.Appendable =

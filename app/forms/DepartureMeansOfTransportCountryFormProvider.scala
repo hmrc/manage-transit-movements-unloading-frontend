@@ -18,15 +18,16 @@ package forms
 
 import javax.inject.Inject
 import forms.mappings.Mappings
+import models.Mode
 import models.reference.Country
 import play.api.data.Form
 
 class DepartureMeansOfTransportCountryFormProvider @Inject() extends Mappings {
 
-  def apply(countries: Seq[Country]): Form[Country] =
+  def apply(mode: Mode, countries: Seq[Country]): Form[Country] =
     Form(
-      "value" -> text("departureMeansOfTransport.country.error.required")
-        .verifying("departureMeansOfTransport.country.error.required", value => countries.exists(_.code == value))
+      "value" -> text(s"departureMeansOfTransport.country.${mode.toString}.error.required")
+        .verifying("departureMeansOfTransport.country.error..required", value => countries.exists(_.code == value))
         .transform[Country](value => countries.find(_.code == value).get, _.code)
     )
 }

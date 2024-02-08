@@ -46,7 +46,7 @@ class IdentificationNumberController @Inject() (
     actions.getStatus(arrivalId) {
       implicit request =>
         val viewModel = identificationNUmberViewModelProvider.apply(mode)
-        val form      = formProvider()
+        val form      = formProvider(mode)
 
         val preparedForm = request.userAnswers.get(VehicleIdentificationNumberPage(transportMeansIndex)) match {
           case None        => form
@@ -60,7 +60,7 @@ class IdentificationNumberController @Inject() (
     actions.getStatus(arrivalId).async {
       implicit request =>
         val viewModel = identificationNUmberViewModelProvider.apply(mode)
-        val form      = formProvider()
+        val form      = formProvider(mode)
         form
           .bindFromRequest()
           .fold(

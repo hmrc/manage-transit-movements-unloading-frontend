@@ -36,7 +36,7 @@ class IdentificationViewSpec extends EnumerableViewBehaviours[TransportMeansIden
   override def applyView(form: Form[TransportMeansIdentification]): HtmlFormat.Appendable =
     injector.instanceOf[IdentificationView].apply(form, mrn, arrivalId, index, values, NormalMode, viewModel)(fakeRequest, messages)
 
-  override val prefix: String = "departureMeansOfTransport.identification"
+  override val prefix: String = "departureMeansOfTransport.identification.NormalMode"
 
   override def radioItems(fieldId: String, checkedValue: Option[TransportMeansIdentification] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)

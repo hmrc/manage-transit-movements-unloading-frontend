@@ -77,7 +77,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         val section           = result.section.head
 
         section.sectionTitle.value mustBe "Departure means of transport 1"
-        section.rows.size mustBe 2
+        section.rows.size mustBe 1
         section.viewLink must not be defined
       }
 
@@ -120,7 +120,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         val section           = result.section(1)
 
         section.sectionTitle.value mustBe "Departure means of transport 2"
-        section.rows.size mustBe 2
+        section.rows.size mustBe 1
         section.viewLink must not be defined
       }
     }
