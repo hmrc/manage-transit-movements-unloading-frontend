@@ -30,8 +30,7 @@ import views.behaviours.EnumerableViewBehaviours
 import views.html.departureMeansOfTransport.IdentificationView
 
 class IdentificationViewSpec extends EnumerableViewBehaviours[TransportMeansIdentification] with Generators {
-  // private val mode                                      = Gen.oneOf(NormalMode, CheckMode).sample.value
-  private val mode                                      = NormalMode
+  private val mode                                      = Gen.oneOf(NormalMode, CheckMode).sample.value
   override def form: Form[TransportMeansIdentification] = new EnumerableFormProvider()(mode, prefix, values)
   private val viewModel: IdentificationViewModel        = arbitrary[IdentificationViewModel].sample.value
 
