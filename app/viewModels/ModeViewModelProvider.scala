@@ -39,5 +39,5 @@ trait ModeViewModelProvider {
     messages(s"$prefix.${mode.toString}.title")
 
   def requiredError(mode: Mode)(implicit messages: Messages): String =
-    messages(s"$prefix.${mode.toString}.errorRequired")
+    messages(s"$prefix.${mode.toString}.error.Required")
 }
