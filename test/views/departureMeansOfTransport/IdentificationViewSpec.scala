@@ -53,6 +53,8 @@ class IdentificationViewSpec extends EnumerableViewBehaviours[TransportMeansIden
 
   behave like pageWithHeading(text = viewModel.heading)
 
+  behave like pageWithRadioItems(args = Seq(index.display))
+
   behave like pageWithContent("p", "This is the means of transport used from the UK office of departure to a UK port or airport.")
 
   behave like pageWithSubmitButton("Continue")

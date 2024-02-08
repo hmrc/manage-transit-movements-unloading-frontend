@@ -88,7 +88,6 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
 
       behave like pageWithErrorSummary()
     }
-
   // scalastyle:on method.length
 
   private def answeredRadioPage(answer: T): Unit = {
