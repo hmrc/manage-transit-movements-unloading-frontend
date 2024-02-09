@@ -18,7 +18,7 @@ package utils
 
 import cats.data.OptionT
 import cats.implicits._
-import models.{Index, Link, NormalMode, UserAnswers}
+import models.{Index, Link, UserAnswers}
 import pages._
 import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
 import pages.sections._
