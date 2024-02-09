@@ -32,6 +32,7 @@ import viewModels.houseConsignment.index.items._
 import viewModels.sections.Section
 import viewModels.transportEquipment.index.ApplyAnotherItemViewModel
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
+import viewModels.transportEquipment.index.ContainerIdentificationNumberViewModel
 
 trait ViewModelGenerators {
   self: Generators =>
@@ -235,5 +236,14 @@ trait ViewModelGenerators {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
     } yield ApplyAnotherItemViewModel(listItems, onSubmitCall, Index(0), isNumberItemsZero = false)
+  }
+
+  implicit lazy val arbitraryContainerIdentificationNumberViewModel: Arbitrary[ContainerIdentificationNumberViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+      paragraph     <- nonEmptyString
+    } yield ContainerIdentificationNumberViewModel(heading, title, requiredError, Some(paragraph))
   }
 }
