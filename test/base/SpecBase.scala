@@ -73,7 +73,7 @@ trait SpecBase
   implicit def messages: Messages = messagesApi.preferred(fakeRequest)
   implicit val hc: HeaderCarrier  = HeaderCarrier()
 
-  def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+  implicit def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
 
   implicit class RichUserAnswers(userAnswers: UserAnswers) {
 

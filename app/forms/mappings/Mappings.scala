@@ -22,6 +22,7 @@ import java.time.LocalDate
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
 import models.{Enumerable, Radioable, SelectableList}
+import play.api.data.format.Formats.ignoredFormat
 
 trait Mappings extends Formatters with Constraints {
 
@@ -70,4 +71,7 @@ trait Mappings extends Formatters with Constraints {
     args: Seq[Any] = Seq.empty
   ): FieldMapping[T] =
     of(selectableFormatter[T](selectableList, errorKey, args))
+
+  protected def mandatoryIfBoolean(errorKey: String, condition: Boolean, defaultValue: Boolean, args: Any*): FieldMapping[Boolean] =
+    if (condition) boolean(errorKey, args = args.map(_.toString)) else of(ignoredFormat(defaultValue))
 }

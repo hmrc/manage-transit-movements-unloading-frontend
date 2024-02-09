@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.transportEquipment
+package controllers.transportEquipment.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
