@@ -21,6 +21,8 @@ import models._
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.{Country, Item, PackageType}
 import org.scalacheck.{Arbitrary, Gen}
+import play.api.mvc.Call
+import play.api.test.Helpers.{GET, POST}
 
 trait ModelGenerators {
 
@@ -93,4 +95,11 @@ trait ModelGenerators {
         desc <- nonEmptyString
       } yield Item(no, desc)
     }
+
+  implicit lazy val arbitraryCall: Arbitrary[Call] = Arbitrary {
+    for {
+      method <- Gen.oneOf(GET, POST)
+      url    <- nonEmptyString
+    } yield Call(method, url)
+  }
 }

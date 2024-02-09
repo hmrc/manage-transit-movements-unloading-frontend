@@ -16,18 +16,21 @@
 
 package generators
 
+import models.Index
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.FormError
+import play.api.mvc.Call
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Content, Hint, Label, RadioItem}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
-import viewModels.UnloadingFindingsViewModel
+import viewModels.{ListItem, UnloadingFindingsViewModel}
 import viewModels.departureTransportMeans._
 import viewModels.houseConsignment.index.items._
 import viewModels.sections.Section
+import viewModels.transportEquipment.index.ApplyAnotherItemViewModel
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
 
 trait ViewModelGenerators {
@@ -217,5 +220,20 @@ trait ViewModelGenerators {
       title         <- nonEmptyString
       requiredError <- nonEmptyString
     } yield IdentificationNumberViewModel(heading, title, requiredError)
+  }
+
+  implicit lazy val arbitraryListItem: Arbitrary[ListItem] = Arbitrary {
+    for {
+      name      <- nonEmptyString
+      changeUrl <- nonEmptyString
+      prefix    <- nonEmptyString
+    } yield ListItem(name, changeUrl, prefix)
+  }
+
+  implicit lazy val arbitraryApplyAnotherItemViewModel: Arbitrary[ApplyAnotherItemViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+    } yield ApplyAnotherItemViewModel(listItems, onSubmitCall, Index(0), isNumberItemsZero = false)
   }
 }

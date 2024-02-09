@@ -29,6 +29,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   lazy val contactHost: String = configuration.get[String]("contact-frontend.host")
 
+  lazy val maxItems: Int = configuration.get[Int]("limits.maxItems")
+
   val showPhaseBanner: Boolean        = configuration.get[Boolean]("banners.showPhase")
   val userResearchUrl: String         = configuration.get[String]("urls.userResearch")
   val showUserResearchBanner: Boolean = configuration.get[Boolean]("banners.showUserResearch")
