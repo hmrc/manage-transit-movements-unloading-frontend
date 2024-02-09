@@ -16,7 +16,7 @@
 
 package viewModels.transportEquipment.index
 
-import models.{CheckMode, Mode, NormalMode}
+import models.Mode
 import play.api.i18n.Messages
 import viewModels.ModeViewModelProvider
 
@@ -32,11 +32,5 @@ object ContainerIdentificationNumberViewModel {
 
     def apply(mode: Mode)(implicit messages: Messages): ContainerIdentificationNumberViewModel =
       new ContainerIdentificationNumberViewModel(heading(mode), title(mode), requiredError(mode), paragraph(mode))
-
-    def paragraph(mode: Mode)(implicit messages: Messages): Option[String] = mode match {
-      case NormalMode => None
-      case CheckMode  => Some(messages(s"$prefix.${mode.toString}.paragraph"))
-    }
-
   }
 }
