@@ -79,14 +79,16 @@ object ApplyAnotherItemViewModel {
 
             def itemPrefix(item: String) = messages("transport.item.prefix", item)
 
-            userAnswers.get(ItemPage(equipmentIndex, itemIndex)).map(_.toString).map(itemPrefix).map {
-              name =>
-                ListItem(
-                  name = name,
-                  changeOrRemoveUrl = changeOrRemoveUrl,
-                  prefix = changePrefix
-                )
-            }
+            userAnswers
+              .get(ItemPage(equipmentIndex, itemIndex))
+              .map(
+                item =>
+                  ListItem(
+                    name = itemPrefix(item.toString),
+                    changeOrRemoveUrl = changeOrRemoveUrl,
+                    prefix = changePrefix
+                  )
+              )
         }
         .toSeq
 
