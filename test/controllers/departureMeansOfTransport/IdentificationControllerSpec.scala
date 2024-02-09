@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.departureTransportMeans
+package controllers.departureMeansOfTransport
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
@@ -25,6 +25,7 @@ import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.transport.TransportMode.InlandMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.departureMeansOfTransport.TransportMeansIdentificationPage
 import pages.equipment.InlandModePage
@@ -33,22 +34,26 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.MeansOfTransportIdentificationTypesService
-import views.html.departureTransportMeans.TransportMeansIdentificationView
+import viewModels.departureTransportMeans.IdentificationViewModel
+import viewModels.departureTransportMeans.IdentificationViewModel.IdentificationViewModelProvider
+import views.html.departureMeansOfTransport.IdentificationView
 
 import scala.concurrent.Future
 
-class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
+class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private val identificationType1 = TransportMeansIdentification("40", "IATA flight number")
-  private val identificationType2 = TransportMeansIdentification("41", "Registration Number of the Aircraft")
-  private val identificationTypes = Seq(identificationType1, identificationType2)
+  private val identificationType1   = TransportMeansIdentification("40", "IATA flight number")
+  private val identificationType2   = TransportMeansIdentification("41", "Registration Number of the Aircraft")
+  private val identificationTypes   = Seq(identificationType1, identificationType2)
+  private val viewModel             = arbitrary[IdentificationViewModel].sample.value
+  private val mockViewModelProvider = mock[IdentificationViewModelProvider]
+  val formProvider                  = new EnumerableFormProvider()
 
-  private val formProvider = new EnumerableFormProvider()
-  private val form         = formProvider[TransportMeansIdentification]("consignment.departureTransportMeans.identification", identificationTypes)
-  private val mode         = NormalMode
+  private val mode = NormalMode
+  private val form = formProvider(mode, viewModel.requiredError, identificationTypes)
 
   private lazy val identificationRoute =
-    controllers.departureTransportMeans.routes.TransportMeansIdentificationController.onPageLoad(arrivalId, index, mode).url
+    controllers.departureMeansOfTransport.routes.IdentificationController.onPageLoad(arrivalId, index, mode).url
 
   private val mockMeansOfTransportIdentificationTypesService: MeansOfTransportIdentificationTypesService =
     mock[MeansOfTransportIdentificationTypesService]
@@ -56,12 +61,17 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockMeansOfTransportIdentificationTypesService)
+    reset(mockViewModelProvider)
+
+    when(mockViewModelProvider.apply(any())(any()))
+      .thenReturn(viewModel)
   }
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[MeansOfTransportIdentificationTypesService]).toInstance(mockMeansOfTransportIdentificationTypesService))
+      .overrides(bind(classOf[IdentificationViewModelProvider]).toInstance(mockViewModelProvider))
 
   "TransportMeansIdentification Controller" - {
 
@@ -77,12 +87,12 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[TransportMeansIdentificationView]
+      val view = injector.instanceOf[IdentificationView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, index, identificationTypes, mode)(request, messages).toString
+        view(form, mrn, arrivalId, index, identificationTypes, mode, viewModel)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -100,12 +110,12 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
 
       val filledForm = form.bind(Map("value" -> identificationType1.code))
 
-      val view = injector.instanceOf[TransportMeansIdentificationView]
+      val view = injector.instanceOf[IdentificationView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, index, identificationTypes, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, index, identificationTypes, mode, viewModel)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -141,12 +151,12 @@ class TransportMeansIdentificationControllerSpec extends SpecBase with AppWithDe
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[TransportMeansIdentificationView]
+      val view = injector.instanceOf[IdentificationView]
 
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, arrivalId, index, identificationTypes, mode)(request, messages).toString
+        view(boundForm, mrn, arrivalId, index, identificationTypes, mode, viewModel)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

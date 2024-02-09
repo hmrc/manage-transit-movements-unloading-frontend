@@ -22,6 +22,7 @@ import generators.Generators
 import models.{NormalMode, SelectableList}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.houseConsignment.index.items.PackageTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -31,7 +32,6 @@ import services.PackagesService
 import viewModels.houseConsignment.index.items.PackageTypeViewModel
 import viewModels.houseConsignment.index.items.PackageTypeViewModel.PackageTypeViewModelProvider
 import views.html.houseConsignment.index.items.PackageTypeView
-import org.scalacheck.Arbitrary.arbitrary
 
 import scala.concurrent.Future
 
@@ -84,7 +84,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(viewModel, form, arrivalId, packageTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex)(request, messages).toString
+        view(viewModel, form, mrn, arrivalId, packageTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -104,7 +104,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(viewModel, filledForm, arrivalId, packageTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex)(request, messages).toString
+        view(viewModel, filledForm, mrn, arrivalId, packageTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -139,7 +139,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(viewModel, boundForm, arrivalId, packageTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex)(request, messages).toString
+        view(viewModel, boundForm, mrn, arrivalId, packageTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

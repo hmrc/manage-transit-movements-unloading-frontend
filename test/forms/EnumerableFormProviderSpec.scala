@@ -17,7 +17,7 @@
 package forms
 
 import forms.behaviours.OptionFieldBehaviours
-import models.{EnumerableType, Radioable}
+import models.{EnumerableType, NormalMode, Radioable}
 import org.scalacheck.Gen
 import play.api.data.FormError
 
@@ -34,12 +34,12 @@ class EnumerableFormProviderSpec extends OptionFieldBehaviours {
 
     case class Foo(code: String) extends FakeEnum
     case class Bar(code: String) extends FakeEnum
-
     override val values: Seq[FakeEnum] = Seq(Foo("foo"), Bar("bar"))
   }
+  private val mode = NormalMode
 
   private val formProvider = new EnumerableFormProvider()
-  private val form         = formProvider.apply[FakeEnum](prefix)
+  private val form         = formProvider.apply[FakeEnum](mode, prefix)
 
   ".value" - {
 

@@ -32,9 +32,9 @@ import scala.concurrent.Future
 
 class UnloadingTypeControllerSpec extends SpecBase with Generators with AppWithDefaultMockFixtures with JsonMatchers {
 
-  private val formProvider = new EnumerableFormProvider()
-  private val form         = formProvider[UnloadingType]("unloadingType")
   private val mode         = NormalMode
+  private val formProvider = new EnumerableFormProvider()
+  private val form         = formProvider[UnloadingType](mode, "unloadingType")
 
   lazy val unloadingTypeRoute: String = controllers.routes.UnloadingTypeController.onPageLoad(arrivalId, mode).url
 
