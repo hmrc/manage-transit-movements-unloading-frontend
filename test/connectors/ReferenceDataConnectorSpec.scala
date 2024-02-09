@@ -17,14 +17,14 @@
 package connectors
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import cats.data.NonEmptySet
 import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import connectors.ReferenceDataConnectorSpec._
-import models.reference.{CUSCode, Country, CustomsOffice, PackageType}
+import models.reference._
+import models.reference.transport.TransportMode.{BorderMode, InlandMode}
 import org.scalacheck.Gen
 import org.scalatest.{Assertion, BeforeAndAfterEach}
-import cats.data.NonEmptySet
-import models.reference.transport.TransportMode.{BorderMode, InlandMode}
 import play.api.inject.guice.GuiceApplicationBuilder
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -175,6 +175,54 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "should handle client and server errors for countries" in {
         checkErrorResponse(url, connector.getPackageTypes)
+      }
+    }
+
+    "getSupportingDocument" - {
+      val typeValue = "C641"
+      val url       = s"/$baseUrl/lists/SupportingDocumentType?data.code=$typeValue"
+
+      "must return supporting document when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(supportingDocumentResponseJson))
+        )
+
+        val expectedResult: DocumentType = DocumentType(typeValue, "Dissostichus - catch document import")
+
+        connector.getSupportingDocument(typeValue).futureValue mustEqual expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getSupportingDocument(typeValue))
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getSupportingDocument(typeValue))
+      }
+    }
+
+    "getTransportDocument" - {
+      val typeValue = "N235"
+      val url       = s"/$baseUrl/lists/TransportDocumentType?data.code=$typeValue"
+
+      "must return supporting document when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(transportDocumentResponseJson))
+        )
+
+        val expectedResult: DocumentType = DocumentType(typeValue, "Container list")
+
+        connector.getTransportDocument(typeValue).futureValue mustEqual expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getTransportDocument(typeValue))
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getTransportDocument(typeValue))
       }
     }
   }
@@ -420,6 +468,50 @@ object ReferenceDataConnectorSpec {
       |    "description":"Drum, plywood"
       |  }
       | ]
+      |}
+      |""".stripMargin
+
+  private val supportingDocumentResponseJson: String =
+    """
+      |{
+      |  "_links": {
+      |    "self": {
+      |      "href": "/customs-reference-data/lists/SupportingDocumentType?data.code=C641"
+      |    }
+      |  },
+      |  "meta": {
+      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+      |    "snapshotDate": "2023-01-01"
+      |  },
+      |  "id": "SupportingDocumentType",
+      |  "data": [
+      |    {
+      |      "code": "C641",
+      |      "description": "Dissostichus - catch document import"
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+
+  private val transportDocumentResponseJson: String =
+    """
+      |{
+      |  "_links": {
+      |    "self": {
+      |      "href": "/customs-reference-data/lists/TransportDocumentType?data.code=N235"
+      |    }
+      |  },
+      |  "meta": {
+      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+      |    "snapshotDate": "2023-01-01"
+      |  },
+      |  "id": "TransportDocumentType",
+      |  "data": [
+      |    {
+      |      "code": "N235",
+      |      "description": "Container list"
+      |    }
+      |  ]
       |}
       |""".stripMargin
 
