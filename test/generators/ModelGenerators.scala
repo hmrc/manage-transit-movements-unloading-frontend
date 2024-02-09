@@ -23,9 +23,6 @@ import models.reference.{Country, Item, PackageType}
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
 import play.api.test.Helpers.{GET, POST}
-import wolfendale.scalacheck.regexp.RegexpGen
-
-import java.time.LocalDate
 
 trait ModelGenerators {
 
