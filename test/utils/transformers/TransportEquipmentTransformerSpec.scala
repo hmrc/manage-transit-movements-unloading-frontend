@@ -24,6 +24,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.sections.ItemsSection
 import pages.{ContainerIdentificationNumberPage, QuestionPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -36,16 +37,22 @@ class TransportEquipmentTransformerSpec extends SpecBase with AppWithDefaultMock
   private val transformer = app.injector.instanceOf[TransportEquipmentTransformer]
 
   private lazy val mockSealsTransformer = mock[SealsTransformer]
+  private lazy val mockItemTransformer  = mock[ItemsTransformer]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[SealsTransformer].toInstance(mockSealsTransformer)
+        bind[SealsTransformer].toInstance(mockSealsTransformer),
+        bind[ItemsTransformer].toInstance(mockItemTransformer)
       )
 
   private case class FakeSealsSection(equipmentIndex: Index) extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ equipmentIndex.position.toString \ "seals"
+  }
+
+  private case class FakeItemsSection(houseConsignmentIndex: Index, itemIndex: Index) extends QuestionPage[JsObject] {
+    override def path: JsPath = JsPath \ ItemsSection(houseConsignmentIndex) \ "items" \ itemIndex.position
   }
 
   "must transform data" in {
@@ -57,10 +64,15 @@ class TransportEquipmentTransformerSpec extends SpecBase with AppWithDefaultMock
               .thenReturn {
                 ua => Future.successful(ua.setValue(FakeSealsSection(Index(i)), Json.obj("foo" -> "bar")))
               }
+            when(mockItemTransformer.transform(any(), any()))
+              .thenReturn {
+                ua => Future.successful(ua.setValue(FakeItemsSection(hcIndex, itemIndex), Json.obj("foo" -> "bar")))
+              }
 
             val result = transformer.transform(transportEquipment).apply(emptyUserAnswers).futureValue
 
             result.get(ContainerIdentificationNumberPage(Index(i))) mustBe te.containerIdentificationNumber
+            result.getValue(FakeItemsSection(hcIndex, itemIndex)) mustBe Json.obj("foo" -> "bar")
             result.getValue(FakeSealsSection(Index(i))) mustBe Json.obj("foo" -> "bar")
         }
     }

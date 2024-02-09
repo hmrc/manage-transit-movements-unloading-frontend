@@ -155,6 +155,18 @@ newContainerIdentificationNumber.error.length = The identification number must b
 newContainerIdentificationNumber.error.characters = The identification number must only include letters a to z and numbers 0 to 9
 newContainerIdentificationNumber.error.alreadyEntered = This identification number has already been submitted. Enter a unique container identification number
 
+containerIdentificationNumber.NormalMode.title = What is the container identification number?
+containerIdentificationNumber.CheckMode.title = What is the new container identification number?
+containerIdentificationNumber.NormalMode.heading = What is the container identification number?
+containerIdentificationNumber.CheckMode.heading = What is the new container identification number?
+containerIdentificationNumber.CheckMode.paragraph = This is a unique number used to identify the container.
+containerIdentificationNumber.hint = This can be up to 17 characters long and include both letters and numbers, for example AABB3322110.
+containerIdentificationNumber.NormalMode.error.required = Enter the container identification number
+containerIdentificationNumber.CheckMode.error.required = Enter the new container identification number
+containerIdentificationNumber.error.length = The identification number must be 17 characters or less
+containerIdentificationNumber.error.characters = The identification number must only include letters a to z and numbers 0 to 9
+containerIdentificationNumber.error.duplicate = This identification number has already been submitted. Enter a unique container identification number
+
 unloadingSummary.title = Check what you found against the transit declaration
 unloadingSummary.heading = Check what you found against the transit declaration
 unloadingSummary.addSeal.link.text = Add a new official customs seal number
@@ -483,6 +495,16 @@ transport.equipment.selectItems.paragraph = You can only select from the items a
 transport.equipment.selectItems.label = Search your {0} items.
 transport.equipment.selectItems.error.required = Select which item this transport equipment applies to
 transport.equipment.selectItems.placeholder = Select an item
+
+transport.equipment.applyAnotherItem.singular.title = You have applied 1 item to transport equipment {0}
+transport.equipment.applyAnotherItem.plural.title = You have applied {0} items to transport equipment {1}
+transport.equipment.applyAnotherItem.singular.heading = You have applied 1 item to transport equipment {0}
+transport.equipment.applyAnotherItem.plural.heading = You have applied {0} items to transport equipment {1}
+transport.equipment.applyAnotherItem.label = Do any other items apply to transport equipment {0}?
+transport.equipment.applyAnotherItem.maxLimit.label = You cannot apply any more items. To apply another, you need to remove one first.
+transport.equipment.applyAnotherItem.error.required = Select yes if you want to apply any other items to transport equipment {0}
+transport.equipment.applyAnotherItem.noMoreItems.label = There are no items left to apply to this transport equipment.
+transport.item.prefix = Item {0}
 
 document.referenceNumber.NormalMode.title = What is the document’s reference number?
 document.referenceNumber.CheckMode.title = What is the document’s new reference number?

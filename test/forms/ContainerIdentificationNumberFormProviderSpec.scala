@@ -16,21 +16,19 @@
 
 package forms
 
-import forms.Constants.maxSealIdentificationLength
 import forms.behaviours.StringFieldBehaviours
-import models.messages.UnloadingRemarksRequest.alphaNumericWithSpacesRegex
+import models.messages.UnloadingRemarksRequest
+import models.messages.UnloadingRemarksRequest.alphaNumericRegex
 import play.api.data.FormError
 
-class SealIdentificationNumberFormProviderSpec extends StringFieldBehaviours {
+class ContainerIdentificationNumberFormProviderSpec extends StringFieldBehaviours {
 
-  private val prefix               = "transportEquipment.index.seal.identificationNumber"
-  private val invalidCharactersKey = s"$prefix.error.invalidCharacters"
-  private val requiredKey          = s"$prefix.error.required"
-  private val maxLengthKey         = s"$prefix.error.length"
-  val duplicateKey                 = s"$prefix.error.duplicate"
-  private val maxLength            = 20
+  private val requiredKey  = "containerIdentificationNumber.error.required"
+  private val maxLength    = UnloadingRemarksRequest.newContainerIdentificationNumberMaximumLength
+  private val invalidKey   = "containerIdentificationNumber.error.characters"
+  private val duplicateKey = "containerIdentificationNumber.error.duplicate"
 
-  val form = new SealIdentificationNumberFormProvider()(requiredKey, Seq.empty)
+  private val form = new ContainerIdentificationNumberFormProvider()(requiredKey, Seq("cin1"))
 
   ".value" - {
 
@@ -42,35 +40,22 @@ class SealIdentificationNumberFormProviderSpec extends StringFieldBehaviours {
       stringsWithMaxLength(maxLength)
     )
 
-    behave like fieldThatRemovesSpaces(
-      form,
-      fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithInvalidCharacters(
-      form,
-      fieldName,
-      error = FormError(fieldName, invalidCharactersKey, Seq(alphaNumericWithSpacesRegex.regex)),
-      maxSealIdentificationLength
-    )
-
     behave like mandatoryField(
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    behave like fieldWithMaxLength(
+    behave like fieldWithInvalidCharacters(
       form,
       fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, maxLengthKey, Seq(maxLength))
+      error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex)),
+      maxLength
     )
 
     "must not bind if value exists in the list of other ids" in {
       val otherIds  = Seq("foo", "bar")
-      val form      = new SealIdentificationNumberFormProvider()(prefix, otherIds)
+      val form      = new ContainerIdentificationNumberFormProvider()(requiredKey, otherIds)
       val boundForm = form.bind(Map("value" -> "foo"))
       val field     = boundForm("value")
       field.errors mustEqual Seq(FormError(fieldName, duplicateKey))

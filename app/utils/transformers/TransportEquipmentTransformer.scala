@@ -26,20 +26,22 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TransportEquipmentTransformer @Inject() (
-  sealsTransformer: SealsTransformer
+  sealsTransformer: SealsTransformer,
+  itemsTransformer: ItemsTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
   def transform(transportEquipment: Seq[TransportEquipmentType05]): UserAnswers => Future[UserAnswers] = userAnswers =>
     transportEquipment.zipWithIndex.foldLeft(Future.successful(userAnswers))({
-      case (acc, (TransportEquipmentType05(_, containerIdentificationNumber, _, seals, _), i)) =>
+      case (acc, (TransportEquipmentType05(_, containerIdentificationNumber, _, seals, goodsReference), i)) =>
         acc.flatMap {
           userAnswers =>
             val equipmentIndex: Index = Index(i)
             val pipeline: UserAnswers => Future[UserAnswers] = {
               set(TransportEquipmentSection(equipmentIndex), Json.obj()) andThen
                 set(ContainerIdentificationNumberPage(equipmentIndex), containerIdentificationNumber) andThen
-                sealsTransformer.transform(seals, equipmentIndex)
+                sealsTransformer.transform(seals, equipmentIndex) andThen
+                itemsTransformer.transform(goodsReference, equipmentIndex)
             }
 
             pipeline(userAnswers)

@@ -16,7 +16,7 @@
 
 package viewModels
 
-import models.{Index, Mode}
+import models.{CheckMode, Index, Mode, NormalMode}
 import play.api.i18n.Messages
 
 trait ModeViewModelProvider {
@@ -40,4 +40,9 @@ trait ModeViewModelProvider {
 
   def requiredError(mode: Mode)(implicit messages: Messages): String =
     messages(s"$prefix.${mode.toString}.error.required")
+
+  def paragraph(mode: Mode)(implicit messages: Messages): Option[String] = mode match {
+    case NormalMode => None
+    case CheckMode  => Some(messages(s"$prefix.${mode.toString}.paragraph"))
+  }
 }
