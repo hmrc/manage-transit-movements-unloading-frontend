@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package viewModels.transportEquipment
+package viewModels.transportEquipment.index
 
 import config.FrontendAppConfig
-import controllers.transport.equipment.routes
+import controllers.transportEquipment.index.routes
 import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, UserAnswers}
-import pages.sections.ItemsSection
-import pages.transport.equipment.ItemPage
+import pages.sections.transport.equipment.ItemsSection
+import pages.transportEquipment.index.ItemPage
 import play.api.i18n.Messages
 import play.api.libs.json.JsArray
 import play.api.mvc.Call

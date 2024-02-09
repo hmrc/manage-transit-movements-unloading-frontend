@@ -19,7 +19,7 @@ package utils.transformers
 import generated.GoodsReferenceType02
 import models.reference.Item
 import models.{Index, UserAnswers}
-import pages.transport.equipment.ItemPage
+import pages.transportEquipment.index.ItemPage
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

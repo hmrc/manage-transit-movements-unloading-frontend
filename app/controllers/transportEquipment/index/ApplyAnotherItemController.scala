@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.transport.equipment
+package controllers.transportEquipment.index
 
 import config.FrontendAppConfig
 import controllers.actions._
@@ -22,14 +22,15 @@ import forms.AddAnotherFormProvider
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
-import pages.transport.equipment.ApplyAnotherItemPage
+import pages.transportEquipment.index.ApplyAnotherItemPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.transportEquipment.{ApplyAnotherItemViewModel, SelectItemsViewModel}
-import viewModels.transportEquipment.ApplyAnotherItemViewModel.ApplyAnotherItemViewModelProvider
+import viewModels.transportEquipment.SelectItemsViewModel
+import viewModels.transportEquipment.index.ApplyAnotherItemViewModel
+import viewModels.transportEquipment.index.ApplyAnotherItemViewModel.ApplyAnotherItemViewModelProvider
 import views.html.transport.equipment.ApplyAnotherItemView
 
 import javax.inject.Inject
@@ -57,8 +58,7 @@ class ApplyAnotherItemController @Inject() (
       val viewModel                  = viewModelProvider(request.userAnswers, arrivalId, mode, equipmentIndex, isNumberItemsZero)
       viewModel.count match {
         case 0 =>
-          println("No items")
-          Redirect(controllers.routes.ErrorController.technicalDifficulties()) //TODO redirect to selectItemsController
+          Redirect(routes.GoodsReferenceController.onPageLoad(ArrivalId(arrivalId), Index(0), mode))
         case _ => Ok(view(form(viewModel, equipmentIndex), arrivalId, viewModel))
       }
   }

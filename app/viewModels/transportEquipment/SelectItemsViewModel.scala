@@ -21,7 +21,7 @@ import models.reference.Item
 import models.{Index, SelectableList, UserAnswers}
 import pages.sections.ItemsSection
 import pages.sections.transport.equipment.EquipmentsSection
-import pages.transport.equipment.ItemPage
+import pages.transportEquipment.index.ItemPage
 
 case class SelectItemsViewModel(items: SelectableList[Item], allItemsCount: Int)
 

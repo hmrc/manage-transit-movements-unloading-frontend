@@ -22,7 +22,7 @@ import generators.Generators
 import models.Index
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.transport.equipment.ItemPage
+import pages.transportEquipment.index.ItemPage
 
 class ItemsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 

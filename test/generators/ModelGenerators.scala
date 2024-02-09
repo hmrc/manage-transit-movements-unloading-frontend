@@ -24,6 +24,8 @@ import models.{UnloadingPermission, _}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen.choose
 import org.scalacheck.{Arbitrary, Gen}
+import play.api.mvc.Call
+import play.api.test.Helpers.{GET, POST}
 import wolfendale.scalacheck.regexp.RegexpGen
 
 import java.time.LocalDate
@@ -283,4 +285,11 @@ trait ModelGenerators {
         desc <- nonEmptyString
       } yield Item(no, desc)
     }
+
+  implicit lazy val arbitraryCall: Arbitrary[Call] = Arbitrary {
+    for {
+      method <- Gen.oneOf(GET, POST)
+      url    <- nonEmptyString
+    } yield Call(method, url)
+  }
 }
