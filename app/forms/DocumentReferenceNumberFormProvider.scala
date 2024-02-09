@@ -16,7 +16,7 @@
 
 package forms
 
-import forms.Constants.maxSealIdentificationLength
+import forms.Constants.maxDocumentRefNumberLength
 import forms.mappings.Mappings
 import models.RichString
 import models.messages.UnloadingRemarksRequest.alphaNumericWithSpacesRegex
@@ -24,16 +24,15 @@ import play.api.data.Form
 
 import javax.inject.Inject
 
-class SealIdentificationNumberFormProvider @Inject() extends Mappings {
+class DocumentReferenceNumberFormProvider @Inject() extends Mappings {
 
-  def apply(requiredError: String, otherSealIdentificationNumbers: Seq[String]): Form[String] =
+  def apply(requiredError: String): Form[String] =
     Form(
       "value" -> adaptedText(requiredError)(_.removeSpaces())
         .verifying(
           forms.StopOnFirstFail[String](
-            regexp(alphaNumericWithSpacesRegex, "transportEquipment.index.seal.identificationNumber.error.invalidCharacters"),
-            maxLength(maxSealIdentificationLength, "transportEquipment.index.seal.identificationNumber.error.length"),
-            valueIsNotInList(otherSealIdentificationNumbers, "transportEquipment.index.seal.identificationNumber.error.duplicate")
+            regexp(alphaNumericWithSpacesRegex, "document.referenceNumber.error.invalidCharacters"),
+            maxLength(maxDocumentRefNumberLength, "document.referenceNumber.error.length")
           )
         )
     )

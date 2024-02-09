@@ -19,11 +19,7 @@ package forms
 import forms.behaviours.StringFieldBehaviours
 import models.messages.UnloadingRemarksRequest
 import models.messages.UnloadingRemarksRequest.alphaNumericRegex
-import org.scalacheck.Gen
-import play.api.data.{Field, FormError}
-import wolfendale.scalacheck.regexp.RegexpGen
-
-import scala.util.matching.Regex
+import play.api.data.FormError
 
 class ContainerIdentificationNumberFormProviderSpec extends StringFieldBehaviours {
 

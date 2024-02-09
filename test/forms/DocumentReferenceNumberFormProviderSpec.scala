@@ -21,16 +21,15 @@ import forms.behaviours.StringFieldBehaviours
 import models.messages.UnloadingRemarksRequest.alphaNumericWithSpacesRegex
 import play.api.data.FormError
 
-class SealIdentificationNumberFormProviderSpec extends StringFieldBehaviours {
+class DocumentReferenceNumberFormProviderSpec extends StringFieldBehaviours {
 
-  private val prefix               = "transportEquipment.index.seal.identificationNumber"
+  private val prefix               = "document.referenceNumber"
   private val invalidCharactersKey = s"$prefix.error.invalidCharacters"
   private val requiredKey          = s"$prefix.error.required"
   private val maxLengthKey         = s"$prefix.error.length"
-  val duplicateKey                 = s"$prefix.error.duplicate"
-  private val maxLength            = 20
+  private val maxLength            = 70
 
-  val form = new SealIdentificationNumberFormProvider()(requiredKey, Seq.empty)
+  val form = new DocumentReferenceNumberFormProvider()(requiredKey)
 
   ".value" - {
 
@@ -67,13 +66,5 @@ class SealIdentificationNumberFormProviderSpec extends StringFieldBehaviours {
       maxLength = maxLength,
       lengthError = FormError(fieldName, maxLengthKey, Seq(maxLength))
     )
-
-    "must not bind if value exists in the list of other ids" in {
-      val otherIds  = Seq("foo", "bar")
-      val form      = new SealIdentificationNumberFormProvider()(prefix, otherIds)
-      val boundForm = form.bind(Map("value" -> "foo"))
-      val field     = boundForm("value")
-      field.errors mustEqual Seq(FormError(fieldName, duplicateKey))
-    }
   }
 }

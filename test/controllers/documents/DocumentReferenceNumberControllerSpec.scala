@@ -14,39 +14,39 @@
  * limitations under the License.
  */
 
-package controllers.transportEquipment.index.seals
+package controllers.documents
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.SealIdentificationNumberFormProvider
+import forms.DocumentReferenceNumberFormProvider
 import generators.Generators
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.transportEquipment.index.seals.SealIdentificationNumberPage
+import pages.documents.DocumentReferenceNumberPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
-import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel.SealIdentificationNumberViewModelProvider
-import views.html.transportEquipment.index.seals.SealIdentificationNumberView
+import viewModels.documents.DocumentReferenceNumberViewModel
+import viewModels.documents.DocumentReferenceNumberViewModel.DocumentReferenceNumberViewModelProvider
+import views.html.documents.DocumentReferenceNumberView
 
 import scala.concurrent.Future
 
-class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class DocumentReferenceNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val viewModel    = arbitrary[SealIdentificationNumberViewModel].sample.value
-  private val formProvider = new SealIdentificationNumberFormProvider()
-  private val form         = formProvider(viewModel.requiredError, Seq.empty)
+  private val viewModel    = arbitrary[DocumentReferenceNumberViewModel].sample.value
+  private val formProvider = new DocumentReferenceNumberFormProvider()
+  private val form         = formProvider(viewModel.requiredError)
   private val mode         = NormalMode
 
-  private val mockViewModelProvider = mock[SealIdentificationNumberViewModelProvider]
+  private val mockViewModelProvider = mock[DocumentReferenceNumberViewModelProvider]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[SealIdentificationNumberViewModelProvider].toInstance(mockViewModelProvider))
+      .overrides(bind[DocumentReferenceNumberViewModelProvider].toInstance(mockViewModelProvider))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -56,43 +56,43 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
       .thenReturn(viewModel)
   }
 
-  private lazy val sealIdentificationNumberRoute = routes.SealIdentificationNumberController.onPageLoad(arrivalId, mode, equipmentIndex, sealIndex).url
+  private lazy val documentReferenceNumberRoute = routes.DocumentReferenceNumberController.onPageLoad(arrivalId, mode, documentIndex).url
 
-  "SealIdentificationNumber Controller" - {
+  "DocumentReferenceNumber Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, sealIdentificationNumberRoute)
+      val request = FakeRequest(GET, documentReferenceNumberRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[SealIdentificationNumberView]
+      val view = injector.instanceOf[DocumentReferenceNumberView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, mode, viewModel, equipmentIndex, sealIndex)(request, messages).toString
+        view(form, mrn, arrivalId, mode, viewModel, documentIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "testString")
+      val userAnswers = emptyUserAnswers.setValue(DocumentReferenceNumberPage(documentIndex), "testString")
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, sealIdentificationNumberRoute)
+      val request = FakeRequest(GET, documentReferenceNumberRoute)
 
       val result = route(app, request).value
 
       val filledForm = form.bind(Map("value" -> "testString"))
 
-      val view = injector.instanceOf[SealIdentificationNumberView]
+      val view = injector.instanceOf[DocumentReferenceNumberView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, mode, viewModel, equipmentIndex, sealIndex)(request, messages).toString
+        view(filledForm, mrn, arrivalId, mode, viewModel, documentIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -101,7 +101,7 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, sealIdentificationNumberRoute)
+      val request = FakeRequest(POST, documentReferenceNumberRoute)
         .withFormUrlEncodedBody(("value", "testString"))
 
       val result = route(app, request).value
@@ -117,24 +117,24 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
 
       val invalidAnswer = ""
 
-      val request    = FakeRequest(POST, sealIdentificationNumberRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, documentReferenceNumberRoute).withFormUrlEncodedBody(("value", ""))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[SealIdentificationNumberView]
+      val view = injector.instanceOf[DocumentReferenceNumberView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, mode, viewModel, equipmentIndex, sealIndex)(request, messages).toString
+        view(filledForm, mrn, arrivalId, mode, viewModel, documentIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, sealIdentificationNumberRoute)
+      val request = FakeRequest(GET, documentReferenceNumberRoute)
 
       val result = route(app, request).value
 
@@ -147,7 +147,7 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, sealIdentificationNumberRoute)
+      val request = FakeRequest(POST, documentReferenceNumberRoute)
         .withFormUrlEncodedBody(("value", "test string"))
 
       val result = route(app, request).value

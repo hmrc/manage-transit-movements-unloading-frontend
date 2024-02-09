@@ -19,7 +19,7 @@ package viewModels.transportEquipment.index
 import base.SpecBase
 import generators.Generators
 import models.reference.Item
-import models.{CheckMode, Index, Mode, NormalMode}
+import models.{CheckMode, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transportEquipment.index.ItemPage

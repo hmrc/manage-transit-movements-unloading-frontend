@@ -28,11 +28,11 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import viewModels.{ListItem, UnloadingFindingsViewModel}
 import viewModels.departureTransportMeans._
+import viewModels.documents.DocumentReferenceNumberViewModel
 import viewModels.houseConsignment.index.items._
 import viewModels.sections.Section
-import viewModels.transportEquipment.index.ApplyAnotherItemViewModel
+import viewModels.transportEquipment.index.{ApplyAnotherItemViewModel, ContainerIdentificationNumberViewModel}
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
-import viewModels.transportEquipment.index.ContainerIdentificationNumberViewModel
 
 trait ViewModelGenerators {
   self: Generators =>
@@ -246,4 +246,13 @@ trait ViewModelGenerators {
       paragraph     <- nonEmptyString
     } yield ContainerIdentificationNumberViewModel(heading, title, requiredError, Some(paragraph))
   }
+
+  implicit lazy val arbitraryDocumentReferenceNumberViewModel: Arbitrary[DocumentReferenceNumberViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+    } yield DocumentReferenceNumberViewModel(heading, title, requiredError)
+  }
+
 }

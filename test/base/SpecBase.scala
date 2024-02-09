@@ -65,6 +65,7 @@ trait SpecBase
   val houseConsignmentIndex: Index  = Index(0)
   val itemIndex: Index              = Index(0)
   val packageIndex: Index           = Index(0)
+  val documentIndex: Index          = Index(0)
   def emptyUserAnswers: UserAnswers = UserAnswers(arrivalId, mrn, eoriNumber, basicIe043, Json.obj(), Instant.now())
 
   def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")

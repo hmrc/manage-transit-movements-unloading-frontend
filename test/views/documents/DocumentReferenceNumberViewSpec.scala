@@ -14,32 +14,32 @@
  * limitations under the License.
  */
 
-package views.transportEquipment.index.seals
+package views.documents
 
-import forms.SealIdentificationNumberFormProvider
+import forms.DocumentReferenceNumberFormProvider
 import models.NormalMode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
+import viewModels.documents.DocumentReferenceNumberViewModel
 import views.behaviours.InputTextViewBehaviours
-import views.html.transportEquipment.index.seals.SealIdentificationNumberView
+import views.html.documents.DocumentReferenceNumberView
 
-class SealIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
+class DocumentReferenceNumberViewSpec extends InputTextViewBehaviours[String] {
 
-  private val viewModel: SealIdentificationNumberViewModel =
-    arbitrary[SealIdentificationNumberViewModel].sample.value
+  private val viewModel: DocumentReferenceNumberViewModel =
+    arbitrary[DocumentReferenceNumberViewModel].sample.value
 
-  override def form: Form[String] = new SealIdentificationNumberFormProvider()(viewModel.requiredError, Seq.empty)
+  override def form: Form[String] = new DocumentReferenceNumberFormProvider()(viewModel.requiredError)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[SealIdentificationNumberView].apply(form, mrn, arrivalId, NormalMode, viewModel, equipmentIndex, sealIndex)(fakeRequest, messages)
+    injector.instanceOf[DocumentReferenceNumberView].apply(form, mrn, arrivalId, NormalMode, viewModel, documentIndex)(fakeRequest, messages)
 
   override val prefix: String = Gen
     .oneOf(
-      "transportEquipment.index.seal.identificationNumber.NormalMode",
-      "transportEquipment.index.seal.identificationNumber.CheckMode"
+      "document.referenceNumber.NormalMode",
+      "document.referenceNumber.CheckMode"
     )
     .sample
     .value
@@ -54,7 +54,7 @@ class SealIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithHint("This can be up to 20 characters long and include both letters and numbers.")
+  behave like pageWithHint("This can be up to 70 characters long and include both letters and numbers.")
 
   behave like pageWithInputText()
 

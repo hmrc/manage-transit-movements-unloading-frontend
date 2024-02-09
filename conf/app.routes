@@ -3,6 +3,7 @@
 ->         /                                            app.departureMeansOfTransport.Routes
 ->         /                                            app.houseConsignment.index.items.Routes
 ->         /                                            app.transportEquipment.index.Routes
+->         /                                            app.documents.Routes
 
 
 ->         /hmrc-frontend                                                                                            hmrcfrontend.Routes
