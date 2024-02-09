@@ -36,13 +36,12 @@ import scala.concurrent.Future
 
 class DocumentReferenceNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
+  private val viewModel    = arbitrary[DocumentReferenceNumberViewModel].sample.value
   private val formProvider = new DocumentReferenceNumberFormProvider()
-  private val form         = formProvider("document.referenceNumber.NormalMode")
+  private val form         = formProvider(viewModel.requiredError)
   private val mode         = NormalMode
 
   private val mockViewModelProvider = mock[DocumentReferenceNumberViewModelProvider]
-
-  private val viewModel = arbitrary[DocumentReferenceNumberViewModel].sample.value
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

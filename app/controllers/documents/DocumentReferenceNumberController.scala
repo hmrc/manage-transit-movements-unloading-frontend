@@ -19,7 +19,7 @@ package controllers.documents
 import controllers.actions._
 import forms.DocumentReferenceNumberFormProvider
 import models.requests.MandatoryDataRequest
-import models.{ArrivalId, CheckMode, Index, Mode, NormalMode}
+import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
 import pages.documents.DocumentReferenceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -45,20 +45,13 @@ class DocumentReferenceNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def prefix(mode: Mode): String = mode match {
-    case NormalMode => "document.referenceNumber.NormalMode"
-    case CheckMode  => "document.referenceNumber.CheckMode"
-  }
-
-  private def form(mode: Mode) = formProvider(prefix(mode))
-
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, documentIndex: Index): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
         val viewModel = viewModelProvider.apply(mode)
         val preparedForm = request.userAnswers.get(DocumentReferenceNumberPage(documentIndex)) match {
-          case None        => form(mode)
-          case Some(value) => form(mode).fill(value)
+          case None        => formProvider(viewModel.requiredError)
+          case Some(value) => formProvider(viewModel.requiredError).fill(value)
         }
 
         Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode, viewModel, documentIndex))
@@ -70,7 +63,7 @@ class DocumentReferenceNumberController @Inject() (
       .async {
         implicit request =>
           val viewModel = viewModelProvider.apply(mode)
-          form(mode)
+          formProvider(viewModel.requiredError)
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode, viewModel, documentIndex))),

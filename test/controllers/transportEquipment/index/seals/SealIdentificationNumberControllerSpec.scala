@@ -36,13 +36,12 @@ import scala.concurrent.Future
 
 class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
+  private val viewModel    = arbitrary[SealIdentificationNumberViewModel].sample.value
   private val formProvider = new SealIdentificationNumberFormProvider()
-  private val form         = formProvider("transportEquipment.index.seal.identificationNumber.NormalMode", Seq.empty)
+  private val form         = formProvider(viewModel.requiredError, Seq.empty)
   private val mode         = NormalMode
 
   private val mockViewModelProvider = mock[SealIdentificationNumberViewModelProvider]
-
-  private val viewModel = arbitrary[SealIdentificationNumberViewModel].sample.value
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

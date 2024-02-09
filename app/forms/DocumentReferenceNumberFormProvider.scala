@@ -26,13 +26,13 @@ import javax.inject.Inject
 
 class DocumentReferenceNumberFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String): Form[String] =
+  def apply(requiredError: String): Form[String] =
     Form(
-      "value" -> adaptedText(s"$prefix.error.required")(_.removeSpaces())
+      "value" -> adaptedText(requiredError)(_.removeSpaces())
         .verifying(
           forms.StopOnFirstFail[String](
-            regexp(alphaNumericWithSpacesRegex, s"$prefix.error.invalidCharacters"),
-            maxLength(maxDocumentRefNumberLength, s"$prefix.error.length")
+            regexp(alphaNumericWithSpacesRegex, "document.referenceNumber.error.invalidCharacters"),
+            maxLength(maxDocumentRefNumberLength, "document.referenceNumber.error.length")
           )
         )
     )

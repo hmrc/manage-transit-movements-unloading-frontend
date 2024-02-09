@@ -24,14 +24,14 @@ import play.api.data.FormError
 
 class SealIdentificationNumberFormProviderSpec extends StringFieldBehaviours {
 
-  private val prefix               = Gen.alphaNumStr.sample.value
+  private val prefix               = "transportEquipment.index.seal.identificationNumber"
   private val invalidCharactersKey = s"$prefix.error.invalidCharacters"
   private val requiredKey          = s"$prefix.error.required"
   private val maxLengthKey         = s"$prefix.error.length"
   val duplicateKey                 = s"$prefix.error.duplicate"
   private val maxLength            = 20
 
-  val form = new SealIdentificationNumberFormProvider()(prefix, Seq.empty)
+  val form = new SealIdentificationNumberFormProvider()(requiredKey, Seq.empty)
 
   ".value" - {
 

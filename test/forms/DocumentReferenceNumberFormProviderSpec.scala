@@ -19,18 +19,17 @@ package forms
 import forms.Constants.maxSealIdentificationLength
 import forms.behaviours.StringFieldBehaviours
 import models.messages.UnloadingRemarksRequest.alphaNumericWithSpacesRegex
-import org.scalacheck.Gen
 import play.api.data.FormError
 
 class DocumentReferenceNumberFormProviderSpec extends StringFieldBehaviours {
 
-  private val prefix               = Gen.alphaNumStr.sample.value
+  private val prefix               = "document.referenceNumber"
   private val invalidCharactersKey = s"$prefix.error.invalidCharacters"
   private val requiredKey          = s"$prefix.error.required"
   private val maxLengthKey         = s"$prefix.error.length"
   private val maxLength            = 70
 
-  val form = new DocumentReferenceNumberFormProvider()(prefix)
+  val form = new DocumentReferenceNumberFormProvider()(requiredKey)
 
   ".value" - {
 

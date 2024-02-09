@@ -19,7 +19,7 @@ package controllers.transportEquipment.index.seals
 import controllers.actions._
 import forms.SealIdentificationNumberFormProvider
 import models.requests.{DataRequest, MandatoryDataRequest}
-import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, RichOptionalJsArray}
+import models.{ArrivalId, Index, Mode, RichOptionalJsArray}
 import navigation.Navigator
 import pages.sections.SealsSection
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
@@ -46,13 +46,8 @@ class SealIdentificationNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def prefix(mode: Mode): String = mode match {
-    case NormalMode => "transportEquipment.index.seal.identificationNumber.NormalMode"
-    case CheckMode  => "transportEquipment.index.seal.identificationNumber.CheckMode"
-  }
-
-  private def form(mode: Mode, equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[_]) =
-    formProvider(prefix(mode), otherSealIdentificationNumbers(equipmentIndex, sealIndex))
+  private def form(requiredError: String, equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[_]) =
+    formProvider(requiredError, otherSealIdentificationNumbers(equipmentIndex, sealIndex))
 
   private def otherSealIdentificationNumbers(equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[_]): Seq[String] = {
     val numberOfSeals = request.userAnswers.get(SealsSection(equipmentIndex)).length
@@ -69,8 +64,8 @@ class SealIdentificationNumberController @Inject() (
       implicit request =>
         val viewModel = viewModelProvider.apply(mode)
         val preparedForm = request.userAnswers.get(SealIdentificationNumberPage(equipmentIndex, sealIndex)) match {
-          case None        => form(mode, equipmentIndex, sealIndex)
-          case Some(value) => form(mode, equipmentIndex, sealIndex).fill(value)
+          case None        => form(viewModel.requiredError, equipmentIndex, sealIndex)
+          case Some(value) => form(viewModel.requiredError, equipmentIndex, sealIndex).fill(value)
         }
 
         Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode, viewModel, equipmentIndex, sealIndex))
@@ -82,7 +77,7 @@ class SealIdentificationNumberController @Inject() (
       .async {
         implicit request =>
           val viewModel = viewModelProvider.apply(mode)
-          form(mode, equipmentIndex, sealIndex)
+          form(viewModel.requiredError, equipmentIndex, sealIndex)
             .bindFromRequest()
             .fold(
               formWithErrors =>

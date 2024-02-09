@@ -26,14 +26,14 @@ import javax.inject.Inject
 
 class SealIdentificationNumberFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String, otherSealIdentificationNumbers: Seq[String]): Form[String] =
+  def apply(requiredError: String, otherSealIdentificationNumbers: Seq[String]): Form[String] =
     Form(
-      "value" -> adaptedText(s"$prefix.error.required")(_.removeSpaces())
+      "value" -> adaptedText(requiredError)(_.removeSpaces())
         .verifying(
           forms.StopOnFirstFail[String](
-            regexp(alphaNumericWithSpacesRegex, s"$prefix.error.invalidCharacters"),
-            maxLength(maxSealIdentificationLength, s"$prefix.error.length"),
-            valueIsNotInList(otherSealIdentificationNumbers, s"$prefix.error.duplicate")
+            regexp(alphaNumericWithSpacesRegex, "transportEquipment.index.seal.identificationNumber.error.invalidCharacters"),
+            maxLength(maxSealIdentificationLength, "transportEquipment.index.seal.identificationNumber.error.length"),
+            valueIsNotInList(otherSealIdentificationNumbers, "transportEquipment.index.seal.identificationNumber.error.duplicate")
           )
         )
     )
