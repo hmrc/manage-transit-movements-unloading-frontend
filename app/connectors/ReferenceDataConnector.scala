@@ -23,7 +23,7 @@ import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import logging.Logging
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.transport.TransportMode
-import models.reference.{CUSCode, Country, CustomsOffice, PackageType}
+import models.reference._
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, Reads}
 import sttp.model.HeaderNames
@@ -86,6 +86,18 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getPackageTypes(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[PackageType]] = {
     val serviceUrl = s"${config.referenceDataUrl}/lists/KindOfPackages"
     http.GET[NonEmptySet[PackageType]](serviceUrl, headers = version2Header)(responseHandlerGeneric(PackageType.format, PackageType.order), hc, ec)
+  }
+
+  def getSupportingDocument(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DocumentType] = {
+    val queryParams: Seq[(String, String)] = Seq("data.code" -> typeValue)
+    val url                                = s"${config.referenceDataUrl}/lists/SupportingDocumentType"
+    http.GET[NonEmptySet[DocumentType]](url, headers = version2Header, queryParams = queryParams).map(_.head)
+  }
+
+  def getTransportDocument(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DocumentType] = {
+    val queryParams: Seq[(String, String)] = Seq("data.code" -> typeValue)
+    val url                                = s"${config.referenceDataUrl}/lists/TransportDocumentType"
+    http.GET[NonEmptySet[DocumentType]](url, headers = version2Header, queryParams = queryParams).map(_.head)
   }
 
   private def version2Header: Seq[(String, String)] = Seq(
