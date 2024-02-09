@@ -18,7 +18,7 @@ package utils
 
 import cats.data.OptionT
 import cats.implicits._
-import models.{Index, Link, UserAnswers}
+import models.{Index, Link, NormalMode, UserAnswers}
 import pages._
 import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
 import pages.sections._
@@ -116,9 +116,9 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
     page = ContainerIdentificationNumberPage(index),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.containerIdentificationNumber",
-    id = None,
+    id = Some(s"change-container-identification-number-${index.display}"),
     args = None,
-    call = None
+    call = Some(controllers.routes.SessionExpiredController.onPageLoad())
   )
 
   def transportEquipmentSeal(equipmentIndex: Index, sealIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
@@ -126,8 +126,8 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.sealIdentifier",
     args = sealIndex.display,
-    id = None,
-    call = None
+    id = Some(s"change-seal-details-${sealIndex.display}"),
+    call = Some(controllers.routes.SessionExpiredController.onPageLoad())
   )
 
   def houseConsignmentSections: Seq[Section] =

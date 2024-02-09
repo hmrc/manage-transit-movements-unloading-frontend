@@ -17,7 +17,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import viewModels.sections.Section
 
-@this(details: GovukDetails)
+@this(details: GovukDetails, govukSummaryList: GovukSummaryList)
 
 @(section: Section)(html: Html = Html(""))(implicit messages: Messages)
 
@@ -31,16 +31,11 @@
 
 @content = {
     <dl class="govuk-summary-list govuk-!-margin-bottom-5">
-        @section.rows.map { row =>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    @row.key.content.asHtml.toString()
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @row.value.content.asHtml.toString()
-                </dd>
-            </div>
-        }
+        @govukSummaryList(
+            SummaryList(
+                rows = section.rows
+            )
+        )
     </dl>
 
     @section.viewLink.map { link =>

@@ -29,6 +29,7 @@ import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.libs.json.{JsObject, Json}
 import services.ReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -39,6 +40,36 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
   val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   private val countryDesc = "Great Britain"
+
+  private def containerIndicatorAction(index: Int) = Some(
+    Actions(
+      "",
+      List(
+        ActionItem(
+          "/manage-transit-movements/unloading/error/this-service-has-been-reset",
+          Text("Change"),
+          Some("unloadingFindings.rowHeadings.containerIdentificationNumber.change.hidden"),
+          "",
+          Map("id" -> s"change-container-identification-number-$index")
+        )
+      )
+    )
+  )
+
+  private def sealsAction(index: Int) = Some(
+    Actions(
+      "",
+      List(
+        ActionItem(
+          "/manage-transit-movements/unloading/error/this-service-has-been-reset",
+          Text("Change"),
+          Some("unloadingFindings.rowHeadings.sealIdentifier.change.hidden"),
+          "",
+          Map("id" -> s"change-seal-details-$index")
+        )
+      )
+    )
+  )
 
   "UnloadingFindingsAnswersHelper" - {
 
@@ -325,8 +356,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
           result mustBe Some(
             SummaryListRow(
               key = Key(identificationTypeMessage.toText),
-              value = Value(vehicleIdentificationNumber.toText),
-              actions = None
+              value = Value(vehicleIdentificationNumber.toText)
             )
           )
         }
@@ -348,8 +378,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
           result mustBe
             SummaryListRow(
               key = Key("Registered country".toText),
-              value = Value(countryDesc.toText),
-              actions = None
+              value = Value(countryDesc.toText)
             )
         }
       }
@@ -397,7 +426,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             SummaryListRow(
               key = Key("Container identification number".toText),
               value = Value(containerIdentificationNumber.toText),
-              actions = None
+              actions = containerIndicatorAction(index.display)
             )
           )
         }
@@ -447,10 +476,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
           val sealRow1 = transportEquipment1.head
 
           sealRow1 mustBe
-            SummaryListRow(
-              key = Key("Seal 1".toText),
-              value = Value("seal1".toText)
-            )
+            SummaryListRow(key = Key("Seal 1".toText), value = Value("seal1".toText), actions = sealsAction(index.display))
 
           transportEquipment1.length mustBe 1
 
@@ -484,7 +510,8 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
           containerRow1 mustBe
             SummaryListRow(
               key = Key("Container identification number".toText),
-              value = Value("container1".toText)
+              value = Value("container1".toText),
+              actions = containerIndicatorAction(index.display)
             )
 
           transportEquipment1.length mustBe 1
@@ -527,13 +554,15 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
           containerRow1 mustBe
             SummaryListRow(
               key = Key("Container identification number".toText),
-              value = Value("container1".toText)
+              value = Value("container1".toText),
+              actions = containerIndicatorAction(index.display)
             )
 
           sealRow1 mustBe
             SummaryListRow(
               key = Key("Seal 1".toText),
-              value = Value("seal1".toText)
+              value = Value("seal1".toText),
+              actions = sealsAction(index.display)
             )
 
         }
@@ -588,25 +617,29 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
           containerRow1 mustBe
             SummaryListRow(
               key = Key("Container identification number".toText),
-              value = Value("container1".toText)
+              value = Value("container1".toText),
+              actions = containerIndicatorAction(1)
             )
 
           sealRow1 mustBe
             SummaryListRow(
               key = Key("Seal 1".toText),
-              value = Value("seal1".toText)
+              value = Value("seal1".toText),
+              actions = sealsAction(1)
             )
 
           containerRow2 mustBe
             SummaryListRow(
               key = Key("Container identification number".toText),
-              value = Value("container2".toText)
+              value = Value("container2".toText),
+              actions = containerIndicatorAction(2)
             )
 
           sealRow2 mustBe
             SummaryListRow(
               key = Key("Seal 1".toText),
-              value = Value("seal2".toText)
+              value = Value("seal2".toText),
+              actions = sealsAction(1)
             )
         }
       }
@@ -661,7 +694,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             SummaryListRow(
               key = Key(s"Seal ${sealIndex.display}".toText),
               value = Value(sealIdentifier.toText),
-              actions = None
+              actions = sealsAction(index.display)
             )
           )
         }
@@ -1290,8 +1323,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
           result mustBe SummaryListRow(
             key = Key("Gross weight".toText),
-            value = Value(s"${BigDecimal(totalGrossWeight)}kg".toText),
-            actions = None
+            value = Value(s"${BigDecimal(totalGrossWeight)}kg".toText)
           )
         }
       }
@@ -1311,8 +1343,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
           result mustBe SummaryListRow(
             key = Key("Net weight".toText),
-            value = Value(s"${BigDecimal(totalNetWeight)}kg".toText),
-            actions = None
+            value = Value(s"${BigDecimal(totalNetWeight)}kg".toText)
           )
         }
       }
