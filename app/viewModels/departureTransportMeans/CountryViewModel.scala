@@ -14,10 +14,27 @@
  * limitations under the License.
  */
 
-package models
+package viewModels.departureTransportMeans
 
-object Seals {
+import models.Mode
+import play.api.i18n.Messages
+import viewModels.ModeViewModelProvider
 
-  val sealIdRegex = "^[a-zA-Z0-9&'@/.\\%? -]*$"
+import javax.inject.Inject
 
+case class CountryViewModel(heading: String, title: String, requiredError: String)
+
+object CountryViewModel {
+
+  class CountryViewModelProvider @Inject() extends ModeViewModelProvider {
+
+    override val prefix = "departureMeansOfTransport.country"
+
+    def apply(mode: Mode)(implicit message: Messages): CountryViewModel =
+      new CountryViewModel(
+        heading(mode),
+        title(mode),
+        requiredError(mode)
+      )
+  }
 }

@@ -17,17 +17,18 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import models.NormalMode
 import models.messages.UnloadingRemarksRequest
 import org.scalacheck.Gen
 import play.api.data.{Field, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
 
 class VehicleIdentificationNumberFormProviderSpec extends StringFieldBehaviours {
-
-  private val requiredKey = "vehicleIdentificationNumber.error.required"
+  private val mode        = NormalMode
+  private val requiredKey = "departureMeansOfTransport.identificationNumber.NormalMode.error.required"
   private val maxLength   = UnloadingRemarksRequest.vehicleIdentificationNumberMaxLength
-  private val invalidKey  = "vehicleIdentificationNumber.error.invalid"
-  private val form        = new VehicleIdentificationNumberFormProvider()()
+  private val invalidKey  = "departureMeansOfTransport.identificationNumber.error.invalid"
+  private val form        = new VehicleIdentificationNumberFormProvider()(mode)
   private val fieldName   = "value"
 
   ".value" - {

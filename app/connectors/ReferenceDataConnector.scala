@@ -21,7 +21,6 @@ import cats.data.NonEmptySet
 import config.FrontendAppConfig
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import logging.Logging
-import metrics.MetricsService
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.transport.TransportMode
 import models.reference.{CUSCode, Country, CustomsOffice, PackageType}
@@ -33,7 +32,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient, metricsService: MetricsService) extends Logging {
+class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient) extends Logging {
 
   def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Country]] = {
     val serviceUrl = s"${config.referenceDataUrl}/lists/CountryCodesFullList"

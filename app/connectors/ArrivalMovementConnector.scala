@@ -18,7 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import models.ArrivalId
-import models.P5.{IE043Data, Messages}
+import models.P5.Messages
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
@@ -34,14 +34,6 @@ class ArrivalMovementConnector @Inject() (config: FrontendAppConfig, http: HttpC
     val serviceUrl = s"${config.commonTransitConventionTradersUrl}movements/arrivals/${arrivalId.value}/messages"
 
     http.GET[Messages](serviceUrl)(implicitly, headers, ec)
-  }
-
-  def getUnloadingPermission(path: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[IE043Data] = {
-    val headers = hc.withExtraHeaders(("Accept", "application/vnd.hmrc.2.0+json"))
-
-    val serviceUrl = s"${config.commonTransitConventionTradersUrl}$path"
-
-    http.GET[IE043Data](serviceUrl)(implicitly, headers, ec)
   }
 
   def getUnloadingPermissionXml(path: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Node] = {

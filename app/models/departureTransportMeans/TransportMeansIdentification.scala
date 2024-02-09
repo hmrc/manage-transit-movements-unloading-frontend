@@ -37,5 +37,5 @@ object TransportMeansIdentification extends DynamicEnumerableType[TransportMeans
   implicit val order: Order[TransportMeansIdentification] = (x: TransportMeansIdentification, y: TransportMeansIdentification) =>
     x.code.compareToIgnoreCase(y.code)
 
-  val messageKeyPrefix = "departureTransportMeans.identification"
+  val messageKeyPrefix = "departureMeansOfTransport.identification"
 }

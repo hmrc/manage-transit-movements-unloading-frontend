@@ -16,9 +16,8 @@
 
 package base
 
-import cats.data.NonEmptyList
 import config.FrontendAppConfig
-import models.{ArrivalId, EoriNumber, GoodsItem, Index, MovementReferenceNumber, Packages, ProducedDocument, UserAnswers}
+import models.{ArrivalId, EoriNumber, Index, MovementReferenceNumber, UserAnswers}
 import org.scalatest._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
@@ -67,22 +66,6 @@ trait SpecBase
   val itemIndex: Index              = Index(0)
   val packageIndex: Index           = Index(0)
   def emptyUserAnswers: UserAnswers = UserAnswers(arrivalId, mrn, eoriNumber, basicIe043, Json.obj(), Instant.now())
-
-  protected lazy val packages: Packages = Packages(Some("Ref."), "BX", Some(1), None)
-
-  protected lazy val producedDocuments: ProducedDocument = ProducedDocument("235", Some("Ref."), None)
-
-  protected lazy val goodsItemMandatory: GoodsItem = GoodsItem(
-    itemNumber = 1,
-    commodityCode = None,
-    description = "Flowers",
-    GrossWeight = Some("1000"),
-    netMass = Some("999"),
-    producedDocuments = Seq.empty,
-    containers = Seq.empty,
-    packages = NonEmptyList(packages, Nil),
-    sensitiveGoodsInformation = Seq.empty
-  )
 
   def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
 
