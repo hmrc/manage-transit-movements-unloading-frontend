@@ -25,19 +25,21 @@ import scala.concurrent.{ExecutionContext, Future}
 class ConsignmentTransformer @Inject() (
   transportEquipmentTransformer: TransportEquipmentTransformer,
   departureTransportMeansTransformer: DepartureTransportMeansTransformer,
-  houseConsignmentTransformer: HouseConsignmentTransformer
+  houseConsignmentTransformer: HouseConsignmentTransformer,
+  additionalReferenceTransformer: AdditionalReferenceTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
   def transform(consignment: Option[ConsignmentType05]): UserAnswers => Future[UserAnswers] = userAnswers =>
     consignment match {
       case Some(
-            ConsignmentType05(_, _, _, _, _, _, transportEquipment, departureTransportMeans, _, _, _, _, _, _, houseConsignments)
+            ConsignmentType05(_, _, _, _, _, _, transportEquipment, departureTransportMeans, _, _, _, additionalReference, _, _, houseConsignments)
           ) =>
         lazy val pipeline: UserAnswers => Future[UserAnswers] =
           transportEquipmentTransformer.transform(transportEquipment) andThen
             departureTransportMeansTransformer.transform(departureTransportMeans) andThen
-            houseConsignmentTransformer.transform(houseConsignments)
+            houseConsignmentTransformer.transform(houseConsignments) andThen
+            additionalReferenceTransformer.transform(additionalReference)
 
         pipeline(userAnswers)
       case None =>
