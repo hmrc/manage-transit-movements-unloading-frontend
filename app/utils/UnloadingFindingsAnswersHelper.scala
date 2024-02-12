@@ -18,13 +18,14 @@ package utils
 
 import cats.data.OptionT
 import cats.implicits._
+import models.departureTransportMeans.TransportMeansIdentification
 import models.{Index, Link, UserAnswers}
 import pages._
-import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
+import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 import pages.sections._
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.i18n.Messages
-import services.ReferenceDataService
+import services.{MeansOfTransportIdentificationTypesService, ReferenceDataService}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HeaderCarrier
@@ -32,7 +33,10 @@ import viewModels.sections.Section
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataService: ReferenceDataService)(implicit
+class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers,
+                                     referenceDataService: ReferenceDataService,
+                                     meansOfTransportIdentificationTypesService: MeansOfTransportIdentificationTypesService
+)(implicit
   messages: Messages,
   hc: HeaderCarrier,
   ec: ExecutionContext
@@ -44,8 +48,9 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
       y <- OptionT.liftF(referenceDataService.getCountryNameByCode(x))
     } yield transportRegisteredCountry(y)).value
 
-  def buildMeansOfTransportRows(idRow: Option[SummaryListRow], nationalityRow: Option[SummaryListRow]): Seq[SummaryListRow] =
+  def buildMeansOfTransportRows(idRow: Option[SummaryListRow], nationalityRow: Option[SummaryListRow], numberRow: Option[SummaryListRow]): Seq[SummaryListRow] =
     idRow.map(Seq(_)).getOrElse(Seq.empty) ++
+      numberRow.map(Seq(_)).getOrElse(Seq.empty) ++
       nationalityRow.map(Seq(_)).getOrElse(Seq.empty)
 
   def buildTransportSections: Future[Seq[Section]] =
@@ -54,35 +59,51 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
       .traverse {
         _.zipWithIndex.traverse {
           y =>
-            val nationalityRow: Future[Option[SummaryListRow]] = buildVehicleNationalityRow(y._2)
-            val meansIdRow: Option[SummaryListRow]             = transportMeansID(y._2)
-
-            nationalityRow.map {
-              nationalityRow =>
-                Section(
-                  messages("unloadingFindings.subsections.transportMeans", y._2.display),
-                  buildMeansOfTransportRows(meansIdRow, nationalityRow)
-                )
-            }
+            for {
+              nationalityRow <- buildVehicleNationalityRow(y._2)
+              meansIdRow     <- transportMeansID(y._2)
+            } yield Section(
+              messages("unloadingFindings.subsections.transportMeans", y._2.display),
+              buildMeansOfTransportRows(meansIdRow, nationalityRow, transportMeansNumber(y._2))
+            )
         }
       }
       .map(_.getOrElse(Seq.empty))
 
-  def transportMeansID(transportMeansIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRowWithDynamicPrefix[String](
-    answerPath = VehicleIdentificationNumberPage(transportMeansIndex),
-    titlePath = VehicleIdentificationTypePage(transportMeansIndex),
-    formatAnswer = formatAsText,
-    dynamicPrefix = formatIdentificationTypeAsText,
-    id = None,
-    call = None
-  )
+  def transportMeansID(transportMeansIndex: Index): Future[Option[SummaryListRow]] =
+    meansOfTransportIdentificationTypesService
+      .getMeansOfTransportIdentificationType(userAnswers.get(TransportMeansIdentificationPage(transportMeansIndex)).map(_.code))
+      .map(
+        identificationAnswer =>
+          buildRowWithAnswer[TransportMeansIdentification](
+            optionalAnswer = identificationAnswer,
+            formatAnswer = formatAsText,
+            prefix = "checkYourAnswers.departureMeansOfTransport.identification",
+            id = Some(s"change-transport-means-identification-${transportMeansIndex.display}"),
+            call = Some(controllers.routes.SessionExpiredController.onPageLoad())
+          )
+      )
+
+  def transportMeansNumber(transportMeansIndex: Index): Option[SummaryListRow] =
+    userAnswers
+      .get(VehicleIdentificationNumberPage(transportMeansIndex))
+      .flatMap(
+        identificationNumber =>
+          buildRowWithAnswer[String](
+            optionalAnswer = Some(identificationNumber),
+            formatAnswer = formatAsText,
+            prefix = "checkYourAnswers.departureMeansOfTransport.identificationNumber",
+            id = Some(s"change-transport-means-identification-number-${transportMeansIndex.display}"),
+            call = Some(controllers.routes.SessionExpiredController.onPageLoad())
+          )
+      )
 
   def transportRegisteredCountry(answer: String): SummaryListRow = buildSimpleRow(
     answer = Text(answer),
     label = messages("unloadingFindings.rowHeadings.vehicleNationality"),
-    prefix = "unloadingFindings.rowHeadings.vehicleNationality",
-    id = None,
-    call = None,
+    prefix = "checkYourAnswers.departureMeansOfTransport.country",
+    id = Some("change-registered-country"),
+    call = Some(controllers.routes.SessionExpiredController.onPageLoad()),
     args = Seq.empty
   )
 

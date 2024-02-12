@@ -23,7 +23,7 @@ import models.Index
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
-import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
+import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 
 class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
@@ -37,7 +37,7 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
             case (dtm, i) =>
               val result = transformer.transform(departureTransportMeans).apply(emptyUserAnswers).futureValue
 
-              result.getValue(VehicleIdentificationTypePage(Index(i))) mustBe dtm.typeOfIdentification
+              result.getValue(TransportMeansIdentificationPage(Index(i))).code mustBe dtm.typeOfIdentification
               result.getValue(VehicleIdentificationNumberPage(Index(i))) mustBe dtm.identificationNumber
               result.getValue(CountryPage(Index(i))) mustBe dtm.nationality
           }

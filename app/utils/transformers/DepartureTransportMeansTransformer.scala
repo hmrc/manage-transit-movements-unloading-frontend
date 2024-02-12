@@ -17,9 +17,10 @@
 package utils.transformers
 
 import generated.DepartureTransportMeansType02
+import models.departureTransportMeans.TransportMeansIdentification
 import models.{Index, UserAnswers}
 import pages._
-import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
+import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,7 +35,7 @@ class DepartureTransportMeansTransformer @Inject() (implicit ec: ExecutionContex
             userAnswers =>
               val dtmIndex: Index = Index(i)
               val pipeline: UserAnswers => Future[UserAnswers] =
-                set(VehicleIdentificationTypePage(dtmIndex), typeOfIdentification) andThen
+                set(TransportMeansIdentificationPage(dtmIndex), TransportMeansIdentification(typeOfIdentification, "")) andThen
                   set(VehicleIdentificationNumberPage(dtmIndex), identificationNumber) andThen
                   set(CountryPage(dtmIndex), nationality)
 

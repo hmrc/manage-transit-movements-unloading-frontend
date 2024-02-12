@@ -29,6 +29,24 @@ class IE043DataHelper(userAnswers: UserAnswers)(implicit messages: Messages) ext
 
   def arrivalId: ArrivalId = userAnswers.id
 
+  protected def buildRowWithAnswer[T](
+    optionalAnswer: Option[T],
+    formatAnswer: T => Content,
+    prefix: String,
+    id: Option[String],
+    call: Option[Call],
+    args: Any*
+  ): Option[SummaryListRow] =
+    for {
+      answer <- optionalAnswer
+    } yield buildRow(
+      prefix = prefix,
+      answer = formatAnswer(answer),
+      id = id,
+      call = call,
+      args = args: _*
+    )
+
   def getAnswerAndBuildRow[T](
     page: QuestionPage[T],
     formatAnswer: T => Content,
