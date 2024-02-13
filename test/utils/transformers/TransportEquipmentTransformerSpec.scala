@@ -35,15 +35,15 @@ class TransportEquipmentTransformerSpec extends SpecBase with AppWithDefaultMock
 
   private val transformer = app.injector.instanceOf[TransportEquipmentTransformer]
 
-  private lazy val mockSealsTransformer = mock[SealsTransformer]
-  private lazy val mockItemTransformer  = mock[GoodsReferencesTransformer]
+  private lazy val mockSealsTransformer           = mock[SealsTransformer]
+  private lazy val mockGoodsReferencesTransformer = mock[GoodsReferencesTransformer]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
         bind[SealsTransformer].toInstance(mockSealsTransformer),
-        bind[GoodsReferencesTransformer].toInstance(mockItemTransformer)
+        bind[GoodsReferencesTransformer].toInstance(mockGoodsReferencesTransformer)
       )
 
   private case class FakeSealsSection(equipmentIndex: Index) extends QuestionPage[JsObject] {
@@ -65,7 +65,7 @@ class TransportEquipmentTransformerSpec extends SpecBase with AppWithDefaultMock
               .thenReturn {
                 ua => Future.successful(ua.setValue(FakeSealsSection(equipmentIndex), Json.obj("foo" -> i.toString)))
               }
-            when(mockItemTransformer.transform(any(), eqTo(equipmentIndex)))
+            when(mockGoodsReferencesTransformer.transform(any(), eqTo(equipmentIndex)))
               .thenReturn {
                 ua => Future.successful(ua.setValue(FakeGoodsReferencesSection(equipmentIndex), Json.obj("foo" -> i.toString)))
               }
@@ -78,8 +78,8 @@ class TransportEquipmentTransformerSpec extends SpecBase with AppWithDefaultMock
             val equipmentIndex = Index(i)
 
             result.get(ContainerIdentificationNumberPage(equipmentIndex)) mustBe te.containerIdentificationNumber
-            result.getValue(FakeGoodsReferencesSection(equipmentIndex)) mustBe Json.obj("foo" -> i.toString)
             result.getValue(FakeSealsSection(equipmentIndex)) mustBe Json.obj("foo" -> i.toString)
+            result.getValue(FakeGoodsReferencesSection(equipmentIndex)) mustBe Json.obj("foo" -> i.toString)
         }
     }
   }
