@@ -34,13 +34,13 @@ class ConsignmentTransformer @Inject() (
   def transform(consignment: Option[ConsignmentType05])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     consignment match {
       case Some(
-            ConsignmentType05(_, _, _, _, _, _, transportEquipment, departureTransportMeans, _, _, _, additionalReference, _, _, houseConsignments)
+            consignment05:ConsignmentType05
           ) =>
         lazy val pipeline: UserAnswers => Future[UserAnswers] =
-          transportEquipmentTransformer.transform(transportEquipment) andThen
-            departureTransportMeansTransformer.transform(departureTransportMeans) andThen
-            houseConsignmentTransformer.transform(houseConsignments) andThen
-            additionalReferenceTransformer.transform(additionalReference)
+          transportEquipmentTransformer.transform(consignment05.TransportEquipment) andThen
+            departureTransportMeansTransformer.transform(consignment05.DepartureTransportMeans) andThen
+            houseConsignmentTransformer.transform(consignment05.HouseConsignment) andThen
+            additionalReferenceTransformer.transform(consignment05.AdditionalReference)
 
         pipeline(userAnswers)
       case None =>

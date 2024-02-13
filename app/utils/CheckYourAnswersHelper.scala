@@ -16,8 +16,11 @@
 
 package utils
 
-import models.{CheckMode, UnloadingType, UserAnswers}
+import models.reference.AdditionalReference
+import models.{CheckMode, Index, UnloadingType, UserAnswers}
 import pages._
+import pages.additionalReference.AdditionalReferenceTypePage
+import pages.sections.additionalReference.AdditionalReferenceSection
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import utils.Format._
@@ -25,6 +28,17 @@ import utils.Format._
 import java.time.LocalDate
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
+
+  def additionalReference(index:Index): Option[SummaryListRow] = getAnswerAndBuildRow[AdditionalReference](
+    page = AdditionalReferenceTypePage(index),
+    formatAnswer = formatEnumAsText(UnloadingType.messageKeyPrefix),
+    prefix = "additional.reference",
+    args = messages("additional.reference.hidden"),
+    id = Some("change-additional-reference"),
+    call = None
+  )
+
+  def additionalReferences: Seq[SummaryListRow] = getAnswersAndBuildSectionRows(AdditionalReferenceSection)(additionalReference)
 
   def unloadingType: Option[SummaryListRow] = getAnswerAndBuildRow[UnloadingType](
     page = UnloadingTypePage,

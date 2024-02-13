@@ -16,7 +16,7 @@
 
 package viewModels
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import play.api.i18n.Messages
 import utils.CheckYourAnswersHelper
 import viewModels.sections.Section

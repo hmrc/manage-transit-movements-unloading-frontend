@@ -17,9 +17,9 @@
 package pages.sections.additionalReference
 
 import pages.sections.Section
-import play.api.libs.json.{JsObject, JsPath}
+import play.api.libs.json.{JsArray, JsObject, JsPath}
 
-case object AdditionalReferenceSection extends Section[JsObject] {
+case object AdditionalReferenceSection extends Section[JsArray] {
 
   override def path: JsPath = JsPath \ "Consignment" \ toString
 
