@@ -48,7 +48,7 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
           departureTransportMeans.zipWithIndex.map {
             case (dtm, i) =>
               when(mockTransportIdentificationTypesService.getMeansOfTransportIdentificationType(any())(any()))
-                .thenReturn(Future.successful(Some(TransportMeansIdentification(dtm.typeOfIdentification, "description"))))
+                .thenReturn(Future.successful(TransportMeansIdentification(dtm.typeOfIdentification, "description")))
 
               val result = transformer.transform(departureTransportMeans)(hc).apply(emptyUserAnswers).futureValue
 

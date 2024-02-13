@@ -31,22 +31,26 @@ class DepartureTransportMeansTransformer @Inject() (meansOfTransportIdentificati
 ) extends PageTransformer {
 
   def transform(departureTransportMeans: Seq[DepartureTransportMeansType02])(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] =
-    userAnswers =>
-      departureTransportMeans.zipWithIndex.foldLeft(Future.successful(userAnswers))({
-        case (acc, (DepartureTransportMeansType02(_, typeOfIdentification, identificationNumber, nationality), i)) =>
-          acc.flatMap {
-            userAnswers =>
-              val dtmIndex: Index    = Index(i)
-              val fetchReferenceData = meansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationType(Some(typeOfIdentification))
-              val pipeline: Future[UserAnswers => Future[UserAnswers]] = fetchReferenceData.map(
-                identificationType =>
-                  set(TransportMeansIdentificationPage(dtmIndex), identificationType) andThen
-                    set(VehicleIdentificationNumberPage(dtmIndex), identificationNumber) andThen
-                    set(CountryPage(dtmIndex), nationality)
-              )
-              pipeline.flatMap(_(userAnswers))
-          }
-      })
+    userAnswers => {
+      lazy val referenceDataLookup = departureTransportMeans.map {
+        dtm => meansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationType(dtm.typeOfIdentification).map((dtm, _))
+      }
+
+      Future.sequence(referenceDataLookup).flatMap {
+        _.zipWithIndex.foldLeft(Future.successful(userAnswers))({
+          case (acc, ((DepartureTransportMeansType02(_, _, identificationNumber, nationality), typeOfIdentification), i)) =>
+            acc.flatMap {
+              userAnswers =>
+                val dtmIndex = Index(i)
+                val pipeline = set(TransportMeansIdentificationPage(dtmIndex), typeOfIdentification) andThen
+                  set(VehicleIdentificationNumberPage(dtmIndex), identificationNumber) andThen
+                  set(CountryPage(dtmIndex), nationality)
+
+                pipeline(userAnswers)
+            }
+        })
+      }
+    }
 
   def transform(departureTransportMeans: Seq[DepartureTransportMeansType02], hcIndex: Index): UserAnswers => Future[UserAnswers] =
     userAnswers =>

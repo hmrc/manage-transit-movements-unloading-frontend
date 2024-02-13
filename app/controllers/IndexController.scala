@@ -57,7 +57,7 @@ class IndexController @Inject() (
               data = Json.obj(),
               lastUpdated = dateTimeService.now
             )
-            dataTransformer.transform(userAnswers)(hc)
+            dataTransformer.transform(userAnswers)
         }
         _ <- sessionRepository.set(userAnswers)
       } yield Redirect(controllers.routes.UnloadingGuidanceController.onPageLoad(arrivalId, messageId))
