@@ -33,10 +33,10 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
     "when consignment level" in {
       forAll(arbitrary[Seq[DepartureTransportMeansType02]]) {
         departureTransportMeans =>
+          val result = transformer.transform(departureTransportMeans).apply(emptyUserAnswers).futureValue
+
           departureTransportMeans.zipWithIndex.map {
             case (dtm, i) =>
-              val result = transformer.transform(departureTransportMeans).apply(emptyUserAnswers).futureValue
-
               result.getValue(VehicleIdentificationTypePage(Index(i))) mustBe dtm.typeOfIdentification
               result.getValue(VehicleIdentificationNumberPage(Index(i))) mustBe dtm.identificationNumber
               result.getValue(CountryPage(Index(i))) mustBe dtm.nationality
@@ -47,10 +47,10 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
     "when house consignment level" in {
       forAll(arbitrary[Seq[DepartureTransportMeansType02]]) {
         departureTransportMeans =>
+          val result = transformer.transform(departureTransportMeans, hcIndex).apply(emptyUserAnswers).futureValue
+
           departureTransportMeans.zipWithIndex.map {
             case (dtm, i) =>
-              val result = transformer.transform(departureTransportMeans, hcIndex).apply(emptyUserAnswers).futureValue
-
               result.getValue(DepartureTransportMeansIdentificationTypePage(hcIndex, Index(i))) mustBe dtm.typeOfIdentification
               result.getValue(DepartureTransportMeansIdentificationNumberPage(hcIndex, Index(i))) mustBe dtm.identificationNumber
               result.getValue(DepartureTransportMeansCountryPage(hcIndex, Index(i))) mustBe dtm.nationality

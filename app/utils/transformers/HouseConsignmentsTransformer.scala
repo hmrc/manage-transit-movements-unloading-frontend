@@ -22,7 +22,7 @@ import models.{Index, UserAnswers}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class HouseConsignmentTransformer @Inject() (
+class HouseConsignmentsTransformer @Inject() (
   consigneeTransformer: ConsigneeTransformer,
   consignorTransformer: ConsignorTransformer,
   departureTransportMeansTransformer: DepartureTransportMeansTransformer,

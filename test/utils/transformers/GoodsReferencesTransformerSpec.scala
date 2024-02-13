@@ -24,17 +24,17 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transportEquipment.index.ItemPage
 
-class ItemsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
+class GoodsReferencesTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private val transformer = app.injector.instanceOf[ItemsTransformer]
+  private val transformer = app.injector.instanceOf[GoodsReferencesTransformer]
 
   "must transform data" in {
     forAll(arbitrary[Seq[GoodsReferenceType02]]) {
-      goodsReferenceSeq =>
-        goodsReferenceSeq.zipWithIndex.map {
-          case (goodsReference, i) =>
-            val result = transformer.transform(goodsReferenceSeq, equipmentIndex).apply(emptyUserAnswers).futureValue
+      goodsReferences =>
+        val result = transformer.transform(goodsReferences, equipmentIndex).apply(emptyUserAnswers).futureValue
 
+        goodsReferences.zipWithIndex.map {
+          case (goodsReference, i) =>
             result.getValue(ItemPage(equipmentIndex, Index(i))).declarationGoodsItemNumber mustBe goodsReference.declarationGoodsItemNumber
         }
     }
