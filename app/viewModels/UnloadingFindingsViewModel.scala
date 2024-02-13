@@ -18,7 +18,7 @@ package viewModels
 
 import models.UserAnswers
 import play.api.i18n.Messages
-import services.{MeansOfTransportIdentificationTypesService, ReferenceDataService}
+import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.UnloadingFindingsAnswersHelper
 import viewModels.sections.Section
@@ -30,21 +30,16 @@ case class UnloadingFindingsViewModel(section: Seq[Section])
 
 object UnloadingFindingsViewModel {
 
-  def apply(userAnswers: UserAnswers,
-            referenceDataService: ReferenceDataService,
-            meansOfTransportIdentificationTypesService: MeansOfTransportIdentificationTypesService
-  )(implicit
+  def apply(userAnswers: UserAnswers, referenceDataService: ReferenceDataService)(implicit
     messages: Messages,
     hc: HeaderCarrier,
     ec: ExecutionContext
-  ): Future[UnloadingFindingsViewModel] = new UnloadingFindingsViewModelProvider(referenceDataService, meansOfTransportIdentificationTypesService)(userAnswers)
+  ): Future[UnloadingFindingsViewModel] = new UnloadingFindingsViewModelProvider(referenceDataService)(userAnswers)
 
-  class UnloadingFindingsViewModelProvider @Inject() (referenceDataService: ReferenceDataService,
-                                                      meansOfTransportIdentificationTypesService: MeansOfTransportIdentificationTypesService
-  ) {
+  class UnloadingFindingsViewModelProvider @Inject() (referenceDataService: ReferenceDataService) {
 
     def apply(userAnswers: UserAnswers)(implicit messages: Messages, hc: HeaderCarrier, ex: ExecutionContext): Future[UnloadingFindingsViewModel] = {
-      val helper = new UnloadingFindingsAnswersHelper(userAnswers, referenceDataService, meansOfTransportIdentificationTypesService)
+      val helper = new UnloadingFindingsAnswersHelper(userAnswers, referenceDataService)
 
       helper.buildTransportSections.map {
         meansOfTransportSections =>

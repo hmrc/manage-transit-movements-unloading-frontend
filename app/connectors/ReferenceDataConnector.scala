@@ -54,6 +54,14 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[NonEmptySet[TransportMeansIdentification]](url, headers = version2Header)
   }
 
+  def getMeansOfTransportIdentificationType(
+    code: String
+  )(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[TransportMeansIdentification]] = {
+    val queryParams: Seq[(String, String)] = Seq("data.type" -> code)
+    val url                                = s"${config.referenceDataUrl}/filtered-lists/TypeOfIdentificationOfMeansOfTransport"
+    http.GET[NonEmptySet[TransportMeansIdentification]](url, headers = version2Header, queryParams = queryParams)
+  }
+
   def getCountryNameByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Country]] = {
 
     val queryParams: Seq[(String, String)] = Seq(

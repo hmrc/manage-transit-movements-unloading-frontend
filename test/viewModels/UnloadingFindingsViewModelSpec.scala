@@ -18,14 +18,13 @@ package viewModels
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
-import models.departureTransportMeans.TransportMeansIdentification
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
-import services.{MeansOfTransportIdentificationTypesService, ReferenceDataService}
+import services.ReferenceDataService
 import viewModels.UnloadingFindingsViewModel.UnloadingFindingsViewModelProvider
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -33,15 +32,13 @@ import scala.concurrent.Future
 
 class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  val mockReferenceDataService: ReferenceDataService                                      = mock[ReferenceDataService]
-  val mockTransportIdentificationTypesService: MeansOfTransportIdentificationTypesService = mock[MeansOfTransportIdentificationTypesService]
-  private val countryDesc                                                                 = "Great Britain"
+  val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
+  private val countryDesc                            = "Great Britain"
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind[ReferenceDataService].toInstance(mockReferenceDataService))
-      .overrides(bind[MeansOfTransportIdentificationTypesService].toInstance(mockTransportIdentificationTypesService))
 
   "Unloading findings sections" - {
 
@@ -73,10 +70,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         setExistingUserAnswers(userAnswers)
 
         when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
-        when(mockTransportIdentificationTypesService.getMeansOfTransportIdentificationType(any())(any()))
-          .thenReturn(Future.successful(None))
 
-        val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService, mockTransportIdentificationTypesService)
+        val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService)
         val result            = viewModelProvider.apply(userAnswers).futureValue
         val section           = result.section.head
 
@@ -117,15 +112,13 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         setExistingUserAnswers(userAnswers)
         when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
-        when(mockTransportIdentificationTypesService.getMeansOfTransportIdentificationType(any())(any()))
-          .thenReturn(Future.successful(Some(TransportMeansIdentification("1", "desc"))))
 
-        val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService, mockTransportIdentificationTypesService)
+        val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService)
         val result            = viewModelProvider.apply(userAnswers).futureValue
         val section           = result.section(1)
 
         section.sectionTitle.value mustBe "Departure means of transport 2"
-        section.rows.size mustBe 3
+        section.rows.size mustBe 2
         section.viewLink must not be defined
       }
     }
@@ -158,7 +151,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           setExistingUserAnswers(userAnswers)
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService, mockTransportIdentificationTypesService)
+          val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService)
           val result            = viewModelProvider.apply(userAnswers).futureValue
           val section           = result.section.head
 
@@ -199,7 +192,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           setExistingUserAnswers(userAnswers)
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService, mockTransportIdentificationTypesService)
+          val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService)
           val result            = viewModelProvider.apply(userAnswers).futureValue
           val section           = result.section.head
 
@@ -239,7 +232,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           setExistingUserAnswers(userAnswers)
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService, mockTransportIdentificationTypesService)
+          val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService)
           val result            = viewModelProvider.apply(userAnswers).futureValue
           val section           = result.section(1)
 
@@ -291,7 +284,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           setExistingUserAnswers(userAnswers)
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService, mockTransportIdentificationTypesService)
+          val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService)
           val result            = viewModelProvider.apply(userAnswers).futureValue
           val section           = result.section(1)
 
@@ -356,7 +349,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         setExistingUserAnswers(userAnswers)
         when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-        val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService, mockTransportIdentificationTypesService)
+        val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService)
         val result            = viewModelProvider.apply(userAnswers).futureValue
         val section           = result.section.head
 
@@ -448,7 +441,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         setExistingUserAnswers(userAnswers)
         when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-        val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService, mockTransportIdentificationTypesService)
+        val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService)
         val result            = viewModelProvider.apply(userAnswers).futureValue
         val section           = result.section(1)
 

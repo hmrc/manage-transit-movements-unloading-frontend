@@ -17,29 +17,34 @@
 package utils.transformers
 
 import generated.DepartureTransportMeansType02
-import models.departureTransportMeans.TransportMeansIdentification
 import models.{Index, UserAnswers}
 import pages._
 import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
+import services.MeansOfTransportIdentificationTypesService
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DepartureTransportMeansTransformer @Inject() (implicit ec: ExecutionContext) extends PageTransformer {
+class DepartureTransportMeansTransformer @Inject() (meansOfTransportIdentificationTypesService: MeansOfTransportIdentificationTypesService)(implicit
+  ec: ExecutionContext
+) extends PageTransformer {
 
-  def transform(departureTransportMeans: Seq[DepartureTransportMeansType02]): UserAnswers => Future[UserAnswers] =
+  def transform(departureTransportMeans: Seq[DepartureTransportMeansType02])(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] =
     userAnswers =>
       departureTransportMeans.zipWithIndex.foldLeft(Future.successful(userAnswers))({
         case (acc, (DepartureTransportMeansType02(_, typeOfIdentification, identificationNumber, nationality), i)) =>
           acc.flatMap {
             userAnswers =>
-              val dtmIndex: Index = Index(i)
-              val pipeline: UserAnswers => Future[UserAnswers] =
-                set(TransportMeansIdentificationPage(dtmIndex), TransportMeansIdentification(typeOfIdentification, "")) andThen
-                  set(VehicleIdentificationNumberPage(dtmIndex), identificationNumber) andThen
-                  set(CountryPage(dtmIndex), nationality)
-
-              pipeline(userAnswers)
+              val dtmIndex: Index    = Index(i)
+              val fetchReferenceData = meansOfTransportIdentificationTypesService.getMeansOfTransportIdentificationType(Some(typeOfIdentification))
+              val pipeline: Future[UserAnswers => Future[UserAnswers]] = fetchReferenceData.map(
+                identificationType =>
+                  set(TransportMeansIdentificationPage(dtmIndex), identificationType) andThen
+                    set(VehicleIdentificationNumberPage(dtmIndex), identificationNumber) andThen
+                    set(CountryPage(dtmIndex), nationality)
+              )
+              pipeline.flatMap(_(userAnswers))
           }
       })
 

@@ -20,14 +20,26 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated.DepartureTransportMeansType02
 import generators.Generators
 import models.Index
+import models.departureTransportMeans.TransportMeansIdentification
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
+import services.MeansOfTransportIdentificationTypesService
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private val transformer = app.injector.instanceOf[DepartureTransportMeansTransformer]
+  private val mockTransportIdentificationTypesService: MeansOfTransportIdentificationTypesService = mock[MeansOfTransportIdentificationTypesService]
+
+  private val transformer = new DepartureTransportMeansTransformer(mockTransportIdentificationTypesService)
+
+  override def beforeEach(): Unit =
+    reset(mockTransportIdentificationTypesService)
 
   "must transform data" - {
     "when consignment level" in {
@@ -35,7 +47,10 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
         departureTransportMeans =>
           departureTransportMeans.zipWithIndex.map {
             case (dtm, i) =>
-              val result = transformer.transform(departureTransportMeans).apply(emptyUserAnswers).futureValue
+              when(mockTransportIdentificationTypesService.getMeansOfTransportIdentificationType(any())(any()))
+                .thenReturn(Future.successful(Some(TransportMeansIdentification(dtm.typeOfIdentification, "description"))))
+
+              val result = transformer.transform(departureTransportMeans)(hc).apply(emptyUserAnswers).futureValue
 
               result.getValue(TransportMeansIdentificationPage(Index(i))).code mustBe dtm.typeOfIdentification
               result.getValue(VehicleIdentificationNumberPage(Index(i))) mustBe dtm.identificationNumber

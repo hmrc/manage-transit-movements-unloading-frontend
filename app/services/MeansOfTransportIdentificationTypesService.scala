@@ -66,13 +66,14 @@ class MeansOfTransportIdentificationTypesService @Inject() (
     }
 
   def getMeansOfTransportIdentificationType(userAnswersCode: Option[String])(implicit hc: HeaderCarrier): Future[Option[TransportMeansIdentification]] =
-    referenceDataConnector.getMeansOfTransportIdentificationTypes.map {
-      identity =>
-        userAnswersCode match {
-          case Some(value) => identity.find(_.code.head == value.head)
-          case _           => None
-        }
-
+    userAnswersCode match {
+      case Some(value) =>
+        referenceDataConnector
+          .getMeansOfTransportIdentificationType(value)
+          .map(
+            item => Some(item.head)
+          )
+      case _ => Future.successful(None)
     }
 
   private def filter(

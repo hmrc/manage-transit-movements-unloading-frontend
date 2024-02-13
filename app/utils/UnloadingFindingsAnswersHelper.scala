@@ -25,7 +25,7 @@ import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificatio
 import pages.sections._
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.i18n.Messages
-import services.{MeansOfTransportIdentificationTypesService, ReferenceDataService}
+import services.ReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HeaderCarrier
@@ -33,10 +33,7 @@ import viewModels.sections.Section
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers,
-                                     referenceDataService: ReferenceDataService,
-                                     meansOfTransportIdentificationTypesService: MeansOfTransportIdentificationTypesService
-)(implicit
+class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataService: ReferenceDataService)(implicit
   messages: Messages,
   hc: HeaderCarrier,
   ec: ExecutionContext
@@ -61,22 +58,21 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers,
           y =>
             for {
               nationalityRow <- buildVehicleNationalityRow(y._2)
-              meansIdRow     <- transportMeansID(y._2)
             } yield Section(
               messages("unloadingFindings.subsections.transportMeans", y._2.display),
-              buildMeansOfTransportRows(meansIdRow, nationalityRow, transportMeansNumber(y._2))
+              buildMeansOfTransportRows(transportMeansID(y._2), nationalityRow, transportMeansNumber(y._2))
             )
         }
       }
       .map(_.getOrElse(Seq.empty))
 
-  def transportMeansID(transportMeansIndex: Index): Future[Option[SummaryListRow]] =
-    meansOfTransportIdentificationTypesService
-      .getMeansOfTransportIdentificationType(userAnswers.get(TransportMeansIdentificationPage(transportMeansIndex)).map(_.code))
-      .map(
+  def transportMeansID(transportMeansIndex: Index): Option[SummaryListRow] =
+    userAnswers
+      .get(TransportMeansIdentificationPage(transportMeansIndex))
+      .flatMap(
         identificationAnswer =>
           buildRowWithAnswer[TransportMeansIdentification](
-            optionalAnswer = identificationAnswer,
+            optionalAnswer = Some(identificationAnswer),
             formatAnswer = formatAsText,
             prefix = "checkYourAnswers.departureMeansOfTransport.identification",
             id = Some(s"change-transport-means-identification-${transportMeansIndex.display}"),
