@@ -25,7 +25,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DocumentTransformer @Inject() (
+class DocumentsTransformer @Inject() (
   referenceDataConnector: ReferenceDataConnector
 )(implicit ec: ExecutionContext)
     extends PageTransformer {

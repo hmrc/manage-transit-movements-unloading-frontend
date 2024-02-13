@@ -31,9 +31,9 @@ import play.api.inject.guice.GuiceApplicationBuilder
 
 import scala.concurrent.Future
 
-class DocumentTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
+class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private val transformer = app.injector.instanceOf[DocumentTransformer]
+  private val transformer = app.injector.instanceOf[DocumentsTransformer]
 
   private lazy val mockReferenceDataConnector = mock[ReferenceDataConnector]
 

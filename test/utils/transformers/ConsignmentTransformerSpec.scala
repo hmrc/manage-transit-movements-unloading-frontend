@@ -36,7 +36,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
 
   private lazy val mockTransportEquipmentTransformer      = mock[TransportEquipmentTransformer]
   private lazy val mockDepartureTransportMeansTransformer = mock[DepartureTransportMeansTransformer]
-  private lazy val mockHouseConsignmentTransformer        = mock[HouseConsignmentTransformer]
+  private lazy val mockHouseConsignmentTransformer        = mock[HouseConsignmentsTransformer]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -44,7 +44,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
       .overrides(
         bind[TransportEquipmentTransformer].toInstance(mockTransportEquipmentTransformer),
         bind[DepartureTransportMeansTransformer].toInstance(mockDepartureTransportMeansTransformer),
-        bind[HouseConsignmentTransformer].toInstance(mockHouseConsignmentTransformer)
+        bind[HouseConsignmentsTransformer].toInstance(mockHouseConsignmentTransformer)
       )
 
   private case object FakeTransportEquipmentSection extends QuestionPage[JsObject] {

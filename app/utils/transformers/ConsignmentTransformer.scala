@@ -25,7 +25,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ConsignmentTransformer @Inject() (
   transportEquipmentTransformer: TransportEquipmentTransformer,
   departureTransportMeansTransformer: DepartureTransportMeansTransformer,
-  houseConsignmentTransformer: HouseConsignmentTransformer
+  houseConsignmentTransformer: HouseConsignmentsTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
