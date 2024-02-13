@@ -19,6 +19,7 @@ package utils.transformers
 import connectors.ReferenceDataConnector
 import generated.{SupportingDocumentType02, TransportDocumentType02}
 import models.{Document, Index, UserAnswers}
+import pages.documents.{AdditionalInformationPage, DocumentReferenceNumberPage}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -58,9 +59,10 @@ class DocumentTransformer @Inject() (
               val documentIndex: Index = Index(i)
               val pipeline: UserAnswers => Future[UserAnswers] = document match {
                 case Document.SupportingDocument(documentType, referenceNumber, complementOfInformation) =>
-                  ???
+                  set(DocumentReferenceNumberPage(documentIndex), referenceNumber) andThen
+                    set(AdditionalInformationPage(documentIndex), complementOfInformation)
                 case Document.TransportDocument(documentType, referenceNumber) =>
-                  ???
+                  set(DocumentReferenceNumberPage(documentIndex), referenceNumber)
               }
 
               pipeline(userAnswers)
