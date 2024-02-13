@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated.HouseConsignmentType04
 import generators.Generators
 import models.Index
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -31,9 +31,9 @@ import play.api.libs.json.{JsObject, JsPath, Json}
 
 import scala.concurrent.Future
 
-class HouseConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
+class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private val transformer = app.injector.instanceOf[HouseConsignmentTransformer]
+  private val transformer = app.injector.instanceOf[HouseConsignmentsTransformer]
 
   private lazy val mockConsigneeTransformer               = mock[ConsigneeTransformer]
   private lazy val mockConsignorTransformer               = mock[ConsignorTransformer]
@@ -71,32 +71,39 @@ class HouseConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFi
       houseConsignments =>
         houseConsignments.zipWithIndex.map {
           case (_, i) =>
-            when(mockConsigneeTransformer.transform(any(), any()))
+            val hcIndex = Index(i)
+
+            when(mockConsigneeTransformer.transform(any(), eqTo(hcIndex)))
               .thenReturn {
-                ua => Future.successful(ua.setValue(FakeConsigneeSection(Index(i)), Json.obj("foo" -> "bar")))
+                ua => Future.successful(ua.setValue(FakeConsigneeSection(hcIndex), Json.obj("foo" -> i.toString)))
               }
 
-            when(mockConsignorTransformer.transform(any(), any()))
+            when(mockConsignorTransformer.transform(any(), eqTo(hcIndex)))
               .thenReturn {
-                ua => Future.successful(ua.setValue(FakeConsignorSection(Index(i)), Json.obj("foo" -> "bar")))
+                ua => Future.successful(ua.setValue(FakeConsignorSection(hcIndex), Json.obj("foo" -> i.toString)))
               }
 
-            when(mockDepartureTransportMeansTransformer.transform(any(), any()))
+            when(mockDepartureTransportMeansTransformer.transform(any(), eqTo(hcIndex)))
               .thenReturn {
-                ua => Future.successful(ua.setValue(FakeDepartureTransportMeansSection(Index(i)), Json.obj("foo" -> "bar")))
+                ua => Future.successful(ua.setValue(FakeDepartureTransportMeansSection(hcIndex), Json.obj("foo" -> i.toString)))
               }
 
-            when(mockConsignmentItemTransformer.transform(any(), any()))
+            when(mockConsignmentItemTransformer.transform(any(), eqTo(hcIndex)))
               .thenReturn {
-                ua => Future.successful(ua.setValue(FakeConsignmentItemSection(Index(i)), Json.obj("foo" -> "bar")))
+                ua => Future.successful(ua.setValue(FakeConsignmentItemSection(hcIndex), Json.obj("foo" -> i.toString)))
               }
+        }
 
-            val result = transformer.transform(houseConsignments).apply(emptyUserAnswers).futureValue
+        val result = transformer.transform(houseConsignments).apply(emptyUserAnswers).futureValue
 
-            result.getValue(FakeConsigneeSection(Index(i))) mustBe Json.obj("foo" -> "bar")
-            result.getValue(FakeConsignorSection(Index(i))) mustBe Json.obj("foo" -> "bar")
-            result.getValue(FakeDepartureTransportMeansSection(Index(i))) mustBe Json.obj("foo" -> "bar")
-            result.getValue(FakeConsignmentItemSection(Index(i))) mustBe Json.obj("foo" -> "bar")
+        houseConsignments.zipWithIndex.map {
+          case (_, i) =>
+            val hcIndex = Index(i)
+
+            result.getValue(FakeConsigneeSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
+            result.getValue(FakeConsignorSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
+            result.getValue(FakeDepartureTransportMeansSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
+            result.getValue(FakeConsignmentItemSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
         }
     }
   }
