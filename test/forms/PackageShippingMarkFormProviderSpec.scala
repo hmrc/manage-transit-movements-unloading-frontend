@@ -24,8 +24,8 @@ import play.api.data.FormError
 
 class PackageShippingMarkFormProviderSpec extends StringFieldBehaviours {
 
-  private val invalidKey  = "houseConsignment.item.packageShippingMark.error.invalid"
-  private val requiredKey = "houseConsignment.item.packageShippingMark.error.required"
+  private val invalidKey  = "houseConsignment.index.item.packageShippingMark.error.invalid"
+  private val requiredKey = "houseConsignment.index.item.packageShippingMark.error.required"
 
   private val fieldName = "value"
 

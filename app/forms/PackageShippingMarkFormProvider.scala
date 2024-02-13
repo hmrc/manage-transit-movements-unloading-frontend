@@ -30,8 +30,8 @@ class PackageShippingMarkFormProvider @Inject() () extends Mappings {
       "value" -> text(requiredError)
         .verifying(
           forms.StopOnFirstFail[String](
-            regexp(alphaNumericRegex, "houseConsignment.item.packageShippingMark.error.invalid"),
-            maxLength(maxPackageShippingMarkLength, "houseConsignment.item.packageShippingMark.error.length")
+            regexp(alphaNumericRegex, "houseConsignment.index.item.packageShippingMark.error.invalid"),
+            maxLength(maxPackageShippingMarkLength, "houseConsignment.index.item.packageShippingMark.error.length")
           )
         )
     )
