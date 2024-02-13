@@ -525,3 +525,13 @@ document.additionalInformation.NormalMode.error.required = Enter the additional 
 document.additionalInformation.CheckMode.error.required = Enter the new additional information
 document.additionalInformation.error.length = The additional information must be 35 characters or less
 document.additionalInformation.error.invalidCharacters = The additional information must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+
+houseConsignment.index.items.document.referenceNumber.NormalMode.title = What is the document’s reference number?
+houseConsignment.index.items.document.referenceNumber.CheckMode.title = What is the new document’s reference number for item {1} in house consignment {0}?
+houseConsignment.index.items.document.referenceNumber.NormalMode.heading = What is the document’s reference number?
+houseConsignment.index.items.document.referenceNumber.CheckMode.heading = What is the new document’s reference number for item {1} in house consignment {0}?
+houseConsignment.index.items.document.referenceNumber.hint = This can be up to 70 characters long and include both letters and numbers.
+houseConsignment.index.items.document.referenceNumber.NormalMode.error.required = Enter the document’s reference number
+houseConsignment.index.items.document.referenceNumber.CheckMode.error.required = Enter the new document’s reference number
+houseConsignment.index.items.document.referenceNumber.error.length = The reference number must be 70 characters or less
+houseConsignment.index.items.document.referenceNumber.error.invalidCharacters = The reference number must only include letters a to z and numbers 0 to 9
