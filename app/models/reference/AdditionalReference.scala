@@ -14,24 +14,14 @@
  * limitations under the License.
  */
 
-package utils.transformers
+package models.reference
 
-import models.UserAnswers
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
+import cats.Order
+import play.api.libs.json.{Format, Json}
 
-import javax.inject.Inject
-import scala.concurrent.Future
+case class AdditionalReference(documentType: String, description: String)
 
-class IE043Transformer @Inject() (
-  consignmentTransformer: ConsignmentTransformer
-) extends FrontendHeaderCarrierProvider {
-
-  def transform(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[UserAnswers] = {
-
-    val transformerPipeline =
-      consignmentTransformer.transform(userAnswers.ie043Data.Consignment)
-
-    transformerPipeline(userAnswers)
-  }
+object AdditionalReference {
+  implicit val format: Format[AdditionalReference] = Json.format[AdditionalReference]
+  implicit val order: Order[AdditionalReference]   = (x: AdditionalReference, y: AdditionalReference) => x.documentType.compareToIgnoreCase(y.documentType)
 }

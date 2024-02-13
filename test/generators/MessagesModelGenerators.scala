@@ -278,8 +278,8 @@ trait MessagesModelGenerators {
     Arbitrary {
       for {
         sequenceNumber <- Gen.alphaNumStr
-        typeVal <- Gen.alphaNumStr
-        refNum <- Gen.option(Gen.alphaNumStr)
+        typeVal        <- Gen.alphaNumStr
+        refNum         <- Gen.option(Gen.alphaNumStr)
       } yield AdditionalReferenceType03(
         sequenceNumber = sequenceNumber,
         typeValue = typeVal,
