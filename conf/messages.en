@@ -517,6 +517,7 @@ document.referenceNumber.CheckMode.error.required = Enter the document’s new r
 document.referenceNumber.error.length = The reference number must be 70 characters or less
 document.referenceNumber.error.invalidCharacters = The reference number must only include letters a to z and numbers 0 to 9
 
-additional.reference.heading = Additional reference
+additional.reference.heading = Additional references
 additional.reference.hidden = additional reference
+additional.reference.checkYourAnswers = Additional Reference {0}
 

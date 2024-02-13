@@ -19,6 +19,19 @@ package models.reference
 import cats.Order
 import play.api.libs.json.{Format, Json}
 
+case class AdditionalReferenceTop(documentType: String, description: String, referenceNumber: Option[String]) {
+
+  override def toString: String = referenceNumber match {
+    case Some(refNumber) => s"$documentType - $description - $refNumber"
+    case None            => s"$documentType - $description"
+  }
+}
+
+object AdditionalReferenceTop {
+  implicit val format: Format[AdditionalReferenceTop] = Json.format[AdditionalReferenceTop]
+
+}
+
 case class AdditionalReference(documentType: String, description: String)
 
 object AdditionalReference {
