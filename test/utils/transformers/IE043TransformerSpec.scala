@@ -50,7 +50,7 @@ class IE043TransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
   "must transform data" in {
     forAll(arbitrary[CC043CType]) {
       _ =>
-        when(mockConsignmentTransformer.transform(any()))
+        when(mockConsignmentTransformer.transform(any())(any()))
           .thenReturn {
             ua => Future.successful(ua.setValue(FakeConsignmentSection, Json.obj("foo" -> "bar")))
           }

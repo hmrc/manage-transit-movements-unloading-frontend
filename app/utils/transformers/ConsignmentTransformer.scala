@@ -18,6 +18,7 @@ package utils.transformers
 
 import generated.ConsignmentType05
 import models.UserAnswers
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -25,19 +26,37 @@ import scala.concurrent.{ExecutionContext, Future}
 class ConsignmentTransformer @Inject() (
   transportEquipmentTransformer: TransportEquipmentTransformer,
   departureTransportMeansTransformer: DepartureTransportMeansTransformer,
-  houseConsignmentTransformer: HouseConsignmentsTransformer
+  documentsTransformer: DocumentsTransformer,
+  houseConsignmentsTransformer: HouseConsignmentsTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(consignment: Option[ConsignmentType05]): UserAnswers => Future[UserAnswers] = userAnswers =>
+  def transform(consignment: Option[ConsignmentType05])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     consignment match {
       case Some(
-            ConsignmentType05(_, _, _, _, _, _, transportEquipment, departureTransportMeans, _, _, _, _, _, _, houseConsignments)
+            ConsignmentType05(
+              _,
+              _,
+              _,
+              _,
+              _,
+              _,
+              transportEquipment,
+              departureTransportMeans,
+              _,
+              supportingDocuments,
+              transportDocuments,
+              _,
+              _,
+              _,
+              houseConsignments
+            )
           ) =>
         lazy val pipeline: UserAnswers => Future[UserAnswers] =
           transportEquipmentTransformer.transform(transportEquipment) andThen
             departureTransportMeansTransformer.transform(departureTransportMeans) andThen
-            houseConsignmentTransformer.transform(houseConsignments)
+            documentsTransformer.transform(supportingDocuments, transportDocuments) andThen
+            houseConsignmentsTransformer.transform(houseConsignments)
 
         pipeline(userAnswers)
       case None =>
