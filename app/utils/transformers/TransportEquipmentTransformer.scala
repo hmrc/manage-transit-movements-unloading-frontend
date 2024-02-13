@@ -27,13 +27,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TransportEquipmentTransformer @Inject() (
   sealsTransformer: SealsTransformer,
-  itemsTransformer: ItemsTransformer
+  goodsReferencesTransformer: GoodsReferencesTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
   def transform(transportEquipment: Seq[TransportEquipmentType05]): UserAnswers => Future[UserAnswers] = userAnswers =>
     transportEquipment.zipWithIndex.foldLeft(Future.successful(userAnswers))({
-      case (acc, (TransportEquipmentType05(_, containerIdentificationNumber, _, seals, goodsReference), i)) =>
+      case (acc, (TransportEquipmentType05(_, containerIdentificationNumber, _, seals, goodsReferences), i)) =>
         acc.flatMap {
           userAnswers =>
             val equipmentIndex: Index = Index(i)
@@ -41,7 +41,7 @@ class TransportEquipmentTransformer @Inject() (
               set(TransportEquipmentSection(equipmentIndex), Json.obj()) andThen
                 set(ContainerIdentificationNumberPage(equipmentIndex), containerIdentificationNumber) andThen
                 sealsTransformer.transform(seals, equipmentIndex) andThen
-                itemsTransformer.transform(goodsReference, equipmentIndex)
+                goodsReferencesTransformer.transform(goodsReferences, equipmentIndex)
             }
 
             pipeline(userAnswers)

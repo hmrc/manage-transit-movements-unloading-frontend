@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated.ConsignmentItemType04
 import generators.Generators
 import models.Index
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -53,14 +53,21 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
       consignmentItems =>
         consignmentItems.zipWithIndex.map {
           case (_, i) =>
-            when(mockCommodityTransformer.transform(any(), any(), any()))
+            val itemIndex = Index(i)
+
+            when(mockCommodityTransformer.transform(any(), any(), eqTo(itemIndex)))
               .thenReturn {
-                ua => Future.successful(ua.setValue(FakeCommoditySection(Index(i)), Json.obj("foo" -> i.toString)))
+                ua => Future.successful(ua.setValue(FakeCommoditySection(itemIndex), Json.obj("foo" -> i.toString)))
               }
+        }
 
-            val result = transformer.transform(consignmentItems, hcIndex).apply(emptyUserAnswers).futureValue
+        val result = transformer.transform(consignmentItems, hcIndex).apply(emptyUserAnswers).futureValue
 
-            result.getValue(FakeCommoditySection(Index(i))) mustBe Json.obj("foo" -> i.toString)
+        consignmentItems.zipWithIndex.map {
+          case (_, i) =>
+            val itemIndex = Index(i)
+
+            result.getValue(FakeCommoditySection(itemIndex)) mustBe Json.obj("foo" -> i.toString)
         }
     }
   }
