@@ -516,3 +516,12 @@ document.referenceNumber.NormalMode.error.required = Enter the document’s refe
 document.referenceNumber.CheckMode.error.required = Enter the document’s new reference number
 document.referenceNumber.error.length = The reference number must be 70 characters or less
 document.referenceNumber.error.invalidCharacters = The reference number must only include letters a to z and numbers 0 to 9
+
+document.additionalInformation.NormalMode.title = Enter the additional information
+document.additionalInformation.CheckMode.title = Enter the new additional information
+document.additionalInformation.NormalMode.heading = Enter the additional information
+document.additionalInformation.CheckMode.heading = Enter the new additional information
+document.additionalInformation.NormalMode.error.required = Enter the additional information
+document.additionalInformation.CheckMode.error.required = Enter the new additional information
+document.additionalInformation.error.length = The additional information must be 35 characters or less
+document.additionalInformation.error.invalidCharacters = The additional information must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
