@@ -345,6 +345,9 @@ unloadingFindings.rowHeadings.identificationType.europeanVesselIdNumber.change.h
 unloadingFindings.rowHeadings.identificationType.unknown = Unknown - this can only be used during the transitional period
 unloadingFindings.rowHeadings.identificationType.unknown.change.hidden = unknown - this can only be used during the transitional period
 
+unloadingFindings.rowHeadings.sealIdentifier.change.hidden = seal identification number
+unloadingFindings.rowHeadings.containerIdentificationNumber.change.hidden = container identification number
+
 unloadingFindings.rowHeadings.vehicleNationality = Registered country
 unloadingFindings.rowHeadings.vehicleNationality.change.hidden = registered country
 
@@ -418,6 +421,12 @@ checkYourAnswers.rowHeadings.additionalComments.change.hidden = discrepancies be
 
 checkYourAnswers.sendRemarks = Send your unloading remarks
 checkYourAnswers.paragraph = By sending this, you are confirming that these details are correct to the best of your knowledge.
+
+checkYourAnswers.departureMeansOfTransport.identification = Identification type
+checkYourAnswers.departureMeansOfTransport.identificationNumber = Identification number
+checkYourAnswers.departureMeansOfTransport.country.change.hidden = registered country for the departure means of transport
+checkYourAnswers.departureMeansOfTransport.identification.change.hidden =  identification type for the departure means of transport
+checkYourAnswers.departureMeansOfTransport.identificationNumber.change.hidden =  identification number for the departure means of transport
 
 cannotSendUnloadingRemarks.title = You cannot send these unloading remarks
 cannotSendUnloadingRemarks.heading = You cannot send these unloading remarks

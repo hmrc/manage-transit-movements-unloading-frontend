@@ -60,8 +60,8 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         )
 
         val expectedResult = NonEmptySet.of(
-          Country("GB", Some("United Kingdom")),
-          Country("AD", Some("Andorra"))
+          Country("GB", "United Kingdom"),
+          Country("AD", "Andorra")
         )
 
         connector.getCountries().futureValue mustBe expectedResult
@@ -73,6 +73,30 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "should handle client and server errors for countries" in {
         checkErrorResponse(url, connector.getCountries())
+      }
+    }
+
+    "getCountry" - {
+      val code = "GB"
+      val url  = s"/$baseUrl/lists/CountryCodesFullList?data.code=$code"
+
+      "should handle a 200 response for countries" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(countryResponseJson))
+        )
+
+        val expectedResult = Country("GB", "United Kingdom")
+
+        connector.getCountry(code).futureValue mustBe expectedResult
+      }
+
+      "should throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getCountry(code))
+      }
+
+      "should handle client and server errors for countries" in {
+        checkErrorResponse(url, connector.getCountry(code))
       }
     }
 
@@ -138,7 +162,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(countryCodeResponseJson))
         )
 
-        val expectedResult = NonEmptySet.of(Country(countryCode, Some("United Kingdom")))
+        val expectedResult = NonEmptySet.of(Country(countryCode, "United Kingdom"))
 
         connector.getCountryNameByCode(countryCode).futureValue mustBe expectedResult
       }
@@ -409,6 +433,20 @@ object ReferenceDataConnectorSpec {
       |    "code":"AD",
       |    "state":"valid",
       |    "description":"Andorra"
+      |  }
+      | ]
+      |}
+      |""".stripMargin
+
+  private val countryResponseJson: String =
+    """
+      |{
+      | "data":
+      | [
+      |  {
+      |    "code":"GB",
+      |    "state":"valid",
+      |    "description":"United Kingdom"
       |  }
       | ]
       |}

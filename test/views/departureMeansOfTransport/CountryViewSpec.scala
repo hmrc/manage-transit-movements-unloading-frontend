@@ -41,9 +41,9 @@ class CountryViewSpec extends InputSelectViewBehaviours[Country] with Generators
   implicit override val arbitraryT: Arbitrary[Country] = arbitraryCountry
 
   override lazy val values: Seq[Country] = Seq(
-    Country("UK", Some("United Kingdom")),
-    Country("US", Some("United States")),
-    Country("ES", Some("Spain"))
+    Country("UK", "United Kingdom"),
+    Country("US", "United States"),
+    Country("ES", "Spain")
   )
 
   behave like pageWithTitle(text = viewModel.title)

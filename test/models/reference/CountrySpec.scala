@@ -32,7 +32,7 @@ class CountrySpec extends SpecBase with ScalaCheckPropertyChecks with Generators
       "must serialise" in {
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
           (code, description) =>
-            val country = Country(code, Some(description))
+            val country = Country(code, description)
             Json.toJson(country) mustBe Json.parse(s"""
                  |{
                  |  "code": "$code",
@@ -45,7 +45,7 @@ class CountrySpec extends SpecBase with ScalaCheckPropertyChecks with Generators
       "must deserialise" in {
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
           (code, description) =>
-            val country = Country(code, Some(description))
+            val country = Country(code, description)
             Json
               .parse(s"""
                    |{
@@ -58,41 +58,17 @@ class CountrySpec extends SpecBase with ScalaCheckPropertyChecks with Generators
       }
     }
 
-    "when description is not present" - {
-      "must serialise" in {
-        val countryCode = Gen.alphaNumStr.sample.value
-        val country     = Country(countryCode, None)
-        Json.toJson(country) mustBe Json.parse(s"""
-             |{
-             |  "code": "$countryCode"
-             |}
-             |""".stripMargin)
-      }
-
-      "must deserialise" in {
-        val countryCode = Gen.alphaNumStr.sample.value
-        val country     = Country(countryCode, None)
-        Json
-          .parse(s"""
-               |{
-               |  "code": "$countryCode"
-               |}
-               |""".stripMargin)
-          .as[Country] mustBe country
-      }
-    }
-
     "must convert to select item" in {
       forAll(arbitrary[Country], arbitrary[Boolean]) {
         (country, selected) =>
-          country.toSelectItem(selected) mustBe SelectItem(Some(country.code), s"${country.description.getOrElse(None)} - ${country.code}", selected)
+          country.toSelectItem(selected) mustBe SelectItem(Some(country.code), s"${country.description} - ${country.code}", selected)
       }
     }
 
     "must format as string" in {
       forAll(arbitrary[Country]) {
         country =>
-          country.toString mustBe s"${country.description.getOrElse(None)} - ${country.code}"
+          country.toString mustBe s"${country.description} - ${country.code}"
       }
     }
   }

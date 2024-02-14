@@ -18,31 +18,29 @@ package utils
 
 import cats.data.OptionT
 import cats.implicits._
+import models.departureTransportMeans.TransportMeansIdentification
+import models.reference.Country
 import models.{Index, UserAnswers}
 import pages._
 import pages.houseConsignment.index.items.ItemDescriptionPage
 import pages.sections._
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
 import play.api.i18n.Messages
-import services.ReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HeaderCarrier
 import viewModels.sections.Section
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: Index, referenceDataService: ReferenceDataService)(implicit
+class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: Index)(implicit
   messages: Messages,
-  hc: HeaderCarrier,
   ec: ExecutionContext
 ) extends UnloadingAnswersHelper(userAnswers) {
 
   def buildVehicleNationalityRow(transportMeansIndex: Index): Future[Option[SummaryListRow]] =
     (for {
       x <- OptionT.fromOption[Future](userAnswers.get(DepartureTransportMeansCountryPage(houseConsignmentIndex, transportMeansIndex)))
-      y <- OptionT.liftF(referenceDataService.getCountryNameByCode(x))
-    } yield transportRegisteredCountry(y)).value
+    } yield transportRegisteredCountry(x)).value
 
   def buildMeansOfTransportRows(idRow: Option[SummaryListRow], nationalityRow: Option[SummaryListRow]): Seq[SummaryListRow] =
     idRow.map(Seq(_)).getOrElse(Seq.empty) ++
@@ -68,17 +66,22 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
       }
       .map(_.getOrElse(Seq.empty))
 
-  def transportMeansID(transportMeansIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRowWithDynamicPrefix[String](
-    answerPath = DepartureTransportMeansIdentificationNumberPage(houseConsignmentIndex, transportMeansIndex),
-    titlePath = DepartureTransportMeansIdentificationTypePage(houseConsignmentIndex, transportMeansIndex),
-    formatAnswer = formatAsText,
-    dynamicPrefix = formatIdentificationTypeAsText,
-    id = None,
-    call = None
-  )
+  def transportMeansID(transportMeansIndex: Index): Option[SummaryListRow] =
+    userAnswers
+      .get(DepartureTransportMeansIdentificationTypePage(houseConsignmentIndex, transportMeansIndex))
+      .flatMap(
+        identificationAnswer =>
+          buildRowWithAnswer[TransportMeansIdentification](
+            optionalAnswer = Some(identificationAnswer),
+            formatAnswer = formatAsText,
+            prefix = "checkYourAnswers.departureMeansOfTransport.identification",
+            id = None,
+            call = None
+          )
+      )
 
-  def transportRegisteredCountry(answer: String): SummaryListRow = buildSimpleRow(
-    answer = Text(answer),
+  def transportRegisteredCountry(answer: Country): SummaryListRow = buildSimpleRow(
+    answer = Text(answer.description),
     label = messages("unloadingFindings.rowHeadings.vehicleNationality"),
     prefix = "unloadingFindings.rowHeadings.vehicleNationality",
     id = None,

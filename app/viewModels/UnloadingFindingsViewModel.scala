@@ -18,8 +18,6 @@ package viewModels
 
 import models.UserAnswers
 import play.api.i18n.Messages
-import services.ReferenceDataService
-import uk.gov.hmrc.http.HeaderCarrier
 import utils.UnloadingFindingsAnswersHelper
 import viewModels.sections.Section
 
@@ -30,16 +28,15 @@ case class UnloadingFindingsViewModel(section: Seq[Section])
 
 object UnloadingFindingsViewModel {
 
-  def apply(userAnswers: UserAnswers, referenceDataService: ReferenceDataService)(implicit
+  def apply(userAnswers: UserAnswers)(implicit
     messages: Messages,
-    hc: HeaderCarrier,
     ec: ExecutionContext
-  ): Future[UnloadingFindingsViewModel] = new UnloadingFindingsViewModelProvider(referenceDataService)(userAnswers)
+  ): Future[UnloadingFindingsViewModel] = new UnloadingFindingsViewModelProvider()(userAnswers)
 
-  class UnloadingFindingsViewModelProvider @Inject() (referenceDataService: ReferenceDataService) {
+  class UnloadingFindingsViewModelProvider @Inject() () {
 
-    def apply(userAnswers: UserAnswers)(implicit messages: Messages, hc: HeaderCarrier, ex: ExecutionContext): Future[UnloadingFindingsViewModel] = {
-      val helper = new UnloadingFindingsAnswersHelper(userAnswers, referenceDataService)
+    def apply(userAnswers: UserAnswers)(implicit messages: Messages, ex: ExecutionContext): Future[UnloadingFindingsViewModel] = {
+      val helper = new UnloadingFindingsAnswersHelper(userAnswers)
 
       helper.buildTransportSections.map {
         meansOfTransportSections =>

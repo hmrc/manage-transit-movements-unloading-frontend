@@ -27,7 +27,7 @@ class IE043Transformer @Inject() (
   consignmentTransformer: ConsignmentTransformer
 ) extends FrontendHeaderCarrierProvider {
 
-  def transform(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[UserAnswers] = {
+  def transform(userAnswers: UserAnswers)(implicit headerCarrier: HeaderCarrier): Future[UserAnswers] = {
 
     val transformerPipeline =
       consignmentTransformer.transform(userAnswers.ie043Data.Consignment)
