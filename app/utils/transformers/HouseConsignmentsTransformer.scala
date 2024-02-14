@@ -18,6 +18,7 @@ package utils.transformers
 
 import generated.HouseConsignmentType04
 import models.{Index, UserAnswers}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,7 +31,7 @@ class HouseConsignmentsTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(houseConsignments: Seq[HouseConsignmentType04]): UserAnswers => Future[UserAnswers] = userAnswers =>
+  def transform(houseConsignments: Seq[HouseConsignmentType04])(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     houseConsignments.zipWithIndex
       .foldLeft(Future.successful(userAnswers))({
         case (acc, (houseConsignment, i)) =>

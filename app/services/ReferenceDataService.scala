@@ -62,11 +62,7 @@ class ReferenceDataServiceImpl @Inject() (connector: ReferenceDataConnector) ext
 
   private def sort(countries: NonEmptySet[Country]): Seq[Country] =
     countries.toSeq.sortBy(
-      country =>
-        country.description match {
-          case Some(desc) => desc.toLowerCase()
-          case None       => country.code
-        }
+      country => country.description.toLowerCase
     )
 }
 

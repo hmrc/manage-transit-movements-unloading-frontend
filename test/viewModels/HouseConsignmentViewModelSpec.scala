@@ -18,62 +18,37 @@ package viewModels
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import models.Index
+import models.departureTransportMeans.TransportMeansIdentification
+import models.reference.Country
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
+import pages.{DepartureTransportMeansCountryPage, DepartureTransportMeansIdentificationNumberPage, DepartureTransportMeansIdentificationTypePage}
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import play.api.libs.json.{JsObject, Json}
-import services.ReferenceDataService
 import viewModels.HouseConsignmentViewModel.HouseConsignmentViewModelProvider
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
-  private val countryDesc                            = "Great Britain"
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(bind[ReferenceDataService].toInstance(mockReferenceDataService))
+  private val country                     = Country("GB", "United Kingdom")
+  private val vehicleIdentificationNumber = "12324"
+  private val identificationType          = TransportMeansIdentification("51", "description")
 
   "HouseConsignmentViewModel" - {
 
     "must render Means of Transport section" - {
       "when there is one" in {
 
-        val json: JsObject = Json
-          .parse("""
-                   | {
-                   |    "Consignment" : {
-                   |      "HouseConsignment" : [
-                   |        {
-                   |         "DepartureTransportMeans" : [
-                   |             {
-                   |                 "sequenceNumber" : "56",
-                   |                 "typeOfIdentification" : "2",
-                   |                 "identificationNumber" : "23",
-                   |                 "nationality" : "IT"
-                   |             }
-                   |         ]
-                   |        }
-                   |      ]
-                   |    }
-                   |}
-            |""".stripMargin)
-          .as[JsObject]
+        val answers = emptyUserAnswers
+          .setValue(DepartureTransportMeansIdentificationNumberPage(Index(0), index), vehicleIdentificationNumber)
+          .setValue(DepartureTransportMeansIdentificationTypePage(Index(0), index), identificationType)
+          .setValue(DepartureTransportMeansCountryPage(Index(0), index), country)
 
-        val userAnswers = emptyUserAnswers.copy(data = json)
+        setExistingUserAnswers(answers)
 
-        setExistingUserAnswers(userAnswers)
-        when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
-
-        val viewModelProvider = new HouseConsignmentViewModelProvider(mockReferenceDataService)
-        val result            = viewModelProvider.apply(userAnswers, index).futureValue
+        val viewModelProvider = new HouseConsignmentViewModelProvider()
+        val result            = viewModelProvider.apply(answers, index).futureValue
         val section           = result.section.head
 
         section.sectionTitle.value mustBe "Departure means of transport 1"
@@ -83,45 +58,28 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
 
       "when there is multiple" in {
 
-        val json: JsObject = Json
-          .parse("""
-                   | {
-                   |    "Consignment" : {
-                   |      "HouseConsignment" : [
-                   |        {
-                   |         "DepartureTransportMeans" : [
-                   |             {
-                   |                 "sequenceNumber" : "56",
-                   |                 "typeOfIdentification" : "2",
-                   |                 "identificationNumber" : "23",
-                   |                 "nationality" : "IT"
-                   |             },
-                   |             {
-                   |                 "sequenceNumber" : "56",
-                   |                 "typeOfIdentification" : "2",
-                   |                 "identificationNumber" : "23",
-                   |                 "nationality" : "IT"
-                   |             }
-                   |          ]
-                   |        }
-                   |      ]
-                   |    }
-                   |}
-                   |""".stripMargin)
-          .as[JsObject]
+        val answers = emptyUserAnswers
+          .setValue(DepartureTransportMeansIdentificationNumberPage(hcIndex, Index(0)), vehicleIdentificationNumber)
+          .setValue(DepartureTransportMeansIdentificationTypePage(hcIndex, Index(0)), identificationType)
+          .setValue(DepartureTransportMeansCountryPage(hcIndex, Index(0)), country)
+          .setValue(DepartureTransportMeansIdentificationNumberPage(hcIndex, Index(1)), vehicleIdentificationNumber)
+          .setValue(DepartureTransportMeansIdentificationTypePage(hcIndex, Index(1)), identificationType)
+          .setValue(DepartureTransportMeansCountryPage(hcIndex, Index(1)), country)
 
-        val userAnswers = emptyUserAnswers.copy(data = json)
+        setExistingUserAnswers(answers)
 
-        setExistingUserAnswers(userAnswers)
-        when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
+        val viewModelProvider = new HouseConsignmentViewModelProvider()
+        val result            = viewModelProvider.apply(answers, index).futureValue
+        val section1          = result.section.head
+        val section2          = result.section(1)
 
-        val viewModelProvider = new HouseConsignmentViewModelProvider(mockReferenceDataService)
-        val result            = viewModelProvider.apply(userAnswers, index).futureValue
-        val section           = result.section(1)
+        section1.sectionTitle.value mustBe "Departure means of transport 1"
+        section1.rows.size mustBe 2
+        section1.viewLink must not be defined
 
-        section.sectionTitle.value mustBe "Departure means of transport 2"
-        section.rows.size mustBe 2
-        section.viewLink must not be defined
+        section2.sectionTitle.value mustBe "Departure means of transport 2"
+        section2.rows.size mustBe 2
+        section2.viewLink must not be defined
       }
     }
 
@@ -165,9 +123,8 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         val userAnswers = emptyUserAnswers.copy(data = json)
 
         setExistingUserAnswers(userAnswers)
-        when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-        val viewModelProvider = new HouseConsignmentViewModelProvider(mockReferenceDataService)
+        val viewModelProvider = new HouseConsignmentViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers, index).futureValue
         val section           = result.houseConsignment.head
 
@@ -206,7 +163,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
 
         setExistingUserAnswers(userAnswers)
 
-        val viewModelProvider = new HouseConsignmentViewModelProvider(mockReferenceDataService)
+        val viewModelProvider = new HouseConsignmentViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers, index).futureValue
         val section           = result.section.head
 
@@ -253,7 +210,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
 
         setExistingUserAnswers(userAnswers)
 
-        val viewModelProvider = new HouseConsignmentViewModelProvider(mockReferenceDataService)
+        val viewModelProvider = new HouseConsignmentViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers, index).futureValue
         val section           = result.section(1)
 

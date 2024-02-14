@@ -60,8 +60,8 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         )
 
         val expectedResult = NonEmptySet.of(
-          Country("GB", Some("United Kingdom")),
-          Country("AD", Some("Andorra"))
+          Country("GB", "United Kingdom"),
+          Country("AD", "Andorra")
         )
 
         connector.getCountries().futureValue mustBe expectedResult
@@ -86,7 +86,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(countryResponseJson))
         )
 
-        val expectedResult = Country("GB", Some("United Kingdom"))
+        val expectedResult = Country("GB", "United Kingdom")
 
         connector.getCountry(code).futureValue mustBe expectedResult
       }
@@ -162,7 +162,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(countryCodeResponseJson))
         )
 
-        val expectedResult = NonEmptySet.of(Country(countryCode, Some("United Kingdom")))
+        val expectedResult = NonEmptySet.of(Country(countryCode, "United Kingdom"))
 
         connector.getCountryNameByCode(countryCode).futureValue mustBe expectedResult
       }

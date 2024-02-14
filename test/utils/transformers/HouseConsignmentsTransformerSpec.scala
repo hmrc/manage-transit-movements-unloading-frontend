@@ -83,7 +83,7 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
                 ua => Future.successful(ua.setValue(FakeConsignorSection(hcIndex), Json.obj("foo" -> i.toString)))
               }
 
-            when(mockDepartureTransportMeansTransformer.transform(any(), eqTo(hcIndex)))
+            when(mockDepartureTransportMeansTransformer.transform(any(), eqTo(hcIndex))(any()))
               .thenReturn {
                 ua => Future.successful(ua.setValue(FakeDepartureTransportMeansSection(hcIndex), Json.obj("foo" -> i.toString)))
               }

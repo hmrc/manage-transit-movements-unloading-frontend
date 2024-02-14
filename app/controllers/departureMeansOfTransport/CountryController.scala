@@ -18,7 +18,6 @@ package controllers.departureMeansOfTransport
 
 import controllers.actions._
 import forms.DepartureMeansOfTransportCountryFormProvider
-import models.reference.Country
 import models.{ArrivalId, Index, Mode}
 import pages.departureMeansOfTransport.CountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -55,9 +54,9 @@ class CountryController @Inject() (
             val preparedForm = request.userAnswers.get(CountryPage(transportMeansIndex)) match {
               case None => form
               case Some(value) =>
-                val country = countries.find(_.code == value) match {
+                val country = countries.find(_.code == value.code) match {
                   case Some(country) => country
-                  case None          => Country(value, None)
+                  case None          => value
                 }
                 form.fill(country)
             }
@@ -80,7 +79,7 @@ class CountryController @Inject() (
                 value =>
                   for {
                     updatedAnswers <- Future
-                      .fromTry(request.userAnswers.set(CountryPage(transportMeansIndex), value.code))
+                      .fromTry(request.userAnswers.set(CountryPage(transportMeansIndex), value))
                     _ <- sessionRepository.set(updatedAnswers)
                   } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
               )

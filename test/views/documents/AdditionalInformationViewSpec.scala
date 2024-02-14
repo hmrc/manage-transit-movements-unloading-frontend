@@ -21,7 +21,7 @@ import forms.Constants.maxAdditionalInfoLength
 import generators.Generators
 import models.NormalMode
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.documents.AdditionalInformationViewModel

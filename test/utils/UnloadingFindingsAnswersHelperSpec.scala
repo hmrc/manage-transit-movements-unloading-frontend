@@ -18,13 +18,15 @@ package utils
 
 import base.SpecBase
 import generators.Generators
-import models.Identification
+import models.{Identification, Index}
+import models.departureTransportMeans.TransportMeansIdentification
+import models.reference.Country
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
-import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
+import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.libs.json.{JsObject, Json}
 import services.ReferenceDataService
@@ -39,7 +41,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
   val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
-  private val countryDesc = "Great Britain"
+  private val countryDesc = "United Kingdom"
 
   private def containerIndicatorAction(index: Int) = Some(
     Actions(
@@ -123,7 +125,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
     "buildTransportSections" - {
       "must return None" - {
         s"when no transport means defined" in {
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
+          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
           val result = helper.buildTransportSections.futureValue
           result.isEmpty mustBe true
         }
@@ -135,45 +137,36 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
         s"when there is 1 transport means section defined" in {
 
-          val json = Json
-            .parse(
-              s"""
-                 |{
-                 |   "Consignment" : {
-                 |       "DepartureTransportMeans" : [
-                 |           {
-                 |               "sequenceNumber" : "dtm-1",
-                 |               "typeOfIdentification" : "${vehicleIdentificationType.identificationType}",
-                 |               "identificationNumber" : "$vehicleIdentificationNumber",
-                 |               "nationality" : "GB"
-                 |           }
-                 |       ]
-                 |   }
-                 |}
-                 |
-                 |""".stripMargin
+          val answers = emptyUserAnswers
+            .setValue(VehicleIdentificationNumberPage(index), vehicleIdentificationNumber)
+            .setValue(TransportMeansIdentificationPage(index),
+                      TransportMeansIdentification(vehicleIdentificationType.identificationType.toString, "description")
             )
-            .as[JsObject]
+            .setValue(CountryPage(index), Country("GB", "United Kingdom"))
 
-          val userAnswers = emptyUserAnswers.copy(data = json)
-
-          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
-
-          val helper          = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
+          val helper          = new UnloadingFindingsAnswersHelper(answers)
           val result          = helper.buildTransportSections.futureValue
           val transportMeans1 = result.head.rows
 
-          val transportMeansIDRow1      = transportMeans1.head
-          val transportMeansCountryRow1 = transportMeans1(1)
+          val transportMeansIDRow      = transportMeans1.head
+          val transportMeansNumberRow  = transportMeans1(1)
+          val transportMeansCountryRow = transportMeans1(2)
 
-          transportMeansIDRow1 mustBe
+          transportMeansIDRow mustBe
+            SummaryListRow(
+              key = Key("Identification type".toText),
+              value = Value("description".toText),
+              actions = identificationTypeAction(1)
+            )
+
+          transportMeansNumberRow mustBe
             SummaryListRow(
               key = Key("Identification number".toText),
               value = Value(vehicleIdentificationNumber.toText),
               actions = identificationNumberAction(1)
             )
 
-          transportMeansCountryRow1 mustBe
+          transportMeansCountryRow mustBe
             SummaryListRow(
               key = Key("Registered country".toText),
               value = Value(countryDesc.toText),
@@ -182,38 +175,29 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
         }
         s"when only identification type and number defined" in {
 
-          val json = Json
-            .parse(
-              s"""
-                 |{
-                 |   "Consignment" : {
-                 |       "DepartureTransportMeans" : [
-                 |           {
-                 |               "sequenceNumber" : "dtm-1",
-                 |               "typeOfIdentification" : "${vehicleIdentificationType.identificationType}",
-                 |               "identificationNumber" : "$vehicleIdentificationNumber"
-                 |           }
-                 |       ]
-                 |   }
-                 |}
-                 |
-                 |""".stripMargin
-            )
-            .as[JsObject]
-
-          val userAnswers = emptyUserAnswers.copy(data = json)
+          val answers = emptyUserAnswers
+            .setValue(VehicleIdentificationNumberPage(index), vehicleIdentificationNumber)
+            .setValue(TransportMeansIdentificationPage(index), TransportMeansIdentification("41", "description"))
 
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper          = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
+          val helper          = new UnloadingFindingsAnswersHelper(answers)
           val result          = helper.buildTransportSections.futureValue
           val transportMeans1 = result.head.rows
 
-          val transportMeansIDRow1 = transportMeans1.head
+          val transportMeansIDRow     = transportMeans1.head
+          val transportMeansNumberRow = transportMeans1(1)
 
-          transportMeans1.length mustBe 1
+          transportMeans1.length mustBe 2
 
-          transportMeansIDRow1 mustBe
+          transportMeansIDRow mustBe
+            SummaryListRow(
+              key = Key("Identification type".toText),
+              value = Value("description".toText),
+              actions = identificationTypeAction(1)
+            )
+
+          transportMeansNumberRow mustBe
             SummaryListRow(
               key = Key("Identification number".toText),
               value = Value(vehicleIdentificationNumber.toText),
@@ -223,29 +207,12 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
         }
         s"when only country is defined" in {
 
-          val json = Json
-            .parse(
-              s"""
-                 |{
-                 |   "Consignment" : {
-                 |       "DepartureTransportMeans" : [
-                 |           {
-                 |               "sequenceNumber" : "dtm-1",
-                 |               "nationality" : "GB"
-                 |           }
-                 |       ]
-                 |   }
-                 |}
-                 |
-                 |""".stripMargin
-            )
-            .as[JsObject]
-
-          val userAnswers = emptyUserAnswers.copy(data = json)
+          val answers = emptyUserAnswers
+            .setValue(CountryPage(index), Country("GB", "United Kingdom"))
 
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper          = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
+          val helper          = new UnloadingFindingsAnswersHelper(answers)
           val result          = helper.buildTransportSections.futureValue
           val transportMeans1 = result.head.rows
 
@@ -263,29 +230,12 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
         }
         s"when only number is defined" in {
 
-          val json = Json
-            .parse(
-              s"""
-                 |{
-                 |   "Consignment" : {
-                 |       "DepartureTransportMeans" : [
-                 |           {
-                 |               "sequenceNumber" : "dtm-1",
-                 |               "identificationNumber" : "$vehicleIdentificationNumber"
-                 |           }
-                 |       ]
-                 |   }
-                 |}
-                 |
-                 |""".stripMargin
-            )
-            .as[JsObject]
-
-          val userAnswers = emptyUserAnswers.copy(data = json)
+          val answers = emptyUserAnswers
+            .setValue(VehicleIdentificationNumberPage(index), vehicleIdentificationNumber)
 
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper          = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
+          val helper          = new UnloadingFindingsAnswersHelper(answers)
           val result          = helper.buildTransportSections.futureValue
           val transportMeans1 = result.head.rows.head
 
@@ -299,47 +249,42 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
         }
         s"when multiple transport means sections are defined" in {
 
-          val json = Json
-            .parse(
-              s"""
-                 |{
-                 |   "Consignment" : {
-                 |       "DepartureTransportMeans" : [
-                 |           {
-                 |               "sequenceNumber" : "dtm-1",
-                 |               "typeOfIdentification" : "${vehicleIdentificationType.identificationType}",
-                 |               "identificationNumber" : "$vehicleIdentificationNumber",
-                 |               "nationality" : "GB"
-                 |           },
-                 |           {
-                 |               "sequenceNumber" : "dtm-1",
-                 |               "typeOfIdentification" : "${vehicleIdentificationType.identificationType}",
-                 |               "identificationNumber" : "$vehicleIdentificationNumber",
-                 |               "nationality" : "GB"
-                 |           }
-                 |       ]
-                 |   }
-                 |}
-                 |
-                 |""".stripMargin
+          val answers = emptyUserAnswers
+            .setValue(VehicleIdentificationNumberPage(Index(0)), vehicleIdentificationNumber)
+            .setValue(
+              TransportMeansIdentificationPage(Index(0)),
+              TransportMeansIdentification(vehicleIdentificationType.identificationType.toString, vehicleIdentificationNumber)
             )
-            .as[JsObject]
-
-          val userAnswers = emptyUserAnswers.copy(data = json)
+            .setValue(CountryPage(Index(0)), Country("GB", "United Kingdom"))
+            .setValue(VehicleIdentificationNumberPage(Index(1)), vehicleIdentificationNumber)
+            .setValue(
+              TransportMeansIdentificationPage(Index(1)),
+              TransportMeansIdentification(vehicleIdentificationType.identificationType.toString, vehicleIdentificationNumber)
+            )
+            .setValue(CountryPage(Index(1)), Country("GB", "United Kingdom"))
 
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
-          val helper          = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
+          val helper          = new UnloadingFindingsAnswersHelper(answers)
           val result          = helper.buildTransportSections.futureValue
           val transportMeans1 = result.head.rows
           val transportMeans2 = result(1).rows
 
           val transportMeansIDRow1      = transportMeans1.head
-          val transportMeansCountryRow1 = transportMeans1(1)
+          val transportMeansNumberRow1  = transportMeans1(1)
+          val transportMeansCountryRow1 = transportMeans1(2)
           val transportMeansIDRow2      = transportMeans2.head
-          val transportMeansCountryRow2 = transportMeans2(1)
+          val transportMeansNumberRow2  = transportMeans2(1)
+          val transportMeansCountryRow2 = transportMeans2(2)
 
           transportMeansIDRow1 mustBe
+            SummaryListRow(
+              key = Key("Identification type".toText),
+              value = Value(vehicleIdentificationNumber.toText),
+              actions = identificationTypeAction(1)
+            )
+
+          transportMeansNumberRow1 mustBe
             SummaryListRow(
               key = Key("Identification number".toText),
               value = Value(vehicleIdentificationNumber.toText),
@@ -354,6 +299,13 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             )
 
           transportMeansIDRow2 mustBe
+            SummaryListRow(
+              key = Key("Identification type".toText),
+              value = Value(vehicleIdentificationNumber.toText),
+              actions = identificationTypeAction(2)
+            )
+
+          transportMeansNumberRow2 mustBe
             SummaryListRow(
               key = Key("Identification number".toText),
               value = Value(vehicleIdentificationNumber.toText),
@@ -373,14 +325,11 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
     "transportMeansID" - {
 
       val vehicleIdentificationNumber = Gen.alphaNumStr.sample.value
-      val vehicleIdentificationType   = Gen.oneOf(Identification.values).sample.value
-
-      val identificationTypeMessage = "Identification type"
 
       "must return None" - {
         s"when $VehicleIdentificationNumberPage undefined" in {
 
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
+          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
           helper.transportMeansID(index) mustBe None
         }
       }
@@ -388,28 +337,10 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       "must return Some(Row)" - {
         s"when $VehicleIdentificationNumberPage defined" in {
 
-          val json = Json
-            .parse(
-              s"""
-                 |{
-                 |   "Consignment" : {
-                 |       "DepartureTransportMeans" : [
-                 |           {
-                 |               "sequenceNumber" : "dtm-1",
-                 |               "typeOfIdentification" : "${vehicleIdentificationType.identificationType}",
-                 |               "identificationNumber" : "$vehicleIdentificationNumber",
-                 |               "nationality" : "GB"
-                 |           }
-                 |       ]
-                 |   }
-                 |}
-                 |""".stripMargin
-            )
-            .as[JsObject]
+          val answers = emptyUserAnswers
+            .setValue(VehicleIdentificationNumberPage(index), vehicleIdentificationNumber)
 
-          val userAnswers = emptyUserAnswers.copy(data = json)
-
-          val helper          = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
+          val helper          = new UnloadingFindingsAnswersHelper(answers)
           val result          = helper.buildTransportSections.futureValue
           val transportMeans1 = result.head.rows.head
 
@@ -427,13 +358,12 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
       "must return Some(Row)" - {
         s"when $CountryPage defined" in {
+          val country = Country("GB", "United Kingdom")
           val answers = emptyUserAnswers
-            .setValue(CountryPage(index), "GB")
+            .setValue(CountryPage(index), country)
 
-          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
-
-          val helper = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
-          val result = helper.transportRegisteredCountry(countryDesc)
+          val helper = new UnloadingFindingsAnswersHelper(answers)
+          val result = helper.transportRegisteredCountry(country)
 
           result mustBe
             SummaryListRow(
@@ -452,7 +382,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       "must return None" - {
         s"when $ContainerIdentificationNumberPage undefined" in {
 
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
+          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
           val result = helper.containerIdentificationNumber(index)
           result mustBe None
         }
@@ -480,7 +410,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
           val userAnswers = emptyUserAnswers.copy(data = json)
 
-          val helper = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
+          val helper = new UnloadingFindingsAnswersHelper(userAnswers)
           val result = helper.containerIdentificationNumber(index)
 
           result mustBe Some(
@@ -497,7 +427,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
     "transportEquipmentSections" - {
       "must return None" - {
         s"when no transport equipments defined" in {
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
+          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
           val result = helper.transportEquipmentSections
           result.isEmpty mustBe true
         }
@@ -531,7 +461,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
           val userAnswers = emptyUserAnswers.copy(data = json)
 
-          val helper              = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
+          val helper              = new UnloadingFindingsAnswersHelper(userAnswers)
           val transportEquipment1 = helper.transportEquipmentSections.head.rows
 
           val sealRow1 = transportEquipment1.head
@@ -563,7 +493,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
           val userAnswers = emptyUserAnswers.copy(data = json)
 
-          val helper              = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
+          val helper              = new UnloadingFindingsAnswersHelper(userAnswers)
           val transportEquipment1 = helper.transportEquipmentSections.head.rows
 
           val containerRow1 = transportEquipment1.head
@@ -606,7 +536,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
           val userAnswers = emptyUserAnswers.copy(data = json)
 
-          val helper              = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
+          val helper              = new UnloadingFindingsAnswersHelper(userAnswers)
           val transportEquipment1 = helper.transportEquipmentSections.head.rows
 
           val containerRow1 = transportEquipment1.head
@@ -666,7 +596,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
           val userAnswers = emptyUserAnswers.copy(data = json)
 
-          val helper              = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
+          val helper              = new UnloadingFindingsAnswersHelper(userAnswers)
           val transportEquipment1 = helper.transportEquipmentSections.head.rows
           val transportEquipment2 = helper.transportEquipmentSections(1).rows
 
@@ -713,7 +643,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       "must return None" - {
         s"when $SealIdentificationNumberPage undefined" in {
 
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
+          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
           val result = helper.transportEquipmentSeal(equipmentIndex, sealIndex)
           result mustBe None
         }
@@ -748,7 +678,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
           val userAnswers = emptyUserAnswers.copy(data = json)
 
-          val helper = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
+          val helper = new UnloadingFindingsAnswersHelper(userAnswers)
           val result = helper.transportEquipmentSeal(equipmentIndex, sealIndex)
 
           result mustBe Some(
@@ -767,7 +697,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       "must return None" - {
         s"when no house consignments defined" in {
 
-          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers, mockReferenceDataService)
+          val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
           val result = helper.houseConsignmentSections
           result.isEmpty mustBe true
         }
@@ -840,7 +770,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
           val userAnswers = emptyUserAnswers.copy(data = json)
 
-          val helper   = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
+          val helper   = new UnloadingFindingsAnswersHelper(userAnswers)
           val sections = helper.houseConsignmentSections.head.rows
 
           val grossWeightRow          = sections.head
@@ -927,7 +857,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
             val userAnswers = emptyUserAnswers.copy(data = json)
 
-            val helper   = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
+            val helper   = new UnloadingFindingsAnswersHelper(userAnswers)
             val sections = helper.houseConsignmentSections.head.rows
 
             val grossWeightRow = sections.head
@@ -979,7 +909,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
             val userAnswers = emptyUserAnswers.copy(data = json)
 
-            val helper   = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
+            val helper   = new UnloadingFindingsAnswersHelper(userAnswers)
             val sections = helper.houseConsignmentSections.head.rows
 
             val consignorName = sections.head
@@ -1017,7 +947,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
             val userAnswers = emptyUserAnswers.copy(data = json)
 
-            val helper   = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
+            val helper   = new UnloadingFindingsAnswersHelper(userAnswers)
             val sections = helper.houseConsignmentSections.head.rows
 
             val consignorIdentification = sections.head
@@ -1070,7 +1000,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
             val userAnswers = emptyUserAnswers.copy(data = json)
 
-            val helper   = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
+            val helper   = new UnloadingFindingsAnswersHelper(userAnswers)
             val sections = helper.houseConsignmentSections.head.rows
 
             val grossWeightRow          = sections.head
@@ -1138,7 +1068,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
             val userAnswers = emptyUserAnswers.copy(data = json)
 
-            val helper   = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
+            val helper   = new UnloadingFindingsAnswersHelper(userAnswers)
             val sections = helper.houseConsignmentSections.head.rows
 
             val grossWeightRow = sections.head
@@ -1190,7 +1120,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
             val userAnswers = emptyUserAnswers.copy(data = json)
 
-            val helper   = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
+            val helper   = new UnloadingFindingsAnswersHelper(userAnswers)
             val sections = helper.houseConsignmentSections.head.rows
 
             val consigneeName = sections.head
@@ -1228,7 +1158,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
             val userAnswers = emptyUserAnswers.copy(data = json)
 
-            val helper   = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
+            val helper   = new UnloadingFindingsAnswersHelper(userAnswers)
             val sections = helper.houseConsignmentSections.head.rows
 
             val consigneeIdentification = sections.head
@@ -1282,7 +1212,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
             val userAnswers = emptyUserAnswers.copy(data = json)
 
-            val helper   = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
+            val helper   = new UnloadingFindingsAnswersHelper(userAnswers)
             val sections = helper.houseConsignmentSections.head.rows
 
             val grossWeightRow          = sections.head
@@ -1344,7 +1274,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
             val userAnswers = emptyUserAnswers.copy(data = json)
 
-            val helper   = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
+            val helper   = new UnloadingFindingsAnswersHelper(userAnswers)
             val sections = helper.houseConsignmentSections.head.rows
 
             val consignorName           = sections.head
@@ -1379,7 +1309,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
           val answers = emptyUserAnswers
 
-          val helper = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
+          val helper = new UnloadingFindingsAnswersHelper(answers)
           val result = helper.totalGrossWeightRow(totalGrossWeight)
 
           result mustBe SummaryListRow(
@@ -1399,7 +1329,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
           val answers = emptyUserAnswers
 
-          val helper = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
+          val helper = new UnloadingFindingsAnswersHelper(answers)
           val result = helper.totalNetWeightRow(totalNetWeight)
 
           result mustBe SummaryListRow(

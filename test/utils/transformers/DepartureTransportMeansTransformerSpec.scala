@@ -71,7 +71,7 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
                 .thenReturn(Future.successful(TransportMeansIdentification(dtm.typeOfIdentification, i.toString)))
 
               when(mockReferenceDataConnector.getCountry(eqTo(dtm.nationality))(any(), any()))
-                .thenReturn(Future.successful(Country(dtm.nationality, Some(i.toString))))
+                .thenReturn(Future.successful(Country(dtm.nationality, i.toString)))
           }
 
           val result = transformer.transform(departureTransportMeans).apply(emptyUserAnswers).futureValue
@@ -83,7 +83,7 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
               result.getValue(TransportMeansIdentificationPage(dtmIndex)).code mustBe dtm.typeOfIdentification
               result.getValue(TransportMeansIdentificationPage(dtmIndex)).description mustBe i.toString
               result.getValue(VehicleIdentificationNumberPage(dtmIndex)) mustBe dtm.identificationNumber
-              result.getValue(CountryPage(dtmIndex)) mustBe dtm.nationality
+              result.getValue(CountryPage(dtmIndex)).code mustBe dtm.nationality
           }
       }
     }
@@ -91,15 +91,21 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
     "when house consignment level" in {
       forAll(departureTransportMeansGen) {
         departureTransportMeans =>
-          val result = transformer.transform(departureTransportMeans, hcIndex).apply(emptyUserAnswers).futureValue
-
           departureTransportMeans.zipWithIndex.map {
             case (dtm, i) =>
+              when(mockReferenceDataConnector.getMeansOfTransportIdentificationType(any())(any(), any()))
+                .thenReturn(Future.successful(TransportMeansIdentification(dtm.typeOfIdentification, dtm.typeOfIdentification)))
+
+              when(mockReferenceDataConnector.getCountry(any())(any(), any()))
+                .thenReturn(Future.successful(Country(dtm.nationality, dtm.nationality)))
+
+              val result = transformer.transform(departureTransportMeans, hcIndex).apply(emptyUserAnswers).futureValue
+
               val dtmIndex = Index(i)
 
-              result.getValue(DepartureTransportMeansIdentificationTypePage(hcIndex, dtmIndex)) mustBe dtm.typeOfIdentification
+              result.getValue(DepartureTransportMeansIdentificationTypePage(hcIndex, dtmIndex)).description mustBe dtm.typeOfIdentification
               result.getValue(DepartureTransportMeansIdentificationNumberPage(hcIndex, dtmIndex)) mustBe dtm.identificationNumber
-              result.getValue(DepartureTransportMeansCountryPage(hcIndex, dtmIndex)) mustBe dtm.nationality
+              result.getValue(DepartureTransportMeansCountryPage(hcIndex, dtmIndex)).description mustBe dtm.nationality
           }
       }
     }

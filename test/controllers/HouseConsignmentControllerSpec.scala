@@ -51,7 +51,7 @@ class HouseConsignmentControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       val sections = arbitrarySections.arbitrary.sample.value
 
-      when(mockHouseConsignmentViewModelProvider.apply(any(), any())(any(), any(), any()))
+      when(mockHouseConsignmentViewModelProvider.apply(any(), any())(any(), any()))
         .thenReturn(Future.successful(HouseConsignmentViewModel(sections, sections)))
 
       val houseConsignmentViewModel = HouseConsignmentViewModel(sections, sections)

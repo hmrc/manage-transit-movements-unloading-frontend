@@ -72,7 +72,7 @@ trait ModelGenerators {
       for {
         code <- Gen.pick(2, 'A' to 'Z')
         name <- nonEmptyString
-      } yield Country(code.mkString, Some(name))
+      } yield Country(code.mkString, name)
     }
 
   implicit lazy val arbitraryMode: Arbitrary[Mode] =

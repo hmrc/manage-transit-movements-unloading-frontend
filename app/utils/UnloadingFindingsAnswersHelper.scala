@@ -19,31 +19,28 @@ package utils
 import cats.data.OptionT
 import cats.implicits._
 import models.departureTransportMeans.TransportMeansIdentification
+import models.reference.Country
 import models.{Index, Link, UserAnswers}
 import pages._
 import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 import pages.sections._
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.i18n.Messages
-import services.ReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HeaderCarrier
 import viewModels.sections.Section
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataService: ReferenceDataService)(implicit
+class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit
   messages: Messages,
-  hc: HeaderCarrier,
   ec: ExecutionContext
 ) extends UnloadingAnswersHelper(userAnswers) {
 
   def buildVehicleNationalityRow(index: Index): Future[Option[SummaryListRow]] =
     (for {
       x <- OptionT.fromOption[Future](userAnswers.get(CountryPage(index)))
-      y <- OptionT.liftF(referenceDataService.getCountryNameByCode(x))
-    } yield transportRegisteredCountry(y)).value
+    } yield transportRegisteredCountry(x)).value
 
   def buildMeansOfTransportRows(idRow: Option[SummaryListRow], nationalityRow: Option[SummaryListRow], numberRow: Option[SummaryListRow]): Seq[SummaryListRow] =
     idRow.map(Seq(_)).getOrElse(Seq.empty) ++
@@ -94,8 +91,8 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
           )
       )
 
-  def transportRegisteredCountry(answer: String): SummaryListRow = buildSimpleRow(
-    answer = Text(answer),
+  def transportRegisteredCountry(answer: Country): SummaryListRow = buildSimpleRow(
+    answer = Text(answer.description),
     label = messages("unloadingFindings.rowHeadings.vehicleNationality"),
     prefix = "checkYourAnswers.departureMeansOfTransport.country",
     id = Some("change-registered-country"),
