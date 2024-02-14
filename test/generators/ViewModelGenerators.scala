@@ -30,6 +30,7 @@ import viewModels.{ListItem, UnloadingFindingsViewModel}
 import viewModels.departureTransportMeans._
 import viewModels.documents.{AdditionalInformationViewModel, DocumentReferenceNumberViewModel}
 import viewModels.houseConsignment.index.items._
+import viewModels.houseConsignment.index.items.document.{ItemsAdditionalInformationViewModel, ItemsDocumentReferenceNumberViewModel}
 import viewModels.sections.Section
 import viewModels.transportEquipment.index.{ApplyAnotherItemViewModel, ContainerIdentificationNumberViewModel}
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
@@ -261,5 +262,21 @@ trait ViewModelGenerators {
       title         <- nonEmptyString
       requiredError <- nonEmptyString
     } yield AdditionalInformationViewModel(heading, title, requiredError)
+  }
+
+  implicit lazy val arbitraryItemsDocumentReferenceNumberViewModel: Arbitrary[ItemsDocumentReferenceNumberViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+    } yield ItemsDocumentReferenceNumberViewModel(heading, title, requiredError)
+  }
+
+  implicit lazy val arbitraryItemsAdditionalInformationViewModel: Arbitrary[ItemsAdditionalInformationViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+    } yield ItemsAdditionalInformationViewModel(heading, title, requiredError)
   }
 }

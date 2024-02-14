@@ -24,6 +24,8 @@ import models.{Index, Link, UserAnswers}
 import pages._
 import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 import pages.sections._
+import pages.sections.additionalReference.AdditionalReferenceSection._
+import pages.sections.additionalReference.{AdditionalReferenceSection, AdditionalReferencesSection}
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -145,6 +147,17 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit
     id = Some(s"change-seal-details-${sealIndex.display}"),
     call = Some(Call(GET, "#"))
   )
+
+  def additionalReference(index: Index): Option[SummaryListRow] = getAnswerAndBuildRow[AdditionalReference](
+    page = AdditionalReferenceSection(index),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.additional.reference",
+    args = index.display,
+    id = Some(s"change-additional-reference-${index.display}"),
+    call = Some(Call(GET, "#")) //TODO change me please
+  )(AdditionalReference.reads(index))
+
+  def additionalReferences: Seq[SummaryListRow] = getAnswersAndBuildSectionRows(AdditionalReferencesSection)(additionalReference)
 
   def houseConsignmentSections: Seq[Section] =
     userAnswers.get(HouseConsignmentsSection).mapWithIndex {

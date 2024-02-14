@@ -18,10 +18,10 @@ package base
 
 import config.FrontendAppConfig
 import models.{ArrivalId, EoriNumber, Index, MovementReferenceNumber, UserAnswers}
-import org.scalatest._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import org.scalatest.{EitherValues, OptionValues, TryValues}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -31,6 +31,7 @@ import play.api.inject.Injector
 import play.api.libs.json.{Json, Reads, Writes}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
+import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Content, Key, Value}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.Instant
@@ -86,6 +87,22 @@ trait SpecBase
 
     def removeValue(page: QuestionPage[_]): UserAnswers =
       userAnswers.remove(page).success.value
+  }
+
+  implicit class RichContent(c: Content) {
+    def value: String = c.asHtml.toString()
+  }
+
+  implicit class RichValue(v: Value) {
+    def value: String = v.content.value
+  }
+
+  implicit class RichAction(ai: ActionItem) {
+    def id: String = ai.attributes.get("id").value
+  }
+
+  implicit class RichKey(k: Key) {
+    def value: String = k.content.value
   }
 
 }

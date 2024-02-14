@@ -226,6 +226,30 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
     }
 
+    "getAdditionalReferenceType" - {
+      val documentType = "Y023"
+      val url          = s"/$baseUrl/lists/AdditionalReference?data.documentType=$documentType"
+
+      "must return supporting document when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(additionalReferenceResponseJson))
+        )
+
+        val expectedResult: AdditionalReferenceType = AdditionalReferenceType(documentType, "Consignee (AEO certificate number)")
+
+        connector.getAdditionalReferenceType(documentType).futureValue mustEqual expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getAdditionalReferenceType(documentType))
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getAdditionalReferenceType(documentType))
+      }
+    }
+
     "getTransportDocument" - {
       val typeValue = "N235"
       val url       = s"/$baseUrl/lists/TransportDocumentType?data.code=$typeValue"
@@ -526,6 +550,18 @@ object ReferenceDataConnectorSpec {
       |    {
       |      "code": "C641",
       |      "description": "Dissostichus - catch document import"
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+
+  private val additionalReferenceResponseJson: String =
+    """
+      |{
+      |  "data": [
+      |    {
+      |      "documentType": "Y023",
+      |      "description": "Consignee (AEO certificate number)"
       |    }
       |  ]
       |}
