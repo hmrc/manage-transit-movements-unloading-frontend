@@ -20,7 +20,7 @@ import models.UserAnswers
 import play.api.i18n.Messages
 import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.UnloadingFindingsAnswersHelper
+import utils.{ConsignmentAnswersHelper, UnloadingFindingsAnswersHelper}
 import viewModels.sections.Section
 
 import javax.inject.Inject
@@ -39,15 +39,19 @@ object UnloadingFindingsViewModel {
   class UnloadingFindingsViewModelProvider @Inject() (referenceDataService: ReferenceDataService) {
 
     def apply(userAnswers: UserAnswers)(implicit messages: Messages, hc: HeaderCarrier, ex: ExecutionContext): Future[UnloadingFindingsViewModel] = {
-      val helper = new UnloadingFindingsAnswersHelper(userAnswers, referenceDataService)
+      val helper                   = new UnloadingFindingsAnswersHelper(userAnswers, referenceDataService)
+      val consignmentAnswersHelper = new ConsignmentAnswersHelper(userAnswers)
 
       helper.buildTransportSections.map {
         meansOfTransportSections =>
           val transportEquipmentSections: Seq[Section] = helper.transportEquipmentSections
 
+          val grossMassSection: Option[Section] = consignmentAnswersHelper.grossMass.map {
+            grossMassRow => Section(messages("unloadingFindings.consignment.heading"), Seq(grossMassRow))
+          }
           val houseConsignmentSections: Seq[Section] = helper.houseConsignmentSections
 
-          val sections: Seq[Section] = meansOfTransportSections ++ transportEquipmentSections ++ houseConsignmentSections
+          val sections: Seq[Section] = meansOfTransportSections ++ transportEquipmentSections ++ houseConsignmentSections ++ grossMassSection
 
           new UnloadingFindingsViewModel(sections)
       }
