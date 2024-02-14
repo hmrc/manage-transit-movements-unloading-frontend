@@ -16,7 +16,6 @@
 
 package pages.additionalReference
 
-import models.reference.AdditionalReference
 import pages.behaviours.PageBehaviours
 
 class AdditionalReferenceNumberPageSpec extends PageBehaviours {

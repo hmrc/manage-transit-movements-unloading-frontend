@@ -18,10 +18,10 @@ package base
 
 import config.FrontendAppConfig
 import models.{ArrivalId, EoriNumber, Index, MovementReferenceNumber, UserAnswers}
-import org.scalatest._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import org.scalatest.{EitherValues, OptionValues, TryValues}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -31,10 +31,8 @@ import play.api.inject.Injector
 import play.api.libs.json.{Json, Reads, Writes}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Content, Key, Value}
-import org.scalatest.{BeforeAndAfterEach, EitherValues, OptionValues, TryValues}
-import org.scalatestplus.mockito.MockitoSugar
+import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.Instant
 

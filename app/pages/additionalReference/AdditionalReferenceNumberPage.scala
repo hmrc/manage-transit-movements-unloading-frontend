@@ -17,7 +17,6 @@
 package pages.additionalReference
 
 import models.Index
-import models.reference.AdditionalReference
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 

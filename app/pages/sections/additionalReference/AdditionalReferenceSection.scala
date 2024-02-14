@@ -17,7 +17,7 @@
 package pages.sections.additionalReference
 
 import pages.sections.Section
-import play.api.libs.json.{JsArray, JsObject, JsPath}
+import play.api.libs.json.{JsArray, JsPath}
 
 case object AdditionalReferenceSection extends Section[JsArray] {
 
