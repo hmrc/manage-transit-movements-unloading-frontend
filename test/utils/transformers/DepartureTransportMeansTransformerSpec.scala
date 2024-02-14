@@ -17,58 +17,89 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import connectors.ReferenceDataConnector
 import generated.DepartureTransportMeansType02
 import generators.Generators
 import models.Index
 import models.departureTransportMeans.TransportMeansIdentification
-import org.mockito.ArgumentMatchers.any
+import models.reference.Country
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
-import services.MeansOfTransportIdentificationTypesService
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private val mockTransportIdentificationTypesService: MeansOfTransportIdentificationTypesService = mock[MeansOfTransportIdentificationTypesService]
+  private val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
-  private val transformer = new DepartureTransportMeansTransformer(mockTransportIdentificationTypesService)
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(
+        bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
+      )
 
-  override def beforeEach(): Unit =
-    reset(mockTransportIdentificationTypesService)
+  private val transformer = app.injector.instanceOf[DepartureTransportMeansTransformer]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockReferenceDataConnector)
+  }
+
+  // Because each DTM has its own set of mocks, we need to ensure the values are unique
+  private val departureTransportMeansGen = arbitrary[Seq[DepartureTransportMeansType02]]
+    .map {
+      _.distinctBy(_.typeOfIdentification)
+        .distinctBy(_.nationality)
+    }
 
   "must transform data" - {
     "when consignment level" in {
-      forAll(arbitrary[Seq[DepartureTransportMeansType02]]) {
+      forAll(departureTransportMeansGen) {
         departureTransportMeans =>
+          beforeEach()
+
           departureTransportMeans.zipWithIndex.map {
             case (dtm, i) =>
-              when(mockTransportIdentificationTypesService.getMeansOfTransportIdentificationType(any())(any()))
-                .thenReturn(Future.successful(TransportMeansIdentification(dtm.typeOfIdentification, "description")))
+              when(mockReferenceDataConnector.getMeansOfTransportIdentificationType(eqTo(dtm.typeOfIdentification))(any(), any()))
+                .thenReturn(Future.successful(TransportMeansIdentification(dtm.typeOfIdentification, i.toString)))
 
-              val result = transformer.transform(departureTransportMeans)(hc).apply(emptyUserAnswers).futureValue
+              when(mockReferenceDataConnector.getCountry(eqTo(dtm.nationality))(any(), any()))
+                .thenReturn(Future.successful(Country(dtm.nationality, Some(i.toString))))
+          }
 
-              result.getValue(TransportMeansIdentificationPage(Index(i))).code mustBe dtm.typeOfIdentification
-              result.getValue(VehicleIdentificationNumberPage(Index(i))) mustBe dtm.identificationNumber
-              result.getValue(CountryPage(Index(i))) mustBe dtm.nationality
+          val result = transformer.transform(departureTransportMeans).apply(emptyUserAnswers).futureValue
+
+          departureTransportMeans.zipWithIndex.map {
+            case (dtm, i) =>
+              val dtmIndex = Index(i)
+
+              result.getValue(TransportMeansIdentificationPage(dtmIndex)).code mustBe dtm.typeOfIdentification
+              result.getValue(TransportMeansIdentificationPage(dtmIndex)).description mustBe i.toString
+              result.getValue(VehicleIdentificationNumberPage(dtmIndex)) mustBe dtm.identificationNumber
+              result.getValue(CountryPage(dtmIndex)) mustBe dtm.nationality
           }
       }
     }
 
     "when house consignment level" in {
-      forAll(arbitrary[Seq[DepartureTransportMeansType02]]) {
+      forAll(departureTransportMeansGen) {
         departureTransportMeans =>
+          val result = transformer.transform(departureTransportMeans, hcIndex).apply(emptyUserAnswers).futureValue
+
           departureTransportMeans.zipWithIndex.map {
             case (dtm, i) =>
-              val result = transformer.transform(departureTransportMeans, hcIndex).apply(emptyUserAnswers).futureValue
+              val dtmIndex = Index(i)
 
-              result.getValue(DepartureTransportMeansIdentificationTypePage(hcIndex, Index(i))) mustBe dtm.typeOfIdentification
-              result.getValue(DepartureTransportMeansIdentificationNumberPage(hcIndex, Index(i))) mustBe dtm.identificationNumber
-              result.getValue(DepartureTransportMeansCountryPage(hcIndex, Index(i))) mustBe dtm.nationality
+              result.getValue(DepartureTransportMeansIdentificationTypePage(hcIndex, dtmIndex)) mustBe dtm.typeOfIdentification
+              result.getValue(DepartureTransportMeansIdentificationNumberPage(hcIndex, dtmIndex)) mustBe dtm.identificationNumber
+              result.getValue(DepartureTransportMeansCountryPage(hcIndex, dtmIndex)) mustBe dtm.nationality
           }
       }
     }

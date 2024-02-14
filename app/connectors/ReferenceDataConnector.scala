@@ -22,8 +22,8 @@ import config.FrontendAppConfig
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import logging.Logging
 import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.transport.TransportMode
 import models.reference._
+import models.reference.transport.TransportMode
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, Reads}
 import sttp.model.HeaderNames
@@ -35,8 +35,14 @@ import scala.concurrent.{ExecutionContext, Future}
 class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient) extends Logging {
 
   def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Country]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/CountryCodesFullList"
-    http.GET[NonEmptySet[Country]](serviceUrl, headers = version2Header)
+    val url = s"${config.referenceDataUrl}/lists/CountryCodesFullList"
+    http.GET[NonEmptySet[Country]](url, headers = version2Header)
+  }
+
+  def getCountry(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Country] = {
+    val queryParams: Seq[(String, String)] = Seq("data.code" -> code)
+    val url                                = s"${config.referenceDataUrl}/lists/CountryCodesFullList"
+    http.GET[NonEmptySet[Country]](url, headers = version2Header, queryParams = queryParams).map(_.head)
   }
 
   def getTransportModeCodes[T <: TransportMode[T]](implicit

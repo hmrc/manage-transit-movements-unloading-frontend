@@ -65,10 +65,6 @@ class MeansOfTransportIdentificationTypesService @Inject() (
           )
     }
 
-  def getMeansOfTransportIdentificationType(userAnswersCode: String)(implicit hc: HeaderCarrier): Future[TransportMeansIdentification] =
-    referenceDataConnector
-      .getMeansOfTransportIdentificationType(userAnswersCode)
-
   private def filter(
     identificationTypes: Seq[TransportMeansIdentification],
     inlandMode: Future[Option[InlandMode]]

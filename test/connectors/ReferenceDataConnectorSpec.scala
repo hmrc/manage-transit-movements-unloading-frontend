@@ -76,6 +76,30 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
     }
 
+    "getCountry" - {
+      val code = "GB"
+      val url  = s"/$baseUrl/lists/CountryCodesFullList?data.code=$code"
+
+      "should handle a 200 response for countries" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(countryResponseJson))
+        )
+
+        val expectedResult = Country("GB", Some("United Kingdom"))
+
+        connector.getCountry(code).futureValue mustBe expectedResult
+      }
+
+      "should throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getCountry(code))
+      }
+
+      "should handle client and server errors for countries" in {
+        checkErrorResponse(url, connector.getCountry(code))
+      }
+    }
+
     "getCustomsOffice" - {
       val url = s"/$baseUrl/filtered-lists/CustomsOffices?data.id=$code"
 
@@ -385,6 +409,20 @@ object ReferenceDataConnectorSpec {
       |    "code":"AD",
       |    "state":"valid",
       |    "description":"Andorra"
+      |  }
+      | ]
+      |}
+      |""".stripMargin
+
+  private val countryResponseJson: String =
+    """
+      |{
+      | "data":
+      | [
+      |  {
+      |    "code":"GB",
+      |    "state":"valid",
+      |    "description":"United Kingdom"
       |  }
       | ]
       |}
