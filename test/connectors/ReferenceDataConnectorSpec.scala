@@ -212,7 +212,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(additionalReferenceResponseJson))
         )
 
-        val expectedResult: AdditionalReference = AdditionalReference(documentType, "Consignee (AEO certificate number)")
+        val expectedResult: AdditionalReferenceType = AdditionalReferenceType(documentType, "Consignee (AEO certificate number)")
 
         connector.getAdditionalReferenceType(documentType).futureValue mustEqual expectedResult
       }

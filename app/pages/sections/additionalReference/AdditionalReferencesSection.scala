@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package models.reference
+package pages.sections.additionalReference
 
-import cats.Order
-import play.api.libs.json.{Format, Json}
+import pages.sections.Section
+import play.api.libs.json.{JsArray, JsPath}
 
-case class AdditionalReference(documentType: String, description: String) {
+case object AdditionalReferencesSection extends Section[JsArray] {
 
-  override def toString: String = s"$documentType - $description"
-}
+  override def path: JsPath = JsPath \ "Consignment" \ toString
 
-object AdditionalReference {
-  implicit val format: Format[AdditionalReference] = Json.format[AdditionalReference]
-
-  implicit val order: Order[AdditionalReference] = (x: AdditionalReference, y: AdditionalReference) => x.documentType.compareToIgnoreCase(y.documentType)
-
+  override def toString: String = "AdditionalReference"
 }

@@ -18,11 +18,12 @@ package pages.additionalReference
 
 import models.Index
 import pages.QuestionPage
+import pages.sections.additionalReference.AdditionalReferenceSection
 import play.api.libs.json.JsPath
 
 case class AdditionalReferenceNumberPage(referenceIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ "Consignment" \ "AdditionalReference" \ referenceIndex.position \ "additionalReference" \ toString
+  override def path: JsPath = AdditionalReferenceSection(referenceIndex).path \ toString
 
   override def toString: String = "referenceNumber"
 }

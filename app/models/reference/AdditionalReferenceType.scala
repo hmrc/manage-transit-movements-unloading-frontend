@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package pages.additionalReference
+package models.reference
 
-import models.reference.AdditionalReference
-import pages.behaviours.PageBehaviours
+import cats.Order
+import play.api.libs.json.{Format, Json}
 
-class AdditionalReferencePageSpec extends PageBehaviours {
+case class AdditionalReferenceType(documentType: String, description: String) {
 
-  "AdditionalReferencePage" - {
+  override def toString: String = s"$documentType - $description"
+}
 
-    beRetrievable[AdditionalReference](AdditionalReferenceTypePage(index))
+object AdditionalReferenceType {
+  implicit val format: Format[AdditionalReferenceType] = Json.format[AdditionalReferenceType]
 
-    beSettable[AdditionalReference](AdditionalReferenceTypePage(index))
+  implicit val order: Order[AdditionalReferenceType] = (x: AdditionalReferenceType, y: AdditionalReferenceType) =>
+    x.documentType.compareToIgnoreCase(y.documentType)
 
-    beRemovable[AdditionalReference](AdditionalReferenceTypePage(index))
-  }
 }

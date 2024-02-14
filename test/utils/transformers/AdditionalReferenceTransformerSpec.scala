@@ -25,7 +25,7 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import models.reference.AdditionalReference
+import models.reference.AdditionalReferenceType
 import pages.additionalReference.AdditionalReferenceTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -58,7 +58,7 @@ class AdditionalReferenceTransformerSpec extends SpecBase with AppWithDefaultMoc
       type0 =>
         when(mockRefDataConnector.getAdditionalReferenceType(eqTo(type0.typeValue))(any(), any()))
           .thenReturn(
-            Future.successful(AdditionalReference(documentType = type0.typeValue, description = "describe me"))
+            Future.successful(AdditionalReferenceType(documentType = type0.typeValue, description = "describe me"))
           )
     }
 

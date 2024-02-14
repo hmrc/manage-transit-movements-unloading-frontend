@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,36 @@
 
 package pages.sections.additionalReference
 
-import pages.sections.Section
-import play.api.libs.json.{JsArray, JsPath}
+import models.Index
+import models.reference.AdditionalReferenceType
+import pages.QuestionPage
+import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
+import pages.sections.additionalReference.AdditionalReferenceSection.AdditionalReference
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{__, JsPath, Reads}
 
-case object AdditionalReferenceSection extends Section[JsArray] {
+case class AdditionalReferenceSection(referenceIndex: Index) extends QuestionPage[AdditionalReference] {
 
-  override def path: JsPath = JsPath \ "Consignment" \ toString
+  override def path: JsPath = JsPath \ "Consignment" \ "AdditionalReference" \ referenceIndex.position \ toString
 
-  override def toString: String = "AdditionalReference"
+  override def toString: String = "additionalReference"
+}
+
+object AdditionalReferenceSection {
+
+  case class AdditionalReference(typeValue: AdditionalReferenceType, referenceNumber: Option[String]) {
+
+    override def toString: String = referenceNumber match {
+      case Some(refNumber) => s"${typeValue.documentType} - ${typeValue.description} - $refNumber"
+      case None            => s"${typeValue.documentType} - ${typeValue.description}"
+    }
+  }
+
+  object AdditionalReference {
+
+    def reads(index: Index): Reads[AdditionalReference] = (
+      (__ \ AdditionalReferenceTypePage(index).toString).read[AdditionalReferenceType] and
+        (__ \ AdditionalReferenceNumberPage(index).toString).readNullable[String]
+    )(AdditionalReference.apply _)
+  }
 }

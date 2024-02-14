@@ -18,7 +18,7 @@ package utils.transformers
 
 import connectors.ReferenceDataConnector
 import generated.AdditionalReferenceType03
-import models.reference.AdditionalReference
+import models.reference.AdditionalReferenceType
 import models.{Index, UserAnswers}
 import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -29,7 +29,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AdditionalReferenceTransformer @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) extends PageTransformer {
 
   private case class TempAdditionalReference(
-    typeValue: AdditionalReference,
+    typeValue: AdditionalReferenceType,
     referenceNumber: Option[String]
   )
 
@@ -53,7 +53,7 @@ class AdditionalReferenceTransformer @Inject() (referenceDataConnector: Referenc
             userAnswers =>
               val dtmIndex = Index(i)
               val pipeline: UserAnswers => Future[UserAnswers] =
-                set(AdditionalReferenceTypePage(dtmIndex), AdditionalReference(refDataValue.documentType, refDataValue.description)) andThen
+                set(AdditionalReferenceTypePage(dtmIndex), AdditionalReferenceType(refDataValue.documentType, refDataValue.description)) andThen
                   set(AdditionalReferenceNumberPage(dtmIndex), referenceNumber)
 
               pipeline(userAnswers)

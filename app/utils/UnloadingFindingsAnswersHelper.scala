@@ -20,17 +20,18 @@ import cats.data.OptionT
 import cats.implicits._
 import models.{Index, Link, UserAnswers}
 import pages._
-import pages.additionalReference.AdditionalReferencePage
-import pages.additionalReference.AdditionalReferencePage._
 import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
 import pages.sections._
-import pages.sections.additionalReference.AdditionalReferenceSection
+import pages.sections.additionalReference.AdditionalReferenceSection._
+import pages.sections.additionalReference.{AdditionalReferenceSection, AdditionalReferencesSection}
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import services.ReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.HttpVerbs.GET
 import viewModels.sections.Section
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -133,16 +134,16 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
     call = Some(controllers.routes.SessionExpiredController.onPageLoad())
   )
 
-  def additionalReference(index: Index): Option[SummaryListRow] = getAnswerAndBuildRow[AdditionalReferenceSection](
-    page = AdditionalReferencePage(index),
+  def additionalReference(index: Index): Option[SummaryListRow] = getAnswerAndBuildRow[AdditionalReference](
+    page = AdditionalReferenceSection(index),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.additional.reference",
     args = index.display,
     id = Some(s"change-additional-reference-${index.display}"),
-    call = None //TODO change me please
-  )
+    call = Some(Call(GET, "#")) //TODO change me please
+  )(AdditionalReference.reads(index))
 
-  def additionalReferences: Seq[SummaryListRow] = getAnswersAndBuildSectionRows(AdditionalReferenceSection)(additionalReference)
+  def additionalReferences: Seq[SummaryListRow] = getAnswersAndBuildSectionRows(AdditionalReferencesSection)(additionalReference)
 
   def houseConsignmentSections: Seq[Section] =
     userAnswers.get(HouseConsignmentsSection).mapWithIndex {

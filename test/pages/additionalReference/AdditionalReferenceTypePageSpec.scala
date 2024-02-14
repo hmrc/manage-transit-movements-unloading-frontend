@@ -16,17 +16,17 @@
 
 package pages.additionalReference
 
-import models.reference.AdditionalReference
+import models.reference.AdditionalReferenceType
 import pages.behaviours.PageBehaviours
 
 class AdditionalReferenceTypePageSpec extends PageBehaviours {
 
   "AdditionalReferenceTypePage" - {
 
-    beRetrievable[AdditionalReference](AdditionalReferenceTypePage(index))
+    beRetrievable[AdditionalReferenceType](AdditionalReferenceTypePage(index))
 
-    beSettable[AdditionalReference](AdditionalReferenceTypePage(index))
+    beSettable[AdditionalReferenceType](AdditionalReferenceTypePage(index))
 
-    beRemovable[AdditionalReference](AdditionalReferenceTypePage(index))
+    beRemovable[AdditionalReferenceType](AdditionalReferenceTypePage(index))
   }
 }
