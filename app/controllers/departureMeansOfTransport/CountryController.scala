@@ -52,13 +52,8 @@ class CountryController @Inject() (
             val viewModel = countryViewModelProvider.apply(mode)
             val form      = formProvider(mode, countries)
             val preparedForm = request.userAnswers.get(CountryPage(transportMeansIndex)) match {
-              case None => form
-              case Some(value) =>
-                val country = countries.find(_.code == value.code) match {
-                  case Some(country) => country
-                  case None          => value
-                }
-                form.fill(country)
+              case None        => form
+              case Some(value) => form.fill(value)
             }
             Ok(view(preparedForm, countries, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode, viewModel))
         }

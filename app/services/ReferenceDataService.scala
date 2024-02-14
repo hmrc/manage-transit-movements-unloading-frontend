@@ -28,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ReferenceDataServiceImpl @Inject() (connector: ReferenceDataConnector) extends ReferenceDataService {
 
   def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] =
-    connector.getCountries().map(sort)
+    connector.getCountries().map(_.toSeq)
 
   def getCountryByCode(code: Option[String])(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[Country]] =
     code match {
@@ -59,11 +59,6 @@ class ReferenceDataServiceImpl @Inject() (connector: ReferenceDataConnector) ext
       .recover {
         case _: NoReferenceDataFoundException => false
       }
-
-  private def sort(countries: NonEmptySet[Country]): Seq[Country] =
-    countries.toSeq.sortBy(
-      country => country.description.toLowerCase
-    )
 }
 
 trait ReferenceDataService {

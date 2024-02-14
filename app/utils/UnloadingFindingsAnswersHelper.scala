@@ -26,8 +26,10 @@ import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificatio
 import pages.sections._
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.http.HttpVerbs.GET
 import viewModels.sections.Section
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -73,7 +75,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit
             formatAnswer = formatAsText,
             prefix = "checkYourAnswers.departureMeansOfTransport.identification",
             id = Some(s"change-transport-means-identification-${transportMeansIndex.display}"),
-            call = Some(controllers.routes.SessionExpiredController.onPageLoad())
+            call = Some(Call(GET, "#"))
           )
       )
 
@@ -87,7 +89,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit
             formatAnswer = formatAsText,
             prefix = "checkYourAnswers.departureMeansOfTransport.identificationNumber",
             id = Some(s"change-transport-means-identification-number-${transportMeansIndex.display}"),
-            call = Some(controllers.routes.SessionExpiredController.onPageLoad())
+            call = Some(Call(GET, "#"))
           )
       )
 
@@ -96,7 +98,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit
     label = messages("unloadingFindings.rowHeadings.vehicleNationality"),
     prefix = "checkYourAnswers.departureMeansOfTransport.country",
     id = Some("change-registered-country"),
-    call = Some(controllers.routes.SessionExpiredController.onPageLoad()),
+    call = Some(Call(GET, "#")),
     args = Seq.empty
   )
 
@@ -132,7 +134,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit
     prefix = "unloadingFindings.rowHeadings.containerIdentificationNumber",
     id = Some(s"change-container-identification-number-${index.display}"),
     args = None,
-    call = Some(controllers.routes.SessionExpiredController.onPageLoad())
+    call = Some(Call(GET, "#"))
   )
 
   def transportEquipmentSeal(equipmentIndex: Index, sealIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
@@ -141,7 +143,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit
     prefix = "unloadingFindings.rowHeadings.sealIdentifier",
     args = sealIndex.display,
     id = Some(s"change-seal-details-${sealIndex.display}"),
-    call = Some(controllers.routes.SessionExpiredController.onPageLoad())
+    call = Some(Call(GET, "#"))
   )
 
   def houseConsignmentSections: Seq[Section] =

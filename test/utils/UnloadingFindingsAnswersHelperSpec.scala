@@ -48,7 +48,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       "",
       List(
         ActionItem(
-          "/manage-transit-movements/unloading/error/this-service-has-been-reset",
+          "#",
           Text("Change"),
           Some("container identification number"),
           "",
@@ -63,7 +63,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       "",
       List(
         ActionItem(
-          "/manage-transit-movements/unloading/error/this-service-has-been-reset",
+          "#",
           Text("Change"),
           Some("seal identification number"),
           "",
@@ -78,7 +78,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
       "",
       List(
         ActionItem(
-          "/manage-transit-movements/unloading/error/this-service-has-been-reset",
+          "#",
           Text("Change"),
           Some("registered country for the departure means of transport"),
           "",
@@ -94,7 +94,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
         "",
         List(
           ActionItem(
-            "/manage-transit-movements/unloading/error/this-service-has-been-reset",
+            "#",
             Text("Change"),
             Some("identification type for the departure means of transport"),
             "",
@@ -110,7 +110,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
         "",
         List(
           ActionItem(
-            "/manage-transit-movements/unloading/error/this-service-has-been-reset",
+            "#",
             Text("Change"),
             Some("identification number for the departure means of transport"),
             "",
