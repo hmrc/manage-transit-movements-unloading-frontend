@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,36 +14,36 @@
  * limitations under the License.
  */
 
-package views.houseConsignment.index.items
+package views.houseConsignment.index.items.document
 
-import forms.Constants.maxPackageShippingMarkLength
-import forms.PackageShippingMarkFormProvider
+import forms.Constants.maxAdditionalInfoLength
+import forms.ItemsAdditionalInformationFormProvider
 import generators.Generators
 import models.NormalMode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.houseConsignment.index.items.PackageShippingMarksViewModel
+import viewModels.houseConsignment.index.items.document.ItemsAdditionalInformationViewModel
 import views.behaviours.CharacterCountViewBehaviours
-import views.html.houseConsignment.index.items.PackageShippingMarkView
+import views.html.houseConsignment.index.items.document.AdditionalInformationView
 
-class PackageShippingMarkViewSpec extends CharacterCountViewBehaviours with Generators {
+class AdditionalInformationViewSpec extends CharacterCountViewBehaviours with Generators {
 
-  private val viewModel: PackageShippingMarksViewModel =
-    arbitrary[PackageShippingMarksViewModel].sample.value
+  private val viewModel: ItemsAdditionalInformationViewModel =
+    arbitrary[ItemsAdditionalInformationViewModel].sample.value
 
-  def form: Form[String] = new PackageShippingMarkFormProvider()(viewModel.requiredError)
+  override def form: Form[String] = new ItemsAdditionalInformationFormProvider()(viewModel.requiredError)
 
-  def applyView(form: Form[String]): HtmlFormat.Appendable =
+  override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector
-      .instanceOf[PackageShippingMarkView]
-      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, NormalMode, viewModel)(fakeRequest, messages)
+      .instanceOf[AdditionalInformationView]
+      .apply(form, mrn, arrivalId, NormalMode, viewModel, houseConsignmentIndex, itemIndex, documentIndex)(fakeRequest, messages)
 
   override val prefix: String = Gen
     .oneOf(
-      "houseConsignment.index.item.packageShippingMark.normalMode",
-      "houseConsignment.index.item.packageShippingMark.checkMode"
+      "houseConsignment.index.items.document.additionalInformation.NormalMode",
+      "houseConsignment.index.items.document.additionalInformation.CheckMode"
     )
     .sample
     .value
@@ -56,10 +56,7 @@ class PackageShippingMarkViewSpec extends CharacterCountViewBehaviours with Gene
 
   behave like pageWithHeading(text = viewModel.heading)
 
-  behave like pageWithHint("You can enter up to 512 characters")
-
-  behave like pageWithCharacterCount(maxPackageShippingMarkLength)
+  behave like pageWithCharacterCount(maxAdditionalInfoLength)
 
   behave like pageWithSubmitButton("Continue")
-
 }

@@ -26,7 +26,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class ConsignmentTransformer @Inject() (
   transportEquipmentTransformer: TransportEquipmentTransformer,
   departureTransportMeansTransformer: DepartureTransportMeansTransformer,
-  houseConsignmentTransformer: HouseConsignmentTransformer,
+  documentsTransformer: DocumentsTransformer,
+  houseConsignmentsTransformer: HouseConsignmentsTransformer,
   additionalReferenceTransformer: AdditionalReferenceTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
@@ -39,7 +40,8 @@ class ConsignmentTransformer @Inject() (
         lazy val pipeline: UserAnswers => Future[UserAnswers] =
           transportEquipmentTransformer.transform(consignment05.TransportEquipment) andThen
             departureTransportMeansTransformer.transform(consignment05.DepartureTransportMeans) andThen
-            houseConsignmentTransformer.transform(consignment05.HouseConsignment) andThen
+            documentsTransformer.transform(consignment05.SupportingDocument, consignment05.TransportDocument) andThen
+            houseConsignmentsTransformer.transform(consignment05.HouseConsignment) andThen
             additionalReferenceTransformer.transform(consignment05.AdditionalReference)
 
         pipeline(userAnswers)

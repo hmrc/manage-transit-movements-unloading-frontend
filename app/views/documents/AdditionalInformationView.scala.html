@@ -14,12 +14,13 @@
  * limitations under the License.
  *@
 
-@import controllers.houseConsignment.index.items.routes
+@import controllers.documents.routes
+@import forms.Constants.maxAdditionalInfoLength
 @import models.MovementReferenceNumber
 @import viewModels.components.InputCharacterCountViewModel._
 @import views.html.components.{Button, ErrorSummary, InputCharacterCount}
-@import forms.Constants.maxItemDescriptionLength
-@import viewModels.houseConsignment.index.items.PackageShippingMarksViewModel
+@import viewModels.documents.AdditionalInformationViewModel
+
 
 @this(
     mainTemplate: MainTemplate,
@@ -29,14 +30,14 @@
     button: Button
 )
 
-@(form: Form[String], mrn: MovementReferenceNumber, arrivalId: ArrivalId,  houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode, viewModel: PackageShippingMarksViewModel)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode, viewModel: AdditionalInformationViewModel, documentIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = viewModel.title,
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.PackageShippingMarkController.onSubmit(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AdditionalInformationController.onSubmit(arrivalId, mode, documentIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
@@ -46,10 +47,12 @@
                 heading = viewModel.heading,
                 caption = Some(messages("site.caption", mrn.toString))
             ),
-            label = messages("houseConsignment.index.item.packageShippingMark.heading", itemIndex.display, houseConsignmentIndex.display, packageIndex.display),
-            maxLength = maxItemDescriptionLength
+            label = viewModel.heading,
+            maxLength = maxAdditionalInfoLength,
+            rows = 1
         )
 
         @button(attributes = Map("id" -> "submit"))
+
     }
 }

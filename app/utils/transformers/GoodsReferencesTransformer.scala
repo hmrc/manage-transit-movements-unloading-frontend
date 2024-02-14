@@ -24,7 +24,7 @@ import pages.transportEquipment.index.ItemPage
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ItemsTransformer @Inject() (implicit ec: ExecutionContext) extends PageTransformer {
+class GoodsReferencesTransformer @Inject() (implicit ec: ExecutionContext) extends PageTransformer {
 
   def transform(goodsReferenceSeq: Seq[GoodsReferenceType02], equipmentIndex: Index): UserAnswers => Future[UserAnswers] = userAnswers =>
     goodsReferenceSeq.zipWithIndex.foldLeft(Future.successful(userAnswers))({

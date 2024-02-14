@@ -16,22 +16,23 @@
 
 package forms
 
-import forms.Constants.maxPackageShippingMarkLength
+import forms.Constants.maxDocumentRefNumberLength
 import forms.mappings.Mappings
-import models.messages.UnloadingRemarksRequest.alphaNumericRegex
+import models.RichString
+import models.messages.UnloadingRemarksRequest.alphaNumericWithSpacesRegex
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class PackageShippingMarkFormProvider @Inject() () extends Mappings {
+class ItemsDocumentReferenceNumberFormProvider @Inject() extends Mappings {
 
   def apply(requiredError: String): Form[String] =
     Form(
-      "value" -> text(requiredError)
+      "value" -> adaptedText(requiredError)(_.removeSpaces())
         .verifying(
           forms.StopOnFirstFail[String](
-            regexp(alphaNumericRegex, "houseConsignment.index.item.packageShippingMark.error.invalid"),
-            maxLength(maxPackageShippingMarkLength, "houseConsignment.index.item.packageShippingMark.error.length")
+            regexp(alphaNumericWithSpacesRegex, "houseConsignment.index.items.document.referenceNumber.error.invalidCharacters"),
+            maxLength(maxDocumentRefNumberLength, "houseConsignment.index.items.document.referenceNumber.error.length")
           )
         )
     )

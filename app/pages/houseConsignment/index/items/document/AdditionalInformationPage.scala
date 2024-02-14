@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package forms
+package pages.houseConsignment.index.items.document
 
-object Constants {
-  lazy val maxItemDescriptionLength: Int     = 512
-  lazy val exactCUSCodeLength: Int           = 9
-  lazy val grossWeightDecimalPlaces: Int     = 6
-  lazy val grossWeightCharacterCount: Int    = 16
-  lazy val maxPackageShippingMarkLength: Int = 512
-  lazy val maxSealIdentificationLength: Int  = 20
-  lazy val maxDocumentRefNumberLength: Int   = 70
-  lazy val maxAdditionalInfoLength: Int      = 35
+import models.Index
+import pages.QuestionPage
+import pages.sections.ItemsSection
+import play.api.libs.json.JsPath
+
+case class AdditionalInformationPage(houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index) extends QuestionPage[String] {
+
+  override def path: JsPath = ItemsSection(houseConsignmentIndex).path \ itemIndex.position \ "Document" \ documentIndex.position \ toString
+
+  override def toString: String = "additionalInformation"
+
 }

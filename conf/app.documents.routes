@@ -2,3 +2,8 @@ GET        /:arrivalId/documents/:documentIndex/reference-number                
 POST       /:arrivalId/documents/:documentIndex/reference-number                         controllers.documents.DocumentReferenceNumberController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode, documentIndex: Index)
 GET        /:arrivalId/documents/:documentIndex/change-reference-number                  controllers.documents.DocumentReferenceNumberController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode, documentIndex: Index)
 POST       /:arrivalId/documents/:documentIndex/change-reference-number                  controllers.documents.DocumentReferenceNumberController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode, documentIndex: Index)
+
+GET        /:arrivalId/documents/:documentIndex/additional-information                   controllers.documents.AdditionalInformationController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode, documentIndex: Index)
+POST       /:arrivalId/documents/:documentIndex/additional-information                   controllers.documents.AdditionalInformationController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode, documentIndex: Index)
+GET        /:arrivalId/documents/:documentIndex/change-additional-information            controllers.documents.AdditionalInformationController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode, documentIndex: Index)
+POST       /:arrivalId/documents/:documentIndex/change-additional-information            controllers.documents.AdditionalInformationController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode, documentIndex: Index)
