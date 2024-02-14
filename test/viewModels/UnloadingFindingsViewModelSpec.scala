@@ -18,9 +18,12 @@ package viewModels
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
+import models.Index
+import models.reference.AdditionalReferenceType
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -447,6 +450,42 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         section.sectionTitle.value mustBe "House consignment 2"
         section.rows.size mustBe 6
         section.viewLink mustBe defined
+      }
+    }
+
+    "must render additional references sections" - {
+      "when there is one" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(AdditionalReferenceTypePage(index), AdditionalReferenceType("Y015", "The rough diamonds are contained in ..."))
+          .setValue(AdditionalReferenceNumberPage(index), "addref-1")
+
+        setExistingUserAnswers(userAnswers)
+
+        val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService)
+        val result            = viewModelProvider.apply(userAnswers).futureValue
+        val section           = result.section.head
+
+        section.sectionTitle.value mustBe "Additional references"
+        section.rows.size mustBe 1
+      }
+
+      "when there are multiple" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(AdditionalReferenceTypePage(Index(0)), AdditionalReferenceType("Y015", "The rough diamonds are contained in ..."))
+          .setValue(AdditionalReferenceNumberPage(Index(0)), "addref-1")
+          .setValue(AdditionalReferenceTypePage(Index(1)), AdditionalReferenceType("Y022", "Consignor / exporter (AEO certificate number)"))
+          .setValue(AdditionalReferenceNumberPage(Index(1)), "addref-2")
+
+        setExistingUserAnswers(userAnswers)
+
+        val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService)
+        val result            = viewModelProvider.apply(userAnswers).futureValue
+        val section           = result.section.head
+
+        section.sectionTitle.value mustBe "Additional references"
+        section.rows.size mustBe 2
       }
     }
   }

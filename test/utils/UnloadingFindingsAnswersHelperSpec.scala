@@ -19,11 +19,14 @@ package utils
 import base.SpecBase
 import generators.Generators
 import models.Identification
+import models.reference.AdditionalReferenceType
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
+import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.libs.json.{JsObject, Json}
@@ -1345,6 +1348,43 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             key = Key("Net weight".toText),
             value = Value(s"${BigDecimal(totalNetWeight)}kg".toText)
           )
+        }
+      }
+    }
+
+    "additionalReference" - {
+      "must return None" - {
+        "when additionalReference is undefined" in {
+
+          val answers = emptyUserAnswers
+
+          val helper = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
+          val result = helper.additionalReference(index)
+          result mustBe None
+
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when additionalReference is defined" in {
+          forAll(arbitrary[AdditionalReferenceType], Gen.alphaNumStr) {
+            (addRef, addRefNumber) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AdditionalReferenceTypePage(index), addRef)
+                .setValue(AdditionalReferenceNumberPage(index), addRefNumber)
+              val helper = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
+              val result = helper.additionalReference(index).get
+
+              result.key.value mustBe "Additional Reference 1"
+              result.value.value mustBe s"${addRef.documentType} - ${addRef.description} - $addRefNumber"
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe "#"
+              action.visuallyHiddenText.get mustBe "additional reference 1"
+              action.id mustBe "change-additional-reference-1"
+          }
         }
       }
     }
