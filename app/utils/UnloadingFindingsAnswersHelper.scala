@@ -18,10 +18,13 @@ package utils
 
 import cats.data.OptionT
 import cats.implicits._
-import models.{Index, Link, UserAnswers}
+import models.reference.AdditionalReference
+import models.{CheckMode, Index, Link, UserAnswers}
 import pages._
+import pages.additionalReference.AdditionalReferencePage
 import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
 import pages.sections._
+import pages.sections.additionalReference.AdditionalReferenceSection
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.i18n.Messages
 import services.ReferenceDataService
@@ -129,6 +132,17 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
     id = Some(s"change-seal-details-${sealIndex.display}"),
     call = Some(controllers.routes.SessionExpiredController.onPageLoad())
   )
+
+  def additionalReference(index: Index): Option[SummaryListRow] = getAnswerAndBuildRow[AdditionalReference](
+    page = AdditionalReferencePage(index),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.additional.reference",
+    args = index.display,
+    id = Some(s"change-additional-reference-${index.display}"),
+    call = Some(controllers.routes.UnloadingTypeController.onPageLoad(arrivalId, CheckMode)) //TODO change me please
+  )
+
+  def additionalReferences: Seq[SummaryListRow] = getAnswersAndBuildSectionRows(AdditionalReferenceSection)(additionalReference)
 
   def houseConsignmentSections: Seq[Section] =
     userAnswers.get(HouseConsignmentsSection).mapWithIndex {

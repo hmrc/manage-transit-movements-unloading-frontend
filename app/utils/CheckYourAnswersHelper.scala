@@ -16,11 +16,8 @@
 
 package utils
 
-import models.reference.{AdditionalReference, AdditionalReferenceType}
-import models.{CheckMode, Index, UnloadingType, UserAnswers}
+import models.{CheckMode, UnloadingType, UserAnswers}
 import pages._
-import pages.additionalReference.AdditionalReferenceTypePage
-import pages.sections.additionalReference.AdditionalReferenceSection
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import utils.Format._

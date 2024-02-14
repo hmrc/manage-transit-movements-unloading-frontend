@@ -60,7 +60,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
     when(mockDateTimeService.currentDateTime).thenReturn(dateTime)
 
-    when(mockIE043Transformer.transform(any()))
+    when(mockIE043Transformer.transform(any())(any()))
       .thenReturn(Future.successful(emptyUserAnswers.copy(data = Json.obj("foo" -> "bar"))))
   }
 
@@ -88,7 +88,7 @@ class IndexControllerSpec extends SpecBase with AppWithDefaultMockFixtures with 
 
         redirectLocation(result).value mustEqual nextPage
 
-        verify(mockIE043Transformer).transform(userAnswersCaptor.capture())
+        verify(mockIE043Transformer).transform(userAnswersCaptor.capture())(any())
         userAnswersCaptor.getValue.data mustBe Json.obj()
 
         verify(mockSessionRepository).set(userAnswersCaptor.capture())

@@ -35,8 +35,6 @@ object CheckYourAnswersViewModel {
     def apply(userAnswers: UserAnswers)(implicit messages: Messages): CheckYourAnswersViewModel = {
       val helper = new CheckYourAnswersHelper(userAnswers)
 
-
-
       val headerSection = Section(
         Seq(
           helper.unloadingType,

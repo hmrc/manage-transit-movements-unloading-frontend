@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,17 @@
 
 package pages.additionalReference
 
-import models.Index
 import models.reference.AdditionalReference
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case class AdditionalReferenceTypePage(referenceIndex: Index) extends QuestionPage[AdditionalReference] {
+class AdditionalReferencePageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ "Consignment" \ "AdditionalReference" \ referenceIndex.position \ toString
+  "AdditionalReferencePage" - {
 
-  override def toString: String = "additionalReference"
+    beRetrievable[AdditionalReference](AdditionalReferencePage(index))
+
+    beSettable[AdditionalReference](AdditionalReferencePage(index))
+
+    beRemovable[AdditionalReference](AdditionalReferencePage(index))
+  }
 }

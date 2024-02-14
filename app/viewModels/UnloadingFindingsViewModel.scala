@@ -43,11 +43,12 @@ object UnloadingFindingsViewModel {
 
       helper.buildTransportSections.map {
         meansOfTransportSections =>
+          val additionalReferenceSection: Section      = Section(sectionTitle = messages("additional.reference.heading"), rows = helper.additionalReferences)
           val transportEquipmentSections: Seq[Section] = helper.transportEquipmentSections
 
           val houseConsignmentSections: Seq[Section] = helper.houseConsignmentSections
 
-          val sections: Seq[Section] = meansOfTransportSections ++ transportEquipmentSections ++ houseConsignmentSections
+          val sections: Seq[Section] = meansOfTransportSections ++ transportEquipmentSections ++ houseConsignmentSections :+ additionalReferenceSection
 
           new UnloadingFindingsViewModel(sections)
       }

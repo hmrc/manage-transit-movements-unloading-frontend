@@ -43,14 +43,12 @@ object HouseConsignmentViewModel {
     )(implicit messages: Messages, hc: HeaderCarrier, ex: ExecutionContext): Future[HouseConsignmentViewModel] = {
       val helper = new HouseConsignmentAnswersHelper(userAnswers, houseConsignmentIndex: Index, referenceDataService)
 
-      val additionalReferenceSection: Section = Section(sectionTitle = messages("additional.reference.heading"), rows = helper.additionalReferences)
-
       helper.buildTransportSections.map {
         meansOfTransportSections =>
           val houseConsignmentSection: Seq[Section] = helper.houseConsignmentSection
           val itemSections: Seq[Section]            = helper.itemSections
 
-          val sections: Seq[Section] = meansOfTransportSections ++ itemSections :+ additionalReferenceSection
+          val sections: Seq[Section] = meansOfTransportSections ++ itemSections
 
           HouseConsignmentViewModel(sections, houseConsignmentSection)
 

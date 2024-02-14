@@ -20,7 +20,7 @@ import connectors.ReferenceDataConnector
 import generated.AdditionalReferenceType03
 import models.reference.AdditionalReference
 import models.{Index, UserAnswers}
-import pages.additionalReference.AdditionalReferenceTypePage
+import pages.additionalReference.AdditionalReferencePage
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -37,9 +37,7 @@ class AdditionalReferenceTransformer @Inject() (referenceDataConnector: Referenc
               referenceDataConnector.getAdditionalReferenceType(reference.typeValue).flatMap {
                 refDataValue =>
                   val pipeline: UserAnswers => Future[UserAnswers] =
-                    set(AdditionalReferenceTypePage(Index(i)),
-                        AdditionalReference(refDataValue.documentType, refDataValue.description, reference.referenceNumber)
-                    )
+                    set(AdditionalReferencePage(Index(i)), AdditionalReference(refDataValue.documentType, refDataValue.description, reference.referenceNumber))
 
                   pipeline(userAnswers)
 

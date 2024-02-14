@@ -18,12 +18,14 @@ package utils
 
 import base.SpecBase
 import generators.Generators
-import models.Identification
+import models.{CheckMode, Identification}
+import models.reference.AdditionalReference
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
+import pages.additionalReference.AdditionalReferencePage
 import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.libs.json.{JsObject, Json}
@@ -34,6 +36,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import org.scalacheck.Arbitrary.arbitrary
 
 class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -1345,6 +1348,43 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             key = Key("Net weight".toText),
             value = Value(s"${BigDecimal(totalNetWeight)}kg".toText)
           )
+        }
+      }
+    }
+
+    "additionalReference" - {
+      "must return None" - {
+        "when additionalReference is undefined" in {
+
+          val answers = emptyUserAnswers
+
+          val helper = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
+          val result = helper.additionalReference(index)
+          result mustBe None
+
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when additionalReference is defined" in {
+          forAll(arbitrary[AdditionalReference]) {
+            addRef =>
+              val userAnswers = emptyUserAnswers.setValue(AdditionalReferencePage(index), addRef)
+              val helper      = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
+              val result      = helper.additionalReference(index).get
+
+              result.key.value mustBe "Additional Reference 1"
+              result.value.value mustBe addRef.toString
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe controllers.routes.UnloadingTypeController
+                .onPageLoad(arrivalId, CheckMode)
+                .url //TODO change me please
+              action.visuallyHiddenText.get mustBe "additional reference 1"
+              action.id mustBe "change-additional-reference-1"
+          }
         }
       }
     }
