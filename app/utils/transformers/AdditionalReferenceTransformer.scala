@@ -28,26 +28,38 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalReferenceTransformer @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) extends PageTransformer {
 
+  private case class TempAdditionalReference(
+    typeValue: AdditionalReference,
+    referenceNumber: Option[String]
+  )
+
   def transform(additionalReferences: Seq[AdditionalReferenceType03])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
-    additionalReferences.zipWithIndex.foldLeft(Future.successful(userAnswers))(
-      {
-        case (accumulator, (reference, i)) =>
-          accumulator.flatMap {
+
+    lazy val referenceDataLookups = additionalReferences.map {
+      additionalReference =>
+        referenceDataConnector.getAdditionalReferenceType(additionalReference.typeValue).map {
+          additionalReferenceType =>
+            TempAdditionalReference(
+              typeValue = additionalReferenceType,
+              referenceNumber = additionalReference.referenceNumber
+            )
+        }
+    }
+
+    Future.sequence(referenceDataLookups).flatMap {
+      _.zipWithIndex.foldLeft(Future.successful(userAnswers))({
+        case (acc, (TempAdditionalReference(refDataValue, referenceNumber), i)) =>
+          acc.flatMap {
             userAnswers =>
-              referenceDataConnector.getAdditionalReferenceType(reference.typeValue).flatMap {
-                refDataValue =>
-                  val pipeline: UserAnswers => Future[UserAnswers] =
-                    set(AdditionalReferenceTypePage(Index(i)), AdditionalReference(refDataValue.documentType, refDataValue.description)) andThen
-                      set(AdditionalReferenceNumberPage(Index(i)), reference.referenceNumber)
+              val dtmIndex = Index(i)
+              val pipeline: UserAnswers => Future[UserAnswers] =
+                set(AdditionalReferenceTypePage(dtmIndex), AdditionalReference(refDataValue.documentType, refDataValue.description)) andThen
+                  set(AdditionalReferenceNumberPage(dtmIndex), referenceNumber)
 
-                  pipeline(userAnswers)
-
-              }
-
+              pipeline(userAnswers)
           }
-
-      }
-    )
+      })
+    }
 
   }
 }
