@@ -27,36 +27,22 @@ class ConsignmentTransformer @Inject() (
   transportEquipmentTransformer: TransportEquipmentTransformer,
   departureTransportMeansTransformer: DepartureTransportMeansTransformer,
   documentsTransformer: DocumentsTransformer,
-  houseConsignmentsTransformer: HouseConsignmentsTransformer
+  houseConsignmentsTransformer: HouseConsignmentsTransformer,
+  additionalReferenceTransformer: AdditionalReferenceTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
   def transform(consignment: Option[ConsignmentType05])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     consignment match {
       case Some(
-            ConsignmentType05(
-              _,
-              _,
-              _,
-              _,
-              _,
-              _,
-              transportEquipment,
-              departureTransportMeans,
-              _,
-              supportingDocuments,
-              transportDocuments,
-              _,
-              _,
-              _,
-              houseConsignments
-            )
+            consignment05
           ) =>
         lazy val pipeline: UserAnswers => Future[UserAnswers] =
-          transportEquipmentTransformer.transform(transportEquipment) andThen
-            departureTransportMeansTransformer.transform(departureTransportMeans) andThen
-            documentsTransformer.transform(supportingDocuments, transportDocuments) andThen
-            houseConsignmentsTransformer.transform(houseConsignments)
+          transportEquipmentTransformer.transform(consignment05.TransportEquipment) andThen
+            departureTransportMeansTransformer.transform(consignment05.DepartureTransportMeans) andThen
+            documentsTransformer.transform(consignment05.SupportingDocument, consignment05.TransportDocument) andThen
+            houseConsignmentsTransformer.transform(consignment05.HouseConsignment) andThen
+            additionalReferenceTransformer.transform(consignment05.AdditionalReference)
 
         pipeline(userAnswers)
       case None =>
