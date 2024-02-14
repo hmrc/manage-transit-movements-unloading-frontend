@@ -26,7 +26,7 @@ import play.api.libs.json.{__, JsPath, Reads}
 
 case class AdditionalReferenceSection(referenceIndex: Index) extends QuestionPage[AdditionalReference] {
 
-  override def path: JsPath = JsPath \ "Consignment" \ "AdditionalReference" \ referenceIndex.position \ toString
+  override def path: JsPath = AdditionalReferencesSection.path \ referenceIndex.position \ toString
 
   override def toString: String = "additionalReference"
 }
@@ -36,8 +36,8 @@ object AdditionalReferenceSection {
   case class AdditionalReference(typeValue: AdditionalReferenceType, referenceNumber: Option[String]) {
 
     override def toString: String = referenceNumber match {
-      case Some(refNumber) => s"${typeValue.documentType} - ${typeValue.description} - $refNumber"
-      case None            => s"${typeValue.documentType} - ${typeValue.description}"
+      case Some(refNumber) => s"${typeValue.toString} - $refNumber"
+      case None            => typeValue.toString
     }
   }
 
