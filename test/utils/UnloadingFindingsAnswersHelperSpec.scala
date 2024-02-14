@@ -1348,7 +1348,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
           val answers = emptyUserAnswers
 
-          val helper = new UnloadingFindingsAnswersHelper(answers, mockReferenceDataService)
+          val helper = new UnloadingFindingsAnswersHelper(answers)
           val result = helper.additionalReference(index)
           result mustBe None
 
@@ -1362,7 +1362,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
               val userAnswers = emptyUserAnswers
                 .setValue(AdditionalReferenceTypePage(index), addRef)
                 .setValue(AdditionalReferenceNumberPage(index), addRefNumber)
-              val helper = new UnloadingFindingsAnswersHelper(userAnswers, mockReferenceDataService)
+              val helper = new UnloadingFindingsAnswersHelper(userAnswers)
               val result = helper.additionalReference(index).get
 
               result.key.value mustBe "Additional Reference 1"

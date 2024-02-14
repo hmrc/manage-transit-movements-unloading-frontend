@@ -463,7 +463,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         setExistingUserAnswers(userAnswers)
 
-        val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService)
+        val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers).futureValue
         val section           = result.section.head
 
@@ -481,7 +481,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         setExistingUserAnswers(userAnswers)
 
-        val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService)
+        val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers).futureValue
         val section           = result.section.head
 
