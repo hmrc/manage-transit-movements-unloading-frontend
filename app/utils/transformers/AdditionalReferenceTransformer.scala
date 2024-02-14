@@ -53,7 +53,7 @@ class AdditionalReferenceTransformer @Inject() (referenceDataConnector: Referenc
             userAnswers =>
               val dtmIndex = Index(i)
               val pipeline: UserAnswers => Future[UserAnswers] =
-                set(AdditionalReferenceTypePage(dtmIndex), AdditionalReference(refDataValue.documentType, refDataValue.description)) andThen
+                set(AdditionalReferenceTypePage(dtmIndex), refDataValue) andThen
                   set(AdditionalReferenceNumberPage(dtmIndex), referenceNumber)
 
               pipeline(userAnswers)
