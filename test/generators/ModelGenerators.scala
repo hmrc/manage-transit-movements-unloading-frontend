@@ -55,8 +55,7 @@ trait ModelGenerators {
       for {
         refType     <- Gen.alphaNumStr
         description <- nonEmptyString
-        refNum      <- Gen.option(nonEmptyString)
-      } yield AdditionalReference(refType, description, refNum)
+      } yield AdditionalReference(refType, description)
     }
 
   implicit lazy val arbitraryEoriNumber: Arbitrary[EoriNumber] =

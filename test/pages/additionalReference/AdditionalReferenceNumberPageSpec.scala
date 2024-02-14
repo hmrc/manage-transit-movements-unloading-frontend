@@ -19,14 +19,14 @@ package pages.additionalReference
 import models.reference.AdditionalReference
 import pages.behaviours.PageBehaviours
 
-class AdditionalReferencePageSpec extends PageBehaviours {
+class AdditionalReferenceNumberPageSpec extends PageBehaviours {
 
-  "AdditionalReferencePage" - {
+  "AdditionalReferenceNumberPage" - {
 
-    beRetrievable[AdditionalReference](AdditionalReferenceTypePage(index))
+    beRetrievable[String](AdditionalReferenceNumberPage(index))
 
-    beSettable[AdditionalReference](AdditionalReferenceTypePage(index))
+    beSettable[String](AdditionalReferenceNumberPage(index))
 
-    beRemovable[AdditionalReference](AdditionalReferenceTypePage(index))
+    beRemovable[String](AdditionalReferenceNumberPage(index))
   }
 }

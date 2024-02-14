@@ -19,9 +19,9 @@ package pages.additionalReference
 import models.reference.AdditionalReference
 import pages.behaviours.PageBehaviours
 
-class AdditionalReferencePageSpec extends PageBehaviours {
+class AdditionalReferenceTypePageSpec extends PageBehaviours {
 
-  "AdditionalReferencePage" - {
+  "AdditionalReferenceTypePage" - {
 
     beRetrievable[AdditionalReference](AdditionalReferenceTypePage(index))
 

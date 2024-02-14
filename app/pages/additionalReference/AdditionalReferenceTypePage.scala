@@ -17,28 +17,13 @@
 package pages.additionalReference
 
 import models.Index
+import models.reference.AdditionalReference
 import pages.QuestionPage
-import pages.additionalReference.AdditionalReferencePage.AdditionalReferenceSection
-import play.api.libs.json.{Format, JsPath, Json}
+import play.api.libs.json.JsPath
 
-case class AdditionalReferencePage(referenceIndex: Index) extends QuestionPage[AdditionalReferenceSection] {
+case class AdditionalReferenceTypePage(referenceIndex: Index) extends QuestionPage[AdditionalReference] {
 
   override def path: JsPath = JsPath \ "Consignment" \ "AdditionalReference" \ referenceIndex.position \ toString
 
   override def toString: String = "additionalReference"
-}
-
-object AdditionalReferencePage {
-
-  case class AdditionalReferenceSection(documentType: String, description: String, referenceNumber: Option[String]) {
-
-    override def toString: String = referenceNumber match {
-      case Some(refNumber) => s"$documentType - $description - $refNumber"
-      case None            => s"$documentType - $description"
-    }
-  }
-
-  object AdditionalReferenceSection {
-    implicit val format: Format[AdditionalReferenceSection] = Json.format[AdditionalReferenceSection]
-  }
 }

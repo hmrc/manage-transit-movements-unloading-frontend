@@ -18,10 +18,10 @@ package utils
 
 import cats.data.OptionT
 import cats.implicits._
-import models.reference.AdditionalReference
-import models.{CheckMode, Index, Link, UserAnswers}
+import models.{Index, Link, UserAnswers}
 import pages._
 import pages.additionalReference.AdditionalReferencePage
+import pages.additionalReference.AdditionalReferencePage._
 import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
 import pages.sections._
 import pages.sections.additionalReference.AdditionalReferenceSection
@@ -133,13 +133,13 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
     call = Some(controllers.routes.SessionExpiredController.onPageLoad())
   )
 
-  def additionalReference(index: Index): Option[SummaryListRow] = getAnswerAndBuildRow[AdditionalReference](
+  def additionalReference(index: Index): Option[SummaryListRow] = getAnswerAndBuildRow[AdditionalReferenceSection](
     page = AdditionalReferencePage(index),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.additional.reference",
     args = index.display,
     id = Some(s"change-additional-reference-${index.display}"),
-    call = Some(controllers.routes.UnloadingTypeController.onPageLoad(arrivalId, CheckMode)) //TODO change me please
+    call = None //TODO change me please
   )
 
   def additionalReferences: Seq[SummaryListRow] = getAnswersAndBuildSectionRows(AdditionalReferenceSection)(additionalReference)

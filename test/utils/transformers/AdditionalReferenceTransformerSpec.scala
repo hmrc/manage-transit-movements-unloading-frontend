@@ -21,12 +21,12 @@ import connectors.ReferenceDataConnector
 import generated.AdditionalReferenceType03
 import generators.Generators
 import models.Index
-import models.reference.AdditionalReferenceType
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.additionalReference.AdditionalReferencePage
+import models.reference.AdditionalReference
+import pages.additionalReference.AdditionalReferenceTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 
@@ -58,7 +58,7 @@ class AdditionalReferenceTransformerSpec extends SpecBase with AppWithDefaultMoc
       type0 =>
         when(mockRefDataConnector.getAdditionalReferenceType(eqTo(type0.typeValue))(any(), any()))
           .thenReturn(
-            Future.successful(AdditionalReferenceType(documentType = type0.typeValue, description = "describe me"))
+            Future.successful(AdditionalReference(documentType = type0.typeValue, description = "describe me"))
           )
     }
 
@@ -66,9 +66,8 @@ class AdditionalReferenceTransformerSpec extends SpecBase with AppWithDefaultMoc
 
     additionalReferenceType03.zipWithIndex.map {
       case (refType, i) =>
-        result.getValue(AdditionalReferencePage(Index(i))).documentType mustBe refType.typeValue
-        result.getValue(AdditionalReferencePage(Index(i))).description mustBe "describe me"
-        result.getValue(AdditionalReferencePage(Index(i))).referenceNumber mustBe refType.referenceNumber
+        result.getValue(AdditionalReferenceTypePage(Index(i))).documentType mustBe refType.typeValue
+        result.getValue(AdditionalReferenceTypePage(Index(i))).description mustBe "describe me"
 
     }
 
