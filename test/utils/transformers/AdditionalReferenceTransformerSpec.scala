@@ -24,6 +24,7 @@ import models.Index
 import models.reference.AdditionalReferenceType
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.additionalReference.AdditionalReferencePage
 import play.api.inject.bind
@@ -51,40 +52,25 @@ class AdditionalReferenceTransformerSpec extends SpecBase with AppWithDefaultMoc
 
   "must transform data" in {
 
-    val additionalReferenceType03 = Seq(
-      AdditionalReferenceType03(sequenceNumber = "num1", typeValue = "type1"),
-      AdditionalReferenceType03(sequenceNumber = "num2", typeValue = "type2"),
-      AdditionalReferenceType03(sequenceNumber = "num3", typeValue = "type3", referenceNumber = Some("ref3"))
-    )
+    val additionalReferenceType03: Seq[AdditionalReferenceType03] = arbitrary[Seq[AdditionalReferenceType03]].sample.value
 
-    when(mockRefDataConnector.getAdditionalReferenceType(eqTo("type1"))(any(), any()))
-      .thenReturn(
-        Future.successful(AdditionalReferenceType(documentType = "type1", description = "describe me"))
-      )
-
-    when(mockRefDataConnector.getAdditionalReferenceType(eqTo("type2"))(any(), any()))
-      .thenReturn(
-        Future.successful(AdditionalReferenceType(documentType = "type2", description = "describe me"))
-      )
-
-    when(mockRefDataConnector.getAdditionalReferenceType(eqTo("type3"))(any(), any()))
-      .thenReturn(
-        Future.successful(AdditionalReferenceType(documentType = "type3", description = "describe me"))
-      )
+    additionalReferenceType03.map {
+      type0 =>
+        when(mockRefDataConnector.getAdditionalReferenceType(eqTo(type0.typeValue))(any(), any()))
+          .thenReturn(
+            Future.successful(AdditionalReferenceType(documentType = type0.typeValue, description = "describe me"))
+          )
+    }
 
     val result = transformer.transform(additionalReferenceType03).apply(emptyUserAnswers).futureValue
 
-    result.getValue(AdditionalReferencePage(Index(0))).documentType mustBe "type1"
-    result.getValue(AdditionalReferencePage(Index(0))).description mustBe "describe me"
-    result.getValue(AdditionalReferencePage(Index(0))).referenceNumber mustBe None
+    additionalReferenceType03.zipWithIndex.map {
+      case (refType, i) =>
+        result.getValue(AdditionalReferencePage(Index(i))).documentType mustBe refType.typeValue
+        result.getValue(AdditionalReferencePage(Index(i))).description mustBe "describe me"
+        result.getValue(AdditionalReferencePage(Index(i))).referenceNumber mustBe refType.referenceNumber
 
-    result.getValue(AdditionalReferencePage(Index(1))).documentType mustBe "type2"
-    result.getValue(AdditionalReferencePage(Index(1))).description mustBe "describe me"
-    result.getValue(AdditionalReferencePage(Index(1))).referenceNumber mustBe None
-
-    result.getValue(AdditionalReferencePage(Index(2))).documentType mustBe "type3"
-    result.getValue(AdditionalReferencePage(Index(2))).description mustBe "describe me"
-    result.getValue(AdditionalReferencePage(Index(2))).referenceNumber mustBe Some("ref3")
+    }
 
   }
 
