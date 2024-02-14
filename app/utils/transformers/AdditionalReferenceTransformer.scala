@@ -48,12 +48,12 @@ class AdditionalReferenceTransformer @Inject() (referenceDataConnector: Referenc
 
     Future.sequence(referenceDataLookups).flatMap {
       _.zipWithIndex.foldLeft(Future.successful(userAnswers))({
-        case (acc, (TempAdditionalReference(refDataValue, referenceNumber), i)) =>
+        case (acc, (TempAdditionalReference(typeValue, referenceNumber), i)) =>
           acc.flatMap {
             userAnswers =>
               val dtmIndex = Index(i)
               val pipeline: UserAnswers => Future[UserAnswers] =
-                set(AdditionalReferenceTypePage(dtmIndex), AdditionalReferenceType(refDataValue.documentType, refDataValue.description)) andThen
+                set(AdditionalReferenceTypePage(dtmIndex), typeValue) andThen
                   set(AdditionalReferenceNumberPage(dtmIndex), referenceNumber)
 
               pipeline(userAnswers)
