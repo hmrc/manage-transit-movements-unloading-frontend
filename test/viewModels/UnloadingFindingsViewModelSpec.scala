@@ -449,5 +449,82 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         section.viewLink mustBe defined
       }
     }
+
+    "must render additional references sections" - {
+      "when there is one" in {
+
+        val json = Json
+          .parse(
+            """
+              |{
+              |   "Consignment" : {
+              |       "AdditionalReference":[
+              |        {
+              |           "additionalReference":{
+              |              "documentType":"Y015",
+              |              "description":"The rough diamonds are contained in tamper-resistant containers, and the seals applied at export by the participant (Kimberley process) are not broken"
+              |           },
+              |           "referenceNumber":"addref-1"
+              |        }
+              |     ]
+              |   }
+              |}
+              |
+              |""".stripMargin
+          )
+          .as[JsObject]
+
+        val userAnswers = emptyUserAnswers.copy(data = json)
+
+        setExistingUserAnswers(userAnswers)
+
+        val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService)
+        val result            = viewModelProvider.apply(userAnswers).futureValue
+        val section           = result.section.head
+
+        section.sectionTitle.value mustBe "Additional references"
+        section.rows.size mustBe 1
+      }
+      "when there are multiple" in {
+        val json = Json
+          .parse(
+            """
+              |{
+              |   "Consignment" : {
+              |       "AdditionalReference":[
+              |        {
+              |           "additionalReference":{
+              |              "documentType":"Y015",
+              |              "description":"The rough diamonds are contained in tamper-resistant containers, and the seals applied at export by the participant (Kimberley process) are not broken"
+              |           },
+              |           "referenceNumber":"addref-1"
+              |        },
+              |        {
+              |           "additionalReference":{
+              |              "documentType":"Y022",
+              |              "description":"Consignor / exporter (AEO certificate number)"
+              |           },
+              |           "referenceNumber":"addref-2"
+              |        }
+              |     ]
+              |   }
+              |}
+              |
+              |""".stripMargin
+          )
+          .as[JsObject]
+
+        val userAnswers = emptyUserAnswers.copy(data = json)
+
+        setExistingUserAnswers(userAnswers)
+
+        val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService)
+        val result            = viewModelProvider.apply(userAnswers).futureValue
+        val section           = result.section(0)
+
+        section.sectionTitle.value mustBe "Additional references"
+        section.rows.size mustBe 2
+      }
+    }
   }
 }
