@@ -16,7 +16,7 @@
 
 package utils
 
-import models.reference.{AdditionalReference, AdditionalReferenceTop}
+import models.reference.{AdditionalReference, AdditionalReferenceType}
 import models.{CheckMode, Index, UnloadingType, UserAnswers}
 import pages._
 import pages.additionalReference.AdditionalReferenceTypePage
@@ -28,17 +28,6 @@ import utils.Format._
 import java.time.LocalDate
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
-
-  def additionalReference(index: Index): Option[SummaryListRow] = getAnswerAndBuildRow[AdditionalReferenceTop](
-    page = AdditionalReferenceTypePage(index),
-    formatAnswer = formatAsText,
-    prefix = messages("additional.reference.checkYourAnswers", index.display),
-    args = messages("additional.reference.hidden"),
-    id = Some("change-additional-reference"),
-    call = Some(controllers.routes.UnloadingTypeController.onPageLoad(arrivalId, CheckMode)) //TODO change me please
-  )
-
-  def additionalReferences: Seq[SummaryListRow] = getAnswersAndBuildSectionRows(AdditionalReferenceSection)(additionalReference)
 
   def unloadingType: Option[SummaryListRow] = getAnswerAndBuildRow[UnloadingType](
     page = UnloadingTypePage,

@@ -18,7 +18,7 @@ package utils.transformers
 
 import connectors.ReferenceDataConnector
 import generated.AdditionalReferenceType03
-import models.reference.AdditionalReferenceTop
+import models.reference.AdditionalReference
 import models.{Index, UserAnswers}
 import pages.additionalReference.AdditionalReferenceTypePage
 import uk.gov.hmrc.http.HeaderCarrier
@@ -38,7 +38,7 @@ class AdditionalReferenceTransformer @Inject() (referenceDataConnector: Referenc
                 refDataValue =>
                   val pipeline: UserAnswers => Future[UserAnswers] =
                     set(AdditionalReferenceTypePage(Index(i)),
-                        AdditionalReferenceTop(refDataValue.documentType, refDataValue.description, reference.referenceNumber)
+                        AdditionalReference(refDataValue.documentType, refDataValue.description, reference.referenceNumber)
                     )
 
                   pipeline(userAnswers)

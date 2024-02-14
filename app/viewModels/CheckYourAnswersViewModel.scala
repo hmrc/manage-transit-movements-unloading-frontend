@@ -35,7 +35,7 @@ object CheckYourAnswersViewModel {
     def apply(userAnswers: UserAnswers)(implicit messages: Messages): CheckYourAnswersViewModel = {
       val helper = new CheckYourAnswersHelper(userAnswers)
 
-      val additionalReferenceSection = Section(sectionTitle = messages("additional.reference.heading"), rows = helper.additionalReferences)
+
 
       val headerSection = Section(
         Seq(
@@ -51,7 +51,7 @@ object CheckYourAnswersViewModel {
         Seq(helper.unloadingCommentsYesNo, helper.additionalComment).flatten
       )
 
-      new CheckYourAnswersViewModel(Seq(headerSection, commentsSection, additionalReferenceSection))
+      new CheckYourAnswersViewModel(Seq(headerSection, commentsSection))
     }
   }
 }

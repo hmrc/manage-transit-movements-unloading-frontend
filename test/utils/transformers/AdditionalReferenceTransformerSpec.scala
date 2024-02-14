@@ -22,7 +22,7 @@ import controllers.actions.{DataRequiredAction, DataRequiredActionImpl}
 import generated.AdditionalReferenceType03
 import generators.Generators
 import models.Index
-import models.reference.AdditionalReference
+import models.reference.AdditionalReferenceType
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -59,7 +59,7 @@ class AdditionalReferenceTransformerSpec extends SpecBase with AppWithDefaultMoc
 
     when(mockRefDataConnector.getAdditionalReferenceType(eqTo(additionalReferenceType0.typeValue))(any(), any()))
       .thenReturn(
-        Future.successful(AdditionalReference(documentType = additionalReferenceType0.typeValue, description = "describe me"))
+        Future.successful(AdditionalReferenceType(documentType = additionalReferenceType0.typeValue, description = "describe me"))
       )
 
     val result = transformer.transform(Seq(additionalReferenceType0)).apply(emptyUserAnswers).futureValue

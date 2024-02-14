@@ -16,14 +16,28 @@
 
 package utils
 
-import models.{Index, UserAnswers}
+import models.reference.AdditionalReference
+import models.{CheckMode, Index, UserAnswers}
 import pages._
+import pages.additionalReference.AdditionalReferenceTypePage
 import pages.houseConsignment.index.items.GrossWeightPage
 import pages.sections.ItemsSection
+import pages.sections.additionalReference.AdditionalReferenceSection
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class UnloadingAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends IE043DataHelper(userAnswers) {
+
+  def additionalReference(index: Index): Option[SummaryListRow] = getAnswerAndBuildRow[AdditionalReference](
+    page = AdditionalReferenceTypePage(index),
+    formatAnswer = formatAsText,
+    prefix = messages("additional.reference.checkYourAnswers", index.display),
+    args = messages("additional.reference.hidden"),
+    id = Some("change-additional-reference"),
+    call = Some(controllers.routes.UnloadingTypeController.onPageLoad(arrivalId, CheckMode)) //TODO change me please
+  )
+
+  def additionalReferences: Seq[SummaryListRow] = getAnswersAndBuildSectionRows(AdditionalReferenceSection)(additionalReference)
 
   def buildHouseConsignmentRows(
     grossAndNetWeightRows: Seq[SummaryListRow],

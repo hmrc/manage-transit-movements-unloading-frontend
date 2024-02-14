@@ -19,7 +19,7 @@ package models.reference
 import cats.Order
 import play.api.libs.json.{Format, Json}
 
-case class AdditionalReferenceTop(documentType: String, description: String, referenceNumber: Option[String]) {
+case class AdditionalReference(documentType: String, description: String, referenceNumber: Option[String]) {
 
   override def toString: String = referenceNumber match {
     case Some(refNumber) => s"$documentType - $description - $refNumber"
@@ -27,14 +27,16 @@ case class AdditionalReferenceTop(documentType: String, description: String, ref
   }
 }
 
-object AdditionalReferenceTop {
-  implicit val format: Format[AdditionalReferenceTop] = Json.format[AdditionalReferenceTop]
+object AdditionalReference {
+  implicit val format: Format[AdditionalReference] = Json.format[AdditionalReference]
 
 }
 
-case class AdditionalReference(documentType: String, description: String)
+case class AdditionalReferenceType(documentType: String, description: String)
 
-object AdditionalReference {
-  implicit val format: Format[AdditionalReference] = Json.format[AdditionalReference]
-  implicit val order: Order[AdditionalReference]   = (x: AdditionalReference, y: AdditionalReference) => x.documentType.compareToIgnoreCase(y.documentType)
+object AdditionalReferenceType {
+  implicit val format: Format[AdditionalReferenceType] = Json.format[AdditionalReferenceType]
+
+  implicit val order: Order[AdditionalReferenceType] = (x: AdditionalReferenceType, y: AdditionalReferenceType) =>
+    x.documentType.compareToIgnoreCase(y.documentType)
 }
