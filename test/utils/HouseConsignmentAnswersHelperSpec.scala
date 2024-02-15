@@ -32,7 +32,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with RowActions {
 
   private val country = Country("GB", "United Kingdom")
 
@@ -298,13 +298,15 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
           grossWeightRow mustBe
             SummaryListRow(
               key = Key("Gross weight".toText),
-              value = Value(s"${totalGrossWeight}kg".toText)
+              value = Value(s"${totalGrossWeight}kg".toText),
+              actions = grossWeightAction
             )
 
           netWeightRow mustBe
             SummaryListRow(
               key = Key("Net weight".toText),
-              value = Value(s"${totalNetWeight}kg".toText)
+              value = Value(s"${totalNetWeight}kg".toText),
+              actions = netWeightAction
             )
 
           consignorName mustBe
@@ -384,13 +386,15 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
             grossWeightRow mustBe
               SummaryListRow(
                 key = Key("Gross weight".toText),
-                value = Value(s"${BigDecimal(grossWeight)}kg".toText)
+                value = Value(s"${BigDecimal(grossWeight)}kg".toText),
+                actions = grossWeightAction
               )
 
             netWeightRow mustBe
               SummaryListRow(
                 key = Key("Net weight".toText),
-                value = Value(s"${BigDecimal(netWeight)}kg".toText)
+                value = Value(s"${BigDecimal(netWeight)}kg".toText),
+                actions = netWeightAction
               )
 
             consignorName mustBe
@@ -527,13 +531,15 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
             grossWeightRow mustBe
               SummaryListRow(
                 key = Key("Gross weight".toText),
-                value = Value(s"${BigDecimal(grossWeight)}kg".toText)
+                value = Value(s"${BigDecimal(grossWeight)}kg".toText),
+                actions = grossWeightAction
               )
 
             netWeightRow mustBe
               SummaryListRow(
                 key = Key("Net weight".toText),
-                value = Value(s"${BigDecimal(netWeight)}kg".toText)
+                value = Value(s"${BigDecimal(netWeight)}kg".toText),
+                actions = netWeightAction
               )
 
             consignorIdentification mustBe
@@ -662,13 +668,15 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
             grossWeightRow mustBe
               SummaryListRow(
                 key = Key("Gross weight".toText),
-                value = Value(s"${BigDecimal(grossWeight)}kg".toText)
+                value = Value(s"${BigDecimal(grossWeight)}kg".toText),
+                actions = grossWeightAction
               )
 
             netWeightRow mustBe
               SummaryListRow(
                 key = Key("Net weight".toText),
-                value = Value(s"${BigDecimal(netWeight)}kg".toText)
+                value = Value(s"${BigDecimal(netWeight)}kg".toText),
+                actions = netWeightAction
               )
 
             consigneeIdentification mustBe
@@ -738,12 +746,12 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
           val answers = emptyUserAnswers
 
           val helper = new HouseConsignmentAnswersHelper(answers, index)
-          val result = helper.totalGrossWeightRow(grossWeight)
+          val result = helper.totalGrossWeightRow(grossWeight, hcIndex).value
 
           result mustBe SummaryListRow(
             key = Key("Gross weight".toText),
             value = Value(s"${grossWeight}kg".toText),
-            actions = None
+            actions = grossWeightAction
           )
         }
       }
@@ -759,12 +767,12 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
           val answers = emptyUserAnswers
 
           val helper = new HouseConsignmentAnswersHelper(answers, index)
-          val result = helper.totalNetWeightRow(netWeight)
+          val result = helper.totalNetWeightRow(netWeight, hcIndex).value
 
           result mustBe SummaryListRow(
             key = Key("Net weight".toText),
             value = Value(s"${netWeight}kg".toText),
-            actions = None
+            actions = netWeightAction
           )
         }
       }
@@ -918,15 +926,14 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
           val userAnswers = emptyUserAnswers.copy(data = json)
 
           val helper = new HouseConsignmentAnswersHelper(userAnswers, index)
-          val result = helper.netWeightRow(index, itemIndex)
+          val result = helper.netWeightRow(index, itemIndex).value
 
-          result mustBe Some(
+          result mustBe
             SummaryListRow(
               key = Key("Net weight".toText),
               value = Value(s"${netWeight}kg".toText),
               actions = None
             )
-          )
         }
       }
     }
