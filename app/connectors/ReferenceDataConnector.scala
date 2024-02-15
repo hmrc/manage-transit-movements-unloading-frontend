@@ -22,8 +22,8 @@ import config.FrontendAppConfig
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import logging.Logging
 import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.transport.TransportMode
 import models.reference._
+import models.reference.transport.TransportMode
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, Reads}
 import sttp.model.HeaderNames
@@ -92,6 +92,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val queryParams: Seq[(String, String)] = Seq("data.code" -> typeValue)
     val url                                = s"${config.referenceDataUrl}/lists/SupportingDocumentType"
     http.GET[NonEmptySet[DocumentType]](url, headers = version2Header, queryParams = queryParams).map(_.head)
+  }
+
+  def getAdditionalReferences()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[AdditionalReferenceType]] = {
+    val url = s"${config.referenceDataUrl}/lists/AdditionalReference"
+    http.GET[NonEmptySet[AdditionalReferenceType]](url, headers = version2Header)
   }
 
   def getAdditionalReferenceType(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[AdditionalReferenceType] = {

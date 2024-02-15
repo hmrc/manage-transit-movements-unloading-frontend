@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package models.reference
+package pages.houseConsignment.index.items.additionalReference
 
-import cats.Order
-import play.api.libs.json.{Format, Json}
+import models.Index
+import models.reference.AdditionalReferenceType
+import pages.QuestionPage
+import pages.sections.ItemsSection
+import play.api.libs.json.JsPath
 
-case class AdditionalReferenceType(documentType: String, description: String) extends Selectable {
+case class AdditionalReferencePage(houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index)
+    extends QuestionPage[AdditionalReferenceType] {
 
-  override def toString: String = s"$documentType - $description"
+  override def path: JsPath =
+    ItemsSection(houseConsignmentIndex).path \ itemIndex.position \ "AdditionalReference" \ additionalReferenceIndex.position \ toString
 
-  override val value: String = documentType
-}
-
-object AdditionalReferenceType {
-  implicit val format: Format[AdditionalReferenceType] = Json.format[AdditionalReferenceType]
-
-  implicit val order: Order[AdditionalReferenceType] = (x: AdditionalReferenceType, y: AdditionalReferenceType) =>
-    x.documentType.compareToIgnoreCase(y.documentType)
-
+  override def toString: String = "type"
 }

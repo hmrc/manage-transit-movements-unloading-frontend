@@ -30,7 +30,7 @@ object AdditionalReferenceViewModel {
 
     override val prefix = "houseConsignment.index.items.additionalReference.additionalReferenceType"
 
-    def apply(houseConsignmentIndex: Index, itemIndex: Index, mode: Mode)(implicit message: Messages): AdditionalReferenceViewModel =
+    def apply(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit message: Messages): AdditionalReferenceViewModel =
       new AdditionalReferenceViewModel(
         heading(mode, houseConsignmentIndex, itemIndex),
         title(mode, houseConsignmentIndex, itemIndex),

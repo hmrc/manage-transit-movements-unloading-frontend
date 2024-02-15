@@ -16,7 +16,7 @@
 
 @import controllers.houseConsignment.index.items.additionalReference.routes
 @import models.MovementReferenceNumber
-@import models.reference.AdditionalReference
+@import models.reference.AdditionalReferenceType
 @import models.reference.Selectable
 @import models.reference.Selectable._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
@@ -33,7 +33,7 @@
     button: Button
 )
 
-@(form: Form[AdditionalReference], mrn: MovementReferenceNumber, arrivalId: ArrivalId, additionalReferences: Seq[AdditionalReference], mode: Mode, viewModel: AdditionalReferenceViewModel, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[AdditionalReferenceType], mrn: MovementReferenceNumber, arrivalId: ArrivalId, additionalReferences: Seq[AdditionalReferenceType], mode: Mode, viewModel: AdditionalReferenceViewModel, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = viewModel.title,
