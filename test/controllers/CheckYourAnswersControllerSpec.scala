@@ -26,7 +26,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.AuditService
+import services.submission.AuditService
 import viewModels.CheckYourAnswersViewModel
 import viewModels.CheckYourAnswersViewModel.CheckYourAnswersViewModelProvider
 import views.html.CheckYourAnswersView

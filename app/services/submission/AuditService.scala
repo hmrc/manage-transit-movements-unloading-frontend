@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package services
+package services.submission
 
 import models.{AuditType, UserAnswers}
 import play.api.libs.json.{JsValue, Json, Writes}

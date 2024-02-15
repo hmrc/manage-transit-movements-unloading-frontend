@@ -20,7 +20,6 @@ import models.{CheckMode, UnloadingType, UserAnswers}
 import pages._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
-import utils.Format._
 
 import java.time.LocalDate
 
@@ -65,7 +64,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     prefix = "checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo",
     id = Some("change-add-unloading-comments"),
     call = Some(controllers.routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, CheckMode))
-  )(intToBooleanReads)
+  )
 
   def additionalComment: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = UnloadingCommentsPage,

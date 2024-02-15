@@ -26,7 +26,6 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import pages.houseConsignment.index.items.GrossWeightPage
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
-import utils.Format._
 
 class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -126,14 +125,14 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
       }
       "must go from unloading comments yes no page" - {
         "when answer is true to unloading comments controller" in {
-          val userAnswers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, true)(booleanToIntWrites)
+          val userAnswers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, true)
 
           navigator
             .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
             .mustBe(routes.UnloadingCommentsController.onPageLoad(arrivalId, mode))
         }
         "when answer is false to check your answers controller" in {
-          val userAnswers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, false)(booleanToIntWrites)
+          val userAnswers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, false)
 
           navigator
             .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
@@ -175,7 +174,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           "to check your answers page if no selected" in {
 
             val userAnswers = emptyUserAnswers
-              .setValue(AddUnloadingCommentsYesNoPage, false)(booleanToIntWrites)
+              .setValue(AddUnloadingCommentsYesNoPage, false)
 
             navigator
               .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
@@ -184,7 +183,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           "to additional comments page if yes is selected and no comments found" in {
 
             val userAnswers = emptyUserAnswers
-              .setValue(AddUnloadingCommentsYesNoPage, true)(booleanToIntWrites)
+              .setValue(AddUnloadingCommentsYesNoPage, true)
 
             navigator
               .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
@@ -193,7 +192,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           "to additional comments page if yes is selected and comments found" in {
 
             val userAnswers = emptyUserAnswers
-              .setValue(AddUnloadingCommentsYesNoPage, true)(booleanToIntWrites)
+              .setValue(AddUnloadingCommentsYesNoPage, true)
               .setValue(UnloadingCommentsPage, "comment")
 
             navigator
