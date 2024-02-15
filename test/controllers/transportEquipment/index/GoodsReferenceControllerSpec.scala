@@ -22,15 +22,15 @@ import forms.SelectableFormProvider
 import generators.Generators
 import models.reference.Item
 import models.{Index, NormalMode, SelectableList}
-import pages.transportEquipment.index.GoodsReferencePage
+import pages.transportEquipment.index.ItemPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewModels.transportEquipment.index.GoodsReferenceViewModel
+import viewModels.transportEquipment.SelectItemsViewModel
 import views.html.transportEquipment.index.GoodsReferenceView
 
 class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val viewModel: GoodsReferenceViewModel = GoodsReferenceViewModel(emptyUserAnswers, None)
+  private val viewModel: SelectItemsViewModel = SelectItemsViewModel(emptyUserAnswers, None)
 
   private val items = SelectableList(Seq(Item(123, "description")))
 
@@ -38,7 +38,7 @@ class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private val mode         = NormalMode
   private val form         = formProvider(mode, "transport.equipment.selectItems", items)
 
-  private lazy val controllerRoute = controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), mode).url
+  private lazy val controllerRoute = controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), itemIndex, mode).url
 
   "GoodsReferenceController" - {
 
@@ -55,12 +55,14 @@ class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, arrivalId, Index(0), mrn, viewModel, mode)(request, messages).toString
+        view(form, arrivalId, Index(0), itemIndex, mrn, viewModel, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(GoodsReferencePage(equipmentIndex), Item(123, "description"))
+      val item = Item(123, "description")
+
+      val userAnswers = emptyUserAnswers.setValue(ItemPage(equipmentIndex, itemIndex), item)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, controllerRoute)
@@ -73,8 +75,10 @@ class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       status(result) mustEqual OK
 
+      val viewModelSelected: SelectItemsViewModel = SelectItemsViewModel(items = SelectableList(Seq(item)), 1)
+
       contentAsString(result) mustEqual
-        view(filledForm, arrivalId, Index(0), mrn, viewModel, mode)(request, messages).toString
+        view(filledForm, arrivalId, Index(0), itemIndex, mrn, viewModelSelected, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -103,7 +107,7 @@ class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, arrivalId, Index(0), mrn, viewModel, mode)(request, messages).toString
+        view(boundForm, arrivalId, Index(0), itemIndex, mrn, viewModel, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

@@ -20,7 +20,7 @@
 @import viewModels.components.InputSelectViewModel._
 @import views.html.components.{Button, ErrorSummary, InputSelect}
 @import models.reference.Item
-@import viewModels.transportEquipment.index.GoodsReferenceViewModel
+@import viewModels.transportEquipment.SelectItemsViewModel
 
 @this(
     mainTemplate: MainTemplate,
@@ -30,7 +30,7 @@
     button: Button
 )
 
-@(form: Form[Item], arrivalId: ArrivalId, equipmentIndex: Index, goodsReferenceIndex: Index, mrn: MovementReferenceNumber, viewModel: GoodsReferenceViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Item], arrivalId: ArrivalId, equipmentIndex: Index, goodsReferenceIndex: Index, mrn: MovementReferenceNumber, viewModel: SelectItemsViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("transport.equipment.selectItems.title"),

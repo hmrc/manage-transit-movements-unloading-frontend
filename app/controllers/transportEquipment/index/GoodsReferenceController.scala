@@ -20,12 +20,12 @@ import controllers.actions._
 import forms.SelectableFormProvider
 import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
-import pages.transportEquipment.index.GoodsReferencePage
+import pages.transportEquipment.index.ItemPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.transportEquipment.index.GoodsReferenceViewModel
+import viewModels.transportEquipment.SelectItemsViewModel
 import views.html.transportEquipment.index.GoodsReferenceView
 
 import javax.inject.Inject
@@ -46,9 +46,9 @@ class GoodsReferenceController @Inject() (
   def onPageLoad(arrivalId: ArrivalId, transportEquipmentIndex: Index, goodsReferenceIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
-        val selectedItem = request.userAnswers.get(GoodsReferencePage(transportEquipmentIndex, goodsReferenceIndex))
-        val viewModel = GoodsReferenceViewModel.apply(request.userAnswers, selectedItem)
-        val form      = formProvider(mode, "transport.equipment.selectItems", viewModel.items)
+        val selectedItem = request.userAnswers.get(ItemPage(transportEquipmentIndex, goodsReferenceIndex))
+        val viewModel    = SelectItemsViewModel.apply(request.userAnswers, selectedItem)
+        val form         = formProvider(mode, "transport.equipment.selectItems", viewModel.items)
         val preparedForm = selectedItem match {
           case None        => form
           case Some(value) => form.fill(value)
@@ -60,8 +60,8 @@ class GoodsReferenceController @Inject() (
   def onSubmit(arrivalId: ArrivalId, transportEquipmentIndex: Index, goodsReferenceIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
-        val selectedItem = request.userAnswers.get(GoodsReferencePage(transportEquipmentIndex, goodsReferenceIndex))
-        val viewModel    = GoodsReferenceViewModel(request.userAnswers, selectedItem)
+        val selectedItem = request.userAnswers.get(ItemPage(transportEquipmentIndex, goodsReferenceIndex))
+        val viewModel    = SelectItemsViewModel(request.userAnswers, selectedItem)
 
         val form = formProvider(mode, "transport.equipment.selectItems", viewModel.items)
         form
@@ -73,9 +73,9 @@ class GoodsReferenceController @Inject() (
               ),
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(GoodsReferencePage(transportEquipmentIndex, goodsReferenceIndex), value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(ItemPage(transportEquipmentIndex, goodsReferenceIndex), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(GoodsReferencePage(transportEquipmentIndex, goodsReferenceIndex), mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(ItemPage(transportEquipmentIndex, goodsReferenceIndex), mode, updatedAnswers))
           )
     }
 }

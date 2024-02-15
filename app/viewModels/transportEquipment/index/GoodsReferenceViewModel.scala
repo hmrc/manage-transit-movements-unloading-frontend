@@ -22,36 +22,36 @@ import models.{Index, SelectableList, UserAnswers}
 import pages.sections.transport.equipment.{EquipmentsSection, ItemsSection}
 import pages.transportEquipment.index.ItemPage
 
-case class GoodsReferenceViewModel(items: SelectableList[Item], allItemsCount: Int)
-
-object GoodsReferenceViewModel {
-
-  def apply(userAnswers: UserAnswers, selectedItem: Option[Item]): GoodsReferenceViewModel = {
-    val allItems: Seq[GoodsReferenceType02] = userAnswers.ie043Data.Consignment
-      .map(
-        consignment =>
-          consignment.TransportEquipment.flatMap(
-            equipment => equipment.GoodsReference
-          )
-      )
-      .toList
-      .flatten
-
-    val getItems: Seq[Item] = for {
-      equipmentIndex <- 0 until userAnswers.get(EquipmentsSection).map(_.value.length).getOrElse(0)
-      itemIndex      <- 0 until userAnswers.get(ItemsSection(Index(equipmentIndex))).map(_.value.length).getOrElse(0)
-      itemToFilter   <- userAnswers.get(ItemPage(Index(equipmentIndex), Index(itemIndex)))
-    } yield itemToFilter
-
-    val filteredList: Seq[Item] = getItems.foldLeft(
-      allItems.map(
-        goodsReferenceType0 => Item(goodsReferenceType0.declarationGoodsItemNumber.toInt, goodsReferenceType0.sequenceNumber)
-      )
-    ) {
-      (items, itemToFilter) =>
-        items.filterNot(_ == itemToFilter)
-    }
-
-    GoodsReferenceViewModel(SelectableList(filteredList ++ selectedItem.toSeq), filteredList.length)
-  }
-}
+//case class GoodsReferenceViewModel(items: SelectableList[Item], allItemsCount: Int)
+//
+//object GoodsReferenceViewModel {
+//
+//  def apply(userAnswers: UserAnswers, selectedItem: Option[Item]): GoodsReferenceViewModel = {
+//    val allItems: Seq[GoodsReferenceType02] = userAnswers.ie043Data.Consignment
+//      .map(
+//        consignment =>
+//          consignment.TransportEquipment.flatMap(
+//            equipment => equipment.GoodsReference
+//          )
+//      )
+//      .toList
+//      .flatten
+//
+//    val getItems: Seq[Item] = for {
+//      equipmentIndex <- 0 until userAnswers.get(EquipmentsSection).map(_.value.length).getOrElse(0)
+//      itemIndex      <- 0 until userAnswers.get(ItemsSection(Index(equipmentIndex))).map(_.value.length).getOrElse(0)
+//      itemToFilter   <- userAnswers.get(ItemPage(Index(equipmentIndex), Index(itemIndex)))
+//    } yield itemToFilter
+//
+//    val filteredList: Seq[Item] = getItems.foldLeft(
+//      allItems.map(
+//        goodsReferenceType0 => Item(goodsReferenceType0.declarationGoodsItemNumber.toInt, goodsReferenceType0.sequenceNumber)
+//      )
+//    ) {
+//      (items, itemToFilter) =>
+//        items.filterNot(_ == itemToFilter)
+//    }
+//
+//    GoodsReferenceViewModel(SelectableList(filteredList ++ selectedItem.toSeq), filteredList.length)
+//  }
+//}

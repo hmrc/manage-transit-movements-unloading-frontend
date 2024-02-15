@@ -55,7 +55,7 @@ class ApplyAnotherItemController @Inject() (
   def onPageLoad(arrivalId: String, mode: Mode, equipmentIndex: Index, goodsReferenceIndex: Index): Action[AnyContent] =
     actions.requireData(ArrivalId(arrivalId)) {
       implicit request =>
-        val isNumberItemsZero: Boolean = SelectItemsViewModel(request.userAnswers).items.values.isEmpty
+        val isNumberItemsZero: Boolean = SelectItemsViewModel.apply(request.userAnswers).items.values.isEmpty
         val viewModel                  = viewModelProvider(request.userAnswers, arrivalId, mode, equipmentIndex, goodsReferenceIndex, isNumberItemsZero)
         viewModel.count match {
           case 0 =>

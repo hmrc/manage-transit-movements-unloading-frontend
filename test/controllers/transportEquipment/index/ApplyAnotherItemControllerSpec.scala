@@ -45,7 +45,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
   private val mode = NormalMode
 
   private lazy val applyAnotherItemRoute =
-    controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId.value, mode, equipmentIndex).url
+    controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId.value, mode, equipmentIndex, itemIndex).url
 
   private lazy val mockViewModelProvider = mock[ApplyAnotherItemViewModelProvider]
 
@@ -73,7 +73,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
 
     "redirect to select items page" - {
       "when 0 items" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
           .thenReturn(emptyViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -85,13 +85,13 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, mode).url
+          controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, itemIndex, mode).url
       }
     }
 
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -109,7 +109,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
       }
 
       "when max limit reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -129,7 +129,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
 
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
