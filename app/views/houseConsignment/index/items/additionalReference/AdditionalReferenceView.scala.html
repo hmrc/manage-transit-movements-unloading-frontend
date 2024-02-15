@@ -33,14 +33,14 @@
     button: Button
 )
 
-@(form: Form[AdditionalReferenceType], mrn: MovementReferenceNumber, arrivalId: ArrivalId, additionalReferences: Seq[AdditionalReferenceType], mode: Mode, viewModel: AdditionalReferenceViewModel, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[AdditionalReferenceType], mrn: MovementReferenceNumber, additionalReferences: Seq[AdditionalReferenceType], viewModel: AdditionalReferenceViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = viewModel.title,
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.AdditionalReferenceController.onSubmit(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AdditionalReferenceController.onSubmit(viewModel.arrivalId, viewModel.mode, viewModel.houseConsignmentIndex, viewModel.itemIndex, viewModel.additionalReferenceIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

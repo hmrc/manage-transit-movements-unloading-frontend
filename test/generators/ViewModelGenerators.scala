@@ -16,7 +16,7 @@
 
 package generators
 
-import models.Index
+import models.{ArrivalId, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.FormError
@@ -286,6 +286,7 @@ trait ViewModelGenerators {
       heading       <- nonEmptyString
       title         <- nonEmptyString
       requiredError <- nonEmptyString
-    } yield AdditionalReferenceViewModel(heading, title, requiredError)
+      arrivalId     <- nonEmptyString
+    } yield AdditionalReferenceViewModel(heading, title, requiredError, ArrivalId(arrivalId), NormalMode, Index(0), Index(0), Index(0))
   }
 }

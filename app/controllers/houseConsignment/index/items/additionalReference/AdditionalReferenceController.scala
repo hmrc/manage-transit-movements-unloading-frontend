@@ -58,23 +58,14 @@ class AdditionalReferenceController @Inject() (
           service.getAdditionalReferences().map {
             additionalReferences =>
               val form      = formProvider(mode, prefix, additionalReferences, houseConsignmentIndex.display, itemIndex.display)
-              val viewModel = viewModelProvider.apply(mode, houseConsignmentIndex, itemIndex)
+              val viewModel = viewModelProvider.apply(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
               val preparedForm = request.userAnswers.get(AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) match {
                 case None        => form
                 case Some(value) => form.fill(value)
               }
 
               Ok(
-                view(preparedForm,
-                     request.userAnswers.mrn,
-                     arrivalId,
-                     additionalReferences.values,
-                     mode,
-                     viewModel,
-                     houseConsignmentIndex,
-                     itemIndex,
-                     additionalReferenceIndex
-                )
+                view(preparedForm, request.userAnswers.mrn, additionalReferences.values, viewModel)
               )
           }
       }
@@ -85,23 +76,14 @@ class AdditionalReferenceController @Inject() (
         service.getAdditionalReferences().flatMap {
           additionalReferences =>
             val form      = formProvider(mode, prefix, additionalReferences, houseConsignmentIndex.display, itemIndex.display)
-            val viewModel = viewModelProvider.apply(mode, houseConsignmentIndex, itemIndex)
+            val viewModel = viewModelProvider.apply(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
             form
               .bindFromRequest()
               .fold(
                 formWithErrors =>
                   Future.successful(
                     BadRequest(
-                      view(formWithErrors,
-                           request.userAnswers.mrn,
-                           arrivalId,
-                           additionalReferences.values,
-                           mode,
-                           viewModel,
-                           houseConsignmentIndex,
-                           itemIndex,
-                           additionalReferenceIndex
-                      )
+                      view(formWithErrors, request.userAnswers.mrn, additionalReferences.values, viewModel)
                     )
                   ),
                 value => redirect(value, houseConsignmentIndex, itemIndex, additionalReferenceIndex, mode)

@@ -16,13 +16,21 @@
 
 package viewModels.houseConsignment.index.items.additionalReference
 
-import models.{Index, Mode}
+import models.{ArrivalId, Index, Mode}
 import play.api.i18n.Messages
 import viewModels.ModeViewModelProvider
 
 import javax.inject.Inject
 
-case class AdditionalReferenceViewModel(heading: String, title: String, requiredError: String)
+case class AdditionalReferenceViewModel(heading: String,
+                                        title: String,
+                                        requiredError: String,
+                                        arrivalId: ArrivalId,
+                                        mode: Mode,
+                                        houseConsignmentIndex: Index,
+                                        itemIndex: Index,
+                                        additionalReferenceIndex: Index
+)
 
 object AdditionalReferenceViewModel {
 
@@ -30,11 +38,18 @@ object AdditionalReferenceViewModel {
 
     override val prefix = "houseConsignment.index.items.additionalReference.additionalReferenceType"
 
-    def apply(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit message: Messages): AdditionalReferenceViewModel =
+    def apply(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index)(implicit
+      message: Messages
+    ): AdditionalReferenceViewModel =
       new AdditionalReferenceViewModel(
         heading(mode, houseConsignmentIndex, itemIndex),
         title(mode, houseConsignmentIndex, itemIndex),
-        requiredError(mode, houseConsignmentIndex, itemIndex)
+        requiredError(mode, houseConsignmentIndex, itemIndex),
+        arrivalId,
+        mode,
+        houseConsignmentIndex,
+        itemIndex,
+        additionalReferenceIndex
       )
   }
 }

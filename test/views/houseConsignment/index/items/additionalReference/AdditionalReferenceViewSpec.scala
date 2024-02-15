@@ -37,7 +37,7 @@ class AdditionalReferenceViewSpec extends InputSelectViewBehaviours[AdditionalRe
   override def applyView(form: Form[AdditionalReferenceType]): HtmlFormat.Appendable =
     injector
       .instanceOf[AdditionalReferenceView]
-      .apply(form, mrn, arrivalId, values, NormalMode, viewModel, houseConsignmentIndex, itemIndex, additionalReferenceIndex)(fakeRequest, messages)
+      .apply(form, mrn, values, viewModel)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[AdditionalReferenceType] = arbitraryAdditionalReference
 
