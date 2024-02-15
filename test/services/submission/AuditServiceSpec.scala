@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package services
+package services.submission
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import models.AuditType.UnloadingRemarks

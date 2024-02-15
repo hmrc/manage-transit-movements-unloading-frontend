@@ -26,7 +26,6 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, Value}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Key, SummaryListRow}
 import utils.Format.cyaDateFormatter
-import utils.Format.booleanToIntWrites
 
 import java.time.LocalDate
 
@@ -179,7 +178,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
       "must return row" - {
         "when answered Yes" in {
 
-          val answers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, true)(booleanToIntWrites)
+          val answers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, true)
           val helper  = new CheckYourAnswersHelper(answers)
           val result  = helper.unloadingCommentsYesNo
 
@@ -206,7 +205,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
         }
         "when answered No" in {
 
-          val answers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, false)(booleanToIntWrites)
+          val answers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, false)
           val helper  = new CheckYourAnswersHelper(answers)
           val result  = helper.unloadingCommentsYesNo
 

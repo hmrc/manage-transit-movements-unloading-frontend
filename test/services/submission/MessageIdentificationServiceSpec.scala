@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package pages.sections
+package services.submission
 
-import play.api.libs.json.{JsObject, JsPath}
+import base.{AppWithDefaultMockFixtures, SpecBase}
 
-case object NavigationDataSection extends Section[JsObject] {
+class MessageIdentificationServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  override def path: JsPath = JsPath \ toString
+  private val service = app.injector.instanceOf[MessageIdentificationService]
 
-  override def toString: String = "navigationData"
+  "randomIdentifier" - {
+    "must generate a random string of 35 characters" in {
+      val result = service.randomIdentifier
+      result.length mustBe 35
+      result.matches("^[a-zA-Z0-9]*$") mustBe true
+    }
+  }
 }

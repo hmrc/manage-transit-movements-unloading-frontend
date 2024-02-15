@@ -29,7 +29,6 @@ import views.html.AddUnloadingCommentsYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import utils.Format._
 
 class AddUnloadingCommentsYesNoController @Inject() (
   override val messagesApi: MessagesApi,
@@ -47,7 +46,7 @@ class AddUnloadingCommentsYesNoController @Inject() (
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddUnloadingCommentsYesNoPage)(intToBooleanReads) match {
+      val preparedForm = request.userAnswers.get(AddUnloadingCommentsYesNoPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -63,7 +62,7 @@ class AddUnloadingCommentsYesNoController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddUnloadingCommentsYesNoPage, value)(booleanToIntWrites))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddUnloadingCommentsYesNoPage, value))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(AddUnloadingCommentsYesNoPage, mode, updatedAnswers))
         )
