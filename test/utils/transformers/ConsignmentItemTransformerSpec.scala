@@ -35,17 +35,23 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
 
   private val transformer = app.injector.instanceOf[ConsignmentItemTransformer]
 
-  private lazy val mockCommodityTransformer = mock[CommodityTransformer]
+  private lazy val mockCommodityTransformer        = mock[CommodityTransformer]
+  private lazy val mockDeclarationGoodsTransformer = mock[DeclarationGoodsItemNumberTransformer]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[CommodityTransformer].toInstance(mockCommodityTransformer)
+        bind[CommodityTransformer].toInstance(mockCommodityTransformer),
+        bind[DeclarationGoodsItemNumberTransformer].toInstance(mockDeclarationGoodsTransformer)
       )
 
   private case class FakeCommoditySection(itemIndex: Index) extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ itemIndex.position.toString \ "commodity"
+  }
+
+  private case class FakeDeclarationSection(itemIndex: Index) extends QuestionPage[JsObject] {
+    override def path: JsPath = JsPath \ itemIndex.position.toString \ "declarationGoodsItemNumber"
   }
 
   "must transform data" in {
@@ -59,6 +65,11 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
               .thenReturn {
                 ua => Future.successful(ua.setValue(FakeCommoditySection(itemIndex), Json.obj("foo" -> i.toString)))
               }
+
+            when(mockDeclarationGoodsTransformer.transform(any(), any(), eqTo(itemIndex)))
+              .thenReturn {
+                ua => Future.successful(ua.setValue(FakeDeclarationSection(itemIndex), Json.obj("foo" -> i.toString)))
+              }
         }
 
         val result = transformer.transform(consignmentItems, hcIndex).apply(emptyUserAnswers).futureValue
@@ -68,6 +79,7 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
             val itemIndex = Index(i)
 
             result.getValue(FakeCommoditySection(itemIndex)) mustBe Json.obj("foo" -> i.toString)
+            result.getValue(FakeDeclarationSection(itemIndex)) mustBe Json.obj("foo" -> i.toString)
         }
     }
   }

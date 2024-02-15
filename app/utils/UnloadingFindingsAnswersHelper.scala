@@ -23,6 +23,7 @@ import models.reference.Country
 import models.{Index, Link, UserAnswers}
 import pages._
 import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
+import pages.houseConsignment.index.items.DeclarationGoodsItemNumberPage
 import pages.sections._
 import pages.sections.additionalReference.AdditionalReferenceSection._
 import pages.sections.additionalReference.{AdditionalReferenceSection, AdditionalReferencesSection}
@@ -125,9 +126,29 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit
           )
       }
 
+  def consignmentItemsSections: Seq[Section] =
+    userAnswers
+      .get(HouseConsignmentsSection)
+      .mapWithIndex {
+        (_, equipmentIndex) =>
+          val consignmentItemsRows: Seq[SummaryListRow] = consignmentItems(equipmentIndex)
+
+          Some(
+            Section(
+              messages("unloadingFindings.subsections.consignmentItem", equipmentIndex.display),
+              consignmentItemsRows
+            )
+          )
+      }
+
   def transportEquipmentSeals(equipmentIndex: Index): Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(SealsSection(equipmentIndex))(
       sealIndex => transportEquipmentSeal(equipmentIndex, sealIndex)
+    )
+
+  def consignmentItems(hcIndex: Index): Seq[SummaryListRow] =
+    getAnswersAndBuildSectionRows(ItemsSection(hcIndex))(
+      itemIndex => declarationGoodsItemNumber(hcIndex, itemIndex)
     )
 
   def containerIdentificationNumber(index: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
@@ -136,6 +157,15 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit
     prefix = "unloadingFindings.rowHeadings.containerIdentificationNumber",
     id = Some(s"change-container-identification-number-${index.display}"),
     args = None,
+    call = Some(Call(GET, "#"))
+  )
+
+  def declarationGoodsItemNumber(houseConsignmentIndex: Index, itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = DeclarationGoodsItemNumberPage(houseConsignmentIndex, itemIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.declarationNumber",
+    args = itemIndex.display,
+    id = Some(s"change-seal-details-${itemIndex.display}"),
     call = Some(Call(GET, "#"))
   )
 
