@@ -43,35 +43,39 @@ class GoodsReferenceController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, transportEquipmentIndex: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(arrivalId: ArrivalId, transportEquipmentIndex: Index, goodsReferenceIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
-        val selectedItem = request.userAnswers.get(GoodsReferencePage(transportEquipmentIndex))
-        val viewModel    = GoodsReferenceViewModel(request.userAnswers, selectedItem)
-        val form         = formProvider(mode, "transport.equipment.selectItems", viewModel.items)
+        val selectedItem = request.userAnswers.get(GoodsReferencePage(transportEquipmentIndex, goodsReferenceIndex))
+        val viewModel = GoodsReferenceViewModel.apply(request.userAnswers, selectedItem)
+        val form      = formProvider(mode, "transport.equipment.selectItems", viewModel.items)
         val preparedForm = selectedItem match {
           case None        => form
           case Some(value) => form.fill(value)
         }
 
-        Ok(view(preparedForm, arrivalId, transportEquipmentIndex, request.userAnswers.mrn, viewModel, mode))
+        Ok(view(preparedForm, arrivalId, transportEquipmentIndex, goodsReferenceIndex, request.userAnswers.mrn, viewModel, mode))
     }
 
-  def onSubmit(arrivalId: ArrivalId, transportEquipmentIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
-    implicit request =>
-      val selectedItem = request.userAnswers.get(GoodsReferencePage(transportEquipmentIndex))
-      val viewModel    = GoodsReferenceViewModel(request.userAnswers, selectedItem)
+  def onSubmit(arrivalId: ArrivalId, transportEquipmentIndex: Index, goodsReferenceIndex: Index, mode: Mode): Action[AnyContent] =
+    actions.requireData(arrivalId).async {
+      implicit request =>
+        val selectedItem = request.userAnswers.get(GoodsReferencePage(transportEquipmentIndex, goodsReferenceIndex))
+        val viewModel    = GoodsReferenceViewModel(request.userAnswers, selectedItem)
 
-      val form = formProvider(mode, "transport.equipment.selectItems", viewModel.items)
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId, transportEquipmentIndex, request.userAnswers.mrn, viewModel, mode))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(GoodsReferencePage(transportEquipmentIndex), value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(GoodsReferencePage(transportEquipmentIndex), mode, updatedAnswers))
-        )
-  }
+        val form = formProvider(mode, "transport.equipment.selectItems", viewModel.items)
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors =>
+              Future.successful(
+                BadRequest(view(formWithErrors, arrivalId, transportEquipmentIndex, goodsReferenceIndex, request.userAnswers.mrn, viewModel, mode))
+              ),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(GoodsReferencePage(transportEquipmentIndex, goodsReferenceIndex), value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(GoodsReferencePage(transportEquipmentIndex, goodsReferenceIndex), mode, updatedAnswers))
+          )
+    }
 }

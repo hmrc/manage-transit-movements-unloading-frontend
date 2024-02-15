@@ -22,9 +22,9 @@ import pages.QuestionPage
 import pages.sections.TransportEquipmentSection
 import play.api.libs.json.JsPath
 
-case class GoodsReferencePage(equipmentIndex: Index) extends QuestionPage[Item] {
+case class GoodsReferencePage(equipmentIndex: Index, goodsRefIndex: Index) extends QuestionPage[Item] {
 
-  override def path: JsPath = TransportEquipmentSection(equipmentIndex).path \ "GoodsReference" \ toString
+  override def path: JsPath = TransportEquipmentSection(equipmentIndex).path \ "GoodsReference" \ goodsRefIndex.position \ toString
 
-  override def toString: String = "goodsReference"
+  override def toString: String = "item"
 }

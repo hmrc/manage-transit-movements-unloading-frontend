@@ -54,12 +54,13 @@ object ApplyAnotherItemViewModel {
 
   class ApplyAnotherItemViewModelProvider() {
 
-    def apply(userAnswers: UserAnswers, arrivalId: String, mode: Mode, equipmentIndex: Index, isNumberItemsZero: Boolean)(implicit
+    def apply(userAnswers: UserAnswers, arrivalId: String, mode: Mode, equipmentIndex: Index, goodsReferenceIndex: Index, isNumberItemsZero: Boolean)(implicit
       messages: Messages
     ): ApplyAnotherItemViewModel = {
 
       val changeOrRemoveUrl: String = mode match {
-        case CheckMode  => controllers.transportEquipment.index.routes.GoodsReferenceController.onSubmit(ArrivalId(arrivalId), equipmentIndex, mode).url
+        case CheckMode =>
+          controllers.transportEquipment.index.routes.GoodsReferenceController.onSubmit(ArrivalId(arrivalId), equipmentIndex, goodsReferenceIndex, mode).url
         case NormalMode => "" //TODO Some(routes.RemoveItemController.onPageLoad(departureId, mode, equipmentIndex, itemIndex).url)
       }
 
@@ -94,7 +95,7 @@ object ApplyAnotherItemViewModel {
 
       new ApplyAnotherItemViewModel(
         listItems,
-        onSubmitCall = routes.ApplyAnotherItemController.onSubmit(arrivalId, mode, equipmentIndex),
+        onSubmitCall = routes.ApplyAnotherItemController.onSubmit(arrivalId, mode, equipmentIndex, goodsReferenceIndex),
         equipmentIndex,
         isNumberItemsZero
       )

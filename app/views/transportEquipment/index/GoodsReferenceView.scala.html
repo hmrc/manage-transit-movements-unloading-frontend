@@ -30,14 +30,14 @@
     button: Button
 )
 
-@(form: Form[Item], arrivalId: ArrivalId, equipmentIndex: Index, mrn: MovementReferenceNumber, viewModel: GoodsReferenceViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Item], arrivalId: ArrivalId, equipmentIndex: Index, goodsReferenceIndex: Index, mrn: MovementReferenceNumber, viewModel: GoodsReferenceViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("transport.equipment.selectItems.title"),
     showBackLink = true
 ) {
 
-        @formHelper(action = routes.GoodsReferenceController.onSubmit(arrivalId, equipmentIndex, mode), Symbol("autoComplete") -> "off") {
+        @formHelper(action = routes.GoodsReferenceController.onSubmit(arrivalId, equipmentIndex, goodsReferenceIndex, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
