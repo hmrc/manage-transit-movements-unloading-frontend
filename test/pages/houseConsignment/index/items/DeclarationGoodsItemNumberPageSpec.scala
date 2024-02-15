@@ -16,14 +16,17 @@
 
 package pages.houseConsignment.index.items
 
-import models.Index
-import pages.QuestionPage
-import pages.sections.ItemsSection
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case class DeclarationGoodsItemNumberPage(houseConsignmentIndex: Index, itemIndex: Index) extends QuestionPage[BigInt] {
+class DeclarationGoodsItemNumberPageSpec extends PageBehaviours {
 
-  override def path: JsPath = ItemsSection(houseConsignmentIndex).path \ itemIndex.position \ toString
+  "DeclarationGoodsItemNumberPage" - {
 
-  override def toString: String = "declarationGoodsItemNumber"
+    beRetrievable[BigInt](DeclarationGoodsItemNumberPage(houseConsignmentIndex, itemIndex))
+
+    beSettable[BigInt](DeclarationGoodsItemNumberPage(houseConsignmentIndex, itemIndex))
+
+    beRemovable[BigInt](DeclarationGoodsItemNumberPage(houseConsignmentIndex, itemIndex))
+
+  }
 }

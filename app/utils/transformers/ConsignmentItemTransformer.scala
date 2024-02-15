@@ -24,18 +24,20 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ConsignmentItemTransformer @Inject() (
   commodityTransformer: CommodityTransformer,
+  goodsItemNumberTransformer: GoodsItemNumberTransformer,
   declarationGoodsItemNumberTransformer: DeclarationGoodsItemNumberTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
   def transform(consignmentItems: Seq[ConsignmentItemType04], hcIndex: Index): UserAnswers => Future[UserAnswers] = userAnswers =>
     consignmentItems.zipWithIndex.foldLeft(Future.successful(userAnswers))({
-      case (acc, (ConsignmentItemType04(_, declarationGoodsItemNumber, _, _, _, commodity, _, _, _, _, _, _), i)) =>
+      case (acc, (ConsignmentItemType04(goodsItemNumber, declarationGoodsItemNumber, _, _, _, commodity, _, _, _, _, _, _), i)) =>
         acc.flatMap {
           userAnswers =>
             val itemIndex: Index = Index(i)
             val pipeline: UserAnswers => Future[UserAnswers] =
               commodityTransformer.transform(commodity, hcIndex, itemIndex) andThen
+                goodsItemNumberTransformer.transform(goodsItemNumber, hcIndex, itemIndex) andThen
                 declarationGoodsItemNumberTransformer.transform(declarationGoodsItemNumber, hcIndex, itemIndex)
 
             pipeline(userAnswers)

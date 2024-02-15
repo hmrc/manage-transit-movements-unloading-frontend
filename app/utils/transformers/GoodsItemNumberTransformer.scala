@@ -17,15 +17,15 @@
 package utils.transformers
 
 import models.{Index, UserAnswers}
-import pages.houseConsignment.index.items.DeclarationGoodsItemNumberPage
+import pages.houseConsignment.index.items.GoodsItemNumberPage
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeclarationGoodsItemNumberTransformer @Inject() (implicit ec: ExecutionContext) extends PageTransformer {
+class GoodsItemNumberTransformer @Inject() (implicit ec: ExecutionContext) extends PageTransformer {
 
-  def transform(declarationGoodsItemNumber: BigInt, hcIndex: Index, itemIndex: Index): UserAnswers => Future[UserAnswers] = userAnswers => {
-    lazy val pipeline: UserAnswers => Future[UserAnswers] = set(DeclarationGoodsItemNumberPage(hcIndex, itemIndex), declarationGoodsItemNumber)
+  def transform(goodsItemNumber: String, hcIndex: Index, itemIndex: Index): UserAnswers => Future[UserAnswers] = userAnswers => {
+    lazy val pipeline: UserAnswers => Future[UserAnswers] = set(GoodsItemNumberPage(hcIndex, itemIndex), goodsItemNumber)
     pipeline(userAnswers)
 
   }

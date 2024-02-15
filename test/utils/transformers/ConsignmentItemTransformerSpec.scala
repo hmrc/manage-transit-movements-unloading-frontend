@@ -36,6 +36,7 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
   private val transformer = app.injector.instanceOf[ConsignmentItemTransformer]
 
   private lazy val mockCommodityTransformer        = mock[CommodityTransformer]
+  private lazy val mockGoodsItemNumberTransformer  = mock[GoodsItemNumberTransformer]
   private lazy val mockDeclarationGoodsTransformer = mock[DeclarationGoodsItemNumberTransformer]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -43,11 +44,16 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
       .guiceApplicationBuilder()
       .overrides(
         bind[CommodityTransformer].toInstance(mockCommodityTransformer),
+        bind[GoodsItemNumberTransformer].toInstance(mockGoodsItemNumberTransformer),
         bind[DeclarationGoodsItemNumberTransformer].toInstance(mockDeclarationGoodsTransformer)
       )
 
   private case class FakeCommoditySection(itemIndex: Index) extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ itemIndex.position.toString \ "commodity"
+  }
+
+  private case class FakeItemNumberSection(itemIndex: Index) extends QuestionPage[JsObject] {
+    override def path: JsPath = JsPath \ itemIndex.position.toString \ "goodsItemNumber"
   }
 
   private case class FakeDeclarationSection(itemIndex: Index) extends QuestionPage[JsObject] {
@@ -66,10 +72,16 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
                 ua => Future.successful(ua.setValue(FakeCommoditySection(itemIndex), Json.obj("foo" -> i.toString)))
               }
 
+            when(mockGoodsItemNumberTransformer.transform(any(), any(), eqTo(itemIndex)))
+              .thenReturn {
+                ua => Future.successful(ua.setValue(FakeItemNumberSection(itemIndex), Json.obj("foo" -> i.toString)))
+              }
+
             when(mockDeclarationGoodsTransformer.transform(any(), any(), eqTo(itemIndex)))
               .thenReturn {
                 ua => Future.successful(ua.setValue(FakeDeclarationSection(itemIndex), Json.obj("foo" -> i.toString)))
               }
+
         }
 
         val result = transformer.transform(consignmentItems, hcIndex).apply(emptyUserAnswers).futureValue
@@ -79,6 +91,7 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
             val itemIndex = Index(i)
 
             result.getValue(FakeCommoditySection(itemIndex)) mustBe Json.obj("foo" -> i.toString)
+            result.getValue(FakeItemNumberSection(itemIndex)) mustBe Json.obj("foo" -> i.toString)
             result.getValue(FakeDeclarationSection(itemIndex)) mustBe Json.obj("foo" -> i.toString)
         }
     }

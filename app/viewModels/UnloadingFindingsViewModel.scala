@@ -44,12 +44,10 @@ object UnloadingFindingsViewModel {
             Section(sectionTitle = messages("unloadingFindings.additional.reference.heading"), rows = helper.additionalReferences)
           val transportEquipmentSections: Seq[Section] = helper.transportEquipmentSections
 
-          val consignmentItemsSections: Seq[Section] = helper.consignmentItemsSections
-
           val houseConsignmentSections: Seq[Section] = helper.houseConsignmentSections
 
           val sections: Seq[Section] =
-            meansOfTransportSections ++ transportEquipmentSections ++ houseConsignmentSections ++ Seq(additionalReferenceSection) ++ consignmentItemsSections
+            meansOfTransportSections ++ transportEquipmentSections ++ houseConsignmentSections ++ Seq(additionalReferenceSection)
 
           new UnloadingFindingsViewModel(sections)
       }
