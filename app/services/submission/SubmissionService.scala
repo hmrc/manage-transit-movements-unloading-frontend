@@ -78,7 +78,7 @@ class SubmissionService @Inject() (
         messageIdentification = messageIdentificationService.randomIdentifier
       ),
       messagE_TYPESequence3 = MESSAGE_TYPESequence(
-        messageType = CC170C
+        messageType = CC044C
       ),
       correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence(
         correlationIdentifier = None

@@ -71,7 +71,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             messageIdentification = "foo"
           ),
           messagE_TYPESequence3 = MESSAGE_TYPESequence(
-            messageType = CC170C
+            messageType = CC044C
           ),
           correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence(
             correlationIdentifier = None
@@ -90,7 +90,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             messageIdentification = "foo"
           ),
           messagE_TYPESequence3 = MESSAGE_TYPESequence(
-            messageType = CC170C
+            messageType = CC044C
           ),
           correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence(
             correlationIdentifier = None
