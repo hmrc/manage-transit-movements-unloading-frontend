@@ -16,17 +16,17 @@
 
 package pages.departureMeansOfTransport
 
+import models.reference.Country
 import pages.behaviours.PageBehaviours
-import pages.departureMeansOfTransport.CountryPage
 
 class DepartureMeansOfTransportCountryPageSpec extends PageBehaviours {
 
   "CountryPage" - {
 
-    beRetrievable[String](CountryPage(index))
+    beRetrievable[Country](CountryPage(index))
 
-    beSettable[String](CountryPage(index))
+    beSettable[Country](CountryPage(index))
 
-    beRemovable[String](CountryPage(index))
+    beRemovable[Country](CountryPage(index))
   }
 }

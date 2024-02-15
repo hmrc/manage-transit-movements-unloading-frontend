@@ -80,7 +80,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
               ua => Future.successful(ua.setValue(FakeTransportEquipmentSection, Json.obj("foo" -> "bar")))
             }
 
-          when(mockDepartureTransportMeansTransformer.transform(any()))
+          when(mockDepartureTransportMeansTransformer.transform(any())(any()))
             .thenReturn {
               ua => Future.successful(ua.setValue(FakeDepartureTransportMeansSection, Json.obj("foo" -> "bar")))
             }
@@ -90,7 +90,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
               ua => Future.successful(ua.setValue(FakeDocumentsSection, Json.obj("foo" -> "bar")))
             }
 
-          when(mockHouseConsignmentsTransformer.transform(any()))
+          when(mockHouseConsignmentsTransformer.transform(any())(any()))
             .thenReturn {
               ua => Future.successful(ua.setValue(FakeHouseConsignmentSection, Json.obj("foo" -> "bar")))
             }
@@ -99,7 +99,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
               ua => Future.successful(ua.setValue(FakeAdditionalReferenceSection, Json.obj("foo" -> "bar")))
             }
 
-          val result = transformer.transform(Some(consignment)).apply(emptyUserAnswers).futureValue
+          val result = transformer.transform(Some(consignment))(hc).apply(emptyUserAnswers).futureValue
 
           result.getValue(FakeTransportEquipmentSection) mustBe Json.obj("foo" -> "bar")
           result.getValue(FakeDepartureTransportMeansSection) mustBe Json.obj("foo" -> "bar")
@@ -110,7 +110,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
     }
 
     "when consignment undefined" in {
-      val result = transformer.transform(None).apply(emptyUserAnswers).futureValue
+      val result = transformer.transform(None)(hc).apply(emptyUserAnswers).futureValue
 
       result.get(FakeTransportEquipmentSection) must not be defined
       result.get(FakeDepartureTransportMeansSection) must not be defined

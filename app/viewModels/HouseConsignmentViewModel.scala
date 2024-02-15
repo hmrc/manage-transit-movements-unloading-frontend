@@ -18,8 +18,6 @@ package viewModels
 
 import models.{Index, UserAnswers}
 import play.api.i18n.Messages
-import services.ReferenceDataService
-import uk.gov.hmrc.http.HeaderCarrier
 import utils.HouseConsignmentAnswersHelper
 import viewModels.sections.Section
 
@@ -30,18 +28,15 @@ case class HouseConsignmentViewModel(section: Seq[Section], houseConsignment: Se
 
 object HouseConsignmentViewModel {
 
-  def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index, referenceDataService: ReferenceDataService)(implicit
+  def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index)(implicit
     messages: Messages,
-    hc: HeaderCarrier,
     ec: ExecutionContext
-  ): Future[HouseConsignmentViewModel] = new HouseConsignmentViewModelProvider(referenceDataService)(userAnswers, houseConsignmentIndex)
+  ): Future[HouseConsignmentViewModel] = new HouseConsignmentViewModelProvider()(userAnswers, houseConsignmentIndex)
 
-  class HouseConsignmentViewModelProvider @Inject() (referenceDataService: ReferenceDataService) {
+  class HouseConsignmentViewModelProvider @Inject() () {
 
-    def apply(userAnswers: UserAnswers,
-              houseConsignmentIndex: Index
-    )(implicit messages: Messages, hc: HeaderCarrier, ex: ExecutionContext): Future[HouseConsignmentViewModel] = {
-      val helper = new HouseConsignmentAnswersHelper(userAnswers, houseConsignmentIndex: Index, referenceDataService)
+    def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index)(implicit messages: Messages, ex: ExecutionContext): Future[HouseConsignmentViewModel] = {
+      val helper = new HouseConsignmentAnswersHelper(userAnswers, houseConsignmentIndex: Index)
 
       helper.buildTransportSections.map {
         meansOfTransportSections =>

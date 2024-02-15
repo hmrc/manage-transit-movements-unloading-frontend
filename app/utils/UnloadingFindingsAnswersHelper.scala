@@ -18,38 +18,37 @@ package utils
 
 import cats.data.OptionT
 import cats.implicits._
+import models.departureTransportMeans.TransportMeansIdentification
+import models.reference.Country
 import models.{Index, Link, UserAnswers}
 import pages._
-import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
+import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 import pages.sections._
 import pages.sections.additionalReference.AdditionalReferenceSection._
 import pages.sections.additionalReference.{AdditionalReferenceSection, AdditionalReferencesSection}
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.i18n.Messages
 import play.api.mvc.Call
-import services.ReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpVerbs.GET
 import viewModels.sections.Section
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataService: ReferenceDataService)(implicit
+class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit
   messages: Messages,
-  hc: HeaderCarrier,
   ec: ExecutionContext
 ) extends UnloadingAnswersHelper(userAnswers) {
 
   def buildVehicleNationalityRow(index: Index): Future[Option[SummaryListRow]] =
     (for {
       x <- OptionT.fromOption[Future](userAnswers.get(CountryPage(index)))
-      y <- OptionT.liftF(referenceDataService.getCountryNameByCode(x))
-    } yield transportRegisteredCountry(y)).value
+    } yield transportRegisteredCountry(x)).value
 
-  def buildMeansOfTransportRows(idRow: Option[SummaryListRow], nationalityRow: Option[SummaryListRow]): Seq[SummaryListRow] =
+  def buildMeansOfTransportRows(idRow: Option[SummaryListRow], nationalityRow: Option[SummaryListRow], numberRow: Option[SummaryListRow]): Seq[SummaryListRow] =
     idRow.map(Seq(_)).getOrElse(Seq.empty) ++
+      numberRow.map(Seq(_)).getOrElse(Seq.empty) ++
       nationalityRow.map(Seq(_)).getOrElse(Seq.empty)
 
   def buildTransportSections: Future[Seq[Section]] =
@@ -58,35 +57,50 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
       .traverse {
         _.zipWithIndex.traverse {
           y =>
-            val nationalityRow: Future[Option[SummaryListRow]] = buildVehicleNationalityRow(y._2)
-            val meansIdRow: Option[SummaryListRow]             = transportMeansID(y._2)
-
-            nationalityRow.map {
-              nationalityRow =>
-                Section(
-                  messages("unloadingFindings.subsections.transportMeans", y._2.display),
-                  buildMeansOfTransportRows(meansIdRow, nationalityRow)
-                )
-            }
+            for {
+              nationalityRow <- buildVehicleNationalityRow(y._2)
+            } yield Section(
+              messages("unloadingFindings.subsections.transportMeans", y._2.display),
+              buildMeansOfTransportRows(transportMeansID(y._2), nationalityRow, transportMeansNumber(y._2))
+            )
         }
       }
       .map(_.getOrElse(Seq.empty))
 
-  def transportMeansID(transportMeansIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRowWithDynamicPrefix[String](
-    answerPath = VehicleIdentificationNumberPage(transportMeansIndex),
-    titlePath = VehicleIdentificationTypePage(transportMeansIndex),
-    formatAnswer = formatAsText,
-    dynamicPrefix = formatIdentificationTypeAsText,
-    id = None,
-    call = None
-  )
+  def transportMeansID(transportMeansIndex: Index): Option[SummaryListRow] =
+    userAnswers
+      .get(TransportMeansIdentificationPage(transportMeansIndex))
+      .flatMap(
+        identificationAnswer =>
+          buildRowWithAnswer[TransportMeansIdentification](
+            optionalAnswer = Some(identificationAnswer),
+            formatAnswer = formatAsText,
+            prefix = "checkYourAnswers.departureMeansOfTransport.identification",
+            id = Some(s"change-transport-means-identification-${transportMeansIndex.display}"),
+            call = Some(Call(GET, "#"))
+          )
+      )
 
-  def transportRegisteredCountry(answer: String): SummaryListRow = buildSimpleRow(
-    answer = Text(answer),
+  def transportMeansNumber(transportMeansIndex: Index): Option[SummaryListRow] =
+    userAnswers
+      .get(VehicleIdentificationNumberPage(transportMeansIndex))
+      .flatMap(
+        identificationNumber =>
+          buildRowWithAnswer[String](
+            optionalAnswer = Some(identificationNumber),
+            formatAnswer = formatAsText,
+            prefix = "checkYourAnswers.departureMeansOfTransport.identificationNumber",
+            id = Some(s"change-transport-means-identification-number-${transportMeansIndex.display}"),
+            call = Some(Call(GET, "#"))
+          )
+      )
+
+  def transportRegisteredCountry(answer: Country): SummaryListRow = buildSimpleRow(
+    answer = Text(answer.description),
     label = messages("unloadingFindings.rowHeadings.vehicleNationality"),
-    prefix = "unloadingFindings.rowHeadings.vehicleNationality",
-    id = None,
-    call = None,
+    prefix = "checkYourAnswers.departureMeansOfTransport.country",
+    id = Some("change-registered-country"),
+    call = Some(Call(GET, "#")),
     args = Seq.empty
   )
 
@@ -122,7 +136,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
     prefix = "unloadingFindings.rowHeadings.containerIdentificationNumber",
     id = Some(s"change-container-identification-number-${index.display}"),
     args = None,
-    call = Some(controllers.routes.SessionExpiredController.onPageLoad())
+    call = Some(Call(GET, "#"))
   )
 
   def transportEquipmentSeal(equipmentIndex: Index, sealIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
@@ -131,7 +145,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers, referenceDataServ
     prefix = "unloadingFindings.rowHeadings.sealIdentifier",
     args = sealIndex.display,
     id = Some(s"change-seal-details-${sealIndex.display}"),
-    call = Some(controllers.routes.SessionExpiredController.onPageLoad())
+    call = Some(Call(GET, "#"))
   )
 
   def additionalReference(index: Index): Option[SummaryListRow] = getAnswerAndBuildRow[AdditionalReference](

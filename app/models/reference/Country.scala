@@ -20,12 +20,8 @@ import cats.Order
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-case class Country(code: String, description: Option[String]) extends Selectable {
-
-  override def toString: String = description match {
-    case Some(description) => s"$description - $code"
-    case None              => code
-  }
+case class Country(code: String, description: String) extends Selectable {
+  override def toString: String = s"$description - $code"
 
   override def toSelectItem(selected: Boolean): SelectItem = SelectItem(Some(code), this.toString, selected)
 
@@ -35,6 +31,6 @@ case class Country(code: String, description: Option[String]) extends Selectable
 object Country {
   implicit val format: OFormat[Country] = Json.format[Country]
 
-  implicit val order: Order[Country] = (x: Country, y: Country) => x.code.compareToIgnoreCase(y.code)
+  implicit val order: Order[Country] = (x: Country, y: Country) => x.description.compareToIgnoreCase(y.description)
 
 }
