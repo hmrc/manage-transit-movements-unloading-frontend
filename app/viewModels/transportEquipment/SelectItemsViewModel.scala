@@ -19,7 +19,7 @@ package viewModels.transportEquipment
 import generated.ConsignmentType05
 import models.reference.Item
 import models.{Index, SelectableList, UserAnswers}
-import pages.sections.ItemsSection
+import pages.sections.transport.equipment.ItemsSection
 import pages.sections.transport.equipment.EquipmentsSection
 import pages.transportEquipment.index.ItemPage
 

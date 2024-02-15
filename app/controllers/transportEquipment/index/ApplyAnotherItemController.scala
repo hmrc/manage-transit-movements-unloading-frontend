@@ -59,7 +59,7 @@ class ApplyAnotherItemController @Inject() (
       viewModel.count match {
         case 0 =>
           Redirect(routes.GoodsReferenceController.onPageLoad(ArrivalId(arrivalId), Index(0), mode))
-        case _ => Ok(view(form(viewModel, equipmentIndex), arrivalId, viewModel))
+        case _ => Ok(view(form(viewModel, equipmentIndex), request.userAnswers.mrn, arrivalId, viewModel))
       }
   }
 
@@ -70,7 +70,7 @@ class ApplyAnotherItemController @Inject() (
       form(viewModel, equipmentIndex)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId, viewModel))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel))),
           value => redirect(mode, value, equipmentIndex, viewModel.nextIndex)
         )
   }
