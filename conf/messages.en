@@ -361,6 +361,8 @@ unloadingFindings.rowHeadings.houseConsignment.netWeight = Net weight
 unloadingFindings.rowHeadings.houseConsignment.consignorName = Consignor name
 unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier = Consignor EORI number or Trader Identification Number (TIN)
 unloadingFindings.rowHeadings.houseConsignment.consigneeName = Consignee name
+unloadingFindings.rowHeadings.houseConsignment.grossWeight.change.hidden = Change Gross weight
+unloadingFindings.rowHeadings.houseConsignment.netWeight.change.hidden = Change Net weight
 
 
 unloadingFindings.rowHeadings.houseConsignment.consigneeIdentifier = Consignee EORI number or Trader Identification Number (TIN)

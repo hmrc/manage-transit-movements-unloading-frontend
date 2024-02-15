@@ -33,94 +33,16 @@ import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.libs.json.{JsObject, Json}
 import services.ReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with RowActions {
 
   val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   private val countryDesc = "United Kingdom"
-
-  private def containerIndicatorAction(index: Int) = Some(
-    Actions(
-      "",
-      List(
-        ActionItem(
-          "#",
-          Text("Change"),
-          Some("container identification number"),
-          "",
-          Map("id" -> s"change-container-identification-number-$index")
-        )
-      )
-    )
-  )
-
-  private def sealsAction(index: Int) = Some(
-    Actions(
-      "",
-      List(
-        ActionItem(
-          "#",
-          Text("Change"),
-          Some("seal identification number"),
-          "",
-          Map("id" -> s"change-seal-details-$index")
-        )
-      )
-    )
-  )
-
-  private val countryAction = Some(
-    Actions(
-      "",
-      List(
-        ActionItem(
-          "#",
-          Text("Change"),
-          Some("registered country for the departure means of transport"),
-          "",
-          Map("id" -> "change-registered-country")
-        )
-      )
-    )
-  )
-
-  def identificationTypeAction(index: Int) =
-    Some(
-      Actions(
-        "",
-        List(
-          ActionItem(
-            "#",
-            Text("Change"),
-            Some("identification type for the departure means of transport"),
-            "",
-            Map("id" -> s"change-transport-means-identification-$index")
-          )
-        )
-      )
-    )
-
-  def identificationNumberAction(index: Int) =
-    Some(
-      Actions(
-        "",
-        List(
-          ActionItem(
-            "#",
-            Text("Change"),
-            Some("identification number for the departure means of transport"),
-            "",
-            Map("id" -> s"change-transport-means-identification-number-$index")
-          )
-        )
-      )
-    )
 
   "UnloadingFindingsAnswersHelper" - {
 
@@ -785,13 +707,15 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
           grossWeightRow mustBe
             SummaryListRow(
               key = Key("Gross weight".toText),
-              value = Value(s"${totalGrossWeight}kg".toText)
+              value = Value(s"${totalGrossWeight}kg".toText),
+              actions = grossWeightAction
             )
 
           netWeightRow mustBe
             SummaryListRow(
               key = Key("Net weight".toText),
-              value = Value(s"${totalNetWeight}kg".toText)
+              value = Value(s"${totalNetWeight}kg".toText),
+              actions = netWeightAction
             )
 
           consignorName mustBe
@@ -869,13 +793,15 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             grossWeightRow mustBe
               SummaryListRow(
                 key = Key("Gross weight".toText),
-                value = Value(s"${BigDecimal(grossWeight)}kg".toText)
+                value = Value(s"${BigDecimal(grossWeight)}kg".toText),
+                actions = grossWeightAction
               )
 
             netWeightRow mustBe
               SummaryListRow(
                 key = Key("Net weight".toText),
-                value = Value(s"${BigDecimal(netWeight)}kg".toText)
+                value = Value(s"${BigDecimal(netWeight)}kg".toText),
+                actions = netWeightAction
               )
 
             consignorName mustBe
@@ -1012,13 +938,15 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             grossWeightRow mustBe
               SummaryListRow(
                 key = Key("Gross weight".toText),
-                value = Value(s"${BigDecimal(grossWeight)}kg".toText)
+                value = Value(s"${BigDecimal(grossWeight)}kg".toText),
+                actions = grossWeightAction
               )
 
             netWeightRow mustBe
               SummaryListRow(
                 key = Key("Net weight".toText),
-                value = Value(s"${BigDecimal(netWeight)}kg".toText)
+                value = Value(s"${BigDecimal(netWeight)}kg".toText),
+                actions = netWeightAction
               )
 
             consignorIdentification mustBe
@@ -1080,13 +1008,15 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             grossWeightRow mustBe
               SummaryListRow(
                 key = Key("Gross weight".toText),
-                value = Value(s"${BigDecimal(grossWeight)}kg".toText)
+                value = Value(s"${BigDecimal(grossWeight)}kg".toText),
+                actions = grossWeightAction
               )
 
             netWeightRow mustBe
               SummaryListRow(
                 key = Key("Net weight".toText),
-                value = Value(s"${BigDecimal(netWeight)}kg".toText)
+                value = Value(s"${BigDecimal(netWeight)}kg".toText),
+                actions = netWeightAction
               )
 
             consigneeName mustBe
@@ -1224,13 +1154,15 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             grossWeightRow mustBe
               SummaryListRow(
                 key = Key("Gross weight".toText),
-                value = Value(s"${BigDecimal(grossWeight)}kg".toText)
+                value = Value(s"${BigDecimal(grossWeight)}kg".toText),
+                actions = grossWeightAction
               )
 
             netWeightRow mustBe
               SummaryListRow(
                 key = Key("Net weight".toText),
-                value = Value(s"${BigDecimal(netWeight)}kg".toText)
+                value = Value(s"${BigDecimal(netWeight)}kg".toText),
+                actions = netWeightAction
               )
 
             consigneeIdentification mustBe
@@ -1312,11 +1244,14 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
           val answers = emptyUserAnswers
 
           val helper = new UnloadingFindingsAnswersHelper(answers)
-          val result = helper.totalGrossWeightRow(totalGrossWeight)
+          val result = helper.totalGrossWeightRow(totalGrossWeight, hcIndex)
 
-          result mustBe SummaryListRow(
-            key = Key("Gross weight".toText),
-            value = Value(s"${BigDecimal(totalGrossWeight)}kg".toText)
+          result mustBe Some(
+            SummaryListRow(
+              key = Key("Gross weight".toText),
+              value = Value(s"${BigDecimal(totalGrossWeight)}kg".toText),
+              actions = grossWeightAction
+            )
           )
         }
       }
@@ -1332,11 +1267,14 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
           val answers = emptyUserAnswers
 
           val helper = new UnloadingFindingsAnswersHelper(answers)
-          val result = helper.totalNetWeightRow(totalNetWeight)
+          val result = helper.totalNetWeightRow(totalNetWeight, hcIndex)
 
-          result mustBe SummaryListRow(
-            key = Key("Net weight".toText),
-            value = Value(s"${BigDecimal(totalNetWeight)}kg".toText)
+          result mustBe Some(
+            SummaryListRow(
+              key = Key("Net weight".toText),
+              value = Value(s"${BigDecimal(totalNetWeight)}kg".toText),
+              actions = netWeightAction
+            )
           )
         }
       }
