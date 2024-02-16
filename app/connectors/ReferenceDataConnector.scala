@@ -108,6 +108,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[NonEmptySet[DocumentType]](url, headers = version2Header, queryParams = queryParams).map(_.head)
   }
 
+  def getAdditionalReferences()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[AdditionalReferenceType]] = {
+    val url = s"${config.referenceDataUrl}/lists/AdditionalReference"
+    http.GET[NonEmptySet[AdditionalReferenceType]](url, headers = version2Header)
+  }
+
   def getAdditionalReferenceType(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[AdditionalReferenceType] = {
     val queryParams: Seq[(String, String)] = Seq("data.documentType" -> typeValue)
     val url                                = s"${config.referenceDataUrl}/lists/AdditionalReference"
