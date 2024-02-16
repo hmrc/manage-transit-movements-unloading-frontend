@@ -52,11 +52,11 @@ class ApplyAnotherItemController @Inject() (
   private def form(viewModel: ApplyAnotherItemViewModel, equipmentIndex: Index): Form[Boolean] =
     formProvider(viewModel.prefix, viewModel.allowMore, equipmentIndex.display)
 
-  def onPageLoad(arrivalId: String, mode: Mode, equipmentIndex: Index, goodsReferenceIndex: Index): Action[AnyContent] =
+  def onPageLoad(arrivalId: String, mode: Mode, equipmentIndex: Index): Action[AnyContent] =
     actions.requireData(ArrivalId(arrivalId)) {
       implicit request =>
         val isNumberItemsZero: Boolean = SelectItemsViewModel.apply(request.userAnswers).items.values.isEmpty
-        val viewModel                  = viewModelProvider(request.userAnswers, arrivalId, mode, equipmentIndex, goodsReferenceIndex, isNumberItemsZero)
+        val viewModel                  = viewModelProvider(request.userAnswers, arrivalId, mode, equipmentIndex, isNumberItemsZero)
         viewModel.count match {
           case 0 =>
             Redirect(routes.GoodsReferenceController.onPageLoad(ArrivalId(arrivalId), equipmentIndex, Index(0), mode))
@@ -64,11 +64,11 @@ class ApplyAnotherItemController @Inject() (
         }
     }
 
-  def onSubmit(arrivalId: String, mode: Mode, equipmentIndex: Index, goodsReferenceIndex: Index): Action[AnyContent] =
+  def onSubmit(arrivalId: String, mode: Mode, equipmentIndex: Index): Action[AnyContent] =
     actions.requireData(ArrivalId(arrivalId)).async {
       implicit request =>
         val isNumberItemsZero: Boolean = SelectItemsViewModel(request.userAnswers).items.values.isEmpty
-        val viewModel                  = viewModelProvider(request.userAnswers, arrivalId, mode, equipmentIndex, goodsReferenceIndex, isNumberItemsZero)
+        val viewModel                  = viewModelProvider(request.userAnswers, arrivalId, mode, equipmentIndex, isNumberItemsZero)
         form(viewModel, equipmentIndex)
           .bindFromRequest()
           .fold(
