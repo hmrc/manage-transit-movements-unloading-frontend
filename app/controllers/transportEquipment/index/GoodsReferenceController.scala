@@ -43,10 +43,10 @@ class GoodsReferenceController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, transportEquipmentIndex: Index, goodsReferenceIndex: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(arrivalId: ArrivalId, transportEquipmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
-        val selectedItem = request.userAnswers.get(ItemPage(transportEquipmentIndex, goodsReferenceIndex))
+        val selectedItem = request.userAnswers.get(ItemPage(transportEquipmentIndex, itemIndex))
         val viewModel    = SelectItemsViewModel.apply(request.userAnswers, selectedItem)
         val form         = formProvider(mode, "transport.equipment.selectItems", viewModel.items)
         val preparedForm = selectedItem match {
@@ -54,13 +54,13 @@ class GoodsReferenceController @Inject() (
           case Some(value) => form.fill(value)
         }
 
-        Ok(view(preparedForm, arrivalId, transportEquipmentIndex, goodsReferenceIndex, request.userAnswers.mrn, viewModel, mode))
+        Ok(view(preparedForm, arrivalId, transportEquipmentIndex, itemIndex, request.userAnswers.mrn, viewModel, mode))
     }
 
-  def onSubmit(arrivalId: ArrivalId, transportEquipmentIndex: Index, goodsReferenceIndex: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(arrivalId: ArrivalId, transportEquipmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
-        val selectedItem = request.userAnswers.get(ItemPage(transportEquipmentIndex, goodsReferenceIndex))
+        val selectedItem = request.userAnswers.get(ItemPage(transportEquipmentIndex, itemIndex))
         val viewModel    = SelectItemsViewModel(request.userAnswers, selectedItem)
 
         val form = formProvider(mode, "transport.equipment.selectItems", viewModel.items)
@@ -69,13 +69,13 @@ class GoodsReferenceController @Inject() (
           .fold(
             formWithErrors =>
               Future.successful(
-                BadRequest(view(formWithErrors, arrivalId, transportEquipmentIndex, goodsReferenceIndex, request.userAnswers.mrn, viewModel, mode))
+                BadRequest(view(formWithErrors, arrivalId, transportEquipmentIndex, itemIndex, request.userAnswers.mrn, viewModel, mode))
               ),
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(ItemPage(transportEquipmentIndex, goodsReferenceIndex), value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(ItemPage(transportEquipmentIndex, itemIndex), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(ItemPage(transportEquipmentIndex, goodsReferenceIndex), mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(ItemPage(transportEquipmentIndex, itemIndex), mode, updatedAnswers))
           )
     }
 }
