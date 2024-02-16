@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-object Constants {
-  lazy val maxItemDescriptionLength: Int     = 512
-  lazy val exactCUSCodeLength: Int           = 9
-  lazy val grossWeightDecimalPlaces: Int     = 6
-  lazy val grossWeightCharacterCount: Int    = 16
-  lazy val maxPackageShippingMarkLength: Int = 512
-  lazy val maxSealIdentificationLength: Int  = 20
-  lazy val maxDocumentRefNumberLength: Int   = 70
-  lazy val maxAdditionalInfoLength: Int      = 35
-  lazy val maxAdditionalReferenceNumber: Int = 70
+import models.Index
+import pages.sections.AdditionalReferenceSection
+import play.api.libs.json.JsPath
+
+final case class AdditionalReferenceNumberPage(referenceIndex: Index) extends QuestionPage[String] {
+
+  override def path: JsPath = AdditionalReferenceSection(referenceIndex).path \ toString
+
+  override def toString: String = "additionalReferenceNumber"
 }

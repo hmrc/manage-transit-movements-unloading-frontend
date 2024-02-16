@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package forms
+package pages.sections
 
-object Constants {
-  lazy val maxItemDescriptionLength: Int     = 512
-  lazy val exactCUSCodeLength: Int           = 9
-  lazy val grossWeightDecimalPlaces: Int     = 6
-  lazy val grossWeightCharacterCount: Int    = 16
-  lazy val maxPackageShippingMarkLength: Int = 512
-  lazy val maxSealIdentificationLength: Int  = 20
-  lazy val maxDocumentRefNumberLength: Int   = 70
-  lazy val maxAdditionalInfoLength: Int      = 35
-  lazy val maxAdditionalReferenceNumber: Int = 70
+import models.Index
+import play.api.libs.json.{JsObject, JsPath}
+
+case class AdditionalReferenceSection(referenceIndex: Index) extends Section[JsObject] {
+
+  override def path: JsPath = AdditionalReferenceListSection.path \ referenceIndex.position
 }
