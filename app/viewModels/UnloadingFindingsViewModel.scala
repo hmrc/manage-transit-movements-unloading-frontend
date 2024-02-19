@@ -18,9 +18,8 @@ package viewModels
 
 import models.UserAnswers
 import play.api.i18n.Messages
-import utils.ConsignmentAnswersHelper
+import utils.answersHelpers.ConsignmentAnswersHelper
 import viewModels.sections.Section
-import viewModels.sections.Section.AccordionSection
 
 import javax.inject.Inject
 
@@ -38,7 +37,7 @@ object UnloadingFindingsViewModel {
       val sections = Seq(
         Seq(helper.headerSection),
         helper.departureTransportMeansSections,
-        //helper.transportEquipmentSections,
+        helper.transportEquipmentSections,
         helper.houseConsignmentSections,
         helper.additionalReferencesSections
       ).flatten

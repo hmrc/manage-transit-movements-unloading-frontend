@@ -25,7 +25,6 @@ import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HttpVerbs.GET
-import utils.AnswersHelper
 
 class DepartureTransportMeansAnswersHelper(
   userAnswers: UserAnswers,

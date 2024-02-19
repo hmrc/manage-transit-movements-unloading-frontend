@@ -22,9 +22,9 @@ import models.Index
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.Country
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.{DepartureTransportMeansCountryPage, DepartureTransportMeansIdentificationNumberPage, DepartureTransportMeansIdentificationTypePage}
+import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage}
+import pages._
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
-import play.api.libs.json.{JsObject, Json}
 import viewModels.HouseConsignmentViewModel.HouseConsignmentViewModelProvider
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 
@@ -51,7 +51,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         val section           = result.sections.head
 
         section.sectionTitle.value mustBe "Departure means of transport 1"
-        section.rows.size mustBe 2
+        section.rows.size mustBe 3
         section.viewLink must not be defined
       }
 
@@ -73,53 +73,25 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         val section2          = result.sections(1)
 
         section1.sectionTitle.value mustBe "Departure means of transport 1"
-        section1.rows.size mustBe 2
+        section1.rows.size mustBe 3
         section1.viewLink must not be defined
 
         section2.sectionTitle.value mustBe "Departure means of transport 2"
-        section2.rows.size mustBe 2
+        section2.rows.size mustBe 3
         section2.viewLink must not be defined
       }
     }
 
     "must render house consignment section" - {
       "when there is one" in {
-
-        val json: JsObject = Json
-          .parse("""
-                   | {
-                   |    "Consignment" : {
-                   |      "HouseConsignment" : [
-                   |        {
-                   |          "Consignor" : {
-                   |              "identificationNumber" : "csgr1",
-                   |              "name" : "michael doe"
-                   |          },
-                   |          "Consignee" : {
-                   |              "identificationNumber" : "csgee1",
-                   |              "name" : "John Smith"
-                   |          },
-                   |          "ConsignmentItem" : [
-                   |              {
-                   |                  "goodsItemNumber" : "6",
-                   |                  "declarationGoodsItemNumber" : 100,
-                   |                  "Commodity" : {
-                   |                      "descriptionOfGoods" : "shirts",
-                   |                      "GoodsMeasure" : {
-                   |                          "grossMass" : 123.45,
-                   |                          "netMass" : 123.45
-                   |                      }
-                   |                  }
-                   |              }
-                   |          ]
-                   |        }
-                   |      ]
-                   |    }
-                   |}
-                   |""".stripMargin)
-          .as[JsObject]
-
-        val userAnswers = emptyUserAnswers.copy(data = json)
+        val userAnswers = emptyUserAnswers
+          .setValue(ConsignorNamePage(hcIndex), "michael doe")
+          .setValue(ConsignorIdentifierPage(hcIndex), "csgr1")
+          .setValue(ConsigneeNamePage(hcIndex), "John Smith")
+          .setValue(ConsigneeIdentifierPage(hcIndex), "csgee1")
+          .setValue(ItemDescriptionPage(hcIndex, itemIndex), "shirts")
+          .setValue(GrossWeightPage(hcIndex, itemIndex), BigDecimal(123.45))
+          .setValue(NetWeightPage(hcIndex, itemIndex), 123.45)
 
         setExistingUserAnswers(userAnswers)
 
@@ -132,38 +104,16 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
 
         result.sections(1) mustBe a[StaticSection]
         result.sections(1).sectionTitle must not be defined
-        result.sections(1).rows.size mustBe 6
+        result.sections(1).rows.size mustBe 4
       }
     }
 
     "must render item section" - {
       "when there is one" in {
-
-        val json: JsObject = Json
-          .parse("""
-                   | {
-                   |    "Consignment" : {
-                   |      "HouseConsignment" : [
-                   |        {
-                   |          "ConsignmentItem" : [
-                   |           {
-                   |               "Commodity" : {
-                   |                   "descriptionOfGoods" : "shirts",
-                   |                   "GoodsMeasure" : {
-                   |                       "grossMass" : 123.45,
-                   |                       "netMass" : 123.45
-                   |                   }
-                   |               }
-                   |           }
-                   |          ]
-                   |        }
-                   |      ]
-                   |    }
-                   |}
-                   |""".stripMargin)
-          .as[JsObject]
-
-        val userAnswers = emptyUserAnswers.copy(data = json)
+        val userAnswers = emptyUserAnswers
+          .setValue(ItemDescriptionPage(hcIndex, itemIndex), "shirts")
+          .setValue(GrossWeightPage(hcIndex, itemIndex), BigDecimal(123.45))
+          .setValue(NetWeightPage(hcIndex, itemIndex), 123.45)
 
         setExistingUserAnswers(userAnswers)
 
@@ -176,41 +126,17 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       }
 
       "when there are multiple" in {
-
-        val json: JsObject = Json
-          .parse("""
-                   | {
-                   |    "Consignment" : {
-                   |      "HouseConsignment" : [
-                   |        {
-                   |          "ConsignmentItem" : [
-                   |           {
-                   |               "Commodity" : {
-                   |                   "descriptionOfGoods" : "shirts",
-                   |                   "GoodsMeasure" : {
-                   |                       "grossMass" : 123.45,
-                   |                       "netMass" : 123.45
-                   |                   }
-                   |               }
-                   |           },
-                   |           {
-                   |               "Commodity" : {
-                   |                   "descriptionOfGoods" : "shirts",
-                   |                   "GoodsMeasure" : {
-                   |                       "grossMass" : 123.45,
-                   |                       "netMass" : 123.45
-                   |                   }
-                   |               }
-                   |           }
-                   |          ]
-                   |        }
-                   |      ]
-                   |    }
-                   |}
-                   |""".stripMargin)
-          .as[JsObject]
-
-        val userAnswers = emptyUserAnswers.copy(data = json)
+        val userAnswers = emptyUserAnswers
+          .setValue(ConsignorNamePage(hcIndex), "michael doe")
+          .setValue(ConsignorIdentifierPage(hcIndex), "csgr1")
+          .setValue(ConsigneeNamePage(hcIndex), "John Smith")
+          .setValue(ConsigneeIdentifierPage(hcIndex), "csgee1")
+          .setValue(ItemDescriptionPage(hcIndex, Index(0)), "shirts")
+          .setValue(GrossWeightPage(hcIndex, Index(0)), BigDecimal(123.45))
+          .setValue(NetWeightPage(hcIndex, Index(0)), 123.45)
+          .setValue(ItemDescriptionPage(hcIndex, Index(1)), "shirts")
+          .setValue(GrossWeightPage(hcIndex, Index(1)), BigDecimal(123.45))
+          .setValue(NetWeightPage(hcIndex, Index(1)), 123.45)
 
         setExistingUserAnswers(userAnswers)
 
@@ -227,7 +153,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
 
         result.sections(2) mustBe a[StaticSection]
         result.sections(2).sectionTitle must not be defined
-        result.sections(2).rows.size mustBe 2
+        result.sections(2).rows.size mustBe 4
       }
     }
   }

@@ -14,28 +14,35 @@
  * limitations under the License.
  */
 
-package utils
+package utils.answersHelpers
 
 import models.{Index, UserAnswers}
-import pages.transportEquipment.index.seals.SealIdentificationNumberPage
+import pages.ContainerIdentificationNumberPage
+import pages.sections.SealsSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HttpVerbs.GET
 
-class SealAnswersHelper(
+class TransportEquipmentAnswersHelper(
   userAnswers: UserAnswers,
-  equipmentIndex: Index,
-  sealIndex: Index
+  equipmentIndex: Index
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
-  def transportEquipmentSeal: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = SealIdentificationNumberPage(equipmentIndex, sealIndex),
+  def containerIdentificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = ContainerIdentificationNumberPage(equipmentIndex),
     formatAnswer = formatAsText,
-    prefix = "unloadingFindings.rowHeadings.sealIdentifier",
-    args = sealIndex.display,
-    id = Some(s"change-seal-details-${sealIndex.display}"),
+    prefix = "unloadingFindings.rowHeadings.containerIdentificationNumber",
+    id = Some(s"change-container-identification-number-${equipmentIndex.display}"),
+    args = None,
     call = Some(Call(GET, "#"))
   )
+
+  def transportEquipmentSeals: Seq[SummaryListRow] =
+    getAnswersAndBuildSectionRows(SealsSection(equipmentIndex)) {
+      sealIndex =>
+        val helper = new SealAnswersHelper(userAnswers, equipmentIndex, sealIndex)
+        helper.transportEquipmentSeal
+    }
 }

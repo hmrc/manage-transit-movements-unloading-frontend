@@ -47,7 +47,7 @@ object HouseConsignmentViewModel {
         ).flatten
       )
 
-      val sections: Seq[Section] = helper.buildTransportSections ++ helper.itemSections ++ Seq(houseConsignmentSection)
+      val sections: Seq[Section] = helper.departureTransportMeansSections ++ helper.itemSections ++ Seq(houseConsignmentSection)
 
       HouseConsignmentViewModel(sections)
     }

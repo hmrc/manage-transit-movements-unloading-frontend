@@ -18,7 +18,7 @@ package viewModels
 
 import models.UserAnswers
 import play.api.i18n.Messages
-import utils.CheckYourAnswersHelper
+import utils.answersHelpers.CheckYourAnswersHelper
 import viewModels.sections.Section
 import viewModels.sections.Section.StaticSection
 

@@ -23,7 +23,7 @@ import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
 import play.api.i18n.Messages
 import play.api.libs.json.JsArray
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.AnswersHelper
+import utils.answersHelpers.AnswersHelper
 import utils.answersHelpers.houseConsignment.item.ConsignmentItemAnswersHelper
 import viewModels.sections.Section
 import viewModels.sections.Section.AccordionSection
@@ -66,7 +66,7 @@ class HouseConsignmentAnswersHelper(
     call = None
   )
 
-  def buildTransportSections: Seq[Section] =
+  def departureTransportMeansSections: Seq[Section] =
     userAnswers
       .get(DepartureTransportMeansListSection(houseConsignmentIndex))
       .getOrElse(JsArray())
@@ -78,6 +78,7 @@ class HouseConsignmentAnswersHelper(
             sectionTitle = messages("unloadingFindings.subsections.transportMeans", transportMeansIndex.display),
             rows = Seq(
               helper.transportMeansID,
+              helper.transportMeansIDNumber,
               helper.buildVehicleNationalityRow
             ).flatten
           )

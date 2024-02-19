@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package utils.answersHelpers
 
 import models.{Link, UserAnswers}
 import pages.sections._
@@ -23,7 +23,6 @@ import play.api.i18n.Messages
 import play.api.libs.json.JsArray
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.answersHelpers.DepartureTransportMeansAnswersHelper
 import utils.answersHelpers.houseConsignment.HouseConsignmentAnswersHelper
 import viewModels.sections.Section
 import viewModels.sections.Section.{AccordionSection, StaticSection}
@@ -58,6 +57,25 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
               helper.transportMeansNumber,
               helper.transportRegisteredCountry
             ).flatten
+          )
+      }
+
+  def transportEquipmentSections: Seq[Section] =
+    userAnswers
+      .get(TransportEquipmentListSection)
+      .mapWithIndex {
+        (_, equipmentIndex) =>
+          val helper = new TransportEquipmentAnswersHelper(userAnswers, equipmentIndex)
+          val rows = Seq(
+            Seq(helper.containerIdentificationNumber).flatten,
+            helper.transportEquipmentSeals
+          ).flatten
+
+          Some(
+            AccordionSection(
+              sectionTitle = messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display),
+              rows = rows
+            )
           )
       }
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package utils.answersHelpers
 
 import models.{CheckMode, UnloadingType, UserAnswers}
 import pages._

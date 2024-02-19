@@ -23,7 +23,7 @@ import pages._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.AnswersHelper
+import utils.answersHelpers.AnswersHelper
 
 class DepartureTransportMeansAnswersHelper(
   userAnswers: UserAnswers,
@@ -32,6 +32,22 @@ class DepartureTransportMeansAnswersHelper(
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
+  def transportMeansID: Option[SummaryListRow] = getAnswerAndBuildRow[TransportMeansIdentification](
+    page = DepartureTransportMeansIdentificationTypePage(houseConsignmentIndex, transportMeansIndex),
+    formatAnswer = formatAsText,
+    prefix = "checkYourAnswers.departureMeansOfTransport.identification",
+    id = None,
+    call = None
+  )
+
+  def transportMeansIDNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = DepartureTransportMeansIdentificationNumberPage(houseConsignmentIndex, transportMeansIndex),
+    formatAnswer = formatAsText,
+    prefix = "checkYourAnswers.departureMeansOfTransport.identificationNumber",
+    id = None,
+    call = None
+  )
+
   def buildVehicleNationalityRow: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
     page = DepartureTransportMeansCountryPage(houseConsignmentIndex, transportMeansIndex),
     formatAnswer = x => Text(x.description),
@@ -39,13 +55,5 @@ class DepartureTransportMeansAnswersHelper(
     id = None,
     call = None,
     args = Seq.empty
-  )
-
-  def transportMeansID: Option[SummaryListRow] = getAnswerAndBuildRow[TransportMeansIdentification](
-    page = DepartureTransportMeansIdentificationTypePage(houseConsignmentIndex, transportMeansIndex),
-    formatAnswer = formatAsWeight,
-    prefix = "checkYourAnswers.departureMeansOfTransport.identification",
-    id = None,
-    call = None
   )
 }
