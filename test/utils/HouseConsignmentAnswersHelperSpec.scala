@@ -878,7 +878,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
             SummaryListRow(
               key = Key("Gross weight".toText),
               value = Value(s"${grossWeight}kg".toText),
-              actions = None
+              actions = grossWeightItemAction
             )
           )
         }
@@ -932,7 +932,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
             SummaryListRow(
               key = Key("Net weight".toText),
               value = Value(s"${netWeight}kg".toText),
-              actions = None
+              actions = netWeightItemAction
             )
         }
       }
@@ -993,13 +993,13 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
             SummaryListRow(
               key = Key("Gross weight".toText),
               value = Value(s"${weight}kg".toText),
-              actions = None
+              actions = grossWeightItemAction
             )
           result(2) mustBe
             SummaryListRow(
               key = Key("Net weight".toText),
               value = Value(s"${weight}kg".toText),
-              actions = None
+              actions = netWeightItemAction
             )
         }
         s"when Net Weight is not defined" in {
@@ -1041,7 +1041,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
             SummaryListRow(
               key = Key("Gross weight".toText),
               value = Value(s"${weight}kg".toText),
-              actions = None
+              actions = grossWeightItemAction
             )
           result.length mustBe 2
         }
@@ -1083,7 +1083,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
             SummaryListRow(
               key = Key("Net weight".toText),
               value = Value(s"${weight}kg".toText),
-              actions = None
+              actions = netWeightItemAction
             )
           result.length mustBe 2
         }

@@ -153,8 +153,8 @@ class UnloadingAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     formatAnswer = formatAsWeight,
     prefix = "unloadingFindings.rowHeadings.item.grossWeight",
     args = itemIndex.display,
-    id = None,
-    call = None
+    id = Some(s"change-gross-weight-${houseConsignmentIndex.display}"),
+    call = Some(Call(GET, "#"))
   )
 
   def netWeightRow(houseConsignmentIndex: Index, itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Double](
@@ -162,7 +162,7 @@ class UnloadingAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     formatAnswer = formatAsWeight,
     prefix = "unloadingFindings.rowHeadings.item.netWeight",
     args = itemIndex.display,
-    id = None,
-    call = None
+    id = Some(s"change-net-weight-${houseConsignmentIndex.display}"),
+    call = Some(Call(GET, "#"))
   )
 }
