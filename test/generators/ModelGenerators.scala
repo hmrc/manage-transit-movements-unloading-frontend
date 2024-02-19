@@ -102,10 +102,4 @@ trait ModelGenerators {
       url    <- nonEmptyString
     } yield Call(method, url)
   }
-
-  implicit lazy val arbitaryGrossMoss: Arbitrary[GrossMoss] =
-    Arbitrary {
-      Gen.oneOf(NormalMode, CheckMode)
-    }
-
 }

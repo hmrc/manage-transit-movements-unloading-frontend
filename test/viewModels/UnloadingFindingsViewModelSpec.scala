@@ -21,6 +21,7 @@ import generators.Generators
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.grossMass.GrossMassPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
@@ -448,6 +449,26 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         section.rows.size mustBe 6
         section.viewLink mustBe defined
       }
+    }
+  }
+
+  "must render Gross Moss section" - {
+    "when there is one" in {
+
+      val userAnswers = emptyUserAnswers
+        .setValue(GrossMassPage, "Gross weight")
+
+      setExistingUserAnswers(userAnswers)
+      when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
+
+      val viewModelProvider = new UnloadingFindingsViewModelProvider(mockReferenceDataService)
+      val result            = viewModelProvider.apply(userAnswers).futureValue
+      val section           = result.section.head
+
+      section.sectionTitle.value mustBe "Consignment"
+      section.rows.size mustBe 1
+      section.rows.head.key.content.asHtml.toString() mustBe "Gross weight"
+      section.viewLink must not be defined
     }
   }
 }

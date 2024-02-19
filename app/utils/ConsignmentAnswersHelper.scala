@@ -19,6 +19,9 @@ package utils
 import models.UserAnswers
 import pages.grossMass.GrossMassPage
 import play.api.i18n.Messages
+import uk.gov.hmrc.http.HttpVerbs.GET
+import play.api.mvc.Call
+
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit
@@ -30,6 +33,6 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.gross.mass.heading",
     id = Some(s"change-gross-mass"),
-    call = None // TODO change this when implementing change link
+    call = Some(Call(GET, "#"))
   )
 }
