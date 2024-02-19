@@ -17,16 +17,14 @@
 package pages.houseConsignment.index.items.additionalReference
 
 import models.Index
-import models.reference.AdditionalReferenceType
 import pages.QuestionPage
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
 import play.api.libs.json.JsPath
 
-case class AdditionalReferencePage(houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index)
-    extends QuestionPage[AdditionalReferenceType] {
+case class AdditionalReferenceNumberPage(houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index) extends QuestionPage[String] {
 
   override def path: JsPath =
     AdditionalReferenceSection(houseConsignmentIndex, itemIndex, additionalReferenceIndex).path \ toString
 
-  override def toString: String = "type"
+  override def toString: String = "referenceNumber"
 }
