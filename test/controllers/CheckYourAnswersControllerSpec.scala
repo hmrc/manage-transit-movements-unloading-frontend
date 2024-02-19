@@ -20,13 +20,15 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.AuditType.UnloadingRemarks
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
+import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.AuditService
+import services.submission.{AuditService, SubmissionService}
+import uk.gov.hmrc.http.HttpResponse
 import viewModels.CheckYourAnswersViewModel
 import viewModels.CheckYourAnswersViewModel.CheckYourAnswersViewModelProvider
 import views.html.CheckYourAnswersView
@@ -35,9 +37,9 @@ import scala.concurrent.Future
 
 class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private val mockCheckYourAnswersViewModelProvider = mock[CheckYourAnswersViewModelProvider]
-
-  private val mockAuditService = mock[AuditService]
+  private lazy val mockCheckYourAnswersViewModelProvider = mock[CheckYourAnswersViewModelProvider]
+  private lazy val mockSubmissionService                 = mock[SubmissionService]
+  private lazy val mockAuditService                      = mock[AuditService]
 
   lazy val checkYourAnswersRoute: String = controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId).url
 
@@ -46,8 +48,16 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
       .guiceApplicationBuilder()
       .overrides(
         bind[CheckYourAnswersViewModelProvider].toInstance(mockCheckYourAnswersViewModelProvider),
+        bind[SubmissionService].toInstance(mockSubmissionService),
         bind[AuditService].toInstance(mockAuditService)
       )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockCheckYourAnswersViewModelProvider)
+    reset(mockSubmissionService)
+    reset(mockAuditService)
+  }
 
   "UnloadingFindingsController Controller" - {
 
@@ -75,25 +85,49 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
         view(mrn, arrivalId, checkYourAnswersViewModel)(request, messages).toString
     }
 
-    "must redirect to the next page when valid data is submitted" ignore {
+    "must redirect to the next page when submission successful" in {
       checkArrivalStatus()
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSubmissionService.submit(any(), any())(any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val userAnswers = emptyUserAnswers
       setExistingUserAnswers(userAnswers)
 
-      val request =
-        FakeRequest(POST, checkYourAnswersRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+      val request = FakeRequest(POST, checkYourAnswersRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.UnloadingRemarksSentController.onPageLoad(arrivalId).url
+      redirectLocation(result).value mustEqual routes.UnloadingRemarksSentController.onPageLoad(arrivalId).url
 
       verify(mockAuditService).audit(eqTo(UnloadingRemarks), eqTo(userAnswers))(any())
+    }
+
+    "must redirect to tech difficulties when submission unsuccessful" in {
+      forAll(Gen.choose(400: Int, 599: Int)) {
+        errorCode =>
+          checkArrivalStatus()
+
+          when(mockSubmissionService.submit(any(), any())(any()))
+            .thenReturn(Future.successful(HttpResponse(errorCode, "")))
+
+          val userAnswers = emptyUserAnswers
+          setExistingUserAnswers(userAnswers)
+
+          val request = FakeRequest(POST, checkYourAnswersRoute)
+            .withFormUrlEncodedBody(("value", "true"))
+
+          val result = route(app, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual routes.ErrorController.technicalDifficulties().url
+
+          verifyNoInteractions(mockAuditService)
+      }
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -110,14 +144,13 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
-    "must redirect to Session Expired for a POST if no existing data is found" ignore {
+    "must redirect to Session Expired for a POST if no existing data is found" in {
       checkArrivalStatus()
 
       setNoExistingUserAnswers()
 
-      val request =
-        FakeRequest(POST, checkYourAnswersRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+      val request = FakeRequest(POST, checkYourAnswersRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
@@ -125,6 +158,5 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
-
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package pages.transportEquipment.index
+package pages.houseConsignment.index.items.additionalReference
 
 import models.Index
-import models.reference.Item
+import models.reference.AdditionalReferenceType
 import pages.QuestionPage
-import pages.sections.TransportEquipmentSection
+import pages.sections.ItemsSection
 import play.api.libs.json.JsPath
 
-case class GoodsReferencePage(equipmentIndex: Index) extends QuestionPage[Item] {
+case class AdditionalReferencePage(houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index)
+    extends QuestionPage[AdditionalReferenceType] {
 
-  override def path: JsPath = TransportEquipmentSection(equipmentIndex).path \ "GoodsReference" \ toString
+  override def path: JsPath =
+    ItemsSection(houseConsignmentIndex).path \ itemIndex.position \ "AdditionalReference" \ additionalReferenceIndex.position \ toString
 
-  override def toString: String = "goodsReference"
+  override def toString: String = "type"
 }

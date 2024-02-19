@@ -58,16 +58,6 @@ object ApplyAnotherItemViewModel {
       messages: Messages
     ): ApplyAnotherItemViewModel = {
 
-      val changeOrRemoveUrl: String = mode match {
-        case CheckMode  => controllers.transportEquipment.index.routes.GoodsReferenceController.onSubmit(ArrivalId(arrivalId), equipmentIndex, mode).url
-        case NormalMode => "" //TODO Some(routes.RemoveItemController.onPageLoad(departureId, mode, equipmentIndex, itemIndex).url)
-      }
-
-      val changePrefix: String = mode match {
-        case CheckMode  => "site.edit"
-        case NormalMode => "site.delete"
-      }
-
       val listItems = userAnswers
         .get(ItemsSection(equipmentIndex))
         .getOrElse(JsArray())
@@ -76,6 +66,17 @@ object ApplyAnotherItemViewModel {
         .flatMap {
           case (_, i) =>
             val itemIndex = Index(i)
+
+            val changeOrRemoveUrl: String = mode match {
+              case CheckMode =>
+                controllers.transportEquipment.index.routes.GoodsReferenceController.onSubmit(ArrivalId(arrivalId), equipmentIndex, itemIndex, mode).url
+              case NormalMode => "" //TODO Some(routes.RemoveItemController.onPageLoad(departureId, mode, equipmentIndex, itemIndex).url)
+            }
+
+            val changePrefix: String = mode match {
+              case CheckMode  => "site.edit"
+              case NormalMode => "site.delete"
+            }
 
             def itemPrefix(item: String) = messages("transport.item.prefix", item)
 

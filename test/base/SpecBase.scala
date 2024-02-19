@@ -59,15 +59,16 @@ trait SpecBase
   val mrn: MovementReferenceNumber = MovementReferenceNumber("19GB1234567890123")
   val eoriNumber: EoriNumber       = EoriNumber("id")
 
-  val index: Index                  = Index(0)
-  val hcIndex: Index                = Index(0)
-  val equipmentIndex: Index         = Index(0)
-  val sealIndex: Index              = Index(0)
-  val houseConsignmentIndex: Index  = Index(0)
-  val itemIndex: Index              = Index(0)
-  val packageIndex: Index           = Index(0)
-  val documentIndex: Index          = Index(0)
-  def emptyUserAnswers: UserAnswers = UserAnswers(arrivalId, mrn, eoriNumber, basicIe043, Json.obj(), Instant.now())
+  val index: Index                    = Index(0)
+  val hcIndex: Index                  = Index(0)
+  val equipmentIndex: Index           = Index(0)
+  val sealIndex: Index                = Index(0)
+  val houseConsignmentIndex: Index    = Index(0)
+  val itemIndex: Index                = Index(0)
+  val packageIndex: Index             = Index(0)
+  val documentIndex: Index            = Index(0)
+  val additionalReferenceIndex: Index = Index(0)
+  def emptyUserAnswers: UserAnswers   = UserAnswers(arrivalId, mrn, eoriNumber, basicIe043, Json.obj(), Instant.now())
 
   def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
 
@@ -84,6 +85,9 @@ trait SpecBase
 
     def setValue[T](page: QuestionPage[T], value: T)(implicit wts: Writes[T]): UserAnswers =
       userAnswers.set(page, value).success.value
+
+    def setValue[T](page: QuestionPage[T], value: Option[T])(implicit wts: Writes[T]): UserAnswers =
+      value.map(setValue(page, _)).getOrElse(userAnswers)
 
     def removeValue(page: QuestionPage[_]): UserAnswers =
       userAnswers.remove(page).success.value

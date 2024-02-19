@@ -21,7 +21,9 @@ import pages._
 import pages.houseConsignment.index.items.GrossWeightPage
 import pages.sections.ItemsSection
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.http.HttpVerbs.GET
 
 class UnloadingAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends IE043DataHelper(userAnswers) {
 
@@ -97,14 +99,24 @@ class UnloadingAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
 
       val createTotalGrossWeightRow: Seq[SummaryListRow] = totalGrossWeight match {
 
-        case x if x.signum() == 1 => Seq(totalGrossWeightRow(x))
-        case _                    => Seq.empty
+        case x if x.signum() == 1 =>
+          totalGrossWeightRow(x, houseConsignmentIndex)
+            .map(
+              row => Seq(row)
+            )
+            .getOrElse(Seq.empty)
+        case _ => Seq.empty
       }
 
       val createTotalNetWeightRow: Seq[SummaryListRow] = totalNetWeight match {
 
-        case x if x.signum() == 1 => Seq(totalNetWeightRow(x))
-        case _                    => Seq.empty
+        case x if x.signum() == 1 =>
+          totalNetWeightRow(x, houseConsignmentIndex)
+            .map(
+              row => Seq(row)
+            )
+            .getOrElse(Seq.empty)
+        case _ => Seq.empty
       }
       createTotalGrossWeightRow ++ createTotalNetWeightRow
 
@@ -120,16 +132,20 @@ class UnloadingAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     )
   }
 
-  def totalGrossWeightRow(answer: BigDecimal): SummaryListRow = buildRowWithNoChangeLink(
-    answer = formatAsWeight(answer),
+  def totalGrossWeightRow(answer: BigDecimal, houseConsignmentIndex: Index): Option[SummaryListRow] = buildRowWithAnswer[BigDecimal](
+    optionalAnswer = Some(answer),
+    formatAnswer = formatAsWeight,
     prefix = "unloadingFindings.rowHeadings.houseConsignment.grossWeight",
-    args = None
+    id = Some(s"change-gross-weight-${houseConsignmentIndex.display}"),
+    call = Some(Call(GET, "#"))
   )
 
-  def totalNetWeightRow(answer: BigDecimal): SummaryListRow = buildRowWithNoChangeLink(
-    answer = formatAsWeight(answer),
+  def totalNetWeightRow(answer: BigDecimal, houseConsignmentIndex: Index): Option[SummaryListRow] = buildRowWithAnswer[BigDecimal](
+    optionalAnswer = Some(answer),
+    formatAnswer = formatAsWeight,
     prefix = "unloadingFindings.rowHeadings.houseConsignment.netWeight",
-    args = None
+    id = Some(s"change-net-weight-${houseConsignmentIndex.display}"),
+    call = Some(Call(GET, "#"))
   )
 
   def grossWeightRow(houseConsignmentIndex: Index, itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
@@ -137,8 +153,8 @@ class UnloadingAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     formatAnswer = formatAsWeight,
     prefix = "unloadingFindings.rowHeadings.item.grossWeight",
     args = itemIndex.display,
-    id = None,
-    call = None
+    id = Some(s"change-gross-weight-${houseConsignmentIndex.display}"),
+    call = Some(Call(GET, "#"))
   )
 
   def netWeightRow(houseConsignmentIndex: Index, itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Double](
@@ -146,7 +162,7 @@ class UnloadingAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     formatAnswer = formatAsWeight,
     prefix = "unloadingFindings.rowHeadings.item.netWeight",
     args = itemIndex.display,
-    id = None,
-    call = None
+    id = Some(s"change-net-weight-${houseConsignmentIndex.display}"),
+    call = Some(Call(GET, "#"))
   )
 }

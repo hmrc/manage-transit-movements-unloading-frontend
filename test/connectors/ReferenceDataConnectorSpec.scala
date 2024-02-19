@@ -226,6 +226,32 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
     }
 
+    "getAdditionalReferences" - {
+      val url = s"/$baseUrl/lists/AdditionalReference"
+
+      "must return Seq of AdditionalReference when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(additionalReferenceJson))
+        )
+
+        val expectedResult: NonEmptySet[AdditionalReferenceType] = NonEmptySet.of(
+          AdditionalReferenceType("documentType1", "desc1"),
+          AdditionalReferenceType("documentType2", "desc2")
+        )
+
+        connector.getAdditionalReferences().futureValue mustEqual expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getAdditionalReferences())
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getAdditionalReferences())
+      }
+    }
+
     "getAdditionalReferenceType" - {
       val documentType = "Y023"
       val url          = s"/$baseUrl/lists/AdditionalReference?data.documentType=$documentType"
@@ -552,6 +578,32 @@ object ReferenceDataConnectorSpec {
       |      "description": "Dissostichus - catch document import"
       |    }
       |  ]
+      |}
+      |""".stripMargin
+
+  private val additionalReferenceJson: String =
+    """
+      |{
+      |  "_links": {
+      |    "self": {
+      |      "href": "/customs-reference-data/lists/AdditionalReference"
+      |    }
+      |  },
+      |  "meta": {
+      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+      |    "snapshotDate": "2023-01-01"
+      |  },
+      |  "id": "AdditionalReference",
+      |  "data": [
+      | {
+      |    "documentType": "documentType1",
+      |    "description": "desc1"
+      |  },
+      |  {
+      |    "documentType": "documentType2",
+      |    "description": "desc2"
+      |  }
+      |]
       |}
       |""".stripMargin
 

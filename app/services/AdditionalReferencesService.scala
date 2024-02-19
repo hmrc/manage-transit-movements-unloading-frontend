@@ -16,21 +16,22 @@
 
 package services
 
-import models.{AuditType, UserAnswers}
-import play.api.libs.json.{JsValue, Json, Writes}
+import connectors.ReferenceDataConnector
+import models.SelectableList
+import models.reference.AdditionalReferenceType
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
-class AuditService @Inject() (auditConnector: AuditConnector)(implicit ec: ExecutionContext) {
+class AdditionalReferencesService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-  def audit(auditType: AuditType, userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Unit =
-    auditConnector.sendExplicitAudit(auditType.name, toJson(userAnswers)(UserAnswers.auditWrites))
+  def getAdditionalReferences()(implicit hc: HeaderCarrier): Future[SelectableList[AdditionalReferenceType]] =
+    referenceDataConnector
+      .getAdditionalReferences()
+      .map(_.toSeq)
+      .map(sort)
 
-  private def toJson[T](details: T)(implicit writes: Writes[T]): JsValue = Json.obj(
-    "channel" -> "web",
-    "detail"  -> Json.toJson(details)
-  )
+  private def sort(additionalReferences: Seq[AdditionalReferenceType]): SelectableList[AdditionalReferenceType] =
+    SelectableList(additionalReferences.sortBy(_.description.toLowerCase))
 }

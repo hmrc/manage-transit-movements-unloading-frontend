@@ -21,8 +21,9 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import generators.Generators
 import play.api.http.Status.OK
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.test.Helpers.{await, _}
 import uk.gov.hmrc.http.HttpResponse
+
+import scala.xml.NodeSeq
 
 class ApiConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockSuite with Generators {
 
@@ -33,24 +34,29 @@ class ApiConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with Wir
 
   private lazy val connector: ApiConnector = app.injector.instanceOf[ApiConnector]
 
-  val uri = s"/movements/arrivals/${arrivalId.value}/messages"
+  private val url = s"/movements/arrivals/${arrivalId.value}/messages"
 
   "ApiConnector" - {
 
     "submit" - {
+      val body: NodeSeq =
+        <ncts:CC044C PhaseID="NCTS5.0" xmlns:ncts="http://ncts.dgtaxud.ec">
+          <messageSender>token</messageSender>
+        </ncts:CC044C>
 
-      "return successful response" in {
-
+      "must return OK for successful response" in {
         server.stubFor(
-          post(uri)
+          post(urlEqualTo(url))
+            .withRequestBody(equalTo(body.toString()))
             .withHeader("Accept", containing("application/vnd.hmrc.2.0+json"))
-            .willReturn(ok())
+            .withHeader("Content-Type", containing("application/xml"))
+            .willReturn(aResponse().withStatus(OK))
         )
 
-        val res = await(connector.submit(emptyUserAnswers, arrivalId))
-        res.toString mustBe Right(HttpResponse(OK, "")).toString
+        val result: HttpResponse = connector.submit(body, arrivalId).futureValue
+
+        result.status mustBe OK
       }
     }
   }
-
 }

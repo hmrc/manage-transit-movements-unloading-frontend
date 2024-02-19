@@ -14,22 +14,13 @@
  * limitations under the License.
  */
 
-package models.reference
+package services.submission
 
-import cats.Order
-import play.api.libs.json.{Format, Json}
+import javax.inject.Inject
+import scala.util.Random
 
-case class AdditionalReferenceType(documentType: String, description: String) extends Selectable {
+class MessageIdentificationService @Inject() {
 
-  override def toString: String = s"$documentType - $description"
-
-  override val value: String = documentType
-}
-
-object AdditionalReferenceType {
-  implicit val format: Format[AdditionalReferenceType] = Json.format[AdditionalReferenceType]
-
-  implicit val order: Order[AdditionalReferenceType] = (x: AdditionalReferenceType, y: AdditionalReferenceType) =>
-    x.documentType.compareToIgnoreCase(y.documentType)
+  def randomIdentifier: String = Random.alphanumeric.take(35).mkString
 
 }

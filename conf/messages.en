@@ -364,6 +364,8 @@ unloadingFindings.rowHeadings.houseConsignment.netWeight = Net weight
 unloadingFindings.rowHeadings.houseConsignment.consignorName = Consignor name
 unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier = Consignor EORI number or Trader Identification Number (TIN)
 unloadingFindings.rowHeadings.houseConsignment.consigneeName = Consignee name
+unloadingFindings.rowHeadings.houseConsignment.grossWeight.change.hidden = Change Gross weight
+unloadingFindings.rowHeadings.houseConsignment.netWeight.change.hidden = Change Net weight
 
 
 unloadingFindings.rowHeadings.houseConsignment.consigneeIdentifier = Consignee EORI number or Trader Identification Number (TIN)
@@ -560,3 +562,12 @@ houseConsignment.index.items.document.additionalInformation.NormalMode.error.req
 houseConsignment.index.items.document.additionalInformation.CheckMode.error.required = Enter the new additional information for item {1} in house consignment {0}?
 houseConsignment.index.items.document.additionalInformation.error.length = The additional information must be 35 characters or less
 houseConsignment.index.items.document.additionalInformation.error.invalidCharacters = The additional information must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+
+houseConsignment.index.items.additionalReference.additionalReferenceType.NormalMode.title = What type of additional reference do you want to add?
+houseConsignment.index.items.additionalReference.additionalReferenceType.NormalMode.heading = What type of additional reference do you want to add?
+houseConsignment.index.items.additionalReference.additionalReferenceType.CheckMode.title = What is the new additional reference type for item {1} in house consignment {0}?
+houseConsignment.index.items.additionalReference.additionalReferenceType.CheckMode.heading = What is the new additional reference type for item {1} in house consignment {0}?
+houseConsignment.index.items.additionalReference.additionalReferenceType.error.required = Select the type of additional reference
+houseConsignment.index.items.additionalReference.additionalReferenceType.check.error.required = Select the new additional reference type for item {1} in house consignment {0}
+houseConsignment.index.items.additionalReference.additionalReferenceType.hint = Enter the reference name or code, like Carrier (AEO certificate number) or Y028.
+houseConsignment.index.items.additionalReference.additionalReferenceType.placeholder = Select an additional reference

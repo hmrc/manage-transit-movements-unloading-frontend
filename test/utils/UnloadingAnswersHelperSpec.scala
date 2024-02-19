@@ -24,7 +24,7 @@ import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
-class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with RowActions {
 
   "UnloadingAnswersHelper" - {
 
@@ -161,13 +161,15 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           rows.head mustBe
             SummaryListRow(
               key = Key("Gross weight".toText),
-              value = Value(s"${grossWeightBigDecimal}kg".toText)
+              value = Value(s"${grossWeightBigDecimal}kg".toText),
+              actions = grossWeightAction
             )
 
           rows(1) mustBe
             SummaryListRow(
               key = Key("Net weight".toText),
-              value = Value(s"${netWeightBigDecimal}kg".toText)
+              value = Value(s"${netWeightBigDecimal}kg".toText),
+              actions = netWeightAction
             )
 
         }
@@ -203,7 +205,8 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           rows.head mustBe
             SummaryListRow(
               key = Key("Gross weight".toText),
-              value = Value(s"${grossWeightBigDecimal}kg".toText)
+              value = Value(s"${grossWeightBigDecimal}kg".toText),
+              actions = grossWeightAction
             )
 
           rows.length mustBe 1
@@ -239,7 +242,8 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           rows.head mustBe
             SummaryListRow(
               key = Key("Net weight".toText),
-              value = Value(s"${netWeightBigDecimal}kg".toText)
+              value = Value(s"${netWeightBigDecimal}kg".toText),
+              actions = netWeightAction
             )
 
           rows.length mustBe 1
@@ -436,7 +440,8 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           grossWeightRow mustBe
             SummaryListRow(
               key = Key("Gross weight".toText),
-              value = Value(s"${grossWeightBigDecimal}kg".toText)
+              value = Value(s"${grossWeightBigDecimal}kg".toText),
+              actions = grossWeightItemAction
             )
 
         }
@@ -488,7 +493,8 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           netWeightRow mustBe
             SummaryListRow(
               key = Key("Net weight".toText),
-              value = Value(s"${netWeightBigDecimal}kg".toText)
+              value = Value(s"${netWeightBigDecimal}kg".toText),
+              actions = netWeightItemAction
             )
 
         }
@@ -505,12 +511,14 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           val answers = emptyUserAnswers
 
           val helper = new UnloadingAnswersHelper(answers)
-          val result = helper.totalGrossWeightRow(totalGrossWeight)
+          val result = helper.totalGrossWeightRow(totalGrossWeight, hcIndex)
 
-          result mustBe SummaryListRow(
-            key = Key("Gross weight".toText),
-            value = Value(s"${BigDecimal(totalGrossWeight)}kg".toText),
-            actions = None
+          result mustBe Some(
+            SummaryListRow(
+              key = Key("Gross weight".toText),
+              value = Value(s"${BigDecimal(totalGrossWeight)}kg".toText),
+              actions = grossWeightAction
+            )
           )
         }
       }
@@ -526,12 +534,14 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           val answers = emptyUserAnswers
 
           val helper = new UnloadingAnswersHelper(answers)
-          val result = helper.totalNetWeightRow(totalNetWeight)
+          val result = helper.totalNetWeightRow(totalNetWeight, hcIndex)
 
-          result mustBe SummaryListRow(
-            key = Key("Net weight".toText),
-            value = Value(s"${BigDecimal(totalNetWeight)}kg".toText),
-            actions = None
+          result mustBe Some(
+            SummaryListRow(
+              key = Key("Net weight".toText),
+              value = Value(s"${BigDecimal(totalNetWeight)}kg".toText),
+              actions = netWeightAction
+            )
           )
         }
       }

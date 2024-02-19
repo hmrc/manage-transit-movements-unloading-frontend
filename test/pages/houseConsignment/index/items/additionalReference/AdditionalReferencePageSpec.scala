@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package pages.transportEquipment.index
+package pages.houseConsignment.index.items.additionalReference
 
-import models.reference.Item
+import models.reference.AdditionalReferenceType
 import pages.behaviours.PageBehaviours
 
-class GoodsReferencePageSpec extends PageBehaviours {
+class AdditionalReferencePageSpec extends PageBehaviours {
 
-  "GoodsReferencePage" - {
+  "AdditionalReferencePage" - {
 
-    beRetrievable[Item](GoodsReferencePage(equipmentIndex))
+    beRetrievable[AdditionalReferenceType](AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
 
-    beSettable[Item](GoodsReferencePage(equipmentIndex))
+    beSettable[AdditionalReferenceType](AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
 
-    beRemovable[Item](GoodsReferencePage(equipmentIndex))
+    beRemovable[AdditionalReferenceType](AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
   }
 }
