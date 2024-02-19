@@ -23,7 +23,7 @@ import models.{Index, NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.transportEquipment.index.GoodsReferenceViewModel
+import viewModels.transportEquipment.SelectItemsViewModel
 import views.behaviours.InputSelectViewBehaviours
 import views.html.transportEquipment.index.GoodsReferenceView
 
@@ -42,10 +42,12 @@ class GoodsReferenceViewSpec extends InputSelectViewBehaviours[Item] {
     )
   )
   override def form: Form[Item] = new SelectableFormProvider()(NormalMode, prefix, SelectableList(values))
-  private val viewModel         = GoodsReferenceViewModel(emptyUserAnswers.copy(ie043Data = ie043Answers), None)
+  private val viewModel         = SelectItemsViewModel(emptyUserAnswers.copy(ie043Data = ie043Answers), None)
 
   override def applyView(form: Form[Item]): HtmlFormat.Appendable =
-    injector.instanceOf[GoodsReferenceView].apply(form, arrivalId, Index(0), mrn, viewModel, NormalMode)(fakeRequest, messages)
+    injector
+      .instanceOf[GoodsReferenceView]
+      .apply(form, arrivalId, Index(0), itemIndex, mrn, viewModel.copy(SelectableList(values)), NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "transport.equipment.selectItems"
 

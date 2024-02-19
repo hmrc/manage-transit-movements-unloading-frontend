@@ -102,8 +102,16 @@ trait RowActions {
     Actions("", List(ActionItem("#", Text("Change"), Some("Change Gross weight"), "", Map("id" -> "change-gross-weight-1"))))
   )
 
+  val grossWeightItemAction: Some[Actions] = Some(
+    Actions("", List(ActionItem("#", Text("Change"), Some("gross weight of item 1"), "", Map("id" -> "change-gross-weight-1"))))
+  )
+
   val netWeightAction: Some[Actions] = Some(
     Actions("", List(ActionItem("#", Text("Change"), Some("Change Net weight"), "", Map("id" -> "change-net-weight-1"))))
+  )
+
+  val netWeightItemAction: Some[Actions] = Some(
+    Actions("", List(ActionItem("#", Text("Change"), Some("net weight of item 1"), "", Map("id" -> "change-net-weight-1"))))
   )
 
 }
