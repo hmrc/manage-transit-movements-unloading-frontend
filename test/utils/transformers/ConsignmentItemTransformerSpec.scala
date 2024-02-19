@@ -35,7 +35,19 @@ import scala.concurrent.Future
 
 class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private val transformer = app.injector.instanceOf[ConsignmentItemTransformer]
+  private val transformer                   = app.injector.instanceOf[ConsignmentItemTransformer]
+  private lazy val mockCommodityTransformer = mock[CommodityTransformer]
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(
+        bind[CommodityTransformer].toInstance(mockCommodityTransformer)
+      )
+
+  private case class FakeCommoditySection(itemIndex: Index) extends QuestionPage[JsObject] {
+    override def path: JsPath = JsPath \ itemIndex.position.toString \ "commodity"
+  }
 
   "must transform data" - {
 
@@ -44,10 +56,15 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
         consignmentItems =>
           consignmentItems.zipWithIndex.map {
             case (item, i) =>
+              when(mockCommodityTransformer.transform(any(), any(), any()))
+                .thenReturn {
+                  ua => Future.successful(ua.setValue(FakeCommoditySection(Index(i)), Json.obj("foo" -> i.toString)))
+                }
               val itemIndex = Index(i)
 
               val result = transformer.transform(consignmentItems, hcIndex).apply(emptyUserAnswers).futureValue
 
+              result.getValue(FakeCommoditySection(Index(i))) mustBe Json.obj("foo" -> i.toString)
               result.getValue(DeclarationGoodsItemNumberPage(hcIndex, itemIndex)) mustBe item.declarationGoodsItemNumber
               result.getValue(GoodsItemNumberPage(hcIndex, itemIndex)) mustBe item.goodsItemNumber
           }
