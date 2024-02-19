@@ -18,8 +18,9 @@ package viewModels
 
 import models.{Index, UserAnswers}
 import play.api.i18n.Messages
-import utils.HouseConsignmentAnswersHelper
+import utils.answersHelpers.houseConsignment.HouseConsignmentAnswersHelper
 import viewModels.sections.Section
+import viewModels.sections.Section.StaticSection
 
 import javax.inject.Inject
 
@@ -37,10 +38,16 @@ object HouseConsignmentViewModel {
     def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index)(implicit messages: Messages): HouseConsignmentViewModel = {
       val helper = new HouseConsignmentAnswersHelper(userAnswers, houseConsignmentIndex: Index)
 
-      val houseConsignmentSection: Seq[Section] = helper.houseConsignmentSection
-      val itemSections: Seq[Section]            = helper.itemSections
+      val houseConsignmentSection: Section = StaticSection(
+        rows = Seq(
+          helper.consignorName,
+          helper.consignorIdentification,
+          helper.consigneeName,
+          helper.consigneeIdentification
+        ).flatten
+      )
 
-      val sections: Seq[Section] = helper.buildTransportSections ++ itemSections ++ houseConsignmentSection
+      val sections: Seq[Section] = helper.buildTransportSections ++ helper.itemSections ++ Seq(houseConsignmentSection)
 
       HouseConsignmentViewModel(sections)
     }

@@ -1,0 +1,100 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package utils
+
+import models.{Link, UserAnswers}
+import pages.sections._
+import pages.sections.additionalReference.AdditionalReferencesSection
+import play.api.i18n.Messages
+import play.api.libs.json.JsArray
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.answersHelpers.DepartureTransportMeansAnswersHelper
+import utils.answersHelpers.houseConsignment.HouseConsignmentAnswersHelper
+import viewModels.sections.Section
+import viewModels.sections.Section.{AccordionSection, StaticSection}
+
+class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
+
+  def headerSection: Section = StaticSection(
+    rows = Seq(
+      traderAtDestinationRow
+    )
+  )
+
+  def traderAtDestinationRow: SummaryListRow = buildRow(
+    prefix = "traderAtDestination",
+    answer = userAnswers.ie043Data.TraderAtDestination.identificationNumber.toText,
+    id = None,
+    call = None
+  )
+
+  def departureTransportMeansSections: Seq[Section] =
+    userAnswers
+      .get(TransportMeansListSection)
+      .getOrElse(JsArray())
+      .zipWithIndex
+      .map {
+        case (_, index) =>
+          val helper = new DepartureTransportMeansAnswersHelper(userAnswers, index)
+          AccordionSection(
+            sectionTitle = messages("unloadingFindings.subsections.transportMeans", index.display),
+            rows = Seq(
+              helper.transportMeansID,
+              helper.transportMeansNumber,
+              helper.transportRegisteredCountry
+            ).flatten
+          )
+      }
+
+  def additionalReferencesSections: Seq[Section] =
+    Seq(
+      AccordionSection(
+        sectionTitle = messages("unloadingFindings.additional.reference.heading"),
+        rows = getAnswersAndBuildSectionRows(AdditionalReferencesSection) {
+          referenceIndex =>
+            val helper = new AdditionalReferenceAnswersHelper(userAnswers, referenceIndex)
+            helper.additionalReference
+        }
+      )
+    )
+
+  def houseConsignmentSections: Seq[Section] =
+    userAnswers.get(HouseConsignmentsSection).mapWithIndex {
+      (_, houseConsignmentIndex) =>
+        val helper = new HouseConsignmentAnswersHelper(userAnswers, houseConsignmentIndex)
+        val rows = Seq(
+          helper.consignorName,
+          helper.consignorIdentification,
+          helper.consigneeName,
+          helper.consigneeIdentification
+        ).flatten
+
+        Some(
+          AccordionSection(
+            sectionTitle = messages("unloadingFindings.subsections.houseConsignment", houseConsignmentIndex.display),
+            rows = rows,
+            viewLink = Link(
+              id = s"view-house-consignment-${houseConsignmentIndex.display}",
+              href = controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url,
+              visuallyHidden = messages("summaryDetails.visuallyHidden", houseConsignmentIndex.display)
+            ),
+            id = s"houseConsignment${houseConsignmentIndex.display}"
+          )
+        )
+    }
+}

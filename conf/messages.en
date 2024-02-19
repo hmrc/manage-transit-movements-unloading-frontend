@@ -428,9 +428,10 @@ checkYourAnswers.paragraph = By sending this, you are confirming that these deta
 
 checkYourAnswers.departureMeansOfTransport.identification = Identification type
 checkYourAnswers.departureMeansOfTransport.identificationNumber = Identification number
-checkYourAnswers.departureMeansOfTransport.country.change.hidden = registered country for the departure means of transport
+checkYourAnswers.departureMeansOfTransport.country = Registered country
 checkYourAnswers.departureMeansOfTransport.identification.change.hidden =  identification type for the departure means of transport
 checkYourAnswers.departureMeansOfTransport.identificationNumber.change.hidden =  identification number for the departure means of transport
+checkYourAnswers.departureMeansOfTransport.country.change.hidden = registered country for the departure means of transport
 
 cannotSendUnloadingRemarks.title = You cannot send these unloading remarks
 cannotSendUnloadingRemarks.heading = You cannot send these unloading remarks

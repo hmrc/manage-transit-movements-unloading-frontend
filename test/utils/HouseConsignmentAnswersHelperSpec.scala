@@ -29,6 +29,7 @@ import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage}
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
+import utils.answersHelpers.houseConsignment.HouseConsignmentAnswersHelper
 
 class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with RowActions {
 

@@ -18,7 +18,7 @@ package viewModels
 
 import models.UserAnswers
 import play.api.i18n.Messages
-import utils.UnloadingFindingsAnswersHelper
+import utils.ConsignmentAnswersHelper
 import viewModels.sections.Section
 import viewModels.sections.Section.AccordionSection
 
@@ -33,14 +33,14 @@ object UnloadingFindingsViewModel {
   class UnloadingFindingsViewModelProvider @Inject() () {
 
     def apply(userAnswers: UserAnswers)(implicit messages: Messages): UnloadingFindingsViewModel = {
-      val helper = new UnloadingFindingsAnswersHelper(userAnswers)
+      val helper = new ConsignmentAnswersHelper(userAnswers)
 
       val sections = Seq(
         Seq(helper.headerSection),
-        helper.buildTransportSections,
-        helper.transportEquipmentSections,
+        helper.departureTransportMeansSections,
+        //helper.transportEquipmentSections,
         helper.houseConsignmentSections,
-        Seq(AccordionSection(sectionTitle = messages("unloadingFindings.additional.reference.heading"), rows = helper.additionalReferences))
+        helper.additionalReferencesSections
       ).flatten
 
       new UnloadingFindingsViewModel(sections)
