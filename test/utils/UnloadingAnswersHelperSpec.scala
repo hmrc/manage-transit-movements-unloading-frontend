@@ -440,7 +440,8 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           grossWeightRow mustBe
             SummaryListRow(
               key = Key("Gross weight".toText),
-              value = Value(s"${grossWeightBigDecimal}kg".toText)
+              value = Value(s"${grossWeightBigDecimal}kg".toText),
+              actions = grossWeightItemAction
             )
 
         }
@@ -492,7 +493,8 @@ class UnloadingAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           netWeightRow mustBe
             SummaryListRow(
               key = Key("Net weight".toText),
-              value = Value(s"${netWeightBigDecimal}kg".toText)
+              value = Value(s"${netWeightBigDecimal}kg".toText),
+              actions = netWeightItemAction
             )
 
         }
