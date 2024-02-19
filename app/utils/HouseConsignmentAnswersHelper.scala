@@ -16,8 +16,6 @@
 
 package utils
 
-import cats.data.OptionT
-import cats.implicits._
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.Country
 import models.{Index, UserAnswers}
@@ -26,45 +24,36 @@ import pages.houseConsignment.index.items.ItemDescriptionPage
 import pages.sections._
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
 import play.api.i18n.Messages
+import play.api.libs.json.JsArray
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewModels.sections.Section
+import viewModels.sections.Section.{AccordionSection, StaticSection}
 
-import scala.concurrent.{ExecutionContext, Future}
+class HouseConsignmentAnswersHelper(
+  userAnswers: UserAnswers,
+  houseConsignmentIndex: Index
+)(implicit messages: Messages)
+    extends UnloadingAnswersHelper(userAnswers) {
 
-class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: Index)(implicit
-  messages: Messages,
-  ec: ExecutionContext
-) extends UnloadingAnswersHelper(userAnswers) {
+  def buildVehicleNationalityRow(transportMeansIndex: Index): Option[SummaryListRow] =
+    userAnswers.get(DepartureTransportMeansCountryPage(houseConsignmentIndex, transportMeansIndex)).map(transportRegisteredCountry)
 
-  def buildVehicleNationalityRow(transportMeansIndex: Index): Future[Option[SummaryListRow]] =
-    (for {
-      x <- OptionT.fromOption[Future](userAnswers.get(DepartureTransportMeansCountryPage(houseConsignmentIndex, transportMeansIndex)))
-    } yield transportRegisteredCountry(x)).value
-
-  def buildMeansOfTransportRows(idRow: Option[SummaryListRow], nationalityRow: Option[SummaryListRow]): Seq[SummaryListRow] =
-    idRow.map(Seq(_)).getOrElse(Seq.empty) ++
-      nationalityRow.map(Seq(_)).getOrElse(Seq.empty)
-
-  def buildTransportSections: Future[Seq[Section]] =
+  def buildTransportSections: Seq[Section] =
     userAnswers
       .get(DepartureTransportMeansListSection(houseConsignmentIndex))
-      .traverse {
-        _.zipWithIndex.traverse {
-          case (_, index) =>
-            val nationalityRow: Future[Option[SummaryListRow]] = buildVehicleNationalityRow(index)
-            val meansIdRow: Option[SummaryListRow]             = transportMeansID(index)
-
-            nationalityRow.map {
-              nationalityRow =>
-                Section(
-                  messages("unloadingFindings.subsections.transportMeans", index.display),
-                  buildMeansOfTransportRows(meansIdRow, nationalityRow)
-                )
-            }
-        }
+      .getOrElse(JsArray())
+      .zipWithIndex
+      .map {
+        case (_, index) =>
+          AccordionSection(
+            sectionTitle = messages("unloadingFindings.subsections.transportMeans", index.display),
+            rows = Seq(
+              transportMeansID(index),
+              buildVehicleNationalityRow(index)
+            ).flatten
+          )
       }
-      .map(_.getOrElse(Seq.empty))
 
   def transportMeansID(transportMeansIndex: Index): Option[SummaryListRow] =
     userAnswers
@@ -99,7 +88,7 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
       consigneeIdentification(houseConsignmentIndex)
     )
 
-    Seq(Section(rows))
+    Seq(StaticSection(rows = rows))
   }
 
   def itemSections: Seq[Section] =
@@ -112,9 +101,9 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
           val netWeight: Option[SummaryListRow]       = netWeightRow(houseConsignmentIndex, itemIndex)
 
           Some(
-            Section(
-              messages("unloadingFindings.subsections.item", itemIndex.display),
-              Seq(itemDescription, grossWeight, netWeight).flatten
+            AccordionSection(
+              sectionTitle = messages("unloadingFindings.subsections.item", itemIndex.display),
+              rows = Seq(itemDescription, grossWeight, netWeight).flatten
             )
           )
       }

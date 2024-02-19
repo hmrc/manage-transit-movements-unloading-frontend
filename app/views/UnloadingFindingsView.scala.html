@@ -15,16 +15,14 @@
  *@
 
 @import viewModels.UnloadingFindingsViewModel
-@import views.html.components.{AnswerSections, Button, Heading, SummaryDetails, VisibleSection}
+@import views.html.components.{AnswerSections, Button, Heading}
 
 @this(
-        mainTemplate: MainTemplate,
-        heading: Heading,
-        answerSections: AnswerSections,
-        visibleSection: VisibleSection,
-        summaryDetails: SummaryDetails,
-        button: Button,
-        formHelper: FormWithCSRF
+    mainTemplate: MainTemplate,
+    heading: Heading,
+    answerSections: AnswerSections,
+    button: Button,
+    formHelper: FormWithCSRF
 )
 
 @(mrn: MovementReferenceNumber, arrivalId: ArrivalId, unloadingFindingsViewModel: UnloadingFindingsViewModel)(implicit request: Request[_], messages: Messages)
@@ -41,7 +39,7 @@
 
         <p class="govuk-body">@messages("unloadingFindings.paragraph")</p>
 
-        @summaryDetails(unloadingFindingsViewModel.section)
+        @answerSections(unloadingFindingsViewModel.sections)
 
         <div>
             <a class="govuk-button" id="submit" href=@controllers.routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, NormalMode).url>

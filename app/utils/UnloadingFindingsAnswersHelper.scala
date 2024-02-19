@@ -33,10 +33,11 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HttpVerbs.GET
 import viewModels.sections.Section
+import viewModels.sections.Section.{AccordionSection, StaticSection}
 
 class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends UnloadingAnswersHelper(userAnswers) {
 
-  val preSection: Section = Section(
+  val headerSection: Section = StaticSection(
     rows = Seq(
       traderAtDestinationRow
     )
@@ -59,7 +60,7 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
       .zipWithIndex
       .map {
         case (_, index) =>
-          Section(
+          AccordionSection(
             sectionTitle = messages("unloadingFindings.subsections.transportMeans", index.display),
             rows = Seq(
               transportMeansID(index),
@@ -120,9 +121,9 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
           }
 
           Some(
-            Section(
-              messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display),
-              rows
+            AccordionSection(
+              sectionTitle = messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display),
+              rows = rows
             )
           )
       }
@@ -173,17 +174,15 @@ class UnloadingFindingsAnswersHelper(userAnswers: UserAnswers)(implicit messages
         )
 
         Some(
-          Section(
+          AccordionSection(
             sectionTitle = messages("unloadingFindings.subsections.houseConsignment", houseConsignmentIndex.display),
-            rows,
-            viewLink = Some(
-              Link(
-                id = s"view-house-consignment-${houseConsignmentIndex.display}",
-                href = controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url,
-                visuallyHidden = messages("summaryDetails.visuallyHidden", houseConsignmentIndex.display)
-              )
+            rows = rows,
+            viewLink = Link(
+              id = s"view-house-consignment-${houseConsignmentIndex.display}",
+              href = controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url,
+              visuallyHidden = messages("summaryDetails.visuallyHidden", houseConsignmentIndex.display)
             ),
-            id = Some(s"houseConsignment${houseConsignmentIndex.display}")
+            id = s"houseConsignment${houseConsignmentIndex.display}"
           )
         )
     }

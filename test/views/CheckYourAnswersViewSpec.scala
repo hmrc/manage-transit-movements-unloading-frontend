@@ -18,7 +18,6 @@ package views
 
 import generators.Generators
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewModels.CheckYourAnswersViewModel
 import viewModels.sections.Section
 import views.behaviours.CheckYourAnswersViewBehaviours
@@ -32,10 +31,6 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours with Gener
     injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, checkYourAnswersViewModel)(fakeRequest, messages)
 
   val checkYourAnswersViewModel: CheckYourAnswersViewModel = new CheckYourAnswersViewModel(sections)
-
-  override def summaryLists: Seq[SummaryList] = sections.map(
-    section => SummaryList(section.rows)
-  )
 
   behave like pageWithTitle()
 

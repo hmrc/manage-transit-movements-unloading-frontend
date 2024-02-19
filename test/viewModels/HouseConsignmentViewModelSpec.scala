@@ -26,8 +26,7 @@ import pages.{DepartureTransportMeansCountryPage, DepartureTransportMeansIdentif
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import play.api.libs.json.{JsObject, Json}
 import viewModels.HouseConsignmentViewModel.HouseConsignmentViewModelProvider
-
-import scala.concurrent.ExecutionContext.Implicits.global
+import viewModels.sections.Section.{AccordionSection, StaticSection}
 
 class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
@@ -48,8 +47,8 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         setExistingUserAnswers(answers)
 
         val viewModelProvider = new HouseConsignmentViewModelProvider()
-        val result            = viewModelProvider.apply(answers, index).futureValue
-        val section           = result.section.head
+        val result            = viewModelProvider.apply(answers, index)
+        val section           = result.sections.head
 
         section.sectionTitle.value mustBe "Departure means of transport 1"
         section.rows.size mustBe 2
@@ -69,9 +68,9 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         setExistingUserAnswers(answers)
 
         val viewModelProvider = new HouseConsignmentViewModelProvider()
-        val result            = viewModelProvider.apply(answers, index).futureValue
-        val section1          = result.section.head
-        val section2          = result.section(1)
+        val result            = viewModelProvider.apply(answers, index)
+        val section1          = result.sections.head
+        val section2          = result.sections(1)
 
         section1.sectionTitle.value mustBe "Departure means of transport 1"
         section1.rows.size mustBe 2
@@ -125,10 +124,15 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         setExistingUserAnswers(userAnswers)
 
         val viewModelProvider = new HouseConsignmentViewModelProvider()
-        val result            = viewModelProvider.apply(userAnswers, index).futureValue
-        val section           = result.houseConsignment.head
+        val result            = viewModelProvider.apply(userAnswers, index)
 
-        section.rows.size mustBe 6
+        result.sections.head mustBe a[AccordionSection]
+        result.sections.head.sectionTitle.value mustBe "Item 1"
+        result.sections.head.rows.size mustBe 3
+
+        result.sections(1) mustBe a[StaticSection]
+        result.sections(1).sectionTitle must not be defined
+        result.sections(1).rows.size mustBe 6
       }
     }
 
@@ -164,8 +168,8 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         setExistingUserAnswers(userAnswers)
 
         val viewModelProvider = new HouseConsignmentViewModelProvider()
-        val result            = viewModelProvider.apply(userAnswers, index).futureValue
-        val section           = result.section.head
+        val result            = viewModelProvider.apply(userAnswers, index)
+        val section           = result.sections.head
 
         section.sectionTitle.value mustBe "Item 1"
         section.rows.size mustBe 3
@@ -211,11 +215,19 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         setExistingUserAnswers(userAnswers)
 
         val viewModelProvider = new HouseConsignmentViewModelProvider()
-        val result            = viewModelProvider.apply(userAnswers, index).futureValue
-        val section           = result.section(1)
+        val result            = viewModelProvider.apply(userAnswers, index)
 
-        section.sectionTitle.value mustBe "Item 2"
-        section.rows.size mustBe 3
+        result.sections.head mustBe a[AccordionSection]
+        result.sections.head.sectionTitle.value mustBe "Item 1"
+        result.sections.head.rows.size mustBe 3
+
+        result.sections(1) mustBe a[AccordionSection]
+        result.sections(1).sectionTitle.value mustBe "Item 2"
+        result.sections(1).rows.size mustBe 3
+
+        result.sections(2) mustBe a[StaticSection]
+        result.sections(2).sectionTitle must not be defined
+        result.sections(2).rows.size mustBe 2
       }
     }
   }

@@ -19,14 +19,50 @@ package viewModels.sections
 import models.Link
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-case class Section(sectionTitle: Option[String], rows: Seq[SummaryListRow], viewLink: Option[Link] = None, id: Option[String] = None)
+sealed trait Section {
+  val sectionTitle: Option[String]
+  val rows: Seq[SummaryListRow]
+  val children: Seq[Section]
+  val viewLink: Option[Link]
+  val id: Option[String]
+}
 
 object Section {
-  def apply(sectionTitle: String, rows: Seq[SummaryListRow]): Section = new Section(Some(sectionTitle), rows)
 
-  def apply(rows: Seq[SummaryListRow]): Section = new Section(None, rows, None)
+  case class AccordionSection(
+    sectionTitle: Option[String] = None,
+    rows: Seq[SummaryListRow] = Nil,
+    children: Seq[Section] = Nil,
+    viewLink: Option[Link] = None,
+    id: Option[String] = None,
+    nestingLevel: Int = 0
+  ) extends Section
 
-  def apply(sectionTitle: String, rows: Seq[SummaryListRow], viewLink: Option[Link], id: Option[String]): Section =
-    new Section(Some(sectionTitle), rows, viewLink, id)
+  object AccordionSection {
 
+    def apply(sectionTitle: String, rows: Seq[SummaryListRow]): AccordionSection =
+      new AccordionSection(sectionTitle = Some(sectionTitle), rows = rows)
+
+    def apply(sectionTitle: String, rows: Seq[SummaryListRow], viewLink: Link, id: String): AccordionSection =
+      new AccordionSection(Some(sectionTitle), rows = rows, viewLink = Some(viewLink), id = Some(id))
+
+    def apply(sectionTitle: String, rows: Seq[SummaryListRow], children: Seq[Section], viewLink: Link, id: String): AccordionSection =
+      new AccordionSection(Some(sectionTitle), rows, children, Some(viewLink), Some(id))
+  }
+
+  case class StaticSection(
+    sectionTitle: Option[String] = None,
+    rows: Seq[SummaryListRow] = Nil,
+    viewLink: Option[Link] = None,
+    id: Option[String] = None
+  ) extends Section {
+
+    override val children: Seq[Section] = Seq.empty
+  }
+
+  object StaticSection {
+
+    def apply(sectionTitle: String, rows: Seq[SummaryListRow]): StaticSection =
+      new StaticSection(sectionTitle = Some(sectionTitle), rows = rows)
+  }
 }

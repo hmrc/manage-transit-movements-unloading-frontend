@@ -18,9 +18,9 @@ package utils
 
 import base.SpecBase
 import generators.Generators
-import models.{Identification, Index}
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.Country
+import models.{Identification, Index}
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
@@ -29,8 +29,6 @@ import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage}
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
-
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with RowActions {
 
@@ -42,7 +40,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
       "must return None" - {
         s"when no transport means defined" in {
           val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, index)
-          val result = helper.buildTransportSections.futureValue
+          val result = helper.buildTransportSections
           result.isEmpty mustBe true
         }
       }
@@ -61,7 +59,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
             .setValue(DepartureTransportMeansCountryPage(Index(0), Index(0)), country)
 
           val helper          = new HouseConsignmentAnswersHelper(answers, index)
-          val result          = helper.buildTransportSections.futureValue
+          val result          = helper.buildTransportSections
           val transportMeans1 = result.head.rows
 
           val transportMeansTypeRow    = transportMeans1.head
@@ -85,7 +83,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
             .setValue(DepartureTransportMeansIdentificationTypePage(Index(0), Index(0)), vehicleIdentification)
 
           val helper          = new HouseConsignmentAnswersHelper(answers, Index(0))
-          val result          = helper.buildTransportSections.futureValue
+          val result          = helper.buildTransportSections
           val transportMeans1 = result.head.rows
 
           val transportMeansTypeRow = transportMeans1.head
@@ -105,7 +103,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
             .setValue(DepartureTransportMeansCountryPage(hcIndex, index), country)
 
           val helper          = new HouseConsignmentAnswersHelper(answers, index)
-          val result          = helper.buildTransportSections.futureValue
+          val result          = helper.buildTransportSections
           val transportMeans1 = result.head.rows
 
           val transportMeansCountryRow1 = transportMeans1.head
@@ -125,7 +123,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
             .setValue(DepartureTransportMeansIdentificationNumberPage(hcIndex, index), vehicleIdentificationNumber)
 
           val helper          = new HouseConsignmentAnswersHelper(answers, index)
-          val result          = helper.buildTransportSections.futureValue
+          val result          = helper.buildTransportSections
           val transportMeans1 = result.head.rows
 
           transportMeans1 mustBe empty
@@ -142,7 +140,7 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
             .setValue(DepartureTransportMeansCountryPage(hcIndex, Index(1)), country)
 
           val helper          = new HouseConsignmentAnswersHelper(answers, index)
-          val result          = helper.buildTransportSections.futureValue
+          val result          = helper.buildTransportSections
           val transportMeans1 = result.head.rows
           val transportMeans2 = result(1).rows
 

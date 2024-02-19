@@ -66,7 +66,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val sections = arbitrarySections.arbitrary.sample.value
+      val sections = arbitraryStaticSections.arbitrary.sample.value
 
       when(mockCheckYourAnswersViewModelProvider.apply(any())(any()))
         .thenReturn(CheckYourAnswersViewModel(sections))

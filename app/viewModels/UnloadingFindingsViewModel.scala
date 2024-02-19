@@ -20,10 +20,11 @@ import models.UserAnswers
 import play.api.i18n.Messages
 import utils.UnloadingFindingsAnswersHelper
 import viewModels.sections.Section
+import viewModels.sections.Section.AccordionSection
 
 import javax.inject.Inject
 
-case class UnloadingFindingsViewModel(section: Seq[Section])
+case class UnloadingFindingsViewModel(sections: Seq[Section])
 
 object UnloadingFindingsViewModel {
 
@@ -35,11 +36,11 @@ object UnloadingFindingsViewModel {
       val helper = new UnloadingFindingsAnswersHelper(userAnswers)
 
       val sections = Seq(
-        Seq(helper.preSection),
+        Seq(helper.headerSection),
         helper.buildTransportSections,
         helper.transportEquipmentSections,
         helper.houseConsignmentSections,
-        Seq(Section(sectionTitle = messages("unloadingFindings.additional.reference.heading"), rows = helper.additionalReferences))
+        Seq(AccordionSection(sectionTitle = messages("unloadingFindings.additional.reference.heading"), rows = helper.additionalReferences))
       ).flatten
 
       new UnloadingFindingsViewModel(sections)

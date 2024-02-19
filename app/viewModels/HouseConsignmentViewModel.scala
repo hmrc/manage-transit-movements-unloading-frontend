@@ -22,32 +22,27 @@ import utils.HouseConsignmentAnswersHelper
 import viewModels.sections.Section
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
-case class HouseConsignmentViewModel(section: Seq[Section], houseConsignment: Seq[Section])
+case class HouseConsignmentViewModel(sections: Seq[Section])
 
 object HouseConsignmentViewModel {
 
-  def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index)(implicit
-    messages: Messages,
-    ec: ExecutionContext
-  ): Future[HouseConsignmentViewModel] = new HouseConsignmentViewModelProvider()(userAnswers, houseConsignmentIndex)
+  def apply(
+    userAnswers: UserAnswers,
+    houseConsignmentIndex: Index
+  )(implicit messages: Messages): HouseConsignmentViewModel = new HouseConsignmentViewModelProvider()(userAnswers, houseConsignmentIndex)
 
   class HouseConsignmentViewModelProvider @Inject() () {
 
-    def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index)(implicit messages: Messages, ex: ExecutionContext): Future[HouseConsignmentViewModel] = {
+    def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index)(implicit messages: Messages): HouseConsignmentViewModel = {
       val helper = new HouseConsignmentAnswersHelper(userAnswers, houseConsignmentIndex: Index)
 
-      helper.buildTransportSections.map {
-        meansOfTransportSections =>
-          val houseConsignmentSection: Seq[Section] = helper.houseConsignmentSection
-          val itemSections: Seq[Section]            = helper.itemSections
+      val houseConsignmentSection: Seq[Section] = helper.houseConsignmentSection
+      val itemSections: Seq[Section]            = helper.itemSections
 
-          val sections: Seq[Section] = meansOfTransportSections ++ itemSections
+      val sections: Seq[Section] = helper.buildTransportSections ++ itemSections ++ houseConsignmentSection
 
-          HouseConsignmentViewModel(sections, houseConsignmentSection)
-
-      }
+      HouseConsignmentViewModel(sections)
     }
   }
 }
