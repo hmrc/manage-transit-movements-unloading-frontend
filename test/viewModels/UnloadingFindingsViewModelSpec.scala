@@ -30,7 +30,6 @@ import play.api.libs.json.{JsObject, Json}
 import services.ReferenceDataService
 import viewModels.UnloadingFindingsViewModel.UnloadingFindingsViewModelProvider
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
@@ -44,6 +43,19 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
       .overrides(bind[ReferenceDataService].toInstance(mockReferenceDataService))
 
   "Unloading findings sections" - {
+
+    "must render pre-section" in {
+      val viewModelProvider = new UnloadingFindingsViewModelProvider()
+      val result            = viewModelProvider.apply(emptyUserAnswers)
+      val section           = result.section.head
+
+      section.sectionTitle must not be defined
+
+      section.rows.size mustBe 1
+      section.rows.head.key.value mustBe "Authorised consignee’s EORI number or Trader Identification Number (TIN)"
+
+      section.viewLink must not be defined
+    }
 
     "must render Means of Transport section" - {
       "when there is one" in {
@@ -75,8 +87,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
-        val result            = viewModelProvider.apply(userAnswers).futureValue
-        val section           = result.section.head
+        val result            = viewModelProvider.apply(userAnswers)
+        val section           = result.section(1)
 
         section.sectionTitle.value mustBe "Departure means of transport 1"
         section.rows.size mustBe 1
@@ -117,8 +129,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
-        val result            = viewModelProvider.apply(userAnswers).futureValue
-        val section           = result.section(1)
+        val result            = viewModelProvider.apply(userAnswers)
+        val section           = result.section(2)
 
         section.sectionTitle.value mustBe "Departure means of transport 2"
         section.rows.size mustBe 1
@@ -155,8 +167,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
           val viewModelProvider = new UnloadingFindingsViewModelProvider()
-          val result            = viewModelProvider.apply(userAnswers).futureValue
-          val section           = result.section.head
+          val result            = viewModelProvider.apply(userAnswers)
+          val section           = result.section(1)
 
           section.sectionTitle.value mustBe "Transport equipment 1"
           section.rows.size mustBe 1
@@ -196,8 +208,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
           val viewModelProvider = new UnloadingFindingsViewModelProvider()
-          val result            = viewModelProvider.apply(userAnswers).futureValue
-          val section           = result.section.head
+          val result            = viewModelProvider.apply(userAnswers)
+          val section           = result.section(1)
 
           section.sectionTitle.value mustBe "Transport equipment 1"
           section.rows.size mustBe 2
@@ -236,8 +248,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
           val viewModelProvider = new UnloadingFindingsViewModelProvider()
-          val result            = viewModelProvider.apply(userAnswers).futureValue
-          val section           = result.section(1)
+          val result            = viewModelProvider.apply(userAnswers)
+          val section           = result.section(2)
 
           section.sectionTitle.value mustBe "Transport equipment 2"
           section.rows.size mustBe 1
@@ -288,8 +300,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
           val viewModelProvider = new UnloadingFindingsViewModelProvider()
-          val result            = viewModelProvider.apply(userAnswers).futureValue
-          val section           = result.section(1)
+          val result            = viewModelProvider.apply(userAnswers)
+          val section           = result.section(2)
 
           section.sectionTitle.value mustBe "Transport equipment 2"
           section.rows.size mustBe 2
@@ -353,8 +365,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
-        val result            = viewModelProvider.apply(userAnswers).futureValue
-        val section           = result.section.head
+        val result            = viewModelProvider.apply(userAnswers)
+        val section           = result.section(1)
 
         section.sectionTitle.value mustBe "House consignment 1"
         section.rows.size mustBe 6
@@ -445,8 +457,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
-        val result            = viewModelProvider.apply(userAnswers).futureValue
-        val section           = result.section(1)
+        val result            = viewModelProvider.apply(userAnswers)
+        val section           = result.section(2)
 
         section.sectionTitle.value mustBe "House consignment 2"
         section.rows.size mustBe 6
@@ -464,8 +476,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         setExistingUserAnswers(userAnswers)
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
-        val result            = viewModelProvider.apply(userAnswers).futureValue
-        val section           = result.section.head
+        val result            = viewModelProvider.apply(userAnswers)
+        val section           = result.section(1)
 
         section.sectionTitle.value mustBe "Additional references"
         section.rows.size mustBe 1
@@ -482,8 +494,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         setExistingUserAnswers(userAnswers)
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
-        val result            = viewModelProvider.apply(userAnswers).futureValue
-        val section           = result.section.head
+        val result            = viewModelProvider.apply(userAnswers)
+        val section           = result.section(1)
 
         section.sectionTitle.value mustBe "Additional references"
         section.rows.size mustBe 2

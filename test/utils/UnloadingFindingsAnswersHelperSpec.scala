@@ -17,6 +17,7 @@
 package utils
 
 import base.SpecBase
+import generated.{CC043CType, TraderAtDestinationType03}
 import generators.Generators
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.{AdditionalReferenceType, Country}
@@ -35,7 +36,6 @@ import services.ReferenceDataService
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with RowActions {
@@ -46,11 +46,26 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
 
   "UnloadingFindingsAnswersHelper" - {
 
+    "traderAtDestinationRow" - {
+      "must generate row with no Change link" in {
+        forAll(arbitrary[CC043CType], Gen.alphaNumStr) {
+          (ie043, identificationNumber) =>
+            val updatedIe043 = ie043.copy(TraderAtDestination = TraderAtDestinationType03(identificationNumber))
+            val userAnswers  = emptyUserAnswers.copy(ie043Data = updatedIe043)
+            val helper       = new UnloadingFindingsAnswersHelper(userAnswers)
+            val result       = helper.traderAtDestinationRow
+            result.key.value mustBe "Authorised consignee’s EORI number or Trader Identification Number (TIN)"
+            result.value.value mustBe identificationNumber
+            result.actions must not be defined
+        }
+      }
+    }
+
     "buildTransportSections" - {
       "must return None" - {
         s"when no transport means defined" in {
           val helper = new UnloadingFindingsAnswersHelper(emptyUserAnswers)
-          val result = helper.buildTransportSections.futureValue
+          val result = helper.buildTransportSections
           result.isEmpty mustBe true
         }
       }
@@ -69,7 +84,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             .setValue(CountryPage(index), Country("GB", "United Kingdom"))
 
           val helper          = new UnloadingFindingsAnswersHelper(answers)
-          val result          = helper.buildTransportSections.futureValue
+          val result          = helper.buildTransportSections
           val transportMeans1 = result.head.rows
 
           val transportMeansIDRow      = transportMeans1.head
@@ -106,7 +121,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
           val helper          = new UnloadingFindingsAnswersHelper(answers)
-          val result          = helper.buildTransportSections.futureValue
+          val result          = helper.buildTransportSections
           val transportMeans1 = result.head.rows
 
           val transportMeansIDRow     = transportMeans1.head
@@ -137,7 +152,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
           val helper          = new UnloadingFindingsAnswersHelper(answers)
-          val result          = helper.buildTransportSections.futureValue
+          val result          = helper.buildTransportSections
           val transportMeans1 = result.head.rows
 
           val transportMeansCountryRow1 = transportMeans1.head
@@ -160,7 +175,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
           val helper          = new UnloadingFindingsAnswersHelper(answers)
-          val result          = helper.buildTransportSections.futureValue
+          val result          = helper.buildTransportSections
           val transportMeans1 = result.head.rows.head
 
           transportMeans1 mustBe
@@ -190,7 +205,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
           val helper          = new UnloadingFindingsAnswersHelper(answers)
-          val result          = helper.buildTransportSections.futureValue
+          val result          = helper.buildTransportSections
           val transportMeans1 = result.head.rows
           val transportMeans2 = result(1).rows
 
@@ -265,7 +280,7 @@ class UnloadingFindingsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             .setValue(VehicleIdentificationNumberPage(index), vehicleIdentificationNumber)
 
           val helper          = new UnloadingFindingsAnswersHelper(answers)
-          val result          = helper.buildTransportSections.futureValue
+          val result          = helper.buildTransportSections
           val transportMeans1 = result.head.rows.head
 
           transportMeans1 mustBe
