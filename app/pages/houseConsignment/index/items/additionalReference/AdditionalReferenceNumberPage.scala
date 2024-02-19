@@ -26,5 +26,5 @@ case class AdditionalReferenceNumberPage(houseConsignmentIndex: Index, itemIndex
   override def path: JsPath =
     AdditionalReferenceSection(houseConsignmentIndex, itemIndex, additionalReferenceIndex).path \ toString
 
-  override def toString: String = "number"
+  override def toString: String = "referenceNumber"
 }
