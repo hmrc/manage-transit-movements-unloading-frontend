@@ -125,6 +125,16 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[NonEmptySet[DocumentType]](url, headers = version2Header, queryParams = queryParams).map(_.head)
   }
 
+  def getSupportingDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[DocumentType]] = {
+    val url = s"${config.referenceDataUrl}/lists/SupportingDocumentType"
+    http.GET[NonEmptySet[DocumentType]](url, headers = version2Header)
+  }
+
+  def getTransportDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[DocumentType]] = {
+    val url = s"${config.referenceDataUrl}/lists/TransportDocumentType"
+    http.GET[NonEmptySet[DocumentType]](url, headers = version2Header)
+  }
+
   private def version2Header: Seq[(String, String)] = Seq(
     HeaderNames.Accept -> "application/vnd.hmrc.2.0+json"
   )

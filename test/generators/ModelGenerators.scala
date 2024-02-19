@@ -19,7 +19,7 @@ package generators
 import models.P5.ArrivalMessageType
 import models._
 import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.{AdditionalReferenceType, Country, Item, PackageType}
+import models.reference._
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
 import play.api.test.Helpers.{GET, POST}
@@ -110,4 +110,12 @@ trait ModelGenerators {
       url    <- nonEmptyString
     } yield Call(method, url)
   }
+
+  implicit lazy val arbitraryDocumentType: Arbitrary[DocumentType] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+        desc <- nonEmptyString
+      } yield DocumentType(code, desc)
+    }
 }
