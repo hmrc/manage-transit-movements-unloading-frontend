@@ -34,8 +34,7 @@ object Section {
     rows: Seq[SummaryListRow] = Nil,
     children: Seq[Section] = Nil,
     viewLink: Option[Link] = None,
-    id: Option[String] = None,
-    nestingLevel: Int = 0
+    id: Option[String] = None
   ) extends Section
 
   object AccordionSection {

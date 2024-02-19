@@ -23,7 +23,7 @@
     govukDetails: GovukDetails
 )
 
-@(section: Section)(implicit messages: Messages)
+@(section: Section, nestingLevel: Int = 0)(implicit messages: Messages)
 
 @if(section.rows.nonEmpty || section.children.nonEmpty) {
     @section match {
@@ -49,7 +49,7 @@
                     summary = HtmlContent(header),
                     content = HtmlContent(content),
                     id = section.id,
-                    classes = s"govuk-!-margin-left-${2 * x.nestingLevel}"
+                    classes = s"govuk-!-margin-left-${2 * nestingLevel}"
                 )
             )
         }
@@ -73,7 +73,7 @@
         )
     </dl>
 
-    @section.children.map(this(_))
+    @section.children.map(this(_, nestingLevel + 1))
 
     @section.viewLink.map { link =>
         <p class="govuk-body">
