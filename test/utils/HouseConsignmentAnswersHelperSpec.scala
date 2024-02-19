@@ -968,7 +968,21 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
                  |                          "grossMass" : $weight,
                  |                          "netMass" : $weight
                  |                      }
-                 |                  }
+                 |                  },
+                 |                  "AdditionalReference" : [
+                 |                                {
+                 |                                    "type" : {
+                 |                                        "documentType" : "Y023",
+                 |                                        "description" : "Consignee (AEO certificate number)"
+                 |                                    }
+                 |                                },
+                 |                                {
+                 |                                    "type" : {
+                 |                                        "documentType" : "C651",
+                 |                                        "description" : "Electronic administrative document (e-AD), as referred to in Article 3(1) of Reg. (EC) No 684/2009"
+                 |                                    }
+                 |                                }
+                 |                            ]
                  |              }
                  |          ]
                  |        }
@@ -980,8 +994,9 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
 
           val userAnswers = emptyUserAnswers.copy(data = json)
 
-          val helper = new HouseConsignmentAnswersHelper(userAnswers, index)
-          val result = helper.itemSections.head.rows
+          val helper                    = new HouseConsignmentAnswersHelper(userAnswers, index)
+          val result                    = helper.itemSections.head.rows
+          val additionalReferenceResult = helper.itemSections(1).rows
 
           result.head mustBe
             SummaryListRow(
@@ -1001,6 +1016,21 @@ class HouseConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckProperty
               value = Value(s"${weight}kg".toText),
               actions = netWeightItemAction
             )
+
+          additionalReferenceResult.head mustBe
+            SummaryListRow(
+              key = Key("Additional Reference 1".toText),
+              value = Value("Y023 - Consignee (AEO certificate number)".toText),
+              actions = additionalReferenceAction(1)
+            )
+
+          additionalReferenceResult(1) mustBe
+            SummaryListRow(
+              key = Key("Additional Reference 2".toText),
+              value = Value("C651 - Electronic administrative document (e-AD), as referred to in Article 3(1) of Reg. (EC) No 684/2009".toText),
+              actions = additionalReferenceAction(2)
+            )
+
         }
         s"when Net Weight is not defined" in {
 

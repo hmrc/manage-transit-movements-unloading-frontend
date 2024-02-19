@@ -19,15 +19,18 @@ package utils
 import cats.data.OptionT
 import cats.implicits._
 import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.Country
+import models.reference.{AdditionalReferenceType, Country}
 import models.{Index, UserAnswers}
 import pages._
 import pages.houseConsignment.index.items.ItemDescriptionPage
+import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
 import pages.sections._
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.http.HttpVerbs.GET
 import viewModels.sections.Section
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -105,19 +108,25 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
   def itemSections: Seq[Section] =
     userAnswers
       .get(ItemsSection(houseConsignmentIndex))
-      .mapWithIndex {
+      .mapWithIndexSeq {
         (_, itemIndex) =>
           val itemDescription: Option[SummaryListRow] = itemDescriptionRow(houseConsignmentIndex, itemIndex)
           val grossWeight: Option[SummaryListRow]     = grossWeightRow(houseConsignmentIndex, itemIndex)
           val netWeight: Option[SummaryListRow]       = netWeightRow(houseConsignmentIndex, itemIndex)
+          val additionalReferencesSection: Section    = additionalReferenceSection(houseConsignmentIndex, itemIndex)
 
-          Some(
-            Section(
-              messages("unloadingFindings.subsections.item", itemIndex.display),
-              Seq(itemDescription, grossWeight, netWeight).flatten
-            )
+          val itemSection = Section(
+            messages("unloadingFindings.subsections.item", itemIndex.display),
+            Seq(itemDescription, grossWeight, netWeight).flatten
           )
+          Seq(itemSection, additionalReferencesSection)
       }
+
+  def additionalReferenceSection(houseConsignmentIndex: Index, itemIndex: Index): Section =
+    Section(
+      messages("unloadingFindings.additional.reference.heading"),
+      additionalReferences(houseConsignmentIndex, itemIndex)
+    )
 
   def itemDescriptionRow(houseConsignmentIndex: Index, itemIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = ItemDescriptionPage(houseConsignmentIndex, itemIndex),
@@ -126,5 +135,21 @@ class HouseConsignmentAnswersHelper(userAnswers: UserAnswers, houseConsignmentIn
     id = None,
     call = None
   )
+
+  def additionalReferences(hcIndex: Index, itemIndex: Index): Seq[SummaryListRow] =
+    getAnswersAndBuildSectionRows(HouseConsignmentAdditionalReferencesSection(hcIndex, itemIndex)) {
+      additionalReferenceIndex =>
+        additionalReference(hcIndex, itemIndex, additionalReferenceIndex)
+    }
+
+  def additionalReference(hcIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): Option[SummaryListRow] =
+    getAnswerAndBuildRow[AdditionalReferenceType](
+      page = AdditionalReferencePage(hcIndex, itemIndex, additionalReferenceIndex),
+      formatAnswer = formatAsText,
+      prefix = "unloadingFindings.additional.reference",
+      args = additionalReferenceIndex.display,
+      id = Some(s"change-additional-reference-${additionalReferenceIndex.display}"),
+      call = Some(Call(GET, "#")) //TODO change me please
+    )
 
 }

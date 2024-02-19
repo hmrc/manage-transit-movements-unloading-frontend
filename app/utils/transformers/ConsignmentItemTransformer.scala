@@ -18,23 +18,26 @@ package utils.transformers
 
 import generated.ConsignmentItemType04
 import models.{Index, UserAnswers}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConsignmentItemTransformer @Inject() (
-  commodityTransformer: CommodityTransformer
+  commodityTransformer: CommodityTransformer,
+  houseConsignmentAdditionalReferenceTransformer: HouseConsignmentAdditionalReferenceTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(consignmentItems: Seq[ConsignmentItemType04], hcIndex: Index): UserAnswers => Future[UserAnswers] = userAnswers =>
+  def transform(consignmentItems: Seq[ConsignmentItemType04], hcIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     consignmentItems.zipWithIndex.foldLeft(Future.successful(userAnswers))({
-      case (acc, (ConsignmentItemType04(_, _, _, _, _, commodity, _, _, _, _, _, _), i)) =>
+      case (acc, (ConsignmentItemType04(_, _, _, _, _, commodity, _, _, _, _, additionalReference, _), i)) =>
         acc.flatMap {
           userAnswers =>
             val itemIndex: Index = Index(i)
             val pipeline: UserAnswers => Future[UserAnswers] =
-              commodityTransformer.transform(commodity, hcIndex, itemIndex)
+              commodityTransformer.transform(commodity, hcIndex, itemIndex) andThen
+                houseConsignmentAdditionalReferenceTransformer.transform(additionalReference, hcIndex, itemIndex)
 
             pipeline(userAnswers)
         }

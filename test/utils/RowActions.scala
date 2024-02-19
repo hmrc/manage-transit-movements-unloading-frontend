@@ -98,6 +98,10 @@ trait RowActions {
       )
     )
 
+  def additionalReferenceAction(index: Int): Some[Actions] = Some(
+    Actions("", List(ActionItem("#", Text("Change"), Some(s"additional reference $index"), "", Map("id" -> s"change-additional-reference-$index"))))
+  )
+
   val grossWeightAction: Some[Actions] = Some(
     Actions("", List(ActionItem("#", Text("Change"), Some("Change Gross weight"), "", Map("id" -> "change-gross-weight-1"))))
   )
