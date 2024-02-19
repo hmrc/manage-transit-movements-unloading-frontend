@@ -18,14 +18,13 @@ package utils.transformers
 
 import generated.ConsignmentItemType04
 import models.{Index, UserAnswers}
+import pages.houseConsignment.index.items.{DeclarationGoodsItemNumberPage, GoodsItemNumberPage}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConsignmentItemTransformer @Inject() (
-  commodityTransformer: CommodityTransformer,
-  goodsItemNumberTransformer: GoodsItemNumberTransformer,
-  declarationGoodsItemNumberTransformer: DeclarationGoodsItemNumberTransformer
+  commodityTransformer: CommodityTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
@@ -37,10 +36,11 @@ class ConsignmentItemTransformer @Inject() (
             val itemIndex: Index = Index(i)
             val pipeline: UserAnswers => Future[UserAnswers] =
               commodityTransformer.transform(commodity, hcIndex, itemIndex) andThen
-                goodsItemNumberTransformer.transform(goodsItemNumber, hcIndex, itemIndex) andThen
-                declarationGoodsItemNumberTransformer.transform(declarationGoodsItemNumber, hcIndex, itemIndex)
+                set(DeclarationGoodsItemNumberPage(hcIndex, itemIndex), declarationGoodsItemNumber) andThen
+                set(GoodsItemNumberPage(hcIndex, itemIndex), goodsItemNumber)
 
             pipeline(userAnswers)
         }
     })
+
 }

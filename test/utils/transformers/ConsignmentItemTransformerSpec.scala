@@ -25,75 +25,42 @@ import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
+import pages.houseConsignment.index.items.{DeclarationGoodsItemNumberPage, GoodsItemNumberPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, JsPath, Json}
 
+import scala.Seq
 import scala.concurrent.Future
 
 class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val transformer = app.injector.instanceOf[ConsignmentItemTransformer]
 
-  private lazy val mockCommodityTransformer        = mock[CommodityTransformer]
-  private lazy val mockGoodsItemNumberTransformer  = mock[GoodsItemNumberTransformer]
-  private lazy val mockDeclarationGoodsTransformer = mock[DeclarationGoodsItemNumberTransformer]
+  "must transform data" - {
 
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(
-        bind[CommodityTransformer].toInstance(mockCommodityTransformer),
-        bind[GoodsItemNumberTransformer].toInstance(mockGoodsItemNumberTransformer),
-        bind[DeclarationGoodsItemNumberTransformer].toInstance(mockDeclarationGoodsTransformer)
-      )
+    "when ConsignmentItem defined" in {
+      forAll(arbitrary[Seq[ConsignmentItemType04]]) {
+        consignmentItems =>
+          consignmentItems.zipWithIndex.map {
+            case (item, i) =>
+              val itemIndex = Index(i)
 
-  private case class FakeCommoditySection(itemIndex: Index) extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ itemIndex.position.toString \ "commodity"
-  }
+              val result = transformer.transform(consignmentItems, hcIndex).apply(emptyUserAnswers).futureValue
 
-  private case class FakeItemNumberSection(itemIndex: Index) extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ itemIndex.position.toString \ "goodsItemNumber"
-  }
+              result.getValue(DeclarationGoodsItemNumberPage(hcIndex, itemIndex)) mustBe item.declarationGoodsItemNumber
+              result.getValue(GoodsItemNumberPage(hcIndex, itemIndex)) mustBe item.goodsItemNumber
+          }
 
-  private case class FakeDeclarationSection(itemIndex: Index) extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ itemIndex.position.toString \ "declarationGoodsItemNumber"
-  }
+      }
+    }
 
-  "must transform data" in {
-    forAll(arbitrary[Seq[ConsignmentItemType04]]) {
-      consignmentItems =>
-        consignmentItems.zipWithIndex.map {
-          case (_, i) =>
-            val itemIndex = Index(i)
+    "when ConsignmentItem undefined" in {
+      val result = transformer.transform(Seq.empty, hcIndex).apply(emptyUserAnswers).futureValue
 
-            when(mockCommodityTransformer.transform(any(), any(), eqTo(itemIndex)))
-              .thenReturn {
-                ua => Future.successful(ua.setValue(FakeCommoditySection(itemIndex), Json.obj("foo" -> i.toString)))
-              }
-
-            when(mockGoodsItemNumberTransformer.transform(any(), any(), eqTo(itemIndex)))
-              .thenReturn {
-                ua => Future.successful(ua.setValue(FakeItemNumberSection(itemIndex), Json.obj("foo" -> i.toString)))
-              }
-
-            when(mockDeclarationGoodsTransformer.transform(any(), any(), eqTo(itemIndex)))
-              .thenReturn {
-                ua => Future.successful(ua.setValue(FakeDeclarationSection(itemIndex), Json.obj("foo" -> i.toString)))
-              }
-
-        }
-
-        val result = transformer.transform(consignmentItems, hcIndex).apply(emptyUserAnswers).futureValue
-
-        consignmentItems.zipWithIndex.map {
-          case (_, i) =>
-            val itemIndex = Index(i)
-
-            result.getValue(FakeCommoditySection(itemIndex)) mustBe Json.obj("foo" -> i.toString)
-            result.getValue(FakeItemNumberSection(itemIndex)) mustBe Json.obj("foo" -> i.toString)
-            result.getValue(FakeDeclarationSection(itemIndex)) mustBe Json.obj("foo" -> i.toString)
-        }
+      result.get(DeclarationGoodsItemNumberPage(hcIndex, itemIndex)) must not be defined
+      result.get(GoodsItemNumberPage(hcIndex, itemIndex)) must not be defined
     }
   }
+
 }
