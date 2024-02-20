@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package pages.houseConsignment.index.items.additionalReference
 
-object Constants {
-  lazy val maxItemDescriptionLength: Int        = 512
-  lazy val exactCUSCodeLength: Int              = 9
-  lazy val grossWeightDecimalPlaces: Int        = 6
-  lazy val grossWeightCharacterCount: Int       = 16
-  lazy val maxPackageShippingMarkLength: Int    = 512
-  lazy val maxSealIdentificationLength: Int     = 20
-  lazy val maxDocumentRefNumberLength: Int      = 70
-  lazy val maxAdditionalInfoLength: Int         = 35
-  lazy val maxAdditionalReferenceNumLength: Int = 70
+import pages.behaviours.PageBehaviours
+
+class AdditionalReferenceNumberPageSpec extends PageBehaviours {
+
+  "AdditionalReferenceNumberPage" - {
+
+    beRetrievable[String](AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
+
+    beSettable[String](AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
+
+    beRemovable[String](AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
+  }
 }

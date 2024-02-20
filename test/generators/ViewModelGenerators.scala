@@ -26,11 +26,12 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{Content, Hint, Label, RadioItem}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
+import viewModels.additionalReference.index.AdditionalReferenceTypeViewModel
 import viewModels.{ListItem, UnloadingFindingsViewModel}
 import viewModels.departureTransportMeans._
 import viewModels.documents.{AdditionalInformationViewModel, DocumentReferenceNumberViewModel}
 import viewModels.houseConsignment.index.items._
-import viewModels.houseConsignment.index.items.additionalReference.AdditionalReferenceViewModel
+import viewModels.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberViewModel, AdditionalReferenceViewModel}
 import viewModels.houseConsignment.index.items.document.{ItemsAdditionalInformationViewModel, ItemsDocumentReferenceNumberViewModel}
 import viewModels.sections.Section
 import viewModels.transportEquipment.index.{ApplyAnotherItemViewModel, ContainerIdentificationNumberViewModel}
@@ -288,5 +289,23 @@ trait ViewModelGenerators {
       requiredError <- nonEmptyString
       arrivalId     <- nonEmptyString
     } yield AdditionalReferenceViewModel(heading, title, requiredError, ArrivalId(arrivalId), NormalMode, Index(0), Index(0), Index(0))
+  }
+
+  implicit lazy val arbitraryItemsAdditionalReferenceNumberViewModel: Arbitrary[AdditionalReferenceNumberViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+      arrivalId     <- nonEmptyString
+    } yield AdditionalReferenceNumberViewModel(heading, title, requiredError, ArrivalId(arrivalId), NormalMode, Index(0), Index(0), Index(0))
+  }
+
+  implicit lazy val arbitraryAdditionalReferenceViewModel: Arbitrary[AdditionalReferenceTypeViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+      arrivalId     <- nonEmptyString
+    } yield AdditionalReferenceTypeViewModel(heading, title, requiredError, ArrivalId(arrivalId), NormalMode, Index(0))
   }
 }

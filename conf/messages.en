@@ -568,3 +568,23 @@ houseConsignment.index.items.additionalReference.additionalReferenceType.error.r
 houseConsignment.index.items.additionalReference.additionalReferenceType.check.error.required = Select the new additional reference type for item {1} in house consignment {0}
 houseConsignment.index.items.additionalReference.additionalReferenceType.hint = Enter the reference name or code, like Carrier (AEO certificate number) or Y028.
 houseConsignment.index.items.additionalReference.additionalReferenceType.placeholder = Select an additional reference
+
+houseConsignment.index.items.additionalReference.additionalReferenceNumber.NormalMode.title = What is the additional reference number?
+houseConsignment.index.items.additionalReference.additionalReferenceNumber.NormalMode.heading = What is the additional reference number?
+houseConsignment.index.items.additionalReference.additionalReferenceNumber.CheckMode.title = What is the new additional reference number for item {1} in house consignment {0}?
+houseConsignment.index.items.additionalReference.additionalReferenceNumber.CheckMode.heading = What is the new additional reference number for item {1} in house consignment {0}?
+houseConsignment.index.items.additionalReference.additionalReferenceNumber.error.length = The additional reference number must be 70 characters or less
+houseConsignment.index.items.additionalReference.additionalReferenceNumber.error.invalidCharacters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+houseConsignment.index.items.additionalReference.additionalReferenceNumber.NormalMode.error.required = Enter the additional reference number
+houseConsignment.index.items.additionalReference.additionalReferenceNumber.CheckMode.error.required = Enter the new additional reference number for item {1} in house consignment {0}
+houseConsignment.index.items.additionalReference.additionalReferenceNumber.paragraph = You need to enter a reference number as you have already added this type of additional reference.
+
+
+additionalReference.index.additionalReferenceType.NormalMode.title = What type of additional reference do you want to add?
+additionalReference.index.additionalReferenceType.NormalMode.heading = What type of additional reference do you want to add?
+additionalReference.index.additionalReferenceType.CheckMode.title = What is the new additional reference type?
+additionalReference.index.additionalReferenceType.CheckMode.heading = What is the new additional reference type?
+additionalReference.index.additionalReferenceType.error.required = Select the type of additional reference
+additionalReference.index.additionalReferenceType.check.error.required = Select the new additional reference type
+additionalReference.index.additionalReferenceType.hint = Enter the reference name or code, like Carrier (AEO certificate number) or Y028.
+additionalReference.index.additionalReferenceType.placeholder = Select an additional reference

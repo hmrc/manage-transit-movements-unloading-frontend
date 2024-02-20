@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package forms
+package pages.sections.houseConsignment.index.items.additionalReference
 
-object Constants {
-  lazy val maxItemDescriptionLength: Int        = 512
-  lazy val exactCUSCodeLength: Int              = 9
-  lazy val grossWeightDecimalPlaces: Int        = 6
-  lazy val grossWeightCharacterCount: Int       = 16
-  lazy val maxPackageShippingMarkLength: Int    = 512
-  lazy val maxSealIdentificationLength: Int     = 20
-  lazy val maxDocumentRefNumberLength: Int      = 70
-  lazy val maxAdditionalInfoLength: Int         = 35
-  lazy val maxAdditionalReferenceNumLength: Int = 70
+import models.Index
+import pages.sections.{ItemsSection, Section}
+import play.api.libs.json.{JsArray, JsPath}
+
+case class AdditionalReferencesSection(houseConsignmentIndex: Index, itemIndex: Index) extends Section[JsArray] {
+
+  override def path: JsPath = ItemsSection(houseConsignmentIndex).path \ itemIndex.position \ toString
+
+  override def toString: String = "additionalReferences"
 }
