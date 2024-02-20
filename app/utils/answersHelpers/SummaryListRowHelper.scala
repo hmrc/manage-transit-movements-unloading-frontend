@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package utils.answersHelpers
 
 import models.Identification
 import play.api.i18n.Messages

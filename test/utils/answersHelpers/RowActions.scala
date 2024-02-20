@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package utils.answersHelpers
 
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions}

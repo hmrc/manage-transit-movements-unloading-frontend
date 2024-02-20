@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package utils.answersHelpers
 
 import base.SpecBase
 import controllers.routes

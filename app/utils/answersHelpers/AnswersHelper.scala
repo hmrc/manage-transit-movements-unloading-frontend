@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package utils.answersHelpers
 
 import models.{ArrivalId, Index, UserAnswers}
 import pages._
@@ -53,87 +53,6 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
     case Some(arguments) => arguments.appended(answer)
   }
 
-  def getAnswerAndBuildRowWithDynamicHiddenText[T](
-    page: QuestionPage[T],
-    formatAnswer: T => Content,
-    prefix: String,
-    id: Option[String],
-    call: Option[Call],
-    args: Option[Seq[Any]]
-  )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.get(page) map {
-      answer =>
-        buildRow(
-          prefix = prefix,
-          answer = formatAnswer(answer),
-          id = id,
-          call = call,
-          args = parseArguments(args, answer): _*
-        )
-    }
-
-  def getAnswerAndBuildRemovableRowWithDynamicHiddenText[T](
-    page: QuestionPage[T],
-    formatAnswer: T => Content,
-    prefix: String,
-    id: String,
-    changeCall: Call,
-    removeCall: Call,
-    args: Option[Seq[Any]]
-  )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.get(page) map {
-      answer =>
-        buildRemovableRow(
-          prefix = prefix,
-          answer = formatAnswer(answer),
-          id = id,
-          changeCall = changeCall,
-          removeCall = removeCall,
-          args = parseArguments(args, answer): _*
-        )
-    }
-
-  def getAnswerAndBuildRowWithDynamicPrefix[T](
-    answerPath: QuestionPage[T],
-    titlePath: QuestionPage[T],
-    formatAnswer: T => Content,
-    dynamicPrefix: T => String,
-    id: Option[String],
-    call: Option[Call],
-    args: Any*
-  )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    for {
-      answer <- userAnswers.get(answerPath)
-      title  <- userAnswers.get(titlePath)
-    } yield buildRowFromPath(
-      prefix = dynamicPrefix(title),
-      answer = formatAnswer(answer),
-      id = id,
-      call = call,
-      args = args: _*
-    )
-
-  def getAnswerAndBuildRemovableRow[T](
-    page: QuestionPage[T],
-    formatAnswer: T => Content,
-    prefix: String,
-    id: String,
-    changeCall: Call,
-    removeCall: Call,
-    args: Any*
-  )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.get(page) map {
-      answer =>
-        buildRemovableRow(
-          prefix = prefix,
-          answer = formatAnswer(answer),
-          id = id,
-          changeCall = changeCall,
-          removeCall = removeCall,
-          args = args: _*
-        )
-    }
-
   implicit class RichJsArray(arr: JsArray) {
 
     def zipWithIndex: List[(JsValue, Index)] = arr.value.toList.zipWithIndex.map(
@@ -150,7 +69,16 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
 
   implicit class RichOptionalJsArray(arr: Option[JsArray]) {
 
-    def mapWithIndex[T](f: (JsValue, Index) => Option[T]): Seq[T] =
+    def mapWithIndex[T](f: (JsValue, Index) => T): Seq[T] =
+      arr
+        .map {
+          _.zipWithIndex.map {
+            case (value, i) => f(value, i)
+          }
+        }
+        .getOrElse(Nil)
+
+    def flatMapWithIndex[T](f: (JsValue, Index) => Option[T]): Seq[T] =
       arr
         .map {
           _.zipWithIndex.flatMap {
@@ -169,7 +97,7 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
   def getAnswersAndBuildSectionRows(section: Section[JsArray])(f: Index => Option[SummaryListRow]): Seq[SummaryListRow] =
     userAnswers
       .get(section)
-      .mapWithIndex {
+      .flatMapWithIndex {
         (_, index) => f(index)
       }
 }

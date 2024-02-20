@@ -15,16 +15,14 @@
  *@
 
 @import viewModels.HouseConsignmentViewModel
-@import views.html.components.{AnswerSections, Button, Heading, SummaryDetails, VisibleSection}
+@import views.html.components.{AnswerSections, Button, Heading}
 
 @this(
-mainTemplate: MainTemplate,
-heading: Heading,
-answerSections: AnswerSections,
-visibleSection: VisibleSection,
-summaryDetails: SummaryDetails,
-button: Button,
-formHelper: FormWithCSRF
+    mainTemplate: MainTemplate,
+    heading: Heading,
+    answerSections: AnswerSections,
+    button: Button,
+    formHelper: FormWithCSRF
 )
 
 @(mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentViewModel: HouseConsignmentViewModel, houseConsignmentIndex: Index)(implicit request: Request[_], messages: Messages)
@@ -41,9 +39,7 @@ formHelper: FormWithCSRF
 
     <p class="govuk-body">@messages("houseConsignment.paragraph")</p>
 
-    @answerSections(houseConsignmentViewModel.houseConsignment)
-
-    @summaryDetails(houseConsignmentViewModel.section)
+    @answerSections(houseConsignmentViewModel.sections)
 
     <div>
         <a class="govuk-button" id="submit" href=@controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url>

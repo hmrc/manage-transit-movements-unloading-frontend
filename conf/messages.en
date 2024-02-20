@@ -82,6 +82,8 @@ dateGoodsUnloaded.error.min.date = The date must be on or after {0}
 dateGoodsUnloaded.error.max.date = The date must be today or in the past
 dateGoodsUnloaded.change.hidden = the date when the goods were unloaded
 
+traderAtDestination = Authorised consignee’s EORI number or Trader Identification Number (TIN)
+
 departureMeansOfTransport.identificationNumber.NormalMode.title = What is the identification number for this vehicle?
 departureMeansOfTransport.identificationNumber.CheckMode.title = What is the identification number for the new departure means of transport?
 departureMeansOfTransport.identificationNumber.NormalMode.heading = What is the identification number for this vehicle?
@@ -426,9 +428,10 @@ checkYourAnswers.paragraph = By sending this, you are confirming that these deta
 
 checkYourAnswers.departureMeansOfTransport.identification = Identification type
 checkYourAnswers.departureMeansOfTransport.identificationNumber = Identification number
-checkYourAnswers.departureMeansOfTransport.country.change.hidden = registered country for the departure means of transport
+checkYourAnswers.departureMeansOfTransport.country = Registered country
 checkYourAnswers.departureMeansOfTransport.identification.change.hidden =  identification type for the departure means of transport
 checkYourAnswers.departureMeansOfTransport.identificationNumber.change.hidden =  identification number for the departure means of transport
+checkYourAnswers.departureMeansOfTransport.country.change.hidden = registered country for the departure means of transport
 
 cannotSendUnloadingRemarks.title = You cannot send these unloading remarks
 cannotSendUnloadingRemarks.heading = You cannot send these unloading remarks

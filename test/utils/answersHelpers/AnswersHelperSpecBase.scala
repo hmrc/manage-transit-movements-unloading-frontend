@@ -1,5 +1,5 @@
-@*
- * Copyright 2023 HM Revenue & Customs
+/*
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,25 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import viewModels.sections.Section
+package utils.answersHelpers
 
-@this(govukSummaryList: GovukSummaryList)
+import base.SpecBase
+import generators.Generators
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-@(section: Section)
-
-@section.sectionTitle.map { title =>
-    <h2 class="govuk-heading-m">@title</h2>
-}
-
-@govukSummaryList(
-    SummaryList(
-        rows = section.rows,
-        classes = "govuk-!-margin-bottom-9 ctc-add-to-a-list"
-    )
-)
-@section.viewLink.map { link =>
-    <p class="govuk-body"><a class="govuk-link" href="@link.href" id="@link.id">@link.text</a></p>
-}
+trait AnswersHelperSpecBase extends SpecBase with ScalaCheckPropertyChecks with Generators with RowActions
