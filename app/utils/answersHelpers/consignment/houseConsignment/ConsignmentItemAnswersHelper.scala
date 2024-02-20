@@ -18,7 +18,7 @@ package utils.answersHelpers.consignment.houseConsignment
 
 import models.{Index, UserAnswers}
 import pages.NetWeightPage
-import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage}
+import pages.houseConsignment.index.items._
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferencesSection
 import pages.sections.PackagingSection
 import play.api.i18n.Messages
@@ -86,4 +86,31 @@ class ConsignmentItemAnswersHelper(
           section
 
       }
+
+  def cusCodeRow: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.item.cusCode",
+    args = itemIndex.display,
+    id = Some(s"change-cus-code-${houseConsignmentIndex.display}"),
+    call = Some(Call(GET, "#"))
+  )
+
+  def commodityCodeRow: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = CommodityCodePage(houseConsignmentIndex, itemIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.item.commodityCode",
+    args = itemIndex.display,
+    id = Some(s"change-commodity-code-${houseConsignmentIndex.display}"),
+    call = Some(Call(GET, "#"))
+  )
+
+  def nomenclatureCodeRow: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.item.nomenclatureCode",
+    args = itemIndex.display,
+    id = Some(s"change-nomenclature-code-${houseConsignmentIndex.display}"),
+    call = Some(Call(GET, "#"))
+  )
 }
