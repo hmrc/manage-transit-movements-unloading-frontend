@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package utils.answersHelpers.consignment.houseConsignment
+package utils.answersHelpers.consignment.houseConsignment.item
 
-import models.{Index, UserAnswers}
 import models.reference.AdditionalReferenceType
+import models.{Index, UserAnswers}
 import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
 import play.api.i18n.Messages
 import play.api.mvc.Call
