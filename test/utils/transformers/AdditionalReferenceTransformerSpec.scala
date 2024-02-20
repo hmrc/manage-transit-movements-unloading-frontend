@@ -18,7 +18,7 @@ package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import connectors.ReferenceDataConnector
-import generated.AdditionalReferenceType03
+import generated.{AdditionalReferenceType02, AdditionalReferenceType03}
 import generators.Generators
 import models.Index
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
@@ -27,6 +27,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import models.reference.AdditionalReferenceType
 import pages.additionalReference.AdditionalReferenceTypePage
+import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 
@@ -68,6 +69,27 @@ class AdditionalReferenceTransformerSpec extends SpecBase with AppWithDefaultMoc
       case (refType, i) =>
         result.getValue(AdditionalReferenceTypePage(Index(i))).documentType mustBe refType.typeValue
         result.getValue(AdditionalReferenceTypePage(Index(i))).description mustBe "describe me"
+
+    }
+
+  }
+
+  "must transform data at Item level" in {
+    val additionalReferenceType02: Seq[AdditionalReferenceType02] = arbitrary[Seq[AdditionalReferenceType02]].sample.value
+
+    additionalReferenceType02.map {
+      type0 =>
+        when(mockRefDataConnector.getAdditionalReferenceType(eqTo(type0.typeValue))(any(), any()))
+          .thenReturn(
+            Future.successful(AdditionalReferenceType(documentType = type0.typeValue, description = "describe me"))
+          )
+    }
+
+    val result = transformer.transform(additionalReferenceType02, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
+
+    additionalReferenceType02.zipWithIndex.map {
+      case (refType, i) =>
+        result.getValue(AdditionalReferencePage(hcIndex, itemIndex, Index(i))).documentType mustBe refType.typeValue
 
     }
 

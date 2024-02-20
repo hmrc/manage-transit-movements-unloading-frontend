@@ -64,12 +64,12 @@ class ConsignmentItemAnswersHelper(
   def additionalReferences: Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(AdditionalReferencesSection(houseConsignmentIndex, itemIndex)) {
       additionalReferenceIndex =>
-        additionalReferenceRow(houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+        additionalReferenceRow(additionalReferenceIndex)
     }
 
-  def additionalReferenceRow(hcIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): Option[SummaryListRow] =
+  def additionalReferenceRow(additionalReferenceIndex: Index): Option[SummaryListRow] =
     getAnswerAndBuildRowWithoutKey[AdditionalReferenceType](
-      page = AdditionalReferencePage(hcIndex, itemIndex, additionalReferenceIndex),
+      page = AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
       formatAnswer = formatAsText,
       prefix = "unloadingFindings.additional.reference",
       args = additionalReferenceIndex.display,
