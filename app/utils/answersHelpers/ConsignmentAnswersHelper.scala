@@ -28,10 +28,39 @@ import viewModels.sections.Section.{AccordionSection, StaticSection}
 
 class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
+  def transitOperationSection: StaticSection = StaticSection(
+    rows = Seq(
+      declarationTypeRow,
+      securityTypeRow,
+      reducedDatasetIndicatorRow
+    )
+  )
+
   def headerSection: Section = StaticSection(
     rows = Seq(
       traderAtDestinationRow
     )
+  )
+
+  def declarationTypeRow: SummaryListRow = buildRow(
+    prefix = "declarationType",
+    answer = userAnswers.ie043Data.TransitOperation.declarationType.toString.toText,
+    id = None,
+    call = None
+  )
+
+  def securityTypeRow: SummaryListRow = buildRow(
+    prefix = "securityType",
+    answer = userAnswers.ie043Data.TransitOperation.security.toText,
+    id = None,
+    call = None
+  )
+
+  def reducedDatasetIndicatorRow: SummaryListRow = buildRow(
+    prefix = "reducedDatasetIndicator",
+    answer = userAnswers.ie043Data.TransitOperation.reducedDatasetIndicator.toString.toText,
+    id = None,
+    call = None
   )
 
   def traderAtDestinationRow: SummaryListRow = buildRow(

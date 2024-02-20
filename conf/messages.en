@@ -324,6 +324,10 @@ unloadingFindings.paragraph = Compare the transit that arrived with the followin
 
 unloadingFindings.subsections.transportMeans = Departure means of transport {0}
 
+declarationType = Declaration type
+securityType = Security type
+reducedDatasetIndicator = Reduced dataset indicator
+
 unloadingFindings.rowHeadings.identificationType.seaGoingVessel = Name of a sea-going vessel
 unloadingFindings.rowHeadings.identificationType.seaGoingVessel.change.hidden = name of a sea-going vessel
 unloadingFindings.rowHeadings.identificationType.iataFlightNumber = IATA flight number

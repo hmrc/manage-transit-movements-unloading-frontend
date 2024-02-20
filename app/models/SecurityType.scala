@@ -14,27 +14,23 @@
  * limitations under the License.
  */
 
-package config
+package models
 
-object Constants {
-  val GB = "GB"
-  val AD = "AD"
+import org.apache.commons.text.StringEscapeUtils
+import play.api.libs.json.{Format, Json}
 
-  val T2 = "T2"
-  val T  = "T"
+case class SecurityType(
+  code: String,
+  description: String
+) extends Radioable[SecurityType] {
 
-  val Maritime = "1"
-  val Rail     = "2"
-  val Road     = "3"
-  val Air      = "4"
-  val Mail     = "5"
-  val Fixed    = "7"
-  val Unknown  = "9"
-  val TIR      = "TIR"
+  override def toString: String = StringEscapeUtils.unescapeXml(description)
 
-  val Other = "D"
+  override val messageKeyPrefix: String = SecurityType.messageKeyPrefix
+}
 
-  object MeansOfTransportIdentification {
-    val UnknownIdentification = "99"
-  }
+object SecurityType extends DynamicEnumerableType[SecurityType] {
+  implicit val format: Format[SecurityType] = Json.format[SecurityType]
+
+  val messageKeyPrefix = "securityDetailsType"
 }

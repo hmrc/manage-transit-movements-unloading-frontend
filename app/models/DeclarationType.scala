@@ -14,27 +14,25 @@
  * limitations under the License.
  */
 
-package config
+package models
 
-object Constants {
-  val GB = "GB"
-  val AD = "AD"
+import config.Constants.TIR
+import play.api.libs.json.{Format, Json}
 
-  val T2 = "T2"
-  val T  = "T"
+case class DeclarationType(
+  code: String,
+  description: String
+) extends Radioable[DeclarationType] {
 
-  val Maritime = "1"
-  val Rail     = "2"
-  val Road     = "3"
-  val Air      = "4"
-  val Mail     = "5"
-  val Fixed    = "7"
-  val Unknown  = "9"
-  val TIR      = "TIR"
+  override def toString: String = s"$code - $description"
 
-  val Other = "D"
+  override val messageKeyPrefix: String = DeclarationType.messageKeyPrefix
 
-  object MeansOfTransportIdentification {
-    val UnknownIdentification = "99"
-  }
+  def isTIR: Boolean = code == TIR
+}
+
+object DeclarationType extends DynamicEnumerableType[DeclarationType] {
+  implicit val format: Format[DeclarationType] = Json.format[DeclarationType]
+
+  val messageKeyPrefix = "declarationType"
 }

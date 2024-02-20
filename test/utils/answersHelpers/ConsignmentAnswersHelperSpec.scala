@@ -16,18 +16,20 @@
 
 package utils.answersHelpers
 
-import generated.TraderAtDestinationType03
+import generated.{CC043CType, Number0, Number1, TraderAtDestinationType03, TransitOperationType14}
+import generators.Generators
+import models.UserAnswers
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.{AdditionalReferenceType, Country}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import pages._
 import pages.additionalReference._
 import pages.departureMeansOfTransport._
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
-import pages._
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 
-class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
+class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase with Generators {
 
   "ConsignmentAnswersHelper" - {
 
@@ -62,6 +64,58 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.value.value mustBe value
             result.actions must not be defined
         }
+      }
+    }
+
+    "declarationTypeRow" - {
+      "must return row" in {
+        forAll(arbitraryDeclarationType) {
+          value =>
+            val decType: TransitOperationType14 = TransitOperationType14("Mrn", declarationType = Some(value.toString), None, "1", Number0)
+            val ie043: CC043CType               = basicIe043.copy(TransitOperation = decType)
+            val answers: UserAnswers            = emptyUserAnswers.copy(ie043Data = ie043)
+
+            val helper = new ConsignmentAnswersHelper(answers)
+            val result = helper.declarationTypeRow
+
+            result.key.value mustBe "Declaration type"
+            result.value.value mustBe s"Some($value)"
+            result.actions must not be defined
+        }
+      }
+    }
+
+    "securityTypeRow" - {
+      "must return row" in {
+        forAll(arbitrarySecurityDetailsType) {
+          value =>
+            val decType: TransitOperationType14 = TransitOperationType14("Mrn", None, None, value.toString, Number0)
+            val ie043: CC043CType               = basicIe043.copy(TransitOperation = decType)
+            val answers: UserAnswers            = emptyUserAnswers.copy(ie043Data = ie043)
+
+            val helper = new ConsignmentAnswersHelper(answers)
+            val result = helper.securityTypeRow
+
+            result.key.value mustBe "Security type"
+            result.value.value mustBe value.toString
+            result.actions must not be defined
+        }
+      }
+    }
+
+    "reducedDatasetIndicatorRow" - {
+      "must return row" in {
+        val flag                            = Gen.oneOf(Number0, Number1).sample.value
+        val decType: TransitOperationType14 = TransitOperationType14("Mrn", None, None, "1", flag)
+        val ie043: CC043CType               = basicIe043.copy(TransitOperation = decType)
+        val answers: UserAnswers            = emptyUserAnswers.copy(ie043Data = ie043)
+
+        val helper = new ConsignmentAnswersHelper(answers)
+        val result = helper.reducedDatasetIndicatorRow
+
+        result.key.value mustBe "Reduced dataset indicator"
+        result.value.value mustBe flag.toString
+        result.actions must not be defined
       }
     }
 
