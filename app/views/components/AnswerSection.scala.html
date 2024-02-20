@@ -16,26 +16,70 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import viewModels.sections.Section
+@import viewModels.sections.Section._
 
-@this(govukSummaryList: GovukSummaryList)
+@this(
+    govukSummaryList: GovukSummaryList,
+    govukDetails: GovukDetails
+)
 
-@(section: Section)(html: Html = Html(""))
+@(section: Section, nestingLevel: Int = 0)(implicit messages: Messages)
 
-@if(section.rows.nonEmpty) {
-    @section.sectionTitle.map { title =>
-        <h2 class="govuk-heading-m">@title</h2>
+@if(section.rows.nonEmpty || section.children.nonEmpty) {
+    @section match {
+        case x: StaticSection => {
+            @section.sectionTitle.map { title =>
+                <h2 class="govuk-heading-m">@title</h2>
+            }
+
+            @govukSummaryList(
+                SummaryList(
+                    rows = section.rows,
+                    classes = "govuk-!-margin-bottom-9 ctc-add-to-a-list"
+                )
+            )
+
+            @section.viewLink.map { link =>
+                <p class="govuk-body"><a class="govuk-link" href="@link.href" id="@link.id">@link.text</a></p>
+            }
+        }
+        case x: AccordionSection => {
+            @govukDetails(
+                Details(
+                    summary = HtmlContent(header),
+                    content = HtmlContent(content),
+                    id = section.id,
+                    classes = s"govuk-!-margin-left-${2 * nestingLevel}"
+                )
+            )
+        }
     }
+}
 
-    @govukSummaryList(
-        SummaryList(
-            rows = section.rows,
-            classes = "govuk-!-margin-bottom-9 ctc-add-to-a-list"
+@header = {
+    @section.sectionTitle.map { title =>
+        <span class="summary-text">
+            <span class="summary-title govuk-!-margin-bottom-0">@title</span>
+        </span>
+    }
+}
+
+@content = {
+    <dl class="govuk-summary-list">
+        @govukSummaryList(
+            SummaryList(
+                rows = section.rows
+            )
         )
-    )
+    </dl>
+
+    @section.children.map(this(_, nestingLevel + 1))
 
     @section.viewLink.map { link =>
-        <p class="govuk-body"><a class="govuk-link" href="@link.href" id="@link.id">@link.text</a></p>
+        <p class="govuk-body">
+            <a class="govuk-link" href=@link.href id="view_link.id">
+                @messages("summaryDetails.link") <span class="govuk-visually-hidden">@link.visuallyHidden</span>
+            </a>
+        </p>
     }
-} else {
-    @html
 }

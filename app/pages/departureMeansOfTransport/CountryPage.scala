@@ -17,11 +17,12 @@
 package pages.departureMeansOfTransport
 
 import models.Index
+import models.reference.Country
 import pages.QuestionPage
 import pages.sections.TransportMeansListSection
 import play.api.libs.json.JsPath
 
-case class CountryPage(transportMeansIndex: Index) extends QuestionPage[String] {
+case class CountryPage(transportMeansIndex: Index) extends QuestionPage[Country] {
 
   override def path: JsPath = TransportMeansListSection.path \ transportMeansIndex.position \ toString
 

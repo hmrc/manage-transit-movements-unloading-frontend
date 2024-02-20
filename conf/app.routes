@@ -4,6 +4,7 @@
 ->         /                                            app.houseConsignment.index.items.Routes
 ->         /                                            app.transportEquipment.index.Routes
 ->         /                                            app.documents.Routes
+->         /                                            app.additionalReference.index.Routes
 
 
 ->         /hmrc-frontend                                                                                            hmrcfrontend.Routes

@@ -21,40 +21,37 @@ import play.api.i18n.Messages
 import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{ConsignmentAnswersHelper, UnloadingFindingsAnswersHelper}
+import utils.answersHelpers.ConsignmentAnswersHelper
 import viewModels.sections.Section
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
-case class UnloadingFindingsViewModel(section: Seq[Section])
+case class UnloadingFindingsViewModel(sections: Seq[Section])
 
 object UnloadingFindingsViewModel {
 
-  def apply(userAnswers: UserAnswers, referenceDataService: ReferenceDataService)(implicit
-    messages: Messages,
-    hc: HeaderCarrier,
-    ec: ExecutionContext
-  ): Future[UnloadingFindingsViewModel] = new UnloadingFindingsViewModelProvider(referenceDataService)(userAnswers)
+  def apply(userAnswers: UserAnswers)(implicit messages: Messages): UnloadingFindingsViewModel = new UnloadingFindingsViewModelProvider()(userAnswers)
 
-  class UnloadingFindingsViewModelProvider @Inject() (referenceDataService: ReferenceDataService) {
+  class UnloadingFindingsViewModelProvider @Inject() () {
 
     def apply(userAnswers: UserAnswers)(implicit messages: Messages, hc: HeaderCarrier, ex: ExecutionContext): Future[UnloadingFindingsViewModel] = {
       val helper                   = new UnloadingFindingsAnswersHelper(userAnswers, referenceDataService)
       val consignmentAnswersHelper = new ConsignmentAnswersHelper(userAnswers)
 
-      helper.buildTransportSections.map {
-        meansOfTransportSections =>
-          val transportEquipmentSections: Seq[Section] = helper.transportEquipmentSections
-
-          val grossMassSection: Option[Section] = consignmentAnswersHelper.grossMass.map {
+      val grossMassSection: Option[Section] = consignmentAnswersHelper.grossMass.map {
             grossMassRow => Section(messages("unloadingFindings.consignment.heading"), Seq(grossMassRow))
           }
-          val houseConsignmentSections: Seq[Section] = helper.houseConsignmentSections
+      
+      val sections = Seq(
+        Seq(helper.headerSection),
+        helper.departureTransportMeansSections,
+        helper.transportEquipmentSections,
+        helper.houseConsignmentSections,
+        helper.additionalReferencesSections,
+        grossMassSection
+      ).flatten
 
-          val sections: Seq[Section] = meansOfTransportSections ++ transportEquipmentSections ++ houseConsignmentSections ++ grossMassSection
-
-          new UnloadingFindingsViewModel(sections)
-      }
+      new UnloadingFindingsViewModel(sections)
     }
   }
 }

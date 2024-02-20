@@ -82,6 +82,8 @@ dateGoodsUnloaded.error.min.date = The date must be on or after {0}
 dateGoodsUnloaded.error.max.date = The date must be today or in the past
 dateGoodsUnloaded.change.hidden = the date when the goods were unloaded
 
+traderAtDestination = Authorised consignee’s EORI number or Trader Identification Number (TIN)
+
 departureMeansOfTransport.identificationNumber.NormalMode.title = What is the identification number for this vehicle?
 departureMeansOfTransport.identificationNumber.CheckMode.title = What is the identification number for the new departure means of transport?
 departureMeansOfTransport.identificationNumber.NormalMode.heading = What is the identification number for this vehicle?
@@ -345,6 +347,9 @@ unloadingFindings.rowHeadings.identificationType.europeanVesselIdNumber.change.h
 unloadingFindings.rowHeadings.identificationType.unknown = Unknown - this can only be used during the transitional period
 unloadingFindings.rowHeadings.identificationType.unknown.change.hidden = unknown - this can only be used during the transitional period
 
+unloadingFindings.rowHeadings.sealIdentifier.change.hidden = seal identification number
+unloadingFindings.rowHeadings.containerIdentificationNumber.change.hidden = container identification number
+
 unloadingFindings.rowHeadings.vehicleNationality = Registered country
 unloadingFindings.rowHeadings.vehicleNationality.change.hidden = registered country
 
@@ -358,6 +363,8 @@ unloadingFindings.rowHeadings.houseConsignment.netWeight = Net weight
 unloadingFindings.rowHeadings.houseConsignment.consignorName = Consignor name
 unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier = Consignor EORI number or Trader Identification Number (TIN)
 unloadingFindings.rowHeadings.houseConsignment.consigneeName = Consignee name
+unloadingFindings.rowHeadings.houseConsignment.grossWeight.change.hidden = Change Gross weight
+unloadingFindings.rowHeadings.houseConsignment.netWeight.change.hidden = Change Net weight
 
 
 unloadingFindings.rowHeadings.houseConsignment.consigneeIdentifier = Consignee EORI number or Trader Identification Number (TIN)
@@ -379,6 +386,10 @@ unloadingFindings.additionalComments.link = Add comments
 unloadingFindings.rowHeadings.additionalComments = Comments
 unloadingFindings.rowHeadings.additionalComments.change.hidden = comments
 unloadingFindings.rowHeadings.additionalComments.remove.hidden = comments
+
+unloadingFindings.additional.reference.heading = Additional references
+unloadingFindings.additional.reference.change.hidden = additional reference {0}
+unloadingFindings.additional.reference = Additional Reference {0}
 
 houseConsignment.title = Cross-check the transit with house consignment {0}
 houseConsignment.heading = Cross-check the transit with house consignment {0}
@@ -414,6 +425,13 @@ checkYourAnswers.rowHeadings.additionalComments.change.hidden = discrepancies be
 
 checkYourAnswers.sendRemarks = Send your unloading remarks
 checkYourAnswers.paragraph = By sending this, you are confirming that these details are correct to the best of your knowledge.
+
+checkYourAnswers.departureMeansOfTransport.identification = Identification type
+checkYourAnswers.departureMeansOfTransport.identificationNumber = Identification number
+checkYourAnswers.departureMeansOfTransport.country = Registered country
+checkYourAnswers.departureMeansOfTransport.identification.change.hidden =  identification type for the departure means of transport
+checkYourAnswers.departureMeansOfTransport.identificationNumber.change.hidden =  identification number for the departure means of transport
+checkYourAnswers.departureMeansOfTransport.country.change.hidden = registered country for the departure means of transport
 
 cannotSendUnloadingRemarks.title = You cannot send these unloading remarks
 cannotSendUnloadingRemarks.heading = You cannot send these unloading remarks
@@ -530,3 +548,51 @@ unloadingFindings.consignment.heading = Consignment
 
 unloadingFindings.gross.mass.heading = Gross weight
 unloadingFindings.gross.mass.hidden = gross weight
+
+houseConsignment.index.items.document.referenceNumber.NormalMode.title = What is the document’s reference number?
+houseConsignment.index.items.document.referenceNumber.CheckMode.title = What is the new document’s reference number for item {1} in house consignment {0}?
+houseConsignment.index.items.document.referenceNumber.NormalMode.heading = What is the document’s reference number?
+houseConsignment.index.items.document.referenceNumber.CheckMode.heading = What is the new document’s reference number for item {1} in house consignment {0}?
+houseConsignment.index.items.document.referenceNumber.hint = This can be up to 70 characters long and include both letters and numbers.
+houseConsignment.index.items.document.referenceNumber.NormalMode.error.required = Enter the document’s reference number
+houseConsignment.index.items.document.referenceNumber.CheckMode.error.required = Enter the new document’s reference number
+houseConsignment.index.items.document.referenceNumber.error.length = The reference number must be 70 characters or less
+houseConsignment.index.items.document.referenceNumber.error.invalidCharacters = The reference number must only include letters a to z and numbers 0 to 9
+
+houseConsignment.index.items.document.additionalInformation.NormalMode.title = Enter the additional information
+houseConsignment.index.items.document.additionalInformation.CheckMode.title = Enter the new additional information for item {1} in house consignment {0}?
+houseConsignment.index.items.document.additionalInformation.NormalMode.heading = Enter the additional information
+houseConsignment.index.items.document.additionalInformation.CheckMode.heading = Enter the new additional information for item {1} in house consignment {0}?
+houseConsignment.index.items.document.additionalInformation.NormalMode.error.required = Enter the additional information
+houseConsignment.index.items.document.additionalInformation.CheckMode.error.required = Enter the new additional information for item {1} in house consignment {0}?
+houseConsignment.index.items.document.additionalInformation.error.length = The additional information must be 35 characters or less
+houseConsignment.index.items.document.additionalInformation.error.invalidCharacters = The additional information must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+
+houseConsignment.index.items.additionalReference.additionalReferenceType.NormalMode.title = What type of additional reference do you want to add?
+houseConsignment.index.items.additionalReference.additionalReferenceType.NormalMode.heading = What type of additional reference do you want to add?
+houseConsignment.index.items.additionalReference.additionalReferenceType.CheckMode.title = What is the new additional reference type for item {1} in house consignment {0}?
+houseConsignment.index.items.additionalReference.additionalReferenceType.CheckMode.heading = What is the new additional reference type for item {1} in house consignment {0}?
+houseConsignment.index.items.additionalReference.additionalReferenceType.error.required = Select the type of additional reference
+houseConsignment.index.items.additionalReference.additionalReferenceType.check.error.required = Select the new additional reference type for item {1} in house consignment {0}
+houseConsignment.index.items.additionalReference.additionalReferenceType.hint = Enter the reference name or code, like Carrier (AEO certificate number) or Y028.
+houseConsignment.index.items.additionalReference.additionalReferenceType.placeholder = Select an additional reference
+
+houseConsignment.index.items.additionalReference.additionalReferenceNumber.NormalMode.title = What is the additional reference number?
+houseConsignment.index.items.additionalReference.additionalReferenceNumber.NormalMode.heading = What is the additional reference number?
+houseConsignment.index.items.additionalReference.additionalReferenceNumber.CheckMode.title = What is the new additional reference number for item {1} in house consignment {0}?
+houseConsignment.index.items.additionalReference.additionalReferenceNumber.CheckMode.heading = What is the new additional reference number for item {1} in house consignment {0}?
+houseConsignment.index.items.additionalReference.additionalReferenceNumber.error.length = The additional reference number must be 70 characters or less
+houseConsignment.index.items.additionalReference.additionalReferenceNumber.error.invalidCharacters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+houseConsignment.index.items.additionalReference.additionalReferenceNumber.NormalMode.error.required = Enter the additional reference number
+houseConsignment.index.items.additionalReference.additionalReferenceNumber.CheckMode.error.required = Enter the new additional reference number for item {1} in house consignment {0}
+houseConsignment.index.items.additionalReference.additionalReferenceNumber.paragraph = You need to enter a reference number as you have already added this type of additional reference.
+
+
+additionalReference.index.additionalReferenceType.NormalMode.title = What type of additional reference do you want to add?
+additionalReference.index.additionalReferenceType.NormalMode.heading = What type of additional reference do you want to add?
+additionalReference.index.additionalReferenceType.CheckMode.title = What is the new additional reference type?
+additionalReference.index.additionalReferenceType.CheckMode.heading = What is the new additional reference type?
+additionalReference.index.additionalReferenceType.error.required = Select the type of additional reference
+additionalReference.index.additionalReferenceType.check.error.required = Select the new additional reference type
+additionalReference.index.additionalReferenceType.hint = Enter the reference name or code, like Carrier (AEO certificate number) or Y028.
+additionalReference.index.additionalReferenceType.placeholder = Select an additional reference

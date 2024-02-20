@@ -17,20 +17,20 @@
 package controllers
 
 import com.google.inject.Inject
-import connectors.ApiConnector
 import controllers.actions.Actions
+import logging.Logging
 import models.ArrivalId
 import models.AuditType.UnloadingRemarks
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.AuditService
-import services.P5.UserAnswersSubmissionService
+import services.submission.{AuditService, SubmissionService}
+import uk.gov.hmrc.http.HttpReads.is2xx
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.CheckYourAnswersViewModel
 import viewModels.CheckYourAnswersViewModel.CheckYourAnswersViewModelProvider
 import views.html.CheckYourAnswersView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class CheckYourAnswersController @Inject() (
   override val messagesApi: MessagesApi,
@@ -38,11 +38,12 @@ class CheckYourAnswersController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: CheckYourAnswersView,
   viewModelProvider: CheckYourAnswersViewModelProvider,
-  apiConnector: ApiConnector,
+  submissionService: SubmissionService,
   auditService: AuditService
 )(implicit val executionContext: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
     actions.getStatus(arrivalId) {
@@ -55,18 +56,16 @@ class CheckYourAnswersController @Inject() (
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
-        for {
-          userAnswers <- Future.fromTry(UserAnswersSubmissionService.userAnswersToSubmission(request.userAnswers))
-          result      <- apiConnector.submit(userAnswers, arrivalId)
-
-        } yield result match {
-          case Left(BadRequest) =>
-            Redirect(controllers.routes.ErrorController.badRequest())
-          case Left(_) =>
-            Redirect(controllers.routes.ErrorController.technicalDifficulties())
-          case Right(_) =>
-            auditService.audit(UnloadingRemarks, userAnswers)
-            Redirect(controllers.routes.UnloadingRemarksSentController.onPageLoad(arrivalId))
+        submissionService.submit(request.userAnswers, arrivalId).map {
+          response =>
+            response.status match {
+              case x if is2xx(x) =>
+                auditService.audit(UnloadingRemarks, request.userAnswers)
+                Redirect(controllers.routes.UnloadingRemarksSentController.onPageLoad(arrivalId))
+              case x =>
+                logger.error(s"Error submitting IE044: $x")
+                Redirect(routes.ErrorController.technicalDifficulties())
+            }
         }
     }
 }

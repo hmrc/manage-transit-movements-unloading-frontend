@@ -1,3 +1,6 @@
+->         /                                            app.houseConsignment.index.items.document.Routes
+->         /                                            app.houseConsignment.index.items.additionalReference.Routes
+
 GET        /:arrivalId/house-consignment/:houseConsignmentIndex/items/:itemIndex/item-description                       controllers.houseConsignment.index.items.DescriptionController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode, houseConsignmentIndex: Index, itemIndex: Index)
 POST       /:arrivalId/house-consignment/:houseConsignmentIndex/items/:itemIndex/item-description                       controllers.houseConsignment.index.items.DescriptionController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode, houseConsignmentIndex: Index, itemIndex: Index)
 GET        /:arrivalId/house-consignment/:houseConsignmentIndex/items/:itemIndex/change-item-description                controllers.houseConsignment.index.items.DescriptionController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode, houseConsignmentIndex: Index, itemIndex: Index)
