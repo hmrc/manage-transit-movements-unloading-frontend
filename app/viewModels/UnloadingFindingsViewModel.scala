@@ -18,38 +18,31 @@ package viewModels
 
 import models.UserAnswers
 import play.api.i18n.Messages
-import utils.UnloadingFindingsAnswersHelper
+import utils.answersHelpers.ConsignmentAnswersHelper
 import viewModels.sections.Section
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
-case class UnloadingFindingsViewModel(section: Seq[Section])
+case class UnloadingFindingsViewModel(sections: Seq[Section])
 
 object UnloadingFindingsViewModel {
 
-  def apply(userAnswers: UserAnswers)(implicit
-    messages: Messages,
-    ec: ExecutionContext
-  ): Future[UnloadingFindingsViewModel] = new UnloadingFindingsViewModelProvider()(userAnswers)
+  def apply(userAnswers: UserAnswers)(implicit messages: Messages): UnloadingFindingsViewModel = new UnloadingFindingsViewModelProvider()(userAnswers)
 
   class UnloadingFindingsViewModelProvider @Inject() () {
 
-    def apply(userAnswers: UserAnswers)(implicit messages: Messages, ex: ExecutionContext): Future[UnloadingFindingsViewModel] = {
-      val helper = new UnloadingFindingsAnswersHelper(userAnswers)
+    def apply(userAnswers: UserAnswers)(implicit messages: Messages): UnloadingFindingsViewModel = {
+      val helper = new ConsignmentAnswersHelper(userAnswers)
 
-      helper.buildTransportSections.map {
-        meansOfTransportSections =>
-          val additionalReferenceSection: Section =
-            Section(sectionTitle = messages("unloadingFindings.additional.reference.heading"), rows = helper.additionalReferences)
-          val transportEquipmentSections: Seq[Section] = helper.transportEquipmentSections
+      val sections = Seq(
+        Seq(helper.headerSection),
+        helper.departureTransportMeansSections,
+        helper.transportEquipmentSections,
+        helper.houseConsignmentSections,
+        helper.additionalReferencesSections
+      ).flatten
 
-          val houseConsignmentSections: Seq[Section] = helper.houseConsignmentSections
-
-          val sections: Seq[Section] = meansOfTransportSections ++ transportEquipmentSections ++ houseConsignmentSections :+ additionalReferenceSection
-
-          new UnloadingFindingsViewModel(sections)
-      }
+      new UnloadingFindingsViewModel(sections)
     }
   }
 }

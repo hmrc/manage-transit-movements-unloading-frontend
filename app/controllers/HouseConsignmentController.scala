@@ -22,11 +22,10 @@ import models.{ArrivalId, Index}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.HouseConsignmentViewModel
 import viewModels.HouseConsignmentViewModel.HouseConsignmentViewModelProvider
 import views.html.HouseConsignmentView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class HouseConsignmentController @Inject() (
   override val messagesApi: MessagesApi,
@@ -39,15 +38,10 @@ class HouseConsignmentController @Inject() (
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+    actions.getStatus(arrivalId) {
       implicit request =>
-        val houseConsignmentViewModel: Future[HouseConsignmentViewModel] =
-          viewModelProvider.apply(request.userAnswers, houseConsignmentIndex)
+        val viewModel = viewModelProvider.apply(request.userAnswers, houseConsignmentIndex)
 
-        houseConsignmentViewModel.map {
-          viewModel =>
-            Ok(view(request.userAnswers.mrn, arrivalId, viewModel, houseConsignmentIndex))
-        }
+        Ok(view(request.userAnswers.mrn, arrivalId, viewModel, houseConsignmentIndex))
     }
-
 }

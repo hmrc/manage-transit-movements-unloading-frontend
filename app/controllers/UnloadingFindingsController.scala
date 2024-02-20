@@ -22,11 +22,10 @@ import models.ArrivalId
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.UnloadingFindingsViewModel
 import viewModels.UnloadingFindingsViewModel.UnloadingFindingsViewModelProvider
 import views.html.UnloadingFindingsView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class UnloadingFindingsController @Inject() (
   override val messagesApi: MessagesApi,
@@ -39,16 +38,9 @@ class UnloadingFindingsController @Inject() (
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+    actions.getStatus(arrivalId) {
       implicit request =>
-        val unloadingFindingsViewModel: Future[UnloadingFindingsViewModel] =
-          viewModelProvider.apply(request.userAnswers)
-
-        unloadingFindingsViewModel.map {
-          viewModel =>
-            Ok(view(request.userAnswers.mrn, arrivalId, viewModel))
-        }
-
+        val viewModel = viewModelProvider.apply(request.userAnswers)
+        Ok(view(request.userAnswers.mrn, arrivalId, viewModel))
     }
-
 }
