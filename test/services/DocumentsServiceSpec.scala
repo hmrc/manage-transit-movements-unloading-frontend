@@ -19,6 +19,7 @@ package services
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
+import models.DocType.{Support, Transport}
 import models.SelectableList
 import models.reference.DocumentType
 import org.mockito.ArgumentMatchers.any
@@ -33,13 +34,13 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                      = new DocumentsService(mockRefDataConnector)
 
-  private val transportDocument1  = DocumentType("N235", "Container list")
-  private val transportDocument2  = DocumentType("N741", "Master airwaybill")
-  private val supportingDocument1 = DocumentType("C673", "Catch certificate")
-  private val supportingDocument2 = DocumentType("N941", "Embargo permit")
+  private val transportDocument1  = DocumentType(Transport, "N235", "Container list")
+  private val transportDocument2  = DocumentType(Transport, "N741", "Master airwaybill")
+  private val supportingDocument1 = DocumentType(Support, "C673", "Catch certificate")
+  private val supportingDocument2 = DocumentType(Support, "N941", "Embargo permit")
 
   private val transportDocuments  = NonEmptySet.of(transportDocument1, transportDocument2)
-  private val supportingDocuments = NonEmptySet.of(supportingDocument1, transportDocument2)
+  private val supportingDocuments = NonEmptySet.of(supportingDocument1, supportingDocument2)
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -47,6 +48,21 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
   }
 
   "DocumentsService" - {
+
+    "getDocuments" - {
+      "returns a list of transport and supporting documents" in {
+        when(mockRefDataConnector.getTransportDocuments()(any(), any()))
+          .thenReturn(Future.successful(transportDocuments))
+        when(mockRefDataConnector.getSupportingDocuments()(any(), any()))
+          .thenReturn(Future.successful(supportingDocuments))
+
+        service.getDocuments().futureValue mustBe
+          SelectableList(Seq(transportDocument1, transportDocument2, supportingDocument1, supportingDocument2))
+
+        verify(mockRefDataConnector).getTransportDocuments()(any(), any())
+        verify(mockRefDataConnector).getSupportingDocuments()(any(), any())
+      }
+    }
 
     "getTransportDocuments" - {
       "returns a list of transport documents" in {

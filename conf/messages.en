@@ -578,3 +578,9 @@ houseConsignment.index.items.additionalReference.additionalReferenceNumber.error
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.NormalMode.error.required = Enter the additional reference number
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.CheckMode.error.required = Enter the new additional reference number for item {1} in house consignment {0}
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.paragraph = You need to enter a reference number as you have already added this type of additional reference.
+
+document.type.title = What is the new document type?
+document.type.heading = What is the new document type?
+document.type.hint = Enter the document name or code.
+document.type.placeholder = Select a document type
+document.type.check.error.required = Select the new document type

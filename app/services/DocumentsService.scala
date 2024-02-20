@@ -26,19 +26,23 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DocumentsService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-  private def sort(documents: Seq[DocumentType]): SelectableList[DocumentType] =
-    SelectableList(documents.sortBy(_.description.toLowerCase))
+  def getDocuments()(implicit hc: HeaderCarrier): Future[SelectableList[DocumentType]] =
+    for {
+      transportDocuments  <- referenceDataConnector.getTransportDocuments().map(_.toSeq)
+      supportingDocuments <- referenceDataConnector.getSupportingDocuments().map(_.toSeq)
+      documents = transportDocuments ++ supportingDocuments
+    } yield SelectableList(documents)
 
   def getTransportDocuments()(implicit hc: HeaderCarrier): Future[SelectableList[DocumentType]] =
     referenceDataConnector
       .getTransportDocuments()
       .map(_.toSeq)
-      .map(sort)
+      .map(SelectableList(_))
 
   def getSupportingDocuments()(implicit hc: HeaderCarrier): Future[SelectableList[DocumentType]] =
     referenceDataConnector
       .getSupportingDocuments()
       .map(_.toSeq)
-      .map(sort)
+      .map(SelectableList(_))
 
 }

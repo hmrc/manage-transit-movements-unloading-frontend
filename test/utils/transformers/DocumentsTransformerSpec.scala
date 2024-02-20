@@ -20,6 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import connectors.ReferenceDataConnector
 import generated.{SupportingDocumentType02, TransportDocumentType02}
 import generators.Generators
+import models.DocType.{Support, Transport}
 import models.Index
 import models.reference.DocumentType
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
@@ -79,16 +80,16 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
     )
 
     when(mockReferenceDataConnector.getSupportingDocument(eqTo("sd1 tv"))(any(), any()))
-      .thenReturn(Future.successful(DocumentType("sd1 tv", "sd1 d")))
+      .thenReturn(Future.successful(DocumentType(Support, "sd1 tv", "sd1 d")))
 
     when(mockReferenceDataConnector.getSupportingDocument(eqTo("sd2 tv"))(any(), any()))
-      .thenReturn(Future.successful(DocumentType("sd2 tv", "sd2 d")))
+      .thenReturn(Future.successful(DocumentType(Support, "sd2 tv", "sd2 d")))
 
     when(mockReferenceDataConnector.getTransportDocument(eqTo("td1 tv"))(any(), any()))
-      .thenReturn(Future.successful(DocumentType("td1 tv", "td1 d")))
+      .thenReturn(Future.successful(DocumentType(Transport, "td1 tv", "td1 d")))
 
     when(mockReferenceDataConnector.getTransportDocument(eqTo("td2 tv"))(any(), any()))
-      .thenReturn(Future.successful(DocumentType("td2 tv", "td2 d")))
+      .thenReturn(Future.successful(DocumentType(Transport, "td2 tv", "td2 d")))
 
     val result = transformer.transform(supportingDocuments, transportDocuments).apply(emptyUserAnswers).futureValue
 

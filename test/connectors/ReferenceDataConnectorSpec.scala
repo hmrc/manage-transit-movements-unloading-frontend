@@ -21,6 +21,7 @@ import cats.data.NonEmptySet
 import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import connectors.ReferenceDataConnectorSpec._
+import models.DocType.{Support, Transport}
 import models.reference._
 import models.reference.transport.TransportMode.{BorderMode, InlandMode}
 import org.scalacheck.Gen
@@ -212,7 +213,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(supportingDocumentResponseJson))
         )
 
-        val expectedResult: DocumentType = DocumentType(typeValue, "Dissostichus - catch document import")
+        val expectedResult: DocumentType = DocumentType(Support, typeValue, "Dissostichus - catch document import")
 
         connector.getSupportingDocument(typeValue).futureValue mustEqual expectedResult
       }
@@ -280,13 +281,13 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       val typeValue = "N235"
       val url       = s"/$baseUrl/lists/TransportDocumentType?data.code=$typeValue"
 
-      "must return supporting document when successful" in {
+      "must return transport document when successful" in {
         server.stubFor(
           get(urlEqualTo(url))
             .willReturn(okJson(transportDocumentResponseJson))
         )
 
-        val expectedResult: DocumentType = DocumentType(typeValue, "Container list")
+        val expectedResult: DocumentType = DocumentType(Transport, typeValue, "Container list")
 
         connector.getTransportDocument(typeValue).futureValue mustEqual expectedResult
       }
@@ -310,8 +311,8 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         )
 
         val expectResult = NonEmptySet.of(
-          DocumentType("1", "Document 1"),
-          DocumentType("4", "Document 2")
+          DocumentType(Transport, "1", "Document 1"),
+          DocumentType(Transport, "4", "Document 2")
         )
 
         connector.getTransportDocuments().futureValue mustEqual expectResult
@@ -336,8 +337,8 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         )
 
         val expectResult = NonEmptySet.of(
-          DocumentType("1", "Document 1"),
-          DocumentType("4", "Document 2")
+          DocumentType(Support, "1", "Document 1"),
+          DocumentType(Support, "4", "Document 2")
         )
 
         connector.getSupportingDocuments().futureValue mustEqual expectResult

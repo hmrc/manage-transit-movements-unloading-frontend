@@ -21,6 +21,7 @@ import cats.data.NonEmptySet
 import config.FrontendAppConfig
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import logging.Logging
+import models.DocType.{Support, Transport}
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference._
 import models.reference.transport.TransportMode
@@ -103,8 +104,9 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   }
 
   def getSupportingDocument(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DocumentType] = {
-    val queryParams: Seq[(String, String)] = Seq("data.code" -> typeValue)
-    val url                                = s"${config.referenceDataUrl}/lists/SupportingDocumentType"
+    val queryParams: Seq[(String, String)]  = Seq("data.code" -> typeValue)
+    val url                                 = s"${config.referenceDataUrl}/lists/SupportingDocumentType"
+    implicit val reads: Reads[DocumentType] = DocumentType.reads(Support)
     http.GET[NonEmptySet[DocumentType]](url, headers = version2Header, queryParams = queryParams).map(_.head)
   }
 
@@ -120,18 +122,21 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   }
 
   def getTransportDocument(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DocumentType] = {
-    val queryParams: Seq[(String, String)] = Seq("data.code" -> typeValue)
-    val url                                = s"${config.referenceDataUrl}/lists/TransportDocumentType"
+    val queryParams: Seq[(String, String)]  = Seq("data.code" -> typeValue)
+    val url                                 = s"${config.referenceDataUrl}/lists/TransportDocumentType"
+    implicit val reads: Reads[DocumentType] = DocumentType.reads(Transport)
     http.GET[NonEmptySet[DocumentType]](url, headers = version2Header, queryParams = queryParams).map(_.head)
   }
 
   def getSupportingDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[DocumentType]] = {
-    val url = s"${config.referenceDataUrl}/lists/SupportingDocumentType"
+    val url                                 = s"${config.referenceDataUrl}/lists/SupportingDocumentType"
+    implicit val reads: Reads[DocumentType] = DocumentType.reads(Support)
     http.GET[NonEmptySet[DocumentType]](url, headers = version2Header)
   }
 
   def getTransportDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[DocumentType]] = {
-    val url = s"${config.referenceDataUrl}/lists/TransportDocumentType"
+    val url                                 = s"${config.referenceDataUrl}/lists/TransportDocumentType"
+    implicit val reads: Reads[DocumentType] = DocumentType.reads(Transport)
     http.GET[NonEmptySet[DocumentType]](url, headers = version2Header)
   }
 
