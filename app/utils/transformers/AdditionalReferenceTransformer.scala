@@ -17,10 +17,11 @@
 package utils.transformers
 
 import connectors.ReferenceDataConnector
-import generated.AdditionalReferenceType03
+import generated.{AdditionalReferenceType02, AdditionalReferenceType03}
 import models.reference.AdditionalReferenceType
 import models.{Index, UserAnswers}
 import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
+import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -32,6 +33,7 @@ class AdditionalReferenceTransformer @Inject() (referenceDataConnector: Referenc
     typeValue: AdditionalReferenceType,
     referenceNumber: Option[String]
   )
+  private case class TempAdditionalReferenceHC(typeValue: AdditionalReferenceType)
 
   def transform(additionalReferences: Seq[AdditionalReferenceType03])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
 
@@ -61,5 +63,34 @@ class AdditionalReferenceTransformer @Inject() (referenceDataConnector: Referenc
       })
     }
 
+  }
+
+  def transform(additionalReferences: Seq[AdditionalReferenceType02], hcIndex: Index, itemIndex: Index)(implicit
+    hc: HeaderCarrier
+  ): UserAnswers => Future[UserAnswers] = userAnswers => {
+
+    lazy val referenceDataLookups = additionalReferences.map {
+      additionalReference =>
+        referenceDataConnector.getAdditionalReferenceType(additionalReference.typeValue).map {
+          additionalReferenceType =>
+            TempAdditionalReferenceHC(
+              typeValue = additionalReferenceType
+            )
+        }
+    }
+
+    Future.sequence(referenceDataLookups).flatMap {
+      _.zipWithIndex.foldLeft(Future.successful(userAnswers))({
+        case (acc, (TempAdditionalReferenceHC(additionalReference), i)) =>
+          acc.flatMap {
+            userAnswers =>
+              val sequence = Index(i)
+              val pipeline: UserAnswers => Future[UserAnswers] =
+                set(AdditionalReferencePage(hcIndex, itemIndex, sequence), additionalReference)
+
+              pipeline(userAnswers)
+          }
+      })
+    }
   }
 }

@@ -19,11 +19,13 @@ package utils.answersHelpers.consignment.houseConsignment
 import models.{Index, UserAnswers}
 import pages.NetWeightPage
 import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage}
+import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferencesSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
+import utils.answersHelpers.consignment.houseConsignment.item.AdditionalReferencesAnswerHelper
 
 class ConsignmentItemAnswersHelper(
   userAnswers: UserAnswers,
@@ -57,4 +59,10 @@ class ConsignmentItemAnswersHelper(
     id = Some(s"change-net-weight-${houseConsignmentIndex.display}"),
     call = Some(Call(GET, "#"))
   )
+
+  def additionalReferences: Seq[SummaryListRow] =
+    getAnswersAndBuildSectionRows(AdditionalReferencesSection(houseConsignmentIndex, itemIndex)) {
+      additionalReferenceIndex =>
+        new AdditionalReferencesAnswerHelper(userAnswers, houseConsignmentIndex, itemIndex, additionalReferenceIndex).additionalReferenceRow
+    }
 }

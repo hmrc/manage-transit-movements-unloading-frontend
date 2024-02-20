@@ -24,5 +24,5 @@ case class AdditionalReferencesSection(houseConsignmentIndex: Index, itemIndex: 
 
   override def path: JsPath = ItemsSection(houseConsignmentIndex).path \ itemIndex.position \ toString
 
-  override def toString: String = "additionalReferences"
+  override def toString: String = "AdditionalReference"
 }
