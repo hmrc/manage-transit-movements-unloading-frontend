@@ -16,9 +16,12 @@
 
 package utils.answersHelpers.consignment.houseConsignment
 
+import models.reference.AdditionalReferenceType
 import models.{Index, UserAnswers}
 import pages.NetWeightPage
+import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
 import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage}
+import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferencesSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -57,4 +60,20 @@ class ConsignmentItemAnswersHelper(
     id = Some(s"change-net-weight-${houseConsignmentIndex.display}"),
     call = Some(Call(GET, "#"))
   )
+
+  def additionalReferences: Seq[SummaryListRow] =
+    getAnswersAndBuildSectionRows(AdditionalReferencesSection(houseConsignmentIndex, itemIndex)) {
+      additionalReferenceIndex =>
+        additionalReferenceRow(houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+    }
+
+  def additionalReferenceRow(hcIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): Option[SummaryListRow] =
+    getAnswerAndBuildRowWithoutKey[AdditionalReferenceType](
+      page = AdditionalReferencePage(hcIndex, itemIndex, additionalReferenceIndex),
+      formatAnswer = formatAsText,
+      prefix = "unloadingFindings.additional.reference",
+      args = additionalReferenceIndex.display,
+      id = Some(s"change-additional-reference-${additionalReferenceIndex.display}"),
+      call = Some(Call(GET, "#")) //TODO change me please
+    )
 }

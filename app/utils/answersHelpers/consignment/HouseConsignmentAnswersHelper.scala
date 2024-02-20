@@ -84,12 +84,21 @@ class HouseConsignmentAnswersHelper(
       case (_, itemIndex) =>
         val helper = new ConsignmentItemAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex)
         AccordionSection(
-          sectionTitle = messages("unloadingFindings.subsections.item", itemIndex.display),
+          sectionTitle = Some(messages("unloadingFindings.subsections.item", itemIndex.display)),
           rows = Seq(
             helper.descriptionRow,
             helper.grossWeightRow,
             helper.netWeightRow
-          ).flatten
+          ).flatten,
+          children = Seq(additionalReferenceSection(houseConsignmentIndex, itemIndex))
         )
     }
+
+  def additionalReferenceSection(houseConsignmentIndex: Index, itemIndex: Index): Section = {
+    val helper = new ConsignmentItemAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex)
+    AccordionSection(
+      messages("unloadingFindings.additional.reference.heading"),
+      helper.additionalReferences
+    )
+  }
 }
