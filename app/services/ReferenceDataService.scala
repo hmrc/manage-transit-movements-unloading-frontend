@@ -19,6 +19,7 @@ package services
 import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
+import models.{DeclarationType, SecurityType}
 import models.reference.{Country, CustomsOffice}
 import uk.gov.hmrc.http.HeaderCarrier
 

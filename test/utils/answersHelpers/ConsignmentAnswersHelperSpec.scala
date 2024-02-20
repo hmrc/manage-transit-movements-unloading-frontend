@@ -79,7 +79,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase with Generators
             val result = helper.declarationTypeRow
 
             result.key.value mustBe "Declaration type"
-            result.value.value mustBe s"Some($value)"
+            result.value.value mustBe value.toString
             result.actions must not be defined
         }
       }

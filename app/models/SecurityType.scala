@@ -16,6 +16,7 @@
 
 package models
 
+import cats.Order
 import org.apache.commons.text.StringEscapeUtils
 import play.api.libs.json.{Format, Json}
 
@@ -31,6 +32,7 @@ case class SecurityType(
 
 object SecurityType extends DynamicEnumerableType[SecurityType] {
   implicit val format: Format[SecurityType] = Json.format[SecurityType]
+  implicit val order: Order[SecurityType]   = (x: SecurityType, y: SecurityType) => x.code.compareToIgnoreCase(y.code)
 
   val messageKeyPrefix = "securityDetailsType"
 }

@@ -24,6 +24,7 @@ import logging.Logging
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference._
 import models.reference.transport.TransportMode
+import models.{DeclarationType, SecurityType}
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, Reads}
 import sttp.model.HeaderNames
@@ -58,6 +59,40 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getMeansOfTransportIdentificationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[TransportMeansIdentification]] = {
     val url = s"${config.referenceDataUrl}/lists/TypeOfIdentificationOfMeansOfTransport"
     http.GET[NonEmptySet[TransportMeansIdentification]](url, headers = version2Header)
+  }
+
+  def getDeclarationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[DeclarationType]] = {
+    val url = s"${config.referenceDataUrl}/lists/DeclarationType"
+    http.GET[Seq[DeclarationType]](url, headers = version2Header)
+  }
+
+  def getDeclarationType(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DeclarationType] = {
+    val queryParams: Seq[(String, String)] = Seq("data.code" -> typeValue)
+    val serviceUrl                         = s"${config.referenceDataUrl}/lists/DeclarationType"
+    http
+      .GET[NonEmptySet[DeclarationType]](serviceUrl, headers = version2Header, queryParams = queryParams)(
+        responseHandlerGeneric(DeclarationType.format, DeclarationType.order),
+        hc,
+        ec
+      )
+      .map(_.head)
+  }
+
+  def getSecurityTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[SecurityType]] = {
+    val url = s"${config.referenceDataUrl}/lists/DeclarationTypeSecurity"
+    http.GET[Seq[SecurityType]](url, headers = version2Header)
+  }
+
+  def getSecurityType(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[SecurityType] = {
+    val queryParams: Seq[(String, String)] = Seq("data.code" -> typeValue)
+    val serviceUrl                         = s"${config.referenceDataUrl}/lists/DeclarationTypeSecurity"
+    http
+      .GET[NonEmptySet[SecurityType]](serviceUrl, headers = version2Header, queryParams = queryParams)(
+        responseHandlerGeneric(SecurityType.format, SecurityType.order),
+        hc,
+        ec
+      )
+      .map(_.head)
   }
 
   def getMeansOfTransportIdentificationType(

@@ -24,8 +24,13 @@ import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.Format.cyaDateFormatter
+import services.ReferenceDataService
+import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDate
+import javax.inject.Inject
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class SummaryListRowHelper(implicit messages: Messages) {
 
@@ -35,6 +40,14 @@ class SummaryListRowHelper(implicit messages: Messages) {
         "site.yes"
       } else {
         "site.no"
+      }
+    }.toText
+
+  def formatAsBoolean(answer: String): Content =
+    messages {
+      answer match {
+        case "1" => messages("site.yes")
+        case "0" => messages("site.no")
       }
     }.toText
 

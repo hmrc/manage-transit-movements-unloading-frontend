@@ -16,6 +16,7 @@
 
 package models
 
+import cats.Order
 import config.Constants.TIR
 import play.api.libs.json.{Format, Json}
 
@@ -33,6 +34,6 @@ case class DeclarationType(
 
 object DeclarationType extends DynamicEnumerableType[DeclarationType] {
   implicit val format: Format[DeclarationType] = Json.format[DeclarationType]
-
-  val messageKeyPrefix = "declarationType"
+  implicit val order: Order[DeclarationType]   = (x: DeclarationType, y: DeclarationType) => x.code.compareToIgnoreCase(y.code)
+  val messageKeyPrefix                         = "declarationType"
 }

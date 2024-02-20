@@ -58,7 +58,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
   def reducedDatasetIndicatorRow: SummaryListRow = buildRow(
     prefix = "reducedDatasetIndicator",
-    answer = userAnswers.ie043Data.TransitOperation.reducedDatasetIndicator.toString.toText,
+    answer = form),
     id = None,
     call = None
   )
