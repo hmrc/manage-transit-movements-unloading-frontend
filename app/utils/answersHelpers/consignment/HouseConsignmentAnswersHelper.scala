@@ -84,12 +84,13 @@ class HouseConsignmentAnswersHelper(
       case (_, itemIndex) =>
         val helper = new ConsignmentItemAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex)
         AccordionSection(
-          sectionTitle = messages("unloadingFindings.subsections.item", itemIndex.display),
+          sectionTitle = Some(messages("unloadingFindings.subsections.item", itemIndex.display)),
           rows = Seq(
             helper.descriptionRow,
             helper.grossWeightRow,
             helper.netWeightRow
-          ).flatten
+          ).flatten,
+          children = helper.packageSections
         )
     }
 }

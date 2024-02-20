@@ -252,6 +252,30 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
     }
 
+    "getPackageType" - {
+      val documentType = "1A"
+      val url          = s"/$baseUrl/lists/KindOfPackages?data.code=$documentType"
+
+      "must return supporting document when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(packageTypeResponseJson))
+        )
+
+        val expectedResult: PackageType = PackageType(documentType, Some("Drum, steel"))
+
+        connector.getPackageType(documentType).futureValue mustEqual expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getPackageType(documentType))
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getPackageType(documentType))
+      }
+    }
+
     "getAdditionalReferenceType" - {
       val documentType = "Y023"
       val url          = s"/$baseUrl/lists/AdditionalReference?data.documentType=$documentType"
@@ -614,6 +638,18 @@ object ReferenceDataConnectorSpec {
       |    {
       |      "documentType": "Y023",
       |      "description": "Consignee (AEO certificate number)"
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+
+  private val packageTypeResponseJson: String =
+    """
+      |{
+      |  "data": [
+      |    {
+      |      "code": "1A",
+      |      "description": "Drum, steel"
       |    }
       |  ]
       |}

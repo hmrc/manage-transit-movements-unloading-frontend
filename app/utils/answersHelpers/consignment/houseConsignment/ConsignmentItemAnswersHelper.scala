@@ -16,14 +16,19 @@
 
 package utils.answersHelpers.consignment.houseConsignment
 
+import models.reference.PackageType
 import models.{Index, UserAnswers}
 import pages.NetWeightPage
+import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
 import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage}
+import pages.sections.PackagingSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
+import viewModels.sections.Section
+import viewModels.sections.Section.AccordionSection
 
 class ConsignmentItemAnswersHelper(
   userAnswers: UserAnswers,
@@ -48,6 +53,49 @@ class ConsignmentItemAnswersHelper(
     id = Some(s"change-gross-weight-${houseConsignmentIndex.display}"),
     call = Some(Call(GET, "#"))
   )
+
+  private[houseConsignment] def packageTypeRow(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[PackageType](
+    page = PackagingTypePage(houseConsignmentIndex, itemIndex, packageIndex),
+    formatAnswer = formatAsPackage,
+    prefix = "unloadingFindings.rowHeadings.item.packageType",
+    args = Seq(packageIndex.display, itemIndex.display): _*,
+    id = Some(s"change-package-type-${packageIndex.display}"),
+    call = Some(Call(GET, "#"))
+  )
+
+  private[houseConsignment] def packageMarksRow(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = PackagingMarksPage(houseConsignmentIndex, itemIndex, packageIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.item.packageMarks",
+    args = Seq(packageIndex.display, itemIndex.display): _*,
+    id = Some(s"change-package-mark-${packageIndex.display}"),
+    call = Some(Call(GET, "#"))
+  )
+
+  private[houseConsignment] def packageCountRow(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[BigInt](
+    page = PackagingCountPage(houseConsignmentIndex, itemIndex, packageIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.item.packageCount",
+    args = Seq(packageIndex.display, itemIndex.display): _*,
+    id = Some(s"change-package-count-${packageIndex.display}"),
+    call = Some(Call(GET, "#"))
+  )
+
+  def packageSections: Seq[Section] =
+    userAnswers
+      .get(PackagingSection(houseConsignmentIndex, itemIndex))
+      .mapWithIndex {
+        case (_, packageIndex) =>
+          val rows = Seq(packageTypeRow(packageIndex), packageCountRow(packageIndex), packageMarksRow(packageIndex)).flatten
+
+          val section = AccordionSection(
+            sectionTitle = messages("unloadingFindings.subsections.packages", packageIndex.display),
+            rows = rows
+          )
+
+          section
+
+      }
 
   def netWeightRow: Option[SummaryListRow] = getAnswerAndBuildRow[Double](
     page = NetWeightPage(houseConsignmentIndex, itemIndex),
