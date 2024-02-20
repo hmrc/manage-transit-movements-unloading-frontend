@@ -15,7 +15,7 @@ object AppDependencies {
     "com.lucidchart"       %% "xtract"                                  % "2.3.0",
     "org.apache.commons"    % "commons-text"                            % "1.10.0",
     "uk.gov.hmrc"          %% "play-allowlist-filter"                   % "1.2.0",
-    "uk.gov.hmrc"          %% "play-frontend-hmrc-play-30"              % "8.0.0",
+    "uk.gov.hmrc"          %% "play-frontend-hmrc-play-30"              % "8.5.0",
     "uk.gov.hmrc"          %% "crypto-json-play-30"                     % "7.6.0"
   )
 

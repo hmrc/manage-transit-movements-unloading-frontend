@@ -85,7 +85,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, mode).url
+          controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, itemIndex, mode).url
       }
     }
 
@@ -105,7 +105,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(notMaxedOutViewModel, equipmentIndex), arrivalId.value, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
+          view(form(notMaxedOutViewModel, equipmentIndex), mrn, arrivalId.value, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
       }
 
       "when max limit reached" in {
@@ -123,7 +123,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(maxedOutViewModel, equipmentIndex), arrivalId.value, maxedOutViewModel)(request, messages, frontendAppConfig).toString
+          view(form(maxedOutViewModel, equipmentIndex), mrn, arrivalId.value, maxedOutViewModel)(request, messages, frontendAppConfig).toString
       }
     }
 
@@ -146,7 +146,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, arrivalId.value, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
+          view(boundForm, mrn, arrivalId.value, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
       }
     }
 

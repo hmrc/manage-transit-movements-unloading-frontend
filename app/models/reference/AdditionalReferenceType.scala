@@ -19,9 +19,11 @@ package models.reference
 import cats.Order
 import play.api.libs.json.{Format, Json}
 
-case class AdditionalReferenceType(documentType: String, description: String) {
+case class AdditionalReferenceType(documentType: String, description: String) extends Selectable {
 
   override def toString: String = s"$documentType - $description"
+
+  override val value: String = documentType
 }
 
 object AdditionalReferenceType {

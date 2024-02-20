@@ -16,7 +16,7 @@
 
 package generators
 
-import models.Index
+import models.{ArrivalId, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.FormError
@@ -26,14 +26,16 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{Content, Hint, Label, RadioItem}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
-import viewModels.{ListItem, UnloadingFindingsViewModel}
+import viewModels.additionalReference.index.AdditionalReferenceTypeViewModel
 import viewModels.departureTransportMeans._
 import viewModels.documents.{AdditionalInformationViewModel, DocumentReferenceNumberViewModel}
 import viewModels.houseConsignment.index.items._
+import viewModels.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberViewModel, AdditionalReferenceViewModel}
 import viewModels.houseConsignment.index.items.document.{ItemsAdditionalInformationViewModel, ItemsDocumentReferenceNumberViewModel}
-import viewModels.sections.Section
-import viewModels.transportEquipment.index.{ApplyAnotherItemViewModel, ContainerIdentificationNumberViewModel}
+import viewModels.sections.Section.{AccordionSection, StaticSection}
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
+import viewModels.transportEquipment.index.{ApplyAnotherItemViewModel, ContainerIdentificationNumberViewModel}
+import viewModels.{ListItem, UnloadingFindingsViewModel}
 
 trait ViewModelGenerators {
   self: Generators =>
@@ -90,20 +92,28 @@ trait ViewModelGenerators {
     } yield SummaryListRow(key, value, classes, actions)
   }
 
-  implicit lazy val arbitrarySection: Arbitrary[Section] = Arbitrary {
+  implicit lazy val arbitraryStaticSection: Arbitrary[StaticSection] = Arbitrary {
     for {
       sectionTitle <- nonEmptyString
       length       <- Gen.choose(1, maxSeqLength)
       rows         <- Gen.containerOfN[Seq, SummaryListRow](length, arbitrary[SummaryListRow])
-    } yield Section(sectionTitle, rows)
+    } yield StaticSection(sectionTitle, rows)
   }
 
-  implicit lazy val arbitrarySections: Arbitrary[List[Section]] = Arbitrary {
-    listWithMaxLength[Section]().retryUntil {
-      sections =>
-        val sectionTitles = sections.map(_.sectionTitle)
-        sectionTitles.distinct.size == sectionTitles.size
-    }
+  implicit lazy val arbitraryAccordionSection: Arbitrary[AccordionSection] = Arbitrary {
+    for {
+      sectionTitle <- nonEmptyString
+      length       <- Gen.choose(1, maxSeqLength)
+      rows         <- Gen.containerOfN[Seq, SummaryListRow](length, arbitrary[SummaryListRow])
+    } yield AccordionSection(sectionTitle, rows)
+  }
+
+  implicit lazy val arbitraryStaticSections: Arbitrary[List[StaticSection]] = Arbitrary {
+    distinctListWithMaxLength[StaticSection, Option[String]]()(_.sectionTitle)
+  }
+
+  implicit lazy val arbitraryAccordionSections: Arbitrary[List[AccordionSection]] = Arbitrary {
+    distinctListWithMaxLength[AccordionSection, Option[String]]()(_.sectionTitle)
   }
 
   implicit lazy val arbitraryHtml: Arbitrary[Html] = Arbitrary {
@@ -164,7 +174,7 @@ trait ViewModelGenerators {
 
   implicit lazy val arbitraryUnloadingFindingsViewModel: Arbitrary[UnloadingFindingsViewModel] = Arbitrary {
     for {
-      sections <- arbitrarySections.arbitrary
+      sections <- arbitraryStaticSections.arbitrary
     } yield UnloadingFindingsViewModel(sections)
   }
 
@@ -278,5 +288,32 @@ trait ViewModelGenerators {
       title         <- nonEmptyString
       requiredError <- nonEmptyString
     } yield ItemsAdditionalInformationViewModel(heading, title, requiredError)
+  }
+
+  implicit lazy val arbitraryItemsAdditionalReferenceViewModel: Arbitrary[AdditionalReferenceViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+      arrivalId     <- nonEmptyString
+    } yield AdditionalReferenceViewModel(heading, title, requiredError, ArrivalId(arrivalId), NormalMode, Index(0), Index(0), Index(0))
+  }
+
+  implicit lazy val arbitraryItemsAdditionalReferenceNumberViewModel: Arbitrary[AdditionalReferenceNumberViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+      arrivalId     <- nonEmptyString
+    } yield AdditionalReferenceNumberViewModel(heading, title, requiredError, ArrivalId(arrivalId), NormalMode, Index(0), Index(0), Index(0))
+  }
+
+  implicit lazy val arbitraryAdditionalReferenceViewModel: Arbitrary[AdditionalReferenceTypeViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+      arrivalId     <- nonEmptyString
+    } yield AdditionalReferenceTypeViewModel(heading, title, requiredError, ArrivalId(arrivalId), NormalMode, Index(0))
   }
 }

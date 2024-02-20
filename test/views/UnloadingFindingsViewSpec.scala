@@ -18,11 +18,8 @@ package views
 
 import generators.Generators
 import models.NormalMode
-import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewModels.UnloadingFindingsViewModel
-import viewModels.sections.Section
 import views.behaviours.DetailsListViewBehaviours
 import views.html.UnloadingFindingsView
 
@@ -30,15 +27,9 @@ class UnloadingFindingsViewSpec extends DetailsListViewBehaviours with Generator
 
   override val prefix: String = "unloadingFindings"
 
-  lazy val sections: Seq[Section] = arbitrary[List[Section]].sample.value
-
   override def view: HtmlFormat.Appendable = injector.instanceOf[UnloadingFindingsView].apply(mrn, arrivalId, unloadingFindingsViewModel)(fakeRequest, messages)
 
   val unloadingFindingsViewModel: UnloadingFindingsViewModel = new UnloadingFindingsViewModel(sections)
-
-  override def summaryLists: Seq[SummaryList] = sections.map(
-    section => SummaryList(section.rows)
-  )
 
   behave like pageWithTitle()
 
