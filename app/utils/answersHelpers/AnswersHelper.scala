@@ -69,7 +69,16 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
 
   implicit class RichOptionalJsArray(arr: Option[JsArray]) {
 
-    def mapWithIndex[T](f: (JsValue, Index) => Option[T]): Seq[T] =
+    def mapWithIndex[T](f: (JsValue, Index) => T): Seq[T] =
+      arr
+        .map {
+          _.zipWithIndex.map {
+            case (value, i) => f(value, i)
+          }
+        }
+        .getOrElse(Nil)
+
+    def flatMapWithIndex[T](f: (JsValue, Index) => Option[T]): Seq[T] =
       arr
         .map {
           _.zipWithIndex.flatMap {
@@ -88,7 +97,7 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
   def getAnswersAndBuildSectionRows(section: Section[JsArray])(f: Index => Option[SummaryListRow]): Seq[SummaryListRow] =
     userAnswers
       .get(section)
-      .mapWithIndex {
+      .flatMapWithIndex {
         (_, index) => f(index)
       }
 }
