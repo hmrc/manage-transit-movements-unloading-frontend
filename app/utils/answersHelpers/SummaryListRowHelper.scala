@@ -82,6 +82,33 @@ class SummaryListRowHelper(implicit messages: Messages) {
       }
     )
 
+  def buildRowWithoutKey(
+    prefix: String,
+    answer: Content,
+    id: Option[String],
+    call: Option[Call],
+    args: Any*
+  ): SummaryListRow =
+    SummaryListRow(
+      key = Key(classes = "govuk-!-display-none"),
+      value = Value(answer),
+      actions = call.map {
+        x =>
+          Actions(items =
+            List(
+              ActionItem(
+                content = messages("site.edit").toText,
+                href = x.url,
+                visuallyHiddenText = Some(messages(s"$prefix.change.hidden", args: _*)),
+                attributes = id.fold[Map[String, String]](Map.empty)(
+                  id => Map("id" -> id)
+                )
+              )
+            )
+          )
+      }
+    )
+
   protected def buildRow(
     prefix: String,
     answer: Content,

@@ -90,7 +90,12 @@ class HouseConsignmentAnswersHelper(
             helper.grossWeightRow,
             helper.netWeightRow
           ).flatten,
-          children = helper.packageSections
+          children = helper.packageSections ++ Seq(
+            AccordionSection(
+              messages("unloadingFindings.additional.reference.heading"),
+              helper.additionalReferences
+            )
+          )
         )
     }
 }

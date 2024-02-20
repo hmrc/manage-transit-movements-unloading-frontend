@@ -18,10 +18,12 @@ package utils.answersHelpers.consignment
 
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.{Country, PackageType}
+import models.reference.{AdditionalReferenceType, Country}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
 import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
+import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
 import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage}
 import utils.answersHelpers.AnswersHelperSpecBase
 import viewModels.sections.Section.AccordionSection
@@ -158,8 +160,8 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
     "itemSections" - {
       "must generate accordion sections" in {
-        forAll(Gen.alphaNumStr, arbitrary[BigDecimal], arbitrary[Double], arbitrary[PackageType], arbitrary[BigInt], arbitrary[String]) {
-          (description, grossWeight, netWeight, packageType, count, mark) =>
+        forAll(Gen.alphaNumStr, arbitrary[BigDecimal], arbitrary[Double], arbitrary[PackageType], arbitrary[BigInt], arbitrary[String],arbitrary[AdditionalReferenceType]) {
+          (description, grossWeight, netWeight, packageType, count, mark,additionalReference) =>
             val answers = emptyUserAnswers
               .setValue(ItemDescriptionPage(hcIndex, itemIndex), description)
               .setValue(GrossWeightPage(hcIndex, itemIndex), grossWeight)
@@ -167,6 +169,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(PackagingTypePage(hcIndex, itemIndex, packageIndex), packageType)
               .setValue(PackagingCountPage(hcIndex, itemIndex, packageIndex), count)
               .setValue(PackagingMarksPage(hcIndex, itemIndex, packageIndex), mark)
+              .setValue(AdditionalReferencePage(hcIndex, itemIndex, additionalReferenceIndex), additionalReference)
 
             val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
             val result = helper.itemSections
@@ -183,6 +186,12 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.head.children.head.rows(0).value.value mustBe s"${packageType.asDescription}"
             result.head.children.head.rows(1).value.value mustBe s"$count"
             result.head.children.head.rows(2).value.value mustBe s"$mark"
+
+            result.head.children.head mustBe a[AccordionSection]
+            result.head.children.head.sectionTitle.value mustBe "Additional references"
+            result.head.children.head.rows.size mustBe 1
+            result.head.children.head.rows.head.value.value mustBe additionalReference.toString
+
         }
       }
     }

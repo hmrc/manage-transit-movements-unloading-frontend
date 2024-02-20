@@ -274,6 +274,19 @@ trait MessagesModelGenerators {
       )
     }
 
+  implicit lazy val arbitraryAdditionalReferenceType02: Arbitrary[AdditionalReferenceType02] =
+    Arbitrary {
+      for {
+        sequenceNumber <- Gen.alphaNumStr
+        typeVal        <- Gen.alphaNumStr
+        refNum         <- Gen.option(Gen.alphaNumStr)
+      } yield AdditionalReferenceType02(
+        sequenceNumber = sequenceNumber,
+        typeValue = typeVal,
+        referenceNumber = refNum
+      )
+    }
+
   implicit lazy val arbitraryAdditionalReferenceType03: Arbitrary[AdditionalReferenceType03] =
     Arbitrary {
       for {

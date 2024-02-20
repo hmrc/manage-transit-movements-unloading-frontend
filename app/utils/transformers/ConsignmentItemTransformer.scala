@@ -25,7 +25,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ConsignmentItemTransformer @Inject() (
   commodityTransformer: CommodityTransformer,
-  packagingTransformer: PackagingTransformer
+  packagingTransformer: PackagingTransformer,
+  additionalReferenceTransformer: AdditionalReferenceTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
@@ -37,7 +38,8 @@ class ConsignmentItemTransformer @Inject() (
             val itemIndex: Index = Index(i)
             val pipeline: UserAnswers => Future[UserAnswers] =
               commodityTransformer.transform(consignmentItemType04.Commodity, hcIndex, itemIndex) andThen
-                packagingTransformer.transform(consignmentItemType04.Packaging, hcIndex, itemIndex)
+                packagingTransformer.transform(consignmentItemType04.Packaging, hcIndex, itemIndex) andThen
+                additionalReferenceTransformer.transform(consignmentItemType04.AdditionalReference, hcIndex, itemIndex)
 
             pipeline(userAnswers)
         }
