@@ -90,15 +90,12 @@ class HouseConsignmentAnswersHelper(
             helper.grossWeightRow,
             helper.netWeightRow
           ).flatten,
-          children = Seq(additionalReferenceSection(itemIndex))
+          children = Seq(
+            AccordionSection(
+              messages("unloadingFindings.additional.reference.heading"),
+              helper.additionalReferences
+            )
+          )
         )
     }
-
-  def additionalReferenceSection(itemIndex: Index): Section = {
-    val helper = new ConsignmentItemAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex)
-    AccordionSection(
-      messages("unloadingFindings.additional.reference.heading"),
-      helper.additionalReferences
-    )
-  }
 }

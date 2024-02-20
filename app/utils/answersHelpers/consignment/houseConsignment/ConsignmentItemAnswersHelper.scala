@@ -16,10 +16,8 @@
 
 package utils.answersHelpers.consignment.houseConsignment
 
-import models.reference.AdditionalReferenceType
 import models.{Index, UserAnswers}
 import pages.NetWeightPage
-import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
 import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage}
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferencesSection
 import play.api.i18n.Messages
@@ -64,16 +62,6 @@ class ConsignmentItemAnswersHelper(
   def additionalReferences: Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(AdditionalReferencesSection(houseConsignmentIndex, itemIndex)) {
       additionalReferenceIndex =>
-        additionalReferenceRow(additionalReferenceIndex)
+        new AdditionalReferencesAnswerHelper(userAnswers, houseConsignmentIndex, itemIndex, additionalReferenceIndex).additionalReferenceRow
     }
-
-  def additionalReferenceRow(additionalReferenceIndex: Index): Option[SummaryListRow] =
-    getAnswerAndBuildRowWithoutKey[AdditionalReferenceType](
-      page = AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
-      formatAnswer = formatAsText,
-      prefix = "unloadingFindings.additional.reference",
-      args = additionalReferenceIndex.display,
-      id = Some(s"change-additional-reference-${additionalReferenceIndex.display}"),
-      call = Some(Call(GET, "#")) //TODO change me please
-    )
 }
