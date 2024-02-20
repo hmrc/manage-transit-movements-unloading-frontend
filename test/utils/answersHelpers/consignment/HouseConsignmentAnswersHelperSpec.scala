@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils.answersHelpers.houseConsignment
+package utils.answersHelpers.consignment
 
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.Country

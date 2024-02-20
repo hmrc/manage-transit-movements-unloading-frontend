@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils.answersHelpers.houseConsignment.item
+package utils.answersHelpers.consignment.houseConsignment
 
 import models.{Index, UserAnswers}
 import pages.NetWeightPage

@@ -18,7 +18,7 @@ package viewModels
 
 import models.{Index, UserAnswers}
 import play.api.i18n.Messages
-import utils.answersHelpers.houseConsignment.HouseConsignmentAnswersHelper
+import utils.answersHelpers.consignment.HouseConsignmentAnswersHelper
 import viewModels.sections.Section
 import viewModels.sections.Section.StaticSection
 

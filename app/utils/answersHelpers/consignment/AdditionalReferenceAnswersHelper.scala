@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils.answersHelpers
+package utils.answersHelpers.consignment
 
 import models.{Index, UserAnswers}
 import pages.sections.additionalReference.AdditionalReferenceSection
@@ -23,6 +23,7 @@ import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HttpVerbs.GET
+import utils.answersHelpers.AnswersHelper
 
 class AdditionalReferenceAnswersHelper(
   userAnswers: UserAnswers,

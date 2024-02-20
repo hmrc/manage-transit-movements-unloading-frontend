@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils.answersHelpers.houseConsignment
+package utils.answersHelpers.consignment
 
 import models.{Index, UserAnswers}
 import pages._
@@ -24,7 +24,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.JsArray
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
-import utils.answersHelpers.houseConsignment.item.ConsignmentItemAnswersHelper
+import utils.answersHelpers.consignment.houseConsignment.{ConsignmentItemAnswersHelper, DepartureTransportMeansAnswersHelper}
 import viewModels.sections.Section
 import viewModels.sections.Section.AccordionSection
 

@@ -23,7 +23,12 @@ import play.api.i18n.Messages
 import play.api.libs.json.JsArray
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.answersHelpers.houseConsignment.HouseConsignmentAnswersHelper
+import utils.answersHelpers.consignment.{
+  AdditionalReferenceAnswersHelper,
+  DepartureTransportMeansAnswersHelper,
+  HouseConsignmentAnswersHelper,
+  TransportEquipmentAnswersHelper
+}
 import viewModels.sections.Section
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,46 +14,47 @@
  * limitations under the License.
  */
 
-package utils.answersHelpers.houseConsignment
+package utils.answersHelpers.consignment
 
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.Country
 import models.{Index, UserAnswers}
-import pages._
+import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
 
 class DepartureTransportMeansAnswersHelper(
   userAnswers: UserAnswers,
-  houseConsignmentIndex: Index,
   transportMeansIndex: Index
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
   def transportMeansID: Option[SummaryListRow] = getAnswerAndBuildRow[TransportMeansIdentification](
-    page = DepartureTransportMeansIdentificationTypePage(houseConsignmentIndex, transportMeansIndex),
+    page = TransportMeansIdentificationPage(transportMeansIndex),
     formatAnswer = formatAsText,
     prefix = "checkYourAnswers.departureMeansOfTransport.identification",
-    id = None,
-    call = None
+    id = Some(s"change-transport-means-identification-${transportMeansIndex.display}"),
+    call = Some(Call(GET, "#"))
   )
 
-  def transportMeansIDNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = DepartureTransportMeansIdentificationNumberPage(houseConsignmentIndex, transportMeansIndex),
+  def transportMeansNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = VehicleIdentificationNumberPage(transportMeansIndex),
     formatAnswer = formatAsText,
     prefix = "checkYourAnswers.departureMeansOfTransport.identificationNumber",
-    id = None,
-    call = None
+    id = Some(s"change-transport-means-identification-number-${transportMeansIndex.display}"),
+    call = Some(Call(GET, "#"))
   )
 
-  def buildVehicleNationalityRow: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
-    page = DepartureTransportMeansCountryPage(houseConsignmentIndex, transportMeansIndex),
+  def transportRegisteredCountry: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
+    page = CountryPage(transportMeansIndex),
     formatAnswer = x => Text(x.description),
-    prefix = "unloadingFindings.rowHeadings.vehicleNationality",
-    id = None,
-    call = None,
+    prefix = "checkYourAnswers.departureMeansOfTransport.country",
+    id = Some("change-registered-country"),
+    call = Some(Call(GET, "#")),
     args = Seq.empty
   )
 }

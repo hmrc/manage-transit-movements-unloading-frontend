@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package utils.answersHelpers
+package utils.answersHelpers.consignment.houseConsignment
 
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.Country
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
+import utils.answersHelpers.AnswersHelperSpecBase
+import utils.answersHelpers.consignment.DepartureTransportMeansAnswersHelper
 
 class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
 

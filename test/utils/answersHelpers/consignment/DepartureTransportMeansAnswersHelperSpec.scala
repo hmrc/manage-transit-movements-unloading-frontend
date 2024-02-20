@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils.answersHelpers.houseConsignment
+package utils.answersHelpers.consignment
 
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.Country
@@ -22,6 +22,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
 import utils.answersHelpers.AnswersHelperSpecBase
+import utils.answersHelpers.consignment.houseConsignment.DepartureTransportMeansAnswersHelper
 
 class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
 

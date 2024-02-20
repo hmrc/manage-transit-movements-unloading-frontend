@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils.answersHelpers
+package utils.answersHelpers.consignment
 
 import models.reference.AdditionalReferenceType
 import org.scalacheck.Arbitrary.arbitrary
@@ -22,6 +22,7 @@ import org.scalacheck.Gen
 import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import pages.sections.additionalReference.AdditionalReferenceSection
 import pages.sections.additionalReference.AdditionalReferenceSection.AdditionalReference
+import utils.answersHelpers.AnswersHelperSpecBase
 
 class AdditionalReferenceAnswersHelperSpec extends AnswersHelperSpecBase {
 

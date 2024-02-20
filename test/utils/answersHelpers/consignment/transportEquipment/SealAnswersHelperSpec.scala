@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package utils.answersHelpers
+package utils.answersHelpers.consignment.transportEquipment
 
 import org.scalacheck.Gen
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
+import utils.answersHelpers.AnswersHelperSpecBase
 
 class SealAnswersHelperSpec extends AnswersHelperSpecBase {
 

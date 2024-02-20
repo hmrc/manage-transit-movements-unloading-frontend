@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils.answersHelpers.houseConsignment.item
+package utils.answersHelpers.consignment.houseConsignment
 
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
