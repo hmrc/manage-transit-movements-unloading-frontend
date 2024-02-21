@@ -18,6 +18,7 @@ package utils.transformers
 
 import connectors.ReferenceDataConnector
 import generated.PackagingType02
+import models.reference.PackageType
 import models.{Index, UserAnswers}
 import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -29,27 +30,19 @@ class PackagingTransformer @Inject() (referenceDataConnector: ReferenceDataConne
 
   def transform(packages: Seq[PackagingType02], hcIndex: Index, itemIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
     userAnswers =>
-      packages match {
-        case packaging =>
-          packaging.zipWithIndex.foldLeft(Future.successful(userAnswers))({
-            case (acc, (packagingType0, i)) =>
-              acc.flatMap {
-                userAnswers =>
-                  referenceDataConnector.getPackageType(packagingType0.typeOfPackages).flatMap {
-                    packageType =>
-                      val packageIndex: Index = Index(i)
-                      lazy val pipeline: UserAnswers => Future[UserAnswers] = {
-                        set(PackagingTypePage(hcIndex, itemIndex, packageIndex), packageType) andThen
-                          set(PackagingCountPage(hcIndex, itemIndex, packageIndex), packagingType0.numberOfPackages) andThen
-                          set(PackagingMarksPage(hcIndex, itemIndex, packageIndex), packagingType0.shippingMarks)
-                      }
+      packages.zipWithIndex.foldLeft(Future.successful(userAnswers))({
+        case (accumulatedUA, (packagingType0, i)) =>
+          val packageIndex: Index = Index(i)
+          def pipeline(packageType: PackageType): UserAnswers => Future[UserAnswers] =
+            set(PackagingTypePage(hcIndex, itemIndex, packageIndex), packageType) andThen
+              set(PackagingCountPage(hcIndex, itemIndex, packageIndex), packagingType0.numberOfPackages) andThen
+              set(PackagingMarksPage(hcIndex, itemIndex, packageIndex), packagingType0.shippingMarks)
+          for {
+            userAnswers <- accumulatedUA
+            packageType <- referenceDataConnector.getPackageType(packagingType0.typeOfPackages)
+            ua          <- pipeline(packageType)(userAnswers)
+          } yield ua
 
-                      pipeline(userAnswers)
-                  }
+      })
 
-              }
-
-          })
-
-      }
 }
