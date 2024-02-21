@@ -67,7 +67,7 @@ class AdditionalReferenceNumberViewSpec extends SpecBase with CharacterCountView
     "must render paragraph" - {
       val view = injector
         .instanceOf[AdditionalReferenceNumberView]
-        .apply(form, arrivalId, mrn, additionalReferenceIndex, mode, viewModel)(fakeRequest, messages)
+        .apply(form, arrivalId, mrn, additionalReferenceIndex, mode, viewModel.copy(isParagraphRequired = true))(fakeRequest, messages)
 
       val doc = parseView(view)
 
