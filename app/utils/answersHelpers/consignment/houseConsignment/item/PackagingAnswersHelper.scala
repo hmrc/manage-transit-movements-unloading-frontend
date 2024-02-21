@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 
-package utils.answersHelpers.consignment.houseConsignment.packaging
+package utils.answersHelpers.consignment.houseConsignment.item
 
 import models.reference.PackageType
 import models.{Index, UserAnswers}
 import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
-import pages.sections.PackagingSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
-import viewModels.sections.Section
-import viewModels.sections.Section.AccordionSection
 
-class PackagingAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages)
+class PackagingAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index)(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
-  private[houseConsignment] def packageTypeRow(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[PackageType](
+  private[houseConsignment] def packageTypeRow: Option[SummaryListRow] = getAnswerAndBuildRow[PackageType](
     page = PackagingTypePage(houseConsignmentIndex, itemIndex, packageIndex),
     formatAnswer = formatAsPackage,
     prefix = "unloadingFindings.rowHeadings.item.packageType",
@@ -40,7 +37,7 @@ class PackagingAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: In
     call = Some(Call(GET, "#"))
   )
 
-  private[houseConsignment] def packageMarksRow(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  private[houseConsignment] def packageMarksRow: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = PackagingMarksPage(houseConsignmentIndex, itemIndex, packageIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.item.packageMarks",
@@ -49,7 +46,7 @@ class PackagingAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: In
     call = Some(Call(GET, "#"))
   )
 
-  private[houseConsignment] def packageCountRow(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[BigInt](
+  private[houseConsignment] def packageCountRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigInt](
     page = PackagingCountPage(houseConsignmentIndex, itemIndex, packageIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.item.packageCount",
@@ -58,19 +55,4 @@ class PackagingAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: In
     call = Some(Call(GET, "#"))
   )
 
-  def packageSections: Seq[Section] =
-    userAnswers
-      .get(PackagingSection(houseConsignmentIndex, itemIndex))
-      .mapWithIndex {
-        case (_, packageIndex) =>
-          val rows = Seq(packageTypeRow(packageIndex), packageCountRow(packageIndex), packageMarksRow(packageIndex)).flatten
-
-          val section = AccordionSection(
-            sectionTitle = messages("unloadingFindings.subsections.packages", packageIndex.display),
-            rows = rows
-          )
-
-          section
-
-      }
 }

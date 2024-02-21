@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-package utils.answersHelpers.consignment.houseConsignment.packaging
+package utils.answersHelpers.consignment.houseConsignment.item
 
 import models.reference.PackageType
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
-import pages.NetWeightPage
 import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
-import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage}
 import utils.answersHelpers.AnswersHelperSpecBase
 
 class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
@@ -32,8 +29,8 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
       val page = PackagingTypePage(hcIndex, itemIndex, packageIndex)
       "must return None" - {
         s"when $page undefined" in {
-          val helper = new PackagingAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
-          helper.packageTypeRow(packageIndex) mustBe None
+          val helper = new PackagingAnswersHelper(emptyUserAnswers, hcIndex, itemIndex, packageIndex)
+          helper.packageTypeRow mustBe None
         }
       }
 
@@ -43,8 +40,8 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
             value =>
               val answers = emptyUserAnswers.setValue(page, value)
 
-              val helper = new PackagingAnswersHelper(answers, hcIndex, itemIndex)
-              val result = helper.packageTypeRow(packageIndex).value
+              val helper = new PackagingAnswersHelper(answers, hcIndex, itemIndex, packageIndex)
+              val result = helper.packageTypeRow.value
 
               result.key.value mustBe "Type"
               result.value.value mustBe s"${value.asDescription}"
@@ -61,8 +58,8 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
       val page = PackagingCountPage(hcIndex, itemIndex, packageIndex)
       "must return None" - {
         s"when $page undefined" in {
-          val helper = new PackagingAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
-          helper.packageCountRow(packageIndex) mustBe None
+          val helper = new PackagingAnswersHelper(emptyUserAnswers, hcIndex, itemIndex, packageIndex)
+          helper.packageCountRow mustBe None
         }
       }
 
@@ -72,8 +69,8 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
             value =>
               val answers = emptyUserAnswers.setValue(page, value)
 
-              val helper = new PackagingAnswersHelper(answers, hcIndex, itemIndex)
-              val result = helper.packageCountRow(packageIndex).value
+              val helper = new PackagingAnswersHelper(answers, hcIndex, itemIndex, packageIndex)
+              val result = helper.packageCountRow.value
 
               result.key.value mustBe "Quantity"
               result.value.value mustBe s"$value"
@@ -90,8 +87,8 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
       val page = PackagingMarksPage(hcIndex, itemIndex, packageIndex)
       "must return None" - {
         s"when $page undefined" in {
-          val helper = new PackagingAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
-          helper.packageMarksRow(packageIndex) mustBe None
+          val helper = new PackagingAnswersHelper(emptyUserAnswers, hcIndex, itemIndex, packageIndex)
+          helper.packageMarksRow mustBe None
         }
       }
 
@@ -101,8 +98,8 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
             value =>
               val answers = emptyUserAnswers.setValue(page, value)
 
-              val helper = new PackagingAnswersHelper(answers, hcIndex, itemIndex)
-              val result = helper.packageMarksRow(packageIndex).value
+              val helper = new PackagingAnswersHelper(answers, hcIndex, itemIndex, packageIndex)
+              val result = helper.packageMarksRow.value
 
               result.key.value mustBe "Shipping mark"
               result.value.value mustBe s"$value"

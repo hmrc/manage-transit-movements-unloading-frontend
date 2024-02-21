@@ -23,7 +23,7 @@ import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
-import utils.answersHelpers.consignment.houseConsignment.packaging.PackagingAnswersHelper
+import utils.answersHelpers.consignment.houseConsignment.item.PackagingAnswersHelper
 import utils.answersHelpers.consignment.houseConsignment.{ConsignmentItemAnswersHelper, DepartureTransportMeansAnswersHelper}
 import viewModels.sections.Section
 import viewModels.sections.Section.AccordionSection
@@ -83,8 +83,7 @@ class HouseConsignmentAnswersHelper(
   def itemSections: Seq[Section] =
     userAnswers.get(ItemsSection(houseConsignmentIndex)).mapWithIndex {
       case (_, itemIndex) =>
-        val helper        = new ConsignmentItemAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex)
-        val packageHelper = new PackagingAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex)
+        val helper = new ConsignmentItemAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex)
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.subsections.item", itemIndex.display)),
           rows = Seq(
@@ -92,7 +91,7 @@ class HouseConsignmentAnswersHelper(
             helper.grossWeightRow,
             helper.netWeightRow
           ).flatten,
-          children = packageHelper.packageSections ++ Seq(
+          children = helper.packageSections ++ Seq(
             AccordionSection(
               messages("unloadingFindings.additional.reference.heading"),
               helper.additionalReferences

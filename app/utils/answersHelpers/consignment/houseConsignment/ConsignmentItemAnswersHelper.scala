@@ -28,7 +28,7 @@ import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
-import utils.answersHelpers.consignment.houseConsignment.item.AdditionalReferencesAnswerHelper
+import utils.answersHelpers.consignment.houseConsignment.item.{AdditionalReferencesAnswerHelper, PackagingAnswersHelper}
 import viewModels.sections.Section
 import viewModels.sections.Section.AccordionSection
 
@@ -70,4 +70,22 @@ class ConsignmentItemAnswersHelper(
       additionalReferenceIndex =>
         new AdditionalReferencesAnswerHelper(userAnswers, houseConsignmentIndex, itemIndex, additionalReferenceIndex).additionalReferenceRow
     }
+
+  def packageSections: Seq[Section] =
+    userAnswers
+      .get(PackagingSection(houseConsignmentIndex, itemIndex))
+      .mapWithIndex {
+        case (_, packageIndex) =>
+          val packageHelper = new PackagingAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex, packageIndex)
+
+          val rows = Seq(packageHelper.packageTypeRow, packageHelper.packageCountRow, packageHelper.packageMarksRow).flatten
+
+          val section = AccordionSection(
+            sectionTitle = messages("unloadingFindings.subsections.packages", packageIndex.display),
+            rows = rows
+          )
+
+          section
+
+      }
 }
