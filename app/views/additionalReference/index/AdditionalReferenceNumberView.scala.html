@@ -29,7 +29,7 @@
     errorSummary: ErrorSummary
 )
 
-@(form: Form[_], arrivalId: ArrivalId, mrn: MovementReferenceNumber, additionalReferenceIndex: Index, mode: Mode, viewModel: AdditionalReferenceNumberViewModel, isParagraphRequired: Boolean)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], arrivalId: ArrivalId, mrn: MovementReferenceNumber, additionalReferenceIndex: Index, mode: Mode, viewModel: AdditionalReferenceNumberViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = viewModel.title,
@@ -45,7 +45,7 @@
         inputCharacterCountType = InputCharacterCountViewModel(
             heading = viewModel.heading,
             caption = Some(messages("site.caption", mrn.toString)),
-            additionalHtml = if (isParagraphRequired) Some(messages("additionalReferenceNumber.index.NormalMode.paragraph").toParagraph) else None
+            additionalHtml = if (viewModel.isParagraphRequired) Some(messages("additionalReferenceNumber.index.NormalMode.paragraph").toParagraph) else None
         ),
         label = viewModel.heading,
         maxLength = maxAdditionalReferenceNumLength,

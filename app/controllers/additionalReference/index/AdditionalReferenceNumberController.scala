@@ -18,9 +18,7 @@ package controllers.additionalReference.index
 
 import controllers.actions._
 import forms.AdditionalReferenceNumberFormProvider
-import models.reference.AdditionalReferenceType
-import models.requests.SpecificDataRequestProvider1
-import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, RichOptionalJsArray}
+import models.{ArrivalId, Index, Mode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -28,7 +26,6 @@ import repositories.SessionRepository
 import navigation.Navigator
 import pages.additionalReference.AdditionalReferenceNumberPage
 import pages.additionalReference.AdditionalReferenceTypePage
-import pages.sections.additionalReference.AdditionalReferencesSection
 import viewModels.additionalReference.index.AdditionalReferenceNumberViewModel.AdditionalReferenceNumberViewModelProvider
 import views.html.additionalReference.index.AdditionalReferenceNumberView
 
@@ -49,20 +46,16 @@ class AdditionalReferenceNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private type Request = SpecificDataRequestProvider1[AdditionalReferenceType]#SpecificDataRequest[_]
-
   def onPageLoad(arrivalId: ArrivalId, additionalReferenceIndex: Index, mode: Mode): Action[AnyContent] =
     actions
-      .getStatus(arrivalId)
-      .andThen(getMandatoryPage(AdditionalReferenceTypePage(additionalReferenceIndex))) {
+      .getStatus(arrivalId) {
         implicit request =>
-          val viewModel = viewModelProvider.apply(mode)
+          val viewModel = viewModelProvider.apply(mode, additionalReferenceIndex, request.userAnswers)
           val form      = formProvider(viewModel.requiredError)
           val preparedForm = request.userAnswers.get(AdditionalReferenceNumberPage(additionalReferenceIndex)) match {
             case None        => form
             case Some(value) => form.fill(value)
           }
-          val additionalRefTypeList = otherAdditionalReferenceTypes(additionalReferenceIndex)
           Ok(
             view(
               preparedForm,
@@ -70,8 +63,7 @@ class AdditionalReferenceNumberController @Inject() (
               request.userAnswers.mrn,
               additionalReferenceIndex,
               mode,
-              viewModel,
-              isParagraphRequired(mode, additionalRefTypeList)
+              viewModel
             )
           )
       }
@@ -82,7 +74,7 @@ class AdditionalReferenceNumberController @Inject() (
       .andThen(getMandatoryPage(AdditionalReferenceTypePage(additionalReferenceIndex)))
       .async {
         implicit request =>
-          val viewModel = viewModelProvider.apply(mode)
+          val viewModel = viewModelProvider.apply(mode, additionalReferenceIndex, request.userAnswers)
           val form      = formProvider(viewModel.requiredError)
           form
             .bindFromRequest()
@@ -96,8 +88,7 @@ class AdditionalReferenceNumberController @Inject() (
                       request.userAnswers.mrn,
                       additionalReferenceIndex,
                       mode,
-                      viewModel,
-                      isParagraphRequired(mode, otherAdditionalReferenceTypes(additionalReferenceIndex))
+                      viewModel
                     )
                   )
                 ),
@@ -108,20 +99,5 @@ class AdditionalReferenceNumberController @Inject() (
                 } yield Redirect(navigator.nextPage(AdditionalReferenceNumberPage(additionalReferenceIndex), mode, updatedAnswers))
             )
       }
-
-  private def otherAdditionalReferenceTypes(additionalReferenceIndex: Index)(implicit request: Request): Seq[AdditionalReferenceType] = {
-    val numberOfAdditionalReferences = request.userAnswers.get(AdditionalReferencesSection).length
-    (0 until numberOfAdditionalReferences)
-      .map(Index(_))
-      .filterNot(_ == additionalReferenceIndex)
-      .map(AdditionalReferenceTypePage)
-      .flatMap(request.userAnswers.get(_))
-  }
-
-  private def isParagraphRequired(mode: Mode, additionalRefTypeList: Seq[AdditionalReferenceType])(implicit request: Request) =
-    mode match {
-      case CheckMode  => false
-      case NormalMode => additionalRefTypeList.contains(request.arg)
-    }
 
 }

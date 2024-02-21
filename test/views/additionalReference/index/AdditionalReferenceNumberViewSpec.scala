@@ -39,7 +39,7 @@ class AdditionalReferenceNumberViewSpec extends SpecBase with CharacterCountView
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector
       .instanceOf[AdditionalReferenceNumberView]
-      .apply(form, arrivalId, mrn, additionalReferenceIndex, mode, viewModel, isParagraphRequired = false)(fakeRequest, messages)
+      .apply(form, arrivalId, mrn, additionalReferenceIndex, mode, viewModel)(fakeRequest, messages)
 
   override val prefix: String = Gen
     .oneOf(
@@ -67,7 +67,7 @@ class AdditionalReferenceNumberViewSpec extends SpecBase with CharacterCountView
     "must render paragraph" - {
       val view = injector
         .instanceOf[AdditionalReferenceNumberView]
-        .apply(form, arrivalId, mrn, additionalReferenceIndex, mode, viewModel, isParagraphRequired = true)(fakeRequest, messages)
+        .apply(form, arrivalId, mrn, additionalReferenceIndex, mode, viewModel)(fakeRequest, messages)
 
       val doc = parseView(view)
 

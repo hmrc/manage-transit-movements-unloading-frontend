@@ -320,9 +320,10 @@ trait ViewModelGenerators {
   implicit lazy val arbitraryAdditionalReferenceNumberViewModel: Arbitrary[viewModels.additionalReference.index.AdditionalReferenceNumberViewModel] =
     Arbitrary {
       for {
-        heading       <- nonEmptyString
-        title         <- nonEmptyString
-        requiredError <- nonEmptyString
-      } yield viewModels.additionalReference.index.AdditionalReferenceNumberViewModel(heading, title, requiredError)
+        heading             <- nonEmptyString
+        title               <- nonEmptyString
+        requiredError       <- nonEmptyString
+        isParagraphRequired <- arbitrary[Boolean]
+      } yield viewModels.additionalReference.index.AdditionalReferenceNumberViewModel(heading, title, requiredError, isParagraphRequired)
     }
 }
