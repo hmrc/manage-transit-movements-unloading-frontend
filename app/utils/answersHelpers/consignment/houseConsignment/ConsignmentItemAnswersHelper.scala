@@ -16,10 +16,8 @@
 
 package utils.answersHelpers.consignment.houseConsignment
 
-import models.reference.PackageType
 import models.{Index, UserAnswers}
 import pages.NetWeightPage
-import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
 import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage}
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferencesSection
 import pages.sections.PackagingSection
