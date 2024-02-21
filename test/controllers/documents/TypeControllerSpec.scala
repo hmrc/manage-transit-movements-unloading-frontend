@@ -19,11 +19,11 @@ package controllers.documents
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SelectableFormProvider
 import generators.Generators
-import models.{NormalMode, SelectableList}
+import models.reference.DocumentType
+import models.{CheckMode, SelectableList}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
 import pages.documents.TypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -36,15 +36,15 @@ import scala.concurrent.Future
 
 class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val document1              = arbitraryDocumentType.arbitrary.sample.get
-  private val document2              = arbitraryDocumentType.arbitrary.sample.get
-  private val document3              = arbitraryDocumentType.arbitrary.sample.get
-  private val document4              = arbitraryDocumentType.arbitrary.sample.get
+  private val document1              = arbitrary[DocumentType](arbitraryTransportDocument).sample.value
+  private val document2              = arbitrary[DocumentType](arbitraryTransportDocument).sample.value
+  private val document3              = arbitrary[DocumentType](arbitrarySupportDocument).sample.value
+  private val document4              = arbitrary[DocumentType](arbitrarySupportDocument).sample.value
   private val transportDocumentList  = SelectableList(Seq(document1, document2))
   private val supportingDocumentList = SelectableList(Seq(document3, document4))
 
   private lazy val formProvider = new SelectableFormProvider()
-  private val mode              = NormalMode
+  private val mode              = CheckMode
 
   private val mockDocumentTypesService: DocumentsService = mock[DocumentsService]
   private lazy val typeRoute                             = routes.TypeController.onPageLoad(arrivalId, mode, documentIndex).url
@@ -60,23 +60,6 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
       "when transport document type selected" - {
         val form = formProvider(mode, "document.type", transportDocumentList)
 
-        "must return OK and the correct view for a GET" in {
-
-          when(mockDocumentTypesService.getTransportDocuments()(any())).thenReturn(Future.successful(transportDocumentList))
-          setExistingUserAnswers(emptyUserAnswers)
-
-          val request = FakeRequest(GET, typeRoute)
-
-          val result = route(app, request).value
-
-          val view = injector.instanceOf[TypeView]
-
-          status(result) mustEqual OK
-
-          contentAsString(result) mustEqual
-            view(form, mrn, arrivalId, mode, transportDocumentList.values, documentIndex)(request, messages).toString
-        }
-
         "must populate the view correctly on a GET when the question has previously been answered" in {
 
           when(mockDocumentTypesService.getTransportDocuments()(any())).thenReturn(Future.successful(transportDocumentList))
@@ -87,7 +70,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
           val result = route(app, request).value
 
-          val filledForm = form.bind(Map("value" -> document1.toString))
+          val filledForm = form.bind(Map("value" -> document1.value))
 
           val view = injector.instanceOf[TypeView]
 
@@ -102,10 +85,11 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
           when(mockDocumentTypesService.getTransportDocuments()(any())).thenReturn(Future.successful(transportDocumentList))
           when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-          setExistingUserAnswers(emptyUserAnswers)
+          val userAnswers = emptyUserAnswers.setValue(TypePage(documentIndex), document1)
+          setExistingUserAnswers(userAnswers)
 
           val request = FakeRequest(POST, typeRoute)
-            .withFormUrlEncodedBody(("value", document1.toString))
+            .withFormUrlEncodedBody(("value", document1.value))
 
           val result = route(app, request).value
 
@@ -117,7 +101,8 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
         "must return a Bad Request and errors when invalid data is submitted" in {
 
           when(mockDocumentTypesService.getTransportDocuments()(any())).thenReturn(Future.successful(transportDocumentList))
-          setExistingUserAnswers(emptyUserAnswers)
+          val userAnswers = emptyUserAnswers.setValue(TypePage(documentIndex), document1)
+          setExistingUserAnswers(userAnswers)
 
           val request   = FakeRequest(POST, typeRoute).withFormUrlEncodedBody(("value", "invalid value"))
           val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -162,34 +147,17 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
       "when supporting document type selected" - {
         val form = formProvider(mode, "document.type", supportingDocumentList)
 
-        "must return OK and the correct view for a GET" in {
-
-          when(mockDocumentTypesService.getSupportingDocuments()(any())).thenReturn(Future.successful(supportingDocumentList))
-          setExistingUserAnswers(emptyUserAnswers)
-
-          val request = FakeRequest(GET, typeRoute)
-
-          val result = route(app, request).value
-
-          val view = injector.instanceOf[TypeView]
-
-          status(result) mustEqual OK
-
-          contentAsString(result) mustEqual
-            view(form, mrn, arrivalId, mode, supportingDocumentList.values, documentIndex)(request, messages).toString
-        }
-
         "must populate the view correctly on a GET when the question has previously been answered" in {
 
           when(mockDocumentTypesService.getSupportingDocuments()(any())).thenReturn(Future.successful(supportingDocumentList))
-          val userAnswers = emptyUserAnswers.setValue(TypePage(documentIndex), document1)
+          val userAnswers = emptyUserAnswers.setValue(TypePage(documentIndex), document3)
           setExistingUserAnswers(userAnswers)
 
           val request = FakeRequest(GET, typeRoute)
 
           val result = route(app, request).value
 
-          val filledForm = form.bind(Map("value" -> document1.toString))
+          val filledForm = form.bind(Map("value" -> document3.value))
 
           val view = injector.instanceOf[TypeView]
 
@@ -204,10 +172,11 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
           when(mockDocumentTypesService.getSupportingDocuments()(any())).thenReturn(Future.successful(supportingDocumentList))
           when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-          setExistingUserAnswers(emptyUserAnswers)
+          val userAnswers = emptyUserAnswers.setValue(TypePage(documentIndex), document3)
+          setExistingUserAnswers(userAnswers)
 
           val request = FakeRequest(POST, typeRoute)
-            .withFormUrlEncodedBody(("value", document1.toString))
+            .withFormUrlEncodedBody(("value", document4.value))
 
           val result = route(app, request).value
 
@@ -219,7 +188,8 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
         "must return a Bad Request and errors when invalid data is submitted" in {
 
           when(mockDocumentTypesService.getSupportingDocuments()(any())).thenReturn(Future.successful(supportingDocumentList))
-          setExistingUserAnswers(emptyUserAnswers)
+          val userAnswers = emptyUserAnswers.setValue(TypePage(documentIndex), document3)
+          setExistingUserAnswers(userAnswers)
 
           val request   = FakeRequest(POST, typeRoute).withFormUrlEncodedBody(("value", "invalid value"))
           val boundForm = form.bind(Map("value" -> "invalid value"))

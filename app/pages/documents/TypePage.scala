@@ -19,12 +19,12 @@ package pages.documents
 import models.Index
 import models.reference.DocumentType
 import pages.QuestionPage
-import pages.sections.documents.DocumentDetailsSection
+import pages.sections.documents.DocumentSection
 import play.api.libs.json.JsPath
 
 case class TypePage(documentIndex: Index) extends QuestionPage[DocumentType] {
 
-  override def path: JsPath = DocumentDetailsSection(documentIndex).path \ toString
+  override def path: JsPath = DocumentSection(documentIndex).path \ toString
 
   override def toString: String = "type"
 }
