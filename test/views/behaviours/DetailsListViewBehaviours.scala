@@ -16,14 +16,22 @@
 
 package views.behaviours
 
+import generators.Generators
+import org.scalacheck.Arbitrary.arbitrary
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import viewModels.sections.Section
+import viewModels.sections.Section.AccordionSection
 
 import scala.jdk.CollectionConverters._
 
-trait DetailsListViewBehaviours extends ViewBehaviours {
+trait DetailsListViewBehaviours extends ViewBehaviours with Generators {
 
-  def summaryLists: Seq[SummaryList]
+  lazy val sections: Seq[Section] = arbitrary[List[AccordionSection]].sample.value
+
+  def summaryLists: Seq[SummaryList] = sections.map(
+    section => SummaryList(section.rows)
+  )
 
   // scalastyle:off method.length
   def pageWithSections(): Unit =

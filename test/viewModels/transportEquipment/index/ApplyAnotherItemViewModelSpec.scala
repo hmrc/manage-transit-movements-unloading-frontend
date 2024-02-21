@@ -48,7 +48,7 @@ class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaC
           result.listItems mustBe Seq(
             ListItem(
               name = s"Item ${item.toString}",
-              changeOrRemoveUrl = controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), mode).url,
+              changeOrRemoveUrl = controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), itemIndex, mode).url,
               prefix = "site.edit"
             )
           )
@@ -74,12 +74,12 @@ class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaC
           result.listItems mustBe Seq(
             ListItem(
               name = s"Item ${item1.toString}",
-              changeOrRemoveUrl = controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), mode).url,
+              changeOrRemoveUrl = controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), itemIndex, mode).url,
               prefix = "site.edit"
             ),
             ListItem(
               name = s"Item ${item2.toString}",
-              changeOrRemoveUrl = controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), mode).url,
+              changeOrRemoveUrl = controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), Index(1), mode).url,
               prefix = "site.edit"
             )
           )

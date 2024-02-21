@@ -18,6 +18,7 @@ package utils.transformers
 
 import generated.ConsignmentType05
 import models.UserAnswers
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -25,19 +26,26 @@ import scala.concurrent.{ExecutionContext, Future}
 class ConsignmentTransformer @Inject() (
   transportEquipmentTransformer: TransportEquipmentTransformer,
   departureTransportMeansTransformer: DepartureTransportMeansTransformer,
-  houseConsignmentTransformer: HouseConsignmentTransformer,
+  documentsTransformer: DocumentsTransformer,
+  houseConsignmentsTransformer: HouseConsignmentsTransformer,
+  additionalReferenceTransformer: AdditionalReferenceTransformer,
   grossMassTransformer: GrossMassTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(consignment: Option[ConsignmentType05]): UserAnswers => Future[UserAnswers] = userAnswers =>
+  def transform(consignment: Option[ConsignmentType05])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     consignment match {
-      case Some(consignment) =>
+      case Some(
+            consignment05
+          ) =>
         lazy val pipeline: UserAnswers => Future[UserAnswers] =
-          transportEquipmentTransformer.transform(consignment.TransportEquipment) andThen
-            departureTransportMeansTransformer.transform(consignment.DepartureTransportMeans) andThen
-            houseConsignmentTransformer.transform(consignment.HouseConsignment) andThen
-            grossMassTransformer.transform(consignment.grossMass)
+          transportEquipmentTransformer.transform(consignment05.TransportEquipment) andThen
+            departureTransportMeansTransformer.transform(consignment05.DepartureTransportMeans) andThen
+            documentsTransformer.transform(consignment05.SupportingDocument, consignment05.TransportDocument) andThen
+            houseConsignmentsTransformer.transform(consignment05.HouseConsignment) andThen
+            additionalReferenceTransformer.transform(consignment05.AdditionalReference) andThen
+            grossMassTransformer.transform(consignment05.grossMass)
+
         pipeline(userAnswers)
       case None =>
         Future.successful(userAnswers)

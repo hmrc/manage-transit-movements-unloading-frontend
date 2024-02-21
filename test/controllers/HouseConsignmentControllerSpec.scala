@@ -29,8 +29,6 @@ import viewModels.HouseConsignmentViewModel
 import viewModels.HouseConsignmentViewModel.HouseConsignmentViewModelProvider
 import views.html.HouseConsignmentView
 
-import scala.concurrent.Future
-
 class HouseConsignmentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val mockHouseConsignmentViewModelProvider = mock[HouseConsignmentViewModelProvider]
@@ -49,12 +47,12 @@ class HouseConsignmentControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val sections = arbitrarySections.arbitrary.sample.value
+      val sections = arbitraryStaticSections.arbitrary.sample.value
 
-      when(mockHouseConsignmentViewModelProvider.apply(any(), any())(any(), any(), any()))
-        .thenReturn(Future.successful(HouseConsignmentViewModel(sections, sections)))
+      val houseConsignmentViewModel = HouseConsignmentViewModel(sections)
 
-      val houseConsignmentViewModel = HouseConsignmentViewModel(sections, sections)
+      when(mockHouseConsignmentViewModelProvider.apply(any(), any())(any()))
+        .thenReturn(houseConsignmentViewModel)
 
       val request = FakeRequest(GET, houseConsignmentRoute)
 

@@ -31,10 +31,10 @@ class SealsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
   "must transform data" in {
     forAll(arbitrary[Seq[SealType04]]) {
       seals =>
+        val result = transformer.transform(seals, equipmentIndex).apply(emptyUserAnswers).futureValue
+
         seals.zipWithIndex.map {
           case (seal, i) =>
-            val result = transformer.transform(seals, equipmentIndex).apply(emptyUserAnswers).futureValue
-
             result.getValue(SealIdentificationNumberPage(equipmentIndex, Index(i))) mustBe seal.identifier
         }
     }

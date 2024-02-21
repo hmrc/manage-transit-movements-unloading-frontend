@@ -20,12 +20,12 @@ import controllers.actions._
 import forms.SelectableFormProvider
 import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
-import pages.transportEquipment.index.GoodsReferencePage
+import pages.transportEquipment.index.ItemPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.transportEquipment.index.GoodsReferenceViewModel
+import viewModels.transportEquipment.SelectItemsViewModel
 import views.html.transportEquipment.index.GoodsReferenceView
 
 import javax.inject.Inject
@@ -43,35 +43,39 @@ class GoodsReferenceController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, transportEquipmentIndex: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(arrivalId: ArrivalId, transportEquipmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
-        val selectedItem = request.userAnswers.get(GoodsReferencePage(transportEquipmentIndex))
-        val viewModel    = GoodsReferenceViewModel(request.userAnswers, selectedItem)
+        val selectedItem = request.userAnswers.get(ItemPage(transportEquipmentIndex, itemIndex))
+        val viewModel    = SelectItemsViewModel.apply(request.userAnswers, selectedItem)
         val form         = formProvider(mode, "transport.equipment.selectItems", viewModel.items)
         val preparedForm = selectedItem match {
           case None        => form
           case Some(value) => form.fill(value)
         }
 
-        Ok(view(preparedForm, arrivalId, transportEquipmentIndex, request.userAnswers.mrn, viewModel, mode))
+        Ok(view(preparedForm, arrivalId, transportEquipmentIndex, itemIndex, request.userAnswers.mrn, viewModel, mode))
     }
 
-  def onSubmit(arrivalId: ArrivalId, transportEquipmentIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
-    implicit request =>
-      val selectedItem = request.userAnswers.get(GoodsReferencePage(transportEquipmentIndex))
-      val viewModel    = GoodsReferenceViewModel(request.userAnswers, selectedItem)
+  def onSubmit(arrivalId: ArrivalId, transportEquipmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
+    actions.requireData(arrivalId).async {
+      implicit request =>
+        val selectedItem = request.userAnswers.get(ItemPage(transportEquipmentIndex, itemIndex))
+        val viewModel    = SelectItemsViewModel(request.userAnswers, selectedItem)
 
-      val form = formProvider(mode, "transport.equipment.selectItems", viewModel.items)
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, arrivalId, transportEquipmentIndex, request.userAnswers.mrn, viewModel, mode))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(GoodsReferencePage(transportEquipmentIndex), value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(GoodsReferencePage(transportEquipmentIndex), mode, updatedAnswers))
-        )
-  }
+        val form = formProvider(mode, "transport.equipment.selectItems", viewModel.items)
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors =>
+              Future.successful(
+                BadRequest(view(formWithErrors, arrivalId, transportEquipmentIndex, itemIndex, request.userAnswers.mrn, viewModel, mode))
+              ),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(ItemPage(transportEquipmentIndex, itemIndex), value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(ItemPage(transportEquipmentIndex, itemIndex), mode, updatedAnswers))
+          )
+    }
 }

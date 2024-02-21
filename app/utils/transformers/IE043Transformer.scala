@@ -17,6 +17,7 @@
 package utils.transformers
 
 import models.UserAnswers
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
 import javax.inject.Inject
@@ -26,7 +27,7 @@ class IE043Transformer @Inject() (
   consignmentTransformer: ConsignmentTransformer
 ) extends FrontendHeaderCarrierProvider {
 
-  def transform(userAnswers: UserAnswers): Future[UserAnswers] = {
+  def transform(userAnswers: UserAnswers)(implicit headerCarrier: HeaderCarrier): Future[UserAnswers] = {
 
     val transformerPipeline =
       consignmentTransformer.transform(userAnswers.ie043Data.Consignment)

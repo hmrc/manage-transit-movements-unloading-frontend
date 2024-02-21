@@ -18,8 +18,9 @@ package viewModels
 
 import models.UserAnswers
 import play.api.i18n.Messages
-import utils.CheckYourAnswersHelper
+import utils.answersHelpers.CheckYourAnswersHelper
 import viewModels.sections.Section
+import viewModels.sections.Section.StaticSection
 
 import javax.inject.Inject
 
@@ -35,8 +36,8 @@ object CheckYourAnswersViewModel {
     def apply(userAnswers: UserAnswers)(implicit messages: Messages): CheckYourAnswersViewModel = {
       val helper = new CheckYourAnswersHelper(userAnswers)
 
-      val headerSection = Section(
-        Seq(
+      val headerSection = StaticSection(
+        rows = Seq(
           helper.unloadingType,
           helper.goodsUnloadedDate,
           helper.canSealsBeRead,
@@ -44,9 +45,9 @@ object CheckYourAnswersViewModel {
         ).flatten
       )
 
-      val commentsSection = Section(
-        messages("checkYourAnswers.subsections.additionalComments"),
-        Seq(helper.unloadingCommentsYesNo, helper.additionalComment).flatten
+      val commentsSection = StaticSection(
+        sectionTitle = messages("checkYourAnswers.subsections.additionalComments"),
+        rows = Seq(helper.unloadingCommentsYesNo, helper.additionalComment).flatten
       )
 
       new CheckYourAnswersViewModel(Seq(headerSection, commentsSection))

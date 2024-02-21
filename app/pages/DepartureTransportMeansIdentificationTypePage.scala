@@ -17,10 +17,12 @@
 package pages
 
 import models.Index
+import models.departureTransportMeans.TransportMeansIdentification
 import pages.sections.HouseConsignmentSection
 import play.api.libs.json.JsPath
 
-case class DepartureTransportMeansIdentificationTypePage(houseConsignmentIndex: Index, transportMeansIndex: Index) extends QuestionPage[String] {
+case class DepartureTransportMeansIdentificationTypePage(houseConsignmentIndex: Index, transportMeansIndex: Index)
+    extends QuestionPage[TransportMeansIdentification] {
 
   override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ "DepartureTransportMeans" \ transportMeansIndex.position \ toString
 

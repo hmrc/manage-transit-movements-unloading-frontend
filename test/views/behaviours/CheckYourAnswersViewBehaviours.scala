@@ -21,10 +21,11 @@ import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewModels.sections.Section
+import viewModels.sections.Section.StaticSection
 
 trait CheckYourAnswersViewBehaviours extends SummaryListViewBehaviours with Generators {
 
-  lazy val sections: Seq[Section] = arbitrary[List[Section]].sample.value
+  lazy val sections: Seq[Section] = arbitrary[List[StaticSection]].sample.value
 
   override def view: HtmlFormat.Appendable = viewWithSections(sections)
 
@@ -47,10 +48,13 @@ trait CheckYourAnswersViewBehaviours extends SummaryListViewBehaviours with Gene
         })
       }
 
-      "must not render section titles when rows are empty" - {
-        val emptySections = sections.map(_.copy(rows = Nil))
-        val view          = viewWithSections(emptySections)
-        val doc           = parseView(view)
+      "must not render section titles when rows and children are empty" - {
+        val emptySections = sections.map {
+          case x: Section.AccordionSection => x.copy(rows = Nil, children = Nil)
+          case x: Section.StaticSection    => x.copy(rows = Nil)
+        }
+        val view = viewWithSections(emptySections)
+        val doc  = parseView(view)
         emptySections.foreach(_.sectionTitle.map {
           sectionTitle =>
             behave like pageWithoutContent(doc, "h2", sectionTitle)

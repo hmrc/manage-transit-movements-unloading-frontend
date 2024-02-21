@@ -60,8 +60,8 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         )
 
         val expectedResult = NonEmptySet.of(
-          Country("GB", Some("United Kingdom")),
-          Country("AD", Some("Andorra"))
+          Country("GB", "United Kingdom"),
+          Country("AD", "Andorra")
         )
 
         connector.getCountries().futureValue mustBe expectedResult
@@ -73,6 +73,30 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "should handle client and server errors for countries" in {
         checkErrorResponse(url, connector.getCountries())
+      }
+    }
+
+    "getCountry" - {
+      val code = "GB"
+      val url  = s"/$baseUrl/lists/CountryCodesFullList?data.code=$code"
+
+      "should handle a 200 response for countries" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(countryResponseJson))
+        )
+
+        val expectedResult = Country("GB", "United Kingdom")
+
+        connector.getCountry(code).futureValue mustBe expectedResult
+      }
+
+      "should throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getCountry(code))
+      }
+
+      "should handle client and server errors for countries" in {
+        checkErrorResponse(url, connector.getCountry(code))
       }
     }
 
@@ -138,7 +162,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(countryCodeResponseJson))
         )
 
-        val expectedResult = NonEmptySet.of(Country(countryCode, Some("United Kingdom")))
+        val expectedResult = NonEmptySet.of(Country(countryCode, "United Kingdom"))
 
         connector.getCountryNameByCode(countryCode).futureValue mustBe expectedResult
       }
@@ -199,6 +223,56 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "must return an exception when an error response is returned" in {
         checkErrorResponse(url, connector.getSupportingDocument(typeValue))
+      }
+    }
+
+    "getAdditionalReferences" - {
+      val url = s"/$baseUrl/lists/AdditionalReference"
+
+      "must return Seq of AdditionalReference when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(additionalReferenceJson))
+        )
+
+        val expectedResult: NonEmptySet[AdditionalReferenceType] = NonEmptySet.of(
+          AdditionalReferenceType("documentType1", "desc1"),
+          AdditionalReferenceType("documentType2", "desc2")
+        )
+
+        connector.getAdditionalReferences().futureValue mustEqual expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getAdditionalReferences())
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getAdditionalReferences())
+      }
+    }
+
+    "getAdditionalReferenceType" - {
+      val documentType = "Y023"
+      val url          = s"/$baseUrl/lists/AdditionalReference?data.documentType=$documentType"
+
+      "must return supporting document when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(additionalReferenceResponseJson))
+        )
+
+        val expectedResult: AdditionalReferenceType = AdditionalReferenceType(documentType, "Consignee (AEO certificate number)")
+
+        connector.getAdditionalReferenceType(documentType).futureValue mustEqual expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getAdditionalReferenceType(documentType))
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getAdditionalReferenceType(documentType))
       }
     }
 
@@ -390,6 +464,20 @@ object ReferenceDataConnectorSpec {
       |}
       |""".stripMargin
 
+  private val countryResponseJson: String =
+    """
+      |{
+      | "data":
+      | [
+      |  {
+      |    "code":"GB",
+      |    "state":"valid",
+      |    "description":"United Kingdom"
+      |  }
+      | ]
+      |}
+      |""".stripMargin
+
   private val customsOfficeResponseJsonWithPhone: String =
     """
       |{
@@ -488,6 +576,44 @@ object ReferenceDataConnectorSpec {
       |    {
       |      "code": "C641",
       |      "description": "Dissostichus - catch document import"
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+
+  private val additionalReferenceJson: String =
+    """
+      |{
+      |  "_links": {
+      |    "self": {
+      |      "href": "/customs-reference-data/lists/AdditionalReference"
+      |    }
+      |  },
+      |  "meta": {
+      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+      |    "snapshotDate": "2023-01-01"
+      |  },
+      |  "id": "AdditionalReference",
+      |  "data": [
+      | {
+      |    "documentType": "documentType1",
+      |    "description": "desc1"
+      |  },
+      |  {
+      |    "documentType": "documentType2",
+      |    "description": "desc2"
+      |  }
+      |]
+      |}
+      |""".stripMargin
+
+  private val additionalReferenceResponseJson: String =
+    """
+      |{
+      |  "data": [
+      |    {
+      |      "documentType": "Y023",
+      |      "description": "Consignee (AEO certificate number)"
       |    }
       |  ]
       |}

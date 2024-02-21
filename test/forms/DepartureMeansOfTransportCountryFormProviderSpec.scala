@@ -27,7 +27,7 @@ class DepartureMeansOfTransportCountryFormProviderSpec extends StringFieldBehavi
   val requiredKey             = "departureMeansOfTransport.country.NormalMode.error.required"
   val lengthKey               = "departureMeansOfTransport.country.error.length"
   val maxLength               = 2
-  val countries: Seq[Country] = Seq(Country("AD", Some("Andorra")))
+  val countries: Seq[Country] = Seq(Country("AD", "Andorra"))
   val form                    = new DepartureMeansOfTransportCountryFormProvider()(mode, countries)
 
   ".value" - {

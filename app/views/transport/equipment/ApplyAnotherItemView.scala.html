@@ -29,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[Boolean], departureId: String, viewModel: ApplyAnotherItemViewModel)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
+@(form: Form[Boolean],mrn: MovementReferenceNumber, departureId: String, viewModel: ApplyAnotherItemViewModel)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
 
 @mainTemplate(
     title = viewModel.title,
@@ -40,7 +40,7 @@
 
     @heading(
         heading = viewModel.heading,
-        caption = Some(messages("transport.caption"))
+        caption = Some(messages("site.caption", mrn.toString))
     )
 
     @listWithActions(viewModel.listItems)
