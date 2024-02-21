@@ -28,21 +28,40 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PackagingTransformer @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) extends PageTransformer {
 
+  private case class TempPackaging(
+    typeValue: PackageType,
+    numberOfPackages: Option[BigInt],
+    shippingMarks: Option[String]
+  )
+
   def transform(packages: Seq[PackagingType02], hcIndex: Index, itemIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
-    userAnswers =>
-      packages.zipWithIndex.foldLeft(Future.successful(userAnswers))({
-        case (accumulatedUA, (packagingType0, i)) =>
-          val packageIndex: Index = Index(i)
-          def pipeline(packageType: PackageType): UserAnswers => Future[UserAnswers] =
-            set(PackagingTypePage(hcIndex, itemIndex, packageIndex), packageType) andThen
-              set(PackagingCountPage(hcIndex, itemIndex, packageIndex), packagingType0.numberOfPackages) andThen
-              set(PackagingMarksPage(hcIndex, itemIndex, packageIndex), packagingType0.shippingMarks)
-          for {
-            userAnswers <- accumulatedUA
-            packageType <- referenceDataConnector.getPackageType(packagingType0.typeOfPackages)
-            ua          <- pipeline(packageType)(userAnswers)
-          } yield ua
+    userAnswers => {
 
-      })
+      lazy val packageTypeRefLookups = packages.map {
+        pack =>
+          referenceDataConnector
+            .getPackageType(pack.typeOfPackages)
+            .map(
+              packageType => TempPackaging(packageType, pack.numberOfPackages, pack.shippingMarks)
+            )
+      }
 
+      Future.sequence(packageTypeRefLookups).flatMap {
+        _.zipWithIndex.foldLeft(Future.successful(userAnswers))({
+          case (acc, (packageType, i)) =>
+            val packageIndex: Index = Index(i)
+            acc.flatMap {
+              userAnswers =>
+                val pipeline: UserAnswers => Future[UserAnswers] =
+                  set(PackagingTypePage(hcIndex, itemIndex, packageIndex), packageType.typeValue) andThen
+                    set(PackagingCountPage(hcIndex, itemIndex, packageIndex), packageType.numberOfPackages) andThen
+                    set(PackagingMarksPage(hcIndex, itemIndex, packageIndex), packageType.shippingMarks)
+
+                pipeline(userAnswers)
+            }
+        })
+
+      }
+
+    }
 }
