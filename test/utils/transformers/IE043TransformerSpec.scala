@@ -27,6 +27,7 @@ import pages.QuestionPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, JsPath, Json}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 
@@ -34,17 +35,23 @@ class IE043TransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
 
   private val transformer = app.injector.instanceOf[IE043Transformer]
 
-  private lazy val mockConsignmentTransformer = mock[ConsignmentTransformer]
+  private lazy val mockConsignmentTransformer      = mock[ConsignmentTransformer]
+  private lazy val mockTransitOperationTransformer = mock[TransitOperationTransformer]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[ConsignmentTransformer].toInstance(mockConsignmentTransformer)
+        bind[ConsignmentTransformer].toInstance(mockConsignmentTransformer),
+        bind[TransitOperationTransformer].toInstance(mockTransitOperationTransformer)
       )
 
   private case object FakeConsignmentSection extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ "consignment"
+  }
+
+  private case object FakeTransitOperationSection extends QuestionPage[JsObject] {
+    override def path: JsPath = JsPath \ "transitOperation"
   }
 
   "must transform data" in {
@@ -55,9 +62,15 @@ class IE043TransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
             ua => Future.successful(ua.setValue(FakeConsignmentSection, Json.obj("foo" -> "bar")))
           }
 
+        when(mockTransitOperationTransformer.transform(any())(any()))
+          .thenReturn {
+            ua => Future.successful(ua.setValue(FakeTransitOperationSection, Json.obj("foo" -> "bar")))
+          }
+
         val result = transformer.transform(emptyUserAnswers).futureValue
 
         result.getValue(FakeConsignmentSection) mustBe Json.obj("foo" -> "bar")
+      //      result.getValue(FakeTransitOperationSection) mustBe Json.obj("foo" -> "bar")
     }
   }
 }

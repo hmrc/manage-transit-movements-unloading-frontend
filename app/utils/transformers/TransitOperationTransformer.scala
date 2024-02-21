@@ -17,7 +17,7 @@
 package utils.transformers
 
 import connectors.ReferenceDataConnector
-import generated.TransitOperationType04
+import generated.TransitOperationType14
 import models.UserAnswers
 import pages.{DeclarationTypePage, SecurityTypePage}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -25,24 +25,23 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TransitOperationTransformer @Inject()(referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) extends PageTransformer {
+class TransitOperationTransformer @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) extends PageTransformer {
 
-  def transform(transitOperation: TransitOperationType04)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
-
-
-        referenceDataConnector.getSecurityType(transitOperation.security).flatMap{
+  def transform(transitOperation: TransitOperationType14)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
+    transitOperation match {
+      case to =>
+        referenceDataConnector.getSecurityType(to.security).flatMap {
           secType =>
-            referenceDataConnector.getDeclarationType(transitOperation.declarationType).flatMap{
-              decType =>         lazy val pipeline: UserAnswers => Future[UserAnswers] =
-                set(SecurityTypePage, secType) andThen
-                  set(DeclarationTypePage, decType)
-
+            referenceDataConnector.getDeclarationType(to.declarationType.get).flatMap {
+              decType =>
+                lazy val pipeline: UserAnswers => Future[UserAnswers] =
+                  set(SecurityTypePage, secType) andThen
+                    set(DeclarationTypePage, decType)
                 pipeline(userAnswers)
             }
         }
+      case _ =>
+        Future.successful(userAnswers)
 
-
-
-
-
+    }
 }

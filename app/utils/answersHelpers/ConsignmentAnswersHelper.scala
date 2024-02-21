@@ -19,6 +19,7 @@ package utils.answersHelpers
 import models.{Link, UserAnswers}
 import pages.sections._
 import pages.sections.additionalReference.AdditionalReferencesSection
+import pages.{DeclarationTypePage, SecurityTypePage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -29,11 +30,7 @@ import viewModels.sections.Section.{AccordionSection, StaticSection}
 class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
   def transitOperationSection: StaticSection = StaticSection(
-    rows = Seq(
-      declarationTypeRow,
-      securityTypeRow,
-      reducedDatasetIndicatorRow
-    )
+    rows = Seq(reducedDatasetIndicatorRow) ++ securityTypeRow ++ declarationTypeRow ++ declarationAcceptanceDateRow
   )
 
   def headerSection: Section = StaticSection(
@@ -42,25 +39,47 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     )
   )
 
-  def declarationTypeRow: SummaryListRow = buildRow(
-    prefix = "declarationType",
-    answer = userAnswers.ie043Data.TransitOperation.declarationType.toString.toText,
-    id = None,
-    call = None
-  )
+  def declarationTypeRow: Option[SummaryListRow] = userAnswers
+    .get(DeclarationTypePage)
+    .map(_.code)
+    .map(
+      dec =>
+        buildRow(
+          prefix = "declarationType",
+          answer = dec.toText,
+          id = None,
+          call = None
+        )
+    )
 
-  def securityTypeRow: SummaryListRow = buildRow(
-    prefix = "securityType",
-    answer = userAnswers.ie043Data.TransitOperation.security.toText,
-    id = None,
-    call = None
-  )
+  def securityTypeRow: Option[SummaryListRow] = userAnswers
+    .get(SecurityTypePage)
+    .map(_.description)
+    .map(
+      dec =>
+        buildRow(
+          prefix = "securityType",
+          answer = dec.toText,
+          id = None,
+          call = None
+        )
+    )
 
   def reducedDatasetIndicatorRow: SummaryListRow = buildRow(
     prefix = "reducedDatasetIndicator",
-    answer = form),
+    answer = formatAsBoolean(userAnswers.ie043Data.TransitOperation.reducedDatasetIndicator.toString),
     id = None,
     call = None
+  )
+
+  def declarationAcceptanceDateRow: Option[SummaryListRow] = userAnswers.ie043Data.TransitOperation.declarationAcceptanceDate.map(
+    dec =>
+      buildRow(
+        prefix = "declarationAcceptanceDate",
+        answer = formatAsDate2(dec),
+        id = None,
+        call = None
+      )
   )
 
   def traderAtDestinationRow: SummaryListRow = buildRow(

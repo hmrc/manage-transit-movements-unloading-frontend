@@ -16,17 +16,18 @@
 
 package utils.answersHelpers
 
-import generated.{CC043CType, Number0, Number1, TraderAtDestinationType03, TransitOperationType14}
+import generated.{CC043CType, Number0, TraderAtDestinationType03, TransitOperationType14}
 import generators.Generators
-import models.UserAnswers
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.{AdditionalReferenceType, Country}
+import models.{DeclarationType, SecurityType, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
 import pages.additionalReference._
 import pages.departureMeansOfTransport._
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
+import scalaxb.XMLCalendar
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 
 class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase with Generators {
@@ -69,17 +70,15 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase with Generators
 
     "declarationTypeRow" - {
       "must return row" in {
-        forAll(arbitraryDeclarationType) {
+        forAll(arbitrary[DeclarationType]) {
           value =>
-            val decType: TransitOperationType14 = TransitOperationType14("Mrn", declarationType = Some(value.toString), None, "1", Number0)
-            val ie043: CC043CType               = basicIe043.copy(TransitOperation = decType)
-            val answers: UserAnswers            = emptyUserAnswers.copy(ie043Data = ie043)
+            val answers: UserAnswers = emptyUserAnswers.setValue(DeclarationTypePage, value)
 
             val helper = new ConsignmentAnswersHelper(answers)
-            val result = helper.declarationTypeRow
+            val result = helper.declarationTypeRow.get
 
             result.key.value mustBe "Declaration type"
-            result.value.value mustBe value.toString
+            result.value.value mustBe value.code
             result.actions must not be defined
         }
       }
@@ -87,17 +86,14 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase with Generators
 
     "securityTypeRow" - {
       "must return row" in {
-        forAll(arbitrarySecurityDetailsType) {
+        forAll(arbitrary[SecurityType]) {
           value =>
-            val decType: TransitOperationType14 = TransitOperationType14("Mrn", None, None, value.toString, Number0)
-            val ie043: CC043CType               = basicIe043.copy(TransitOperation = decType)
-            val answers: UserAnswers            = emptyUserAnswers.copy(ie043Data = ie043)
+            val answers: UserAnswers = emptyUserAnswers.setValue(SecurityTypePage, value)
+            val helper               = new ConsignmentAnswersHelper(answers)
+            val result               = helper.securityTypeRow.get
 
-            val helper = new ConsignmentAnswersHelper(answers)
-            val result = helper.securityTypeRow
-
-            result.key.value mustBe "Security type"
-            result.value.value mustBe value.toString
+            result.key.value mustBe "Safety and security details"
+            result.value.value mustBe value.description
             result.actions must not be defined
         }
       }
@@ -105,16 +101,29 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase with Generators
 
     "reducedDatasetIndicatorRow" - {
       "must return row" in {
-        val flag                            = Gen.oneOf(Number0, Number1).sample.value
-        val decType: TransitOperationType14 = TransitOperationType14("Mrn", None, None, "1", flag)
+        val decType: TransitOperationType14 = TransitOperationType14("Mrn", None, None, "1", Number0)
         val ie043: CC043CType               = basicIe043.copy(TransitOperation = decType)
         val answers: UserAnswers            = emptyUserAnswers.copy(ie043Data = ie043)
 
         val helper = new ConsignmentAnswersHelper(answers)
         val result = helper.reducedDatasetIndicatorRow
 
-        result.key.value mustBe "Reduced dataset indicator"
-        result.value.value mustBe flag.toString
+        result.key.value mustBe "Do you want to add a reduced data set?"
+        result.value.value mustBe "No"
+        result.actions must not be defined
+      }
+    }
+    "declarationAcceptanceDate" - {
+      "must return row" in {
+        val decType: TransitOperationType14 = TransitOperationType14("Mrn", None, Some(XMLCalendar("2023-06-09")), "1", Number0)
+        val ie043: CC043CType               = basicIe043.copy(TransitOperation = decType)
+        val answers: UserAnswers            = emptyUserAnswers.copy(ie043Data = ie043)
+
+        val helper = new ConsignmentAnswersHelper(answers)
+        val result = helper.declarationAcceptanceDateRow.get
+
+        result.key.value mustBe "Declaration acceptance date"
+        result.value.value mustBe "9 June 2023"
         result.actions must not be defined
       }
     }

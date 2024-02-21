@@ -17,20 +17,22 @@
 package viewModels
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import generated.Number0
 import generators.Generators
-import models.Index
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.{AdditionalReferenceType, Country}
+import models.{DeclarationType, Index, SecurityType, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages._
 import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage}
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
-import pages._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import scalaxb.XMLCalendar
 import services.ReferenceDataService
 import viewModels.UnloadingFindingsViewModel.UnloadingFindingsViewModelProvider
 
@@ -50,57 +52,75 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
     "must render pre-section" in {
       val viewModelProvider = new UnloadingFindingsViewModelProvider()
-      val result            = viewModelProvider.apply(emptyUserAnswers)
-      val section           = result.sections.head
+      val userAnswers: UserAnswers = emptyUserAnswers.copy(ie043Data =
+        emptyUserAnswers.ie043Data.copy(TransitOperation =
+          emptyUserAnswers.ie043Data.TransitOperation.copy(reducedDatasetIndicator = Number0,
+                                                           declarationAcceptanceDate = Some(XMLCalendar("2020-01-01T09:30:00"))
+          )
+        )
+      )
+
+      val result = viewModelProvider.apply(
+        userAnswers
+          .setValue(DeclarationTypePage, DeclarationType("T1", "test"))
+          .setValue(SecurityTypePage, SecurityType("1", "test"))
+      )
+      val section = result.sections(1)
 
       section.sectionTitle must not be defined
 
-      section.rows.size mustBe 3
-      section.rows.head.key.value mustBe "Declaration type"
+      section.rows.size mustBe 1
+      section.rows.head.key.value mustBe "Authorised consignee’s EORI number or Trader Identification Number (TIN)"
 
       section.viewLink must not be defined
     }
 
-    "must render Means of Transport section" - {
-      "when there is one" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(TransportMeansIdentificationPage(dtmIndex), TransportMeansIdentification("4", ""))
-          .setValue(VehicleIdentificationNumberPage(dtmIndex), "28")
-          .setValue(CountryPage(dtmIndex), Country("GB", ""))
+    "must render Transit Operation section" in {
+      val viewModelProvider = new UnloadingFindingsViewModelProvider()
+      val userAnswers: UserAnswers = emptyUserAnswers.copy(ie043Data =
+        emptyUserAnswers.ie043Data.copy(TransitOperation =
+          emptyUserAnswers.ie043Data.TransitOperation.copy(reducedDatasetIndicator = Number0,
+                                                           declarationAcceptanceDate = Some(XMLCalendar("2020-01-01T09:30:00"))
+          )
+        )
+      )
 
-        setExistingUserAnswers(userAnswers)
+      val result = viewModelProvider.apply(
+        userAnswers
+          .setValue(DeclarationTypePage, DeclarationType("T1", "test"))
+          .setValue(SecurityTypePage, SecurityType("1", "test"))
+      )
+      val section = result.sections.head
 
-        when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
+      section.sectionTitle must not be defined
 
-        val viewModelProvider = new UnloadingFindingsViewModelProvider()
-        val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(2)
+      section.rows.size mustBe 4
+      section.rows.head.key.value mustBe "Do you want to add a reduced data set?"
+      section.rows(1).key.value mustBe "Safety and security details"
+      section.rows(2).key.value mustBe "Declaration type"
+      section.rows(3).key.value mustBe "Declaration acceptance date"
 
-        section.sectionTitle.value mustBe "Departure means of transport 1"
-        section.rows.size mustBe 3
-        section.viewLink must not be defined
-      }
+      section.viewLink must not be defined
+    }
 
-      "when there is multiple" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(TransportMeansIdentificationPage(Index(0)), TransportMeansIdentification("4", ""))
-          .setValue(VehicleIdentificationNumberPage(Index(0)), "28")
-          .setValue(CountryPage(Index(0)), Country("GB", ""))
-          .setValue(TransportMeansIdentificationPage(Index(1)), TransportMeansIdentification("4", ""))
-          .setValue(VehicleIdentificationNumberPage(Index(1)), "28")
-          .setValue(CountryPage(Index(1)), Country("GB", ""))
+    "must render Transit Operation section" - {
 
-        setExistingUserAnswers(userAnswers)
-        when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
+      val userAnswers = emptyUserAnswers
+        .setValue(TransportMeansIdentificationPage(dtmIndex), TransportMeansIdentification("4", ""))
+        .setValue(VehicleIdentificationNumberPage(dtmIndex), "28")
+        .setValue(CountryPage(dtmIndex), Country("GB", ""))
 
-        val viewModelProvider = new UnloadingFindingsViewModelProvider()
-        val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(3)
+      setExistingUserAnswers(userAnswers)
 
-        section.sectionTitle.value mustBe "Departure means of transport 2"
-        section.rows.size mustBe 3
-        section.viewLink must not be defined
-      }
+      when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
+
+      val viewModelProvider = new UnloadingFindingsViewModelProvider()
+      val result            = viewModelProvider.apply(userAnswers)
+      val section           = result.sections(2)
+
+      section.sectionTitle.value mustBe "Departure means of transport 1"
+      section.rows.size mustBe 3
+      section.viewLink must not be defined
     }
 
     "must render transport equipment section" - {

@@ -23,14 +23,11 @@ import uk.gov.hmrc.govukfrontend.views.html.components._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.Format.cyaDateFormatter
-import services.ReferenceDataService
-import uk.gov.hmrc.http.HeaderCarrier
+import utils.Date.getDate
+import utils.Format.{cyaDateFormatter, dateFormatter, dateTimeFormatIE044}
 
 import java.time.LocalDate
-import javax.inject.Inject
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import javax.xml.datatype.XMLGregorianCalendar
 
 class SummaryListRowHelper(implicit messages: Messages) {
 
@@ -65,6 +62,9 @@ class SummaryListRowHelper(implicit messages: Messages) {
 
   def formatAsDate(answer: LocalDate): Content =
     answer.format(cyaDateFormatter).toText
+
+  def formatAsDate2(answer: XMLGregorianCalendar): Content =
+    answer.toGregorianCalendar.toZonedDateTime.format(cyaDateFormatter).toText
 
   def buildRow(
     prefix: String,
