@@ -274,6 +274,19 @@ trait MessagesModelGenerators {
       )
     }
 
+  implicit lazy val arbitraryAdditionalReferenceType02: Arbitrary[AdditionalReferenceType02] =
+    Arbitrary {
+      for {
+        sequenceNumber <- Gen.alphaNumStr
+        typeVal        <- Gen.alphaNumStr
+        refNum         <- Gen.option(Gen.alphaNumStr)
+      } yield AdditionalReferenceType02(
+        sequenceNumber = sequenceNumber,
+        typeValue = typeVal,
+        referenceNumber = refNum
+      )
+    }
+
   implicit lazy val arbitraryAdditionalReferenceType03: Arbitrary[AdditionalReferenceType03] =
     Arbitrary {
       for {
@@ -295,6 +308,22 @@ trait MessagesModelGenerators {
       } yield SealType04(
         sequenceNumber = sequenceNumber,
         identifier = identifier
+      )
+    }
+
+  implicit lazy val arbitraryPackageType04: Arbitrary[PackagingType02] =
+    Arbitrary {
+      for {
+        sequenceNumber   <- Gen.alphaNumStr
+        typeOfPackages   <- Gen.alphaNumStr
+        numberOfPackages <- Gen.option(positiveBigInts)
+        shippingMarks    <- Gen.option(Gen.alphaNumStr)
+
+      } yield PackagingType02(
+        sequenceNumber = sequenceNumber,
+        typeOfPackages,
+        numberOfPackages,
+        shippingMarks
       )
     }
 

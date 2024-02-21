@@ -18,36 +18,38 @@ package viewModels
 
 import models.{Index, UserAnswers}
 import play.api.i18n.Messages
-import utils.HouseConsignmentAnswersHelper
+import utils.answersHelpers.consignment.HouseConsignmentAnswersHelper
 import viewModels.sections.Section
+import viewModels.sections.Section.StaticSection
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
-case class HouseConsignmentViewModel(section: Seq[Section], houseConsignment: Seq[Section])
+case class HouseConsignmentViewModel(sections: Seq[Section])
 
 object HouseConsignmentViewModel {
 
-  def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index)(implicit
-    messages: Messages,
-    ec: ExecutionContext
-  ): Future[HouseConsignmentViewModel] = new HouseConsignmentViewModelProvider()(userAnswers, houseConsignmentIndex)
+  def apply(
+    userAnswers: UserAnswers,
+    houseConsignmentIndex: Index
+  )(implicit messages: Messages): HouseConsignmentViewModel = new HouseConsignmentViewModelProvider()(userAnswers, houseConsignmentIndex)
 
   class HouseConsignmentViewModelProvider @Inject() () {
 
-    def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index)(implicit messages: Messages, ex: ExecutionContext): Future[HouseConsignmentViewModel] = {
+    def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index)(implicit messages: Messages): HouseConsignmentViewModel = {
       val helper = new HouseConsignmentAnswersHelper(userAnswers, houseConsignmentIndex: Index)
 
-      helper.buildTransportSections.map {
-        meansOfTransportSections =>
-          val houseConsignmentSection: Seq[Section] = helper.houseConsignmentSection
-          val itemSections: Seq[Section]            = helper.itemSections
+      val houseConsignmentSection: Section = StaticSection(
+        rows = Seq(
+          helper.consignorName,
+          helper.consignorIdentification,
+          helper.consigneeName,
+          helper.consigneeIdentification
+        ).flatten
+      )
 
-          val sections: Seq[Section] = meansOfTransportSections ++ itemSections
+      val sections: Seq[Section] = helper.departureTransportMeansSections ++ helper.itemSections ++ Seq(houseConsignmentSection)
 
-          HouseConsignmentViewModel(sections, houseConsignmentSection)
-
-      }
+      HouseConsignmentViewModel(sections)
     }
   }
 }

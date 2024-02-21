@@ -17,11 +17,8 @@
 package views
 
 import generators.Generators
-import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewModels.HouseConsignmentViewModel
-import viewModels.sections.Section
 import views.behaviours.DetailsListViewBehaviours
 import views.html.HouseConsignmentView
 
@@ -29,15 +26,10 @@ class HouseConsignmentViewSpec extends DetailsListViewBehaviours with Generators
 
   override val prefix: String = "houseConsignment"
 
-  lazy val sections: Seq[Section]                          = arbitrary[List[Section]].sample.value
-  val houseConsignmentViewModel: HouseConsignmentViewModel = new HouseConsignmentViewModel(sections, sections)
+  val houseConsignmentViewModel: HouseConsignmentViewModel = new HouseConsignmentViewModel(sections)
 
   override def view: HtmlFormat.Appendable =
     injector.instanceOf[HouseConsignmentView].apply(mrn, arrivalId, houseConsignmentViewModel, index)(fakeRequest, messages)
-
-  override def summaryLists: Seq[SummaryList] = sections.map(
-    section => SummaryList(section.rows)
-  )
 
   behave like pageWithTitle(args = "1")
 
