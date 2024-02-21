@@ -36,16 +36,22 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
   private val transformer = app.injector.instanceOf[ConsignmentItemTransformer]
 
   private lazy val mockCommodityTransformer = mock[CommodityTransformer]
+  private lazy val mockPackagingTransformer = mock[PackagingTransformer]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[CommodityTransformer].toInstance(mockCommodityTransformer)
+        bind[CommodityTransformer].toInstance(mockCommodityTransformer),
+        bind[PackagingTransformer].toInstance(mockPackagingTransformer)
       )
 
   private case class FakeCommoditySection(itemIndex: Index) extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ itemIndex.position.toString \ "commodity"
+  }
+
+  private case class FakePackagingSection(itemIndex: Index) extends QuestionPage[JsObject] {
+    override def path: JsPath = JsPath \ itemIndex.position.toString \ "packaging"
   }
 
   "must transform data" in {
@@ -59,6 +65,11 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
               .thenReturn {
                 ua => Future.successful(ua.setValue(FakeCommoditySection(itemIndex), Json.obj("foo" -> i.toString)))
               }
+
+            when(mockPackagingTransformer.transform(any(), any(), eqTo(itemIndex))(any()))
+              .thenReturn {
+                ua => Future.successful(ua.setValue(FakePackagingSection(itemIndex), Json.obj("foo" -> i.toString)))
+              }
         }
 
         val result = transformer.transform(consignmentItems, hcIndex).apply(emptyUserAnswers).futureValue
@@ -68,6 +79,7 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
             val itemIndex = Index(i)
 
             result.getValue(FakeCommoditySection(itemIndex)) mustBe Json.obj("foo" -> i.toString)
+            result.getValue(FakePackagingSection(itemIndex)) mustBe Json.obj("foo" -> i.toString)
         }
     }
   }

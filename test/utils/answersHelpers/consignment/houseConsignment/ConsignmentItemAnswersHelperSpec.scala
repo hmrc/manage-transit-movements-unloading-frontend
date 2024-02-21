@@ -16,9 +16,11 @@
 
 package utils.answersHelpers.consignment.houseConsignment
 
+import models.reference.PackageType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.NetWeightPage
+import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
 import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage}
 import utils.answersHelpers.AnswersHelperSpecBase
 

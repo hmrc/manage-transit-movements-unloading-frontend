@@ -323,6 +323,7 @@ unloadingFindings.heading = Cross-check the transit with this declaration summar
 unloadingFindings.paragraph = Compare the transit that arrived with the following information to identify any discrepancies.
 
 unloadingFindings.subsections.transportMeans = Departure means of transport {0}
+unloadingFindings.subsections.packages = Package {0}
 
 unloadingFindings.rowHeadings.identificationType.seaGoingVessel = Name of a sea-going vessel
 unloadingFindings.rowHeadings.identificationType.seaGoingVessel.change.hidden = name of a sea-going vessel
@@ -376,6 +377,12 @@ unloadingFindings.rowHeadings.totalNetWeight = Total net weight of all items
 unloadingFindings.subsections.item = Item {0}
 unloadingFindings.rowHeadings.item.description = Description
 unloadingFindings.rowHeadings.item.grossWeight = Gross weight
+unloadingFindings.rowHeadings.item.packageType = Type
+unloadingFindings.rowHeadings.item.packageType.change.hidden = type of package {0} for item {1}
+unloadingFindings.rowHeadings.item.packageCount = Quantity
+unloadingFindings.rowHeadings.item.packageCount.change.hidden = quantity of package {0} for item {1}
+unloadingFindings.rowHeadings.item.packageMarks = Shipping mark
+unloadingFindings.rowHeadings.item.packageMarks.change.hidden = shipping mark of package {0} for item {1}
 unloadingFindings.rowHeadings.item.grossWeight.change.hidden = gross weight of item {0}
 unloadingFindings.rowHeadings.item.netWeight = Net weight
 unloadingFindings.rowHeadings.item.netWeight.change.hidden = net weight of item {0}
