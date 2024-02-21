@@ -20,7 +20,9 @@ import models.P5.ArrivalMessageType
 import models._
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.{AdditionalReferenceType, Country, CustomsOffice, Item, PackageType}
+import models.reference._
 import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.mvc.Call
 import play.api.test.Helpers.{GET, POST}
 
@@ -63,7 +65,7 @@ trait ModelGenerators {
   implicit lazy val arbitraryAdditionalReference: Arbitrary[AdditionalReferenceType] =
     Arbitrary {
       for {
-        refType     <- Gen.alphaNumStr
+        refType     <- nonEmptyString
         description <- nonEmptyString
       } yield AdditionalReferenceType(refType, description)
     }
@@ -120,4 +122,34 @@ trait ModelGenerators {
       url    <- nonEmptyString
     } yield Call(method, url)
   }
+
+  implicit lazy val arbitraryDocumentType: Arbitrary[DocumentType] =
+    Arbitrary {
+      for {
+        docType <- arbitrary[DocType]
+        code    <- nonEmptyString
+        desc    <- nonEmptyString
+      } yield DocumentType(docType, code, desc)
+    }
+
+  lazy val arbitraryTransportDocument: Arbitrary[DocumentType] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+        desc <- nonEmptyString
+      } yield DocumentType(DocType.Transport, code, desc)
+    }
+
+  lazy val arbitrarySupportDocument: Arbitrary[DocumentType] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+        desc <- nonEmptyString
+      } yield DocumentType(DocType.Support, code, desc)
+    }
+
+  implicit lazy val arbitraryDocType: Arbitrary[DocType] =
+    Arbitrary {
+      Gen.oneOf(DocType.values)
+    }
 }

@@ -590,7 +590,6 @@ houseConsignment.index.items.additionalReference.additionalReferenceNumber.Norma
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.CheckMode.error.required = Enter the new additional reference number for item {1} in house consignment {0}
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.paragraph = You need to enter a reference number as you have already added this type of additional reference.
 
-
 additionalReference.index.additionalReferenceType.NormalMode.title = What type of additional reference do you want to add?
 additionalReference.index.additionalReferenceType.NormalMode.heading = What type of additional reference do you want to add?
 additionalReference.index.additionalReferenceType.CheckMode.title = What is the new additional reference type?
@@ -599,3 +598,9 @@ additionalReference.index.additionalReferenceType.error.required = Select the ty
 additionalReference.index.additionalReferenceType.check.error.required = Select the new additional reference type
 additionalReference.index.additionalReferenceType.hint = Enter the reference name or code, like Carrier (AEO certificate number) or Y028.
 additionalReference.index.additionalReferenceType.placeholder = Select an additional reference
+
+document.type.title = What is the new document type?
+document.type.heading = What is the new document type?
+document.type.hint = Enter the document name or code.
+document.type.placeholder = Select a document type
+document.type.check.error.required = Select the new document type
