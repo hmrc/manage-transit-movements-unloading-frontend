@@ -16,7 +16,6 @@
 
 package utils.answersHelpers
 
-import models.reference.CustomsOfficeOfDestinationActual
 import models.{Link, UserAnswers}
 import pages.CustomsOfficeOfDestinationActualPage
 import pages.sections._
@@ -33,8 +32,8 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
   def headerSection: Section = StaticSection(
     rows = Seq(
       customsOfficeOfDestinationActual,
-      Some(traderAtDestinationRow)
-    ).flatten
+      traderAtDestinationRow
+    )
   )
 
   def traderAtDestinationRow: SummaryListRow = buildRow(
@@ -44,10 +43,9 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     call = None
   )
 
-  def customsOfficeOfDestinationActual: Option[SummaryListRow] = getAnswerAndBuildRow[CustomsOfficeOfDestinationActual](
-    page = CustomsOfficeOfDestinationActualPage(),
-    formatAnswer = formatAsText,
+  def customsOfficeOfDestinationActual: SummaryListRow = buildRow(
     prefix = "customsOfficeOfDestinationActual",
+    answer = userAnswers.get(CustomsOfficeOfDestinationActualPage).get.name.toText,
     id = None,
     call = None
   )

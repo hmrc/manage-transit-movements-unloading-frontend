@@ -18,7 +18,6 @@ package utils.transformers
 
 import generated.CustomsOfficeOfDestinationActualType03
 import models.UserAnswers
-import models.reference.CustomsOfficeOfDestinationActual
 import pages.CustomsOfficeOfDestinationActualPage
 import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -29,25 +28,14 @@ import scala.concurrent.{ExecutionContext, Future}
 class CustomsOfficeOfDestinationActualTransformer @Inject() (referenceDataService: ReferenceDataService)(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  private case class TempCusCode(referenceNumber: String, description: String)
-
   def transform(customsOfficeOfDestination: CustomsOfficeOfDestinationActualType03)(implicit
     hc: HeaderCarrier
   ): Future[UserAnswers] => Future[UserAnswers] = userAnswers => {
 
-    lazy val referenceDataLookup =
-      referenceDataService.getCustomsOfficeByCode(customsOfficeOfDestination.referenceNumber).map {
-        customsOffice =>
-          TempCusCode(
-            customsOfficeOfDestination.referenceNumber,
-            customsOffice.map(_.name).getOrElse(customsOfficeOfDestination.referenceNumber)
-          )
-      }
-
-    referenceDataLookup flatMap {
-      case TempCusCode(referenceNumber, description) =>
+    referenceDataService.getCustomsOfficeByCode(customsOfficeOfDestination.referenceNumber) flatMap {
+      customsOffice =>
         val pipeline: UserAnswers => Future[UserAnswers] =
-          set(CustomsOfficeOfDestinationActualPage(), CustomsOfficeOfDestinationActual(referenceNumber, description))
+          set(CustomsOfficeOfDestinationActualPage, customsOffice)
 
         pipeline(userAnswers)
     }

@@ -55,13 +55,13 @@ class CustomsOfficeOfDestinationActualTransformerSpec extends SpecBase with AppW
 
     when(mockRefDataService.getCustomsOfficeByCode(eqTo(customsOfficeOfDestinationActualType03.referenceNumber))(any(), any()))
       .thenReturn(
-        Future.successful(Some(CustomsOffice(customsOfficeOfDestinationActualType03.referenceNumber, "name", "countryID", None)))
+        Future.successful(CustomsOffice(customsOfficeOfDestinationActualType03.referenceNumber, "name", "countryID", None))
       )
 
     val result = transformer.transform(customsOfficeOfDestinationActualType03).apply(Future.successful(emptyUserAnswers)).futureValue
 
-    result.getValue(CustomsOfficeOfDestinationActualPage()).description mustBe "name"
-    result.getValue(CustomsOfficeOfDestinationActualPage()).value mustBe customsOfficeOfDestinationActualType03.referenceNumber
+    result.getValue(CustomsOfficeOfDestinationActualPage).name mustBe "name"
+    result.getValue(CustomsOfficeOfDestinationActualPage).id mustBe customsOfficeOfDestinationActualType03.referenceNumber
 
   }
 }

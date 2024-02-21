@@ -17,13 +17,12 @@
 package utils.answersHelpers.consignment
 
 import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.{Country, PackageType}
-import models.reference.{AdditionalReferenceType, Country}
+import models.reference.{AdditionalReferenceType, Country, PackageType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
-import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
 import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
+import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
 import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage}
 import utils.answersHelpers.AnswersHelperSpecBase
 import viewModels.sections.Section.AccordionSection
