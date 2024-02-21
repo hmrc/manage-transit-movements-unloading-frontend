@@ -26,9 +26,9 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import repositories.SessionRepository
 import navigation.Navigator
-import pages.AdditionalReferenceNumberPage
+import pages.additionalReference.AdditionalReferenceNumberPage
 import pages.additionalReference.AdditionalReferenceTypePage
-import pages.sections.AdditionalReferenceListSection
+import pages.sections.additionalReference.AdditionalReferencesSection
 import viewModels.additionalReference.index.AdditionalReferenceNumberViewModel.AdditionalReferenceNumberViewModelProvider
 import views.html.additionalReference.index.AdditionalReferenceNumberView
 
@@ -110,7 +110,7 @@ class AdditionalReferenceNumberController @Inject() (
       }
 
   private def otherAdditionalReferenceTypes(additionalReferenceIndex: Index)(implicit request: Request): Seq[AdditionalReferenceType] = {
-    val numberOfAdditionalReferences = request.userAnswers.get(AdditionalReferenceListSection).length
+    val numberOfAdditionalReferences = request.userAnswers.get(AdditionalReferencesSection).length
     (0 until numberOfAdditionalReferences)
       .map(Index(_))
       .filterNot(_ == additionalReferenceIndex)

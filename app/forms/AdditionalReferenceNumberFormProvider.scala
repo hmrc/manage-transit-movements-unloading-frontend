@@ -29,8 +29,8 @@ class AdditionalReferenceNumberFormProvider @Inject extends Mappings {
       "value" -> text(requiredError)
         .verifying(
           forms.StopOnFirstFail[String](
-            regexp(UnloadingRemarksRequest.stringFieldRegexComma, "additionalReferenceNumber.error.characters"),
-            maxLength(UnloadingRemarksRequest.additionalReferenceNumberMaximumLength, "additionalReferenceNumber.error.length")
+            regexp(UnloadingRemarksRequest.stringFieldRegexComma, "additionalReferenceNumber.index.error.characters"),
+            maxLength(UnloadingRemarksRequest.additionalReferenceNumberMaximumLength, "additionalReferenceNumber.index.error.length")
           )
         )
     )

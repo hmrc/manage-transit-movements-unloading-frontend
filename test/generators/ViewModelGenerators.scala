@@ -316,4 +316,13 @@ trait ViewModelGenerators {
       arrivalId     <- nonEmptyString
     } yield AdditionalReferenceTypeViewModel(heading, title, requiredError, ArrivalId(arrivalId), NormalMode, Index(0))
   }
+
+  implicit lazy val arbitraryAdditionalReferenceNumberViewModel: Arbitrary[viewModels.additionalReference.index.AdditionalReferenceNumberViewModel] =
+    Arbitrary {
+      for {
+        heading       <- nonEmptyString
+        title         <- nonEmptyString
+        requiredError <- nonEmptyString
+      } yield viewModels.additionalReference.index.AdditionalReferenceNumberViewModel(heading, title, requiredError)
+    }
 }

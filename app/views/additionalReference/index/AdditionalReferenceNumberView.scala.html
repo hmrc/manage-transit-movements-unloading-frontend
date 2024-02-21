@@ -19,7 +19,7 @@
 @import models.MovementReferenceNumber
 @import viewModels.components.InputCharacterCountViewModel
 @import views.html.components.{Button, ErrorSummary, InputCharacterCount}
-@import forms.Constants.maxAdditionalReferenceNumber
+@import forms.Constants.maxAdditionalReferenceNumLength
 
 @this(
     mainTemplate: MainTemplate,
@@ -45,10 +45,10 @@
         inputCharacterCountType = InputCharacterCountViewModel(
             heading = viewModel.heading,
             caption = Some(messages("site.caption", mrn.toString)),
-            additionalHtml = if (isParagraphRequired) Some(messages("additionalReferenceNumber.NormalMode.paragraph").toParagraph) else None
+            additionalHtml = if (isParagraphRequired) Some(messages("additionalReferenceNumber.index.NormalMode.paragraph").toParagraph) else None
         ),
         label = viewModel.heading,
-        maxLength = maxAdditionalReferenceNumber,
+        maxLength = maxAdditionalReferenceNumLength,
         rows = 2
     )
 

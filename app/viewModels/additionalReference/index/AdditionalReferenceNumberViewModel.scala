@@ -27,7 +27,7 @@ case class AdditionalReferenceNumberViewModel(heading: String, title: String, re
 object AdditionalReferenceNumberViewModel {
 
   class AdditionalReferenceNumberViewModelProvider @Inject() extends ModeViewModelProvider {
-    override val prefix = "additionalReferenceNumber"
+    override val prefix = "additionalReferenceNumber.index"
 
     def apply(mode: Mode)(implicit messages: Messages): AdditionalReferenceNumberViewModel =
       new AdditionalReferenceNumberViewModel(heading(mode), title(mode), requiredError(mode))
