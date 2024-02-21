@@ -93,19 +93,19 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
     val result = transformer.transform(supportingDocuments, transportDocuments).apply(emptyUserAnswers).futureValue
 
-    result.getValue(TypePage(Index(0))).toString mustBe "(sd1 tv) sd1 d"
+    result.getValue(TypePage(Index(0))).toString mustBe "Supporting - (sd1 tv) sd1 d"
     result.getValue(DocumentReferenceNumberPage(Index(0))) mustBe "sd1 rn"
     result.getValue(AdditionalInformationPage(Index(0))) mustBe "sd1 coi"
 
-    result.getValue(TypePage(Index(1))).toString mustBe "(sd2 tv) sd2 d"
+    result.getValue(TypePage(Index(1))).toString mustBe "Supporting - (sd2 tv) sd2 d"
     result.getValue(DocumentReferenceNumberPage(Index(1))) mustBe "sd2 rn"
     result.get(AdditionalInformationPage(Index(1))) must not be defined
 
-    result.getValue(TypePage(Index(2))).toString mustBe "(td1 tv) td1 d"
+    result.getValue(TypePage(Index(2))).toString mustBe "Transport - (td1 tv) td1 d"
     result.getValue(DocumentReferenceNumberPage(Index(2))) mustBe "td1 rn"
     result.get(AdditionalInformationPage(Index(2))) must not be defined
 
-    result.getValue(TypePage(Index(3))).toString mustBe "(td2 tv) td2 d"
+    result.getValue(TypePage(Index(3))).toString mustBe "Transport - (td2 tv) td2 d"
     result.getValue(DocumentReferenceNumberPage(Index(3))) mustBe "td2 rn"
     result.get(AdditionalInformationPage(Index(3))) must not be defined
   }

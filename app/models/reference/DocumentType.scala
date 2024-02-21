@@ -23,7 +23,7 @@ import play.api.libs.json._
 
 case class DocumentType(`type`: DocType, code: String, description: String) extends Selectable {
 
-  override def toString: String = s"($code) $description"
+  override def toString: String = s"${`type`.display} - ($code) $description"
 
   override val value: String = code
 }
