@@ -19,6 +19,7 @@ package generators
 import models.P5.ArrivalMessageType
 import models._
 import models.departureTransportMeans.TransportMeansIdentification
+import models.reference.{AdditionalReferenceType, Country, CustomsOffice, Item, PackageType}
 import models.reference._
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Arbitrary.arbitrary
@@ -28,6 +29,16 @@ import play.api.test.Helpers.{GET, POST}
 trait ModelGenerators {
 
   self: Generators =>
+
+  implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice] =
+    Arbitrary {
+      for {
+        id          <- Gen.alphaNumStr
+        name        <- Gen.alphaNumStr
+        countryId   <- Gen.alphaNumStr
+        phoneNumber <- Gen.numStr
+      } yield CustomsOffice(id, name, countryId, Some(phoneNumber))
+    }
 
   implicit lazy val arbitraryMovementReferenceNumber: Arbitrary[MovementReferenceNumber] =
     Arbitrary {

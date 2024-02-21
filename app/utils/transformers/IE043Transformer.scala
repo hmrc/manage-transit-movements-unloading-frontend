@@ -24,13 +24,15 @@ import javax.inject.Inject
 import scala.concurrent.Future
 
 class IE043Transformer @Inject() (
-  consignmentTransformer: ConsignmentTransformer
+  consignmentTransformer: ConsignmentTransformer,
+  customsOfficeOfDestinationActualTransformer: CustomsOfficeOfDestinationActualTransformer
 ) extends FrontendHeaderCarrierProvider {
 
   def transform(userAnswers: UserAnswers)(implicit headerCarrier: HeaderCarrier): Future[UserAnswers] = {
 
     val transformerPipeline =
-      consignmentTransformer.transform(userAnswers.ie043Data.Consignment)
+      consignmentTransformer.transform(userAnswers.ie043Data.Consignment) andThen
+        customsOfficeOfDestinationActualTransformer.transform(userAnswers.ie043Data.CustomsOfficeOfDestinationActual)
 
     transformerPipeline(userAnswers)
   }

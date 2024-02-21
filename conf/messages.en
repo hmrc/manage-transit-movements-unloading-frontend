@@ -83,6 +83,7 @@ dateGoodsUnloaded.error.max.date = The date must be today or in the past
 dateGoodsUnloaded.change.hidden = the date when the goods were unloaded
 
 traderAtDestination = Authorised consignee’s EORI number or Trader Identification Number (TIN)
+customsOfficeOfDestinationActual = Office of destination
 
 departureMeansOfTransport.identificationNumber.NormalMode.title = What is the identification number for this vehicle?
 departureMeansOfTransport.identificationNumber.CheckMode.title = What is the identification number for the new departure means of transport?

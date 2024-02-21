@@ -34,17 +34,23 @@ class IE043TransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
 
   private val transformer = app.injector.instanceOf[IE043Transformer]
 
-  private lazy val mockConsignmentTransformer = mock[ConsignmentTransformer]
+  private lazy val mockConsignmentTransformer                      = mock[ConsignmentTransformer]
+  private lazy val mockCustomsOfficeOfDestinationActualTransformer = mock[CustomsOfficeOfDestinationActualTransformer]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[ConsignmentTransformer].toInstance(mockConsignmentTransformer)
+        bind[ConsignmentTransformer].toInstance(mockConsignmentTransformer),
+        bind[CustomsOfficeOfDestinationActualTransformer].toInstance(mockCustomsOfficeOfDestinationActualTransformer)
       )
 
   private case object FakeConsignmentSection extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ "consignment"
+  }
+
+  private case object FakeCustomsOfficeOfDestinationActualSection extends QuestionPage[JsObject] {
+    override def path: JsPath = JsPath \ "CustomsOfficeOfDestinationActual"
   }
 
   "must transform data" in {
@@ -54,10 +60,15 @@ class IE043TransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
           .thenReturn {
             ua => Future.successful(ua.setValue(FakeConsignmentSection, Json.obj("foo" -> "bar")))
           }
+        when(mockCustomsOfficeOfDestinationActualTransformer.transform(any())(any()))
+          .thenReturn {
+            ua => Future.successful(ua.futureValue.setValue(FakeCustomsOfficeOfDestinationActualSection, Json.obj("foo1" -> "bar1")))
+          }
 
         val result = transformer.transform(emptyUserAnswers).futureValue
 
         result.getValue(FakeConsignmentSection) mustBe Json.obj("foo" -> "bar")
+        result.getValue(FakeCustomsOfficeOfDestinationActualSection) mustBe Json.obj("foo1" -> "bar1")
     }
   }
 }

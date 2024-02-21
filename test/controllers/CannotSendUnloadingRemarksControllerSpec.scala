@@ -55,7 +55,7 @@ class CannotSendUnloadingRemarksControllerSpec extends SpecBase with AppWithDefa
     "return OK and the correct view for a GET" in {
       checkArrivalStatus()
 
-      when(mockReferenceDataService.getCustomsOfficeByCode(any())(any(), any())).thenReturn(Future.successful(Some(customsOffice)))
+      when(mockReferenceDataService.getCustomsOfficeByCode(any())(any(), any())).thenReturn(Future.successful(customsOffice))
 
       val ie043Data = basicIe043.copy(CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActualType03(customsOfficeId))
       setExistingUserAnswers(emptyUserAnswers.copy(ie043Data = ie043Data))
@@ -68,7 +68,7 @@ class CannotSendUnloadingRemarksControllerSpec extends SpecBase with AppWithDefa
 
       status(result) mustBe OK
 
-      contentAsString(result) mustEqual view(mrn, arrivalId, CannotSendUnloadingRemarksViewModel(None, customsOfficeId))(request, messages).toString
+      contentAsString(result) mustEqual view(mrn, arrivalId, CannotSendUnloadingRemarksViewModel(customsOffice, customsOfficeId))(request, messages).toString
 
       verify(mockReferenceDataService).getCustomsOfficeByCode(eqTo(customsOfficeId))(any(), any())
     }

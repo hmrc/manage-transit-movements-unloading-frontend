@@ -17,6 +17,7 @@
 package utils.answersHelpers
 
 import models.{Link, UserAnswers}
+import pages.CustomsOfficeOfDestinationActualPage
 import pages.sections._
 import pages.sections.additionalReference.AdditionalReferencesSection
 import play.api.i18n.Messages
@@ -30,6 +31,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
   def headerSection: Section = StaticSection(
     rows = Seq(
+      customsOfficeOfDestinationActual,
       traderAtDestinationRow
     )
   )
@@ -37,6 +39,13 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
   def traderAtDestinationRow: SummaryListRow = buildRow(
     prefix = "traderAtDestination",
     answer = userAnswers.ie043Data.TraderAtDestination.identificationNumber.toText,
+    id = None,
+    call = None
+  )
+
+  def customsOfficeOfDestinationActual: SummaryListRow = buildRow(
+    prefix = "customsOfficeOfDestinationActual",
+    answer = userAnswers.get(CustomsOfficeOfDestinationActualPage).get.name.toText,
     id = None,
     call = None
   )

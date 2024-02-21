@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.Index
 import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.{AdditionalReferenceType, Country}
+import models.reference.{AdditionalReferenceType, Country, CustomsOffice}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -48,15 +48,18 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
   "Unloading findings sections" - {
 
+    val customsOffice = CustomsOffice("id", "name", "countryId", None)
+
     "must render pre-section" in {
       val viewModelProvider = new UnloadingFindingsViewModelProvider()
-      val result            = viewModelProvider.apply(emptyUserAnswers)
+      val result            = viewModelProvider.apply(emptyUserAnswers.setValue(CustomsOfficeOfDestinationActualPage, customsOffice))
       val section           = result.sections.head
 
       section.sectionTitle must not be defined
 
-      section.rows.size mustBe 1
-      section.rows.head.key.value mustBe "Authorised consignee’s EORI number or Trader Identification Number (TIN)"
+      section.rows.size mustBe 2
+      section.rows.head.key.value mustBe "Office of destination"
+      section.rows(1).key.value mustBe "Authorised consignee’s EORI number or Trader Identification Number (TIN)"
 
       section.viewLink must not be defined
     }
@@ -67,6 +70,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(TransportMeansIdentificationPage(dtmIndex), TransportMeansIdentification("4", ""))
           .setValue(VehicleIdentificationNumberPage(dtmIndex), "28")
           .setValue(CountryPage(dtmIndex), Country("GB", ""))
+          .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
 
         setExistingUserAnswers(userAnswers)
 
@@ -89,6 +93,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(TransportMeansIdentificationPage(Index(1)), TransportMeansIdentification("4", ""))
           .setValue(VehicleIdentificationNumberPage(Index(1)), "28")
           .setValue(CountryPage(Index(1)), Country("GB", ""))
+          .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
 
         setExistingUserAnswers(userAnswers)
         when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -109,6 +114,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         "with no seals" in {
           val userAnswers = emptyUserAnswers
             .setValue(ContainerIdentificationNumberPage(equipmentIndex), "cin-1")
+            .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
 
           setExistingUserAnswers(userAnswers)
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -126,6 +132,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           val userAnswers = emptyUserAnswers
             .setValue(ContainerIdentificationNumberPage(equipmentIndex), "cin-1")
             .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "1002")
+            .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
 
           setExistingUserAnswers(userAnswers)
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -145,6 +152,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           val userAnswers = emptyUserAnswers
             .setValue(ContainerIdentificationNumberPage(Index(0)), "cin-1")
             .setValue(ContainerIdentificationNumberPage(Index(1)), "cin-1")
+            .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
 
           setExistingUserAnswers(userAnswers)
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -164,6 +172,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             .setValue(SealIdentificationNumberPage(Index(0), sealIndex), "1002")
             .setValue(ContainerIdentificationNumberPage(Index(1)), "cin-1")
             .setValue(SealIdentificationNumberPage(Index(1), sealIndex), "1002")
+            .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
 
           setExistingUserAnswers(userAnswers)
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -192,6 +201,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(ItemDescriptionPage(hcIndex, itemIndex), "shirts")
           .setValue(GrossWeightPage(hcIndex, itemIndex), BigDecimal(123.45))
           .setValue(NetWeightPage(hcIndex, itemIndex), 123.45)
+          .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
 
         setExistingUserAnswers(userAnswers)
         when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -226,6 +236,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(ItemDescriptionPage(Index(1), itemIndex), "shirts")
           .setValue(GrossWeightPage(Index(1), itemIndex), BigDecimal(123.45))
           .setValue(NetWeightPage(Index(1), itemIndex), 123.45)
+          .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
 
         setExistingUserAnswers(userAnswers)
         when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -246,6 +257,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         val userAnswers = emptyUserAnswers
           .setValue(AdditionalReferenceTypePage(index), AdditionalReferenceType("Y015", "The rough diamonds are contained in ..."))
           .setValue(AdditionalReferenceNumberPage(index), "addref-1")
+          .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
 
         setExistingUserAnswers(userAnswers)
 
@@ -264,6 +276,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(AdditionalReferenceNumberPage(Index(0)), "addref-1")
           .setValue(AdditionalReferenceTypePage(Index(1)), AdditionalReferenceType("Y022", "Consignor / exporter (AEO certificate number)"))
           .setValue(AdditionalReferenceNumberPage(Index(1)), "addref-2")
+          .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
 
         setExistingUserAnswers(userAnswers)
 
