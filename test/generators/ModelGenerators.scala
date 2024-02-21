@@ -54,7 +54,7 @@ trait ModelGenerators {
   implicit lazy val arbitraryAdditionalReference: Arbitrary[AdditionalReferenceType] =
     Arbitrary {
       for {
-        refType     <- Gen.alphaNumStr
+        refType     <- nonEmptyString
         description <- nonEmptyString
       } yield AdditionalReferenceType(refType, description)
     }
