@@ -28,10 +28,10 @@ class DocumentsService @Inject() (referenceDataConnector: ReferenceDataConnector
 
   def getDocuments()(implicit hc: HeaderCarrier): Future[SelectableList[DocumentType]] =
     for {
-      transportDocuments  <- referenceDataConnector.getTransportDocuments().map(_.toSeq)
-      supportingDocuments <- referenceDataConnector.getSupportingDocuments().map(_.toSeq)
+      transportDocuments  <- referenceDataConnector.getTransportDocuments()
+      supportingDocuments <- referenceDataConnector.getSupportingDocuments()
       documents = transportDocuments ++ supportingDocuments
-    } yield SelectableList(documents)
+    } yield SelectableList(documents.toSeq)
 
   def getTransportDocuments()(implicit hc: HeaderCarrier): Future[SelectableList[DocumentType]] =
     referenceDataConnector

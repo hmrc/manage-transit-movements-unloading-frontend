@@ -57,7 +57,7 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
           .thenReturn(Future.successful(supportingDocuments))
 
         service.getDocuments().futureValue mustBe
-          SelectableList(Seq(transportDocument1, transportDocument2, supportingDocument1, supportingDocument2))
+          SelectableList(Seq(supportingDocument1, transportDocument1, transportDocument2, supportingDocument2))
 
         verify(mockRefDataConnector).getTransportDocuments()(any(), any())
         verify(mockRefDataConnector).getSupportingDocuments()(any(), any())
