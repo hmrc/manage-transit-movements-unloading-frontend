@@ -21,6 +21,8 @@ import cats.data.NonEmptySet
 import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import connectors.ReferenceDataConnectorSpec._
+import models.DocType.{Support, Transport}
+import models.SecurityType
 import models.reference._
 import models.reference.transport.TransportMode.{BorderMode, InlandMode}
 import org.scalacheck.Gen
@@ -97,6 +99,30 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "should handle client and server errors for countries" in {
         checkErrorResponse(url, connector.getCountry(code))
+      }
+    }
+
+    "getSecurityType" - {
+      val code = "GB"
+      val url  = s"/$baseUrl/lists/DeclarationTypeSecurity?data.code=$code"
+
+      "should handle a 200 response for countries" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(securityTypeResponseJson))
+        )
+
+        val expectedResult = SecurityType("1", "description")
+
+        connector.getSecurityType(code).futureValue mustBe expectedResult
+      }
+
+      "should throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getSecurityType(code))
+      }
+
+      "should handle client and server errors for countries" in {
+        checkErrorResponse(url, connector.getSecurityType(code))
       }
     }
 
@@ -212,7 +238,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(supportingDocumentResponseJson))
         )
 
-        val expectedResult: DocumentType = DocumentType(typeValue, "Dissostichus - catch document import")
+        val expectedResult: DocumentType = DocumentType(Support, typeValue, "Dissostichus - catch document import")
 
         connector.getSupportingDocument(typeValue).futureValue mustEqual expectedResult
       }
@@ -328,13 +354,13 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       val typeValue = "N235"
       val url       = s"/$baseUrl/lists/TransportDocumentType?data.code=$typeValue"
 
-      "must return supporting document when successful" in {
+      "must return transport document when successful" in {
         server.stubFor(
           get(urlEqualTo(url))
             .willReturn(okJson(transportDocumentResponseJson))
         )
 
-        val expectedResult: DocumentType = DocumentType(typeValue, "Container list")
+        val expectedResult: DocumentType = DocumentType(Transport, typeValue, "Container list")
 
         connector.getTransportDocument(typeValue).futureValue mustEqual expectedResult
       }
@@ -345,6 +371,58 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "must return an exception when an error response is returned" in {
         checkErrorResponse(url, connector.getTransportDocument(typeValue))
+      }
+    }
+
+    "getTransportDocuments" - {
+      val url = s"/$baseUrl/lists/TransportDocumentType"
+
+      "must return list of documents when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(documentsJson("TransportDocumentType")))
+        )
+
+        val expectResult = NonEmptySet.of(
+          DocumentType(Transport, "1", "Document 1"),
+          DocumentType(Transport, "4", "Document 2")
+        )
+
+        connector.getTransportDocuments().futureValue mustEqual expectResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getTransportDocuments())
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getTransportDocuments())
+      }
+    }
+
+    "getSupportingDocuments" - {
+      val url = s"/$baseUrl/lists/SupportingDocumentType"
+
+      "must return list of documents when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(documentsJson("SupportingDocumentType")))
+        )
+
+        val expectResult = NonEmptySet.of(
+          DocumentType(Support, "1", "Document 1"),
+          DocumentType(Support, "4", "Document 2")
+        )
+
+        connector.getSupportingDocuments().futureValue mustEqual expectResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getSupportingDocuments())
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getSupportingDocuments())
       }
     }
   }
@@ -521,6 +599,20 @@ object ReferenceDataConnectorSpec {
       |    "code":"GB",
       |    "state":"valid",
       |    "description":"United Kingdom"
+      |  }
+      | ]
+      |}
+      |""".stripMargin
+
+  private val securityTypeResponseJson: String =
+    """
+      |{
+      | "data":
+      | [
+      |  {
+      |    "code":"1",
+      |    "state":"valid",
+      |    "description":"description"
       |  }
       | ]
       |}
@@ -712,6 +804,32 @@ object ReferenceDataConnectorSpec {
       |  ]
       |}
       |""".stripMargin
+
+  private def documentsJson(docType: String): String =
+    s"""
+       |{
+       |"_links": {
+       |    "self": {
+       |      "href": "/customs-reference-data/lists/$docType"
+       |    }
+       |  },
+       |  "meta": {
+       |    "version": "410157ad-bc37-4e71-af2a-404d1ddad94c",
+       |    "snapshotDate": "2023-01-01"
+       |  },
+       |  "id": "$docType",
+       |  "data": [
+       |  {
+       |    "code": "1",
+       |    "description": "Document 1"
+       |  },
+       |  {
+       |    "code": "4",
+       |    "description": "Document 2"
+       |  }
+       |  ]
+       |}
+       |""".stripMargin
 
   private val emptyResponseJson: String =
     """

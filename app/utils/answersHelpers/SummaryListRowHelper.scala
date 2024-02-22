@@ -18,6 +18,8 @@ package utils.answersHelpers
 
 import models.Identification
 import models.reference.{Incident, PackageType}
+import models.reference.PackageType
+import pages.QuestionPage
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -27,6 +29,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.Format.cyaDateFormatter
 
 import java.time.LocalDate
+import javax.xml.datatype.XMLGregorianCalendar
 
 class SummaryListRowHelper(implicit messages: Messages) {
 
@@ -36,6 +39,14 @@ class SummaryListRowHelper(implicit messages: Messages) {
         "site.yes"
       } else {
         "site.no"
+      }
+    }.toText
+
+  def formatAsBoolean(answer: String): Content =
+    messages {
+      answer match {
+        case "1" => messages("site.yes")
+        case "0" => messages("site.no")
       }
     }.toText
 
@@ -54,6 +65,9 @@ class SummaryListRowHelper(implicit messages: Messages) {
 
   def formatAsDate(answer: LocalDate): Content =
     answer.format(cyaDateFormatter).toText
+
+  def formatAsDate(answer: XMLGregorianCalendar): Content =
+    answer.toGregorianCalendar.toZonedDateTime.format(cyaDateFormatter).toText
 
   def buildRow(
     prefix: String,

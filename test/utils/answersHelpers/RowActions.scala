@@ -118,4 +118,15 @@ trait RowActions {
     Actions("", List(ActionItem("#", Text("Change"), Some("net weight of item 1"), "", Map("id" -> "change-net-weight-1"))))
   )
 
+  val cusCodeItemAction: Some[Actions] = Some(
+    Actions("", List(ActionItem("#", Text("Change"), Some("Customs Union and Statistics (CUS) code for item 1"), "", Map("id" -> "change-cus-code-1"))))
+  )
+
+  val commodityCodeItemAction: Some[Actions] = Some(
+    Actions("", List(ActionItem("#", Text("Change"), Some("commodity code for item 1"), "", Map("id" -> "change-commodity-code-1"))))
+  )
+
+  val nomenclatureCodeItemAction: Some[Actions] = Some(
+    Actions("", List(ActionItem("#", Text("Change"), Some("combined nomenclature code for item 1"), "", Map("id" -> "change-nomenclature-code-1"))))
+  )
 }

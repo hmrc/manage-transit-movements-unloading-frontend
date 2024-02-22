@@ -55,12 +55,12 @@ class UnloadingRemarksSentControllerSpec extends SpecBase with AppWithDefaultMoc
 
       checkArrivalStatus()
 
-      when(mockReferenceDataService.getCustomsOfficeByCode(any())(any(), any())).thenReturn(Future.successful(Some(customsOffice)))
+      when(mockReferenceDataService.getCustomsOfficeByCode(any())(any(), any())).thenReturn(Future.successful(customsOffice))
 
       val ie043Data = basicIe043.copy(CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActualType03(customsOfficeId))
       setExistingUserAnswers(emptyUserAnswers.copy(ie043Data = ie043Data))
 
-      val unloadingRemarksSentViewModel = UnloadingRemarksSentViewModel(Some(customsOffice), "CODE-001")
+      val unloadingRemarksSentViewModel = UnloadingRemarksSentViewModel(customsOffice, "CODE-001")
 
       val request = FakeRequest(GET, routes.UnloadingRemarksSentController.onPageLoad(arrivalId).url)
 

@@ -18,6 +18,7 @@ package models
 
 import base.SpecBase
 import generated._
+import models.DocType.{Support, Transport}
 import models.Document._
 import models.reference.DocumentType
 import org.scalacheck.Gen
@@ -37,6 +38,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks {
           )
 
           val documentType = DocumentType(
+            `type` = Support,
             code = typeValue,
             description = description
           )
@@ -61,6 +63,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks {
           )
 
           val documentType = DocumentType(
+            `type` = Transport,
             code = typeValue,
             description = description
           )

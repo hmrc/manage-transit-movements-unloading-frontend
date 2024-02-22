@@ -17,14 +17,13 @@
 package utils.answersHelpers.consignment
 
 import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.{Country, PackageType}
-import models.reference.{AdditionalReferenceType, Country}
+import models.reference.{AdditionalReferenceType, Country, PackageType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
-import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
 import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
-import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage}
+import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
+import pages.houseConsignment.index.items._
 import utils.answersHelpers.AnswersHelperSpecBase
 import viewModels.sections.Section.AccordionSection
 
@@ -162,6 +161,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must generate accordion sections" in {
         forAll(Gen.alphaNumStr, arbitrary[BigDecimal], arbitrary[Double], arbitrary[PackageType], arbitrary[BigInt], arbitrary[AdditionalReferenceType]) {
           (description, grossWeight, netWeight, packageType, count, additionalReference) =>
+            val (cusCode, commodityCode, nomenclatureCode) = ("cusCode", "commodityCode", "nomenclatureCode")
             val answers = emptyUserAnswers
               .setValue(ItemDescriptionPage(hcIndex, itemIndex), description)
               .setValue(GrossWeightPage(hcIndex, itemIndex), grossWeight)
@@ -169,6 +169,9 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(PackagingTypePage(hcIndex, itemIndex, packageIndex), packageType)
               .setValue(PackagingCountPage(hcIndex, itemIndex, packageIndex), count)
               .setValue(PackagingMarksPage(hcIndex, itemIndex, packageIndex), description)
+              .setValue(CustomsUnionAndStatisticsCodePage(hcIndex, itemIndex), cusCode)
+              .setValue(CommodityCodePage(hcIndex, itemIndex), commodityCode)
+              .setValue(CombinedNomenclatureCodePage(hcIndex, itemIndex), nomenclatureCode)
               .setValue(AdditionalReferencePage(hcIndex, itemIndex, additionalReferenceIndex), additionalReference)
 
             val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
@@ -176,10 +179,13 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
             result.head mustBe a[AccordionSection]
             result.head.sectionTitle.value mustBe "Item 1"
-            result.head.rows.size mustBe 3
+            result.head.rows.size mustBe 6
             result.head.rows.head.value.value mustBe description
             result.head.rows(1).value.value mustBe s"${grossWeight}kg"
             result.head.rows(2).value.value mustBe s"${netWeight}kg"
+            result.head.rows(3).value.value mustBe s"$cusCode"
+            result.head.rows(4).value.value mustBe s"$commodityCode"
+            result.head.rows(5).value.value mustBe s"$nomenclatureCode"
 
             result.head.children.head.sectionTitle.get mustBe "Package 1"
             result.head.children.head.rows.size mustBe 3

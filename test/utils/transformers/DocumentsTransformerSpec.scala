@@ -20,12 +20,13 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import connectors.ReferenceDataConnector
 import generated.{SupportingDocumentType02, TransportDocumentType02}
 import generators.Generators
+import models.DocType.{Support, Transport}
 import models.Index
 import models.reference.DocumentType
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.documents.{AdditionalInformationPage, DocumentReferenceNumberPage}
+import pages.documents.{AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 
@@ -79,28 +80,32 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
     )
 
     when(mockReferenceDataConnector.getSupportingDocument(eqTo("sd1 tv"))(any(), any()))
-      .thenReturn(Future.successful(DocumentType("sd1 tv", "sd1 d")))
+      .thenReturn(Future.successful(DocumentType(Support, "sd1 tv", "sd1 d")))
 
     when(mockReferenceDataConnector.getSupportingDocument(eqTo("sd2 tv"))(any(), any()))
-      .thenReturn(Future.successful(DocumentType("sd2 tv", "sd2 d")))
+      .thenReturn(Future.successful(DocumentType(Support, "sd2 tv", "sd2 d")))
 
     when(mockReferenceDataConnector.getTransportDocument(eqTo("td1 tv"))(any(), any()))
-      .thenReturn(Future.successful(DocumentType("td1 tv", "td1 d")))
+      .thenReturn(Future.successful(DocumentType(Transport, "td1 tv", "td1 d")))
 
     when(mockReferenceDataConnector.getTransportDocument(eqTo("td2 tv"))(any(), any()))
-      .thenReturn(Future.successful(DocumentType("td2 tv", "td2 d")))
+      .thenReturn(Future.successful(DocumentType(Transport, "td2 tv", "td2 d")))
 
     val result = transformer.transform(supportingDocuments, transportDocuments).apply(emptyUserAnswers).futureValue
 
+    result.getValue(TypePage(Index(0))).toString mustBe "Supporting - (sd1 tv) sd1 d"
     result.getValue(DocumentReferenceNumberPage(Index(0))) mustBe "sd1 rn"
     result.getValue(AdditionalInformationPage(Index(0))) mustBe "sd1 coi"
 
+    result.getValue(TypePage(Index(1))).toString mustBe "Supporting - (sd2 tv) sd2 d"
     result.getValue(DocumentReferenceNumberPage(Index(1))) mustBe "sd2 rn"
     result.get(AdditionalInformationPage(Index(1))) must not be defined
 
+    result.getValue(TypePage(Index(2))).toString mustBe "Transport - (td1 tv) td1 d"
     result.getValue(DocumentReferenceNumberPage(Index(2))) mustBe "td1 rn"
     result.get(AdditionalInformationPage(Index(2))) must not be defined
 
+    result.getValue(TypePage(Index(3))).toString mustBe "Transport - (td2 tv) td2 d"
     result.getValue(DocumentReferenceNumberPage(Index(3))) mustBe "td2 rn"
     result.get(AdditionalInformationPage(Index(3))) must not be defined
   }

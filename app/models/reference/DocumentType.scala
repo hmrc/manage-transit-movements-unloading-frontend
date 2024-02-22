@@ -17,16 +17,27 @@
 package models.reference
 
 import cats.Order
-import play.api.libs.json.{Json, OFormat}
+import models.DocType
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
 
-case class DocumentType(code: String, description: String) extends Selectable {
+case class DocumentType(`type`: DocType, code: String, description: String) extends Selectable {
 
-  override def toString: String = s"($code) $description"
+  override def toString: String = s"${`type`.display} - ($code) $description"
 
   override val value: String = code
 }
 
 object DocumentType {
+
+  def reads(`type`: DocType): Reads[DocumentType] = (
+    (__ \ "code").read[String] and
+      (__ \ "description").read[String]
+  ).apply {
+    (code, description) =>
+      DocumentType(`type`, code, description)
+  }
+
   implicit val format: OFormat[DocumentType] = Json.format[DocumentType]
 
   implicit val order: Order[DocumentType] = (x: DocumentType, y: DocumentType) => x.code.compareToIgnoreCase(y.code)

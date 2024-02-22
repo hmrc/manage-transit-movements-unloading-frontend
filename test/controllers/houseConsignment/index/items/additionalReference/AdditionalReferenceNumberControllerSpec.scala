@@ -39,10 +39,9 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
 
   private val viewModel = arbitrary[AdditionalReferenceNumberViewModel].sample.value
 
-  private lazy val formProvider   = new ItemsAdditionalReferenceNumberFormProvider()
-  private lazy val form           = formProvider(viewModel.requiredError)
-  private val mode                = NormalMode
-  private val isParagraphRequired = false
+  private lazy val formProvider = new ItemsAdditionalReferenceNumberFormProvider()
+  private lazy val form         = formProvider(viewModel.requiredError)
+  private val mode              = NormalMode
 
   private lazy val additionalReferenceNumberRoute =
     routes.AdditionalReferenceNumberController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex).url
@@ -61,7 +60,7 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockViewModelProvider)
-    when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any())).thenReturn(viewModel)
+    when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any())).thenReturn(viewModel)
   }
 
   "AdditionalReferenceNumber Controller" - {
@@ -79,7 +78,7 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, viewModel, isParagraphRequired)(request, messages).toString
+        view(form, mrn, viewModel)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -98,7 +97,7 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, viewModel, isParagraphRequired)(request, messages).toString
+        view(filledForm, mrn, viewModel)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -134,7 +133,7 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
       val view = injector.instanceOf[AdditionalReferenceNumberView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, viewModel, isParagraphRequired)(request, messages).toString
+        view(filledForm, mrn, viewModel)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
