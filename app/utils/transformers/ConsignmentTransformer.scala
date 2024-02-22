@@ -44,19 +44,9 @@ class ConsignmentTransformer @Inject() (
             documentsTransformer.transform(consignment05.SupportingDocument, consignment05.TransportDocument) andThen
             houseConsignmentsTransformer.transform(consignment05.HouseConsignment) andThen
             additionalReferenceTransformer.transform(consignment05.AdditionalReference) andThen
-            transformGrossMass(consignment05.grossMass)
-
+            set(GrossMassPage, consignment05.grossMass)
         pipeline(userAnswers)
       case None =>
         Future.successful(userAnswers)
     }
-
-  private def transformGrossMass(grossMass: Option[BigDecimal]): UserAnswers => Future[UserAnswers] = userAnswers => {
-    grossMass match {
-      case Some(value) =>
-        lazy val pipeline: UserAnswers => Future[UserAnswers] = set(GrossMassPage, value)
-        pipeline(userAnswers)
-      case None => Future.successful(userAnswers)
-    }
-  }
 }
