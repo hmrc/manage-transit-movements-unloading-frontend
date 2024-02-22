@@ -16,16 +16,15 @@
 
 package connectors
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock._
-import generators.Generators
+import itbase.{ItSpecBase, WireMockServerHandler}
 import play.api.http.Status.OK
 import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.xml.NodeSeq
 
-class ApiConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockSuite with Generators {
+class ApiConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -48,8 +47,8 @@ class ApiConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with Wir
         server.stubFor(
           post(urlEqualTo(url))
             .withRequestBody(equalTo(body.toString()))
-            .withHeader("Accept", containing("application/vnd.hmrc.2.0+json"))
-            .withHeader("Content-Type", containing("application/xml"))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
+            .withHeader("Content-Type", equalTo("application/xml"))
             .willReturn(aResponse().withStatus(OK))
         )
 

@@ -16,7 +16,6 @@
 
 package models
 
-import com.lucidchart.open.xtract.{XmlReader, __ => XmlPath}
 import play.api.libs.json._
 
 final case class MovementReferenceNumber(value: String) {
@@ -32,7 +31,4 @@ object MovementReferenceNumber {
   implicit lazy val writes: Writes[MovementReferenceNumber] = Writes {
     mrn => JsString(mrn.toString)
   }
-
-  implicit val xmlReader: XmlReader[MovementReferenceNumber] =
-    (XmlPath \ "DocNumHEA5").read[String].map(MovementReferenceNumber(_))
 }
