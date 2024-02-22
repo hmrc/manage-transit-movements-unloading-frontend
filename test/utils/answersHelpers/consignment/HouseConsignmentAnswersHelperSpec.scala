@@ -17,10 +17,12 @@
 package utils.answersHelpers.consignment
 
 import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.Country
+import models.reference.{AdditionalReferenceType, Country, PackageType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
+import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
+import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
 import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage}
 import utils.answersHelpers.AnswersHelperSpecBase
 import viewModels.sections.Section.AccordionSection
@@ -157,12 +159,16 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
     "itemSections" - {
       "must generate accordion sections" in {
-        forAll(Gen.alphaNumStr, arbitrary[BigDecimal], arbitrary[Double]) {
-          (description, grossWeight, netWeight) =>
+        forAll(Gen.alphaNumStr, arbitrary[BigDecimal], arbitrary[Double], arbitrary[PackageType], arbitrary[BigInt], arbitrary[AdditionalReferenceType]) {
+          (description, grossWeight, netWeight, packageType, count, additionalReference) =>
             val answers = emptyUserAnswers
               .setValue(ItemDescriptionPage(hcIndex, itemIndex), description)
               .setValue(GrossWeightPage(hcIndex, itemIndex), grossWeight)
               .setValue(NetWeightPage(hcIndex, itemIndex), netWeight)
+              .setValue(PackagingTypePage(hcIndex, itemIndex, packageIndex), packageType)
+              .setValue(PackagingCountPage(hcIndex, itemIndex, packageIndex), count)
+              .setValue(PackagingMarksPage(hcIndex, itemIndex, packageIndex), description)
+              .setValue(AdditionalReferencePage(hcIndex, itemIndex, additionalReferenceIndex), additionalReference)
 
             val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
             val result = helper.itemSections
@@ -173,8 +179,21 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.head.rows.head.value.value mustBe description
             result.head.rows(1).value.value mustBe s"${grossWeight}kg"
             result.head.rows(2).value.value mustBe s"${netWeight}kg"
+
+            result.head.children.head.sectionTitle.get mustBe "Package 1"
+            result.head.children.head.rows.size mustBe 3
+            result.head.children.head.rows(0).value.value mustBe s"${packageType.asDescription}"
+            result.head.children.head.rows(1).value.value mustBe s"$count"
+            result.head.children.head.rows(2).value.value mustBe s"$description"
+
+            result.head.children(1) mustBe a[AccordionSection]
+            result.head.children(1).sectionTitle.value mustBe "Additional references"
+            result.head.children(1).rows.size mustBe 1
+            result.head.children(1).rows.head.value.value mustBe additionalReference.toString
+
         }
       }
     }
+
   }
 }

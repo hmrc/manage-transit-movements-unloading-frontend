@@ -17,6 +17,7 @@
 package utils.answersHelpers
 
 import models.Identification
+import models.reference.PackageType
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -48,8 +49,9 @@ class SummaryListRowHelper(implicit messages: Messages) {
       }
     }.toText
 
-  protected def formatAsText[T](answer: T): Content   = s"$answer".toText
-  protected def formatAsWeight[T](answer: T): Content = s"${answer}kg".toText
+  protected def formatAsText[T](answer: T): Content           = s"$answer".toText
+  protected def formatAsPackage(answer: PackageType): Content = s"${answer.asDescription}".toText
+  protected def formatAsWeight[T](answer: T): Content         = s"${answer}kg".toText
 
   protected def formatIdentificationTypeAsText(xmlString: String): String =
     s"${Identification.messageKeyPrefix}.${Identification(xmlString)}"
@@ -75,6 +77,33 @@ class SummaryListRowHelper(implicit messages: Messages) {
   ): SummaryListRow =
     SummaryListRow(
       key = messages(s"$prefix", args: _*).toKey,
+      value = Value(answer),
+      actions = call.map {
+        x =>
+          Actions(items =
+            List(
+              ActionItem(
+                content = messages("site.edit").toText,
+                href = x.url,
+                visuallyHiddenText = Some(messages(s"$prefix.change.hidden", args: _*)),
+                attributes = id.fold[Map[String, String]](Map.empty)(
+                  id => Map("id" -> id)
+                )
+              )
+            )
+          )
+      }
+    )
+
+  def buildRowWithoutKey(
+    prefix: String,
+    answer: Content,
+    id: Option[String],
+    call: Option[Call],
+    args: Any*
+  ): SummaryListRow =
+    SummaryListRow(
+      key = Key(classes = "govuk-!-display-none"),
       value = Value(answer),
       actions = call.map {
         x =>

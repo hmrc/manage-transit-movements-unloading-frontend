@@ -48,6 +48,25 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
         )
     }
 
+  def getAnswerAndBuildRowWithoutKey[T](
+    page: QuestionPage[T],
+    formatAnswer: T => Content,
+    prefix: String,
+    id: Option[String],
+    call: Option[Call],
+    args: Any*
+  )(implicit rds: Reads[T]): Option[SummaryListRow] =
+    userAnswers.get(page) map {
+      answer =>
+        buildRowWithoutKey(
+          prefix = prefix,
+          answer = formatAnswer(answer),
+          id = id,
+          call = call,
+          args = args: _*
+        )
+    }
+
   def parseArguments[T](args: Option[Seq[Any]], answer: T): Seq[Any] = args match {
     case None            => Seq(answer)
     case Some(arguments) => arguments.appended(answer)

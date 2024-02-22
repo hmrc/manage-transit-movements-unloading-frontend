@@ -35,14 +35,16 @@ class IE043TransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
 
   private val transformer = app.injector.instanceOf[IE043Transformer]
 
-  private lazy val mockConsignmentTransformer      = mock[ConsignmentTransformer]
-  private lazy val mockTransitOperationTransformer = mock[TransitOperationTransformer]
+  private lazy val mockConsignmentTransformer                      = mock[ConsignmentTransformer]
+  private lazy val mockCustomsOfficeOfDestinationActualTransformer = mock[CustomsOfficeOfDestinationActualTransformer]
+  private lazy val mockTransitOperationTransformer                 = mock[TransitOperationTransformer]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
         bind[ConsignmentTransformer].toInstance(mockConsignmentTransformer),
+        bind[CustomsOfficeOfDestinationActualTransformer].toInstance(mockCustomsOfficeOfDestinationActualTransformer),
         bind[TransitOperationTransformer].toInstance(mockTransitOperationTransformer)
       )
 
@@ -54,12 +56,20 @@ class IE043TransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
     override def path: JsPath = JsPath \ "transitOperation"
   }
 
+  private case object FakeCustomsOfficeOfDestinationActualSection extends QuestionPage[JsObject] {
+    override def path: JsPath = JsPath \ "CustomsOfficeOfDestinationActual"
+  }
+
   "must transform data" in {
     forAll(arbitrary[CC043CType]) {
       _ =>
         when(mockConsignmentTransformer.transform(any())(any()))
           .thenReturn {
             ua => Future.successful(ua.setValue(FakeConsignmentSection, Json.obj("foo" -> "bar")))
+          }
+        when(mockCustomsOfficeOfDestinationActualTransformer.transform(any())(any()))
+          .thenReturn {
+            ua => Future.successful(ua.futureValue.setValue(FakeCustomsOfficeOfDestinationActualSection, Json.obj("foo1" -> "bar1")))
           }
 
         when(mockTransitOperationTransformer.transform(any())(any()))
@@ -70,7 +80,8 @@ class IE043TransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
         val result = transformer.transform(emptyUserAnswers).futureValue
 
         result.getValue(FakeConsignmentSection) mustBe Json.obj("foo" -> "bar")
-      //      result.getValue(FakeTransitOperationSection) mustBe Json.obj("foo" -> "bar")
+        result.getValue(FakeCustomsOfficeOfDestinationActualSection) mustBe Json.obj("foo1" -> "bar1")
+        result.getValue(FakeTransitOperationSection) mustBe Json.obj("foo" -> "bar")
     }
   }
 }
