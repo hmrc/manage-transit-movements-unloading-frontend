@@ -29,12 +29,8 @@ import generated.{
   TraderAtDestinationType03,
   TransitOperationType14
 }
+import itbase.ItSpecBase
 import models.{ArrivalId, EoriNumber, MovementReferenceNumber, SensitiveFormats, UserAnswers}
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.{BeforeAndAfterEach, OptionValues}
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.Json
 import scalaxb.XMLCalendar
 import services.DateTimeService
@@ -42,15 +38,7 @@ import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class SessionRepositorySpec
-    extends AnyFreeSpec
-    with Matchers
-    with ScalaFutures
-    with BeforeAndAfterEach
-    with IntegrationPatience
-    with GuiceOneAppPerSuite
-    with OptionValues
-    with DefaultPlayMongoRepositorySupport[UserAnswers] {
+class SessionRepositorySpec extends ItSpecBase with DefaultPlayMongoRepositorySupport[UserAnswers] {
 
   private val config: FrontendAppConfig        = app.injector.instanceOf[FrontendAppConfig]
   private val dateTimeService: DateTimeService = app.injector.instanceOf[DateTimeService]

@@ -20,7 +20,7 @@ import play.api.libs.json.{__, Reads}
 
 import java.time.LocalDateTime
 
-case class MessageMetaData(received: LocalDateTime, messageType: ArrivalMessageType, path: String)
+case class MessageMetaData(received: LocalDateTime, messageType: ArrivalMessageType, id: String)
 
 object MessageMetaData {
 
@@ -29,9 +29,7 @@ object MessageMetaData {
     (
       (__ \ "received").read[LocalDateTime] and
         (__ \ "type").read[ArrivalMessageType] and
-        (__ \ "_links" \ "self" \ "href")
-          .read[String]
-          .map(_.replace("/customs/transits/", ""))
+        (__ \ "id").read[String]
     )(MessageMetaData.apply _)
   }
 }

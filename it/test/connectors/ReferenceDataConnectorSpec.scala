@@ -16,28 +16,24 @@
 
 package connectors
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
 import cats.data.NonEmptySet
 import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import connectors.ReferenceDataConnectorSpec._
+import itbase.{ItSpecBase, WireMockServerHandler}
 import models.DocType.{Support, Transport}
 import models.SecurityType
 import models.reference._
 import models.reference.transport.TransportMode.{BorderMode, InlandMode}
 import org.scalacheck.Gen
-import org.scalatest.{Assertion, BeforeAndAfterEach}
+import org.scalatest.Assertion
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.guice.GuiceApplicationBuilder
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockSuite with BeforeAndAfterEach {
-
-  override def beforeEach(): Unit = {
-    server.resetAll()
-    super.beforeEach()
-  }
+class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler with ScalaCheckPropertyChecks {
 
   private val baseUrl = "customs-reference-data/test-only"
 
@@ -127,7 +123,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
     }
 
     "getCustomsOffice" - {
-      val url = s"/$baseUrl/filtered-lists/CustomsOffices?data.id=$code"
+      val url = s"/$baseUrl/lists/CustomsOffices?data.id=$code"
 
       "should handle a 200 response for customs office with code end point with valid phone number" in {
         server.stubFor(
@@ -162,7 +158,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
     "getCusCode" - {
       val cusCode = "0010001-6"
-      val url     = s"/$baseUrl/filtered-lists/CUSCode?data.code=$cusCode"
+      val url     = s"/$baseUrl/lists/CUSCode?data.code=$cusCode"
 
       "must return CUSCode when successful" in {
         server.stubFor(
@@ -179,7 +175,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
     }
 
     "getCountryByCode" - {
-      val url = s"/$baseUrl/filtered-lists/CountryCodesFullList?data.code=$countryCode"
+      val url = s"/$baseUrl/lists/CountryCodesFullList?data.code=$countryCode"
 
       "should handle a 200 response" in {
 
@@ -666,7 +662,7 @@ object ReferenceDataConnectorSpec {
       |{
       |  "_links": {
       |    "self": {
-      |      "href": "/customs-reference-data/filtered-lists/CUSCode"
+      |      "href": "/customs-reference-data/lists/CUSCode"
       |    }
       |  },
       |  "meta": {

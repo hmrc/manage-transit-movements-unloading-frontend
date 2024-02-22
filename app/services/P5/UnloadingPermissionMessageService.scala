@@ -55,7 +55,7 @@ class UnloadingPermissionMessageService @Inject() (arrivalMovementConnector: Arr
     (
       for {
         unloadingPermissionMessage <- OptionT(getUnloadingPermissionMessage(arrivalId))
-        unloadingPermission        <- OptionT.liftF(arrivalMovementConnector.getUnloadingPermissionXml(unloadingPermissionMessage.path))
+        unloadingPermission        <- OptionT.liftF(arrivalMovementConnector.getUnloadingPermissionXml(arrivalId, unloadingPermissionMessage.id))
       } yield fromXML[CC043CType](unloadingPermission)
     ).value
 
