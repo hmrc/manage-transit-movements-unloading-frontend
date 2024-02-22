@@ -35,6 +35,7 @@ object UnloadingFindingsViewModel {
       val helper = new ConsignmentAnswersHelper(userAnswers)
 
       val sections = Seq(
+        Seq(helper.transitOperationSection),
         Seq(helper.headerSection),
         helper.departureTransportMeansSections,
         helper.transportEquipmentSections,

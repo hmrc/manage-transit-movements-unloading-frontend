@@ -16,9 +16,10 @@
 
 package utils.answersHelpers
 
-import models.{Link, UserAnswers}
+import models.{Link, SecurityType, UserAnswers}
 import pages.sections._
 import pages.sections.additionalReference.AdditionalReferencesSection
+import pages.{CustomsOfficeOfDestinationActualPage, SecurityTypePage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -28,15 +29,61 @@ import viewModels.sections.Section.{AccordionSection, StaticSection}
 
 class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
+  def transitOperationSection: StaticSection = StaticSection(
+    rows = Seq(
+      Some(reducedDatasetIndicatorRow),
+      securityTypeRow,
+      declarationTypeRow,
+      declarationAcceptanceDateRow
+    ).flatten
+  )
+
   def headerSection: Section = StaticSection(
     rows = Seq(
+      customsOfficeOfDestinationActual,
       traderAtDestinationRow
     )
+  )
+
+  def declarationTypeRow: Option[SummaryListRow] = userAnswers.ie043Data.TransitOperation.declarationType.map(
+    dec =>
+      buildRowWithNoChangeLink(
+        prefix = "declarationType",
+        answer = dec.toText
+      )
+  )
+
+  def securityTypeRow: Option[SummaryListRow] = getAnswerAndBuildRow[SecurityType](
+    page = SecurityTypePage,
+    formatAnswer = formatAsText,
+    prefix = "securityType",
+    id = None,
+    call = None
+  )
+
+  def reducedDatasetIndicatorRow: SummaryListRow = buildRowWithNoChangeLink(
+    prefix = "reducedDatasetIndicator",
+    answer = formatAsBoolean(userAnswers.ie043Data.TransitOperation.reducedDatasetIndicator.toString)
+  )
+
+  def declarationAcceptanceDateRow: Option[SummaryListRow] = userAnswers.ie043Data.TransitOperation.declarationAcceptanceDate.map(
+    dec =>
+      buildRowWithNoChangeLink(
+        prefix = "declarationAcceptanceDate",
+        answer = formatAsDate(dec)
+      )
   )
 
   def traderAtDestinationRow: SummaryListRow = buildRow(
     prefix = "traderAtDestination",
     answer = userAnswers.ie043Data.TraderAtDestination.identificationNumber.toText,
+    id = None,
+    call = None
+  )
+
+  def customsOfficeOfDestinationActual: SummaryListRow = buildRow(
+    prefix = "customsOfficeOfDestinationActual",
+    answer = userAnswers.get(CustomsOfficeOfDestinationActualPage).get.name.toText,
     id = None,
     call = None
   )
@@ -96,6 +143,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         AccordionSection(
           sectionTitle = messages("unloadingFindings.subsections.houseConsignment", houseConsignmentIndex.display),
           rows = rows,
+          children = helper.itemSections,
           viewLink = Link(
             id = s"view-house-consignment-${houseConsignmentIndex.display}",
             href = controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url,

@@ -14,25 +14,14 @@
  * limitations under the License.
  */
 
-package config
+package pages
 
-object Constants {
-  val GB = "GB"
-  val AD = "AD"
+import models.reference.CustomsOffice
+import play.api.libs.json.JsPath
 
-  val T2 = "T2"
-  val T  = "T"
+case object CustomsOfficeOfDestinationActualPage extends QuestionPage[CustomsOffice] {
 
-  val Maritime = "1"
-  val Rail     = "2"
-  val Road     = "3"
-  val Air      = "4"
-  val Mail     = "5"
-  val Fixed    = "7"
-  val Unknown  = "9"
-  val Other    = "D"
+  override def path: JsPath = JsPath \ toString
 
-  object MeansOfTransportIdentification {
-    val UnknownIdentification = "99"
-  }
+  override def toString: String = "CustomsOfficeOfDestinationActual"
 }

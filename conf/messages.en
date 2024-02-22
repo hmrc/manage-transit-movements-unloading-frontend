@@ -83,6 +83,7 @@ dateGoodsUnloaded.error.max.date = The date must be today or in the past
 dateGoodsUnloaded.change.hidden = the date when the goods were unloaded
 
 traderAtDestination = Authorised consignee’s EORI number or Trader Identification Number (TIN)
+customsOfficeOfDestinationActual = Office of destination
 
 departureMeansOfTransport.identificationNumber.NormalMode.title = What is the identification number for this vehicle?
 departureMeansOfTransport.identificationNumber.CheckMode.title = What is the identification number for the new departure means of transport?
@@ -118,6 +119,11 @@ departureMeansOfTransport.identification.title = Which identification do you wan
 departureMeansOfTransport.identification.check.error.required = Select which identification you want to use for the departure means of transport
 departureMeansOfTransport.identification.error.required = Select which identification you want to use for the new departure means of transport
 departureMeansOfTransport.identification.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
+
+departureMeansOfTransport.addIdentificationYesNo.title = Do you want to add the type of identification for the departure means of transport?
+departureMeansOfTransport.addIdentificationYesNo.heading = Do you want to add the type of identification for the departure means of transport?
+departureMeansOfTransport.addIdentificationYesNo.error.required = Select yes if you want to add the type of identification for the departure means of transport
+departureMeansOfTransport.addIdentificationYesNo.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
 
 houseConsignment.item.grossWeight.title = What is the new gross weight of item {0} in house consignment {1}?
 houseConsignment.item.grossWeight.heading = What is the new gross weight of item {0} in house consignment {1}?
@@ -329,6 +335,11 @@ unloadingFindings.paragraph = Compare the transit that arrived with the followin
 unloadingFindings.subsections.transportMeans = Departure means of transport {0}
 unloadingFindings.subsections.packages = Package {0}
 
+declarationType = Declaration type
+securityType = Safety and security details
+reducedDatasetIndicator = Do you want to add a reduced data set?
+declarationAcceptanceDate = Declaration acceptance date
+
 unloadingFindings.rowHeadings.identificationType.seaGoingVessel = Name of a sea-going vessel
 unloadingFindings.rowHeadings.identificationType.seaGoingVessel.change.hidden = name of a sea-going vessel
 unloadingFindings.rowHeadings.identificationType.iataFlightNumber = IATA flight number
@@ -390,6 +401,12 @@ unloadingFindings.rowHeadings.item.packageMarks.change.hidden = shipping mark of
 unloadingFindings.rowHeadings.item.grossWeight.change.hidden = gross weight of item {0}
 unloadingFindings.rowHeadings.item.netWeight = Net weight
 unloadingFindings.rowHeadings.item.netWeight.change.hidden = net weight of item {0}
+unloadingFindings.rowHeadings.item.cusCode = Customs Union and Statistics (CUS) code
+unloadingFindings.rowHeadings.item.cusCode.change.hidden = Customs Union and Statistics (CUS) code for item {0}
+unloadingFindings.rowHeadings.item.commodityCode = Commodity code
+unloadingFindings.rowHeadings.item.commodityCode.change.hidden = commodity code for item {0}
+unloadingFindings.rowHeadings.item.nomenclatureCode = Combined nomenclature code
+unloadingFindings.rowHeadings.item.nomenclatureCode.change.hidden = combined nomenclature code for item {0}
 
 unloadingFindings.subsections.additionalComments = Additional comments
 unloadingFindings.additionalComments.link = Add comments
@@ -593,7 +610,6 @@ houseConsignment.index.items.additionalReference.additionalReferenceNumber.Norma
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.CheckMode.error.required = Enter the new additional reference number for item {1} in house consignment {0}
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.paragraph = You need to enter a reference number as you have already added this type of additional reference.
 
-
 additionalReference.index.additionalReferenceType.NormalMode.title = What type of additional reference do you want to add?
 additionalReference.index.additionalReferenceType.NormalMode.heading = What type of additional reference do you want to add?
 additionalReference.index.additionalReferenceType.CheckMode.title = What is the new additional reference type?
@@ -602,3 +618,9 @@ additionalReference.index.additionalReferenceType.error.required = Select the ty
 additionalReference.index.additionalReferenceType.check.error.required = Select the new additional reference type
 additionalReference.index.additionalReferenceType.hint = Enter the reference name or code, like Carrier (AEO certificate number) or Y028.
 additionalReference.index.additionalReferenceType.placeholder = Select an additional reference
+
+document.type.title = What is the new document type?
+document.type.heading = What is the new document type?
+document.type.hint = Enter the document name or code.
+document.type.placeholder = Select a document type
+document.type.check.error.required = Select the new document type

@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-package config
+package pages
 
-object Constants {
-  val GB = "GB"
-  val AD = "AD"
+import models.SecurityType
+import pages.behaviours.PageBehaviours
 
-  val T2 = "T2"
-  val T  = "T"
+class SecurityTypePageSpec extends PageBehaviours {
 
-  val Maritime = "1"
-  val Rail     = "2"
-  val Road     = "3"
-  val Air      = "4"
-  val Mail     = "5"
-  val Fixed    = "7"
-  val Unknown  = "9"
-  val Other    = "D"
+  "SecurityTypePage" - {
 
-  object MeansOfTransportIdentification {
-    val UnknownIdentification = "99"
+    beRetrievable[SecurityType](SecurityTypePage)
+
+    beSettable[SecurityType](SecurityTypePage)
+
+    beRemovable[SecurityType](SecurityTypePage)
   }
 }

@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package config
+package models
 
-object Constants {
-  val GB = "GB"
-  val AD = "AD"
+sealed trait DocType {
+  val display: String
+}
 
-  val T2 = "T2"
-  val T  = "T"
+object DocType extends EnumerableType[DocType] {
 
-  val Maritime = "1"
-  val Rail     = "2"
-  val Road     = "3"
-  val Air      = "4"
-  val Mail     = "5"
-  val Fixed    = "7"
-  val Unknown  = "9"
-  val Other    = "D"
-
-  object MeansOfTransportIdentification {
-    val UnknownIdentification = "99"
+  case object Support extends DocType {
+    override val display = "Supporting"
   }
+
+  case object Transport extends DocType {
+    override val display = "Transport"
+  }
+
+  case object Previous extends DocType {
+    override val display = "Previous"
+  }
+
+  override val values: Seq[DocType] = Seq(Support, Transport, Previous)
 }

@@ -18,7 +18,7 @@ package utils.answersHelpers
 
 import generated.TraderAtDestinationType03
 import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.{AdditionalReferenceType, Country}
+import models.reference.{AdditionalReferenceType, Country, CustomsOffice}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.additionalReference._
@@ -33,16 +33,17 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
     "headerSection" - {
       "must return static section" in {
-        forAll(arbitrary[TraderAtDestinationType03]) {
-          traderAtDestination =>
+        forAll(arbitrary[TraderAtDestinationType03], arbitrary[CustomsOffice]) {
+          (traderAtDestination, arbitraryCustomsOffice) =>
             val ie043   = basicIe043.copy(TraderAtDestination = traderAtDestination)
-            val answers = emptyUserAnswers.copy(ie043Data = ie043)
+            val answers = emptyUserAnswers.copy(ie043Data = ie043).setValue(CustomsOfficeOfDestinationActualPage, arbitraryCustomsOffice)
 
             val helper = new ConsignmentAnswersHelper(answers)
             val result = helper.headerSection
 
             result mustBe a[StaticSection]
-            result.rows.head.value.value mustBe traderAtDestination.identificationNumber
+            result.rows.head.value.value mustBe arbitraryCustomsOffice.name
+            result.rows(1).value.value mustBe traderAtDestination.identificationNumber
         }
       }
     }

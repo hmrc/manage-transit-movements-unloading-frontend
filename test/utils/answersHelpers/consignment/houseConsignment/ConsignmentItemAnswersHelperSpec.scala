@@ -16,12 +16,12 @@
 
 package utils.answersHelpers.consignment.houseConsignment
 
-import models.reference.PackageType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.NetWeightPage
-import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
-import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage}
+import pages.houseConsignment.index.items._
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import utils.answersHelpers.AnswersHelperSpecBase
 
 class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
@@ -110,6 +110,99 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
               action.id mustBe "change-net-weight-1"
           }
         }
+      }
+    }
+  }
+
+  "cusCodeRow" - {
+
+    val value = Gen.alphaLowerStr.sample.value
+    val page  = CustomsUnionAndStatisticsCodePage(hcIndex, itemIndex)
+
+    "must return None" - {
+      s"when $page undefined" in {
+
+        val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
+        val result = helper.cusCodeRow
+        result mustBe None
+      }
+    }
+
+    "must return Some(Row)" - {
+      s"when $page defined" in {
+        val userAnswers = emptyUserAnswers.setValue(page, value)
+
+        val helper = new ConsignmentItemAnswersHelper(userAnswers, hcIndex, itemIndex)
+        val result = helper.cusCodeRow.value
+
+        result mustBe
+          SummaryListRow(
+            key = Key("Customs Union and Statistics (CUS) code".toText),
+            value = Value(s"$value".toText),
+            actions = cusCodeItemAction
+          )
+      }
+    }
+  }
+
+  "commodityCodeRow" - {
+
+    val value = Gen.alphaLowerStr.sample.value
+    val page  = CommodityCodePage(hcIndex, itemIndex)
+
+    "must return None" - {
+      s"when $page undefined" in {
+
+        val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
+        val result = helper.commodityCodeRow
+        result mustBe None
+      }
+    }
+
+    "must return Some(Row)" - {
+      s"when $page defined" in {
+        val userAnswers = emptyUserAnswers.setValue(page, value)
+
+        val helper = new ConsignmentItemAnswersHelper(userAnswers, hcIndex, itemIndex)
+        val result = helper.commodityCodeRow.value
+
+        result mustBe
+          SummaryListRow(
+            key = Key("Commodity code".toText),
+            value = Value(s"$value".toText),
+            actions = commodityCodeItemAction
+          )
+      }
+    }
+  }
+
+  "nomenclatureCodeRow" - {
+
+    val value = Gen.alphaLowerStr.sample.value
+    val page  = CombinedNomenclatureCodePage(hcIndex, itemIndex)
+
+    "must return None" - {
+      s"when $page undefined" in {
+
+        val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
+        val result = helper.nomenclatureCodeRow
+        result mustBe None
+      }
+    }
+
+    "must return Some(Row)" - {
+      s"when $page defined" in {
+        val userAnswers = emptyUserAnswers.setValue(page, value)
+
+        val helper = new ConsignmentItemAnswersHelper(userAnswers, hcIndex, itemIndex)
+        val result = helper.nomenclatureCodeRow.value
+
+        result mustBe
+          SummaryListRow(
+            key = Key("Combined nomenclature code".toText),
+            value = Value(s"$value".toText),
+            actions = nomenclatureCodeItemAction
+          )
       }
     }
   }

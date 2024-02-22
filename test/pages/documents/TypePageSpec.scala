@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-package config
+package pages.documents
 
-object Constants {
-  val GB = "GB"
-  val AD = "AD"
+import models.reference.DocumentType
+import pages.behaviours.PageBehaviours
 
-  val T2 = "T2"
-  val T  = "T"
+class TypePageSpec extends PageBehaviours {
 
-  val Maritime = "1"
-  val Rail     = "2"
-  val Road     = "3"
-  val Air      = "4"
-  val Mail     = "5"
-  val Fixed    = "7"
-  val Unknown  = "9"
-  val Other    = "D"
+  "DocumentReferenceNumberPage" - {
 
-  object MeansOfTransportIdentification {
-    val UnknownIdentification = "99"
+    beRetrievable[DocumentType](TypePage(documentIndex))
+
+    beSettable[DocumentType](TypePage(documentIndex))
+
+    beRemovable[DocumentType](TypePage(documentIndex))
   }
 }
