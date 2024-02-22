@@ -604,3 +604,9 @@ document.type.heading = What is the new document type?
 document.type.hint = Enter the document name or code.
 document.type.placeholder = Select a document type
 document.type.check.error.required = Select the new document type
+
+houseConsignment.index.items.document.type.title = What is the new document type for item {1} in house consignment {0}?
+houseConsignment.index.items.document.type.heading = What is the new document type for item {1} in house consignment {0}?
+houseConsignment.index.items.document.type.hint = Enter the document name or code.
+houseConsignment.index.items.document.type.placeholder = Select a document type
+houseConsignment.index.items.document.type.check.error.required = Select the new document type for item {1} in house consignment {0}?

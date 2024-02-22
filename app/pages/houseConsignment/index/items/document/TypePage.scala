@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package pages.documents
+package pages.houseConsignment.index.items.document
 
+import models.Index
 import models.reference.DocumentType
-import pages.behaviours.PageBehaviours
+import pages.QuestionPage
+import pages.sections.ItemsSection
+import play.api.libs.json.JsPath
 
-class TypePageSpec extends PageBehaviours {
+case class TypePage(houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index) extends QuestionPage[DocumentType] {
 
-  "TypePage" - {
+  override def path: JsPath = ItemsSection(houseConsignmentIndex).path \ itemIndex.position \ "Document" \ documentIndex.position \ toString
 
-    beRetrievable[DocumentType](TypePage(documentIndex))
-
-    beSettable[DocumentType](TypePage(documentIndex))
-
-    beRemovable[DocumentType](TypePage(documentIndex))
-  }
+  override def toString: String = "type"
 }
