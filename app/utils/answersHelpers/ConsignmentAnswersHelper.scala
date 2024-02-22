@@ -17,9 +17,9 @@
 package utils.answersHelpers
 
 import models.{Link, UserAnswers}
-import pages.{CustomsOfficeOfDestinationActualPage, QuestionPage, SecurityTypePage}
 import pages.sections._
 import pages.sections.additionalReference.AdditionalReferencesSection
+import pages.{CustomsOfficeOfDestinationActualPage, SecurityTypePage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -47,11 +47,9 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
   def declarationTypeRow: Option[SummaryListRow] = userAnswers.ie043Data.TransitOperation.declarationType.map(
     dec =>
-      buildRow(
+      buildRowWithNoChangeLink(
         prefix = "declarationType",
-        answer = dec.toText,
-        id = None,
-        call = None
+        answer = dec.toText
       )
   )
 
@@ -60,11 +58,9 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     .map(_.description)
     .map(
       dec =>
-        buildRow(
+        buildRowWithNoChangeLink(
           prefix = "securityType",
-          answer = dec.toText,
-          id = None,
-          call = None
+          answer = dec.toText
         )
     )
 
@@ -77,11 +73,9 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
   def declarationAcceptanceDateRow: Option[SummaryListRow] = userAnswers.ie043Data.TransitOperation.declarationAcceptanceDate.map(
     dec =>
-      buildRow(
+      buildRowWithNoChangeLink(
         prefix = "declarationAcceptanceDate",
-        answer = formatAsDate(dec),
-        id = None,
-        call = None
+        answer = formatAsDate(dec)
       )
   )
 
