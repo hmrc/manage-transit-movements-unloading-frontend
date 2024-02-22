@@ -16,7 +16,7 @@
 
 package utils.answersHelpers
 
-import models.{Link, UserAnswers}
+import models.{Link, SecurityType, UserAnswers}
 import pages.sections._
 import pages.sections.additionalReference.AdditionalReferencesSection
 import pages.{CustomsOfficeOfDestinationActualPage, SecurityTypePage}
@@ -53,22 +53,17 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       )
   )
 
-  def securityTypeRow: Option[SummaryListRow] = userAnswers
-    .get(SecurityTypePage)
-    .map(_.description)
-    .map(
-      dec =>
-        buildRowWithNoChangeLink(
-          prefix = "securityType",
-          answer = dec.toText
-        )
-    )
-
-  def reducedDatasetIndicatorRow: SummaryListRow = buildRow(
-    prefix = "reducedDatasetIndicator",
-    answer = formatAsBoolean(userAnswers.ie043Data.TransitOperation.reducedDatasetIndicator.toString),
+  def securityTypeRow: Option[SummaryListRow] = getAnswerAndBuildRow[SecurityType](
+    page = SecurityTypePage,
+    formatAnswer = formatAsText,
+    prefix = "securityType",
     id = None,
     call = None
+  )
+
+  def reducedDatasetIndicatorRow: SummaryListRow = buildRowWithNoChangeLink(
+    prefix = "reducedDatasetIndicator",
+    answer = formatAsBoolean(userAnswers.ie043Data.TransitOperation.reducedDatasetIndicator.toString)
   )
 
   def declarationAcceptanceDateRow: Option[SummaryListRow] = userAnswers.ie043Data.TransitOperation.declarationAcceptanceDate.map(
