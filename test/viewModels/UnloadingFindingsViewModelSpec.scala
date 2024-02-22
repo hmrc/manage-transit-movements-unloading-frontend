@@ -57,6 +57,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
       val userAnswers: UserAnswers = emptyUserAnswers.copy(ie043Data =
         emptyUserAnswers.ie043Data.copy(TransitOperation =
           emptyUserAnswers.ie043Data.TransitOperation.copy(reducedDatasetIndicator = Number0,
+                                                           declarationType = Some("T1"),
                                                            declarationAcceptanceDate = Some(XMLCalendar("2020-01-01T09:30:00"))
           )
         )
@@ -65,7 +66,6 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
       val result = viewModelProvider.apply(
         userAnswers
           .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
-          .setValue(DeclarationTypePage, DeclarationType("T1", "test"))
           .setValue(SecurityTypePage, SecurityType("1", "test"))
       )
       val section = result.sections(1)
@@ -84,6 +84,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
       val userAnswers: UserAnswers = emptyUserAnswers.copy(ie043Data =
         emptyUserAnswers.ie043Data.copy(TransitOperation =
           emptyUserAnswers.ie043Data.TransitOperation.copy(reducedDatasetIndicator = Number0,
+                                                           declarationType = Some("T1"),
                                                            declarationAcceptanceDate = Some(XMLCalendar("2020-01-01T09:30:00"))
           )
         )
@@ -92,7 +93,6 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
       val result = viewModelProvider.apply(
         userAnswers
           .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
-          .setValue(DeclarationTypePage, DeclarationType("T1", "test"))
           .setValue(SecurityTypePage, SecurityType("1", "test"))
       )
       val section = result.sections.head

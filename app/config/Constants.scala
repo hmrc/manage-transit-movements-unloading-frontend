@@ -30,9 +30,7 @@ object Constants {
   val Mail     = "5"
   val Fixed    = "7"
   val Unknown  = "9"
-  val TIR      = "TIR"
-
-  val Other = "D"
+  val Other    = "D"
 
   object MeansOfTransportIdentification {
     val UnknownIdentification = "99"

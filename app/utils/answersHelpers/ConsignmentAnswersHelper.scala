@@ -17,10 +17,9 @@
 package utils.answersHelpers
 
 import models.{Link, UserAnswers}
-import pages.CustomsOfficeOfDestinationActualPage
+import pages.{CustomsOfficeOfDestinationActualPage, QuestionPage, SecurityTypePage}
 import pages.sections._
 import pages.sections.additionalReference.AdditionalReferencesSection
-import pages.{DeclarationTypePage, SecurityTypePage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -31,7 +30,12 @@ import viewModels.sections.Section.{AccordionSection, StaticSection}
 class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
   def transitOperationSection: StaticSection = StaticSection(
-    rows = Seq(reducedDatasetIndicatorRow) ++ securityTypeRow ++ declarationTypeRow ++ declarationAcceptanceDateRow
+    rows = Seq(
+      Some(reducedDatasetIndicatorRow),
+      securityTypeRow,
+      declarationTypeRow,
+      declarationAcceptanceDateRow
+    ).flatten
   )
 
   def headerSection: Section = StaticSection(
@@ -41,18 +45,15 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     )
   )
 
-  def declarationTypeRow: Option[SummaryListRow] = userAnswers
-    .get(DeclarationTypePage)
-    .map(_.code)
-    .map(
-      dec =>
-        buildRow(
-          prefix = "declarationType",
-          answer = dec.toText,
-          id = None,
-          call = None
-        )
-    )
+  def declarationTypeRow: Option[SummaryListRow] = userAnswers.ie043Data.TransitOperation.declarationType.map(
+    dec =>
+      buildRow(
+        prefix = "declarationType",
+        answer = dec.toText,
+        id = None,
+        call = None
+      )
+  )
 
   def securityTypeRow: Option[SummaryListRow] = userAnswers
     .get(SecurityTypePage)
@@ -78,7 +79,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     dec =>
       buildRow(
         prefix = "declarationAcceptanceDate",
-        answer = formatAsDate2(dec),
+        answer = formatAsDate(dec),
         id = None,
         call = None
       )

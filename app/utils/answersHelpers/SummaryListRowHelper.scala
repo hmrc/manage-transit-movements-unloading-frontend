@@ -18,6 +18,7 @@ package utils.answersHelpers
 
 import models.Identification
 import models.reference.PackageType
+import pages.QuestionPage
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -64,7 +65,7 @@ class SummaryListRowHelper(implicit messages: Messages) {
   def formatAsDate(answer: LocalDate): Content =
     answer.format(cyaDateFormatter).toText
 
-  def formatAsDate2(answer: XMLGregorianCalendar): Content =
+  def formatAsDate(answer: XMLGregorianCalendar): Content =
     answer.toGregorianCalendar.toZonedDateTime.format(cyaDateFormatter).toText
 
   def buildRow(

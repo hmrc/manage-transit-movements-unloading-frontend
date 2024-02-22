@@ -17,7 +17,6 @@
 package models
 
 import cats.Order
-import config.Constants.TIR
 import play.api.libs.json.{Format, Json}
 
 case class DeclarationType(
@@ -29,7 +28,6 @@ case class DeclarationType(
 
   override val messageKeyPrefix: String = DeclarationType.messageKeyPrefix
 
-  def isTIR: Boolean = code == TIR
 }
 
 object DeclarationType extends DynamicEnumerableType[DeclarationType] {

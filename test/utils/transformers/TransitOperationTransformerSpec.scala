@@ -25,7 +25,7 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.{DeclarationTypePage, SecurityTypePage}
+import pages.SecurityTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 
@@ -67,8 +67,7 @@ class TransitOperationTransformerSpec extends SpecBase with AppWithDefaultMockFi
       case Some(_) => Some("test1")
       case None    => None
     }
-    result.get(DeclarationTypePage).map(_.code) mustBe transitOperationType14.declarationType
-    result.get(DeclarationTypePage).map(_.description) mustBe desc
+
     result.getValue(SecurityTypePage).code mustBe transitOperationType14.security
     result.getValue(SecurityTypePage).description mustBe "test2"
 

@@ -18,8 +18,8 @@ package utils.transformers
 
 import connectors.ReferenceDataConnector
 import generated.TransitOperationType14
-import models.{DeclarationType, UserAnswers}
-import pages.{DeclarationTypePage, SecurityTypePage}
+import models.UserAnswers
+import pages.SecurityTypePage
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -32,18 +32,9 @@ class TransitOperationTransformer @Inject() (referenceDataConnector: ReferenceDa
       case to =>
         referenceDataConnector.getSecurityType(to.security).flatMap {
           secType =>
-            to.declarationType
-              .map(
-                dec => referenceDataConnector.getDeclarationType(dec).map(Some(_))
-              )
-              .getOrElse(Future.successful(None))
-              .flatMap {
-                optDecType =>
-                  lazy val pipeline: UserAnswers => Future[UserAnswers] =
-                    set(SecurityTypePage, secType) andThen
-                      set(DeclarationTypePage, optDecType)
-                  pipeline(userAnswers)
-              }
+            lazy val pipeline: UserAnswers => Future[UserAnswers] =
+              set(SecurityTypePage, secType)
+            pipeline(userAnswers)
         }
 
       case _ =>

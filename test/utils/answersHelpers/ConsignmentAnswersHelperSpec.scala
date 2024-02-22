@@ -73,10 +73,11 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase with Generators
       "must return row" in {
         forAll(arbitrary[DeclarationType]) {
           value =>
-            val answers: UserAnswers = emptyUserAnswers.setValue(DeclarationTypePage, value)
-
-            val helper = new ConsignmentAnswersHelper(answers)
-            val result = helper.declarationTypeRow.get
+            val decType: TransitOperationType14 = TransitOperationType14("Mrn", Some(value.code), None, "1", Number0)
+            val ie043: CC043CType               = basicIe043.copy(TransitOperation = decType)
+            val answers: UserAnswers            = emptyUserAnswers.copy(ie043Data = ie043)
+            val helper                          = new ConsignmentAnswersHelper(answers)
+            val result                          = helper.declarationTypeRow.get
 
             result.key.value mustBe "Declaration type"
             result.value.value mustBe value.code
