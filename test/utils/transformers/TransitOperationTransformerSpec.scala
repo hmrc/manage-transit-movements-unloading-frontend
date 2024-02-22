@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import connectors.ReferenceDataConnector
 import generated.TransitOperationType14
 import generators.Generators
-import models.{DeclarationType, SecurityType}
+import models.SecurityType
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -53,20 +53,10 @@ class TransitOperationTransformerSpec extends SpecBase with AppWithDefaultMockFi
 
     val transitOperationType14: TransitOperationType14 = arbitrary[TransitOperationType14].sample.value
 
-    transitOperationType14.declarationType.map(
-      dec =>
-        when(mockRefDataConnector.getDeclarationType(eqTo(dec))(any(), any()))
-          .thenReturn(Future.successful(DeclarationType(dec, "test1")))
-    )
-
     when(mockRefDataConnector.getSecurityType(eqTo(transitOperationType14.security))(any(), any()))
       .thenReturn(Future.successful(SecurityType(transitOperationType14.security, "test2")))
 
     val result = transformer.transform(transitOperationType14).apply(emptyUserAnswers).futureValue
-    val desc = transitOperationType14.declarationType match {
-      case Some(_) => Some("test1")
-      case None    => None
-    }
 
     result.getValue(SecurityTypePage).code mustBe transitOperationType14.security
     result.getValue(SecurityTypePage).description mustBe "test2"

@@ -21,8 +21,8 @@ import cats.data.NonEmptySet
 import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import connectors.ReferenceDataConnectorSpec._
-import models.{DeclarationType, SecurityType}
 import models.DocType.{Support, Transport}
+import models.SecurityType
 import models.reference._
 import models.reference.transport.TransportMode.{BorderMode, InlandMode}
 import org.scalacheck.Gen
@@ -102,29 +102,6 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
     }
 
-    "getDeclarationType" - {
-      val code = "GB"
-      val url  = s"/$baseUrl/lists/DeclarationType?data.code=$code"
-
-      "should handle a 200 response for countries" in {
-        server.stubFor(
-          get(urlEqualTo(url))
-            .willReturn(okJson(declarationTypeResponseJson))
-        )
-
-        val expectedResult = DeclarationType("T1", "description")
-
-        connector.getDeclarationType(code).futureValue mustBe expectedResult
-      }
-
-      "should throw a NoReferenceDataFoundException for an empty response" in {
-        checkNoReferenceDataFoundResponse(url, connector.getDeclarationType(code))
-      }
-
-      "should handle client and server errors for countries" in {
-        checkErrorResponse(url, connector.getDeclarationType(code))
-      }
-    }
 
     "getSecurityType" - {
       val code = "GB"
@@ -146,7 +123,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
 
       "should handle client and server errors for countries" in {
-        checkErrorResponse(url, connector.getDeclarationType(code))
+        checkErrorResponse(url, connector.getSecurityType(code))
       }
     }
 
@@ -604,19 +581,6 @@ object ReferenceDataConnectorSpec {
       |}
       |""".stripMargin
 
-  private val declarationTypeResponseJson: String =
-    """
-      |{
-      | "data":
-      | [
-      |  {
-      |    "code":"T1",
-      |    "state":"valid",
-      |    "description":"description"
-      |  }
-      | ]
-      |}
-      |""".stripMargin
 
   private val securityTypeResponseJson: String =
     """
