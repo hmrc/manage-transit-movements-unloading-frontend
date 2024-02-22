@@ -26,9 +26,8 @@ import play.api.libs.json.{__, JsPath, Reads}
 
 case class AdditionalInformationSection(informationIndex: Index) extends QuestionPage[AdditionalInformation] {
 
-  override def path: JsPath = AdditionalInformationListSection.path \ informationIndex.position \ toString
+  override def path: JsPath = AdditionalInformationListSection.path \ informationIndex.position
 
-  override def toString: String = "additionalInformation"
 }
 
 object AdditionalInformationSection {

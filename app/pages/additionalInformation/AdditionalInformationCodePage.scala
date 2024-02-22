@@ -17,14 +17,14 @@
 package pages.additionalInformation
 
 import models.Index
-import models.reference.{AdditionalInformationCode, AdditionalReferenceType}
+import models.reference.AdditionalInformationCode
 import pages.QuestionPage
-import pages.sections.additionalReference.AdditionalReferenceSection
+import pages.sections.additionalInformation.AdditionalInformationSection
 import play.api.libs.json.JsPath
 
 case class AdditionalInformationCodePage(informationIndex: Index) extends QuestionPage[AdditionalInformationCode] {
 
-  override def path: JsPath = AdditionalReferenceSection(informationIndex).path \ toString
+  override def path: JsPath = AdditionalInformationSection(informationIndex).path \ toString
 
-  override def toString: String = "type"
+  override def toString: String = "code"
 }

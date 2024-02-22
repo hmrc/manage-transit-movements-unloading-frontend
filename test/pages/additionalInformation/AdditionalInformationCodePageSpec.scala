@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,17 @@
 
 package pages.additionalInformation
 
-import models.Index
-import pages.QuestionPage
-import pages.sections.additionalInformation.AdditionalInformationSection
-import play.api.libs.json.JsPath
+import models.reference.AdditionalInformationCode
+import pages.behaviours.PageBehaviours
 
-case class AdditionalInformationTextPage(informationIndex: Index) extends QuestionPage[String] {
+class AdditionalInformationCodePageSpec extends PageBehaviours {
 
-  override def path: JsPath = AdditionalInformationSection(informationIndex).path \ toString
+  "AdditionalInformationCodePage" - {
 
-  override def toString: String = "text"
+    beRetrievable[AdditionalInformationCode](AdditionalInformationCodePage(index))
+
+    beSettable[AdditionalInformationCode](AdditionalInformationCodePage(index))
+
+    beRemovable[AdditionalInformationCode](AdditionalInformationCodePage(index))
+  }
 }

@@ -18,7 +18,7 @@ package utils.transformers
 
 import connectors.ReferenceDataConnector
 import generated.AdditionalInformationType02
-import models.reference.{AdditionalInformationCode, AdditionalReferenceType}
+import models.reference.{AdditionalInformationCode}
 import models.{Index, UserAnswers}
 import pages.additionalInformation.{AdditionalInformationCodePage, AdditionalInformationTextPage}
 import uk.gov.hmrc.http.HeaderCarrier

@@ -19,7 +19,7 @@ package generators
 import models.P5.ArrivalMessageType
 import models._
 import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.{AdditionalReferenceType, Country, Item, PackageType}
+import models.reference.{AdditionalInformationCode, AdditionalReferenceType, Country, Item, PackageType}
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
 import play.api.test.Helpers.{GET, POST}
@@ -56,6 +56,14 @@ trait ModelGenerators {
         refType     <- Gen.alphaNumStr
         description <- nonEmptyString
       } yield AdditionalReferenceType(refType, description)
+    }
+
+  implicit lazy val arbitraryAdditionalInformationCode: Arbitrary[AdditionalInformationCode] =
+    Arbitrary {
+      for {
+        code        <- Gen.alphaNumStr
+        description <- nonEmptyString
+      } yield AdditionalInformationCode(code, description)
     }
 
   implicit lazy val arbitraryEoriNumber: Arbitrary[EoriNumber] =
