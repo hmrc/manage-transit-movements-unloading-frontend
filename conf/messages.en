@@ -116,6 +116,11 @@ departureMeansOfTransport.identification.check.error.required = Select which ide
 departureMeansOfTransport.identification.error.required = Select which identification you want to use for the new departure means of transport
 departureMeansOfTransport.identification.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
 
+departureMeansOfTransport.addIdentificationYesNo.title = Do you want to add the type of identification for the departure means of transport?
+departureMeansOfTransport.addIdentificationYesNo.heading = Do you want to add the type of identification for the departure means of transport?
+departureMeansOfTransport.addIdentificationYesNo.error.required = Select yes if you want to add the type of identification for the departure means of transport
+departureMeansOfTransport.addIdentificationYesNo.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
+
 houseConsignment.item.grossWeight.title = What is the new gross weight of item {0} in house consignment {1}?
 houseConsignment.item.grossWeight.heading = What is the new gross weight of item {0} in house consignment {1}?
 houseConsignment.item.grossWeight.paragraph = This is the combined weight of the item’s goods and packaging.
