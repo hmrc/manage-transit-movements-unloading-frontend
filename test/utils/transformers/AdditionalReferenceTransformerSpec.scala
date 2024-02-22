@@ -27,7 +27,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import models.reference.AdditionalReferenceType
 import pages.additionalReference.AdditionalReferenceTypePage
-import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
+import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferencePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 
@@ -90,6 +90,7 @@ class AdditionalReferenceTransformerSpec extends SpecBase with AppWithDefaultMoc
     additionalReferenceType02.zipWithIndex.map {
       case (refType, i) =>
         result.getValue(AdditionalReferencePage(hcIndex, itemIndex, Index(i))).documentType mustBe refType.typeValue
+        result.getValue(AdditionalReferenceNumberPage(hcIndex, itemIndex, Index(i))) mustBe refType.referenceNumber.value
 
     }
 
