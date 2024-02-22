@@ -21,17 +21,19 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
 import javax.inject.Inject
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class IE043Transformer @Inject() (
   consignmentTransformer: ConsignmentTransformer,
+  transitOperationTransformer: TransitOperationTransformer,
   customsOfficeOfDestinationActualTransformer: CustomsOfficeOfDestinationActualTransformer
 ) extends FrontendHeaderCarrierProvider {
 
-  def transform(userAnswers: UserAnswers)(implicit headerCarrier: HeaderCarrier): Future[UserAnswers] = {
+  def transform(userAnswers: UserAnswers)(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[UserAnswers] = {
 
     val transformerPipeline =
-      consignmentTransformer.transform(userAnswers.ie043Data.Consignment) andThen
+      transitOperationTransformer.transform(userAnswers.ie043Data.TransitOperation) andThen
+        consignmentTransformer.transform(userAnswers.ie043Data.Consignment) andThen
         customsOfficeOfDestinationActualTransformer.transform(userAnswers.ie043Data.CustomsOfficeOfDestinationActual)
 
     transformerPipeline(userAnswers)
