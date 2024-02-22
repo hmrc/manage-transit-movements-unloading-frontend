@@ -16,7 +16,6 @@
 
 package views
 
-import forms.AddUnloadingCommentsYesNoFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -24,8 +23,6 @@ import views.behaviours.YesNoViewBehaviours
 import views.html.AddUnloadingCommentsYesNoView
 
 class AddUnloadingCommentsYesNoViewSpec extends YesNoViewBehaviours {
-
-  override def form: Form[Boolean] = new AddUnloadingCommentsYesNoFormProvider()()
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector.instanceOf[AddUnloadingCommentsYesNoView].apply(form, mrn, arrivalId, NormalMode)(fakeRequest, messages)
