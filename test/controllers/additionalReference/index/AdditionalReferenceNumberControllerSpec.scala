@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package controllers.houseConsignment.index.items.additionalReference
+package controllers.additionalReference.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.ItemsAdditionalReferenceNumberFormProvider
+import forms.AdditionalReferenceNumberFormProvider
 import generators.Generators
 import models.NormalMode
 import models.reference.AdditionalReferenceType
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferencePage}
+import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewModels.houseConsignment.index.items.additionalReference.AdditionalReferenceNumberViewModel
-import viewModels.houseConsignment.index.items.additionalReference.AdditionalReferenceNumberViewModel.AdditionalReferenceNumberViewModelProvider
-import views.html.houseConsignment.index.items.additionalReference.AdditionalReferenceNumberView
+import viewModels.additionalReference.index.AdditionalReferenceNumberViewModel
+import viewModels.additionalReference.index.AdditionalReferenceNumberViewModel.AdditionalReferenceNumberViewModelProvider
+import views.html.additionalReference.index.AdditionalReferenceNumberView
 
 import scala.concurrent.Future
 
@@ -39,12 +39,12 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
 
   private val viewModel = arbitrary[AdditionalReferenceNumberViewModel].sample.value
 
-  private lazy val formProvider = new ItemsAdditionalReferenceNumberFormProvider()
+  private lazy val formProvider = new AdditionalReferenceNumberFormProvider()
   private lazy val form         = formProvider(viewModel.requiredError)
   private val mode              = NormalMode
 
   private lazy val additionalReferenceNumberRoute =
-    routes.AdditionalReferenceNumberController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex).url
+    routes.AdditionalReferenceNumberController.onPageLoad(arrivalId, additionalReferenceIndex, mode).url
 
   private val mockViewModelProvider = mock[AdditionalReferenceNumberViewModelProvider]
 
@@ -55,12 +55,12 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
 
   private val additionalReference = arbitrary[AdditionalReferenceType].sample.value
 
-  private val baseAnswers = emptyUserAnswers.setValue(AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), additionalReference)
+  private val baseAnswers = emptyUserAnswers.setValue(AdditionalReferenceTypePage(additionalReferenceIndex), additionalReference)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockViewModelProvider)
-    when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any())).thenReturn(viewModel)
+    when(mockViewModelProvider.apply(any(), any(), any())(any())).thenReturn(viewModel)
   }
 
   "AdditionalReferenceNumber Controller" - {
@@ -78,12 +78,12 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, viewModel)(request, messages).toString
+        view(form, arrivalId, mrn, additionalReferenceIndex, mode, viewModel)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = baseAnswers.setValue(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), "test string")
+      val userAnswers = baseAnswers.setValue(AdditionalReferenceNumberPage(additionalReferenceIndex), "test string")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, additionalReferenceNumberRoute)
@@ -97,7 +97,7 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, viewModel)(request, messages).toString
+        view(filledForm, arrivalId, mrn, additionalReferenceIndex, mode, viewModel)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -133,7 +133,7 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
       val view = injector.instanceOf[AdditionalReferenceNumberView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, viewModel)(request, messages).toString
+        view(filledForm, arrivalId, mrn, additionalReferenceIndex, mode, viewModel)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

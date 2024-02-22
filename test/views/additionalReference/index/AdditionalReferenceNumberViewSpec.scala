@@ -14,35 +14,37 @@
  * limitations under the License.
  */
 
-package views.houseConsignment.index.items.additionalReference
+package views.additionalReference.index
 
 import base.SpecBase
 import forms.Constants.maxAdditionalReferenceNumLength
-import forms.ItemsAdditionalReferenceNumberFormProvider
+import forms.AdditionalReferenceNumberFormProvider
 import generators.Generators
+import models.{CheckMode, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.houseConsignment.index.items.additionalReference.AdditionalReferenceNumberViewModel
+import viewModels.additionalReference.index.AdditionalReferenceNumberViewModel
 import views.behaviours.CharacterCountViewBehaviours
-import views.html.houseConsignment.index.items.additionalReference.AdditionalReferenceNumberView
+import views.html.additionalReference.index.AdditionalReferenceNumberView
 
 class AdditionalReferenceNumberViewSpec extends SpecBase with CharacterCountViewBehaviours with Generators {
 
   private val viewModel = arbitrary[AdditionalReferenceNumberViewModel].sample.value
+  private val mode      = Gen.oneOf(NormalMode, CheckMode).sample.value
 
-  override def form: Form[String] = new ItemsAdditionalReferenceNumberFormProvider()(viewModel.requiredError)
+  override def form: Form[String] = new AdditionalReferenceNumberFormProvider()(viewModel.requiredError)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector
       .instanceOf[AdditionalReferenceNumberView]
-      .apply(form, mrn, viewModel)(fakeRequest, messages)
+      .apply(form, arrivalId, mrn, additionalReferenceIndex, mode, viewModel)(fakeRequest, messages)
 
   override val prefix: String = Gen
     .oneOf(
-      "houseConsignment.index.items.additionalReference.additionalReferenceNumber.NormalMode",
-      "houseConsignment.index.items.additionalReference.additionalReferenceNumber.CheckMode"
+      "additionalReference.index.NormalMode",
+      "additionalReference.index.CheckMode"
     )
     .sample
     .value
@@ -65,7 +67,7 @@ class AdditionalReferenceNumberViewSpec extends SpecBase with CharacterCountView
     "must render paragraph" - {
       val view = injector
         .instanceOf[AdditionalReferenceNumberView]
-        .apply(form, mrn, viewModel.copy(isParagraphRequired = true))(fakeRequest, messages)
+        .apply(form, arrivalId, mrn, additionalReferenceIndex, mode, viewModel.copy(isParagraphRequired = true))(fakeRequest, messages)
 
       val doc = parseView(view)
 
