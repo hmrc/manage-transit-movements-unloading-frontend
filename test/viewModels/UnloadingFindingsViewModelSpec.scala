@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.Index
 import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.{AdditionalReferenceType, Country}
+import models.reference.{AdditionalReferenceType, Country, Incident}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -29,6 +29,7 @@ import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificatio
 import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage}
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import pages._
+import pages.incident.{IncidentCodePage, IncidentTextPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import services.ReferenceDataService
@@ -273,6 +274,46 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         section.sectionTitle.value mustBe "Additional references"
         section.rows.size mustBe 2
+      }
+    }
+
+    "must render incidents sections" - {
+      "when there is one" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(IncidentCodePage(index), Incident("1", "bad wrapping paper"))
+          .setValue(IncidentTextPage(index), "it got wet")
+
+        setExistingUserAnswers(userAnswers)
+
+        val viewModelProvider = new UnloadingFindingsViewModelProvider()
+        val result            = viewModelProvider.apply(userAnswers)
+        val section           = result.sections(2)
+
+        section.sectionTitle.value mustBe "Incident 1"
+        section.rows.size mustBe 2
+      }
+
+      "when there are multiple" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(IncidentCodePage(Index(0)), Incident("1", "desc 1"))
+          .setValue(IncidentTextPage(Index(0)), "free text 1")
+          .setValue(IncidentCodePage(Index(1)), Incident("2", "desc 2"))
+          .setValue(IncidentTextPage(Index(1)), "free text 2")
+
+        setExistingUserAnswers(userAnswers)
+
+        val viewModelProvider = new UnloadingFindingsViewModelProvider()
+        val result            = viewModelProvider.apply(userAnswers)
+        val section1          = result.sections(2)
+
+        section1.sectionTitle.value mustBe "Incident 1"
+        section1.rows.size mustBe 2
+        val section2 = result.sections(3)
+
+        section2.sectionTitle.value mustBe "Incident 2"
+        section2.rows.size mustBe 2
       }
     }
   }

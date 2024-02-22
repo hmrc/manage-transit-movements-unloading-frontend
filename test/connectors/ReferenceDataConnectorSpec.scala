@@ -276,6 +276,30 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
     }
 
+    "getIncidentType" - {
+      val code = "1"
+      val url  = s"/$baseUrl/lists/IncidentCode?data.code=$code"
+
+      "must return supporting document when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(incidentResponseJson))
+        )
+
+        val expectedResult: Incident = Incident(code, "The carrier is obligated to deviate from the…")
+
+        connector.getIncidentType(code).futureValue mustEqual expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getIncidentType(code))
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getIncidentType(code))
+      }
+    }
+
     "getAdditionalReferenceType" - {
       val documentType = "Y023"
       val url          = s"/$baseUrl/lists/AdditionalReference?data.documentType=$documentType"
@@ -650,6 +674,18 @@ object ReferenceDataConnectorSpec {
       |    {
       |      "code": "1A",
       |      "description": "Drum, steel"
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+
+  private val incidentResponseJson: String =
+    """
+      |{
+      |  "data": [
+      |    {
+      |      "code": "1",
+      |      "description": "The carrier is obligated to deviate from the…"
       |    }
       |  ]
       |}

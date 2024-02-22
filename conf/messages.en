@@ -325,6 +325,11 @@ unloadingFindings.paragraph = Compare the transit that arrived with the followin
 unloadingFindings.subsections.transportMeans = Departure means of transport {0}
 unloadingFindings.subsections.packages = Package {0}
 
+unloadingFindings.subsections.incidents = Incident {0}
+unloadingFindings.rowHeadings.incident.code = Incident code
+unloadingFindings.rowHeadings.incident.description = Description
+
+
 unloadingFindings.rowHeadings.identificationType.seaGoingVessel = Name of a sea-going vessel
 unloadingFindings.rowHeadings.identificationType.seaGoingVessel.change.hidden = name of a sea-going vessel
 unloadingFindings.rowHeadings.identificationType.iataFlightNumber = IATA flight number
