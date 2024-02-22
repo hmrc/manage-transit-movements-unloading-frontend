@@ -28,16 +28,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class TransitOperationTransformer @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) extends PageTransformer {
 
   def transform(transitOperation: TransitOperationType14)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
-    transitOperation match {
-      case to =>
-        referenceDataConnector.getSecurityType(to.security).flatMap {
-          secType =>
-            lazy val pipeline: UserAnswers => Future[UserAnswers] =
-              set(SecurityTypePage, secType)
-            pipeline(userAnswers)
-        }
-
-      case _ =>
-        Future.successful(userAnswers)
+    referenceDataConnector.getSecurityType(transitOperation.security).flatMap {
+      secType =>
+        lazy val pipeline: UserAnswers => Future[UserAnswers] =
+          set(SecurityTypePage, secType)
+        pipeline(userAnswers)
     }
+
 }
