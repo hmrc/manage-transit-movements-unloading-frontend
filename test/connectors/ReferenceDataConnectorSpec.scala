@@ -22,6 +22,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import connectors.ReferenceDataConnectorSpec._
 import models.DocType.{Support, Transport}
+import models.SecurityType
 import models.reference._
 import models.reference.transport.TransportMode.{BorderMode, InlandMode}
 import org.scalacheck.Gen
@@ -98,6 +99,30 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "should handle client and server errors for countries" in {
         checkErrorResponse(url, connector.getCountry(code))
+      }
+    }
+
+    "getSecurityType" - {
+      val code = "GB"
+      val url  = s"/$baseUrl/lists/DeclarationTypeSecurity?data.code=$code"
+
+      "should handle a 200 response for countries" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(securityTypeResponseJson))
+        )
+
+        val expectedResult = SecurityType("1", "description")
+
+        connector.getSecurityType(code).futureValue mustBe expectedResult
+      }
+
+      "should throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getSecurityType(code))
+      }
+
+      "should handle client and server errors for countries" in {
+        checkErrorResponse(url, connector.getSecurityType(code))
       }
     }
 
@@ -550,6 +575,20 @@ object ReferenceDataConnectorSpec {
       |    "code":"GB",
       |    "state":"valid",
       |    "description":"United Kingdom"
+      |  }
+      | ]
+      |}
+      |""".stripMargin
+
+  private val securityTypeResponseJson: String =
+    """
+      |{
+      | "data":
+      | [
+      |  {
+      |    "code":"1",
+      |    "state":"valid",
+      |    "description":"description"
       |  }
       | ]
       |}

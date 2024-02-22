@@ -16,21 +16,59 @@
 
 package utils.answersHelpers
 
-import models.{Link, UserAnswers}
-import pages.CustomsOfficeOfDestinationActualPage
+import models.{Link, SecurityType, UserAnswers}
+import pages.{CustomsOfficeOfDestinationActualPage, SecurityTypePage}
 import pages.grossMass.GrossMassPage
 import pages.sections._
 import pages.sections.additionalReference.AdditionalReferencesSection
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.consignment._
 import viewModels.sections.Section
 import viewModels.sections.Section.{AccordionSection, StaticSection}
-import play.api.mvc.Call
 
 class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
+
+  def transitOperationSection: StaticSection = StaticSection(
+    rows = Seq(
+      Some(reducedDatasetIndicatorRow),
+      securityTypeRow,
+      declarationTypeRow,
+      declarationAcceptanceDateRow
+    ).flatten
+  )
+
+  def declarationTypeRow: Option[SummaryListRow] = userAnswers.ie043Data.TransitOperation.declarationType.map(
+    dec =>
+      buildRowWithNoChangeLink(
+        prefix = "declarationType",
+        answer = dec.toText
+      )
+  )
+
+  def securityTypeRow: Option[SummaryListRow] = getAnswerAndBuildRow[SecurityType](
+    page = SecurityTypePage,
+    formatAnswer = formatAsText,
+    prefix = "securityType",
+    id = None,
+    call = None
+  )
+
+  def reducedDatasetIndicatorRow: SummaryListRow = buildRowWithNoChangeLink(
+    prefix = "reducedDatasetIndicator",
+    answer = formatAsBoolean(userAnswers.ie043Data.TransitOperation.reducedDatasetIndicator.toString)
+  )
+
+  def declarationAcceptanceDateRow: Option[SummaryListRow] = userAnswers.ie043Data.TransitOperation.declarationAcceptanceDate.map(
+    dec =>
+      buildRowWithNoChangeLink(
+        prefix = "declarationAcceptanceDate",
+        answer = formatAsDate(dec)
+      )
+  )
 
   def headerSection: Section = StaticSection(
     rows = Seq(
@@ -52,6 +90,14 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     answer = userAnswers.get(CustomsOfficeOfDestinationActualPage).get.name.toText,
     id = None,
     call = None
+  )
+
+  def grossMassRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
+    page = GrossMassPage,
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.gross.mass.heading",
+    id = Some(s"change-gross-mass"),
+    call = Some(Call(GET, "#"))
   )
 
   def departureTransportMeansSections: Seq[Section] =
@@ -118,12 +164,4 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           id = s"houseConsignment${houseConsignmentIndex.display}"
         )
     }
-
-  def grossMassRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
-    page = GrossMassPage,
-    formatAnswer = formatAsText,
-    prefix = "unloadingFindings.gross.mass.heading",
-    id = Some(s"change-gross-mass"),
-    call = Some(Call(GET, "#"))
-  )
 }

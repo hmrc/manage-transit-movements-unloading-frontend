@@ -27,6 +27,7 @@ import pages.QuestionPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, JsPath, Json}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 
@@ -36,17 +37,23 @@ class IE043TransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
 
   private lazy val mockConsignmentTransformer                      = mock[ConsignmentTransformer]
   private lazy val mockCustomsOfficeOfDestinationActualTransformer = mock[CustomsOfficeOfDestinationActualTransformer]
+  private lazy val mockTransitOperationTransformer                 = mock[TransitOperationTransformer]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
         bind[ConsignmentTransformer].toInstance(mockConsignmentTransformer),
-        bind[CustomsOfficeOfDestinationActualTransformer].toInstance(mockCustomsOfficeOfDestinationActualTransformer)
+        bind[CustomsOfficeOfDestinationActualTransformer].toInstance(mockCustomsOfficeOfDestinationActualTransformer),
+        bind[TransitOperationTransformer].toInstance(mockTransitOperationTransformer)
       )
 
   private case object FakeConsignmentSection extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ "consignment"
+  }
+
+  private case object FakeTransitOperationSection extends QuestionPage[JsObject] {
+    override def path: JsPath = JsPath \ "transitOperation"
   }
 
   private case object FakeCustomsOfficeOfDestinationActualSection extends QuestionPage[JsObject] {
@@ -65,10 +72,16 @@ class IE043TransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
             ua => Future.successful(ua.futureValue.setValue(FakeCustomsOfficeOfDestinationActualSection, Json.obj("foo1" -> "bar1")))
           }
 
+        when(mockTransitOperationTransformer.transform(any())(any()))
+          .thenReturn {
+            ua => Future.successful(ua.setValue(FakeTransitOperationSection, Json.obj("foo" -> "bar")))
+          }
+
         val result = transformer.transform(emptyUserAnswers).futureValue
 
         result.getValue(FakeConsignmentSection) mustBe Json.obj("foo" -> "bar")
         result.getValue(FakeCustomsOfficeOfDestinationActualSection) mustBe Json.obj("foo1" -> "bar1")
+        result.getValue(FakeTransitOperationSection) mustBe Json.obj("foo" -> "bar")
     }
   }
 }

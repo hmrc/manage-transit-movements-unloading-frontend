@@ -67,10 +67,6 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
     override def path: JsPath = JsPath \ "houseConsignment"
   }
 
-  private case object FakeGrossMossSection extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ "grossMoss"
-  }
-
   private case object FakeAdditionalReferenceSection extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ "additionalReferenceSection"
   }

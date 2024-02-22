@@ -22,6 +22,7 @@ import config.FrontendAppConfig
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import logging.Logging
 import models.DocType.{Support, Transport}
+import models.SecurityType
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference._
 import models.reference.transport.TransportMode
@@ -59,6 +60,18 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getMeansOfTransportIdentificationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[TransportMeansIdentification]] = {
     val url = s"${config.referenceDataUrl}/lists/TypeOfIdentificationOfMeansOfTransport"
     http.GET[NonEmptySet[TransportMeansIdentification]](url, headers = version2Header)
+  }
+
+  def getSecurityType(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[SecurityType] = {
+    val queryParams: Seq[(String, String)] = Seq("data.code" -> typeValue)
+    val serviceUrl                         = s"${config.referenceDataUrl}/lists/DeclarationTypeSecurity"
+    http
+      .GET[NonEmptySet[SecurityType]](serviceUrl, headers = version2Header, queryParams = queryParams)(
+        responseHandlerGeneric(SecurityType.format, SecurityType.order),
+        hc,
+        ec
+      )
+      .map(_.head)
   }
 
   def getMeansOfTransportIdentificationType(
