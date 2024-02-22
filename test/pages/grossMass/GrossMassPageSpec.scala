@@ -22,10 +22,10 @@ class GrossMassPageSpec extends PageBehaviours {
 
   "GrossMossPageSpec" - {
 
-    beRetrievable[String](GrossMassPage)
+    beRetrievable[BigDecimal](GrossMassPage)
 
-    beSettable[String](GrossMassPage)
+    beSettable[BigDecimal](GrossMassPage)
 
-    beRemovable[String](GrossMassPage)
+    beRemovable[BigDecimal](GrossMassPage)
   }
 }

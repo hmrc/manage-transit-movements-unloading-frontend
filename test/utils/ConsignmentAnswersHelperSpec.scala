@@ -47,7 +47,7 @@ class ConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCheck
     "must return None" - {
       s"when no transport equipments defined" in {
         val helper = new ConsignmentAnswersHelper(emptyUserAnswers)
-        val result = helper.grossMass
+        val result = helper.grossMassRow
         result.isEmpty mustBe true
       }
     }
@@ -55,10 +55,10 @@ class ConsignmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCheck
     "must return Some(Row)" - {
       s"when $GrossMassPage is defined" in {
         val answers = emptyUserAnswers
-          .setValue(GrossMassPage, "999.99")
+          .setValue(GrossMassPage, BigDecimal(999.99))
 
         val helper = new ConsignmentAnswersHelper(answers)
-        val result = helper.grossMass.head
+        val result = helper.grossMassRow.head
 
         result mustBe
           SummaryListRow(

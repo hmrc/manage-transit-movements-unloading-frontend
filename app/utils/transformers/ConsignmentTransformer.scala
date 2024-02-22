@@ -18,6 +18,7 @@ package utils.transformers
 
 import generated.ConsignmentType05
 import models.UserAnswers
+import pages.grossMass.GrossMassPage
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -28,8 +29,7 @@ class ConsignmentTransformer @Inject() (
   departureTransportMeansTransformer: DepartureTransportMeansTransformer,
   documentsTransformer: DocumentsTransformer,
   houseConsignmentsTransformer: HouseConsignmentsTransformer,
-  additionalReferenceTransformer: AdditionalReferenceTransformer,
-  grossMassTransformer: GrossMassTransformer
+  additionalReferenceTransformer: AdditionalReferenceTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
@@ -44,10 +44,19 @@ class ConsignmentTransformer @Inject() (
             documentsTransformer.transform(consignment05.SupportingDocument, consignment05.TransportDocument) andThen
             houseConsignmentsTransformer.transform(consignment05.HouseConsignment) andThen
             additionalReferenceTransformer.transform(consignment05.AdditionalReference) andThen
-            grossMassTransformer.transform(consignment05.grossMass)
+            transformGrossMass(consignment05.grossMass)
 
         pipeline(userAnswers)
       case None =>
         Future.successful(userAnswers)
     }
+
+  private def transformGrossMass(grossMass: Option[BigDecimal]): UserAnswers => Future[UserAnswers] = userAnswers => {
+    grossMass match {
+      case Some(value) =>
+        lazy val pipeline: UserAnswers => Future[UserAnswers] = set(GrossMassPage, value)
+        pipeline(userAnswers)
+      case None => Future.successful(userAnswers)
+    }
+  }
 }

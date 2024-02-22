@@ -591,7 +591,5 @@ additionalReference.index.additionalReferenceType.error.required = Select the ty
 additionalReference.index.additionalReferenceType.check.error.required = Select the new additional reference type
 additionalReference.index.additionalReferenceType.hint = Enter the reference name or code, like Carrier (AEO certificate number) or Y028.
 additionalReference.index.additionalReferenceType.placeholder = Select an additional reference
-unloadingFindings.consignment.heading = Consignment
 
 unloadingFindings.gross.mass.heading = Gross weight
-unloadingFindings.gross.mass.hidden = gross weight

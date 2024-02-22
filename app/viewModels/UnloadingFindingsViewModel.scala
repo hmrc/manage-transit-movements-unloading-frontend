@@ -19,10 +19,7 @@ package viewModels
 import models.UserAnswers
 import play.api.i18n.Messages
 import utils.answersHelpers.ConsignmentAnswersHelper
-import services.ReferenceDataService
-import uk.gov.hmrc.http.HeaderCarrier
 import viewModels.sections.Section
-import viewModels.sections.Section.AccordionSection
 
 import javax.inject.Inject
 

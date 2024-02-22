@@ -20,7 +20,7 @@ import models.Index
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object GrossMassPage extends QuestionPage[String] {
+case object GrossMassPage extends QuestionPage[BigDecimal] {
 
   override def path: JsPath = JsPath \ "Consignment" \ toString
 

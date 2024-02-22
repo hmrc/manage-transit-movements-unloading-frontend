@@ -33,8 +33,9 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
   def headerSection: Section = StaticSection(
     rows = Seq(
-      traderAtDestinationRow
-    ) ++ grossMass
+      Some(traderAtDestinationRow),
+      grossMassRow
+    ).flatten
   )
 
   def traderAtDestinationRow: SummaryListRow = buildRow(
@@ -108,7 +109,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         )
     }
 
-  def grossMass: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  def grossMassRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
     page = GrossMassPage,
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.gross.mass.heading",
