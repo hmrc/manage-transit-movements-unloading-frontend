@@ -102,7 +102,6 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
     }
 
-
     "getSecurityType" - {
       val code = "GB"
       val url  = s"/$baseUrl/lists/DeclarationTypeSecurity?data.code=$code"
@@ -580,7 +579,6 @@ object ReferenceDataConnectorSpec {
       | ]
       |}
       |""".stripMargin
-
 
   private val securityTypeResponseJson: String =
     """

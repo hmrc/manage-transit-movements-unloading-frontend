@@ -22,10 +22,10 @@ import config.FrontendAppConfig
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import logging.Logging
 import models.DocType.{Support, Transport}
+import models.SecurityType
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference._
 import models.reference.transport.TransportMode
-import models.{DeclarationType, SecurityType}
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, Reads}
 import sttp.model.HeaderNames

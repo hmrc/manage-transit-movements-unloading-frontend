@@ -21,7 +21,7 @@ import generated.Number0
 import generators.Generators
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.{AdditionalReferenceType, Country, CustomsOffice}
-import models.{DeclarationType, Index, SecurityType, UserAnswers}
+import models.{Index, SecurityType, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
