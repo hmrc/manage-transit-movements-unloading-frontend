@@ -39,7 +39,7 @@ trait Mappings extends Formatters with Constraints {
   ): FieldMapping[Int] =
     of(intFormatter(requiredKey, wholeNumberKey, nonNumericKey))
 
-  protected def boolean(requiredKey: String = "error.required", invalidKey: String = "error.boolean", args: Seq[String] = Seq.empty): FieldMapping[Boolean] =
+  protected def boolean(requiredKey: String = "error.required", invalidKey: String = "error.boolean", args: Seq[Any] = Seq.empty): FieldMapping[Boolean] =
     of(booleanFormatter(requiredKey, invalidKey, args))
 
   protected def enumerable[A <: Radioable[A]](requiredKey: String = "error.required", invalidKey: String = "error.invalid", args: Seq[Any] = Seq.empty)(implicit
@@ -73,5 +73,5 @@ trait Mappings extends Formatters with Constraints {
     of(selectableFormatter[T](selectableList, errorKey, args))
 
   protected def mandatoryIfBoolean(errorKey: String, condition: Boolean, defaultValue: Boolean, args: Any*): FieldMapping[Boolean] =
-    if (condition) boolean(errorKey, args = args.map(_.toString)) else of(ignoredFormat(defaultValue))
+    if (condition) boolean(errorKey, args = args) else of(ignoredFormat(defaultValue))
 }

@@ -40,7 +40,7 @@ trait Formatters {
       Map(key -> value)
   }
 
-  private[mappings] def booleanFormatter(requiredKey: String, invalidKey: String, args: Seq[String] = Seq.empty): Formatter[Boolean] =
+  private[mappings] def booleanFormatter(requiredKey: String, invalidKey: String, args: Seq[Any] = Seq.empty): Formatter[Boolean] =
     new Formatter[Boolean] {
 
       private val baseFormatter = stringFormatter(requiredKey, args)(identity)
