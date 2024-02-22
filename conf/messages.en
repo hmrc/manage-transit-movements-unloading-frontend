@@ -582,6 +582,16 @@ houseConsignment.index.items.document.referenceNumber.CheckMode.error.required =
 houseConsignment.index.items.document.referenceNumber.error.length = The reference number must be 70 characters or less
 houseConsignment.index.items.document.referenceNumber.error.invalidCharacters = The reference number must only include letters a to z and numbers 0 to 9
 
+additionalReferenceNumber.index.NormalMode.title = What is the additional reference number?
+additionalReferenceNumber.index.CheckMode.title = What is the new additional reference number?
+additionalReferenceNumber.index.NormalMode.heading = What is the additional reference number?
+additionalReferenceNumber.index.CheckMode.heading = What is the new additional reference number?
+additionalReferenceNumber.index.NormalMode.paragraph = You need to enter a reference number as you have already added this type of additional reference.
+additionalReferenceNumber.index.NormalMode.error.required = Enter the additional reference number
+additionalReferenceNumber.index.CheckMode.error.required = Enter the new additional reference number
+additionalReferenceNumber.index.error.length = The additional reference number must be 70 characters or less
+additionalReferenceNumber.index.error.characters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+
 houseConsignment.index.items.document.additionalInformation.NormalMode.title = Enter the additional information
 houseConsignment.index.items.document.additionalInformation.CheckMode.title = Enter the new additional information for item {1} in house consignment {0}?
 houseConsignment.index.items.document.additionalInformation.NormalMode.heading = Enter the additional information

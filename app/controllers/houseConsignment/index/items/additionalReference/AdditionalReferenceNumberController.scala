@@ -20,10 +20,9 @@ import controllers.actions._
 import forms.ItemsAdditionalReferenceNumberFormProvider
 import models.reference.AdditionalReferenceType
 import models.requests.{MandatoryDataRequest, SpecificDataRequestProvider1}
-import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, RichOptionalJsArray}
+import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
-import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferencePage}
-import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferencesSection
+import pages.houseConsignment.index.items.additionalReference.AdditionalReferenceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -52,53 +51,30 @@ class AdditionalReferenceNumberController @Inject() (
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] =
     actions
-      .requireData(arrivalId)
-      .andThen(getMandatoryPage(AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))) {
+      .requireData(arrivalId) {
         implicit request =>
-          val paragraphRequired = isParagraphRequired(mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
-          val viewModel         = viewModelProvider.apply(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
-          val form              = formProvider(viewModel.requiredError)
+          val viewModel = viewModelProvider.apply(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex, request.userAnswers)
+          val form      = formProvider(viewModel.requiredError)
           val preparedForm = request.userAnswers.get(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) match {
             case None        => form
             case Some(value) => form.fill(value)
           }
-          Ok(view(preparedForm, request.userAnswers.mrn, viewModel, paragraphRequired))
+          Ok(view(preparedForm, request.userAnswers.mrn, viewModel))
       }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] = actions
     .requireData(arrivalId)
-    .andThen(getMandatoryPage(AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)))
     .async {
       implicit request =>
-        val paragraphRequired = isParagraphRequired(mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
-        val viewModel         = viewModelProvider.apply(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
-        val form              = formProvider(viewModel.requiredError)
+        val viewModel = viewModelProvider.apply(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex, request.userAnswers)
+        val form      = formProvider(viewModel.requiredError)
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, viewModel, paragraphRequired))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, viewModel))),
             value => redirect(value, houseConsignmentIndex, itemIndex, additionalReferenceIndex, mode)
           )
     }
-
-  private def isParagraphRequired(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index)(implicit
-    request: Request
-  ): Boolean =
-    mode match {
-      case CheckMode  => false
-      case NormalMode => otherAdditionalReferenceTypes(houseConsignmentIndex, itemIndex, additionalReferenceIndex).contains(request.arg)
-    }
-
-  private def otherAdditionalReferenceTypes(houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index)(implicit
-    request: Request
-  ): Seq[AdditionalReferenceType] = {
-    val numberOfAdditionalReferences = request.userAnswers.get(AdditionalReferencesSection(houseConsignmentIndex, itemIndex)).length
-    (0 until numberOfAdditionalReferences)
-      .map(Index(_))
-      .filterNot(_ == additionalReferenceIndex)
-      .map(AdditionalReferencePage(houseConsignmentIndex, itemIndex, _))
-      .flatMap(request.userAnswers.get(_))
-  }
 
   private def redirect(
     value: String,
