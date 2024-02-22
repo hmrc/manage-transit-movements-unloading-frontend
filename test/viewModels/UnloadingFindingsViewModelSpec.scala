@@ -344,12 +344,13 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         val userAnswers = emptyUserAnswers
           .setValue(IncidentCodePage(index), Incident("1", "bad wrapping paper"))
           .setValue(IncidentTextPage(index), "it got wet")
+          .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
 
         setExistingUserAnswers(userAnswers)
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(2)
+        val section           = result.sections(3)
 
         section.sectionTitle.value mustBe "Incident 1"
         section.rows.size mustBe 2
@@ -362,16 +363,17 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(IncidentTextPage(Index(0)), "free text 1")
           .setValue(IncidentCodePage(Index(1)), Incident("2", "desc 2"))
           .setValue(IncidentTextPage(Index(1)), "free text 2")
+          .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
 
         setExistingUserAnswers(userAnswers)
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
-        val section1          = result.sections(2)
+        val section1          = result.sections(3)
 
         section1.sectionTitle.value mustBe "Incident 1"
         section1.rows.size mustBe 2
-        val section2 = result.sections(3)
+        val section2 = result.sections(4)
 
         section2.sectionTitle.value mustBe "Incident 2"
         section2.rows.size mustBe 2
