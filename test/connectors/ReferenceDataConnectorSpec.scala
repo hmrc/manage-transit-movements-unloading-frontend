@@ -276,6 +276,30 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
     }
 
+    "getAdditionalInformationType" - {
+      val code = "20300"
+      val url  = s"/$baseUrl/lists/AdditionalInformation?data.code=$code"
+
+      "must return supporting document when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(additionalInformationJson))
+        )
+
+        val expectedResult: AdditionalInformationCode = AdditionalInformationCode(code, "Export")
+
+        connector.getAdditionalInformationCode(code).futureValue mustEqual expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getAdditionalInformationCode(code))
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getAdditionalInformationCode(code))
+      }
+    }
+
     "getTransportDocument" - {
       val typeValue = "N235"
       val url       = s"/$baseUrl/lists/TransportDocumentType?data.code=$typeValue"
@@ -602,6 +626,32 @@ object ReferenceDataConnectorSpec {
       |  {
       |    "documentType": "documentType2",
       |    "description": "desc2"
+      |  }
+      |]
+      |}
+      |""".stripMargin
+
+  private val additionalInformationJson: String =
+    """
+      |{
+      |  "_links": {
+      |    "self": {
+      |      "href": "/customs-reference-data/lists/AdditionalInformation"
+      |    }
+      |  },
+      |  "meta": {
+      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+      |    "snapshotDate": "2023-01-01"
+      |  },
+      |  "id": "AdditionalInformation",
+      |  "data": [
+      | {
+      |    "code": "20300",
+      |    "description": "Export"
+      |  },
+      |  {
+      |    "code": "30600",
+      |    "description": "In EXS, where negotiable bills of lading 'to order blank endorsed' are concerned and the consignee particulars are unknown."
       |  }
       |]
       |}

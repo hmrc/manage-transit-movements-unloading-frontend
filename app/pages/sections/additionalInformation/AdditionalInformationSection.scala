@@ -22,7 +22,7 @@ import pages.QuestionPage
 import pages.additionalInformation.{AdditionalInformationCodePage, AdditionalInformationTextPage}
 import pages.sections.additionalInformation.AdditionalInformationSection.AdditionalInformation
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Reads, __}
+import play.api.libs.json.{__, JsPath, Reads}
 
 case class AdditionalInformationSection(informationIndex: Index) extends QuestionPage[AdditionalInformation] {
 
@@ -37,7 +37,7 @@ object AdditionalInformationSection {
 
     override def toString: String = text match {
       case Some(text) => s"${code.toString} - $text"
-      case None            => code.toString
+      case None       => code.toString
     }
   }
 

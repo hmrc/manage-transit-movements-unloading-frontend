@@ -16,6 +16,7 @@
 
 package models.reference
 
+import cats.Order
 import play.api.libs.json.{Format, Json}
 
 case class AdditionalInformationCode(code: String, description: String) extends Selectable {
@@ -26,5 +27,9 @@ case class AdditionalInformationCode(code: String, description: String) extends 
 }
 
 object AdditionalInformationCode {
+
   implicit val format: Format[AdditionalInformationCode] = Json.format[AdditionalInformationCode]
+
+  implicit val order: Order[AdditionalInformationCode] = (x: AdditionalInformationCode, y: AdditionalInformationCode) => x.code.compareToIgnoreCase(y.code)
+
 }

@@ -300,6 +300,19 @@ trait MessagesModelGenerators {
       )
     }
 
+  implicit lazy val arbitraryAdditionalInformationType02: Arbitrary[AdditionalInformationType02] =
+    Arbitrary {
+      for {
+        sequenceNumber <- Gen.alphaNumStr
+        code           <- Gen.alphaNumStr
+        text           <- Gen.option(Gen.alphaNumStr)
+      } yield AdditionalInformationType02(
+        sequenceNumber = sequenceNumber,
+        code = code,
+        text = text
+      )
+    }
+
   implicit lazy val arbitrarySealType04: Arbitrary[SealType04] =
     Arbitrary {
       for {
