@@ -71,7 +71,7 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new IncidentAnswersHelper(answers, index)
               val result = helper.incidentDescriptionRow.value
 
-              result.key.value mustBe "Identifier type"
+              result.key.value mustBe "Description"
               result.value.value mustBe s"$value"
               val action = result.actions
               action mustBe None

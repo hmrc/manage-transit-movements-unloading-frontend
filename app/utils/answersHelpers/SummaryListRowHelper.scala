@@ -41,9 +41,7 @@ class SummaryListRowHelper(implicit messages: Messages) {
 
   protected def formatAsText[T](answer: T): Content           = s"$answer".toText
   protected def formatAsPackage(answer: PackageType): Content = s"${answer.asDescription}".toText
-
-  protected def formatIncidentAsCode(answer: Incident): Content = s"${answer.code}".toText
-  protected def formatAsWeight[T](answer: T): Content           = s"${answer}kg".toText
+  protected def formatAsWeight[T](answer: T): Content         = s"${answer}kg".toText
 
   protected def formatIdentificationTypeAsText(xmlString: String): String =
     s"${Identification.messageKeyPrefix}.${Identification(xmlString)}"
