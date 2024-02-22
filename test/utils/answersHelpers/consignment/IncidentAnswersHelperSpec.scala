@@ -16,9 +16,8 @@
 
 package utils.answersHelpers.consignment
 
-import models.reference.{Incident, PackageType}
+import models.reference.Incident
 import org.scalacheck.Arbitrary.arbitrary
-import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
 import pages.incident.{IncidentCodePage, IncidentTextPage}
 import utils.answersHelpers.AnswersHelperSpecBase
 

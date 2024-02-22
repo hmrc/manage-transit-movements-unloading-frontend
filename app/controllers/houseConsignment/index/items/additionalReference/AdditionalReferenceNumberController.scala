@@ -18,8 +18,7 @@ package controllers.houseConsignment.index.items.additionalReference
 
 import controllers.actions._
 import forms.ItemsAdditionalReferenceNumberFormProvider
-import models.reference.AdditionalReferenceType
-import models.requests.{MandatoryDataRequest, SpecificDataRequestProvider1}
+import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
 import pages.houseConsignment.index.items.additionalReference.AdditionalReferenceNumberPage
@@ -46,8 +45,6 @@ class AdditionalReferenceNumberController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
-
-  private type Request = SpecificDataRequestProvider1[AdditionalReferenceType]#SpecificDataRequest[AnyContent]
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] =
     actions

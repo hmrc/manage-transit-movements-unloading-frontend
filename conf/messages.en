@@ -420,6 +420,13 @@ unloadingFindings.rowHeadings.additionalComments = Comments
 unloadingFindings.rowHeadings.additionalComments.change.hidden = comments
 unloadingFindings.rowHeadings.additionalComments.remove.hidden = comments
 
+unloadingFindings.rowHeadings.holderOfTheTransitProcedure.heading = Transit holder
+unloadingFindings.rowHeadings.holderOfTheTransitProcedure.identificationNumber = EORI number
+unloadingFindings.rowHeadings.holderOfTheTransitProcedure.tirHolderIdentificationNumber = TIR holder’s identification number
+unloadingFindings.rowHeadings.holderOfTheTransitProcedure.name = Name
+unloadingFindings.rowHeadings.holderOfTheTransitProcedure.address = Address
+unloadingFindings.rowHeadings.holderOfTheTransitProcedure.country = Country
+
 unloadingFindings.additional.reference.heading = Additional references
 unloadingFindings.additional.reference.change.hidden = additional reference {0}
 unloadingFindings.additional.reference = Additional Reference {0}

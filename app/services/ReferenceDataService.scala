@@ -30,11 +30,8 @@ class ReferenceDataServiceImpl @Inject() (connector: ReferenceDataConnector) ext
   def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] =
     connector.getCountries().map(_.toSeq)
 
-  def getCountryByCode(code: Option[String])(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[Country]] =
-    code match {
-      case Some(countryCode) => getCountries().map(_.find(_.code.equals(countryCode)))
-      case None              => Future.successful(None)
-    }
+  def getCountryByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Country] =
+    connector.getCountry(code)
 
   def getCustomsOfficeByCode(customsOfficeCode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[CustomsOffice] = {
     val customsOfficesResult: Future[NonEmptySet[CustomsOffice]] = connector.getCustomsOffice(customsOfficeCode)
@@ -63,7 +60,7 @@ class ReferenceDataServiceImpl @Inject() (connector: ReferenceDataConnector) ext
 
 trait ReferenceDataService {
   def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]]
-  def getCountryByCode(code: Option[String])(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[Country]]
+  def getCountryByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Country]
   def getCustomsOfficeByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[CustomsOffice]
   def getCountryNameByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[String]
   def doesCUSCodeExist(cusCode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Boolean]

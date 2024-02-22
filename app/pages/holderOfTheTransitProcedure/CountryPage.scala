@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package pages.sections
+package pages.holderOfTheTransitProcedure
 
-import play.api.libs.json.{JsArray, JsPath}
+import models.reference.Country
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-case object IncidentSection extends Section[JsArray] {
+case object CountryPage extends QuestionPage[Country] {
 
-  override def path: JsPath = JsPath \ "Consignment" \ toString
+  override def path: JsPath = JsPath \ "HolderOfTheTransitProcedure" \ "Address" \ toString
 
-  override def toString: String = "Incident"
+  override def toString: String = "nationality"
 }
