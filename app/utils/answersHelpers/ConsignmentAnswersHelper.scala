@@ -87,9 +87,9 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       .get(IncidentSection)
       .mapWithIndex {
         case (_, incidentIndex) =>
-          val packageHelper = new IncidentAnswersHelper(userAnswers, incidentIndex)
+          val helper = new IncidentAnswersHelper(userAnswers, incidentIndex)
 
-          val rows = Seq(packageHelper.incidentCodeRow, packageHelper.incidentDescriptionRow).flatten
+          val rows = Seq(helper.incidentCodeRow, helper.incidentDescriptionRow).flatten
 
           val section = AccordionSection(
             sectionTitle = messages("unloadingFindings.subsections.incidents", incidentIndex.display),
