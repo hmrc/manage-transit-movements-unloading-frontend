@@ -20,9 +20,7 @@ import models.reference.Incident
 import models.{Index, UserAnswers}
 import pages.incident.{IncidentCodePage, IncidentTextPage}
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
 
 class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(implicit messages: Messages) extends AnswersHelper(userAnswers) {

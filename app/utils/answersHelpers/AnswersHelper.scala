@@ -22,8 +22,7 @@ import pages.sections.Section
 import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, JsValue, Reads}
 import play.api.mvc.Call
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
 
 class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends SummaryListRowHelper {
 
@@ -48,6 +47,22 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
         )
     }
 
+  def buildRowWithNoChangeLink[T](
+    data: Option[T],
+    formatAnswer: T => Content,
+    prefix: String
+  ): Option[SummaryListRow] =
+    data map {
+      answer =>
+        buildRow(
+          prefix = prefix,
+          answer = formatAnswer(answer),
+          id = None,
+          call = None,
+          args = Nil
+        )
+    }
+
   def getAnswerAndBuildRowWithoutKey[T](
     page: QuestionPage[T],
     formatAnswer: T => Content,
@@ -67,21 +82,11 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
         )
     }
 
-  def parseArguments[T](args: Option[Seq[Any]], answer: T): Seq[Any] = args match {
-    case None            => Seq(answer)
-    case Some(arguments) => arguments.appended(answer)
-  }
-
   implicit class RichJsArray(arr: JsArray) {
 
     def zipWithIndex: List[(JsValue, Index)] = arr.value.toList.zipWithIndex.map(
       x => (x._1, Index(x._2))
     )
-
-    def filterWithIndex(f: (JsValue, Index) => Boolean): Seq[(JsValue, Index)] =
-      arr.zipWithIndex.filter {
-        case (value, i) => f(value, i)
-      }
 
     def isEmpty: Boolean = arr.value.isEmpty
   }

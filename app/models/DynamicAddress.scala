@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package pages.sections
+package models
 
-import play.api.libs.json.{JsArray, JsPath}
+import play.api.libs.json.{Json, OFormat}
 
-case object IncidentSection extends Section[JsArray] {
+case class DynamicAddress(
+  numberAndStreet: String,
+  city: String,
+  postalCode: Option[String]
+) {
 
-  override def path: JsPath = JsPath \ "Consignment" \ toString
+  override def toString: String = Seq(Some(numberAndStreet), Some(city), postalCode).flatten.mkString("<br>")
+}
 
-  override def toString: String = "Incident"
+object DynamicAddress {
+  implicit val format: OFormat[DynamicAddress] = Json.format[DynamicAddress]
 }

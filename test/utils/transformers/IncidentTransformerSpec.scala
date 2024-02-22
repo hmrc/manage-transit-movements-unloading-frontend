@@ -21,14 +21,13 @@ import connectors.ReferenceDataConnector
 import generators.Generators
 import models.Index
 import models.reference.Incident
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.incident.{IncidentCodePage, IncidentTextPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 
 import scala.concurrent.Future
 
