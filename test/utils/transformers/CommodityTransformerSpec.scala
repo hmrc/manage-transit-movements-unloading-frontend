@@ -24,7 +24,7 @@ import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
-import pages.houseConsignment.index.items.{CustomsUnionAndStatisticsCodePage, ItemDescriptionPage}
+import pages.houseConsignment.index.items.{CombinedNomenclatureCodePage, CommodityCodePage, CustomsUnionAndStatisticsCodePage, ItemDescriptionPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, JsPath, Json}
@@ -60,6 +60,8 @@ class CommodityTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
         result.getValue(ItemDescriptionPage(hcIndex, itemIndex)) mustBe commodity.descriptionOfGoods
         result.get(CustomsUnionAndStatisticsCodePage(hcIndex, itemIndex)) mustBe commodity.cusCode
+        result.get(CommodityCodePage(hcIndex, itemIndex)) mustBe commodity.CommodityCode.map(_.harmonizedSystemSubHeadingCode)
+        result.get(CombinedNomenclatureCodePage(hcIndex, itemIndex)) mustBe commodity.CommodityCode.flatMap(_.combinedNomenclatureCode)
         result.getValue(FakeGoodsMeasureSection) mustBe Json.obj("foo" -> "bar")
     }
   }

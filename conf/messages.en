@@ -387,6 +387,12 @@ unloadingFindings.rowHeadings.item.packageMarks.change.hidden = shipping mark of
 unloadingFindings.rowHeadings.item.grossWeight.change.hidden = gross weight of item {0}
 unloadingFindings.rowHeadings.item.netWeight = Net weight
 unloadingFindings.rowHeadings.item.netWeight.change.hidden = net weight of item {0}
+unloadingFindings.rowHeadings.item.cusCode = Customs Union and Statistics (CUS) code
+unloadingFindings.rowHeadings.item.cusCode.change.hidden = Customs Union and Statistics (CUS) code for item {0}
+unloadingFindings.rowHeadings.item.commodityCode = Commodity code
+unloadingFindings.rowHeadings.item.commodityCode.change.hidden = commodity code for item {0}
+unloadingFindings.rowHeadings.item.nomenclatureCode = Combined nomenclature code
+unloadingFindings.rowHeadings.item.nomenclatureCode.change.hidden = combined nomenclature code for item {0}
 
 unloadingFindings.subsections.additionalComments = Additional comments
 unloadingFindings.additionalComments.link = Add comments
