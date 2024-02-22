@@ -24,8 +24,7 @@ import uk.gov.hmrc.govukfrontend.views.html.components._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.Date.getDate
-import utils.Format.{cyaDateFormatter, dateFormatter, dateTimeFormatIE044}
+import utils.Format.cyaDateFormatter
 
 import java.time.LocalDate
 import javax.xml.datatype.XMLGregorianCalendar
