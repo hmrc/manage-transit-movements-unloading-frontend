@@ -62,11 +62,6 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[NonEmptySet[TransportMeansIdentification]](url, headers = version2Header)
   }
 
-  def getDeclarationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[DeclarationType]] = {
-    val url = s"${config.referenceDataUrl}/lists/DeclarationType"
-    http.GET[Seq[DeclarationType]](url, headers = version2Header)
-  }
-
   def getDeclarationType(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DeclarationType] = {
     val queryParams: Seq[(String, String)] = Seq("data.code" -> typeValue)
     val serviceUrl                         = s"${config.referenceDataUrl}/lists/DeclarationType"
@@ -77,11 +72,6 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
         ec
       )
       .map(_.head)
-  }
-
-  def getSecurityTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[SecurityType]] = {
-    val url = s"${config.referenceDataUrl}/lists/DeclarationTypeSecurity"
-    http.GET[Seq[SecurityType]](url, headers = version2Header)
   }
 
   def getSecurityType(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[SecurityType] = {
