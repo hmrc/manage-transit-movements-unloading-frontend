@@ -106,6 +106,10 @@ departureMeansOfTransport.country.CheckMode.error.required = Select the country 
 departureMeansOfTransport.country.placeHolder = Select a country
 departureMeansOfTransport.country.hint  = Enter the country or code, like Austria or AT.
 
+departureMeansOfTransport.addIdentificationNumberYesNo.title = Do you want to add an identification number for this vehicle?
+departureMeansOfTransport.addIdentificationNumberYesNo.heading = Do you want to add an identification number for this vehicle?
+departureMeansOfTransport.addIdentificationNumberYesNo.error.required = Select yes if you want to add an identification number for this vehicle
+
 departureMeansOfTransport.identification.NormalMode.title = Which identification do you want to use for the departure means of transport?
 departureMeansOfTransport.identification.CheckMode.title = Which identification do you want to use for the new departure means of transport?
 departureMeansOfTransport.identification.NormalMode.heading = Which identification do you want to use for the departure means of transport?
