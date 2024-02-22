@@ -107,10 +107,6 @@ departureMeansOfTransport.country.CheckMode.error.required = Select the country 
 departureMeansOfTransport.country.placeHolder = Select a country
 departureMeansOfTransport.country.hint  = Enter the country or code, like Austria or AT.
 
-departureMeansOfTransport.addIdentificationNumberYesNo.title = Do you want to add an identification number for this vehicle?
-departureMeansOfTransport.addIdentificationNumberYesNo.heading = Do you want to add an identification number for this vehicle?
-departureMeansOfTransport.addIdentificationNumberYesNo.error.required = Select yes if you want to add an identification number for this vehicle
-
 departureMeansOfTransport.identification.NormalMode.title = Which identification do you want to use for the departure means of transport?
 departureMeansOfTransport.identification.CheckMode.title = Which identification do you want to use for the new departure means of transport?
 departureMeansOfTransport.identification.NormalMode.heading = Which identification do you want to use for the departure means of transport?
@@ -124,6 +120,10 @@ departureMeansOfTransport.addIdentificationYesNo.title = Do you want to add the 
 departureMeansOfTransport.addIdentificationYesNo.heading = Do you want to add the type of identification for the departure means of transport?
 departureMeansOfTransport.addIdentificationYesNo.error.required = Select yes if you want to add the type of identification for the departure means of transport
 departureMeansOfTransport.addIdentificationYesNo.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
+
+departureMeansOfTransport.addIdentificationNumberYesNo.title = Do you want to add an identification number for this vehicle?
+departureMeansOfTransport.addIdentificationNumberYesNo.heading = Do you want to add an identification number for this vehicle?
+departureMeansOfTransport.addIdentificationNumberYesNo.error.required = Select yes if you want to add an identification number for this vehicle
 
 houseConsignment.item.grossWeight.title = What is the new gross weight of item {0} in house consignment {1}?
 houseConsignment.item.grossWeight.heading = What is the new gross weight of item {0} in house consignment {1}?

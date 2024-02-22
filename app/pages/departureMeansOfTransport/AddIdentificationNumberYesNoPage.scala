@@ -16,14 +16,22 @@
 
 package pages.departureMeansOfTransport
 
-import models.Index
+import models.{Index, UserAnswers}
 import pages.QuestionPage
 import pages.sections.TransportMeansListSection
 import play.api.libs.json.JsPath
+
+import scala.util.Try
 
 case class AddIdentificationNumberYesNoPage(transportMeansIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = TransportMeansListSection.path \ transportMeansIndex.position \ toString
 
   override def toString: String = "addIdentificationNumberYesNo"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(VehicleIdentificationNumberPage(transportMeansIndex))
+      case _           => super.cleanup(value, userAnswers)
+    }
 }
