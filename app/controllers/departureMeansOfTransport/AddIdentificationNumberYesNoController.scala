@@ -14,57 +14,57 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.departureMeansOfTransport
 
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.{ArrivalId, Mode}
+import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
-import pages.AddUnloadingCommentsYesNoPage
+import pages.departureMeansOfTransport.AddIdentificationNumberYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.AddUnloadingCommentsYesNoView
+import views.html.departureMeansOfTransport.AddIdentificationNumberYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddUnloadingCommentsYesNoController @Inject() (
+class AddIdentificationNumberYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddUnloadingCommentsYesNoView
+  view: AddIdentificationNumberYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("addUnloadingCommentsYesNo")
+  private val form = formProvider("departureMeansOfTransport.addIdentificationNumberYesNo")
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddUnloadingCommentsYesNoPage) match {
+      val preparedForm = request.userAnswers.get(AddIdentificationNumberYesNoPage(transportMeansIndex)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode))
+      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode))
   }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId).async {
+  def onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddUnloadingCommentsYesNoPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddIdentificationNumberYesNoPage(transportMeansIndex), value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddUnloadingCommentsYesNoPage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(AddIdentificationNumberYesNoPage(transportMeansIndex), mode, updatedAnswers))
         )
   }
 }

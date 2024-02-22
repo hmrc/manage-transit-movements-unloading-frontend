@@ -16,12 +16,16 @@
 
 package views.behaviours
 
+import forms.YesNoFormProvider
+import play.api.data.Form
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
 trait YesNoViewBehaviours extends RadioViewBehaviours[Boolean] {
 
   override val getValue: Boolean => String = _.toString
+
+  override def form: Form[Boolean] = new YesNoFormProvider()(prefix)
 
   override def radioItems(fieldId: String, checkedValue: Option[Boolean]): Seq[RadioItem] =
     Seq(

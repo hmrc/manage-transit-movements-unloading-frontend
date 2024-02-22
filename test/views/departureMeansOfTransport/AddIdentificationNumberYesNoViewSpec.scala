@@ -20,14 +20,14 @@ import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.departureMeansOfTransport.AddIdentificationYesNoView
+import views.html.departureMeansOfTransport.AddIdentificationNumberYesNoView
 
-class AddIdentificationYesNoViewSpec extends YesNoViewBehaviours {
-
-  override val prefix: String = "departureMeansOfTransport.addIdentificationYesNo"
+class AddIdentificationNumberYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddIdentificationYesNoView].apply(form, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[AddIdentificationNumberYesNoView].apply(form, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
+
+  override val prefix: String = "departureMeansOfTransport.addIdentificationNumberYesNo"
 
   behave like pageWithTitle()
 
@@ -36,8 +36,6 @@ class AddIdentificationYesNoViewSpec extends YesNoViewBehaviours {
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
   behave like pageWithHeading()
-
-  behave like pageWithContent("p", "This is the means of transport used from the UK office of departure to a UK port or airport.")
 
   behave like pageWithRadioItems()
 
