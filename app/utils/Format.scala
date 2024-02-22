@@ -16,34 +16,11 @@
 
 package utils
 
-import logging.Logging
-
 import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, LocalTime}
 
 object Format {
 
-  val dateFormatter: DateTimeFormatter       = DateTimeFormatter.ofPattern("yyyyMMdd")
-  def dateFormatted(date: LocalDate): String = date.format(dateFormatter)
-
-  val timeFormatter: DateTimeFormatter       = DateTimeFormatter.ofPattern("HHmm")
-  def timeFormatted(time: LocalTime): String = time.format(timeFormatter)
+  val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
 
   val cyaDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-
-  val dateTimeFormatIE044: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
-}
-
-object Date extends Logging {
-
-  def getDate(date: String): Option[LocalDate] =
-    try Some(LocalDate.parse(date, Format.dateFormatter))
-    catch { case _: Exception => logger.debug("Failed to parse the date"); None }
-}
-
-object IntValue extends Logging {
-
-  def getInt(value: String): Option[Int] =
-    try Some(value.toInt)
-    catch { case _: Exception => logger.debug("failed to get string as Int"); None }
 }

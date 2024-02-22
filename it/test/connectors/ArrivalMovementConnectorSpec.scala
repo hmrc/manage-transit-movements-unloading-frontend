@@ -16,9 +16,8 @@
 
 package connectors
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock._
-import generators.Generators
+import itbase.{ItSpecBase, WireMockServerHandler}
 import models.P5._
 import play.api.inject.guice.GuiceApplicationBuilder
 
@@ -27,7 +26,7 @@ import java.time.format.DateTimeFormatter
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.xml.Node
 
-class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockSuite with Generators {
+class ArrivalMovementConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -52,6 +51,7 @@ class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtu
           |          "href": "/customs/transits/movements/arrivals/63498209a2d89ad8/messages/634982098f02f00a"
           |        }
           |      },
+          |      "id": "634982098f02f00a",
           |      "received": "2022-11-10T15:32:51.459Z",
           |      "type": "IE007"
           |    }
@@ -62,7 +62,7 @@ class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtu
       "should return Messages" in {
         server.stubFor(
           get(url)
-            .withHeader("Accept", containing("application/vnd.hmrc.2.0+json"))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(okJson(expectedResponse))
         )
 
@@ -73,7 +73,7 @@ class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtu
             MessageMetaData(
               LocalDateTime.parse("2022-11-10T15:32:51.459Z", DateTimeFormatter.ISO_DATE_TIME),
               ArrivalMessageType.ArrivalNotification,
-              "movements/arrivals/63498209a2d89ad8/messages/634982098f02f00a"
+              "634982098f02f00a"
             )
           )
         )
@@ -89,14 +89,16 @@ class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtu
           <messageSender>token</messageSender>
         </ncts:CC043C>
 
+      val messageId = "messageId"
+
       "should return Message" in {
         server.stubFor(
-          get("/path/url/body")
-            .withHeader("Accept", containing("application/vnd.hmrc.2.0+xml"))
+          get(s"/movements/arrivals/${arrivalId.value}/messages/$messageId/body")
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+xml"))
             .willReturn(ok(xml.toString()))
         )
 
-        val result = connector.getUnloadingPermissionXml("path/url").futureValue
+        val result = connector.getUnloadingPermissionXml(arrivalId, messageId).futureValue
 
         result mustBe xml
       }
