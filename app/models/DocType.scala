@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,25 @@
  * limitations under the License.
  */
 
-package pages.grossMass
+package models
 
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+sealed trait DocType {
+  val display: String
+}
 
-case object GrossMassPage extends QuestionPage[BigDecimal] {
+object DocType extends EnumerableType[DocType] {
 
-  override def path: JsPath = JsPath \ "Consignment" \ toString
+  case object Support extends DocType {
+    override val display = "Supporting"
+  }
 
-  override def toString: String = "grossMass"
+  case object Transport extends DocType {
+    override val display = "Transport"
+  }
+
+  case object Previous extends DocType {
+    override val display = "Previous"
+  }
+
+  override val values: Seq[DocType] = Seq(Support, Transport, Previous)
 }

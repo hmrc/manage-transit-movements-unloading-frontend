@@ -92,8 +92,7 @@ class ReferenceDataServiceSpec extends AnyFreeSpec with ScalaFutures with Matche
 
         val service = new ReferenceDataServiceImpl(mockConnector)
 
-        service.getCustomsOfficeByCode("GB00001").futureValue mustBe
-          Some(customsOffice)
+        service.getCustomsOfficeByCode("GB00001").futureValue mustBe customsOffice
 
         verify(mockConnector).getCustomsOffice(any())(any(), any())
       }

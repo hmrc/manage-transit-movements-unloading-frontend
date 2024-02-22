@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package pages.grossMass
+package pages.documents
 
+import models.Index
+import models.reference.DocumentType
 import pages.QuestionPage
+import pages.sections.documents.DocumentSection
 import play.api.libs.json.JsPath
 
-case object GrossMassPage extends QuestionPage[BigDecimal] {
+case class TypePage(documentIndex: Index) extends QuestionPage[DocumentType] {
 
-  override def path: JsPath = JsPath \ "Consignment" \ toString
+  override def path: JsPath = DocumentSection(documentIndex).path \ toString
 
-  override def toString: String = "grossMass"
+  override def toString: String = "type"
 }

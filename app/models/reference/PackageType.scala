@@ -26,6 +26,11 @@ case class PackageType(code: String, description: Option[String]) extends Select
     case _                                  => code
   }
 
+  def asDescription: String = description match {
+    case Some(value) if value.trim.nonEmpty => s"$value"
+    case _                                  => code
+  }
+
   override val value: String = code
 }
 

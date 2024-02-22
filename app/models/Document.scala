@@ -17,6 +17,7 @@
 package models
 
 import generated._
+import models.DocType.{Support, Transport}
 import models.reference.DocumentType
 
 sealed trait Document {
@@ -29,6 +30,7 @@ object Document {
   def apply(document: SupportingDocumentType02, documentType: DocumentType): SupportingDocument =
     SupportingDocument(
       documentType = DocumentType(
+        `type` = Support,
         code = documentType.code,
         description = documentType.description
       ),
@@ -39,6 +41,7 @@ object Document {
   def apply(document: TransportDocumentType02, documentType: DocumentType): TransportDocument =
     TransportDocument(
       documentType = DocumentType(
+        `type` = Transport,
         code = documentType.code,
         description = documentType.description
       ),

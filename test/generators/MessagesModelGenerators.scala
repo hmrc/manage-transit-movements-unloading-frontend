@@ -311,6 +311,22 @@ trait MessagesModelGenerators {
       )
     }
 
+  implicit lazy val arbitraryPackageType04: Arbitrary[PackagingType02] =
+    Arbitrary {
+      for {
+        sequenceNumber   <- Gen.alphaNumStr
+        typeOfPackages   <- Gen.alphaNumStr
+        numberOfPackages <- Gen.option(positiveBigInts)
+        shippingMarks    <- Gen.option(Gen.alphaNumStr)
+
+      } yield PackagingType02(
+        sequenceNumber = sequenceNumber,
+        typeOfPackages,
+        numberOfPackages,
+        shippingMarks
+      )
+    }
+
   implicit lazy val arbitraryGoodsReferenceType02: Arbitrary[GoodsReferenceType02] =
     Arbitrary {
       for {

@@ -88,9 +88,12 @@ class HouseConsignmentAnswersHelper(
           rows = Seq(
             helper.descriptionRow,
             helper.grossWeightRow,
-            helper.netWeightRow
+            helper.netWeightRow,
+            helper.cusCodeRow,
+            helper.commodityCodeRow,
+            helper.nomenclatureCodeRow
           ).flatten,
-          children = Seq(
+          children = helper.packageSections ++ Seq(
             AccordionSection(
               messages("unloadingFindings.additional.reference.heading"),
               helper.additionalReferences

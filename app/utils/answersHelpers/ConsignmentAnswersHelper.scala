@@ -17,6 +17,7 @@
 package utils.answersHelpers
 
 import models.{Link, UserAnswers}
+import pages.CustomsOfficeOfDestinationActualPage
 import pages.grossMass.GrossMassPage
 import pages.sections._
 import pages.sections.additionalReference.AdditionalReferencesSection
@@ -33,6 +34,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
   def headerSection: Section = StaticSection(
     rows = Seq(
+      Some(customsOfficeOfDestinationActual),
       Some(traderAtDestinationRow),
       grossMassRow
     ).flatten
@@ -41,6 +43,13 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
   def traderAtDestinationRow: SummaryListRow = buildRow(
     prefix = "traderAtDestination",
     answer = userAnswers.ie043Data.TraderAtDestination.identificationNumber.toText,
+    id = None,
+    call = None
+  )
+
+  def customsOfficeOfDestinationActual: SummaryListRow = buildRow(
+    prefix = "customsOfficeOfDestinationActual",
+    answer = userAnswers.get(CustomsOfficeOfDestinationActualPage).get.name.toText,
     id = None,
     call = None
   )
@@ -100,6 +109,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         AccordionSection(
           sectionTitle = messages("unloadingFindings.subsections.houseConsignment", houseConsignmentIndex.display),
           rows = rows,
+          children = helper.itemSections,
           viewLink = Link(
             id = s"view-house-consignment-${houseConsignmentIndex.display}",
             href = controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url,

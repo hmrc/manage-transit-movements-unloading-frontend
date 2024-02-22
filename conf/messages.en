@@ -83,6 +83,7 @@ dateGoodsUnloaded.error.max.date = The date must be today or in the past
 dateGoodsUnloaded.change.hidden = the date when the goods were unloaded
 
 traderAtDestination = Authorised consignee’s EORI number or Trader Identification Number (TIN)
+customsOfficeOfDestinationActual = Office of destination
 
 departureMeansOfTransport.identificationNumber.NormalMode.title = What is the identification number for this vehicle?
 departureMeansOfTransport.identificationNumber.CheckMode.title = What is the identification number for the new departure means of transport?
@@ -323,6 +324,7 @@ unloadingFindings.heading = Cross-check the transit with this declaration summar
 unloadingFindings.paragraph = Compare the transit that arrived with the following information to identify any discrepancies.
 
 unloadingFindings.subsections.transportMeans = Departure means of transport {0}
+unloadingFindings.subsections.packages = Package {0}
 
 unloadingFindings.rowHeadings.identificationType.seaGoingVessel = Name of a sea-going vessel
 unloadingFindings.rowHeadings.identificationType.seaGoingVessel.change.hidden = name of a sea-going vessel
@@ -376,9 +378,21 @@ unloadingFindings.rowHeadings.totalNetWeight = Total net weight of all items
 unloadingFindings.subsections.item = Item {0}
 unloadingFindings.rowHeadings.item.description = Description
 unloadingFindings.rowHeadings.item.grossWeight = Gross weight
+unloadingFindings.rowHeadings.item.packageType = Type
+unloadingFindings.rowHeadings.item.packageType.change.hidden = type of package {0} for item {1}
+unloadingFindings.rowHeadings.item.packageCount = Quantity
+unloadingFindings.rowHeadings.item.packageCount.change.hidden = quantity of package {0} for item {1}
+unloadingFindings.rowHeadings.item.packageMarks = Shipping mark
+unloadingFindings.rowHeadings.item.packageMarks.change.hidden = shipping mark of package {0} for item {1}
 unloadingFindings.rowHeadings.item.grossWeight.change.hidden = gross weight of item {0}
 unloadingFindings.rowHeadings.item.netWeight = Net weight
 unloadingFindings.rowHeadings.item.netWeight.change.hidden = net weight of item {0}
+unloadingFindings.rowHeadings.item.cusCode = Customs Union and Statistics (CUS) code
+unloadingFindings.rowHeadings.item.cusCode.change.hidden = Customs Union and Statistics (CUS) code for item {0}
+unloadingFindings.rowHeadings.item.commodityCode = Commodity code
+unloadingFindings.rowHeadings.item.commodityCode.change.hidden = commodity code for item {0}
+unloadingFindings.rowHeadings.item.nomenclatureCode = Combined nomenclature code
+unloadingFindings.rowHeadings.item.nomenclatureCode.change.hidden = combined nomenclature code for item {0}
 
 unloadingFindings.subsections.additionalComments = Additional comments
 unloadingFindings.additionalComments.link = Add comments
@@ -582,7 +596,6 @@ houseConsignment.index.items.additionalReference.additionalReferenceNumber.Norma
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.CheckMode.error.required = Enter the new additional reference number for item {1} in house consignment {0}
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.paragraph = You need to enter a reference number as you have already added this type of additional reference.
 
-
 additionalReference.index.additionalReferenceType.NormalMode.title = What type of additional reference do you want to add?
 additionalReference.index.additionalReferenceType.NormalMode.heading = What type of additional reference do you want to add?
 additionalReference.index.additionalReferenceType.CheckMode.title = What is the new additional reference type?
@@ -593,3 +606,9 @@ additionalReference.index.additionalReferenceType.hint = Enter the reference nam
 additionalReference.index.additionalReferenceType.placeholder = Select an additional reference
 
 unloadingFindings.gross.mass.heading = Gross weight
+
+document.type.title = What is the new document type?
+document.type.heading = What is the new document type?
+document.type.hint = Enter the document name or code.
+document.type.placeholder = Select a document type
+document.type.check.error.required = Select the new document type

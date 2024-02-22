@@ -18,14 +18,17 @@ package utils.answersHelpers.consignment.houseConsignment
 
 import models.{Index, UserAnswers}
 import pages.NetWeightPage
-import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage}
+import pages.houseConsignment.index.items._
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferencesSection
+import pages.sections.PackagingSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
-import utils.answersHelpers.consignment.houseConsignment.item.AdditionalReferencesAnswerHelper
+import utils.answersHelpers.consignment.houseConsignment.item.{AdditionalReferencesAnswerHelper, PackagingAnswersHelper}
+import viewModels.sections.Section
+import viewModels.sections.Section.AccordionSection
 
 class ConsignmentItemAnswersHelper(
   userAnswers: UserAnswers,
@@ -65,4 +68,49 @@ class ConsignmentItemAnswersHelper(
       additionalReferenceIndex =>
         new AdditionalReferencesAnswerHelper(userAnswers, houseConsignmentIndex, itemIndex, additionalReferenceIndex).additionalReferenceRow
     }
+
+  def packageSections: Seq[Section] =
+    userAnswers
+      .get(PackagingSection(houseConsignmentIndex, itemIndex))
+      .mapWithIndex {
+        case (_, packageIndex) =>
+          val packageHelper = new PackagingAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex, packageIndex)
+
+          val rows = Seq(packageHelper.packageTypeRow, packageHelper.packageCountRow, packageHelper.packageMarksRow).flatten
+
+          val section = AccordionSection(
+            sectionTitle = messages("unloadingFindings.subsections.packages", packageIndex.display),
+            rows = rows
+          )
+
+          section
+
+      }
+
+  def cusCodeRow: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.item.cusCode",
+    args = itemIndex.display,
+    id = Some(s"change-cus-code-${houseConsignmentIndex.display}"),
+    call = Some(Call(GET, "#"))
+  )
+
+  def commodityCodeRow: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = CommodityCodePage(houseConsignmentIndex, itemIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.item.commodityCode",
+    args = itemIndex.display,
+    id = Some(s"change-commodity-code-${houseConsignmentIndex.display}"),
+    call = Some(Call(GET, "#"))
+  )
+
+  def nomenclatureCodeRow: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.item.nomenclatureCode",
+    args = itemIndex.display,
+    id = Some(s"change-nomenclature-code-${houseConsignmentIndex.display}"),
+    call = Some(Call(GET, "#"))
+  )
 }
