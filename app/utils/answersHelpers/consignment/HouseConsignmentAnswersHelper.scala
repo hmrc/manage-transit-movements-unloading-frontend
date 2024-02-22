@@ -23,7 +23,6 @@ import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
-import utils.answersHelpers.consignment.houseConsignment.item.PackagingAnswersHelper
 import utils.answersHelpers.consignment.houseConsignment.{ConsignmentItemAnswersHelper, DepartureTransportMeansAnswersHelper}
 import viewModels.sections.Section
 import viewModels.sections.Section.AccordionSection
@@ -89,7 +88,10 @@ class HouseConsignmentAnswersHelper(
           rows = Seq(
             helper.descriptionRow,
             helper.grossWeightRow,
-            helper.netWeightRow
+            helper.netWeightRow,
+            helper.cusCodeRow,
+            helper.commodityCodeRow,
+            helper.nomenclatureCodeRow
           ).flatten,
           children = helper.packageSections ++ Seq(
             AccordionSection(

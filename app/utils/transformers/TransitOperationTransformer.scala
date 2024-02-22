@@ -34,5 +34,4 @@ class TransitOperationTransformer @Inject() (referenceDataConnector: ReferenceDa
           set(SecurityTypePage, secType)
         pipeline(userAnswers)
     }
-
 }

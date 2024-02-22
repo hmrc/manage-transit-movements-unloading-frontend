@@ -26,6 +26,7 @@ import org.scalacheck.Gen
 import pages._
 import pages.additionalReference._
 import pages.departureMeansOfTransport._
+import pages.houseConsignment.index.items.{CombinedNomenclatureCodePage, CommodityCodePage, CustomsUnionAndStatisticsCodePage}
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import scalaxb.XMLCalendar
 import viewModels.sections.Section.{AccordionSection, StaticSection}
@@ -195,11 +196,15 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase with Generators
       "must generate accordion sections" in {
         forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
           (consignorName, consignorId, consigneeName, consigneeId) =>
+            val (cusCode, commodityCode, nomenclatureCode) = ("cusCode", "commodityCode", "nomenclatureCode")
             val answers = emptyUserAnswers
               .setValue(ConsignorNamePage(hcIndex), consignorName)
               .setValue(ConsignorIdentifierPage(hcIndex), consignorId)
               .setValue(ConsigneeNamePage(hcIndex), consigneeName)
               .setValue(ConsigneeIdentifierPage(hcIndex), consigneeId)
+              .setValue(CustomsUnionAndStatisticsCodePage(hcIndex, itemIndex), cusCode)
+              .setValue(CommodityCodePage(hcIndex, itemIndex), commodityCode)
+              .setValue(CombinedNomenclatureCodePage(hcIndex, itemIndex), nomenclatureCode)
 
             val helper = new ConsignmentAnswersHelper(answers)
             val result = helper.houseConsignmentSections
@@ -211,6 +216,13 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase with Generators
             result.head.rows(1).value.value mustBe consignorId
             result.head.rows(2).value.value mustBe consigneeName
             result.head.rows(3).value.value mustBe consigneeId
+
+            result.head.children.head.sectionTitle.value mustBe "Item 1"
+            result.head.children.head.rows.size mustBe 3
+            result.head.children.head.rows.head.value.value mustBe cusCode
+            result.head.children.head.rows(1).value.value mustBe commodityCode
+            result.head.children.head.rows(2).value.value mustBe nomenclatureCode
+
             val link = result.head.viewLink.value
             link.id mustBe "view-house-consignment-1"
             link.text mustBe "View"

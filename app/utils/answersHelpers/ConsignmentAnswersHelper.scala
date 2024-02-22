@@ -143,6 +143,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         AccordionSection(
           sectionTitle = messages("unloadingFindings.subsections.houseConsignment", houseConsignmentIndex.display),
           rows = rows,
+          children = helper.itemSections,
           viewLink = Link(
             id = s"view-house-consignment-${houseConsignmentIndex.display}",
             href = controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url,
