@@ -335,6 +335,11 @@ unloadingFindings.paragraph = Compare the transit that arrived with the followin
 unloadingFindings.subsections.transportMeans = Departure means of transport {0}
 unloadingFindings.subsections.packages = Package {0}
 
+unloadingFindings.subsections.incidents = Incident {0}
+unloadingFindings.rowHeadings.incident.code = Incident code
+unloadingFindings.rowHeadings.incident.description = Description
+
+
 declarationType = Declaration type
 securityType = Safety and security details
 reducedDatasetIndicator = Do you want to add a reduced data set?

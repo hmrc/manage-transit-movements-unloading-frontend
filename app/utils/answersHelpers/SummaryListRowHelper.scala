@@ -17,6 +17,7 @@
 package utils.answersHelpers
 
 import models.Identification
+import models.reference.{Incident, PackageType}
 import models.reference.PackageType
 import pages.QuestionPage
 import play.api.i18n.Messages

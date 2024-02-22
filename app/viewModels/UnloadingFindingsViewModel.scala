@@ -40,7 +40,8 @@ object UnloadingFindingsViewModel {
         helper.departureTransportMeansSections,
         helper.transportEquipmentSections,
         helper.houseConsignmentSections,
-        helper.additionalReferencesSections
+        helper.additionalReferencesSections,
+        helper.incidentSections
       ).flatten
 
       new UnloadingFindingsViewModel(sections)

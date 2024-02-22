@@ -128,6 +128,18 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
       .map(_.head)
   }
 
+  def getIncidentType(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Incident] = {
+    val queryParams: Seq[(String, String)] = Seq("data.code" -> typeValue)
+    val serviceUrl                         = s"${config.referenceDataUrl}/lists/IncidentCode"
+    http
+      .GET[NonEmptySet[Incident]](serviceUrl, headers = version2Header, queryParams = queryParams)(
+        responseHandlerGeneric(Incident.format, Incident.order),
+        hc,
+        ec
+      )
+      .map(_.head)
+  }
+
   def getSupportingDocument(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DocumentType] = {
     val queryParams: Seq[(String, String)]  = Seq("data.code" -> typeValue)
     val url                                 = s"${config.referenceDataUrl}/lists/SupportingDocumentType"
