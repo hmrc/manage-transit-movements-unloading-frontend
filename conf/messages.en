@@ -431,6 +431,14 @@ unloadingFindings.rowHeadings.holderOfTheTransitProcedure.name = Name
 unloadingFindings.rowHeadings.holderOfTheTransitProcedure.address = Address
 unloadingFindings.rowHeadings.holderOfTheTransitProcedure.country = Country
 
+unloadingFindings.document.heading = Document {0}
+unloadingFindings.document.type = Document type
+unloadingFindings.document.type.change.hidden = document type for document {0}
+unloadingFindings.document.referenceNumber = Reference number
+unloadingFindings.document.referenceNumber.change.hidden = reference number for document {0}
+unloadingFindings.document.additionalInformation = Additional information
+unloadingFindings.document.additionalInformation.change.hidden = additional information for document {0}
+
 unloadingFindings.houseConsignment.item.document.heading = Document {0}
 unloadingFindings.houseConsignment.item.document.type = Document type
 unloadingFindings.houseConsignment.item.document.type.change.hidden = document {0} for item {1} - document type
@@ -655,7 +663,8 @@ additionalReference.index.additionalReferenceType.check.error.required = Select 
 additionalReference.index.additionalReferenceType.hint = Enter the reference name or code, like Carrier (AEO certificate number) or Y028.
 additionalReference.index.additionalReferenceType.placeholder = Select an additional reference
 
-unloadingFindings.gross.mass.heading = Gross weight
+unloadingFindings.grossMass = Gross weight
+unloadingFindings.grossMass.change.hidden = gross weight
 
 document.type.title = What is the new document type?
 document.type.heading = What is the new document type?

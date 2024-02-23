@@ -16,40 +16,38 @@
 
 package utils.answersHelpers
 
-import generated.HolderOfTheTransitProcedureType06
+import generated.AddressType10
 import models._
 import models.reference.Country
 import pages.holderOfTheTransitProcedure.CountryPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewModels.sections.Section
-import viewModels.sections.Section.AccordionSection
 
 class HolderOfTheTransitProcedureHelper(
   userAnswers: UserAnswers
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
-  def identificationNumber(holderOfTheTransitProcedure: HolderOfTheTransitProcedureType06): Option[SummaryListRow] = buildRowWithNoChangeLink[String](
-    data = holderOfTheTransitProcedure.identificationNumber,
+  def identificationNumber(answer: Option[String]): Option[SummaryListRow] = buildRowWithNoChangeLink[String](
+    data = answer,
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.holderOfTheTransitProcedure.identificationNumber"
   )
 
-  def tirHolderIdentificationNumber(holderOfTheTransitProcedure: HolderOfTheTransitProcedureType06): Option[SummaryListRow] = buildRowWithNoChangeLink[String](
-    data = holderOfTheTransitProcedure.TIRHolderIdentificationNumber,
+  def tirHolderIdentificationNumber(answer: Option[String]): Option[SummaryListRow] = buildRowWithNoChangeLink[String](
+    data = answer,
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.holderOfTheTransitProcedure.tirHolderIdentificationNumber"
   )
 
-  def name(holderOfTheTransitProcedure: HolderOfTheTransitProcedureType06): Option[SummaryListRow] = buildRowWithNoChangeLink[String](
-    data = Option(holderOfTheTransitProcedure.name),
+  def name(answer: String): Option[SummaryListRow] = buildRowWithNoChangeLink[String](
+    data = Option(answer),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.holderOfTheTransitProcedure.name"
   )
 
-  def address(holderOfTheTransitProcedure: HolderOfTheTransitProcedureType06): Option[SummaryListRow] = buildRowWithNoChangeLink[DynamicAddress](
-    data = Option(holderOfTheTransitProcedure.Address.toDynamicAddress),
+  def address(answer: AddressType10): Option[SummaryListRow] = buildRowWithNoChangeLink[DynamicAddress](
+    data = Option(answer.toDynamicAddress),
     formatAnswer = formatAsDynamicAddress,
     prefix = "unloadingFindings.rowHeadings.holderOfTheTransitProcedure.address"
   )
@@ -59,21 +57,4 @@ class HolderOfTheTransitProcedureHelper(
     formatAnswer = formatAsCountry,
     prefix = "unloadingFindings.rowHeadings.holderOfTheTransitProcedure.country"
   )
-
-  def holderOfTheTransitProcedureSection: Seq[Section] = userAnswers.ie043Data.HolderOfTheTransitProcedure
-    .map(
-      hotP =>
-        AccordionSection(
-          sectionTitle = Some(messages("unloadingFindings.rowHeadings.holderOfTheTransitProcedure.heading")),
-          rows = Seq(
-            identificationNumber(hotP),
-            name(hotP),
-            country,
-            address(hotP),
-            tirHolderIdentificationNumber(hotP)
-          ).flatten
-        )
-    )
-    .toList
-
 }
