@@ -44,7 +44,7 @@ class ConsignmentTransformer @Inject() (
             departureTransportMeansTransformer.transform(consignment05.DepartureTransportMeans) andThen
             documentsTransformer.transform(consignment05.SupportingDocument, consignment05.TransportDocument) andThen
             houseConsignmentsTransformer.transform(consignment05.HouseConsignment) andThen
-            additionalReferenceTransformer.transform(consignment05.AdditionalReference) andThen
+            additionalReferencesTransformer.transform(consignment05.AdditionalReference) andThen
             set(GrossMassPage, consignment05.grossMass) andThen
             additionalReferencesTransformer.transform(consignment05.AdditionalReference) andThen
             incidentTransformer.transform(consignment05.Incident)
