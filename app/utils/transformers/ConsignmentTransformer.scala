@@ -18,6 +18,7 @@ package utils.transformers
 
 import generated.ConsignmentType05
 import models.UserAnswers
+import pages.grossMass.GrossMassPage
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -44,8 +45,9 @@ class ConsignmentTransformer @Inject() (
             documentsTransformer.transform(consignment05.SupportingDocument, consignment05.TransportDocument) andThen
             houseConsignmentsTransformer.transform(consignment05.HouseConsignment) andThen
             additionalReferencesTransformer.transform(consignment05.AdditionalReference) andThen
+            set(GrossMassPage, consignment05.grossMass) andThen
+            additionalReferencesTransformer.transform(consignment05.AdditionalReference) andThen
             incidentTransformer.transform(consignment05.Incident)
-
         pipeline(userAnswers)
       case None =>
         Future.successful(userAnswers)
