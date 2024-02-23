@@ -26,9 +26,10 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IncidentTransformer @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit
-  ec: ExecutionContext
-) extends PageTransformer {
+class IncidentsTransformer @Inject() (
+  referenceDataConnector: ReferenceDataConnector
+)(implicit ec: ExecutionContext)
+    extends PageTransformer {
 
   private case class TempIncident(
     typeValue: Incident,

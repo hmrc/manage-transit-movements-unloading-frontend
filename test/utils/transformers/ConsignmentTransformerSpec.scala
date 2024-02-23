@@ -40,7 +40,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
   private lazy val mockDocumentsTransformer               = mock[DocumentsTransformer]
   private lazy val mockHouseConsignmentsTransformer       = mock[HouseConsignmentsTransformer]
   private lazy val mockAdditionalReferencesTransformer    = mock[AdditionalReferencesTransformer]
-  private lazy val mockIncidentTransformer                = mock[IncidentTransformer]
+  private lazy val mockIncidentsTransformer               = mock[IncidentsTransformer]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -51,7 +51,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
         bind[DocumentsTransformer].toInstance(mockDocumentsTransformer),
         bind[HouseConsignmentsTransformer].toInstance(mockHouseConsignmentsTransformer),
         bind[AdditionalReferencesTransformer].toInstance(mockAdditionalReferencesTransformer),
-        bind[IncidentTransformer].toInstance(mockIncidentTransformer)
+        bind[IncidentsTransformer].toInstance(mockIncidentsTransformer)
       )
 
   private case object FakeTransportEquipmentSection extends QuestionPage[JsObject] {
@@ -106,7 +106,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
               ua => Future.successful(ua.setValue(FakeAdditionalReferenceSection, Json.obj("foo" -> "bar")))
             }
 
-          when(mockIncidentTransformer.transform(any())(any()))
+          when(mockIncidentsTransformer.transform(any())(any()))
             .thenReturn {
               ua => Future.successful(ua.setValue(FakeIncidentSection, Json.obj("foo" -> "bar")))
             }

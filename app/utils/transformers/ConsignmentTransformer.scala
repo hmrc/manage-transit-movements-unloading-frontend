@@ -30,15 +30,13 @@ class ConsignmentTransformer @Inject() (
   documentsTransformer: DocumentsTransformer,
   houseConsignmentsTransformer: HouseConsignmentsTransformer,
   additionalReferencesTransformer: AdditionalReferencesTransformer,
-  incidentTransformer: IncidentTransformer
+  incidentsTransformer: IncidentsTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
   def transform(consignment: Option[ConsignmentType05])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     consignment match {
-      case Some(
-            consignment05
-          ) =>
+      case Some(consignment05) =>
         lazy val pipeline: UserAnswers => Future[UserAnswers] =
           transportEquipmentTransformer.transform(consignment05.TransportEquipment) andThen
             departureTransportMeansTransformer.transform(consignment05.DepartureTransportMeans) andThen
@@ -47,7 +45,7 @@ class ConsignmentTransformer @Inject() (
             additionalReferencesTransformer.transform(consignment05.AdditionalReference) andThen
             set(GrossMassPage, consignment05.grossMass) andThen
             additionalReferencesTransformer.transform(consignment05.AdditionalReference) andThen
-            incidentTransformer.transform(consignment05.Incident)
+            incidentsTransformer.transform(consignment05.Incident)
         pipeline(userAnswers)
       case None =>
         Future.successful(userAnswers)
