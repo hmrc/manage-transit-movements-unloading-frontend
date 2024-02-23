@@ -427,6 +427,14 @@ unloadingFindings.rowHeadings.holderOfTheTransitProcedure.name = Name
 unloadingFindings.rowHeadings.holderOfTheTransitProcedure.address = Address
 unloadingFindings.rowHeadings.holderOfTheTransitProcedure.country = Country
 
+unloadingFindings.houseConsignment.item.document.heading = Document {0}
+unloadingFindings.houseConsignment.item.document.type = Document type
+unloadingFindings.houseConsignment.item.document.type.change.hidden = document {0} for item {1} - document type
+unloadingFindings.houseConsignment.item.document.referenceNumber = Reference number
+unloadingFindings.houseConsignment.item.document.referenceNumber.change.hidden = document {0} for item {1} - reference number
+unloadingFindings.houseConsignment.item.document.additionalInformation = Additional information
+unloadingFindings.houseConsignment.item.document.additionalInformation.change.hidden = document {0} for item {1} - additional information
+
 unloadingFindings.additional.reference.heading = Additional references
 unloadingFindings.additional.reference.change.hidden = additional reference {0}
 unloadingFindings.additional.reference = Additional Reference {0}

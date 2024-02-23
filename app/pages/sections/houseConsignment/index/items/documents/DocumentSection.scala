@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package pages.houseConsignment.index.items.document
+package pages.sections.houseConsignment.index.items.documents
 
 import models.Index
-import pages.QuestionPage
-import pages.sections.houseConsignment.index.items.documents.DocumentSection
-import play.api.libs.json.JsPath
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-case class AdditionalInformationPage(houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index) extends QuestionPage[String] {
+case class DocumentSection(houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index) extends Section[JsObject] {
 
-  override def path: JsPath = DocumentSection(houseConsignmentIndex, itemIndex, documentIndex).path \ toString
-
-  override def toString: String = "additionalInformation"
-
+  override def path: JsPath = DocumentsSection(houseConsignmentIndex, itemIndex).path \ documentIndex.position
 }

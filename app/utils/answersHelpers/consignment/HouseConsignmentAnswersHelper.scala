@@ -93,12 +93,11 @@ class HouseConsignmentAnswersHelper(
             helper.commodityCodeRow,
             helper.nomenclatureCodeRow
           ).flatten,
-          children = helper.packageSections ++ Seq(
-            AccordionSection(
-              messages("unloadingFindings.additional.reference.heading"),
-              helper.additionalReferences
-            )
-          )
+          children = Seq(
+            helper.packageSections,
+            helper.documentSections,
+            Seq(helper.additionalReferencesSection)
+          ).flatten
         )
     }
 }
