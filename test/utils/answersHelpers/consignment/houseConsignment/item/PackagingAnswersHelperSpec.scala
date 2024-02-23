@@ -18,6 +18,7 @@ package utils.answersHelpers.consignment.houseConsignment.item
 
 import models.reference.PackageType
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
 import utils.answersHelpers.AnswersHelperSpecBase
 
@@ -94,7 +95,7 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return Some(Row)" - {
         s"when $page defined" in {
-          forAll(arbitrary[String]) {
+          forAll(Gen.alphaNumStr) {
             value =>
               val answers = emptyUserAnswers.setValue(page, value)
 

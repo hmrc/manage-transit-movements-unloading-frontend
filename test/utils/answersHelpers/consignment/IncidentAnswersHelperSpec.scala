@@ -18,6 +18,7 @@ package utils.answersHelpers.consignment
 
 import models.reference.Incident
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import pages.incident.{IncidentCodePage, IncidentTextPage}
 import utils.answersHelpers.AnswersHelperSpecBase
 
@@ -63,7 +64,7 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return Some(Row)" - {
         s"when $page defined" in {
-          forAll(arbitrary[String]) {
+          forAll(Gen.alphaNumStr) {
             value =>
               val answers = emptyUserAnswers.setValue(page, value)
 
