@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package pages.houseConsignment.index.items.document
+package pages.grossMass
 
-import models.Index
-import pages.QuestionPage
-import pages.sections.houseConsignment.index.items.documents.DocumentSection
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case class AdditionalInformationPage(houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index) extends QuestionPage[String] {
+class GrossMassPageSpec extends PageBehaviours {
 
-  override def path: JsPath = DocumentSection(houseConsignmentIndex, itemIndex, documentIndex).path \ toString
+  "GrossMossPageSpec" - {
 
-  override def toString: String = "additionalInformation"
+    beRetrievable[BigDecimal](GrossMassPage)
 
+    beSettable[BigDecimal](GrossMassPage)
+
+    beRemovable[BigDecimal](GrossMassPage)
+  }
 }

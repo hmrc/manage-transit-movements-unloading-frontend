@@ -125,6 +125,10 @@ departureMeansOfTransport.addIdentificationNumberYesNo.title = Do you want to ad
 departureMeansOfTransport.addIdentificationNumberYesNo.heading = Do you want to add an identification number for this vehicle?
 departureMeansOfTransport.addIdentificationNumberYesNo.error.required = Select yes if you want to add an identification number for this vehicle
 
+departureMeansOfTransport.addNationalityYesNo.title = Do you want to add the registered country for this vehicle?
+departureMeansOfTransport.addNationalityYesNo.heading = Do you want to add the registered country for this vehicle?
+departureMeansOfTransport.addNationalityYesNo.error.required = Select yes if you want to add the registered country for this vehicle
+
 houseConsignment.item.grossWeight.title = What is the new gross weight of item {0} in house consignment {1}?
 houseConsignment.item.grossWeight.heading = What is the new gross weight of item {0} in house consignment {1}?
 houseConsignment.item.grossWeight.paragraph = This is the combined weight of the item’s goods and packaging.
@@ -427,9 +431,19 @@ unloadingFindings.rowHeadings.holderOfTheTransitProcedure.name = Name
 unloadingFindings.rowHeadings.holderOfTheTransitProcedure.address = Address
 unloadingFindings.rowHeadings.holderOfTheTransitProcedure.country = Country
 
+unloadingFindings.houseConsignment.item.document.heading = Document {0}
+unloadingFindings.houseConsignment.item.document.type = Document type
+unloadingFindings.houseConsignment.item.document.type.change.hidden = document {0} for item {1} - document type
+unloadingFindings.houseConsignment.item.document.referenceNumber = Reference number
+unloadingFindings.houseConsignment.item.document.referenceNumber.change.hidden = document {0} for item {1} - reference number
+unloadingFindings.houseConsignment.item.document.additionalInformation = Additional information
+unloadingFindings.houseConsignment.item.document.additionalInformation.change.hidden = document {0} for item {1} - additional information
+
 unloadingFindings.additional.reference.heading = Additional references
 unloadingFindings.additional.reference.change.hidden = additional reference {0}
 unloadingFindings.additional.reference = Additional Reference {0}
+
+unloadingFindings.dangerousGoods.unNumber = UN number {0}
 
 houseConsignment.title = Cross-check the transit with house consignment {0}
 houseConsignment.heading = Cross-check the transit with house consignment {0}
@@ -640,6 +654,8 @@ additionalReference.index.additionalReferenceType.error.required = Select the ty
 additionalReference.index.additionalReferenceType.check.error.required = Select the new additional reference type
 additionalReference.index.additionalReferenceType.hint = Enter the reference name or code, like Carrier (AEO certificate number) or Y028.
 additionalReference.index.additionalReferenceType.placeholder = Select an additional reference
+
+unloadingFindings.gross.mass.heading = Gross weight
 
 document.type.title = What is the new document type?
 document.type.heading = What is the new document type?

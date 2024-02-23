@@ -24,6 +24,7 @@ import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
+import pages.grossMass.GrossMassPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, JsPath, Json}
@@ -38,7 +39,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
   private lazy val mockDepartureTransportMeansTransformer = mock[DepartureTransportMeansTransformer]
   private lazy val mockDocumentsTransformer               = mock[DocumentsTransformer]
   private lazy val mockHouseConsignmentsTransformer       = mock[HouseConsignmentsTransformer]
-  private lazy val mockAdditionalReferenceTransformer     = mock[AdditionalReferenceTransformer]
+  private lazy val mockAdditionalReferencesTransformer    = mock[AdditionalReferencesTransformer]
   private lazy val mockIncidentTransformer                = mock[IncidentTransformer]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -49,7 +50,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
         bind[DepartureTransportMeansTransformer].toInstance(mockDepartureTransportMeansTransformer),
         bind[DocumentsTransformer].toInstance(mockDocumentsTransformer),
         bind[HouseConsignmentsTransformer].toInstance(mockHouseConsignmentsTransformer),
-        bind[AdditionalReferenceTransformer].toInstance(mockAdditionalReferenceTransformer),
+        bind[AdditionalReferencesTransformer].toInstance(mockAdditionalReferencesTransformer),
         bind[IncidentTransformer].toInstance(mockIncidentTransformer)
       )
 
@@ -100,7 +101,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
             .thenReturn {
               ua => Future.successful(ua.setValue(FakeHouseConsignmentSection, Json.obj("foo" -> "bar")))
             }
-          when(mockAdditionalReferenceTransformer.transform(any())(any()))
+          when(mockAdditionalReferencesTransformer.transform(any())(any()))
             .thenReturn {
               ua => Future.successful(ua.setValue(FakeAdditionalReferenceSection, Json.obj("foo" -> "bar")))
             }
@@ -117,6 +118,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
           result.getValue(FakeDocumentsSection) mustBe Json.obj("foo" -> "bar")
           result.getValue(FakeHouseConsignmentSection) mustBe Json.obj("foo" -> "bar")
           result.getValue(FakeAdditionalReferenceSection) mustBe Json.obj("foo" -> "bar")
+          result.get(GrossMassPage) mustBe consignment.grossMass
           result.getValue(FakeIncidentSection) mustBe Json.obj("foo" -> "bar")
       }
     }
@@ -129,6 +131,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
       result.get(FakeDocumentsSection) must not be defined
       result.get(FakeHouseConsignmentSection) must not be defined
       result.get(FakeAdditionalReferenceSection) must not be defined
+      result.get(GrossMassPage) must not be defined
       result.get(FakeIncidentSection) must not be defined
     }
   }
