@@ -28,7 +28,7 @@ class ConsignmentTransformer @Inject() (
   departureTransportMeansTransformer: DepartureTransportMeansTransformer,
   documentsTransformer: DocumentsTransformer,
   houseConsignmentsTransformer: HouseConsignmentsTransformer,
-  additionalReferenceTransformer: AdditionalReferenceTransformer,
+  additionalReferencesTransformer: AdditionalReferencesTransformer,
   incidentTransformer: IncidentTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
@@ -43,7 +43,7 @@ class ConsignmentTransformer @Inject() (
             departureTransportMeansTransformer.transform(consignment05.DepartureTransportMeans) andThen
             documentsTransformer.transform(consignment05.SupportingDocument, consignment05.TransportDocument) andThen
             houseConsignmentsTransformer.transform(consignment05.HouseConsignment) andThen
-            additionalReferenceTransformer.transform(consignment05.AdditionalReference) andThen
+            additionalReferencesTransformer.transform(consignment05.AdditionalReference) andThen
             incidentTransformer.transform(consignment05.Incident)
 
         pipeline(userAnswers)

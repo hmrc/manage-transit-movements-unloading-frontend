@@ -19,7 +19,6 @@ package utils.transformers
 import connectors.ReferenceDataConnector
 import generated.{SupportingDocumentType02, TransportDocumentType02}
 import models.{Document, Index, UserAnswers}
-import pages.documents.{AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -33,7 +32,48 @@ class DocumentsTransformer @Inject() (
   def transform(
     supportingDocuments: Seq[SupportingDocumentType02],
     transportDocuments: Seq[TransportDocumentType02]
+  )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
+    import pages.documents._
+    genericTransform(supportingDocuments, transportDocuments) {
+      case (document, documentIndex) =>
+        document match {
+          case Document.SupportingDocument(documentType, referenceNumber, complementOfInformation) =>
+            set(TypePage(documentIndex), documentType) andThen
+              set(DocumentReferenceNumberPage(documentIndex), referenceNumber) andThen
+              set(AdditionalInformationPage(documentIndex), complementOfInformation)
+          case Document.TransportDocument(documentType, referenceNumber) =>
+            set(TypePage(documentIndex), documentType) andThen
+              set(DocumentReferenceNumberPage(documentIndex), referenceNumber)
+        }
+    }
+  }
+
+  def transform(
+    supportingDocuments: Seq[SupportingDocumentType02],
+    transportDocuments: Seq[TransportDocumentType02],
+    hcIndex: Index,
+    itemIndex: Index
+  )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
+    import pages.houseConsignment.index.items.document._
+    genericTransform(supportingDocuments, transportDocuments) {
+      case (document, documentIndex) =>
+        document match {
+          case Document.SupportingDocument(documentType, referenceNumber, complementOfInformation) =>
+            set(DocumentReferenceNumberPage(hcIndex, itemIndex, documentIndex), referenceNumber) andThen
+              set(AdditionalInformationPage(hcIndex, itemIndex, documentIndex), complementOfInformation)
+          case Document.TransportDocument(documentType, referenceNumber) =>
+            set(DocumentReferenceNumberPage(hcIndex, itemIndex, documentIndex), referenceNumber)
+        }
+    }
+  }
+
+  private def genericTransform(
+    supportingDocuments: Seq[SupportingDocumentType02],
+    transportDocuments: Seq[TransportDocumentType02]
+  )(
+    pipeline: (Document, Index) => UserAnswers => Future[UserAnswers]
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
+
     lazy val supportingDocumentsWithDescription = supportingDocuments.map {
       supportingDocument =>
         referenceDataConnector.getSupportingDocument(supportingDocument.typeValue).map {
@@ -54,20 +94,7 @@ class DocumentsTransformer @Inject() (
       documents = sd ++ td
       userAnswers <- documents.zipWithIndex.foldLeft(Future.successful(userAnswers))({
         case (acc, (document, i)) =>
-          acc.flatMap {
-            userAnswers =>
-              val documentIndex: Index = Index(i)
-              val pipeline: UserAnswers => Future[UserAnswers] = document match {
-                case Document.SupportingDocument(documentType, referenceNumber, complementOfInformation) =>
-                  set(TypePage(documentIndex), documentType) andThen
-                    set(DocumentReferenceNumberPage(documentIndex), referenceNumber) andThen
-                    set(AdditionalInformationPage(documentIndex), complementOfInformation)
-                case Document.TransportDocument(documentType, referenceNumber) =>
-                  set(TypePage(documentIndex), documentType) andThen set(DocumentReferenceNumberPage(documentIndex), referenceNumber)
-              }
-
-              pipeline(userAnswers)
-          }
+          acc.flatMap(pipeline(document, Index(i)))
       })
     } yield userAnswers
   }
