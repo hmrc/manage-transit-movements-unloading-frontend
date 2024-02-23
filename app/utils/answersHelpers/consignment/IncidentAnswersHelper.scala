@@ -16,9 +16,9 @@
 
 package utils.answersHelpers.consignment
 
-import models.reference.Incident
+import models.reference.{Country, Incident}
 import models.{Index, UserAnswers}
-import pages.incident.{IncidentCodePage, IncidentTextPage}
+import pages.incident.{EndorsementCountryPage, IncidentCodePage, IncidentTextPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
@@ -38,6 +38,57 @@ class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(impl
     page = IncidentTextPage(incidentIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.incident.description",
+    args = incidentIndex.display,
+    id = None,
+    call = None
+  )
+
+  def incidentEndorsementDateRow: Option[SummaryListRow] = userAnswers.ie043Data.Consignment
+    .flatMap(
+      _.Incident
+        .lift(incidentIndex.position)
+        .flatMap(_.Endorsement.map(_.date))
+    )
+    .map {
+      date =>
+        buildRowWithNoChangeLink(
+          prefix = "unloadingFindings.incident.endorsement.date",
+          answer = formatAsDate(date)
+        )
+    }
+
+  def incidentEndorsementAuthorityRow: Option[SummaryListRow] = userAnswers.ie043Data.Consignment
+    .flatMap(
+      _.Incident
+        .lift(incidentIndex.position)
+        .flatMap(_.Endorsement.map(_.authority))
+    )
+    .map {
+      auth =>
+        buildRowWithNoChangeLink(
+          prefix = "unloadingFindings.incident.endorsement.authority",
+          answer = formatAsText(auth)
+        )
+    }
+
+  def incidentEndorsementPlaceRow: Option[SummaryListRow] = userAnswers.ie043Data.Consignment
+    .flatMap(
+      _.Incident
+        .lift(incidentIndex.position)
+        .flatMap(_.Endorsement.map(_.place))
+    )
+    .map {
+      place =>
+        buildRowWithNoChangeLink(
+          prefix = "unloadingFindings.incident.endorsement.place",
+          answer = formatAsText(place)
+        )
+    }
+
+  def incidentEndorsementCountryRow: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
+    page = EndorsementCountryPage(incidentIndex),
+    formatAnswer = formatAsCountry,
+    prefix = "unloadingFindings.incident.endorsement.country",
     args = incidentIndex.display,
     id = None,
     call = None

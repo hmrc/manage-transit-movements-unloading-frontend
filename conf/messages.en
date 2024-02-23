@@ -338,6 +338,10 @@ unloadingFindings.subsections.packages = Package {0}
 unloadingFindings.subsections.incidents = Incident {0}
 unloadingFindings.rowHeadings.incident.code = Incident code
 unloadingFindings.rowHeadings.incident.description = Description
+unloadingFindings.incident.endorsement.date = Endorsement date
+unloadingFindings.incident.endorsement.place = Location
+unloadingFindings.incident.endorsement.authority = Authority
+unloadingFindings.incident.endorsement.country = Country
 
 
 declarationType = Declaration type
