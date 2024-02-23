@@ -40,10 +40,10 @@ object UnloadingFindingsViewModel {
         helper.holderOfTheTransitProcedureSection,
         helper.departureTransportMeansSections,
         helper.transportEquipmentSections,
-        helper.houseConsignmentSections,
         helper.documentSections,
         helper.additionalReferencesSections,
-        helper.incidentSections
+        helper.incidentSections,
+        helper.houseConsignmentSections
       ).flatten
 
       new UnloadingFindingsViewModel(sections)
