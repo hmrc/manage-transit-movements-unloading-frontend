@@ -16,14 +16,22 @@
 
 package pages.transportEquipment.index
 
-import models.Index
+import models.{Index, UserAnswers}
 import pages.QuestionPage
-import pages.sections.TransportEquipmentSection
+import pages.sections.{SealsSection, TransportEquipmentSection}
 import play.api.libs.json.JsPath
+
+import scala.util.Try
 
 case class AddSealYesNoPage(equipmentIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = TransportEquipmentSection(equipmentIndex).path \ toString
 
   override def toString: String = "addSealYesNo"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(SealsSection(equipmentIndex))
+      case _           => super.cleanup(value, userAnswers)
+    }
 }
