@@ -439,6 +439,8 @@ unloadingFindings.additional.reference.heading = Additional references
 unloadingFindings.additional.reference.change.hidden = additional reference {0}
 unloadingFindings.additional.reference = Additional Reference {0}
 
+unloadingFindings.dangerousGoods.unNumber = UN number {0}
+
 houseConsignment.title = Cross-check the transit with house consignment {0}
 houseConsignment.heading = Cross-check the transit with house consignment {0}
 houseConsignment.paragraph = Compare the transit that arrived with the following information to identify any discrepancies.
