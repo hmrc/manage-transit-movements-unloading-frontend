@@ -16,7 +16,7 @@
 
 package utils.answersHelpers
 
-import generated.{AddressType10, HolderOfTheTransitProcedureType06}
+import generated.AddressType10
 import models.reference.Country
 import pages.holderOfTheTransitProcedure.CountryPage
 
@@ -24,47 +24,15 @@ class HolderOfTheTransitProcedureHelperSpec extends AnswersHelperSpecBase {
 
   "HolderOfTheTransitProcedureHelper" - {
 
-    val holderOfTheTransitProcedure = createHotP()
-
-    "section" - {
-      "must return empty when HolderOfTheTransitProcedure is undefined" in {
-        val userAnswers = emptyUserAnswers
-          .copy(ie043Data = basicIe043.copy(HolderOfTheTransitProcedure = None))
-
-        val helper = new HolderOfTheTransitProcedureHelper(userAnswers)
-        helper.holderOfTheTransitProcedureSection mustBe Seq()
-      }
-
-      "must return section title and rows when HolderOfTheTransitProcedure is defined" in {
-        val userAnswers = emptyUserAnswers
-          .copy(ie043Data = basicIe043.copy(HolderOfTheTransitProcedure = Some(holderOfTheTransitProcedure)))
-          .setValue(CountryPage, Country("GB", "Great Britain"))
-
-        val helper  = new HolderOfTheTransitProcedureHelper(userAnswers)
-        val section = helper.holderOfTheTransitProcedureSection.head
-
-        section.sectionTitle.value mustBe "Transit holder"
-        section.rows.size mustBe 5
-        section.viewLink must not be defined
-      }
-    }
-
     "identificationNumber" - {
       "must return None when field is undefined" in {
-        val hotP = createHotP(identificationNumber = None)
-        val userAnswers = emptyUserAnswers
-          .copy(ie043Data = basicIe043.copy(HolderOfTheTransitProcedure = Some(hotP)))
-
-        val helper = new HolderOfTheTransitProcedureHelper(userAnswers)
-        helper.identificationNumber(hotP) mustBe None
+        val helper = new HolderOfTheTransitProcedureHelper(emptyUserAnswers)
+        helper.identificationNumber(None) mustBe None
       }
 
       "must return Some(Row) when field is defined" in {
-        val userAnswers = emptyUserAnswers
-          .copy(ie043Data = basicIe043.copy(HolderOfTheTransitProcedure = Some(holderOfTheTransitProcedure)))
-
-        val helper = new HolderOfTheTransitProcedureHelper(userAnswers)
-        val result = helper.identificationNumber(holderOfTheTransitProcedure).value
+        val helper = new HolderOfTheTransitProcedureHelper(emptyUserAnswers)
+        val result = helper.identificationNumber(Some("identificationNumber")).value
 
         result.key.value mustBe "EORI number"
         result.value.value mustBe "identificationNumber"
@@ -74,20 +42,13 @@ class HolderOfTheTransitProcedureHelperSpec extends AnswersHelperSpecBase {
 
     "tirHolderIdentificationNumber" - {
       "must return None when field is undefined" in {
-        val hotP = createHotP(tirHolderIdentificationNumber = None)
-        val userAnswers = emptyUserAnswers
-          .copy(ie043Data = basicIe043.copy(HolderOfTheTransitProcedure = Some(hotP)))
-
-        val helper = new HolderOfTheTransitProcedureHelper(userAnswers)
-        helper.tirHolderIdentificationNumber(hotP) mustBe None
+        val helper = new HolderOfTheTransitProcedureHelper(emptyUserAnswers)
+        helper.tirHolderIdentificationNumber(None) mustBe None
       }
 
       "must return Some(Row) when field is defined" in {
-        val userAnswers = emptyUserAnswers
-          .copy(ie043Data = basicIe043.copy(HolderOfTheTransitProcedure = Some(holderOfTheTransitProcedure)))
-
-        val helper = new HolderOfTheTransitProcedureHelper(userAnswers)
-        val result = helper.tirHolderIdentificationNumber(holderOfTheTransitProcedure).value
+        val helper = new HolderOfTheTransitProcedureHelper(emptyUserAnswers)
+        val result = helper.tirHolderIdentificationNumber(Some("TIRHolderIdentificationNumber")).value
 
         result.key.value mustBe "TIR holder’s identification number"
         result.value.value mustBe "TIRHolderIdentificationNumber"
@@ -97,20 +58,14 @@ class HolderOfTheTransitProcedureHelperSpec extends AnswersHelperSpecBase {
 
     "country" - {
       "must return None when page is undefined" in {
-        val userAnswers = emptyUserAnswers
-          .copy(ie043Data = basicIe043.copy(HolderOfTheTransitProcedure = Some(holderOfTheTransitProcedure)))
-
-        val helper = new HolderOfTheTransitProcedureHelper(userAnswers)
+        val helper = new HolderOfTheTransitProcedureHelper(emptyUserAnswers)
         helper.country mustBe None
       }
 
       "must return Some(Row) when field is defined" in {
-        val userAnswers = emptyUserAnswers
-          .copy(ie043Data = basicIe043.copy(HolderOfTheTransitProcedure = Some(holderOfTheTransitProcedure)))
-          .setValue(CountryPage, Country("GB", "Great Britain"))
-
-        val helper = new HolderOfTheTransitProcedureHelper(userAnswers)
-        val result = helper.country.value
+        val userAnswers = emptyUserAnswers.setValue(CountryPage, Country("GB", "Great Britain"))
+        val helper      = new HolderOfTheTransitProcedureHelper(userAnswers)
+        val result      = helper.country.value
 
         result.key.value mustBe "Country"
         result.value.value mustBe "Great Britain"
@@ -119,11 +74,8 @@ class HolderOfTheTransitProcedureHelperSpec extends AnswersHelperSpecBase {
     }
 
     "name must return Some(Row)" in {
-      val userAnswers = emptyUserAnswers
-        .copy(ie043Data = basicIe043.copy(HolderOfTheTransitProcedure = Some(holderOfTheTransitProcedure)))
-
-      val helper = new HolderOfTheTransitProcedureHelper(userAnswers)
-      val result = helper.name(holderOfTheTransitProcedure).value
+      val helper = new HolderOfTheTransitProcedureHelper(emptyUserAnswers)
+      val result = helper.name("name").value
 
       result.key.value mustBe "Name"
       result.value.value mustBe "name"
@@ -131,31 +83,12 @@ class HolderOfTheTransitProcedureHelperSpec extends AnswersHelperSpecBase {
     }
 
     "address must return Some(Row)" in {
-      val userAnswers = emptyUserAnswers
-        .copy(ie043Data = basicIe043.copy(HolderOfTheTransitProcedure = Some(holderOfTheTransitProcedure)))
-
-      val helper = new HolderOfTheTransitProcedureHelper(userAnswers)
-      val result = helper.address(holderOfTheTransitProcedure).value
+      val helper = new HolderOfTheTransitProcedureHelper(emptyUserAnswers)
+      val result = helper.address(AddressType10("streetAndNumber", Some("postcode"), "city", "GB")).value
 
       result.key.value mustBe "Address"
       result.value.value mustBe "streetAndNumber<br>city<br>postcode"
       result.actions mustBe None
     }
   }
-
-  private def createHotP(
-    identificationNumber: Option[String] = Some("identificationNumber"),
-    tirHolderIdentificationNumber: Option[String] = Some("TIRHolderIdentificationNumber"),
-    name: String = "name",
-    streetAndNumber: String = "streetAndNumber",
-    postcode: Option[String] = Some("postcode"),
-    city: String = "city",
-    country: String = "GB"
-  ) =
-    HolderOfTheTransitProcedureType06(
-      identificationNumber,
-      tirHolderIdentificationNumber,
-      name,
-      AddressType10(streetAndNumber, postcode, city, country)
-    )
 }

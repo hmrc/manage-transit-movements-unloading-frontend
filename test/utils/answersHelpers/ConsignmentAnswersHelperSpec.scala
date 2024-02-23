@@ -16,15 +16,12 @@
 
 package utils.answersHelpers
 
-import generated.TraderAtDestinationType03
+import generated.{AddressType10, HolderOfTheTransitProcedureType06, TraderAtDestinationType03}
+import models.Index
 import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.{AdditionalReferenceType, Country, CustomsOffice}
+import models.reference.{AdditionalReferenceType, Country, CustomsOffice, DocumentType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.additionalReference._
-import pages.departureMeansOfTransport._
-import pages.transportEquipment.index.seals.SealIdentificationNumberPage
-import pages._
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 
 class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
@@ -32,6 +29,8 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
   "ConsignmentAnswersHelper" - {
 
     "headerSection" - {
+      import pages._
+
       "must return static section" in {
         forAll(arbitrary[TraderAtDestinationType03], arbitrary[CustomsOffice]) {
           (traderAtDestination, arbitraryCustomsOffice) =>
@@ -66,7 +65,41 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       }
     }
 
+    "holderOfTheTransitProcedureSection" - {
+      import pages.holderOfTheTransitProcedure.CountryPage
+
+      "must return empty when HolderOfTheTransitProcedure is undefined" in {
+        val userAnswers = emptyUserAnswers
+          .copy(ie043Data = basicIe043.copy(HolderOfTheTransitProcedure = None))
+
+        val helper = new ConsignmentAnswersHelper(userAnswers)
+        helper.holderOfTheTransitProcedureSection mustBe Seq()
+      }
+
+      "must return section title and rows when HolderOfTheTransitProcedure is defined" in {
+        val holderOfTransit = HolderOfTheTransitProcedureType06(
+          Some("identificationNumber"),
+          Some("TIRHolderIdentificationNumber"),
+          "name",
+          AddressType10("streetAndNumber", Some("postcode"), "city", "GB")
+        )
+
+        val userAnswers = emptyUserAnswers
+          .copy(ie043Data = basicIe043.copy(HolderOfTheTransitProcedure = Some(holderOfTransit)))
+          .setValue(CountryPage, Country("GB", "Great Britain"))
+
+        val helper  = new ConsignmentAnswersHelper(userAnswers)
+        val section = helper.holderOfTheTransitProcedureSection.head
+
+        section.sectionTitle.value mustBe "Transit holder"
+        section.rows.size mustBe 5
+        section.viewLink must not be defined
+      }
+    }
+
     "departureTransportMeansSections" - {
+      import pages.departureMeansOfTransport._
+
       "must generate accordion sections" in {
         forAll(arbitrary[TransportMeansIdentification], Gen.alphaNumStr, arbitrary[Country]) {
           (`type`, number, country) =>
@@ -89,6 +122,9 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
     }
 
     "transportEquipmentSections" - {
+      import pages._
+      import pages.transportEquipment.index.seals.SealIdentificationNumberPage
+
       "must generate accordion sections" in {
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
           (containerId, sealId) =>
@@ -109,6 +145,8 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
     }
 
     "additionalReferencesSections" - {
+      import pages.additionalReference._
+
       "must generate accordion sections" in {
         forAll(arbitrary[AdditionalReferenceType], Gen.alphaNumStr) {
           (`type`, number) =>
@@ -127,7 +165,43 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       }
     }
 
+    "documentSections" - {
+      import pages.documents._
+
+      "must generate accordion sections" in {
+        forAll(arbitrary[DocumentType], Gen.alphaNumStr, Gen.alphaNumStr) {
+          (documentType, referenceNumber, additionalInformation) =>
+            val answers = emptyUserAnswers
+              .setValue(TypePage(Index(0)), documentType)
+              .setValue(DocumentReferenceNumberPage(Index(0)), referenceNumber)
+              .setValue(AdditionalInformationPage(Index(0)), additionalInformation)
+              .setValue(TypePage(Index(1)), documentType)
+              .setValue(DocumentReferenceNumberPage(Index(1)), referenceNumber)
+              .setValue(AdditionalInformationPage(Index(1)), additionalInformation)
+
+            val helper = new ConsignmentAnswersHelper(answers)
+            val result = helper.documentSections
+
+            result.head mustBe a[AccordionSection]
+
+            result.head.sectionTitle.value mustBe "Document 1"
+            result.head.rows.size mustBe 3
+            result.head.rows.head.value.value mustBe documentType.toString
+            result.head.rows(1).value.value mustBe referenceNumber
+            result.head.rows(2).value.value mustBe additionalInformation
+
+            result(1).sectionTitle.value mustBe "Document 2"
+            result(1).rows.size mustBe 3
+            result(1).rows.head.value.value mustBe documentType.toString
+            result(1).rows(1).value.value mustBe referenceNumber
+            result(1).rows(2).value.value mustBe additionalInformation
+        }
+      }
+    }
+
     "houseConsignmentSections" - {
+      import pages._
+
       "must generate accordion sections" in {
         forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
           (consignorName, consignorId, consigneeName, consigneeId) =>

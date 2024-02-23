@@ -19,6 +19,7 @@ package utils.answersHelpers
 import models.{Link, SecurityType, UserAnswers}
 import pages.sections._
 import pages.sections.additionalReference.AdditionalReferencesSection
+import pages.sections.documents.DocumentsSection
 import pages.{CustomsOfficeOfDestinationActualPage, SecurityTypePage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
@@ -88,6 +89,22 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     call = None
   )
 
+  def holderOfTheTransitProcedureSection: Seq[Section] =
+    userAnswers.ie043Data.HolderOfTheTransitProcedure.map {
+      hotP =>
+        val helper = new HolderOfTheTransitProcedureHelper(userAnswers)
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.rowHeadings.holderOfTheTransitProcedure.heading")),
+          rows = Seq(
+            helper.identificationNumber(hotP.identificationNumber),
+            helper.name(hotP.name),
+            helper.country,
+            helper.address(hotP.Address),
+            helper.tirHolderIdentificationNumber(hotP.TIRHolderIdentificationNumber)
+          ).flatten
+        )
+    }.toList
+
   def departureTransportMeansSections: Seq[Section] =
     userAnswers.get(TransportMeansListSection).mapWithIndex {
       case (_, index) =>
@@ -130,22 +147,34 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     )
 
   def incidentSections: Seq[Section] =
-    userAnswers
-      .get(IncidentSection)
-      .mapWithIndex {
-        case (_, incidentIndex) =>
-          val helper = new IncidentAnswersHelper(userAnswers, incidentIndex)
+    userAnswers.get(IncidentSection).mapWithIndex {
+      case (_, incidentIndex) =>
+        val helper = new IncidentAnswersHelper(userAnswers, incidentIndex)
 
-          val rows = Seq(helper.incidentCodeRow, helper.incidentDescriptionRow).flatten
+        val rows = Seq(helper.incidentCodeRow, helper.incidentDescriptionRow).flatten
 
-          val section = AccordionSection(
-            sectionTitle = messages("unloadingFindings.subsections.incidents", incidentIndex.display),
-            rows = rows
-          )
+        AccordionSection(
+          sectionTitle = messages("unloadingFindings.subsections.incidents", incidentIndex.display),
+          rows = rows
+        )
+    }
 
-          section
+  def documentSections: Seq[Section] =
+    userAnswers.get(DocumentsSection).mapWithIndex {
+      case (_, documentIndex) =>
+        val helper = new DocumentAnswersHelper(userAnswers, documentIndex)
 
-      }
+        val rows = Seq(
+          helper.documentType,
+          helper.referenceNumber,
+          helper.additionalInformation
+        ).flatten
+
+        AccordionSection(
+          sectionTitle = messages("unloadingFindings.document.heading", documentIndex.display),
+          rows = rows
+        )
+    }
 
   // Don't show children sections here. These are accessed from the 'More details' link
   def houseConsignmentSections: Seq[Section] =
