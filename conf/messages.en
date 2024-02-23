@@ -125,6 +125,10 @@ departureMeansOfTransport.addIdentificationNumberYesNo.title = Do you want to ad
 departureMeansOfTransport.addIdentificationNumberYesNo.heading = Do you want to add an identification number for this vehicle?
 departureMeansOfTransport.addIdentificationNumberYesNo.error.required = Select yes if you want to add an identification number for this vehicle
 
+departureMeansOfTransport.addNationalityYesNo.title = Do you want to add the registered country for this vehicle?
+departureMeansOfTransport.addNationalityYesNo.heading = Do you want to add the registered country for this vehicle?
+departureMeansOfTransport.addNationalityYesNo.error.required = Select yes if you want to add the registered country for this vehicle
+
 houseConsignment.item.grossWeight.title = What is the new gross weight of item {0} in house consignment {1}?
 houseConsignment.item.grossWeight.heading = What is the new gross weight of item {0} in house consignment {1}?
 houseConsignment.item.grossWeight.paragraph = This is the combined weight of the item’s goods and packaging.
