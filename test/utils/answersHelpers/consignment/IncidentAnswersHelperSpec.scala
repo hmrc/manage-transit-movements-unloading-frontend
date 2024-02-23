@@ -16,10 +16,12 @@
 
 package utils.answersHelpers.consignment
 
-import models.reference.Incident
+import generated.{ConsignmentType05, EndorsementType03, IncidentType04, Number0}
+import models.reference.{Country, Incident}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.incident.{IncidentCodePage, IncidentTextPage}
+import pages.incident.{EndorsementCountryPage, IncidentCodePage, IncidentTextPage}
+import utils.Format.cyaDateFormatter
 import utils.answersHelpers.AnswersHelperSpecBase
 
 class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
@@ -73,6 +75,126 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
 
               result.key.value mustBe "Description"
               result.value.value mustBe s"$value"
+              val action = result.actions
+              action mustBe None
+          }
+        }
+      }
+    }
+
+    "incidentEndorsementDateRow" - {
+      "must return None" - {
+        s"when endorsement undefined" in {
+          val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
+          helper.incidentDescriptionRow mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when endorsement defined" in {
+          forAll(arbitrary[IncidentType04], arbitrary[EndorsementType03]) {
+            (incident, endorsement) =>
+              val consignment: ConsignmentType05 = ConsignmentType05(
+                containerIndicator = Number0,
+                Incident = Seq(incident.copy(Endorsement = Some(endorsement)))
+              )
+
+              val answers = emptyUserAnswers.copy(ie043Data = emptyUserAnswers.ie043Data.copy(Consignment = Some(consignment)))
+
+              val helper = new IncidentAnswersHelper(answers, index)
+              val result = helper.incidentEndorsementDateRow.value
+
+              result.key.value mustBe "Endorsement date"
+              result.value.value mustBe s"${endorsement.date.toGregorianCalendar.toZonedDateTime.format(cyaDateFormatter)}"
+              val action = result.actions
+              action mustBe None
+          }
+        }
+      }
+    }
+
+    "incidentEndorsementAuthorityRow" - {
+      "must return None" - {
+        s"when endorsement undefined" in {
+          val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
+          helper.incidentEndorsementAuthorityRow mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when endorsement defined" in {
+          forAll(arbitrary[IncidentType04], arbitrary[EndorsementType03]) {
+            (incident, endorsement) =>
+              val consignment: ConsignmentType05 = ConsignmentType05(
+                containerIndicator = Number0,
+                Incident = Seq(incident.copy(Endorsement = Some(endorsement)))
+              )
+
+              val answers = emptyUserAnswers.copy(ie043Data = emptyUserAnswers.ie043Data.copy(Consignment = Some(consignment)))
+
+              val helper = new IncidentAnswersHelper(answers, index)
+              val result = helper.incidentEndorsementAuthorityRow.value
+
+              result.key.value mustBe "Authority"
+              result.value.value mustBe s"${endorsement.authority}"
+              val action = result.actions
+              action mustBe None
+          }
+        }
+      }
+    }
+
+    "incidentEndorsementPlaceRow" - {
+      "must return None" - {
+        s"when endorsement undefined" in {
+          val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
+          helper.incidentEndorsementPlaceRow mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when endorsement defined" in {
+          forAll(arbitrary[IncidentType04], arbitrary[EndorsementType03]) {
+            (incident, endorsement) =>
+              val consignment: ConsignmentType05 = ConsignmentType05(
+                containerIndicator = Number0,
+                Incident = Seq(incident.copy(Endorsement = Some(endorsement)))
+              )
+
+              val answers = emptyUserAnswers.copy(ie043Data = emptyUserAnswers.ie043Data.copy(Consignment = Some(consignment)))
+
+              val helper = new IncidentAnswersHelper(answers, index)
+              val result = helper.incidentEndorsementPlaceRow.value
+
+              result.key.value mustBe "Location"
+              result.value.value mustBe s"${endorsement.place}"
+              val action = result.actions
+              action mustBe None
+          }
+        }
+      }
+    }
+
+    "incidentEndorsementCountryRow" - {
+      val page = EndorsementCountryPage(index)
+      "must return None" - {
+        s"when $page undefined" in {
+          val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
+          helper.incidentEndorsementCountryRow mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $page defined" in {
+          forAll(arbitrary[Country]) {
+            value =>
+              val answers = emptyUserAnswers.setValue(page, value)
+
+              val helper = new IncidentAnswersHelper(answers, index)
+              val result = helper.incidentEndorsementCountryRow.value
+
+              result.key.value mustBe "Country"
+              result.value.value mustBe s"${value.description}"
               val action = result.actions
               action mustBe None
           }

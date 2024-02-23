@@ -388,6 +388,15 @@ trait MessagesModelGenerators {
       )
     }
 
+  implicit lazy val arbitraryEndorsement03: Arbitrary[generated.EndorsementType03] = Arbitrary {
+    for {
+      date      <- arbitraryXMLGregorianCalendar.arbitrary
+      authority <- Gen.alphaNumStr
+      place     <- Gen.alphaNumStr
+      country   <- Gen.alphaNumStr
+    } yield EndorsementType03(date, authority, place, country)
+  }
+
   implicit lazy val arbitraryIncidentType04: Arbitrary[generated.IncidentType04] =
     Arbitrary {
       for {

@@ -158,7 +158,14 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       case (_, incidentIndex) =>
         val helper = new IncidentAnswersHelper(userAnswers, incidentIndex)
 
-        val rows = Seq(helper.incidentCodeRow, helper.incidentDescriptionRow).flatten
+        val rows = Seq(
+          helper.incidentCodeRow,
+          helper.incidentDescriptionRow,
+          helper.incidentEndorsementDateRow,
+          helper.incidentEndorsementAuthorityRow,
+          helper.incidentEndorsementPlaceRow,
+          helper.incidentEndorsementCountryRow
+        ).flatten
 
         AccordionSection(
           sectionTitle = messages("unloadingFindings.subsections.incidents", incidentIndex.display),
