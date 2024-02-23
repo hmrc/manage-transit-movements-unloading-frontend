@@ -24,18 +24,20 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CommodityTransformer @Inject() (
-  goodsMeasureTransformer: GoodsMeasureTransformer
+  goodsMeasureTransformer: GoodsMeasureTransformer,
+  dangerousGoodsTransformer: DangerousGoodsTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
   def transform(commodity: CommodityType08, hcIndex: Index, itemIndex: Index): UserAnswers => Future[UserAnswers] = userAnswers =>
     commodity match {
-      case CommodityType08(descriptionOfGoods, cusCode, commodityCode, _, goodsMeasure) =>
+      case CommodityType08(descriptionOfGoods, cusCode, commodityCode, dangerousGoods, goodsMeasure) =>
         lazy val pipeline: UserAnswers => Future[UserAnswers] =
           set(ItemDescriptionPage(hcIndex, itemIndex), descriptionOfGoods) andThen
             set(CustomsUnionAndStatisticsCodePage(hcIndex, itemIndex), cusCode) andThen
             set(CommodityCodePage(hcIndex, itemIndex), commodityCode.map(_.harmonizedSystemSubHeadingCode)) andThen
             set(CombinedNomenclatureCodePage(hcIndex, itemIndex), commodityCode.flatMap(_.combinedNomenclatureCode)) andThen
+            dangerousGoodsTransformer.transform(dangerousGoods, hcIndex, itemIndex) andThen
             goodsMeasureTransformer.transform(goodsMeasure, hcIndex, itemIndex)
 
         pipeline(userAnswers)

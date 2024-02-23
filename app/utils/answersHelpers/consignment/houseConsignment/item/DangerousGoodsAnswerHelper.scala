@@ -17,29 +17,28 @@
 package utils.answersHelpers.consignment.houseConsignment.item
 
 import models.{Index, UserAnswers}
-import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
-import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection.AdditionalReference
+import pages.houseConsignment.index.items.DangerousGoodsPage
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
 
-class AdditionalReferencesAnswerHelper(
+class DangerousGoodsAnswerHelper(
   userAnswers: UserAnswers,
   houseConsignmentIndex: Index,
   itemIndex: Index,
-  additionalReferenceIndex: Index
+  dangerousGoodsIndex: Index
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
-  def additionalReferenceRow: Option[SummaryListRow] = getAnswerAndBuildRowWithoutKey[AdditionalReference](
-    page = AdditionalReferenceSection(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
-    formatAnswer = formatAsText,
-    prefix = "unloadingFindings.additional.reference",
-    args = additionalReferenceIndex.display,
-    id = Some(s"change-additional-reference-${additionalReferenceIndex.display}"),
-    call = Some(Call(GET, "#")) //TODO change me please
-  )(AdditionalReference.reads(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
-
+  def dangerousGoodsRow: Option[SummaryListRow] =
+    getAnswerAndBuildRow[String](
+      page = DangerousGoodsPage(houseConsignmentIndex, itemIndex, dangerousGoodsIndex),
+      formatAnswer = formatAsText,
+      prefix = "unloadingFindings.dangerousGoods.unNumber",
+      args = dangerousGoodsIndex.display,
+      id = Some(s"change-unNumber-${dangerousGoodsIndex.display}"),
+      call = Some(Call(GET, "#")) //TODO change me please
+    )
 }
