@@ -58,7 +58,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
     "CheckMode" - {
       "when transport document type selected" - {
-        val form = formProvider(mode, "houseConsignment.index.items.document.type", transportDocumentList)
+        val form = formProvider(mode, "houseConsignment.index.items.document.type", transportDocumentList, houseConsignmentIndex.display, itemIndex.display)
 
         "must populate the view correctly on a GET when the question has previously been answered" in {
 
@@ -145,7 +145,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
       }
 
       "when supporting document type selected" - {
-        val form = formProvider(mode, "houseConsignment.index.items.document.type", supportingDocumentList)
+        val form = formProvider(mode, "houseConsignment.index.items.document.type", supportingDocumentList, houseConsignmentIndex.display, itemIndex.display)
 
         "must populate the view correctly on a GET when the question has previously been answered" in {
 

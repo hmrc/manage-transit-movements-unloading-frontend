@@ -27,6 +27,11 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.documents.{AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
+import pages.houseConsignment.index.items.document.{
+  TypePage => ItemDocTypePage,
+  DocumentReferenceNumberPage => ItemDocumentReferenceNumberPage,
+  AdditionalInformationPage => ItemDocAdditionalInformationPage
+}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 
@@ -46,11 +51,24 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
       )
 
   override def beforeEach(): Unit = {
-    super.beforeEach()
     reset(mockReferenceDataConnector)
+
+    when(mockReferenceDataConnector.getSupportingDocument(eqTo("sd1 tv"))(any(), any()))
+      .thenReturn(Future.successful(DocumentType(Support, "sd1 tv", "sd1 d")))
+
+    when(mockReferenceDataConnector.getSupportingDocument(eqTo("sd2 tv"))(any(), any()))
+      .thenReturn(Future.successful(DocumentType(Support, "sd2 tv", "sd2 d")))
+
+    when(mockReferenceDataConnector.getTransportDocument(eqTo("td1 tv"))(any(), any()))
+      .thenReturn(Future.successful(DocumentType(Transport, "td1 tv", "td1 d")))
+
+    when(mockReferenceDataConnector.getTransportDocument(eqTo("td2 tv"))(any(), any()))
+      .thenReturn(Future.successful(DocumentType(Transport, "td2 tv", "td2 d")))
+
+    super.beforeEach()
   }
 
-  "must transform data" in {
+  "must transform data" - {
     val supportingDocuments = Seq(
       SupportingDocumentType02(
         sequenceNumber = "1",
@@ -79,34 +97,45 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
       )
     )
 
-    when(mockReferenceDataConnector.getSupportingDocument(eqTo("sd1 tv"))(any(), any()))
-      .thenReturn(Future.successful(DocumentType(Support, "sd1 tv", "sd1 d")))
+    "when consignment level" in {
+      val result = transformer.transform(supportingDocuments, transportDocuments).apply(emptyUserAnswers).futureValue
 
-    when(mockReferenceDataConnector.getSupportingDocument(eqTo("sd2 tv"))(any(), any()))
-      .thenReturn(Future.successful(DocumentType(Support, "sd2 tv", "sd2 d")))
+      result.getValue(TypePage(Index(0))).toString mustBe "Supporting - (sd1 tv) sd1 d"
+      result.getValue(DocumentReferenceNumberPage(Index(0))) mustBe "sd1 rn"
+      result.getValue(AdditionalInformationPage(Index(0))) mustBe "sd1 coi"
 
-    when(mockReferenceDataConnector.getTransportDocument(eqTo("td1 tv"))(any(), any()))
-      .thenReturn(Future.successful(DocumentType(Transport, "td1 tv", "td1 d")))
+      result.getValue(TypePage(Index(1))).toString mustBe "Supporting - (sd2 tv) sd2 d"
+      result.getValue(DocumentReferenceNumberPage(Index(1))) mustBe "sd2 rn"
+      result.get(AdditionalInformationPage(Index(1))) must not be defined
 
-    when(mockReferenceDataConnector.getTransportDocument(eqTo("td2 tv"))(any(), any()))
-      .thenReturn(Future.successful(DocumentType(Transport, "td2 tv", "td2 d")))
+      result.getValue(TypePage(Index(2))).toString mustBe "Transport - (td1 tv) td1 d"
+      result.getValue(DocumentReferenceNumberPage(Index(2))) mustBe "td1 rn"
+      result.get(AdditionalInformationPage(Index(2))) must not be defined
 
-    val result = transformer.transform(supportingDocuments, transportDocuments).apply(emptyUserAnswers).futureValue
+      result.getValue(TypePage(Index(3))).toString mustBe "Transport - (td2 tv) td2 d"
+      result.getValue(DocumentReferenceNumberPage(Index(3))) mustBe "td2 rn"
+      result.get(AdditionalInformationPage(Index(3))) must not be defined
+    }
 
-    result.getValue(TypePage(Index(0))).toString mustBe "Supporting - (sd1 tv) sd1 d"
-    result.getValue(DocumentReferenceNumberPage(Index(0))) mustBe "sd1 rn"
-    result.getValue(AdditionalInformationPage(Index(0))) mustBe "sd1 coi"
+    "when house consignment level" in {
 
-    result.getValue(TypePage(Index(1))).toString mustBe "Supporting - (sd2 tv) sd2 d"
-    result.getValue(DocumentReferenceNumberPage(Index(1))) mustBe "sd2 rn"
-    result.get(AdditionalInformationPage(Index(1))) must not be defined
+      val result = transformer.transform(supportingDocuments, transportDocuments, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
 
-    result.getValue(TypePage(Index(2))).toString mustBe "Transport - (td1 tv) td1 d"
-    result.getValue(DocumentReferenceNumberPage(Index(2))) mustBe "td1 rn"
-    result.get(AdditionalInformationPage(Index(2))) must not be defined
+      result.getValue(ItemDocTypePage(hcIndex, itemIndex, Index(0))).toString mustBe "Supporting - (sd1 tv) sd1 d"
+      result.getValue(ItemDocumentReferenceNumberPage(hcIndex, itemIndex, Index(0))) mustBe "sd1 rn"
+      result.getValue(ItemDocAdditionalInformationPage(hcIndex, itemIndex, Index(0))) mustBe "sd1 coi"
 
-    result.getValue(TypePage(Index(3))).toString mustBe "Transport - (td2 tv) td2 d"
-    result.getValue(DocumentReferenceNumberPage(Index(3))) mustBe "td2 rn"
-    result.get(AdditionalInformationPage(Index(3))) must not be defined
+      result.getValue(ItemDocTypePage(hcIndex, itemIndex, Index(1))).toString mustBe "Supporting - (sd2 tv) sd2 d"
+      result.getValue(ItemDocumentReferenceNumberPage(hcIndex, itemIndex, Index(1))) mustBe "sd2 rn"
+      result.get(ItemDocAdditionalInformationPage(hcIndex, itemIndex, Index(1))) must not be defined
+
+      result.getValue(ItemDocTypePage(hcIndex, itemIndex, Index(2))).toString mustBe "Transport - (td1 tv) td1 d"
+      result.getValue(ItemDocumentReferenceNumberPage(hcIndex, itemIndex, Index(2))) mustBe "td1 rn"
+      result.get(ItemDocAdditionalInformationPage(hcIndex, itemIndex, Index(2))) must not be defined
+
+      result.getValue(ItemDocTypePage(hcIndex, itemIndex, Index(3))).toString mustBe "Transport - (td2 tv) td2 d"
+      result.getValue(ItemDocumentReferenceNumberPage(hcIndex, itemIndex, Index(3))) mustBe "td2 rn"
+      result.get(ItemDocAdditionalInformationPage(hcIndex, itemIndex, Index(3))) must not be defined
+    }
   }
 }
