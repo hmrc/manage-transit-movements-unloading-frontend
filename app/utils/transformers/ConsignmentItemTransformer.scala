@@ -26,20 +26,22 @@ import scala.concurrent.{ExecutionContext, Future}
 class ConsignmentItemTransformer @Inject() (
   commodityTransformer: CommodityTransformer,
   packagingTransformer: PackagingTransformer,
-  additionalReferenceTransformer: AdditionalReferenceTransformer
+  documentsTransformer: DocumentsTransformer,
+  additionalReferencesTransformer: AdditionalReferencesTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
   def transform(consignmentItems: Seq[ConsignmentItemType04], hcIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     consignmentItems.zipWithIndex.foldLeft(Future.successful(userAnswers))({
-      case (acc, (consignmentItemType04, i)) =>
+      case (acc, (consignmentItem, i)) =>
         acc.flatMap {
           userAnswers =>
             val itemIndex: Index = Index(i)
             val pipeline: UserAnswers => Future[UserAnswers] =
-              commodityTransformer.transform(consignmentItemType04.Commodity, hcIndex, itemIndex) andThen
-                packagingTransformer.transform(consignmentItemType04.Packaging, hcIndex, itemIndex) andThen
-                additionalReferenceTransformer.transform(consignmentItemType04.AdditionalReference, hcIndex, itemIndex)
+              commodityTransformer.transform(consignmentItem.Commodity, hcIndex, itemIndex) andThen
+                packagingTransformer.transform(consignmentItem.Packaging, hcIndex, itemIndex) andThen
+                documentsTransformer.transform(consignmentItem.SupportingDocument, consignmentItem.TransportDocument, hcIndex, itemIndex) andThen
+                additionalReferencesTransformer.transform(consignmentItem.AdditionalReference, hcIndex, itemIndex)
 
             pipeline(userAnswers)
         }
