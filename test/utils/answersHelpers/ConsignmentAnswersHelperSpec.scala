@@ -16,13 +16,15 @@
 
 package utils.answersHelpers
 
-import generated.{AddressType10, HolderOfTheTransitProcedureType06, TraderAtDestinationType03}
-import models.Index
+import generated._
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.{AdditionalReferenceType, Country, CustomsOffice, DocumentType}
+import models.{Index, SecurityType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import viewModels.sections.Section.{AccordionSection, StaticSection}
+
+import javax.xml.datatype.XMLGregorianCalendar
 
 class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
@@ -30,20 +32,30 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
     "headerSection" - {
       import pages._
+      import pages.grossMass.GrossMassPage
 
       "must return static section" in {
-        forAll(arbitrary[TraderAtDestinationType03], arbitrary[CustomsOffice]) {
-          (traderAtDestination, arbitraryCustomsOffice) =>
-            val ie043   = basicIe043.copy(TraderAtDestination = traderAtDestination)
-            val answers = emptyUserAnswers.copy(ie043Data = ie043).setValue(CustomsOfficeOfDestinationActualPage, arbitraryCustomsOffice)
+        val ie043 = basicIe043.copy(
+          TransitOperation = TransitOperationType14(
+            MRN = Gen.alphaNumStr.sample.value,
+            declarationType = Some(Gen.alphaNumStr.sample.value),
+            declarationAcceptanceDate = Some(arbitrary[XMLGregorianCalendar].sample.value),
+            security = Gen.alphaNumStr.sample.value,
+            reducedDatasetIndicator = arbitrary[Flag].sample.value
+          ),
+          TraderAtDestination = arbitrary[TraderAtDestinationType03].sample.value
+        )
+        val answers = emptyUserAnswers
+          .copy(ie043Data = ie043)
+          .setValue(SecurityTypePage, arbitrary[SecurityType].sample.value)
+          .setValue(CustomsOfficeOfDestinationActualPage, arbitrary[CustomsOffice].sample.value)
+          .setValue(GrossMassPage, arbitrary[BigDecimal].sample.value)
 
-            val helper = new ConsignmentAnswersHelper(answers)
-            val result = helper.headerSection
+        val helper = new ConsignmentAnswersHelper(answers)
+        val result = helper.headerSection
 
-            result mustBe a[StaticSection]
-            result.rows.head.value.value mustBe arbitraryCustomsOffice.name
-            result.rows(1).value.value mustBe traderAtDestination.identificationNumber
-        }
+        result mustBe a[StaticSection]
+        result.rows.size mustBe 7
       }
     }
 
@@ -61,6 +73,36 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.key.value mustBe "Authorised consignee’s EORI number or Trader Identification Number (TIN)"
             result.value.value mustBe value
             result.actions must not be defined
+        }
+      }
+    }
+
+    "grossMassRow" - {
+      import pages.grossMass.GrossMassPage
+
+      "must return None" - {
+        s"when no transport equipments defined" in {
+          val helper = new ConsignmentAnswersHelper(emptyUserAnswers)
+          val result = helper.grossMassRow
+          result.isEmpty mustBe true
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $GrossMassPage is defined" in {
+          val answers = emptyUserAnswers
+            .setValue(GrossMassPage, BigDecimal(999.99))
+
+          val helper = new ConsignmentAnswersHelper(answers)
+          val result = helper.grossMassRow.value
+
+          result.key.value mustBe "Gross weight"
+          result.value.value mustBe "999.99"
+          val action = result.actions.value.items.head
+          action.content.value mustBe "Change"
+          action.href mustBe "#"
+          action.visuallyHiddenText.value mustBe "gross weight"
+          action.id mustBe "change-gross-mass"
         }
       }
     }

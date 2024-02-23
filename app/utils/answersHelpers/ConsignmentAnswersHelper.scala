@@ -17,7 +17,6 @@
 package utils.answersHelpers
 
 import models.{Link, SecurityType, UserAnswers}
-import pages.{CustomsOfficeOfDestinationActualPage, SecurityTypePage}
 import pages.grossMass.GrossMassPage
 import pages.sections._
 import pages.sections.additionalReference.AdditionalReferencesSection
@@ -34,12 +33,15 @@ import viewModels.sections.Section.{AccordionSection, StaticSection}
 
 class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
-  def transitOperationSection: StaticSection = StaticSection(
+  def headerSection: Section = StaticSection(
     rows = Seq(
-      Some(reducedDatasetIndicatorRow),
-      securityTypeRow,
+      declarationAcceptanceDateRow,
       declarationTypeRow,
-      declarationAcceptanceDateRow
+      securityTypeRow,
+      Some(reducedDatasetIndicatorRow),
+      Some(customsOfficeOfDestinationActual),
+      grossMassRow,
+      Some(traderAtDestinationRow)
     ).flatten
   )
 
@@ -70,14 +72,6 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         prefix = "declarationAcceptanceDate",
         answer = formatAsDate(dec)
       )
-  )
-
-  def headerSection: Section = StaticSection(
-    rows = Seq(
-      Some(customsOfficeOfDestinationActual),
-      Some(traderAtDestinationRow),
-      grossMassRow
-    ).flatten
   )
 
   def traderAtDestinationRow: SummaryListRow = buildRow(
@@ -113,7 +107,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
   def grossMassRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
     page = GrossMassPage,
     formatAnswer = formatAsText,
-    prefix = "unloadingFindings.gross.mass.heading",
+    prefix = "unloadingFindings.grossMass",
     id = Some(s"change-gross-mass"),
     call = Some(Call(GET, "#"))
   )
