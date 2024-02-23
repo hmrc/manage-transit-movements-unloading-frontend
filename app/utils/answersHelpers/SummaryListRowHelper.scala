@@ -16,17 +16,17 @@
 
 package utils.answersHelpers
 
-import models.Identification
-import models.reference.PackageType
+import models.reference.{Country, PackageType}
+import models.{DynamicAddress, Identification}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.Format.cyaDateFormatter
 
 import java.time.LocalDate
+import javax.xml.datatype.XMLGregorianCalendar
 
 class SummaryListRowHelper(implicit messages: Messages) {
 
@@ -39,9 +39,22 @@ class SummaryListRowHelper(implicit messages: Messages) {
       }
     }.toText
 
+  def formatAsBoolean(answer: String): Content =
+    messages {
+      answer match {
+        case "1" => messages("site.yes")
+        case "0" => messages("site.no")
+      }
+    }.toText
+
   protected def formatAsText[T](answer: T): Content           = s"$answer".toText
   protected def formatAsPackage(answer: PackageType): Content = s"${answer.asDescription}".toText
   protected def formatAsWeight[T](answer: T): Content         = s"${answer}kg".toText
+
+  protected def formatAsDynamicAddress(address: DynamicAddress): Content =
+    HtmlContent(address.toString)
+
+  protected def formatAsCountry(country: Country): Content = country.description.toText
 
   protected def formatIdentificationTypeAsText(xmlString: String): String =
     s"${Identification.messageKeyPrefix}.${Identification(xmlString)}"
@@ -54,6 +67,9 @@ class SummaryListRowHelper(implicit messages: Messages) {
 
   def formatAsDate(answer: LocalDate): Content =
     answer.format(cyaDateFormatter).toText
+
+  def formatAsDate(answer: XMLGregorianCalendar): Content =
+    answer.toGregorianCalendar.toZonedDateTime.format(cyaDateFormatter).toText
 
   def buildRow(
     prefix: String,

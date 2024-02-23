@@ -88,7 +88,11 @@ class HouseConsignmentAnswersHelper(
           rows = Seq(
             helper.descriptionRow,
             helper.grossWeightRow,
-            helper.netWeightRow
+            helper.netWeightRow,
+            helper.cusCodeRow,
+            helper.commodityCodeRow,
+            helper.nomenclatureCodeRow,
+            helper.dangerousGoodsRows
           ).flatten,
           children = helper.packageSections ++ Seq(
             AccordionSection(

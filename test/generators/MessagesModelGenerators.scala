@@ -388,6 +388,27 @@ trait MessagesModelGenerators {
       )
     }
 
+  implicit lazy val arbitraryIncidentType04: Arbitrary[generated.IncidentType04] =
+    Arbitrary {
+      for {
+        sequenceNumber            <- Gen.alphaNumStr
+        code                      <- Gen.alphaNumStr
+        text                      <- Gen.alphaNumStr
+        qualifierOfIdentification <- Gen.alphaNumStr
+        country                   <- Gen.alphaNumStr
+
+      } yield generated.IncidentType04(
+        sequenceNumber = sequenceNumber,
+        code = code,
+        text = text,
+        Endorsement = None,
+        Location =
+          generated.LocationType02(qualifierOfIdentification = qualifierOfIdentification, UNLocode = None, country = country, GNSS = None, Address = None),
+        TransportEquipment = Nil,
+        Transhipment = None
+      )
+    }
+
   implicit lazy val arbitraryConsignmentItemType04: Arbitrary[ConsignmentItemType04] =
     Arbitrary {
       for {

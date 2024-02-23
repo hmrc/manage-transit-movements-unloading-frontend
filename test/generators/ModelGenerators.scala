@@ -17,12 +17,12 @@
 package generators
 
 import models.P5.ArrivalMessageType
-import models._
 import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.{AdditionalReferenceType, Country, CustomsOffice, Item, PackageType}
+import models.reference.{AdditionalReferenceType, Country, Incident, Item, PackageType}
 import models.reference._
-import org.scalacheck.{Arbitrary, Gen}
+import models.{SecurityType, _}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
 import play.api.test.Helpers.{GET, POST}
 
@@ -52,6 +52,14 @@ trait ModelGenerators {
       for {
         value <- Gen.alphaNumStr
       } yield ArrivalId(value)
+    }
+
+  implicit lazy val arbitrarySecurityDetailsType: Arbitrary[SecurityType] =
+    Arbitrary {
+      for {
+        code        <- Gen.oneOf("0", "1", "2", "3")
+        description <- nonEmptyString
+      } yield SecurityType(code, description)
     }
 
   implicit lazy val arbitraryTransportMeansIdentification: Arbitrary[TransportMeansIdentification] =
@@ -106,6 +114,14 @@ trait ModelGenerators {
         code <- nonEmptyString
         desc <- Gen.option(nonEmptyString)
       } yield PackageType(code, desc)
+    }
+
+  implicit lazy val arbitraryIncident: Arbitrary[Incident] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+        desc <- nonEmptyString
+      } yield Incident(code, desc)
     }
 
   implicit lazy val arbitraryItem: Arbitrary[Item] =

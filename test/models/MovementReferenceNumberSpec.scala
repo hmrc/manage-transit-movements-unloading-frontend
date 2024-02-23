@@ -16,7 +16,6 @@
 
 package models
 
-import com.lucidchart.open.xtract.XmlReader
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.freespec.AnyFreeSpec
@@ -24,8 +23,6 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.{EitherValues, OptionValues}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsString, Json}
-
-import scala.xml.Node
 
 class MovementReferenceNumberSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with Generators with EitherValues with OptionValues {
 
@@ -44,17 +41,6 @@ class MovementReferenceNumberSpec extends AnyFreeSpec with Matchers with ScalaCh
       forAll(arbitrary[MovementReferenceNumber]) {
         mrn =>
           Json.toJson(mrn) mustEqual JsString(mrn.toString)
-      }
-    }
-
-    "XML" - {
-      "must read xml as MovementReferenceNumber" in {
-        forAll(arbitrary[MovementReferenceNumber]) {
-          mrn =>
-            val xml: Node = <HEAHEA>{<DocNumHEA5>{mrn}</DocNumHEA5>}</HEAHEA>
-            val result    = XmlReader.of[MovementReferenceNumber].read(xml)
-            result.toOption.value mustEqual mrn
-        }
       }
     }
   }

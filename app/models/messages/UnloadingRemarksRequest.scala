@@ -36,4 +36,5 @@ object UnloadingRemarksRequest {
   val numericRegex: Regex                           = "^[0-9]*$".r
   val commodityCodeLength                           = 6
   val combinedNomenclatureCodeLength                = 2
+  val additionalReferenceNumberMaximumLength        = 70
 }
