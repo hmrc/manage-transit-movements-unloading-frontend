@@ -17,13 +17,17 @@
 package utils.answersHelpers
 
 import models.{Link, SecurityType, UserAnswers}
+import pages.{CustomsOfficeOfDestinationActualPage, SecurityTypePage}
+import pages.grossMass.GrossMassPage
 import pages.sections._
 import pages.sections.additionalReference.AdditionalReferencesSection
 import pages.sections.documents.DocumentsSection
 import pages.{CustomsOfficeOfDestinationActualPage, SecurityTypePage}
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.consignment._
 import viewModels.sections.Section
 import viewModels.sections.Section.{AccordionSection, StaticSection}
@@ -37,13 +41,6 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       declarationTypeRow,
       declarationAcceptanceDateRow
     ).flatten
-  )
-
-  def headerSection: Section = StaticSection(
-    rows = Seq(
-      customsOfficeOfDestinationActual,
-      traderAtDestinationRow
-    )
   )
 
   def declarationTypeRow: Option[SummaryListRow] = userAnswers.ie043Data.TransitOperation.declarationType.map(
@@ -75,6 +72,14 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       )
   )
 
+  def headerSection: Section = StaticSection(
+    rows = Seq(
+      Some(customsOfficeOfDestinationActual),
+      Some(traderAtDestinationRow),
+      grossMassRow
+    ).flatten
+  )
+
   def traderAtDestinationRow: SummaryListRow = buildRow(
     prefix = "traderAtDestination",
     answer = userAnswers.ie043Data.TraderAtDestination.identificationNumber.toText,
@@ -104,6 +109,14 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           ).flatten
         )
     }.toList
+
+  def grossMassRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
+    page = GrossMassPage,
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.gross.mass.heading",
+    id = Some(s"change-gross-mass"),
+    call = Some(Call(GET, "#"))
+  )
 
   def departureTransportMeansSections: Seq[Section] =
     userAnswers.get(TransportMeansListSection).mapWithIndex {
