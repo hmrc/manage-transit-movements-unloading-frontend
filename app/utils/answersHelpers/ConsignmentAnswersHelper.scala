@@ -147,6 +147,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
       }
 
+  // Don't show children sections here. These are accessed from the 'More details' link
   def houseConsignmentSections: Seq[Section] =
     userAnswers.get(HouseConsignmentsSection).mapWithIndex {
       (_, houseConsignmentIndex) =>
@@ -161,7 +162,6 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         AccordionSection(
           sectionTitle = messages("unloadingFindings.subsections.houseConsignment", houseConsignmentIndex.display),
           rows = rows,
-          children = helper.itemSections,
           viewLink = Link(
             id = s"view-house-consignment-${houseConsignmentIndex.display}",
             href = controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url,
