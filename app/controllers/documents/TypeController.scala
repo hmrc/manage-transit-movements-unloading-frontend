@@ -20,14 +20,13 @@ import controllers.actions._
 import forms.SelectableFormProvider
 import models.reference.DocumentType
 import models.requests.MandatoryDataRequest
-import models.{ArrivalId, DocType, Index, Mode, SelectableList, UserAnswers}
+import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
 import pages.documents.TypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.DocumentsService
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.documents.TypeView
 
@@ -54,7 +53,7 @@ class TypeController @Inject() (
     .requireData(arrivalId)
     .async {
       implicit request =>
-        getDocumentList(request.userAnswers, service, documentIndex).map {
+        service.getDocumentList(request.userAnswers, documentIndex).map {
           documentList =>
             val form = formProvider(mode, prefix, documentList)
             val preparedForm = request.userAnswers.get(TypePage(documentIndex)) match {
@@ -70,7 +69,7 @@ class TypeController @Inject() (
     .requireData(arrivalId)
     .async {
       implicit request =>
-        getDocumentList(request.userAnswers, service, documentIndex).flatMap {
+        service.getDocumentList(request.userAnswers, documentIndex).flatMap {
           documentList =>
             val form = formProvider(mode, prefix, documentList)
             form
@@ -80,19 +79,6 @@ class TypeController @Inject() (
                   Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode, documentList.values, documentIndex))),
                 value => redirect(mode, value, documentIndex)
               )
-        }
-    }
-
-  private def getDocumentList(userAnswers: UserAnswers, service: DocumentsService, documentIndex: Index)(implicit
-    hc: HeaderCarrier
-  ): Future[SelectableList[DocumentType]] =
-    userAnswers.get(TypePage(documentIndex)) match {
-      case None => service.getDocuments()
-      case Some(value) =>
-        value.`type` match {
-          case DocType.Transport => service.getTransportDocuments()
-          case DocType.Support   => service.getSupportingDocuments()
-          case _                 => service.getDocuments()
         }
     }
 

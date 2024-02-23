@@ -20,14 +20,13 @@ import controllers.actions._
 import forms.SelectableFormProvider
 import models.reference.DocumentType
 import models.requests.MandatoryDataRequest
-import models.{ArrivalId, DocType, Index, Mode, SelectableList, UserAnswers}
+import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
 import pages.houseConsignment.index.items.document.TypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.DocumentsService
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.houseConsignment.index.items.document.TypeView
 
@@ -54,7 +53,7 @@ class TypeController @Inject() (
     .requireData(arrivalId)
     .async {
       implicit request =>
-        getDocumentList(request.userAnswers, service, houseConsignmentIndex, itemIndex, documentIndex).map {
+        service.getDocumentList(request.userAnswers, houseConsignmentIndex, itemIndex, documentIndex).map {
           documentList =>
             val form = formProvider(mode, prefix, documentList, houseConsignmentIndex.display, itemIndex.display)
             val preparedForm = request.userAnswers.get(TypePage(houseConsignmentIndex, itemIndex, documentIndex)) match {
@@ -70,7 +69,7 @@ class TypeController @Inject() (
     .requireData(arrivalId)
     .async {
       implicit request =>
-        getDocumentList(request.userAnswers, service, houseConsignmentIndex, itemIndex, documentIndex).flatMap {
+        service.getDocumentList(request.userAnswers, houseConsignmentIndex, itemIndex, documentIndex).flatMap {
           documentList =>
             val form = formProvider(mode, prefix, documentList, houseConsignmentIndex.display, itemIndex.display)
             form
@@ -84,19 +83,6 @@ class TypeController @Inject() (
                   ),
                 value => redirect(mode, value, houseConsignmentIndex, itemIndex, documentIndex)
               )
-        }
-    }
-
-  private def getDocumentList(userAnswers: UserAnswers, service: DocumentsService, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index)(
-    implicit hc: HeaderCarrier
-  ): Future[SelectableList[DocumentType]] =
-    userAnswers.get(TypePage(houseConsignmentIndex, itemIndex, documentIndex)) match {
-      case None => service.getDocuments()
-      case Some(value) =>
-        value.`type` match {
-          case DocType.Transport => service.getTransportDocuments()
-          case DocType.Support   => service.getSupportingDocuments()
-          case _                 => service.getDocuments()
         }
     }
 

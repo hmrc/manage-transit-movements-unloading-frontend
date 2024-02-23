@@ -62,7 +62,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
         "must populate the view correctly on a GET when the question has previously been answered" in {
 
-          when(mockDocumentTypesService.getTransportDocuments()(any())).thenReturn(Future.successful(transportDocumentList))
+          when(mockDocumentTypesService.getDocumentList(any(), any(), any(), any())(any())).thenReturn(Future.successful(transportDocumentList))
           val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex), document1)
           setExistingUserAnswers(userAnswers)
 
@@ -82,7 +82,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
         "must redirect to the next page when valid data is submitted" in {
 
-          when(mockDocumentTypesService.getTransportDocuments()(any())).thenReturn(Future.successful(transportDocumentList))
+          when(mockDocumentTypesService.getDocumentList(any(), any(), any(), any())(any())).thenReturn(Future.successful(transportDocumentList))
           when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
           val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex), document1)
@@ -100,7 +100,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
         "must return a Bad Request and errors when invalid data is submitted" in {
 
-          when(mockDocumentTypesService.getTransportDocuments()(any())).thenReturn(Future.successful(transportDocumentList))
+          when(mockDocumentTypesService.getDocumentList(any(), any(), any(), any())(any())).thenReturn(Future.successful(transportDocumentList))
           val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex), document1)
           setExistingUserAnswers(userAnswers)
 
@@ -149,7 +149,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
         "must populate the view correctly on a GET when the question has previously been answered" in {
 
-          when(mockDocumentTypesService.getSupportingDocuments()(any())).thenReturn(Future.successful(supportingDocumentList))
+          when(mockDocumentTypesService.getDocumentList(any(), any(), any(), any())(any())).thenReturn(Future.successful(supportingDocumentList))
           val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex), document3)
           setExistingUserAnswers(userAnswers)
 
@@ -169,7 +169,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
         "must redirect to the next page when valid data is submitted" in {
 
-          when(mockDocumentTypesService.getSupportingDocuments()(any())).thenReturn(Future.successful(supportingDocumentList))
+          when(mockDocumentTypesService.getDocumentList(any(), any(), any(), any())(any())).thenReturn(Future.successful(supportingDocumentList))
           when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
           val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex), document3)
@@ -187,7 +187,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
         "must return a Bad Request and errors when invalid data is submitted" in {
 
-          when(mockDocumentTypesService.getSupportingDocuments()(any())).thenReturn(Future.successful(supportingDocumentList))
+          when(mockDocumentTypesService.getDocumentList(any(), any(), any(), any())(any())).thenReturn(Future.successful(supportingDocumentList))
           val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex), document3)
           setExistingUserAnswers(userAnswers)
 
