@@ -50,7 +50,7 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
               action.href mustBe "#"
-              action.visuallyHiddenText.value mustBe "document type"
+              action.visuallyHiddenText.value mustBe "document type for document 1"
               action.id mustBe "change-document-type-1"
           }
         }
@@ -81,7 +81,7 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
               action.href mustBe "#"
-              action.visuallyHiddenText.value mustBe "reference number"
+              action.visuallyHiddenText.value mustBe "reference number for document 1"
               action.id mustBe "change-document-reference-number-1"
           }
         }
@@ -112,7 +112,7 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
               action.href mustBe "#"
-              action.visuallyHiddenText.value mustBe "additional information"
+              action.visuallyHiddenText.value mustBe "additional information for document 1"
               action.id mustBe "change-document-additional-information-1"
           }
         }
