@@ -159,15 +159,19 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(0))) mustBe "sd1 rn"
       result.getValue(AdditionalInformationPage(hcIndex, itemIndex, Index(0))) mustBe "sd1 coi"
+      result.getValue(TypePage(hcIndex, itemIndex, Index(0))).toString mustBe "Supporting - (sd1 tv) sd1 d"
 
       result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(1))) mustBe "sd2 rn"
       result.get(AdditionalInformationPage(hcIndex, itemIndex, Index(1))) must not be defined
+      result.getValue(TypePage(hcIndex, itemIndex, Index(1))).toString mustBe "Supporting - (sd2 tv) sd2 d"
 
       result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(2))) mustBe "td1 rn"
       result.get(AdditionalInformationPage(hcIndex, itemIndex, Index(2))) must not be defined
+      result.getValue(TypePage(hcIndex, itemIndex, Index(2))).toString mustBe "Transport - (td1 tv) td1 d"
 
       result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(3))) mustBe "td2 rn"
       result.get(AdditionalInformationPage(hcIndex, itemIndex, Index(3))) must not be defined
+      result.getValue(TypePage(hcIndex, itemIndex, Index(3))).toString mustBe "Transport - (td2 tv) td2 d"
     }
   }
 }
