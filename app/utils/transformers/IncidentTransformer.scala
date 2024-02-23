@@ -41,15 +41,11 @@ class IncidentTransformer @Inject() (referenceDataConnector: ReferenceDataConnec
 
     lazy val incidentRefLookups = incidents.map {
       incidentType0 =>
+        val incidentF = referenceDataConnector.getIncidentType(incidentType0.code)
+        val countryF  = incidentType0.Endorsement.map(_.country).lookup(referenceDataConnector.getCountry)
         for {
-          incident <- referenceDataConnector
-            .getIncidentType(incidentType0.code)
-          country <- incidentType0.Endorsement
-            .map(
-              endorsementType0 => referenceDataConnector.getCountry(endorsementType0.country)
-            )
-            .map(_.map(Some(_)))
-            .getOrElse(Future.successful(None))
+          incident <- incidentF
+          country  <- countryF
         } yield TempIncident(incident, incidentType0.text, incidentType0.Endorsement, country)
     }
 

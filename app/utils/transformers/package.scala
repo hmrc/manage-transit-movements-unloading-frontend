@@ -26,5 +26,13 @@ package object transformers {
     def asFuture: Future[A] = Future.fromTry(tryValue)
   }
 
+  implicit class OptionMethods[A](value: Option[A]) {
+
+    def lookup[B](f: A => Future[B])(implicit ec: ExecutionContext): Future[Option[B]] = value match {
+      case Some(value) => f(value).map(Some(_))
+      case None        => Future.successful(None)
+    }
+  }
+
   implicit def liftToFuture[A](f: A => Future[A])(implicit ec: ExecutionContext): Future[A] => Future[A] = _ flatMap f
 }
