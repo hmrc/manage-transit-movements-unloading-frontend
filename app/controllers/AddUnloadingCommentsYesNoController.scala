@@ -17,7 +17,7 @@
 package controllers
 
 import controllers.actions._
-import forms.AddUnloadingCommentsYesNoFormProvider
+import forms.YesNoFormProvider
 import models.{ArrivalId, Mode}
 import navigation.Navigator
 import pages.AddUnloadingCommentsYesNoPage
@@ -35,14 +35,14 @@ class AddUnloadingCommentsYesNoController @Inject() (
   sessionRepository: SessionRepository,
   navigator: Navigator,
   actions: Actions,
-  formProvider: AddUnloadingCommentsYesNoFormProvider,
+  formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddUnloadingCommentsYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider()
+  private val form = formProvider("addUnloadingCommentsYesNo")
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId) {
     implicit request =>

@@ -18,7 +18,7 @@ package viewModels
 
 import models.UserAnswers
 import play.api.i18n.Messages
-import utils.answersHelpers.ConsignmentAnswersHelper
+import utils.answersHelpers.{ConsignmentAnswersHelper, HolderOfTheTransitProcedureHelper}
 import viewModels.sections.Section
 
 import javax.inject.Inject
@@ -32,15 +32,18 @@ object UnloadingFindingsViewModel {
   class UnloadingFindingsViewModelProvider @Inject() () {
 
     def apply(userAnswers: UserAnswers)(implicit messages: Messages): UnloadingFindingsViewModel = {
-      val helper = new ConsignmentAnswersHelper(userAnswers)
+      val consignmentHelper = new ConsignmentAnswersHelper(userAnswers)
+      val hotPHelper        = new HolderOfTheTransitProcedureHelper(userAnswers)
 
       val sections = Seq(
-        Seq(helper.transitOperationSection),
-        Seq(helper.headerSection),
-        helper.departureTransportMeansSections,
-        helper.transportEquipmentSections,
-        helper.houseConsignmentSections,
-        helper.additionalReferencesSections
+        Seq(consignmentHelper.transitOperationSection),
+        Seq(consignmentHelper.headerSection),
+        hotPHelper.holderOfTheTransitProcedureSection,
+        consignmentHelper.departureTransportMeansSections,
+        consignmentHelper.transportEquipmentSections,
+        consignmentHelper.houseConsignmentSections,
+        consignmentHelper.additionalReferencesSections,
+        consignmentHelper.incidentSections
       ).flatten
 
       new UnloadingFindingsViewModel(sections)

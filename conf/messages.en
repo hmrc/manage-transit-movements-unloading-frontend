@@ -121,6 +121,10 @@ departureMeansOfTransport.addIdentificationYesNo.heading = Do you want to add th
 departureMeansOfTransport.addIdentificationYesNo.error.required = Select yes if you want to add the type of identification for the departure means of transport
 departureMeansOfTransport.addIdentificationYesNo.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
 
+departureMeansOfTransport.addIdentificationNumberYesNo.title = Do you want to add an identification number for this vehicle?
+departureMeansOfTransport.addIdentificationNumberYesNo.heading = Do you want to add an identification number for this vehicle?
+departureMeansOfTransport.addIdentificationNumberYesNo.error.required = Select yes if you want to add an identification number for this vehicle
+
 houseConsignment.item.grossWeight.title = What is the new gross weight of item {0} in house consignment {1}?
 houseConsignment.item.grossWeight.heading = What is the new gross weight of item {0} in house consignment {1}?
 houseConsignment.item.grossWeight.paragraph = This is the combined weight of the item’s goods and packaging.
@@ -331,6 +335,11 @@ unloadingFindings.paragraph = Compare the transit that arrived with the followin
 unloadingFindings.subsections.transportMeans = Departure means of transport {0}
 unloadingFindings.subsections.packages = Package {0}
 
+unloadingFindings.subsections.incidents = Incident {0}
+unloadingFindings.rowHeadings.incident.code = Incident code
+unloadingFindings.rowHeadings.incident.description = Description
+
+
 declarationType = Declaration type
 securityType = Safety and security details
 reducedDatasetIndicator = Do you want to add a reduced data set?
@@ -410,6 +419,13 @@ unloadingFindings.additionalComments.link = Add comments
 unloadingFindings.rowHeadings.additionalComments = Comments
 unloadingFindings.rowHeadings.additionalComments.change.hidden = comments
 unloadingFindings.rowHeadings.additionalComments.remove.hidden = comments
+
+unloadingFindings.rowHeadings.holderOfTheTransitProcedure.heading = Transit holder
+unloadingFindings.rowHeadings.holderOfTheTransitProcedure.identificationNumber = EORI number
+unloadingFindings.rowHeadings.holderOfTheTransitProcedure.tirHolderIdentificationNumber = TIR holder’s identification number
+unloadingFindings.rowHeadings.holderOfTheTransitProcedure.name = Name
+unloadingFindings.rowHeadings.holderOfTheTransitProcedure.address = Address
+unloadingFindings.rowHeadings.holderOfTheTransitProcedure.country = Country
 
 unloadingFindings.additional.reference.heading = Additional references
 unloadingFindings.additional.reference.change.hidden = additional reference {0}
@@ -577,6 +593,16 @@ houseConsignment.index.items.document.referenceNumber.NormalMode.error.required 
 houseConsignment.index.items.document.referenceNumber.CheckMode.error.required = Enter the new document’s reference number
 houseConsignment.index.items.document.referenceNumber.error.length = The reference number must be 70 characters or less
 houseConsignment.index.items.document.referenceNumber.error.invalidCharacters = The reference number must only include letters a to z and numbers 0 to 9
+
+additionalReferenceNumber.index.NormalMode.title = What is the additional reference number?
+additionalReferenceNumber.index.CheckMode.title = What is the new additional reference number?
+additionalReferenceNumber.index.NormalMode.heading = What is the additional reference number?
+additionalReferenceNumber.index.CheckMode.heading = What is the new additional reference number?
+additionalReferenceNumber.index.NormalMode.paragraph = You need to enter a reference number as you have already added this type of additional reference.
+additionalReferenceNumber.index.NormalMode.error.required = Enter the additional reference number
+additionalReferenceNumber.index.CheckMode.error.required = Enter the new additional reference number
+additionalReferenceNumber.index.error.length = The additional reference number must be 70 characters or less
+additionalReferenceNumber.index.error.characters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 
 houseConsignment.index.items.document.additionalInformation.NormalMode.title = Enter the additional information
 houseConsignment.index.items.document.additionalInformation.CheckMode.title = Enter the new additional information for item {1} in house consignment {0}?

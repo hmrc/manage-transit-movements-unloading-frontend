@@ -19,7 +19,6 @@ package views.behaviours
 import config.FrontendAppConfig
 import generators.Generators
 import org.jsoup.nodes.Document
-import org.jsoup.select.Elements
 import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
 import viewModels.ListItem
@@ -88,25 +87,6 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
               val name = renderedItem.getElementsByClass("govuk-summary-list__key").text()
               name mustBe listItem.name
             }
-
-            def withActionLink(actions: Elements, linkType: String, index: Int, url: String): Unit =
-              s"must contain a $linkType link" in {
-                val link = actions
-                  .asScala(index)
-                  .getElementsByClass("govuk-link")
-                  .first()
-
-                assertElementContainsHref(link, url)
-
-                val spans = link.getElementsByTag("span")
-                spans.size() mustBe 2
-
-                spans.first().text() mustBe linkType
-                assert(spans.first().hasAttr("aria-hidden"))
-
-                spans.last().text() mustBe s"$linkType ${listItem.name}"
-                assert(spans.last().hasClass("govuk-visually-hidden"))
-              }
           }
       }
     }

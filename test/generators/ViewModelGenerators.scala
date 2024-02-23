@@ -301,11 +301,21 @@ trait ViewModelGenerators {
 
   implicit lazy val arbitraryItemsAdditionalReferenceNumberViewModel: Arbitrary[AdditionalReferenceNumberViewModel] = Arbitrary {
     for {
-      heading       <- nonEmptyString
-      title         <- nonEmptyString
-      requiredError <- nonEmptyString
-      arrivalId     <- nonEmptyString
-    } yield AdditionalReferenceNumberViewModel(heading, title, requiredError, ArrivalId(arrivalId), NormalMode, Index(0), Index(0), Index(0))
+      heading             <- nonEmptyString
+      title               <- nonEmptyString
+      requiredError       <- nonEmptyString
+      arrivalId           <- nonEmptyString
+      isParagraphRequired <- arbitrary[Boolean]
+    } yield AdditionalReferenceNumberViewModel(heading,
+                                               title,
+                                               requiredError,
+                                               ArrivalId(arrivalId),
+                                               NormalMode,
+                                               Index(0),
+                                               Index(0),
+                                               Index(0),
+                                               isParagraphRequired
+    )
   }
 
   implicit lazy val arbitraryAdditionalReferenceViewModel: Arbitrary[AdditionalReferenceTypeViewModel] = Arbitrary {
@@ -316,4 +326,14 @@ trait ViewModelGenerators {
       arrivalId     <- nonEmptyString
     } yield AdditionalReferenceTypeViewModel(heading, title, requiredError, ArrivalId(arrivalId), NormalMode, Index(0))
   }
+
+  implicit lazy val arbitraryAdditionalReferenceNumberViewModel: Arbitrary[viewModels.additionalReference.index.AdditionalReferenceNumberViewModel] =
+    Arbitrary {
+      for {
+        heading             <- nonEmptyString
+        title               <- nonEmptyString
+        requiredError       <- nonEmptyString
+        isParagraphRequired <- arbitrary[Boolean]
+      } yield viewModels.additionalReference.index.AdditionalReferenceNumberViewModel(heading, title, requiredError, isParagraphRequired)
+    }
 }

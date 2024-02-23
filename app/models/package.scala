@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import generated.{CC043C, CC043CType}
+import generated.{AddressType10, CC043C, CC043CType}
 import play.api.libs.json._
 import scalaxb.`package`.toScope
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
@@ -200,4 +200,12 @@ package object models {
 
   }
 
+  implicit class RichAddress(address: AddressType10) {
+
+    def toDynamicAddress: DynamicAddress = DynamicAddress(
+      numberAndStreet = address.streetAndNumber,
+      city = address.city,
+      postalCode = address.postcode
+    )
+  }
 }

@@ -16,7 +16,6 @@
 
 package views.departureMeansOfTransport
 
-import forms.YesNoFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -25,8 +24,7 @@ import views.html.departureMeansOfTransport.AddIdentificationYesNoView
 
 class AddIdentificationYesNoViewSpec extends YesNoViewBehaviours {
 
-  override val prefix: String      = "departureMeansOfTransport.addIdentificationYesNo"
-  override def form: Form[Boolean] = new YesNoFormProvider()(prefix)
+  override val prefix: String = "departureMeansOfTransport.addIdentificationYesNo"
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector.instanceOf[AddIdentificationYesNoView].apply(form, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
