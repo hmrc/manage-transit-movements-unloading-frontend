@@ -17,8 +17,8 @@
 package utils.transformers
 
 import connectors.ReferenceDataConnector
-import generated.{EndorsementType03, IncidentType04}
-import models.reference.Incident
+import generated.EndorsementType03
+import models.reference.{Country, Incident}
 import models.{Index, UserAnswers}
 import pages.incident.{EndorsementCountryPage, IncidentCodePage, IncidentTextPage}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -26,25 +26,31 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IncidentTransformer @Inject() (referenceDataConnector: ReferenceDataConnector, endorsementTransformer: EndorsementTransformer)(implicit
+class IncidentTransformer @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit
   ec: ExecutionContext
 ) extends PageTransformer {
 
   private case class TempIncident(
     typeValue: Incident,
     text: String,
-    endorsement: Option[EndorsementType03]
+    endorsement: Option[EndorsementType03],
+    endorsementCountry: Option[Country]
   )
 
   def transform(incidents: Seq[generated.IncidentType04])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
 
     lazy val incidentRefLookups = incidents.map {
-      incidentType0: IncidentType04 =>
-        referenceDataConnector
-          .getIncidentType(incidentType0.code)
-          .map(
-            incident => TempIncident(incident, incidentType0.text, incidentType0.Endorsement)
-          )
+      incidentType0 =>
+        for {
+          incident <- referenceDataConnector
+            .getIncidentType(incidentType0.code)
+          country <- incidentType0.Endorsement
+            .map(
+              endorsementType0 => referenceDataConnector.getCountry(endorsementType0.country)
+            )
+            .map(_.map(Some(_)))
+            .getOrElse(Future.successful(None))
+        } yield TempIncident(incident, incidentType0.text, incidentType0.Endorsement, country)
     }
 
     Future.sequence(incidentRefLookups).flatMap {
@@ -56,7 +62,7 @@ class IncidentTransformer @Inject() (referenceDataConnector: ReferenceDataConnec
               val pipeline: UserAnswers => Future[UserAnswers] =
                 set(IncidentCodePage(incidentIndex), tempIncident.typeValue) andThen
                   set(IncidentTextPage(incidentIndex), tempIncident.text) andThen
-                  endorsementTransformer.transform(tempIncident.endorsement, incidentIndex)
+                  set(EndorsementCountryPage(incidentIndex), tempIncident.endorsementCountry)
 
               pipeline(userAnswers)
           }

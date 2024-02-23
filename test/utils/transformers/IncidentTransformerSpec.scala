@@ -20,12 +20,12 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import connectors.ReferenceDataConnector
 import generators.Generators
 import models.Index
-import models.reference.Incident
+import models.reference.{Country, Incident}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.incident.{IncidentCodePage, IncidentTextPage}
+import pages.incident.{EndorsementCountryPage, IncidentCodePage, IncidentTextPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 
@@ -57,6 +57,18 @@ class IncidentTransformerSpec extends SpecBase with AppWithDefaultMockFixtures w
             )
       }
 
+      incidents.map {
+        type0 =>
+          type0.Endorsement.map {
+            endorse =>
+              when(mockRefDataConnector.getCountry(eqTo(endorse.country))(any(), any()))
+                .thenReturn(
+                  Future.successful(Country(endorse.country, "country near the sea"))
+                )
+          }
+
+      }
+
       val result = transformer.transform(incidents).apply(emptyUserAnswers).futureValue
 
       incidents.zipWithIndex.map {
@@ -64,6 +76,10 @@ class IncidentTransformerSpec extends SpecBase with AppWithDefaultMockFixtures w
           result.getValue(IncidentCodePage(Index(i))).code mustBe incident.code
           result.getValue(IncidentCodePage(Index(i))).description mustBe "describe me"
           result.getValue(IncidentTextPage(Index(i))) mustBe incident.text
+          result.get(EndorsementCountryPage(Index(i))).map(_.code) mustBe incident.Endorsement.map(_.country)
+          result.get(EndorsementCountryPage(Index(i))).map(_.description) mustBe incident.Endorsement.map(
+            _ => "country near the sea"
+          )
 
       }
 
