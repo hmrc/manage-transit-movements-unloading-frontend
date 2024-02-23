@@ -182,7 +182,7 @@ containerIdentificationNumber.error.duplicate = This identification number has a
 transportEquipment.index.addSealYesNo.title = Do you want to add a seal for the transport equipment?
 transportEquipment.index.addSealYesNo.heading = Do you want to add a seal for the transport equipment?
 transportEquipment.index.addSealYesNo.paragraph = You can only add a seal if you are authorised to use customs seals.
-transportEquipment.index.addSealYesNo.error.required = Select yes if you want to add a seal for the transport equipment?
+transportEquipment.index.addSealYesNo.error.required = Select yes if you want to add a seal for the transport equipment
 
 unloadingSummary.title = Check what you found against the transit declaration
 unloadingSummary.heading = Check what you found against the transit declaration
