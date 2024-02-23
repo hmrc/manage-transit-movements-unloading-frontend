@@ -21,7 +21,7 @@ import generated.{AdditionalReferenceType02, AdditionalReferenceType03}
 import models.reference.AdditionalReferenceType
 import models.{Index, UserAnswers}
 import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
-import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
+import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberPage => AdditionalReferenceNumberItemPage, AdditionalReferencePage}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -33,7 +33,7 @@ class AdditionalReferencesTransformer @Inject() (referenceDataConnector: Referen
     typeValue: AdditionalReferenceType,
     referenceNumber: Option[String]
   )
-  private case class TempAdditionalReferenceHC(typeValue: AdditionalReferenceType)
+  private case class TempAdditionalReferenceHC(typeValue: AdditionalReferenceType, referenceNumber: Option[String])
 
   def transform(additionalReferences: Seq[AdditionalReferenceType03])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
 
@@ -74,19 +74,21 @@ class AdditionalReferencesTransformer @Inject() (referenceDataConnector: Referen
         referenceDataConnector.getAdditionalReferenceType(additionalReference.typeValue).map {
           additionalReferenceType =>
             TempAdditionalReferenceHC(
-              typeValue = additionalReferenceType
+              typeValue = additionalReferenceType,
+              additionalReference.referenceNumber
             )
         }
     }
 
     Future.sequence(referenceDataLookups).flatMap {
       _.zipWithIndex.foldLeft(Future.successful(userAnswers))({
-        case (acc, (TempAdditionalReferenceHC(additionalReference), i)) =>
+        case (acc, (TempAdditionalReferenceHC(additionalReference, referenceNumber), i)) =>
           acc.flatMap {
             userAnswers =>
               val sequence = Index(i)
               val pipeline: UserAnswers => Future[UserAnswers] =
-                set(AdditionalReferencePage(hcIndex, itemIndex, sequence), additionalReference)
+                set(AdditionalReferencePage(hcIndex, itemIndex, sequence), additionalReference) andThen
+                  set(AdditionalReferenceNumberItemPage(hcIndex, itemIndex, sequence), referenceNumber)
 
               pipeline(userAnswers)
           }

@@ -21,11 +21,11 @@ import connectors.ReferenceDataConnector
 import generated.{AdditionalReferenceType02, AdditionalReferenceType03}
 import generators.Generators
 import models.Index
+import models.reference.AdditionalReferenceType
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import models.reference.AdditionalReferenceType
 import pages.additionalReference.AdditionalReferenceTypePage
 import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
 import play.api.inject.bind
@@ -71,7 +71,6 @@ class AdditionalReferencesTransformerSpec extends SpecBase with AppWithDefaultMo
         result.getValue(AdditionalReferenceTypePage(Index(i))).description mustBe "describe me"
 
     }
-
   }
 
   "must transform data at Item level" in {
@@ -90,9 +89,6 @@ class AdditionalReferencesTransformerSpec extends SpecBase with AppWithDefaultMo
     additionalReferenceType02.zipWithIndex.map {
       case (refType, i) =>
         result.getValue(AdditionalReferencePage(hcIndex, itemIndex, Index(i))).documentType mustBe refType.typeValue
-
     }
-
   }
-
 }

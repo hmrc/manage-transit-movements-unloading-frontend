@@ -16,9 +16,9 @@
 
 package utils.answersHelpers.consignment.houseConsignment.item
 
-import models.reference.AdditionalReferenceType
 import models.{Index, UserAnswers}
-import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
+import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
+import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection.AdditionalReference
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -33,14 +33,13 @@ class AdditionalReferencesAnswerHelper(
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
-  def additionalReferenceRow: Option[SummaryListRow] =
-    getAnswerAndBuildRowWithoutKey[AdditionalReferenceType](
-      page = AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
-      formatAnswer = formatAsText,
-      prefix = "unloadingFindings.additional.reference",
-      args = additionalReferenceIndex.display,
-      id = Some(s"change-additional-reference-${additionalReferenceIndex.display}"),
-      call = Some(Call(GET, "#")) //TODO change me please
-    )
+  def additionalReferenceRow: Option[SummaryListRow] = getAnswerAndBuildRowWithoutKey[AdditionalReference](
+    page = AdditionalReferenceSection(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.additional.reference",
+    args = additionalReferenceIndex.display,
+    id = Some(s"change-additional-reference-${additionalReferenceIndex.display}"),
+    call = Some(Call(GET, "#")) //TODO change me please
+  )(AdditionalReference.reads(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
 
 }
