@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package forms
+package pages.incident
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import models.reference.Incident
+import pages.behaviours.PageBehaviours
 
-import javax.inject.Inject
+class IncidentCodePageSpec extends PageBehaviours {
 
-class AddUnloadingCommentsYesNoFormProvider @Inject() extends Mappings {
+  "IncidentCodePage" - {
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("addUnloadingCommentsYesNo.error.required")
-    )
+    beRetrievable[Incident](IncidentCodePage(index))
+
+    beSettable[Incident](IncidentCodePage(index))
+
+    beRemovable[Incident](IncidentCodePage(index))
+  }
 }

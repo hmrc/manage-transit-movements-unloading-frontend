@@ -64,9 +64,9 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
 
   def getSecurityType(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[SecurityType] = {
     val queryParams: Seq[(String, String)] = Seq("data.code" -> typeValue)
-    val serviceUrl                         = s"${config.referenceDataUrl}/lists/DeclarationTypeSecurity"
+    val url                                = s"${config.referenceDataUrl}/lists/DeclarationTypeSecurity"
     http
-      .GET[NonEmptySet[SecurityType]](serviceUrl, headers = version2Header, queryParams = queryParams)(
+      .GET[NonEmptySet[SecurityType]](url, headers = version2Header, queryParams = queryParams)(
         responseHandlerGeneric(SecurityType.format, SecurityType.order),
         hc,
         ec
@@ -88,16 +88,16 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
       "data.code" -> code
     )
 
-    val serviceUrl = s"${config.referenceDataUrl}/filtered-lists/CountryCodesFullList"
+    val url = s"${config.referenceDataUrl}/lists/CountryCodesFullList"
 
-    http.GET[NonEmptySet[Country]](serviceUrl, headers = version2Header, queryParams = queryParams)
+    http.GET[NonEmptySet[Country]](url, headers = version2Header, queryParams = queryParams)
   }
 
   def getCUSCode(cusCode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[CUSCode]] = {
     val queryParams: Seq[(String, String)] = Seq("data.code" -> cusCode)
 
-    val serviceUrl = s"${config.referenceDataUrl}/filtered-lists/CUSCode"
-    http.GET[NonEmptySet[CUSCode]](serviceUrl, headers = version2Header, queryParams = queryParams)
+    val url = s"${config.referenceDataUrl}/lists/CUSCode"
+    http.GET[NonEmptySet[CUSCode]](url, headers = version2Header, queryParams = queryParams)
   }
 
   def getCustomsOffice(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[CustomsOffice]] = {
@@ -106,22 +106,34 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
       "data.id" -> code
     )
 
-    val serviceUrl = s"${config.referenceDataUrl}/filtered-lists/CustomsOffices"
+    val url = s"${config.referenceDataUrl}/lists/CustomsOffices"
 
-    http.GET[NonEmptySet[CustomsOffice]](serviceUrl, headers = version2Header, queryParams = queryParams)
+    http.GET[NonEmptySet[CustomsOffice]](url, headers = version2Header, queryParams = queryParams)
   }
 
   def getPackageTypes(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[PackageType]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/KindOfPackages"
-    http.GET[NonEmptySet[PackageType]](serviceUrl, headers = version2Header)(responseHandlerGeneric(PackageType.format, PackageType.order), hc, ec)
+    val url = s"${config.referenceDataUrl}/lists/KindOfPackages"
+    http.GET[NonEmptySet[PackageType]](url, headers = version2Header)(responseHandlerGeneric(PackageType.format, PackageType.order), hc, ec)
   }
 
   def getPackageType(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[PackageType] = {
     val queryParams: Seq[(String, String)] = Seq("data.code" -> typeValue)
-    val serviceUrl                         = s"${config.referenceDataUrl}/lists/KindOfPackages"
+    val url                                = s"${config.referenceDataUrl}/lists/KindOfPackages"
     http
-      .GET[NonEmptySet[PackageType]](serviceUrl, headers = version2Header, queryParams = queryParams)(
+      .GET[NonEmptySet[PackageType]](url, headers = version2Header, queryParams = queryParams)(
         responseHandlerGeneric(PackageType.format, PackageType.order),
+        hc,
+        ec
+      )
+      .map(_.head)
+  }
+
+  def getIncidentType(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Incident] = {
+    val queryParams: Seq[(String, String)] = Seq("data.code" -> typeValue)
+    val serviceUrl                         = s"${config.referenceDataUrl}/lists/IncidentCode"
+    http
+      .GET[NonEmptySet[Incident]](serviceUrl, headers = version2Header, queryParams = queryParams)(
+        responseHandlerGeneric(Incident.format, Incident.order),
         hc,
         ec
       )

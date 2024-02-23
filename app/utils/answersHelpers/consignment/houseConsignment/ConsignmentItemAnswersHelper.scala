@@ -21,12 +21,13 @@ import pages.NetWeightPage
 import pages.houseConsignment.index.items._
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferencesSection
 import pages.sections.PackagingSection
+import pages.sections.houseConsignment.index.items.dangerousGoods.DangerousGoodsSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
-import utils.answersHelpers.consignment.houseConsignment.item.{AdditionalReferencesAnswerHelper, PackagingAnswersHelper}
+import utils.answersHelpers.consignment.houseConsignment.item.{AdditionalReferencesAnswerHelper, DangerousGoodsAnswerHelper, PackagingAnswersHelper}
 import viewModels.sections.Section
 import viewModels.sections.Section.AccordionSection
 
@@ -67,6 +68,12 @@ class ConsignmentItemAnswersHelper(
     getAnswersAndBuildSectionRows(AdditionalReferencesSection(houseConsignmentIndex, itemIndex)) {
       additionalReferenceIndex =>
         new AdditionalReferencesAnswerHelper(userAnswers, houseConsignmentIndex, itemIndex, additionalReferenceIndex).additionalReferenceRow
+    }
+
+  def dangerousGoodsRows: Seq[SummaryListRow] =
+    getAnswersAndBuildSectionRows(DangerousGoodsSection(houseConsignmentIndex, itemIndex)) {
+      dangerousGoodsIndex =>
+        new DangerousGoodsAnswerHelper(userAnswers, houseConsignmentIndex, itemIndex, dangerousGoodsIndex).dangerousGoodsRow
     }
 
   def packageSections: Seq[Section] =

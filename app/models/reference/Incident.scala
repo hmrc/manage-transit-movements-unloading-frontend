@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-import uk.gov.hmrc.http.{HttpReads, HttpResponse}
+package models.reference
 
-package object connectors {
+import cats.Order
+import play.api.libs.json.{Json, OFormat}
 
-  implicit val httpReads: HttpReads[HttpResponse] =
-    new HttpReads[HttpResponse] {
+case class Incident(code: String, description: String) extends Selectable {
 
-      override def read(method: String, url: String, response: HttpResponse): HttpResponse =
-        response
-    }
+  override def toString: String = s"$code - $description"
+
+  override val value: String = code
+}
+
+object Incident {
+  implicit val format: OFormat[Incident] = Json.format[Incident]
+
+  implicit val order: Order[Incident] = (x: Incident, y: Incident) => x.code.compareToIgnoreCase(y.code)
 }

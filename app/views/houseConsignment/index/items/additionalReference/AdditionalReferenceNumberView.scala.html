@@ -29,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[String], mrn: MovementReferenceNumber, viewModel: AdditionalReferenceNumberViewModel, isParagraphRequired: Boolean)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], mrn: MovementReferenceNumber, viewModel: AdditionalReferenceNumberViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = viewModel.title,
@@ -45,7 +45,7 @@
             inputCharacterCountType = InputCharacterCountViewModel(
                 heading = viewModel.heading,
                 caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = if (isParagraphRequired) Some(messages("houseConsignment.index.items.additionalReference.additionalReferenceNumber.paragraph").toParagraph) else None
+                additionalHtml = if (viewModel.isParagraphRequired) Some(messages("houseConsignment.index.items.additionalReference.additionalReferenceNumber.paragraph").toParagraph) else None
             ),
             label = viewModel.heading,
             maxLength = maxAdditionalReferenceNumLength,

@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package connectors
+package itbase
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Suite}
 
-trait WireMockSuite extends BeforeAndAfterAll with BeforeAndAfterEach {
+trait WireMockServerHandler extends BeforeAndAfterAll with BeforeAndAfterEach {
   this: Suite =>
 
-  protected val server: WireMockServer = new WireMockServer(wireMockConfig().dynamicPort())
+  protected val server: WireMockServer = new WireMockServer(wireMockConfig.dynamicPort())
 
   override def beforeAll(): Unit = {
     server.start()
@@ -39,5 +39,4 @@ trait WireMockSuite extends BeforeAndAfterAll with BeforeAndAfterEach {
     super.afterAll()
     server.stop()
   }
-
 }

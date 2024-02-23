@@ -38,6 +38,7 @@ class IE043TransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
   private lazy val mockConsignmentTransformer                      = mock[ConsignmentTransformer]
   private lazy val mockCustomsOfficeOfDestinationActualTransformer = mock[CustomsOfficeOfDestinationActualTransformer]
   private lazy val mockTransitOperationTransformer                 = mock[TransitOperationTransformer]
+  private lazy val mockHotPTransformer                             = mock[HolderOfTheTransitProcedureTransformer]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -45,7 +46,8 @@ class IE043TransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
       .overrides(
         bind[ConsignmentTransformer].toInstance(mockConsignmentTransformer),
         bind[CustomsOfficeOfDestinationActualTransformer].toInstance(mockCustomsOfficeOfDestinationActualTransformer),
-        bind[TransitOperationTransformer].toInstance(mockTransitOperationTransformer)
+        bind[TransitOperationTransformer].toInstance(mockTransitOperationTransformer),
+        bind[HolderOfTheTransitProcedureTransformer].toInstance(mockHotPTransformer)
       )
 
   private case object FakeConsignmentSection extends QuestionPage[JsObject] {
@@ -60,6 +62,10 @@ class IE043TransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
     override def path: JsPath = JsPath \ "CustomsOfficeOfDestinationActual"
   }
 
+  private case object HotPSection extends QuestionPage[JsObject] {
+    override def path: JsPath = JsPath \ "HolderOfTheTransitProcedure" \ "Address"
+  }
+
   "must transform data" in {
     forAll(arbitrary[CC043CType]) {
       _ =>
@@ -70,6 +76,10 @@ class IE043TransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
         when(mockCustomsOfficeOfDestinationActualTransformer.transform(any())(any()))
           .thenReturn {
             ua => Future.successful(ua.futureValue.setValue(FakeCustomsOfficeOfDestinationActualSection, Json.obj("foo1" -> "bar1")))
+          }
+        when(mockHotPTransformer.transform(any())(any()))
+          .thenReturn {
+            ua => Future.successful(ua.setValue(HotPSection, Json.obj("country" -> "GB")))
           }
 
         when(mockTransitOperationTransformer.transform(any())(any()))
@@ -82,6 +92,7 @@ class IE043TransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
         result.getValue(FakeConsignmentSection) mustBe Json.obj("foo" -> "bar")
         result.getValue(FakeCustomsOfficeOfDestinationActualSection) mustBe Json.obj("foo1" -> "bar1")
         result.getValue(FakeTransitOperationSection) mustBe Json.obj("foo" -> "bar")
+        result.getValue(HotPSection) mustBe Json.obj("country" -> "GB")
     }
   }
 }

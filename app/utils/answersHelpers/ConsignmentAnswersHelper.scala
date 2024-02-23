@@ -141,6 +141,24 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       )
     )
 
+  def incidentSections: Seq[Section] =
+    userAnswers
+      .get(IncidentSection)
+      .mapWithIndex {
+        case (_, incidentIndex) =>
+          val helper = new IncidentAnswersHelper(userAnswers, incidentIndex)
+
+          val rows = Seq(helper.incidentCodeRow, helper.incidentDescriptionRow).flatten
+
+          val section = AccordionSection(
+            sectionTitle = messages("unloadingFindings.subsections.incidents", incidentIndex.display),
+            rows = rows
+          )
+
+          section
+
+      }
+
   def houseConsignmentSections: Seq[Section] =
     userAnswers.get(HouseConsignmentsSection).mapWithIndex {
       (_, houseConsignmentIndex) =>

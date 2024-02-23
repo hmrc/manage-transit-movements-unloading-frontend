@@ -26,6 +26,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class IE043Transformer @Inject() (
   consignmentTransformer: ConsignmentTransformer,
   transitOperationTransformer: TransitOperationTransformer,
+  hotPTransformer: HolderOfTheTransitProcedureTransformer,
   customsOfficeOfDestinationActualTransformer: CustomsOfficeOfDestinationActualTransformer
 ) extends FrontendHeaderCarrierProvider {
 
@@ -34,6 +35,7 @@ class IE043Transformer @Inject() (
     val transformerPipeline =
       transitOperationTransformer.transform(userAnswers.ie043Data.TransitOperation) andThen
         consignmentTransformer.transform(userAnswers.ie043Data.Consignment) andThen
+        hotPTransformer.transform(userAnswers.ie043Data.HolderOfTheTransitProcedure) andThen
         customsOfficeOfDestinationActualTransformer.transform(userAnswers.ie043Data.CustomsOfficeOfDestinationActual)
 
     transformerPipeline(userAnswers)
