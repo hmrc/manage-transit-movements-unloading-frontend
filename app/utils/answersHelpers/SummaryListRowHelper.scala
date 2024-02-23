@@ -16,10 +16,8 @@
 
 package utils.answersHelpers
 
-import models.Identification
-import models.reference.PackageType
-import models.reference.{Country, PackageType}
 import models.{DynamicAddress, Identification}
+import models.reference.{Country, PackageType}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components._
