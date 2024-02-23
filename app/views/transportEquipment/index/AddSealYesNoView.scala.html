@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.departureMeansOfTransport.routes
+@import controllers.transportEquipment.index.routes
 @import models.MovementReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo}
@@ -27,22 +27,23 @@ errorSummary: ErrorSummary,
 button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, transportEquipmentIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("departureMeansOfTransport.addIdentificationNumberYesNo.title"),
+    title = messages("transportEquipment.index.addSealYesNo.title"),
     showBackLink = true
 ) {
 
         @errorSummary(form.errors)
 
-        @formHelper(action = routes.AddIdentificationNumberYesNoController.onSubmit(arrivalId, transportMeansIndex, mode), Symbol("autoComplete") -> "off") {
+        @formHelper(action = routes.AddSealYesNoController.onSubmit(arrivalId, transportEquipmentIndex, mode), Symbol("autoComplete") -> "off") {
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
-                heading = messages("departureMeansOfTransport.addIdentificationNumberYesNo.heading"),
-                caption = Some(messages("site.caption", mrn.toString))
+            yesNoType = YesNoWithAdditionalHtml(
+                heading = messages("transportEquipment.index.addSealYesNo.heading"),
+                caption = Some(messages("site.caption", mrn.toString)),
+                additionalHtml = messages("transportEquipment.index.addSealYesNo.paragraph").toParagraph
             )
         )
 

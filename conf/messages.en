@@ -183,6 +183,11 @@ containerIdentificationNumber.error.length = The identification number must be 1
 containerIdentificationNumber.error.characters = The identification number must only include letters a to z and numbers 0 to 9
 containerIdentificationNumber.error.duplicate = This identification number has already been submitted. Enter a unique container identification number
 
+transportEquipment.index.addSealYesNo.title = Do you want to add a seal for the transport equipment?
+transportEquipment.index.addSealYesNo.heading = Do you want to add a seal for the transport equipment?
+transportEquipment.index.addSealYesNo.paragraph = You can only add a seal if you are authorised to use customs seals.
+transportEquipment.index.addSealYesNo.error.required = Select yes if you want to add a seal for the transport equipment
+
 unloadingSummary.title = Check what you found against the transit declaration
 unloadingSummary.heading = Check what you found against the transit declaration
 unloadingSummary.addSeal.link.text = Add a new official customs seal number
@@ -675,3 +680,9 @@ document.type.heading = What is the new document type?
 document.type.hint = Enter the document name or code.
 document.type.placeholder = Select a document type
 document.type.check.error.required = Select the new document type
+
+houseConsignment.index.items.document.type.title = What is the new document type for item {1} in house consignment {0}?
+houseConsignment.index.items.document.type.heading = What is the new document type for item {1} in house consignment {0}?
+houseConsignment.index.items.document.type.hint = Enter the document name or code.
+houseConsignment.index.items.document.type.placeholder = Select a document type
+houseConsignment.index.items.document.type.check.error.required = Select the new document type for item {1} in house consignment {0}

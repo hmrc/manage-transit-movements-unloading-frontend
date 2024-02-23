@@ -60,9 +60,11 @@ class DocumentsTransformer @Inject() (
         document match {
           case Document.SupportingDocument(documentType, referenceNumber, complementOfInformation) =>
             set(DocumentReferenceNumberPage(hcIndex, itemIndex, documentIndex), referenceNumber) andThen
-              set(AdditionalInformationPage(hcIndex, itemIndex, documentIndex), complementOfInformation)
+              set(AdditionalInformationPage(hcIndex, itemIndex, documentIndex), complementOfInformation) andThen
+              set(TypePage(hcIndex, itemIndex, documentIndex), documentType)
           case Document.TransportDocument(documentType, referenceNumber) =>
-            set(DocumentReferenceNumberPage(hcIndex, itemIndex, documentIndex), referenceNumber)
+            set(DocumentReferenceNumberPage(hcIndex, itemIndex, documentIndex), referenceNumber) andThen
+              set(TypePage(hcIndex, itemIndex, documentIndex), documentType)
         }
     }
   }

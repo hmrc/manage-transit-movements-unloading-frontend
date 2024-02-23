@@ -17,8 +17,10 @@
 package services
 
 import connectors.ReferenceDataConnector
-import models.SelectableList
+import models.{DocType, Index, SelectableList, UserAnswers}
 import models.reference.DocumentType
+import pages.documents.TypePage
+import pages.houseConsignment.index.items.document.{TypePage => ItemDocTypePage}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -45,4 +47,29 @@ class DocumentsService @Inject() (referenceDataConnector: ReferenceDataConnector
       .map(_.toSeq)
       .map(SelectableList(_))
 
+  def getDocumentList(userAnswers: UserAnswers, documentIndex: Index)(implicit
+    hc: HeaderCarrier
+  ): Future[SelectableList[DocumentType]] =
+    userAnswers.get(TypePage(documentIndex)) match {
+      case None => getDocuments()
+      case Some(value) =>
+        value.`type` match {
+          case DocType.Transport => getTransportDocuments()
+          case DocType.Support   => getSupportingDocuments()
+          case _                 => getDocuments()
+        }
+    }
+
+  def getDocumentList(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index)(implicit
+    hc: HeaderCarrier
+  ): Future[SelectableList[DocumentType]] =
+    userAnswers.get(ItemDocTypePage(houseConsignmentIndex, itemIndex, documentIndex)) match {
+      case None => getDocuments()
+      case Some(value) =>
+        value.`type` match {
+          case DocType.Transport => getTransportDocuments()
+          case DocType.Support   => getSupportingDocuments()
+          case _                 => getDocuments()
+        }
+    }
 }

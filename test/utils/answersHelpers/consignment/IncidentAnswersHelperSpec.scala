@@ -22,6 +22,8 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen.alphaNumStr
 import pages.incident.{EndorsementCountryPage, IncidentCodePage, IncidentTextPage}
 import utils.Format.cyaDateFormatter
+import org.scalacheck.Gen
+import pages.incident.{IncidentCodePage, IncidentTextPage}
 import utils.answersHelpers.AnswersHelperSpecBase
 
 class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
@@ -66,7 +68,7 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return Some(Row)" - {
         s"when $page defined" in {
-          forAll(alphaNumStr) {
+          forAll(Gen.alphaNumStr) {
             value =>
               val answers = emptyUserAnswers.setValue(page, value)
 

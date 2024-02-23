@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.documents
+package controllers.houseConsignment.index.items.document
 
 import controllers.actions._
 import forms.SelectableFormProvider
@@ -22,13 +22,13 @@ import models.reference.DocumentType
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
-import pages.documents.TypePage
+import pages.houseConsignment.index.items.document.TypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.DocumentsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.documents.TypeView
+import views.html.houseConsignment.index.items.document.TypeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -47,37 +47,41 @@ class TypeController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val prefix: String = "document.type"
+  private val prefix: String = "houseConsignment.index.items.document.type"
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
+  def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions
     .requireData(arrivalId)
     .async {
       implicit request =>
-        service.getDocumentList(request.userAnswers, documentIndex).map {
+        service.getDocumentList(request.userAnswers, houseConsignmentIndex, itemIndex, documentIndex).map {
           documentList =>
-            val form = formProvider(mode, prefix, documentList)
-            val preparedForm = request.userAnswers.get(TypePage(documentIndex)) match {
+            val form = formProvider(mode, prefix, documentList, houseConsignmentIndex.display, itemIndex.display)
+            val preparedForm = request.userAnswers.get(TypePage(houseConsignmentIndex, itemIndex, documentIndex)) match {
               case None        => form
               case Some(value) => form.fill(value)
             }
 
-            Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode, documentList.values, documentIndex))
+            Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode, documentList.values, houseConsignmentIndex, itemIndex, documentIndex))
         }
     }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
+  def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions
     .requireData(arrivalId)
     .async {
       implicit request =>
-        service.getDocumentList(request.userAnswers, documentIndex).flatMap {
+        service.getDocumentList(request.userAnswers, houseConsignmentIndex, itemIndex, documentIndex).flatMap {
           documentList =>
-            val form = formProvider(mode, prefix, documentList)
+            val form = formProvider(mode, prefix, documentList, houseConsignmentIndex.display, itemIndex.display)
             form
               .bindFromRequest()
               .fold(
                 formWithErrors =>
-                  Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode, documentList.values, documentIndex))),
-                value => redirect(mode, value, documentIndex)
+                  Future.successful(
+                    BadRequest(
+                      view(formWithErrors, request.userAnswers.mrn, arrivalId, mode, documentList.values, houseConsignmentIndex, itemIndex, documentIndex)
+                    )
+                  ),
+                value => redirect(mode, value, houseConsignmentIndex, itemIndex, documentIndex)
               )
         }
     }
@@ -85,10 +89,12 @@ class TypeController @Inject() (
   private def redirect(
     mode: Mode,
     value: DocumentType,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
     documentIndex: Index
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(TypePage(documentIndex), value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(TypePage(houseConsignmentIndex, itemIndex, documentIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(TypePage(documentIndex), mode, request.userAnswers))
+    } yield Redirect(navigator.nextPage(TypePage(houseConsignmentIndex, itemIndex, documentIndex), mode, request.userAnswers))
 }
