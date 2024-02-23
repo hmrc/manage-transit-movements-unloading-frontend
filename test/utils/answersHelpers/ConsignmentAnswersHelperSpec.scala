@@ -147,6 +147,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.head.rows(1).value.value mustBe consignorId
             result.head.rows(2).value.value mustBe consigneeName
             result.head.rows(3).value.value mustBe consigneeId
+            result.head.children mustBe empty
             val link = result.head.viewLink.value
             link.id mustBe "view-house-consignment-1"
             link.text mustBe "View"

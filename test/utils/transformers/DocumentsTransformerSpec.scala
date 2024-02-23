@@ -26,12 +26,6 @@ import models.reference.DocumentType
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.documents.{AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
-import pages.houseConsignment.index.items.document.{
-  TypePage => ItemDocTypePage,
-  DocumentReferenceNumberPage => ItemDocumentReferenceNumberPage,
-  AdditionalInformationPage => ItemDocAdditionalInformationPage
-}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 
@@ -51,53 +45,54 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
       )
 
   override def beforeEach(): Unit = {
-    reset(mockReferenceDataConnector)
-
-    when(mockReferenceDataConnector.getSupportingDocument(eqTo("sd1 tv"))(any(), any()))
-      .thenReturn(Future.successful(DocumentType(Support, "sd1 tv", "sd1 d")))
-
-    when(mockReferenceDataConnector.getSupportingDocument(eqTo("sd2 tv"))(any(), any()))
-      .thenReturn(Future.successful(DocumentType(Support, "sd2 tv", "sd2 d")))
-
-    when(mockReferenceDataConnector.getTransportDocument(eqTo("td1 tv"))(any(), any()))
-      .thenReturn(Future.successful(DocumentType(Transport, "td1 tv", "td1 d")))
-
-    when(mockReferenceDataConnector.getTransportDocument(eqTo("td2 tv"))(any(), any()))
-      .thenReturn(Future.successful(DocumentType(Transport, "td2 tv", "td2 d")))
-
     super.beforeEach()
+    reset(mockReferenceDataConnector)
   }
 
   "must transform data" - {
-    val supportingDocuments = Seq(
-      SupportingDocumentType02(
-        sequenceNumber = "1",
-        typeValue = "sd1 tv",
-        referenceNumber = "sd1 rn",
-        complementOfInformation = Some("sd1 coi")
-      ),
-      SupportingDocumentType02(
-        sequenceNumber = "2",
-        typeValue = "sd2 tv",
-        referenceNumber = "sd2 rn",
-        complementOfInformation = None
-      )
-    )
+    "when consignment documents" in {
+      import pages.documents._
 
-    val transportDocuments = Seq(
-      TransportDocumentType02(
-        sequenceNumber = "1",
-        typeValue = "td1 tv",
-        referenceNumber = "td1 rn"
-      ),
-      TransportDocumentType02(
-        sequenceNumber = "2",
-        typeValue = "td2 tv",
-        referenceNumber = "td2 rn"
+      val supportingDocuments = Seq(
+        SupportingDocumentType02(
+          sequenceNumber = "1",
+          typeValue = "sd1 tv",
+          referenceNumber = "sd1 rn",
+          complementOfInformation = Some("sd1 coi")
+        ),
+        SupportingDocumentType02(
+          sequenceNumber = "2",
+          typeValue = "sd2 tv",
+          referenceNumber = "sd2 rn",
+          complementOfInformation = None
+        )
       )
-    )
 
-    "when consignment level" in {
+      val transportDocuments = Seq(
+        TransportDocumentType02(
+          sequenceNumber = "1",
+          typeValue = "td1 tv",
+          referenceNumber = "td1 rn"
+        ),
+        TransportDocumentType02(
+          sequenceNumber = "2",
+          typeValue = "td2 tv",
+          referenceNumber = "td2 rn"
+        )
+      )
+
+      when(mockReferenceDataConnector.getSupportingDocument(eqTo("sd1 tv"))(any(), any()))
+        .thenReturn(Future.successful(DocumentType(Support, "sd1 tv", "sd1 d")))
+
+      when(mockReferenceDataConnector.getSupportingDocument(eqTo("sd2 tv"))(any(), any()))
+        .thenReturn(Future.successful(DocumentType(Support, "sd2 tv", "sd2 d")))
+
+      when(mockReferenceDataConnector.getTransportDocument(eqTo("td1 tv"))(any(), any()))
+        .thenReturn(Future.successful(DocumentType(Transport, "td1 tv", "td1 d")))
+
+      when(mockReferenceDataConnector.getTransportDocument(eqTo("td2 tv"))(any(), any()))
+        .thenReturn(Future.successful(DocumentType(Transport, "td2 tv", "td2 d")))
+
       val result = transformer.transform(supportingDocuments, transportDocuments).apply(emptyUserAnswers).futureValue
 
       result.getValue(TypePage(Index(0))).toString mustBe "Supporting - (sd1 tv) sd1 d"
@@ -117,25 +112,62 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
       result.get(AdditionalInformationPage(Index(3))) must not be defined
     }
 
-    "when house consignment level" in {
+    "when consignment item documents" in {
+      import pages.houseConsignment.index.items.document._
+
+      val supportingDocuments = Seq(
+        SupportingDocumentType02(
+          sequenceNumber = "1",
+          typeValue = "sd1 tv",
+          referenceNumber = "sd1 rn",
+          complementOfInformation = Some("sd1 coi")
+        ),
+        SupportingDocumentType02(
+          sequenceNumber = "2",
+          typeValue = "sd2 tv",
+          referenceNumber = "sd2 rn",
+          complementOfInformation = None
+        )
+      )
+
+      val transportDocuments = Seq(
+        TransportDocumentType02(
+          sequenceNumber = "1",
+          typeValue = "td1 tv",
+          referenceNumber = "td1 rn"
+        ),
+        TransportDocumentType02(
+          sequenceNumber = "2",
+          typeValue = "td2 tv",
+          referenceNumber = "td2 rn"
+        )
+      )
+
+      when(mockReferenceDataConnector.getSupportingDocument(eqTo("sd1 tv"))(any(), any()))
+        .thenReturn(Future.successful(DocumentType(Support, "sd1 tv", "sd1 d")))
+
+      when(mockReferenceDataConnector.getSupportingDocument(eqTo("sd2 tv"))(any(), any()))
+        .thenReturn(Future.successful(DocumentType(Support, "sd2 tv", "sd2 d")))
+
+      when(mockReferenceDataConnector.getTransportDocument(eqTo("td1 tv"))(any(), any()))
+        .thenReturn(Future.successful(DocumentType(Transport, "td1 tv", "td1 d")))
+
+      when(mockReferenceDataConnector.getTransportDocument(eqTo("td2 tv"))(any(), any()))
+        .thenReturn(Future.successful(DocumentType(Transport, "td2 tv", "td2 d")))
 
       val result = transformer.transform(supportingDocuments, transportDocuments, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
 
-      result.getValue(ItemDocTypePage(hcIndex, itemIndex, Index(0))).toString mustBe "Supporting - (sd1 tv) sd1 d"
-      result.getValue(ItemDocumentReferenceNumberPage(hcIndex, itemIndex, Index(0))) mustBe "sd1 rn"
-      result.getValue(ItemDocAdditionalInformationPage(hcIndex, itemIndex, Index(0))) mustBe "sd1 coi"
+      result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(0))) mustBe "sd1 rn"
+      result.getValue(AdditionalInformationPage(hcIndex, itemIndex, Index(0))) mustBe "sd1 coi"
 
-      result.getValue(ItemDocTypePage(hcIndex, itemIndex, Index(1))).toString mustBe "Supporting - (sd2 tv) sd2 d"
-      result.getValue(ItemDocumentReferenceNumberPage(hcIndex, itemIndex, Index(1))) mustBe "sd2 rn"
-      result.get(ItemDocAdditionalInformationPage(hcIndex, itemIndex, Index(1))) must not be defined
+      result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(1))) mustBe "sd2 rn"
+      result.get(AdditionalInformationPage(hcIndex, itemIndex, Index(1))) must not be defined
 
-      result.getValue(ItemDocTypePage(hcIndex, itemIndex, Index(2))).toString mustBe "Transport - (td1 tv) td1 d"
-      result.getValue(ItemDocumentReferenceNumberPage(hcIndex, itemIndex, Index(2))) mustBe "td1 rn"
-      result.get(ItemDocAdditionalInformationPage(hcIndex, itemIndex, Index(2))) must not be defined
+      result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(2))) mustBe "td1 rn"
+      result.get(AdditionalInformationPage(hcIndex, itemIndex, Index(2))) must not be defined
 
-      result.getValue(ItemDocTypePage(hcIndex, itemIndex, Index(3))).toString mustBe "Transport - (td2 tv) td2 d"
-      result.getValue(ItemDocumentReferenceNumberPage(hcIndex, itemIndex, Index(3))) mustBe "td2 rn"
-      result.get(ItemDocAdditionalInformationPage(hcIndex, itemIndex, Index(3))) must not be defined
+      result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(3))) mustBe "td2 rn"
+      result.get(AdditionalInformationPage(hcIndex, itemIndex, Index(3))) must not be defined
     }
   }
 }
