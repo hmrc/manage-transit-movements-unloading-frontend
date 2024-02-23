@@ -16,6 +16,7 @@
 
 package utils.answersHelpers.consignment
 
+import models.Index
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.{AdditionalReferenceType, Country, PackageType}
 import org.scalacheck.Arbitrary.arbitrary
@@ -24,6 +25,7 @@ import pages._
 import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
 import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
 import pages.houseConsignment.index.items._
+import pages.houseConsignment.index.items.document.DocumentReferenceNumberPage
 import utils.answersHelpers.AnswersHelperSpecBase
 import viewModels.sections.Section.AccordionSection
 
@@ -172,6 +174,8 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(CustomsUnionAndStatisticsCodePage(hcIndex, itemIndex), cusCode)
               .setValue(CommodityCodePage(hcIndex, itemIndex), commodityCode)
               .setValue(CombinedNomenclatureCodePage(hcIndex, itemIndex), nomenclatureCode)
+              .setValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(0)), "doc 1 ref")
+              .setValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(1)), "doc 2 ref")
               .setValue(AdditionalReferencePage(hcIndex, itemIndex, additionalReferenceIndex), additionalReference)
 
             val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
@@ -194,13 +198,21 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.head.children.head.rows(2).value.value mustBe s"$description"
 
             result.head.children(1) mustBe a[AccordionSection]
-            result.head.children(1).sectionTitle.value mustBe "Additional references"
+            result.head.children(1).sectionTitle.value mustBe "Document 1"
             result.head.children(1).rows.size mustBe 1
-            result.head.children(1).rows.head.value.value mustBe additionalReference.toString
+            result.head.children(1).rows.head.value.value mustBe "doc 1 ref"
 
+            result.head.children(2) mustBe a[AccordionSection]
+            result.head.children(2).sectionTitle.value mustBe "Document 2"
+            result.head.children(2).rows.size mustBe 1
+            result.head.children(2).rows.head.value.value mustBe "doc 2 ref"
+
+            result.head.children(3) mustBe a[AccordionSection]
+            result.head.children(3).sectionTitle.value mustBe "Additional references"
+            result.head.children(3).rows.size mustBe 1
+            result.head.children(3).rows.head.value.value mustBe additionalReference.toString
         }
       }
     }
-
   }
 }
