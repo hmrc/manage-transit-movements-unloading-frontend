@@ -19,7 +19,7 @@ package utils.answersHelpers.consignment
 import generated.{ConsignmentType05, EndorsementType03, IncidentType04, Number0}
 import models.reference.{Country, Incident}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen.alphaNumStr
+import org.scalacheck.Gen
 import pages.incident.{EndorsementCountryPage, IncidentCodePage, IncidentTextPage}
 import utils.Format.cyaDateFormatter
 import utils.answersHelpers.AnswersHelperSpecBase
@@ -66,7 +66,7 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return Some(Row)" - {
         s"when $page defined" in {
-          forAll(alphaNumStr) {
+          forAll(Gen.alphaNumStr) {
             value =>
               val answers = emptyUserAnswers.setValue(page, value)
 

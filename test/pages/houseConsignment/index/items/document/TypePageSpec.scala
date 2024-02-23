@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages.documents
+package pages.houseConsignment.index.items.document
 
 import models.reference.DocumentType
 import pages.behaviours.PageBehaviours
@@ -23,10 +23,10 @@ class TypePageSpec extends PageBehaviours {
 
   "TypePage" - {
 
-    beRetrievable[DocumentType](TypePage(documentIndex))
+    beRetrievable[DocumentType](TypePage(houseConsignmentIndex, itemIndex, documentIndex))
 
-    beSettable[DocumentType](TypePage(documentIndex))
+    beSettable[DocumentType](TypePage(houseConsignmentIndex, itemIndex, documentIndex))
 
-    beRemovable[DocumentType](TypePage(documentIndex))
+    beRemovable[DocumentType](TypePage(houseConsignmentIndex, itemIndex, documentIndex))
   }
 }

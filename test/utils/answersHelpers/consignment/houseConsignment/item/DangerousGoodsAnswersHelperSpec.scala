@@ -16,7 +16,7 @@
 
 package utils.answersHelpers.consignment.houseConsignment.item
 
-import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import pages.houseConsignment.index.items.DangerousGoodsPage
 import utils.answersHelpers.AnswersHelperSpecBase
 
@@ -36,7 +36,7 @@ class DangerousGoodsAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return Some(Row)" - {
         s"when $page defined" in {
-          forAll(arbitrary[String]) {
+          forAll(Gen.alphaNumStr) {
             value =>
               val answers = emptyUserAnswers.setValue(page, value)
 
