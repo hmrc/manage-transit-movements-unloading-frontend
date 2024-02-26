@@ -16,7 +16,8 @@
 
 package utils.answersHelpers.consignment
 
-import generated.{ConsignmentType05, EndorsementType03, IncidentType04, Number0}
+import generated.{ConsignmentType05, EndorsementType03, GNSSType, IncidentType04, LocationType02, Number0}
+import models.Coordinates
 import models.reference.{Country, Incident}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -196,6 +197,38 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
 
               result.key.value mustBe "Country"
               result.value.value mustBe s"${value.description}"
+              val action = result.actions
+              action mustBe None
+          }
+        }
+      }
+    }
+
+    "incidentCoordinatesRow" - {
+      "must return None" - {
+        s"when incident undefined" in {
+          val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
+          helper.incidentCoordinatesRow mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when incident defined" in {
+          forAll(arbitrary[IncidentType04], arbitrary[Coordinates], arbitrary[LocationType02]) {
+            (incident, coordinate, locationType02) =>
+              val locationType = locationType02.copy(GNSS = Some(GNSSType(coordinate.latitude, coordinate.longitude)))
+              val consignment: ConsignmentType05 = ConsignmentType05(
+                containerIndicator = Number0,
+                Incident = Seq(incident.copy(Location = locationType))
+              )
+
+              val answers = emptyUserAnswers.copy(ie043Data = emptyUserAnswers.ie043Data.copy(Consignment = Some(consignment)))
+
+              val helper = new IncidentAnswersHelper(answers, index)
+              val result = helper.incidentCoordinatesRow.value
+
+              result.key.value mustBe "Coordinates"
+              result.value.value mustBe s"$coordinate"
               val action = result.actions
               action mustBe None
           }

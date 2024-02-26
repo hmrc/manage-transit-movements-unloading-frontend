@@ -18,10 +18,12 @@ package utils.answersHelpers
 
 import generated._
 import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.{AdditionalReferenceType, Country, CustomsOffice, DocumentType}
-import models.{Index, SecurityType}
+import models.reference.{AdditionalReferenceType, Country, CustomsOffice, DocumentType, Incident}
+import models.{Coordinates, Index, SecurityType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import pages.incident.{IncidentCodePage, IncidentTextPage}
+import pages.incident.endorsement.EndorsementCountryPage
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 
 import javax.xml.datatype.XMLGregorianCalendar
@@ -270,6 +272,46 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             link.href mustBe controllers.routes.HouseConsignmentController.onPageLoad(answers.id, hcIndex).url
             link.visuallyHidden mustBe "on house consignment 1"
             result.head.id.value mustBe "houseConsignment1"
+        }
+      }
+    }
+
+    "incidentSection" - {
+
+      "must generate accordion sections" in {
+        forAll(arbitrary[IncidentType04], arbitrary[EndorsementType03], arbitrary[Country], arbitrary[LocationType02], arbitrary[Coordinates]) {
+          (incident, endorsement, country, locationType02, coordinate) =>
+            val locationType = locationType02.copy(GNSS = Some(GNSSType(coordinate.latitude, coordinate.longitude)))
+            val consignment: ConsignmentType05 = ConsignmentType05(
+              containerIndicator = Number0,
+              Incident = Seq(incident.copy(Endorsement = Some(endorsement), Location = locationType))
+            )
+
+            val inc = Incident("A", "desc A")
+
+            val answers =
+              emptyUserAnswers
+                .copy(ie043Data = emptyUserAnswers.ie043Data.copy(Consignment = Some(consignment)))
+                .setValue(IncidentCodePage(index), inc)
+                .setValue(EndorsementCountryPage(index), country)
+                .setValue(IncidentTextPage(index), "description")
+
+            val helper = new ConsignmentAnswersHelper(answers)
+            val result = helper.incidentSections
+
+            result.head mustBe a[AccordionSection]
+            result.head.sectionTitle.value mustBe "Incident 1"
+            result.head.rows.size mustBe 3
+            result.head.rows.head.value.value mustBe inc.toString
+            result.head.rows(1).value.value mustBe "description"
+            result.head.rows(2).value.value mustBe coordinate.toString
+
+            result.head.children.head.sectionTitle.value mustBe "Endorsements"
+            result.head.children.head.rows.head.key.value mustBe "Endorsement date"
+            result.head.children.head.rows(1).key.value mustBe "Authority"
+            result.head.children.head.rows(2).key.value mustBe "Country"
+            result.head.children.head.rows(3).key.value mustBe "Location"
+
         }
       }
     }

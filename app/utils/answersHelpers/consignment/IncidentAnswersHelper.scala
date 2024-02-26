@@ -17,7 +17,7 @@
 package utils.answersHelpers.consignment
 
 import models.reference.{Country, Incident}
-import models.{Index, UserAnswers}
+import models.{Coordinates, Index, UserAnswers}
 import pages.incident.endorsement.EndorsementCountryPage
 import pages.incident.{IncidentCodePage, IncidentTextPage}
 import play.api.i18n.Messages
@@ -94,5 +94,14 @@ class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(impl
     id = None,
     call = None
   )
+
+  def incidentCoordinatesRow: Option[SummaryListRow] =
+    userAnswers.ie043Data.Consignment.flatMap(_.Incident.lift(incidentIndex.position).flatMap(_.Location.GNSS)).map {
+      gnss =>
+        buildRowWithNoChangeLink(
+          prefix = "unloadingFindings.incident.coordinates",
+          answer = formatAsText(Coordinates(gnss.latitude, gnss.longitude))
+        )
+    }
 
 }
