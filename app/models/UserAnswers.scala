@@ -45,19 +45,22 @@ final case class UserAnswers(
   def get[A](page: QuestionPage[A])(implicit rds: Reads[A]): Option[A] =
     get(page: Gettable[A])
 
-  def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
+  def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] =
+    set(page.path, value).flatMap {
+      userAnswers => page.cleanup(Some(value), userAnswers)
+    }
 
-    val updatedData = data.setObject(page.path, Json.toJson(value)) match {
+  def set[A](path: JsPath, value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
+    val updatedData = data.setObject(path, Json.toJson(value)) match {
       case JsSuccess(jsValue, _) =>
         Success(jsValue)
       case JsError(errors) =>
         Failure(JsResultException(errors))
     }
 
-    updatedData.flatMap {
+    updatedData.map {
       d =>
-        val updatedAnswers = copy(data = d)
-        page.cleanup(Some(value), updatedAnswers)
+        copy(data = d)
     }
   }
 

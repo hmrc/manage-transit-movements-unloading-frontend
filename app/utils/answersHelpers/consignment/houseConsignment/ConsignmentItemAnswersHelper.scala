@@ -28,12 +28,7 @@ import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
-import utils.answersHelpers.consignment.houseConsignment.item.{
-  AdditionalReferencesAnswerHelper,
-  DangerousGoodsAnswerHelper,
-  DocumentAnswersHelper,
-  PackagingAnswersHelper
-}
+import utils.answersHelpers.consignment.houseConsignment.item.{AdditionalReferencesAnswerHelper, DangerousGoodsAnswerHelper, DocumentAnswersHelper, PackagingAnswersHelper}
 import viewModels.sections.Section
 import viewModels.sections.Section.AccordionSection
 
@@ -87,10 +82,11 @@ class ConsignmentItemAnswersHelper(
     userAnswers
       .get(DocumentsSection(houseConsignmentIndex, itemIndex))
       .mapWithIndex {
-        case (_, documentIndex) =>
+        case (jsValue, documentIndex) =>
           val helper = new DocumentAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex, documentIndex)
 
           val rows = Seq(
+            helper.sequenceNumber(jsValue),
             helper.referenceNumber,
             helper.additionalInformation
           ).flatten
@@ -111,10 +107,10 @@ class ConsignmentItemAnswersHelper(
     userAnswers
       .get(PackagingSection(houseConsignmentIndex, itemIndex))
       .mapWithIndex {
-        case (_, packageIndex) =>
+        case (jsValue, packageIndex) =>
           val helper = new PackagingAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex, packageIndex)
 
-          val rows = Seq(helper.packageTypeRow, helper.packageCountRow, helper.packageMarksRow).flatten
+          val rows = Seq(helper.sequenceNumber(jsValue), helper.packageTypeRow, helper.packageCountRow, helper.packageMarksRow).flatten
 
           AccordionSection(
             sectionTitle = messages("unloadingFindings.subsections.packages", packageIndex.display),
