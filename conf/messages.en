@@ -688,3 +688,8 @@ houseConsignment.index.items.document.type.heading = What is the new document ty
 houseConsignment.index.items.document.type.hint = Enter the document name or code.
 houseConsignment.index.items.document.type.placeholder = Select a document type
 houseConsignment.index.items.document.type.check.error.required = Select the new document type for item {1} in house consignment {0}
+
+transportEquipment.index.addContainerIdentificationNumberYesNo.title = Do you want to add a container identification number for the transport equipment?
+transportEquipment.index.addContainerIdentificationNumberYesNo.heading = Do you want to add a container identification number for the transport equipment?
+transportEquipment.index.addContainerIdentificationNumberYesNo.paragraph = This is a unique number used to identify the container.
+transportEquipment.index.addContainerIdentificationNumberYesNo.error.required = Select yes if you want to add a container identification number for the transport equipment
