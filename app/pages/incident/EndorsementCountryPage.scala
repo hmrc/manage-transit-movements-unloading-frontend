@@ -17,13 +17,14 @@
 package pages.incident
 
 import models.Index
-import models.reference.{Country, Incident}
+import models.reference.Country
 import pages.QuestionPage
+import pages.sections.incidents.IncidentEndorsementSection
 import play.api.libs.json.JsPath
 
 case class EndorsementCountryPage(incidentIndex: Index) extends QuestionPage[Country] {
 
-  override def path: JsPath = JsPath \ "Consignment" \ "Incident" \ incidentIndex.position \ "Endorsement" \ toString
+  override def path: JsPath = IncidentEndorsementSection(incidentIndex).path \ toString
 
   override def toString: String = "country"
 }

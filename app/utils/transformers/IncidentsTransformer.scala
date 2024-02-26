@@ -64,8 +64,6 @@ class IncidentsTransformer @Inject() (
               pipeline(userAnswers)
           }
       })
-
     }
   }
-
 }
