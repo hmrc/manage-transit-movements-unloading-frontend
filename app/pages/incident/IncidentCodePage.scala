@@ -19,11 +19,12 @@ package pages.incident
 import models.Index
 import models.reference.Incident
 import pages.QuestionPage
+import pages.sections.incidents.IncidentSection
 import play.api.libs.json.JsPath
 
 case class IncidentCodePage(incidentIndex: Index) extends QuestionPage[Incident] {
 
-  override def path: JsPath = JsPath \ "Consignment" \ "Incident" \ incidentIndex.position \ toString
+  override def path: JsPath = IncidentSection(incidentIndex).path \ toString
 
   override def toString: String = "incident"
 }

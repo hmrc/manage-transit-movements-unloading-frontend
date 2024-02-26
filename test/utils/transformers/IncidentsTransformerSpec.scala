@@ -21,14 +21,16 @@ import connectors.ReferenceDataConnector
 import generated._
 import generators.Generators
 import models.Index
-import models.reference.{Country, Incident}
+import models.reference.Incident
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.incident.{EndorsementCountryPage, IncidentCodePage, IncidentTextPage}
+import pages.QuestionPage
+import pages.incident.{IncidentCodePage, IncidentTextPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.{JsObject, JsPath, Json}
 
 import scala.concurrent.Future
 
@@ -38,16 +40,32 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
   private lazy val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
+  private lazy val mockIncidentEndorsementTransformer: IncidentEndorsementTransformer = mock[IncidentEndorsementTransformer]
+
+  private lazy val mockIncidentLocationTransformer: IncidentLocationTransformer = mock[IncidentLocationTransformer]
+
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[ReferenceDataConnector].toInstance(mockRefDataConnector)
+        bind[ReferenceDataConnector].toInstance(mockRefDataConnector),
+        bind[IncidentEndorsementTransformer].toInstance(mockIncidentEndorsementTransformer),
+        bind[IncidentLocationTransformer].toInstance(mockIncidentLocationTransformer)
       )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockRefDataConnector)
+    reset(mockIncidentEndorsementTransformer)
+    reset(mockIncidentLocationTransformer)
+  }
+
+  private case object FakeIncidentEndorsementSection extends QuestionPage[JsObject] {
+    override def path: JsPath = JsPath \ "incidentEndorsement"
+  }
+
+  private case object FakeIncidentLocationSection extends QuestionPage[JsObject] {
+    override def path: JsPath = JsPath \ "incidentLocation"
   }
 
   // Because each incident has its own set of mocks, we need to ensure the values are unique
@@ -55,6 +73,7 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
     .map {
       _.distinctBy(_.code)
         .distinctBy(_.Endorsement)
+        .distinctBy(_.Location)
     }
 
   "must transform data" - {
@@ -70,13 +89,15 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
                   Future.successful(Incident(type0.code, i.toString))
                 )
 
-              type0.Endorsement.map {
-                endorse =>
-                  when(mockRefDataConnector.getCountry(eqTo(endorse.country))(any(), any()))
-                    .thenReturn(
-                      Future.successful(Country(endorse.country, i.toString))
-                    )
-              }
+              when(mockIncidentEndorsementTransformer.transform(any(), eqTo(Index(i)))(any()))
+                .thenReturn {
+                  ua => Future.successful(ua.setValue(FakeIncidentEndorsementSection, Json.obj("foo" -> i.toString)))
+                }
+
+              when(mockIncidentLocationTransformer.transform(any(), eqTo(Index(i)))(any()))
+                .thenReturn {
+                  ua => Future.successful(ua.setValue(FakeIncidentLocationSection, Json.obj("foo" -> i.toString)))
+                }
           }
 
           val result = transformer.transform(incidents).apply(emptyUserAnswers).futureValue
@@ -86,10 +107,8 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
               result.getValue(IncidentCodePage(Index(i))).code mustBe incident.code
               result.getValue(IncidentCodePage(Index(i))).description mustBe i.toString
               result.getValue(IncidentTextPage(Index(i))) mustBe incident.text
-              result.get(EndorsementCountryPage(Index(i))).map(_.code) mustBe incident.Endorsement.map(_.country)
-              result.get(EndorsementCountryPage(Index(i))).map(_.description) mustBe incident.Endorsement.map(
-                _ => i.toString
-              )
+              result.getValue(FakeIncidentEndorsementSection) mustBe Json.obj("foo" -> i.toString)
+              result.getValue(FakeIncidentLocationSection) mustBe Json.obj("foo" -> i.toString)
           }
       }
     }

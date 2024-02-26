@@ -18,7 +18,8 @@ package utils.answersHelpers.consignment
 
 import models.reference.{Country, Incident}
 import models.{Coordinates, Index, UserAnswers}
-import pages.incident.{EndorsementCountryPage, IncidentCodePage, IncidentTextPage}
+import pages.incident.endorsement.EndorsementCountryPage
+import pages.incident.{IncidentCodePage, IncidentTextPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper

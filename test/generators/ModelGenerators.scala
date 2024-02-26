@@ -18,7 +18,6 @@ package generators
 
 import models.P5.ArrivalMessageType
 import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.{AdditionalReferenceType, Country, Incident, Item, PackageType}
 import models.reference._
 import models.{SecurityType, _}
 import org.scalacheck.Arbitrary.arbitrary
@@ -122,6 +121,14 @@ trait ModelGenerators {
         code <- nonEmptyString
         desc <- nonEmptyString
       } yield Incident(code, desc)
+    }
+
+  implicit lazy val arbitraryQualifierOfIdentification: Arbitrary[QualifierOfIdentification] =
+    Arbitrary {
+      for {
+        qualifier   <- nonEmptyString
+        description <- nonEmptyString
+      } yield QualifierOfIdentification(qualifier, description)
     }
 
   implicit lazy val arbitraryItem: Arbitrary[Item] =

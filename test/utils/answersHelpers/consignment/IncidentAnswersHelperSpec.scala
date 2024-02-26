@@ -21,7 +21,8 @@ import models.Coordinates
 import models.reference.{Country, Incident}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.incident.{EndorsementCountryPage, IncidentCodePage, IncidentTextPage}
+import pages.incident.endorsement.EndorsementCountryPage
+import pages.incident.{IncidentCodePage, IncidentTextPage}
 import utils.Format.cyaDateFormatter
 import utils.answersHelpers.AnswersHelperSpecBase
 
