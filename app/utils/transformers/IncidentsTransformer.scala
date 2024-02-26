@@ -17,7 +17,7 @@
 package utils.transformers
 
 import connectors.ReferenceDataConnector
-import generated.EndorsementType03
+import generated._
 import models.reference.{Country, Incident}
 import models.{Index, UserAnswers}
 import pages.incident.endorsement.EndorsementCountryPage
@@ -28,7 +28,8 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IncidentsTransformer @Inject() (
-  referenceDataConnector: ReferenceDataConnector
+  referenceDataConnector: ReferenceDataConnector,
+  incidentLocationTransformer: IncidentLocationTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
@@ -36,7 +37,8 @@ class IncidentsTransformer @Inject() (
     typeValue: Incident,
     text: String,
     endorsement: Option[EndorsementType03],
-    endorsementCountry: Option[Country]
+    endorsementCountry: Option[Country],
+    location: LocationType02
   )
 
   def transform(incidents: Seq[generated.IncidentType04])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
@@ -48,7 +50,7 @@ class IncidentsTransformer @Inject() (
         for {
           incident <- incidentF
           country  <- countryF
-        } yield TempIncident(incident, incidentType0.text, incidentType0.Endorsement, country)
+        } yield TempIncident(incident, incidentType0.text, incidentType0.Endorsement, country, incidentType0.Location)
     }
 
     Future.sequence(incidentRefLookups).flatMap {
@@ -60,7 +62,8 @@ class IncidentsTransformer @Inject() (
               val pipeline: UserAnswers => Future[UserAnswers] =
                 set(IncidentCodePage(incidentIndex), tempIncident.typeValue) andThen
                   set(IncidentTextPage(incidentIndex), tempIncident.text) andThen
-                  set(EndorsementCountryPage(incidentIndex), tempIncident.endorsementCountry)
+                  set(EndorsementCountryPage(incidentIndex), tempIncident.endorsementCountry) andThen
+                  incidentLocationTransformer.transform(tempIncident.location, incidentIndex)
 
               pipeline(userAnswers)
           }
