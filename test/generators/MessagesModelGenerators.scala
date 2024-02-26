@@ -17,6 +17,7 @@
 package generators
 
 import generated._
+import models.Coordinates
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen.const
 import org.scalacheck.{Arbitrary, Gen}
@@ -397,22 +398,27 @@ trait MessagesModelGenerators {
     } yield EndorsementType03(date, authority, place, country)
   }
 
+  implicit lazy val coordinates: Arbitrary[Coordinates] = Arbitrary {
+    for {
+      long <- Gen.alphaNumStr
+      lat  <- Gen.alphaNumStr
+    } yield Coordinates(long, lat)
+  }
+
   implicit lazy val arbitraryIncidentType04: Arbitrary[generated.IncidentType04] =
     Arbitrary {
       for {
-        sequenceNumber            <- Gen.alphaNumStr
-        code                      <- Gen.alphaNumStr
-        text                      <- Gen.alphaNumStr
-        qualifierOfIdentification <- Gen.alphaNumStr
-        country                   <- Gen.alphaNumStr
+        sequenceNumber <- Gen.alphaNumStr
+        code           <- Gen.alphaNumStr
+        text           <- Gen.alphaNumStr
+        loc            <- arbitraryLocationType02.arbitrary
 
       } yield generated.IncidentType04(
         sequenceNumber = sequenceNumber,
         code = code,
         text = text,
         Endorsement = None,
-        Location =
-          generated.LocationType02(qualifierOfIdentification = qualifierOfIdentification, UNLocode = None, country = country, GNSS = None, Address = None),
+        Location = loc,
         TransportEquipment = Nil,
         Transhipment = None
       )

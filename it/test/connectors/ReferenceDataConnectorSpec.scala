@@ -348,7 +348,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
     "getQualifierOfIdentificationIncident" - {
       val qualifier = "U"
-      val url          = s"/$baseUrl/lists/QualifierOfIdentificationIncident?data.qualifier=$qualifier"
+      val url       = s"/$baseUrl/lists/QualifierOfIdentificationIncident?data.qualifier=$qualifier"
 
       "must return supporting document when successful" in {
         server.stubFor(

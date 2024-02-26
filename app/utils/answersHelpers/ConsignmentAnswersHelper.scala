@@ -162,15 +162,22 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         val rows = Seq(
           helper.incidentCodeRow,
           helper.incidentDescriptionRow,
-          helper.incidentEndorsementDateRow,
-          helper.incidentEndorsementAuthorityRow,
-          helper.incidentEndorsementPlaceRow,
-          helper.incidentEndorsementCountryRow
+          helper.incidentCoordinatesRow
         ).flatten
 
+        val endorsementSection = StaticSection(
+          sectionTitle = Some(messages("unloadingFindings.subsections.incidents.endorsements")),
+          rows = Seq(helper.incidentEndorsementDateRow,
+                     helper.incidentEndorsementAuthorityRow,
+                     helper.incidentEndorsementCountryRow,
+                     helper.incidentEndorsementPlaceRow
+          ).flatten
+        )
+
         AccordionSection(
-          sectionTitle = messages("unloadingFindings.subsections.incidents", incidentIndex.display),
-          rows = rows
+          sectionTitle = Some(messages("unloadingFindings.subsections.incidents", incidentIndex.display)),
+          rows = rows,
+          children = Seq(endorsementSection)
         )
     }
 
