@@ -18,10 +18,11 @@ package utils.answersHelpers.consignment
 
 import generated.{ConsignmentType05, EndorsementType03, GNSSType, IncidentType04, LocationType02, Number0}
 import models.Coordinates
-import models.reference.{Country, Incident}
+import models.reference.{Country, Incident, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.incident.endorsement.EndorsementCountryPage
+import pages.incident.location._
 import pages.incident.{IncidentCodePage, IncidentTextPage}
 import utils.Format.cyaDateFormatter
 import utils.answersHelpers.AnswersHelperSpecBase
@@ -29,6 +30,33 @@ import utils.answersHelpers.AnswersHelperSpecBase
 class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
 
   "IncidentAnswersHelper" - {
+
+    "incidentCountryRow" - {
+      val page = CountryPage(index)
+      "must return None" - {
+        s"when $page undefined" in {
+          val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
+          helper.incidentCountryRow mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $page defined" in {
+          forAll(arbitrary[Country]) {
+            value =>
+              val answers = emptyUserAnswers.setValue(page, value)
+
+              val helper = new IncidentAnswersHelper(answers, index)
+              val result = helper.incidentCountryRow.value
+
+              result.key.value mustBe "Country"
+              result.value.value mustBe value.toString
+              val action = result.actions
+              action mustBe None
+          }
+        }
+      }
+    }
 
     "incidentCodeRow" - {
       val page = IncidentCodePage(index)
@@ -57,7 +85,7 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
       }
     }
 
-    "incidentTextRow" - {
+    "incidentDescriptionRow" - {
       val page = IncidentTextPage(index)
       "must return None" - {
         s"when $page undefined" in {
@@ -77,6 +105,33 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
 
               result.key.value mustBe "Description"
               result.value.value mustBe s"$value"
+              val action = result.actions
+              action mustBe None
+          }
+        }
+      }
+    }
+
+    "incidentQualifierRow" - {
+      val page = QualifierOfIdentificationPage(index)
+      "must return None" - {
+        s"when $page undefined" in {
+          val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
+          helper.incidentQualifierRow mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $page defined" in {
+          forAll(arbitrary[QualifierOfIdentification]) {
+            value =>
+              val answers = emptyUserAnswers.setValue(page, value)
+
+              val helper = new IncidentAnswersHelper(answers, index)
+              val result = helper.incidentQualifierRow.value
+
+              result.key.value mustBe "Identifier type"
+              result.value.value mustBe s"${value.toString}"
               val action = result.actions
               action mustBe None
           }
@@ -236,5 +291,36 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
       }
     }
 
+    "incidentUnLocodeRow" - {
+      "must return None" - {
+        s"when incident undefined" in {
+          val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
+          helper.incidentUnLocodeRow mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when incident defined" in {
+          forAll(arbitrary[IncidentType04], Gen.alphaNumStr, arbitrary[LocationType02]) {
+            (incident, unLocode, locationType02) =>
+              val locationType = locationType02.copy(UNLocode = Some(unLocode))
+              val consignment: ConsignmentType05 = ConsignmentType05(
+                containerIndicator = Number0,
+                Incident = Seq(incident.copy(Location = locationType))
+              )
+
+              val answers = emptyUserAnswers.copy(ie043Data = emptyUserAnswers.ie043Data.copy(Consignment = Some(consignment)))
+
+              val helper = new IncidentAnswersHelper(answers, index)
+              val result = helper.incidentUnLocodeRow.value
+
+              result.key.value mustBe "UN/LOCODE"
+              result.value.value mustBe unLocode
+              val action = result.actions
+              action mustBe None
+          }
+        }
+      }
+    }
   }
 }
