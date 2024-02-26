@@ -159,12 +159,13 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         val helper = new IncidentAnswersHelper(userAnswers, incidentIndex)
 
         val rows = Seq(
+          helper.incidentEndorsementCountryRow,
           helper.incidentCodeRow,
           helper.incidentDescriptionRow,
+          helper.incidentCoordinatesRow,
           helper.incidentEndorsementDateRow,
           helper.incidentEndorsementAuthorityRow,
-          helper.incidentEndorsementPlaceRow,
-          helper.incidentEndorsementCountryRow
+          helper.incidentEndorsementPlaceRow
         ).flatten
 
         AccordionSection(
