@@ -27,9 +27,6 @@ trait TransportMode[T] extends Radioable[T] {
   val description: String
 
   override def toString: String = StringEscapeUtils.unescapeXml(description)
-
-  def isOneOf(codes: String*): Boolean    = codes.contains(code)
-  def isNotOneOf(codes: String*): Boolean = !isOneOf(codes: _*)
 }
 
 object TransportMode {

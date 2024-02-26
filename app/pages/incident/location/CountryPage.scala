@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package pages.incident
+package pages.incident.location
 
 import models.Index
+import models.reference.Country
 import pages.QuestionPage
-import pages.sections.incidents.IncidentSection
+import pages.sections.incidents.IncidentLocationSection
 import play.api.libs.json.JsPath
 
-case class IncidentTextPage(incidentIndex: Index) extends QuestionPage[String] {
+case class CountryPage(incidentIndex: Index) extends QuestionPage[Country] {
 
-  override def path: JsPath = IncidentSection(incidentIndex).path \ toString
+  override def path: JsPath = IncidentLocationSection(incidentIndex).path \ toString
 
-  override def toString: String = "text"
+  override def toString: String = "country"
 }

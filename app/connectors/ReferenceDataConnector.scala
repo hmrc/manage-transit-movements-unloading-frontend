@@ -177,6 +177,12 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[NonEmptySet[DocumentType]](url, headers = version2Header)
   }
 
+  def getQualifierOfIdentificationIncident(qualifier: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[QualifierOfIdentification] = {
+    val queryParams: Seq[(String, String)] = Seq("data.qualifier" -> qualifier)
+    val url                                = s"${config.referenceDataUrl}/lists/QualifierOfIdentificationIncident"
+    http.GET[NonEmptySet[QualifierOfIdentification]](url, headers = version2Header, queryParams = queryParams).map(_.head)
+  }
+
   private def version2Header: Seq[(String, String)] = Seq(
     HeaderNames.Accept -> "application/vnd.hmrc.2.0+json"
   )

@@ -21,6 +21,7 @@ import pages.grossMass.GrossMassPage
 import pages.sections._
 import pages.sections.additionalReference.AdditionalReferencesSection
 import pages.sections.documents.DocumentsSection
+import pages.sections.incidents.IncidentsSection
 import pages.{CustomsOfficeOfDestinationActualPage, SecurityTypePage}
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -154,7 +155,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     )
 
   def incidentSections: Seq[Section] =
-    userAnswers.get(IncidentSection).mapWithIndex {
+    userAnswers.get(IncidentsSection).mapWithIndex {
       case (_, incidentIndex) =>
         val helper = new IncidentAnswersHelper(userAnswers, incidentIndex)
 

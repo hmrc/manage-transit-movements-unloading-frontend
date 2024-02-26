@@ -470,6 +470,19 @@ trait MessagesModelGenerators {
       )
     }
 
+  implicit lazy val arbitraryAddressType18: Arbitrary[AddressType18] =
+    Arbitrary {
+      for {
+        streetAndNumber <- Gen.alphaNumStr
+        postcode        <- Gen.option(Gen.alphaNumStr)
+        city            <- Gen.alphaNumStr
+      } yield AddressType18(
+        streetAndNumber = streetAndNumber,
+        postcode = postcode,
+        city = city
+      )
+    }
+
   implicit lazy val arbitrarySupportingDocumentType02: Arbitrary[SupportingDocumentType02] =
     Arbitrary {
       for {
@@ -495,6 +508,34 @@ trait MessagesModelGenerators {
         sequenceNumber = sequenceNumber,
         typeValue = typeValue,
         referenceNumber = referenceNumber
+      )
+    }
+
+  implicit lazy val arbitraryLocationType02: Arbitrary[LocationType02] =
+    Arbitrary {
+      for {
+        qualifierOfIdentification <- Gen.alphaNumStr
+        unLocode                  <- Gen.option(Gen.alphaNumStr)
+        country                   <- Gen.alphaNumStr
+        gnss                      <- Gen.option(arbitrary[GNSSType])
+        address                   <- Gen.option(arbitrary[AddressType18])
+      } yield LocationType02(
+        qualifierOfIdentification = qualifierOfIdentification,
+        UNLocode = unLocode,
+        country = country,
+        GNSS = gnss,
+        Address = address
+      )
+    }
+
+  implicit lazy val arbitraryGNSSType: Arbitrary[GNSSType] =
+    Arbitrary {
+      for {
+        latitude  <- Gen.alphaNumStr
+        longitude <- Gen.alphaNumStr
+      } yield GNSSType(
+        latitude = latitude,
+        longitude = longitude
       )
     }
 

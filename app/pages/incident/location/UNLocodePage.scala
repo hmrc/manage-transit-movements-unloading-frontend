@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package pages.incident
+package pages.incident.location
 
 import models.Index
 import pages.QuestionPage
-import pages.sections.incidents.IncidentSection
+import pages.sections.incidents.IncidentLocationSection
 import play.api.libs.json.JsPath
 
-case class IncidentTextPage(incidentIndex: Index) extends QuestionPage[String] {
+case class UNLocodePage(incidentIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = IncidentSection(incidentIndex).path \ toString
+  override def path: JsPath = IncidentLocationSection(incidentIndex).path \ toString
 
-  override def toString: String = "text"
+  override def toString: String = "unLocode"
 }

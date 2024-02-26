@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package pages.incident
+package pages.incident.location
 
-import models.Index
-import pages.QuestionPage
-import pages.sections.incidents.IncidentSection
-import play.api.libs.json.JsPath
+import models.reference.Country
+import pages.behaviours.PageBehaviours
 
-case class IncidentTextPage(incidentIndex: Index) extends QuestionPage[String] {
+class CountryPageSpec extends PageBehaviours {
 
-  override def path: JsPath = IncidentSection(incidentIndex).path \ toString
+  "CountryPage" - {
 
-  override def toString: String = "text"
+    beRetrievable[Country](CountryPage(index))
+
+    beSettable[Country](CountryPage(index))
+
+    beRemovable[Country](CountryPage(index))
+  }
 }
