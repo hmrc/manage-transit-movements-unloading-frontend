@@ -65,6 +65,18 @@ class HouseConsignmentAnswersHelper(
     call = None
   )
 
+  def consigneeCountry: Option[SummaryListRow] = buildRowWithNoChangeLink[String](
+    data = userAnswers.get(ConsigneeAddressPage(houseConsignmentIndex)).map(_.country.description),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.houseConsignment.consigneeCountry"
+  )
+
+  def consigneeAddress: Option[SummaryListRow] = buildRowWithNoChangeLink[String](
+    data = userAnswers.get(ConsigneeAddressPage(houseConsignmentIndex)).map(_.toString),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.houseConsignment.consigneeAddress"
+  )
+
   def departureTransportMeansSections: Seq[Section] =
     userAnswers.get(DepartureTransportMeansListSection(houseConsignmentIndex)).mapWithIndex {
       case (_, transportMeansIndex) =>

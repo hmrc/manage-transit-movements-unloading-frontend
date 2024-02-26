@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package pages.incident
+package pages
 
-import models.Index
-import models.reference.Country
-import pages.QuestionPage
+import models.{Address, Index}
+import pages.sections.HouseConsignmentSection
 import play.api.libs.json.JsPath
 
-case class EndorsementCountryPage(incidentIndex: Index) extends QuestionPage[Country] {
+case class ConsigneeAddressPage(houseConsignmentIndex: Index) extends QuestionPage[Address] {
 
-  override def path: JsPath = JsPath \ "Consignment" \ "Incident" \ incidentIndex.position \ "Endorsement" \ toString
+  override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ "Consignee" \ toString
 
-  override def toString: String = "country"
+  override def toString: String = "Address"
 }

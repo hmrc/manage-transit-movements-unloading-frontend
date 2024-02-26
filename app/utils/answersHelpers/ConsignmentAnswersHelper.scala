@@ -199,7 +199,9 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           helper.consignorName,
           helper.consignorIdentification,
           helper.consigneeName,
-          helper.consigneeIdentification
+          helper.consigneeIdentification,
+          helper.consigneeCountry,
+          helper.consigneeAddress
         ).flatten
 
         AccordionSection(

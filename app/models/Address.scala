@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,25 @@
  * limitations under the License.
  */
 
-package pages.incident
+package models
 
-import models.Index
 import models.reference.Country
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import play.api.libs.json.{Json, OFormat}
 
-case class EndorsementCountryPage(incidentIndex: Index) extends QuestionPage[Country] {
+case class Address(
+  streetAndNumber: String,
+  city: String,
+  postalCode: Option[String],
+  country: Country
+) {
 
-  override def path: JsPath = JsPath \ "Consignment" \ "Incident" \ incidentIndex.position \ "Endorsement" \ toString
+  override def toString: String = postalCode match {
+    case Some(pc) => s"$streetAndNumber, $city, $pc"
+    case None     => s"$streetAndNumber, $city"
+  }
 
-  override def toString: String = "country"
+}
+
+object Address {
+  implicit val format: OFormat[Address] = Json.format[Address]
 }

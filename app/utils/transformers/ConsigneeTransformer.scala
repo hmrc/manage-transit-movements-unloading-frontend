@@ -16,23 +16,45 @@
 
 package utils.transformers
 
-import generated.ConsigneeType04
-import models.{Index, UserAnswers}
-import pages.{ConsigneeIdentifierPage, ConsigneeNamePage}
+import generated.{AddressType07, ConsigneeType04}
+import models.{Address, Index, UserAnswers}
+import pages.{ConsigneeAddressPage, ConsigneeIdentifierPage, ConsigneeNamePage}
+import services.ReferenceDataService
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConsigneeTransformer @Inject() (implicit ec: ExecutionContext) extends PageTransformer {
+class ConsigneeTransformer @Inject() (
+  referenceDataConnector: ReferenceDataService
+)(implicit ec: ExecutionContext)
+    extends PageTransformer {
 
-  def transform(consignee: Option[ConsigneeType04], hcIndex: Index): UserAnswers => Future[UserAnswers] = userAnswers =>
+  def transform(consignee: Option[ConsigneeType04], hcIndex: Index)(implicit
+    hc: HeaderCarrier
+  ): UserAnswers => Future[UserAnswers] = userAnswers =>
     consignee match {
-      case Some(ConsigneeType04(identificationNumber, name, _)) =>
+      case Some(ConsigneeType04(identificationNumber, name, address)) =>
         val pipeline: UserAnswers => Future[UserAnswers] =
           set(ConsigneeIdentifierPage(hcIndex), identificationNumber) andThen
-            set(ConsigneeNamePage(hcIndex), name)
+            set(ConsigneeNamePage(hcIndex), name) andThen
+            transformAddress(address, hcIndex)
 
         pipeline(userAnswers)
+      case None =>
+        Future.successful(userAnswers)
+    }
+
+  private def transformAddress(address: Option[AddressType07], hcIndex: Index)(implicit
+    hc: HeaderCarrier
+  ): UserAnswers => Future[UserAnswers] = userAnswers =>
+    address match {
+      case Some(AddressType07(streetAndNumber, postcode, city, country)) =>
+        referenceDataConnector
+          .getCountryByCode(country)
+          .flatMap(
+            country => userAnswers.set(ConsigneeAddressPage(hcIndex), Address(streetAndNumber, city, postcode, country)).asFuture
+          )
       case None =>
         Future.successful(userAnswers)
     }
