@@ -72,6 +72,8 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
   private val incidentsGen = arbitrary[Seq[IncidentType04]]
     .map {
       _.distinctBy(_.code)
+        .distinctBy(_.Endorsement)
+        .distinctBy(_.Location)
     }
 
   "must transform data" - {
@@ -89,12 +91,12 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
               when(mockIncidentEndorsementTransformer.transform(any(), eqTo(Index(i)))(any()))
                 .thenReturn {
-                  ua => Future.successful(ua.setValue(FakeIncidentEndorsementSection, Json.obj("foo" -> "bar")))
+                  ua => Future.successful(ua.setValue(FakeIncidentEndorsementSection, Json.obj("foo" -> i.toString)))
                 }
 
               when(mockIncidentLocationTransformer.transform(any(), eqTo(Index(i)))(any()))
                 .thenReturn {
-                  ua => Future.successful(ua.setValue(FakeIncidentLocationSection, Json.obj("foo" -> "bar")))
+                  ua => Future.successful(ua.setValue(FakeIncidentLocationSection, Json.obj("foo" -> i.toString)))
                 }
           }
 
@@ -105,8 +107,8 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
               result.getValue(IncidentCodePage(Index(i))).code mustBe incident.code
               result.getValue(IncidentCodePage(Index(i))).description mustBe i.toString
               result.getValue(IncidentTextPage(Index(i))) mustBe incident.text
-              result.getValue(FakeIncidentEndorsementSection) mustBe Json.obj("foo" -> "bar")
-              result.getValue(FakeIncidentLocationSection) mustBe Json.obj("foo" -> "bar")
+              result.getValue(FakeIncidentEndorsementSection) mustBe Json.obj("foo" -> i.toString)
+              result.getValue(FakeIncidentLocationSection) mustBe Json.obj("foo" -> i.toString)
           }
       }
     }
