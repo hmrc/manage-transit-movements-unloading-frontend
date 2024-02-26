@@ -18,9 +18,9 @@ package pages.sections.incidents
 
 import models.Index
 import pages.sections.Section
-import play.api.libs.json.{JsArray, JsPath}
+import play.api.libs.json.{JsObject, JsPath}
 
-case class IncidentSection(incidentIndex: Index) extends Section[JsArray] {
+case class IncidentSection(incidentIndex: Index) extends Section[JsObject] {
 
   override def path: JsPath = IncidentsSection.path \ incidentIndex.position
 }
