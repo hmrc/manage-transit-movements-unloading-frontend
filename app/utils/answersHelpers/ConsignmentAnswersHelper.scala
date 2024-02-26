@@ -160,18 +160,24 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         val helper = new IncidentAnswersHelper(userAnswers, incidentIndex)
 
         val rows = Seq(
-          helper.incidentEndorsementCountryRow,
           helper.incidentCodeRow,
           helper.incidentDescriptionRow,
-          helper.incidentCoordinatesRow,
-          helper.incidentEndorsementDateRow,
-          helper.incidentEndorsementAuthorityRow,
-          helper.incidentEndorsementPlaceRow
+          helper.incidentCoordinatesRow
         ).flatten
 
+        val endorsementSection = StaticSection(
+          sectionTitle = Some(messages("unloadingFindings.subsections.incidents.endorsements")),
+          rows = Seq(helper.incidentEndorsementDateRow,
+                     helper.incidentEndorsementAuthorityRow,
+                     helper.incidentEndorsementCountryRow,
+                     helper.incidentEndorsementPlaceRow
+          ).flatten
+        )
+
         AccordionSection(
-          sectionTitle = messages("unloadingFindings.subsections.incidents", incidentIndex.display),
-          rows = rows
+          sectionTitle = Some(messages("unloadingFindings.subsections.incidents", incidentIndex.display)),
+          rows = rows,
+          children = Seq(endorsementSection)
         )
     }
 

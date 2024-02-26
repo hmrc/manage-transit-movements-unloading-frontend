@@ -411,7 +411,7 @@ trait MessagesModelGenerators {
         sequenceNumber <- Gen.alphaNumStr
         code           <- Gen.alphaNumStr
         text           <- Gen.alphaNumStr
-        loc            <- location.arbitrary
+        loc            <- arbitraryLocationType02.arbitrary
 
       } yield generated.IncidentType04(
         sequenceNumber = sequenceNumber,
@@ -423,16 +423,6 @@ trait MessagesModelGenerators {
         Transhipment = None
       )
     }
-
-  implicit lazy val location: Arbitrary[LocationType02] = Arbitrary {
-    for {
-      qual    <- Gen.alphaNumStr
-      un      <- Gen.option(Gen.alphaNumStr)
-      country <- Gen.alphaNumStr
-      long    <- Gen.alphaNumStr
-      lat     <- Gen.alphaNumStr
-    } yield LocationType02(qualifierOfIdentification = qual, UNLocode = un, country = country, GNSS = Some(GNSSType(long, lat)), Address = None)
-  }
 
   implicit lazy val arbitraryConsignmentItemType04: Arbitrary[ConsignmentItemType04] =
     Arbitrary {
