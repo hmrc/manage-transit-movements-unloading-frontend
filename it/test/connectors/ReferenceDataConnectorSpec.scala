@@ -346,6 +346,30 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       }
     }
 
+    "getQualifierOfIdentificationIncident" - {
+      val qualifier = "U"
+      val url          = s"/$baseUrl/lists/QualifierOfIdentificationIncident?data.qualifier=$qualifier"
+
+      "must return supporting document when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(qualifierOfIdentificationResponseJson))
+        )
+
+        val expectedResult: QualifierOfIdentification = QualifierOfIdentification(qualifier, "UN/LOCODE")
+
+        connector.getQualifierOfIdentificationIncident(qualifier).futureValue mustEqual expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getQualifierOfIdentificationIncident(qualifier))
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getQualifierOfIdentificationIncident(qualifier))
+      }
+    }
+
     "getTransportDocument" - {
       val typeValue = "N235"
       val url       = s"/$baseUrl/lists/TransportDocumentType?data.code=$typeValue"
@@ -421,6 +445,116 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         checkErrorResponse(url, connector.getSupportingDocuments())
       }
     }
+
+    "getTransportModeCodes" - {
+      val url: String = s"/$baseUrl/lists/TransportModeCode"
+
+      "when inland modes" - {
+
+        "must return Seq of inland modes when successful" in {
+          val responseJson: String =
+            """
+              |{
+              |  "_links": {
+              |    "self": {
+              |      "href": "/customs-reference-data/lists/TransportModeCode"
+              |    }
+              |  },
+              |  "meta": {
+              |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+              |    "snapshotDate": "2023-01-01"
+              |  },
+              |  "id": "TransportModeCode",
+              |  "data": [
+              |    {
+              |      "code": "1",
+              |      "description": "Maritime Transport"
+              |    },
+              |    {
+              |      "code": "2",
+              |      "description": "Rail Transport"
+              |    }
+              |  ]
+              |}
+              |""".stripMargin
+
+          server.stubFor(
+            get(urlEqualTo(url))
+              .willReturn(okJson(responseJson))
+          )
+
+          val expectedResult = NonEmptySet.of(
+            InlandMode("1", "Maritime Transport"),
+            InlandMode("2", "Rail Transport")
+          )
+
+          connector.getTransportModeCodes[InlandMode].futureValue mustEqual expectedResult
+        }
+
+        "must throw a NoReferenceDataFoundException for an empty response" in {
+          checkNoReferenceDataFoundResponse(url, connector.getTransportModeCodes[InlandMode])
+        }
+
+        "must return an exception when an error response is returned" in {
+          checkErrorResponse(url, connector.getTransportModeCodes[InlandMode])
+        }
+      }
+
+      "when border modes" - {
+
+        "must return Seq of border modes when successful" in {
+          val responseJson: String =
+            """
+              |{
+              |  "_links": {
+              |    "self": {
+              |      "href": "/customs-reference-data/lists/TransportModeCode"
+              |    }
+              |  },
+              |  "meta": {
+              |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+              |    "snapshotDate": "2023-01-01"
+              |  },
+              |  "id": "TransportModeCode",
+              |  "data": [
+              |    {
+              |      "code": "1",
+              |      "description": "Maritime Transport"
+              |    },
+              |    {
+              |      "code": "1",
+              |      "description": "Maritime Transport"
+              |    },
+              |    {
+              |      "code": "2",
+              |      "description": "Rail Transport"
+              |    }
+              |  ]
+              |}
+              |""".stripMargin
+
+          server.stubFor(
+            get(urlEqualTo(url))
+              .willReturn(okJson(responseJson))
+          )
+
+          val expectedResult = NonEmptySet.of(
+            BorderMode("1", "Maritime Transport"),
+            BorderMode("2", "Rail Transport")
+          )
+
+          connector.getTransportModeCodes[BorderMode].futureValue mustEqual expectedResult
+        }
+
+        "must throw a NoReferenceDataFoundException for an empty response" in {
+          checkNoReferenceDataFoundResponse(url, connector.getTransportModeCodes[BorderMode])
+        }
+
+        "must return an exception when an error response is returned" in {
+          checkErrorResponse(url, connector.getTransportModeCodes[BorderMode])
+        }
+      }
+    }
   }
 
   private def checkNoReferenceDataFoundResponse(url: String, result: => Future[_]): Assertion = {
@@ -452,117 +586,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         }
     }
   }
-
-  "getTransportModeCodes" - {
-    val url: String = s"/$baseUrl/lists/TransportModeCode"
-
-    "when inland modes" - {
-
-      "must return Seq of inland modes when successful" in {
-        val responseJson: String =
-          """
-            |{
-            |  "_links": {
-            |    "self": {
-            |      "href": "/customs-reference-data/lists/TransportModeCode"
-            |    }
-            |  },
-            |  "meta": {
-            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-            |    "snapshotDate": "2023-01-01"
-            |  },
-            |  "id": "TransportModeCode",
-            |  "data": [
-            |    {
-            |      "code": "1",
-            |      "description": "Maritime Transport"
-            |    },
-            |    {
-            |      "code": "2",
-            |      "description": "Rail Transport"
-            |    }
-            |  ]
-            |}
-            |""".stripMargin
-
-        server.stubFor(
-          get(urlEqualTo(url))
-            .willReturn(okJson(responseJson))
-        )
-
-        val expectedResult = NonEmptySet.of(
-          InlandMode("1", "Maritime Transport"),
-          InlandMode("2", "Rail Transport")
-        )
-
-        connector.getTransportModeCodes[InlandMode].futureValue mustEqual expectedResult
-      }
-
-      "must throw a NoReferenceDataFoundException for an empty response" in {
-        checkNoReferenceDataFoundResponse(url, connector.getTransportModeCodes[InlandMode])
-      }
-
-      "must return an exception when an error response is returned" in {
-        checkErrorResponse(url, connector.getTransportModeCodes[InlandMode])
-      }
-    }
-
-    "when border modes" - {
-
-      "must return Seq of border modes when successful" in {
-        val responseJson: String =
-          """
-            |{
-            |  "_links": {
-            |    "self": {
-            |      "href": "/customs-reference-data/lists/TransportModeCode"
-            |    }
-            |  },
-            |  "meta": {
-            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-            |    "snapshotDate": "2023-01-01"
-            |  },
-            |  "id": "TransportModeCode",
-            |  "data": [
-            |    {
-            |      "code": "1",
-            |      "description": "Maritime Transport"
-            |    },
-            |    {
-            |      "code": "1",
-            |      "description": "Maritime Transport"
-            |    },
-            |    {
-            |      "code": "2",
-            |      "description": "Rail Transport"
-            |    }
-            |  ]
-            |}
-            |""".stripMargin
-
-        server.stubFor(
-          get(urlEqualTo(url))
-            .willReturn(okJson(responseJson))
-        )
-
-        val expectedResult = NonEmptySet.of(
-          BorderMode("1", "Maritime Transport"),
-          BorderMode("2", "Rail Transport")
-        )
-
-        connector.getTransportModeCodes[BorderMode].futureValue mustEqual expectedResult
-      }
-
-      "must throw a NoReferenceDataFoundException for an empty response" in {
-        checkNoReferenceDataFoundResponse(url, connector.getTransportModeCodes[BorderMode])
-      }
-
-      "must return an exception when an error response is returned" in {
-        checkErrorResponse(url, connector.getTransportModeCodes[BorderMode])
-      }
-    }
-  }
-
 }
 
 object ReferenceDataConnectorSpec {
@@ -750,6 +773,18 @@ object ReferenceDataConnectorSpec {
       |    {
       |      "documentType": "Y023",
       |      "description": "Consignee (AEO certificate number)"
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+
+  private val qualifierOfIdentificationResponseJson: String =
+    """
+      |{
+      |  "data": [
+      |    {
+      |      "qualifier": "U",
+      |      "description": "UN/LOCODE"
       |    }
       |  ]
       |}

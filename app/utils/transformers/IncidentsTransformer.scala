@@ -17,17 +17,19 @@
 package utils.transformers
 
 import connectors.ReferenceDataConnector
-import generated.EndorsementType03
-import models.reference.{Country, Incident}
+import generated._
+import models.reference.Incident
 import models.{Index, UserAnswers}
-import pages.incident.{EndorsementCountryPage, IncidentCodePage, IncidentTextPage}
+import pages.incident.{IncidentCodePage, IncidentTextPage}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IncidentsTransformer @Inject() (
-  referenceDataConnector: ReferenceDataConnector
+  referenceDataConnector: ReferenceDataConnector,
+  incidentEndorsementTransformer: IncidentEndorsementTransformer,
+  incidentLocationTransformer: IncidentLocationTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
@@ -35,7 +37,7 @@ class IncidentsTransformer @Inject() (
     typeValue: Incident,
     text: String,
     endorsement: Option[EndorsementType03],
-    endorsementCountry: Option[Country]
+    location: LocationType02
   )
 
   def transform(incidents: Seq[generated.IncidentType04])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
@@ -43,11 +45,9 @@ class IncidentsTransformer @Inject() (
     lazy val incidentRefLookups = incidents.map {
       incidentType0 =>
         val incidentF = referenceDataConnector.getIncidentType(incidentType0.code)
-        val countryF  = incidentType0.Endorsement.map(_.country).lookup(referenceDataConnector.getCountry)
         for {
           incident <- incidentF
-          country  <- countryF
-        } yield TempIncident(incident, incidentType0.text, incidentType0.Endorsement, country)
+        } yield TempIncident(incident, incidentType0.text, incidentType0.Endorsement, incidentType0.Location)
     }
 
     Future.sequence(incidentRefLookups).flatMap {
@@ -59,13 +59,12 @@ class IncidentsTransformer @Inject() (
               val pipeline: UserAnswers => Future[UserAnswers] =
                 set(IncidentCodePage(incidentIndex), tempIncident.typeValue) andThen
                   set(IncidentTextPage(incidentIndex), tempIncident.text) andThen
-                  set(EndorsementCountryPage(incidentIndex), tempIncident.endorsementCountry)
+                  incidentEndorsementTransformer.transform(tempIncident.endorsement, incidentIndex) andThen
+                  incidentLocationTransformer.transform(tempIncident.location, incidentIndex)
 
               pipeline(userAnswers)
           }
       })
-
     }
   }
-
 }
