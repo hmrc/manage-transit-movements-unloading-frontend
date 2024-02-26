@@ -48,7 +48,7 @@ class HolderOfTheTransitProcedureHelper(
 
   def address(answer: AddressType10): Option[SummaryListRow] = buildRowWithNoChangeLink[DynamicAddress](
     data = Option(answer.toDynamicAddress),
-    formatAnswer = formatAsDynamicAddress,
+    formatAnswer = formatAsHtmlContent,
     prefix = "unloadingFindings.rowHeadings.holderOfTheTransitProcedure.address"
   )
 

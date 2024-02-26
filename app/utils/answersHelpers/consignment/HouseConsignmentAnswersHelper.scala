@@ -73,7 +73,7 @@ class HouseConsignmentAnswersHelper(
 
   def consigneeAddress: Option[SummaryListRow] = buildRowWithNoChangeLink[String](
     data = userAnswers.get(ConsigneeAddressPage(houseConsignmentIndex)).map(_.toString),
-    formatAnswer = formatAsText,
+    formatAnswer = formatAsHtmlContent,
     prefix = "unloadingFindings.rowHeadings.houseConsignment.consigneeAddress"
   )
 

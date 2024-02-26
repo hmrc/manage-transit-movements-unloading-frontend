@@ -26,10 +26,7 @@ case class Address(
   country: Country
 ) {
 
-  override def toString: String = postalCode match {
-    case Some(pc) => s"$streetAndNumber, $city, $pc"
-    case None     => s"$streetAndNumber, $city"
-  }
+  override def toString: String = Seq(Some(streetAndNumber), Some(city), postalCode).flatten.mkString("<br>")
 
 }
 
