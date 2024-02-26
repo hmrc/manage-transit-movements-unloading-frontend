@@ -20,7 +20,8 @@ import connectors.ReferenceDataConnector
 import generated.EndorsementType03
 import models.reference.{Country, Incident}
 import models.{Index, UserAnswers}
-import pages.incident.{EndorsementCountryPage, IncidentCodePage, IncidentTextPage}
+import pages.incident.endorsement.EndorsementCountryPage
+import pages.incident.{IncidentCodePage, IncidentTextPage}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject

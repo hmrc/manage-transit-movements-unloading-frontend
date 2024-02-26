@@ -27,6 +27,9 @@ trait Radioable[T] {
 
   val code: String
 
+  def isOneOf(codes: String*): Boolean    = codes.contains(code)
+  def isNotOneOf(codes: String*): Boolean = !isOneOf(codes: _*)
+
   val messageKeyPrefix: String
 
   private lazy val contentKey = s"$messageKeyPrefix.${this.code}"

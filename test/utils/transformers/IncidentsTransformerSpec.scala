@@ -26,7 +26,8 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.incident.{EndorsementCountryPage, IncidentCodePage, IncidentTextPage}
+import pages.incident.endorsement.EndorsementCountryPage
+import pages.incident.{IncidentCodePage, IncidentTextPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 
