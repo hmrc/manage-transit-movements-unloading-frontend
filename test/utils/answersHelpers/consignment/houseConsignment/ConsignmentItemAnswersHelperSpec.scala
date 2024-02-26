@@ -17,6 +17,7 @@
 package utils.answersHelpers.consignment.houseConsignment
 
 import models.Index
+import models.reference.Country
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.NetWeightPage
@@ -50,6 +51,58 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
 
               result.key.value mustBe "Description"
               result.value.value mustBe value
+              result.actions must not be defined
+          }
+        }
+      }
+    }
+
+    "declarationTypeRow" - {
+      val page = DeclarationTypePage(hcIndex, itemIndex)
+      "must return None" - {
+        s"when $page undefined" in {
+          val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
+          helper.declarationType mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $page defined" in {
+          forAll(Gen.alphaNumStr) {
+            value =>
+              val answers = emptyUserAnswers.setValue(page, value)
+
+              val helper = new ConsignmentItemAnswersHelper(answers, hcIndex, itemIndex)
+              val result = helper.declarationType.value
+
+              result.key.value mustBe "Declaration type"
+              result.value.value mustBe value
+              result.actions must not be defined
+          }
+        }
+      }
+    }
+
+    "countryOfDestinationRow" - {
+      val page = CountryOfDestinationPage(hcIndex, itemIndex)
+      "must return None" - {
+        s"when $page undefined" in {
+          val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
+          helper.countryOfDestination mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $page defined" in {
+          forAll(arbitrary[Country]) {
+            value =>
+              val answers = emptyUserAnswers.setValue(page, value)
+
+              val helper = new ConsignmentItemAnswersHelper(answers, hcIndex, itemIndex)
+              val result = helper.countryOfDestination.value
+
+              result.key.value mustBe "Country of destination"
+              result.value.value mustBe value.description
               result.actions must not be defined
           }
         }
