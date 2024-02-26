@@ -409,6 +409,8 @@ unloadingFindings.rowHeadings.totalNetWeight = Total net weight of all items
 
 unloadingFindings.subsections.item = Item {0}
 unloadingFindings.rowHeadings.item.description = Description
+unloadingFindings.rowHeadings.item.declarationType = Declaration type
+unloadingFindings.rowHeadings.item.countryOfDestination = Country of destination
 unloadingFindings.rowHeadings.item.grossWeight = Gross weight
 unloadingFindings.rowHeadings.item.packageType = Type
 unloadingFindings.rowHeadings.item.packageType.change.hidden = type of package {0} for item {1}

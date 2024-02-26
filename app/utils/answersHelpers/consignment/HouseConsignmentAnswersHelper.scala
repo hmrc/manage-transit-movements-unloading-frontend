@@ -87,6 +87,8 @@ class HouseConsignmentAnswersHelper(
           sectionTitle = Some(messages("unloadingFindings.subsections.item", itemIndex.display)),
           rows = Seq(
             helper.descriptionRow,
+            helper.declarationType,
+            helper.countryOfDestination,
             helper.grossWeightRow,
             helper.netWeightRow,
             helper.cusCodeRow,

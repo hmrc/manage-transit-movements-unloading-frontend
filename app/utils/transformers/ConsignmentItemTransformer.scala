@@ -18,6 +18,8 @@ package utils.transformers
 
 import generated.ConsignmentItemType04
 import models.{Index, UserAnswers}
+import pages.houseConsignment.index.items.{CountryOfDestinationPage, DeclarationTypePage}
+import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -27,7 +29,8 @@ class ConsignmentItemTransformer @Inject() (
   commodityTransformer: CommodityTransformer,
   packagingTransformer: PackagingTransformer,
   documentsTransformer: DocumentsTransformer,
-  additionalReferencesTransformer: AdditionalReferencesTransformer
+  additionalReferencesTransformer: AdditionalReferencesTransformer,
+  referenceDataService: ReferenceDataService
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
@@ -37,13 +40,18 @@ class ConsignmentItemTransformer @Inject() (
         acc.flatMap {
           userAnswers =>
             val itemIndex: Index = Index(i)
-            val pipeline: UserAnswers => Future[UserAnswers] =
-              commodityTransformer.transform(consignmentItem.Commodity, hcIndex, itemIndex) andThen
-                packagingTransformer.transform(consignmentItem.Packaging, hcIndex, itemIndex) andThen
-                documentsTransformer.transform(consignmentItem.SupportingDocument, consignmentItem.TransportDocument, hcIndex, itemIndex) andThen
-                additionalReferencesTransformer.transform(consignmentItem.AdditionalReference, hcIndex, itemIndex)
+            referenceDataService.getCountryByCode(consignmentItem.countryOfDestination.getOrElse("")) flatMap {
+              countryOfDestination =>
+                val pipeline: UserAnswers => Future[UserAnswers] =
+                  set(DeclarationTypePage(hcIndex, itemIndex), consignmentItem.declarationType) andThen
+                    set(CountryOfDestinationPage(hcIndex, itemIndex), countryOfDestination)
+                commodityTransformer.transform(consignmentItem.Commodity, hcIndex, itemIndex) andThen
+                  packagingTransformer.transform(consignmentItem.Packaging, hcIndex, itemIndex) andThen
+                  documentsTransformer.transform(consignmentItem.SupportingDocument, consignmentItem.TransportDocument, hcIndex, itemIndex) andThen
+                  additionalReferencesTransformer.transform(consignmentItem.AdditionalReference, hcIndex, itemIndex)
 
-            pipeline(userAnswers)
+                pipeline(userAnswers)
+            }
         }
     })
 }

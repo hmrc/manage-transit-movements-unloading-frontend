@@ -16,6 +16,7 @@
 
 package utils.answersHelpers.consignment.houseConsignment
 
+import models.reference.Country
 import models.{Index, UserAnswers}
 import pages.NetWeightPage
 import pages.houseConsignment.index.items._
@@ -50,6 +51,18 @@ class ConsignmentItemAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.item.description",
     id = None,
     call = None
+  )
+
+  def declarationType: Option[SummaryListRow] = buildRowWithNoChangeLink[String](
+    data = userAnswers.get(DeclarationTypePage(houseConsignmentIndex, itemIndex)),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.item.declarationType"
+  )
+
+  def countryOfDestination: Option[SummaryListRow] = buildRowWithNoChangeLink[Country](
+    data = userAnswers.get(CountryOfDestinationPage(houseConsignmentIndex, itemIndex)),
+    formatAnswer = formatAsCountry,
+    prefix = "unloadingFindings.rowHeadings.item.countryOfDestination"
   )
 
   def grossWeightRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
