@@ -16,7 +16,7 @@
 
 package utils.answersHelpers.consignment
 
-import generated.{ConsignmentType05, EndorsementType03, IncidentType04, Number0}
+import generated.{AddressType18, ConsignmentType05, EndorsementType03, IncidentType04, LocationType02, Number0}
 import models.reference.{Country, Incident}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -196,6 +196,42 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
 
               result.key.value mustBe "Country"
               result.value.value mustBe s"${value.description}"
+              val action = result.actions
+              action mustBe None
+          }
+        }
+      }
+    }
+
+    "incidentLocationAddressRow" - {
+      "must return None" - {
+        s"when location address undefined" in {
+          val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
+          helper.incidentLocationAddressRow mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when location address defined" in {
+          forAll(arbitrary[IncidentType04], arbitrary[LocationType02]) {
+            (incident, location) =>
+              val addressType18 = Some(AddressType18("streetAndNumber", Some("postcode"), "city"))
+              val consignment: ConsignmentType05 = ConsignmentType05(
+                containerIndicator = Number0,
+                Incident = Seq(
+                  incident.copy(Location =
+                    LocationType02(location.qualifierOfIdentification, location.UNLocode, location.country, location.GNSS, addressType18)
+                  )
+                )
+              )
+
+              val answers = emptyUserAnswers.copy(ie043Data = emptyUserAnswers.ie043Data.copy(Consignment = Some(consignment)))
+
+              val helper = new IncidentAnswersHelper(answers, index)
+              val result = helper.incidentLocationAddressRow.value
+
+              result.key.value mustBe "Address"
+              result.value.value mustBe s"${addressType18.value.streetAndNumber}<br>${addressType18.value.city}<br>${addressType18.value.postcode.get}"
               val action = result.actions
               action mustBe None
           }

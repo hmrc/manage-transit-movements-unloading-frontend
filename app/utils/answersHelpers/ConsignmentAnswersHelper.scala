@@ -165,7 +165,8 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           helper.incidentEndorsementDateRow,
           helper.incidentEndorsementAuthorityRow,
           helper.incidentEndorsementPlaceRow,
-          helper.incidentEndorsementCountryRow
+          helper.incidentEndorsementCountryRow,
+          helper.incidentLocationAddressRow
         ).flatten
 
         AccordionSection(

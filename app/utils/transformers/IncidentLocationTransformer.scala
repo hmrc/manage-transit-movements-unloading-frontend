@@ -26,7 +26,8 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IncidentLocationTransformer @Inject() (
-  referenceDataConnector: ReferenceDataConnector
+  referenceDataConnector: ReferenceDataConnector,
+  incidentLocationAddressTransformer: IncidentLocationAddressTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
@@ -43,6 +44,7 @@ class IncidentLocationTransformer @Inject() (
             val pipeline = set(QualifierOfIdentificationPage(incidentIndex), qualifierOfIdentification) andThen
               set(UNLocodePage(incidentIndex), unLocode) andThen
               set(CountryPage(incidentIndex), country)
+            incidentLocationAddressTransformer.transform(location.Address, incidentIndex)
 
             pipeline(userAnswers)
           }

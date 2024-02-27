@@ -17,8 +17,9 @@
 package utils.answersHelpers.consignment
 
 import models.reference.{Country, Incident}
-import models.{Index, UserAnswers}
+import models.{DynamicAddress, Index, UserAnswers}
 import pages.incident.endorsement.EndorsementCountryPage
+import pages.incident.location.address.{AddressCityPage, AddressPostcodePage, AddressStreetAndNumberPage}
 import pages.incident.{IncidentCodePage, IncidentTextPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -94,5 +95,23 @@ class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(impl
     id = None,
     call = None
   )
+
+  def incidentLocationAddressRow: Option[SummaryListRow] = userAnswers.ie043Data.Consignment
+    .flatMap(
+      _.Incident
+        .lift(incidentIndex.position)
+        .flatMap(
+          _.Location.Address.map(
+            add => DynamicAddress(add.streetAndNumber, add.city, add.postcode)
+          )
+        )
+    )
+    .map {
+      dynamicAddress =>
+        buildRowWithNoChangeLink(
+          prefix = "unloadingFindings.incident.location.address",
+          answer = formatAsDynamicAddress(dynamicAddress)
+        )
+    }
 
 }
