@@ -17,6 +17,7 @@
 package utils.answersHelpers
 
 import generated._
+import models.DocType.Previous
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference._
 import models.{Coordinates, Index, SecurityType}
@@ -213,6 +214,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must generate accordion sections" in {
         forAll(arbitrary[DocumentType], Gen.alphaNumStr, Gen.alphaNumStr) {
           (documentType, referenceNumber, additionalInformation) =>
+            val previousDoc = documentType.copy(`type` = Previous)
             val answers = emptyUserAnswers
               .setValue(TypePage(Index(0)), documentType)
               .setValue(DocumentReferenceNumberPage(Index(0)), referenceNumber)
@@ -220,6 +222,9 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(TypePage(Index(1)), documentType)
               .setValue(DocumentReferenceNumberPage(Index(1)), referenceNumber)
               .setValue(AdditionalInformationPage(Index(1)), additionalInformation)
+              .setValue(TypePage(Index(2)), previousDoc)
+              .setValue(DocumentReferenceNumberPage(Index(2)), referenceNumber)
+              .setValue(AdditionalInformationPage(Index(2)), additionalInformation)
 
             val helper = new ConsignmentAnswersHelper(answers)
             val result = helper.documentSections
@@ -237,6 +242,14 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result(1).rows.head.value.value mustBe documentType.toString
             result(1).rows(1).value.value mustBe referenceNumber
             result(1).rows(2).value.value mustBe additionalInformation
+
+            result(2).sectionTitle.value mustBe "Document 3"
+            result(2).rows.size mustBe 3
+            result(2).rows.head.value.value mustBe previousDoc.toString
+            result(2).rows(1).value.value mustBe referenceNumber
+            result(2).rows(1).actions mustBe None
+            result(2).rows(2).value.value mustBe additionalInformation
+            result(2).rows(2).actions mustBe None
         }
       }
     }

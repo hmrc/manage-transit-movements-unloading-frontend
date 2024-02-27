@@ -74,7 +74,7 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
           case (_, i) =>
             val hcIndex = Index(i)
 
-            when(mockConsigneeTransformer.transform(any(), eqTo(hcIndex)))
+            when(mockConsigneeTransformer.transform(any(), eqTo(hcIndex))(any()))
               .thenReturn {
                 ua => Future.successful(ua.setValue(FakeConsigneeSection(hcIndex), Json.obj("foo" -> i.toString)))
               }

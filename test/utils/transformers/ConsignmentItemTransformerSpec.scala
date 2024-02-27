@@ -83,7 +83,7 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
                 ua => Future.successful(ua.setValue(FakePackagingSection(itemIndex), Json.obj("foo" -> i.toString)))
               }
 
-            when(mockDocumentsTransformer.transform(any(), any(), any(), eqTo(itemIndex))(any()))
+            when(mockDocumentsTransformer.transform(any(), any(), any(), any(), eqTo(itemIndex))(any()))
               .thenReturn {
                 ua => Future.successful(ua.setValue(FakeDocumentsSection(itemIndex), Json.obj("foo" -> i.toString)))
               }

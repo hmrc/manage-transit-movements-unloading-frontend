@@ -20,7 +20,6 @@ import derivable.Derivable
 import generated.CC043CType
 import models.SensitiveFormats.SensitiveWrites
 import pages._
-import pages.sections.Section
 import play.api.libs.json._
 import queries.Gettable
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
@@ -81,23 +80,16 @@ final case class UserAnswers(
     }
   }
 
-  def removeExceptSequenceNumber(section: Section[JsObject]): Try[UserAnswers] = {
-    val sequenceNumberPath = section.path \ "sequenceNumber"
-
-    val transformation = sequenceNumberPath.json.pick[JsString] flatMap {
-      sequenceNumber =>
-        section.path.json.prune andThen
-          __.json.update(sequenceNumberPath.json.put(sequenceNumber))
-    }
-
-    this.data.transform(transformation) match {
-      case JsSuccess(value, _) => Success(this.copy(data = value))
-      case JsError(e) =>
-        println("***")
-        e.foreach(println)
-        Success(this)
-    }
-  }
+  def removeExceptSequenceNumber[A](section: QuestionPage[A]): Try[UserAnswers] =
+    for {
+      obj <- data
+        .transform(section.path.json.pick[JsObject])
+        .fold(
+          errors => Failure(JsResultException(errors)),
+          Success(_)
+        )
+      userAnswers <- set(section.path, JsObject(obj.fields.filter(_._1 == "sequenceNumber")))
+    } yield userAnswers
 }
 
 object UserAnswers {
