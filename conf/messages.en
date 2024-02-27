@@ -26,6 +26,8 @@ site.caption = MRN: {0}
 site.email.link = If you have any questions or issues, email us at {0}
 site.email.subject = NCTS Phase 5 - Help with testing
 
+unloadingFindings.sequenceNumber = Sequence number
+
 error.title.prefix = Error:
 error.summary.title = There is a problem
 
@@ -367,6 +369,7 @@ unloadingFindings.incident.endorsement.authority = Authority
 unloadingFindings.incident.endorsement.country = Country
 unloadingFindings.incident.coordinates = Coordinates
 unloadingFindings.incident.unLocode = UN/LOCODE
+unloadingFindings.incident.location.address = Address
 
 
 declarationType = Declaration type
@@ -712,3 +715,7 @@ transportEquipment.index.addContainerIdentificationNumberYesNo.title = Do you wa
 transportEquipment.index.addContainerIdentificationNumberYesNo.heading = Do you want to add a container identification number for the transport equipment?
 transportEquipment.index.addContainerIdentificationNumberYesNo.paragraph = This is a unique number used to identify the container.
 transportEquipment.index.addContainerIdentificationNumberYesNo.error.required = Select yes if you want to add a container identification number for the transport equipment
+
+transportEquipment.index.seal.removeSealYesNo.title = Are you sure you want to remove seal {1} from transport equipment {0}?
+transportEquipment.index.seal.removeSealYesNo.heading = Are you sure you want to remove seal {1} from transport equipment {0}?
+transportEquipment.index.seal.removeSealYesNo.error.required = Select yes if you want to remove seal {1} from transport equipment {0}

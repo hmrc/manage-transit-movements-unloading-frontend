@@ -18,7 +18,9 @@ package controllers.actions
 
 import models.ArrivalId
 import models.requests.{DataRequest, OptionalDataRequest}
-import play.api.mvc.{ActionBuilder, AnyContent}
+import pages.sections.Section
+import play.api.libs.json.JsObject
+import play.api.mvc.{ActionBuilder, AnyContent, Call}
 
 import javax.inject.Inject
 
@@ -27,7 +29,8 @@ class Actions @Inject() (
   dataRetrievalAction: DataRetrievalActionProvider,
   dataRequiredAction: DataRequiredAction,
   identify: IdentifierAction,
-  checkArrivalStatusProvider: CheckArrivalStatusProvider
+  checkArrivalStatusProvider: CheckArrivalStatusProvider,
+  indexRequiredAction: IndexRequiredActionProvider
 ) {
 
   def getData(arrivalId: ArrivalId): ActionBuilder[OptionalDataRequest, AnyContent] =
@@ -39,4 +42,6 @@ class Actions @Inject() (
   def getStatus(arrivalId: ArrivalId): ActionBuilder[DataRequest, AnyContent] =
     identify andThen identifierAction andThen checkArrivalStatusProvider(arrivalId) andThen requireData(arrivalId)
 
+  def requireIndex(arrivalId: ArrivalId, section: Section[JsObject], addAnother: => Call): ActionBuilder[DataRequest, AnyContent] =
+    requireData(arrivalId) andThen indexRequiredAction(section, addAnother)
 }

@@ -17,6 +17,7 @@
 package utils.answersHelpers.consignment.houseConsignment
 
 import models.Index
+import models.reference.DocumentType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.NetWeightPage
@@ -211,11 +212,13 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
     "documentSections" - {
       import pages.houseConsignment.index.items.document._
       "must generate accordion sections" in {
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (referenceNumber, additionalInformation) =>
+        forAll(arbitrary[DocumentType], Gen.alphaNumStr, Gen.alphaNumStr) {
+          (documentType, referenceNumber, additionalInformation) =>
             val answers = emptyUserAnswers
+              .setValue(TypePage(hcIndex, itemIndex, Index(0)), documentType)
               .setValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(0)), referenceNumber)
               .setValue(AdditionalInformationPage(hcIndex, itemIndex, Index(0)), additionalInformation)
+              .setValue(TypePage(hcIndex, itemIndex, Index(1)), documentType)
               .setValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(1)), referenceNumber)
               .setValue(AdditionalInformationPage(hcIndex, itemIndex, Index(1)), additionalInformation)
 
@@ -224,11 +227,11 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
 
             result.head mustBe a[AccordionSection]
             result.head.sectionTitle.value mustBe "Document 1"
-            result.head.rows.size mustBe 2
+            result.head.rows.size mustBe 3
 
             result(1) mustBe a[AccordionSection]
             result(1).sectionTitle.value mustBe "Document 2"
-            result(1).rows.size mustBe 2
+            result(1).rows.size mustBe 3
         }
       }
     }

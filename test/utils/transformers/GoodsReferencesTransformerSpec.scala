@@ -22,6 +22,7 @@ import generators.Generators
 import models.Index
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.sections.transport.equipment.ItemSection
 import pages.transportEquipment.index.ItemPage
 
 class GoodsReferencesTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
@@ -35,6 +36,7 @@ class GoodsReferencesTransformerSpec extends SpecBase with AppWithDefaultMockFix
 
         goodsReferences.zipWithIndex.map {
           case (goodsReference, i) =>
+            result.getSequenceNumber(ItemSection(equipmentIndex, Index(i))) mustBe goodsReference.sequenceNumber
             result.getValue(ItemPage(equipmentIndex, Index(i))).declarationGoodsItemNumber mustBe goodsReference.declarationGoodsItemNumber
         }
     }

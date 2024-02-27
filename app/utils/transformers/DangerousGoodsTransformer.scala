@@ -19,6 +19,7 @@ package utils.transformers
 import generated.DangerousGoodsType01
 import models.{Index, UserAnswers}
 import pages.houseConsignment.index.items.DangerousGoodsPage
+import pages.sections.houseConsignment.index.items.dangerousGoods.DangerousGoodsSection
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -27,12 +28,13 @@ class DangerousGoodsTransformer @Inject() (implicit ec: ExecutionContext) extend
 
   def transform(dangerousGoods: Seq[DangerousGoodsType01], hcIndex: Index, itemIndex: Index): UserAnswers => Future[UserAnswers] = userAnswers =>
     dangerousGoods.zipWithIndex.foldLeft(Future.successful(userAnswers))({
-      case (acc, (DangerousGoodsType01(_, unNumber), i)) =>
+      case (acc, (DangerousGoodsType01(sequenceNumber, unNumber), i)) =>
         acc.flatMap {
           userAnswers =>
-            val unNumberIndex = Index(i)
+            val index = Index(i)
             val pipeline: UserAnswers => Future[UserAnswers] =
-              set(DangerousGoodsPage(hcIndex, itemIndex, unNumberIndex), unNumber)
+              setSequenceNumber(DangerousGoodsSection(hcIndex, itemIndex, index), sequenceNumber) andThen
+                set(DangerousGoodsPage(hcIndex, itemIndex, index), unNumber)
 
             pipeline(userAnswers)
         }

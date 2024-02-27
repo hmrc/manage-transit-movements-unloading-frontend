@@ -205,7 +205,8 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           helper.incidentDescriptionRow,
           helper.incidentQualifierRow,
           helper.incidentCoordinatesRow,
-          helper.incidentUnLocodeRow
+          helper.incidentUnLocodeRow,
+          helper.incidentLocationAddressRow
         ).flatten
 
         val endorsementSection = StaticSection(
