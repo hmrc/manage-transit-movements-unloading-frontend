@@ -67,12 +67,11 @@ class HouseConsignmentAnswersHelper(
 
   def departureTransportMeansSections: Seq[Section] =
     userAnswers.get(DepartureTransportMeansListSection(houseConsignmentIndex)).mapWithIndex {
-      case (jsValue, transportMeansIndex) =>
+      case (_, transportMeansIndex) =>
         val helper = new DepartureTransportMeansAnswersHelper(userAnswers, houseConsignmentIndex, transportMeansIndex)
         AccordionSection(
           sectionTitle = messages("unloadingFindings.subsections.transportMeans", transportMeansIndex.display),
           rows = Seq(
-            helper.sequenceNumber(jsValue),
             helper.transportMeansID,
             helper.transportMeansIDNumber,
             helper.buildVehicleNationalityRow
@@ -82,12 +81,11 @@ class HouseConsignmentAnswersHelper(
 
   def itemSections: Seq[Section] =
     userAnswers.get(ItemsSection(houseConsignmentIndex)).mapWithIndex {
-      case (jsValue, itemIndex) =>
+      case (_, itemIndex) =>
         val helper = new ConsignmentItemAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex)
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.subsections.item", itemIndex.display)),
           rows = Seq(
-            helper.sequenceNumber(jsValue),
             helper.descriptionRow,
             helper.grossWeightRow,
             helper.netWeightRow,

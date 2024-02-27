@@ -115,12 +115,11 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
   def departureTransportMeansSections: Seq[Section] =
     userAnswers.get(TransportMeansListSection).mapWithIndex {
-      case (jsValue, index) =>
+      case (_, index) =>
         val helper = new DepartureTransportMeansAnswersHelper(userAnswers, index)
         AccordionSection(
           sectionTitle = messages("unloadingFindings.subsections.transportMeans", index.display),
           rows = Seq(
-            helper.sequenceNumber(jsValue),
             helper.transportMeansID,
             helper.transportMeansNumber,
             helper.transportRegisteredCountry
@@ -130,10 +129,9 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
   def transportEquipmentSections: Seq[Section] =
     userAnswers.get(TransportEquipmentListSection).mapWithIndex {
-      (jsValue, equipmentIndex) =>
+      (_, equipmentIndex) =>
         val helper = new TransportEquipmentAnswersHelper(userAnswers, equipmentIndex)
         val rows = Seq(
-          Seq(helper.sequenceNumber(jsValue)).flatten,
           Seq(helper.containerIdentificationNumber).flatten,
           helper.transportEquipmentSeals
         ).flatten
@@ -158,11 +156,10 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
   def incidentSections: Seq[Section] =
     userAnswers.get(IncidentsSection).mapWithIndex {
-      case (jsValue, incidentIndex) =>
+      case (_, incidentIndex) =>
         val helper = new IncidentAnswersHelper(userAnswers, incidentIndex)
 
         val rows = Seq(
-          helper.sequenceNumber(jsValue),
           helper.incidentCountryRow,
           helper.incidentCodeRow,
           helper.incidentDescriptionRow,
@@ -190,11 +187,10 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
   def documentSections: Seq[Section] =
     userAnswers.get(DocumentsSection).mapWithIndex {
-      case (jsValue, documentIndex) =>
+      case (_, documentIndex) =>
         val helper = new DocumentAnswersHelper(userAnswers, documentIndex)
 
         val rows = Seq(
-          helper.sequenceNumber(jsValue),
           helper.documentType,
           helper.referenceNumber,
           helper.additionalInformation
@@ -209,10 +205,9 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
   // Don't show children sections here. These are accessed from the 'More details' link
   def houseConsignmentSections: Seq[Section] =
     userAnswers.get(HouseConsignmentsSection).mapWithIndex {
-      (jsValue, houseConsignmentIndex) =>
+      (_, houseConsignmentIndex) =>
         val helper = new HouseConsignmentAnswersHelper(userAnswers, houseConsignmentIndex)
         val rows = Seq(
-          helper.sequenceNumber(jsValue),
           helper.consignorName,
           helper.consignorIdentification,
           helper.consigneeName,

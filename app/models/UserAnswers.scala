@@ -20,6 +20,7 @@ import derivable.Derivable
 import generated.CC043CType
 import models.SensitiveFormats.SensitiveWrites
 import pages._
+import pages.sections.Section
 import play.api.libs.json._
 import queries.Gettable
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
@@ -77,6 +78,24 @@ final case class UserAnswers(
       d =>
         val updatedAnswers = copy(data = d)
         page.cleanup(None, updatedAnswers)
+    }
+  }
+
+  def removeExceptSequenceNumber(section: Section[JsObject]): Try[UserAnswers] = {
+    val sequenceNumberPath = section.path \ "sequenceNumber"
+
+    val transformation = sequenceNumberPath.json.pick[JsString] flatMap {
+      sequenceNumber =>
+        section.path.json.prune andThen
+          __.json.update(sequenceNumberPath.json.put(sequenceNumber))
+    }
+
+    this.data.transform(transformation) match {
+      case JsSuccess(value, _) => Success(this.copy(data = value))
+      case JsError(e) =>
+        println("***")
+        e.foreach(println)
+        Success(this)
     }
   }
 }
