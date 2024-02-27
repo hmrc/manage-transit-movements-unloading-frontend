@@ -38,7 +38,7 @@ class IncidentLocationTransformerSpec extends SpecBase with AppWithDefaultMockFi
 
   private val transformer = app.injector.instanceOf[IncidentLocationTransformer]
 
-  private lazy val mockReferenceDataConnector                                                 = mock[ReferenceDataConnector]
+  private lazy val mockReferenceDataConnector = mock[ReferenceDataConnector]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
