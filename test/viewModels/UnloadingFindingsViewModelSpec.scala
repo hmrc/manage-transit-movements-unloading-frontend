@@ -144,7 +144,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
       section.sectionTitle.value mustBe "Departure means of transport 1"
       section.rows.size mustBe 3
-      section.viewLink must not be defined
+      section.viewLink mustBe defined
+      section.secondViewLink must not be defined
     }
 
     "when there is multiple" in {
@@ -169,7 +170,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
       section.sectionTitle.value mustBe "Departure means of transport 1"
       section.rows.size mustBe 3
-      section.viewLink must not be defined
+      section.viewLink mustBe defined
+      section.secondViewLink must not be defined
     }
 
     "must render transport equipment section" - {
@@ -185,11 +187,12 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
           val viewModelProvider = new UnloadingFindingsViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers)
-          val section           = result.sections(1)
+          val section           = result.sections(2)
 
           section.sectionTitle.value mustBe "Transport equipment 1"
           section.rows.size mustBe 1
-          section.viewLink must not be defined
+          section.viewLink mustBe defined
+          section.secondViewLink mustBe defined
         }
 
         "with seals" in {
@@ -203,11 +206,12 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
           val viewModelProvider = new UnloadingFindingsViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers)
-          val section           = result.sections(1)
+          val section           = result.sections(2)
 
           section.sectionTitle.value mustBe "Transport equipment 1"
           section.rows.size mustBe 2
-          section.viewLink must not be defined
+          section.viewLink mustBe defined
+          section.secondViewLink mustBe defined
         }
       }
       "when there is multiple" - {
@@ -223,11 +227,12 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
           val viewModelProvider = new UnloadingFindingsViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers)
-          val section           = result.sections(2)
+          val section           = result.sections(3)
 
           section.sectionTitle.value mustBe "Transport equipment 2"
           section.rows.size mustBe 1
-          section.viewLink must not be defined
+          section.viewLink mustBe defined
+          section.secondViewLink mustBe defined
         }
 
         "with seals" in {
@@ -243,11 +248,12 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
           val viewModelProvider = new UnloadingFindingsViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers)
-          val section           = result.sections(2)
+          val section           = result.sections(3)
 
           section.sectionTitle.value mustBe "Transport equipment 2"
           section.rows.size mustBe 2
-          section.viewLink must not be defined
+          section.viewLink mustBe defined
+          section.secondViewLink mustBe defined
         }
       }
     }
@@ -272,11 +278,12 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(2)
+        val section           = result.sections(5)
 
         section.sectionTitle.value mustBe "House consignment 1"
         section.rows.size mustBe 4
         section.viewLink mustBe defined
+        section.secondViewLink must not be defined
       }
       "when there is multiple" in {
         val userAnswers = emptyUserAnswers
@@ -307,11 +314,12 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(3)
+        val section           = result.sections(6)
 
         section.sectionTitle.value mustBe "House consignment 2"
         section.rows.size mustBe 4
         section.viewLink mustBe defined
+        section.secondViewLink must not be defined
       }
     }
 
@@ -327,7 +335,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(1)
+        val section           = result.sections(4)
 
         section.sectionTitle.value mustBe "Additional references"
         section.rows.size mustBe 1
@@ -346,10 +354,12 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(1)
+        val section           = result.sections(4)
 
         section.sectionTitle.value mustBe "Additional references"
         section.rows.size mustBe 2
+        section.viewLink mustBe defined
+        section.secondViewLink must not be defined
       }
     }
 
@@ -365,10 +375,12 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(2)
+        val section           = result.sections(5)
 
         section.sectionTitle.value mustBe "Incident 1"
         section.rows.size mustBe 2
+        section.viewLink must not be defined
+        section.secondViewLink must not be defined
       }
 
       "when there are multiple" in {
@@ -385,13 +397,17 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
 
-        val section1 = result.sections(2)
+        val section1 = result.sections(5)
         section1.sectionTitle.value mustBe "Incident 1"
         section1.rows.size mustBe 2
+        section1.viewLink must not be defined
+        section1.secondViewLink must not be defined
 
-        val section2 = result.sections(3)
+        val section2 = result.sections(6)
         section2.sectionTitle.value mustBe "Incident 2"
         section2.rows.size mustBe 2
+        section1.viewLink must not be defined
+        section1.secondViewLink must not be defined
       }
     }
   }

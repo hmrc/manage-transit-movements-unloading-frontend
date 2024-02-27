@@ -24,8 +24,6 @@
 )
 
 @(section: Section, nestingLevel: Int = 0)(implicit messages: Messages)
-
-@if(section.rows.nonEmpty || section.children.nonEmpty) {
     @section match {
         case x: StaticSection => {
             @section.sectionTitle.map { title =>
@@ -54,7 +52,6 @@
             )
         }
     }
-}
 
 @header = {
     @section.sectionTitle.map { title =>
@@ -65,20 +62,32 @@
 }
 
 @content = {
-    <dl class="govuk-summary-list">
-        @govukSummaryList(
-            SummaryList(
-                rows = section.rows
+    @if(section.rows.nonEmpty) {
+        <dl class="govuk-summary-list">
+            @govukSummaryList(
+                SummaryList(
+                    rows = section.rows
+                )
             )
-        )
-    </dl>
+        </dl>
+    }
 
-    @section.children.map(this(_, nestingLevel + 1))
+    @if(section.children.nonEmpty) {
+        @section.children.map(this(_, nestingLevel + 1))
+    }
 
     @section.viewLink.map { link =>
         <p class="govuk-body">
-            <a class="govuk-link" href=@link.href id="view_link.id">
-                @messages("summaryDetails.link") <span class="govuk-visually-hidden">@link.visuallyHidden</span>
+            <a class="govuk-link" href=@link.href id="@link.id">
+                @messages(link.text) <span class="govuk-visually-hidden">@link.visuallyHidden</span>
+            </a>
+        </p>
+    }
+
+    @section.secondViewLink.map { link =>
+        <p class="govuk-body">
+            <a class="govuk-link" href=@link.href id="@link.id">
+                @messages(link.text) <span class="govuk-visually-hidden">@link.visuallyHidden</span>
             </a>
         </p>
     }

@@ -18,7 +18,7 @@ package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import connectors.ReferenceDataConnector
-import generated.{PreviousDocumentType04, PreviousDocumentType06, SupportingDocumentType02, TransportDocumentType02}
+import generated.{PreviousDocumentType06, SupportingDocumentType02, TransportDocumentType02}
 import generators.Generators
 import models.DocType.{Previous, Support, Transport}
 import models.Index

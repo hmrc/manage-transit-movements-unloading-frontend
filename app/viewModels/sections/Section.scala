@@ -24,6 +24,7 @@ sealed trait Section {
   val rows: Seq[SummaryListRow]
   val children: Seq[Section]
   val viewLink: Option[Link]
+  val secondViewLink: Option[Link]
   val id: Option[String]
 }
 
@@ -34,6 +35,7 @@ object Section {
     rows: Seq[SummaryListRow] = Nil,
     children: Seq[Section] = Nil,
     viewLink: Option[Link] = None,
+    secondViewLink: Option[Link] = None,
     id: Option[String] = None
   ) extends Section
 
@@ -42,17 +44,21 @@ object Section {
     def apply(sectionTitle: String, rows: Seq[SummaryListRow]): AccordionSection =
       new AccordionSection(sectionTitle = Some(sectionTitle), rows = rows)
 
+    def apply(sectionTitle: String, rows: Seq[SummaryListRow], viewLink: Link, secondViewLink: Option[Link]): AccordionSection =
+      new AccordionSection(Some(sectionTitle), rows = rows, viewLink = Some(viewLink), secondViewLink = secondViewLink)
+
     def apply(sectionTitle: String, rows: Seq[SummaryListRow], viewLink: Link, id: String): AccordionSection =
       new AccordionSection(Some(sectionTitle), rows = rows, viewLink = Some(viewLink), id = Some(id))
 
     def apply(sectionTitle: String, rows: Seq[SummaryListRow], children: Seq[Section], viewLink: Link, id: String): AccordionSection =
-      new AccordionSection(Some(sectionTitle), rows, children, Some(viewLink), Some(id))
+      new AccordionSection(Some(sectionTitle), rows, children, Some(viewLink), None, Some(id))
   }
 
   case class StaticSection(
     sectionTitle: Option[String] = None,
     rows: Seq[SummaryListRow] = Nil,
     viewLink: Option[Link] = None,
+    secondViewLink: Option[Link] = None,
     id: Option[String] = None
   ) extends Section {
 

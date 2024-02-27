@@ -38,7 +38,7 @@ class Navigator @Inject() () {
 
     case CanSealsBeReadPage    => ua => routes.AreAnySealsBrokenController.onPageLoad(ua.id, NormalMode)
     case AreAnySealsBrokenPage => ua => routes.UnloadingFindingsController.onPageLoad(ua.id)
-    case UnloadingCommentsPage => ua => routes.CheckYourAnswersController.onPageLoad(ua.id)
+    case UnloadingCommentsPage => ua => routes.UnloadingFindingsController.onPageLoad(ua.id)
     case AddUnloadingCommentsYesNoPage =>
       ua =>
         ua.get(AddUnloadingCommentsYesNoPage) match {

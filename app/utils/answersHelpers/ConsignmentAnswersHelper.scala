@@ -17,7 +17,7 @@
 package utils.answersHelpers
 
 import models.DocType.Previous
-import models.{Link, SecurityType, UserAnswers}
+import models.{Index, Link, SecurityType, UserAnswers}
 import pages.documents.TypePage
 import pages.grossMass.GrossMassPage
 import pages.sections._
@@ -115,22 +115,34 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     call = Some(Call(GET, "#"))
   )
 
-  def departureTransportMeansSections: Seq[Section] =
-    userAnswers.get(TransportMeansListSection).mapWithIndex {
+  def departureTransportMeansSections: Seq[Section] = {
+    val sections = userAnswers.get(TransportMeansListSection).mapWithIndex {
       case (_, index) =>
         val helper = new DepartureTransportMeansAnswersHelper(userAnswers, index)
         AccordionSection(
-          sectionTitle = messages("unloadingFindings.subsections.transportMeans", index.display),
+          sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans", index.display)),
           rows = Seq(
             helper.transportMeansID,
             helper.transportMeansNumber,
             helper.transportRegisteredCountry
-          ).flatten
+          ).flatten,
+          viewLink = Some(helper.departureTransportMeansAddRemoveLink)
         )
     }
+    if (sections.nonEmpty) sections
+    else {
+      val helper = new DepartureTransportMeansAnswersHelper(userAnswers, Index(0))
+      Seq(
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans.empty")),
+          viewLink = Some(helper.departureTransportMeansAddRemoveLink)
+        )
+      )
+    }
+  }
 
-  def transportEquipmentSections: Seq[Section] =
-    userAnswers.get(TransportEquipmentListSection).mapWithIndex {
+  def transportEquipmentSections: Seq[Section] = {
+    val sections = userAnswers.get(TransportEquipmentListSection).mapWithIndex {
       (_, equipmentIndex) =>
         val helper = new TransportEquipmentAnswersHelper(userAnswers, equipmentIndex)
         val rows = Seq(
@@ -140,21 +152,47 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
         AccordionSection(
           sectionTitle = messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display),
-          rows = rows
+          rows = rows,
+          viewLink = helper.transportEquipmentAddRemoveLink,
+          secondViewLink = Some(helper.sealsAddRemoveLink)
         )
     }
 
-  def additionalReferencesSections: Seq[Section] =
-    Seq(
+    if (sections.nonEmpty) sections
+    else {
+      val helper = new TransportEquipmentAnswersHelper(userAnswers, Index(0))
+      Seq(
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment.empty")),
+          viewLink = Some(helper.transportEquipmentAddRemoveLink)
+        )
+      )
+    }
+
+  }
+
+  def additionalReferencesSections: Seq[Section] = {
+    val sections = Seq(
       AccordionSection(
-        sectionTitle = messages("unloadingFindings.additional.reference.heading"),
+        sectionTitle = Some(messages("unloadingFindings.additional.reference.heading")),
         rows = getAnswersAndBuildSectionRows(AdditionalReferencesSection) {
           referenceIndex =>
             val helper = new AdditionalReferenceAnswersHelper(userAnswers, referenceIndex)
             helper.additionalReference
-        }
+        },
+        viewLink = Some(additionalReferenceAddRemoveLink)
       )
     )
+    if (sections.nonEmpty) sections
+    else {
+      Seq(
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.additional.reference.heading")),
+          viewLink = Some(additionalReferenceAddRemoveLink)
+        )
+      )
+    }
+  }
 
   def incidentSections: Seq[Section] =
     userAnswers.get(IncidentsSection).mapWithIndex {
@@ -187,8 +225,8 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         )
     }
 
-  def documentSections: Seq[Section] =
-    userAnswers.get(DocumentsSection).mapWithIndex {
+  def documentSections: Seq[Section] = {
+    val sections = userAnswers.get(DocumentsSection).mapWithIndex {
       case (_, documentIndex) =>
         val helper   = new DocumentAnswersHelper(userAnswers, documentIndex)
         val readOnly = userAnswers.get(TypePage(documentIndex)).map(_.`type`).contains(Previous)
@@ -200,10 +238,22 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         ).flatten
 
         AccordionSection(
-          sectionTitle = messages("unloadingFindings.document.heading", documentIndex.display),
-          rows = rows
+          sectionTitle = Some(messages("unloadingFindings.document.heading", documentIndex.display)),
+          rows = rows,
+          viewLink = Some(helper.documentAddRemoveLink)
         )
     }
+    if (sections.nonEmpty) sections
+    else {
+      val helper = new DocumentAnswersHelper(userAnswers, Index(0))
+      Seq(
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.document.heading.empty")),
+          viewLink = Some(helper.documentAddRemoveLink)
+        )
+      )
+    }
+  }
 
   // Don't show children sections here. These are accessed from the 'More details' link
   def houseConsignmentSections: Seq[Section] =
@@ -230,4 +280,11 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           id = s"houseConsignment${houseConsignmentIndex.display}"
         )
     }
+
+  val additionalReferenceAddRemoveLink: Link = Link(
+    id = "add-remove-additional-reference",
+    href = "#",
+    text = messages("additionalReferenceLink.addRemove"),
+    visuallyHidden = messages("additionalReferenceLink.visuallyHidden")
+  )
 }
