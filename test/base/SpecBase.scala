@@ -28,7 +28,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
-import play.api.libs.json.{Json, Reads, Writes}
+import play.api.libs.json._
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Content, Key, Value}
@@ -93,6 +93,9 @@ trait SpecBase
 
     def removeValue(page: QuestionPage[_]): UserAnswers =
       userAnswers.remove(page).success.value
+
+    def getSequenceNumber(section: QuestionPage[JsObject]): String =
+      getValue(section).transform((JsPath \ "sequenceNumber").json.pick[JsString]).get.value
   }
 
   implicit class RichContent(c: Content) {

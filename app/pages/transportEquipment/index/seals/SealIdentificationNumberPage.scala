@@ -18,12 +18,12 @@ package pages.transportEquipment.index.seals
 
 import models.Index
 import pages.QuestionPage
-import pages.sections.SealsSection
+import pages.sections.SealSection
 import play.api.libs.json.JsPath
 
 case class SealIdentificationNumberPage(equipmentIndex: Index, sealIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = SealsSection(equipmentIndex).path \ sealIndex.position \ toString
+  override def path: JsPath = SealSection(equipmentIndex, sealIndex).path \ toString
 
   override def toString: String = "identifier"
 }

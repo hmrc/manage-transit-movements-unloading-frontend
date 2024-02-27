@@ -17,12 +17,12 @@
 package pages.sections.houseConsignment.index.items.additionalReference
 
 import models.Index
-import pages.sections.{ItemsSection, Section}
+import pages.sections.{ItemSection, Section}
 import play.api.libs.json.{JsArray, JsPath}
 
 case class AdditionalReferencesSection(houseConsignmentIndex: Index, itemIndex: Index) extends Section[JsArray] {
 
-  override def path: JsPath = ItemsSection(houseConsignmentIndex).path \ itemIndex.position \ toString
+  override def path: JsPath = ItemSection(houseConsignmentIndex, itemIndex).path \ toString
 
   override def toString: String = "AdditionalReference"
 }

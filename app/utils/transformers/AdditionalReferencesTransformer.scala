@@ -39,13 +39,9 @@ class AdditionalReferencesTransformer @Inject() (referenceDataConnector: Referen
 
     lazy val referenceDataLookups = additionalReferences.map {
       additionalReference =>
-        referenceDataConnector.getAdditionalReferenceType(additionalReference.typeValue).map {
-          additionalReferenceType =>
-            TempAdditionalReference(
-              underlying = additionalReference,
-              typeValue = additionalReferenceType
-            )
-        }
+        referenceDataConnector
+          .getAdditionalReferenceType(additionalReference.typeValue)
+          .map(TempAdditionalReference(additionalReference, _))
     }
 
     Future.sequence(referenceDataLookups).flatMap {
@@ -73,13 +69,9 @@ class AdditionalReferencesTransformer @Inject() (referenceDataConnector: Referen
 
     lazy val referenceDataLookups = additionalReferences.map {
       additionalReference =>
-        referenceDataConnector.getAdditionalReferenceType(additionalReference.typeValue).map {
-          additionalReferenceType =>
-            TempAdditionalReference(
-              underlying = additionalReference,
-              typeValue = additionalReferenceType
-            )
-        }
+        referenceDataConnector
+          .getAdditionalReferenceType(additionalReference.typeValue)
+          .map(TempAdditionalReference(additionalReference, _))
     }
 
     Future.sequence(referenceDataLookups).flatMap {

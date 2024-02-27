@@ -46,6 +46,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks {
           val result = Document.apply(ie043Document, documentType)
 
           result mustBe SupportingDocument(
+            sequenceNumber = sequenceNumber,
             documentType = documentType,
             referenceNumber = referenceNumber,
             complementOfInformation = complementOfInformation
@@ -71,6 +72,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks {
           val result = Document.apply(ie043Document, documentType)
 
           result mustBe TransportDocument(
+            sequenceNumber = sequenceNumber,
             documentType = documentType,
             referenceNumber = referenceNumber
           )

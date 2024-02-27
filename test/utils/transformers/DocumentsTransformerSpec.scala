@@ -52,6 +52,7 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
   "must transform data" - {
     "when consignment documents" in {
       import pages.documents._
+      import pages.sections.documents.DocumentSection
 
       val supportingDocuments = Seq(
         SupportingDocumentType02(
@@ -95,18 +96,22 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       val result = transformer.transform(supportingDocuments, transportDocuments).apply(emptyUserAnswers).futureValue
 
+      result.getSequenceNumber(DocumentSection(Index(0))) mustBe "1"
       result.getValue(TypePage(Index(0))).toString mustBe "Supporting - (sd1 tv) sd1 d"
       result.getValue(DocumentReferenceNumberPage(Index(0))) mustBe "sd1 rn"
       result.getValue(AdditionalInformationPage(Index(0))) mustBe "sd1 coi"
 
+      result.getSequenceNumber(DocumentSection(Index(1))) mustBe "2"
       result.getValue(TypePage(Index(1))).toString mustBe "Supporting - (sd2 tv) sd2 d"
       result.getValue(DocumentReferenceNumberPage(Index(1))) mustBe "sd2 rn"
       result.get(AdditionalInformationPage(Index(1))) must not be defined
 
+      result.getSequenceNumber(DocumentSection(Index(2))) mustBe "1"
       result.getValue(TypePage(Index(2))).toString mustBe "Transport - (td1 tv) td1 d"
       result.getValue(DocumentReferenceNumberPage(Index(2))) mustBe "td1 rn"
       result.get(AdditionalInformationPage(Index(2))) must not be defined
 
+      result.getSequenceNumber(DocumentSection(Index(3))) mustBe "2"
       result.getValue(TypePage(Index(3))).toString mustBe "Transport - (td2 tv) td2 d"
       result.getValue(DocumentReferenceNumberPage(Index(3))) mustBe "td2 rn"
       result.get(AdditionalInformationPage(Index(3))) must not be defined
@@ -114,6 +119,7 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
     "when consignment item documents" in {
       import pages.houseConsignment.index.items.document._
+      import pages.sections.houseConsignment.index.items.documents.DocumentSection
 
       val supportingDocuments = Seq(
         SupportingDocumentType02(
@@ -157,18 +163,22 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       val result = transformer.transform(supportingDocuments, transportDocuments, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
 
+      result.getSequenceNumber(DocumentSection(hcIndex, itemIndex, Index(0))) mustBe "1"
       result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(0))) mustBe "sd1 rn"
       result.getValue(AdditionalInformationPage(hcIndex, itemIndex, Index(0))) mustBe "sd1 coi"
       result.getValue(TypePage(hcIndex, itemIndex, Index(0))).toString mustBe "Supporting - (sd1 tv) sd1 d"
 
+      result.getSequenceNumber(DocumentSection(hcIndex, itemIndex, Index(1))) mustBe "2"
       result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(1))) mustBe "sd2 rn"
       result.get(AdditionalInformationPage(hcIndex, itemIndex, Index(1))) must not be defined
       result.getValue(TypePage(hcIndex, itemIndex, Index(1))).toString mustBe "Supporting - (sd2 tv) sd2 d"
 
+      result.getSequenceNumber(DocumentSection(hcIndex, itemIndex, Index(2))) mustBe "1"
       result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(2))) mustBe "td1 rn"
       result.get(AdditionalInformationPage(hcIndex, itemIndex, Index(2))) must not be defined
       result.getValue(TypePage(hcIndex, itemIndex, Index(2))).toString mustBe "Transport - (td1 tv) td1 d"
 
+      result.getSequenceNumber(DocumentSection(hcIndex, itemIndex, Index(3))) mustBe "2"
       result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(3))) mustBe "td2 rn"
       result.get(AdditionalInformationPage(hcIndex, itemIndex, Index(3))) must not be defined
       result.getValue(TypePage(hcIndex, itemIndex, Index(3))).toString mustBe "Transport - (td2 tv) td2 d"

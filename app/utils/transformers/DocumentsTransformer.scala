@@ -34,15 +34,19 @@ class DocumentsTransformer @Inject() (
     transportDocuments: Seq[TransportDocumentType02]
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.documents._
+    import pages.sections.documents.DocumentSection
+
     genericTransform(supportingDocuments, transportDocuments) {
       case (document, documentIndex) =>
         document match {
-          case Document.SupportingDocument(documentType, referenceNumber, complementOfInformation) =>
-            set(TypePage(documentIndex), documentType) andThen
+          case Document.SupportingDocument(sequenceNumber, documentType, referenceNumber, complementOfInformation) =>
+            setSequenceNumber(DocumentSection(documentIndex), sequenceNumber) andThen
+              set(TypePage(documentIndex), documentType) andThen
               set(DocumentReferenceNumberPage(documentIndex), referenceNumber) andThen
               set(AdditionalInformationPage(documentIndex), complementOfInformation)
-          case Document.TransportDocument(documentType, referenceNumber) =>
-            set(TypePage(documentIndex), documentType) andThen
+          case Document.TransportDocument(sequenceNumber, documentType, referenceNumber) =>
+            setSequenceNumber(DocumentSection(documentIndex), sequenceNumber) andThen
+              set(TypePage(documentIndex), documentType) andThen
               set(DocumentReferenceNumberPage(documentIndex), referenceNumber)
         }
     }
@@ -55,15 +59,19 @@ class DocumentsTransformer @Inject() (
     itemIndex: Index
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.houseConsignment.index.items.document._
+    import pages.sections.houseConsignment.index.items.documents.DocumentSection
+
     genericTransform(supportingDocuments, transportDocuments) {
       case (document, documentIndex) =>
         document match {
-          case Document.SupportingDocument(documentType, referenceNumber, complementOfInformation) =>
-            set(DocumentReferenceNumberPage(hcIndex, itemIndex, documentIndex), referenceNumber) andThen
+          case Document.SupportingDocument(sequenceNumber, documentType, referenceNumber, complementOfInformation) =>
+            setSequenceNumber(DocumentSection(hcIndex, itemIndex, documentIndex), sequenceNumber) andThen
+              set(DocumentReferenceNumberPage(hcIndex, itemIndex, documentIndex), referenceNumber) andThen
               set(AdditionalInformationPage(hcIndex, itemIndex, documentIndex), complementOfInformation) andThen
               set(TypePage(hcIndex, itemIndex, documentIndex), documentType)
-          case Document.TransportDocument(documentType, referenceNumber) =>
-            set(DocumentReferenceNumberPage(hcIndex, itemIndex, documentIndex), referenceNumber) andThen
+          case Document.TransportDocument(sequenceNumber, documentType, referenceNumber) =>
+            setSequenceNumber(DocumentSection(hcIndex, itemIndex, documentIndex), sequenceNumber) andThen
+              set(DocumentReferenceNumberPage(hcIndex, itemIndex, documentIndex), referenceNumber) andThen
               set(TypePage(hcIndex, itemIndex, documentIndex), documentType)
         }
     }
