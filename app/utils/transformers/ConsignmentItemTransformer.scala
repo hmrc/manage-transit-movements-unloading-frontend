@@ -40,7 +40,7 @@ class ConsignmentItemTransformer @Inject() (
             val pipeline: UserAnswers => Future[UserAnswers] =
               commodityTransformer.transform(consignmentItem.Commodity, hcIndex, itemIndex) andThen
                 packagingTransformer.transform(consignmentItem.Packaging, hcIndex, itemIndex) andThen
-                documentsTransformer.transform(consignmentItem.SupportingDocument, consignmentItem.TransportDocument, hcIndex, itemIndex) andThen
+                documentsTransformer.transform(consignmentItem.SupportingDocument, consignmentItem.TransportDocument, Seq.empty, hcIndex, itemIndex) andThen
                 additionalReferencesTransformer.transform(consignmentItem.AdditionalReference, hcIndex, itemIndex)
 
             pipeline(userAnswers)

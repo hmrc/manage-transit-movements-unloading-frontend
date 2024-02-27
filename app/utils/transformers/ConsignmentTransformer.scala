@@ -40,7 +40,7 @@ class ConsignmentTransformer @Inject() (
         lazy val pipeline: UserAnswers => Future[UserAnswers] =
           transportEquipmentTransformer.transform(consignment05.TransportEquipment) andThen
             departureTransportMeansTransformer.transform(consignment05.DepartureTransportMeans) andThen
-            documentsTransformer.transform(consignment05.SupportingDocument, consignment05.TransportDocument) andThen
+            documentsTransformer.transform(consignment05.SupportingDocument, consignment05.TransportDocument, consignment05.PreviousDocument) andThen
             houseConsignmentsTransformer.transform(consignment05.HouseConsignment) andThen
             additionalReferencesTransformer.transform(consignment05.AdditionalReference) andThen
             set(GrossMassPage, consignment05.grossMass) andThen
