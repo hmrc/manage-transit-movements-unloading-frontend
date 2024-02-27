@@ -20,7 +20,6 @@ import models.reference.{Country, Incident}
 import models.{Index, UserAnswers}
 import pages.incident.endorsement.EndorsementCountryPage
 import pages.incident.{IncidentCodePage, IncidentTextPage}
-import pages.sections.incidents.transportEquipment.IncidentTransportEquipmentSection
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
@@ -99,12 +98,20 @@ class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(impl
   )
 
   def incidentTransportEquipments: Seq[Section] =
-    userAnswers.get(IncidentTransportEquipmentSection(incidentIndex)).mapWithIndex {
-      case (_, equipmentIndex) =>
-        val helper = new IncidentTransportEquipmentAnswersHelper(userAnswers, equipmentIndex, incidentIndex)
-        val rows   = Seq(helper.containerIdentificationNumber, helper.transportEquipmentSeals, helper.itemNumber).flatten
+    userAnswers.ie043Data.Consignment
+      .flatMap(_.Incident.lift(incidentIndex.position))
+      .map(_.TransportEquipment)
+      .toSeq
+      .flatten
+      .zipWithIndex
+      .map {
+        case (transportEquipmentType0, index) =>
+          val equipmentIndex = Index(index)
+          val helper         = new IncidentTransportEquipmentAnswersHelper(userAnswers, transportEquipmentType0)
 
-        AccordionSection(messages("unloadingFindings.incident.transportEquipment.heading", equipmentIndex.display), rows)
-    }
+          val rows = Seq(helper.containerIdentificationNumber, helper.transportEquipmentSeals, helper.itemNumber).flatten
+
+          AccordionSection(messages("unloadingFindings.incident.transportEquipment.heading", equipmentIndex.display), rows)
+      }
 
 }

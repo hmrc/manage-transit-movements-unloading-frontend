@@ -16,43 +16,48 @@
 
 package utils.answersHelpers.consignment.incident
 
+import generated.TransportEquipmentType07
 import models.{Index, UserAnswers}
-import pages.incident.transportEquipment.IncidentContainerIdentificationNumberPage
-import pages.sections.incidents.transportEquipment.{IncidentItemsSection, IncidentSealsSection}
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
 
 class IncidentTransportEquipmentAnswersHelper(
   userAnswers: UserAnswers,
-  equipmentIndex: Index,
-  incidentIndex: Index
+  transportEquipmentType0: TransportEquipmentType07
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
-  def containerIdentificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = IncidentContainerIdentificationNumberPage(incidentIndex, equipmentIndex),
+  def containerIdentificationNumber: Option[SummaryListRow] = buildRowWithNoChangeLink[String](
+    data = transportEquipmentType0.containerIdentificationNumber,
     formatAnswer = formatAsText,
-    prefix = "unloadingFindings.rowHeadings.containerIdentificationNumber",
-    id = Some(s"change-container-identification-number-${equipmentIndex.display}"),
-    args = None,
-    call = Some(Call(GET, "#"))
+    prefix = "unloadingFindings.rowHeadings.containerIdentificationNumber"
   )
 
   def transportEquipmentSeals: Seq[SummaryListRow] =
-    getAnswersAndBuildSectionRows(IncidentSealsSection(incidentIndex, equipmentIndex)) {
-      sealIndex =>
-        val helper = new IncidentSealAnswersHelper(userAnswers, incidentIndex, equipmentIndex, sealIndex)
-        helper.transportEquipmentSeal
+    transportEquipmentType0.Seal.zipWithIndex.flatMap {
+      case (sealType0, i) =>
+        val sealIndex = Index(i)
+        buildRowWithNoChangeLink[String](
+          data = Option(sealType0.identifier),
+          formatAnswer = formatAsText,
+          prefix = "unloadingFindings.rowHeadings.sealIdentifier",
+          args = sealIndex.display
+        )
+
     }
 
   def itemNumber: Seq[SummaryListRow] =
-    getAnswersAndBuildSectionRows(IncidentItemsSection(incidentIndex, equipmentIndex)) {
-      itemIndex =>
-        val helper = new IncidentItemAnswersHelper(userAnswers, incidentIndex, equipmentIndex, itemIndex)
-        helper.transportEquipmentItem
+    transportEquipmentType0.GoodsReference.zipWithIndex.flatMap {
+      case (type0, i) =>
+        val itemIndex = Index(i)
+        buildRowWithNoChangeLink[String](
+          data = Option(type0.declarationGoodsItemNumber.toString()),
+          formatAnswer = formatAsText,
+          prefix = "unloadingFindings.rowHeadings.item",
+          args = itemIndex.display
+        )
+
     }
 
 }

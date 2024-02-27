@@ -26,11 +26,9 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IncidentsTransformer @Inject() (
-  referenceDataConnector: ReferenceDataConnector,
-  incidentEndorsementTransformer: IncidentEndorsementTransformer,
-  incidentLocationTransformer: IncidentLocationTransformer,
-  incidentTransportEquipmentTransformer: IncidentTransportEquipmentTransformer
+class IncidentsTransformer @Inject() (referenceDataConnector: ReferenceDataConnector,
+                                      incidentEndorsementTransformer: IncidentEndorsementTransformer,
+                                      incidentLocationTransformer: IncidentLocationTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
@@ -62,8 +60,7 @@ class IncidentsTransformer @Inject() (
                 set(IncidentCodePage(incidentIndex), tempIncident.typeValue) andThen
                   set(IncidentTextPage(incidentIndex), tempIncident.text) andThen
                   incidentEndorsementTransformer.transform(tempIncident.endorsement, incidentIndex) andThen
-                  incidentLocationTransformer.transform(tempIncident.location, incidentIndex) andThen
-                  incidentTransportEquipmentTransformer.transform(tempIncident.transportEquipments, incidentIndex)
+                  incidentLocationTransformer.transform(tempIncident.location, incidentIndex)
 
               pipeline(userAnswers)
           }
