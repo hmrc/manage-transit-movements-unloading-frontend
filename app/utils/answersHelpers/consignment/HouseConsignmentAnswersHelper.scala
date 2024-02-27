@@ -16,6 +16,7 @@
 
 package utils.answersHelpers.consignment
 
+import models.reference.Country
 import models.{Index, UserAnswers}
 import pages._
 import pages.sections.ItemsSection
@@ -65,8 +66,8 @@ class HouseConsignmentAnswersHelper(
     call = None
   )
 
-  def consigneeCountry: Option[SummaryListRow] = buildRowWithNoChangeLink[String](
-    data = userAnswers.get(ConsigneeAddressPage(houseConsignmentIndex)).map(_.country.description),
+  def consigneeCountry: Option[SummaryListRow] = buildRowWithNoChangeLink[Country](
+    data = userAnswers.get(ConsigneeCountryPage(houseConsignmentIndex)),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.houseConsignment.consigneeCountry"
   )

@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-package models
+package pages
 
+import models.Index
 import models.reference.Country
-import play.api.libs.json.{Json, OFormat}
+import pages.sections.HouseConsignmentSection
+import play.api.libs.json.JsPath
 
-case class Address(
-  streetAndNumber: String,
-  city: String,
-  postalCode: Option[String],
-  country: Country
-) {
+case class ConsigneeCountryPage(houseConsignmentIndex: Index) extends QuestionPage[Country] {
 
-  override def toString: String = Seq(Some(streetAndNumber), Some(city), postalCode).flatten.mkString("<br>")
+  override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ "Consignee" \ toString
 
-}
-
-object Address {
-  implicit val format: OFormat[Address] = Json.format[Address]
+  override def toString: String = "country"
 }

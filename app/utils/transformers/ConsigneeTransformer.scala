@@ -17,8 +17,8 @@
 package utils.transformers
 
 import generated.{AddressType07, ConsigneeType04}
-import models.{Address, Index, UserAnswers}
-import pages.{ConsigneeAddressPage, ConsigneeIdentifierPage, ConsigneeNamePage}
+import models.{DynamicAddress, Index, UserAnswers}
+import pages.{ConsigneeAddressPage, ConsigneeCountryPage, ConsigneeIdentifierPage, ConsigneeNamePage}
 import services.ReferenceDataService
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -50,12 +50,15 @@ class ConsigneeTransformer @Inject() (
   ): UserAnswers => Future[UserAnswers] = userAnswers =>
     address match {
       case Some(AddressType07(streetAndNumber, postcode, city, country)) =>
-        referenceDataConnector
-          .getCountryByCode(country)
-          .flatMap(
-            country => userAnswers.set(ConsigneeAddressPage(hcIndex), Address(streetAndNumber, city, postcode, country)).asFuture
-          )
-      case None =>
-        Future.successful(userAnswers)
+        referenceDataConnector.getCountryByCode(country).flatMap {
+          countryVal =>
+            val pipeline: UserAnswers => Future[UserAnswers] = {
+              set(ConsigneeCountryPage(hcIndex), countryVal) andThen
+                set(ConsigneeAddressPage(hcIndex), DynamicAddress(streetAndNumber, city, postcode))
+            }
+            pipeline(userAnswers)
+        }
+
+      case None => Future.successful(userAnswers)
     }
 }

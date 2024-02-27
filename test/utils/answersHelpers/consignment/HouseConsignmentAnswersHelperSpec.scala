@@ -18,7 +18,7 @@ package utils.answersHelpers.consignment
 
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.{AdditionalReferenceType, Country, PackageType}
-import models.{Address, Index}
+import models.{DynamicAddress, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
@@ -149,21 +149,42 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return Some(Row)" - {
         s"when $page defined" in {
-          forAll(arbitrary[Address]) {
+          forAll(arbitrary[DynamicAddress]) {
             value =>
               val answers = emptyUserAnswers.setValue(page, value)
 
-              val helper        = new HouseConsignmentAnswersHelper(answers, hcIndex)
-              val addressResult = helper.consigneeAddress.value
-              val countryResult = helper.consigneeCountry.value
+              val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
+              val result = helper.consigneeAddress.value
 
-              countryResult.key.value mustBe "Country"
-              countryResult.value.value mustBe value.country.description
-              countryResult.actions must not be defined
+              result.key.value mustBe "Address"
+              result.value.value mustBe value.toString
+              result.actions must not be defined
+          }
+        }
+      }
+    }
 
-              addressResult.key.value mustBe "Address"
-              addressResult.value.value mustBe value.toString
-              addressResult.actions must not be defined
+    "ConsigneeCountryPage" - {
+      val page = ConsigneeCountryPage(hcIndex)
+      "must return None" - {
+        s"when $page undefined" in {
+          val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, hcIndex)
+          helper.consigneeCountry mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $page defined" in {
+          forAll(arbitrary[Country]) {
+            value =>
+              val answers = emptyUserAnswers.setValue(page, value)
+
+              val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
+              val result = helper.consigneeCountry.value
+
+              result.key.value mustBe "Country"
+              result.value.value mustBe value.toString
+              result.actions must not be defined
           }
         }
       }

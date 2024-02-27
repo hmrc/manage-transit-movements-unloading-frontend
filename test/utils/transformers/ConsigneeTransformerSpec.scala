@@ -24,7 +24,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.{ConsigneeAddressPage, ConsigneeIdentifierPage, ConsigneeNamePage}
+import pages.{ConsigneeAddressPage, ConsigneeCountryPage, ConsigneeIdentifierPage, ConsigneeNamePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import services.ReferenceDataService
@@ -58,12 +58,11 @@ class ConsigneeTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
           result.get(ConsigneeIdentifierPage(hcIndex)) mustBe consignee.identificationNumber
           result.get(ConsigneeNamePage(hcIndex)) mustBe consignee.name
-
-          consignee.Address match {
-            case Some(_) => result.get(ConsigneeAddressPage(hcIndex)).value.country mustBe country
-            case None    => result.get(ConsigneeAddressPage(hcIndex)) must not be defined
-          }
-
+          result
+            .get(ConsigneeCountryPage(hcIndex))
+            .map(
+              countryResult => countryResult.description mustBe country.description
+            )
       }
     }
 

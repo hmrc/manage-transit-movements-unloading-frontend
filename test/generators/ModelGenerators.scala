@@ -69,15 +69,13 @@ trait ModelGenerators {
       } yield TransportMeansIdentification(code, description)
     }
 
-  implicit lazy val arbitraryAddress: Arbitrary[Address] =
+  implicit lazy val arbitraryAddress: Arbitrary[DynamicAddress] =
     Arbitrary {
       for {
         streetAndNumber <- Gen.oneOf("10", "11", "21", "30", "40", "41", "80", "81")
         city            <- nonEmptyString
         postCode        <- Gen.option(Gen.alphaNumStr)
-        country         <- arbitraryCountry.arbitrary
-
-      } yield Address(streetAndNumber, city, postCode, country)
+      } yield DynamicAddress(streetAndNumber, city, postCode)
     }
 
   implicit lazy val arbitraryAdditionalReference: Arbitrary[AdditionalReferenceType] =
