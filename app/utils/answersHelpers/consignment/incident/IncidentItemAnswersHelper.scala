@@ -36,7 +36,7 @@ class IncidentItemAnswersHelper(
   def transportEquipmentItem: Option[SummaryListRow] = getAnswerAndBuildRow[Item](
     page = IncidentItemNumberPage(incidentIndex, equipmentIndex, itemIndex),
     formatAnswer = formatAsText,
-    prefix = "unloadingFindings.rowHeadings.sealIdentifier",
+    prefix = messages("unloadingFindings.rowHeadings.item", itemIndex.display),
     args = itemIndex.display,
     id = Some(s"change-seal-details-${itemIndex.display}"),
     call = Some(Call(GET, "#"))

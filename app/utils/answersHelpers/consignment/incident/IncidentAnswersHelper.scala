@@ -104,7 +104,7 @@ class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(impl
         val helper = new IncidentTransportEquipmentAnswersHelper(userAnswers, equipmentIndex, incidentIndex)
         val rows   = Seq(helper.containerIdentificationNumber, helper.transportEquipmentSeals, helper.itemNumber).flatten
 
-        AccordionSection("testtext", rows)
+        AccordionSection(messages("unloadingFindings.incident.transportEquipment.heading", equipmentIndex.display), rows)
     }
 
 }

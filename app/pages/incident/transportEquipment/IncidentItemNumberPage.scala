@@ -26,5 +26,5 @@ final case class IncidentItemNumberPage(incidentIndex: Index, equipmentIndex: In
 
   override def path: JsPath = IncidentTransportEquipmentSection(incidentIndex).path \ equipmentIndex.position \ "GoodsReference" \ itemIndex.position
 
-  override def toString: String = "declarationGoodsItemNumberNumber"
+  override def toString: String = "declarationGoodsItemNumber"
 }
