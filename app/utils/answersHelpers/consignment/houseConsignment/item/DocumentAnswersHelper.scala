@@ -16,6 +16,7 @@
 
 package utils.answersHelpers.consignment.houseConsignment.item
 
+import models.reference.DocumentType
 import models.{Index, UserAnswers}
 import pages.houseConsignment.index.items.document._
 import play.api.i18n.Messages
@@ -31,6 +32,16 @@ class DocumentAnswersHelper(
   documentIndex: Index
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
+
+  def documentType: Option[SummaryListRow] =
+    getAnswerAndBuildRow[DocumentType](
+      page = TypePage(houseConsignmentIndex, itemIndex, documentIndex),
+      formatAnswer = formatAsText,
+      prefix = "unloadingFindings.houseConsignment.item.document.type",
+      args = Seq(documentIndex.display, itemIndex.display): _*,
+      id = Some(s"change-document-type-${itemIndex.display}-${documentIndex.display}"),
+      call = Some(Call(GET, "#")) //TODO change me please
+    )
 
   def referenceNumber: Option[SummaryListRow] =
     getAnswerAndBuildRow[String](

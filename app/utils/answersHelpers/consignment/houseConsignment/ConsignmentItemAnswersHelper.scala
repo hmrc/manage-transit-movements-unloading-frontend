@@ -91,6 +91,7 @@ class ConsignmentItemAnswersHelper(
           val helper = new DocumentAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex, documentIndex)
 
           val rows = Seq(
+            helper.documentType,
             helper.referenceNumber,
             helper.additionalInformation
           ).flatten

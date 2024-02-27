@@ -16,6 +16,8 @@
 
 package utils.answersHelpers.consignment.houseConsignment.item
 
+import models.reference.DocumentType
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.houseConsignment.index.items.document._
 import utils.answersHelpers.AnswersHelperSpecBase
@@ -23,6 +25,37 @@ import utils.answersHelpers.AnswersHelperSpecBase
 class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
 
   "DocumentAnswersHelper" - {
+
+    "documentType" - {
+      val page = TypePage(hcIndex, itemIndex, documentIndex)
+
+      "must return None" - {
+        s"when $page undefined" in {
+          val helper = new DocumentAnswersHelper(emptyUserAnswers, hcIndex, itemIndex, documentIndex)
+          helper.documentType mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $page defined" in {
+          forAll(arbitrary[DocumentType]) {
+            value =>
+              val answers = emptyUserAnswers.setValue(page, value)
+
+              val helper = new DocumentAnswersHelper(answers, hcIndex, itemIndex, documentIndex)
+              val result = helper.documentType.value
+
+              result.key.value mustBe "Document type"
+              result.value.value mustBe value.toString
+              val action = result.actions.value.items.head
+              action.content.value mustBe "Change"
+              action.href mustBe "#"
+              action.visuallyHiddenText.value mustBe "document 1 for item 1 - document type"
+              action.id mustBe "change-document-type-1-1"
+          }
+        }
+      }
+    }
 
     "referenceNumber" - {
       val page = DocumentReferenceNumberPage(hcIndex, itemIndex, documentIndex)
