@@ -14,34 +14,33 @@
  * limitations under the License.
  */
 
-package views
+package views.transportEquipment.index.seals
 
-import forms.ConfirmRemoveSealFormProvider
+import generators.Generators
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.ConfirmRemoveSealView
+import views.html.transportEquipment.index.seals.RemoveSealYesNoView
 
-class ConfirmRemoveSealViewSpec extends YesNoViewBehaviours {
+class RemoveSealYesNoViewSpec extends YesNoViewBehaviours with Generators {
 
-  private val sealDescription      = "sealDescription"
-  override def form: Form[Boolean] = new ConfirmRemoveSealFormProvider()(sealDescription)
+  private val sealIdNumber = nonEmptyString.sample.value
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[ConfirmRemoveSealView].apply(form, mrn, arrivalId, equipmentIndex, sealIndex, sealDescription, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[RemoveSealYesNoView].apply(form, mrn, arrivalId, NormalMode, equipmentIndex, sealIndex, sealIdNumber)(fakeRequest, messages)
 
-  override val prefix: String = "confirmRemoveSeal"
+  override val prefix: String = "transportEquipment.index.seal.removeSealYesNo"
 
-  behave like pageWithTitle(args = sealDescription)
+  behave like pageWithTitle(equipmentIndex.display, sealIdNumber)
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithHeading(args = sealDescription)
+  behave like pageWithHeading(equipmentIndex.display, sealIdNumber)
 
-  behave like pageWithRadioItems(args = List(sealDescription))
+  behave like pageWithRadioItems(args = Seq(equipmentIndex.display, sealIdNumber))
 
-  behave like pageWithSubmitButton("Save and continue")
+  behave like pageWithSubmitButton("Continue")
 }

@@ -14,7 +14,8 @@
  * limitations under the License.
  *@
 
-@import models.{ArrivalId, Index, MovementReferenceNumber}
+@import controllers.transportEquipment.index.seals.routes
+@import models.MovementReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo}
 
@@ -26,26 +27,25 @@
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, equipmentIndex: Index, sealIndex: Index, sealDescription: String, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index, sealIndex: Index, sealIdNumber: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("confirmRemoveSeal.title", sealDescription),
+    title = messages("transportEquipment.index.seal.removeSealYesNo.title", equipmentIndex.display, sealIdNumber),
     showBackLink = true
 ) {
 
-    @errorSummary(form.errors)
+    @formHelper(action = routes.RemoveSealYesNoController.onSubmit(arrivalId, mode, equipmentIndex, sealIndex), Symbol("autoComplete") -> "off") {
 
-    @formHelper(action = controllers.routes.ConfirmRemoveSealController.onSubmit(arrivalId, equipmentIndex, sealIndex, mode), Symbol("autoComplete") -> "off") {
-
+        @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),
             yesNoType = OrdinaryYesNo(
-                heading = messages("confirmRemoveSeal.heading", sealDescription),
+                heading = messages("transportEquipment.index.seal.removeSealYesNo.heading", equipmentIndex.display, sealIdNumber),
                 caption = Some(messages("site.caption", mrn.toString))
             )
         )
 
-        @button(attributes = Map("id" -> "submit"), messageKey = "site.saveAndContinue")
+        @button(attributes = Map("id" -> "submit"))
     }
 }
