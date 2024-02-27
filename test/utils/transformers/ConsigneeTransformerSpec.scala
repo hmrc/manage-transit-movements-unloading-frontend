@@ -19,15 +19,38 @@ package utils.transformers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated.ConsigneeType04
 import generators.Generators
+import models.reference.Country
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.{ConsigneeIdentifierPage, ConsigneeNamePage}
+import pages.{ConsigneeAddressPage, ConsigneeCountryPage, ConsigneeIdentifierPage, ConsigneeNamePage}
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
+import services.ReferenceDataService
+
+import scala.concurrent.Future
 
 class ConsigneeTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val transformer = app.injector.instanceOf[ConsigneeTransformer]
 
+  private lazy val mockRefDataService: ReferenceDataService = mock[ReferenceDataService]
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(
+        bind[ReferenceDataService].toInstance(mockRefDataService)
+      )
+
   "must transform data" - {
+
+    val country = Country("GB", "United Kingdom")
+
+    when(mockRefDataService.getCountryByCode(any())(any(), any()))
+      .thenReturn(Future.successful(country))
+
     "when consignee defined" in {
       forAll(arbitrary[ConsigneeType04]) {
         consignee =>
@@ -35,6 +58,11 @@ class ConsigneeTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
           result.get(ConsigneeIdentifierPage(hcIndex)) mustBe consignee.identificationNumber
           result.get(ConsigneeNamePage(hcIndex)) mustBe consignee.name
+          result
+            .get(ConsigneeCountryPage(hcIndex))
+            .map(
+              countryResult => countryResult.description mustBe country.description
+            )
       }
     }
 
@@ -43,6 +71,7 @@ class ConsigneeTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       result.get(ConsigneeIdentifierPage(hcIndex)) must not be defined
       result.get(ConsigneeNamePage(hcIndex)) must not be defined
+      result.get(ConsigneeAddressPage(hcIndex)) must not be defined
     }
   }
 }
