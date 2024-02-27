@@ -43,8 +43,8 @@ class IncidentLocationTransformer @Inject() (
           userAnswers <- {
             val pipeline = set(QualifierOfIdentificationPage(incidentIndex), qualifierOfIdentification) andThen
               set(UNLocodePage(incidentIndex), unLocode) andThen
-              set(CountryPage(incidentIndex), country)
-            incidentLocationAddressTransformer.transform(location.Address, incidentIndex)
+              set(CountryPage(incidentIndex), country) andThen
+              incidentLocationAddressTransformer.transform(location.Address, incidentIndex)
 
             pipeline(userAnswers)
           }
