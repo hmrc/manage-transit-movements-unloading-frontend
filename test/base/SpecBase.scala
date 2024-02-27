@@ -94,8 +94,8 @@ trait SpecBase
     def removeValue(page: QuestionPage[_]): UserAnswers =
       userAnswers.remove(page).success.value
 
-    def getSequenceNumber(section: QuestionPage[JsObject]): String =
-      getValue(section).transform((JsPath \ "sequenceNumber").json.pick[JsString]).get.value
+    def getSequenceNumber(section: QuestionPage[_]): String =
+      userAnswers.data.transform((section.path \ "sequenceNumber").json.pick[JsString]).get.value
   }
 
   implicit class RichContent(c: Content) {
