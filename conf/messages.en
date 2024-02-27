@@ -450,6 +450,12 @@ unloadingFindings.rowHeadings.holderOfTheTransitProcedure.name = Name
 unloadingFindings.rowHeadings.holderOfTheTransitProcedure.address = Address
 unloadingFindings.rowHeadings.holderOfTheTransitProcedure.country = Country
 
+unloadingFindings.consignor.heading = Consignor
+unloadingFindings.consignor.identificationNumber = EORI number or Trader Identification Number (TIN)
+unloadingFindings.consignor.name = Name
+unloadingFindings.consignor.country = Country
+unloadingFindings.consignor.address = Address
+
 unloadingFindings.document.heading = Document {0}
 unloadingFindings.document.type = Document type
 unloadingFindings.document.type.change.hidden = document type for document {0}
