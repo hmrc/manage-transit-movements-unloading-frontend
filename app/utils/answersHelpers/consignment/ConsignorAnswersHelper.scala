@@ -30,24 +30,18 @@ class ConsignorAnswersHelper(
     extends AnswersHelper(userAnswers) {
 
   def identificationNumber(answer: Option[String]): Option[SummaryListRow] =
-    answer
-      .map {
-        identificationNumber =>
-          buildRowWithNoChangeLink(
-            prefix = "unloadingFindings.consignor.identificationNumber",
-            answer = formatAsText(identificationNumber)
-          )
-      }
+    buildRowWithNoChangeLink[String](
+      data = answer,
+      formatAnswer = formatAsText,
+      prefix = "unloadingFindings.consignor.identificationNumber"
+    )
 
   def name(answer: Option[String]): Option[SummaryListRow] =
-    answer
-      .map {
-        name =>
-          buildRowWithNoChangeLink(
-            prefix = "unloadingFindings.consignor.name",
-            answer = formatAsText(name)
-          )
-      }
+    buildRowWithNoChangeLink[String](
+      data = answer,
+      formatAnswer = formatAsText,
+      prefix = "unloadingFindings.consignor.name"
+    )
 
   def country: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
     page = CountryPage,
@@ -58,13 +52,9 @@ class ConsignorAnswersHelper(
   )
 
   def address(answer: Option[AddressType07]): Option[SummaryListRow] =
-    answer
-      .map(DynamicAddress(_))
-      .map {
-        address =>
-          buildRowWithNoChangeLink(
-            prefix = "unloadingFindings.consignor.address",
-            answer = formatAsHtmlContent(address.toString)
-          )
-      }
+    buildRowWithNoChangeLink[DynamicAddress](
+      data = answer.map(DynamicAddress(_)),
+      formatAnswer = formatAsHtmlContent,
+      prefix = "unloadingFindings.consignor.address"
+    )
 }

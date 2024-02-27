@@ -16,7 +16,7 @@
 
 package models
 
-import generated.AddressType07
+import generated.{AddressType07, AddressType10}
 import play.api.libs.json.{Json, OFormat}
 
 case class DynamicAddress(
@@ -32,5 +32,8 @@ object DynamicAddress {
   implicit val format: OFormat[DynamicAddress] = Json.format[DynamicAddress]
 
   def apply(address: AddressType07): DynamicAddress =
+    new DynamicAddress(address.streetAndNumber, address.city, address.postcode)
+
+  def apply(address: AddressType10): DynamicAddress =
     new DynamicAddress(address.streetAndNumber, address.city, address.postcode)
 }
