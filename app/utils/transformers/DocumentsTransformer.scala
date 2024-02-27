@@ -17,7 +17,7 @@
 package utils.transformers
 
 import connectors.ReferenceDataConnector
-import generated.{PreviousDocumentType04, PreviousDocumentType06, SupportingDocumentType02, TransportDocumentType02}
+import generated.{PreviousDocumentType06, SupportingDocumentType02, TransportDocumentType02}
 import models.{Document, Index, UserAnswers}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -61,14 +61,14 @@ class DocumentsTransformer @Inject() (
   def transform(
     supportingDocuments: Seq[SupportingDocumentType02],
     transportDocuments: Seq[TransportDocumentType02],
-    previousDocuments: Seq[PreviousDocumentType04],
+    previousDocuments: Seq[PreviousDocumentType06],
     hcIndex: Index,
     itemIndex: Index
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.houseConsignment.index.items.document._
     import pages.sections.houseConsignment.index.items.documents.DocumentSection
 
-    genericTransform(supportingDocuments, transportDocuments, Seq.empty) {
+    genericTransform(supportingDocuments, transportDocuments, previousDocuments) {
       case (document, documentIndex) =>
         document match {
           case Document.SupportingDocument(sequenceNumber, documentType, referenceNumber, complementOfInformation) =>
@@ -80,7 +80,11 @@ class DocumentsTransformer @Inject() (
             setSequenceNumber(DocumentSection(hcIndex, itemIndex, documentIndex), sequenceNumber) andThen
               set(DocumentReferenceNumberPage(hcIndex, itemIndex, documentIndex), referenceNumber) andThen
               set(TypePage(hcIndex, itemIndex, documentIndex), documentType)
-          case Document.PreviousDocument(_, _, _, _) => userAnswers => Future.successful(userAnswers)
+          case Document.PreviousDocument(sequenceNumber, documentType, referenceNumber, complementOfInformation) =>
+            setSequenceNumber(DocumentSection(hcIndex, itemIndex, documentIndex), sequenceNumber) andThen
+              set(DocumentReferenceNumberPage(hcIndex, itemIndex, documentIndex), referenceNumber) andThen
+              set(AdditionalInformationPage(hcIndex, itemIndex, documentIndex), complementOfInformation) andThen
+              set(TypePage(hcIndex, itemIndex, documentIndex), documentType)
         }
     }
   }
