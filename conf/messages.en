@@ -26,6 +26,8 @@ site.caption = MRN: {0}
 site.email.link = If you have any questions or issues, email us at {0}
 site.email.subject = NCTS Phase 5 - Help with testing
 
+unloadingFindings.sequenceNumber = Sequence number
+
 error.title.prefix = Error:
 error.summary.title = There is a problem
 

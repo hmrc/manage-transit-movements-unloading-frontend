@@ -17,11 +17,11 @@
 package pages
 
 import models.Index
-import pages.sections.HouseConsignmentSection
+import pages.sections.houseConsignment.index.departureTransportMeans.TransportMeansSection
 import play.api.libs.json.JsPath
 
 case class DepartureTransportMeansIdentificationNumberPage(houseConsignmentIndex: Index, transportMeansIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath     = HouseConsignmentSection(houseConsignmentIndex).path \ "DepartureTransportMeans" \ transportMeansIndex.position \ toString
+  override def path: JsPath     = TransportMeansSection(houseConsignmentIndex, transportMeansIndex).path \ toString
   override def toString: String = "identificationNumber"
 }

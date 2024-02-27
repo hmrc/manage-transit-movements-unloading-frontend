@@ -19,12 +19,12 @@ package pages.houseConsignment.index.items
 import models.Index
 import models.reference.PackageType
 import pages.QuestionPage
-import pages.sections.ItemsSection
+import pages.sections.PackagingSection
 import play.api.libs.json.JsPath
 
 case class PackageTypePage(houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index) extends QuestionPage[PackageType] {
 
-  override def path: JsPath = ItemsSection(houseConsignmentIndex).path \ itemIndex.position \ "Packaging" \ packageIndex.position \ toString
+  override def path: JsPath = PackagingSection(houseConsignmentIndex, itemIndex, packageIndex).path \ toString
 
   override def toString: String = "typeOfPackages"
 

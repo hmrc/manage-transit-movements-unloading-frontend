@@ -28,6 +28,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
 import pages.incident.{IncidentCodePage, IncidentTextPage}
+import pages.sections.incidents.IncidentSection
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, JsPath, Json}
@@ -104,6 +105,7 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
           incidents.zipWithIndex.map {
             case (incident, i) =>
+              result.getSequenceNumber(IncidentSection(Index(i))) mustBe incident.sequenceNumber
               result.getValue(IncidentCodePage(Index(i))).code mustBe incident.code
               result.getValue(IncidentCodePage(Index(i))).description mustBe i.toString
               result.getValue(IncidentTextPage(Index(i))) mustBe incident.text

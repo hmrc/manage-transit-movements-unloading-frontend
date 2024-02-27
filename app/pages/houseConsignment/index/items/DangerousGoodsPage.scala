@@ -18,12 +18,11 @@ package pages.houseConsignment.index.items
 
 import models.Index
 import pages.QuestionPage
-import pages.sections.ItemsSection
+import pages.sections.houseConsignment.index.items.dangerousGoods.DangerousGoodsSection
 import play.api.libs.json.JsPath
 
 case class DangerousGoodsPage(houseConsignmentIndex: Index, itemIndex: Index, dangerousGoodsIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath =
-    ItemsSection(houseConsignmentIndex).path \ itemIndex.position \ "Commodity" \ "DangerousGoods" \ dangerousGoodsIndex.position \ toString
+  override def path: JsPath     = DangerousGoodsSection(houseConsignmentIndex, itemIndex, dangerousGoodsIndex).path \ toString
   override def toString: String = "UNNumber"
 }
