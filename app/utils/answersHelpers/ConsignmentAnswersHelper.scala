@@ -29,6 +29,7 @@ import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.consignment._
+import utils.answersHelpers.consignment.incident.IncidentAnswersHelper
 import viewModels.sections.Section
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 
@@ -169,8 +170,9 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         ).flatten
 
         AccordionSection(
-          sectionTitle = messages("unloadingFindings.subsections.incidents", incidentIndex.display),
-          rows = rows
+          sectionTitle = Some(messages("unloadingFindings.subsections.incidents", incidentIndex.display)),
+          rows = rows,
+          children = helper.incidentTransportEquipments
         )
     }
 

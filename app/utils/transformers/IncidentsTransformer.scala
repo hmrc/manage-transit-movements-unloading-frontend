@@ -29,7 +29,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class IncidentsTransformer @Inject() (
   referenceDataConnector: ReferenceDataConnector,
   incidentEndorsementTransformer: IncidentEndorsementTransformer,
-  incidentLocationTransformer: IncidentLocationTransformer
+  incidentLocationTransformer: IncidentLocationTransformer,
+  incidentTransportEquipmentTransformer: IncidentTransportEquipmentTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
@@ -37,17 +38,18 @@ class IncidentsTransformer @Inject() (
     typeValue: Incident,
     text: String,
     endorsement: Option[EndorsementType03],
-    location: LocationType02
+    location: LocationType02,
+    transportEquipments: Seq[TransportEquipmentType07]
   )
 
   def transform(incidents: Seq[generated.IncidentType04])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
 
     lazy val incidentRefLookups = incidents.map {
-      incidentType0 =>
+      incidentType0: IncidentType04 =>
         val incidentF = referenceDataConnector.getIncidentType(incidentType0.code)
         for {
           incident <- incidentF
-        } yield TempIncident(incident, incidentType0.text, incidentType0.Endorsement, incidentType0.Location)
+        } yield TempIncident(incident, incidentType0.text, incidentType0.Endorsement, incidentType0.Location, incidentType0.TransportEquipment)
     }
 
     Future.sequence(incidentRefLookups).flatMap {
@@ -60,7 +62,8 @@ class IncidentsTransformer @Inject() (
                 set(IncidentCodePage(incidentIndex), tempIncident.typeValue) andThen
                   set(IncidentTextPage(incidentIndex), tempIncident.text) andThen
                   incidentEndorsementTransformer.transform(tempIncident.endorsement, incidentIndex) andThen
-                  incidentLocationTransformer.transform(tempIncident.location, incidentIndex)
+                  incidentLocationTransformer.transform(tempIncident.location, incidentIndex) andThen
+                  incidentTransportEquipmentTransformer.transform(tempIncident.transportEquipments, incidentIndex)
 
               pipeline(userAnswers)
           }

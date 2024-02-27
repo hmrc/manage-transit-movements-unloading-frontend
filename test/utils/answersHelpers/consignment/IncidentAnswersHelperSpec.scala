@@ -24,6 +24,7 @@ import pages.incident.endorsement.EndorsementCountryPage
 import pages.incident.{IncidentCodePage, IncidentTextPage}
 import utils.Format.cyaDateFormatter
 import utils.answersHelpers.AnswersHelperSpecBase
+import utils.answersHelpers.consignment.incident.IncidentAnswersHelper
 
 class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
 

@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package utils.answersHelpers.consignment
+package utils.answersHelpers.consignment.incident
 
 import models.reference.{Country, Incident}
 import models.{Index, UserAnswers}
 import pages.incident.endorsement.EndorsementCountryPage
 import pages.incident.{IncidentCodePage, IncidentTextPage}
+import pages.sections.incidents.transportEquipment.IncidentTransportEquipmentSection
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
+import viewModels.sections.Section
+import viewModels.sections.Section.AccordionSection
 
 class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
@@ -94,5 +97,14 @@ class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(impl
     id = None,
     call = None
   )
+
+  def incidentTransportEquipments: Seq[Section] =
+    userAnswers.get(IncidentTransportEquipmentSection(incidentIndex)).mapWithIndex {
+      case (_, equipmentIndex) =>
+        val helper = new IncidentTransportEquipmentAnswersHelper(userAnswers, equipmentIndex, incidentIndex)
+        val rows   = Seq(helper.containerIdentificationNumber, helper.transportEquipmentSeals, helper.itemNumber).flatten
+
+        AccordionSection("testtext", rows)
+    }
 
 }
