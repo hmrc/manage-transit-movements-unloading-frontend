@@ -17,7 +17,7 @@
 package models
 
 import generated._
-import models.DocType.{Support, Transport}
+import models.DocType.{Previous, Support, Transport}
 import models.reference.DocumentType
 
 sealed trait Document {
@@ -48,6 +48,17 @@ object Document {
       referenceNumber = document.referenceNumber
     )
 
+  def apply(document: PreviousDocumentType06, documentType: DocumentType): PreviousDocument =
+    PreviousDocument(
+      documentType = DocumentType(
+        `type` = Previous,
+        code = documentType.code,
+        description = documentType.description
+      ),
+      referenceNumber = document.referenceNumber,
+      complementOfInformation = document.complementOfInformation
+    )
+
   case class SupportingDocument(
     documentType: DocumentType,
     referenceNumber: String,
@@ -57,5 +68,11 @@ object Document {
   case class TransportDocument(
     documentType: DocumentType,
     referenceNumber: String
+  ) extends Document
+
+  case class PreviousDocument(
+    documentType: DocumentType,
+    referenceNumber: String,
+    complementOfInformation: Option[String]
   ) extends Document
 }

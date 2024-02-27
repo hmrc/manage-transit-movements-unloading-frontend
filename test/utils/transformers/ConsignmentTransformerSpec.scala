@@ -92,7 +92,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
               ua => Future.successful(ua.setValue(FakeDepartureTransportMeansSection, Json.obj("foo" -> "bar")))
             }
 
-          when(mockDocumentsTransformer.transform(any(), any())(any()))
+          when(mockDocumentsTransformer.transform(any(), any(), any())(any()))
             .thenReturn {
               ua => Future.successful(ua.setValue(FakeDocumentsSection, Json.obj("foo" -> "bar")))
             }
