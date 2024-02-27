@@ -16,7 +16,9 @@
 
 package utils.answersHelpers
 
+import models.DocType.Previous
 import models.{Link, SecurityType, UserAnswers}
+import pages.documents.TypePage
 import pages.grossMass.GrossMassPage
 import pages.sections._
 import pages.sections.additionalReference.AdditionalReferencesSection
@@ -160,30 +162,42 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         val helper = new IncidentAnswersHelper(userAnswers, incidentIndex)
 
         val rows = Seq(
+          helper.incidentCountryRow,
           helper.incidentCodeRow,
           helper.incidentDescriptionRow,
-          helper.incidentEndorsementDateRow,
-          helper.incidentEndorsementAuthorityRow,
-          helper.incidentEndorsementPlaceRow,
-          helper.incidentEndorsementCountryRow,
+          helper.incidentQualifierRow,
+          helper.incidentCoordinatesRow,
+          helper.incidentUnLocodeRow,
           helper.incidentLocationAddressRow
         ).flatten
 
+        val endorsementSection = StaticSection(
+          sectionTitle = Some(messages("unloadingFindings.subsections.incidents.endorsements")),
+          rows = Seq(
+            helper.incidentEndorsementDateRow,
+            helper.incidentEndorsementAuthorityRow,
+            helper.incidentEndorsementCountryRow,
+            helper.incidentEndorsementPlaceRow
+          ).flatten
+        )
+
         AccordionSection(
-          sectionTitle = messages("unloadingFindings.subsections.incidents", incidentIndex.display),
-          rows = rows
+          sectionTitle = Some(messages("unloadingFindings.subsections.incidents", incidentIndex.display)),
+          rows = rows,
+          children = Seq(endorsementSection)
         )
     }
 
   def documentSections: Seq[Section] =
     userAnswers.get(DocumentsSection).mapWithIndex {
       case (_, documentIndex) =>
-        val helper = new DocumentAnswersHelper(userAnswers, documentIndex)
+        val helper   = new DocumentAnswersHelper(userAnswers, documentIndex)
+        val readOnly = userAnswers.get(TypePage(documentIndex)).map(_.`type`).contains(Previous)
 
         val rows = Seq(
-          helper.documentType,
-          helper.referenceNumber,
-          helper.additionalInformation
+          helper.documentType(readOnly),
+          helper.referenceNumber(readOnly),
+          helper.additionalInformation(readOnly)
         ).flatten
 
         AccordionSection(
@@ -201,7 +215,9 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           helper.consignorName,
           helper.consignorIdentification,
           helper.consigneeName,
-          helper.consigneeIdentification
+          helper.consigneeIdentification,
+          helper.consigneeCountry,
+          helper.consigneeAddress
         ).flatten
 
         AccordionSection(

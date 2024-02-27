@@ -16,9 +16,10 @@
 
 package utils.answersHelpers.consignment
 
-import models.reference.{Country, Incident}
-import models.{DynamicAddress, Index, UserAnswers}
+import models.reference.{Country, Incident, QualifierOfIdentification}
+import models.{Coordinates, DynamicAddress, Index, UserAnswers}
 import pages.incident.endorsement.EndorsementCountryPage
+import pages.incident.location._
 import pages.incident.location.address.{AddressCityPage, AddressPostcodePage, AddressStreetAndNumberPage}
 import pages.incident.{IncidentCodePage, IncidentTextPage}
 import play.api.i18n.Messages
@@ -26,6 +27,15 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
 
 class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
+
+  def incidentCountryRow: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
+    page = CountryPage(incidentIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.incident.country",
+    args = incidentIndex.display,
+    id = None,
+    call = None
+  )
 
   def incidentCodeRow: Option[SummaryListRow] = getAnswerAndBuildRow[Incident](
     page = IncidentCodePage(incidentIndex),
@@ -40,6 +50,15 @@ class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(impl
     page = IncidentTextPage(incidentIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.incident.description",
+    args = incidentIndex.display,
+    id = None,
+    call = None
+  )
+
+  def incidentQualifierRow: Option[SummaryListRow] = getAnswerAndBuildRow[QualifierOfIdentification](
+    page = QualifierOfIdentificationPage(incidentIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.incident.qualifier",
     args = incidentIndex.display,
     id = None,
     call = None
@@ -95,6 +114,24 @@ class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(impl
     id = None,
     call = None
   )
+
+  def incidentCoordinatesRow: Option[SummaryListRow] =
+    userAnswers.ie043Data.Consignment.flatMap(_.Incident.lift(incidentIndex.position).flatMap(_.Location.GNSS)).map {
+      gnss =>
+        buildRowWithNoChangeLink(
+          prefix = "unloadingFindings.incident.coordinates",
+          answer = formatAsText(Coordinates(gnss.latitude, gnss.longitude))
+        )
+    }
+
+  def incidentUnLocodeRow: Option[SummaryListRow] =
+    userAnswers.ie043Data.Consignment.flatMap(_.Incident.lift(incidentIndex.position).flatMap(_.Location.UNLocode)).map {
+      unlocode =>
+        buildRowWithNoChangeLink(
+          prefix = "unloadingFindings.incident.unLocode",
+          answer = formatAsText(unlocode)
+        )
+    }
 
   def incidentLocationAddressRow: Option[SummaryListRow] = userAnswers.ie043Data.Consignment
     .flatMap(

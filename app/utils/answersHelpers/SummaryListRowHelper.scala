@@ -16,7 +16,7 @@
 
 package utils.answersHelpers
 
-import models.{DynamicAddress, Identification}
+import models.Identification
 import models.reference.{Country, PackageType}
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -51,8 +51,8 @@ class SummaryListRowHelper(implicit messages: Messages) {
   protected def formatAsPackage(answer: PackageType): Content = s"${answer.asDescription}".toText
   protected def formatAsWeight[T](answer: T): Content         = s"${answer}kg".toText
 
-  protected def formatAsDynamicAddress(address: DynamicAddress): Content =
-    HtmlContent(address.toString)
+  protected def formatAsHtmlContent[T](answer: T): Content =
+    HtmlContent(answer.toString)
 
   protected def formatAsCountry(country: Country): Content = country.description.toText
 

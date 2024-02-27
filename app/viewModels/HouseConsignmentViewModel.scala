@@ -43,7 +43,9 @@ object HouseConsignmentViewModel {
           helper.consignorName,
           helper.consignorIdentification,
           helper.consigneeName,
-          helper.consigneeIdentification
+          helper.consigneeIdentification,
+          helper.consigneeCountry,
+          helper.consigneeAddress
         ).flatten
       )
 
