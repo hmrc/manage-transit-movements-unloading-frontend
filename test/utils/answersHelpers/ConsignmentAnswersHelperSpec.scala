@@ -303,9 +303,12 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         val unLocode       = Gen.alphaNumStr.sample.value
         val description    = Gen.alphaNumStr.sample.value
 
+        val addressType18 = AddressType18("streetAndNumber", Some("postcode"), "city")
+
         val locationType = locationType02.copy(
           UNLocode = Some(unLocode),
-          GNSS = Some(GNSSType(coordinate.latitude, coordinate.longitude))
+          GNSS = Some(GNSSType(coordinate.latitude, coordinate.longitude)),
+          Address = Some(addressType18)
         )
         val consignment: ConsignmentType05 = ConsignmentType05(
           containerIndicator = Number0,
@@ -325,13 +328,14 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
         result.head mustBe a[AccordionSection]
         result.head.sectionTitle.value mustBe "Incident 1"
-        result.head.rows.size mustBe 6
+        result.head.rows.size mustBe 7
         result.head.rows.head.value.value mustBe country.toString
         result.head.rows(1).value.value mustBe inc.toString
         result.head.rows(2).value.value mustBe description
         result.head.rows(3).value.value mustBe qualifier.toString
         result.head.rows(4).value.value mustBe coordinate.toString
         result.head.rows(5).value.value mustBe unLocode
+        result.head.rows(6).value.value mustBe s"${addressType18.streetAndNumber}<br>${addressType18.city}<br>${addressType18.postcode.get}"
 
         result.head.children.head.sectionTitle.value mustBe "Endorsements"
         result.head.children.head.rows.head.key.value mustBe "Endorsement date"

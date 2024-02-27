@@ -17,7 +17,7 @@
 package utils.answersHelpers.consignment
 
 import models.reference.{Country, Incident, QualifierOfIdentification}
-import models.{Coordinates, Index, UserAnswers}
+import models.{Coordinates, DynamicAddress, Index, UserAnswers}
 import pages.incident.endorsement.EndorsementCountryPage
 import pages.incident.location._
 import pages.incident.{IncidentCodePage, IncidentTextPage}
@@ -129,6 +129,24 @@ class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(impl
         buildRowWithNoChangeLink(
           prefix = "unloadingFindings.incident.unLocode",
           answer = formatAsText(unlocode)
+        )
+    }
+
+  def incidentLocationAddressRow: Option[SummaryListRow] = userAnswers.ie043Data.Consignment
+    .flatMap(
+      _.Incident
+        .lift(incidentIndex.position)
+        .flatMap(
+          _.Location.Address.map(
+            add => DynamicAddress(add.streetAndNumber, add.city, add.postcode)
+          )
+        )
+    )
+    .map {
+      dynamicAddress =>
+        buildRowWithNoChangeLink(
+          prefix = "unloadingFindings.incident.location.address",
+          answer = formatAsHtmlContent(dynamicAddress)
         )
     }
 
