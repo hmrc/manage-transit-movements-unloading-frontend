@@ -20,7 +20,6 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import connectors.ReferenceDataConnector
 import generated.LocationType02
 import generators.Generators
-import models.Index
 import models.reference.{Country, QualifierOfIdentification}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
@@ -40,20 +39,17 @@ class IncidentLocationTransformerSpec extends SpecBase with AppWithDefaultMockFi
   private val transformer = app.injector.instanceOf[IncidentLocationTransformer]
 
   private lazy val mockReferenceDataConnector                                                 = mock[ReferenceDataConnector]
-  private lazy val mockIncidentLocationAddressTransformer: IncidentLocationAddressTransformer = mock[IncidentLocationAddressTransformer]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector),
-        bind[IncidentLocationAddressTransformer].toInstance(mockIncidentLocationAddressTransformer)
+        bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
       )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockReferenceDataConnector)
-    reset(mockIncidentLocationAddressTransformer)
   }
 
   private case object FakeIncidentLocationAddressSection extends QuestionPage[JsObject] {
@@ -74,11 +70,6 @@ class IncidentLocationTransformerSpec extends SpecBase with AppWithDefaultMockFi
         when(mockReferenceDataConnector.getCountry(any())(any(), any()))
           .thenReturn(Future.successful(country))
 
-        when(mockIncidentLocationAddressTransformer.transform(any(), eqTo(index))(any()))
-          .thenReturn {
-            ua => Future.successful(ua.setValue(FakeIncidentLocationAddressSection, Json.obj("foo" -> index.toString)))
-          }
-
         val result = transformer.transform(location, index).apply(emptyUserAnswers).futureValue
 
         result.getValue(QualifierOfIdentificationPage(index)) mustBe qualifierOfIdentification
@@ -88,7 +79,6 @@ class IncidentLocationTransformerSpec extends SpecBase with AppWithDefaultMockFi
 
         verify(mockReferenceDataConnector).getQualifierOfIdentificationIncident(eqTo(location.qualifierOfIdentification))(any(), any())
         verify(mockReferenceDataConnector).getCountry(eqTo(location.country))(any(), any())
-        verify(mockIncidentLocationAddressTransformer).transform(any(), any())(any())
     }
   }
 }
