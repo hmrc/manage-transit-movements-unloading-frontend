@@ -147,7 +147,7 @@ class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(impl
       dynamicAddress =>
         buildRowWithNoChangeLink(
           prefix = "unloadingFindings.incident.location.address",
-          answer = formatAsDynamicAddress(dynamicAddress)
+          answer = formatAsHtmlContent(dynamicAddress)
         )
     }
 
