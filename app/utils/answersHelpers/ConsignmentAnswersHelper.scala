@@ -16,7 +16,9 @@
 
 package utils.answersHelpers
 
+import models.DocType.Previous
 import models.{Link, SecurityType, UserAnswers}
+import pages.documents.TypePage
 import pages.grossMass.GrossMassPage
 import pages.sections._
 import pages.sections.additionalReference.AdditionalReferencesSection
@@ -188,12 +190,13 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
   def documentSections: Seq[Section] =
     userAnswers.get(DocumentsSection).mapWithIndex {
       case (_, documentIndex) =>
-        val helper = new DocumentAnswersHelper(userAnswers, documentIndex)
+        val helper   = new DocumentAnswersHelper(userAnswers, documentIndex)
+        val readOnly = userAnswers.get(TypePage(documentIndex)).map(_.`type`).contains(Previous)
 
         val rows = Seq(
-          helper.documentType,
-          helper.referenceNumber,
-          helper.additionalInformation
+          helper.documentType(readOnly),
+          helper.referenceNumber(readOnly),
+          helper.additionalInformation(readOnly)
         ).flatten
 
         AccordionSection(
@@ -211,7 +214,9 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           helper.consignorName,
           helper.consignorIdentification,
           helper.consigneeName,
-          helper.consigneeIdentification
+          helper.consigneeIdentification,
+          helper.consigneeCountry,
+          helper.consigneeAddress
         ).flatten
 
         AccordionSection(

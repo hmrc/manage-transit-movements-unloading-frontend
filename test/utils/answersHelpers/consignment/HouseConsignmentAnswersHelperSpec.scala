@@ -16,16 +16,16 @@
 
 package utils.answersHelpers.consignment
 
-import models.Index
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.{AdditionalReferenceType, Country, PackageType}
+import models.{DynamicAddress, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
-import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
-import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
 import pages.houseConsignment.index.items._
+import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
 import pages.houseConsignment.index.items.document.DocumentReferenceNumberPage
+import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
 import utils.answersHelpers.AnswersHelperSpecBase
 import viewModels.sections.Section.AccordionSection
 
@@ -131,6 +131,59 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
               result.key.value mustBe "Consignee EORI number or Trader Identification Number (TIN)"
               result.value.value mustBe value
+              result.actions must not be defined
+          }
+        }
+      }
+    }
+
+    "ConsigneeAddressPage" - {
+      val page = ConsigneeAddressPage(hcIndex)
+      "must return None" - {
+        s"when $page undefined" in {
+          val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, hcIndex)
+          helper.consigneeAddress mustBe None
+          helper.consigneeCountry mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $page defined" in {
+          forAll(arbitrary[DynamicAddress]) {
+            value =>
+              val answers = emptyUserAnswers.setValue(page, value)
+
+              val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
+              val result = helper.consigneeAddress.value
+
+              result.key.value mustBe "Address"
+              result.value.value mustBe value.toString
+              result.actions must not be defined
+          }
+        }
+      }
+    }
+
+    "ConsigneeCountryPage" - {
+      val page = ConsigneeCountryPage(hcIndex)
+      "must return None" - {
+        s"when $page undefined" in {
+          val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, hcIndex)
+          helper.consigneeCountry mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $page defined" in {
+          forAll(arbitrary[Country]) {
+            value =>
+              val answers = emptyUserAnswers.setValue(page, value)
+
+              val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
+              val result = helper.consigneeCountry.value
+
+              result.key.value mustBe "Country"
+              result.value.value mustBe value.toString
               result.actions must not be defined
           }
         }
