@@ -106,7 +106,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
               val section           = result.sections(1)
 
               section.sectionTitle.value mustBe "Consignor"
-              section.viewLink must not be defined
+              section.viewLinks mustBe Nil
           }
         }
       }
