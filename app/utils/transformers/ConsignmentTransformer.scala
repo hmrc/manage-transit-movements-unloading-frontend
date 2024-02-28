@@ -31,6 +31,7 @@ class ConsignmentTransformer @Inject() (
   documentsTransformer: DocumentsTransformer,
   houseConsignmentsTransformer: HouseConsignmentsTransformer,
   additionalReferencesTransformer: AdditionalReferencesTransformer,
+  additionalInformationTransformer: AdditionalInformationTransformer,
   incidentsTransformer: IncidentsTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
@@ -45,6 +46,7 @@ class ConsignmentTransformer @Inject() (
             documentsTransformer.transform(consignment05.SupportingDocument, consignment05.TransportDocument, consignment05.PreviousDocument) andThen
             houseConsignmentsTransformer.transform(consignment05.HouseConsignment) andThen
             additionalReferencesTransformer.transform(consignment05.AdditionalReference) andThen
+            additionalInformationTransformer.transform(consignment05.AdditionalInformation) andThen
             set(GrossMassPage, consignment05.grossMass) andThen
             additionalReferencesTransformer.transform(consignment05.AdditionalReference) andThen
             incidentsTransformer.transform(consignment05.Incident)

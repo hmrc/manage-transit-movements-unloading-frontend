@@ -253,6 +253,27 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       }
     }
 
+    "additionalInformationSections" - {
+      import pages.additionalInformation._
+
+      "must generate accordion sections" in {
+        forAll(arbitrary[AdditionalInformationCode], Gen.alphaNumStr) {
+          (code, text) =>
+            val answers = emptyUserAnswers
+              .setValue(AdditionalInformationCodePage(index), code)
+              .setValue(AdditionalInformationTextPage(index), text)
+
+            val helper = new ConsignmentAnswersHelper(answers)
+            val result = helper.additionalInformationSections
+
+            result.head mustBe a[AccordionSection]
+            result.head.sectionTitle.value mustBe "Additional information"
+            result.head.rows.size mustBe 1
+            result.head.rows.head.value.value mustBe s"$code - $text"
+        }
+      }
+    }
+
     "documentSections" - {
       import pages.documents._
 
