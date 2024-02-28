@@ -78,6 +78,51 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       }
     }
 
+    "consignorSection" - {
+
+      "must return no section" - {
+        "when consignor is undefined" in {
+          forAll(arbitrary[ConsignmentType05]) {
+            consignment =>
+              val userAnswers = emptyUserAnswers.copy(
+                ie043Data = basicIe043.copy(
+                  Consignment = Some(
+                    consignment.copy(
+                      Consignor = None
+                    )
+                  )
+                )
+              )
+
+              val helper = new ConsignmentAnswersHelper(userAnswers)
+              helper.consignorSection must not be defined
+          }
+        }
+      }
+
+      "must return section" - {
+        "when consignor is defined" in {
+          forAll(arbitrary[ConsignmentType05], arbitrary[ConsignorType05]) {
+            (consignment, consignor) =>
+              val userAnswers = emptyUserAnswers.copy(
+                ie043Data = basicIe043.copy(
+                  Consignment = Some(
+                    consignment.copy(
+                      Consignor = Some(consignor)
+                    )
+                  )
+                )
+              )
+
+              val helper = new ConsignmentAnswersHelper(userAnswers)
+              val result = helper.consignorSection.value
+
+              result.sectionTitle.value mustBe "Consignor"
+          }
+        }
+      }
+    }
+
     "grossMassRow" - {
       import pages.grossMass.GrossMassPage
 

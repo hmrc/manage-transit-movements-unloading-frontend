@@ -25,6 +25,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConsignmentTransformer @Inject() (
+  consignorTransformer: ConsignorTransformer,
   transportEquipmentTransformer: TransportEquipmentTransformer,
   departureTransportMeansTransformer: DepartureTransportMeansTransformer,
   documentsTransformer: DocumentsTransformer,
@@ -38,7 +39,8 @@ class ConsignmentTransformer @Inject() (
     consignment match {
       case Some(consignment05) =>
         lazy val pipeline: UserAnswers => Future[UserAnswers] =
-          transportEquipmentTransformer.transform(consignment05.TransportEquipment) andThen
+          consignorTransformer.transform(consignment05.Consignor) andThen
+            transportEquipmentTransformer.transform(consignment05.TransportEquipment) andThen
             departureTransportMeansTransformer.transform(consignment05.DepartureTransportMeans) andThen
             documentsTransformer.transform(consignment05.SupportingDocument, consignment05.TransportDocument, consignment05.PreviousDocument) andThen
             houseConsignmentsTransformer.transform(consignment05.HouseConsignment) andThen

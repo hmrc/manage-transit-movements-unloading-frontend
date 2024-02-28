@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import generated.{AddressType10, CC043C, CC043CType, PreviousDocumentType04, PreviousDocumentType06}
+import generated._
 import play.api.libs.json._
 import scalaxb.`package`.toScope
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
@@ -200,18 +200,9 @@ package object models {
 
   }
 
-  implicit class RichAddress(address: AddressType10) {
-
-    def toDynamicAddress: DynamicAddress = DynamicAddress(
-      numberAndStreet = address.streetAndNumber,
-      city = address.city,
-      postalCode = address.postcode
-    )
-  }
-
   implicit class RichPreviousDocument(previousDocument: PreviousDocumentType04) {
 
-    def toPreviousDocumentType06(): PreviousDocumentType06 = {
+    def toPreviousDocumentType06: PreviousDocumentType06 = {
       import previousDocument._
       PreviousDocumentType06(sequenceNumber, typeValue, referenceNumber, complementOfInformation)
     }
@@ -219,9 +210,7 @@ package object models {
 
   implicit class RichPreviousDocuments(previousDocuments: Seq[PreviousDocumentType04]) {
 
-    def toPreviousDocumentType06(): Seq[PreviousDocumentType06] =
-      previousDocuments.map(
-        d => d.toPreviousDocumentType06()
-      )
+    def toPreviousDocumentType06: Seq[PreviousDocumentType06] =
+      previousDocuments.map(_.toPreviousDocumentType06)
   }
 }
