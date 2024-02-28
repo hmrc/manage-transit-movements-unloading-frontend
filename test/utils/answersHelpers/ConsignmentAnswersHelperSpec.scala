@@ -347,7 +347,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         val coordinate         = arbitrary[Coordinates].sample.value
         val unLocode           = Gen.alphaNumStr.sample.value
         val description        = Gen.alphaNumStr.sample.value
-        val arbitraryTransport = arbitrary[TransportEquipmentType05].sample.value
+        val arbitraryTransport = arbitrary[TransportEquipmentType07].sample.value
 
         val addressType18 = AddressType18("streetAndNumber", Some("postcode"), "city")
 
@@ -358,8 +358,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         )
         val consignment: ConsignmentType05 = ConsignmentType05(
           containerIndicator = Number0,
-          TransportEquipment = Seq(arbitraryTransport),
-          Incident = Seq(incident.copy(Endorsement = Some(endorsement), Location = locationType))
+          Incident = Seq(incident.copy(Endorsement = Some(endorsement), Location = locationType, TransportEquipment = Seq(arbitraryTransport)))
         )
 
         val answers = emptyUserAnswers

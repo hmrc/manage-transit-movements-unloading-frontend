@@ -275,6 +275,22 @@ trait MessagesModelGenerators {
       )
     }
 
+  implicit lazy val arbitraryTransportEquipmentType07: Arbitrary[TransportEquipmentType07] =
+    Arbitrary {
+      for {
+        sequenceNumber                <- Gen.alphaNumStr
+        containerIdentificationNumber <- Gen.option(Gen.alphaNumStr)
+        seals                         <- arbitrary[Seq[SealType04]]
+        numberOfSeals                 <- Gen.option(positiveBigInts)
+        goodsReferences               <- arbitrary[Seq[GoodsReferenceType01]]
+      } yield TransportEquipmentType07(sequenceNumber,
+                                       containerIdentificationNumber = containerIdentificationNumber,
+                                       numberOfSeals = numberOfSeals,
+                                       Seal = seals,
+                                       GoodsReference = goodsReferences
+      )
+    }
+
   implicit lazy val arbitraryAdditionalReferenceType02: Arbitrary[AdditionalReferenceType02] =
     Arbitrary {
       for {
@@ -334,6 +350,17 @@ trait MessagesModelGenerators {
         sequenceNumber             <- Gen.alphaNumStr
         declarationGoodsItemNumber <- positiveBigInts
       } yield GoodsReferenceType02(
+        sequenceNumber = sequenceNumber,
+        declarationGoodsItemNumber = declarationGoodsItemNumber
+      )
+    }
+
+  implicit lazy val arbitraryGoodsReferenceType01: Arbitrary[GoodsReferenceType01] =
+    Arbitrary {
+      for {
+        sequenceNumber             <- Gen.alphaNumStr
+        declarationGoodsItemNumber <- positiveBigInts
+      } yield GoodsReferenceType01(
         sequenceNumber = sequenceNumber,
         declarationGoodsItemNumber = declarationGoodsItemNumber
       )
