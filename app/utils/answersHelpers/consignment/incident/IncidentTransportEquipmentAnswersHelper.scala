@@ -24,18 +24,18 @@ import utils.answersHelpers.AnswersHelper
 
 class IncidentTransportEquipmentAnswersHelper(
   userAnswers: UserAnswers,
-  transportEquipmentType0: TransportEquipmentType07
+  transportEquipmentType7: TransportEquipmentType07
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
   def containerIdentificationNumber: Option[SummaryListRow] = buildRowWithNoChangeLink[String](
-    data = transportEquipmentType0.containerIdentificationNumber,
+    data = transportEquipmentType7.containerIdentificationNumber,
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.containerIdentificationNumber"
   )
 
   def transportEquipmentSeals: Seq[SummaryListRow] =
-    transportEquipmentType0.Seal.zipWithIndex.flatMap {
+    transportEquipmentType7.Seal.zipWithIndex.flatMap {
       case (sealType0, i) =>
         val sealIndex = Index(i)
         buildRowWithNoChangeLink[String](
@@ -48,7 +48,7 @@ class IncidentTransportEquipmentAnswersHelper(
     }
 
   def itemNumber: Seq[SummaryListRow] =
-    transportEquipmentType0.GoodsReference.zipWithIndex.flatMap {
+    transportEquipmentType7.GoodsReference.zipWithIndex.flatMap {
       case (type0, i) =>
         val itemIndex = Index(i)
         buildRowWithNoChangeLink[String](
