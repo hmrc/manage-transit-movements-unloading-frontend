@@ -48,7 +48,7 @@ checkYourAnswers.changeItems.hidden = answers
 
 session_expired.title = For your security, we signed you out
 session_expired.heading = For your security, we signed you out
-session_expired.guidance = We did not save your answers.
+session_expired.guidance = We saved your answers. They will be available for 15 minutes.
 session_expired.button = Sign in
 
 unauthorised.title = You cannot use this service
@@ -61,8 +61,8 @@ unauthorised.again.later = again later.
 technicalDifficulties.title = Sorry, there is a problem with the service
 technicalDifficulties.heading = Sorry, there is a problem with the service
 technicalDifficulties.tryAgain = Try again later.
-technicalDifficulties.contact = You can
-technicalDifficulties.contact.link = contact the New Computerised Transit System helpdesk if you need to speak to someone about transit movements (opens in a new tab).
+technicalDifficulties.savedAnswers = We saved your answers. They will be available for 15 minutes.
+technicalDifficulties.contact.link = Contact the New Computerised Transit System (NCTS) helpdesk if you need to speak to someone about your transit movements (opens in a new tab)
 
 unloadingGuidance.title = Unload the goods before you make unloading remarks
 unloadingGuidance.heading = Unload the goods before you make unloading remarks
@@ -325,8 +325,7 @@ pageNotFound.title = Page not found
 pageNotFound.heading = Page not found
 pageNotFound.paragraph1 = If you typed the web address, check it is correct.
 pageNotFound.paragraph2 = If you pasted the web address, check you copied the entire address.
-pageNotFound.paragraph3Start = If the web address is correct or you selected a link or button,
-pageNotFound.contactLink = contact the New Computerised Transit System(NCTS) helpdesk if you need to speak to someone about your transit movement (opens in a new tab)
+pageNotFound.contactLink = Contact the New Computerised Transit System (NCTS) helpdesk if you need to speak to someone about your transit movements (opens in a new tab)
 
 unauthorisedWithGroupAccess.title = You cannot use this service authorisation
 unauthorisedWithGroupAccess.heading = You cannot use this service
