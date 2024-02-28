@@ -405,6 +405,15 @@ trait MessagesModelGenerators {
     } yield Coordinates(long, lat)
   }
 
+  implicit lazy val arbTranshipment02: Arbitrary[TranshipmentType02] = Arbitrary {
+    for {
+      flag            <- arbitraryFlag.arbitrary
+      sequenceNumber  <- Gen.alphaNumStr
+      typeValue       <- Gen.alphaNumStr
+      referenceNumber <- Gen.alphaNumStr
+    } yield TranshipmentType02(flag, TransportMeansType02(sequenceNumber, typeValue, referenceNumber))
+  }
+
   implicit lazy val arbitraryIncidentType04: Arbitrary[generated.IncidentType04] =
     Arbitrary {
       for {

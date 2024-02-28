@@ -171,6 +171,11 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           helper.incidentLocationAddressRow
         ).flatten
 
+        val transhipment = StaticSection(
+          sectionTitle = Some(messages("unloadingFindings.subsections.incidents.transhipment")),
+          rows = helper.incidentTranshipment
+        )
+
         val endorsementSection = StaticSection(
           sectionTitle = Some(messages("unloadingFindings.subsections.incidents.endorsements")),
           rows = Seq(
@@ -184,7 +189,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.subsections.incidents", incidentIndex.display)),
           rows = rows,
-          children = Seq(endorsementSection)
+          children = Seq(endorsementSection, transhipment)
         )
     }
 

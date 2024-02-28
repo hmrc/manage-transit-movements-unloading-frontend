@@ -348,6 +348,7 @@ unloadingFindings.subsections.packages = Package {0}
 
 unloadingFindings.subsections.incidents = Incident {0}
 unloadingFindings.subsections.incidents.endorsements = Endorsements
+unloadingFindings.subsections.incidents.transhipment = Transhipment
 unloadingFindings.rowHeadings.incident.country = Country
 unloadingFindings.rowHeadings.incident.code = Incident code
 unloadingFindings.rowHeadings.incident.description = Description
@@ -359,6 +360,11 @@ unloadingFindings.incident.endorsement.country = Country
 unloadingFindings.incident.coordinates = Coordinates
 unloadingFindings.incident.unLocode = UN/LOCODE
 unloadingFindings.incident.location.address = Address
+
+unloadingFindings.rowHeadings.transhipment.containerIndicator = Container indicator
+unloadingFindings.rowHeadings.transhipment.typeOfIdentification = Identification type
+unloadingFindings.rowHeadings.transhipment.identificationNumber = Identification number
+unloadingFindings.rowHeadings.transhipment.nationality = Registered country
 
 
 declarationType = Declaration type
