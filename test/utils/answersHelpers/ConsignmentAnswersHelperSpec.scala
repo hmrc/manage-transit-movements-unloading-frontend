@@ -338,15 +338,16 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       import pages.incident.location._
 
       "must generate accordion sections" in {
-        val incident       = arbitrary[IncidentType04].sample.value
-        val endorsement    = arbitrary[EndorsementType03].sample.value
-        val inc            = arbitrary[Incident].sample.value
-        val qualifier      = arbitrary[QualifierOfIdentification].sample.value
-        val country        = arbitrary[Country].sample.value
-        val locationType02 = arbitrary[LocationType02].sample.value
-        val coordinate     = arbitrary[Coordinates].sample.value
-        val unLocode       = Gen.alphaNumStr.sample.value
-        val description    = Gen.alphaNumStr.sample.value
+        val incident           = arbitrary[IncidentType04].sample.value
+        val endorsement        = arbitrary[EndorsementType03].sample.value
+        val inc                = arbitrary[Incident].sample.value
+        val qualifier          = arbitrary[QualifierOfIdentification].sample.value
+        val country            = arbitrary[Country].sample.value
+        val locationType02     = arbitrary[LocationType02].sample.value
+        val coordinate         = arbitrary[Coordinates].sample.value
+        val unLocode           = Gen.alphaNumStr.sample.value
+        val description        = Gen.alphaNumStr.sample.value
+        val arbitraryTransport = arbitrary[TransportEquipmentType05].sample.value
 
         val addressType18 = AddressType18("streetAndNumber", Some("postcode"), "city")
 
@@ -357,6 +358,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         )
         val consignment: ConsignmentType05 = ConsignmentType05(
           containerIndicator = Number0,
+          TransportEquipment = Seq(arbitraryTransport),
           Incident = Seq(incident.copy(Endorsement = Some(endorsement), Location = locationType))
         )
 
@@ -387,6 +389,12 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         result.head.children.head.rows(1).key.value mustBe "Authority"
         result.head.children.head.rows(2).key.value mustBe "Country"
         result.head.children.head.rows(3).key.value mustBe "Location"
+
+        result.head.children(1).sectionTitle.value mustBe "Endorsements"
+        result.head.children(1).rows.head.key.value mustBe "Endorsement date"
+        result.head.children(1).rows(1).key.value mustBe "Authority"
+        result.head.children(1).rows(2).key.value mustBe "Country"
+        result.head.children(1).rows(3).key.value mustBe "Location"
       }
     }
   }
