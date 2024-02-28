@@ -52,7 +52,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
 
         section.sectionTitle.value mustBe "Departure means of transport 1"
         section.rows.size mustBe 3
-        section.viewLink must not be defined
+        section.viewLinks mustBe Nil
       }
 
       "when there is multiple" in {
@@ -74,11 +74,11 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
 
         section1.sectionTitle.value mustBe "Departure means of transport 1"
         section1.rows.size mustBe 3
-        section1.viewLink must not be defined
+        section1.viewLinks mustBe Nil
 
         section2.sectionTitle.value mustBe "Departure means of transport 2"
         section2.rows.size mustBe 3
-        section2.viewLink must not be defined
+        section1.viewLinks mustBe Nil
       }
     }
 

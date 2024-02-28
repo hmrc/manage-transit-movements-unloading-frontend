@@ -30,15 +30,21 @@
                 <h2 class="govuk-heading-m">@title</h2>
             }
 
-            @govukSummaryList(
-                SummaryList(
-                    rows = section.rows,
-                    classes = s"govuk-!-margin-left-${2 * nestingLevel}"
+            @if(section.rows.nonEmpty) {
+                @govukSummaryList(
+                    SummaryList(
+                        rows = section.rows,
+                        classes = s"govuk-!-margin-left-${2 * nestingLevel}"
+                    )
                 )
-            )
+            }
 
-            @section.viewLink.map { link =>
-                <p class="govuk-body"><a class="govuk-link" href="@link.href" id="@link.id">@link.text</a></p>
+            @section.viewLinks.map { link =>
+                <p class="govuk-body">
+                    <a class="govuk-link" href=@link.href id="@link.id">
+                        @messages(link.text) <span class="govuk-visually-hidden">@link.visuallyHidden</span>
+                    </a>
+                </p>
             }
         }
         case x: AccordionSection => {
@@ -50,6 +56,15 @@
                     classes = s"govuk-!-margin-left-${2 * nestingLevel}"
                 )
             )
+
+            @section.viewLinks.map { link =>
+                <p class="govuk-body">
+                    <a class="govuk-link" href=@link.href id="@link.id">
+                        @messages(link.text) <span class="govuk-visually-hidden">@link.visuallyHidden</span>
+                    </a>
+                </p>
+            }
+
         }
     }
 
@@ -70,25 +85,16 @@
                 )
             )
         </dl>
+
+@section.accordionLink.map { link =>
+<p class="govuk-body">
+    <a class="govuk-link" href=@link.href id="@link.id">
+        @messages(link.text) <span class="govuk-visually-hidden">@link.visuallyHidden</span>
+    </a>
+</p>
+}
+
     }
 
-    @if(section.children.nonEmpty) {
-        @section.children.map(this(_, nestingLevel + 1))
-    }
-
-    @section.viewLink.map { link =>
-        <p class="govuk-body">
-            <a class="govuk-link" href=@link.href id="@link.id">
-                @messages(link.text) <span class="govuk-visually-hidden">@link.visuallyHidden</span>
-            </a>
-        </p>
-    }
-
-    @section.secondViewLink.map { link =>
-        <p class="govuk-body">
-            <a class="govuk-link" href=@link.href id="@link.id">
-                @messages(link.text) <span class="govuk-visually-hidden">@link.visuallyHidden</span>
-            </a>
-        </p>
-    }
+    @section.children.map(this(_, nestingLevel + 1))
 }

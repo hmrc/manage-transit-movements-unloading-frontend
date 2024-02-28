@@ -96,12 +96,12 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
         }
       }
 
-      "must go from can unloading comment page to UnloadingFindingsController" in {
+      "must go from can unloading comment page to check your answers page" in {
 
         val userAnswers = emptyUserAnswers.setValue(UnloadingCommentsPage, "test")
         navigator
           .nextPage(UnloadingCommentsPage, mode, userAnswers)
-          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(userAnswers.id))
+          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
       }
 
       "must go from are any seals broken page " - {

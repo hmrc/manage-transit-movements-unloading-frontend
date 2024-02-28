@@ -75,7 +75,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
       section.sectionTitle must not be defined
       section.rows.size mustBe 6
-      section.viewLink must not be defined
+      section.viewLinks mustBe Nil
     }
 
     "must render Holder of the Transit Procedure section" - {
@@ -107,7 +107,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         section.sectionTitle.value mustBe "Transit holder"
         section.rows.size mustBe 5
-        section.viewLink must not be defined
+        section.viewLinks mustBe Nil
       }
 
       "when there is none" in {
@@ -144,8 +144,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
       section.sectionTitle.value mustBe "Departure means of transport 1"
       section.rows.size mustBe 3
-      section.viewLink mustBe defined
-      section.secondViewLink must not be defined
+      section.viewLinks must not be Nil
+      section.accordionLink must not be defined
     }
 
     "when there is multiple" in {
@@ -167,11 +167,17 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
       val viewModelProvider = new UnloadingFindingsViewModelProvider()
       val result            = viewModelProvider.apply(userAnswers)
       val section           = result.sections(1)
+      val section2          = result.sections(2)
 
       section.sectionTitle.value mustBe "Departure means of transport 1"
       section.rows.size mustBe 3
-      section.viewLink mustBe defined
-      section.secondViewLink must not be defined
+      section.viewLinks mustBe Nil
+      section.accordionLink must not be defined
+
+      section2.sectionTitle.value mustBe "Departure means of transport 2"
+      section2.rows.size mustBe 3
+      section2.viewLinks must not be Nil
+      section2.accordionLink must not be defined
     }
 
     "must render transport equipment section" - {
@@ -191,8 +197,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
           section.sectionTitle.value mustBe "Transport equipment 1"
           section.rows.size mustBe 1
-          section.viewLink mustBe defined
-          section.secondViewLink mustBe defined
+          section.viewLinks must not be Nil
+          section.accordionLink must not be defined
         }
 
         "with seals" in {
@@ -210,8 +216,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
           section.sectionTitle.value mustBe "Transport equipment 1"
           section.rows.size mustBe 2
-          section.viewLink mustBe defined
-          section.secondViewLink mustBe defined
+          section.viewLinks must not be Nil
+          section.accordionLink must not be defined
         }
       }
       "when there is multiple" - {
@@ -231,8 +237,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
           section.sectionTitle.value mustBe "Transport equipment 2"
           section.rows.size mustBe 1
-          section.viewLink mustBe defined
-          section.secondViewLink mustBe defined
+          section.viewLinks must not be Nil
+          section.accordionLink must not be defined
         }
 
         "with seals" in {
@@ -252,8 +258,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
           section.sectionTitle.value mustBe "Transport equipment 2"
           section.rows.size mustBe 2
-          section.viewLink mustBe defined
-          section.secondViewLink mustBe defined
+          section.viewLinks must not be Nil
+          section.accordionLink must not be defined
         }
       }
     }
@@ -282,8 +288,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         section.sectionTitle.value mustBe "House consignment 1"
         section.rows.size mustBe 4
-        section.viewLink mustBe defined
-        section.secondViewLink must not be defined
+        section.viewLinks mustBe Nil
+        section.accordionLink mustBe defined
       }
       "when there is multiple" in {
         val userAnswers = emptyUserAnswers
@@ -318,8 +324,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         section.sectionTitle.value mustBe "House consignment 2"
         section.rows.size mustBe 4
-        section.viewLink mustBe defined
-        section.secondViewLink must not be defined
+        section.viewLinks mustBe Nil
+        section.accordionLink mustBe defined
       }
     }
 
@@ -358,8 +364,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         section.sectionTitle.value mustBe "Additional references"
         section.rows.size mustBe 2
-        section.viewLink mustBe defined
-        section.secondViewLink must not be defined
+        section.viewLinks must not be Nil
+        section.accordionLink must not be defined
       }
     }
 
@@ -379,8 +385,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         section.sectionTitle.value mustBe "Incident 1"
         section.rows.size mustBe 2
-        section.viewLink must not be defined
-        section.secondViewLink must not be defined
+        section.viewLinks mustBe Nil
+        section.accordionLink must not be defined
       }
 
       "when there are multiple" in {
@@ -400,14 +406,14 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         val section1 = result.sections(5)
         section1.sectionTitle.value mustBe "Incident 1"
         section1.rows.size mustBe 2
-        section1.viewLink must not be defined
-        section1.secondViewLink must not be defined
+        section1.viewLinks mustBe Nil
+        section1.accordionLink must not be defined
 
         val section2 = result.sections(6)
         section2.sectionTitle.value mustBe "Incident 2"
         section2.rows.size mustBe 2
-        section1.viewLink must not be defined
-        section1.secondViewLink must not be defined
+        section1.viewLinks mustBe Nil
+        section1.accordionLink must not be defined
       }
     }
   }

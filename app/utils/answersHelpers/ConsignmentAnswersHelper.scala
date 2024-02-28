@@ -116,79 +116,113 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
   )
 
   def departureTransportMeansSections: Seq[Section] = {
-    val sections = userAnswers.get(TransportMeansListSection).mapWithIndex {
+
+    val departureTransportMeansSection = userAnswers.get(TransportMeansListSection)
+
+    val sectionRows = departureTransportMeansSection.mapWithIndex {
       case (_, index) =>
         val helper = new DepartureTransportMeansAnswersHelper(userAnswers, index)
-        AccordionSection(
-          sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans", index.display)),
-          rows = Seq(
-            helper.transportMeansID,
-            helper.transportMeansNumber,
-            helper.transportRegisteredCountry
-          ).flatten,
-          viewLink = Some(helper.departureTransportMeansAddRemoveLink)
-        )
+
+        Seq(
+          helper.transportMeansID,
+          helper.transportMeansNumber,
+          helper.transportRegisteredCountry
+        ).flatten
     }
-    if (sections.nonEmpty) sections
-    else {
-      val helper = new DepartureTransportMeansAnswersHelper(userAnswers, Index(0))
+
+    val numberOfSections = sectionRows.length
+
+    if (numberOfSections == 0) {
       Seq(
-        AccordionSection(
+        StaticSection(
           sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans.empty")),
-          viewLink = Some(helper.departureTransportMeansAddRemoveLink)
+          viewLinks = Seq(departureTransportMeansAddRemoveLink)
         )
       )
+    } else {
+
+      sectionRows.zipWithIndex.map {
+        case (rows, index) =>
+          val sectionIndex = Index(index).display
+
+          if (sectionIndex == numberOfSections) {
+            AccordionSection(
+              sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans", sectionIndex)),
+              rows,
+              viewLinks = Seq(departureTransportMeansAddRemoveLink)
+            )
+          } else {
+            AccordionSection(
+              sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans", sectionIndex)),
+              rows
+            )
+          }
+      }
     }
   }
 
   def transportEquipmentSections: Seq[Section] = {
-    val sections = userAnswers.get(TransportEquipmentListSection).mapWithIndex {
+
+    val sectionsRows = userAnswers.get(TransportEquipmentListSection).mapWithIndex {
       (_, equipmentIndex) =>
         val helper = new TransportEquipmentAnswersHelper(userAnswers, equipmentIndex)
-        val rows = Seq(
+        Seq(
           Seq(helper.containerIdentificationNumber).flatten,
           helper.transportEquipmentSeals
         ).flatten
-
-        AccordionSection(
-          sectionTitle = messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display),
-          rows = rows,
-          viewLink = helper.transportEquipmentAddRemoveLink,
-          secondViewLink = Some(helper.sealsAddRemoveLink)
-        )
     }
 
-    if (sections.nonEmpty) sections
-    else {
-      val helper = new TransportEquipmentAnswersHelper(userAnswers, Index(0))
+    val numberOfSections = sectionsRows.length
+
+    if (numberOfSections == 0) {
       Seq(
-        AccordionSection(
+        StaticSection(
           sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment.empty")),
-          viewLink = Some(helper.transportEquipmentAddRemoveLink)
+          viewLinks = Seq(transportEquipmentAddRemoveLink)
         )
       )
-    }
+    } else {
 
+      sectionsRows.zipWithIndex.map {
+        case (rows, index) =>
+          val sectionIndex = Index(index).display
+
+          if (sectionIndex == numberOfSections) {
+            AccordionSection(
+              sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment", sectionIndex)),
+              rows = rows,
+              viewLinks = Seq(transportEquipmentAddRemoveLink, sealsAddRemoveLink)
+            )
+          } else {
+            AccordionSection(
+              sectionTitle = messages("unloadingFindings.subsections.transportEquipment", sectionIndex),
+              rows = rows
+            )
+          }
+      }
+    }
   }
 
   def additionalReferencesSections: Seq[Section] = {
-    val sections = Seq(
-      AccordionSection(
-        sectionTitle = Some(messages("unloadingFindings.additional.reference.heading")),
-        rows = getAnswersAndBuildSectionRows(AdditionalReferencesSection) {
-          referenceIndex =>
-            val helper = new AdditionalReferenceAnswersHelper(userAnswers, referenceIndex)
-            helper.additionalReference
-        },
-        viewLink = Some(additionalReferenceAddRemoveLink)
-      )
-    )
-    if (sections.nonEmpty) sections
-    else {
+    val rows = getAnswersAndBuildSectionRows(AdditionalReferencesSection) {
+      referenceIndex =>
+        val helper = new AdditionalReferenceAnswersHelper(userAnswers, referenceIndex)
+        helper.additionalReference
+    }
+
+    if (rows.nonEmpty) {
       Seq(
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.additional.reference.heading")),
-          viewLink = Some(additionalReferenceAddRemoveLink)
+          rows,
+          viewLinks = Seq(additionalReferenceAddRemoveLink)
+        )
+      )
+    } else {
+      Seq(
+        StaticSection(
+          sectionTitle = Some(messages("unloadingFindings.additional.reference.heading")),
+          viewLinks = Seq(additionalReferenceAddRemoveLink)
         )
       )
     }
@@ -227,32 +261,46 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     }
 
   def documentSections: Seq[Section] = {
-    val sections = userAnswers.get(DocumentsSection).mapWithIndex {
+
+    val documentSectionRows = userAnswers.get(DocumentsSection).mapWithIndex {
       case (_, documentIndex) =>
         val helper   = new DocumentAnswersHelper(userAnswers, documentIndex)
         val readOnly = userAnswers.get(TypePage(documentIndex)).map(_.`type`).contains(Previous)
 
-        val rows = Seq(
+        Seq(
           helper.documentType(readOnly),
           helper.referenceNumber(readOnly),
           helper.additionalInformation(readOnly)
         ).flatten
-
-        AccordionSection(
-          sectionTitle = Some(messages("unloadingFindings.document.heading", documentIndex.display)),
-          rows = rows,
-          viewLink = Some(helper.documentAddRemoveLink)
-        )
     }
-    if (sections.nonEmpty) sections
-    else {
-      val helper = new DocumentAnswersHelper(userAnswers, Index(0))
+
+    val numberOfSections = documentSectionRows.length
+
+    if (numberOfSections == 0) {
       Seq(
-        AccordionSection(
+        StaticSection(
           sectionTitle = Some(messages("unloadingFindings.document.heading.empty")),
-          viewLink = Some(helper.documentAddRemoveLink)
+          viewLinks = Seq(documentAddRemoveLink)
         )
       )
+    } else {
+
+      documentSectionRows.zipWithIndex.map {
+        case (rows, index) =>
+          val sectionIndex = Index(index).display
+          if (sectionIndex == numberOfSections) {
+            AccordionSection(
+              sectionTitle = Some(messages("unloadingFindings.document.heading", sectionIndex)),
+              rows = rows,
+              viewLinks = Seq(documentAddRemoveLink)
+            )
+          } else {
+            AccordionSection(
+              sectionTitle = Some(messages("unloadingFindings.document.heading", sectionIndex)),
+              rows = rows
+            )
+          }
+      }
     }
   }
 
@@ -273,19 +321,52 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         AccordionSection(
           sectionTitle = messages("unloadingFindings.subsections.houseConsignment", houseConsignmentIndex.display),
           rows = rows,
-          viewLink = Link(
-            id = s"view-house-consignment-${houseConsignmentIndex.display}",
-            href = controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url,
-            visuallyHidden = messages("summaryDetails.visuallyHidden", houseConsignmentIndex.display)
+          viewLinks = Nil,
+          accordionLink = Some(
+            Link(
+              id = s"view-house-consignment-${houseConsignmentIndex.display}",
+              href = controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url,
+              visuallyHidden = messages("summaryDetails.visuallyHidden", houseConsignmentIndex.display)
+            )
           ),
-          id = s"houseConsignment${houseConsignmentIndex.display}"
+          id = Some(s"houseConsignment${houseConsignmentIndex.display}")
         )
     }
 
-  val additionalReferenceAddRemoveLink: Link = Link(
+  private val documentAddRemoveLink: Link = Link(
+    id = s"add-remove-documents",
+    href = "#",
+    text = messages("documentsLink.addRemove"),
+    visuallyHidden = messages("documentsLink.visuallyHidden")
+  )
+
+  private val additionalReferenceAddRemoveLink: Link = Link(
     id = "add-remove-additional-reference",
     href = "#",
     text = messages("additionalReferenceLink.addRemove"),
     visuallyHidden = messages("additionalReferenceLink.visuallyHidden")
+  )
+
+  private val departureTransportMeansAddRemoveLink: Link =
+    Link(
+      id = s"add-remove-departure-transport-means",
+      href = "#",
+      text = messages("departureTransportMeans.addRemove"),
+      visuallyHidden = messages("departureTransportMeans.visuallyHidden")
+    )
+
+  private val sealsAddRemoveLink: Link =
+    Link(
+      id = s"add-remove-seals",
+      href = "#",
+      text = messages("sealsLink.addRemove"),
+      visuallyHidden = messages("sealsLink.visuallyHidden")
+    )
+
+  private val transportEquipmentAddRemoveLink: Link = Link(
+    id = s"add-remove-transport-equipment",
+    href = "#",
+    text = messages("transportEquipmentLink.addRemove"),
+    visuallyHidden = messages("transportEquipmentLink.visuallyHidden")
   )
 }

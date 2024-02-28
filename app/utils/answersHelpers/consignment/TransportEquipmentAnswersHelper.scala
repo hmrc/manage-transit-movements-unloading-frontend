@@ -16,7 +16,7 @@
 
 package utils.answersHelpers.consignment
 
-import models.{Index, Link, UserAnswers}
+import models.{Index, UserAnswers}
 import pages.ContainerIdentificationNumberPage
 import pages.sections.SealsSection
 import play.api.i18n.Messages
@@ -47,19 +47,4 @@ class TransportEquipmentAnswersHelper(
         val helper = new SealAnswersHelper(userAnswers, equipmentIndex, sealIndex)
         helper.transportEquipmentSeal
     }
-
-  def sealsAddRemoveLink: Link =
-    Link(
-      id = s"add-remove-seals-${equipmentIndex.display}",
-      href = "#",
-      text = messages("sealsLink.addRemove"),
-      visuallyHidden = messages("sealsLink.visuallyHidden", equipmentIndex.display)
-    )
-
-  val transportEquipmentAddRemoveLink: Link = Link(
-    id = s"add-remove-transport-equipment-${equipmentIndex.display}",
-    href = "#",
-    text = messages("transportEquipmentLink.addRemove"),
-    visuallyHidden = messages("transportEquipmentLink.visuallyHidden", equipmentIndex.display)
-  )
 }

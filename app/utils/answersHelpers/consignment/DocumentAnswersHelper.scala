@@ -17,7 +17,7 @@
 package utils.answersHelpers.consignment
 
 import models.reference.DocumentType
-import models.{Index, Link, UserAnswers}
+import models.{Index, UserAnswers}
 import pages.documents._
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -84,11 +84,4 @@ class DocumentAnswersHelper(
         call = Some(Call(GET, "#")) //TODO change me please
       )
     }
-
-  val documentAddRemoveLink: Link = Link(
-    id = s"add-remove-documents-${documentIndex.display}",
-    href = "#",
-    text = messages("documentsLink.addRemove"),
-    visuallyHidden = messages("documentsLink.visuallyHidden", documentIndex.display)
-  )
 }

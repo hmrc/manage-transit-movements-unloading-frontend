@@ -136,7 +136,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
         section.sectionTitle.value mustBe "Transit holder"
         section.rows.size mustBe 5
-        section.viewLink must not be defined
+        section.viewLinks mustBe Nil
       }
     }
 
@@ -160,7 +160,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.head.rows.head.value.value mustBe `type`.description
             result.head.rows(1).value.value mustBe number
             result.head.rows(2).value.value mustBe country.description
-            result.head.viewLink.value.href mustBe "#"
+            result.head.viewLinks.head.href mustBe "#"
         }
       }
     }
@@ -184,7 +184,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.head.rows.size mustBe 2
             result.head.rows.head.value.value mustBe containerId
             result.head.rows(1).value.value mustBe sealId
-            result.head.viewLink.value.href mustBe "#"
+            result.head.viewLinks.head.href mustBe "#"
         }
       }
     }
@@ -206,7 +206,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.head.sectionTitle.value mustBe "Additional references"
             result.head.rows.size mustBe 1
             result.head.rows.head.value.value mustBe s"${`type`} - $number"
-            result.head.viewLink.value.href mustBe "#"
+            result.head.viewLinks.head.href mustBe "#"
         }
       }
     }
@@ -239,14 +239,14 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.head.rows.head.value.value mustBe documentType.toString
             result.head.rows(1).value.value mustBe referenceNumber
             result.head.rows(2).value.value mustBe additionalInformation
-            result.head.viewLink.value.href mustBe "#"
+            result.head.viewLinks mustBe Nil
 
             result(1).sectionTitle.value mustBe "Document 2"
             result(1).rows.size mustBe 3
             result(1).rows.head.value.value mustBe documentType.toString
             result(1).rows(1).value.value mustBe referenceNumber
             result(1).rows(2).value.value mustBe additionalInformation
-            result(1).viewLink.value.href mustBe "#"
+            result(1).viewLinks mustBe Nil
 
             result(2).sectionTitle.value mustBe "Document 3"
             result(2).rows.size mustBe 3
@@ -255,7 +255,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result(2).rows(1).actions mustBe None
             result(2).rows(2).value.value mustBe additionalInformation
             result(2).rows(2).actions mustBe None
-            result(2).viewLink.value.href mustBe "#"
+            result(2).viewLinks.head.href mustBe "#"
         }
       }
     }
@@ -283,7 +283,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.head.rows(2).value.value mustBe consigneeName
             result.head.rows(3).value.value mustBe consigneeId
             result.head.children mustBe empty
-            val link = result.head.viewLink.value
+            val link = result.head.accordionLink.value
             link.id mustBe "view-house-consignment-1"
             link.text mustBe "summaryDetails.link"
             link.href mustBe controllers.routes.HouseConsignmentController.onPageLoad(answers.id, hcIndex).url

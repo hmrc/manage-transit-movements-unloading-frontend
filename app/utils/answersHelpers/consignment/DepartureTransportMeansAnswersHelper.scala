@@ -18,7 +18,7 @@ package utils.answersHelpers.consignment
 
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.Country
-import models.{Index, Link, UserAnswers}
+import models.{Index, UserAnswers}
 import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -57,12 +57,4 @@ class DepartureTransportMeansAnswersHelper(
     call = Some(Call(GET, "#")),
     args = Seq.empty
   )
-
-  def departureTransportMeansAddRemoveLink: Link =
-    Link(
-      id = s"add-remove-departure-transport-means-${transportMeansIndex.display}",
-      href = "#",
-      text = messages("departureTransportMeans.addRemove"),
-      visuallyHidden = messages("departureTransportMeans.visuallyHidden", transportMeansIndex.display)
-    )
 }

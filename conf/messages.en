@@ -34,13 +34,13 @@ error.summary.title = There is a problem
 summaryDetails.link = More details
 summaryDetails.visuallyHidden = on house consignment {0}
 transportEquipmentLink.addRemove = Add or remove transport equipment
-transportEquipmentLink.visuallyHidden = Add or remove transport equipment {0}
+transportEquipmentLink.visuallyHidden = Add or remove transport equipment
 sealsLink.addRemove = Add or remove seal
-sealsLink.visuallyHidden = Add or remove seal {0}
+sealsLink.visuallyHidden = Add or remove seal
 departureTransportMeans.addRemove = Add or remove departure means of transport
-departureTransportMeans.visuallyHidden = Add or remove departure means of transport {0}
+departureTransportMeans.visuallyHidden = Add or remove departure means of transport
 documentsLink.addRemove = Add or remove document
-documentsLink.visuallyHidden = Add or remove document {0}
+documentsLink.visuallyHidden = Add or remove document
 additionalReferenceLink.addRemove = Add or remove additional reference
 additionalReferenceLink.visuallyHidden = Add or remove additional reference
 
