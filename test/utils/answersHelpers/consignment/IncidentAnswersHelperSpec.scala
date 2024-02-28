@@ -26,7 +26,6 @@ import pages.incident.endorsement.EndorsementCountryPage
 import pages.incident.location._
 import pages.incident.transhipment.{IdentificationPage, NationalityPage}
 import pages.incident.{IncidentCodePage, IncidentTextPage}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.Format.cyaDateFormatter
 import utils.answersHelpers.AnswersHelperSpecBase
 import utils.answersHelpers.consignment.incident.IncidentAnswersHelper

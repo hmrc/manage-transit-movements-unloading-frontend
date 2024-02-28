@@ -178,11 +178,12 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
       val section           = result.sections(1)
 
       section.sectionTitle.value mustBe "Departure means of transport"
+      section.viewLinks must not be Nil
       section.children.length mustBe 1
 
       section.children.head.sectionTitle.value mustBe "Departure means of transport 1"
       section.children.head.rows.size mustBe 3
-      section.children.head.viewLinks must not be Nil
+      section.children.head.viewLinks mustBe Nil
       section.children.head.accordionLink must not be defined
     }
 
@@ -208,6 +209,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
       section.sectionTitle.value mustBe "Departure means of transport"
       section.children.length mustBe 2
+      section.viewLinks must not be Nil
 
       section.children.head.sectionTitle.value mustBe "Departure means of transport 1"
       section.children.head.rows.size mustBe 3
@@ -216,7 +218,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
       section.children(1).sectionTitle.value mustBe "Departure means of transport 2"
       section.children(1).rows.size mustBe 3
-      section.children(1).viewLinks must not be Nil
+      section.children(1).viewLinks mustBe Nil
       section.children(1).accordionLink must not be defined
     }
 
@@ -236,6 +238,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           val section           = result.sections(2)
 
           section.sectionTitle.value mustBe "Transport equipment"
+          section.viewLinks must not be Nil
           section.children.length mustBe 1
 
           section.children.head.sectionTitle.value mustBe "Transport equipment 1"
@@ -258,6 +261,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           val section           = result.sections(2)
 
           section.sectionTitle.value mustBe "Transport equipment"
+          section.viewLinks must not be Nil
           section.children.length mustBe 1
 
           section.children.head.sectionTitle.value mustBe "Transport equipment 1"
@@ -282,11 +286,12 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           val section           = result.sections(2)
 
           section.sectionTitle.value mustBe "Transport equipment"
+          section.viewLinks must not be Nil
           section.children.length mustBe 2
 
           section.children.head.sectionTitle.value mustBe "Transport equipment 1"
           section.children.head.rows.size mustBe 1
-          section.children.head.viewLinks mustBe Nil
+          section.children.head.viewLinks must not be Nil
           section.children.head.accordionLink must not be defined
 
           section.children(1).sectionTitle.value mustBe "Transport equipment 2"
@@ -315,7 +320,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
           section.children.head.sectionTitle.value mustBe "Transport equipment 1"
           section.children.head.rows.size mustBe 2
-          section.children.head.viewLinks mustBe Nil
+          section.children.head.viewLinks must not be Nil
           section.children.head.accordionLink must not be defined
         }
       }
@@ -341,7 +346,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(6)
+        val section           = result.sections(7)
 
         section.sectionTitle.value mustBe "House consignments"
         section.children.length mustBe 1
@@ -380,7 +385,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(6)
+        val section           = result.sections(7)
 
         section.sectionTitle.value mustBe "House consignments"
         section.children.length mustBe 2
