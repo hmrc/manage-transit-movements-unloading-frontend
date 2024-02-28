@@ -221,7 +221,11 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.subsections.incidents", incidentIndex.display)),
           rows = rows,
-          children = endorsementSection +: helper.incidentTransportEquipments :+ transhipment
+          children = Seq(
+            Seq(endorsementSection),
+            helper.incidentTransportEquipments,
+            Seq(transhipment)
+          ).flatten
         )
     }
 
