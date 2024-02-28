@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-package pages.additionalInformation
+package pages.sections
 
-import pages.behaviours.PageBehaviours
+import play.api.libs.json.{JsObject, JsPath}
 
-class AdditionalInformationTextPageSpec extends PageBehaviours {
+case object ConsigneeSection extends Section[JsObject] {
 
-  "AdditionalInformationTextPage" - {
+  override def path: JsPath = JsPath \ "Consignment" \ toString
 
-    beRetrievable[String](AdditionalInformationTextPage(index))
-
-    beSettable[String](AdditionalInformationTextPage(index))
-
-    beRemovable[String](AdditionalInformationTextPage(index))
-  }
+  override def toString: String = "Consignee"
 }

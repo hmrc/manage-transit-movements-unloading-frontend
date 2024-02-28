@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated.{AddressType10, CC043CType, HolderOfTheTransitProcedureType06, Number0}
 import generators.Generators
 import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.{AdditionalInformationCode, AdditionalReferenceType, Country, CustomsOffice, Incident}
+import models.reference._
 import models.{Index, SecurityType, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -107,6 +107,38 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
               val section           = result.sections(1)
 
               section.sectionTitle.value mustBe "Consignor"
+              section.viewLinks mustBe Nil
+          }
+        }
+      }
+    }
+
+    "consignee section" - {
+      "must not be rendered" - {
+        "when there is not a consignee" in {
+
+          val ie043 = arbitrary[CC043CType].retryUntil(_.Consignment.flatMap(_.Consignee).isEmpty).sample.value
+
+          val userAnswers = emptyUserAnswers.copy(ie043Data = ie043)
+
+          val viewModelProvider = new UnloadingFindingsViewModelProvider()
+          val result            = viewModelProvider.apply(userAnswers)
+          val section           = result.sections(1)
+
+          section.sectionTitle must not be "Consignee"
+        }
+      }
+
+      "must be rendered" - {
+        "when there is a consignee" in {
+          forAll(arbitrary[CC043CType].retryUntil(_.Consignment.flatMap(_.Consignee).isDefined)) {
+            ie043 =>
+              val userAnswers = emptyUserAnswers.copy(ie043Data = ie043)
+
+              val viewModelProvider = new UnloadingFindingsViewModelProvider()
+              val result            = viewModelProvider.apply(userAnswers)
+              val section           = result.sections.find(_.sectionTitle.contains("Consignee")).get
+
               section.viewLinks mustBe Nil
           }
         }

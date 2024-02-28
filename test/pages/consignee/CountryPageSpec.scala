@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package pages.additionalInformation
+package pages.consignee
 
+import models.reference.Country
 import pages.behaviours.PageBehaviours
 
-class AdditionalInformationTextPageSpec extends PageBehaviours {
+class CountryPageSpec extends PageBehaviours {
 
-  "AdditionalInformationTextPage" - {
+  "CountryPage" - {
 
-    beRetrievable[String](AdditionalInformationTextPage(index))
+    beRetrievable[Country](CountryPage)
 
-    beSettable[String](AdditionalInformationTextPage(index))
+    beSettable[Country](CountryPage)
 
-    beRemovable[String](AdditionalInformationTextPage(index))
+    beRemovable[Country](CountryPage)
   }
 }

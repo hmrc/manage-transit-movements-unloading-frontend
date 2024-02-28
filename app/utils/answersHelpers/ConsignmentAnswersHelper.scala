@@ -17,8 +17,8 @@
 package utils.answersHelpers
 
 import models.DocType.Previous
-import models.{Index, Link, SecurityType, UserAnswers}
 import models.reference.CustomsOffice
+import models.{Index, Link, SecurityType, UserAnswers}
 import pages.documents.TypePage
 import pages.grossMass.GrossMassPage
 import pages.sections._
@@ -98,6 +98,21 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
             helper.name(consignor.name),
             helper.country,
             helper.address(consignor.Address)
+          ).flatten
+        )
+    }
+
+  def consigneeSection: Option[Section] =
+    userAnswers.ie043Data.Consignment.flatMap(_.Consignee).map {
+      consignee =>
+        val helper = new ConsigneeAnswersHelper(userAnswers)
+        StaticSection(
+          sectionTitle = messages("unloadingFindings.consignee.heading"),
+          rows = Seq(
+            helper.identificationNumber(consignee.identificationNumber),
+            helper.name(consignee.name),
+            helper.country,
+            helper.address(consignee.Address)
           ).flatten
         )
     }

@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package pages.additionalInformation
+package pages.consignee
 
-import pages.behaviours.PageBehaviours
+import models.reference.Country
+import pages.QuestionPage
+import pages.sections.ConsigneeSection
+import play.api.libs.json.JsPath
 
-class AdditionalInformationTextPageSpec extends PageBehaviours {
+case object CountryPage extends QuestionPage[Country] {
 
-  "AdditionalInformationTextPage" - {
+  override def path: JsPath = ConsigneeSection.path \ toString
 
-    beRetrievable[String](AdditionalInformationTextPage(index))
-
-    beSettable[String](AdditionalInformationTextPage(index))
-
-    beRemovable[String](AdditionalInformationTextPage(index))
-  }
+  override def toString: String = "country"
 }
