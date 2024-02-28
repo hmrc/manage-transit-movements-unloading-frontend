@@ -706,3 +706,6 @@ transportEquipment.index.addContainerIdentificationNumberYesNo.error.required = 
 transportEquipment.index.seal.removeSealYesNo.title = Are you sure you want to remove seal {1} from transport equipment {0}?
 transportEquipment.index.seal.removeSealYesNo.heading = Are you sure you want to remove seal {1} from transport equipment {0}?
 transportEquipment.index.seal.removeSealYesNo.error.required = Select yes if you want to remove seal {1} from transport equipment {0}
+
+unloadingFindings.additionalInformation.heading = Additional information
+unloadingFindings.additionalInformation.label = Additional information {0}

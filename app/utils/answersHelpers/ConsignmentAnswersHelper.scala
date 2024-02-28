@@ -21,6 +21,7 @@ import models.{Link, SecurityType, UserAnswers}
 import pages.documents.TypePage
 import pages.grossMass.GrossMassPage
 import pages.sections._
+import pages.sections.additionalInformation.AdditionalInformationListSection
 import pages.sections.additionalReference.AdditionalReferencesSection
 import pages.sections.documents.DocumentsSection
 import pages.sections.incidents.IncidentsSection
@@ -152,6 +153,18 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           referenceIndex =>
             val helper = new AdditionalReferenceAnswersHelper(userAnswers, referenceIndex)
             helper.additionalReference
+        }
+      )
+    )
+
+  def additionalInformationSections: Seq[Section] =
+    Seq(
+      AccordionSection(
+        sectionTitle = messages("unloadingFindings.additionalInformation.heading"),
+        rows = getAnswersAndBuildSectionRows(AdditionalInformationListSection) {
+          informationIndex =>
+            val helper = new AdditionalInformationAnswersHelper(userAnswers, informationIndex)
+            helper.additionalInformation
         }
       )
     )
