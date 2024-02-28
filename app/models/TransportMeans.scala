@@ -19,7 +19,7 @@ package models
 case class TransportMeans(identificationType: String, identificationNumber: Option[String]) {
 
   def asString: String = identificationNumber match {
-    case Some(value) => s"$identificationType - $value."
+    case Some(value) => s"$identificationType - $value"
     case None        => identificationType
   }
 }

@@ -75,9 +75,10 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
     .andThen(getMandatoryPage(VehicleIdentificationNumberPage(transportMeansIndex)))
     .async {
       implicit request =>
-        val identificationType   = request.arg
-        val identificationNumber = request.userAnswers.get(VehicleIdentificationNumberPage(transportMeansIndex))
-        val insetText            = TransportMeans(identificationType, identificationNumber).asString
+        val identificationType: TransportMeansIdentification =
+          request.userAnswers.get(TransportMeansIdentificationPage(transportMeansIndex)).getOrElse(TransportMeansIdentification("", ""))
+        val identificationNumber: Option[String] = request.userAnswers.get(VehicleIdentificationNumberPage(transportMeansIndex))
+        val insetText                            = TransportMeans(identificationType.description, identificationNumber).asString
         form
           .bindFromRequest()
           .fold(

@@ -24,7 +24,7 @@
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
-    insetText:InsetText,
+    govukInsetText : GovukInsetText,
     button: Button
 )
 
@@ -44,7 +44,7 @@
             yesNoType = YesNoWithAdditionalHtml(
                 heading = messages("departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.title"),
                 caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = messages(insetText).toParagraph
+                additionalHtml = govukInsetText(InsetText(content = Text(insetText)))
             )
         )
 
