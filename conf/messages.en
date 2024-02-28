@@ -475,12 +475,17 @@ unloadingFindings.houseConsignment.item.document.additionalInformation = Additio
 unloadingFindings.houseConsignment.item.document.additionalInformation.change.hidden = document {0} for item {1} - additional information
 
 unloadingFindings.additional.reference.heading = Additional references
-unloadingFindings.additional.reference.change.hidden = additional reference {0}
 unloadingFindings.additional.reference = Additional reference {0}
 unloadingFindings.additional.reference.type = Type
 unloadingFindings.additional.reference.type.change.hidden = type for additional reference {0}
 unloadingFindings.additional.reference.number = Reference number
 unloadingFindings.additional.reference.number.change.hidden = reference number for additional reference {0}
+
+unloadingFindings.houseConsignment.item.additionalReference = Additional reference {0}
+unloadingFindings.houseConsignment.item.additionalReference.type = Type
+unloadingFindings.houseConsignment.item.additionalReference.type.change.hidden = type for additional reference {0} in item {1}
+unloadingFindings.houseConsignment.item.additionalReference.number = Reference number
+unloadingFindings.houseConsignment.item.additionalReference.number.change.hidden = reference number for additional reference {0} in item {1}
 
 unloadingFindings.dangerousGoods.unNumber = UN number {0}
 

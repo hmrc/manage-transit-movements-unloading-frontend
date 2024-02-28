@@ -72,22 +72,22 @@ class ConsignmentItemAnswersHelper(
     call = Some(Call(GET, "#"))
   )
 
-  def additionalReferencesSection: Section = {
-    val rows = getAnswersAndBuildSectionRows(AdditionalReferencesSection(houseConsignmentIndex, itemIndex)) {
-      additionalReferenceIndex =>
-        val helper = new AdditionalReferencesAnswerHelper(userAnswers, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
-        helper.additionalReferenceRow
+  def additionalReferencesSection: Seq[Section] =
+    userAnswers.get(AdditionalReferencesSection(houseConsignmentIndex, itemIndex)).mapWithIndex {
+      case (_, index) =>
+        val helper = new AdditionalReferencesAnswerHelper(userAnswers, houseConsignmentIndex, itemIndex, index)
+        AccordionSection(
+          sectionTitle = messages("unloadingFindings.houseConsignment.item.additionalReference", index.display),
+          rows = Seq(
+            helper.code,
+            helper.referenceNumber
+          ).flatten
+        )
     }
 
-    AccordionSection(
-      sectionTitle = messages("unloadingFindings.additional.reference.heading"),
-      rows = rows
-    )
-  }
-
-  def documentSections: Seq[Section] = {
-    val docs = userAnswers.get(DocumentsSection(houseConsignmentIndex, itemIndex))
-    docs
+  def documentSections: Seq[Section] =
+    userAnswers
+      .get(DocumentsSection(houseConsignmentIndex, itemIndex))
       .mapWithIndex {
         case (_, documentIndex) =>
           val helper   = new DocumentAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex, documentIndex)
@@ -104,7 +104,6 @@ class ConsignmentItemAnswersHelper(
             rows = rows
           )
       }
-  }
 
   def dangerousGoodsRows: Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(DangerousGoodsListSection(houseConsignmentIndex, itemIndex)) {
