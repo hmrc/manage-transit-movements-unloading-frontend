@@ -51,7 +51,7 @@ class AddAnotherDepartureMeansOfTransportController @Inject() (
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode)
 
-      Ok(view(form(viewModel), arrivalId, viewModel))
+      Ok(view(form(viewModel), request.userAnswers.mrn, arrivalId, viewModel))
   }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
@@ -60,14 +60,13 @@ class AddAnotherDepartureMeansOfTransportController @Inject() (
       form(viewModel)
         .bindFromRequest()
         .fold(
-          formWithErrors => BadRequest(view(formWithErrors, arrivalId, viewModel)),
+          formWithErrors => BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel)),
           {
             case true =>
-              Redirect(Call("GET", "#")) // TODO nav logic to be implemented
+              Redirect(controllers.departureMeansOfTransport.routes.AddIdentificationYesNoController.onPageLoad(arrivalId, viewModel.nextIndex, mode))
             case false =>
-              Redirect(Call("GET", "#")) // TODO nav logic to be implemented
+              Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
           }
         )
   }
-
 }

@@ -30,19 +30,20 @@
                     ListWithActionsItem(
                         name = Text(listItem.name),
                         actions = Seq(
-                            Some(
-                                ListWithActionsAction(
-                                    content = Text(messages("site.edit")),
-                                    visuallyHiddenText = Some(messages("site.edit.hidden", listItem.name)),
-                                    href = listItem.changeUrl
-                                )
+                            listItem.changeUrl.map (
+                                changeUrl =>
+                                    ListWithActionsAction(
+                                        content = Text(messages("site.edit")),
+                                        visuallyHiddenText = Some(messages("site.edit.hidden", listItem.name)),
+                                        href = changeUrl
+                                    )
                             ),
                             listItem.removeUrl.map (
-                                url =>
+                                removeUrl =>
                                     ListWithActionsAction(
                                         content = Text(messages("site.delete")),
                                         visuallyHiddenText = Some(messages("site.delete.hidden", listItem.name)),
-                                        href = url
+                                        href = removeUrl
                                     )
                             )
                         ).flatten

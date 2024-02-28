@@ -23,24 +23,17 @@ import pages.sections.TransportMeansListSection
 import play.api.i18n.Messages
 import play.api.libs.json.JsArray
 import play.api.mvc.Call
-import play.api.mvc.Results.Redirect
 import viewModels.{AddAnotherViewModel, ListItem}
-import play.api.mvc._
 
-case class AddAnotherDepartureMeansOfTransportViewModel(userAnswers: UserAnswers, listItems: Seq[ListItem], onSubmitCall: Call) extends AddAnotherViewModel {
-  override val prefix: String = "consignment.departureTransportMeans.addAnotherTransportMeans"
+case class AddAnotherDepartureMeansOfTransportViewModel(listItems: Seq[ListItem], onSubmitCall: Call) extends AddAnotherViewModel {
+  override val prefix: String = "departureMeansOfTransport.addAnotherDepartureMeansOfTransport"
 
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxDepartureMeansOfTransport
 
   override def maxLimitLabel(implicit messages: Messages): String = messages(s"$prefix.maxLimit.label")
 
-  def paragraphContent(implicit messages: Messages): String =
-    if (count > 0) messages(s"$prefix.addAnother") else messages(s"$prefix.add")
-
-  def maxLimitWarningHint1(implicit messages: Messages): String = messages(s"$prefix.maxLimit.hint1")
-
-  def maxLimitWarningHint2(implicit messages: Messages): String = messages(s"$prefix.maxLimit.hint2")
-
+  def legendContent(implicit messages: Messages): String =
+    if (count > 0) messages(s"$prefix.label") else messages(s"$prefix.add.label")
 }
 
 object AddAnotherDepartureMeansOfTransportViewModel {
@@ -58,28 +51,31 @@ object AddAnotherDepartureMeansOfTransportViewModel {
           case (_, i) =>
             val index = Index(i)
 
-            def departureMeansOfTransportPrefix(increment: Int) = messages("departureMeansOfTransportPrefix.prefix", increment)
+            def prefix(increment: Int) = messages("departureMeansOfTransportPrefix.prefix", increment)
 
-            val name = for {
-              identification       <- userAnswers.get(TransportMeansIdentificationPage(index))
-              identificationNumber <- userAnswers.get(VehicleIdentificationNumberPage(index))
-            } yield s"${departureMeansOfTransportPrefix(index.display)} - $identification - $identificationNumber"
+            val name =
+              (userAnswers.get(TransportMeansIdentificationPage(index)), userAnswers.get(VehicleIdentificationNumberPage(index))) match {
+                case (Some(identification), Some(identificationNumber)) =>
+                  Some(s"${prefix(index.display)} - $identification - $identificationNumber")
+                case (Some(identification), None)       => Some(s"${prefix(index.display)} - $identification")
+                case (None, Some(identificationNumber)) => Some(s"${prefix(index.display)} - $identificationNumber")
+                case _                                  => Some(s"${prefix(index.display)}")
+              }
 
             name.map {
               name =>
                 ListItem(
                   name = name,
-                  changeUrl = "",
-                  removeUrl = None
+                  changeUrl = Some(Call("GET", "#").url), //TODO: To be added later
+                  removeUrl = Some(Call("GET", "#").url) //TODO: To be added later
                 )
             }
         }
         .toSeq
 
       new AddAnotherDepartureMeansOfTransportViewModel(
-        userAnswers,
         listItems,
-        onSubmitCall = Call("GET", "#")
+        onSubmitCall = controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController.onSubmit(arrivalId, mode)
       )
     }
   }

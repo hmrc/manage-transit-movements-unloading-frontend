@@ -26,12 +26,16 @@ trait AddAnotherViewModel {
 
   val nextIndex: Index = Index(count)
 
-  val singularOrPlural: String = if (count == 1) "singular" else "plural"
+  val emptyOrSingularOrPlural: String = count match {
+    case 0 => "empty"
+    case 1 => "singular"
+    case _ => "plural"
+  }
 
   val prefix: String
 
-  def title(implicit messages: Messages): String         = messages(s"$prefix.$singularOrPlural.title", count)
-  def heading(implicit messages: Messages): String       = messages(s"$prefix.$singularOrPlural.heading", count)
+  def title(implicit messages: Messages): String         = messages(s"$prefix.$emptyOrSingularOrPlural.title", count)
+  def heading(implicit messages: Messages): String       = messages(s"$prefix.$emptyOrSingularOrPlural.heading", count)
   def legend(implicit messages: Messages): String        = messages(s"$prefix.label")
   def maxLimitLabel(implicit messages: Messages): String = messages(s"$prefix.maxLimit.label")
 

@@ -131,6 +131,18 @@ departureMeansOfTransport.addNationalityYesNo.title = Do you want to add the reg
 departureMeansOfTransport.addNationalityYesNo.heading = Do you want to add the registered country for this vehicle?
 departureMeansOfTransport.addNationalityYesNo.error.required = Select yes if you want to add the registered country for this vehicle
 
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.empty.title = You have added 0 departure means of transport
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.singular.title = You have added 1 departure means of transport
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.plural.title = You have added {0} departure means of transport
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.empty.heading = You have added 0 departure means of transport
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.singular.heading = You have added 1 departure means of transport
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.plural.heading = You have added {0} departure means of transport
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.add.label = Do you want to add a departure means of transport?
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.label = Do you want to add another departure means of transport?
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.maxLimit.label = You cannot add another departure means of transport. To add another, you need to remove one first.
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.error.required = Select yes if you want to add another departure means of transport
+departureMeansOfTransportPrefix.prefix = Departure means of transport {0}
+
 houseConsignment.item.grossWeight.title = What is the new gross weight of item {0} in house consignment {1}?
 houseConsignment.item.grossWeight.heading = What is the new gross weight of item {0} in house consignment {1}?
 houseConsignment.item.grossWeight.paragraph = This is the combined weight of the item’s goods and packaging.

@@ -31,7 +31,7 @@
     button: Button
 )
 
-@(form: Form[Boolean], arrivalId: ArrivalId, viewModel: AddAnotherDepartureMeansOfTransportViewModel)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, viewModel: AddAnotherDepartureMeansOfTransportViewModel)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
 
 @mainTemplate(
     title = viewModel.title,
@@ -42,7 +42,7 @@
 
     @heading(
         heading = viewModel.heading,
-        caption = Some(messages("departureTransportMeans.subheading"))
+        caption = Some(messages("site.caption", mrn.toString))
     )
 
     @listWithActions(viewModel.listItems)
@@ -53,7 +53,7 @@
             @inputYesNo(
                 field = form("value"),
                 yesNoType = YesNoWithLegend(
-                    legend = viewModel.legend
+                    legend = viewModel.legendContent
                 )
             )
         } else {

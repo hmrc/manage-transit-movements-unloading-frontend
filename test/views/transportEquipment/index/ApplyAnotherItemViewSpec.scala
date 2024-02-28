@@ -21,10 +21,10 @@ import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.transportEquipment.index.ApplyAnotherItemViewModel
-import views.behaviours.ListWithActionsViewBehaviours
+import views.behaviours.ListWithActionsViewBehavioursForApply
 import views.html.transport.equipment.ApplyAnotherItemView
 
-class ApplyAnotherItemViewSpec extends ListWithActionsViewBehaviours {
+class ApplyAnotherItemViewSpec extends ListWithActionsViewBehavioursForApply {
 
   override def maxNumber: Int = frontendAppConfig.maxItems
 
