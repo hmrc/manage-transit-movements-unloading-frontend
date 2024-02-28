@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils.answersHelpers.consignment
+package utils.answersHelpers.consignment.incident
 
 import models.reference.{Country, Incident, QualifierOfIdentification}
 import models.{Coordinates, DynamicAddress, Index, UserAnswers}
@@ -24,6 +24,8 @@ import pages.incident.{IncidentCodePage, IncidentTextPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
+import viewModels.sections.Section
+import viewModels.sections.Section.AccordionSection
 
 class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
@@ -149,5 +151,22 @@ class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(impl
           answer = formatAsHtmlContent(dynamicAddress)
         )
     }
+
+  def incidentTransportEquipments: Seq[Section] =
+    userAnswers.ie043Data.Consignment
+      .flatMap(_.Incident.lift(incidentIndex.position))
+      .map(_.TransportEquipment)
+      .toSeq
+      .flatten
+      .zipWithIndex
+      .map {
+        case (transportEquipmentType0, index) =>
+          val equipmentIndex = Index(index)
+          val helper         = new IncidentTransportEquipmentAnswersHelper(userAnswers, transportEquipmentType0)
+
+          val rows = Seq(helper.containerIdentificationNumber, helper.transportEquipmentSeals, helper.itemNumber).flatten
+
+          AccordionSection(messages("unloadingFindings.incident.transportEquipment.heading", equipmentIndex.display), rows)
+      }
 
 }

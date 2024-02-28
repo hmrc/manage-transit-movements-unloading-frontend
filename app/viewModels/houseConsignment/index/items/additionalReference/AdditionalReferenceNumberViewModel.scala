@@ -16,9 +16,7 @@
 
 package viewModels.houseConsignment.index.items.additionalReference
 
-import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, RichOptionalJsArray, UserAnswers}
-import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
-import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferencesSection
+import models.{ArrivalId, Index, Mode}
 import play.api.i18n.Messages
 import viewModels.ModeViewModelProvider
 

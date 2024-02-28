@@ -359,6 +359,7 @@ unloadingFindings.incident.coordinates = Coordinates
 unloadingFindings.incident.unLocode = UN/LOCODE
 unloadingFindings.incident.location.address = Address
 
+unloadingFindings.incident.transportEquipment.heading = Transport equipment {0}
 
 declarationType = Declaration type
 securityType = Safety and security details
@@ -396,6 +397,7 @@ unloadingFindings.rowHeadings.vehicleNationality.change.hidden = registered coun
 
 unloadingFindings.subsections.transportEquipment = Transport equipment {0}
 unloadingFindings.rowHeadings.containerIdentificationNumber = Container identification number
+unloadingFindings.rowHeadings.item = Item {0}
 unloadingFindings.rowHeadings.sealIdentifier = Seal {0}
 
 unloadingFindings.subsections.houseConsignment = House consignment {0}

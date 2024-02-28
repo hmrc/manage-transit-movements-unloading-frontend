@@ -26,6 +26,7 @@ import pages.incident.location._
 import pages.incident.{IncidentCodePage, IncidentTextPage}
 import utils.Format.cyaDateFormatter
 import utils.answersHelpers.AnswersHelperSpecBase
+import utils.answersHelpers.consignment.incident.IncidentAnswersHelper
 
 class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
 
