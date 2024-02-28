@@ -43,7 +43,7 @@ class AddAnotherDepartureMeansOfTransportViewModelSpec extends SpecBase with Gen
               result.listItems mustBe Nil
               result.title mustBe "You have added 0 departure means of transport"
               result.heading mustBe "You have added 0 departure means of transport"
-              result.legendContent mustBe "Do you want to add a departure means of transport?"
+              result.legend mustBe "Do you want to add a departure means of transport?"
               result.maxLimitLabel mustBe "You cannot add another departure means of transport. To add another, you need to remove one first."
           }
         }
@@ -62,7 +62,7 @@ class AddAnotherDepartureMeansOfTransportViewModelSpec extends SpecBase with Gen
               result.listItems.length mustBe 1
               result.title mustBe "You have added 1 departure means of transport"
               result.heading mustBe "You have added 1 departure means of transport"
-              result.legendContent mustBe "Do you want to add another departure means of transport?"
+              result.legend mustBe "Do you want to add another departure means of transport?"
               result.maxLimitLabel mustBe "You cannot add another departure means of transport. To add another, you need to remove one first."
           }
         }
@@ -93,7 +93,7 @@ class AddAnotherDepartureMeansOfTransportViewModelSpec extends SpecBase with Gen
               result.listItems.length mustBe 4
               result.title mustBe s"You have added 4 departure means of transport"
               result.heading mustBe s"You have added 4 departure means of transport"
-              result.legendContent mustBe "Do you want to add another departure means of transport?"
+              result.legend mustBe "Do you want to add another departure means of transport?"
               result.maxLimitLabel mustBe "You cannot add another departure means of transport. To add another, you need to remove one first."
           }
         }
