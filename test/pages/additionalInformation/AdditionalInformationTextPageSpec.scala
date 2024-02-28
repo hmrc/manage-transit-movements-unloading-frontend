@@ -16,7 +16,6 @@
 
 package pages.additionalInformation
 
-import models.reference.AdditionalReferenceType
 import pages.behaviours.PageBehaviours
 
 class AdditionalInformationTextPageSpec extends PageBehaviours {

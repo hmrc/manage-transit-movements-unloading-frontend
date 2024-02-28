@@ -155,9 +155,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(1)
 
-        section.sectionTitle.value must not be "Transit holder"
+        result.sections.exists(_.sectionTitle.contains("Transit holder")) mustBe false
       }
     }
 
@@ -307,7 +306,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(3)
+        val section           = result.sections(1)
 
         section.sectionTitle.value mustBe "House consignment 1"
         section.rows.size mustBe 4
@@ -342,7 +341,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(4)
+        val section           = result.sections(2)
 
         section.sectionTitle.value mustBe "House consignment 2"
         section.rows.size mustBe 4
@@ -364,8 +363,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         val result            = viewModelProvider.apply(userAnswers)
         val section           = result.sections(1)
 
-        section.sectionTitle.value mustBe "Additional references"
-        section.rows.size mustBe 1
+        section.sectionTitle.value mustBe "Additional reference 1"
+        section.rows.size mustBe 2
       }
 
       "when there are multiple" in {
@@ -381,10 +380,14 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(1)
 
-        section.sectionTitle.value mustBe "Additional references"
-        section.rows.size mustBe 2
+        val section1 = result.sections(1)
+        section1.sectionTitle.value mustBe "Additional reference 1"
+        section1.rows.size mustBe 2
+
+        val section2 = result.sections(2)
+        section2.sectionTitle.value mustBe "Additional reference 2"
+        section2.rows.size mustBe 2
       }
     }
 
@@ -400,10 +403,10 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(2)
+        val section           = result.sections(1)
 
-        section.sectionTitle.value mustBe "Additional information"
-        section.rows.size mustBe 1
+        section.sectionTitle.value mustBe "Additional information 1"
+        section.rows.size mustBe 2
       }
 
       "when there are multiple" in {
@@ -425,10 +428,14 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(2)
 
-        section.sectionTitle.value mustBe "Additional information"
-        section.rows.size mustBe 2
+        val section1 = result.sections(1)
+        section1.sectionTitle.value mustBe "Additional information 1"
+        section1.rows.size mustBe 2
+
+        val section2 = result.sections(2)
+        section2.sectionTitle.value mustBe "Additional information 2"
+        section2.rows.size mustBe 2
       }
     }
 
@@ -444,7 +451,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(3)
+        val section           = result.sections(1)
 
         section.sectionTitle.value mustBe "Incident 1"
         section.rows.size mustBe 2
@@ -464,11 +471,11 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
 
-        val section1 = result.sections(3)
+        val section1 = result.sections(1)
         section1.sectionTitle.value mustBe "Incident 1"
         section1.rows.size mustBe 2
 
-        val section2 = result.sections(4)
+        val section2 = result.sections(2)
         section2.sectionTitle.value mustBe "Incident 2"
         section2.rows.size mustBe 2
       }

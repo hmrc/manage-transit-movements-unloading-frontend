@@ -246,9 +246,8 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             val result = helper.additionalReferencesSections
 
             result.head mustBe a[AccordionSection]
-            result.head.sectionTitle.value mustBe "Additional references"
-            result.head.rows.size mustBe 1
-            result.head.rows.head.value.value mustBe s"${`type`} - $number"
+            result.head.sectionTitle.value mustBe "Additional reference 1"
+            result.head.rows.size mustBe 2
         }
       }
     }
@@ -267,9 +266,8 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             val result = helper.additionalInformationSections
 
             result.head mustBe a[AccordionSection]
-            result.head.sectionTitle.value mustBe "Additional information"
-            result.head.rows.size mustBe 1
-            result.head.rows.head.value.value mustBe s"$code - $text"
+            result.head.sectionTitle.value mustBe "Additional information 1"
+            result.head.rows.size mustBe 2
         }
       }
     }

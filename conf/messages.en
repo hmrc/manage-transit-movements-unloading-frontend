@@ -476,7 +476,11 @@ unloadingFindings.houseConsignment.item.document.additionalInformation.change.hi
 
 unloadingFindings.additional.reference.heading = Additional references
 unloadingFindings.additional.reference.change.hidden = additional reference {0}
-unloadingFindings.additional.reference = Additional Reference {0}
+unloadingFindings.additional.reference = Additional reference {0}
+unloadingFindings.additional.reference.type = Type
+unloadingFindings.additional.reference.type.change.hidden = type for additional reference {0}
+unloadingFindings.additional.reference.number = Reference number
+unloadingFindings.additional.reference.number.change.hidden = reference number for additional reference {0}
 
 unloadingFindings.dangerousGoods.unNumber = UN number {0}
 
@@ -714,3 +718,5 @@ transportEquipment.index.seal.removeSealYesNo.error.required = Select yes if you
 
 unloadingFindings.additionalInformation.heading = Additional information
 unloadingFindings.additionalInformation.label = Additional information {0}
+unloadingFindings.additionalInformation.type = Type
+unloadingFindings.additionalInformation.description = Description

@@ -16,47 +16,62 @@
 
 package utils.answersHelpers.consignment
 
-import models.reference.{AdditionalInformationCode, AdditionalReferenceType}
+import models.reference.AdditionalInformationCode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.additionalInformation.{AdditionalInformationCodePage, AdditionalInformationTextPage}
-import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
-import pages.sections.additionalInformation.AdditionalInformationSection
-import pages.sections.additionalInformation.AdditionalInformationSection.AdditionalInformation
-import pages.sections.additionalReference.AdditionalReferenceSection
-import pages.sections.additionalReference.AdditionalReferenceSection.AdditionalReference
+import pages.additionalInformation._
 import utils.answersHelpers.AnswersHelperSpecBase
 
 class AdditionalInformationAnswersHelperSpec extends AnswersHelperSpecBase {
 
-  "AdditionalInformationAnswersHelperSpec" - {
+  "AdditionalInformationAnswersHelper" - {
 
-    "additionalInformation" - {
-      val page = AdditionalInformationSection(index)
+    "code" - {
+      val page = AdditionalInformationCodePage(index)
+
       "must return None" - {
         s"when $page undefined" in {
           val helper = new AdditionalInformationAnswersHelper(emptyUserAnswers, index)
-          helper.additionalInformation mustBe None
+          helper.code mustBe None
         }
       }
 
-      "must return Some(Row)" - {
-        s"when $page defined" in {
-          forAll(arbitrary[AdditionalInformationCode], Gen.option(Gen.alphaNumStr)) {
-            (code, text) =>
-              val value = AdditionalInformation(code, text)
+      "must return Some(Row)" in {
+        forAll(arbitrary[AdditionalInformationCode]) {
+          value =>
+            val answers = emptyUserAnswers.setValue(page, value)
 
-              val answers = emptyUserAnswers
-                .setValue(AdditionalInformationCodePage(index), code)
-                .setValue(AdditionalInformationTextPage(index), text)
+            val helper = new AdditionalInformationAnswersHelper(answers, index)
+            val result = helper.code.value
 
-              val helper = new AdditionalInformationAnswersHelper(answers, index)
-              val result = helper.additionalInformation.value
+            result.key.value mustBe "Type"
+            result.value.value mustBe value.toString
+            result.actions must not be defined
+        }
+      }
+    }
 
-              result.key.value mustBe "Additional information 1"
-              result.value.value mustBe value.toString
-              result.actions mustBe None
-          }
+    "description" - {
+      val page = AdditionalInformationTextPage(index)
+
+      "must return None" - {
+        s"when $page undefined" in {
+          val helper = new AdditionalInformationAnswersHelper(emptyUserAnswers, index)
+          helper.description mustBe None
+        }
+      }
+
+      "must return Some(Row)" in {
+        forAll(Gen.alphaNumStr) {
+          value =>
+            val answers = emptyUserAnswers.setValue(page, value)
+
+            val helper = new AdditionalInformationAnswersHelper(answers, index)
+            val result = helper.description.value
+
+            result.key.value mustBe "Description"
+            result.value.value mustBe value
+            result.actions must not be defined
         }
       }
     }

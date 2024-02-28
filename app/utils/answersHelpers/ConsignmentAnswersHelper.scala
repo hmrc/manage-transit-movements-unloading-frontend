@@ -165,28 +165,30 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     }
 
   def additionalReferencesSections: Seq[Section] =
-    Seq(
-      AccordionSection(
-        sectionTitle = messages("unloadingFindings.additional.reference.heading"),
-        rows = getAnswersAndBuildSectionRows(AdditionalReferencesSection) {
-          referenceIndex =>
-            val helper = new AdditionalReferenceAnswersHelper(userAnswers, referenceIndex)
-            helper.additionalReference
-        }
-      )
-    )
+    userAnswers.get(AdditionalReferencesSection).mapWithIndex {
+      case (_, index) =>
+        val helper = new AdditionalReferenceAnswersHelper(userAnswers, index)
+        AccordionSection(
+          sectionTitle = messages("unloadingFindings.additional.reference", index.display),
+          rows = Seq(
+            helper.code,
+            helper.referenceNumber
+          ).flatten
+        )
+    }
 
   def additionalInformationSections: Seq[Section] =
-    Seq(
-      AccordionSection(
-        sectionTitle = messages("unloadingFindings.additionalInformation.heading"),
-        rows = getAnswersAndBuildSectionRows(AdditionalInformationListSection) {
-          informationIndex =>
-            val helper = new AdditionalInformationAnswersHelper(userAnswers, informationIndex)
-            helper.additionalInformation
-        }
-      )
-    )
+    userAnswers.get(AdditionalInformationListSection).mapWithIndex {
+      case (_, index) =>
+        val helper = new AdditionalInformationAnswersHelper(userAnswers, index)
+        AccordionSection(
+          sectionTitle = messages("unloadingFindings.additionalInformation.label", index.display),
+          rows = Seq(
+            helper.code,
+            helper.description
+          ).flatten
+        )
+    }
 
   def incidentSections: Seq[Section] =
     userAnswers.get(IncidentsSection).mapWithIndex {

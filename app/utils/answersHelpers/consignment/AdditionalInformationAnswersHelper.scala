@@ -16,9 +16,9 @@
 
 package utils.answersHelpers.consignment
 
+import models.reference.AdditionalInformationCode
 import models.{Index, UserAnswers}
-import pages.sections.additionalInformation.AdditionalInformationSection
-import pages.sections.additionalInformation.AdditionalInformationSection.AdditionalInformation
+import pages.additionalInformation._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
@@ -29,12 +29,19 @@ class AdditionalInformationAnswersHelper(
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
-  def additionalInformation: Option[SummaryListRow] = getAnswerAndBuildRow[AdditionalInformation](
-    page = AdditionalInformationSection(additionalInformationIndex),
+  def code: Option[SummaryListRow] = getAnswerAndBuildRow[AdditionalInformationCode](
+    page = AdditionalInformationCodePage(additionalInformationIndex),
     formatAnswer = formatAsText,
-    prefix = "unloadingFindings.additionalInformation.label",
-    args = additionalInformationIndex.display,
+    prefix = "unloadingFindings.additionalInformation.type",
     id = None,
     call = None
-  )(AdditionalInformation.reads(additionalInformationIndex))
+  )
+
+  def description: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = AdditionalInformationTextPage(additionalInformationIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.additionalInformation.description",
+    id = None,
+    call = None
+  )
 }
