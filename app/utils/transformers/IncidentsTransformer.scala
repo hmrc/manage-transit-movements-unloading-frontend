@@ -29,7 +29,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class IncidentsTransformer @Inject() (
   referenceDataConnector: ReferenceDataConnector,
   incidentEndorsementTransformer: IncidentEndorsementTransformer,
-  incidentLocationTransformer: IncidentLocationTransformer
+  incidentLocationTransformer: IncidentLocationTransformer,
+  transhipmentIdentificationTransformer: TranshipmentTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
@@ -59,7 +60,8 @@ class IncidentsTransformer @Inject() (
                   set(IncidentCodePage(incidentIndex), typeValue) andThen
                   set(IncidentTextPage(incidentIndex), underlying.text) andThen
                   incidentEndorsementTransformer.transform(underlying.Endorsement, incidentIndex) andThen
-                  incidentLocationTransformer.transform(underlying.Location, incidentIndex)
+                  incidentLocationTransformer.transform(underlying.Location, incidentIndex) andThen
+                  transhipmentIdentificationTransformer.transform(underlying.Transhipment, incidentIndex)
 
               pipeline(userAnswers)
           }
