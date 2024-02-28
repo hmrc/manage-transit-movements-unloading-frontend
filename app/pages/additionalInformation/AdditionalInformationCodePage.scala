@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package models.reference
+package pages.additionalInformation
 
-import play.api.libs.json.{Json, OFormat}
+import models.Index
+import models.reference.AdditionalInformationCode
+import pages.QuestionPage
+import pages.sections.additionalInformation.AdditionalInformationSection
+import play.api.libs.json.JsPath
 
-case class Item(declarationGoodsItemNumber: BigInt, sequenceNumber: String) extends Selectable {
-  override def toString: String = s"$declarationGoodsItemNumber"
+case class AdditionalInformationCodePage(informationIndex: Index) extends QuestionPage[AdditionalInformationCode] {
 
-  override val value: String = declarationGoodsItemNumber.toString
-}
+  override def path: JsPath = AdditionalInformationSection(informationIndex).path \ toString
 
-object Item {
-  implicit val format: OFormat[Item] = Json.format[Item]
+  override def toString: String = "code"
 }

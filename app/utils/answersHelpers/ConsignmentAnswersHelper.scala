@@ -22,6 +22,7 @@ import models.reference.CustomsOffice
 import pages.documents.TypePage
 import pages.grossMass.GrossMassPage
 import pages.sections._
+import pages.sections.additionalInformation.AdditionalInformationListSection
 import pages.sections.additionalReference.AdditionalReferencesSection
 import pages.sections.documents.DocumentsSection
 import pages.sections.incidents.IncidentsSection
@@ -32,6 +33,7 @@ import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.consignment._
+import utils.answersHelpers.consignment.incident.IncidentAnswersHelper
 import viewModels.sections.Section
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 
@@ -49,7 +51,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     ).flatten
   )
 
-  def declarationTypeRow: Option[SummaryListRow] = userAnswers.ie043Data.TransitOperation.declarationType.map(
+  private def declarationTypeRow: Option[SummaryListRow] = userAnswers.ie043Data.TransitOperation.declarationType.map(
     dec =>
       buildRowWithNoChangeLink(
         prefix = "declarationType",
@@ -57,7 +59,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       )
   )
 
-  def securityTypeRow: Option[SummaryListRow] = getAnswerAndBuildRow[SecurityType](
+  private def securityTypeRow: Option[SummaryListRow] = getAnswerAndBuildRow[SecurityType](
     page = SecurityTypePage,
     formatAnswer = formatAsText,
     prefix = "securityType",
@@ -65,12 +67,12 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     call = None
   )
 
-  def reducedDatasetIndicatorRow: SummaryListRow = buildRowWithNoChangeLink(
+  private def reducedDatasetIndicatorRow: SummaryListRow = buildRowWithNoChangeLink(
     prefix = "reducedDatasetIndicator",
     answer = formatAsBoolean(userAnswers.ie043Data.TransitOperation.reducedDatasetIndicator.toString)
   )
 
-  def declarationAcceptanceDateRow: Option[SummaryListRow] = userAnswers.ie043Data.TransitOperation.declarationAcceptanceDate.map(
+  private def declarationAcceptanceDateRow: Option[SummaryListRow] = userAnswers.ie043Data.TransitOperation.declarationAcceptanceDate.map(
     dec =>
       buildRowWithNoChangeLink(
         prefix = "declarationAcceptanceDate",
@@ -258,6 +260,18 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     }
   }
 
+  def additionalInformationSections: Seq[Section] =
+    Seq(
+      AccordionSection(
+        sectionTitle = messages("unloadingFindings.additionalInformation.heading"),
+        rows = getAnswersAndBuildSectionRows(AdditionalInformationListSection) {
+          informationIndex =>
+            val helper = new AdditionalInformationAnswersHelper(userAnswers, informationIndex)
+            helper.additionalInformation
+        }
+      )
+    )
+
   def incidentSections: Seq[Section] = {
     val sections = userAnswers.get(IncidentsSection).mapWithIndex {
       case (_, incidentIndex) =>
@@ -286,7 +300,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.subsections.incidents", incidentIndex.display)),
           rows = rows,
-          children = Seq(endorsementSection)
+          children = endorsementSection +: helper.incidentTransportEquipments
         )
     }
     if (sections.nonEmpty) Seq(AccordionSection(sectionTitle = Some(messages("unloadingFindings.subsections.incidents.parent.header")), children = sections))

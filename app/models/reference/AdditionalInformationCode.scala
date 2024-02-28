@@ -16,14 +16,20 @@
 
 package models.reference
 
-import play.api.libs.json.{Json, OFormat}
+import cats.Order
+import play.api.libs.json.{Format, Json}
 
-case class Item(declarationGoodsItemNumber: BigInt, sequenceNumber: String) extends Selectable {
-  override def toString: String = s"$declarationGoodsItemNumber"
+case class AdditionalInformationCode(code: String, description: String) extends Selectable {
 
-  override val value: String = declarationGoodsItemNumber.toString
+  override def toString: String = s"$code - $description"
+
+  override val value: String = code
 }
 
-object Item {
-  implicit val format: OFormat[Item] = Json.format[Item]
+object AdditionalInformationCode {
+
+  implicit val format: Format[AdditionalInformationCode] = Json.format[AdditionalInformationCode]
+
+  implicit val order: Order[AdditionalInformationCode] = (x: AdditionalInformationCode, y: AdditionalInformationCode) => x.code.compareToIgnoreCase(y.code)
+
 }

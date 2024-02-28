@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package models.reference
+package pages.additionalInformation
 
-import play.api.libs.json.{Json, OFormat}
+import models.reference.AdditionalInformationCode
+import pages.behaviours.PageBehaviours
 
-case class Item(declarationGoodsItemNumber: BigInt, sequenceNumber: String) extends Selectable {
-  override def toString: String = s"$declarationGoodsItemNumber"
+class AdditionalInformationCodePageSpec extends PageBehaviours {
 
-  override val value: String = declarationGoodsItemNumber.toString
-}
+  "AdditionalInformationCodePage" - {
 
-object Item {
-  implicit val format: OFormat[Item] = Json.format[Item]
+    beRetrievable[AdditionalInformationCode](AdditionalInformationCodePage(index))
+
+    beSettable[AdditionalInformationCode](AdditionalInformationCodePage(index))
+
+    beRemovable[AdditionalInformationCode](AdditionalInformationCodePage(index))
+  }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package models.reference
+package pages.sections.additionalInformation
 
-import play.api.libs.json.{Json, OFormat}
+import pages.sections.Section
+import play.api.libs.json.{JsArray, JsPath}
 
-case class Item(declarationGoodsItemNumber: BigInt, sequenceNumber: String) extends Selectable {
-  override def toString: String = s"$declarationGoodsItemNumber"
+case object AdditionalInformationListSection extends Section[JsArray] {
 
-  override val value: String = declarationGoodsItemNumber.toString
-}
+  override def path: JsPath = JsPath \ "Consignment" \ toString
 
-object Item {
-  implicit val format: OFormat[Item] = Json.format[Item]
+  override def toString: String = "AdditionalInformation"
 }

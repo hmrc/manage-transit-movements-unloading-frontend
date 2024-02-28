@@ -42,6 +42,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
   private lazy val mockHouseConsignmentsTransformer       = mock[HouseConsignmentsTransformer]
   private lazy val mockAdditionalReferencesTransformer    = mock[AdditionalReferencesTransformer]
   private lazy val mockIncidentsTransformer               = mock[IncidentsTransformer]
+  private lazy val mockAdditionalInformationTransformer   = mock[AdditionalInformationTransformer]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -53,7 +54,8 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
         bind[DocumentsTransformer].toInstance(mockDocumentsTransformer),
         bind[HouseConsignmentsTransformer].toInstance(mockHouseConsignmentsTransformer),
         bind[AdditionalReferencesTransformer].toInstance(mockAdditionalReferencesTransformer),
-        bind[IncidentsTransformer].toInstance(mockIncidentsTransformer)
+        bind[IncidentsTransformer].toInstance(mockIncidentsTransformer),
+        bind[AdditionalInformationTransformer].toInstance(mockAdditionalInformationTransformer)
       )
 
   private case object FakeConsignorSection extends QuestionPage[JsObject] {
@@ -78,6 +80,10 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
 
   private case object FakeAdditionalReferenceSection extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ "additionalReferenceSection"
+  }
+
+  private case object FakeAdditionalInformationSection extends QuestionPage[JsObject] {
+    override def path: JsPath = JsPath \ "additionalInformationSection"
   }
 
   private case object FakeIncidentSection extends QuestionPage[JsObject] {
@@ -117,6 +123,11 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
               ua => Future.successful(ua.setValue(FakeAdditionalReferenceSection, Json.obj("foo" -> "bar")))
             }
 
+          when(mockAdditionalInformationTransformer.transform(any())(any()))
+            .thenReturn {
+              ua => Future.successful(ua.setValue(FakeAdditionalInformationSection, Json.obj("foo" -> "bar")))
+            }
+
           when(mockIncidentsTransformer.transform(any())(any()))
             .thenReturn {
               ua => Future.successful(ua.setValue(FakeIncidentSection, Json.obj("foo" -> "bar")))
@@ -130,6 +141,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
           result.getValue(FakeDocumentsSection) mustBe Json.obj("foo" -> "bar")
           result.getValue(FakeHouseConsignmentSection) mustBe Json.obj("foo" -> "bar")
           result.getValue(FakeAdditionalReferenceSection) mustBe Json.obj("foo" -> "bar")
+          result.getValue(FakeAdditionalInformationSection) mustBe Json.obj("foo" -> "bar")
           result.get(GrossMassPage) mustBe consignment.grossMass
           result.getValue(FakeIncidentSection) mustBe Json.obj("foo" -> "bar")
       }
@@ -144,6 +156,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
       result.get(FakeDocumentsSection) must not be defined
       result.get(FakeHouseConsignmentSection) must not be defined
       result.get(FakeAdditionalReferenceSection) must not be defined
+      result.get(FakeAdditionalInformationSection) must not be defined
       result.get(GrossMassPage) must not be defined
       result.get(FakeIncidentSection) must not be defined
     }
