@@ -33,4 +33,7 @@ trait PageTransformer {
       case None    => Future.successful(userAnswers)
     }
 
+  def setSequenceNumber(section: QuestionPage[_], sequenceNumber: String): UserAnswers => Future[UserAnswers] = userAnswers =>
+    Future.fromTry(userAnswers.set(section.path \ "sequenceNumber", sequenceNumber))
+
 }

@@ -17,10 +17,10 @@
 package utils.transformers
 
 import connectors.ReferenceDataConnector
-import generated._
 import models.reference.Incident
 import models.{Index, UserAnswers}
 import pages.incident.{IncidentCodePage, IncidentTextPage}
+import pages.sections.incidents.IncidentSection
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -29,15 +29,14 @@ import scala.concurrent.{ExecutionContext, Future}
 class IncidentsTransformer @Inject() (
   referenceDataConnector: ReferenceDataConnector,
   incidentEndorsementTransformer: IncidentEndorsementTransformer,
-  incidentLocationTransformer: IncidentLocationTransformer
+  incidentLocationTransformer: IncidentLocationTransformer,
+  transhipmentIdentificationTransformer: TranshipmentTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  private case class TempIncident(
-    typeValue: Incident,
-    text: String,
-    endorsement: Option[EndorsementType03],
-    location: LocationType02
+  private case class TempIncident[T](
+    underlying: T,
+    typeValue: Incident
   )
 
   def transform(incidents: Seq[generated.IncidentType04])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
@@ -47,20 +46,22 @@ class IncidentsTransformer @Inject() (
         val incidentF = referenceDataConnector.getIncidentType(incidentType0.code)
         for {
           incident <- incidentF
-        } yield TempIncident(incident, incidentType0.text, incidentType0.Endorsement, incidentType0.Location)
+        } yield TempIncident(incidentType0, incident)
     }
 
     Future.sequence(incidentRefLookups).flatMap {
       _.zipWithIndex.foldLeft(Future.successful(userAnswers))({
-        case (acc, (tempIncident, i)) =>
+        case (acc, (TempIncident(underlying, typeValue), i)) =>
           val incidentIndex: Index = Index(i)
           acc.flatMap {
             userAnswers =>
               val pipeline: UserAnswers => Future[UserAnswers] =
-                set(IncidentCodePage(incidentIndex), tempIncident.typeValue) andThen
-                  set(IncidentTextPage(incidentIndex), tempIncident.text) andThen
-                  incidentEndorsementTransformer.transform(tempIncident.endorsement, incidentIndex) andThen
-                  incidentLocationTransformer.transform(tempIncident.location, incidentIndex)
+                setSequenceNumber(IncidentSection(incidentIndex), underlying.sequenceNumber) andThen
+                  set(IncidentCodePage(incidentIndex), typeValue) andThen
+                  set(IncidentTextPage(incidentIndex), underlying.text) andThen
+                  incidentEndorsementTransformer.transform(underlying.Endorsement, incidentIndex) andThen
+                  incidentLocationTransformer.transform(underlying.Location, incidentIndex) andThen
+                  transhipmentIdentificationTransformer.transform(underlying.Transhipment, incidentIndex)
 
               pipeline(userAnswers)
           }

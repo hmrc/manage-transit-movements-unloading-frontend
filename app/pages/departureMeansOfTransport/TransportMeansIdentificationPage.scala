@@ -19,12 +19,12 @@ package pages.departureMeansOfTransport
 import models.Index
 import models.departureTransportMeans.TransportMeansIdentification
 import pages.QuestionPage
-import pages.sections.TransportMeansListSection
+import pages.sections.TransportMeansSection
 import play.api.libs.json.JsPath
 
 case class TransportMeansIdentificationPage(transportMeansIndex: Index) extends QuestionPage[TransportMeansIdentification] {
 
-  override def path: JsPath = TransportMeansListSection.path \ transportMeansIndex.position \ toString
+  override def path: JsPath = TransportMeansSection(transportMeansIndex).path \ toString
 
   override def toString: String = "identification"
 }

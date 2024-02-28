@@ -17,11 +17,9 @@
 package pages.sections
 
 import models.Index
-import play.api.libs.json.{JsArray, JsPath}
+import play.api.libs.json.{JsObject, JsPath}
 
-case class PackagingSection(houseConsignment: Index, itemIndex: Index) extends Section[JsArray] {
+case class PackagingSection(houseConsignmentIndex: Index, itemIndex: Index, packagingIndex: Index) extends Section[JsObject] {
 
-  override def path: JsPath = ItemsSection(houseConsignment).path \ itemIndex.position \ toString
-
-  override def toString: String = "Packaging"
+  override def path: JsPath = PackagingListSection(houseConsignmentIndex, itemIndex).path \ packagingIndex.position
 }

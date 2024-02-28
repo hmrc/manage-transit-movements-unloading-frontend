@@ -31,33 +31,57 @@ class DocumentAnswersHelper(
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
-  def documentType: Option[SummaryListRow] =
-    getAnswerAndBuildRow[DocumentType](
-      page = TypePage(documentIndex),
-      formatAnswer = formatAsText,
-      prefix = "unloadingFindings.document.type",
-      args = documentIndex.display,
-      id = Some(s"change-document-type-${documentIndex.display}"),
-      call = Some(Call(GET, "#")) //TODO change me please
-    )
+  def documentType(readOnly: Boolean = false): Option[SummaryListRow] =
+    if (readOnly) {
+      buildRowWithNoChangeLink[DocumentType](
+        data = userAnswers.get(TypePage(documentIndex)),
+        formatAnswer = formatAsText,
+        prefix = "unloadingFindings.document.type"
+      )
+    } else {
+      getAnswerAndBuildRow[DocumentType](
+        page = TypePage(documentIndex),
+        formatAnswer = formatAsText,
+        prefix = "unloadingFindings.document.type",
+        args = documentIndex.display,
+        id = Some(s"change-document-type-${documentIndex.display}"),
+        call = Some(Call(GET, "#")) //TODO change me please
+      )
+    }
 
-  def referenceNumber: Option[SummaryListRow] =
-    getAnswerAndBuildRow[String](
-      page = DocumentReferenceNumberPage(documentIndex),
-      formatAnswer = formatAsText,
-      prefix = "unloadingFindings.document.referenceNumber",
-      args = documentIndex.display,
-      id = Some(s"change-document-reference-number-${documentIndex.display}"),
-      call = Some(Call(GET, "#")) //TODO change me please
-    )
+  def referenceNumber(readOnly: Boolean = false): Option[SummaryListRow] =
+    if (readOnly) {
+      buildRowWithNoChangeLink[String](
+        data = userAnswers.get(DocumentReferenceNumberPage(documentIndex)),
+        formatAnswer = formatAsText,
+        prefix = "unloadingFindings.document.referenceNumber"
+      )
+    } else {
+      getAnswerAndBuildRow[String](
+        page = DocumentReferenceNumberPage(documentIndex),
+        formatAnswer = formatAsText,
+        prefix = "unloadingFindings.document.referenceNumber",
+        args = documentIndex.display,
+        id = Some(s"change-document-reference-number-${documentIndex.display}"),
+        call = Some(Call(GET, "#")) //TODO change me please
+      )
+    }
 
-  def additionalInformation: Option[SummaryListRow] =
-    getAnswerAndBuildRow[String](
-      page = AdditionalInformationPage(documentIndex),
-      formatAnswer = formatAsText,
-      prefix = "unloadingFindings.document.additionalInformation",
-      args = documentIndex.display,
-      id = Some(s"change-document-additional-information-${documentIndex.display}"),
-      call = Some(Call(GET, "#")) //TODO change me please
-    )
+  def additionalInformation(readOnly: Boolean = false): Option[SummaryListRow] =
+    if (readOnly) {
+      buildRowWithNoChangeLink[String](
+        data = userAnswers.get(AdditionalInformationPage(documentIndex)),
+        formatAnswer = formatAsText,
+        prefix = "unloadingFindings.document.additionalInformation"
+      )
+    } else {
+      getAnswerAndBuildRow[String](
+        page = AdditionalInformationPage(documentIndex),
+        formatAnswer = formatAsText,
+        prefix = "unloadingFindings.document.additionalInformation",
+        args = documentIndex.display,
+        id = Some(s"change-document-additional-information-${documentIndex.display}"),
+        call = Some(Call(GET, "#")) //TODO change me please
+      )
+    }
 }

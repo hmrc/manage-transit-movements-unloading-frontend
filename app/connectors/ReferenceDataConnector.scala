@@ -21,11 +21,11 @@ import cats.data.NonEmptySet
 import config.FrontendAppConfig
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import logging.Logging
-import models.DocType.{Support, Transport}
-import models.SecurityType
+import models.DocType.{Previous, Support, Transport}
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference._
 import models.reference.transport.TransportMode
+import models.{DocType, SecurityType}
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, Reads}
 import sttp.model.HeaderNames
@@ -140,12 +140,8 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
       .map(_.head)
   }
 
-  def getSupportingDocument(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DocumentType] = {
-    val queryParams: Seq[(String, String)]  = Seq("data.code" -> typeValue)
-    val url                                 = s"${config.referenceDataUrl}/lists/SupportingDocumentType"
-    implicit val reads: Reads[DocumentType] = DocumentType.reads(Support)
-    http.GET[NonEmptySet[DocumentType]](url, headers = version2Header, queryParams = queryParams).map(_.head)
-  }
+  def getSupportingDocument(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DocumentType] =
+    getDocument(Support, "SupportingDocumentType", typeValue)
 
   def getAdditionalReferences()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[AdditionalReferenceType]] = {
     val url = s"${config.referenceDataUrl}/lists/AdditionalReference"
@@ -158,23 +154,34 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[NonEmptySet[AdditionalReferenceType]](url, headers = version2Header, queryParams = queryParams).map(_.head)
   }
 
-  def getTransportDocument(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DocumentType] = {
-    val queryParams: Seq[(String, String)]  = Seq("data.code" -> typeValue)
-    val url                                 = s"${config.referenceDataUrl}/lists/TransportDocumentType"
-    implicit val reads: Reads[DocumentType] = DocumentType.reads(Transport)
-    http.GET[NonEmptySet[DocumentType]](url, headers = version2Header, queryParams = queryParams).map(_.head)
+  def getAdditionalInformationCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[AdditionalInformationCode] = {
+    val queryParams: Seq[(String, String)] = Seq("data.code" -> code)
+    val url                                = s"${config.referenceDataUrl}/lists/AdditionalInformation"
+    http.GET[NonEmptySet[AdditionalInformationCode]](url, headers = version2Header, queryParams = queryParams).map(_.head)
   }
 
-  def getSupportingDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[DocumentType]] = {
-    val url                                 = s"${config.referenceDataUrl}/lists/SupportingDocumentType"
-    implicit val reads: Reads[DocumentType] = DocumentType.reads(Support)
-    http.GET[NonEmptySet[DocumentType]](url, headers = version2Header)
-  }
+  def getTransportDocument(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DocumentType] =
+    getDocument(Transport, "TransportDocumentType", typeValue)
 
-  def getTransportDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[DocumentType]] = {
-    val url                                 = s"${config.referenceDataUrl}/lists/TransportDocumentType"
-    implicit val reads: Reads[DocumentType] = DocumentType.reads(Transport)
-    http.GET[NonEmptySet[DocumentType]](url, headers = version2Header)
+  def getSupportingDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[DocumentType]] =
+    getDocuments(Support, "SupportingDocumentType")
+
+  def getTransportDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[DocumentType]] =
+    getDocuments(Transport, "TransportDocumentType")
+
+  def getPreviousDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[DocumentType]] =
+    getDocuments(Previous, "PreviousDocumentType")
+
+  def getPreviousDocument(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DocumentType] =
+    getDocument(Previous, "PreviousDocumentType", typeValue)
+
+  def getDocuments(dt: DocType, path: String, queryParams: Seq[(String, String)] = Seq())(implicit
+    ec: ExecutionContext,
+    hc: HeaderCarrier
+  ): Future[NonEmptySet[DocumentType]] = {
+    val url                                 = s"${config.referenceDataUrl}/lists/$path"
+    implicit val reads: Reads[DocumentType] = DocumentType.reads(dt)
+    http.GET[NonEmptySet[DocumentType]](url, headers = version2Header, queryParams = queryParams)
   }
 
   def getQualifierOfIdentificationIncident(qualifier: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[QualifierOfIdentification] = {
@@ -182,6 +189,9 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url                                = s"${config.referenceDataUrl}/lists/QualifierOfIdentificationIncident"
     http.GET[NonEmptySet[QualifierOfIdentification]](url, headers = version2Header, queryParams = queryParams).map(_.head)
   }
+
+  def getDocument(dt: DocType, path: String, typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DocumentType] =
+    getDocuments(dt, path, Seq("data.code" -> typeValue)).map(_.head)
 
   private def version2Header: Seq[(String, String)] = Seq(
     HeaderNames.Accept -> "application/vnd.hmrc.2.0+json"

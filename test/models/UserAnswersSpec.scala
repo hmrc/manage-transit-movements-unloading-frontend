@@ -18,6 +18,7 @@ package models
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import pages.QuestionPage
+import pages.sections.Section
 import play.api.libs.json._
 import play.api.test.Helpers.running
 
@@ -191,6 +192,114 @@ class UserAnswersSpec extends SpecBase with AppWithDefaultMockFixtures {
              |""".stripMargin)
 
         result mustBe json
+      }
+    }
+
+    "removeExceptSequenceNumber" - {
+      "must remove everything except sequence number" - {
+        "when only one element" in {
+          case object FakeSection extends Section[JsObject] {
+            override def path: JsPath = JsPath \ "some" \ "example" \ "path" \ 0
+          }
+          val data = Json
+            .parse("""
+                |{
+                |  "some" : {
+                |    "example" : {
+                |      "path" : [
+                |        {
+                |          "sequenceNumber" : "1",
+                |          "foo" : "foo",
+                |          "bar" : "bar",
+                |          "baz" : "baz"
+                |        }
+                |      ]
+                |    }
+                |  }
+                |}
+                |""".stripMargin)
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(data = data)
+          val result      = userAnswers.removeExceptSequenceNumber(FakeSection).get
+          result.data mustBe Json.parse("""
+              |{
+              |  "some" : {
+              |    "example" : {
+              |      "path" : [
+              |        {
+              |          "sequenceNumber" : "1"
+              |        }
+              |      ]
+              |    }
+              |  }
+              |}
+              |""".stripMargin)
+        }
+
+        "when one of several elements" in {
+          case object FakeSection extends Section[JsObject] {
+            override def path: JsPath = JsPath \ "some" \ "example" \ "path" \ 1
+          }
+          val data = Json
+            .parse("""
+                |{
+                |  "some" : {
+                |    "example" : {
+                |      "path" : [
+                |        {
+                |          "sequenceNumber" : "1",
+                |          "foo" : "foo",
+                |          "bar" : "bar",
+                |          "baz" : "baz"
+                |        },
+                |        {
+                |          "sequenceNumber" : "2",
+                |          "foo" : "foo",
+                |          "bar" : "bar",
+                |          "baz" : "baz"
+                |        },
+                |        {
+                |          "sequenceNumber" : "3",
+                |          "foo" : "foo",
+                |          "bar" : "bar",
+                |          "baz" : "baz"
+                |        }
+                |      ]
+                |    }
+                |  }
+                |}
+                |""".stripMargin)
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(data = data)
+          val result      = userAnswers.removeExceptSequenceNumber(FakeSection).get
+          result.data mustBe Json.parse("""
+              |{
+              |  "some" : {
+              |    "example" : {
+              |      "path" : [
+              |        {
+              |          "sequenceNumber" : "1",
+              |          "foo" : "foo",
+              |          "bar" : "bar",
+              |          "baz" : "baz"
+              |        },
+              |        {
+              |          "sequenceNumber" : "2"
+              |        },
+              |        {
+              |          "sequenceNumber" : "3",
+              |          "foo" : "foo",
+              |          "bar" : "bar",
+              |          "baz" : "baz"
+              |        }
+              |      ]
+              |    }
+              |  }
+              |}
+              |""".stripMargin)
+        }
       }
     }
   }

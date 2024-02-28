@@ -18,14 +18,14 @@ package pages.departureMeansOfTransport
 
 import models.{Index, UserAnswers}
 import pages.QuestionPage
-import pages.sections.TransportMeansListSection
+import pages.sections.TransportMeansSection
 import play.api.libs.json.JsPath
 
 import scala.util.Try
 
 case class AddNationalityYesNoPage(transportMeansIndex: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = TransportMeansListSection.path \ transportMeansIndex.position \ toString
+  override def path: JsPath = TransportMeansSection(transportMeansIndex).path \ toString
 
   override def toString: String = "addNationalityYesNo"
 

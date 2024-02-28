@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package pages
+package pages.additionalInformation
 
-import pages.behaviours.PageBehaviours
+import models.Index
+import pages.QuestionPage
+import pages.sections.additionalInformation.AdditionalInformationSection
+import play.api.libs.json.JsPath
 
-class ContainerIdentificationNumberPageSpec extends PageBehaviours {
+case class AdditionalInformationTextPage(informationIndex: Index) extends QuestionPage[String] {
 
-  "ContainerIdentificationNumberPage" - {
+  override def path: JsPath = AdditionalInformationSection(informationIndex).path \ toString
 
-    beRetrievable[String](ContainerIdentificationNumberPage(index))
-
-    beSettable[String](ContainerIdentificationNumberPage(index))
-
-    beRemovable[String](ContainerIdentificationNumberPage(index))
-  }
+  override def toString: String = "text"
 }

@@ -35,24 +35,32 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
 
   private val transformer = app.injector.instanceOf[ConsignmentTransformer]
 
+  private lazy val mockConsignorTransformer               = mock[ConsignorTransformer]
   private lazy val mockTransportEquipmentTransformer      = mock[TransportEquipmentTransformer]
   private lazy val mockDepartureTransportMeansTransformer = mock[DepartureTransportMeansTransformer]
   private lazy val mockDocumentsTransformer               = mock[DocumentsTransformer]
   private lazy val mockHouseConsignmentsTransformer       = mock[HouseConsignmentsTransformer]
   private lazy val mockAdditionalReferencesTransformer    = mock[AdditionalReferencesTransformer]
   private lazy val mockIncidentsTransformer               = mock[IncidentsTransformer]
+  private lazy val mockAdditionalInformationTransformer   = mock[AdditionalInformationTransformer]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
+        bind[ConsignorTransformer].toInstance(mockConsignorTransformer),
         bind[TransportEquipmentTransformer].toInstance(mockTransportEquipmentTransformer),
         bind[DepartureTransportMeansTransformer].toInstance(mockDepartureTransportMeansTransformer),
         bind[DocumentsTransformer].toInstance(mockDocumentsTransformer),
         bind[HouseConsignmentsTransformer].toInstance(mockHouseConsignmentsTransformer),
         bind[AdditionalReferencesTransformer].toInstance(mockAdditionalReferencesTransformer),
-        bind[IncidentsTransformer].toInstance(mockIncidentsTransformer)
+        bind[IncidentsTransformer].toInstance(mockIncidentsTransformer),
+        bind[AdditionalInformationTransformer].toInstance(mockAdditionalInformationTransformer)
       )
+
+  private case object FakeConsignorSection extends QuestionPage[JsObject] {
+    override def path: JsPath = JsPath \ "consignor"
+  }
 
   private case object FakeTransportEquipmentSection extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ "transportEquipment"
@@ -74,6 +82,10 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
     override def path: JsPath = JsPath \ "additionalReferenceSection"
   }
 
+  private case object FakeAdditionalInformationSection extends QuestionPage[JsObject] {
+    override def path: JsPath = JsPath \ "additionalInformationSection"
+  }
+
   private case object FakeIncidentSection extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ "incidentSection"
   }
@@ -82,6 +94,11 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
     "when consignment defined" in {
       forAll(arbitrary[ConsignmentType05]) {
         consignment =>
+          when(mockConsignorTransformer.transform(any())(any()))
+            .thenReturn {
+              ua => Future.successful(ua.setValue(FakeConsignorSection, Json.obj("foo" -> "bar")))
+            }
+
           when(mockTransportEquipmentTransformer.transform(any()))
             .thenReturn {
               ua => Future.successful(ua.setValue(FakeTransportEquipmentSection, Json.obj("foo" -> "bar")))
@@ -92,7 +109,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
               ua => Future.successful(ua.setValue(FakeDepartureTransportMeansSection, Json.obj("foo" -> "bar")))
             }
 
-          when(mockDocumentsTransformer.transform(any(), any())(any()))
+          when(mockDocumentsTransformer.transform(any(), any(), any())(any()))
             .thenReturn {
               ua => Future.successful(ua.setValue(FakeDocumentsSection, Json.obj("foo" -> "bar")))
             }
@@ -106,6 +123,11 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
               ua => Future.successful(ua.setValue(FakeAdditionalReferenceSection, Json.obj("foo" -> "bar")))
             }
 
+          when(mockAdditionalInformationTransformer.transform(any())(any()))
+            .thenReturn {
+              ua => Future.successful(ua.setValue(FakeAdditionalInformationSection, Json.obj("foo" -> "bar")))
+            }
+
           when(mockIncidentsTransformer.transform(any())(any()))
             .thenReturn {
               ua => Future.successful(ua.setValue(FakeIncidentSection, Json.obj("foo" -> "bar")))
@@ -113,11 +135,13 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
 
           val result = transformer.transform(Some(consignment))(hc).apply(emptyUserAnswers).futureValue
 
+          result.getValue(FakeConsignorSection) mustBe Json.obj("foo" -> "bar")
           result.getValue(FakeTransportEquipmentSection) mustBe Json.obj("foo" -> "bar")
           result.getValue(FakeDepartureTransportMeansSection) mustBe Json.obj("foo" -> "bar")
           result.getValue(FakeDocumentsSection) mustBe Json.obj("foo" -> "bar")
           result.getValue(FakeHouseConsignmentSection) mustBe Json.obj("foo" -> "bar")
           result.getValue(FakeAdditionalReferenceSection) mustBe Json.obj("foo" -> "bar")
+          result.getValue(FakeAdditionalInformationSection) mustBe Json.obj("foo" -> "bar")
           result.get(GrossMassPage) mustBe consignment.grossMass
           result.getValue(FakeIncidentSection) mustBe Json.obj("foo" -> "bar")
       }
@@ -126,11 +150,13 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
     "when consignment undefined" in {
       val result = transformer.transform(None)(hc).apply(emptyUserAnswers).futureValue
 
+      result.get(FakeConsignorSection) must not be defined
       result.get(FakeTransportEquipmentSection) must not be defined
       result.get(FakeDepartureTransportMeansSection) must not be defined
       result.get(FakeDocumentsSection) must not be defined
       result.get(FakeHouseConsignmentSection) must not be defined
       result.get(FakeAdditionalReferenceSection) must not be defined
+      result.get(FakeAdditionalInformationSection) must not be defined
       result.get(GrossMassPage) must not be defined
       result.get(FakeIncidentSection) must not be defined
     }

@@ -21,6 +21,7 @@ import generated.PackagingType02
 import models.reference.PackageType
 import models.{Index, UserAnswers}
 import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
+import pages.sections.PackagingSection
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -28,40 +29,37 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PackagingTransformer @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) extends PageTransformer {
 
-  private case class TempPackaging(
-    typeValue: PackageType,
-    numberOfPackages: Option[BigInt],
-    shippingMarks: Option[String]
+  private case class TempPackaging[T](
+    underlying: T,
+    typeValue: PackageType
   )
 
   def transform(packages: Seq[PackagingType02], hcIndex: Index, itemIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] =
     userAnswers => {
 
       lazy val packageTypeRefLookups = packages.map {
-        pack =>
+        `package` =>
           referenceDataConnector
-            .getPackageType(pack.typeOfPackages)
-            .map(
-              packageType => TempPackaging(packageType, pack.numberOfPackages, pack.shippingMarks)
-            )
+            .getPackageType(`package`.typeOfPackages)
+            .map(TempPackaging(`package`, _))
       }
 
       Future.sequence(packageTypeRefLookups).flatMap {
         _.zipWithIndex.foldLeft(Future.successful(userAnswers))({
-          case (acc, (packageType, i)) =>
+          case (acc, (TempPackaging(underlying, typeValue), i)) =>
             val packageIndex: Index = Index(i)
             acc.flatMap {
               userAnswers =>
-                val pipeline: UserAnswers => Future[UserAnswers] =
-                  set(PackagingTypePage(hcIndex, itemIndex, packageIndex), packageType.typeValue) andThen
-                    set(PackagingCountPage(hcIndex, itemIndex, packageIndex), packageType.numberOfPackages) andThen
-                    set(PackagingMarksPage(hcIndex, itemIndex, packageIndex), packageType.shippingMarks)
+                val pipeline: UserAnswers => Future[UserAnswers] = {
+                  setSequenceNumber(PackagingSection(hcIndex, itemIndex, packageIndex), underlying.sequenceNumber) andThen
+                    set(PackagingTypePage(hcIndex, itemIndex, packageIndex), typeValue) andThen
+                    set(PackagingCountPage(hcIndex, itemIndex, packageIndex), underlying.numberOfPackages) andThen
+                    set(PackagingMarksPage(hcIndex, itemIndex, packageIndex), underlying.shippingMarks)
+                }
 
                 pipeline(userAnswers)
             }
         })
-
       }
-
     }
 }

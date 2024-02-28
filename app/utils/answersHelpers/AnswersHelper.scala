@@ -20,13 +20,23 @@ import models.{ArrivalId, Index, UserAnswers}
 import pages._
 import pages.sections.Section
 import play.api.i18n.Messages
-import play.api.libs.json.{JsArray, JsValue, Reads}
+import play.api.libs.json._
 import play.api.mvc.Call
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
 
 class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends SummaryListRowHelper {
 
   def arrivalId: ArrivalId = userAnswers.id
+
+  def sequenceNumber(jsValue: JsValue): Option[SummaryListRow] =
+    jsValue.transform((__ \ "sequenceNumber").json.pick[JsString]).asOpt.map {
+      case JsString(value) =>
+        buildRowWithNoChangeLink(
+          prefix = messages("unloadingFindings.sequenceNumber"),
+          answer = value.toText
+        )
+    }
 
   def getAnswerAndBuildRow[T](
     page: QuestionPage[T],
@@ -60,6 +70,23 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
           id = None,
           call = None,
           args = Nil
+        )
+    }
+
+  def buildRowWithNoChangeLink[T](
+    data: Option[T],
+    formatAnswer: T => Content,
+    prefix: String,
+    args: Any*
+  ): Option[SummaryListRow] =
+    data map {
+      answer =>
+        buildRow(
+          prefix = prefix,
+          answer = formatAnswer(answer),
+          id = None,
+          call = None,
+          args = args: _*
         )
     }
 

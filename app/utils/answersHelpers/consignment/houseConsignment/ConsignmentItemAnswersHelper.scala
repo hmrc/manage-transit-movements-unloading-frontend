@@ -17,12 +17,14 @@
 package utils.answersHelpers.consignment.houseConsignment
 
 import models.reference.Country
+import models.DocType.Previous
 import models.{Index, UserAnswers}
 import pages.NetWeightPage
 import pages.houseConsignment.index.items._
-import pages.sections.PackagingSection
+import pages.houseConsignment.index.items.document.TypePage
+import pages.sections.PackagingListSection
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferencesSection
-import pages.sections.houseConsignment.index.items.dangerousGoods.DangerousGoodsSection
+import pages.sections.houseConsignment.index.items.dangerousGoods.DangerousGoodsListSection
 import pages.sections.houseConsignment.index.items.documents.DocumentsSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -96,16 +98,18 @@ class ConsignmentItemAnswersHelper(
     )
   }
 
-  def documentSections: Seq[Section] =
-    userAnswers
-      .get(DocumentsSection(houseConsignmentIndex, itemIndex))
+  def documentSections: Seq[Section] = {
+    val docs = userAnswers.get(DocumentsSection(houseConsignmentIndex, itemIndex))
+    docs
       .mapWithIndex {
         case (_, documentIndex) =>
-          val helper = new DocumentAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex, documentIndex)
+          val helper   = new DocumentAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex, documentIndex)
+          val readOnly = userAnswers.get(TypePage(houseConsignmentIndex, itemIndex, documentIndex)).map(_.`type`).contains(Previous)
 
           val rows = Seq(
-            helper.referenceNumber,
-            helper.additionalInformation
+            helper.documentType(readOnly),
+            helper.referenceNumber(readOnly),
+            helper.additionalInformation(readOnly)
           ).flatten
 
           AccordionSection(
@@ -113,16 +117,17 @@ class ConsignmentItemAnswersHelper(
             rows = rows
           )
       }
+  }
 
   def dangerousGoodsRows: Seq[SummaryListRow] =
-    getAnswersAndBuildSectionRows(DangerousGoodsSection(houseConsignmentIndex, itemIndex)) {
+    getAnswersAndBuildSectionRows(DangerousGoodsListSection(houseConsignmentIndex, itemIndex)) {
       dangerousGoodsIndex =>
         new DangerousGoodsAnswerHelper(userAnswers, houseConsignmentIndex, itemIndex, dangerousGoodsIndex).dangerousGoodsRow
     }
 
   def packageSections: Seq[Section] =
     userAnswers
-      .get(PackagingSection(houseConsignmentIndex, itemIndex))
+      .get(PackagingListSection(houseConsignmentIndex, itemIndex))
       .mapWithIndex {
         case (_, packageIndex) =>
           val helper = new PackagingAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex, packageIndex)

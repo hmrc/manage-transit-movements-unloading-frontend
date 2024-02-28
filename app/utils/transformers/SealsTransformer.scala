@@ -18,6 +18,7 @@ package utils.transformers
 
 import generated.SealType04
 import models.{Index, UserAnswers}
+import pages.sections.SealSection
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 
 import javax.inject.Inject
@@ -27,12 +28,13 @@ class SealsTransformer @Inject() (implicit ec: ExecutionContext) extends PageTra
 
   def transform(seals: Seq[SealType04], equipmentIndex: Index): UserAnswers => Future[UserAnswers] = userAnswers =>
     seals.zipWithIndex.foldLeft(Future.successful(userAnswers))({
-      case (acc, (SealType04(_, identifier), i)) =>
+      case (acc, (SealType04(sequenceNumber, identifier), i)) =>
         acc.flatMap {
           userAnswers =>
             val sealIndex: Index = Index(i)
             val pipeline: UserAnswers => Future[UserAnswers] =
-              set(SealIdentificationNumberPage(equipmentIndex, sealIndex), identifier)
+              setSequenceNumber(SealSection(equipmentIndex, sealIndex), sequenceNumber) andThen
+                set(SealIdentificationNumberPage(equipmentIndex, sealIndex), identifier)
 
             pipeline(userAnswers)
         }

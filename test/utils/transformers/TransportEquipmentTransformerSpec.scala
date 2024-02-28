@@ -24,6 +24,7 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.sections.TransportEquipmentSection
 import pages.{ContainerIdentificationNumberPage, QuestionPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -77,6 +78,7 @@ class TransportEquipmentTransformerSpec extends SpecBase with AppWithDefaultMock
           case (te, i) =>
             val equipmentIndex = Index(i)
 
+            result.getSequenceNumber(TransportEquipmentSection(equipmentIndex)) mustBe te.sequenceNumber
             result.get(ContainerIdentificationNumberPage(equipmentIndex)) mustBe te.containerIdentificationNumber
             result.getValue(FakeSealsSection(equipmentIndex)) mustBe Json.obj("foo" -> i.toString)
             result.getValue(FakeGoodsReferencesSection(equipmentIndex)) mustBe Json.obj("foo" -> i.toString)

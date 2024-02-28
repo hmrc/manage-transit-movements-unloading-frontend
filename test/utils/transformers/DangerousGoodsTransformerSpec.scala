@@ -23,6 +23,7 @@ import models.Index
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.houseConsignment.index.items.DangerousGoodsPage
+import pages.sections.houseConsignment.index.items.dangerousGoods.DangerousGoodsSection
 
 class DangerousGoodsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
@@ -35,6 +36,7 @@ class DangerousGoodsTransformerSpec extends SpecBase with AppWithDefaultMockFixt
 
         dangerousGoods.zipWithIndex.map {
           case (dangerousGoods, i) =>
+            result.getSequenceNumber(DangerousGoodsSection(hcIndex, itemIndex, Index(i))) mustBe dangerousGoods.sequenceNumber
             result.getValue(DangerousGoodsPage(hcIndex, itemIndex, Index(i))) mustBe dangerousGoods.UNNumber
         }
     }
