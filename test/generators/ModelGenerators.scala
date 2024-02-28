@@ -86,6 +86,14 @@ trait ModelGenerators {
       } yield AdditionalReferenceType(refType, description)
     }
 
+  implicit lazy val arbitraryAdditionalInformationCode: Arbitrary[AdditionalInformationCode] =
+    Arbitrary {
+      for {
+        code        <- Gen.alphaNumStr
+        description <- nonEmptyString
+      } yield AdditionalInformationCode(code, description)
+    }
+
   implicit lazy val arbitraryEoriNumber: Arbitrary[EoriNumber] =
     Arbitrary {
       for {

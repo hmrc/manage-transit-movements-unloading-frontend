@@ -45,7 +45,7 @@
             inputCharacterCountType = InputCharacterCountViewModel(
                 heading = viewModel.heading,
                 caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = if (viewModel.isParagraphRequired) Some(messages("houseConsignment.index.items.additionalReference.additionalReferenceNumber.paragraph").toParagraph) else None
+                additionalHtml = None
             ),
             label = viewModel.heading,
             maxLength = maxAdditionalReferenceNumLength,

@@ -16,43 +16,25 @@
 
 package viewModels.additionalReference.index
 
-import models.{CheckMode, Index, Mode, NormalMode, RichOptionalJsArray, UserAnswers}
-import pages.additionalReference.AdditionalReferenceTypePage
-import pages.sections.additionalReference.AdditionalReferencesSection
+import models.Mode
 import play.api.i18n.Messages
 import viewModels.ModeViewModelProvider
 
 import javax.inject.Inject
 
-case class AdditionalReferenceNumberViewModel(heading: String, title: String, requiredError: String, isParagraphRequired: Boolean)
+case class AdditionalReferenceNumberViewModel(heading: String, title: String, requiredError: String)
 
 object AdditionalReferenceNumberViewModel {
 
   class AdditionalReferenceNumberViewModelProvider @Inject() extends ModeViewModelProvider {
     override val prefix = "additionalReferenceNumber.index"
 
-    def apply(mode: Mode, additionalReferenceIndex: Index, userAnswers: UserAnswers)(implicit messages: Messages): AdditionalReferenceNumberViewModel =
+    def apply(mode: Mode)(implicit messages: Messages): AdditionalReferenceNumberViewModel =
       new AdditionalReferenceNumberViewModel(
         heading(mode),
         title(mode),
-        requiredError(mode),
-        isParagraphRequired(mode, additionalReferenceIndex, userAnswers)
+        requiredError(mode)
       )
-
-    private def isParagraphRequired(mode: Mode, additionalReferenceIndex: Index, userAnswers: UserAnswers) =
-      mode match {
-        case CheckMode => false
-        case NormalMode =>
-          val additionalReferenceTypes = {
-            val numberOfAdditionalReferences = userAnswers.get(AdditionalReferencesSection).length
-            (0 until numberOfAdditionalReferences)
-              .map(Index(_))
-              .filterNot(_ == additionalReferenceIndex)
-              .map(AdditionalReferenceTypePage)
-              .flatMap(userAnswers.get(_))
-          }
-          userAnswers.get(AdditionalReferenceTypePage(additionalReferenceIndex)).exists(additionalReferenceTypes.contains)
-      }
   }
 
 }

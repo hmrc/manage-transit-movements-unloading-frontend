@@ -48,7 +48,7 @@ checkYourAnswers.changeItems.hidden = answers
 
 session_expired.title = For your security, we signed you out
 session_expired.heading = For your security, we signed you out
-session_expired.guidance = We did not save your answers.
+session_expired.guidance = We saved your answers. They will be available for 15 minutes.
 session_expired.button = Sign in
 
 unauthorised.title = You cannot use this service
@@ -61,8 +61,8 @@ unauthorised.again.later = again later.
 technicalDifficulties.title = Sorry, there is a problem with the service
 technicalDifficulties.heading = Sorry, there is a problem with the service
 technicalDifficulties.tryAgain = Try again later.
-technicalDifficulties.contact = You can
-technicalDifficulties.contact.link = contact the New Computerised Transit System helpdesk if you need to speak to someone about transit movements (opens in a new tab).
+technicalDifficulties.savedAnswers = We saved your answers. They will be available for 15 minutes.
+technicalDifficulties.contact.link = Contact the New Computerised Transit System (NCTS) helpdesk if you need to speak to someone about your transit movements (opens in a new tab)
 
 unloadingGuidance.title = Unload the goods before you make unloading remarks
 unloadingGuidance.heading = Unload the goods before you make unloading remarks
@@ -325,8 +325,7 @@ pageNotFound.title = Page not found
 pageNotFound.heading = Page not found
 pageNotFound.paragraph1 = If you typed the web address, check it is correct.
 pageNotFound.paragraph2 = If you pasted the web address, check you copied the entire address.
-pageNotFound.paragraph3Start = If the web address is correct or you selected a link or button,
-pageNotFound.contactLink = contact the New Computerised Transit System(NCTS) helpdesk if you need to speak to someone about your transit movement (opens in a new tab)
+pageNotFound.contactLink = Contact the New Computerised Transit System (NCTS) helpdesk if you need to speak to someone about your transit movements (opens in a new tab)
 
 unauthorisedWithGroupAccess.title = You cannot use this service authorisation
 unauthorisedWithGroupAccess.heading = You cannot use this service
@@ -366,6 +365,7 @@ unloadingFindings.rowHeadings.transhipment.typeOfIdentification = Identification
 unloadingFindings.rowHeadings.transhipment.identificationNumber = Identification number
 unloadingFindings.rowHeadings.transhipment.nationality = Registered country
 
+unloadingFindings.incident.transportEquipment.heading = Transport equipment {0}
 
 declarationType = Declaration type
 securityType = Safety and security details
@@ -403,6 +403,7 @@ unloadingFindings.rowHeadings.vehicleNationality.change.hidden = registered coun
 
 unloadingFindings.subsections.transportEquipment = Transport equipment {0}
 unloadingFindings.rowHeadings.containerIdentificationNumber = Container identification number
+unloadingFindings.rowHeadings.item = Item {0}
 unloadingFindings.rowHeadings.sealIdentifier = Seal {0}
 
 unloadingFindings.subsections.houseConsignment = House consignment {0}
@@ -456,6 +457,12 @@ unloadingFindings.rowHeadings.holderOfTheTransitProcedure.tirHolderIdentificatio
 unloadingFindings.rowHeadings.holderOfTheTransitProcedure.name = Name
 unloadingFindings.rowHeadings.holderOfTheTransitProcedure.address = Address
 unloadingFindings.rowHeadings.holderOfTheTransitProcedure.country = Country
+
+unloadingFindings.consignor.heading = Consignor
+unloadingFindings.consignor.identificationNumber = EORI number or Trader Identification Number (TIN)
+unloadingFindings.consignor.name = Name
+unloadingFindings.consignor.country = Country
+unloadingFindings.consignor.address = Address
 
 unloadingFindings.document.heading = Document {0}
 unloadingFindings.document.type = Document type
@@ -646,7 +653,6 @@ additionalReferenceNumber.index.NormalMode.title = What is the additional refere
 additionalReferenceNumber.index.CheckMode.title = What is the new additional reference number?
 additionalReferenceNumber.index.NormalMode.heading = What is the additional reference number?
 additionalReferenceNumber.index.CheckMode.heading = What is the new additional reference number?
-additionalReferenceNumber.index.NormalMode.paragraph = You need to enter a reference number as you have already added this type of additional reference.
 additionalReferenceNumber.index.NormalMode.error.required = Enter the additional reference number
 additionalReferenceNumber.index.CheckMode.error.required = Enter the new additional reference number
 additionalReferenceNumber.index.error.length = The additional reference number must be 70 characters or less
@@ -678,7 +684,6 @@ houseConsignment.index.items.additionalReference.additionalReferenceNumber.error
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.error.invalidCharacters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.NormalMode.error.required = Enter the additional reference number
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.CheckMode.error.required = Enter the new additional reference number for item {1} in house consignment {0}
-houseConsignment.index.items.additionalReference.additionalReferenceNumber.paragraph = You need to enter a reference number as you have already added this type of additional reference.
 
 additionalReference.index.additionalReferenceType.NormalMode.title = What type of additional reference do you want to add?
 additionalReference.index.additionalReferenceType.NormalMode.heading = What type of additional reference do you want to add?
@@ -712,3 +717,6 @@ transportEquipment.index.addContainerIdentificationNumberYesNo.error.required = 
 transportEquipment.index.seal.removeSealYesNo.title = Are you sure you want to remove seal {1} from transport equipment {0}?
 transportEquipment.index.seal.removeSealYesNo.heading = Are you sure you want to remove seal {1} from transport equipment {0}?
 transportEquipment.index.seal.removeSealYesNo.error.required = Select yes if you want to remove seal {1} from transport equipment {0}
+
+unloadingFindings.additionalInformation.heading = Additional information
+unloadingFindings.additionalInformation.label = Additional information {0}

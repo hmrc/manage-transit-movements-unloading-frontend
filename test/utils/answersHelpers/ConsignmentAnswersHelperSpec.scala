@@ -78,6 +78,51 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       }
     }
 
+    "consignorSection" - {
+
+      "must return no section" - {
+        "when consignor is undefined" in {
+          forAll(arbitrary[ConsignmentType05]) {
+            consignment =>
+              val userAnswers = emptyUserAnswers.copy(
+                ie043Data = basicIe043.copy(
+                  Consignment = Some(
+                    consignment.copy(
+                      Consignor = None
+                    )
+                  )
+                )
+              )
+
+              val helper = new ConsignmentAnswersHelper(userAnswers)
+              helper.consignorSection must not be defined
+          }
+        }
+      }
+
+      "must return section" - {
+        "when consignor is defined" in {
+          forAll(arbitrary[ConsignmentType05], arbitrary[ConsignorType05]) {
+            (consignment, consignor) =>
+              val userAnswers = emptyUserAnswers.copy(
+                ie043Data = basicIe043.copy(
+                  Consignment = Some(
+                    consignment.copy(
+                      Consignor = Some(consignor)
+                    )
+                  )
+                )
+              )
+
+              val helper = new ConsignmentAnswersHelper(userAnswers)
+              val result = helper.consignorSection.value
+
+              result.sectionTitle.value mustBe "Consignor"
+          }
+        }
+      }
+    }
+
     "grossMassRow" - {
       import pages.grossMass.GrossMassPage
 
@@ -208,6 +253,27 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       }
     }
 
+    "additionalInformationSections" - {
+      import pages.additionalInformation._
+
+      "must generate accordion sections" in {
+        forAll(arbitrary[AdditionalInformationCode], Gen.alphaNumStr) {
+          (code, text) =>
+            val answers = emptyUserAnswers
+              .setValue(AdditionalInformationCodePage(index), code)
+              .setValue(AdditionalInformationTextPage(index), text)
+
+            val helper = new ConsignmentAnswersHelper(answers)
+            val result = helper.additionalInformationSections
+
+            result.head mustBe a[AccordionSection]
+            result.head.sectionTitle.value mustBe "Additional information"
+            result.head.rows.size mustBe 1
+            result.head.rows.head.value.value mustBe s"$code - $text"
+        }
+      }
+    }
+
     "documentSections" - {
       import pages.documents._
 
@@ -293,15 +359,16 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       import pages.incident.location._
 
       "must generate accordion sections" in {
-        val incident       = arbitrary[IncidentType04].sample.value
-        val endorsement    = arbitrary[EndorsementType03].sample.value
-        val inc            = arbitrary[Incident].sample.value
-        val qualifier      = arbitrary[QualifierOfIdentification].sample.value
-        val country        = arbitrary[Country].sample.value
-        val locationType02 = arbitrary[LocationType02].sample.value
-        val coordinate     = arbitrary[Coordinates].sample.value
-        val unLocode       = Gen.alphaNumStr.sample.value
-        val description    = Gen.alphaNumStr.sample.value
+        val incident           = arbitrary[IncidentType04].sample.value
+        val endorsement        = arbitrary[EndorsementType03].sample.value
+        val inc                = arbitrary[Incident].sample.value
+        val qualifier          = arbitrary[QualifierOfIdentification].sample.value
+        val country            = arbitrary[Country].sample.value
+        val locationType02     = arbitrary[LocationType02].sample.value
+        val coordinate         = arbitrary[Coordinates].sample.value
+        val unLocode           = Gen.alphaNumStr.sample.value
+        val description        = Gen.alphaNumStr.sample.value
+        val arbitraryTransport = arbitrary[TransportEquipmentType07].sample.value
 
         val addressType18 = AddressType18("streetAndNumber", Some("postcode"), "city")
 
@@ -312,7 +379,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         )
         val consignment: ConsignmentType05 = ConsignmentType05(
           containerIndicator = Number0,
-          Incident = Seq(incident.copy(Endorsement = Some(endorsement), Location = locationType))
+          Incident = Seq(incident.copy(Endorsement = Some(endorsement), Location = locationType, TransportEquipment = Seq(arbitraryTransport)))
         )
 
         val answers = emptyUserAnswers
@@ -342,6 +409,14 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         result.head.children.head.rows(1).key.value mustBe "Authority"
         result.head.children.head.rows(2).key.value mustBe "Country"
         result.head.children.head.rows(3).key.value mustBe "Location"
+        result.head.children.head.rows(3).key.value mustBe "Location"
+
+        result.head.children(1).sectionTitle.value mustBe "Transport equipment 1"
+        result.head.children(1).rows.head.key.value mustBe "Container identification number"
+        result.head.children(1).rows(1).key.value mustBe "Seal 1"
+        result.head.children(1).rows(2).key.value mustBe "Seal 2"
+        result.head.children(1).rows(3).key.value mustBe "Seal 3"
+
       }
     }
   }

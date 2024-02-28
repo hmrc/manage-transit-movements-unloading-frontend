@@ -17,15 +17,17 @@
 package viewModels
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.{AddressType10, HolderOfTheTransitProcedureType06, Number0}
+import generated.{AddressType10, CC043CType, HolderOfTheTransitProcedureType06, Number0}
 import generators.Generators
 import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.{AdditionalReferenceType, Country, CustomsOffice, Incident}
+import models.reference.{AdditionalInformationCode, AdditionalReferenceType, Country, CustomsOffice, Incident}
 import models.{Index, SecurityType, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
+import pages.additionalInformation.{AdditionalInformationCodePage, AdditionalInformationTextPage}
 import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 import pages.holderOfTheTransitProcedure.{CountryPage => HotPCountryPage}
@@ -76,6 +78,39 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
       section.sectionTitle must not be defined
       section.rows.size mustBe 6
       section.viewLink must not be defined
+    }
+
+    "consignor section" - {
+      "must not be rendered" - {
+        "when there is not a consignor" in {
+
+          val ie043 = arbitrary[CC043CType].retryUntil(_.Consignment.flatMap(_.Consignor).isEmpty).sample.value
+
+          val userAnswers = emptyUserAnswers.copy(ie043Data = ie043)
+
+          val viewModelProvider = new UnloadingFindingsViewModelProvider()
+          val result            = viewModelProvider.apply(userAnswers)
+          val section           = result.sections(1)
+
+          section.sectionTitle must not be "Consignor"
+        }
+      }
+
+      "must be rendered" - {
+        "when there is a consignor" in {
+          forAll(arbitrary[CC043CType].retryUntil(_.Consignment.flatMap(_.Consignor).isDefined)) {
+            ie043 =>
+              val userAnswers = emptyUserAnswers.copy(ie043Data = ie043)
+
+              val viewModelProvider = new UnloadingFindingsViewModelProvider()
+              val result            = viewModelProvider.apply(userAnswers)
+              val section           = result.sections(1)
+
+              section.sectionTitle.value mustBe "Consignor"
+              section.viewLink must not be defined
+          }
+        }
+      }
     }
 
     "must render Holder of the Transit Procedure section" - {
@@ -272,7 +307,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(2)
+        val section           = result.sections(3)
 
         section.sectionTitle.value mustBe "House consignment 1"
         section.rows.size mustBe 4
@@ -307,7 +342,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(3)
+        val section           = result.sections(4)
 
         section.sectionTitle.value mustBe "House consignment 2"
         section.rows.size mustBe 4
@@ -353,6 +388,50 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
       }
     }
 
+    "must render additional information sections" - {
+      "when there is one" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(AdditionalInformationCodePage(index), AdditionalInformationCode("20300", "Export"))
+          .setValue(AdditionalInformationTextPage(index), "a string")
+          .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
+
+        setExistingUserAnswers(userAnswers)
+
+        val viewModelProvider = new UnloadingFindingsViewModelProvider()
+        val result            = viewModelProvider.apply(userAnswers)
+        val section           = result.sections(2)
+
+        section.sectionTitle.value mustBe "Additional information"
+        section.rows.size mustBe 1
+      }
+
+      "when there are multiple" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(AdditionalInformationCodePage(Index(0)), AdditionalInformationCode("20300", "Export"))
+          .setValue(AdditionalInformationTextPage(Index(0)), "a string")
+          .setValue(
+            AdditionalInformationCodePage(Index(1)),
+            AdditionalInformationCode(
+              "30600",
+              "In EXS, where negotiable bills of lading 'to order blank endorsed' are concerned and the consignee particulars are unknown."
+            )
+          )
+          .setValue(AdditionalInformationTextPage(Index(1)), "another string")
+          .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
+
+        setExistingUserAnswers(userAnswers)
+
+        val viewModelProvider = new UnloadingFindingsViewModelProvider()
+        val result            = viewModelProvider.apply(userAnswers)
+        val section           = result.sections(2)
+
+        section.sectionTitle.value mustBe "Additional information"
+        section.rows.size mustBe 2
+      }
+    }
+
     "must render incidents sections" - {
       "when there is one" in {
 
@@ -365,7 +444,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(2)
+        val section           = result.sections(3)
 
         section.sectionTitle.value mustBe "Incident 1"
         section.rows.size mustBe 2
@@ -385,11 +464,11 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
 
-        val section1 = result.sections(2)
+        val section1 = result.sections(3)
         section1.sectionTitle.value mustBe "Incident 1"
         section1.rows.size mustBe 2
 
-        val section2 = result.sections(3)
+        val section2 = result.sections(4)
         section2.sectionTitle.value mustBe "Incident 2"
         section2.rows.size mustBe 2
       }

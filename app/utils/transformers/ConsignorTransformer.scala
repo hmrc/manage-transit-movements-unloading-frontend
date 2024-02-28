@@ -16,24 +16,52 @@
 
 package utils.transformers
 
-import generated.ConsignorType06
+import connectors.ReferenceDataConnector
+import generated._
 import models.{Index, UserAnswers}
-import pages.{ConsignorIdentifierPage, ConsignorNamePage}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConsignorTransformer @Inject() (implicit ec: ExecutionContext) extends PageTransformer {
+class ConsignorTransformer @Inject() (
+  referenceDataConnector: ReferenceDataConnector
+)(implicit ec: ExecutionContext)
+    extends PageTransformer {
 
-  def transform(consignor: Option[ConsignorType06], hcIndex: Index): UserAnswers => Future[UserAnswers] = userAnswers =>
-    consignor match {
-      case Some(ConsignorType06(identificationNumber, name, _)) =>
-        val pipeline: UserAnswers => Future[UserAnswers] =
-          set(ConsignorIdentifierPage(hcIndex), identificationNumber) andThen
-            set(ConsignorNamePage(hcIndex), name)
+  def transform(consignor: Option[ConsignorType05])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
+    import pages.consignor._
 
-        pipeline(userAnswers)
-      case None =>
-        Future.successful(userAnswers)
-    }
+    userAnswers =>
+      consignor match {
+        case Some(ConsignorType05(_, _, address)) =>
+          for {
+            country <- address.map(_.country).lookup(referenceDataConnector.getCountry)
+            userAnswers <- {
+              val pipeline: UserAnswers => Future[UserAnswers] =
+                set(CountryPage, country)
+
+              pipeline(userAnswers)
+            }
+          } yield userAnswers
+        case None =>
+          Future.successful(userAnswers)
+      }
+  }
+
+  def transform(consignor: Option[ConsignorType06], hcIndex: Index): UserAnswers => Future[UserAnswers] = {
+    import pages.{ConsignorIdentifierPage, ConsignorNamePage}
+
+    userAnswers =>
+      consignor match {
+        case Some(ConsignorType06(identificationNumber, name, _)) =>
+          val pipeline: UserAnswers => Future[UserAnswers] =
+            set(ConsignorIdentifierPage(hcIndex), identificationNumber) andThen
+              set(ConsignorNamePage(hcIndex), name)
+
+          pipeline(userAnswers)
+        case None =>
+          Future.successful(userAnswers)
+      }
+  }
 }

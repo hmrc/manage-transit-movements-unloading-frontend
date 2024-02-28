@@ -29,6 +29,7 @@ import pages.incident.{IncidentCodePage, IncidentTextPage}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.Format.cyaDateFormatter
 import utils.answersHelpers.AnswersHelperSpecBase
+import utils.answersHelpers.consignment.incident.IncidentAnswersHelper
 
 class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
 

@@ -17,7 +17,7 @@
 package utils.transformers
 
 import generated.ConsignmentItemType04
-import models.{Index, UserAnswers}
+import models._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -40,7 +40,13 @@ class ConsignmentItemTransformer @Inject() (
             val pipeline: UserAnswers => Future[UserAnswers] =
               commodityTransformer.transform(consignmentItem.Commodity, hcIndex, itemIndex) andThen
                 packagingTransformer.transform(consignmentItem.Packaging, hcIndex, itemIndex) andThen
-                documentsTransformer.transform(consignmentItem.SupportingDocument, consignmentItem.TransportDocument, Seq.empty, hcIndex, itemIndex) andThen
+                documentsTransformer.transform(
+                  consignmentItem.SupportingDocument,
+                  consignmentItem.TransportDocument,
+                  consignmentItem.PreviousDocument.toPreviousDocumentType06,
+                  hcIndex,
+                  itemIndex
+                ) andThen
                 additionalReferencesTransformer.transform(consignmentItem.AdditionalReference, hcIndex, itemIndex)
 
             pipeline(userAnswers)
