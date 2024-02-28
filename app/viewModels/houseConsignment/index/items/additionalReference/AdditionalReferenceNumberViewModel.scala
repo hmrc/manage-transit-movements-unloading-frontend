@@ -31,8 +31,7 @@ case class AdditionalReferenceNumberViewModel(heading: String,
                                               mode: Mode,
                                               houseConsignmentIndex: Index,
                                               itemIndex: Index,
-                                              additionalReferenceIndex: Index,
-                                              isParagraphRequired: Boolean
+                                              additionalReferenceIndex: Index
 )
 
 object AdditionalReferenceNumberViewModel {
@@ -41,8 +40,8 @@ object AdditionalReferenceNumberViewModel {
 
     override val prefix = "houseConsignment.index.items.additionalReference.additionalReferenceNumber"
 
-    def apply(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index, userAnswers: UserAnswers)(
-      implicit message: Messages
+    def apply(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit
+      message: Messages
     ): AdditionalReferenceNumberViewModel =
       new AdditionalReferenceNumberViewModel(
         heading(mode, houseConsignmentIndex, itemIndex),
@@ -52,24 +51,8 @@ object AdditionalReferenceNumberViewModel {
         mode,
         houseConsignmentIndex,
         itemIndex,
-        houseConsignmentIndex,
-        isParagraphRequired(mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex, userAnswers)
+        houseConsignmentIndex
       )
-
-    private def isParagraphRequired(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index, userAnswers: UserAnswers) =
-      mode match {
-        case CheckMode => false
-        case NormalMode =>
-          val additionalReferenceTypes = {
-            val numberOfAdditionalReferences = userAnswers.get(AdditionalReferencesSection(houseConsignmentIndex, itemIndex)).length
-            (0 until numberOfAdditionalReferences)
-              .map(Index(_))
-              .filterNot(_ == houseConsignmentIndex)
-              .map(AdditionalReferencePage(houseConsignmentIndex, itemIndex, _))
-              .flatMap(userAnswers.get(_))
-          }
-          userAnswers.get(AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)).exists(additionalReferenceTypes.contains)
-      }
 
   }
 }
