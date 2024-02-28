@@ -16,15 +16,12 @@
 
 package utils.answersHelpers.consignment
 
-import models.reference.{AdditionalInformationCode, AdditionalReferenceType}
+import models.reference.AdditionalInformationCode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.additionalInformation.{AdditionalInformationCodePage, AdditionalInformationTextPage}
-import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import pages.sections.additionalInformation.AdditionalInformationSection
 import pages.sections.additionalInformation.AdditionalInformationSection.AdditionalInformation
-import pages.sections.additionalReference.AdditionalReferenceSection
-import pages.sections.additionalReference.AdditionalReferenceSection.AdditionalReference
 import utils.answersHelpers.AnswersHelperSpecBase
 
 class AdditionalInformationAnswersHelperSpec extends AnswersHelperSpecBase {

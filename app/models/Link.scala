@@ -16,4 +16,4 @@
 
 package models
 
-case class Link(id: String, text: String = "View", href: String, visuallyHidden: String)
+case class Link(id: String, text: String = "summaryDetails.link", href: String, visuallyHidden: String)

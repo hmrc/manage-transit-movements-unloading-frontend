@@ -33,6 +33,16 @@ error.summary.title = There is a problem
 
 summaryDetails.link = More details
 summaryDetails.visuallyHidden = on house consignment {0}
+transportEquipmentLink.addRemove = Add or remove transport equipment
+transportEquipmentLink.visuallyHidden = Add or remove transport equipment
+sealsLink.addRemove = Add or remove seal
+sealsLink.visuallyHidden = Add or remove seal
+departureTransportMeans.addRemove = Add or remove departure means of transport
+departureTransportMeans.visuallyHidden = Add or remove departure means of transport
+documentsLink.addRemove = Add or remove document
+documentsLink.visuallyHidden = Add or remove document
+additionalReferenceLink.addRemove = Add or remove additional reference
+additionalReferenceLink.visuallyHidden = Add or remove additional reference
 
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
@@ -343,9 +353,11 @@ unloadingFindings.heading = Cross-check the transit with this declaration summar
 unloadingFindings.paragraph = Compare the transit that arrived with the following information to identify any discrepancies.
 
 unloadingFindings.subsections.transportMeans = Departure means of transport {0}
+unloadingFindings.subsections.transportMeans.parent.header = Departure means of transport
 unloadingFindings.subsections.packages = Package {0}
 
 unloadingFindings.subsections.incidents = Incident {0}
+unloadingFindings.subsections.incidents.parent.header = Incidents
 unloadingFindings.subsections.incidents.endorsements = Endorsements
 unloadingFindings.rowHeadings.incident.country = Country
 unloadingFindings.rowHeadings.incident.code = Incident code
@@ -396,11 +408,13 @@ unloadingFindings.rowHeadings.vehicleNationality = Registered country
 unloadingFindings.rowHeadings.vehicleNationality.change.hidden = registered country
 
 unloadingFindings.subsections.transportEquipment = Transport equipment {0}
+unloadingFindings.subsections.transportEquipment.parent.heading = Transport equipment
 unloadingFindings.rowHeadings.containerIdentificationNumber = Container identification number
 unloadingFindings.rowHeadings.item = Item {0}
 unloadingFindings.rowHeadings.sealIdentifier = Seal {0}
 
 unloadingFindings.subsections.houseConsignment = House consignment {0}
+unloadingFindings.subsections.houseConsignment.parent.heading = House consignments
 unloadingFindings.rowHeadings.houseConsignment.grossWeight = Gross weight
 unloadingFindings.rowHeadings.houseConsignment.netWeight = Net weight
 unloadingFindings.rowHeadings.houseConsignment.consignorName = Consignor name
@@ -459,6 +473,7 @@ unloadingFindings.consignor.country = Country
 unloadingFindings.consignor.address = Address
 
 unloadingFindings.document.heading = Document {0}
+unloadingFindings.document.heading.parent.heading = Documents
 unloadingFindings.document.type = Document type
 unloadingFindings.document.type.change.hidden = document type for document {0}
 unloadingFindings.document.referenceNumber = Reference number
