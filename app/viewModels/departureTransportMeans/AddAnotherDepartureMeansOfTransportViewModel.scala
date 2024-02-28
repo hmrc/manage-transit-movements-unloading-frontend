@@ -33,7 +33,7 @@ case class AddAnotherDepartureMeansOfTransportViewModel(listItems: Seq[ListItem]
   override def maxLimitLabel(implicit messages: Messages): String = messages(s"$prefix.maxLimit.label")
 
   def legendContent(implicit messages: Messages): String =
-    if (count > 0) messages(s"$prefix.label") else messages(s"$prefix.add.label")
+    if (count > 0) messages(s"$prefix.label") else messages(s"$prefix.empty.label")
 }
 
 object AddAnotherDepartureMeansOfTransportViewModel {

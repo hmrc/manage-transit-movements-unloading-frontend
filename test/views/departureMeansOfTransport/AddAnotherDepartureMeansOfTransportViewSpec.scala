@@ -32,10 +32,16 @@ class AddAnotherDepartureMeansOfTransportViewSpec extends ListWithActionsViewBeh
     new AddAnotherFormProvider()(viewModel.prefix, viewModel.allowMore)
 
   private val viewModel            = arbitrary[AddAnotherDepartureMeansOfTransportViewModel].sample.value
+  private val noItemsViewModel     = viewModel.copy(listItems = Nil)
   private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
   private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
 
   override def form: Form[Boolean] = formProvider(notMaxedOutViewModel)
+
+  override def applyNoItemsView: HtmlFormat.Appendable =
+    injector
+      .instanceOf[AddAnotherDepartureMeansOfTransportView]
+      .apply(formProvider(noItemsViewModel), mrn, arrivalId, noItemsViewModel)(fakeRequest, messages, frontendAppConfig)
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
@@ -52,6 +58,8 @@ class AddAnotherDepartureMeansOfTransportViewSpec extends ListWithActionsViewBeh
   behave like pageWithBackLink()
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
+
+  behave like pageWithNoItems(noItemsViewModel.count)
 
   behave like pageWithMoreItemsAllowed(notMaxedOutViewModel.count)()
 
