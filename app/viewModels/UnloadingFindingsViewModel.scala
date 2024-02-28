@@ -38,13 +38,13 @@ object UnloadingFindingsViewModel {
         Seq(helper.headerSection),
         helper.consignorSection,
         helper.holderOfTheTransitProcedureSection,
-        helper.departureTransportMeansSections,
-        helper.transportEquipmentSections,
-        helper.documentSections,
-        helper.additionalReferencesSections,
-        helper.additionalInformationSections,
-        helper.incidentSections,
-        helper.houseConsignmentSections
+        Seq(helper.departureTransportMeansSection),
+        Seq(helper.transportEquipmentSection),
+        Seq(helper.documentSection),
+        Seq(helper.additionalReferencesSection),
+        helper.additionalInformationSection,
+        Seq(helper.incidentSection),
+        Seq(helper.houseConsignmentSection)
       ).flatten
 
       new UnloadingFindingsViewModel(sections)

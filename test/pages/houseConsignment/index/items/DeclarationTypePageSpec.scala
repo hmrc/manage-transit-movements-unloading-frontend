@@ -14,6 +14,18 @@
  * limitations under the License.
  */
 
-package models
+package pages.houseConsignment.index.items
 
-case class Link(id: String, text: String = "summaryDetails.link", href: String, visuallyHidden: String)
+import pages.behaviours.PageBehaviours
+
+class DeclarationTypePageSpec extends PageBehaviours {
+
+  "DeclarationTypePage" - {
+
+    beRetrievable[String](DeclarationTypePage(houseConsignmentIndex, itemIndex))
+
+    beSettable[String](DeclarationTypePage(houseConsignmentIndex, itemIndex))
+
+    beRemovable[String](DeclarationTypePage(houseConsignmentIndex, itemIndex))
+  }
+}

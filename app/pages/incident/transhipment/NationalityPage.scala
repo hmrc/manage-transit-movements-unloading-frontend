@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,17 @@
  * limitations under the License.
  */
 
-package models
+package pages.incident.transhipment
 
-case class Link(id: String, text: String = "summaryDetails.link", href: String, visuallyHidden: String)
+import models.Index
+import models.reference.Country
+import pages.QuestionPage
+import pages.sections.incidents.IncidentSection
+import play.api.libs.json.JsPath
+
+case class NationalityPage(incidentIndex: Index) extends QuestionPage[Country] {
+
+  override def path: JsPath = IncidentSection(incidentIndex).path \ "Transhipment" \ toString
+
+  override def toString: String = "nationality"
+}

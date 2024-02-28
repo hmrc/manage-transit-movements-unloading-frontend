@@ -14,6 +14,19 @@
  * limitations under the License.
  */
 
-package models
+package pages.incident.transhipment
 
-case class Link(id: String, text: String = "summaryDetails.link", href: String, visuallyHidden: String)
+import models.reference.Country
+import pages.behaviours.PageBehaviours
+
+class NationalityPageSpec extends PageBehaviours {
+
+  "NationalityPage" - {
+
+    beRetrievable[Country](NationalityPage(index))
+
+    beSettable[Country](NationalityPage(index))
+
+    beRemovable[Country](NationalityPage(index))
+  }
+}
