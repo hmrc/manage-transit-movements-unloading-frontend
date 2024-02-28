@@ -354,10 +354,11 @@ unloadingFindings.heading = Cross-check the transit with this declaration summar
 unloadingFindings.paragraph = Compare the transit that arrived with the following information to identify any discrepancies.
 
 unloadingFindings.subsections.transportMeans = Departure means of transport {0}
-unloadingFindings.subsections.transportMeans.empty = Departure means of transport
+unloadingFindings.subsections.transportMeans.parent.header = Departure means of transport
 unloadingFindings.subsections.packages = Package {0}
 
 unloadingFindings.subsections.incidents = Incident {0}
+unloadingFindings.subsections.incidents.parent.header = Incidents
 unloadingFindings.subsections.incidents.endorsements = Endorsements
 unloadingFindings.rowHeadings.incident.country = Country
 unloadingFindings.rowHeadings.incident.code = Incident code
@@ -407,11 +408,12 @@ unloadingFindings.rowHeadings.vehicleNationality = Registered country
 unloadingFindings.rowHeadings.vehicleNationality.change.hidden = registered country
 
 unloadingFindings.subsections.transportEquipment = Transport equipment {0}
-unloadingFindings.subsections.transportEquipment.empty = Transport equipment
+unloadingFindings.subsections.transportEquipment.parent.heading = Transport equipment
 unloadingFindings.rowHeadings.containerIdentificationNumber = Container identification number
 unloadingFindings.rowHeadings.sealIdentifier = Seal {0}
 
 unloadingFindings.subsections.houseConsignment = House consignment {0}
+unloadingFindings.subsections.houseConsignment.parent.heading = House consignments
 unloadingFindings.rowHeadings.houseConsignment.grossWeight = Gross weight
 unloadingFindings.rowHeadings.houseConsignment.netWeight = Net weight
 unloadingFindings.rowHeadings.houseConsignment.consignorName = Consignor name
@@ -470,7 +472,7 @@ unloadingFindings.consignor.country = Country
 unloadingFindings.consignor.address = Address
 
 unloadingFindings.document.heading = Document {0}
-unloadingFindings.document.heading.empty = Document
+unloadingFindings.document.heading.parent.heading = Documents
 unloadingFindings.document.type = Document type
 unloadingFindings.document.type.change.hidden = document type for document {0}
 unloadingFindings.document.referenceNumber = Reference number
