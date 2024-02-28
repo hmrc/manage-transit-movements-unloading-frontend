@@ -18,6 +18,7 @@ package utils.transformers
 
 import generated.HouseConsignmentType04
 import models.{Index, UserAnswers}
+import pages.sections.HouseConsignmentSection
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -39,7 +40,8 @@ class HouseConsignmentsTransformer @Inject() (
             userAnswers =>
               val hcIndex = Index(i)
               val pipeline =
-                consigneeTransformer.transform(houseConsignment.Consignee, hcIndex) andThen
+                setSequenceNumber(HouseConsignmentSection(hcIndex), houseConsignment.sequenceNumber) andThen
+                  consigneeTransformer.transform(houseConsignment.Consignee, hcIndex) andThen
                   consignorTransformer.transform(houseConsignment.Consignor, hcIndex) andThen
                   departureTransportMeansTransformer.transform(houseConsignment.DepartureTransportMeans, hcIndex) andThen
                   consignmentItemTransformer.transform(houseConsignment.ConsignmentItem, hcIndex)

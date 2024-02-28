@@ -14,34 +14,32 @@
  * limitations under the License.
  */
 
-package views
+package views.transportEquipment.index
 
-import forms.ConfirmRemoveSealFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.ConfirmRemoveSealView
+import views.html.transportEquipment.index.AddContainerIdentificationNumberYesNoView
 
-class ConfirmRemoveSealViewSpec extends YesNoViewBehaviours {
-
-  private val sealDescription      = "sealDescription"
-  override def form: Form[Boolean] = new ConfirmRemoveSealFormProvider()(sealDescription)
+class AddContainerIdentificationNumberYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[ConfirmRemoveSealView].apply(form, mrn, arrivalId, equipmentIndex, sealIndex, sealDescription, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[AddContainerIdentificationNumberYesNoView].apply(form, mrn, arrivalId, NormalMode, index)(fakeRequest, messages)
 
-  override val prefix: String = "confirmRemoveSeal"
+  override val prefix: String = "transportEquipment.index.addContainerIdentificationNumberYesNo"
 
-  behave like pageWithTitle(args = sealDescription)
+  behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithHeading(args = sealDescription)
+  behave like pageWithHeading()
 
-  behave like pageWithRadioItems(args = List(sealDescription))
+  behave like pageWithContent("p", "This is a unique number used to identify the container.")
 
-  behave like pageWithSubmitButton("Save and continue")
+  behave like pageWithRadioItems()
+
+  behave like pageWithSubmitButton("Continue")
 }

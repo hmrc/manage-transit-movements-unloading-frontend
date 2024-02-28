@@ -20,7 +20,6 @@ import generated.TransportEquipmentType05
 import models.{Index, UserAnswers}
 import pages.ContainerIdentificationNumberPage
 import pages.sections.TransportEquipmentSection
-import play.api.libs.json.Json
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -33,12 +32,12 @@ class TransportEquipmentTransformer @Inject() (
 
   def transform(transportEquipment: Seq[TransportEquipmentType05]): UserAnswers => Future[UserAnswers] = userAnswers =>
     transportEquipment.zipWithIndex.foldLeft(Future.successful(userAnswers))({
-      case (acc, (TransportEquipmentType05(_, containerIdentificationNumber, _, seals, goodsReferences), i)) =>
+      case (acc, (TransportEquipmentType05(sequenceNumber, containerIdentificationNumber, _, seals, goodsReferences), i)) =>
         acc.flatMap {
           userAnswers =>
             val equipmentIndex: Index = Index(i)
             val pipeline: UserAnswers => Future[UserAnswers] = {
-              set(TransportEquipmentSection(equipmentIndex), Json.obj()) andThen
+              setSequenceNumber(TransportEquipmentSection(equipmentIndex), sequenceNumber) andThen
                 set(ContainerIdentificationNumberPage(equipmentIndex), containerIdentificationNumber) andThen
                 sealsTransformer.transform(seals, equipmentIndex) andThen
                 goodsReferencesTransformer.transform(goodsReferences, equipmentIndex)

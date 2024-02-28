@@ -18,12 +18,12 @@ package pages.houseConsignment.index.items
 
 import models.Index
 import pages.QuestionPage
-import pages.sections.ItemsSection
+import pages.sections.ItemSection
 import play.api.libs.json.JsPath
 
 case class CombinedNomenclatureCodePage(houseConsignmentIndex: Index, itemIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = ItemsSection(houseConsignmentIndex).path \ itemIndex.position \ "Commodity" \ "CommodityCode" \ toString
+  override def path: JsPath = ItemSection(houseConsignmentIndex, itemIndex).path \ "Commodity" \ "CommodityCode" \ toString
 
   override def toString: String = "combinedNomenclatureCode"
 }

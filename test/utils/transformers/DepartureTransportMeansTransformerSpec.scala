@@ -27,8 +27,6 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages._
-import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 
@@ -61,6 +59,9 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
 
   "must transform data" - {
     "when consignment level" in {
+      import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
+      import pages.sections.TransportMeansSection
+
       forAll(departureTransportMeansGen) {
         departureTransportMeans =>
           beforeEach()
@@ -80,6 +81,7 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
             case (dtm, i) =>
               val dtmIndex = Index(i)
 
+              result.getSequenceNumber(TransportMeansSection(dtmIndex)) mustBe dtm.sequenceNumber
               result.getValue(TransportMeansIdentificationPage(dtmIndex)).code mustBe dtm.typeOfIdentification
               result.getValue(TransportMeansIdentificationPage(dtmIndex)).description mustBe i.toString
               result.getValue(VehicleIdentificationNumberPage(dtmIndex)) mustBe dtm.identificationNumber
@@ -89,6 +91,9 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
     }
 
     "when house consignment level" in {
+      import pages._
+      import pages.sections.houseConsignment.index.departureTransportMeans.TransportMeansSection
+
       forAll(departureTransportMeansGen) {
         departureTransportMeans =>
           departureTransportMeans.zipWithIndex.map {
@@ -103,6 +108,7 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
 
               val dtmIndex = Index(i)
 
+              result.getSequenceNumber(TransportMeansSection(hcIndex, dtmIndex)) mustBe dtm.sequenceNumber
               result.getValue(DepartureTransportMeansIdentificationTypePage(hcIndex, dtmIndex)).description mustBe dtm.typeOfIdentification
               result.getValue(DepartureTransportMeansIdentificationNumberPage(hcIndex, dtmIndex)) mustBe dtm.identificationNumber
               result.getValue(DepartureTransportMeansCountryPage(hcIndex, dtmIndex)).description mustBe dtm.nationality

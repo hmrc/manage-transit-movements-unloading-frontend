@@ -26,6 +26,8 @@ site.caption = MRN: {0}
 site.email.link = If you have any questions or issues, email us at {0}
 site.email.subject = NCTS Phase 5 - Help with testing
 
+unloadingFindings.sequenceNumber = Sequence number
+
 error.title.prefix = Error:
 error.summary.title = There is a problem
 
@@ -345,12 +347,18 @@ unloadingFindings.subsections.transportMeans = Departure means of transport {0}
 unloadingFindings.subsections.packages = Package {0}
 
 unloadingFindings.subsections.incidents = Incident {0}
+unloadingFindings.subsections.incidents.endorsements = Endorsements
+unloadingFindings.rowHeadings.incident.country = Country
 unloadingFindings.rowHeadings.incident.code = Incident code
 unloadingFindings.rowHeadings.incident.description = Description
+unloadingFindings.rowHeadings.incident.qualifier = Identifier type
 unloadingFindings.incident.endorsement.date = Endorsement date
 unloadingFindings.incident.endorsement.place = Location
 unloadingFindings.incident.endorsement.authority = Authority
 unloadingFindings.incident.endorsement.country = Country
+unloadingFindings.incident.coordinates = Coordinates
+unloadingFindings.incident.unLocode = UN/LOCODE
+unloadingFindings.incident.location.address = Address
 
 unloadingFindings.incident.transportEquipment.heading = Transport equipment {0}
 
@@ -401,6 +409,9 @@ unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier = Consignor E
 unloadingFindings.rowHeadings.houseConsignment.consigneeName = Consignee name
 unloadingFindings.rowHeadings.houseConsignment.grossWeight.change.hidden = Change Gross weight
 unloadingFindings.rowHeadings.houseConsignment.netWeight.change.hidden = Change Net weight
+unloadingFindings.rowHeadings.houseConsignment.consigneeCountry = Country
+unloadingFindings.rowHeadings.houseConsignment.consigneeAddress = Address
+
 
 
 unloadingFindings.rowHeadings.houseConsignment.consigneeIdentifier = Consignee EORI number or Trader Identification Number (TIN)
@@ -441,6 +452,12 @@ unloadingFindings.rowHeadings.holderOfTheTransitProcedure.tirHolderIdentificatio
 unloadingFindings.rowHeadings.holderOfTheTransitProcedure.name = Name
 unloadingFindings.rowHeadings.holderOfTheTransitProcedure.address = Address
 unloadingFindings.rowHeadings.holderOfTheTransitProcedure.country = Country
+
+unloadingFindings.consignor.heading = Consignor
+unloadingFindings.consignor.identificationNumber = EORI number or Trader Identification Number (TIN)
+unloadingFindings.consignor.name = Name
+unloadingFindings.consignor.country = Country
+unloadingFindings.consignor.address = Address
 
 unloadingFindings.document.heading = Document {0}
 unloadingFindings.document.type = Document type
@@ -631,7 +648,6 @@ additionalReferenceNumber.index.NormalMode.title = What is the additional refere
 additionalReferenceNumber.index.CheckMode.title = What is the new additional reference number?
 additionalReferenceNumber.index.NormalMode.heading = What is the additional reference number?
 additionalReferenceNumber.index.CheckMode.heading = What is the new additional reference number?
-additionalReferenceNumber.index.NormalMode.paragraph = You need to enter a reference number as you have already added this type of additional reference.
 additionalReferenceNumber.index.NormalMode.error.required = Enter the additional reference number
 additionalReferenceNumber.index.CheckMode.error.required = Enter the new additional reference number
 additionalReferenceNumber.index.error.length = The additional reference number must be 70 characters or less
@@ -663,7 +679,6 @@ houseConsignment.index.items.additionalReference.additionalReferenceNumber.error
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.error.invalidCharacters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.NormalMode.error.required = Enter the additional reference number
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.CheckMode.error.required = Enter the new additional reference number for item {1} in house consignment {0}
-houseConsignment.index.items.additionalReference.additionalReferenceNumber.paragraph = You need to enter a reference number as you have already added this type of additional reference.
 
 additionalReference.index.additionalReferenceType.NormalMode.title = What type of additional reference do you want to add?
 additionalReference.index.additionalReferenceType.NormalMode.heading = What type of additional reference do you want to add?
@@ -688,3 +703,12 @@ houseConsignment.index.items.document.type.heading = What is the new document ty
 houseConsignment.index.items.document.type.hint = Enter the document name or code.
 houseConsignment.index.items.document.type.placeholder = Select a document type
 houseConsignment.index.items.document.type.check.error.required = Select the new document type for item {1} in house consignment {0}
+
+transportEquipment.index.addContainerIdentificationNumberYesNo.title = Do you want to add a container identification number for the transport equipment?
+transportEquipment.index.addContainerIdentificationNumberYesNo.heading = Do you want to add a container identification number for the transport equipment?
+transportEquipment.index.addContainerIdentificationNumberYesNo.paragraph = This is a unique number used to identify the container.
+transportEquipment.index.addContainerIdentificationNumberYesNo.error.required = Select yes if you want to add a container identification number for the transport equipment
+
+transportEquipment.index.seal.removeSealYesNo.title = Are you sure you want to remove seal {1} from transport equipment {0}?
+transportEquipment.index.seal.removeSealYesNo.heading = Are you sure you want to remove seal {1} from transport equipment {0}?
+transportEquipment.index.seal.removeSealYesNo.error.required = Select yes if you want to remove seal {1} from transport equipment {0}

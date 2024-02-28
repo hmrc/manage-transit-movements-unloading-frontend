@@ -21,7 +21,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import connectors.ReferenceDataConnectorSpec._
 import itbase.{ItSpecBase, WireMockServerHandler}
-import models.DocType.{Support, Transport}
+import models.DocType.{Previous, Support, Transport}
 import models.SecurityType
 import models.reference._
 import models.reference.transport.TransportMode.{BorderMode, InlandMode}
@@ -248,6 +248,31 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       }
     }
 
+    "getPreviousDocument" - {
+      val typeValue = "C512"
+      val url       = s"/$baseUrl/lists/PreviousDocumentType?data.code=$typeValue"
+
+      "must return previous document when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(previousDocumentResponseJson))
+        )
+
+        val expectedResult: DocumentType =
+          DocumentType(Previous, typeValue, "SDE - Authorisation to use simplified declaration (Column 7a, Annex A of Delegated Regulation (EU) 2015/2446)")
+
+        connector.getPreviousDocument(typeValue).futureValue mustEqual expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getPreviousDocument(typeValue))
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getPreviousDocument(typeValue))
+      }
+    }
+
     "getAdditionalReferences" - {
       val url = s"/$baseUrl/lists/AdditionalReference"
 
@@ -348,7 +373,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
     "getQualifierOfIdentificationIncident" - {
       val qualifier = "U"
-      val url          = s"/$baseUrl/lists/QualifierOfIdentificationIncident?data.qualifier=$qualifier"
+      val url       = s"/$baseUrl/lists/QualifierOfIdentificationIncident?data.qualifier=$qualifier"
 
       "must return supporting document when successful" in {
         server.stubFor(
@@ -555,6 +580,32 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         }
       }
     }
+
+    "getPreviousDocuments" - {
+      val url = s"/$baseUrl/lists/PreviousDocumentType"
+
+      "must return list of documents when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(documentsJson("PreviousDocumentType")))
+        )
+
+        val expectResult = NonEmptySet.of(
+          DocumentType(Support, "1", "Document 1"),
+          DocumentType(Support, "4", "Document 2")
+        )
+
+        connector.getPreviousDocuments().futureValue mustEqual expectResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getPreviousDocuments())
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getPreviousDocuments())
+      }
+    }
   }
 
   private def checkNoReferenceDataFoundResponse(url: String, result: => Future[_]): Assertion = {
@@ -735,6 +786,28 @@ object ReferenceDataConnectorSpec {
       |    {
       |      "code": "C641",
       |      "description": "Dissostichus - catch document import"
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+
+  private val previousDocumentResponseJson: String =
+    """
+      |{
+      |  "_links": {
+      |    "self": {
+      |      "href": "/customs-reference-data/lists/PreviousDocumentType?data.code=C512"
+      |    }
+      |  },
+      |  "meta": {
+      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+      |    "snapshotDate": "2023-01-01"
+      |  },
+      |  "id": "PreviousDocumentType",
+      |  "data": [
+      |    {
+      |      "code": "C512",
+      |      "description": "SDE - Authorisation to use simplified declaration (Column 7a, Annex A of Delegated Regulation (EU) 2015/2446)"
       |    }
       |  ]
       |}

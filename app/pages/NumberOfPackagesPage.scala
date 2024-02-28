@@ -17,12 +17,12 @@
 package pages
 
 import models.Index
-import pages.sections.ItemsSection
+import pages.sections.PackagingSection
 import play.api.libs.json.JsPath
 
 case class NumberOfPackagesPage(houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = ItemsSection(houseConsignmentIndex).path \ itemIndex.position \ "Packaging" \ packageIndex.position \ toString
+  override def path: JsPath = PackagingSection(houseConsignmentIndex, itemIndex, packageIndex).path \ toString
 
   override def toString: String = "numberOfPackages"
 }

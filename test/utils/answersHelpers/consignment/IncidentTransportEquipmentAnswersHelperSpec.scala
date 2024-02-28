@@ -20,7 +20,6 @@ import base.AppWithDefaultMockFixtures
 import generated.{GoodsReferenceType01, SealType04, TransportEquipmentType07}
 import models.UserAnswers
 import org.mockito.Mockito.when
-import org.scalacheck.Gen
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
