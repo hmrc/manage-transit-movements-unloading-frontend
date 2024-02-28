@@ -17,7 +17,7 @@
 package pages.incident.transhipment
 
 import models.Index
-import models.reference.{Country, Incident}
+import models.reference.Country
 import pages.QuestionPage
 import pages.sections.incidents.IncidentSection
 import play.api.libs.json.JsPath

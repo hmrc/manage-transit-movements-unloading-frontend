@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package pages.additionalInformation
+package pages.houseConsignment.index.items
 
+import models.reference.Country
 import pages.behaviours.PageBehaviours
 
-class AdditionalInformationTextPageSpec extends PageBehaviours {
+class CountryOfDestinationPageSpec extends PageBehaviours {
 
-  "AdditionalInformationTextPage" - {
+  "CountryOfDestination" - {
 
-    beRetrievable[String](AdditionalInformationTextPage(index))
+    beRetrievable[Country](CountryOfDestinationPage(houseConsignmentIndex, itemIndex))
 
-    beSettable[String](AdditionalInformationTextPage(index))
+    beSettable[Country](CountryOfDestinationPage(houseConsignmentIndex, itemIndex))
 
-    beRemovable[String](AdditionalInformationTextPage(index))
+    beRemovable[Country](CountryOfDestinationPage(houseConsignmentIndex, itemIndex))
   }
 }

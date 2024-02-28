@@ -25,6 +25,7 @@ import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
+import pages.houseConsignment.index.items.DeclarationTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, JsPath, Json}
@@ -97,9 +98,10 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
         val result = transformer.transform(consignmentItems, hcIndex).apply(emptyUserAnswers).futureValue
 
         consignmentItems.zipWithIndex.map {
-          case (_, i) =>
+          case (consignmentItem, i) =>
             val itemIndex = Index(i)
 
+            result.get(DeclarationTypePage(hcIndex, itemIndex)) mustBe consignmentItem.declarationType
             result.getValue(FakeCommoditySection(itemIndex)) mustBe Json.obj("foo" -> i.toString)
             result.getValue(FakePackagingSection(itemIndex)) mustBe Json.obj("foo" -> i.toString)
             result.getValue(FakeDocumentsSection(itemIndex)) mustBe Json.obj("foo" -> i.toString)

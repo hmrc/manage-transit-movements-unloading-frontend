@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package pages.additionalInformation
+package pages.houseConsignment.index.items
 
 import pages.behaviours.PageBehaviours
 
-class AdditionalInformationTextPageSpec extends PageBehaviours {
+class DeclarationTypePageSpec extends PageBehaviours {
 
-  "AdditionalInformationTextPage" - {
+  "DeclarationTypePage" - {
 
-    beRetrievable[String](AdditionalInformationTextPage(index))
+    beRetrievable[String](DeclarationTypePage(houseConsignmentIndex, itemIndex))
 
-    beSettable[String](AdditionalInformationTextPage(index))
+    beSettable[String](DeclarationTypePage(houseConsignmentIndex, itemIndex))
 
-    beRemovable[String](AdditionalInformationTextPage(index))
+    beRemovable[String](DeclarationTypePage(houseConsignmentIndex, itemIndex))
   }
 }

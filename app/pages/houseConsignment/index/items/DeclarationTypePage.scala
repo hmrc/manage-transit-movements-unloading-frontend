@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package pages.additionalInformation
+package pages.houseConsignment.index.items
 
-import pages.behaviours.PageBehaviours
+import models.Index
+import pages.QuestionPage
+import pages.sections.ItemsSection
+import play.api.libs.json.JsPath
 
-class AdditionalInformationTextPageSpec extends PageBehaviours {
+case class DeclarationTypePage(houseConsignment: Index, itemIndex: Index) extends QuestionPage[String] {
 
-  "AdditionalInformationTextPage" - {
+  override def path: JsPath = ItemsSection(houseConsignment).path \ itemIndex.position \ toString
 
-    beRetrievable[String](AdditionalInformationTextPage(index))
-
-    beSettable[String](AdditionalInformationTextPage(index))
-
-    beRemovable[String](AdditionalInformationTextPage(index))
-  }
+  override def toString: String = "declarationType"
 }
