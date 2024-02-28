@@ -32,7 +32,7 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new DocumentAnswersHelper(emptyUserAnswers, hcIndex, itemIndex, documentIndex)
-          helper.documentType mustBe None
+          helper.documentType() mustBe None
         }
       }
 
@@ -43,7 +43,7 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               val answers = emptyUserAnswers.setValue(page, value)
 
               val helper = new DocumentAnswersHelper(answers, hcIndex, itemIndex, documentIndex)
-              val result = helper.documentType.value
+              val result = helper.documentType().value
 
               result.key.value mustBe "Document type"
               result.value.value mustBe value.toString
@@ -55,6 +55,22 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
           }
         }
       }
+
+      "must return Some(Row) without links" - {
+        s"when $page read only" in {
+          forAll(arbitrary[DocumentType]) {
+            value =>
+              val answers = emptyUserAnswers.setValue(page, value)
+
+              val helper = new DocumentAnswersHelper(answers, hcIndex, itemIndex, documentIndex)
+              val result = helper.documentType(true).value
+
+              result.key.value mustBe "Document type"
+              result.value.value mustBe value.toString
+              result.actions mustBe None
+          }
+        }
+      }
     }
 
     "referenceNumber" - {
@@ -63,7 +79,7 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new DocumentAnswersHelper(emptyUserAnswers, hcIndex, itemIndex, documentIndex)
-          helper.referenceNumber mustBe None
+          helper.referenceNumber() mustBe None
         }
       }
 
@@ -74,7 +90,7 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               val answers = emptyUserAnswers.setValue(page, value)
 
               val helper = new DocumentAnswersHelper(answers, hcIndex, itemIndex, documentIndex)
-              val result = helper.referenceNumber.value
+              val result = helper.referenceNumber().value
 
               result.key.value mustBe "Reference number"
               result.value.value mustBe value
@@ -86,6 +102,22 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
           }
         }
       }
+
+      "must return Some(Row) without links" - {
+        s"when $page read only" in {
+          forAll(Gen.alphaNumStr) {
+            value =>
+              val answers = emptyUserAnswers.setValue(page, value)
+
+              val helper = new DocumentAnswersHelper(answers, hcIndex, itemIndex, documentIndex)
+              val result = helper.referenceNumber(true).value
+
+              result.key.value mustBe "Reference number"
+              result.value.value mustBe value
+              result.actions mustBe None
+          }
+        }
+      }
     }
 
     "additionalInformation" - {
@@ -94,7 +126,7 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new DocumentAnswersHelper(emptyUserAnswers, hcIndex, itemIndex, documentIndex)
-          helper.additionalInformation mustBe None
+          helper.additionalInformation() mustBe None
         }
       }
 
@@ -105,7 +137,7 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               val answers = emptyUserAnswers.setValue(page, value)
 
               val helper = new DocumentAnswersHelper(answers, hcIndex, itemIndex, documentIndex)
-              val result = helper.additionalInformation.value
+              val result = helper.additionalInformation().value
 
               result.key.value mustBe "Additional information"
               result.value.value mustBe value
@@ -114,6 +146,22 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               action.href mustBe "#"
               action.visuallyHiddenText.value mustBe "document 1 for item 1 - additional information"
               action.id mustBe "change-document-additional-information-1-1"
+          }
+        }
+      }
+
+      "must return Some(Row) without links" - {
+        s"when $page read only" in {
+          forAll(Gen.alphaNumStr) {
+            value =>
+              val answers = emptyUserAnswers.setValue(page, value)
+
+              val helper = new DocumentAnswersHelper(answers, hcIndex, itemIndex, documentIndex)
+              val result = helper.additionalInformation(true).value
+
+              result.key.value mustBe "Additional information"
+              result.value.value mustBe value
+              result.actions mustBe None
           }
         }
       }

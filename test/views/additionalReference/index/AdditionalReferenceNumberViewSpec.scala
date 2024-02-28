@@ -61,21 +61,4 @@ class AdditionalReferenceNumberViewSpec extends SpecBase with CharacterCountView
 
   behave like pageWithSubmitButton("Continue")
 
-  private val content = "You need to enter a reference number as you have already added this type of additional reference."
-
-  "when paragraph required" - {
-    "must render paragraph" - {
-      val view = injector
-        .instanceOf[AdditionalReferenceNumberView]
-        .apply(form, arrivalId, mrn, additionalReferenceIndex, mode, viewModel.copy(isParagraphRequired = true))(fakeRequest, messages)
-
-      val doc = parseView(view)
-
-      behave like pageWithContent(
-        doc = doc,
-        tag = "p",
-        expectedText = content
-      )
-    }
-  }
 }

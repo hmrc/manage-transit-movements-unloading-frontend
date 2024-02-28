@@ -17,13 +17,14 @@
 package viewModels
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.{AddressType10, HolderOfTheTransitProcedureType06, Number0}
+import generated.{AddressType10, CC043CType, HolderOfTheTransitProcedureType06, Number0}
 import generators.Generators
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.{AdditionalReferenceType, Country, CustomsOffice, Incident}
 import models.{Index, SecurityType, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
@@ -76,6 +77,39 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
       section.sectionTitle must not be defined
       section.rows.size mustBe 6
       section.viewLinks mustBe Nil
+    }
+
+    "consignor section" - {
+      "must not be rendered" - {
+        "when there is not a consignor" in {
+
+          val ie043 = arbitrary[CC043CType].retryUntil(_.Consignment.flatMap(_.Consignor).isEmpty).sample.value
+
+          val userAnswers = emptyUserAnswers.copy(ie043Data = ie043)
+
+          val viewModelProvider = new UnloadingFindingsViewModelProvider()
+          val result            = viewModelProvider.apply(userAnswers)
+          val section           = result.sections(1)
+
+          section.sectionTitle must not be "Consignor"
+        }
+      }
+
+      "must be rendered" - {
+        "when there is a consignor" in {
+          forAll(arbitrary[CC043CType].retryUntil(_.Consignment.flatMap(_.Consignor).isDefined)) {
+            ie043 =>
+              val userAnswers = emptyUserAnswers.copy(ie043Data = ie043)
+
+              val viewModelProvider = new UnloadingFindingsViewModelProvider()
+              val result            = viewModelProvider.apply(userAnswers)
+              val section           = result.sections(1)
+
+              section.sectionTitle.value mustBe "Consignor"
+              section.viewLink must not be defined
+          }
+        }
+      }
     }
 
     "must render Holder of the Transit Procedure section" - {

@@ -18,6 +18,7 @@ package utils.answersHelpers
 
 import models.DocType.Previous
 import models.{Index, Link, SecurityType, UserAnswers}
+import models.reference.CustomsOffice
 import pages.documents.TypePage
 import pages.grossMass.GrossMassPage
 import pages.sections._
@@ -42,7 +43,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       declarationTypeRow,
       securityTypeRow,
       Some(reducedDatasetIndicatorRow),
-      Some(customsOfficeOfDestinationActual),
+      customsOfficeOfDestinationActual,
       grossMassRow,
       Some(traderAtDestinationRow)
     ).flatten
@@ -84,12 +85,29 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     call = None
   )
 
-  def customsOfficeOfDestinationActual: SummaryListRow = buildRow(
-    prefix = "customsOfficeOfDestinationActual",
-    answer = userAnswers.get(CustomsOfficeOfDestinationActualPage).get.name.toText,
-    id = None,
-    call = None
-  )
+  def consignorSection: Option[Section] =
+    userAnswers.ie043Data.Consignment.flatMap(_.Consignor).map {
+      consignor =>
+        val helper = new ConsignorAnswersHelper(userAnswers)
+        StaticSection(
+          sectionTitle = messages("unloadingFindings.consignor.heading"),
+          rows = Seq(
+            helper.identificationNumber(consignor.identificationNumber),
+            helper.name(consignor.name),
+            helper.country,
+            helper.address(consignor.Address)
+          ).flatten
+        )
+    }
+
+  def customsOfficeOfDestinationActual: Option[SummaryListRow] =
+    getAnswerAndBuildRow[CustomsOffice](
+      page = CustomsOfficeOfDestinationActualPage,
+      formatAnswer = x => formatAsText(x.name),
+      prefix = "customsOfficeOfDestinationActual",
+      id = None,
+      call = None
+    )
 
   def holderOfTheTransitProcedureSection: Seq[Section] =
     userAnswers.ie043Data.HolderOfTheTransitProcedure.map {

@@ -33,33 +33,57 @@ class DocumentAnswersHelper(
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
-  def documentType: Option[SummaryListRow] =
-    getAnswerAndBuildRow[DocumentType](
-      page = TypePage(houseConsignmentIndex, itemIndex, documentIndex),
-      formatAnswer = formatAsText,
-      prefix = "unloadingFindings.houseConsignment.item.document.type",
-      args = Seq(documentIndex.display, itemIndex.display): _*,
-      id = Some(s"change-document-type-${itemIndex.display}-${documentIndex.display}"),
-      call = Some(Call(GET, "#")) //TODO change me please
-    )
+  def documentType(readOnly: Boolean = false): Option[SummaryListRow] =
+    if (readOnly) {
+      buildRowWithNoChangeLink[DocumentType](
+        data = userAnswers.get(TypePage(houseConsignmentIndex, itemIndex, documentIndex)),
+        formatAnswer = formatAsText,
+        prefix = "unloadingFindings.houseConsignment.item.document.type"
+      )
+    } else {
+      getAnswerAndBuildRow[DocumentType](
+        page = TypePage(houseConsignmentIndex, itemIndex, documentIndex),
+        formatAnswer = formatAsText,
+        prefix = "unloadingFindings.houseConsignment.item.document.type",
+        args = Seq(documentIndex.display, itemIndex.display): _*,
+        id = Some(s"change-document-type-${itemIndex.display}-${documentIndex.display}"),
+        call = Some(Call(GET, "#")) //TODO change me please
+      )
+    }
 
-  def referenceNumber: Option[SummaryListRow] =
-    getAnswerAndBuildRow[String](
-      page = DocumentReferenceNumberPage(houseConsignmentIndex, itemIndex, documentIndex),
-      formatAnswer = formatAsText,
-      prefix = "unloadingFindings.houseConsignment.item.document.referenceNumber",
-      args = Seq(documentIndex.display, itemIndex.display): _*,
-      id = Some(s"change-document-reference-number-${itemIndex.display}-${documentIndex.display}"),
-      call = Some(Call(GET, "#")) //TODO change me please
-    )
+  def referenceNumber(readOnly: Boolean = false): Option[SummaryListRow] =
+    if (readOnly) {
+      buildRowWithNoChangeLink[String](
+        data = userAnswers.get(DocumentReferenceNumberPage(houseConsignmentIndex, itemIndex, documentIndex)),
+        formatAnswer = formatAsText,
+        prefix = "unloadingFindings.houseConsignment.item.document.referenceNumber"
+      )
+    } else {
+      getAnswerAndBuildRow[String](
+        page = DocumentReferenceNumberPage(houseConsignmentIndex, itemIndex, documentIndex),
+        formatAnswer = formatAsText,
+        prefix = "unloadingFindings.houseConsignment.item.document.referenceNumber",
+        args = Seq(documentIndex.display, itemIndex.display): _*,
+        id = Some(s"change-document-reference-number-${itemIndex.display}-${documentIndex.display}"),
+        call = Some(Call(GET, "#")) //TODO change me please
+      )
+    }
 
-  def additionalInformation: Option[SummaryListRow] =
-    getAnswerAndBuildRow[String](
-      page = AdditionalInformationPage(houseConsignmentIndex, itemIndex, documentIndex),
-      formatAnswer = formatAsText,
-      prefix = "unloadingFindings.houseConsignment.item.document.additionalInformation",
-      args = Seq(documentIndex.display, itemIndex.display): _*,
-      id = Some(s"change-document-additional-information-${itemIndex.display}-${documentIndex.display}"),
-      call = Some(Call(GET, "#")) //TODO change me please
-    )
+  def additionalInformation(readOnly: Boolean = false): Option[SummaryListRow] =
+    if (readOnly) {
+      buildRowWithNoChangeLink[String](
+        data = userAnswers.get(AdditionalInformationPage(houseConsignmentIndex, itemIndex, documentIndex)),
+        formatAnswer = formatAsText,
+        prefix = "unloadingFindings.document.additionalInformation"
+      )
+    } else {
+      getAnswerAndBuildRow[String](
+        page = AdditionalInformationPage(houseConsignmentIndex, itemIndex, documentIndex),
+        formatAnswer = formatAsText,
+        prefix = "unloadingFindings.houseConsignment.item.document.additionalInformation",
+        args = Seq(documentIndex.display, itemIndex.display): _*,
+        id = Some(s"change-document-additional-information-${itemIndex.display}-${documentIndex.display}"),
+        call = Some(Call(GET, "#")) //TODO change me please
+      )
+    }
 }

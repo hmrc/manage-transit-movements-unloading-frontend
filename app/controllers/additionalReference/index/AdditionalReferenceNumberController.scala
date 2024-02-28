@@ -50,7 +50,7 @@ class AdditionalReferenceNumberController @Inject() (
     actions
       .getStatus(arrivalId) {
         implicit request =>
-          val viewModel = viewModelProvider.apply(mode, additionalReferenceIndex, request.userAnswers)
+          val viewModel = viewModelProvider.apply(mode)
           val form      = formProvider(viewModel.requiredError)
           val preparedForm = request.userAnswers.get(AdditionalReferenceNumberPage(additionalReferenceIndex)) match {
             case None        => form
@@ -74,7 +74,7 @@ class AdditionalReferenceNumberController @Inject() (
       .andThen(getMandatoryPage(AdditionalReferenceTypePage(additionalReferenceIndex)))
       .async {
         implicit request =>
-          val viewModel = viewModelProvider.apply(mode, additionalReferenceIndex, request.userAnswers)
+          val viewModel = viewModelProvider.apply(mode)
           val form      = formProvider(viewModel.requiredError)
           form
             .bindFromRequest()
