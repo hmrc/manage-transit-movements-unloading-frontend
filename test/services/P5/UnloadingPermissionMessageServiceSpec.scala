@@ -372,7 +372,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
           </ncts:CC043C>
 
         when(mockConnector.getMessageMetaData(arrivalId)).thenReturn(Future.successful(messageMetaData))
-        when(mockConnector.getUnloadingPermissionXml(unloadingPermission1.path)).thenReturn(Future.successful(message))
+        when(mockConnector.getUnloadingPermissionXml(arrivalId, unloadingPermission1.id)).thenReturn(Future.successful(message))
 
         service.getUnloadingPermissionXml(arrivalId).futureValue.value mustBe a[CC043CType]
       }

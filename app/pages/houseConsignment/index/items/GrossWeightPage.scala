@@ -18,12 +18,12 @@ package pages.houseConsignment.index.items
 
 import models.Index
 import pages.QuestionPage
-import pages.sections.ItemsSection
+import pages.sections.ItemSection
 import play.api.libs.json.JsPath
 
-case class GrossWeightPage(houseConsignment: Index, itemIndex: Index) extends QuestionPage[BigDecimal] {
+case class GrossWeightPage(houseConsignmentIndex: Index, itemIndex: Index) extends QuestionPage[BigDecimal] {
 
-  override def path: JsPath = ItemsSection(houseConsignment).path \ itemIndex.position \ "Commodity" \ "GoodsMeasure" \ toString
+  override def path: JsPath = ItemSection(houseConsignmentIndex, itemIndex).path \ "Commodity" \ "GoodsMeasure" \ toString
 
   override def toString: String = "grossMass"
 }

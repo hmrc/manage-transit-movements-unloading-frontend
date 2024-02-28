@@ -26,6 +26,8 @@ site.caption = MRN: {0}
 site.email.link = If you have any questions or issues, email us at {0}
 site.email.subject = NCTS Phase 5 - Help with testing
 
+unloadingFindings.sequenceNumber = Sequence number
+
 error.title.prefix = Error:
 error.summary.title = There is a problem
 
@@ -83,6 +85,7 @@ dateGoodsUnloaded.error.max.date = The date must be today or in the past
 dateGoodsUnloaded.change.hidden = the date when the goods were unloaded
 
 traderAtDestination = Authorised consignee’s EORI number or Trader Identification Number (TIN)
+customsOfficeOfDestinationActual = Office of destination
 
 departureMeansOfTransport.identificationNumber.NormalMode.title = What is the identification number for this vehicle?
 departureMeansOfTransport.identificationNumber.CheckMode.title = What is the identification number for the new departure means of transport?
@@ -114,6 +117,19 @@ departureMeansOfTransport.identification.title = Which identification do you wan
 departureMeansOfTransport.identification.check.error.required = Select which identification you want to use for the departure means of transport
 departureMeansOfTransport.identification.error.required = Select which identification you want to use for the new departure means of transport
 departureMeansOfTransport.identification.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
+
+departureMeansOfTransport.addIdentificationYesNo.title = Do you want to add the type of identification for the departure means of transport?
+departureMeansOfTransport.addIdentificationYesNo.heading = Do you want to add the type of identification for the departure means of transport?
+departureMeansOfTransport.addIdentificationYesNo.error.required = Select yes if you want to add the type of identification for the departure means of transport
+departureMeansOfTransport.addIdentificationYesNo.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
+
+departureMeansOfTransport.addIdentificationNumberYesNo.title = Do you want to add an identification number for this vehicle?
+departureMeansOfTransport.addIdentificationNumberYesNo.heading = Do you want to add an identification number for this vehicle?
+departureMeansOfTransport.addIdentificationNumberYesNo.error.required = Select yes if you want to add an identification number for this vehicle
+
+departureMeansOfTransport.addNationalityYesNo.title = Do you want to add the registered country for this vehicle?
+departureMeansOfTransport.addNationalityYesNo.heading = Do you want to add the registered country for this vehicle?
+departureMeansOfTransport.addNationalityYesNo.error.required = Select yes if you want to add the registered country for this vehicle
 
 houseConsignment.item.grossWeight.title = What is the new gross weight of item {0} in house consignment {1}?
 houseConsignment.item.grossWeight.heading = What is the new gross weight of item {0} in house consignment {1}?
@@ -168,6 +184,11 @@ containerIdentificationNumber.CheckMode.error.required = Enter the new container
 containerIdentificationNumber.error.length = The identification number must be 17 characters or less
 containerIdentificationNumber.error.characters = The identification number must only include letters a to z and numbers 0 to 9
 containerIdentificationNumber.error.duplicate = This identification number has already been submitted. Enter a unique container identification number
+
+transportEquipment.index.addSealYesNo.title = Do you want to add a seal for the transport equipment?
+transportEquipment.index.addSealYesNo.heading = Do you want to add a seal for the transport equipment?
+transportEquipment.index.addSealYesNo.paragraph = You can only add a seal if you are authorised to use customs seals.
+transportEquipment.index.addSealYesNo.error.required = Select yes if you want to add a seal for the transport equipment
 
 unloadingSummary.title = Check what you found against the transit declaration
 unloadingSummary.heading = Check what you found against the transit declaration
@@ -323,6 +344,27 @@ unloadingFindings.heading = Cross-check the transit with this declaration summar
 unloadingFindings.paragraph = Compare the transit that arrived with the following information to identify any discrepancies.
 
 unloadingFindings.subsections.transportMeans = Departure means of transport {0}
+unloadingFindings.subsections.packages = Package {0}
+
+unloadingFindings.subsections.incidents = Incident {0}
+unloadingFindings.subsections.incidents.endorsements = Endorsements
+unloadingFindings.rowHeadings.incident.country = Country
+unloadingFindings.rowHeadings.incident.code = Incident code
+unloadingFindings.rowHeadings.incident.description = Description
+unloadingFindings.rowHeadings.incident.qualifier = Identifier type
+unloadingFindings.incident.endorsement.date = Endorsement date
+unloadingFindings.incident.endorsement.place = Location
+unloadingFindings.incident.endorsement.authority = Authority
+unloadingFindings.incident.endorsement.country = Country
+unloadingFindings.incident.coordinates = Coordinates
+unloadingFindings.incident.unLocode = UN/LOCODE
+unloadingFindings.incident.location.address = Address
+
+
+declarationType = Declaration type
+securityType = Safety and security details
+reducedDatasetIndicator = Do you want to add a reduced data set?
+declarationAcceptanceDate = Declaration acceptance date
 
 unloadingFindings.rowHeadings.identificationType.seaGoingVessel = Name of a sea-going vessel
 unloadingFindings.rowHeadings.identificationType.seaGoingVessel.change.hidden = name of a sea-going vessel
@@ -365,6 +407,9 @@ unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier = Consignor E
 unloadingFindings.rowHeadings.houseConsignment.consigneeName = Consignee name
 unloadingFindings.rowHeadings.houseConsignment.grossWeight.change.hidden = Change Gross weight
 unloadingFindings.rowHeadings.houseConsignment.netWeight.change.hidden = Change Net weight
+unloadingFindings.rowHeadings.houseConsignment.consigneeCountry = Country
+unloadingFindings.rowHeadings.houseConsignment.consigneeAddress = Address
+
 
 
 unloadingFindings.rowHeadings.houseConsignment.consigneeIdentifier = Consignee EORI number or Trader Identification Number (TIN)
@@ -376,9 +421,21 @@ unloadingFindings.rowHeadings.totalNetWeight = Total net weight of all items
 unloadingFindings.subsections.item = Item {0}
 unloadingFindings.rowHeadings.item.description = Description
 unloadingFindings.rowHeadings.item.grossWeight = Gross weight
+unloadingFindings.rowHeadings.item.packageType = Type
+unloadingFindings.rowHeadings.item.packageType.change.hidden = type of package {0} for item {1}
+unloadingFindings.rowHeadings.item.packageCount = Quantity
+unloadingFindings.rowHeadings.item.packageCount.change.hidden = quantity of package {0} for item {1}
+unloadingFindings.rowHeadings.item.packageMarks = Shipping mark
+unloadingFindings.rowHeadings.item.packageMarks.change.hidden = shipping mark of package {0} for item {1}
 unloadingFindings.rowHeadings.item.grossWeight.change.hidden = gross weight of item {0}
 unloadingFindings.rowHeadings.item.netWeight = Net weight
 unloadingFindings.rowHeadings.item.netWeight.change.hidden = net weight of item {0}
+unloadingFindings.rowHeadings.item.cusCode = Customs Union and Statistics (CUS) code
+unloadingFindings.rowHeadings.item.cusCode.change.hidden = Customs Union and Statistics (CUS) code for item {0}
+unloadingFindings.rowHeadings.item.commodityCode = Commodity code
+unloadingFindings.rowHeadings.item.commodityCode.change.hidden = commodity code for item {0}
+unloadingFindings.rowHeadings.item.nomenclatureCode = Combined nomenclature code
+unloadingFindings.rowHeadings.item.nomenclatureCode.change.hidden = combined nomenclature code for item {0}
 
 unloadingFindings.subsections.additionalComments = Additional comments
 unloadingFindings.additionalComments.link = Add comments
@@ -387,9 +444,34 @@ unloadingFindings.rowHeadings.additionalComments = Comments
 unloadingFindings.rowHeadings.additionalComments.change.hidden = comments
 unloadingFindings.rowHeadings.additionalComments.remove.hidden = comments
 
+unloadingFindings.rowHeadings.holderOfTheTransitProcedure.heading = Transit holder
+unloadingFindings.rowHeadings.holderOfTheTransitProcedure.identificationNumber = EORI number
+unloadingFindings.rowHeadings.holderOfTheTransitProcedure.tirHolderIdentificationNumber = TIR holder’s identification number
+unloadingFindings.rowHeadings.holderOfTheTransitProcedure.name = Name
+unloadingFindings.rowHeadings.holderOfTheTransitProcedure.address = Address
+unloadingFindings.rowHeadings.holderOfTheTransitProcedure.country = Country
+
+unloadingFindings.document.heading = Document {0}
+unloadingFindings.document.type = Document type
+unloadingFindings.document.type.change.hidden = document type for document {0}
+unloadingFindings.document.referenceNumber = Reference number
+unloadingFindings.document.referenceNumber.change.hidden = reference number for document {0}
+unloadingFindings.document.additionalInformation = Additional information
+unloadingFindings.document.additionalInformation.change.hidden = additional information for document {0}
+
+unloadingFindings.houseConsignment.item.document.heading = Document {0}
+unloadingFindings.houseConsignment.item.document.type = Document type
+unloadingFindings.houseConsignment.item.document.type.change.hidden = document {0} for item {1} - document type
+unloadingFindings.houseConsignment.item.document.referenceNumber = Reference number
+unloadingFindings.houseConsignment.item.document.referenceNumber.change.hidden = document {0} for item {1} - reference number
+unloadingFindings.houseConsignment.item.document.additionalInformation = Additional information
+unloadingFindings.houseConsignment.item.document.additionalInformation.change.hidden = document {0} for item {1} - additional information
+
 unloadingFindings.additional.reference.heading = Additional references
 unloadingFindings.additional.reference.change.hidden = additional reference {0}
 unloadingFindings.additional.reference = Additional Reference {0}
+
+unloadingFindings.dangerousGoods.unNumber = UN number {0}
 
 houseConsignment.title = Cross-check the transit with house consignment {0}
 houseConsignment.heading = Cross-check the transit with house consignment {0}
@@ -554,6 +636,16 @@ houseConsignment.index.items.document.referenceNumber.CheckMode.error.required =
 houseConsignment.index.items.document.referenceNumber.error.length = The reference number must be 70 characters or less
 houseConsignment.index.items.document.referenceNumber.error.invalidCharacters = The reference number must only include letters a to z and numbers 0 to 9
 
+additionalReferenceNumber.index.NormalMode.title = What is the additional reference number?
+additionalReferenceNumber.index.CheckMode.title = What is the new additional reference number?
+additionalReferenceNumber.index.NormalMode.heading = What is the additional reference number?
+additionalReferenceNumber.index.CheckMode.heading = What is the new additional reference number?
+additionalReferenceNumber.index.NormalMode.paragraph = You need to enter a reference number as you have already added this type of additional reference.
+additionalReferenceNumber.index.NormalMode.error.required = Enter the additional reference number
+additionalReferenceNumber.index.CheckMode.error.required = Enter the new additional reference number
+additionalReferenceNumber.index.error.length = The additional reference number must be 70 characters or less
+additionalReferenceNumber.index.error.characters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+
 houseConsignment.index.items.document.additionalInformation.NormalMode.title = Enter the additional information
 houseConsignment.index.items.document.additionalInformation.CheckMode.title = Enter the new additional information for item {1} in house consignment {0}?
 houseConsignment.index.items.document.additionalInformation.NormalMode.heading = Enter the additional information
@@ -582,7 +674,6 @@ houseConsignment.index.items.additionalReference.additionalReferenceNumber.Norma
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.CheckMode.error.required = Enter the new additional reference number for item {1} in house consignment {0}
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.paragraph = You need to enter a reference number as you have already added this type of additional reference.
 
-
 additionalReference.index.additionalReferenceType.NormalMode.title = What type of additional reference do you want to add?
 additionalReference.index.additionalReferenceType.NormalMode.heading = What type of additional reference do you want to add?
 additionalReference.index.additionalReferenceType.CheckMode.title = What is the new additional reference type?
@@ -591,3 +682,27 @@ additionalReference.index.additionalReferenceType.error.required = Select the ty
 additionalReference.index.additionalReferenceType.check.error.required = Select the new additional reference type
 additionalReference.index.additionalReferenceType.hint = Enter the reference name or code, like Carrier (AEO certificate number) or Y028.
 additionalReference.index.additionalReferenceType.placeholder = Select an additional reference
+
+unloadingFindings.grossMass = Gross weight
+unloadingFindings.grossMass.change.hidden = gross weight
+
+document.type.title = What is the new document type?
+document.type.heading = What is the new document type?
+document.type.hint = Enter the document name or code.
+document.type.placeholder = Select a document type
+document.type.check.error.required = Select the new document type
+
+houseConsignment.index.items.document.type.title = What is the new document type for item {1} in house consignment {0}?
+houseConsignment.index.items.document.type.heading = What is the new document type for item {1} in house consignment {0}?
+houseConsignment.index.items.document.type.hint = Enter the document name or code.
+houseConsignment.index.items.document.type.placeholder = Select a document type
+houseConsignment.index.items.document.type.check.error.required = Select the new document type for item {1} in house consignment {0}
+
+transportEquipment.index.addContainerIdentificationNumberYesNo.title = Do you want to add a container identification number for the transport equipment?
+transportEquipment.index.addContainerIdentificationNumberYesNo.heading = Do you want to add a container identification number for the transport equipment?
+transportEquipment.index.addContainerIdentificationNumberYesNo.paragraph = This is a unique number used to identify the container.
+transportEquipment.index.addContainerIdentificationNumberYesNo.error.required = Select yes if you want to add a container identification number for the transport equipment
+
+transportEquipment.index.seal.removeSealYesNo.title = Are you sure you want to remove seal {1} from transport equipment {0}?
+transportEquipment.index.seal.removeSealYesNo.heading = Are you sure you want to remove seal {1} from transport equipment {0}?
+transportEquipment.index.seal.removeSealYesNo.error.required = Select yes if you want to remove seal {1} from transport equipment {0}

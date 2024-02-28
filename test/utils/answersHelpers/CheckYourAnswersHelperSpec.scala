@@ -20,6 +20,7 @@ import base.SpecBase
 import controllers.routes
 import models.CheckMode
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Actions, Value}
@@ -234,7 +235,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
     "additionalComment" - {
       "must return row" in {
 
-        forAll(arbitrary[String]) {
+        forAll(Gen.alphaNumStr) {
           comments =>
             val answers = emptyUserAnswers.setValue(UnloadingCommentsPage, comments)
             val helper  = new CheckYourAnswersHelper(answers)

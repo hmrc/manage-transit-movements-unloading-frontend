@@ -17,7 +17,7 @@
 package utils.transformers
 
 import generated.ConsignmentItemType04
-import models.{Index, UserAnswers}
+import models._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -25,19 +25,28 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ConsignmentItemTransformer @Inject() (
   commodityTransformer: CommodityTransformer,
-  additionalReferenceTransformer: AdditionalReferenceTransformer
+  packagingTransformer: PackagingTransformer,
+  documentsTransformer: DocumentsTransformer,
+  additionalReferencesTransformer: AdditionalReferencesTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
   def transform(consignmentItems: Seq[ConsignmentItemType04], hcIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     consignmentItems.zipWithIndex.foldLeft(Future.successful(userAnswers))({
-      case (acc, (ConsignmentItemType04(_, _, _, _, _, commodity, _, _, _, _, additionalReference, _), i)) =>
+      case (acc, (consignmentItem, i)) =>
         acc.flatMap {
           userAnswers =>
             val itemIndex: Index = Index(i)
             val pipeline: UserAnswers => Future[UserAnswers] =
-              commodityTransformer.transform(commodity, hcIndex, itemIndex) andThen
-                additionalReferenceTransformer.transform(additionalReference, hcIndex, itemIndex)
+              commodityTransformer.transform(consignmentItem.Commodity, hcIndex, itemIndex) andThen
+                packagingTransformer.transform(consignmentItem.Packaging, hcIndex, itemIndex) andThen
+                documentsTransformer.transform(consignmentItem.SupportingDocument,
+                                               consignmentItem.TransportDocument,
+                                               consignmentItem.PreviousDocument.toPreviousDocumentType06(),
+                                               hcIndex,
+                                               itemIndex
+                ) andThen
+                additionalReferencesTransformer.transform(consignmentItem.AdditionalReference, hcIndex, itemIndex)
 
             pipeline(userAnswers)
         }

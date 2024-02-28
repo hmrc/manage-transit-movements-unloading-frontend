@@ -52,7 +52,7 @@ class MessageMetaDataSpec extends SpecBase {
           val expectedResult = MessageMetaData(
             LocalDateTime.parse("2022-11-10T15:32:51.459Z", DateTimeFormatter.ISO_DATE_TIME),
             messageType,
-            "movements/arrivals/63498209a2d89ad8/messages/634982098f02f00a"
+            "634982098f02f00a"
           )
 
           val result: MessageMetaData = json.validate[MessageMetaData].asOpt.value

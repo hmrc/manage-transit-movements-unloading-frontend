@@ -74,13 +74,11 @@ class ReferenceDataServiceSpec extends AnyFreeSpec with ScalaFutures with Matche
 
       "return Country if country code exists" in {
 
-        when(mockConnector.getCountries()).thenReturn(Future.successful(countries))
+        when(mockConnector.getCountry("GB")).thenReturn(Future.successful(uk))
 
         val service = new ReferenceDataServiceImpl(mockConnector)
 
-        service.getCountryByCode(Some("GB")).futureValue mustBe Some(
-          Country("GB", "United Kingdom")
-        )
+        service.getCountryByCode("GB").futureValue mustBe Country("GB", "United Kingdom")
       }
 
     }
@@ -92,8 +90,7 @@ class ReferenceDataServiceSpec extends AnyFreeSpec with ScalaFutures with Matche
 
         val service = new ReferenceDataServiceImpl(mockConnector)
 
-        service.getCustomsOfficeByCode("GB00001").futureValue mustBe
-          Some(customsOffice)
+        service.getCustomsOfficeByCode("GB00001").futureValue mustBe customsOffice
 
         verify(mockConnector).getCustomsOffice(any())(any(), any())
       }

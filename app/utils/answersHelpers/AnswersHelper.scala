@@ -20,14 +20,23 @@ import models.{ArrivalId, Index, UserAnswers}
 import pages._
 import pages.sections.Section
 import play.api.i18n.Messages
-import play.api.libs.json.{JsArray, JsValue, Reads}
+import play.api.libs.json._
 import play.api.mvc.Call
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
 
 class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends SummaryListRowHelper {
 
   def arrivalId: ArrivalId = userAnswers.id
+
+  def sequenceNumber(jsValue: JsValue): Option[SummaryListRow] =
+    jsValue.transform((__ \ "sequenceNumber").json.pick[JsString]).asOpt.map {
+      case JsString(value) =>
+        buildRowWithNoChangeLink(
+          prefix = messages("unloadingFindings.sequenceNumber"),
+          answer = value.toText
+        )
+    }
 
   def getAnswerAndBuildRow[T](
     page: QuestionPage[T],
@@ -45,6 +54,22 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
           id = id,
           call = call,
           args = args: _*
+        )
+    }
+
+  def buildRowWithNoChangeLink[T](
+    data: Option[T],
+    formatAnswer: T => Content,
+    prefix: String
+  ): Option[SummaryListRow] =
+    data map {
+      answer =>
+        buildRow(
+          prefix = prefix,
+          answer = formatAnswer(answer),
+          id = None,
+          call = None,
+          args = Nil
         )
     }
 
@@ -67,21 +92,11 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
         )
     }
 
-  def parseArguments[T](args: Option[Seq[Any]], answer: T): Seq[Any] = args match {
-    case None            => Seq(answer)
-    case Some(arguments) => arguments.appended(answer)
-  }
-
   implicit class RichJsArray(arr: JsArray) {
 
     def zipWithIndex: List[(JsValue, Index)] = arr.value.toList.zipWithIndex.map(
       x => (x._1, Index(x._2))
     )
-
-    def filterWithIndex(f: (JsValue, Index) => Boolean): Seq[(JsValue, Index)] =
-      arr.zipWithIndex.filter {
-        case (value, i) => f(value, i)
-      }
 
     def isEmpty: Boolean = arr.value.isEmpty
   }

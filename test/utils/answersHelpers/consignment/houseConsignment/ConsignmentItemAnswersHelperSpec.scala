@@ -16,11 +16,17 @@
 
 package utils.answersHelpers.consignment.houseConsignment
 
+import models.DocType.Previous
+import models.Index
+import models.reference.DocumentType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.NetWeightPage
-import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage}
+import pages.houseConsignment.index.items._
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
 import utils.answersHelpers.AnswersHelperSpecBase
+import viewModels.sections.Section.AccordionSection
 
 class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
 
@@ -107,6 +113,133 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
               action.visuallyHiddenText.value mustBe "net weight of item 1"
               action.id mustBe "change-net-weight-1"
           }
+        }
+      }
+    }
+
+    "cusCodeRow" - {
+
+      val value = Gen.alphaLowerStr.sample.value
+      val page  = CustomsUnionAndStatisticsCodePage(hcIndex, itemIndex)
+
+      "must return None" - {
+        s"when $page undefined" in {
+
+          val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
+          val result = helper.cusCodeRow
+          result mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $page defined" in {
+          val userAnswers = emptyUserAnswers.setValue(page, value)
+
+          val helper = new ConsignmentItemAnswersHelper(userAnswers, hcIndex, itemIndex)
+          val result = helper.cusCodeRow.value
+
+          result mustBe
+            SummaryListRow(
+              key = Key("Customs Union and Statistics (CUS) code".toText),
+              value = Value(s"$value".toText),
+              actions = cusCodeItemAction
+            )
+        }
+      }
+    }
+
+    "commodityCodeRow" - {
+
+      val value = Gen.alphaLowerStr.sample.value
+      val page  = CommodityCodePage(hcIndex, itemIndex)
+
+      "must return None" - {
+        s"when $page undefined" in {
+
+          val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
+          val result = helper.commodityCodeRow
+          result mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $page defined" in {
+          val userAnswers = emptyUserAnswers.setValue(page, value)
+
+          val helper = new ConsignmentItemAnswersHelper(userAnswers, hcIndex, itemIndex)
+          val result = helper.commodityCodeRow.value
+
+          result mustBe
+            SummaryListRow(
+              key = Key("Commodity code".toText),
+              value = Value(s"$value".toText),
+              actions = commodityCodeItemAction
+            )
+        }
+      }
+    }
+
+    "nomenclatureCodeRow" - {
+
+      val value = Gen.alphaLowerStr.sample.value
+      val page  = CombinedNomenclatureCodePage(hcIndex, itemIndex)
+
+      "must return None" - {
+        s"when $page undefined" in {
+
+          val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
+          val result = helper.nomenclatureCodeRow
+          result mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $page defined" in {
+          val userAnswers = emptyUserAnswers.setValue(page, value)
+
+          val helper = new ConsignmentItemAnswersHelper(userAnswers, hcIndex, itemIndex)
+          val result = helper.nomenclatureCodeRow.value
+
+          result mustBe
+            SummaryListRow(
+              key = Key("Combined nomenclature code".toText),
+              value = Value(s"$value".toText),
+              actions = nomenclatureCodeItemAction
+            )
+        }
+      }
+    }
+
+    "documentSections" - {
+      import pages.houseConsignment.index.items.document._
+      "must generate accordion sections" in {
+        forAll(arbitrary[DocumentType], Gen.alphaNumStr, Gen.alphaNumStr) {
+          (documentType, referenceNumber, additionalInformation) =>
+            val answers = emptyUserAnswers
+              .setValue(TypePage(hcIndex, itemIndex, Index(0)), documentType)
+              .setValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(0)), referenceNumber)
+              .setValue(AdditionalInformationPage(hcIndex, itemIndex, Index(0)), additionalInformation)
+              .setValue(TypePage(hcIndex, itemIndex, Index(1)), documentType)
+              .setValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(1)), referenceNumber)
+              .setValue(AdditionalInformationPage(hcIndex, itemIndex, Index(1)), additionalInformation)
+              .setValue(TypePage(hcIndex, itemIndex, Index(2)), documentType.copy(`type` = Previous))
+              .setValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(2)), referenceNumber)
+              .setValue(AdditionalInformationPage(hcIndex, itemIndex, Index(2)), additionalInformation)
+
+            val helper = new ConsignmentItemAnswersHelper(answers, hcIndex, itemIndex)
+            val result = helper.documentSections
+
+            result.head mustBe a[AccordionSection]
+            result.head.sectionTitle.value mustBe "Document 1"
+            result.head.rows.size mustBe 3
+
+            result(1) mustBe a[AccordionSection]
+            result(1).sectionTitle.value mustBe "Document 2"
+            result(1).rows.size mustBe 3
+
+            result(2) mustBe a[AccordionSection]
+            result(2).sectionTitle.value mustBe "Document 3"
+            result(2).rows.size mustBe 3
         }
       }
     }

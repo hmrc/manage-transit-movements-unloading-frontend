@@ -17,6 +17,7 @@
 package generators
 
 import generated._
+import models.Coordinates
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen.const
 import org.scalacheck.{Arbitrary, Gen}
@@ -324,6 +325,22 @@ trait MessagesModelGenerators {
       )
     }
 
+  implicit lazy val arbitraryPackageType04: Arbitrary[PackagingType02] =
+    Arbitrary {
+      for {
+        sequenceNumber   <- Gen.alphaNumStr
+        typeOfPackages   <- Gen.alphaNumStr
+        numberOfPackages <- Gen.option(positiveBigInts)
+        shippingMarks    <- Gen.option(Gen.alphaNumStr)
+
+      } yield PackagingType02(
+        sequenceNumber = sequenceNumber,
+        typeOfPackages,
+        numberOfPackages,
+        shippingMarks
+      )
+    }
+
   implicit lazy val arbitraryGoodsReferenceType02: Arbitrary[GoodsReferenceType02] =
     Arbitrary {
       for {
@@ -385,6 +402,41 @@ trait MessagesModelGenerators {
       )
     }
 
+  implicit lazy val arbitraryEndorsement03: Arbitrary[generated.EndorsementType03] = Arbitrary {
+    for {
+      date      <- arbitraryXMLGregorianCalendar.arbitrary
+      authority <- Gen.alphaNumStr
+      place     <- Gen.alphaNumStr
+      country   <- Gen.alphaNumStr
+    } yield EndorsementType03(date, authority, place, country)
+  }
+
+  implicit lazy val coordinates: Arbitrary[Coordinates] = Arbitrary {
+    for {
+      long <- Gen.alphaNumStr
+      lat  <- Gen.alphaNumStr
+    } yield Coordinates(long, lat)
+  }
+
+  implicit lazy val arbitraryIncidentType04: Arbitrary[generated.IncidentType04] =
+    Arbitrary {
+      for {
+        sequenceNumber <- Gen.alphaNumStr
+        code           <- Gen.alphaNumStr
+        text           <- Gen.alphaNumStr
+        loc            <- arbitraryLocationType02.arbitrary
+
+      } yield generated.IncidentType04(
+        sequenceNumber = sequenceNumber,
+        code = code,
+        text = text,
+        Endorsement = None,
+        Location = loc,
+        TransportEquipment = Nil,
+        Transhipment = None
+      )
+    }
+
   implicit lazy val arbitraryConsignmentItemType04: Arbitrary[ConsignmentItemType04] =
     Arbitrary {
       for {
@@ -437,6 +489,19 @@ trait MessagesModelGenerators {
       )
     }
 
+  implicit lazy val arbitraryAddressType18: Arbitrary[AddressType18] =
+    Arbitrary {
+      for {
+        streetAndNumber <- Gen.alphaNumStr
+        postcode        <- Gen.option(Gen.alphaNumStr)
+        city            <- Gen.alphaNumStr
+      } yield AddressType18(
+        streetAndNumber = streetAndNumber,
+        postcode = postcode,
+        city = city
+      )
+    }
+
   implicit lazy val arbitrarySupportingDocumentType02: Arbitrary[SupportingDocumentType02] =
     Arbitrary {
       for {
@@ -462,6 +527,34 @@ trait MessagesModelGenerators {
         sequenceNumber = sequenceNumber,
         typeValue = typeValue,
         referenceNumber = referenceNumber
+      )
+    }
+
+  implicit lazy val arbitraryLocationType02: Arbitrary[LocationType02] =
+    Arbitrary {
+      for {
+        qualifierOfIdentification <- Gen.alphaNumStr
+        unLocode                  <- Gen.option(Gen.alphaNumStr)
+        country                   <- Gen.alphaNumStr
+        gnss                      <- Gen.option(arbitrary[GNSSType])
+        address                   <- Gen.option(arbitrary[AddressType18])
+      } yield LocationType02(
+        qualifierOfIdentification = qualifierOfIdentification,
+        UNLocode = unLocode,
+        country = country,
+        GNSS = gnss,
+        Address = address
+      )
+    }
+
+  implicit lazy val arbitraryGNSSType: Arbitrary[GNSSType] =
+    Arbitrary {
+      for {
+        latitude  <- Gen.alphaNumStr
+        longitude <- Gen.alphaNumStr
+      } yield GNSSType(
+        latitude = latitude,
+        longitude = longitude
       )
     }
 

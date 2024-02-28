@@ -25,6 +25,7 @@ import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
+import pages.sections.HouseConsignmentSection
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, JsPath, Json}
@@ -73,7 +74,7 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
           case (_, i) =>
             val hcIndex = Index(i)
 
-            when(mockConsigneeTransformer.transform(any(), eqTo(hcIndex)))
+            when(mockConsigneeTransformer.transform(any(), eqTo(hcIndex))(any()))
               .thenReturn {
                 ua => Future.successful(ua.setValue(FakeConsigneeSection(hcIndex), Json.obj("foo" -> i.toString)))
               }
@@ -97,9 +98,10 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
         val result = transformer.transform(houseConsignments).apply(emptyUserAnswers).futureValue
 
         houseConsignments.zipWithIndex.map {
-          case (_, i) =>
+          case (hc, i) =>
             val hcIndex = Index(i)
 
+            result.getSequenceNumber(HouseConsignmentSection(hcIndex)) mustBe hc.sequenceNumber
             result.getValue(FakeConsigneeSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
             result.getValue(FakeConsignorSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
             result.getValue(FakeDepartureTransportMeansSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)

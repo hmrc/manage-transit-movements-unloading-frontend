@@ -17,9 +17,11 @@
 package models
 
 import generated._
+import models.DocType.{Previous, Support, Transport}
 import models.reference.DocumentType
 
 sealed trait Document {
+  val sequenceNumber: String
   val documentType: DocumentType
   val referenceNumber: String
 }
@@ -28,7 +30,9 @@ object Document {
 
   def apply(document: SupportingDocumentType02, documentType: DocumentType): SupportingDocument =
     SupportingDocument(
+      sequenceNumber = document.sequenceNumber,
       documentType = DocumentType(
+        `type` = Support,
         code = documentType.code,
         description = documentType.description
       ),
@@ -38,21 +42,56 @@ object Document {
 
   def apply(document: TransportDocumentType02, documentType: DocumentType): TransportDocument =
     TransportDocument(
+      sequenceNumber = document.sequenceNumber,
       documentType = DocumentType(
+        `type` = Transport,
         code = documentType.code,
         description = documentType.description
       ),
       referenceNumber = document.referenceNumber
     )
 
+  def apply(document: PreviousDocumentType06, documentType: DocumentType): PreviousDocument =
+    PreviousDocument(
+      sequenceNumber = document.sequenceNumber,
+      documentType = DocumentType(
+        `type` = Previous,
+        code = documentType.code,
+        description = documentType.description
+      ),
+      referenceNumber = document.referenceNumber,
+      complementOfInformation = document.complementOfInformation
+    )
+
+  def apply(document: PreviousDocumentType04, documentType: DocumentType): PreviousDocument =
+    PreviousDocument(
+      sequenceNumber = document.sequenceNumber,
+      documentType = DocumentType(
+        `type` = Previous,
+        code = documentType.code,
+        description = documentType.description
+      ),
+      referenceNumber = document.referenceNumber,
+      complementOfInformation = document.complementOfInformation
+    )
+
   case class SupportingDocument(
+    sequenceNumber: String,
     documentType: DocumentType,
     referenceNumber: String,
     complementOfInformation: Option[String]
   ) extends Document
 
   case class TransportDocument(
+    sequenceNumber: String,
     documentType: DocumentType,
     referenceNumber: String
+  ) extends Document
+
+  case class PreviousDocument(
+    sequenceNumber: String,
+    documentType: DocumentType,
+    referenceNumber: String,
+    complementOfInformation: Option[String]
   ) extends Document
 }

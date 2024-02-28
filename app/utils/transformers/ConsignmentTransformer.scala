@@ -18,6 +18,7 @@ package utils.transformers
 
 import generated.ConsignmentType05
 import models.UserAnswers
+import pages.grossMass.GrossMassPage
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -28,24 +29,25 @@ class ConsignmentTransformer @Inject() (
   departureTransportMeansTransformer: DepartureTransportMeansTransformer,
   documentsTransformer: DocumentsTransformer,
   houseConsignmentsTransformer: HouseConsignmentsTransformer,
-  additionalReferenceTransformer: AdditionalReferenceTransformer,
-  additionalInformationTransformer: AdditionalInformationTransformer
+  additionalReferencesTransformer: AdditionalReferencesTransformer,
+  additionalInformationTransformer: AdditionalInformationTransformer,
+  incidentsTransformer: IncidentsTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
   def transform(consignment: Option[ConsignmentType05])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers =>
     consignment match {
-      case Some(
-            consignment05
-          ) =>
+      case Some(consignment05) =>
         lazy val pipeline: UserAnswers => Future[UserAnswers] =
           transportEquipmentTransformer.transform(consignment05.TransportEquipment) andThen
             departureTransportMeansTransformer.transform(consignment05.DepartureTransportMeans) andThen
-            documentsTransformer.transform(consignment05.SupportingDocument, consignment05.TransportDocument) andThen
+            documentsTransformer.transform(consignment05.SupportingDocument, consignment05.TransportDocument, consignment05.PreviousDocument) andThen
             houseConsignmentsTransformer.transform(consignment05.HouseConsignment) andThen
-            additionalReferenceTransformer.transform(consignment05.AdditionalReference) andThen
-            additionalInformationTransformer.transform(consignment05.AdditionalInformation)
-
+            additionalReferencesTransformer.transform(consignment05.AdditionalReference) andThen
+            additionalInformationTransformer.transform(consignment05.AdditionalInformation) andThen
+            set(GrossMassPage, consignment05.grossMass) andThen
+            additionalReferencesTransformer.transform(consignment05.AdditionalReference) andThen
+            incidentsTransformer.transform(consignment05.Incident)
         pipeline(userAnswers)
       case None =>
         Future.successful(userAnswers)

@@ -17,9 +17,8 @@
 package utils.transformers
 
 import connectors.ReferenceDataConnector
-import generated.{SupportingDocumentType02, TransportDocumentType02}
+import generated.{PreviousDocumentType06, SupportingDocumentType02, TransportDocumentType02}
 import models.{Document, Index, UserAnswers}
-import pages.documents.{AdditionalInformationPage, DocumentReferenceNumberPage}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -32,8 +31,72 @@ class DocumentsTransformer @Inject() (
 
   def transform(
     supportingDocuments: Seq[SupportingDocumentType02],
-    transportDocuments: Seq[TransportDocumentType02]
+    transportDocuments: Seq[TransportDocumentType02],
+    previousDocuments: Seq[PreviousDocumentType06]
+  )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
+    import pages.documents._
+    import pages.sections.documents.DocumentSection
+
+    genericTransform(supportingDocuments, transportDocuments, previousDocuments) {
+      case (document, documentIndex) =>
+        document match {
+          case Document.SupportingDocument(sequenceNumber, documentType, referenceNumber, complementOfInformation) =>
+            setSequenceNumber(DocumentSection(documentIndex), sequenceNumber) andThen
+              set(TypePage(documentIndex), documentType) andThen
+              set(DocumentReferenceNumberPage(documentIndex), referenceNumber) andThen
+              set(AdditionalInformationPage(documentIndex), complementOfInformation)
+          case Document.TransportDocument(sequenceNumber, documentType, referenceNumber) =>
+            setSequenceNumber(DocumentSection(documentIndex), sequenceNumber) andThen
+              set(TypePage(documentIndex), documentType) andThen
+              set(DocumentReferenceNumberPage(documentIndex), referenceNumber)
+          case Document.PreviousDocument(sequenceNumber, documentType, referenceNumber, complementOfInformation) =>
+            setSequenceNumber(DocumentSection(documentIndex), sequenceNumber) andThen
+              set(TypePage(documentIndex), documentType) andThen
+              set(DocumentReferenceNumberPage(documentIndex), referenceNumber) andThen
+              set(AdditionalInformationPage(documentIndex), complementOfInformation)
+        }
+    }
+  }
+
+  def transform(
+    supportingDocuments: Seq[SupportingDocumentType02],
+    transportDocuments: Seq[TransportDocumentType02],
+    previousDocuments: Seq[PreviousDocumentType06],
+    hcIndex: Index,
+    itemIndex: Index
+  )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
+    import pages.houseConsignment.index.items.document._
+    import pages.sections.houseConsignment.index.items.documents.DocumentSection
+
+    genericTransform(supportingDocuments, transportDocuments, previousDocuments) {
+      case (document, documentIndex) =>
+        document match {
+          case Document.SupportingDocument(sequenceNumber, documentType, referenceNumber, complementOfInformation) =>
+            setSequenceNumber(DocumentSection(hcIndex, itemIndex, documentIndex), sequenceNumber) andThen
+              set(DocumentReferenceNumberPage(hcIndex, itemIndex, documentIndex), referenceNumber) andThen
+              set(AdditionalInformationPage(hcIndex, itemIndex, documentIndex), complementOfInformation) andThen
+              set(TypePage(hcIndex, itemIndex, documentIndex), documentType)
+          case Document.TransportDocument(sequenceNumber, documentType, referenceNumber) =>
+            setSequenceNumber(DocumentSection(hcIndex, itemIndex, documentIndex), sequenceNumber) andThen
+              set(DocumentReferenceNumberPage(hcIndex, itemIndex, documentIndex), referenceNumber) andThen
+              set(TypePage(hcIndex, itemIndex, documentIndex), documentType)
+          case Document.PreviousDocument(sequenceNumber, documentType, referenceNumber, complementOfInformation) =>
+            setSequenceNumber(DocumentSection(hcIndex, itemIndex, documentIndex), sequenceNumber) andThen
+              set(DocumentReferenceNumberPage(hcIndex, itemIndex, documentIndex), referenceNumber) andThen
+              set(AdditionalInformationPage(hcIndex, itemIndex, documentIndex), complementOfInformation) andThen
+              set(TypePage(hcIndex, itemIndex, documentIndex), documentType)
+        }
+    }
+  }
+
+  private def genericTransform(
+    supportingDocuments: Seq[SupportingDocumentType02],
+    transportDocuments: Seq[TransportDocumentType02],
+    previousDocuments: Seq[PreviousDocumentType06]
+  )(
+    pipeline: (Document, Index) => UserAnswers => Future[UserAnswers]
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
+
     lazy val supportingDocumentsWithDescription = supportingDocuments.map {
       supportingDocument =>
         referenceDataConnector.getSupportingDocument(supportingDocument.typeValue).map {
@@ -48,25 +111,21 @@ class DocumentsTransformer @Inject() (
         }
     }
 
+    lazy val previousDocumentsWithDescription = previousDocuments.map {
+      previousDocument =>
+        referenceDataConnector.getPreviousDocument(previousDocument.typeValue).map {
+          Document.apply(previousDocument, _)
+        }
+    }
+
     for {
       sd <- Future.sequence(supportingDocumentsWithDescription)
       td <- Future.sequence(transportDocumentsWithDescription)
-      documents = sd ++ td
+      pd <- Future.sequence(previousDocumentsWithDescription)
+      documents = sd ++ td ++ pd
       userAnswers <- documents.zipWithIndex.foldLeft(Future.successful(userAnswers))({
         case (acc, (document, i)) =>
-          acc.flatMap {
-            userAnswers =>
-              val documentIndex: Index = Index(i)
-              val pipeline: UserAnswers => Future[UserAnswers] = document match {
-                case Document.SupportingDocument(documentType, referenceNumber, complementOfInformation) =>
-                  set(DocumentReferenceNumberPage(documentIndex), referenceNumber) andThen
-                    set(AdditionalInformationPage(documentIndex), complementOfInformation)
-                case Document.TransportDocument(documentType, referenceNumber) =>
-                  set(DocumentReferenceNumberPage(documentIndex), referenceNumber)
-              }
-
-              pipeline(userAnswers)
-          }
+          acc.flatMap(pipeline(document, Index(i)))
       })
     } yield userAnswers
   }

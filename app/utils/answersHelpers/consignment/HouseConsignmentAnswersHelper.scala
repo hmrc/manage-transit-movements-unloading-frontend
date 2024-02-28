@@ -16,6 +16,7 @@
 
 package utils.answersHelpers.consignment
 
+import models.reference.Country
 import models.{Index, UserAnswers}
 import pages._
 import pages.sections.ItemsSection
@@ -65,6 +66,18 @@ class HouseConsignmentAnswersHelper(
     call = None
   )
 
+  def consigneeCountry: Option[SummaryListRow] = buildRowWithNoChangeLink[Country](
+    data = userAnswers.get(ConsigneeCountryPage(houseConsignmentIndex)),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.houseConsignment.consigneeCountry"
+  )
+
+  def consigneeAddress: Option[SummaryListRow] = buildRowWithNoChangeLink[String](
+    data = userAnswers.get(ConsigneeAddressPage(houseConsignmentIndex)).map(_.toString),
+    formatAnswer = formatAsHtmlContent,
+    prefix = "unloadingFindings.rowHeadings.houseConsignment.consigneeAddress"
+  )
+
   def departureTransportMeansSections: Seq[Section] =
     userAnswers.get(DepartureTransportMeansListSection(houseConsignmentIndex)).mapWithIndex {
       case (_, transportMeansIndex) =>
@@ -88,14 +101,17 @@ class HouseConsignmentAnswersHelper(
           rows = Seq(
             helper.descriptionRow,
             helper.grossWeightRow,
-            helper.netWeightRow
+            helper.netWeightRow,
+            helper.cusCodeRow,
+            helper.commodityCodeRow,
+            helper.nomenclatureCodeRow,
+            helper.dangerousGoodsRows
           ).flatten,
           children = Seq(
-            AccordionSection(
-              messages("unloadingFindings.additional.reference.heading"),
-              helper.additionalReferences
-            )
-          )
+            helper.packageSections,
+            helper.documentSections,
+            Seq(helper.additionalReferencesSection)
+          ).flatten
         )
     }
 }

@@ -18,6 +18,7 @@ package models
 
 import base.SpecBase
 import generated._
+import models.DocType.{Previous, Support, Transport}
 import models.Document._
 import models.reference.DocumentType
 import org.scalacheck.Gen
@@ -37,6 +38,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks {
           )
 
           val documentType = DocumentType(
+            `type` = Support,
             code = typeValue,
             description = description
           )
@@ -44,6 +46,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks {
           val result = Document.apply(ie043Document, documentType)
 
           result mustBe SupportingDocument(
+            sequenceNumber = sequenceNumber,
             documentType = documentType,
             referenceNumber = referenceNumber,
             complementOfInformation = complementOfInformation
@@ -61,6 +64,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks {
           )
 
           val documentType = DocumentType(
+            `type` = Transport,
             code = typeValue,
             description = description
           )
@@ -68,8 +72,64 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks {
           val result = Document.apply(ie043Document, documentType)
 
           result mustBe TransportDocument(
+            sequenceNumber = sequenceNumber,
             documentType = documentType,
             referenceNumber = referenceNumber
+          )
+      }
+    }
+
+    "must convert PreviousDocumentType06 to PreviousDocumentType" in {
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr, Gen.option(Gen.alphaNumStr), Gen.alphaNumStr) {
+        (sequenceNumber, typeValue, referenceNumber, complementOfInformation, description) =>
+          val ie043Document = PreviousDocumentType06(
+            sequenceNumber = sequenceNumber,
+            typeValue = typeValue,
+            referenceNumber = referenceNumber,
+            complementOfInformation = complementOfInformation
+          )
+
+          val documentType = DocumentType(
+            `type` = Previous,
+            code = typeValue,
+            description = description
+          )
+
+          val result = Document.apply(ie043Document, documentType)
+
+          result mustBe PreviousDocument(
+            sequenceNumber = sequenceNumber,
+            documentType = documentType,
+            referenceNumber = referenceNumber,
+            complementOfInformation = complementOfInformation
+          )
+      }
+    }
+
+    "must convert PreviousDocumentType04 to PreviousDocumentType" in {
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr, Gen.option(Gen.alphaNumStr), Gen.option(Gen.alphaNumStr), Gen.alphaNumStr) {
+        (sequenceNumber, typeValue, referenceNumber, goodsItemNumber, complementOfInformation, description) =>
+          val ie043Document = PreviousDocumentType04(
+            sequenceNumber = sequenceNumber,
+            typeValue = typeValue,
+            referenceNumber = referenceNumber,
+            goodsItemNumber = goodsItemNumber,
+            complementOfInformation = complementOfInformation
+          )
+
+          val documentType = DocumentType(
+            `type` = Previous,
+            code = typeValue,
+            description = description
+          )
+
+          val result = Document.apply(ie043Document, documentType)
+
+          result mustBe PreviousDocument(
+            sequenceNumber = sequenceNumber,
+            documentType = documentType,
+            referenceNumber = referenceNumber,
+            complementOfInformation = complementOfInformation
           )
       }
     }
