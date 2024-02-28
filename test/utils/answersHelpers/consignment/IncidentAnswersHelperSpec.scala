@@ -363,7 +363,7 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
       }
     }
 
-    "incidentTransShipment" - {
+    "incidentTranshipment" - {
       "must return Nil" - {
         s"when transhipment undefined" in {
           val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
