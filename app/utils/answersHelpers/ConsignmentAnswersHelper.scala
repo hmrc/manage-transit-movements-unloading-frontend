@@ -163,25 +163,21 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
       sectionRows.zipWithIndex.map {
         case (rows, index) =>
-          val sectionIndex = Index(index).display
-
-          if (sectionIndex == numberOfSections) {
-            AccordionSection(
-              sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans", sectionIndex)),
-              rows,
-              viewLinks = Seq(departureTransportMeansAddRemoveLink)
-            )
-          } else {
-            AccordionSection(
-              sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans", sectionIndex)),
-              rows
-            )
-          }
+          AccordionSection(
+            sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans", Index(index).display)),
+            rows
+          )
       }
     }
 
     if (numberOfSections != 0) {
-      Seq(AccordionSection(sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans.parent.header")), children = transportMeans))
+      Seq(
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans.parent.header")),
+          children = transportMeans,
+          viewLinks = Seq(departureTransportMeansAddRemoveLink)
+        )
+      )
     } else {
       transportMeans
     }
@@ -211,25 +207,21 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
       sectionsRows.zipWithIndex.map {
         case (rows, index) =>
-          val sectionIndex = Index(index).display
-
-          if (sectionIndex == numberOfSections) {
-            AccordionSection(
-              sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment", sectionIndex)),
-              rows = rows,
-              viewLinks = Seq(transportEquipmentAddRemoveLink, sealsAddRemoveLink)
-            )
-          } else {
-            AccordionSection(
-              sectionTitle = messages("unloadingFindings.subsections.transportEquipment", sectionIndex),
-              rows = rows
-            )
-          }
+          AccordionSection(
+            sectionTitle = messages("unloadingFindings.subsections.transportEquipment", Index(index).display),
+            rows = rows
+          )
       }
     }
 
     if (numberOfSections != 0) {
-      Seq(AccordionSection(sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment.parent.heading")), children = transportEquipments))
+      Seq(
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment.parent.heading")),
+          viewLinks = Seq(transportEquipmentAddRemoveLink, sealsAddRemoveLink),
+          children = transportEquipments
+        )
+      )
     } else {
       transportEquipments
     }
@@ -334,23 +326,19 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
       documentSectionRows.zipWithIndex.map {
         case (rows, index) =>
-          val sectionIndex = Index(index).display
-          if (sectionIndex == numberOfSections) {
-            AccordionSection(
-              sectionTitle = Some(messages("unloadingFindings.document.heading", sectionIndex)),
-              rows = rows,
-              viewLinks = Seq(documentAddRemoveLink)
-            )
-          } else {
-            AccordionSection(
-              sectionTitle = Some(messages("unloadingFindings.document.heading", sectionIndex)),
-              rows = rows
-            )
-          }
+          AccordionSection(
+            sectionTitle = Some(messages("unloadingFindings.document.heading", Index(index).display)),
+            rows = rows
+          )
       }
     }
     if (numberOfSections != 0) {
-      Seq(AccordionSection(sectionTitle = Some(messages("unloadingFindings.document.heading.parent.heading")), children = documents))
+      Seq(
+        AccordionSection(sectionTitle = Some(messages("unloadingFindings.document.heading.parent.heading")),
+                         viewLinks = Seq(documentAddRemoveLink),
+                         children = documents
+        )
+      )
     } else {
       documents
     }

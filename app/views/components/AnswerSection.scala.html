@@ -56,15 +56,6 @@
                     classes = s"govuk-!-margin-left-${2 * nestingLevel}"
                 )
             )
-
-            @section.viewLinks.map { link =>
-                <p class="govuk-body">
-                    <a class="govuk-link" href=@link.href id="@link.id">
-                        @messages(link.text) <span class="govuk-visually-hidden">@link.visuallyHidden</span>
-                    </a>
-                </p>
-            }
-
         }
     }
 
@@ -86,15 +77,23 @@
             )
         </dl>
 
-@section.accordionLink.map { link =>
-<p class="govuk-body">
-    <a class="govuk-link" href=@link.href id="@link.id">
-        @messages(link.text) <span class="govuk-visually-hidden">@link.visuallyHidden</span>
-    </a>
-</p>
-}
-
+    @section.accordionLink.map { link =>
+        <p class="govuk-body">
+            <a class="govuk-link" href=@link.href id="@link.id">
+                @messages(link.text) <span class="govuk-visually-hidden">@link.visuallyHidden</span>
+            </a>
+        </p>
     }
 
+}
+
     @section.children.map(this(_, nestingLevel + 1))
+
+    @section.viewLinks.map { link =>
+        <p class="govuk-body">
+            <a class="govuk-link" href=@link.href id="@link.id">
+                @messages(link.text) <span class="govuk-visually-hidden">@link.visuallyHidden</span>
+            </a>
+        </p>
+    }
 }

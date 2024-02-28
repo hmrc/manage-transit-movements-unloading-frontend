@@ -201,6 +201,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
             result.head mustBe a[AccordionSection]
             result.head.sectionTitle.value mustBe "Departure means of transport"
+            result.head.viewLinks.head.href mustBe "#"
 
             result.head.children.head mustBe a[AccordionSection]
             result.head.children.head.sectionTitle.value mustBe "Departure means of transport 1"
@@ -208,7 +209,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.head.children.head.rows.head.value.value mustBe `type`.description
             result.head.children.head.rows(1).value.value mustBe number
             result.head.children.head.rows(2).value.value mustBe country.description
-            result.head.children.head.viewLinks.head.href mustBe "#"
+
         }
       }
     }
@@ -229,13 +230,13 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
             result.head mustBe a[AccordionSection]
             result.head.sectionTitle.value mustBe "Transport equipment"
+            result.head.viewLinks.head.href mustBe "#"
 
             result.head.children.head mustBe a[AccordionSection]
             result.head.children.head.sectionTitle.value mustBe "Transport equipment 1"
             result.head.children.head.rows.size mustBe 2
             result.head.children.head.rows.head.value.value mustBe containerId
             result.head.children.head.rows(1).value.value mustBe sealId
-            result.head.children.head.viewLinks.head.href mustBe "#"
         }
       }
     }
@@ -306,6 +307,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
             result.head mustBe a[AccordionSection]
             result.head.sectionTitle.value mustBe "Documents"
+            result.head.viewLinks.head.href mustBe "#"
 
             result.head.children.head.sectionTitle.value mustBe "Document 1"
             result.head.children.head.rows.size mustBe 3
@@ -328,7 +330,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.head.children(2).rows(1).actions mustBe None
             result.head.children(2).rows(2).value.value mustBe additionalInformation
             result.head.children(2).rows(2).actions mustBe None
-            result.head.children(2).viewLinks.head.href mustBe "#"
+            result.head.children(2).viewLinks mustBe Nil
         }
       }
     }
