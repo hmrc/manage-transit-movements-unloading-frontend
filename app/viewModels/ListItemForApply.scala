@@ -16,8 +16,8 @@
 
 package viewModels
 
-case class ListItem(
+case class ListItemForApply(
   name: String,
-  changeUrl: String,
-  removeUrl: Option[String]
+  changeOrRemoveUrl: String,
+  prefix: String
 )

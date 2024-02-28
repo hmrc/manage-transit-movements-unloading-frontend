@@ -14,40 +14,32 @@
  * limitations under the License.
  *@
 
-@import viewModels.ListItem
+@import viewModels.ListItemForApply
 
 @this(hmrcListWithActions: HmrcListWithActions)
 
 @(
-    listItems: Seq[ListItem]
+    listItems: Seq[ListItemForApply]
 )(implicit messages: Messages)
 
 <div class="govuk-form-group">
     @hmrcListWithActions(
         ListWithActions(
-            items = listItems map (
+            items = listItems map {
                 listItem =>
                     ListWithActionsItem(
                         name = Text(listItem.name),
                         actions = Seq(
                             Some(
                                 ListWithActionsAction(
-                                    content = Text(messages("site.edit")),
-                                    visuallyHiddenText = Some(messages("site.edit.hidden", listItem.name)),
-                                    href = listItem.changeUrl
+                                    content = Text(messages(listItem.prefix)),
+                                    visuallyHiddenText = Some(messages(s"${listItem.prefix}.hidden", listItem.name)),
+                                    href = listItem.changeOrRemoveUrl
                                 )
-                            ),
-                            listItem.removeUrl.map (
-                                url =>
-                                    ListWithActionsAction(
-                                        content = Text(messages("site.delete")),
-                                        visuallyHiddenText = Some(messages("site.delete.hidden", listItem.name)),
-                                        href = url
-                                    )
                             )
                         ).flatten
                     )
-            )
+            }
         )
     )
 </div>

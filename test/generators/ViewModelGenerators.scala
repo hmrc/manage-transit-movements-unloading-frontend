@@ -35,7 +35,7 @@ import viewModels.houseConsignment.index.items.document.{ItemsAdditionalInformat
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
 import viewModels.transportEquipment.index.{ApplyAnotherItemViewModel, ContainerIdentificationNumberViewModel}
-import viewModels.{ListItem, UnloadingFindingsViewModel}
+import viewModels.{ListItemForApply, UnloadingFindingsViewModel}
 
 trait ViewModelGenerators {
   self: Generators =>
@@ -234,17 +234,17 @@ trait ViewModelGenerators {
     } yield IdentificationNumberViewModel(heading, title, requiredError)
   }
 
-  implicit lazy val arbitraryListItem: Arbitrary[ListItem] = Arbitrary {
+  implicit lazy val arbitraryListItem: Arbitrary[ListItemForApply] = Arbitrary {
     for {
       name      <- nonEmptyString
       changeUrl <- nonEmptyString
       prefix    <- nonEmptyString
-    } yield ListItem(name, changeUrl, prefix)
+    } yield ListItemForApply(name, changeUrl, prefix)
   }
 
   implicit lazy val arbitraryApplyAnotherItemViewModel: Arbitrary[ApplyAnotherItemViewModel] = Arbitrary {
     for {
-      listItems    <- arbitrary[Seq[ListItem]]
+      listItems    <- arbitrary[Seq[ListItemForApply]]
       onSubmitCall <- arbitrary[Call]
     } yield ApplyAnotherItemViewModel(listItems, onSubmitCall, Index(0), isNumberItemsZero = false)
   }

@@ -21,7 +21,7 @@ import generators.Generators
 import org.jsoup.nodes.Document
 import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
-import viewModels.ListItem
+import viewModels.ListItemForApply
 
 import scala.jdk.CollectionConverters._
 
@@ -31,11 +31,11 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
 
   def maxNumber: Int
 
-  private val listItem = arbitrary[ListItem].sample.value
+  private val listItem = arbitrary[ListItemForApply].sample.value
 
-  val listItems: Seq[ListItem] = Seq(listItem)
+  val listItems: Seq[ListItemForApply] = Seq(listItem)
 
-  val maxedOutListItems: Seq[ListItem] = Seq.fill(maxNumber)(listItem)
+  val maxedOutListItems: Seq[ListItemForApply] = Seq.fill(maxNumber)(listItem)
 
   def applyMaxedOutView: HtmlFormat.Appendable
 
@@ -69,7 +69,7 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
     }
 
   // scalastyle:off method.length
-  private def pageWithListWithActions(doc: Document, listItems: Seq[ListItem]): Unit =
+  private def pageWithListWithActions(doc: Document, listItems: Seq[ListItemForApply]): Unit =
     "page with a list with actions" - {
       "must contain a description list" in {
         val descriptionLists = getElementsByTag(doc, "dl")
