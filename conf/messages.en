@@ -358,6 +358,7 @@ unloadingFindings.incident.endorsement.authority = Authority
 unloadingFindings.incident.endorsement.country = Country
 unloadingFindings.incident.coordinates = Coordinates
 unloadingFindings.incident.unLocode = UN/LOCODE
+unloadingFindings.incident.location.address = Address
 
 
 declarationType = Declaration type
