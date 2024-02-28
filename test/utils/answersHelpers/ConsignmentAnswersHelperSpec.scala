@@ -388,12 +388,14 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         result.head.children.head.rows(1).key.value mustBe "Authority"
         result.head.children.head.rows(2).key.value mustBe "Country"
         result.head.children.head.rows(3).key.value mustBe "Location"
+        result.head.children.head.rows(3).key.value mustBe "Location"
 
-        result.head.children(1).sectionTitle.value mustBe "Endorsements"
-        result.head.children(1).rows.head.key.value mustBe "Endorsement date"
-        result.head.children(1).rows(1).key.value mustBe "Authority"
-        result.head.children(1).rows(2).key.value mustBe "Country"
-        result.head.children(1).rows(3).key.value mustBe "Location"
+        result.head.children(1).sectionTitle.value mustBe "Transport equipment 1"
+        result.head.children(1).rows.head.key.value mustBe "Container identification number"
+        result.head.children(1).rows(1).key.value mustBe "Seal 1"
+        result.head.children(1).rows(2).key.value mustBe "Seal 2"
+        result.head.children(1).rows(3).key.value mustBe "Seal 3"
+
       }
     }
   }

@@ -50,7 +50,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     ).flatten
   )
 
-  def declarationTypeRow: Option[SummaryListRow] = userAnswers.ie043Data.TransitOperation.declarationType.map(
+  private def declarationTypeRow: Option[SummaryListRow] = userAnswers.ie043Data.TransitOperation.declarationType.map(
     dec =>
       buildRowWithNoChangeLink(
         prefix = "declarationType",
@@ -58,7 +58,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       )
   )
 
-  def securityTypeRow: Option[SummaryListRow] = getAnswerAndBuildRow[SecurityType](
+  private def securityTypeRow: Option[SummaryListRow] = getAnswerAndBuildRow[SecurityType](
     page = SecurityTypePage,
     formatAnswer = formatAsText,
     prefix = "securityType",
@@ -66,12 +66,12 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     call = None
   )
 
-  def reducedDatasetIndicatorRow: SummaryListRow = buildRowWithNoChangeLink(
+  private def reducedDatasetIndicatorRow: SummaryListRow = buildRowWithNoChangeLink(
     prefix = "reducedDatasetIndicator",
     answer = formatAsBoolean(userAnswers.ie043Data.TransitOperation.reducedDatasetIndicator.toString)
   )
 
-  def declarationAcceptanceDateRow: Option[SummaryListRow] = userAnswers.ie043Data.TransitOperation.declarationAcceptanceDate.map(
+  private def declarationAcceptanceDateRow: Option[SummaryListRow] = userAnswers.ie043Data.TransitOperation.declarationAcceptanceDate.map(
     dec =>
       buildRowWithNoChangeLink(
         prefix = "declarationAcceptanceDate",
