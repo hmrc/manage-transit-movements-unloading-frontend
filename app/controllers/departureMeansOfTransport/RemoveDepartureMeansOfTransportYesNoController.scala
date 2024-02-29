@@ -18,10 +18,7 @@ package controllers.departureMeansOfTransport
 
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.departureTransportMeans.TransportMeansIdentification
-import models.requests.SpecificDataRequestProvider1
-import models.{ArrivalId, Index, Mode, TransportMeans}
-import pages.departureMeansOfTransport._
+import models.{ArrivalId, Index, Mode, TransportMeans, UserAnswers}
 import pages.sections.TransportMeansSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -38,7 +35,6 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
   sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: YesNoFormProvider,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveDepartureMeansOfTransportYesNoView
 )(implicit ec: ExecutionContext)
@@ -48,34 +44,23 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
   private val form: Form[Boolean] = formProvider("departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo")
 
   private def addAnother(arrivalId: ArrivalId, mode: Mode): Call =
-    controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(
-      arrivalId,
-      mode
-    )
+    routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, mode)
 
-  private def formatInsetText(transportMeansIndex: Index,
-                              request: SpecificDataRequestProvider1[TransportMeansIdentification]#SpecificDataRequest[AnyContent]
-  ): String = {
-    val identificationType: TransportMeansIdentification = request.arg
-    val identificationNumber: Option[String]             = request.userAnswers.get(VehicleIdentificationNumberPage(transportMeansIndex))
-    val insetText                                        = TransportMeans(identificationType.description, identificationNumber).asString
-    insetText
-  }
+  private def formatInsetText(userAnswers: UserAnswers, transportMeansIndex: Index): String =
+    TransportMeans(userAnswers, transportMeansIndex).toString
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, transportMeansIndex: Index): Action[AnyContent] = actions
-    .requireIndex(arrivalId, TransportMeansSection(transportMeansIndex), addAnother(arrivalId, mode))
-    .andThen(getMandatoryPage(TransportMeansIdentificationPage(transportMeansIndex))) {
+    .requireIndex(arrivalId, TransportMeansSection(transportMeansIndex), addAnother(arrivalId, mode)) {
       implicit request =>
-        val insetText: String = formatInsetText(transportMeansIndex, request)
+        val insetText: String = formatInsetText(request.userAnswers, transportMeansIndex)
         Ok(view(form, request.userAnswers.mrn, arrivalId, transportMeansIndex, insetText, mode))
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode, transportMeansIndex: Index): Action[AnyContent] = actions
     .requireIndex(arrivalId, TransportMeansSection(transportMeansIndex), addAnother(arrivalId, mode))
-    .andThen(getMandatoryPage(TransportMeansIdentificationPage(transportMeansIndex)))
     .async {
       implicit request =>
-        val insetText: String = formatInsetText(transportMeansIndex, request)
+        val insetText: String = formatInsetText(request.userAnswers, transportMeansIndex)
         form
           .bindFromRequest()
           .fold(

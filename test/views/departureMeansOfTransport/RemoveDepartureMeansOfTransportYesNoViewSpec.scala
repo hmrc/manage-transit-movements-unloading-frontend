@@ -27,9 +27,9 @@ class RemoveDepartureMeansOfTransportYesNoViewSpec extends YesNoViewBehaviours {
 
   val identificationType: TransportMeansIdentification = TransportMeansIdentification("80", "European vessel identification number (ENI Code)")
 
-  val identificationNumber: Option[String] = Some("1234")
+  val identificationNumber: String = "1234"
 
-  val insetText: String = TransportMeans(identificationType.description, identificationNumber).asString
+  val insetText: String = TransportMeans(Some(identificationType), Some(identificationNumber)).toString
   val mode              = NormalMode
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
@@ -49,7 +49,7 @@ class RemoveDepartureMeansOfTransportYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithRadioItems()
 
-  behave like pageWithInsetText(s"${identificationType.description} - ${identificationNumber.get}")
+  behave like pageWithInsetText(s"${identificationType.description} - $identificationNumber")
 
   behave like pageWithSubmitButton("Continue")
 }

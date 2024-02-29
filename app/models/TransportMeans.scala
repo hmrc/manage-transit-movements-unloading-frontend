@@ -16,10 +16,25 @@
 
 package models
 
-case class TransportMeans(identificationType: String, identificationNumber: Option[String]) {
+import models.departureTransportMeans.TransportMeansIdentification
 
-  def asString: String = identificationNumber match {
-    case Some(value) => s"$identificationType - $value"
-    case None        => identificationType
+case class TransportMeans(identificationType: Option[TransportMeansIdentification], identificationNumber: Option[String]) {
+
+  override def toString: String = (identificationType, identificationNumber) match {
+    case (Some(a), Some(b)) => s"$a - $b"
+    case (Some(a), None)    => a.toString
+    case (None, Some(b))    => b
+    case (None, None)       => "" // TODO - do we need some default value?
+  }
+}
+
+object TransportMeans {
+
+  def apply(userAnswers: UserAnswers, transportMeansIndex: Index): TransportMeans = {
+    import pages.departureMeansOfTransport._
+    new TransportMeans(
+      userAnswers.get(TransportMeansIdentificationPage(transportMeansIndex)),
+      userAnswers.get(VehicleIdentificationNumberPage(transportMeansIndex))
+    )
   }
 }

@@ -58,7 +58,7 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
             .setValue(TransportMeansIdentificationPage(transportMeansIndex), identifier)
             .setValue(VehicleIdentificationNumberPage(transportMeansIndex), identificationNumber)
 
-          val insetText = TransportMeans(identifier.description, Some(identificationNumber)).asString
+          val insetText = TransportMeans(Some(identifier), Some(identificationNumber)).toString
 
           setExistingUserAnswers(userAnswers)
 
@@ -148,7 +148,7 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
             .setValue(TransportMeansIdentificationPage(transportMeansIndex), identifier)
             .setValue(VehicleIdentificationNumberPage(transportMeansIndex), identificationNumber)
 
-          val insetText = TransportMeans(identifier.description, Option(identificationNumber)).asString
+          val insetText = TransportMeans(Some(identifier), Some(identificationNumber)).toString
 
           setExistingUserAnswers(userAnswers)
 
