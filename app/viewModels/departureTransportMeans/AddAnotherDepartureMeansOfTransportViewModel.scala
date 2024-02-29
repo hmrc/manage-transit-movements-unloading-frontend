@@ -17,12 +17,12 @@
 package viewModels.departureTransportMeans
 
 import config.FrontendAppConfig
-import models.{ArrivalId, Index, Mode, UserAnswers}
+import models.{ArrivalId, Mode, UserAnswers}
 import pages.departureMeansOfTransport.{TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 import pages.sections.TransportMeansListSection
 import play.api.i18n.Messages
-import play.api.libs.json.JsArray
 import play.api.mvc.Call
+import utils.answersHelpers.RichOptionalJsArray
 import viewModels.{AddAnotherViewModel, ListItem}
 
 case class AddAnotherDepartureMeansOfTransportViewModel(listItems: Seq[ListItem], onSubmitCall: Call) extends AddAnotherViewModel {
@@ -41,13 +41,8 @@ object AddAnotherDepartureMeansOfTransportViewModel {
 
       val listItems = userAnswers
         .get(TransportMeansListSection)
-        .getOrElse(JsArray())
-        .value
-        .zipWithIndex
-        .map {
-          case (_, i) =>
-            val index = Index(i)
-
+        .mapWithIndex {
+          case (_, index) =>
             def prefix(increment: Int) = messages("departureMeansOfTransportPrefix.prefix", increment)
 
             val name =
@@ -65,7 +60,6 @@ object AddAnotherDepartureMeansOfTransportViewModel {
               removeUrl = Some(Call("GET", "#").url) //TODO: To be added later
             )
         }
-        .toSeq
 
       new AddAnotherDepartureMeansOfTransportViewModel(
         listItems,

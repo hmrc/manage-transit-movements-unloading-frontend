@@ -93,41 +93,6 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
         )
     }
 
-  implicit class RichJsArray(arr: JsArray) {
-
-    def mapWithIndex[T](f: (JsValue, Index) => T): Seq[T] =
-      JsArray {
-        arr.value.filter {
-          case JsObject(underlying) =>
-            underlying.keys.toSeq match {
-              case "sequenceNumber" :: Nil => false
-              case _                       => true
-            }
-          case _ => true
-        }
-      }.zipWithIndex.map {
-        case (value, i) => f(value, i)
-      }
-
-    def zipWithIndex: List[(JsValue, Index)] = arr.value.toList.zipWithIndex.map(
-      x => (x._1, Index(x._2))
-    )
-
-    def isEmpty: Boolean = arr.value.isEmpty
-  }
-
-  implicit class RichOptionalJsArray(arr: Option[JsArray]) {
-
-    def mapWithIndex[T](f: (JsValue, Index) => T): Seq[T] =
-      arr.map(_.mapWithIndex(f)).getOrElse(Nil)
-
-    def validate[T](implicit rds: Reads[T]): Option[T] =
-      arr.flatMap(_.validate[T].asOpt)
-
-    def length: Int = arr.getOrElse(JsArray()).value.length
-
-  }
-
   def getAnswersAndBuildSectionRows(section: Section[JsArray])(f: Index => Option[SummaryListRow]): Seq[SummaryListRow] =
     userAnswers
       .get(section)

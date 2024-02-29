@@ -22,9 +22,6 @@ import play.api.libs.json.{JsArray, JsValue, Json}
 
 class AnswersHelperSpec extends SpecBase {
 
-  private val answersHelper = new AnswersHelper(emptyUserAnswers)
-  import answersHelper._
-
   "mapWithIndex" - {
     "must filter out js objects which only contain a sequence number" in {
       val array = Json
@@ -63,5 +60,44 @@ class AnswersHelperSpec extends SpecBase {
       )
       result(1)._2 mustBe Index(1)
     }
+
+    "must filter out departureTransportMeans which only contain a sequence number" in {
+      val array = Json
+        .parse("""
+          |[
+          |        {
+          |          "sequenceNumber": "dtm-1"
+          |        },
+          |        {
+          |          "sequenceNumber": "dtm-2",
+          |          "identificationNumber": "BoatyMcBoatFace2"
+          |        },
+          |        {
+          |          "sequenceNumber": "dtm-3",
+          |          "identificationNumber": "BoatyMcBoatFace3"
+          |        }
+          |      ]
+          |""".stripMargin)
+        .as[JsArray]
+
+      val result = array.mapWithIndex[(JsValue, Index)] {
+        case (jsValue, index) => (jsValue, index)
+      }
+
+      result.size mustBe 2
+
+      result.head._1 mustBe Json.obj(
+        "sequenceNumber"       -> "dtm-2",
+        "identificationNumber" -> "BoatyMcBoatFace2"
+      )
+      result.head._2 mustBe Index(0)
+
+      result(1)._1 mustBe Json.obj(
+        "sequenceNumber"       -> "dtm-3",
+        "identificationNumber" -> "BoatyMcBoatFace3"
+      )
+      result(1)._2 mustBe Index(1)
+    }
+
   }
 }

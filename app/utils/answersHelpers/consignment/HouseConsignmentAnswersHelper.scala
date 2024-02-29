@@ -23,7 +23,7 @@ import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.answersHelpers.AnswersHelper
+import utils.answersHelpers.{AnswersHelper, RichOptionalJsArray}
 import utils.answersHelpers.consignment.houseConsignment.{ConsignmentItemAnswersHelper, DepartureTransportMeansAnswersHelper}
 import viewModels.sections.Section
 import viewModels.sections.Section.AccordionSection
