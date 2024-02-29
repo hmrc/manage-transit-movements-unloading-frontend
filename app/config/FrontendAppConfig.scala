@@ -30,6 +30,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val contactHost: String = configuration.get[String]("contact-frontend.host")
 
   lazy val maxItems: Int = configuration.get[Int]("limits.maxItems")
+  lazy val maxSeals: Int = configuration.get[Int]("limits.maxSeals")
 
   val showPhaseBanner: Boolean        = configuration.get[Boolean]("banners.showPhase")
   val userResearchUrl: String         = configuration.get[String]("urls.userResearch")

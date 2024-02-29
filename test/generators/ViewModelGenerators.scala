@@ -34,7 +34,7 @@ import viewModels.houseConsignment.index.items.additionalReference.{AdditionalRe
 import viewModels.houseConsignment.index.items.document.{ItemsAdditionalInformationViewModel, ItemsDocumentReferenceNumberViewModel}
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
-import viewModels.transportEquipment.index.{ApplyAnotherItemViewModel, ContainerIdentificationNumberViewModel}
+import viewModels.transportEquipment.index.{AddAnotherSealViewModel, ApplyAnotherItemViewModel, ContainerIdentificationNumberViewModel}
 import viewModels.{ListItem, UnloadingFindingsViewModel}
 
 trait ViewModelGenerators {
@@ -336,4 +336,11 @@ trait ViewModelGenerators {
         isParagraphRequired <- arbitrary[Boolean]
       } yield viewModels.additionalReference.index.AdditionalReferenceNumberViewModel(heading, title, requiredError, isParagraphRequired)
     }
+
+  implicit lazy val arbitraryAddAnotherSealViewModel: Arbitrary[AddAnotherSealViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+    } yield AddAnotherSealViewModel(listItems, onSubmitCall)
+  }
 }
