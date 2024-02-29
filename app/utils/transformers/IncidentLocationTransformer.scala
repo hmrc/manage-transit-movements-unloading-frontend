@@ -43,7 +43,6 @@ class IncidentLocationTransformer @Inject() (
             val pipeline = set(QualifierOfIdentificationPage(incidentIndex), qualifierOfIdentification) andThen
               set(UNLocodePage(incidentIndex), unLocode) andThen
               set(CountryPage(incidentIndex), country)
-
             pipeline(userAnswers)
           }
         } yield userAnswers

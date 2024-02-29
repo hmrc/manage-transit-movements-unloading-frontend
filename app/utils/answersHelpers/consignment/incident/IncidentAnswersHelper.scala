@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package utils.answersHelpers.consignment
+package utils.answersHelpers.consignment.incident
 
+import generated.TranshipmentType02
 import models.reference.{Country, Incident, QualifierOfIdentification}
-import models.{Coordinates, Index, UserAnswers}
+import models.{Coordinates, DynamicAddress, Index, UserAnswers}
 import pages.incident.endorsement.EndorsementCountryPage
 import pages.incident.location._
 import pages.incident.{IncidentCodePage, IncidentTextPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
+import utils.answersHelpers.consignment.transhipment.TranshipmentAnswersHelper
+import viewModels.sections.Section
+import viewModels.sections.Section.AccordionSection
 
 class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
@@ -131,5 +135,56 @@ class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(impl
           answer = formatAsText(unlocode)
         )
     }
+
+  def incidentLocationAddressRow: Option[SummaryListRow] = userAnswers.ie043Data.Consignment
+    .flatMap(
+      _.Incident
+        .lift(incidentIndex.position)
+        .flatMap(
+          _.Location.Address.map(
+            add => DynamicAddress(add.streetAndNumber, add.city, add.postcode)
+          )
+        )
+    )
+    .map {
+      dynamicAddress =>
+        buildRowWithNoChangeLink(
+          prefix = "unloadingFindings.incident.location.address",
+          answer = formatAsHtmlContent(dynamicAddress)
+        )
+    }
+
+  def incidentTransportEquipments: Seq[Section] =
+    userAnswers.ie043Data.Consignment
+      .flatMap(_.Incident.lift(incidentIndex.position))
+      .map(_.TransportEquipment)
+      .toSeq
+      .flatten
+      .zipWithIndex
+      .map {
+        case (transportEquipmentType0, index) =>
+          val equipmentIndex = Index(index)
+          val helper         = new IncidentTransportEquipmentAnswersHelper(userAnswers, transportEquipmentType0)
+
+          val rows = Seq(helper.containerIdentificationNumber, helper.transportEquipmentSeals, helper.itemNumber).flatten
+
+          AccordionSection(messages("unloadingFindings.incident.transportEquipment.heading", equipmentIndex.display), rows)
+      }
+
+  def incidentTranshipment: Seq[SummaryListRow] = {
+    val maybeTranshipmentType0: Option[TranshipmentType02] = userAnswers.ie043Data.Consignment
+      .flatMap(_.Incident.lift(incidentIndex.position))
+      .flatMap(_.Transhipment)
+
+    val helper = new TranshipmentAnswersHelper(userAnswers, maybeTranshipmentType0, incidentIndex)
+
+    Seq(
+      helper.containerIndicator,
+      helper.typeOfIdentification,
+      helper.identificationNumber,
+      helper.nationality
+    ).flatten
+
+  }
 
 }

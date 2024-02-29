@@ -34,11 +34,10 @@ trait AddAnotherViewModel {
 
   val prefix: String
 
-  def title(implicit messages: Messages): String           = messages(s"$prefix.$emptyOrSingularOrPlural.title", count)
-  def heading(implicit messages: Messages): String         = messages(s"$prefix.$emptyOrSingularOrPlural.heading", count)
-  def legend(implicit messages: Messages): String          = messages(s"$prefix.label")
-  def emptyListLegend(implicit messages: Messages): String = messages(s"$prefix.empty.label")
-  def maxLimitLabel(implicit messages: Messages): String   = messages(s"$prefix.maxLimit.label")
+  def title(implicit messages: Messages): String         = messages(s"$prefix.$emptyOrSingularOrPlural.title", count)
+  def heading(implicit messages: Messages): String       = messages(s"$prefix.$emptyOrSingularOrPlural.heading", count)
+  def legend(implicit messages: Messages): String        = if (count > 0) messages(s"$prefix.label") else messages(s"$prefix.empty.label")
+  def maxLimitLabel(implicit messages: Messages): String = messages(s"$prefix.maxLimit.label")
 
   def maxCount(implicit config: FrontendAppConfig): Int
   def allowMore(implicit config: FrontendAppConfig): Boolean = count < maxCount

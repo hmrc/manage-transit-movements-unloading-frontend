@@ -17,35 +17,11 @@
 package pages.sections.additionalReference
 
 import models.Index
-import models.reference.AdditionalReferenceType
-import pages.QuestionPage
-import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
-import pages.sections.additionalReference.AdditionalReferenceSection.AdditionalReference
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{__, JsPath, Reads}
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-case class AdditionalReferenceSection(referenceIndex: Index) extends QuestionPage[AdditionalReference] {
+case class AdditionalReferenceSection(referenceIndex: Index) extends Section[JsObject] {
 
-  override def path: JsPath = AdditionalReferencesSection.path \ referenceIndex.position \ toString
+  override def path: JsPath = AdditionalReferencesSection.path \ referenceIndex.position
 
-  override def toString: String = "additionalReference"
-}
-
-object AdditionalReferenceSection {
-
-  case class AdditionalReference(typeValue: AdditionalReferenceType, referenceNumber: Option[String]) {
-
-    override def toString: String = referenceNumber match {
-      case Some(refNumber) => s"${typeValue.toString} - $refNumber"
-      case None            => typeValue.toString
-    }
-  }
-
-  object AdditionalReference {
-
-    def reads(index: Index): Reads[AdditionalReference] = (
-      (__ \ AdditionalReferenceTypePage(index).toString).read[AdditionalReferenceType] and
-        (__ \ AdditionalReferenceNumberPage(index).toString).readNullable[String]
-    )(AdditionalReference.apply _)
-  }
 }

@@ -16,7 +16,10 @@
 
 package utils.answersHelpers.consignment.houseConsignment
 
+import models.DocType.Previous
 import models.Index
+import models.reference.Country
+import models.reference.DocumentType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.NetWeightPage
@@ -50,6 +53,58 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
 
               result.key.value mustBe "Description"
               result.value.value mustBe value
+              result.actions must not be defined
+          }
+        }
+      }
+    }
+
+    "declarationTypeRow" - {
+      val page = DeclarationTypePage(hcIndex, itemIndex)
+      "must return None" - {
+        s"when $page undefined" in {
+          val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
+          helper.declarationType mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $page defined" in {
+          forAll(Gen.alphaNumStr) {
+            value =>
+              val answers = emptyUserAnswers.setValue(page, value)
+
+              val helper = new ConsignmentItemAnswersHelper(answers, hcIndex, itemIndex)
+              val result = helper.declarationType.value
+
+              result.key.value mustBe "Declaration type"
+              result.value.value mustBe value
+              result.actions must not be defined
+          }
+        }
+      }
+    }
+
+    "countryOfDestinationRow" - {
+      val page = CountryOfDestinationPage(hcIndex, itemIndex)
+      "must return None" - {
+        s"when $page undefined" in {
+          val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
+          helper.countryOfDestination mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $page defined" in {
+          forAll(arbitrary[Country]) {
+            value =>
+              val answers = emptyUserAnswers.setValue(page, value)
+
+              val helper = new ConsignmentItemAnswersHelper(answers, hcIndex, itemIndex)
+              val result = helper.countryOfDestination.value
+
+              result.key.value mustBe "Country of destination"
+              result.value.value mustBe value.description
               result.actions must not be defined
           }
         }
@@ -211,24 +266,33 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
     "documentSections" - {
       import pages.houseConsignment.index.items.document._
       "must generate accordion sections" in {
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (referenceNumber, additionalInformation) =>
+        forAll(arbitrary[DocumentType], Gen.alphaNumStr, Gen.alphaNumStr) {
+          (documentType, referenceNumber, additionalInformation) =>
             val answers = emptyUserAnswers
+              .setValue(TypePage(hcIndex, itemIndex, Index(0)), documentType)
               .setValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(0)), referenceNumber)
               .setValue(AdditionalInformationPage(hcIndex, itemIndex, Index(0)), additionalInformation)
+              .setValue(TypePage(hcIndex, itemIndex, Index(1)), documentType)
               .setValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(1)), referenceNumber)
               .setValue(AdditionalInformationPage(hcIndex, itemIndex, Index(1)), additionalInformation)
+              .setValue(TypePage(hcIndex, itemIndex, Index(2)), documentType.copy(`type` = Previous))
+              .setValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(2)), referenceNumber)
+              .setValue(AdditionalInformationPage(hcIndex, itemIndex, Index(2)), additionalInformation)
 
             val helper = new ConsignmentItemAnswersHelper(answers, hcIndex, itemIndex)
             val result = helper.documentSections
 
             result.head mustBe a[AccordionSection]
             result.head.sectionTitle.value mustBe "Document 1"
-            result.head.rows.size mustBe 2
+            result.head.rows.size mustBe 3
 
             result(1) mustBe a[AccordionSection]
             result(1).sectionTitle.value mustBe "Document 2"
-            result(1).rows.size mustBe 2
+            result(1).rows.size mustBe 3
+
+            result(2) mustBe a[AccordionSection]
+            result(2).sectionTitle.value mustBe "Document 3"
+            result(2).rows.size mustBe 3
         }
       }
     }

@@ -60,7 +60,8 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
   def buildRowWithNoChangeLink[T](
     data: Option[T],
     formatAnswer: T => Content,
-    prefix: String
+    prefix: String,
+    args: Any*
   ): Option[SummaryListRow] =
     data map {
       answer =>
@@ -69,7 +70,7 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
           answer = formatAnswer(answer),
           id = None,
           call = None,
-          args = Nil
+          args = args: _*
         )
     }
 

@@ -36,6 +36,8 @@ import viewModels.sections.Section.{AccordionSection, StaticSection}
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
 import viewModels.transportEquipment.index.{AddAnotherSealViewModel, ApplyAnotherItemViewModel, ContainerIdentificationNumberViewModel}
 import viewModels.{ListItem, UnloadingFindingsViewModel}
+import viewModels.transportEquipment.index.{ApplyAnotherItemViewModel, ContainerIdentificationNumberViewModel}
+import viewModels.{ListItem, ListItemForApply, UnloadingFindingsViewModel}
 
 trait ViewModelGenerators {
   self: Generators =>
@@ -237,16 +239,31 @@ trait ViewModelGenerators {
   implicit lazy val arbitraryListItem: Arbitrary[ListItem] = Arbitrary {
     for {
       name      <- nonEmptyString
+      changeUrl <- Gen.option(nonEmptyString)
+      removeUrl <- Gen.option(nonEmptyString)
+    } yield ListItem(name, changeUrl, removeUrl)
+  }
+
+  implicit lazy val arbitraryListItemForApply: Arbitrary[ListItemForApply] = Arbitrary {
+    for {
+      name      <- nonEmptyString
       changeUrl <- nonEmptyString
       prefix    <- nonEmptyString
-    } yield ListItem(name, changeUrl, prefix)
+    } yield ListItemForApply(name, changeUrl, prefix)
   }
 
   implicit lazy val arbitraryApplyAnotherItemViewModel: Arbitrary[ApplyAnotherItemViewModel] = Arbitrary {
     for {
-      listItems    <- arbitrary[Seq[ListItem]]
+      listItems    <- arbitrary[Seq[ListItemForApply]]
       onSubmitCall <- arbitrary[Call]
     } yield ApplyAnotherItemViewModel(listItems, onSubmitCall, Index(0), isNumberItemsZero = false)
+  }
+
+  implicit lazy val arbitraryAddAnotherDepartureMeansOfTransportViewModel: Arbitrary[AddAnotherDepartureMeansOfTransportViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+    } yield AddAnotherDepartureMeansOfTransportViewModel(listItems, onSubmitCall)
   }
 
   implicit lazy val arbitraryContainerIdentificationNumberViewModel: Arbitrary[ContainerIdentificationNumberViewModel] = Arbitrary {
@@ -301,21 +318,11 @@ trait ViewModelGenerators {
 
   implicit lazy val arbitraryItemsAdditionalReferenceNumberViewModel: Arbitrary[AdditionalReferenceNumberViewModel] = Arbitrary {
     for {
-      heading             <- nonEmptyString
-      title               <- nonEmptyString
-      requiredError       <- nonEmptyString
-      arrivalId           <- nonEmptyString
-      isParagraphRequired <- arbitrary[Boolean]
-    } yield AdditionalReferenceNumberViewModel(heading,
-                                               title,
-                                               requiredError,
-                                               ArrivalId(arrivalId),
-                                               NormalMode,
-                                               Index(0),
-                                               Index(0),
-                                               Index(0),
-                                               isParagraphRequired
-    )
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+      arrivalId     <- nonEmptyString
+    } yield AdditionalReferenceNumberViewModel(heading, title, requiredError, ArrivalId(arrivalId), NormalMode, Index(0), Index(0), Index(0))
   }
 
   implicit lazy val arbitraryAdditionalReferenceViewModel: Arbitrary[AdditionalReferenceTypeViewModel] = Arbitrary {
@@ -330,11 +337,10 @@ trait ViewModelGenerators {
   implicit lazy val arbitraryAdditionalReferenceNumberViewModel: Arbitrary[viewModels.additionalReference.index.AdditionalReferenceNumberViewModel] =
     Arbitrary {
       for {
-        heading             <- nonEmptyString
-        title               <- nonEmptyString
-        requiredError       <- nonEmptyString
-        isParagraphRequired <- arbitrary[Boolean]
-      } yield viewModels.additionalReference.index.AdditionalReferenceNumberViewModel(heading, title, requiredError, isParagraphRequired)
+        heading       <- nonEmptyString
+        title         <- nonEmptyString
+        requiredError <- nonEmptyString
+      } yield viewModels.additionalReference.index.AdditionalReferenceNumberViewModel(heading, title, requiredError)
     }
 
   implicit lazy val arbitraryAddAnotherSealViewModel: Arbitrary[AddAnotherSealViewModel] = Arbitrary {

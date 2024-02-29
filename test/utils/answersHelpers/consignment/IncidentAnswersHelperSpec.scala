@@ -16,16 +16,19 @@
 
 package utils.answersHelpers.consignment
 
-import generated.{ConsignmentType05, EndorsementType03, GNSSType, IncidentType04, LocationType02, Number0}
+import generated.{AddressType18, ConsignmentType05, EndorsementType03, GNSSType, IncidentType04, LocationType02, Number0, TranshipmentType02}
 import models.Coordinates
+import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.{Country, Incident, QualifierOfIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.incident.endorsement.EndorsementCountryPage
 import pages.incident.location._
+import pages.incident.transhipment.{IdentificationPage, NationalityPage}
 import pages.incident.{IncidentCodePage, IncidentTextPage}
 import utils.Format.cyaDateFormatter
 import utils.answersHelpers.AnswersHelperSpecBase
+import utils.answersHelpers.consignment.incident.IncidentAnswersHelper
 
 class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
 
@@ -259,6 +262,42 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
       }
     }
 
+    "incidentLocationAddressRow" - {
+      "must return None" - {
+        s"when location address undefined" in {
+          val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
+          helper.incidentLocationAddressRow mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when location address defined" in {
+          forAll(arbitrary[IncidentType04], arbitrary[LocationType02]) {
+            (incident, location) =>
+              val addressType18 = Some(AddressType18("streetAndNumber", Some("postcode"), "city"))
+              val consignment: ConsignmentType05 = ConsignmentType05(
+                containerIndicator = Number0,
+                Incident = Seq(
+                  incident.copy(Location =
+                    LocationType02(location.qualifierOfIdentification, location.UNLocode, location.country, location.GNSS, addressType18)
+                  )
+                )
+              )
+
+              val answers = emptyUserAnswers.copy(ie043Data = emptyUserAnswers.ie043Data.copy(Consignment = Some(consignment)))
+
+              val helper = new IncidentAnswersHelper(answers, index)
+              val result = helper.incidentLocationAddressRow.value
+
+              result.key.value mustBe "Address"
+              result.value.value mustBe s"${addressType18.value.streetAndNumber}<br>${addressType18.value.city}<br>${addressType18.value.postcode.get}"
+              val action = result.actions
+              action mustBe None
+          }
+        }
+      }
+    }
+
     "incidentCoordinatesRow" - {
       "must return None" - {
         s"when incident undefined" in {
@@ -318,6 +357,48 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
               result.value.value mustBe unLocode
               val action = result.actions
               action mustBe None
+          }
+        }
+      }
+    }
+
+    "incidentTranshipment" - {
+      "must return Nil" - {
+        s"when transhipment undefined" in {
+          val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
+          helper.incidentTranshipment mustBe Nil
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when incident defined" in {
+          forAll(arbitrary[IncidentType04], arbitrary[TranshipmentType02], arbitrary[Country], arbitrary[TransportMeansIdentification]) {
+            (incident, transhipment, country, identification) =>
+              val consignment: ConsignmentType05 = ConsignmentType05(
+                containerIndicator = Number0,
+                Incident = Seq(incident.copy(Transhipment = Some(transhipment)))
+              )
+
+              val answers = emptyUserAnswers
+                .copy(ie043Data = emptyUserAnswers.ie043Data.copy(Consignment = Some(consignment)))
+                .setValue(IdentificationPage(index), identification)
+                .setValue(NationalityPage(index), country)
+
+              val helper = new IncidentAnswersHelper(answers, index)
+              val result = helper.incidentTranshipment
+
+              result.head.key.value mustBe "Container indicator"
+              result.head.value.value mustBe transhipment.containerIndicator.toString
+
+              result(1).key.value mustBe "Identification type"
+              result(1).value.value mustBe identification.toString
+
+              result(2).key.value mustBe "Identification number"
+              result(2).value.value mustBe transhipment.TransportMeans.identificationNumber
+
+              result(3).key.value mustBe "Registered country"
+              result(3).value.value mustBe country.description
+
           }
         }
       }

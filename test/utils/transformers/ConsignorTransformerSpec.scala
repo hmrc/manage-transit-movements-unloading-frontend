@@ -17,32 +17,102 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.ConsignorType06
+import connectors.ReferenceDataConnector
+import generated._
 import generators.Generators
+import models.reference.Country
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{reset, verifyNoInteractions, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.{ConsignorIdentifierPage, ConsignorNamePage}
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
+
+import scala.concurrent.Future
 
 class ConsignorTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val transformer = app.injector.instanceOf[ConsignorTransformer]
 
-  "must transform data" - {
-    "when consignee defined" in {
-      forAll(arbitrary[ConsignorType06]) {
-        consignor =>
-          val result = transformer.transform(Some(consignor), hcIndex).apply(emptyUserAnswers).futureValue
+  private lazy val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
-          result.get(ConsignorIdentifierPage(hcIndex)) mustBe consignor.identificationNumber
-          result.get(ConsignorNamePage(hcIndex)) mustBe consignor.name
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(
+        bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
+      )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockReferenceDataConnector)
+  }
+
+  "must transform data" - {
+    "at consignment level" - {
+      import pages.consignor._
+
+      "when consignee defined" - {
+        "when address defined" in {
+          forAll(arbitrary[ConsignorType05], arbitrary[AddressType07], arbitrary[Country]) {
+            (consignor, address, country) =>
+              beforeEach()
+
+              val input = consignor.copy(Address = Some(address))
+
+              when(mockReferenceDataConnector.getCountry(eqTo(address.country))(any(), any()))
+                .thenReturn(Future.successful(country))
+
+              val result = transformer.transform(Some(input)).apply(emptyUserAnswers).futureValue
+
+              result.getValue(CountryPage) mustBe country
+          }
+        }
+
+        "when address undefined" in {
+          forAll(arbitrary[ConsignorType05]) {
+            consignor =>
+              beforeEach()
+
+              val input = consignor.copy(Address = None)
+
+              val result = transformer.transform(Some(input)).apply(emptyUserAnswers).futureValue
+
+              result.get(CountryPage) must not be defined
+
+              verifyNoInteractions(mockReferenceDataConnector)
+          }
+        }
+      }
+
+      "when consignee undefined" in {
+        val result = transformer.transform(None).apply(emptyUserAnswers).futureValue
+
+        result.get(CountryPage) must not be defined
+
+        verifyNoInteractions(mockReferenceDataConnector)
       }
     }
 
-    "when consignee undefined" in {
-      val result = transformer.transform(None, hcIndex).apply(emptyUserAnswers).futureValue
+    "at house consignment level" - {
+      import pages.{ConsignorIdentifierPage, ConsignorNamePage}
 
-      result.get(ConsignorIdentifierPage(hcIndex)) must not be defined
-      result.get(ConsignorNamePage(hcIndex)) must not be defined
+      "when consignee defined" in {
+        forAll(arbitrary[ConsignorType06]) {
+          consignor =>
+            val result = transformer.transform(Some(consignor), hcIndex).apply(emptyUserAnswers).futureValue
+
+            result.get(ConsignorIdentifierPage(hcIndex)) mustBe consignor.identificationNumber
+            result.get(ConsignorNamePage(hcIndex)) mustBe consignor.name
+        }
+      }
+
+      "when consignee undefined" in {
+        val result = transformer.transform(None, hcIndex).apply(emptyUserAnswers).futureValue
+
+        result.get(ConsignorIdentifierPage(hcIndex)) must not be defined
+        result.get(ConsignorNamePage(hcIndex)) must not be defined
+      }
     }
   }
 }

@@ -18,36 +18,68 @@ package utils.answersHelpers.consignment.houseConsignment.item
 
 import models.reference.AdditionalReferenceType
 import org.scalacheck.Arbitrary.arbitrary
-import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
+import org.scalacheck.Gen
+import pages.houseConsignment.index.items.additionalReference._
 import utils.answersHelpers.AnswersHelperSpecBase
 
 class AdditionalReferencesAnswersHelperSpec extends AnswersHelperSpecBase {
 
   "AdditionalReferencesAnswersHelper" - {
 
-    "additionalReferenceRow" - {
-      val page = AdditionalReferencePage(hcIndex, itemIndex, additionalReferenceIndex)
+    "code" - {
+      val page = AdditionalReferencePage(hcIndex, itemIndex, index)
 
       "must return None" - {
         s"when $page undefined" in {
-          val helper = new AdditionalReferencesAnswerHelper(emptyUserAnswers, hcIndex, itemIndex, additionalReferenceIndex)
-          helper.additionalReferenceRow mustBe None
+          val helper = new AdditionalReferencesAnswerHelper(emptyUserAnswers, hcIndex, itemIndex, index)
+          helper.code mustBe None
         }
       }
 
-      "must return Some(Row)" - {
-        s"when $page defined" in {
-          forAll(arbitrary[AdditionalReferenceType]) {
-            value =>
-              val answers = emptyUserAnswers.setValue(page, value)
+      "must return Some(Row)" in {
+        forAll(arbitrary[AdditionalReferenceType]) {
+          value =>
+            val answers = emptyUserAnswers.setValue(page, value)
 
-              val helper = new AdditionalReferencesAnswerHelper(answers, hcIndex, itemIndex, additionalReferenceIndex)
-              val result = helper.additionalReferenceRow.value
+            val helper = new AdditionalReferencesAnswerHelper(answers, hcIndex, itemIndex, index)
+            val result = helper.code.value
 
-              result.key.value mustBe ""
-              result.value.value mustBe value.toString
-              result.actions.head.items.head.href mustBe "#"
-          }
+            result.key.value mustBe "Type"
+            result.value.value mustBe value.toString
+            val action = result.actions.value.items.head
+            action.content.value mustBe "Change"
+            action.href mustBe "#"
+            action.visuallyHiddenText.value mustBe "type for additional reference 1 in item 1"
+            action.id mustBe "change-additional-reference-type-1-1"
+        }
+      }
+    }
+
+    "referenceNumber" - {
+      val page = AdditionalReferenceNumberPage(hcIndex, itemIndex, index)
+
+      "must return None" - {
+        s"when $page undefined" in {
+          val helper = new AdditionalReferencesAnswerHelper(emptyUserAnswers, hcIndex, itemIndex, index)
+          helper.referenceNumber mustBe None
+        }
+      }
+
+      "must return Some(Row)" in {
+        forAll(Gen.alphaNumStr) {
+          value =>
+            val answers = emptyUserAnswers.setValue(page, value)
+
+            val helper = new AdditionalReferencesAnswerHelper(answers, hcIndex, itemIndex, index)
+            val result = helper.referenceNumber.value
+
+            result.key.value mustBe "Reference number"
+            result.value.value mustBe value
+            val action = result.actions.value.items.head
+            action.content.value mustBe "Change"
+            action.href mustBe "#"
+            action.visuallyHiddenText.value mustBe "reference number for additional reference 1 in item 1"
+            action.id mustBe "change-additional-reference-number-1-1"
         }
       }
     }

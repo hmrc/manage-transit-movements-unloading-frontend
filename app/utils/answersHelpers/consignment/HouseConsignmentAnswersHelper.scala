@@ -100,6 +100,8 @@ class HouseConsignmentAnswersHelper(
           sectionTitle = Some(messages("unloadingFindings.subsections.item", itemIndex.display)),
           rows = Seq(
             helper.descriptionRow,
+            helper.declarationType,
+            helper.countryOfDestination,
             helper.grossWeightRow,
             helper.netWeightRow,
             helper.cusCodeRow,
@@ -110,7 +112,7 @@ class HouseConsignmentAnswersHelper(
           children = Seq(
             helper.packageSections,
             helper.documentSections,
-            Seq(helper.additionalReferencesSection)
+            helper.additionalReferencesSection
           ).flatten
         )
     }

@@ -180,6 +180,21 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
         )
       )
 
+      val previousDocuments = Seq(
+        PreviousDocumentType06(
+          sequenceNumber = "1",
+          typeValue = "pd1 tv",
+          referenceNumber = "pd1 rn",
+          complementOfInformation = Some("pd1 coi")
+        ),
+        PreviousDocumentType06(
+          sequenceNumber = "2",
+          typeValue = "pd2 tv",
+          referenceNumber = "pd2 rn",
+          complementOfInformation = None
+        )
+      )
+
       when(mockReferenceDataConnector.getSupportingDocument(eqTo("sd1 tv"))(any(), any()))
         .thenReturn(Future.successful(DocumentType(Support, "sd1 tv", "sd1 d")))
 
@@ -192,7 +207,13 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
       when(mockReferenceDataConnector.getTransportDocument(eqTo("td2 tv"))(any(), any()))
         .thenReturn(Future.successful(DocumentType(Transport, "td2 tv", "td2 d")))
 
-      val result = transformer.transform(supportingDocuments, transportDocuments, Seq(), hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
+      when(mockReferenceDataConnector.getPreviousDocument(eqTo("pd1 tv"))(any(), any()))
+        .thenReturn(Future.successful(DocumentType(Previous, "pd1 tv", "pd1 d")))
+
+      when(mockReferenceDataConnector.getPreviousDocument(eqTo("pd2 tv"))(any(), any()))
+        .thenReturn(Future.successful(DocumentType(Previous, "pd2 tv", "pd2 d")))
+
+      val result = transformer.transform(supportingDocuments, transportDocuments, previousDocuments, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
 
       result.getSequenceNumber(DocumentSection(hcIndex, itemIndex, Index(0))) mustBe "1"
       result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(0))) mustBe "sd1 rn"
@@ -213,6 +234,14 @@ class DocumentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
       result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(3))) mustBe "td2 rn"
       result.get(AdditionalInformationPage(hcIndex, itemIndex, Index(3))) must not be defined
       result.getValue(TypePage(hcIndex, itemIndex, Index(3))).toString mustBe "Transport - (td2 tv) td2 d"
+
+      result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(4))) mustBe "pd1 rn"
+      result.getValue(AdditionalInformationPage(hcIndex, itemIndex, Index(4))) mustBe "pd1 coi"
+      result.getValue(TypePage(hcIndex, itemIndex, Index(4))).toString mustBe "Previous - (pd1 tv) pd1 d"
+
+      result.getValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(5))) mustBe "pd2 rn"
+      result.get(AdditionalInformationPage(hcIndex, itemIndex, Index(5))) must not be defined
+      result.getValue(TypePage(hcIndex, itemIndex, Index(5))).toString mustBe "Previous - (pd2 tv) pd2 d"
     }
   }
 }

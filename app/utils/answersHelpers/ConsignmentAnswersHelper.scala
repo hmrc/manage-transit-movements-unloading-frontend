@@ -17,10 +17,12 @@
 package utils.answersHelpers
 
 import models.DocType.Previous
-import models.{Link, SecurityType, UserAnswers}
+import models.reference.CustomsOffice
+import models.{Index, Link, SecurityType, UserAnswers}
 import pages.documents.TypePage
 import pages.grossMass.GrossMassPage
 import pages.sections._
+import pages.sections.additionalInformation.AdditionalInformationListSection
 import pages.sections.additionalReference.AdditionalReferencesSection
 import pages.sections.documents.DocumentsSection
 import pages.sections.incidents.IncidentsSection
@@ -31,6 +33,7 @@ import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.consignment._
+import utils.answersHelpers.consignment.incident.IncidentAnswersHelper
 import viewModels.sections.Section
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 
@@ -42,13 +45,13 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       declarationTypeRow,
       securityTypeRow,
       Some(reducedDatasetIndicatorRow),
-      Some(customsOfficeOfDestinationActual),
+      customsOfficeOfDestinationActual,
       grossMassRow,
       Some(traderAtDestinationRow)
     ).flatten
   )
 
-  def declarationTypeRow: Option[SummaryListRow] = userAnswers.ie043Data.TransitOperation.declarationType.map(
+  private def declarationTypeRow: Option[SummaryListRow] = userAnswers.ie043Data.TransitOperation.declarationType.map(
     dec =>
       buildRowWithNoChangeLink(
         prefix = "declarationType",
@@ -56,7 +59,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       )
   )
 
-  def securityTypeRow: Option[SummaryListRow] = getAnswerAndBuildRow[SecurityType](
+  private def securityTypeRow: Option[SummaryListRow] = getAnswerAndBuildRow[SecurityType](
     page = SecurityTypePage,
     formatAnswer = formatAsText,
     prefix = "securityType",
@@ -64,12 +67,12 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     call = None
   )
 
-  def reducedDatasetIndicatorRow: SummaryListRow = buildRowWithNoChangeLink(
+  private def reducedDatasetIndicatorRow: SummaryListRow = buildRowWithNoChangeLink(
     prefix = "reducedDatasetIndicator",
     answer = formatAsBoolean(userAnswers.ie043Data.TransitOperation.reducedDatasetIndicator.toString)
   )
 
-  def declarationAcceptanceDateRow: Option[SummaryListRow] = userAnswers.ie043Data.TransitOperation.declarationAcceptanceDate.map(
+  private def declarationAcceptanceDateRow: Option[SummaryListRow] = userAnswers.ie043Data.TransitOperation.declarationAcceptanceDate.map(
     dec =>
       buildRowWithNoChangeLink(
         prefix = "declarationAcceptanceDate",
@@ -84,12 +87,29 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     call = None
   )
 
-  def customsOfficeOfDestinationActual: SummaryListRow = buildRow(
-    prefix = "customsOfficeOfDestinationActual",
-    answer = userAnswers.get(CustomsOfficeOfDestinationActualPage).get.name.toText,
-    id = None,
-    call = None
-  )
+  def consignorSection: Option[Section] =
+    userAnswers.ie043Data.Consignment.flatMap(_.Consignor).map {
+      consignor =>
+        val helper = new ConsignorAnswersHelper(userAnswers)
+        StaticSection(
+          sectionTitle = messages("unloadingFindings.consignor.heading"),
+          rows = Seq(
+            helper.identificationNumber(consignor.identificationNumber),
+            helper.name(consignor.name),
+            helper.country,
+            helper.address(consignor.Address)
+          ).flatten
+        )
+    }
+
+  def customsOfficeOfDestinationActual: Option[SummaryListRow] =
+    getAnswerAndBuildRow[CustomsOffice](
+      page = CustomsOfficeOfDestinationActualPage,
+      formatAnswer = x => formatAsText(x.name),
+      prefix = "customsOfficeOfDestinationActual",
+      id = None,
+      call = None
+    )
 
   def holderOfTheTransitProcedureSection: Seq[Section] =
     userAnswers.ie043Data.HolderOfTheTransitProcedure.map {
@@ -115,119 +135,277 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     call = Some(Call(GET, "#"))
   )
 
-  def departureTransportMeansSections: Seq[Section] =
-    userAnswers.get(TransportMeansListSection).mapWithIndex {
-      case (_, index) =>
-        val helper = new DepartureTransportMeansAnswersHelper(userAnswers, index)
-        AccordionSection(
-          sectionTitle = messages("unloadingFindings.subsections.transportMeans", index.display),
-          rows = Seq(
+  def departureTransportMeansSection: Section =
+    userAnswers
+      .get(TransportMeansListSection)
+      .mapWithIndex {
+        case (_, index) =>
+          val helper = new DepartureTransportMeansAnswersHelper(userAnswers, index)
+          Seq(
             helper.transportMeansID,
             helper.transportMeansNumber,
             helper.transportRegisteredCountry
           ).flatten
+      } match {
+      case Nil =>
+        StaticSection(
+          sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans.parent.header")),
+          viewLinks = Seq(departureTransportMeansAddRemoveLink)
+        )
+      case sections =>
+        val children = sections.zipWithIndex.map {
+          case (rows, index) =>
+            AccordionSection(
+              sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans", Index(index).display)),
+              rows
+            )
+        }
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans.parent.header")),
+          children = children,
+          viewLinks = Seq(departureTransportMeansAddRemoveLink),
+          id = Some("departureTransportMeans")
         )
     }
 
-  def transportEquipmentSections: Seq[Section] =
+  def transportEquipmentSection: Section =
     userAnswers.get(TransportEquipmentListSection).mapWithIndex {
       (_, equipmentIndex) =>
         val helper = new TransportEquipmentAnswersHelper(userAnswers, equipmentIndex)
-        val rows = Seq(
-          Seq(helper.containerIdentificationNumber).flatten,
-          helper.transportEquipmentSeals
-        ).flatten
-
-        AccordionSection(
-          sectionTitle = messages("unloadingFindings.subsections.transportEquipment", equipmentIndex.display),
-          rows = rows
+        Seq(helper.containerIdentificationNumber, helper.transportEquipmentSeals).flatten
+    } match {
+      case Nil =>
+        StaticSection(
+          sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment.parent.heading")),
+          viewLinks = Seq(transportEquipmentAddRemoveLink)
         )
-    }
-
-  def additionalReferencesSections: Seq[Section] =
-    Seq(
-      AccordionSection(
-        sectionTitle = messages("unloadingFindings.additional.reference.heading"),
-        rows = getAnswersAndBuildSectionRows(AdditionalReferencesSection) {
-          referenceIndex =>
-            val helper = new AdditionalReferenceAnswersHelper(userAnswers, referenceIndex)
-            helper.additionalReference
+      case sectionsRows =>
+        val transportEquipments = sectionsRows.zipWithIndex.map {
+          case (rows, index) =>
+            val equipmentIndex = Index(index).display
+            AccordionSection(
+              sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment", equipmentIndex)),
+              viewLinks = Seq(sealsAddRemoveLink(equipmentIndex)),
+              rows = rows
+            )
         }
-      )
-    )
-
-  def incidentSections: Seq[Section] =
-    userAnswers.get(IncidentsSection).mapWithIndex {
-      case (_, incidentIndex) =>
-        val helper = new IncidentAnswersHelper(userAnswers, incidentIndex)
-
-        val rows = Seq(
-          helper.incidentCountryRow,
-          helper.incidentCodeRow,
-          helper.incidentDescriptionRow,
-          helper.incidentQualifierRow,
-          helper.incidentCoordinatesRow,
-          helper.incidentUnLocodeRow
-        ).flatten
-
-        val endorsementSection = StaticSection(
-          sectionTitle = Some(messages("unloadingFindings.subsections.incidents.endorsements")),
-          rows = Seq(
-            helper.incidentEndorsementDateRow,
-            helper.incidentEndorsementAuthorityRow,
-            helper.incidentEndorsementCountryRow,
-            helper.incidentEndorsementPlaceRow
-          ).flatten
-        )
-
         AccordionSection(
-          sectionTitle = Some(messages("unloadingFindings.subsections.incidents", incidentIndex.display)),
-          rows = rows,
-          children = Seq(endorsementSection)
+          sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment.parent.heading")),
+          viewLinks = Seq(transportEquipmentAddRemoveLink),
+          children = transportEquipments,
+          id = Some("transportEquipments")
         )
     }
 
-  def documentSections: Seq[Section] =
+  def additionalReferencesSection: Section =
+    userAnswers.get(AdditionalReferencesSection).mapWithIndex {
+      (_, referenceIndex) =>
+        val helper = new AdditionalReferenceAnswersHelper(userAnswers, referenceIndex)
+        Seq(helper.code, helper.referenceNumber).flatten
+    } match {
+      case Nil =>
+        StaticSection(
+          sectionTitle = Some(messages("unloadingFindings.additional.reference.heading")),
+          viewLinks = Seq(additionalReferenceAddRemoveLink)
+        )
+      case sectionsRows =>
+        val children = sectionsRows.zipWithIndex.map {
+          case (rows, index) =>
+            AccordionSection(
+              sectionTitle = Some(messages("unloadingFindings.additional.reference", Index(index).display)),
+              rows = rows
+            )
+        }
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.additional.reference.heading")),
+          viewLinks = Seq(additionalReferenceAddRemoveLink),
+          children = children,
+          id = Some("additionalReferences")
+        )
+    }
+
+  def additionalInformationSection: Option[Section] =
+    userAnswers.get(AdditionalInformationListSection).mapWithIndex {
+      (_, referenceIndex) =>
+        val helper = new AdditionalInformationAnswersHelper(userAnswers, referenceIndex)
+        Seq(helper.code, helper.description).flatten
+    } match {
+      case Nil =>
+        None
+      case sectionsRows =>
+        val children = sectionsRows.zipWithIndex.map {
+          case (rows, index) =>
+            AccordionSection(
+              sectionTitle = Some(messages("unloadingFindings.additionalInformation.label", Index(index).display)),
+              rows = rows
+            )
+        }
+        Some(
+          AccordionSection(
+            sectionTitle = Some(messages("unloadingFindings.additionalInformation.heading")),
+            children = children,
+            id = Some("additionalInformation")
+          )
+        )
+    }
+
+  def incidentSection: Option[Section] =
+    userAnswers
+      .get(IncidentsSection)
+      .mapWithIndex {
+        case (_, incidentIndex) =>
+          val helper = new IncidentAnswersHelper(userAnswers, incidentIndex)
+
+          val rows = Seq(
+            helper.incidentCountryRow,
+            helper.incidentCodeRow,
+            helper.incidentDescriptionRow,
+            helper.incidentQualifierRow,
+            helper.incidentCoordinatesRow,
+            helper.incidentUnLocodeRow,
+            helper.incidentLocationAddressRow
+          ).flatten
+
+          val transhipment = StaticSection(
+            sectionTitle = Some(messages("unloadingFindings.subsections.incidents.transhipment")),
+            rows = helper.incidentTranshipment
+          )
+          val endorsementSection = StaticSection(
+            sectionTitle = Some(messages("unloadingFindings.subsections.incidents.endorsements")),
+            rows = Seq(
+              helper.incidentEndorsementDateRow,
+              helper.incidentEndorsementAuthorityRow,
+              helper.incidentEndorsementCountryRow,
+              helper.incidentEndorsementPlaceRow
+            ).flatten
+          )
+
+          AccordionSection(
+            sectionTitle = Some(messages("unloadingFindings.subsections.incidents", incidentIndex.display)),
+            rows = rows,
+            children = Seq(endorsementSection) ++ helper.incidentTransportEquipments ++ Seq(transhipment)
+          )
+      }
+      .toList match {
+      case Nil => None
+      case sections =>
+        Some(
+          AccordionSection(
+            sectionTitle = Some(messages("unloadingFindings.subsections.incidents.parent.header")),
+            children = sections,
+            id = Some("incidents")
+          )
+        )
+    }
+
+  def documentSection: Section =
     userAnswers.get(DocumentsSection).mapWithIndex {
       case (_, documentIndex) =>
         val helper   = new DocumentAnswersHelper(userAnswers, documentIndex)
         val readOnly = userAnswers.get(TypePage(documentIndex)).map(_.`type`).contains(Previous)
 
-        val rows = Seq(
+        Seq(
           helper.documentType(readOnly),
           helper.referenceNumber(readOnly),
           helper.additionalInformation(readOnly)
         ).flatten
-
+    } match {
+      case Nil =>
+        StaticSection(
+          sectionTitle = Some(messages("unloadingFindings.document.heading.parent.heading")),
+          viewLinks = Seq(documentAddRemoveLink)
+        )
+      case documentSectionRows =>
+        val documents = documentSectionRows.zipWithIndex.map {
+          case (rows, index) =>
+            AccordionSection(
+              sectionTitle = Some(messages("unloadingFindings.document.heading", Index(index).display)),
+              rows = rows
+            )
+        }
         AccordionSection(
-          sectionTitle = messages("unloadingFindings.document.heading", documentIndex.display),
-          rows = rows
+          sectionTitle = Some(messages("unloadingFindings.document.heading.parent.heading")),
+          viewLinks = Seq(documentAddRemoveLink),
+          children = documents,
+          id = Some("documents")
         )
     }
 
   // Don't show children sections here. These are accessed from the 'More details' link
-  def houseConsignmentSections: Seq[Section] =
-    userAnswers.get(HouseConsignmentsSection).mapWithIndex {
-      (_, houseConsignmentIndex) =>
-        val helper = new HouseConsignmentAnswersHelper(userAnswers, houseConsignmentIndex)
-        val rows = Seq(
-          helper.consignorName,
-          helper.consignorIdentification,
-          helper.consigneeName,
-          helper.consigneeIdentification,
-          helper.consigneeCountry,
-          helper.consigneeAddress
-        ).flatten
+  def houseConsignmentSection: Option[Section] =
+    userAnswers
+      .get(HouseConsignmentsSection)
+      .mapWithIndex {
+        (_, houseConsignmentIndex) =>
+          val helper = new HouseConsignmentAnswersHelper(userAnswers, houseConsignmentIndex)
+          val rows = Seq(
+            helper.consignorName,
+            helper.consignorIdentification,
+            helper.consigneeName,
+            helper.consigneeIdentification,
+            helper.consigneeCountry,
+            helper.consigneeAddress
+          ).flatten
 
-        AccordionSection(
-          sectionTitle = messages("unloadingFindings.subsections.houseConsignment", houseConsignmentIndex.display),
-          rows = rows,
-          viewLink = Link(
-            id = s"view-house-consignment-${houseConsignmentIndex.display}",
-            href = controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url,
-            visuallyHidden = messages("summaryDetails.visuallyHidden", houseConsignmentIndex.display)
-          ),
-          id = s"houseConsignment${houseConsignmentIndex.display}"
+          AccordionSection(
+            sectionTitle = messages("unloadingFindings.subsections.houseConsignment", houseConsignmentIndex.display),
+            rows = rows,
+            viewLinks = Seq(
+              Link(
+                id = s"view-house-consignment-${houseConsignmentIndex.display}",
+                href = controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url,
+                visuallyHidden = messages("summaryDetails.visuallyHidden", houseConsignmentIndex.display)
+              )
+            ),
+            id = s"houseConsignment${houseConsignmentIndex.display}"
+          )
+      }
+      .toList match {
+      case Nil => None
+      case sections =>
+        Some(
+          AccordionSection(
+            sectionTitle = Some(messages("unloadingFindings.subsections.houseConsignment.parent.heading")),
+            children = sections,
+            id = Some("houseConsignments")
+          )
         )
     }
+
+  private val documentAddRemoveLink: Link = Link(
+    id = s"add-remove-documents",
+    href = "#",
+    text = messages("documentsLink.addRemove"),
+    visuallyHidden = messages("documentsLink.visuallyHidden")
+  )
+
+  private val additionalReferenceAddRemoveLink: Link = Link(
+    id = "add-remove-additional-reference",
+    href = "#",
+    text = messages("additionalReferenceLink.addRemove"),
+    visuallyHidden = messages("additionalReferenceLink.visuallyHidden")
+  )
+
+  private val departureTransportMeansAddRemoveLink: Link =
+    Link(
+      id = s"add-remove-departure-transport-means",
+      href = "#",
+      text = messages("departureTransportMeans.addRemove"),
+      visuallyHidden = messages("departureTransportMeans.visuallyHidden")
+    )
+
+  private def sealsAddRemoveLink(index: Int): Link =
+    Link(
+      id = s"add-remove-seals-$index",
+      href = "#",
+      text = messages("sealsLink.addRemove"),
+      visuallyHidden = messages("sealsLink.visuallyHidden")
+    )
+
+  private val transportEquipmentAddRemoveLink: Link = Link(
+    id = s"add-remove-transport-equipment",
+    href = "#",
+    text = messages("transportEquipmentLink.addRemove"),
+    visuallyHidden = messages("transportEquipmentLink.visuallyHidden")
+  )
 }

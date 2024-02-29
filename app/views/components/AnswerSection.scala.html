@@ -25,34 +25,38 @@
 
 @(section: Section, nestingLevel: Int = 0)(implicit messages: Messages)
 
-@if(section.rows.nonEmpty || section.children.nonEmpty) {
-    @section match {
-        case x: StaticSection => {
-            @section.sectionTitle.map { title =>
-                <h2 class="govuk-heading-m">@title</h2>
-            }
+@section match {
+    case x: StaticSection => {
+        @section.sectionTitle.map { title =>
+            <h2 class="govuk-heading-m">@title</h2>
+        }
 
+        @if(section.rows.nonEmpty) {
             @govukSummaryList(
                 SummaryList(
                     rows = section.rows,
                     classes = s"govuk-!-margin-left-${2 * nestingLevel}"
                 )
             )
+        }
 
-            @section.viewLink.map { link =>
-                <p class="govuk-body"><a class="govuk-link" href="@link.href" id="@link.id">@link.text</a></p>
-            }
+        @section.viewLinks.map { link =>
+            <p class="govuk-body">
+                <a class="govuk-link" href=@link.href id="@link.id">
+                    @messages(link.text) <span class="govuk-visually-hidden">@link.visuallyHidden</span>
+                </a>
+            </p>
         }
-        case x: AccordionSection => {
-            @govukDetails(
-                Details(
-                    summary = HtmlContent(header),
-                    content = HtmlContent(content),
-                    id = section.id,
-                    classes = s"govuk-!-margin-left-${2 * nestingLevel}"
-                )
+    }
+    case x: AccordionSection => {
+        @govukDetails(
+            Details(
+                summary = HtmlContent(header),
+                content = HtmlContent(content),
+                id = section.id,
+                classes = s"govuk-!-margin-left-${2 * nestingLevel}"
             )
-        }
+        )
     }
 }
 
@@ -65,20 +69,22 @@
 }
 
 @content = {
-    <dl class="govuk-summary-list">
-        @govukSummaryList(
-            SummaryList(
-                rows = section.rows
+    @if(section.rows.nonEmpty) {
+        <dl class="govuk-summary-list">
+            @govukSummaryList(
+                SummaryList(
+                    rows = section.rows
+                )
             )
-        )
-    </dl>
+        </dl>
+    }
 
     @section.children.map(this(_, nestingLevel + 1))
 
-    @section.viewLink.map { link =>
+    @section.viewLinks.map { link =>
         <p class="govuk-body">
-            <a class="govuk-link" href=@link.href id="view_link.id">
-                @messages("summaryDetails.link") <span class="govuk-visually-hidden">@link.visuallyHidden</span>
+            <a class="govuk-link" href=@link.href id="@link.id">
+                @messages(link.text) <span class="govuk-visually-hidden">@link.visuallyHidden</span>
             </a>
         </p>
     }

@@ -16,9 +16,12 @@
 
 package utils.answersHelpers.consignment.houseConsignment
 
+import models.reference.Country
+import models.DocType.Previous
 import models.{Index, UserAnswers}
 import pages.NetWeightPage
 import pages.houseConsignment.index.items._
+import pages.houseConsignment.index.items.document.TypePage
 import pages.sections.PackagingListSection
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferencesSection
 import pages.sections.houseConsignment.index.items.dangerousGoods.DangerousGoodsListSection
@@ -52,6 +55,18 @@ class ConsignmentItemAnswersHelper(
     call = None
   )
 
+  def declarationType: Option[SummaryListRow] = buildRowWithNoChangeLink[String](
+    data = userAnswers.get(DeclarationTypePage(houseConsignmentIndex, itemIndex)),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.item.declarationType"
+  )
+
+  def countryOfDestination: Option[SummaryListRow] = buildRowWithNoChangeLink[Country](
+    data = userAnswers.get(CountryOfDestinationPage(houseConsignmentIndex, itemIndex)),
+    formatAnswer = formatAsCountry,
+    prefix = "unloadingFindings.rowHeadings.item.countryOfDestination"
+  )
+
   def grossWeightRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
     page = GrossWeightPage(houseConsignmentIndex, itemIndex),
     formatAnswer = formatAsWeight,
@@ -70,29 +85,31 @@ class ConsignmentItemAnswersHelper(
     call = Some(Call(GET, "#"))
   )
 
-  def additionalReferencesSection: Section = {
-    val rows = getAnswersAndBuildSectionRows(AdditionalReferencesSection(houseConsignmentIndex, itemIndex)) {
-      additionalReferenceIndex =>
-        val helper = new AdditionalReferencesAnswerHelper(userAnswers, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
-        helper.additionalReferenceRow
+  def additionalReferencesSection: Seq[Section] =
+    userAnswers.get(AdditionalReferencesSection(houseConsignmentIndex, itemIndex)).mapWithIndex {
+      case (_, index) =>
+        val helper = new AdditionalReferencesAnswerHelper(userAnswers, houseConsignmentIndex, itemIndex, index)
+        AccordionSection(
+          sectionTitle = messages("unloadingFindings.houseConsignment.item.additionalReference", index.display),
+          rows = Seq(
+            helper.code,
+            helper.referenceNumber
+          ).flatten
+        )
     }
-
-    AccordionSection(
-      sectionTitle = messages("unloadingFindings.additional.reference.heading"),
-      rows = rows
-    )
-  }
 
   def documentSections: Seq[Section] =
     userAnswers
       .get(DocumentsSection(houseConsignmentIndex, itemIndex))
       .mapWithIndex {
         case (_, documentIndex) =>
-          val helper = new DocumentAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex, documentIndex)
+          val helper   = new DocumentAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex, documentIndex)
+          val readOnly = userAnswers.get(TypePage(houseConsignmentIndex, itemIndex, documentIndex)).map(_.`type`).contains(Previous)
 
           val rows = Seq(
-            helper.referenceNumber,
-            helper.additionalInformation
+            helper.documentType(readOnly),
+            helper.referenceNumber(readOnly),
+            helper.additionalInformation(readOnly)
           ).flatten
 
           AccordionSection(

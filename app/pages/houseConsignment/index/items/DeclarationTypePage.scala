@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package pages
+package pages.houseConsignment.index.items
 
-import pages.behaviours.PageBehaviours
+import models.Index
+import pages.QuestionPage
+import pages.sections.ItemsSection
+import play.api.libs.json.JsPath
 
-class ContainerIdentificationNumberPageSpec extends PageBehaviours {
+case class DeclarationTypePage(houseConsignment: Index, itemIndex: Index) extends QuestionPage[String] {
 
-  "ContainerIdentificationNumberPage" - {
+  override def path: JsPath = ItemsSection(houseConsignment).path \ itemIndex.position \ toString
 
-    beRetrievable[String](ContainerIdentificationNumberPage(index))
-
-    beSettable[String](ContainerIdentificationNumberPage(index))
-
-    beRemovable[String](ContainerIdentificationNumberPage(index))
-  }
+  override def toString: String = "declarationType"
 }

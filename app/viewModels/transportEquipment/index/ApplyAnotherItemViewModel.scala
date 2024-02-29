@@ -24,10 +24,10 @@ import pages.transportEquipment.index.ItemPage
 import play.api.i18n.Messages
 import play.api.libs.json.JsArray
 import play.api.mvc.Call
-import viewModels.{AddAnotherViewModel, ListItem}
+import viewModels.{ApplyAnotherViewModel, ListItemForApply}
 
-case class ApplyAnotherItemViewModel(listItems: Seq[ListItem], onSubmitCall: Call, equipmentIndex: Index, isNumberItemsZero: Boolean)
-    extends AddAnotherViewModel {
+case class ApplyAnotherItemViewModel(listItems: Seq[ListItemForApply], onSubmitCall: Call, equipmentIndex: Index, isNumberItemsZero: Boolean)
+    extends ApplyAnotherViewModel {
   override val prefix: String = "transport.equipment.applyAnotherItem"
 
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxItems
@@ -84,7 +84,7 @@ object ApplyAnotherItemViewModel {
               .get(ItemPage(equipmentIndex, itemIndex))
               .map(
                 item =>
-                  ListItem(
+                  ListItemForApply(
                     name = itemPrefix(item.toString),
                     changeOrRemoveUrl = changeOrRemoveUrl,
                     prefix = changePrefix
