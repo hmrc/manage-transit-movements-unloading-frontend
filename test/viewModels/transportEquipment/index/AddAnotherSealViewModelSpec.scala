@@ -20,7 +20,6 @@ import base.SpecBase
 import generators.Generators
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import viewModels.transportEquipment.index.AddAnotherSealViewModel.AddAnotherSealViewModelProvider
@@ -62,7 +61,6 @@ class AddAnotherSealViewModelSpec extends SpecBase with Generators with ScalaChe
     }
 
     "when there are multiple seals" in {
-      val formatter = java.text.NumberFormat.getIntegerInstance
 
       forAll(arbitrary[Mode], nonEmptyString) {
         (mode, identificationNumber) =>
