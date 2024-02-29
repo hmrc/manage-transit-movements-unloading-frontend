@@ -364,7 +364,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(ConsigneeIdentifierPage(hcIndex), consigneeId)
 
             val helper = new ConsignmentAnswersHelper(answers)
-            val result = helper.houseConsignmentSection
+            val result = helper.houseConsignmentSection.get
 
             result mustBe a[AccordionSection]
             result.sectionTitle.value mustBe "House consignments"

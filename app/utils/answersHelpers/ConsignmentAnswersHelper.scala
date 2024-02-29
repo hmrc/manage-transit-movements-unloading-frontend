@@ -182,9 +182,10 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       case sectionsRows =>
         val transportEquipments = sectionsRows.zipWithIndex.map {
           case (rows, index) =>
+            val equipmentIndex = Index(index).display
             AccordionSection(
-              sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment", Index(index).display)),
-              viewLinks = Seq(sealsAddRemoveLink),
+              sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment", equipmentIndex)),
+              viewLinks = Seq(sealsAddRemoveLink(equipmentIndex)),
               rows = rows
             )
         }
@@ -331,7 +332,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     }
 
   // Don't show children sections here. These are accessed from the 'More details' link
-  def houseConsignmentSection: Section =
+  def houseConsignmentSection: Option[Section] =
     userAnswers
       .get(HouseConsignmentsSection)
       .mapWithIndex {
@@ -360,17 +361,14 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           )
       }
       .toList match {
-      case Nil =>
-        StaticSection(
-          sectionTitle = Some(messages("unloadingFindings.subsections.houseConsignment.parent.heading")),
-          rows = Nil,
-          viewLinks = Nil
-        )
+      case Nil => None
       case sections =>
-        AccordionSection(
-          sectionTitle = Some(messages("unloadingFindings.subsections.houseConsignment.parent.heading")),
-          children = sections,
-          id = Some("houseConsignments")
+        Some(
+          AccordionSection(
+            sectionTitle = Some(messages("unloadingFindings.subsections.houseConsignment.parent.heading")),
+            children = sections,
+            id = Some("houseConsignments")
+          )
         )
     }
 
@@ -396,9 +394,9 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       visuallyHidden = messages("departureTransportMeans.visuallyHidden")
     )
 
-  private val sealsAddRemoveLink: Link =
+  private def sealsAddRemoveLink(index: Int): Link =
     Link(
-      id = s"add-remove-seals",
+      id = s"add-remove-seals-$index",
       href = "#",
       text = messages("sealsLink.addRemove"),
       visuallyHidden = messages("sealsLink.visuallyHidden")
