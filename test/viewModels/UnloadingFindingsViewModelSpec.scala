@@ -113,6 +113,38 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
       }
     }
 
+    "consignee section" - {
+      "must not be rendered" - {
+        "when there is not a consignee" in {
+
+          val ie043 = arbitrary[CC043CType].retryUntil(_.Consignment.flatMap(_.Consignee).isEmpty).sample.value
+
+          val userAnswers = emptyUserAnswers.copy(ie043Data = ie043)
+
+          val viewModelProvider = new UnloadingFindingsViewModelProvider()
+          val result            = viewModelProvider.apply(userAnswers)
+          val section           = result.sections(1)
+
+          section.sectionTitle must not be "Consignee"
+        }
+      }
+
+      "must be rendered" - {
+        "when there is a consignee" in {
+          forAll(arbitrary[CC043CType].retryUntil(_.Consignment.flatMap(_.Consignee).isDefined)) {
+            ie043 =>
+              val userAnswers = emptyUserAnswers.copy(ie043Data = ie043)
+
+              val viewModelProvider = new UnloadingFindingsViewModelProvider()
+              val result            = viewModelProvider.apply(userAnswers)
+              val section           = result.sections.find(_.sectionTitle.contains("Consignee")).get
+
+              section.viewLinks mustBe Nil
+          }
+        }
+      }
+    }
+
     "must render Holder of the Transit Procedure section" - {
       "when there is one" in {
         val country = Country("GB", "Great Britain")

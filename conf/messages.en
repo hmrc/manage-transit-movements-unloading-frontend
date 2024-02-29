@@ -492,6 +492,12 @@ unloadingFindings.consignor.name = Name
 unloadingFindings.consignor.country = Country
 unloadingFindings.consignor.address = Address
 
+unloadingFindings.consignee.heading = Consignee
+unloadingFindings.consignee.identificationNumber = EORI number or Trader Identification Number (TIN)
+unloadingFindings.consignee.name = Name
+unloadingFindings.consignee.country = Country
+unloadingFindings.consignee.address = Address
+
 unloadingFindings.document.heading = Document {0}
 unloadingFindings.document.heading.parent.heading = Documents
 unloadingFindings.document.type = Document type
