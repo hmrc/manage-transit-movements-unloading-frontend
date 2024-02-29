@@ -426,7 +426,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
           .setValue(EndorsementCountryPage(index), country)
 
         val helper = new ConsignmentAnswersHelper(answers)
-        val result = helper.incidentSection
+        val result = helper.incidentSection.get
 
         result mustBe a[AccordionSection]
         result.sectionTitle.value mustBe "Incidents"
