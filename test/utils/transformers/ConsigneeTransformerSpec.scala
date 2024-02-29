@@ -17,17 +17,17 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import generated.ConsigneeType04
+import connectors.ReferenceDataConnector
+import generated.{AddressType07, ConsigneeType04}
 import generators.Generators
 import models.reference.Country
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{reset, verifyNoInteractions, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.{ConsigneeAddressPage, ConsigneeCountryPage, ConsigneeIdentifierPage, ConsigneeNamePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import services.ReferenceDataService
 
 import scala.concurrent.Future
 
@@ -35,43 +35,76 @@ class ConsigneeTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
   private val transformer = app.injector.instanceOf[ConsigneeTransformer]
 
-  private lazy val mockRefDataService: ReferenceDataService = mock[ReferenceDataService]
+  private lazy val mockReferenceDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[ReferenceDataService].toInstance(mockRefDataService)
+        bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
       )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockReferenceDataConnector)
+  }
 
   "must transform data" - {
 
     val country = Country("GB", "United Kingdom")
 
-    when(mockRefDataService.getCountryByCode(any())(any(), any()))
-      .thenReturn(Future.successful(country))
+    "at consignment level" - {
+      "when consignee defined" in {
+        forAll(arbitrary[ConsigneeType04], arbitrary[AddressType07], arbitrary[Country]) {
+          (consignor, address, country) =>
+            beforeEach()
 
-    "when consignee defined" in {
-      forAll(arbitrary[ConsigneeType04]) {
-        consignee =>
-          val result = transformer.transform(Some(consignee), hcIndex).apply(emptyUserAnswers).futureValue
+            val input = consignor.copy(Address = Some(address))
 
-          result.get(ConsigneeIdentifierPage(hcIndex)) mustBe consignee.identificationNumber
-          result.get(ConsigneeNamePage(hcIndex)) mustBe consignee.name
-          result
-            .get(ConsigneeCountryPage(hcIndex))
-            .map(
-              countryResult => countryResult.description mustBe country.description
-            )
+            when(mockReferenceDataConnector.getCountry(eqTo(address.country))(any(), any()))
+              .thenReturn(Future.successful(country))
+
+            val result = transformer.transform(Some(input)).apply(emptyUserAnswers).futureValue
+
+            result.getValue(pages.consignee.CountryPage) mustBe country
+        }
+      }
+
+      "when consignee undefined" in {
+        val result = transformer.transform(None).apply(emptyUserAnswers).futureValue
+
+        result.get(pages.consignee.CountryPage) must not be defined
+        verifyNoInteractions(mockReferenceDataConnector)
       }
     }
 
-    "when consignee undefined" in {
-      val result = transformer.transform(None, hcIndex).apply(emptyUserAnswers).futureValue
+    "at house consignment level" - {
 
-      result.get(ConsigneeIdentifierPage(hcIndex)) must not be defined
-      result.get(ConsigneeNamePage(hcIndex)) must not be defined
-      result.get(ConsigneeAddressPage(hcIndex)) must not be defined
+      "when consignee defined" in {
+        when(mockReferenceDataConnector.getCountry(any())(any(), any()))
+          .thenReturn(Future.successful(country))
+
+        forAll(arbitrary[ConsigneeType04]) {
+          consignee =>
+            val result = transformer.transform(Some(consignee), hcIndex).apply(emptyUserAnswers).futureValue
+
+            result.get(ConsigneeIdentifierPage(hcIndex)) mustBe consignee.identificationNumber
+            result.get(ConsigneeNamePage(hcIndex)) mustBe consignee.name
+            result
+              .get(ConsigneeCountryPage(hcIndex))
+              .map(
+                countryResult => countryResult.description mustBe country.description
+              )
+        }
+      }
+
+      "when consignee undefined" in {
+        val result = transformer.transform(None, hcIndex).apply(emptyUserAnswers).futureValue
+
+        result.get(ConsigneeIdentifierPage(hcIndex)) must not be defined
+        result.get(ConsigneeNamePage(hcIndex)) must not be defined
+        result.get(ConsigneeAddressPage(hcIndex)) must not be defined
+      }
     }
   }
 }

@@ -102,6 +102,21 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         )
     }
 
+  def consigneeSection: Option[Section] =
+    userAnswers.ie043Data.Consignment.flatMap(_.Consignee).map {
+      consignee =>
+        val helper = new ConsigneeAnswersHelper(userAnswers)
+        StaticSection(
+          sectionTitle = messages("unloadingFindings.consignee.heading"),
+          rows = Seq(
+            helper.identificationNumber(consignee.identificationNumber),
+            helper.name(consignee.name),
+            helper.country,
+            helper.address(consignee.Address)
+          ).flatten
+        )
+    }
+
   def customsOfficeOfDestinationActual: Option[SummaryListRow] =
     getAnswerAndBuildRow[CustomsOffice](
       page = CustomsOfficeOfDestinationActualPage,

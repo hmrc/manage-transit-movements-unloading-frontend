@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-package viewModels
+package pages.consignee
 
-case class ListItemForApply(
-  name: String,
-  changeOrRemoveUrl: String,
-  prefix: String
-)
+import models.reference.Country
+import pages.QuestionPage
+import pages.sections.ConsigneeSection
+import play.api.libs.json.JsPath
+
+case object CountryPage extends QuestionPage[Country] {
+
+  override def path: JsPath = ConsigneeSection.path \ toString
+
+  override def toString: String = "country"
+}

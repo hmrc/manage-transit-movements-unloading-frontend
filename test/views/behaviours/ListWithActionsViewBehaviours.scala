@@ -37,21 +37,7 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
 
   val maxedOutListItems: Seq[ListItem] = Seq.fill(maxNumber)(listItem)
 
-  def applyNoItemsView: HtmlFormat.Appendable
   def applyMaxedOutView: HtmlFormat.Appendable
-
-  def pageWithNoItems(args: Any*): Unit =
-    "page with no items" - {
-
-      val doc = parseView(applyNoItemsView)
-
-      behave like pageWithTitle(doc, s"$prefix.empty", args: _*)
-
-      behave like pageWithHeading(doc, s"$prefix.empty", args: _*)
-
-      behave like pageWithRadioItems(legendIsHeading = false, args = Seq(args))
-
-    }
 
   def pageWithMoreItemsAllowed(h1Args: Any*)(h2Args: Any*): Unit =
     "page with more items allowed" - {
