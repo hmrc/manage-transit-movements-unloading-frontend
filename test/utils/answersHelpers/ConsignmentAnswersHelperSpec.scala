@@ -378,7 +378,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.children.head.rows(3).value.value mustBe consigneeId
             result.children.head.children mustBe empty
 
-            val link = result.children.head.accordionLink.value
+            val link = result.children.head.viewLinks.head
             link.id mustBe "view-house-consignment-1"
             link.text mustBe "summaryDetails.link"
             link.href mustBe controllers.routes.HouseConsignmentController.onPageLoad(answers.id, hcIndex).url

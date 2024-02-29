@@ -351,15 +351,14 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           AccordionSection(
             sectionTitle = messages("unloadingFindings.subsections.houseConsignment", houseConsignmentIndex.display),
             rows = rows,
-            viewLinks = Nil,
-            accordionLink = Some(
+            viewLinks = Seq(
               Link(
                 id = s"view-house-consignment-${houseConsignmentIndex.display}",
                 href = controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url,
                 visuallyHidden = messages("summaryDetails.visuallyHidden", houseConsignmentIndex.display)
               )
             ),
-            id = Some(s"houseConsignment${houseConsignmentIndex.display}")
+            id = s"houseConsignment${houseConsignmentIndex.display}"
           )
       }
       .toList match {
