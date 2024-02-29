@@ -150,12 +150,20 @@ class AddAnotherDepartureMeansOfTransportViewModelSpec extends SpecBase with Gen
                 ListItem(
                   name = s"Departure means of transport 1 - $identification - $identificationNumber",
                   changeUrl = Some("#"), //TODO: To be added later
-                  removeUrl = Some("#") //TODO: To be added later
+                  removeUrl = Some(
+                    controllers.departureMeansOfTransport.routes.RemoveDepartureMeansOfTransportYesNoController
+                      .onPageLoad(arrivalId, mode, Index(0))
+                      .url
+                  )
                 ),
                 ListItem(
                   name = s"Departure means of transport 2",
                   changeUrl = Some("#"), //TODO: To be added later
-                  removeUrl = Some("#") //TODO: To be added later
+                  removeUrl = Some(
+                    controllers.departureMeansOfTransport.routes.RemoveDepartureMeansOfTransportYesNoController
+                      .onPageLoad(arrivalId, mode, Index(1))
+                      .url
+                  )
                 )
               )
 
