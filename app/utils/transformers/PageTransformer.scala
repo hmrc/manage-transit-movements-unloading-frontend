@@ -18,7 +18,8 @@ package utils.transformers
 
 import models.UserAnswers
 import pages.QuestionPage
-import play.api.libs.json.Writes
+import pages.sections.Section
+import play.api.libs.json.{JsObject, Writes}
 
 import scala.concurrent.Future
 
@@ -33,7 +34,7 @@ trait PageTransformer {
       case None    => Future.successful(userAnswers)
     }
 
-  def setSequenceNumber(section: QuestionPage[_], sequenceNumber: String): UserAnswers => Future[UserAnswers] = userAnswers =>
+  def setSequenceNumber(section: Section[JsObject], sequenceNumber: String): UserAnswers => Future[UserAnswers] = userAnswers =>
     Future.fromTry(userAnswers.set(section.path \ "sequenceNumber", sequenceNumber))
 
 }

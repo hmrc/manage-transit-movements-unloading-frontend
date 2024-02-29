@@ -17,14 +17,14 @@
 package utils.answersHelpers.consignment
 
 import models.reference.Country
-import models.{Index, UserAnswers}
+import models.{Index, RichOptionalJsArray, UserAnswers}
 import pages._
 import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.answersHelpers.AnswersHelper
 import utils.answersHelpers.consignment.houseConsignment.{ConsignmentItemAnswersHelper, DepartureTransportMeansAnswersHelper}
-import utils.answersHelpers.{AnswersHelper, RichOptionalJsArray}
 import viewModels.sections.Section
 import viewModels.sections.Section.AccordionSection
 

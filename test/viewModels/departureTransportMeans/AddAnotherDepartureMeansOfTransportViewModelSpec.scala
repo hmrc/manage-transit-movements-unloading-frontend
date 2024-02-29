@@ -25,6 +25,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.departureMeansOfTransport._
+import pages.sections.TransportMeansSection
 import viewModels.ListItem
 import viewModels.departureTransportMeans.AddAnotherDepartureMeansOfTransportViewModel.AddAnotherDepartureMeansOfTransportViewModelProvider
 
@@ -45,6 +46,7 @@ class AddAnotherDepartureMeansOfTransportViewModelSpec extends SpecBase with Gen
               result.heading mustBe "You have added 0 departure means of transport"
               result.legend mustBe "Do you want to add a departure means of transport?"
               result.maxLimitLabel mustBe "You cannot add another departure means of transport. To add another, you need to remove one first."
+              result.nextIndex mustBe Index(0)
           }
         }
       }
@@ -64,6 +66,7 @@ class AddAnotherDepartureMeansOfTransportViewModelSpec extends SpecBase with Gen
               result.heading mustBe "You have added 1 departure means of transport"
               result.legend mustBe "Do you want to add another departure means of transport?"
               result.maxLimitLabel mustBe "You cannot add another departure means of transport. To add another, you need to remove one first."
+              result.nextIndex mustBe Index(1)
           }
         }
 
@@ -95,6 +98,35 @@ class AddAnotherDepartureMeansOfTransportViewModelSpec extends SpecBase with Gen
               result.heading mustBe s"You have added 4 departure means of transport"
               result.legend mustBe "Do you want to add another departure means of transport?"
               result.maxLimitLabel mustBe "You cannot add another departure means of transport. To add another, you need to remove one first."
+              result.nextIndex mustBe Index(4)
+          }
+        }
+
+        "when one has been removed" in {
+          forAll(arbitrary[Mode], arbitrary[TransportMeansIdentification], Gen.alphaStr, arbitrary[Country]) {
+            (mode, identification, identificationNumber, country) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddIdentificationYesNoPage(Index(0)), true)
+                .setValue(TransportMeansIdentificationPage(Index(0)), identification)
+                .setValue(AddIdentificationNumberYesNoPage(Index(0)), false)
+                .setValue(AddNationalityYesNoPage(Index(0)), true)
+                .setValue(CountryPage(Index(0)), country)
+                .setSequenceNumber(TransportMeansSection(Index(1)), "2")
+                .setValue(AddIdentificationYesNoPage(Index(2)), false)
+                .setValue(AddIdentificationNumberYesNoPage(Index(2)), true)
+                .setValue(VehicleIdentificationNumberPage(Index(2)), identificationNumber)
+                .setValue(AddNationalityYesNoPage(Index(2)), false)
+                .setValue(AddIdentificationYesNoPage(Index(3)), false)
+                .setValue(AddIdentificationNumberYesNoPage(Index(3)), false)
+                .setValue(AddNationalityYesNoPage(Index(3)), false)
+
+              val result = new AddAnotherDepartureMeansOfTransportViewModelProvider().apply(userAnswers, arrivalId, mode)
+              result.listItems.length mustBe 3
+              result.title mustBe s"You have added 3 departure means of transport"
+              result.heading mustBe s"You have added 3 departure means of transport"
+              result.legend mustBe "Do you want to add another departure means of transport?"
+              result.maxLimitLabel mustBe "You cannot add another departure means of transport. To add another, you need to remove one first."
+              result.nextIndex mustBe Index(4)
           }
         }
 
@@ -126,6 +158,8 @@ class AddAnotherDepartureMeansOfTransportViewModelSpec extends SpecBase with Gen
                   removeUrl = Some("#") //TODO: To be added later
                 )
               )
+
+              result.nextIndex mustBe Index(2)
           }
         }
       }

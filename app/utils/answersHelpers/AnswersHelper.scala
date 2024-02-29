@@ -16,7 +16,7 @@
 
 package utils.answersHelpers
 
-import models.{ArrivalId, Index, UserAnswers}
+import models.{ArrivalId, Index, RichOptionalJsArray, UserAnswers}
 import pages._
 import pages.sections.Section
 import play.api.i18n.Messages
@@ -74,30 +74,11 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
         )
     }
 
-  def getAnswerAndBuildRowWithoutKey[T](
-    page: QuestionPage[T],
-    formatAnswer: T => Content,
-    prefix: String,
-    id: Option[String],
-    call: Option[Call],
-    args: Any*
-  )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.get(page) map {
-      answer =>
-        buildRowWithoutKey(
-          prefix = prefix,
-          answer = formatAnswer(answer),
-          id = id,
-          call = call,
-          args = args: _*
-        )
-    }
-
   def getAnswersAndBuildSectionRows(section: Section[JsArray])(f: Index => Option[SummaryListRow]): Seq[SummaryListRow] =
     userAnswers
       .get(section)
       .mapWithIndex {
-        (_, index) => f(index)
+        case (_, index) => f(index)
       }
       .flatten
 }

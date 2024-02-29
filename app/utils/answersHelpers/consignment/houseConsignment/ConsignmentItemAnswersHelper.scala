@@ -18,7 +18,7 @@ package utils.answersHelpers.consignment.houseConsignment
 
 import models.DocType.Previous
 import models.reference.Country
-import models.{Index, UserAnswers}
+import models.{Index, RichOptionalJsArray, UserAnswers}
 import pages.NetWeightPage
 import pages.houseConsignment.index.items._
 import pages.houseConsignment.index.items.document.TypePage
@@ -30,8 +30,8 @@ import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HttpVerbs.GET
+import utils.answersHelpers.AnswersHelper
 import utils.answersHelpers.consignment.houseConsignment.item._
-import utils.answersHelpers.{AnswersHelper, RichOptionalJsArray}
 import viewModels.sections.Section
 import viewModels.sections.Section.AccordionSection
 
