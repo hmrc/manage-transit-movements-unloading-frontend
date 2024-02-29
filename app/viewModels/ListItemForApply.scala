@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-package pages.sections.additionalReference
+package viewModels
 
-import models.Index
-import pages.sections.Section
-import play.api.libs.json.{JsObject, JsPath}
-
-case class AdditionalReferenceSection(referenceIndex: Index) extends Section[JsObject] {
-
-  override def path: JsPath = AdditionalReferencesSection.path \ referenceIndex.position
-
-}
+case class ListItemForApply(
+  name: String,
+  changeOrRemoveUrl: String,
+  prefix: String
+)

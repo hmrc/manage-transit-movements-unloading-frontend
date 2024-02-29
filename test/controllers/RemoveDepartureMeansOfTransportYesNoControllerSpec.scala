@@ -89,9 +89,9 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.departureMeansOfTransport.routes.CountryController
-          .onPageLoad(arrivalId, transportMeansIndex, mode)
-          .url //todo update to AddAnotherTransportMeansController once implemented
+        redirectLocation(result).value mustEqual controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
+          .onPageLoad(arrivalId, mode)
+          .url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -112,9 +112,9 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.departureMeansOfTransport.routes.CountryController
-          .onPageLoad(arrivalId, transportMeansIndex, mode)
-          .url //todo update to AddAnotherTransportMeansController once implemented
+        redirectLocation(result).value mustEqual controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
+          .onPageLoad(arrivalId, mode)
+          .url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -135,9 +135,9 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.departureMeansOfTransport.routes.CountryController
-        .onPageLoad(arrivalId, transportMeansIndex, mode)
-        .url //todo update to AddAnotherTransportMeansController once implemented
+      redirectLocation(result).value mustEqual controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
+        .onPageLoad(arrivalId, mode)
+        .url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

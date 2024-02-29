@@ -17,34 +17,11 @@
 package pages.sections.additionalInformation
 
 import models.Index
-import models.reference.AdditionalInformationCode
-import pages.QuestionPage
-import pages.additionalInformation.{AdditionalInformationCodePage, AdditionalInformationTextPage}
-import pages.sections.additionalInformation.AdditionalInformationSection.AdditionalInformation
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{__, JsPath, Reads}
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-case class AdditionalInformationSection(informationIndex: Index) extends QuestionPage[AdditionalInformation] {
+case class AdditionalInformationSection(informationIndex: Index) extends Section[JsObject] {
 
   override def path: JsPath = AdditionalInformationListSection.path \ informationIndex.position
 
-}
-
-object AdditionalInformationSection {
-
-  case class AdditionalInformation(code: AdditionalInformationCode, text: Option[String]) {
-
-    override def toString: String = text match {
-      case Some(text) => s"${code.toString} - $text"
-      case None       => code.toString
-    }
-  }
-
-  object AdditionalInformation {
-
-    def reads(index: Index): Reads[AdditionalInformation] = (
-      (__ \ AdditionalInformationCodePage(index).toString).read[AdditionalInformationCode] and
-        (__ \ AdditionalInformationTextPage(index).toString).readNullable[String]
-    )(AdditionalInformation.apply _)
-  }
 }

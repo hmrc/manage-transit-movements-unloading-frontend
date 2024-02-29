@@ -17,8 +17,8 @@
 package utils.answersHelpers
 
 import models.DocType.Previous
-import models.{Index, Link, SecurityType, UserAnswers}
 import models.reference.CustomsOffice
+import models.{Index, Link, SecurityType, UserAnswers}
 import pages.documents.TypePage
 import pages.grossMass.GrossMassPage
 import pages.sections._
@@ -149,7 +149,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       } match {
       case Nil =>
         StaticSection(
-          sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans.empty")),
+          sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans.parent.header")),
           viewLinks = Seq(departureTransportMeansAddRemoveLink)
         )
       case sections =>
@@ -182,9 +182,10 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       case sectionsRows =>
         val transportEquipments = sectionsRows.zipWithIndex.map {
           case (rows, index) =>
+            val equipmentIndex = Index(index).display
             AccordionSection(
-              sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment", Index(index).display)),
-              viewLinks = Seq(sealsAddRemoveLink),
+              sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment", equipmentIndex)),
+              viewLinks = Seq(sealsAddRemoveLink(equipmentIndex)),
               rows = rows
             )
         }
@@ -196,40 +197,59 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         )
     }
 
-  def additionalReferencesSection: Section = {
-    val rows = getAnswersAndBuildSectionRows(AdditionalReferencesSection) {
-      referenceIndex =>
+  def additionalReferencesSection: Section =
+    userAnswers.get(AdditionalReferencesSection).mapWithIndex {
+      (_, referenceIndex) =>
         val helper = new AdditionalReferenceAnswersHelper(userAnswers, referenceIndex)
-        helper.additionalReference
-    }
-
-    if (rows.nonEmpty) {
-      AccordionSection(
-        sectionTitle = Some(messages("unloadingFindings.additional.reference.heading")),
-        rows = rows,
-        viewLinks = Seq(additionalReferenceAddRemoveLink)
-      )
-    } else {
-      StaticSection(
-        sectionTitle = Some(messages("unloadingFindings.additional.reference.heading")),
-        viewLinks = Seq(additionalReferenceAddRemoveLink)
-      )
-    }
-  }
-
-  def additionalInformationSections: Seq[Section] =
-    Seq(
-      AccordionSection(
-        sectionTitle = messages("unloadingFindings.additionalInformation.heading"),
-        rows = getAnswersAndBuildSectionRows(AdditionalInformationListSection) {
-          informationIndex =>
-            val helper = new AdditionalInformationAnswersHelper(userAnswers, informationIndex)
-            helper.additionalInformation
+        Seq(helper.code, helper.referenceNumber).flatten
+    } match {
+      case Nil =>
+        StaticSection(
+          sectionTitle = Some(messages("unloadingFindings.additional.reference.heading")),
+          viewLinks = Seq(additionalReferenceAddRemoveLink)
+        )
+      case sectionsRows =>
+        val children = sectionsRows.zipWithIndex.map {
+          case (rows, index) =>
+            AccordionSection(
+              sectionTitle = Some(messages("unloadingFindings.additional.reference", Index(index).display)),
+              rows = rows
+            )
         }
-      )
-    )
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.additional.reference.heading")),
+          viewLinks = Seq(additionalReferenceAddRemoveLink),
+          children = children,
+          id = Some("additionalReferences")
+        )
+    }
 
-  def incidentSection: Section =
+  def additionalInformationSection: Option[Section] =
+    userAnswers.get(AdditionalInformationListSection).mapWithIndex {
+      (_, referenceIndex) =>
+        val helper = new AdditionalInformationAnswersHelper(userAnswers, referenceIndex)
+        Seq(helper.code, helper.description).flatten
+    } match {
+      case Nil =>
+        None
+      case sectionsRows =>
+        val children = sectionsRows.zipWithIndex.map {
+          case (rows, index) =>
+            AccordionSection(
+              sectionTitle = Some(messages("unloadingFindings.additionalInformation.label", Index(index).display)),
+              rows = rows
+            )
+        }
+        Some(
+          AccordionSection(
+            sectionTitle = Some(messages("unloadingFindings.additionalInformation.heading")),
+            children = children,
+            id = Some("additionalInformation")
+          )
+        )
+    }
+
+  def incidentSection: Option[Section] =
     userAnswers
       .get(IncidentsSection)
       .mapWithIndex {
@@ -267,16 +287,14 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           )
       }
       .toList match {
-      case Nil =>
-        StaticSection(
-          sectionTitle = Some(messages("unloadingFindings.subsections.incidents.noIncidents")),
-          rows = Nil
-        )
+      case Nil => None
       case sections =>
-        AccordionSection(
-          sectionTitle = Some(messages("unloadingFindings.subsections.incidents.parent.header")),
-          children = sections,
-          id = Some("incidents")
+        Some(
+          AccordionSection(
+            sectionTitle = Some(messages("unloadingFindings.subsections.incidents.parent.header")),
+            children = sections,
+            id = Some("incidents")
+          )
         )
     }
 
@@ -314,7 +332,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     }
 
   // Don't show children sections here. These are accessed from the 'More details' link
-  def houseConsignmentSection: Section =
+  def houseConsignmentSection: Option[Section] =
     userAnswers
       .get(HouseConsignmentsSection)
       .mapWithIndex {
@@ -332,29 +350,25 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           AccordionSection(
             sectionTitle = messages("unloadingFindings.subsections.houseConsignment", houseConsignmentIndex.display),
             rows = rows,
-            viewLinks = Nil,
-            accordionLink = Some(
+            viewLinks = Seq(
               Link(
                 id = s"view-house-consignment-${houseConsignmentIndex.display}",
                 href = controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url,
                 visuallyHidden = messages("summaryDetails.visuallyHidden", houseConsignmentIndex.display)
               )
             ),
-            id = Some(s"houseConsignment${houseConsignmentIndex.display}")
+            id = s"houseConsignment${houseConsignmentIndex.display}"
           )
       }
       .toList match {
-      case Nil =>
-        StaticSection(
-          sectionTitle = Some(messages("unloadingFindings.subsections.houseConsignment.noConsignments")),
-          rows = Nil,
-          viewLinks = Nil
-        )
+      case Nil => None
       case sections =>
-        AccordionSection(
-          sectionTitle = Some(messages("unloadingFindings.subsections.houseConsignment.parent.heading")),
-          children = sections,
-          id = Some("houseConsignments")
+        Some(
+          AccordionSection(
+            sectionTitle = Some(messages("unloadingFindings.subsections.houseConsignment.parent.heading")),
+            children = sections,
+            id = Some("houseConsignments")
+          )
         )
     }
 
@@ -380,9 +394,9 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       visuallyHidden = messages("departureTransportMeans.visuallyHidden")
     )
 
-  private val sealsAddRemoveLink: Link =
+  private def sealsAddRemoveLink(index: Int): Link =
     Link(
-      id = s"add-remove-seals",
+      id = s"add-remove-seals-$index",
       href = "#",
       text = messages("sealsLink.addRemove"),
       visuallyHidden = messages("sealsLink.visuallyHidden")

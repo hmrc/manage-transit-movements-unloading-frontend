@@ -35,7 +35,7 @@ import viewModels.houseConsignment.index.items.document.{ItemsAdditionalInformat
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
 import viewModels.transportEquipment.index.{ApplyAnotherItemViewModel, ContainerIdentificationNumberViewModel}
-import viewModels.{ListItem, UnloadingFindingsViewModel}
+import viewModels.{ListItem, ListItemForApply, UnloadingFindingsViewModel}
 
 trait ViewModelGenerators {
   self: Generators =>
@@ -237,16 +237,31 @@ trait ViewModelGenerators {
   implicit lazy val arbitraryListItem: Arbitrary[ListItem] = Arbitrary {
     for {
       name      <- nonEmptyString
+      changeUrl <- Gen.option(nonEmptyString)
+      removeUrl <- Gen.option(nonEmptyString)
+    } yield ListItem(name, changeUrl, removeUrl)
+  }
+
+  implicit lazy val arbitraryListItemForApply: Arbitrary[ListItemForApply] = Arbitrary {
+    for {
+      name      <- nonEmptyString
       changeUrl <- nonEmptyString
       prefix    <- nonEmptyString
-    } yield ListItem(name, changeUrl, prefix)
+    } yield ListItemForApply(name, changeUrl, prefix)
   }
 
   implicit lazy val arbitraryApplyAnotherItemViewModel: Arbitrary[ApplyAnotherItemViewModel] = Arbitrary {
     for {
-      listItems    <- arbitrary[Seq[ListItem]]
+      listItems    <- arbitrary[Seq[ListItemForApply]]
       onSubmitCall <- arbitrary[Call]
     } yield ApplyAnotherItemViewModel(listItems, onSubmitCall, Index(0), isNumberItemsZero = false)
+  }
+
+  implicit lazy val arbitraryAddAnotherDepartureMeansOfTransportViewModel: Arbitrary[AddAnotherDepartureMeansOfTransportViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+    } yield AddAnotherDepartureMeansOfTransportViewModel(listItems, onSubmitCall)
   }
 
   implicit lazy val arbitraryContainerIdentificationNumberViewModel: Arbitrary[ContainerIdentificationNumberViewModel] = Arbitrary {

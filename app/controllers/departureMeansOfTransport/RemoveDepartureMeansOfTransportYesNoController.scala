@@ -19,6 +19,7 @@ package controllers.departureMeansOfTransport
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.departureTransportMeans.TransportMeansIdentification
+import models.requests.SpecificDataRequestProvider1
 import models.{ArrivalId, Index, Mode, TransportMeans}
 import pages.departureMeansOfTransport._
 import pages.sections.TransportMeansSection
@@ -46,35 +47,35 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
 
   private val form: Form[Boolean] = formProvider("departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo")
 
-  private def addAnother(arrivalId: ArrivalId): Call =
-    controllers.routes.UnloadingFindingsController.onPageLoad(
-      arrivalId
-    ) //todo change to AddAnotherTransportMeansController when ready
+  private def addAnother(arrivalId: ArrivalId, mode: Mode): Call =
+    controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(
+      arrivalId,
+      mode
+    )
+
+  private def formatInsetText(transportMeansIndex: Index,
+                              request: SpecificDataRequestProvider1[TransportMeansIdentification]#SpecificDataRequest[AnyContent]
+  ): String = {
+    val identificationType: TransportMeansIdentification = request.arg
+    val identificationNumber: Option[String]             = request.userAnswers.get(VehicleIdentificationNumberPage(transportMeansIndex))
+    val insetText                                        = TransportMeans(identificationType.description, identificationNumber).asString
+    insetText
+  }
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, transportMeansIndex: Index): Action[AnyContent] = actions
-    .requireIndex(arrivalId,
-                  TransportMeansSection(transportMeansIndex),
-                  addAnother(arrivalId)
-    ) //todo update parameter values when AddAnotherTransportMeansController is complete
+    .requireIndex(arrivalId, TransportMeansSection(transportMeansIndex), addAnother(arrivalId, mode))
     .andThen(getMandatoryPage(TransportMeansIdentificationPage(transportMeansIndex))) {
       implicit request =>
-        val identificationType: TransportMeansIdentification = request.arg
-        val identificationNumber: Option[String]             = request.userAnswers.get(VehicleIdentificationNumberPage(transportMeansIndex))
-        val insetText                                        = TransportMeans(identificationType.description, identificationNumber).asString
+        val insetText: String = formatInsetText(transportMeansIndex, request)
         Ok(view(form, request.userAnswers.mrn, arrivalId, transportMeansIndex, insetText, mode))
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode, transportMeansIndex: Index): Action[AnyContent] = actions
-    .requireIndex(arrivalId,
-                  TransportMeansSection(transportMeansIndex),
-                  addAnother(arrivalId)
-    ) //todo update parameter values when AddAnotherTransportMeansController is complete
+    .requireIndex(arrivalId, TransportMeansSection(transportMeansIndex), addAnother(arrivalId, mode))
     .andThen(getMandatoryPage(TransportMeansIdentificationPage(transportMeansIndex)))
     .async {
       implicit request =>
-        val identificationType: TransportMeansIdentification = request.arg
-        val identificationNumber: Option[String]             = request.userAnswers.get(VehicleIdentificationNumberPage(transportMeansIndex))
-        val insetText                                        = TransportMeans(identificationType.description, identificationNumber).asString
+        val insetText: String = formatInsetText(transportMeansIndex, request)
         form
           .bindFromRequest()
           .fold(
@@ -90,7 +91,7 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
                     Future.successful(request.userAnswers)
                   }
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(addAnother(arrivalId))
+              } yield Redirect(addAnother(arrivalId, mode))
           )
     }
 }

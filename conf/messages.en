@@ -8,7 +8,7 @@ date.year   = year
 
 site.delete = Remove
 site.edit = Change
-site.delete.hidden = Change {0}
+site.delete.hidden = Remove {0}
 site.edit.hidden = Change {0}
 site.no = No
 site.yes = Yes
@@ -140,6 +140,18 @@ departureMeansOfTransport.addIdentificationNumberYesNo.error.required = Select y
 departureMeansOfTransport.addNationalityYesNo.title = Do you want to add the registered country for this vehicle?
 departureMeansOfTransport.addNationalityYesNo.heading = Do you want to add the registered country for this vehicle?
 departureMeansOfTransport.addNationalityYesNo.error.required = Select yes if you want to add the registered country for this vehicle
+
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.empty.title = You have added 0 departure means of transport
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.singular.title = You have added 1 departure means of transport
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.plural.title = You have added {0} departure means of transport
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.empty.heading = You have added 0 departure means of transport
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.singular.heading = You have added 1 departure means of transport
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.plural.heading = You have added {0} departure means of transport
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.empty.label = Do you want to add a departure means of transport?
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.label = Do you want to add another departure means of transport?
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.maxLimit.label = You cannot add another departure means of transport. To add another, you need to remove one first.
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.error.required = Select yes if you want to add a departure means of transport
+departureMeansOfTransportPrefix.prefix = Departure means of transport {0}
 
 houseConsignment.item.grossWeight.title = What is the new gross weight of item {0} in house consignment {1}?
 houseConsignment.item.grossWeight.heading = What is the new gross weight of item {0} in house consignment {1}?
@@ -498,8 +510,17 @@ unloadingFindings.houseConsignment.item.document.additionalInformation = Additio
 unloadingFindings.houseConsignment.item.document.additionalInformation.change.hidden = document {0} for item {1} - additional information
 
 unloadingFindings.additional.reference.heading = Additional references
-unloadingFindings.additional.reference.change.hidden = additional reference {0}
-unloadingFindings.additional.reference = Additional Reference {0}
+unloadingFindings.additional.reference = Additional reference {0}
+unloadingFindings.additional.reference.type = Type
+unloadingFindings.additional.reference.type.change.hidden = type for additional reference {0}
+unloadingFindings.additional.reference.number = Reference number
+unloadingFindings.additional.reference.number.change.hidden = reference number for additional reference {0}
+
+unloadingFindings.houseConsignment.item.additionalReference = Additional reference {0}
+unloadingFindings.houseConsignment.item.additionalReference.type = Type
+unloadingFindings.houseConsignment.item.additionalReference.type.change.hidden = type for additional reference {0} in item {1}
+unloadingFindings.houseConsignment.item.additionalReference.number = Reference number
+unloadingFindings.houseConsignment.item.additionalReference.number.change.hidden = reference number for additional reference {0} in item {1}
 
 unloadingFindings.dangerousGoods.unNumber = UN number {0}
 
@@ -737,6 +758,8 @@ transportEquipment.index.seal.removeSealYesNo.error.required = Select yes if you
 
 unloadingFindings.additionalInformation.heading = Additional information
 unloadingFindings.additionalInformation.label = Additional information {0}
+unloadingFindings.additionalInformation.type = Type
+unloadingFindings.additionalInformation.description = Description
 
 departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.title = Are you sure you want to remove this departure means of transport?
 departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.heading = Are you sure you want to remove this departure means of transport?

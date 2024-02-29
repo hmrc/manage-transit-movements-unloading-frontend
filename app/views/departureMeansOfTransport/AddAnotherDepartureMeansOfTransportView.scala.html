@@ -15,21 +15,23 @@
  *@
 
 @import config.FrontendAppConfig
+@import controllers.departureMeansOfTransport.routes
+@import models.MovementReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
-@import viewModels.transportEquipment.index.ApplyAnotherItemViewModel
-@import views.html.components.{Button, ErrorSummary, Heading, InputYesNo, ListWithActionsForApply}
+@import viewModels.departureTransportMeans.AddAnotherDepartureMeansOfTransportViewModel
+@import views.html.components.{Button, ErrorSummary, Heading, InputYesNo, ListWithActions}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     heading: Heading,
-    listWithActions: ListWithActionsForApply,
+    listWithActions: ListWithActions,
     inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
     button: Button
 )
 
-@(form: Form[Boolean],mrn: MovementReferenceNumber, departureId: String, viewModel: ApplyAnotherItemViewModel)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, viewModel: AddAnotherDepartureMeansOfTransportViewModel)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
 
 @mainTemplate(
     title = viewModel.title,
@@ -47,16 +49,14 @@
 
     @formHelper(action = viewModel.onSubmitCall, Symbol("autoComplete") -> "off") {
 
-        @if(viewModel.isNumberItemsZero) {
-        <p class="govuk-body" id="noItems">@viewModel.noMoreItemsLabel</p>
-        }else if(viewModel.allowMore) {
+        @if(viewModel.allowMore) {
             @inputYesNo(
                 field = form("value"),
                 yesNoType = YesNoWithLegend(
                     legend = viewModel.legend
                 )
             )
-        }else{
+        } else {
             <p class="govuk-body" data-testId="maxLimit">@viewModel.maxLimitLabel</p>
         }
 

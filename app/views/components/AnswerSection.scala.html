@@ -24,40 +24,41 @@
 )
 
 @(section: Section, nestingLevel: Int = 0)(implicit messages: Messages)
-    @section match {
-        case x: StaticSection => {
-            @section.sectionTitle.map { title =>
-                <h2 class="govuk-heading-m">@title</h2>
-            }
 
-            @if(section.rows.nonEmpty) {
-                @govukSummaryList(
-                    SummaryList(
-                        rows = section.rows,
-                        classes = s"govuk-!-margin-left-${2 * nestingLevel}"
-                    )
-                )
-            }
-
-            @section.viewLinks.map { link =>
-                <p class="govuk-body">
-                    <a class="govuk-link" href=@link.href id="@link.id">
-                        @messages(link.text) <span class="govuk-visually-hidden">@link.visuallyHidden</span>
-                    </a>
-                </p>
-            }
+@section match {
+    case x: StaticSection => {
+        @section.sectionTitle.map { title =>
+            <h2 class="govuk-heading-m">@title</h2>
         }
-        case x: AccordionSection => {
-            @govukDetails(
-                Details(
-                    summary = HtmlContent(header),
-                    content = HtmlContent(content),
-                    id = section.id,
+
+        @if(section.rows.nonEmpty) {
+            @govukSummaryList(
+                SummaryList(
+                    rows = section.rows,
                     classes = s"govuk-!-margin-left-${2 * nestingLevel}"
                 )
             )
         }
+
+        @section.viewLinks.map { link =>
+            <p class="govuk-body">
+                <a class="govuk-link" href=@link.href id="@link.id">
+                    @messages(link.text) <span class="govuk-visually-hidden">@link.visuallyHidden</span>
+                </a>
+            </p>
+        }
     }
+    case x: AccordionSection => {
+        @govukDetails(
+            Details(
+                summary = HtmlContent(header),
+                content = HtmlContent(content),
+                id = section.id,
+                classes = s"govuk-!-margin-left-${2 * nestingLevel}"
+            )
+        )
+    }
+}
 
 @header = {
     @section.sectionTitle.map { title =>
@@ -76,16 +77,7 @@
                 )
             )
         </dl>
-
-    @section.accordionLink.map { link =>
-        <p class="govuk-body">
-            <a class="govuk-link" href=@link.href id="@link.id">
-                @messages(link.text) <span class="govuk-visually-hidden">@link.visuallyHidden</span>
-            </a>
-        </p>
     }
-
-}
 
     @section.children.map(this(_, nestingLevel + 1))
 
