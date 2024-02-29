@@ -26,7 +26,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
 import utils.answersHelpers.consignment.houseConsignment.{ConsignmentItemAnswersHelper, DepartureTransportMeansAnswersHelper}
 import viewModels.sections.Section
-import viewModels.sections.Section.AccordionSection
+import viewModels.sections.Section.{AccordionSection, StaticSection}
 
 class HouseConsignmentAnswersHelper(
   userAnswers: UserAnswers,
@@ -65,6 +65,17 @@ class HouseConsignmentAnswersHelper(
     id = None,
     call = None
   )
+
+  def houseConsignmentConsigneeSection: Section =
+    StaticSection(
+      sectionTitle = messages("unloadingFindings.consignee.heading"),
+      rows = Seq(
+        consigneeIdentification,
+        consigneeName,
+        consigneeCountry,
+        consigneeAddress
+      ).flatten
+    )
 
   def consigneeCountry: Option[SummaryListRow] = buildRowWithNoChangeLink[Country](
     data = userAnswers.get(ConsigneeCountryPage(houseConsignmentIndex)),
@@ -110,6 +121,7 @@ class HouseConsignmentAnswersHelper(
             helper.dangerousGoodsRows
           ).flatten,
           children = Seq(
+            Seq(helper.itemLevelConsigneeSection),
             helper.packageSections,
             helper.documentSections,
             helper.additionalReferencesSection

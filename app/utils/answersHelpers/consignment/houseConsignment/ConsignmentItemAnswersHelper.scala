@@ -16,12 +16,18 @@
 
 package utils.answersHelpers.consignment.houseConsignment
 
-import models.reference.Country
 import models.DocType.Previous
+import models.reference.Country
 import models.{Index, UserAnswers}
 import pages.NetWeightPage
-import pages.houseConsignment.index.items._
 import pages.houseConsignment.index.items.document.TypePage
+import pages.houseConsignment.index.items.{
+  ConsigneeAddressPage => ItemConsigneeAddressPage,
+  ConsigneeCountryPage => ItemConsigneeCountryPage,
+  ConsigneeIdentifierPage => ItemConsigneeIdentifierPage,
+  ConsigneeNamePage => ItemConsigneeNamePage,
+  _
+}
 import pages.sections.PackagingListSection
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferencesSection
 import pages.sections.houseConsignment.index.items.dangerousGoods.DangerousGoodsListSection
@@ -38,7 +44,7 @@ import utils.answersHelpers.consignment.houseConsignment.item.{
   PackagingAnswersHelper
 }
 import viewModels.sections.Section
-import viewModels.sections.Section.AccordionSection
+import viewModels.sections.Section.{AccordionSection, StaticSection}
 
 class ConsignmentItemAnswersHelper(
   userAnswers: UserAnswers,
@@ -164,5 +170,44 @@ class ConsignmentItemAnswersHelper(
     args = itemIndex.display,
     id = Some(s"change-nomenclature-code-${houseConsignmentIndex.display}"),
     call = Some(Call(GET, "#"))
+  )
+
+  def itemLevelConsigneeSection: Section =
+    StaticSection(
+      sectionTitle = messages("unloadingFindings.consignee.heading"),
+      rows = Seq(
+        consigneeIdentification,
+        consigneeName,
+        consigneeCountry,
+        consigneeAddress
+      ).flatten
+    )
+
+  def consigneeName: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = ItemConsigneeNamePage(houseConsignmentIndex, itemIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.houseConsignment.consigneeName",
+    id = None,
+    call = None
+  )
+
+  def consigneeIdentification: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = ItemConsigneeIdentifierPage(houseConsignmentIndex, itemIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.houseConsignment.consigneeIdentifier",
+    id = None,
+    call = None
+  )
+
+  def consigneeCountry: Option[SummaryListRow] = buildRowWithNoChangeLink[Country](
+    data = userAnswers.get(ItemConsigneeCountryPage(houseConsignmentIndex, itemIndex)),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.rowHeadings.houseConsignment.consigneeCountry"
+  )
+
+  def consigneeAddress: Option[SummaryListRow] = buildRowWithNoChangeLink[String](
+    data = userAnswers.get(ItemConsigneeAddressPage(houseConsignmentIndex, itemIndex)).map(_.toString),
+    formatAnswer = formatAsHtmlContent,
+    prefix = "unloadingFindings.rowHeadings.houseConsignment.consigneeAddress"
   )
 }

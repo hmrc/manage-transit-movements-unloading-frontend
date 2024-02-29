@@ -376,8 +376,11 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         section.children.length mustBe 1
 
         section.children.head.sectionTitle.value mustBe "House consignment 1"
-        section.children.head.rows.size mustBe 4
+        section.children.head.rows.size mustBe 2
         section.children.head.viewLinks.size mustBe 1
+
+        section.children.head.children.head.sectionTitle.value mustBe "Consignee"
+        section.children.head.children.head.rows.size mustBe 2
       }
       "when there is multiple" in {
         val userAnswers = emptyUserAnswers
@@ -414,8 +417,11 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         section.children.length mustBe 2
 
         section.children.head.sectionTitle.value mustBe "House consignment 1"
-        section.children.head.rows.size mustBe 4
+        section.children.head.rows.size mustBe 2
         section.children.head.viewLinks.size mustBe 1
+
+        section.children.head.children.head.sectionTitle.value mustBe "Consignee"
+        section.children.head.children.head.rows.size mustBe 2
       }
     }
 

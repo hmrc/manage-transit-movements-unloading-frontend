@@ -355,11 +355,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           val helper = new HouseConsignmentAnswersHelper(userAnswers, houseConsignmentIndex)
           val rows = Seq(
             helper.consignorName,
-            helper.consignorIdentification,
-            helper.consigneeName,
-            helper.consigneeIdentification,
-            helper.consigneeCountry,
-            helper.consigneeAddress
+            helper.consignorIdentification
           ).flatten
 
           AccordionSection(
@@ -372,7 +368,8 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
                 visuallyHidden = messages("summaryDetails.visuallyHidden", houseConsignmentIndex.display)
               )
             ),
-            id = s"houseConsignment${houseConsignmentIndex.display}"
+            id = s"houseConsignment${houseConsignmentIndex.display}",
+            children = Seq(helper.houseConsignmentConsigneeSection)
           )
       }
       .toList match {
