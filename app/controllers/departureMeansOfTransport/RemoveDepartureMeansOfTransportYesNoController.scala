@@ -46,31 +46,28 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
 
   private val form: Form[Boolean] = formProvider("departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo")
 
-  private def addAnother(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Call =
-    controllers.departureMeansOfTransport.routes.CountryController.onPageLoad(
-      arrivalId,
-      transportMeansIndex,
-      mode
+  private def addAnother(arrivalId: ArrivalId): Call =
+    controllers.routes.UnloadingFindingsController.onPageLoad(
+      arrivalId
     ) //todo change to AddAnotherTransportMeansController when ready
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, transportMeansIndex: Index): Action[AnyContent] = actions
     .requireIndex(arrivalId,
                   TransportMeansSection(transportMeansIndex),
-                  addAnother(arrivalId, transportMeansIndex, mode)
+                  addAnother(arrivalId)
     ) //todo update parameter values when AddAnotherTransportMeansController is complete
-    .andThen(getMandatoryPage(VehicleIdentificationNumberPage(transportMeansIndex))) {
+    .andThen(getMandatoryPage(TransportMeansIdentificationPage(transportMeansIndex))) {
       implicit request =>
-        val identificationType: TransportMeansIdentification =
-          request.userAnswers.get(TransportMeansIdentificationPage(transportMeansIndex)).getOrElse(TransportMeansIdentification("", ""))
-        val identificationNumber: Option[String] = request.userAnswers.get(VehicleIdentificationNumberPage(transportMeansIndex))
-        val insetText                            = TransportMeans(identificationType.description, identificationNumber).asString
+        val identificationType: TransportMeansIdentification = request.arg
+        val identificationNumber: Option[String]             = request.userAnswers.get(VehicleIdentificationNumberPage(transportMeansIndex))
+        val insetText                                        = TransportMeans(identificationType.description, identificationNumber).asString
         Ok(view(form, request.userAnswers.mrn, arrivalId, transportMeansIndex, insetText, mode))
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode, transportMeansIndex: Index): Action[AnyContent] = actions
     .requireIndex(arrivalId,
                   TransportMeansSection(transportMeansIndex),
-                  addAnother(arrivalId, transportMeansIndex, mode)
+                  addAnother(arrivalId)
     ) //todo update parameter values when AddAnotherTransportMeansController is complete
     .andThen(getMandatoryPage(TransportMeansIdentificationPage(transportMeansIndex)))
     .async {
@@ -88,12 +85,12 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
               for {
                 updatedAnswers <-
                   if (value) {
-                    Future.fromTry(request.userAnswers.remove(TransportMeansSection(transportMeansIndex))) //todo set as empty json object?
+                    Future.fromTry(request.userAnswers.removeExceptSequenceNumber(TransportMeansSection(transportMeansIndex)))
                   } else {
                     Future.successful(request.userAnswers)
                   }
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(addAnother(arrivalId, transportMeansIndex, mode))
+              } yield Redirect(addAnother(arrivalId))
           )
     }
 }
