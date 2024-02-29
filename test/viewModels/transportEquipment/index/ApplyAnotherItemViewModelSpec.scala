@@ -23,7 +23,7 @@ import models.{CheckMode, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transportEquipment.index.ItemPage
-import viewModels.ListItemForApply
+import viewModels.ListItem
 import viewModels.transportEquipment.index.ApplyAnotherItemViewModel.ApplyAnotherItemViewModelProvider
 
 class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
@@ -46,10 +46,10 @@ class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaC
           result.maxLimitLabel mustBe "You cannot apply any more items. To apply another, you need to remove one first."
 
           result.listItems mustBe Seq(
-            ListItemForApply(
+            ListItem(
               name = s"Item ${item.toString}",
-              changeOrRemoveUrl = controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), itemIndex, mode).url,
-              prefix = "site.edit"
+              changeUrl = Some(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), itemIndex, mode).url),
+              removeUrl = None
             )
           )
       }
@@ -72,15 +72,15 @@ class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaC
           result.maxLimitLabel mustBe "You cannot apply any more items. To apply another, you need to remove one first."
 
           result.listItems mustBe Seq(
-            ListItemForApply(
+            ListItem(
               name = s"Item ${item1.toString}",
-              changeOrRemoveUrl = controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), itemIndex, mode).url,
-              prefix = "site.edit"
+              changeUrl = Some(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), itemIndex, mode).url),
+              removeUrl = None
             ),
-            ListItemForApply(
+            ListItem(
               name = s"Item ${item2.toString}",
-              changeOrRemoveUrl = controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), Index(1), mode).url,
-              prefix = "site.edit"
+              changeUrl = Some(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), Index(1), mode).url),
+              removeUrl = None
             )
           )
       }
@@ -105,10 +105,10 @@ class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaC
           result.maxLimitLabel mustBe "You cannot apply any more items. To apply another, you need to remove one first."
 
           result.listItems mustBe Seq(
-            ListItemForApply(
+            ListItem(
               name = s"Item ${item.toString}",
-              changeOrRemoveUrl = "", //TODO add in remove url
-              prefix = "site.delete"
+              changeUrl = None,
+              removeUrl = Some("") //TODO add in remove url
             )
           )
       }
@@ -131,15 +131,15 @@ class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaC
           result.maxLimitLabel mustBe "You cannot apply any more items. To apply another, you need to remove one first."
 
           result.listItems mustBe Seq(
-            ListItemForApply(
+            ListItem(
               name = s"Item ${item1.toString}",
-              changeOrRemoveUrl = "", //TODO add in remove url
-              prefix = "site.delete"
+              changeUrl = None,
+              removeUrl = Some("") //TODO add in remove url
             ),
-            ListItemForApply(
+            ListItem(
               name = s"Item ${item2.toString}",
-              changeOrRemoveUrl = "", //TODO add in remove url
-              prefix = "site.delete"
+              changeUrl = None,
+              removeUrl = Some("") //TODO add in remove url
             )
           )
       }

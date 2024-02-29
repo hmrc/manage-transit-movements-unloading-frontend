@@ -30,7 +30,6 @@ import viewModels.departureTransportMeans.AddAnotherDepartureMeansOfTransportVie
 import views.html.departureMeansOfTransport.AddAnotherDepartureMeansOfTransportView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 class AddAnotherDepartureMeansOfTransportController @Inject() (
   override val messagesApi: MessagesApi,
@@ -40,7 +39,7 @@ class AddAnotherDepartureMeansOfTransportController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherDepartureMeansOfTransportView,
   viewModelProvider: AddAnotherDepartureMeansOfTransportViewModelProvider
-)(implicit config: FrontendAppConfig, ec: ExecutionContext)
+)(implicit config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
