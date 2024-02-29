@@ -50,10 +50,6 @@ class AddAnotherSealController @Inject() (
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode, equipmentIndex)
       Ok(view(form(viewModel), request.userAnswers.mrn, arrivalId, viewModel))
-//      viewModel.count match {
-//        case 0 => Redirect(controllers.transportEquipment.index.routes.AddSealYesNoController.onPageLoad(lrn, mode, equipmentIndex))
-//        case _ => Ok(view(form(viewModel), request.userAnswers.mrn, arrivalId, viewModel))
-//      }
   }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
@@ -70,7 +66,7 @@ class AddAnotherSealController @Inject() (
                   .onPageLoad(arrivalId, mode, equipmentIndex, viewModel.nextIndex)
               )
             case false =>
-              Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId)) // TODO update when navigator is ready
+              Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
           }
         )
   }

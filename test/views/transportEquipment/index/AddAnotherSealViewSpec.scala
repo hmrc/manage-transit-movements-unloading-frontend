@@ -32,10 +32,16 @@ class AddAnotherSealViewSpec extends ListWithActionsViewBehaviours {
     new AddAnotherFormProvider()(viewModel.prefix, viewModel.allowMore)
 
   private val viewModel            = arbitrary[AddAnotherSealViewModel].sample.value
+  private val noSealViewModel      = viewModel.copy(listItems = Nil)
   private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
   private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
 
   override def form: Form[Boolean] = formProvider(notMaxedOutViewModel)
+
+  def applyNoSealView: HtmlFormat.Appendable =
+    injector
+      .instanceOf[AddAnotherSealView]
+      .apply(formProvider(noSealViewModel), mrn, arrivalId, noSealViewModel)(fakeRequest, messages, frontendAppConfig)
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
@@ -53,11 +59,21 @@ class AddAnotherSealViewSpec extends ListWithActionsViewBehaviours {
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-
-
-  behave like pageWithMoreItemsAllowed(notMaxedOutViewModel.count)(notMaxedOutViewModel.count)
+  behave like pageWithMoreItemsAllowed(notMaxedOutViewModel.count)()
 
   behave like pageWithItemsMaxedOut(maxedOutViewModel.count)
 
   behave like pageWithSubmitButton("Continue")
+
+  "page with no items" - {
+
+    val doc = parseView(applyNoSealView)
+
+    behave like pageWithTitle(doc, s"$prefix.empty", noSealViewModel.count)
+
+    behave like pageWithHeading(doc, s"$prefix.empty", noSealViewModel.count)
+
+    behave like pageWithRadioItems(legendIsHeading = false, args = Seq(noSealViewModel.count))
+
+  }
 }

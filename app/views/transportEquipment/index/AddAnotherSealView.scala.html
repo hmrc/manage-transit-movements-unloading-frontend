@@ -51,13 +51,13 @@
             @inputYesNo(
                 field = form("value"),
                 yesNoType = YesNoWithLegend(
-                    legend = if (viewModel.count == 0) viewModel.emptyListLegend else viewModel.legend
+                    legend = viewModel.legend
                 )
             )
         } else {
             <p class="govuk-body" data-testId="maxLimit">@viewModel.maxLimitLabel</p>
         }
 
-        @button(attributes = Map("id" -> "submit"))
+        @button(messageKey = "site.continue", attributes = Map("id" -> "submit"))
     }
 }

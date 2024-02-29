@@ -46,10 +46,10 @@ object AddAnotherSealViewModel {
           case (_, i) =>
             val sealIndex = Index(i)
             userAnswers.get(SealIdentificationNumberPage(equipmentIndex, sealIndex)).map {
-              name =>
+              number =>
                 ListItem(
-                  name = name,
-                  changeUrl = routes.SealIdentificationNumberController.onPageLoad(arrivalId, mode, equipmentIndex, sealIndex).url,
+                  name = number,
+                  changeUrl = Some(routes.SealIdentificationNumberController.onPageLoad(arrivalId, mode, equipmentIndex, sealIndex).url),
                   removeUrl = Some(routes.RemoveSealYesNoController.onPageLoad(arrivalId, mode, equipmentIndex, sealIndex).url)
                 )
             }

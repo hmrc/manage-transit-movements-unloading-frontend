@@ -35,8 +35,6 @@ import viewModels.houseConsignment.index.items.document.{ItemsAdditionalInformat
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
 import viewModels.transportEquipment.index.{AddAnotherSealViewModel, ApplyAnotherItemViewModel, ContainerIdentificationNumberViewModel}
-import viewModels.{ListItem, UnloadingFindingsViewModel}
-import viewModels.transportEquipment.index.{ApplyAnotherItemViewModel, ContainerIdentificationNumberViewModel}
 import viewModels.{ListItem, ListItemForApply, UnloadingFindingsViewModel}
 
 trait ViewModelGenerators {

@@ -37,7 +37,7 @@ class AddAnotherSealViewModelSpec extends SpecBase with Generators with ScalaChe
           result.listItems.length mustBe 0
           result.title mustBe s"You have added 0 seal to transport equipment ${equipmentIndex.display}"
           result.heading mustBe s"You have added 0 seal to transport equipment ${equipmentIndex.display}"
-          result.emptyListLegend mustBe s"Do you want to add a seal to transport equipment ${equipmentIndex.display}?"
+          result.legend mustBe s"Do you want to add a seal to transport equipment ${equipmentIndex.display}?"
           result.maxLimitLabel mustBe
             s"You cannot add any more seals to transport equipment ${equipmentIndex.display}. To add another, you need to remove one first."
       }
