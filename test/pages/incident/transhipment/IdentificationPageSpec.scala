@@ -14,6 +14,19 @@
  * limitations under the License.
  */
 
-package models
+package pages.incident.transhipment
 
-case class Link(id: String, text: String = "summaryDetails.link", href: String, visuallyHidden: String)
+import models.departureTransportMeans.TransportMeansIdentification
+import pages.behaviours.PageBehaviours
+
+class IdentificationPageSpec extends PageBehaviours {
+
+  "IdentificationPage" - {
+
+    beRetrievable[TransportMeansIdentification](IdentificationPage(index))
+
+    beSettable[TransportMeansIdentification](IdentificationPage(index))
+
+    beRemovable[TransportMeansIdentification](IdentificationPage(index))
+  }
+}

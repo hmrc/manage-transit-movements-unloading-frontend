@@ -17,6 +17,8 @@
 package utils.transformers
 
 import generated.ConsignmentItemType04
+import models.{Index, UserAnswers}
+import pages.houseConsignment.index.items.DeclarationTypePage
 import models._
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -24,6 +26,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConsignmentItemTransformer @Inject() (
+  countryOfDestinationTransformer: CountryOfDestinationTransformer,
   commodityTransformer: CommodityTransformer,
   packagingTransformer: PackagingTransformer,
   documentsTransformer: DocumentsTransformer,
@@ -38,7 +41,9 @@ class ConsignmentItemTransformer @Inject() (
           userAnswers =>
             val itemIndex: Index = Index(i)
             val pipeline: UserAnswers => Future[UserAnswers] =
-              commodityTransformer.transform(consignmentItem.Commodity, hcIndex, itemIndex) andThen
+              set(DeclarationTypePage(hcIndex, itemIndex), consignmentItem.declarationType) andThen
+                countryOfDestinationTransformer.transform(consignmentItem.countryOfDestination, hcIndex, itemIndex) andThen
+                commodityTransformer.transform(consignmentItem.Commodity, hcIndex, itemIndex) andThen
                 packagingTransformer.transform(consignmentItem.Packaging, hcIndex, itemIndex) andThen
                 documentsTransformer.transform(
                   consignmentItem.SupportingDocument,

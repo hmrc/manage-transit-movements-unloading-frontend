@@ -181,7 +181,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
         section.sectionTitle.value mustBe "Transit holder"
         section.rows.size mustBe 5
-        section.viewLink must not be defined
+        section.viewLinks mustBe Nil
       }
     }
 
@@ -197,14 +197,19 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(CountryPage(dtmIndex), country)
 
             val helper = new ConsignmentAnswersHelper(answers)
-            val result = helper.departureTransportMeansSections
+            val result = helper.departureTransportMeansSection
 
-            result.head mustBe a[AccordionSection]
-            result.head.sectionTitle.value mustBe "Departure means of transport 1"
-            result.head.rows.size mustBe 3
-            result.head.rows.head.value.value mustBe `type`.description
-            result.head.rows(1).value.value mustBe number
-            result.head.rows(2).value.value mustBe country.description
+            result mustBe a[AccordionSection]
+            result.sectionTitle.value mustBe "Departure means of transport"
+            result.viewLinks.head.href mustBe "#"
+
+            result.children.head mustBe a[AccordionSection]
+            result.children.head.sectionTitle.value mustBe "Departure means of transport 1"
+            result.children.head.rows.size mustBe 3
+            result.children.head.rows.head.value.value mustBe `type`.description
+            result.children.head.rows(1).value.value mustBe number
+            result.children.head.rows(2).value.value mustBe country.description
+
         }
       }
     }
@@ -221,13 +226,17 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), sealId)
 
             val helper = new ConsignmentAnswersHelper(answers)
-            val result = helper.transportEquipmentSections
+            val result = helper.transportEquipmentSection
 
-            result.head mustBe a[AccordionSection]
-            result.head.sectionTitle.value mustBe "Transport equipment 1"
-            result.head.rows.size mustBe 2
-            result.head.rows.head.value.value mustBe containerId
-            result.head.rows(1).value.value mustBe sealId
+            result mustBe a[AccordionSection]
+            result.sectionTitle.value mustBe "Transport equipment"
+            result.viewLinks.head.href mustBe "#"
+
+            result.children.head mustBe a[AccordionSection]
+            result.children.head.sectionTitle.value mustBe "Transport equipment 1"
+            result.children.head.rows.size mustBe 2
+            result.children.head.rows.head.value.value mustBe containerId
+            result.children.head.rows(1).value.value mustBe sealId
         }
       }
     }
@@ -243,12 +252,13 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(AdditionalReferenceNumberPage(additionalReferenceIndex), number)
 
             val helper = new ConsignmentAnswersHelper(answers)
-            val result = helper.additionalReferencesSections
+            val result = helper.additionalReferencesSection
 
-            result.head mustBe a[AccordionSection]
-            result.head.sectionTitle.value mustBe "Additional references"
-            result.head.rows.size mustBe 1
-            result.head.rows.head.value.value mustBe s"${`type`} - $number"
+            result mustBe a[AccordionSection]
+            result.sectionTitle.value mustBe "Additional references"
+            result.rows.size mustBe 1
+            result.rows.head.value.value mustBe s"${`type`} - $number"
+            result.viewLinks.head.href mustBe "#"
         }
       }
     }
@@ -293,29 +303,34 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(AdditionalInformationPage(Index(2)), additionalInformation)
 
             val helper = new ConsignmentAnswersHelper(answers)
-            val result = helper.documentSections
+            val result = helper.documentSection
 
-            result.head mustBe a[AccordionSection]
+            result mustBe a[AccordionSection]
+            result.sectionTitle.value mustBe "Documents"
+            result.viewLinks.head.href mustBe "#"
 
-            result.head.sectionTitle.value mustBe "Document 1"
-            result.head.rows.size mustBe 3
-            result.head.rows.head.value.value mustBe documentType.toString
-            result.head.rows(1).value.value mustBe referenceNumber
-            result.head.rows(2).value.value mustBe additionalInformation
+            result.children.head.sectionTitle.value mustBe "Document 1"
+            result.children.head.rows.size mustBe 3
+            result.children.head.rows.head.value.value mustBe documentType.toString
+            result.children.head.rows(1).value.value mustBe referenceNumber
+            result.children.head.rows(2).value.value mustBe additionalInformation
+            result.children.head.viewLinks mustBe Nil
 
-            result(1).sectionTitle.value mustBe "Document 2"
-            result(1).rows.size mustBe 3
-            result(1).rows.head.value.value mustBe documentType.toString
-            result(1).rows(1).value.value mustBe referenceNumber
-            result(1).rows(2).value.value mustBe additionalInformation
+            result.children(1).sectionTitle.value mustBe "Document 2"
+            result.children(1).rows.size mustBe 3
+            result.children(1).rows.head.value.value mustBe documentType.toString
+            result.children(1).rows(1).value.value mustBe referenceNumber
+            result.children(1).rows(2).value.value mustBe additionalInformation
+            result.children(1).viewLinks mustBe Nil
 
-            result(2).sectionTitle.value mustBe "Document 3"
-            result(2).rows.size mustBe 3
-            result(2).rows.head.value.value mustBe previousDoc.toString
-            result(2).rows(1).value.value mustBe referenceNumber
-            result(2).rows(1).actions mustBe None
-            result(2).rows(2).value.value mustBe additionalInformation
-            result(2).rows(2).actions mustBe None
+            result.children(2).sectionTitle.value mustBe "Document 3"
+            result.children(2).rows.size mustBe 3
+            result.children(2).rows.head.value.value mustBe previousDoc.toString
+            result.children(2).rows(1).value.value mustBe referenceNumber
+            result.children(2).rows(1).actions mustBe None
+            result.children(2).rows(2).value.value mustBe additionalInformation
+            result.children(2).rows(2).actions mustBe None
+            result.children(2).viewLinks mustBe Nil
         }
       }
     }
@@ -333,22 +348,26 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(ConsigneeIdentifierPage(hcIndex), consigneeId)
 
             val helper = new ConsignmentAnswersHelper(answers)
-            val result = helper.houseConsignmentSections
+            val result = helper.houseConsignmentSection
 
-            result.head mustBe a[AccordionSection]
-            result.head.sectionTitle.value mustBe "House consignment 1"
-            result.head.rows.size mustBe 4
-            result.head.rows.head.value.value mustBe consignorName
-            result.head.rows(1).value.value mustBe consignorId
-            result.head.rows(2).value.value mustBe consigneeName
-            result.head.rows(3).value.value mustBe consigneeId
-            result.head.children mustBe empty
-            val link = result.head.viewLink.value
+            result mustBe a[AccordionSection]
+            result.sectionTitle.value mustBe "House consignments"
+
+            result.children.head mustBe a[AccordionSection]
+            result.children.head.sectionTitle.value mustBe "House consignment 1"
+            result.children.head.rows.size mustBe 4
+            result.children.head.rows.head.value.value mustBe consignorName
+            result.children.head.rows(1).value.value mustBe consignorId
+            result.children.head.rows(2).value.value mustBe consigneeName
+            result.children.head.rows(3).value.value mustBe consigneeId
+            result.children.head.children mustBe empty
+
+            val link = result.children.head.accordionLink.value
             link.id mustBe "view-house-consignment-1"
-            link.text mustBe "View"
+            link.text mustBe "summaryDetails.link"
             link.href mustBe controllers.routes.HouseConsignmentController.onPageLoad(answers.id, hcIndex).url
             link.visuallyHidden mustBe "on house consignment 1"
-            result.head.id.value mustBe "houseConsignment1"
+            result.children.head.id.value mustBe "houseConsignment1"
         }
       }
     }
@@ -391,32 +410,33 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
           .setValue(EndorsementCountryPage(index), country)
 
         val helper = new ConsignmentAnswersHelper(answers)
-        val result = helper.incidentSections
+        val result = helper.incidentSection
 
-        result.head mustBe a[AccordionSection]
-        result.head.sectionTitle.value mustBe "Incident 1"
-        result.head.rows.size mustBe 7
-        result.head.rows.head.value.value mustBe country.toString
-        result.head.rows(1).value.value mustBe inc.toString
-        result.head.rows(2).value.value mustBe description
-        result.head.rows(3).value.value mustBe qualifier.toString
-        result.head.rows(4).value.value mustBe coordinate.toString
-        result.head.rows(5).value.value mustBe unLocode
-        result.head.rows(6).value.value mustBe s"${addressType18.streetAndNumber}<br>${addressType18.city}<br>${addressType18.postcode.get}"
+        result mustBe a[AccordionSection]
+        result.sectionTitle.value mustBe "Incidents"
 
-        result.head.children.head.sectionTitle.value mustBe "Endorsements"
-        result.head.children.head.rows.head.key.value mustBe "Endorsement date"
-        result.head.children.head.rows(1).key.value mustBe "Authority"
-        result.head.children.head.rows(2).key.value mustBe "Country"
-        result.head.children.head.rows(3).key.value mustBe "Location"
-        result.head.children.head.rows(3).key.value mustBe "Location"
+        result mustBe a[AccordionSection]
+        result.children.head.sectionTitle.value mustBe "Incident 1"
+        result.children.head.rows.size mustBe 7
+        result.children.head.rows.head.value.value mustBe country.toString
+        result.children.head.rows(1).value.value mustBe inc.toString
+        result.children.head.rows(2).value.value mustBe description
+        result.children.head.rows(3).value.value mustBe qualifier.toString
+        result.children.head.rows(4).value.value mustBe coordinate.toString
+        result.children.head.rows(5).value.value mustBe unLocode
+        result.children.head.rows(6).value.value mustBe s"${addressType18.streetAndNumber}<br>${addressType18.city}<br>${addressType18.postcode.get}"
 
-        result.head.children(1).sectionTitle.value mustBe "Transport equipment 1"
-        result.head.children(1).rows.head.key.value mustBe "Container identification number"
-        result.head.children(1).rows(1).key.value mustBe "Seal 1"
-        result.head.children(1).rows(2).key.value mustBe "Seal 2"
-        result.head.children(1).rows(3).key.value mustBe "Seal 3"
-
+        result.children.head.children.head.sectionTitle.value mustBe "Endorsements"
+        result.children.head.children.head.rows.head.key.value mustBe "Endorsement date"
+        result.children.head.children.head.rows(1).key.value mustBe "Authority"
+        result.children.head.children.head.rows(2).key.value mustBe "Country"
+        result.children.head.children.head.rows(3).key.value mustBe "Location"
+        result.children.head.children.head.sectionTitle.value mustBe "Endorsements"
+        result.children.head.children.head.rows.head.key.value mustBe "Endorsement date"
+        result.children.head.children.head.rows(1).key.value mustBe "Authority"
+        result.children.head.children.head.rows(2).key.value mustBe "Country"
+        result.children.head.children.head.rows(3).key.value mustBe "Location"
+        result.children.head.children.head.rows(3).key.value mustBe "Location"
       }
     }
   }

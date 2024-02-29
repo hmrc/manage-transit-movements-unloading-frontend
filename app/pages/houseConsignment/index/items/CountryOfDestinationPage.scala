@@ -14,6 +14,17 @@
  * limitations under the License.
  */
 
-package models
+package pages.houseConsignment.index.items
 
-case class Link(id: String, text: String = "summaryDetails.link", href: String, visuallyHidden: String)
+import models.Index
+import models.reference.Country
+import pages.QuestionPage
+import pages.sections.ItemsSection
+import play.api.libs.json.JsPath
+
+case class CountryOfDestinationPage(houseConsignment: Index, itemIndex: Index) extends QuestionPage[Country] {
+
+  override def path: JsPath = ItemsSection(houseConsignment).path \ itemIndex.position \ toString
+
+  override def toString: String = "countryOfDestination"
+}

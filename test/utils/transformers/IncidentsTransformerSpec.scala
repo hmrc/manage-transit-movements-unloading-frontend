@@ -45,13 +45,16 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
   private lazy val mockIncidentLocationTransformer: IncidentLocationTransformer = mock[IncidentLocationTransformer]
 
+  private lazy val mockTranshipmentTransformer: TranshipmentTransformer = mock[TranshipmentTransformer]
+
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
         bind[ReferenceDataConnector].toInstance(mockRefDataConnector),
         bind[IncidentEndorsementTransformer].toInstance(mockIncidentEndorsementTransformer),
-        bind[IncidentLocationTransformer].toInstance(mockIncidentLocationTransformer)
+        bind[IncidentLocationTransformer].toInstance(mockIncidentLocationTransformer),
+        bind[TranshipmentTransformer].toInstance(mockTranshipmentTransformer)
       )
 
   override def beforeEach(): Unit = {
@@ -59,6 +62,7 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
     reset(mockRefDataConnector)
     reset(mockIncidentEndorsementTransformer)
     reset(mockIncidentLocationTransformer)
+    reset(mockTranshipmentTransformer)
   }
 
   private case object FakeIncidentEndorsementSection extends QuestionPage[JsObject] {
@@ -67,6 +71,10 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
   private case object FakeIncidentLocationSection extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ "incidentLocation"
+  }
+
+  private case object FakeTranshipmentSection extends QuestionPage[JsObject] {
+    override def path: JsPath = JsPath \ "transhipment"
   }
 
   // Because each incident has its own set of mocks, we need to ensure the values are unique
@@ -99,6 +107,11 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
                 .thenReturn {
                   ua => Future.successful(ua.setValue(FakeIncidentLocationSection, Json.obj("foo" -> i.toString)))
                 }
+
+              when(mockTranshipmentTransformer.transform(any(), eqTo(Index(i)))(any()))
+                .thenReturn {
+                  ua => Future.successful(ua.setValue(FakeTranshipmentSection, Json.obj("foo" -> i.toString)))
+                }
           }
 
           val result = transformer.transform(incidents).apply(emptyUserAnswers).futureValue
@@ -111,6 +124,7 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
               result.getValue(IncidentTextPage(Index(i))) mustBe incident.text
               result.getValue(FakeIncidentEndorsementSection) mustBe Json.obj("foo" -> i.toString)
               result.getValue(FakeIncidentLocationSection) mustBe Json.obj("foo" -> i.toString)
+              result.getValue(FakeTranshipmentSection) mustBe Json.obj("foo" -> i.toString)
           }
       }
     }
