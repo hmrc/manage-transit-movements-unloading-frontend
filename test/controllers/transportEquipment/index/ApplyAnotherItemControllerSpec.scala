@@ -30,7 +30,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewModels.ListItemForApply
+import viewModels.ListItem
 import viewModels.transportEquipment.index.ApplyAnotherItemViewModel
 import viewModels.transportEquipment.index.ApplyAnotherItemViewModel.ApplyAnotherItemViewModelProvider
 import views.html.transport.equipment.ApplyAnotherItemView
@@ -59,7 +59,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
     reset(mockViewModelProvider)
   }
 
-  private val listItem          = arbitrary[ListItemForApply].sample.value
+  private val listItem          = arbitrary[ListItem].sample.value
   private val listItems         = Seq.fill(Gen.choose(1, frontendAppConfig.maxItems - 1).sample.value)(listItem)
   private val maxedOutListItems = Seq.fill(frontendAppConfig.maxItems)(listItem)
 

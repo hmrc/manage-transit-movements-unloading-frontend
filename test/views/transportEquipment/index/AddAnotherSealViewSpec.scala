@@ -59,9 +59,9 @@ class AddAnotherSealViewSpec extends ListWithActionsViewBehaviours {
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithMoreItemsAllowed(notMaxedOutViewModel.count)()
+  behave like pageWithMoreItemsAllowed(notMaxedOutViewModel.count, equipmentIndex.display)(notMaxedOutViewModel.count, equipmentIndex.display)
 
-  behave like pageWithItemsMaxedOut(maxedOutViewModel.count)
+  behave like pageWithItemsMaxedOut(maxedOutViewModel.count, equipmentIndex.display)(equipmentIndex.display)
 
   behave like pageWithSubmitButton("Continue")
 
@@ -69,11 +69,11 @@ class AddAnotherSealViewSpec extends ListWithActionsViewBehaviours {
 
     val doc = parseView(applyNoSealView)
 
-    behave like pageWithTitle(doc, s"$prefix.empty", noSealViewModel.count)
+    behave like pageWithTitle(doc, s"$prefix.empty", noSealViewModel.count, equipmentIndex.display)
 
-    behave like pageWithHeading(doc, s"$prefix.empty", noSealViewModel.count)
+    behave like pageWithHeading(doc, s"$prefix.empty", noSealViewModel.count, equipmentIndex.display)
 
-    behave like pageWithRadioItems(legendIsHeading = false, args = Seq(noSealViewModel.count))
+    behave like pageWithRadioItems(document = doc, legendIsHeading = false, args = Seq(noSealViewModel.count, equipmentIndex.display))
 
   }
 }

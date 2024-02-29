@@ -68,8 +68,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
 
   "AddAnotherSeal Controller" - {
-
-    "redirect to add seal yes/no page" - {
+    "must return OK and the correct view for a GET" - {
       "when 0 seals" in {
         when(mockViewModelProvider.apply(any(), any(), any(), any()))
           .thenReturn(emptyViewModel)
@@ -81,14 +80,14 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         val result = route(app, request).value
 
-        status(result) mustEqual SEE_OTHER
+        val view = injector.instanceOf[AddAnotherSealView]
 
-        redirectLocation(result).value mustEqual
-          routes.AddSealYesNoController.onPageLoad(arrivalId, equipmentIndex, mode).url
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(form(emptyViewModel), mrn, arrivalId, emptyViewModel)(request, messages, frontendAppConfig).toString
       }
-    }
 
-    "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
         when(mockViewModelProvider.apply(any(), any(), any(), any()))
           .thenReturn(notMaxedOutViewModel)
@@ -162,7 +161,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual onwardRoute.url
+          redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
         }
       }
     }
@@ -181,7 +180,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual onwardRoute.url
+        redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
       }
     }
 

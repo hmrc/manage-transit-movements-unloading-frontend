@@ -38,6 +38,11 @@ class AddAnotherDepartureMeansOfTransportViewSpec extends ListWithActionsViewBeh
 
   override def form: Form[Boolean] = formProvider(notMaxedOutViewModel)
 
+  def applyNoItemsView: HtmlFormat.Appendable =
+    injector
+      .instanceOf[AddAnotherDepartureMeansOfTransportView]
+      .apply(formProvider(noItemsViewModel), mrn, arrivalId, noItemsViewModel)(fakeRequest, messages, frontendAppConfig)
+
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[AddAnotherDepartureMeansOfTransportView]
@@ -54,9 +59,20 @@ class AddAnotherDepartureMeansOfTransportViewSpec extends ListWithActionsViewBeh
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithMoreItemsAllowed(notMaxedOutViewModel.count)()
+  behave like pageWithMoreItemsAllowed(notMaxedOutViewModel.count)(notMaxedOutViewModel.count)
 
-  behave like pageWithItemsMaxedOut(maxedOutViewModel.count)
+  behave like pageWithItemsMaxedOut(maxedOutViewModel.count)()
 
   behave like pageWithSubmitButton("Continue")
+
+  "page with no items" - {
+
+    val doc = parseView(applyNoItemsView)
+
+    behave like pageWithTitle(doc, s"$prefix.empty", noItemsViewModel.count)
+
+    behave like pageWithHeading(doc, s"$prefix.empty", noItemsViewModel.count)
+
+    behave like pageWithRadioItems(document = doc, legendIsHeading = false, args = Seq(noItemsViewModel.count))
+  }
 }

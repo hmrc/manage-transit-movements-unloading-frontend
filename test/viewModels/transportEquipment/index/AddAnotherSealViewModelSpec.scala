@@ -34,9 +34,10 @@ class AddAnotherSealViewModelSpec extends SpecBase with Generators with ScalaChe
         mode =>
           val result = new AddAnotherSealViewModelProvider().apply(emptyUserAnswers, arrivalId, mode, equipmentIndex)
 
-          result.listItems.length mustBe 0
-          result.title mustBe s"You have added 0 seal to transport equipment ${equipmentIndex.display}"
-          result.heading mustBe s"You have added 0 seal to transport equipment ${equipmentIndex.display}"
+          result.listItems mustBe Nil
+
+          result.title mustBe s"You have added 0 seals to transport equipment ${equipmentIndex.display}"
+          result.heading mustBe s"You have added 0 seals to transport equipment ${equipmentIndex.display}"
           result.legend mustBe s"Do you want to add a seal to transport equipment ${equipmentIndex.display}?"
           result.maxLimitLabel mustBe
             s"You cannot add any more seals to transport equipment ${equipmentIndex.display}. To add another, you need to remove one first."
@@ -63,18 +64,18 @@ class AddAnotherSealViewModelSpec extends SpecBase with Generators with ScalaChe
     "when there are multiple seals" in {
       val formatter = java.text.NumberFormat.getIntegerInstance
 
-      forAll(arbitrary[Mode], nonEmptyString, Gen.choose(2, frontendAppConfig.maxSeals)) {
-        (mode, identificationNumber, seals) =>
-          val userAnswers = (0 until seals).foldLeft(emptyUserAnswers) {
-            (acc, i) =>
-              acc
-                .setValue(SealIdentificationNumberPage(equipmentIndex, Index(i)), s"$identificationNumber$i")
-          }
+      forAll(arbitrary[Mode], nonEmptyString) {
+        (mode, identificationNumber) =>
+          val userAnswers = emptyUserAnswers
+            .setValue(SealIdentificationNumberPage(equipmentIndex, Index(0)), identificationNumber)
+            .setValue(SealIdentificationNumberPage(equipmentIndex, Index(1)), identificationNumber)
+            .setValue(SealIdentificationNumberPage(equipmentIndex, Index(2)), identificationNumber)
+            .setValue(SealIdentificationNumberPage(equipmentIndex, Index(3)), identificationNumber)
 
           val result = new AddAnotherSealViewModelProvider().apply(userAnswers, arrivalId, mode, equipmentIndex)
-          result.listItems.length mustBe seals
-          result.title mustBe s"You have added ${formatter.format(seals)} seals to transport equipment ${equipmentIndex.display}"
-          result.heading mustBe s"You have added ${formatter.format(seals)} seals to transport equipment ${equipmentIndex.display}"
+          result.listItems.length mustBe 4
+          result.title mustBe s"You have added 4 seals to transport equipment ${equipmentIndex.display}"
+          result.heading mustBe s"You have added 4 seals to transport equipment ${equipmentIndex.display}"
           result.legend mustBe s"Do you want to add another seal to transport equipment ${equipmentIndex.display}?"
           result.maxLimitLabel mustBe
             s"You cannot add any more seals to transport equipment ${equipmentIndex.display}. To add another, you need to remove one first."
