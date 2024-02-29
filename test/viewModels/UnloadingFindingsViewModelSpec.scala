@@ -338,7 +338,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(6)
+        val section           = result.sections(5)
 
         section.sectionTitle.value mustBe "House consignments"
         section.children.length mustBe 1
@@ -376,7 +376,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
-        val section           = result.sections(6)
+        val section           = result.sections(5)
 
         section.sectionTitle.value mustBe "House consignments"
         section.children.length mustBe 2

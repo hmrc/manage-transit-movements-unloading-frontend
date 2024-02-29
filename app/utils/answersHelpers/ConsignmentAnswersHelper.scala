@@ -149,7 +149,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       } match {
       case Nil =>
         StaticSection(
-          sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans.empty")),
+          sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans.parent.header")),
           viewLinks = Seq(departureTransportMeansAddRemoveLink)
         )
       case sections =>
@@ -248,7 +248,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         )
     }
 
-  def incidentSection: Section =
+  def incidentSection: Option[Section] =
     userAnswers
       .get(IncidentsSection)
       .mapWithIndex {
@@ -286,16 +286,14 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           )
       }
       .toList match {
-      case Nil =>
-        StaticSection(
-          sectionTitle = Some(messages("unloadingFindings.subsections.incidents.noIncidents")),
-          rows = Nil
-        )
+      case Nil => None
       case sections =>
-        AccordionSection(
-          sectionTitle = Some(messages("unloadingFindings.subsections.incidents.parent.header")),
-          children = sections,
-          id = Some("incidents")
+        Some(
+          AccordionSection(
+            sectionTitle = Some(messages("unloadingFindings.subsections.incidents.parent.header")),
+            children = sections,
+            id = Some("incidents")
+          )
         )
     }
 
@@ -364,7 +362,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       .toList match {
       case Nil =>
         StaticSection(
-          sectionTitle = Some(messages("unloadingFindings.subsections.houseConsignment.noConsignments")),
+          sectionTitle = Some(messages("unloadingFindings.subsections.houseConsignment.parent.heading")),
           rows = Nil,
           viewLinks = Nil
         )
