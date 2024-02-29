@@ -26,6 +26,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
+import pages.sections.Section
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
 import play.api.libs.json._
@@ -71,6 +72,7 @@ trait SpecBase
   val additionalReferenceIndex: Index = Index(0)
   val dangerousGoodsIndex: Index      = Index(0)
   val dtmIndex: Index                 = Index(0)
+  val transportMeansIndex: Index      = Index(0)
   def emptyUserAnswers: UserAnswers   = UserAnswers(arrivalId, mrn, eoriNumber, basicIe043, Json.obj(), Instant.now())
 
   def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
@@ -95,8 +97,11 @@ trait SpecBase
     def removeValue(page: QuestionPage[_]): UserAnswers =
       userAnswers.remove(page).success.value
 
-    def getSequenceNumber(section: QuestionPage[_]): String =
+    def getSequenceNumber(section: Section[JsObject]): String =
       userAnswers.data.transform((section.path \ "sequenceNumber").json.pick[JsString]).get.value
+
+    def setSequenceNumber(section: Section[JsObject], sequenceNumber: String): UserAnswers =
+      userAnswers.set(section.path, Json.obj("sequenceNumber" -> sequenceNumber)).success.value
   }
 
   implicit class RichContent(c: Content) {

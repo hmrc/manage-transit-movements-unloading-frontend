@@ -17,7 +17,7 @@
 package utils.answersHelpers.consignment
 
 import models.reference.Country
-import models.{Index, UserAnswers}
+import models.{Index, RichOptionalJsArray, UserAnswers}
 import pages._
 import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
@@ -80,10 +80,10 @@ class HouseConsignmentAnswersHelper(
 
   def departureTransportMeansSections: Seq[Section] =
     userAnswers.get(DepartureTransportMeansListSection(houseConsignmentIndex)).mapWithIndex {
-      case (_, transportMeansIndex) =>
-        val helper = new DepartureTransportMeansAnswersHelper(userAnswers, houseConsignmentIndex, transportMeansIndex)
+      case (_, index) =>
+        val helper = new DepartureTransportMeansAnswersHelper(userAnswers, houseConsignmentIndex, index)
         AccordionSection(
-          sectionTitle = messages("unloadingFindings.subsections.transportMeans", transportMeansIndex.display),
+          sectionTitle = messages("unloadingFindings.subsections.transportMeans", index.display),
           rows = Seq(
             helper.transportMeansID,
             helper.transportMeansIDNumber,
@@ -94,10 +94,10 @@ class HouseConsignmentAnswersHelper(
 
   def itemSections: Seq[Section] =
     userAnswers.get(ItemsSection(houseConsignmentIndex)).mapWithIndex {
-      case (_, itemIndex) =>
-        val helper = new ConsignmentItemAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex)
+      case (_, index) =>
+        val helper = new ConsignmentItemAnswersHelper(userAnswers, houseConsignmentIndex, index)
         AccordionSection(
-          sectionTitle = Some(messages("unloadingFindings.subsections.item", itemIndex.display)),
+          sectionTitle = Some(messages("unloadingFindings.subsections.item", index.display)),
           rows = Seq(
             helper.descriptionRow,
             helper.declarationType,
