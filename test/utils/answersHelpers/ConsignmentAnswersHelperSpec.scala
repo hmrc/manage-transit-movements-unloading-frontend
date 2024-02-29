@@ -256,9 +256,13 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
             result mustBe a[AccordionSection]
             result.sectionTitle.value mustBe "Additional references"
-            result.rows.size mustBe 1
-            result.rows.head.value.value mustBe s"${`type`} - $number"
+            result.children.size mustBe 1
+            result.children.head.sectionTitle.value mustBe "Additional reference 1"
+            result.children.head.rows.size mustBe 2
+            result.children.head.rows.head.value.value mustBe `type`.toString
+            result.children.head.rows(1).value.value mustBe number
             result.viewLinks.head.href mustBe "#"
+            result.id.value mustBe "additionalReferences"
         }
       }
     }
@@ -266,7 +270,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
     "additionalInformationSections" - {
       import pages.additionalInformation._
 
-      "must generate accordion sections" in {
+      "must generate accordion sections when additional information defined" in {
         forAll(arbitrary[AdditionalInformationCode], Gen.alphaNumStr) {
           (code, text) =>
             val answers = emptyUserAnswers
@@ -274,13 +278,25 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(AdditionalInformationTextPage(index), text)
 
             val helper = new ConsignmentAnswersHelper(answers)
-            val result = helper.additionalInformationSections
+            val result = helper.additionalInformationSection.value
 
-            result.head mustBe a[AccordionSection]
-            result.head.sectionTitle.value mustBe "Additional information"
-            result.head.rows.size mustBe 1
-            result.head.rows.head.value.value mustBe s"$code - $text"
+            result mustBe a[AccordionSection]
+            result.sectionTitle.value mustBe "Additional information"
+            result.children.size mustBe 1
+            result.children.head.sectionTitle.value mustBe "Additional information 1"
+            result.children.head.rows.size mustBe 2
+            result.children.head.rows.head.value.value mustBe code.toString
+            result.children.head.rows(1).value.value mustBe text
+            result.viewLinks mustBe empty
+            result.id.value mustBe "additionalInformation"
         }
+      }
+
+      "must not generate accordion sections when additional information undefined" in {
+        val helper = new ConsignmentAnswersHelper(emptyUserAnswers)
+        val result = helper.additionalInformationSection
+
+        result must not be defined
       }
     }
 
@@ -348,7 +364,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(ConsigneeIdentifierPage(hcIndex), consigneeId)
 
             val helper = new ConsignmentAnswersHelper(answers)
-            val result = helper.houseConsignmentSection
+            val result = helper.houseConsignmentSection.get
 
             result mustBe a[AccordionSection]
             result.sectionTitle.value mustBe "House consignments"
@@ -362,7 +378,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.children.head.rows(3).value.value mustBe consigneeId
             result.children.head.children mustBe empty
 
-            val link = result.children.head.accordionLink.value
+            val link = result.children.head.viewLinks.head
             link.id mustBe "view-house-consignment-1"
             link.text mustBe "summaryDetails.link"
             link.href mustBe controllers.routes.HouseConsignmentController.onPageLoad(answers.id, hcIndex).url
@@ -410,7 +426,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
           .setValue(EndorsementCountryPage(index), country)
 
         val helper = new ConsignmentAnswersHelper(answers)
-        val result = helper.incidentSection
+        val result = helper.incidentSection.get
 
         result mustBe a[AccordionSection]
         result.sectionTitle.value mustBe "Incidents"

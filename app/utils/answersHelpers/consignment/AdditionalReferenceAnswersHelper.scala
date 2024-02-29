@@ -16,9 +16,9 @@
 
 package utils.answersHelpers.consignment
 
+import models.reference.AdditionalReferenceType
 import models.{Index, UserAnswers}
-import pages.sections.additionalReference.AdditionalReferenceSection
-import pages.sections.additionalReference.AdditionalReferenceSection.AdditionalReference
+import pages.additionalReference._
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -31,12 +31,21 @@ class AdditionalReferenceAnswersHelper(
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
-  def additionalReference: Option[SummaryListRow] = getAnswerAndBuildRow[AdditionalReference](
-    page = AdditionalReferenceSection(referenceIndex),
+  def code: Option[SummaryListRow] = getAnswerAndBuildRow[AdditionalReferenceType](
+    page = AdditionalReferenceTypePage(referenceIndex),
     formatAnswer = formatAsText,
-    prefix = "unloadingFindings.additional.reference",
-    args = referenceIndex.display,
-    id = Some(s"change-additional-reference-${referenceIndex.display}"),
-    call = Some(Call(GET, "#")) //TODO change me please
-  )(AdditionalReference.reads(referenceIndex))
+    prefix = "unloadingFindings.additional.reference.type",
+    id = Some(s"change-additional-reference-type-${referenceIndex.display}"),
+    call = Some(Call(GET, "#")),
+    args = referenceIndex.display
+  )
+
+  def referenceNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = AdditionalReferenceNumberPage(referenceIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.additional.reference.number",
+    id = Some(s"change-additional-reference-number-${referenceIndex.display}"),
+    call = Some(Call(GET, "#")),
+    args = referenceIndex.display
+  )
 }

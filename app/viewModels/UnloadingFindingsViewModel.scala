@@ -42,9 +42,9 @@ object UnloadingFindingsViewModel {
         Seq(helper.transportEquipmentSection),
         Seq(helper.documentSection),
         Seq(helper.additionalReferencesSection),
-        helper.additionalInformationSections,
-        Seq(helper.incidentSection),
-        Seq(helper.houseConsignmentSection)
+        helper.additionalInformationSection,
+        helper.incidentSection,
+        helper.houseConsignmentSection
       ).flatten
 
       new UnloadingFindingsViewModel(sections)
