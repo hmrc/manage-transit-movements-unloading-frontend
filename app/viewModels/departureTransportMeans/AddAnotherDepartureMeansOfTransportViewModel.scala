@@ -44,7 +44,7 @@ object AddAnotherDepartureMeansOfTransportViewModel {
         .getOrElse(JsArray())
         .value
         .zipWithIndex
-        .flatMap {
+        .map {
           case (_, i) =>
             val index = Index(i)
 
@@ -53,20 +53,17 @@ object AddAnotherDepartureMeansOfTransportViewModel {
             val name =
               (userAnswers.get(TransportMeansIdentificationPage(index)), userAnswers.get(VehicleIdentificationNumberPage(index))) match {
                 case (Some(identification), Some(identificationNumber)) =>
-                  Some(s"${prefix(index.display)} - $identification - $identificationNumber")
-                case (Some(identification), None)       => Some(s"${prefix(index.display)} - $identification")
-                case (None, Some(identificationNumber)) => Some(s"${prefix(index.display)} - $identificationNumber")
-                case _                                  => Some(s"${prefix(index.display)}")
+                  s"${prefix(index.display)} - $identification - $identificationNumber"
+                case (Some(identification), None)       => s"${prefix(index.display)} - $identification"
+                case (None, Some(identificationNumber)) => s"${prefix(index.display)} - $identificationNumber"
+                case _                                  => s"${prefix(index.display)}"
               }
 
-            name.map {
-              name =>
-                ListItem(
-                  name = name,
-                  changeUrl = Some(Call("GET", "#").url), //TODO: To be added later
-                  removeUrl = Some(Call("GET", "#").url) //TODO: To be added later
-                )
-            }
+            ListItem(
+              name = name,
+              changeUrl = Some(Call("GET", "#").url), //TODO: To be added later
+              removeUrl = Some(Call("GET", "#").url) //TODO: To be added later
+            )
         }
         .toSeq
 
