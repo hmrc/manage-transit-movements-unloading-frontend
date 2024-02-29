@@ -80,10 +80,10 @@ class HouseConsignmentAnswersHelper(
 
   def departureTransportMeansSections: Seq[Section] =
     userAnswers.get(DepartureTransportMeansListSection(houseConsignmentIndex)).mapWithIndex {
-      case (_, index, displayIndex) =>
+      case (_, index) =>
         val helper = new DepartureTransportMeansAnswersHelper(userAnswers, houseConsignmentIndex, index)
         AccordionSection(
-          sectionTitle = messages("unloadingFindings.subsections.transportMeans", displayIndex.display),
+          sectionTitle = messages("unloadingFindings.subsections.transportMeans", index.display),
           rows = Seq(
             helper.transportMeansID,
             helper.transportMeansIDNumber,
@@ -94,10 +94,10 @@ class HouseConsignmentAnswersHelper(
 
   def itemSections: Seq[Section] =
     userAnswers.get(ItemsSection(houseConsignmentIndex)).mapWithIndex {
-      case (_, index, displayIndex) =>
+      case (_, index) =>
         val helper = new ConsignmentItemAnswersHelper(userAnswers, houseConsignmentIndex, index)
         AccordionSection(
-          sectionTitle = Some(messages("unloadingFindings.subsections.item", displayIndex.display)),
+          sectionTitle = Some(messages("unloadingFindings.subsections.item", index.display)),
           rows = Seq(
             helper.descriptionRow,
             helper.declarationType,

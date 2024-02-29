@@ -43,8 +43,8 @@ class TransportEquipmentAnswersHelper(
 
   def transportEquipmentSeals: Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(SealsSection(equipmentIndex)) {
-      case (index, displayIndex) =>
+      index =>
         val helper = new SealAnswersHelper(userAnswers, equipmentIndex, index)
-        helper.transportEquipmentSeal(displayIndex)
+        helper.transportEquipmentSeal
     }
 }

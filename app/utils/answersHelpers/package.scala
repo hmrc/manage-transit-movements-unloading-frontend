@@ -23,7 +23,7 @@ package object answersHelpers {
 
   implicit class RichJsArray(arr: JsArray) {
 
-    def mapWithIndex[T](f: (JsValue, Index, Index) => T): Seq[T] =
+    def mapWithIndex[T](f: (JsValue, Index) => T): Seq[T] =
       arr.value.zipWithIndex
         .flatMap {
           case (value, i) =>
@@ -38,7 +38,7 @@ package object answersHelpers {
         }
         .zipWithIndex
         .map {
-          case ((value, index), displayIndex) => f(value, Index(index), Index(displayIndex))
+          case ((value, index), _) => f(value, Index(index))
         }
         .toSeq
 
@@ -51,7 +51,7 @@ package object answersHelpers {
 
   implicit class RichOptionalJsArray(arr: Option[JsArray]) {
 
-    def mapWithIndex[T](f: (JsValue, Index, Index) => T): Seq[T] =
+    def mapWithIndex[T](f: (JsValue, Index) => T): Seq[T] =
       arr.map(_.mapWithIndex(f)).getOrElse(Nil)
 
     def validate[T](implicit rds: Reads[T]): Option[T] =

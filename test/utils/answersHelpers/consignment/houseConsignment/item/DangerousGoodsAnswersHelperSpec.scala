@@ -30,7 +30,7 @@ class DangerousGoodsAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new DangerousGoodsAnswerHelper(emptyUserAnswers, hcIndex, itemIndex, dangerousGoodsIndex)
-          helper.dangerousGoodsRow(dangerousGoodsIndex) mustBe None
+          helper.dangerousGoodsRow mustBe None
         }
       }
 
@@ -41,7 +41,7 @@ class DangerousGoodsAnswersHelperSpec extends AnswersHelperSpecBase {
               val answers = emptyUserAnswers.setValue(page, value)
 
               val helper = new DangerousGoodsAnswerHelper(answers, hcIndex, itemIndex, additionalReferenceIndex)
-              val result = helper.dangerousGoodsRow(dangerousGoodsIndex).value
+              val result = helper.dangerousGoodsRow.value
 
               result.key.value mustBe "UN number 1"
               result.value.value mustBe value

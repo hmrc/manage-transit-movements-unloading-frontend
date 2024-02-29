@@ -32,13 +32,13 @@ class DangerousGoodsAnswerHelper(
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
-  def dangerousGoodsRow(displayIndex: Index): Option[SummaryListRow] =
+  def dangerousGoodsRow: Option[SummaryListRow] =
     getAnswerAndBuildRow[String](
       page = DangerousGoodsPage(houseConsignmentIndex, itemIndex, dangerousGoodsIndex),
       formatAnswer = formatAsText,
       prefix = "unloadingFindings.dangerousGoods.unNumber",
-      args = displayIndex.display,
-      id = Some(s"change-unNumber-${displayIndex.display}"),
+      args = dangerousGoodsIndex.display,
+      id = Some(s"change-unNumber-${dangerousGoodsIndex.display}"),
       call = Some(Call(GET, "#")) //TODO change me please
     )
 }

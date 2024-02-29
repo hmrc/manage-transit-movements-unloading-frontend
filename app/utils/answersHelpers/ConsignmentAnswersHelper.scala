@@ -139,14 +139,14 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     userAnswers
       .get(TransportMeansListSection)
       .mapWithIndex {
-        case (_, index, displayIndex) =>
+        case (_, index) =>
           val helper = new DepartureTransportMeansAnswersHelper(userAnswers, index)
           val rows = Seq(
             helper.transportMeansID,
             helper.transportMeansNumber,
             helper.transportRegisteredCountry
           ).flatten
-          (rows, displayIndex)
+          (rows, index)
       } match {
       case Nil =>
         StaticSection(
@@ -155,9 +155,9 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         )
       case sections =>
         val children = sections.map {
-          case (rows, displayIndex) =>
+          case (rows, index) =>
             AccordionSection(
-              sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans", displayIndex.display)),
+              sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans", index.display)),
               rows
             )
         }
@@ -171,10 +171,10 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
   def transportEquipmentSection: Section =
     userAnswers.get(TransportEquipmentListSection).mapWithIndex {
-      case (_, index, displayIndex) =>
+      case (_, index) =>
         val helper = new TransportEquipmentAnswersHelper(userAnswers, index)
         val rows   = Seq(helper.containerIdentificationNumber, helper.transportEquipmentSeals).flatten
-        (rows, displayIndex)
+        (rows, index)
     } match {
       case Nil =>
         StaticSection(
@@ -183,8 +183,8 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         )
       case sectionsRows =>
         val transportEquipments = sectionsRows.map {
-          case (rows, displayIndex) =>
-            val equipmentIndex = displayIndex.display
+          case (rows, index) =>
+            val equipmentIndex = index.display
             AccordionSection(
               sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment", equipmentIndex)),
               viewLinks = Seq(sealsAddRemoveLink(equipmentIndex)),
@@ -201,10 +201,10 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
   def additionalReferencesSection: Section =
     userAnswers.get(AdditionalReferencesSection).mapWithIndex {
-      case (_, index, displayIndex) =>
+      case (_, index) =>
         val helper = new AdditionalReferenceAnswersHelper(userAnswers, index)
         val rows   = Seq(helper.code, helper.referenceNumber).flatten
-        (rows, displayIndex)
+        (rows, index)
     } match {
       case Nil =>
         StaticSection(
@@ -213,9 +213,9 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         )
       case sectionsRows =>
         val children = sectionsRows.map {
-          case (rows, displayIndex) =>
+          case (rows, index) =>
             AccordionSection(
-              sectionTitle = Some(messages("unloadingFindings.additional.reference", displayIndex.display)),
+              sectionTitle = Some(messages("unloadingFindings.additional.reference", index.display)),
               rows = rows
             )
         }
@@ -229,18 +229,18 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
   def additionalInformationSection: Option[Section] =
     userAnswers.get(AdditionalInformationListSection).mapWithIndex {
-      case (_, index, displayIndex) =>
+      case (_, index) =>
         val helper = new AdditionalInformationAnswersHelper(userAnswers, index)
         val rows   = Seq(helper.code, helper.description).flatten
-        (rows, displayIndex)
+        (rows, index)
     } match {
       case Nil =>
         None
       case sectionsRows =>
         val children = sectionsRows.map {
-          case (rows, displayIndex) =>
+          case (rows, index) =>
             AccordionSection(
-              sectionTitle = Some(messages("unloadingFindings.additionalInformation.label", displayIndex.display)),
+              sectionTitle = Some(messages("unloadingFindings.additionalInformation.label", index.display)),
               rows = rows
             )
         }
@@ -257,7 +257,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     userAnswers
       .get(IncidentsSection)
       .mapWithIndex {
-        case (_, index, displayIndex) =>
+        case (_, index) =>
           val helper = new IncidentAnswersHelper(userAnswers, index)
 
           val rows = Seq(
@@ -285,7 +285,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           )
 
           AccordionSection(
-            sectionTitle = Some(messages("unloadingFindings.subsections.incidents", displayIndex.display)),
+            sectionTitle = Some(messages("unloadingFindings.subsections.incidents", index.display)),
             rows = rows,
             children = Seq(endorsementSection) ++ helper.incidentTransportEquipments ++ Seq(transhipment)
           )
@@ -304,7 +304,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
   def documentSection: Section =
     userAnswers.get(DocumentsSection).mapWithIndex {
-      case (_, index, displayIndex) =>
+      case (_, index) =>
         val helper   = new DocumentAnswersHelper(userAnswers, index)
         val readOnly = userAnswers.get(TypePage(index)).map(_.`type`).contains(Previous)
 
@@ -313,7 +313,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           helper.referenceNumber(readOnly),
           helper.additionalInformation(readOnly)
         ).flatten
-        (rows, displayIndex)
+        (rows, index)
     } match {
       case Nil =>
         StaticSection(
@@ -322,9 +322,9 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         )
       case documentSectionRows =>
         val documents = documentSectionRows.map {
-          case (rows, displayIndex) =>
+          case (rows, index) =>
             AccordionSection(
-              sectionTitle = Some(messages("unloadingFindings.document.heading", displayIndex.display)),
+              sectionTitle = Some(messages("unloadingFindings.document.heading", index.display)),
               rows = rows
             )
         }
@@ -341,7 +341,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     userAnswers
       .get(HouseConsignmentsSection)
       .mapWithIndex {
-        case (_, index, displayIndex) =>
+        case (_, index) =>
           val helper = new HouseConsignmentAnswersHelper(userAnswers, index)
           val rows = Seq(
             helper.consignorName,
@@ -353,16 +353,16 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           ).flatten
 
           AccordionSection(
-            sectionTitle = messages("unloadingFindings.subsections.houseConsignment", displayIndex.display),
+            sectionTitle = messages("unloadingFindings.subsections.houseConsignment", index.display),
             rows = rows,
             viewLinks = Seq(
               Link(
-                id = s"view-house-consignment-${displayIndex.display}",
+                id = s"view-house-consignment-${index.display}",
                 href = controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, index).url,
-                visuallyHidden = messages("summaryDetails.visuallyHidden", displayIndex.display)
+                visuallyHidden = messages("summaryDetails.visuallyHidden", index.display)
               )
             ),
-            id = s"houseConsignment${displayIndex.display}"
+            id = s"houseConsignment${index.display}"
           )
       }
       .toList match {

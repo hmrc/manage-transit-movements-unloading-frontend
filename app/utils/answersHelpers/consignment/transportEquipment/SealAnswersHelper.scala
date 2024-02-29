@@ -31,12 +31,12 @@ class SealAnswersHelper(
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
-  def transportEquipmentSeal(displayIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  def transportEquipmentSeal: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = SealIdentificationNumberPage(equipmentIndex, sealIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.sealIdentifier",
-    args = displayIndex.display,
-    id = Some(s"change-seal-details-${displayIndex.display}"),
+    args = sealIndex.display,
+    id = Some(s"change-seal-details-${sealIndex.display}"),
     call = Some(Call(GET, "#"))
   )
 }
