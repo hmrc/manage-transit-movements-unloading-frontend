@@ -71,6 +71,7 @@ trait SpecBase
   val additionalReferenceIndex: Index = Index(0)
   val dangerousGoodsIndex: Index      = Index(0)
   val dtmIndex: Index                 = Index(0)
+  val transportMeansIndex: Index      = Index(0)
   def emptyUserAnswers: UserAnswers   = UserAnswers(arrivalId, mrn, eoriNumber, basicIe043, Json.obj(), Instant.now())
 
   def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")

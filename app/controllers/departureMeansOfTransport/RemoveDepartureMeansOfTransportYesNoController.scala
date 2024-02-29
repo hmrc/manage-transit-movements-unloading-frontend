@@ -72,13 +72,12 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
                   TransportMeansSection(transportMeansIndex),
                   addAnother(arrivalId, transportMeansIndex, mode)
     ) //todo update parameter values when AddAnotherTransportMeansController is complete
-    .andThen(getMandatoryPage(VehicleIdentificationNumberPage(transportMeansIndex)))
+    .andThen(getMandatoryPage(TransportMeansIdentificationPage(transportMeansIndex)))
     .async {
       implicit request =>
-        val identificationType: TransportMeansIdentification =
-          request.userAnswers.get(TransportMeansIdentificationPage(transportMeansIndex)).getOrElse(TransportMeansIdentification("", ""))
-        val identificationNumber: Option[String] = request.userAnswers.get(VehicleIdentificationNumberPage(transportMeansIndex))
-        val insetText                            = TransportMeans(identificationType.description, identificationNumber).asString
+        val identificationType: TransportMeansIdentification = request.arg
+        val identificationNumber: Option[String]             = request.userAnswers.get(VehicleIdentificationNumberPage(transportMeansIndex))
+        val insetText                                        = TransportMeans(identificationType.description, identificationNumber).asString
         form
           .bindFromRequest()
           .fold(
@@ -89,7 +88,7 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
               for {
                 updatedAnswers <-
                   if (value) {
-                    Future.fromTry(request.userAnswers.remove(TransportMeansSection(transportMeansIndex)))
+                    Future.fromTry(request.userAnswers.remove(TransportMeansSection(transportMeansIndex))) //todo set as empty json object?
                   } else {
                     Future.successful(request.userAnswers)
                   }
