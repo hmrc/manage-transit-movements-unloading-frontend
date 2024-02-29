@@ -93,11 +93,11 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
         )
     }
 
-  def getAnswersAndBuildSectionRows(section: Section[JsArray])(f: Index => Option[SummaryListRow]): Seq[SummaryListRow] =
+  def getAnswersAndBuildSectionRows(section: Section[JsArray])(f: (Index, Index) => Option[SummaryListRow]): Seq[SummaryListRow] =
     userAnswers
       .get(section)
       .mapWithIndex {
-        (_, index) => f(index)
+        (_, index, displayIndex) => f(index, displayIndex)
       }
       .flatten
 }

@@ -23,8 +23,8 @@ import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.answersHelpers.{AnswersHelper, RichOptionalJsArray}
 import utils.answersHelpers.consignment.houseConsignment.{ConsignmentItemAnswersHelper, DepartureTransportMeansAnswersHelper}
+import utils.answersHelpers.{AnswersHelper, RichOptionalJsArray}
 import viewModels.sections.Section
 import viewModels.sections.Section.AccordionSection
 
@@ -80,10 +80,10 @@ class HouseConsignmentAnswersHelper(
 
   def departureTransportMeansSections: Seq[Section] =
     userAnswers.get(DepartureTransportMeansListSection(houseConsignmentIndex)).mapWithIndex {
-      case (_, transportMeansIndex) =>
-        val helper = new DepartureTransportMeansAnswersHelper(userAnswers, houseConsignmentIndex, transportMeansIndex)
+      case (_, index, displayIndex) =>
+        val helper = new DepartureTransportMeansAnswersHelper(userAnswers, houseConsignmentIndex, index)
         AccordionSection(
-          sectionTitle = messages("unloadingFindings.subsections.transportMeans", transportMeansIndex.display),
+          sectionTitle = messages("unloadingFindings.subsections.transportMeans", displayIndex.display),
           rows = Seq(
             helper.transportMeansID,
             helper.transportMeansIDNumber,
@@ -94,10 +94,10 @@ class HouseConsignmentAnswersHelper(
 
   def itemSections: Seq[Section] =
     userAnswers.get(ItemsSection(houseConsignmentIndex)).mapWithIndex {
-      case (_, itemIndex) =>
-        val helper = new ConsignmentItemAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex)
+      case (_, index, displayIndex) =>
+        val helper = new ConsignmentItemAnswersHelper(userAnswers, houseConsignmentIndex, index)
         AccordionSection(
-          sectionTitle = Some(messages("unloadingFindings.subsections.item", itemIndex.display)),
+          sectionTitle = Some(messages("unloadingFindings.subsections.item", displayIndex.display)),
           rows = Seq(
             helper.descriptionRow,
             helper.declarationType,

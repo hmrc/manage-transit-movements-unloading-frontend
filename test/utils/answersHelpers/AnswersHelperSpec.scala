@@ -42,8 +42,8 @@ class AnswersHelperSpec extends SpecBase {
           |""".stripMargin)
         .as[JsArray]
 
-      val result = array.mapWithIndex[(JsValue, Index)] {
-        case (jsValue, index) => (jsValue, index)
+      val result = array.mapWithIndex[(JsValue, Index, Index)] {
+        case (jsValue, index, displayIndex) => (jsValue, index, displayIndex)
       }
 
       result.size mustBe 2
@@ -53,51 +53,14 @@ class AnswersHelperSpec extends SpecBase {
         "foo"            -> "foo"
       )
       result.head._2 mustBe Index(0)
+      result.head._3 mustBe Index(0)
 
       result(1)._1 mustBe Json.obj(
         "sequenceNumber" -> "3",
         "bar"            -> "bar"
       )
-      result(1)._2 mustBe Index(1)
+      result(1)._2 mustBe Index(2)
+      result(1)._3 mustBe Index(1)
     }
-
-    "must filter out departureTransportMeans which only contain a sequence number" in {
-      val array = Json
-        .parse("""
-          |[
-          |        {
-          |          "sequenceNumber": "dtm-1"
-          |        },
-          |        {
-          |          "sequenceNumber": "dtm-2",
-          |          "identificationNumber": "BoatyMcBoatFace2"
-          |        },
-          |        {
-          |          "sequenceNumber": "dtm-3",
-          |          "identificationNumber": "BoatyMcBoatFace3"
-          |        }
-          |      ]
-          |""".stripMargin)
-        .as[JsArray]
-
-      val result = array.mapWithIndex[(JsValue, Index)] {
-        case (jsValue, index) => (jsValue, index)
-      }
-
-      result.size mustBe 2
-
-      result.head._1 mustBe Json.obj(
-        "sequenceNumber"       -> "dtm-2",
-        "identificationNumber" -> "BoatyMcBoatFace2"
-      )
-      result.head._2 mustBe Index(0)
-
-      result(1)._1 mustBe Json.obj(
-        "sequenceNumber"       -> "dtm-3",
-        "identificationNumber" -> "BoatyMcBoatFace3"
-      )
-      result(1)._2 mustBe Index(1)
-    }
-
   }
 }

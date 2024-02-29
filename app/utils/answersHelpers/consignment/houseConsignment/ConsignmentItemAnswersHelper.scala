@@ -30,8 +30,8 @@ import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HttpVerbs.GET
-import utils.answersHelpers.{AnswersHelper, RichOptionalJsArray}
 import utils.answersHelpers.consignment.houseConsignment.item._
+import utils.answersHelpers.{AnswersHelper, RichOptionalJsArray}
 import viewModels.sections.Section
 import viewModels.sections.Section.AccordionSection
 
@@ -82,10 +82,10 @@ class ConsignmentItemAnswersHelper(
 
   def additionalReferencesSection: Seq[Section] =
     userAnswers.get(AdditionalReferencesSection(houseConsignmentIndex, itemIndex)).mapWithIndex {
-      case (_, index) =>
+      case (_, index, displayIndex) =>
         val helper = new AdditionalReferencesAnswerHelper(userAnswers, houseConsignmentIndex, itemIndex, index)
         AccordionSection(
-          sectionTitle = messages("unloadingFindings.houseConsignment.item.additionalReference", index.display),
+          sectionTitle = messages("unloadingFindings.houseConsignment.item.additionalReference", displayIndex.display),
           rows = Seq(
             helper.code,
             helper.referenceNumber
@@ -97,9 +97,9 @@ class ConsignmentItemAnswersHelper(
     userAnswers
       .get(DocumentsSection(houseConsignmentIndex, itemIndex))
       .mapWithIndex {
-        case (_, documentIndex) =>
-          val helper   = new DocumentAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex, documentIndex)
-          val readOnly = userAnswers.get(TypePage(houseConsignmentIndex, itemIndex, documentIndex)).map(_.`type`).contains(Previous)
+        case (_, index, displayIndex) =>
+          val helper   = new DocumentAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex, index)
+          val readOnly = userAnswers.get(TypePage(houseConsignmentIndex, itemIndex, index)).map(_.`type`).contains(Previous)
 
           val rows = Seq(
             helper.documentType(readOnly),
@@ -108,28 +108,29 @@ class ConsignmentItemAnswersHelper(
           ).flatten
 
           AccordionSection(
-            sectionTitle = messages("unloadingFindings.houseConsignment.item.document.heading", documentIndex.display),
+            sectionTitle = messages("unloadingFindings.houseConsignment.item.document.heading", displayIndex.display),
             rows = rows
           )
       }
 
   def dangerousGoodsRows: Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(DangerousGoodsListSection(houseConsignmentIndex, itemIndex)) {
-      dangerousGoodsIndex =>
-        new DangerousGoodsAnswerHelper(userAnswers, houseConsignmentIndex, itemIndex, dangerousGoodsIndex).dangerousGoodsRow
+      (index, displayIndex) =>
+        val helper = new DangerousGoodsAnswerHelper(userAnswers, houseConsignmentIndex, itemIndex, index)
+        helper.dangerousGoodsRow(displayIndex)
     }
 
   def packageSections: Seq[Section] =
     userAnswers
       .get(PackagingListSection(houseConsignmentIndex, itemIndex))
       .mapWithIndex {
-        case (_, packageIndex) =>
-          val helper = new PackagingAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex, packageIndex)
+        case (_, index, displayIndex) =>
+          val helper = new PackagingAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex, index)
 
           val rows = Seq(helper.packageTypeRow, helper.packageCountRow, helper.packageMarksRow).flatten
 
           AccordionSection(
-            sectionTitle = messages("unloadingFindings.subsections.packages", packageIndex.display),
+            sectionTitle = messages("unloadingFindings.subsections.packages", displayIndex.display),
             rows = rows
           )
       }

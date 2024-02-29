@@ -29,7 +29,7 @@ class SealAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new SealAnswersHelper(emptyUserAnswers, equipmentIndex, sealIndex)
-          helper.transportEquipmentSeal mustBe None
+          helper.transportEquipmentSeal(sealIndex) mustBe None
         }
       }
 
@@ -40,7 +40,7 @@ class SealAnswersHelperSpec extends AnswersHelperSpecBase {
               val answers = emptyUserAnswers.setValue(page, value)
 
               val helper = new SealAnswersHelper(answers, equipmentIndex, sealIndex)
-              val result = helper.transportEquipmentSeal.value
+              val result = helper.transportEquipmentSeal(sealIndex).value
 
               result.key.value mustBe "Seal 1"
               result.value.value mustBe value

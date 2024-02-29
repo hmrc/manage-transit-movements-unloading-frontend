@@ -42,16 +42,19 @@ object AddAnotherDepartureMeansOfTransportViewModel {
       val listItems = userAnswers
         .get(TransportMeansListSection)
         .mapWithIndex {
-          case (_, index) =>
+          case (_, index, displayIndex) =>
             def prefix(increment: Int) = messages("departureMeansOfTransportPrefix.prefix", increment)
 
             val name =
               (userAnswers.get(TransportMeansIdentificationPage(index)), userAnswers.get(VehicleIdentificationNumberPage(index))) match {
                 case (Some(identification), Some(identificationNumber)) =>
-                  s"${prefix(index.display)} - $identification - $identificationNumber"
-                case (Some(identification), None)       => s"${prefix(index.display)} - $identification"
-                case (None, Some(identificationNumber)) => s"${prefix(index.display)} - $identificationNumber"
-                case _                                  => s"${prefix(index.display)}"
+                  s"${prefix(displayIndex.display)} - $identification - $identificationNumber"
+                case (Some(identification), None) =>
+                  s"${prefix(displayIndex.display)} - $identification"
+                case (None, Some(identificationNumber)) =>
+                  s"${prefix(displayIndex.display)} - $identificationNumber"
+                case _ =>
+                  s"${prefix(displayIndex.display)}"
               }
 
             ListItem(
