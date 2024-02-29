@@ -46,7 +46,8 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
             if (legendIsHeading) {
               assertElementIncludesText(legends.first(), messages(s"$prefix.heading", args: _*))
             } else {
-              assertElementIncludesText(legends.first(), messages(s"$prefix.label", args: _*))
+              val labelPrefix = if (args == 0) s"$prefix.empty.label" else s"$prefix.label"
+              assertElementIncludesText(legends.first(), messages(s"$labelPrefix", args: _*))
               assert(legends.first().hasClass("govuk-visually-hidden") != legendIsVisible)
             }
           }
