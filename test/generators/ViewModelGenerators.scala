@@ -246,14 +246,16 @@ trait ViewModelGenerators {
     for {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
-    } yield ApplyAnotherItemViewModel(listItems, onSubmitCall, Index(0), isNumberItemsZero = false)
+      nextIndex    <- arbitrary[Index]
+    } yield ApplyAnotherItemViewModel(listItems, onSubmitCall, Index(0), isNumberItemsZero = false, nextIndex)
   }
 
   implicit lazy val arbitraryAddAnotherDepartureMeansOfTransportViewModel: Arbitrary[AddAnotherDepartureMeansOfTransportViewModel] = Arbitrary {
     for {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
-    } yield AddAnotherDepartureMeansOfTransportViewModel(listItems, onSubmitCall)
+      nextIndex    <- arbitrary[Index]
+    } yield AddAnotherDepartureMeansOfTransportViewModel(listItems, onSubmitCall, nextIndex)
   }
 
   implicit lazy val arbitraryContainerIdentificationNumberViewModel: Arbitrary[ContainerIdentificationNumberViewModel] = Arbitrary {

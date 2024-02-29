@@ -39,6 +39,13 @@ trait ModelGenerators {
       } yield CustomsOffice(id, name, countryId, Some(phoneNumber))
     }
 
+  implicit lazy val arbitraryIndex: Arbitrary[Index] =
+    Arbitrary {
+      for {
+        position <- positiveInts
+      } yield Index(position)
+    }
+
   implicit lazy val arbitraryMovementReferenceNumber: Arbitrary[MovementReferenceNumber] =
     Arbitrary {
       for {
