@@ -19,7 +19,7 @@ package viewModels.transportEquipment.index
 import config.FrontendAppConfig
 import controllers.transportEquipment.index.routes
 import models.reference.Item
-import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, UserAnswers}
+import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, RichOptionalJsArray, UserAnswers}
 import pages.sections.transport.equipment.ItemsSection
 import pages.transportEquipment.index.ItemPage
 import play.api.i18n.Messages
@@ -27,8 +27,13 @@ import play.api.libs.json.JsArray
 import play.api.mvc.Call
 import viewModels.{AddAnotherViewModel, ListItem}
 
-case class ApplyAnotherItemViewModel(listItems: Seq[ListItem], onSubmitCall: Call, equipmentIndex: Index, isNumberItemsZero: Boolean)
-    extends AddAnotherViewModel {
+case class ApplyAnotherItemViewModel(
+  listItems: Seq[ListItem],
+  onSubmitCall: Call,
+  equipmentIndex: Index,
+  isNumberItemsZero: Boolean,
+  nextIndex: Index
+) extends AddAnotherViewModel {
   override val prefix: String = "transport.equipment.applyAnotherItem"
 
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxItems
@@ -58,9 +63,9 @@ object ApplyAnotherItemViewModel {
     def apply(userAnswers: UserAnswers, arrivalId: String, mode: Mode, equipmentIndex: Index, isNumberItemsZero: Boolean)(implicit
       messages: Messages
     ): ApplyAnotherItemViewModel = {
+      val array = userAnswers.get(ItemsSection(equipmentIndex))
 
-      val listItems = userAnswers
-        .get(ItemsSection(equipmentIndex))
+      val listItems = array
         .getOrElse(JsArray())
         .value
         .zipWithIndex
@@ -96,10 +101,11 @@ object ApplyAnotherItemViewModel {
         .toSeq
 
       new ApplyAnotherItemViewModel(
-        listItems,
+        listItems = listItems,
         onSubmitCall = routes.ApplyAnotherItemController.onSubmit(arrivalId, mode, equipmentIndex),
-        equipmentIndex,
-        isNumberItemsZero
+        equipmentIndex = equipmentIndex,
+        isNumberItemsZero = isNumberItemsZero,
+        nextIndex = array.nextIndex
       )
     }
   }

@@ -24,7 +24,7 @@ trait AddAnotherViewModel {
   val listItems: Seq[ListItem]
   val count: Int = listItems.length
 
-  val nextIndex: Index = Index(count)
+  val nextIndex: Index
 
   val emptyOrSingularOrPlural: String = count match {
     case 0 => "empty"

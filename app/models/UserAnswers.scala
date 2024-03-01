@@ -88,7 +88,12 @@ final case class UserAnswers(
           errors => Failure(JsResultException(errors)),
           Success(_)
         )
-      userAnswers <- set(section.path, JsObject(obj.fields.filter(_._1 == "sequenceNumber")))
+      userAnswers <- {
+        obj.fields.filter(_._1 == "sequenceNumber") match {
+          case Nil            => remove(section)
+          case sequenceNumber => set(section.path, JsObject(sequenceNumber))
+        }
+      }
     } yield userAnswers
 }
 

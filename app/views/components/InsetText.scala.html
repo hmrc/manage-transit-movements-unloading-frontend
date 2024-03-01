@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +12,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package pages.sections.houseConsignment.index.items.additionalReference
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import viewModels.components.InputTextViewModel
+@import viewModels.components.InputTextViewModel._
+@import views.html.components.Heading
 
-import models.Index
-import pages.sections.Section
-import play.api.libs.json.{JsObject, JsPath}
+@this(govukInsetText: GovukInsetText)
 
-case class AdditionalReferenceSection(houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index) extends Section[JsObject] {
+@(text: String)
 
-  override def path: JsPath = AdditionalReferencesSection(houseConsignmentIndex, itemIndex).path \ additionalReferenceIndex.position
-
-}
+@govukInsetText(
+    InsetText(
+        content = Text(text)
+    )
+)
