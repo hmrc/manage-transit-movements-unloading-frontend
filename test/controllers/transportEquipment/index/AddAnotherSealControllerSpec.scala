@@ -38,8 +38,8 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
   private val formProvider = new AddAnotherFormProvider()
 
-  private def form(viewModel: AddAnotherSealViewModel) =
-    formProvider(viewModel.prefix, viewModel.allowMore(frontendAppConfig))
+  private def form(viewModel: AddAnotherSealViewModel, equipmentIndex: Index) =
+    formProvider(viewModel.prefix, viewModel.allowMore(frontendAppConfig), equipmentIndex.display)
 
   private val mode = NormalMode
 
@@ -85,7 +85,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(emptyViewModel), mrn, arrivalId, emptyViewModel)(request, messages, frontendAppConfig).toString
+          view(form(emptyViewModel, equipmentIndex), mrn, arrivalId, emptyViewModel)(request, messages, frontendAppConfig).toString
       }
 
       "when max limit not reached" in {
@@ -103,7 +103,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(notMaxedOutViewModel), mrn, arrivalId, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
+          view(form(notMaxedOutViewModel, equipmentIndex), mrn, arrivalId, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
       }
 
       "when max limit reached" in {
@@ -121,7 +121,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(maxedOutViewModel), mrn, arrivalId, maxedOutViewModel)(request, messages, frontendAppConfig).toString
+          view(form(maxedOutViewModel, equipmentIndex), mrn, arrivalId, maxedOutViewModel)(request, messages, frontendAppConfig).toString
       }
     }
 
@@ -194,7 +194,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         val request = FakeRequest(POST, addAnotherSealRoute)
           .withFormUrlEncodedBody(("value", ""))
 
-        val boundForm = form(notMaxedOutViewModel).bind(Map("value" -> ""))
+        val boundForm = form(notMaxedOutViewModel, equipmentIndex).bind(Map("value" -> ""))
 
         val result = route(app, request).value
 

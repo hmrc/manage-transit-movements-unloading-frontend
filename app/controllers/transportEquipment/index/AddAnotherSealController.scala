@@ -43,19 +43,19 @@ class AddAnotherSealController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(viewModel: AddAnotherSealViewModel): Form[Boolean] =
-    formProvider(viewModel.prefix, viewModel.allowMore)
+  private def form(viewModel: AddAnotherSealViewModel, equipmentIndex: Index): Form[Boolean] =
+    formProvider(viewModel.prefix, viewModel.allowMore, equipmentIndex.display)
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode, equipmentIndex)
-      Ok(view(form(viewModel), request.userAnswers.mrn, arrivalId, viewModel))
+      Ok(view(form(viewModel, equipmentIndex), request.userAnswers.mrn, arrivalId, viewModel))
   }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode, equipmentIndex)
-      form(viewModel)
+      form(viewModel, equipmentIndex)
         .bindFromRequest()
         .fold(
           formWithErrors => BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel)),
