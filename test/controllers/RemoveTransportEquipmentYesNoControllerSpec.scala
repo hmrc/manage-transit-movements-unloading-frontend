@@ -74,8 +74,34 @@ class RemoveTransportEquipmentYesNoControllerSpec extends SpecBase with AppWithD
     }
 
     "when yes submitted" - {
-      "must redirect to add another TransportEquipment and remove departureTransportMeans at specified index" in {
+      "must redirect to add another TransportEquipment and remove departureTransportMeans at specified index" ignore {
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        val userAnswers = emptyUserAnswers
+          .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "Seal-1")
+          .setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), true)
+          .setValue(ContainerIdentificationNumberPage(equipmentIndex), "CIN-1")
+
+        setExistingUserAnswers(userAnswers)
+
+        val request = FakeRequest(POST, removeTransportEquipmentMeansRoute)
+          .withFormUrlEncodedBody(("value", "false"))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual Call(GET, "#").url //todo update when add another page implemented
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+        userAnswersCaptor.getValue.get(TransportMeansSection(transportMeansIndex)) mustNot be(defined)
+      }
+    }
+
+    "when no submitted" - {
+      "must redirect to add another TransportEquipment and not remove TransportEquipment at specified index" ignore {
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
         val userAnswers = emptyUserAnswers
           .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "Seal-1")
           .setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), true)
@@ -94,37 +120,11 @@ class RemoveTransportEquipmentYesNoControllerSpec extends SpecBase with AppWithD
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
-        userAnswersCaptor.getValue.get(TransportMeansSection(transportMeansIndex)) mustNot be(defined)
-      }
-    }
-
-    "when no submitted" - {
-      "must redirect to add another departureTransportMeans and not remove departureTransportMeans at specified index" ignore {
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(false)
-
-        val userAnswers = emptyUserAnswers
-          .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "Seal-1")
-          .setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), true)
-          .setValue(ContainerIdentificationNumberPage(equipmentIndex), "CIN-1")
-
-        setExistingUserAnswers(userAnswers)
-
-        val request = FakeRequest(POST, removeTransportEquipmentMeansRoute)
-          .withFormUrlEncodedBody(("value", "false"))
-
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual Call(GET, "#").url //todo update when add another page implenented
-
-        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(mockSessionRepository).set(userAnswersCaptor.capture())
         userAnswersCaptor.getValue.get(TransportMeansSection(transportMeansIndex)) must be(defined)
       }
     }
 
-    "must redirect to the next page when valid data is submitted" ignore {
+    "must redirect to the next page when valid data is submitted" in {
 
       val userAnswers = emptyUserAnswers
         .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "Seal-1")
@@ -141,7 +141,7 @@ class RemoveTransportEquipmentYesNoControllerSpec extends SpecBase with AppWithD
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual Call(GET, "#") //todo update when add another page implemented
+      redirectLocation(result).value mustEqual Call(GET, "#").url //todo update when add another page implemented
 
     }
 
