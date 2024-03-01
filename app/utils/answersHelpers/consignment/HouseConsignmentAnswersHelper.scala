@@ -110,9 +110,9 @@ class HouseConsignmentAnswersHelper(
             helper.dangerousGoodsRows
           ).flatten,
           children = Seq(
-            helper.packageSections,
             helper.documentSections,
-            helper.additionalReferencesSection
+            helper.additionalReferencesSection,
+            helper.packageSections
           ).flatten
         )
     }

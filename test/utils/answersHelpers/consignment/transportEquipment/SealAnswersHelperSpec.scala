@@ -47,8 +47,8 @@ class SealAnswersHelperSpec extends AnswersHelperSpecBase {
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
               action.href mustBe "#"
-              action.visuallyHiddenText.value mustBe "seal identification number"
-              action.id mustBe "change-seal-details-1"
+              action.visuallyHiddenText.value mustBe "seal 1 for transport equipment 1"
+              action.id mustBe "change-seal-details-1-1"
           }
         }
       }

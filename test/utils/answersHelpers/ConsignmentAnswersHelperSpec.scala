@@ -224,6 +224,8 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         val helper  = new ConsignmentAnswersHelper(userAnswers)
         val section = helper.holderOfTheTransitProcedureSection.head
 
+        section mustBe a[StaticSection]
+
         section.sectionTitle.value mustBe "Transit holder"
         section.rows.size mustBe 5
         section.viewLinks mustBe Nil
