@@ -779,8 +779,8 @@ unloadingFindings.additionalInformation.label = Additional information {0}
 unloadingFindings.additionalInformation.type = Type
 unloadingFindings.additionalInformation.description = Description
 
-departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.title = Are you sure you want to remove this departure means of transport?
-departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.heading = Are you sure you want to remove this departure means of transport?
+departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.title = Are you sure you want to remove departure means of transport {0}?
+departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.heading = Are you sure you want to remove departure means of transport {0}?
 departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.error.required = Select yes if you want to remove this departure means of transport
 
 transportEquipment.index.removeTransportEquipmentYesNo.title = Are you sure you want to remove transport equipment {0}?

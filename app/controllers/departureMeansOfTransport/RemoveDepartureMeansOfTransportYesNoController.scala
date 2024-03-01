@@ -46,27 +46,27 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
   private def addAnother(arrivalId: ArrivalId, mode: Mode): Call =
     routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, mode)
 
-  private def formatInsetText(userAnswers: UserAnswers, transportMeansIndex: Index): String =
-    TransportMeans(userAnswers, transportMeansIndex).toString
+  private def formatInsetText(userAnswers: UserAnswers, transportMeansIndex: Index): Option[String] =
+    TransportMeans(userAnswers, transportMeansIndex).asString
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, transportMeansIndex: Index): Action[AnyContent] = actions
     .requireIndex(arrivalId, TransportMeansSection(transportMeansIndex), addAnother(arrivalId, mode)) {
       implicit request =>
-        val insetText: String = formatInsetText(request.userAnswers, transportMeansIndex)
-        Ok(view(form, request.userAnswers.mrn, arrivalId, transportMeansIndex, insetText, mode))
+        val insetText = formatInsetText(request.userAnswers, transportMeansIndex)
+        Ok(view(form, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode, insetText))
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode, transportMeansIndex: Index): Action[AnyContent] = actions
     .requireIndex(arrivalId, TransportMeansSection(transportMeansIndex), addAnother(arrivalId, mode))
     .async {
       implicit request =>
-        val insetText: String = formatInsetText(request.userAnswers, transportMeansIndex)
+        val insetText = formatInsetText(request.userAnswers, transportMeansIndex)
         form
           .bindFromRequest()
           .fold(
             formWithErrors =>
               Future
-                .successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, transportMeansIndex, insetText, mode))),
+                .successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode, insetText))),
             value =>
               for {
                 updatedAnswers <-
