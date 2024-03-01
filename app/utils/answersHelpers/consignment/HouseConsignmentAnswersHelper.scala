@@ -122,9 +122,9 @@ class HouseConsignmentAnswersHelper(
           ).flatten,
           children = Seq(
             Seq(helper.itemLevelConsigneeSection),
-            helper.packageSections,
             helper.documentSections,
-            helper.additionalReferencesSection
+            helper.additionalReferencesSection,
+            helper.packageSections
           ).flatten
         )
     }

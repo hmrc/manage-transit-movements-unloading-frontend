@@ -45,7 +45,11 @@ class DangerousGoodsAnswersHelperSpec extends AnswersHelperSpecBase {
 
               result.key.value mustBe "UN number 1"
               result.value.value mustBe value
-              result.actions.head.items.head.href mustBe "#"
+              val action = result.actions.value.items.head
+              action.content.value mustBe "Change"
+              action.href mustBe "#"
+              action.visuallyHiddenText.value mustBe "UN number 1 for item 1"
+              action.id mustBe "change-unNumber-1-1"
           }
         }
       }

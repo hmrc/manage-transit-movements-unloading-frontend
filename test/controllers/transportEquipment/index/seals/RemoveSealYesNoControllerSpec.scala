@@ -21,13 +21,17 @@ import forms.YesNoFormProvider
 import generators.Generators
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
-import org.mockito.Mockito.verify
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{verify, when}
 import pages.sections.SealSection
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
-import play.api.mvc.Call
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.api.libs.json.Json
 import views.html.transportEquipment.index.seals.RemoveSealYesNoView
+
+import scala.concurrent.Future
 
 class RemoveSealYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
@@ -36,6 +40,10 @@ class RemoveSealYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
   private val form                      = formProvider("transportEquipment.index.seal.removeSealYesNo", equipmentIndex.display, sealIdNumber)
   private val mode                      = NormalMode
   private lazy val removeSealYesNoRoute = routes.RemoveSealYesNoController.onPageLoad(arrivalId, mode, equipmentIndex, sealIndex).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
 
   "RemoveSealYesNo Controller" - {
 
@@ -56,9 +64,13 @@ class RemoveSealYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
     }
 
     "must redirect to the next page" - {
-      "when yes is submitted" ignore {
+      "when yes is submitted" in {
 
-        val userAnswers = emptyUserAnswers.setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), sealIdNumber)
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        val userAnswers = emptyUserAnswers
+          .setValue(SealSection(equipmentIndex, sealIndex), Json.obj())
+          .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), sealIdNumber)
+
         setExistingUserAnswers(userAnswers)
 
         val request = FakeRequest(POST, removeSealYesNoRoute)
@@ -68,15 +80,21 @@ class RemoveSealYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual Call("GET", "#") // TODO Should go to addAnotherSealController
+        redirectLocation(result).value mustEqual
+          controllers.transportEquipment.index.routes.AddAnotherSealController
+            .onPageLoad(arrivalId, mode, equipmentIndex)
+            .url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
         userAnswersCaptor.getValue.get(SealSection(equipmentIndex, sealIndex)) mustNot be(defined)
       }
 
-      "when no is submitted" ignore {
-        val userAnswers = emptyUserAnswers.setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), sealIdNumber)
+      "when no is submitted" in {
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        val userAnswers = emptyUserAnswers
+          .setValue(SealSection(equipmentIndex, sealIndex), Json.obj())
+          .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), sealIdNumber)
         setExistingUserAnswers(userAnswers)
 
         val request = FakeRequest(POST, removeSealYesNoRoute)
@@ -86,7 +104,10 @@ class RemoveSealYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual Call("GET", "#") // TODO Should go to addAnotherSealController
+        redirectLocation(result).value mustEqual
+          controllers.transportEquipment.index.routes.AddAnotherSealController
+            .onPageLoad(arrivalId, mode, equipmentIndex)
+            .url
       }
     }
 
@@ -122,7 +143,7 @@ class RemoveSealYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
         redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
       }
 
-      "if no seal is found" ignore {
+      "if no seal is found" in {
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -132,7 +153,10 @@ class RemoveSealYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual Call("GET", "#") // TODO Should go to addAnotherSealController
+        redirectLocation(result).value mustEqual
+          controllers.transportEquipment.index.routes.AddAnotherSealController
+            .onPageLoad(arrivalId, mode, equipmentIndex)
+            .url
       }
     }
 
@@ -151,7 +175,7 @@ class RemoveSealYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
         redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
       }
 
-      "if no seal is found" ignore {
+      "if no seal is found" in {
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -162,7 +186,10 @@ class RemoveSealYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual Call("GET", "#") // TODO Should go to addAnotherSealController
+        redirectLocation(result).value mustEqual
+          controllers.transportEquipment.index.routes.AddAnotherSealController
+            .onPageLoad(arrivalId, mode, equipmentIndex)
+            .url
       }
     }
   }

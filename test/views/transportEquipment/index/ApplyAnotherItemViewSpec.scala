@@ -58,7 +58,7 @@ class ApplyAnotherItemViewSpec extends ListWithActionsViewBehaviours {
 
   behave like pageWithMoreItemsAllowed(notMaxedOutViewModel.count)(equipmentIndex.display)
 
-  behave like pageWithItemsMaxedOut(maxedOutViewModel.count, equipmentIndex.display)
+  behave like pageWithItemsMaxedOut(maxedOutViewModel.count, equipmentIndex.display)()
 
   behave like pageWithSubmitButton("Continue")
 

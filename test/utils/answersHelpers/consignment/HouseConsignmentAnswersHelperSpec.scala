@@ -259,26 +259,26 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.head.children.head.rows.head.value.value mustBe "csgee1"
             result.head.children.head.rows(1).value.value mustBe "John Smith"
 
-            result.head.children(1).sectionTitle.get mustBe "Package 1"
-            result.head.children(1).rows.size mustBe 3
-            result.head.children(1).rows.head.value.value mustBe s"${packageType.asDescription}"
-            result.head.children(1).rows(1).value.value mustBe s"$count"
-            result.head.children(1).rows(2).value.value mustBe s"$description"
+            result.head.children(1) mustBe a[AccordionSection]
+            result.head.children(1).sectionTitle.value mustBe "Document 1"
+            result.head.children(1).rows.size mustBe 1
+            result.head.children(1).rows.head.value.value mustBe "doc 1 ref"
 
             result.head.children(2) mustBe a[AccordionSection]
-            result.head.children(2).sectionTitle.value mustBe "Document 1"
+            result.head.children(2).sectionTitle.value mustBe "Document 2"
             result.head.children(2).rows.size mustBe 1
-            result.head.children(2).rows.head.value.value mustBe "doc 1 ref"
+            result.head.children(2).rows.head.value.value mustBe "doc 2 ref"
 
             result.head.children(3) mustBe a[AccordionSection]
-            result.head.children(3).sectionTitle.value mustBe "Document 2"
+            result.head.children(3).sectionTitle.value mustBe "Additional reference 1"
             result.head.children(3).rows.size mustBe 1
-            result.head.children(3).rows.head.value.value mustBe "doc 2 ref"
+            result.head.children(3).rows.head.value.value mustBe additionalReference.toString
 
-            result.head.children(4) mustBe a[AccordionSection]
-            result.head.children(4).sectionTitle.value mustBe "Additional reference 1"
-            result.head.children(4).rows.size mustBe 1
-            result.head.children(4).rows.head.value.value mustBe additionalReference.toString
+            result.head.children(4).sectionTitle.get mustBe "Package 1"
+            result.head.children(4).rows.size mustBe 3
+            result.head.children(4).rows(0).value.value mustBe s"${packageType.asDescription}"
+            result.head.children(4).rows(1).value.value mustBe s"$count"
+            result.head.children(4).rows(2).value.value mustBe s"$description"
         }
       }
     }

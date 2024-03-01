@@ -49,7 +49,7 @@ class TransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase {
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
               action.href mustBe "#"
-              action.visuallyHiddenText.value mustBe "container identification number"
+              action.visuallyHiddenText.value mustBe "container identification number for transport equipment 1"
               action.id mustBe "change-container-identification-number-1"
           }
         }
