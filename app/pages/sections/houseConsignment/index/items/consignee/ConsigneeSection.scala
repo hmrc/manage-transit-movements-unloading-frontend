@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package pages.houseConsignment.index.items
+package pages.sections.houseConsignment.index.items.consignee
 
 import models.Index
-import pages.QuestionPage
-import pages.sections.houseConsignment.index.items.consignee.ConsigneeSection
-import play.api.libs.json.JsPath
+import pages.sections.{ItemSection, Section}
+import play.api.libs.json.{JsArray, JsPath}
 
-case class ConsigneeIdentifierPage(houseConsignmentIndex: Index, itemIndex: Index) extends QuestionPage[String] {
+case class ConsigneeSection(houseConsignmentIndex: Index, itemIndex: Index) extends Section[JsArray] {
 
-  override def path: JsPath = ConsigneeSection(houseConsignmentIndex: Index, itemIndex: Index).path \ toString
+  override def path: JsPath = ItemSection(houseConsignmentIndex, itemIndex).path \ toString
 
-  override def toString: String = "identificationNumber"
+  override def toString: String = "Consignee"
 }
