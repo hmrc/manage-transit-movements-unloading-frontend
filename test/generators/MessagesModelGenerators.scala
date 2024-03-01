@@ -218,6 +218,19 @@ trait MessagesModelGenerators {
       )
     }
 
+  implicit lazy val arbitraryConsigneeType03: Arbitrary[ConsigneeType03] =
+    Arbitrary {
+      for {
+        identificationNumber <- Gen.option(Gen.alphaNumStr)
+        name                 <- Gen.option(Gen.alphaNumStr)
+        address              <- Gen.option(arbitrary[AddressType09])
+      } yield ConsigneeType03(
+        identificationNumber = identificationNumber,
+        name = name,
+        Address = address
+      )
+    }
+
   implicit lazy val arbitraryConsigneeType04: Arbitrary[ConsigneeType04] =
     Arbitrary {
       for {
@@ -492,6 +505,21 @@ trait MessagesModelGenerators {
         TransportDocument = Nil,
         AdditionalReference = Nil,
         AdditionalInformation = Nil
+      )
+    }
+
+  implicit lazy val arbitraryAddressType09: Arbitrary[AddressType09] =
+    Arbitrary {
+      for {
+        streetAndNumber <- Gen.alphaNumStr
+        postcode        <- Gen.option(Gen.alphaNumStr)
+        city            <- Gen.alphaNumStr
+        country         <- Gen.alphaNumStr
+      } yield AddressType09(
+        streetAndNumber = streetAndNumber,
+        postcode = postcode,
+        city = city,
+        country = country
       )
     }
 

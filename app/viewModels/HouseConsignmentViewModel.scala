@@ -41,15 +41,12 @@ object HouseConsignmentViewModel {
       val houseConsignmentSection: Section = StaticSection(
         rows = Seq(
           helper.consignorName,
-          helper.consignorIdentification,
-          helper.consigneeName,
-          helper.consigneeIdentification,
-          helper.consigneeCountry,
-          helper.consigneeAddress
+          helper.consignorIdentification
         ).flatten
       )
 
-      val sections: Seq[Section] = helper.departureTransportMeansSections ++ helper.itemSections ++ Seq(houseConsignmentSection)
+      val sections: Seq[Section] =
+        helper.departureTransportMeansSections ++ helper.itemSections ++ Seq(houseConsignmentSection) ++ Seq(helper.houseConsignmentConsigneeSection)
 
       HouseConsignmentViewModel(sections)
     }
