@@ -130,7 +130,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     userAnswers.ie043Data.HolderOfTheTransitProcedure.map {
       hotP =>
         val helper = new HolderOfTheTransitProcedureHelper(userAnswers)
-        AccordionSection(
+        StaticSection(
           sectionTitle = Some(messages("unloadingFindings.rowHeadings.holderOfTheTransitProcedure.heading")),
           rows = Seq(
             helper.identificationNumber(hotP.identificationNumber),
@@ -360,11 +360,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           val helper = new HouseConsignmentAnswersHelper(userAnswers, index)
           val rows = Seq(
             helper.consignorName,
-            helper.consignorIdentification,
-            helper.consigneeName,
-            helper.consigneeIdentification,
-            helper.consigneeCountry,
-            helper.consigneeAddress
+            helper.consignorIdentification
           ).flatten
 
           AccordionSection(
@@ -377,7 +373,8 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
                 visuallyHidden = messages("summaryDetails.visuallyHidden", index.display)
               )
             ),
-            id = s"houseConsignment${index.display}"
+            id = s"houseConsignment${index.display}",
+            children = Seq(helper.houseConsignmentConsigneeSection)
           )
       }
       .toList match {

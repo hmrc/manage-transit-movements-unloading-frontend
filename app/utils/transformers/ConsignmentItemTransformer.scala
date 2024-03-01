@@ -30,7 +30,8 @@ class ConsignmentItemTransformer @Inject() (
   commodityTransformer: CommodityTransformer,
   packagingTransformer: PackagingTransformer,
   documentsTransformer: DocumentsTransformer,
-  additionalReferencesTransformer: AdditionalReferencesTransformer
+  additionalReferencesTransformer: AdditionalReferencesTransformer,
+  consigneeTransformer: ConsigneeTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
@@ -52,7 +53,8 @@ class ConsignmentItemTransformer @Inject() (
                   hcIndex,
                   itemIndex
                 ) andThen
-                additionalReferencesTransformer.transform(consignmentItem.AdditionalReference, hcIndex, itemIndex)
+                additionalReferencesTransformer.transform(consignmentItem.AdditionalReference, hcIndex, itemIndex) andThen
+                consigneeTransformer.transform(consignmentItem.Consignee, hcIndex, itemIndex)
 
             pipeline(userAnswers)
         }

@@ -33,7 +33,7 @@ class PackagingAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: In
     formatAnswer = formatAsPackage,
     prefix = "unloadingFindings.rowHeadings.item.packageType",
     args = Seq(packageIndex.display, itemIndex.display): _*,
-    id = Some(s"change-package-type-${packageIndex.display}"),
+    id = Some(s"change-package-type-${itemIndex.display}-${packageIndex.display}"),
     call = Some(Call(GET, "#"))
   )
 
@@ -42,7 +42,7 @@ class PackagingAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: In
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.item.packageMarks",
     args = Seq(packageIndex.display, itemIndex.display): _*,
-    id = Some(s"change-package-mark-${packageIndex.display}"),
+    id = Some(s"change-package-mark-${itemIndex.display}-${packageIndex.display}"),
     call = Some(Call(GET, "#"))
   )
 
@@ -51,7 +51,7 @@ class PackagingAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: In
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.item.packageCount",
     args = Seq(packageIndex.display, itemIndex.display): _*,
-    id = Some(s"change-package-count-${packageIndex.display}"),
+    id = Some(s"change-package-count-${itemIndex.display}-${packageIndex.display}"),
     call = Some(Call(GET, "#"))
   )
 

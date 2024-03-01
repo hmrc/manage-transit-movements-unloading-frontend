@@ -22,10 +22,18 @@ import models.{DynamicAddress, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
-import pages.houseConsignment.index.items._
 import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
 import pages.houseConsignment.index.items.document.DocumentReferenceNumberPage
 import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
+import pages.houseConsignment.index.items.{
+  CombinedNomenclatureCodePage,
+  CommodityCodePage,
+  CustomsUnionAndStatisticsCodePage,
+  GrossWeightPage,
+  ItemDescriptionPage,
+  ConsigneeIdentifierPage => ItemConsigneeIdentifierPage,
+  ConsigneeNamePage => ItemConsigneeNamePage
+}
 import utils.answersHelpers.AnswersHelperSpecBase
 import viewModels.sections.Section.AccordionSection
 
@@ -230,6 +238,8 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(0)), "doc 1 ref")
               .setValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(1)), "doc 2 ref")
               .setValue(AdditionalReferencePage(hcIndex, itemIndex, additionalReferenceIndex), additionalReference)
+              .setValue(ItemConsigneeNamePage(hcIndex, itemIndex), "John Smith")
+              .setValue(ItemConsigneeIdentifierPage(hcIndex, itemIndex), "csgee1")
 
             val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
             val result = helper.itemSections
@@ -244,11 +254,10 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.head.rows(4).value.value mustBe s"$commodityCode"
             result.head.rows(5).value.value mustBe s"$nomenclatureCode"
 
-            result.head.children.head.sectionTitle.get mustBe "Package 1"
-            result.head.children.head.rows.size mustBe 3
-            result.head.children.head.rows(0).value.value mustBe s"${packageType.asDescription}"
-            result.head.children.head.rows(1).value.value mustBe s"$count"
-            result.head.children.head.rows(2).value.value mustBe s"$description"
+            result.head.children.head.sectionTitle.get mustBe "Consignee"
+            result.head.children.head.rows.size mustBe 2
+            result.head.children.head.rows.head.value.value mustBe "csgee1"
+            result.head.children.head.rows(1).value.value mustBe "John Smith"
 
             result.head.children(1) mustBe a[AccordionSection]
             result.head.children(1).sectionTitle.value mustBe "Document 1"
@@ -264,6 +273,12 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.head.children(3).sectionTitle.value mustBe "Additional reference 1"
             result.head.children(3).rows.size mustBe 1
             result.head.children(3).rows.head.value.value mustBe additionalReference.toString
+
+            result.head.children(4).sectionTitle.get mustBe "Package 1"
+            result.head.children(4).rows.size mustBe 3
+            result.head.children(4).rows(0).value.value mustBe s"${packageType.asDescription}"
+            result.head.children(4).rows(1).value.value mustBe s"$count"
+            result.head.children(4).rows(2).value.value mustBe s"$description"
         }
       }
     }

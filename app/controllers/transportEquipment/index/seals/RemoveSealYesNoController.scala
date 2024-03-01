@@ -49,18 +49,19 @@ class RemoveSealYesNoController @Inject() (
   private def form(equipmentIndex: Index)(implicit request: Request): Form[Boolean] =
     formProvider("transportEquipment.index.seal.removeSealYesNo", equipmentIndex.display, request.arg)
 
-  private def addAnother(arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index): Call = Call("GET", "#") // TODO should go to addAnotherSeal controller
+  private def addAnother(arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index): Call =
+    controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, mode, equipmentIndex)
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index, sealIndex: Index): Action[AnyContent] = actions
     .requireIndex(arrivalId, SealSection(equipmentIndex, sealIndex), addAnother(arrivalId, mode, equipmentIndex))
-    .andThen(getMandatoryPage.getFirst(SealIdentificationNumberPage(equipmentIndex, sealIndex))) {
+    .andThen(getMandatoryPage(SealIdentificationNumberPage(equipmentIndex, sealIndex))) {
       implicit request =>
         Ok(view(form(equipmentIndex), request.userAnswers.mrn, arrivalId, mode, equipmentIndex, sealIndex, request.arg))
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index, sealIndex: Index): Action[AnyContent] = actions
     .requireIndex(arrivalId, SealSection(equipmentIndex, sealIndex), addAnother(arrivalId, mode, equipmentIndex))
-    .andThen(getMandatoryPage.getFirst(SealIdentificationNumberPage(equipmentIndex, sealIndex)))
+    .andThen(getMandatoryPage(SealIdentificationNumberPage(equipmentIndex, sealIndex)))
     .async {
       implicit request =>
         form(equipmentIndex)
