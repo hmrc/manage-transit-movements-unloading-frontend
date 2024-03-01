@@ -13,19 +13,19 @@ GET        /:arrivalId/unloading-remarks/:messageId                             
 
 GET        /assets/*file                                                                                             controllers.Assets.versioned(path="/public", file: Asset)
 
-GET        /error/this-service-has-been-reset                                                                        controllers.SessionExpiredController.onPageLoad()
-POST       /error/this-service-has-been-reset                                                                        controllers.SessionExpiredController.onSubmit()
+GET        /this-service-has-been-reset                                                                              controllers.SessionExpiredController.onPageLoad()
+POST       /this-service-has-been-reset                                                                              controllers.SessionExpiredController.onSubmit()
 
-GET        /error/bad-request                                                                                        controllers.ErrorController.badRequest()
-GET        /error/not-found                                                                                          controllers.ErrorController.notFound()
-GET        /error/technical-difficulties                                                                             controllers.ErrorController.technicalDifficulties()
-GET        /error/internal-server-error                                                                              controllers.ErrorController.internalServerError()
+GET        /bad-request                                                                                              controllers.ErrorController.badRequest()
+GET        /not-found                                                                                                controllers.ErrorController.notFound()
+GET        /technical-difficulties                                                                                   controllers.ErrorController.technicalDifficulties()
+GET        /internal-server-error                                                                                    controllers.ErrorController.internalServerError()
 
-GET        /error/cannot-use-service-no-eori                                                                         controllers.UnauthorisedController.onPageLoad()
+GET        /unauthorised                                                                                             controllers.UnauthorisedController.onPageLoad()
 GET        /unauthorised-group-access                                                                                controllers.UnauthorisedWithGroupAccessController.onPageLoad()
 
-GET        /data/keep-alive                                                                                          controllers.KeepAliveController.keepAlive(arrivalId: Option[ArrivalId] = None)
-GET        /data/:arrivalId/keep-alive                                                                               controllers.KeepAliveController.keepAlive(arrivalId: Option[ArrivalId])
+GET        /keep-alive                                                                                               controllers.KeepAliveController.keepAlive(arrivalId: Option[ArrivalId] = None)
+GET        /:arrivalId/keep-alive                                                                                    controllers.KeepAliveController.keepAlive(arrivalId: Option[ArrivalId])
 
 GET        /:arrivalId/unloading-guidance/:messageId                                                                 controllers.UnloadingGuidanceController.onPageLoad(arrivalId: ArrivalId, messageId: String)
 GET        /:arrivalId/cannot-send-unloading-remarks                                                                 controllers.CannotSendUnloadingRemarksController.onPageLoad(arrivalId: ArrivalId)
