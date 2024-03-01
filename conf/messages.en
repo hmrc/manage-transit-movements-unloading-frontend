@@ -783,3 +783,7 @@ departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.title = Are
 departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.heading = Are you sure you want to remove departure means of transport {0}?
 departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.error.required = Select yes if you want to remove this departure means of transport
 
+transportEquipment.index.removeTransportEquipmentYesNo.title = Are you sure you want to remove transport equipment {0}?
+transportEquipment.index.removeTransportEquipmentYesNo.heading = Are you sure you want to remove transport equipment {0}?
+transportEquipment.index.removeTransportEquipmentYesNo.error.required = Select yes if you want to remove transport equipment {0}
+

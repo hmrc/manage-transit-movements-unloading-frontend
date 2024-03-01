@@ -122,7 +122,7 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
       }
     }
 
-    "must redirect to the next page when valid data is submitted" ignore {
+    "must redirect to the next page when valid data is submitted" in {
 
       setExistingUserAnswers(emptyUserAnswers.setValue(TransportMeansSection(transportMeansIndex), Json.obj()))
 
