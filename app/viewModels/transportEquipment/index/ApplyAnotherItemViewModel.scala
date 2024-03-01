@@ -18,7 +18,8 @@ package viewModels.transportEquipment.index
 
 import config.FrontendAppConfig
 import controllers.transportEquipment.index.routes
-import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, UserAnswers}
+import models.reference.Item
+import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, RichOptionalJsArray, UserAnswers}
 import pages.sections.transport.equipment.ItemsSection
 import pages.transportEquipment.index.ItemPage
 import play.api.i18n.Messages
@@ -26,8 +27,13 @@ import play.api.libs.json.JsArray
 import play.api.mvc.Call
 import viewModels.{AddAnotherViewModel, ListItem}
 
-case class ApplyAnotherItemViewModel(listItems: Seq[ListItem], onSubmitCall: Call, equipmentIndex: Index, isNumberItemsZero: Boolean)
-    extends AddAnotherViewModel {
+case class ApplyAnotherItemViewModel(
+  listItems: Seq[ListItem],
+  onSubmitCall: Call,
+  equipmentIndex: Index,
+  isNumberItemsZero: Boolean,
+  nextIndex: Index
+) extends AddAnotherViewModel {
   override val prefix: String = "transport.equipment.applyAnotherItem"
 
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxItems
@@ -57,9 +63,9 @@ object ApplyAnotherItemViewModel {
     def apply(userAnswers: UserAnswers, arrivalId: String, mode: Mode, equipmentIndex: Index, isNumberItemsZero: Boolean)(implicit
       messages: Messages
     ): ApplyAnotherItemViewModel = {
+      val array = userAnswers.get(ItemsSection(equipmentIndex))
 
-      val listItems = userAnswers
-        .get(ItemsSection(equipmentIndex))
+      val listItems = array
         .getOrElse(JsArray())
         .value
         .zipWithIndex
@@ -67,37 +73,39 @@ object ApplyAnotherItemViewModel {
           case (_, i) =>
             val itemIndex = Index(i)
 
-            val changeOrRemoveUrl: String = mode match {
-              case CheckMode =>
-                controllers.transportEquipment.index.routes.GoodsReferenceController.onSubmit(ArrivalId(arrivalId), equipmentIndex, itemIndex, mode).url
-              case NormalMode => "" //TODO Some(routes.RemoveItemController.onPageLoad(departureId, mode, equipmentIndex, itemIndex).url)
-            }
-
-            val changePrefix: String = mode match {
-              case CheckMode  => "site.edit"
-              case NormalMode => "site.delete"
-            }
-
             def itemPrefix(item: String) = messages("transport.item.prefix", item)
+
+            def buildListItem(item: Item): ListItem = mode match {
+              case CheckMode =>
+                ListItem(
+                  name = itemPrefix(item.toString),
+                  changeUrl = Some(
+                    controllers.transportEquipment.index.routes.GoodsReferenceController.onSubmit(ArrivalId(arrivalId), equipmentIndex, itemIndex, mode).url
+                  ),
+                  removeUrl = None
+                )
+              case NormalMode =>
+                ListItem(
+                  name = itemPrefix(item.toString),
+                  changeUrl = None,
+                  removeUrl = Some("") //TODO Some(routes.RemoveItemController.onPageLoad(departureId, mode, equipmentIndex, itemIndex).url)
+                )
+            }
 
             userAnswers
               .get(ItemPage(equipmentIndex, itemIndex))
               .map(
-                item =>
-                  ListItem(
-                    name = itemPrefix(item.toString),
-                    changeOrRemoveUrl = changeOrRemoveUrl,
-                    prefix = changePrefix
-                  )
+                item => buildListItem(item)
               )
         }
         .toSeq
 
       new ApplyAnotherItemViewModel(
-        listItems,
+        listItems = listItems,
         onSubmitCall = routes.ApplyAnotherItemController.onSubmit(arrivalId, mode, equipmentIndex),
-        equipmentIndex,
-        isNumberItemsZero
+        equipmentIndex = equipmentIndex,
+        isNumberItemsZero = isNumberItemsZero,
+        nextIndex = array.nextIndex
       )
     }
   }

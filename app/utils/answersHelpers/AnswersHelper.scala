@@ -16,7 +16,7 @@
 
 package utils.answersHelpers
 
-import models.{ArrivalId, Index, UserAnswers}
+import models.{ArrivalId, Index, RichOptionalJsArray, UserAnswers}
 import pages._
 import pages.sections.Section
 import play.api.i18n.Messages
@@ -60,22 +60,6 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
   def buildRowWithNoChangeLink[T](
     data: Option[T],
     formatAnswer: T => Content,
-    prefix: String
-  ): Option[SummaryListRow] =
-    data map {
-      answer =>
-        buildRow(
-          prefix = prefix,
-          answer = formatAnswer(answer),
-          id = None,
-          call = None,
-          args = Nil
-        )
-    }
-
-  def buildRowWithNoChangeLink[T](
-    data: Option[T],
-    formatAnswer: T => Content,
     prefix: String,
     args: Any*
   ): Option[SummaryListRow] =
@@ -89,66 +73,12 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
           args = args: _*
         )
     }
-
-  def getAnswerAndBuildRowWithoutKey[T](
-    page: QuestionPage[T],
-    formatAnswer: T => Content,
-    prefix: String,
-    id: Option[String],
-    call: Option[Call],
-    args: Any*
-  )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.get(page) map {
-      answer =>
-        buildRowWithoutKey(
-          prefix = prefix,
-          answer = formatAnswer(answer),
-          id = id,
-          call = call,
-          args = args: _*
-        )
-    }
-
-  implicit class RichJsArray(arr: JsArray) {
-
-    def zipWithIndex: List[(JsValue, Index)] = arr.value.toList.zipWithIndex.map(
-      x => (x._1, Index(x._2))
-    )
-
-    def isEmpty: Boolean = arr.value.isEmpty
-  }
-
-  implicit class RichOptionalJsArray(arr: Option[JsArray]) {
-
-    def mapWithIndex[T](f: (JsValue, Index) => T): Seq[T] =
-      arr
-        .map {
-          _.zipWithIndex.map {
-            case (value, i) => f(value, i)
-          }
-        }
-        .getOrElse(Nil)
-
-    def flatMapWithIndex[T](f: (JsValue, Index) => Option[T]): Seq[T] =
-      arr
-        .map {
-          _.zipWithIndex.flatMap {
-            case (value, i) => f(value, i)
-          }
-        }
-        .getOrElse(Nil)
-
-    def validate[T](implicit rds: Reads[T]): Option[T] =
-      arr.flatMap(_.validate[T].asOpt)
-
-    def length: Int = arr.getOrElse(JsArray()).value.length
-
-  }
 
   def getAnswersAndBuildSectionRows(section: Section[JsArray])(f: Index => Option[SummaryListRow]): Seq[SummaryListRow] =
     userAnswers
       .get(section)
-      .flatMapWithIndex {
-        (_, index) => f(index)
+      .mapWithIndex {
+        case (_, index) => f(index)
       }
+      .flatten
 }

@@ -159,6 +159,15 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
       assertElementContainsText(hint, expectedText)
     }
 
+  def pageWithInsetText(expectedText: String): Unit =
+    pageWithInsetText(doc, expectedText)
+
+  def pageWithInsetText(doc: Document, expectedText: String): Unit =
+    "must render inset text" in {
+      val insetText = getElementByClass(doc, "govuk-inset-text")
+      assertElementContainsText(insetText, expectedText)
+    }
+
   def pageWithoutHint(): Unit =
     "must not render hint" in {
       assertElementDoesNotExist(doc, "govuk-hint")

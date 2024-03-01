@@ -37,14 +37,14 @@ class TransportEquipmentAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.containerIdentificationNumber",
     id = Some(s"change-container-identification-number-${equipmentIndex.display}"),
-    args = None,
+    args = equipmentIndex.display,
     call = Some(Call(GET, "#"))
   )
 
   def transportEquipmentSeals: Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(SealsSection(equipmentIndex)) {
-      sealIndex =>
-        val helper = new SealAnswersHelper(userAnswers, equipmentIndex, sealIndex)
+      index =>
+        val helper = new SealAnswersHelper(userAnswers, equipmentIndex, index)
         helper.transportEquipmentSeal
     }
 }

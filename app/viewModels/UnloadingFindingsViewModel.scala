@@ -37,14 +37,15 @@ object UnloadingFindingsViewModel {
       val sections = Seq(
         Seq(helper.headerSection),
         helper.consignorSection,
+        helper.consigneeSection,
         helper.holderOfTheTransitProcedureSection,
-        helper.departureTransportMeansSections,
-        helper.transportEquipmentSections,
-        helper.documentSections,
-        helper.additionalReferencesSections,
-        helper.additionalInformationSections,
-        helper.incidentSections,
-        helper.houseConsignmentSections
+        Seq(helper.departureTransportMeansSection),
+        Seq(helper.transportEquipmentSection),
+        Seq(helper.documentSection),
+        Seq(helper.additionalReferencesSection),
+        helper.additionalInformationSection,
+        helper.incidentSection,
+        helper.houseConsignmentSection
       ).flatten
 
       new UnloadingFindingsViewModel(sections)

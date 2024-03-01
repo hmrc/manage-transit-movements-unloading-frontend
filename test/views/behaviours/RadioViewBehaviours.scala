@@ -30,6 +30,7 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
 
   // scalastyle:off method.length
   def pageWithRadioItems(
+    document: Document = doc,
     legendIsHeading: Boolean = true,
     hintTextPrefix: Option[String] = None,
     args: Seq[Any] = Nil,
@@ -40,19 +41,20 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
       "when rendered" - {
 
         "must contain a legend for the question" in {
-          val legends = getElementsByTag(doc, "legend")
+          val legends = getElementsByTag(document, "legend")
           legends.size mustBe 1
           if (mode.isEmpty) {
             if (legendIsHeading) {
               assertElementIncludesText(legends.first(), messages(s"$prefix.heading", args: _*))
             } else {
-              assertElementIncludesText(legends.first(), messages(s"$prefix.label", args: _*))
+              val labelPrefix = if (args.head == 0) s"$prefix.empty.label" else s"$prefix.label"
+              assertElementIncludesText(legends.first(), messages(s"$labelPrefix", args: _*))
               assert(legends.first().hasClass("govuk-visually-hidden") != legendIsVisible)
             }
           }
           hintTextPrefix.map {
             prefix =>
-              val hint = getElementByClass(doc, "govuk-hint")
+              val hint = getElementByClass(document, "govuk-hint")
               assertElementIncludesText(hint, messages(s"$prefix.hint"))
           }
         }
@@ -60,7 +62,7 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
         radioItems(fieldId).zipWithIndex.foreach {
           case (radioItem, index) =>
             s"must contain an input for the value ${radioItem.value.get}" in {
-              assertRenderedById(doc, radioItem.id.get)
+              assertRenderedById(document, radioItem.id.get)
             }
 
             radioItem.hint.foreach {
@@ -68,14 +70,14 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
                 s"must contain a hint for the value ${radioItem.value.get}" in {
                   val element = {
                     val id = if (index == 0) s"$fieldId-item-hint" else s"${fieldId}_$index-item-hint"
-                    getElementById(doc, id)
+                    getElementById(document, id)
                   }
                   assertElementContainsText(element, hint.content.asHtml.toString())
                 }
             }
 
             s"must not have ${radioItem.value.get} checked when rendered with no form" in {
-              assert(!doc.getElementById(radioItem.id.get).hasAttr("checked"))
+              assert(!document.getElementById(radioItem.id.get).hasAttr("checked"))
             }
         }
 

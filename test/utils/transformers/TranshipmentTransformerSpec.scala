@@ -18,7 +18,7 @@ package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import connectors.ReferenceDataConnector
-import generated.{EndorsementType03, TranshipmentType02}
+import generated.TranshipmentType02
 import generators.Generators
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.Country
@@ -27,7 +27,6 @@ import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.incident.endorsement._
 import pages.incident.transhipment.{IdentificationPage, NationalityPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder

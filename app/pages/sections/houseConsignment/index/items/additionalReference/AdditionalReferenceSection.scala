@@ -17,35 +17,11 @@
 package pages.sections.houseConsignment.index.items.additionalReference
 
 import models.Index
-import models.reference.AdditionalReferenceType
-import pages.QuestionPage
-import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferencePage}
-import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection.AdditionalReference
-import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.json.{__, JsPath, Reads}
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-case class AdditionalReferenceSection(houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index)
-    extends QuestionPage[AdditionalReference] {
+case class AdditionalReferenceSection(houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index) extends Section[JsObject] {
 
   override def path: JsPath = AdditionalReferencesSection(houseConsignmentIndex, itemIndex).path \ additionalReferenceIndex.position
 
-}
-
-object AdditionalReferenceSection {
-
-  case class AdditionalReference(typeValue: AdditionalReferenceType, referenceNumber: Option[String]) {
-
-    override def toString: String = referenceNumber match {
-      case Some(refNumber) => s"${typeValue.toString} - $refNumber"
-      case None            => typeValue.toString
-    }
-  }
-
-  object AdditionalReference {
-
-    def reads(houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): Reads[AdditionalReference] = (
-      (__ \ AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex).toString).read[AdditionalReferenceType] and
-        (__ \ AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex).toString).readNullable[String]
-    )(AdditionalReference.apply _)
-  }
 }

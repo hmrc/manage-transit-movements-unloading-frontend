@@ -8,7 +8,7 @@ date.year   = year
 
 site.delete = Remove
 site.edit = Change
-site.delete.hidden = Change {0}
+site.delete.hidden = Remove {0}
 site.edit.hidden = Change {0}
 site.no = No
 site.yes = Yes
@@ -140,6 +140,18 @@ departureMeansOfTransport.addIdentificationNumberYesNo.error.required = Select y
 departureMeansOfTransport.addNationalityYesNo.title = Do you want to add the registered country for this vehicle?
 departureMeansOfTransport.addNationalityYesNo.heading = Do you want to add the registered country for this vehicle?
 departureMeansOfTransport.addNationalityYesNo.error.required = Select yes if you want to add the registered country for this vehicle
+
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.empty.title = You have added 0 departure means of transport
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.singular.title = You have added 1 departure means of transport
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.plural.title = You have added {0} departure means of transport
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.empty.heading = You have added 0 departure means of transport
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.singular.heading = You have added 1 departure means of transport
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.plural.heading = You have added {0} departure means of transport
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.empty.label = Do you want to add a departure means of transport?
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.label = Do you want to add another departure means of transport?
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.maxLimit.label = You cannot add another departure means of transport. To add another, you need to remove one first.
+departureMeansOfTransport.addAnotherDepartureMeansOfTransport.error.required = Select yes if you want to add a departure means of transport
+departureMeansOfTransportPrefix.prefix = Departure means of transport {0}
 
 houseConsignment.item.grossWeight.title = What is the new gross weight of item {0} in house consignment {1}?
 houseConsignment.item.grossWeight.heading = What is the new gross weight of item {0} in house consignment {1}?
@@ -407,8 +419,8 @@ unloadingFindings.rowHeadings.identificationType.europeanVesselIdNumber.change.h
 unloadingFindings.rowHeadings.identificationType.unknown = Unknown - this can only be used during the transitional period
 unloadingFindings.rowHeadings.identificationType.unknown.change.hidden = unknown - this can only be used during the transitional period
 
-unloadingFindings.rowHeadings.sealIdentifier.change.hidden = seal identification number
-unloadingFindings.rowHeadings.containerIdentificationNumber.change.hidden = container identification number
+unloadingFindings.rowHeadings.sealIdentifier.change.hidden = seal {0} for transport equipment {1}
+unloadingFindings.rowHeadings.containerIdentificationNumber.change.hidden = container identification number for transport equipment {0}
 
 unloadingFindings.rowHeadings.vehicleNationality = Registered country
 unloadingFindings.rowHeadings.vehicleNationality.change.hidden = registered country
@@ -441,6 +453,8 @@ unloadingFindings.rowHeadings.totalNetWeight = Total net weight of all items
 
 unloadingFindings.subsections.item = Item {0}
 unloadingFindings.rowHeadings.item.description = Description
+unloadingFindings.rowHeadings.item.declarationType = Declaration type
+unloadingFindings.rowHeadings.item.countryOfDestination = Country of destination
 unloadingFindings.rowHeadings.item.grossWeight = Gross weight
 unloadingFindings.rowHeadings.item.packageType = Type
 unloadingFindings.rowHeadings.item.packageType.change.hidden = type of package {0} for item {1}
@@ -478,6 +492,12 @@ unloadingFindings.consignor.name = Name
 unloadingFindings.consignor.country = Country
 unloadingFindings.consignor.address = Address
 
+unloadingFindings.consignee.heading = Consignee
+unloadingFindings.consignee.identificationNumber = EORI number or Trader Identification Number (TIN)
+unloadingFindings.consignee.name = Name
+unloadingFindings.consignee.country = Country
+unloadingFindings.consignee.address = Address
+
 unloadingFindings.document.heading = Document {0}
 unloadingFindings.document.heading.parent.heading = Documents
 unloadingFindings.document.type = Document type
@@ -489,17 +509,27 @@ unloadingFindings.document.additionalInformation.change.hidden = additional info
 
 unloadingFindings.houseConsignment.item.document.heading = Document {0}
 unloadingFindings.houseConsignment.item.document.type = Document type
-unloadingFindings.houseConsignment.item.document.type.change.hidden = document {0} for item {1} - document type
+unloadingFindings.houseConsignment.item.document.type.change.hidden = document type for document {0} in item {1}
 unloadingFindings.houseConsignment.item.document.referenceNumber = Reference number
-unloadingFindings.houseConsignment.item.document.referenceNumber.change.hidden = document {0} for item {1} - reference number
+unloadingFindings.houseConsignment.item.document.referenceNumber.change.hidden = reference number for document {0} in item {1}
 unloadingFindings.houseConsignment.item.document.additionalInformation = Additional information
-unloadingFindings.houseConsignment.item.document.additionalInformation.change.hidden = document {0} for item {1} - additional information
+unloadingFindings.houseConsignment.item.document.additionalInformation.change.hidden = additional information for document {0} in item {1}
 
 unloadingFindings.additional.reference.heading = Additional references
-unloadingFindings.additional.reference.change.hidden = additional reference {0}
-unloadingFindings.additional.reference = Additional Reference {0}
+unloadingFindings.additional.reference = Additional reference {0}
+unloadingFindings.additional.reference.type = Type
+unloadingFindings.additional.reference.type.change.hidden = type for additional reference {0}
+unloadingFindings.additional.reference.number = Reference number
+unloadingFindings.additional.reference.number.change.hidden = reference number for additional reference {0}
+
+unloadingFindings.houseConsignment.item.additionalReference = Additional reference {0}
+unloadingFindings.houseConsignment.item.additionalReference.type = Type
+unloadingFindings.houseConsignment.item.additionalReference.type.change.hidden = type for additional reference {0} in item {1}
+unloadingFindings.houseConsignment.item.additionalReference.number = Reference number
+unloadingFindings.houseConsignment.item.additionalReference.number.change.hidden = reference number for additional reference {0} in item {1}
 
 unloadingFindings.dangerousGoods.unNumber = UN number {0}
+unloadingFindings.dangerousGoods.unNumber.change.hidden = UN number {0} for item {1}
 
 houseConsignment.title = Cross-check the transit with house consignment {0}
 houseConsignment.heading = Cross-check the transit with house consignment {0}
@@ -539,9 +569,9 @@ checkYourAnswers.paragraph = By sending this, you are confirming that these deta
 checkYourAnswers.departureMeansOfTransport.identification = Identification type
 checkYourAnswers.departureMeansOfTransport.identificationNumber = Identification number
 checkYourAnswers.departureMeansOfTransport.country = Registered country
-checkYourAnswers.departureMeansOfTransport.identification.change.hidden =  identification type for the departure means of transport
-checkYourAnswers.departureMeansOfTransport.identificationNumber.change.hidden =  identification number for the departure means of transport
-checkYourAnswers.departureMeansOfTransport.country.change.hidden = registered country for the departure means of transport
+checkYourAnswers.departureMeansOfTransport.identification.change.hidden = identification type for departure means of transport {0}
+checkYourAnswers.departureMeansOfTransport.identificationNumber.change.hidden = identification number for departure means of transport {0}
+checkYourAnswers.departureMeansOfTransport.country.change.hidden = registered country for departure means of transport {0}
 
 cannotSendUnloadingRemarks.title = You cannot send these unloading remarks
 cannotSendUnloadingRemarks.heading = You cannot send these unloading remarks
@@ -733,8 +763,26 @@ transportEquipment.index.seal.removeSealYesNo.title = Are you sure you want to r
 transportEquipment.index.seal.removeSealYesNo.heading = Are you sure you want to remove seal {1} from transport equipment {0}?
 transportEquipment.index.seal.removeSealYesNo.error.required = Select yes if you want to remove seal {1} from transport equipment {0}
 
+transportEquipment.index.addAnotherSeal.empty.title = You have added 0 seals to transport equipment {1}
+transportEquipment.index.addAnotherSeal.singular.title = You have added 1 seal to transport equipment {1}
+transportEquipment.index.addAnotherSeal.plural.title = You have added {0} seals to transport equipment {1}
+transportEquipment.index.addAnotherSeal.empty.heading = You have added 0 seals to transport equipment {1}
+transportEquipment.index.addAnotherSeal.singular.heading = You have added 1 seal to transport equipment {1}
+transportEquipment.index.addAnotherSeal.plural.heading = You have added {0} seals to transport equipment {1}
+transportEquipment.index.addAnotherSeal.empty.label = Do you want to add a seal to transport equipment {1}?
+transportEquipment.index.addAnotherSeal.label = Do you want to add another seal to transport equipment {1}?
+transportEquipment.index.addAnotherSeal.maxLimit.label = You cannot add any more seals to transport equipment {0}. To add another, you need to remove one first.
+transportEquipment.index.addAnotherSeal.error.required = Select yes if you want to add another seal to transport equipment {0}
+
 unloadingFindings.additionalInformation.heading = Additional information
 unloadingFindings.additionalInformation.label = Additional information {0}
+unloadingFindings.additionalInformation.type = Type
+unloadingFindings.additionalInformation.description = Description
+
+departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.title = Are you sure you want to remove this departure means of transport?
+departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.heading = Are you sure you want to remove this departure means of transport?
+departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.error.required = Select yes if you want to remove this departure means of transport
+
 
 transportEquipment.index.item.removeItemYesNo.title = Are you sure you want to remove item {1} from transport equipment {0}?
 transportEquipment.index.item.removeItemYesNo.heading = Are you sure you want to remove item {1} from transport equipment {0}?

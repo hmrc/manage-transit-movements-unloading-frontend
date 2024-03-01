@@ -22,8 +22,13 @@ import models.Index
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.Country
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage}
 import pages._
+import pages.houseConsignment.index.items.{
+  GrossWeightPage,
+  ItemDescriptionPage,
+  ConsigneeIdentifierPage => ItemConsigneeIdentifierPage,
+  ConsigneeNamePage => ItemConsigneeNamePage
+}
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import viewModels.HouseConsignmentViewModel.HouseConsignmentViewModelProvider
 import viewModels.sections.Section.{AccordionSection, StaticSection}
@@ -92,6 +97,8 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
           .setValue(ItemDescriptionPage(hcIndex, itemIndex), "shirts")
           .setValue(GrossWeightPage(hcIndex, itemIndex), BigDecimal(123.45))
           .setValue(NetWeightPage(hcIndex, itemIndex), 123.45)
+          .setValue(ItemConsigneeNamePage(hcIndex, itemIndex), "John Smith")
+          .setValue(ItemConsigneeIdentifierPage(hcIndex, itemIndex), "csgee2")
 
         setExistingUserAnswers(userAnswers)
 
@@ -104,7 +111,12 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
 
         result.sections(1) mustBe a[StaticSection]
         result.sections(1).sectionTitle must not be defined
-        result.sections(1).rows.size mustBe 4
+        result.sections(1).rows.size mustBe 2
+
+        result.sections(2) mustBe a[StaticSection]
+        result.sections(2).sectionTitle.value mustBe "Consignee"
+        result.sections(2).rows.size mustBe 2
+
       }
     }
 
@@ -137,6 +149,10 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
           .setValue(ItemDescriptionPage(hcIndex, Index(1)), "shirts")
           .setValue(GrossWeightPage(hcIndex, Index(1)), BigDecimal(123.45))
           .setValue(NetWeightPage(hcIndex, Index(1)), 123.45)
+          .setValue(ItemConsigneeNamePage(hcIndex, Index(0)), "John Smith")
+          .setValue(ItemConsigneeIdentifierPage(hcIndex, Index(0)), "csgee2")
+          .setValue(ItemConsigneeNamePage(hcIndex, Index(1)), "John Smith")
+          .setValue(ItemConsigneeIdentifierPage(hcIndex, Index(1)), "csgee3")
 
         setExistingUserAnswers(userAnswers)
 
@@ -151,9 +167,9 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         result.sections(1).sectionTitle.value mustBe "Item 2"
         result.sections(1).rows.size mustBe 3
 
-        result.sections(2) mustBe a[StaticSection]
-        result.sections(2).sectionTitle must not be defined
-        result.sections(2).rows.size mustBe 4
+        result.sections(1).children.head mustBe a[StaticSection]
+        result.sections(1).children.head.sectionTitle.value mustBe "Consignee"
+        result.sections(1).children.head.rows.size mustBe 2
       }
     }
   }

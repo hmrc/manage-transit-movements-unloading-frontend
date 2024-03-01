@@ -21,14 +21,13 @@ import models.reference.{Country, Incident, QualifierOfIdentification}
 import models.{Coordinates, DynamicAddress, Index, UserAnswers}
 import pages.incident.endorsement.EndorsementCountryPage
 import pages.incident.location._
-import pages.incident.transhipment.NationalityPage
 import pages.incident.{IncidentCodePage, IncidentTextPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
+import utils.answersHelpers.consignment.transhipment.TranshipmentAnswersHelper
 import viewModels.sections.Section
 import viewModels.sections.Section.AccordionSection
-import utils.answersHelpers.consignment.transhipment.TranshipmentAnswersHelper
 
 class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 

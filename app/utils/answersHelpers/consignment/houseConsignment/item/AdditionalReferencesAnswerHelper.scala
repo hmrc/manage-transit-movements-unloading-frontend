@@ -16,9 +16,9 @@
 
 package utils.answersHelpers.consignment.houseConsignment.item
 
+import models.reference.AdditionalReferenceType
 import models.{Index, UserAnswers}
-import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
-import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection.AdditionalReference
+import pages.houseConsignment.index.items.additionalReference._
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -33,13 +33,21 @@ class AdditionalReferencesAnswerHelper(
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
-  def additionalReferenceRow: Option[SummaryListRow] = getAnswerAndBuildRowWithoutKey[AdditionalReference](
-    page = AdditionalReferenceSection(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
+  def code: Option[SummaryListRow] = getAnswerAndBuildRow[AdditionalReferenceType](
+    page = AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
     formatAnswer = formatAsText,
-    prefix = "unloadingFindings.additional.reference",
-    args = additionalReferenceIndex.display,
-    id = Some(s"change-additional-reference-${additionalReferenceIndex.display}"),
-    call = Some(Call(GET, "#")) //TODO change me please
-  )(AdditionalReference.reads(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
+    prefix = "unloadingFindings.houseConsignment.item.additionalReference.type",
+    id = Some(s"change-additional-reference-type-${itemIndex.display}-${additionalReferenceIndex.display}"),
+    call = Some(Call(GET, "#")),
+    args = Seq(itemIndex.display, additionalReferenceIndex.display): _*
+  )
 
+  def referenceNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.houseConsignment.item.additionalReference.number",
+    id = Some(s"change-additional-reference-number-${itemIndex.display}-${additionalReferenceIndex.display}"),
+    call = Some(Call(GET, "#")),
+    args = Seq(itemIndex.display, additionalReferenceIndex.display): _*
+  )
 }

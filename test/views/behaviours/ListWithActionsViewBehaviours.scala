@@ -52,7 +52,7 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
 
     }
 
-  def pageWithItemsMaxedOut(args: Any*): Unit =
+  def pageWithItemsMaxedOut(args: Any*)(messageArgs: Any*): Unit =
     "page with items maxed out" - {
 
       val doc = parseView(applyMaxedOutView)
@@ -65,7 +65,7 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
 
       behave like pageWithoutRadioItems(doc)
 
-      behave like pageWithContent(doc, "p", messages(s"$prefix.maxLimit.label"))
+      behave like pageWithContent(doc, "p", messages(s"$prefix.maxLimit.label", messageArgs: _*))
     }
 
   // scalastyle:off method.length
