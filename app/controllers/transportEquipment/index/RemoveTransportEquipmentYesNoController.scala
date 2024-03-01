@@ -18,7 +18,8 @@ package controllers.transportEquipment.index
 
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.{ArrivalId, Index, Mode}
+import models.{ArrivalId, Index, Mode, TransportEquipment}
+import pages.ContainerIdentificationNumberPage
 import pages.sections.TransportEquipmentSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -27,7 +28,6 @@ import repositories.SessionRepository
 import uk.gov.hmrc.http.HttpVerbs.GET
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.RemoveTransportEquipmentYesNoView
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -48,22 +48,29 @@ class RemoveTransportEquipmentYesNoController @Inject() (
   private def addAnother(arrivalId: ArrivalId, mode: Mode): Call =
     Call(GET, "#") //todo changes to AddAnotherTransportEquipmentController once implemented
 
+  private def formatInsetText(containerId: Option[String]): Option[String] =
+    TransportEquipment(containerId).asString
+
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, transportEquipmentIndex: Index): Action[AnyContent] = actions
     .requireIndex(arrivalId, TransportEquipmentSection(transportEquipmentIndex), addAnother(arrivalId, mode)) {
       implicit request =>
-        Ok(view(form(transportEquipmentIndex), request.userAnswers.mrn, arrivalId, transportEquipmentIndex, mode))
+        val containerId: Option[String] = request.userAnswers.get(ContainerIdentificationNumberPage(transportEquipmentIndex))
+        val insetText                   = formatInsetText(containerId)
+        Ok(view(form(transportEquipmentIndex), request.userAnswers.mrn, arrivalId, transportEquipmentIndex, insetText, mode))
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode, transportEquipmentIndex: Index): Action[AnyContent] = actions
     .requireIndex(arrivalId, TransportEquipmentSection(transportEquipmentIndex), addAnother(arrivalId, mode))
     .async {
       implicit request =>
+        val containerId: Option[String] = request.userAnswers.get(ContainerIdentificationNumberPage(transportEquipmentIndex))
+        val insetText                   = formatInsetText(containerId)
         form(transportEquipmentIndex)
           .bindFromRequest()
           .fold(
             formWithErrors =>
               Future
-                .successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, transportEquipmentIndex, mode))),
+                .successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, transportEquipmentIndex, insetText, mode))),
             value =>
               for {
                 updatedAnswers <-

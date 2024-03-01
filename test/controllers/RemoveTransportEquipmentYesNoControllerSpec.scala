@@ -19,7 +19,7 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import generators.Generators
-import models.{NormalMode, UserAnswers}
+import models.{NormalMode, TransportEquipment, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
@@ -35,6 +35,7 @@ import uk.gov.hmrc.http.HttpVerbs.GET
 import views.html.RemoveTransportEquipmentYesNoView
 
 import scala.concurrent.Future
+import org.scalacheck.Gen
 
 class RemoveTransportEquipmentYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
@@ -52,27 +53,29 @@ class RemoveTransportEquipmentYesNoControllerSpec extends SpecBase with AppWithD
   "RemoveTransportEquipmentYesNoController Controller" - {
 
     "must return OK and the correct view for a GET" in {
+      forAll(Gen.alphaNumStr) {
+        containerId =>
+          val userAnswers = emptyUserAnswers
+            .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "Seal-1")
+            .setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), true)
+            .setValue(ContainerIdentificationNumberPage(equipmentIndex), containerId)
 
-      val userAnswers = emptyUserAnswers
-        .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "Seal-1")
-        .setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), true)
-        .setValue(ContainerIdentificationNumberPage(equipmentIndex), "CIN-1")
+          setExistingUserAnswers(userAnswers)
+          val insetText = TransportEquipment(Some(containerId)).asString
 
-      setExistingUserAnswers(userAnswers)
+          val request = FakeRequest(GET, removeTransportEquipmentMeansRoute)
 
-      val request = FakeRequest(GET, removeTransportEquipmentMeansRoute)
+          val result = route(app, request).value
 
-      val result = route(app, request).value
+          val view = injector.instanceOf[RemoveTransportEquipmentYesNoView]
 
-      val view = injector.instanceOf[RemoveTransportEquipmentYesNoView]
+          status(result) mustEqual OK
 
-      status(result) mustEqual OK
+          contentAsString(result) mustEqual
+            view(form, mrn, arrivalId, transportMeansIndex, insetText, mode)(request, messages).toString
 
-      contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, transportMeansIndex, mode)(request, messages).toString
-
+      }
     }
-
     "when yes submitted" - {
       "must redirect to add another TransportEquipment and remove departureTransportMeans at specified index" ignore {
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
@@ -146,30 +149,30 @@ class RemoveTransportEquipmentYesNoControllerSpec extends SpecBase with AppWithD
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
+      forAll(Gen.alphaNumStr) {
+        containerId =>
+          val userAnswers = emptyUserAnswers
+            .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "Seal-1")
+            .setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), true)
+            .setValue(ContainerIdentificationNumberPage(equipmentIndex), containerId)
 
-      val userAnswers = emptyUserAnswers
-        .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "Seal-1")
-        .setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), true)
-        .setValue(ContainerIdentificationNumberPage(equipmentIndex), "CIN-1")
+          setExistingUserAnswers(userAnswers)
 
-      setExistingUserAnswers(userAnswers)
+          val invalidAnswer = ""
+          val request       = FakeRequest(POST, removeTransportEquipmentMeansRoute).withFormUrlEncodedBody(("value", ""))
+          val filledForm    = form.bind(Map("value" -> invalidAnswer))
+          val result        = route(app, request).value
+          val insetText     = TransportEquipment(Some(containerId)).asString
 
-      val invalidAnswer = ""
+          status(result) mustEqual BAD_REQUEST
 
-      val request    = FakeRequest(POST, removeTransportEquipmentMeansRoute).withFormUrlEncodedBody(("value", ""))
-      val filledForm = form.bind(Map("value" -> invalidAnswer))
+          val view = injector.instanceOf[RemoveTransportEquipmentYesNoView]
 
-      val result = route(app, request).value
+          contentAsString(result) mustEqual
+            view(filledForm, mrn, arrivalId, transportEquipmentIndex, insetText, mode)(request, messages).toString
 
-      status(result) mustEqual BAD_REQUEST
-
-      val view = injector.instanceOf[RemoveTransportEquipmentYesNoView]
-
-      contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, transportEquipmentIndex, mode)(request, messages).toString
-
+      }
     }
-
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
