@@ -339,6 +339,6 @@ trait ViewModelGenerators {
     for {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
-    } yield AddAnotherSealViewModel(listItems, onSubmitCall, Index(0))
+    } yield AddAnotherSealViewModel(listItems, onSubmitCall, Index(0), Index(0))
   }
 }

@@ -18,7 +18,7 @@ package viewModels.transportEquipment.index
 
 import config.FrontendAppConfig
 import controllers.transportEquipment.index.seals.routes
-import models.{ArrivalId, Index, Mode, UserAnswers}
+import models.{ArrivalId, Index, Mode, RichOptionalJsArray, UserAnswers}
 import pages.sections.SealsSection
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.libs.json.JsArray
@@ -26,7 +26,7 @@ import play.api.mvc.Call
 import play.api.i18n.Messages
 import viewModels.{AddAnotherViewModel, ListItem}
 
-case class AddAnotherSealViewModel(listItems: Seq[ListItem], onSubmitCall: Call, equipmentIndex: Index) extends AddAnotherViewModel {
+case class AddAnotherSealViewModel(listItems: Seq[ListItem], onSubmitCall: Call, equipmentIndex: Index, nextIndex: Index) extends AddAnotherViewModel {
   override val prefix: String = "transportEquipment.index.addAnotherSeal"
 
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxSeals
@@ -48,8 +48,9 @@ object AddAnotherSealViewModel {
 
     def apply(userAnswers: UserAnswers, arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index): AddAnotherSealViewModel = {
 
-      val listItems = userAnswers
-        .get(SealsSection(equipmentIndex))
+      val array = userAnswers.get(SealsSection(equipmentIndex))
+
+      val listItems = array
         .getOrElse(JsArray())
         .value
         .zipWithIndex
@@ -70,7 +71,8 @@ object AddAnotherSealViewModel {
       new AddAnotherSealViewModel(
         listItems,
         onSubmitCall = controllers.transportEquipment.index.routes.AddAnotherSealController.onSubmit(arrivalId, mode, equipmentIndex),
-        equipmentIndex
+        equipmentIndex = equipmentIndex,
+        nextIndex = array.nextIndex
       )
     }
   }

@@ -142,7 +142,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
           redirectLocation(result).value mustEqual
             controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController
-              .onPageLoad(arrivalId, mode, equipmentIndex, Index(listItems.length))
+              .onPageLoad(arrivalId, mode, equipmentIndex, notMaxedOutViewModel.nextIndex)
               .url
         }
       }
