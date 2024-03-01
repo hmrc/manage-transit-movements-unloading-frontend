@@ -14,65 +14,66 @@
  * limitations under the License.
  */
 
-package views.departureMeansOfTransport
+package views.transportEquipment.index
 
 import forms.AddAnotherFormProvider
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.departureTransportMeans.AddAnotherDepartureMeansOfTransportViewModel
+import viewModels.transportEquipment.index.AddAnotherSealViewModel
 import views.behaviours.ListWithActionsViewBehaviours
-import views.html.departureMeansOfTransport.AddAnotherDepartureMeansOfTransportView
+import views.html.transportEquipment.index.AddAnotherSealView
 
-class AddAnotherDepartureMeansOfTransportViewSpec extends ListWithActionsViewBehaviours {
+class AddAnotherSealViewSpec extends ListWithActionsViewBehaviours {
 
-  override def maxNumber: Int = frontendAppConfig.maxDepartureMeansOfTransport
+  override def maxNumber: Int = frontendAppConfig.maxSeals
 
-  private def formProvider(viewModel: AddAnotherDepartureMeansOfTransportViewModel) =
+  private def formProvider(viewModel: AddAnotherSealViewModel) =
     new AddAnotherFormProvider()(viewModel.prefix, viewModel.allowMore)
 
-  private val viewModel            = arbitrary[AddAnotherDepartureMeansOfTransportViewModel].sample.value
-  private val noItemsViewModel     = viewModel.copy(listItems = Nil)
+  private val viewModel            = arbitrary[AddAnotherSealViewModel].sample.value
+  private val noSealViewModel      = viewModel.copy(listItems = Nil)
   private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
   private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
 
   override def form: Form[Boolean] = formProvider(notMaxedOutViewModel)
 
-  def applyNoItemsView: HtmlFormat.Appendable =
+  def applyNoSealView: HtmlFormat.Appendable =
     injector
-      .instanceOf[AddAnotherDepartureMeansOfTransportView]
-      .apply(formProvider(noItemsViewModel), mrn, arrivalId, noItemsViewModel)(fakeRequest, messages, frontendAppConfig)
+      .instanceOf[AddAnotherSealView]
+      .apply(formProvider(noSealViewModel), mrn, arrivalId, noSealViewModel)(fakeRequest, messages, frontendAppConfig)
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
-      .instanceOf[AddAnotherDepartureMeansOfTransportView]
+      .instanceOf[AddAnotherSealView]
       .apply(form, mrn, arrivalId, notMaxedOutViewModel)(fakeRequest, messages, frontendAppConfig)
 
   override def applyMaxedOutView: HtmlFormat.Appendable =
     injector
-      .instanceOf[AddAnotherDepartureMeansOfTransportView]
+      .instanceOf[AddAnotherSealView]
       .apply(formProvider(maxedOutViewModel), mrn, arrivalId, maxedOutViewModel)(fakeRequest, messages, frontendAppConfig)
 
-  override val prefix: String = "departureMeansOfTransport.addAnotherDepartureMeansOfTransport"
+  override val prefix: String = "transportEquipment.index.addAnotherSeal"
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithMoreItemsAllowed(notMaxedOutViewModel.count)(notMaxedOutViewModel.count)
+  behave like pageWithMoreItemsAllowed(notMaxedOutViewModel.count, equipmentIndex.display)(notMaxedOutViewModel.count, equipmentIndex.display)
 
-  behave like pageWithItemsMaxedOut(maxedOutViewModel.count)()
+  behave like pageWithItemsMaxedOut(maxedOutViewModel.count, equipmentIndex.display)(equipmentIndex.display)
 
   behave like pageWithSubmitButton("Continue")
 
   "page with no items" - {
 
-    val doc = parseView(applyNoItemsView)
+    val doc = parseView(applyNoSealView)
 
-    behave like pageWithTitle(doc, s"$prefix.empty", noItemsViewModel.count)
+    behave like pageWithTitle(doc, s"$prefix.empty", noSealViewModel.count, equipmentIndex.display)
 
-    behave like pageWithHeading(doc, s"$prefix.empty", noItemsViewModel.count)
+    behave like pageWithHeading(doc, s"$prefix.empty", noSealViewModel.count, equipmentIndex.display)
 
-    behave like pageWithRadioItems(document = doc, legendIsHeading = false, args = Seq(noItemsViewModel.count))
+    behave like pageWithRadioItems(document = doc, legendIsHeading = false, args = Seq(noSealViewModel.count, equipmentIndex.display))
+
   }
 }

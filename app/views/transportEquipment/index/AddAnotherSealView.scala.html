@@ -15,9 +15,8 @@
  *@
 
 @import config.FrontendAppConfig
-@import models.MovementReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
-@import viewModels.departureTransportMeans.AddAnotherDepartureMeansOfTransportViewModel
+@import viewModels.transportEquipment.index.AddAnotherSealViewModel
 @import views.html.components.{Button, ErrorSummary, Heading, InputYesNo, ListWithActions}
 
 @this(
@@ -30,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, viewModel: AddAnotherDepartureMeansOfTransportViewModel)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, viewModel: AddAnotherSealViewModel)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
 
 @mainTemplate(
     title = viewModel.title,
