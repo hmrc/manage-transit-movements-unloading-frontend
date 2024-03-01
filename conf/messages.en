@@ -419,8 +419,8 @@ unloadingFindings.rowHeadings.identificationType.europeanVesselIdNumber.change.h
 unloadingFindings.rowHeadings.identificationType.unknown = Unknown - this can only be used during the transitional period
 unloadingFindings.rowHeadings.identificationType.unknown.change.hidden = unknown - this can only be used during the transitional period
 
-unloadingFindings.rowHeadings.sealIdentifier.change.hidden = seal identification number
-unloadingFindings.rowHeadings.containerIdentificationNumber.change.hidden = container identification number
+unloadingFindings.rowHeadings.sealIdentifier.change.hidden = seal {0} for transport equipment {1}
+unloadingFindings.rowHeadings.containerIdentificationNumber.change.hidden = container identification number for transport equipment {0}
 
 unloadingFindings.rowHeadings.vehicleNationality = Registered country
 unloadingFindings.rowHeadings.vehicleNationality.change.hidden = registered country
@@ -509,11 +509,11 @@ unloadingFindings.document.additionalInformation.change.hidden = additional info
 
 unloadingFindings.houseConsignment.item.document.heading = Document {0}
 unloadingFindings.houseConsignment.item.document.type = Document type
-unloadingFindings.houseConsignment.item.document.type.change.hidden = document {0} for item {1} - document type
+unloadingFindings.houseConsignment.item.document.type.change.hidden = document type for document {0} in item {1}
 unloadingFindings.houseConsignment.item.document.referenceNumber = Reference number
-unloadingFindings.houseConsignment.item.document.referenceNumber.change.hidden = document {0} for item {1} - reference number
+unloadingFindings.houseConsignment.item.document.referenceNumber.change.hidden = reference number for document {0} in item {1}
 unloadingFindings.houseConsignment.item.document.additionalInformation = Additional information
-unloadingFindings.houseConsignment.item.document.additionalInformation.change.hidden = document {0} for item {1} - additional information
+unloadingFindings.houseConsignment.item.document.additionalInformation.change.hidden = additional information for document {0} in item {1}
 
 unloadingFindings.additional.reference.heading = Additional references
 unloadingFindings.additional.reference = Additional reference {0}
@@ -529,6 +529,7 @@ unloadingFindings.houseConsignment.item.additionalReference.number = Reference n
 unloadingFindings.houseConsignment.item.additionalReference.number.change.hidden = reference number for additional reference {0} in item {1}
 
 unloadingFindings.dangerousGoods.unNumber = UN number {0}
+unloadingFindings.dangerousGoods.unNumber.change.hidden = UN number {0} for item {1}
 
 houseConsignment.title = Cross-check the transit with house consignment {0}
 houseConsignment.heading = Cross-check the transit with house consignment {0}
@@ -568,9 +569,9 @@ checkYourAnswers.paragraph = By sending this, you are confirming that these deta
 checkYourAnswers.departureMeansOfTransport.identification = Identification type
 checkYourAnswers.departureMeansOfTransport.identificationNumber = Identification number
 checkYourAnswers.departureMeansOfTransport.country = Registered country
-checkYourAnswers.departureMeansOfTransport.identification.change.hidden =  identification type for the departure means of transport
-checkYourAnswers.departureMeansOfTransport.identificationNumber.change.hidden =  identification number for the departure means of transport
-checkYourAnswers.departureMeansOfTransport.country.change.hidden = registered country for the departure means of transport
+checkYourAnswers.departureMeansOfTransport.identification.change.hidden = identification type for departure means of transport {0}
+checkYourAnswers.departureMeansOfTransport.identificationNumber.change.hidden = identification number for departure means of transport {0}
+checkYourAnswers.departureMeansOfTransport.country.change.hidden = registered country for departure means of transport {0}
 
 cannotSendUnloadingRemarks.title = You cannot send these unloading remarks
 cannotSendUnloadingRemarks.heading = You cannot send these unloading remarks

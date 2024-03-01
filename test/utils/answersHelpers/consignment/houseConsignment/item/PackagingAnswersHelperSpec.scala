@@ -50,6 +50,7 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
               action.content.value mustBe "Change"
               action.visuallyHiddenText.value mustBe "type of package 1 for item 1"
               action.href mustBe "#"
+              action.id mustBe "change-package-type-1-1"
           }
         }
       }
@@ -79,6 +80,7 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
               action.content.value mustBe "Change"
               action.visuallyHiddenText.value mustBe "quantity of package 1 for item 1"
               action.href mustBe "#"
+              action.id mustBe "change-package-count-1-1"
           }
         }
       }
@@ -108,6 +110,7 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
               action.content.value mustBe "Change"
               action.visuallyHiddenText.value mustBe "shipping mark of package 1 for item 1"
               action.href mustBe "#"
+              action.id mustBe "change-package-mark-1-1"
           }
         }
       }

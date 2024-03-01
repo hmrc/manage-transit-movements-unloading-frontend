@@ -35,8 +35,8 @@ class SealAnswersHelper(
     page = SealIdentificationNumberPage(equipmentIndex, sealIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.sealIdentifier",
-    args = sealIndex.display,
-    id = Some(s"change-seal-details-${sealIndex.display}"),
+    args = Seq(sealIndex.display, equipmentIndex.display): _*,
+    id = Some(s"change-seal-details-${equipmentIndex.display}-${sealIndex.display}"),
     call = Some(Call(GET, "#"))
   )
 }

@@ -130,7 +130,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     userAnswers.ie043Data.HolderOfTheTransitProcedure.map {
       hotP =>
         val helper = new HolderOfTheTransitProcedureHelper(userAnswers)
-        AccordionSection(
+        StaticSection(
           sectionTitle = Some(messages("unloadingFindings.rowHeadings.holderOfTheTransitProcedure.heading")),
           rows = Seq(
             helper.identificationNumber(hotP.identificationNumber),

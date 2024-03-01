@@ -37,7 +37,7 @@ class TransportEquipmentAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.containerIdentificationNumber",
     id = Some(s"change-container-identification-number-${equipmentIndex.display}"),
-    args = None,
+    args = equipmentIndex.display,
     call = Some(Call(GET, "#"))
   )
 
