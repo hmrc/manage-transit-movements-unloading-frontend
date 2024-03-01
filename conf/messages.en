@@ -735,3 +735,7 @@ transportEquipment.index.seal.removeSealYesNo.error.required = Select yes if you
 
 unloadingFindings.additionalInformation.heading = Additional information
 unloadingFindings.additionalInformation.label = Additional information {0}
+
+transportEquipment.index.item.removeItemYesNo.title = Are you sure you want to remove item {1} from transport equipment {0}?
+transportEquipment.index.item.removeItemYesNo.heading = Are you sure you want to remove item {1} from transport equipment {0}?
+transportEquipment.index.item.removeItemYesNo.error.required = Select yes if you want to remove item {1} from transport equipment {0}
