@@ -787,3 +787,7 @@ transportEquipment.index.removeTransportEquipmentYesNo.title = Are you sure you 
 transportEquipment.index.removeTransportEquipmentYesNo.heading = Are you sure you want to remove transport equipment {0}?
 transportEquipment.index.removeTransportEquipmentYesNo.error.required = Select yes if you want to remove transport equipment {0}
 
+
+transportEquipment.index.item.removeItemYesNo.title = Are you sure you want to remove item {1} from transport equipment {0}?
+transportEquipment.index.item.removeItemYesNo.heading = Are you sure you want to remove item {1} from transport equipment {0}?
+transportEquipment.index.item.removeItemYesNo.error.required = Select yes if you want to remove item {1} from transport equipment {0}
