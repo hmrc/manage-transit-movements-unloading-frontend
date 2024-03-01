@@ -15,7 +15,7 @@
  *@
 
 @import models.MovementReferenceNumber
-@import viewModels.components.InputYesNoViewModel._
+@import viewModels.components.InputYesNoViewModel
 @import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 @import views.utils.ViewUtils.StringImplicits
 
@@ -28,27 +28,25 @@
     button: Button
 )
 
-@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, transportMeansIndex:Index, insetText:String, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode, insetText: Option[String])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.title"),
+    title = messages("departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.title", transportMeansIndex.display),
     showBackLink = true
 ) {
 
-        @errorSummary(form.errors)
+    @errorSummary(form.errors)
 
-        @formHelper(action = controllers.departureMeansOfTransport.routes.RemoveDepartureMeansOfTransportYesNoController.onSubmit(arrivalId,mode,  transportMeansIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.departureMeansOfTransport.routes.RemoveDepartureMeansOfTransportYesNoController.onSubmit(arrivalId,mode,  transportMeansIndex), Symbol("autoComplete") -> "off") {
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.title"),
+            yesNoType = InputYesNoViewModel(
+                heading = messages("departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.title", transportMeansIndex.display),
                 caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = govukInsetText(InsetText(content = Text(insetText)))
+                additionalHtml = insetText.map(x => govukInsetText(InsetText(content = Text(x))))
             )
         )
-
-
 
         @button(attributes = Map("id" -> "submit"))
     }

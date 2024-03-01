@@ -31,8 +31,8 @@ class TransportMeansSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
       forAll(arbitrary[TransportMeansIdentification], Gen.alphaNumStr) {
         (identificationType, identificationNumber) =>
           val transportMeans = TransportMeans(Some(identificationType), Some(identificationNumber))
-          val result         = transportMeans.toString
-          result mustBe s"${identificationType.toString} - $identificationNumber"
+          val result         = transportMeans.asString
+          result.value mustBe s"${identificationType.toString} - $identificationNumber"
       }
     }
 
@@ -40,8 +40,8 @@ class TransportMeansSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
       forAll(arbitrary[TransportMeansIdentification]) {
         identificationType =>
           val transportMeans = TransportMeans(Some(identificationType), None)
-          val result         = transportMeans.toString
-          result mustBe identificationType.toString
+          val result         = transportMeans.asString
+          result.value mustBe identificationType.toString
       }
     }
 
@@ -49,15 +49,15 @@ class TransportMeansSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
       forAll(Gen.alphaNumStr) {
         identificationNumber =>
           val transportMeans = TransportMeans(None, Some(identificationNumber))
-          val result         = transportMeans.toString
-          result mustBe identificationNumber
+          val result         = transportMeans.asString
+          result.value mustBe identificationNumber
       }
     }
 
     "when nothing defined" in {
       val transportMeans = TransportMeans(None, None)
-      val result         = transportMeans.toString
-      result mustBe ""
+      val result         = transportMeans.asString
+      result mustBe None
     }
   }
 }

@@ -20,11 +20,11 @@ import models.departureTransportMeans.TransportMeansIdentification
 
 case class TransportMeans(identificationType: Option[TransportMeansIdentification], identificationNumber: Option[String]) {
 
-  override def toString: String = (identificationType, identificationNumber) match {
-    case (Some(a), Some(b)) => s"$a - $b"
-    case (Some(a), None)    => a.toString
-    case (None, Some(b))    => b
-    case (None, None)       => "" // TODO - do we need some default value?
+  def asString: Option[String] = (identificationType, identificationNumber) match {
+    case (Some(a), Some(b)) => Some(s"$a - $b")
+    case (Some(a), None)    => Some(a.toString)
+    case (None, Some(b))    => Some(b)
+    case (None, None)       => None
   }
 }
 
