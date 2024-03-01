@@ -58,7 +58,7 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
             .setValue(TransportMeansIdentificationPage(transportMeansIndex), identifier)
             .setValue(VehicleIdentificationNumberPage(transportMeansIndex), identificationNumber)
 
-          val insetText = TransportMeans(Some(identifier), Some(identificationNumber)).toString
+          val insetText = TransportMeans(Some(identifier), Some(identificationNumber)).asString
 
           setExistingUserAnswers(userAnswers)
 
@@ -71,7 +71,7 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, mrn, arrivalId, transportMeansIndex, insetText, mode)(request, messages).toString
+            view(form, mrn, arrivalId, transportMeansIndex, mode, insetText)(request, messages).toString
       }
     }
 
@@ -122,7 +122,7 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
       }
     }
 
-    "must redirect to the next page when valid data is submitted" ignore {
+    "must redirect to the next page when valid data is submitted" in {
 
       setExistingUserAnswers(emptyUserAnswers.setValue(TransportMeansSection(transportMeansIndex), Json.obj()))
 
@@ -148,7 +148,7 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
             .setValue(TransportMeansIdentificationPage(transportMeansIndex), identifier)
             .setValue(VehicleIdentificationNumberPage(transportMeansIndex), identificationNumber)
 
-          val insetText = TransportMeans(Some(identifier), Some(identificationNumber)).toString
+          val insetText = TransportMeans(Some(identifier), Some(identificationNumber)).asString
 
           setExistingUserAnswers(userAnswers)
 
@@ -164,7 +164,7 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
           val view = injector.instanceOf[RemoveDepartureMeansOfTransportYesNoView]
 
           contentAsString(result) mustEqual
-            view(filledForm, mrn, arrivalId, transportMeansIndex, insetText, mode)(request, messages).toString
+            view(filledForm, mrn, arrivalId, transportMeansIndex, mode, insetText)(request, messages).toString
       }
     }
 

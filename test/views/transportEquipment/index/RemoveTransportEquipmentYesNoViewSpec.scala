@@ -14,37 +14,36 @@
  * limitations under the License.
  */
 
-package views.departureMeansOfTransport
+package views.transportEquipment.index
 
-import models.NormalMode
+import models.{Mode, NormalMode}
 import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.RemoveDepartureMeansOfTransportYesNoView
+import views.html.RemoveTransportEquipmentYesNoView
 
-class RemoveDepartureMeansOfTransportYesNoViewSpec extends YesNoViewBehaviours {
-
+class RemoveTransportEquipmentYesNoViewSpec extends YesNoViewBehaviours {
   private val insetText = Gen.alphaNumStr.sample.value
 
-  private val mode = NormalMode
+  val mode: Mode = NormalMode
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
-      .instanceOf[RemoveDepartureMeansOfTransportYesNoView]
-      .apply(form, mrn, arrivalId, transportMeansIndex, mode, Some(insetText))(fakeRequest, messages)
+      .instanceOf[RemoveTransportEquipmentYesNoView]
+      .apply(form, mrn, arrivalId, transportMeansIndex, Some(insetText), mode)(fakeRequest, messages)
 
-  override val prefix: String = "departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo"
+  override val prefix: String = "transportEquipment.index.removeTransportEquipmentYesNo"
 
-  behave like pageWithTitle(transportMeansIndex.display)
+  behave like pageWithTitle(transportEquipmentIndex.display)
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(s"This notification is MRN: $mrn")
 
-  behave like pageWithHeading(transportMeansIndex.display)
+  behave like pageWithHeading(transportEquipmentIndex.display)
 
-  behave like pageWithRadioItems(args = Seq(transportMeansIndex.display))
+  behave like pageWithRadioItems(args = Seq(equipmentIndex.display))
 
   behave like pageWithInsetText(insetText)
 
@@ -52,8 +51,8 @@ class RemoveDepartureMeansOfTransportYesNoViewSpec extends YesNoViewBehaviours {
 
   "when inset text undefined" - {
     val view = injector
-      .instanceOf[RemoveDepartureMeansOfTransportYesNoView]
-      .apply(form, mrn, arrivalId, transportMeansIndex, mode, None)(fakeRequest, messages)
+      .instanceOf[RemoveTransportEquipmentYesNoView]
+      .apply(form, mrn, arrivalId, transportEquipmentIndex, None, mode)(fakeRequest, messages)
     val doc = parseView(view)
 
     behave like pageWithoutInsetText(doc)
