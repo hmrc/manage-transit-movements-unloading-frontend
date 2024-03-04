@@ -482,7 +482,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
         result mustBe a[AccordionSection]
         result.children.head.sectionTitle.value mustBe "Incident 1"
-        result.children.head.rows.size mustBe 7
+        result.children.head.rows.size mustBe 8
         result.children.head.rows.head.value.value mustBe country.toString
         result.children.head.rows(1).value.value mustBe inc.toString
         result.children.head.rows(2).value.value mustBe description
