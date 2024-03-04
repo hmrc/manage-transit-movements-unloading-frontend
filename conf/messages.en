@@ -371,7 +371,7 @@ unloadingFindings.subsections.packages = Package {0}
 unloadingFindings.subsections.incidents = Incident {0}
 unloadingFindings.subsections.incidents.parent.header = Incidents
 unloadingFindings.subsections.incidents.endorsements = Endorsements
-unloadingFindings.subsections.incidents.transhipment = Transhipment
+unloadingFindings.subsections.incidents.replacementMeansOfTransport = Replacement means of transport
 unloadingFindings.rowHeadings.incident.country = Country
 unloadingFindings.rowHeadings.incident.code = Incident code
 unloadingFindings.rowHeadings.incident.description = Description
@@ -384,10 +384,10 @@ unloadingFindings.incident.coordinates = Coordinates
 unloadingFindings.incident.unLocode = UN/LOCODE
 unloadingFindings.incident.location.address = Address
 
-unloadingFindings.rowHeadings.transhipment.containerIndicator = Container indicator
-unloadingFindings.rowHeadings.transhipment.typeOfIdentification = Identification type
-unloadingFindings.rowHeadings.transhipment.identificationNumber = Identification number
-unloadingFindings.rowHeadings.transhipment.nationality = Registered country
+unloadingFindings.rowHeadings.containerIndicator = Are you using any containers?
+unloadingFindings.rowHeadings.replacementMeansOfTransport.typeOfIdentification = Identification type
+unloadingFindings.rowHeadings.replacementMeansOfTransport.identificationNumber = Identification number
+unloadingFindings.rowHeadings.replacementMeansOfTransport.nationality = Registered country
 
 unloadingFindings.incident.transportEquipment.heading = Transport equipment {0}
 

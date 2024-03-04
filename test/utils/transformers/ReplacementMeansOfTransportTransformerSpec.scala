@@ -27,15 +27,15 @@ import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.incident.transhipment.{IdentificationPage, NationalityPage}
+import pages.incident.replacementMeansOfTransport.{IdentificationPage, NationalityPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 
 import scala.concurrent.Future
 
-class TranshipmentTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
+class ReplacementMeansOfTransportTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private val transformer = app.injector.instanceOf[TranshipmentTransformer]
+  private val transformer = app.injector.instanceOf[ReplacementMeansOfTransportTransformer]
 
   private lazy val mockReferenceDataConnector = mock[ReferenceDataConnector]
 
@@ -52,7 +52,7 @@ class TranshipmentTransformerSpec extends SpecBase with AppWithDefaultMockFixtur
   }
 
   "must transform data" - {
-    "when transhipment defined" in {
+    "when replacementMeansOFTransport defined" in {
       forAll(arbitrary[TranshipmentType02], Gen.alphaNumStr) {
         (transhipment, description) =>
           beforeEach()

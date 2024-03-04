@@ -25,7 +25,7 @@ import pages.incident.{IncidentCodePage, IncidentTextPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
-import utils.answersHelpers.consignment.transhipment.TranshipmentAnswersHelper
+import utils.answersHelpers.consignment.replacementMeansOFTransport.ReplacementMeansOfTransportAnswersHelper
 import viewModels.sections.Section
 import viewModels.sections.Section.AccordionSection
 
@@ -171,15 +171,20 @@ class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(impl
           AccordionSection(messages("unloadingFindings.incident.transportEquipment.heading", equipmentIndex.display), rows)
       }
 
-  def incidentTranshipment: Seq[SummaryListRow] = {
+  def containerIndicator: Option[SummaryListRow] = buildRowWithNoChangeLink[String](
+    data = userAnswers.ie043Data.Consignment.map(_.containerIndicator.toString),
+    formatAnswer = formatAsBoolean,
+    prefix = "unloadingFindings.rowHeadings.containerIndicator"
+  )
+
+  def incidentReplacementMeansOfTransport: Seq[SummaryListRow] = {
     val maybeTranshipmentType0: Option[TranshipmentType02] = userAnswers.ie043Data.Consignment
       .flatMap(_.Incident.lift(incidentIndex.position))
       .flatMap(_.Transhipment)
 
-    val helper = new TranshipmentAnswersHelper(userAnswers, maybeTranshipmentType0, incidentIndex)
+    val helper = new ReplacementMeansOfTransportAnswersHelper(userAnswers, maybeTranshipmentType0, incidentIndex)
 
     Seq(
-      helper.containerIndicator,
       helper.typeOfIdentification,
       helper.identificationNumber,
       helper.nationality

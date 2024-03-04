@@ -14,34 +14,28 @@
  * limitations under the License.
  */
 
-package utils.answersHelpers.consignment.transhipment
+package utils.answersHelpers.consignment.replacementMeansOFTransport
 
 import generated.TranshipmentType02
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.Country
 import models.{Index, UserAnswers}
-import pages.incident.transhipment.{IdentificationPage, NationalityPage}
+import pages.incident.replacementMeansOfTransport.{IdentificationPage, NationalityPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
 
-class TranshipmentAnswersHelper(
+class ReplacementMeansOfTransportAnswersHelper(
   userAnswers: UserAnswers,
   transhipment: Option[TranshipmentType02],
   incidentIndex: Index
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
-  def containerIndicator: Option[SummaryListRow] = buildRowWithNoChangeLink[String](
-    data = transhipment.map(_.containerIndicator.toString),
-    formatAnswer = formatAsText,
-    prefix = "unloadingFindings.rowHeadings.transhipment.containerIndicator"
-  )
-
   def typeOfIdentification: Option[SummaryListRow] = getAnswerAndBuildRow[TransportMeansIdentification](
     page = IdentificationPage(incidentIndex),
     formatAnswer = formatAsText,
-    prefix = "unloadingFindings.rowHeadings.transhipment.typeOfIdentification",
+    prefix = "unloadingFindings.rowHeadings.replacementMeansOfTransport.typeOfIdentification",
     args = incidentIndex.display,
     id = None,
     call = None
@@ -50,13 +44,13 @@ class TranshipmentAnswersHelper(
   def identificationNumber: Option[SummaryListRow] = buildRowWithNoChangeLink[String](
     data = transhipment.map(_.TransportMeans.identificationNumber),
     formatAnswer = formatAsText,
-    prefix = "unloadingFindings.rowHeadings.transhipment.identificationNumber"
+    prefix = "unloadingFindings.rowHeadings.replacementMeansOfTransport.identificationNumber"
   )
 
   def nationality: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
     page = NationalityPage(incidentIndex),
     formatAnswer = formatAsCountry,
-    prefix = "unloadingFindings.rowHeadings.transhipment.nationality",
+    prefix = "unloadingFindings.rowHeadings.replacementMeansOfTransport.nationality",
     args = incidentIndex.display,
     id = None,
     call = None

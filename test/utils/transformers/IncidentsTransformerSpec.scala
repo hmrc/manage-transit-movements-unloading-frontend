@@ -45,7 +45,7 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
   private lazy val mockIncidentLocationTransformer: IncidentLocationTransformer = mock[IncidentLocationTransformer]
 
-  private lazy val mockTranshipmentTransformer: TranshipmentTransformer = mock[TranshipmentTransformer]
+  private lazy val mockTranshipmentTransformer: ReplacementMeansOfTransportTransformer = mock[ReplacementMeansOfTransportTransformer]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -54,7 +54,7 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
         bind[ReferenceDataConnector].toInstance(mockRefDataConnector),
         bind[IncidentEndorsementTransformer].toInstance(mockIncidentEndorsementTransformer),
         bind[IncidentLocationTransformer].toInstance(mockIncidentLocationTransformer),
-        bind[TranshipmentTransformer].toInstance(mockTranshipmentTransformer)
+        bind[ReplacementMeansOfTransportTransformer].toInstance(mockTranshipmentTransformer)
       )
 
   override def beforeEach(): Unit = {
@@ -74,7 +74,7 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
   }
 
   private case object FakeTranshipmentSection extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ "transhipment"
+    override def path: JsPath = JsPath \ "replacementMeansOFTransport"
   }
 
   // Because each incident has its own set of mocks, we need to ensure the values are unique
