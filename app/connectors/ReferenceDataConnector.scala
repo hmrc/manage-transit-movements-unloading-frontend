@@ -160,6 +160,12 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[NonEmptySet[AdditionalInformationCode]](url, headers = version2Header, queryParams = queryParams).map(_.head)
   }
 
+  def getAdditionalInformationType(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[AdditionalInformationType] = {
+    val queryParams: Seq[(String, String)] = Seq("data.code" -> code)
+    val url                                = s"${config.referenceDataUrl}/lists/AdditionalInformation"
+    http.GET[NonEmptySet[AdditionalInformationType]](url, headers = version2Header, queryParams = queryParams).map(_.head)
+  }
+
   def getTransportDocument(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DocumentType] =
     getDocument(Transport, "TransportDocumentType", typeValue)
 

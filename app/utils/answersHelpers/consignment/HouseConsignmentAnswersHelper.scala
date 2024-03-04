@@ -124,6 +124,7 @@ class HouseConsignmentAnswersHelper(
             Seq(helper.itemLevelConsigneeSection),
             helper.documentSections,
             helper.additionalReferencesSection,
+            Seq(helper.additionalInformationsSection),
             helper.packageSections
           ).flatten
         )

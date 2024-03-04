@@ -16,11 +16,12 @@
 
 package utils.transformers
 
-import generated.AdditionalInformationType02
 import connectors.ReferenceDataConnector
-import models.reference.AdditionalInformationCode
+import generated.AdditionalInformationType02
+import models.reference.{AdditionalInformationCode, AdditionalInformationType}
 import models.{Index, UserAnswers}
 import pages.additionalInformation.{AdditionalInformationCodePage, AdditionalInformationTextPage}
+import pages.houseConsignment.index.items.additionalinformation.{HouseConsignmentAdditionalInformationCodePage, HouseConsignmentAdditionalInformationTextPage}
 import pages.sections.additionalInformation.AdditionalInformationSection
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -28,11 +29,6 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalInformationTransformer @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) extends PageTransformer {
-
-  private case class TempAdditionalInformation[T](
-    underlying: T,
-    code: AdditionalInformationCode
-  )
 
   def transform(additionalInformation: Seq[AdditionalInformationType02])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
 
@@ -59,4 +55,42 @@ class AdditionalInformationTransformer @Inject() (referenceDataConnector: Refere
       })
     }
   }
+
+  def transform(additionalReferences: Seq[AdditionalInformationType02], hcIndex: Index, itemIndex: Index)(implicit
+    hc: HeaderCarrier
+  ): UserAnswers => Future[UserAnswers] = userAnswers => {
+
+    lazy val referenceDataLookups = additionalReferences.map {
+      additionalInformation =>
+        referenceDataConnector
+          .getAdditionalInformationType(additionalInformation.code)
+          .map(TempAdditionalInformationType(additionalInformation, _))
+    }
+
+    Future.sequence(referenceDataLookups).flatMap {
+      _.zipWithIndex.foldLeft(Future.successful(userAnswers))({
+        case (acc, (TempAdditionalInformationType(underlying, additionalInformation), i)) =>
+          acc.flatMap {
+            userAnswers =>
+              val index = Index(i)
+              val pipeline: UserAnswers => Future[UserAnswers] = {
+                set(HouseConsignmentAdditionalInformationCodePage(hcIndex, itemIndex, index), additionalInformation) andThen
+                  set(HouseConsignmentAdditionalInformationTextPage(hcIndex, itemIndex, index), underlying.text)
+              }
+              pipeline(userAnswers)
+          }
+      })
+    }
+  }
+
+  private case class TempAdditionalInformation[T](
+    underlying: T,
+    code: AdditionalInformationCode
+  )
+
+  private case class TempAdditionalInformationType[T](
+    underlying: T,
+    code: AdditionalInformationType
+  )
+
 }

@@ -299,6 +299,31 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       }
     }
 
+    "getAdditionalInformationType" - {
+      val code = "10600"
+      val url = s"/$baseUrl/lists/AdditionalInformation?data.code=$code"
+
+      "must return additional information when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(additionalInformationResponseJson))
+        )
+
+        val expectedResult: AdditionalInformationType = AdditionalInformationType(code, "Negotiable Bill of lading 'to order blank endorsed'")
+
+        connector.getAdditionalReferenceType(code).futureValue mustEqual expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getAdditionalInformationType(code))
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getAdditionalInformationType(code))
+      }
+    }
+
+
     "getPackageType" - {
       val documentType = "1A"
       val url          = s"/$baseUrl/lists/KindOfPackages?data.code=$documentType"
@@ -664,6 +689,18 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 }
 
 object ReferenceDataConnectorSpec {
+
+  private val additionalInformationResponseJson: String =
+    """
+      |{
+      |  "data": [
+      |    {
+      |      "code": "10600",
+      |      "description": "Negotiable Bill of lading 'to order blank endorsed'"
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
 
   private val countryListResponseJson: String =
     """

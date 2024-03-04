@@ -528,6 +528,10 @@ unloadingFindings.houseConsignment.item.additionalReference.type.change.hidden =
 unloadingFindings.houseConsignment.item.additionalReference.number = Reference number
 unloadingFindings.houseConsignment.item.additionalReference.number.change.hidden = reference number for additional reference {0} in item {1}
 
+unloadingFindings.additional.information.heading = Additional information
+unloadingFindings.additional.information.change.hidden = additional information {0}
+unloadingFindings.additional.information = Additional Information {0}
+
 unloadingFindings.dangerousGoods.unNumber = UN number {0}
 unloadingFindings.dangerousGoods.unNumber.change.hidden = UN number {0} for item {1}
 
