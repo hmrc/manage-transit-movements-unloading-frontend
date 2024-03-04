@@ -154,6 +154,12 @@ class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(impl
         )
     }
 
+  def containerIndicator: Option[SummaryListRow] = buildRowWithNoChangeLink[String](
+    data = userAnswers.ie043Data.Consignment.map(_.containerIndicator.toString),
+    formatAnswer = formatAsBoolean,
+    prefix = "unloadingFindings.rowHeadings.containerIndicator"
+  )
+
   def incidentTransportEquipments: Seq[Section] =
     userAnswers.ie043Data.Consignment
       .flatMap(_.Incident.lift(incidentIndex.position))
@@ -170,12 +176,6 @@ class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(impl
 
           AccordionSection(messages("unloadingFindings.incident.transportEquipment.heading", equipmentIndex.display), rows)
       }
-
-  def containerIndicator: Option[SummaryListRow] = buildRowWithNoChangeLink[String](
-    data = userAnswers.ie043Data.Consignment.map(_.containerIndicator.toString),
-    formatAnswer = formatAsBoolean,
-    prefix = "unloadingFindings.rowHeadings.containerIndicator"
-  )
 
   def incidentReplacementMeansOfTransport: Seq[SummaryListRow] = {
     val maybeTranshipmentType0: Option[TranshipmentType02] = userAnswers.ie043Data.Consignment

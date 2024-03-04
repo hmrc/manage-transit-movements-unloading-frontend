@@ -16,7 +16,7 @@
 
 package utils.answersHelpers.consignment
 
-import generated.{AddressType18, ConsignmentType05, EndorsementType03, GNSSType, IncidentType04, LocationType02, Number0, TranshipmentType02}
+import generated.{AddressType18, ConsignmentType05, EndorsementType03, Flag, GNSSType, IncidentType04, LocationType02, Number0, TranshipmentType02}
 import models.Coordinates
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.{Country, Incident, QualifierOfIdentification}
@@ -323,6 +323,32 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
 
               result.key.value mustBe "Coordinates"
               result.value.value mustBe s"$coordinate"
+              val action = result.actions
+              action mustBe None
+          }
+        }
+      }
+    }
+    "containerIndicator" - {
+      "must return None" - {
+        s"when Container Indicator undefined" in {
+          val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
+          helper.containerIndicator mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when  Container Indicator  defined" in {
+
+          forAll(arbitrary[Flag]) {
+            containerIndicator =>
+              val consignment: ConsignmentType05 = ConsignmentType05(containerIndicator = containerIndicator)
+              val answers                        = emptyUserAnswers.copy(ie043Data = emptyUserAnswers.ie043Data.copy(Consignment = Some(consignment)))
+              val helper                         = new IncidentAnswersHelper(answers, index)
+              val result                         = helper.containerIndicator.value
+
+              result.key.value mustBe "Are you using any containers?"
+              result.value.value.contains(containerIndicator.toString)
               val action = result.actions
               action mustBe None
           }
