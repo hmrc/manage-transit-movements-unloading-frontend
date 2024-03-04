@@ -52,7 +52,7 @@ class ReplacementMeansOfTransportTransformerSpec extends SpecBase with AppWithDe
   }
 
   "must transform data" - {
-    "when replacementMeansOFTransport defined" in {
+    "when replacementMeansOfTransport defined" in {
       forAll(arbitrary[TranshipmentType02], Gen.alphaNumStr) {
         (transhipment, description) =>
           beforeEach()

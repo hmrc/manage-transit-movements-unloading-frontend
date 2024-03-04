@@ -74,7 +74,7 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
   }
 
   private case object FakeTranshipmentSection extends QuestionPage[JsObject] {
-    override def path: JsPath = JsPath \ "replacementMeansOFTransport"
+    override def path: JsPath = JsPath \ "replacementMeansOfTransport"
   }
 
   // Because each incident has its own set of mocks, we need to ensure the values are unique

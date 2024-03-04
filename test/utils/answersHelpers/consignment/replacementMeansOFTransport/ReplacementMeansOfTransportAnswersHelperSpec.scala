@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils.answersHelpers.consignment.replacementMeansOFTransport
+package utils.answersHelpers.consignment.replacementMeansOfTransport
 
 import generated.{ConsignmentType05, IncidentType04, Number0, TranshipmentType02}
 import models.departureTransportMeans.TransportMeansIdentification
@@ -29,14 +29,14 @@ class ReplacementMeansOfTransportAnswersHelperSpec extends AnswersHelperSpecBase
 
     "typeOfIdentification" - {
       "must return None" - {
-        s"when replacementMeansOFTransport undefined" in {
+        s"when replacementMeansOfTransport undefined" in {
           val helper = new ReplacementMeansOfTransportAnswersHelper(emptyUserAnswers, None, index)
           helper.typeOfIdentification mustBe None
         }
       }
 
       "must return Some(Row)" - {
-        s"when replacementMeansOFTransport defined" in {
+        s"when replacementMeansOfTransport defined" in {
           forAll(arbitrary[TranshipmentType02], arbitrary[IncidentType04], arbitrary[TransportMeansIdentification]) {
             (transhipment, incident, identification) =>
               val consignment: ConsignmentType05 = ConsignmentType05(
@@ -61,14 +61,14 @@ class ReplacementMeansOfTransportAnswersHelperSpec extends AnswersHelperSpecBase
 
     "identificationNumber" - {
       "must return None" - {
-        s"when replacementMeansOFTransport undefined" in {
+        s"when replacementMeansOfTransport undefined" in {
           val helper = new ReplacementMeansOfTransportAnswersHelper(emptyUserAnswers, None, index)
           helper.identificationNumber mustBe None
         }
       }
 
       "must return Some(Row)" - {
-        s"when replacementMeansOFTransport defined" in {
+        s"when replacementMeansOfTransport defined" in {
           forAll(arbitrary[TranshipmentType02], arbitrary[IncidentType04]) {
             (transhipment, incident) =>
               val consignment: ConsignmentType05 = ConsignmentType05(
@@ -92,14 +92,14 @@ class ReplacementMeansOfTransportAnswersHelperSpec extends AnswersHelperSpecBase
 
     "nationality" - {
       "must return None" - {
-        s"when replacementMeansOFTransport undefined" in {
+        s"when replacementMeansOfTransport undefined" in {
           val helper = new ReplacementMeansOfTransportAnswersHelper(emptyUserAnswers, None, index)
           helper.nationality mustBe None
         }
       }
 
       "must return Some(Row)" - {
-        s"when replacementMeansOFTransport defined" in {
+        s"when replacementMeansOfTransport defined" in {
           forAll(arbitrary[TranshipmentType02], arbitrary[IncidentType04], arbitrary[Country]) {
             (transhipment, incident, country) =>
               val consignment: ConsignmentType05 = ConsignmentType05(

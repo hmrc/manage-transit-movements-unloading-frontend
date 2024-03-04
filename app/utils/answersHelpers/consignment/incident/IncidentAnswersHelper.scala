@@ -25,7 +25,7 @@ import pages.incident.{IncidentCodePage, IncidentTextPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
-import utils.answersHelpers.consignment.replacementMeansOFTransport.ReplacementMeansOfTransportAnswersHelper
+import utils.answersHelpers.consignment.replacementMeansOfTransport.ReplacementMeansOfTransportAnswersHelper
 import viewModels.sections.Section
 import viewModels.sections.Section.AccordionSection
 

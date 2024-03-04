@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils.answersHelpers.consignment.replacementMeansOFTransport
+package utils.answersHelpers.consignment.replacementMeansOfTransport
 
 import generated.TranshipmentType02
 import models.departureTransportMeans.TransportMeansIdentification

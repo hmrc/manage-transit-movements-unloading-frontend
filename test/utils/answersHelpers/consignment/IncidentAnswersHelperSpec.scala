@@ -390,7 +390,7 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
 
     "incidentReplacementMeansOfTransport" - {
       "must return Nil" - {
-        s"when replacementMeansOFTransport undefined" in {
+        s"when replacementMeansOfTransport undefined" in {
           val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
           helper.incidentReplacementMeansOfTransport mustBe Nil
         }
