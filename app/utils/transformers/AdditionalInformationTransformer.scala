@@ -74,7 +74,8 @@ class AdditionalInformationTransformer @Inject() (referenceDataConnector: Refere
             userAnswers =>
               val index = Index(i)
               val pipeline: UserAnswers => Future[UserAnswers] = {
-                set(HouseConsignmentAdditionalInformationCodePage(hcIndex, itemIndex, index), additionalInformation) andThen
+                setSequenceNumber(AdditionalInformationSection(index), underlying.sequenceNumber) andThen
+                  set(HouseConsignmentAdditionalInformationCodePage(hcIndex, itemIndex, index), additionalInformation) andThen
                   set(HouseConsignmentAdditionalInformationTextPage(hcIndex, itemIndex, index), underlying.text)
               }
               pipeline(userAnswers)
