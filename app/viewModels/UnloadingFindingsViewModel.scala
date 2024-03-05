@@ -43,8 +43,8 @@ object UnloadingFindingsViewModel {
         Seq(helper.transportEquipmentSection),
         Seq(helper.documentSection),
         Seq(helper.additionalReferencesSection),
-        helper.additionalInformationSection,
         helper.incidentSection,
+        helper.additionalInformationSection,
         helper.houseConsignmentSection
       ).flatten
 
