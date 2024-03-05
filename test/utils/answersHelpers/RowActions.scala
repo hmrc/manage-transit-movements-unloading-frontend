@@ -123,10 +123,22 @@ trait RowActions {
   )
 
   val commodityCodeItemAction: Some[Actions] = Some(
-    Actions("", List(ActionItem("#", Text("Change"), Some("commodity code for item 1"), "", Map("id" -> "change-commodity-code-1"))))
+    Actions(
+      "",
+      List(
+        ActionItem("#", Text("Change"), Some("commodity code for item 1"), "", Map("id" -> "change-commodity-code-1")),
+        ActionItem("#", Text("Remove"), Some("commodity code for item 1"), "", Map("id" -> "remove-commodity-code-1"))
+      )
+    )
   )
 
   val nomenclatureCodeItemAction: Some[Actions] = Some(
-    Actions("", List(ActionItem("#", Text("Change"), Some("combined nomenclature code for item 1"), "", Map("id" -> "change-nomenclature-code-1"))))
+    Actions(
+      "",
+      List(
+        ActionItem("#", Text("Change"), Some("combined nomenclature code for item 1"), "", Map("id" -> "change-nomenclature-code-1")),
+        ActionItem("#", Text("Remove"), Some("combined nomenclature code for item 1"), "", Map("id" -> "remove-nomenclature-code-1"))
+      )
+    )
   )
 }

@@ -37,12 +37,41 @@ transportEquipmentLink.addRemove = Add or remove transport equipment
 transportEquipmentLink.visuallyHidden = Add or remove transport equipment
 sealsLink.addRemove = Add or remove seal
 sealsLink.visuallyHidden = Add or remove seal
+itemsLink.addRemove = Add or remove item
+itemsLink.visuallyHidden = Add or remove item
+packagingLink.addRemove = Add or remove package
+packagingLink.visuallyHidden = Add or remove package
+documentLink.addRemove = Add or remove document
+documentLink.visuallyHidden = Add or remove document
+additionalReferenceLink.addRemove = Add or remove additional reference
+additionalReferenceLink.visuallyHidden = Add or remove additional reference
+
+
+
+
 departureTransportMeans.addRemove = Add or remove departure means of transport
 departureTransportMeans.visuallyHidden = Add or remove departure means of transport
 documentsLink.addRemove = Add or remove document
 documentsLink.visuallyHidden = Add or remove document
 additionalReferenceLink.addRemove = Add or remove additional reference
 additionalReferenceLink.visuallyHidden = Add or remove additional reference
+commodityCodeLink.add = Add commodity code
+commodityCodeLink.add.visuallyHidden = Add commodity code
+commodityCodeLink.remove = Remove commodity code
+commodityCodeLink.remove.visuallyHidden = Remove commodity code
+nomenclatureCodeLink.remove = Remove nomenclature code
+nomenclatureCodeLink.remove.visuallyHidden = Remove nomenclature code
+
+nomenclatureCodeLink.add = Add nomenclature code
+nomenclatureCodeLink.add.visuallyHidden = Add nomenclature code
+grossWeightLink.remove = Remove gross weight
+grossWeightLink.remove.visuallyHidden = Remove gross weight
+grossWeightLink.add = Add gross weight
+grossWeightLink.add.visuallyHidden = Add gross weight
+netMassLink.remove = Remove net weight
+netMassLink.remove.visuallyHidden = Remove net weight
+
+
 
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
@@ -463,14 +492,18 @@ unloadingFindings.rowHeadings.item.packageCount.change.hidden = quantity of pack
 unloadingFindings.rowHeadings.item.packageMarks = Shipping mark
 unloadingFindings.rowHeadings.item.packageMarks.change.hidden = shipping mark of package {0} for item {1}
 unloadingFindings.rowHeadings.item.grossWeight.change.hidden = gross weight of item {0}
+unloadingFindings.rowHeadings.item.grossWeight.remove.hidden = gross weight of item {0}
 unloadingFindings.rowHeadings.item.netWeight = Net weight
 unloadingFindings.rowHeadings.item.netWeight.change.hidden = net weight of item {0}
+unloadingFindings.rowHeadings.item.netWeight.remove.hidden = net weight of item {0}
 unloadingFindings.rowHeadings.item.cusCode = Customs Union and Statistics (CUS) code
 unloadingFindings.rowHeadings.item.cusCode.change.hidden = Customs Union and Statistics (CUS) code for item {0}
 unloadingFindings.rowHeadings.item.commodityCode = Commodity code
 unloadingFindings.rowHeadings.item.commodityCode.change.hidden = commodity code for item {0}
+unloadingFindings.rowHeadings.item.commodityCode.remove.hidden = commodity code for item {0}
 unloadingFindings.rowHeadings.item.nomenclatureCode = Combined nomenclature code
 unloadingFindings.rowHeadings.item.nomenclatureCode.change.hidden = combined nomenclature code for item {0}
+unloadingFindings.rowHeadings.item.nomenclatureCode.remove.hidden = combined nomenclature code for item {0}
 
 unloadingFindings.subsections.additionalComments = Additional comments
 unloadingFindings.additionalComments.link = Add comments

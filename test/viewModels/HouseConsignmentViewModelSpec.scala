@@ -100,7 +100,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
 
         result.sections.head mustBe a[AccordionSection]
         result.sections.head.sectionTitle.value mustBe "Item 1"
-        result.sections.head.rows.size mustBe 3
+        result.sections.head.rows.size mustBe 5
 
         result.sections(1) mustBe a[StaticSection]
         result.sections(1).sectionTitle must not be defined
@@ -122,7 +122,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         val section           = result.sections.head
 
         section.sectionTitle.value mustBe "Item 1"
-        section.rows.size mustBe 3
+        section.rows.size mustBe 5
       }
 
       "when there are multiple" in {
@@ -145,11 +145,11 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
 
         result.sections.head mustBe a[AccordionSection]
         result.sections.head.sectionTitle.value mustBe "Item 1"
-        result.sections.head.rows.size mustBe 3
+        result.sections.head.rows.size mustBe 5
 
         result.sections(1) mustBe a[AccordionSection]
         result.sections(1).sectionTitle.value mustBe "Item 2"
-        result.sections(1).rows.size mustBe 3
+        result.sections(1).rows.size mustBe 5
 
         result.sections(2) mustBe a[StaticSection]
         result.sections(2).sectionTitle must not be defined

@@ -234,6 +234,24 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
             val result = helper.itemSections
 
+            result.head.viewLinks.length mustBe 4
+
+            result.head.viewLinks.head.href mustBe "#"
+            result.head.viewLinks.head.id mustBe "add-remove-items-0"
+            result.head.viewLinks.head.text mustBe "Add or remove item"
+
+            result.head.viewLinks(1).href mustBe "#"
+            result.head.viewLinks(1).id mustBe "add-remove-packaging"
+            result.head.viewLinks(1).text mustBe "Add or remove package"
+
+            result.head.viewLinks(2).href mustBe "#"
+            result.head.viewLinks(2).id mustBe "add-remove-document"
+            result.head.viewLinks(2).text mustBe "Add or remove document"
+
+            result.head.viewLinks(3).href mustBe "#"
+            result.head.viewLinks(3).id mustBe "add-remove-additionalReference"
+            result.head.viewLinks(3).text mustBe "Add or remove additional reference"
+
             result.head mustBe a[AccordionSection]
             result.head.sectionTitle.value mustBe "Item 1"
             result.head.rows.size mustBe 6
