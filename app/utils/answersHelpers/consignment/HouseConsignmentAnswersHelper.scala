@@ -115,10 +115,10 @@ class HouseConsignmentAnswersHelper(
             helper.additionalReferencesSection
           ).flatten,
           viewLinks = Seq(
-            itemsAddRemoveLink(itemIndex.position),
-            helper.packagingAddRemoveLink,
-            helper.documentAddRemoveLink,
-            helper.additionalReferenceAddRemoveLink
+            itemsAddRemoveLink(itemIndex.position), //TODO move to respective parent section
+            helper.packagingAddRemoveLink, //TODO move to respective parent section
+            helper.documentAddRemoveLink, //TODO move to respective parent section
+            helper.additionalReferenceAddRemoveLink //TODO move to respective parent section
           )
         )
     }
