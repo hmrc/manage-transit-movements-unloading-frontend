@@ -64,9 +64,11 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
     id: String,
     change: Call,
     remove: Call,
+    hiddenLink: String,
+    href: String,
     args: Any*
-  )(implicit rds: Reads[T]): Option[SummaryListRow] =
-    userAnswers.get(page) map {
+  )(implicit rds: Reads[T]): SummaryListRow =
+    (userAnswers.get(page) map {
       answer =>
         buildRemovableRow(
           prefix = prefix,
@@ -76,7 +78,14 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
           removeCall = remove,
           args = args: _*
         )
-    }
+    }).getOrElse(
+      buildRow(
+        prefix = prefix,
+        answer = formatAsLink(messages(s"$hiddenLink.add.visuallyHidden"), href),
+        id = None,
+        call = None
+      )
+    )
 
   def buildRowWithNoChangeLink[T](
     data: Option[T],

@@ -74,14 +74,9 @@ class ConsignmentItemAnswersHelper(
     args = itemIndex.display,
     id = s"gross-weight-${houseConsignmentIndex.display}",
     change = Call(GET, "#"),
-    remove = Call(GET, "#")
-  ).getOrElse(
-    buildRow(
-      prefix = "unloadingFindings.rowHeadings.item.grossWeight",
-      answer = formatAsLink(messages("grossWeightLink.add.visuallyHidden"), href = "#"),
-      id = None,
-      call = None
-    )
+    remove = Call(GET, "#"),
+    hiddenLink = "grossWeightLink",
+    href = "#"
   )
 
   def netWeightRow: SummaryListRow = getAnswerAndBuildRowWithRemove[Double](
@@ -91,14 +86,9 @@ class ConsignmentItemAnswersHelper(
     args = itemIndex.display,
     id = s"net-weight-${houseConsignmentIndex.display}",
     change = Call(GET, "#"),
-    remove = Call(GET, "#")
-  ).getOrElse(
-    buildRow(
-      prefix = "unloadingFindings.rowHeadings.item.netWeight",
-      answer = formatAsLink(messages("netWeightLink.add.visuallyHidden"), href = "#"),
-      id = None,
-      call = None
-    )
+    remove = Call(GET, "#"),
+    hiddenLink = "netWeightLink",
+    href = "#"
   )
 
   def additionalReferencesSection: Seq[Section] =
@@ -171,14 +161,9 @@ class ConsignmentItemAnswersHelper(
     args = itemIndex.display,
     id = s"commodity-code-${houseConsignmentIndex.display}",
     change = Call(GET, "#"),
-    remove = Call(GET, "#")
-  ).getOrElse(
-    buildRow(
-      prefix = "unloadingFindings.rowHeadings.item.commodityCode",
-      answer = formatAsLink(messages("commodityCodeLink.add.visuallyHidden"), href = "#"),
-      id = None,
-      call = None
-    )
+    remove = Call(GET, "#"),
+    hiddenLink = "commodityCodeLink",
+    href = "#"
   )
 
   def nomenclatureCodeRow: SummaryListRow = getAnswerAndBuildRowWithRemove[String](
@@ -188,14 +173,9 @@ class ConsignmentItemAnswersHelper(
     args = itemIndex.display,
     id = s"nomenclature-code-${houseConsignmentIndex.display}",
     change = Call(GET, "#"),
-    remove = Call(GET, "#")
-  ).getOrElse(
-    buildRow(
-      prefix = "unloadingFindings.rowHeadings.item.nomenclatureCode",
-      answer = formatAsLink(messages("nomenclatureCodeLink.add.visuallyHidden"), href = "#"),
-      id = None,
-      call = None
-    )
+    remove = Call(GET, "#"),
+    hiddenLink = "nomenclatureCodeLink",
+    href = "#"
   )
 
   private[consignment] def packagingAddRemoveLink: Link =
