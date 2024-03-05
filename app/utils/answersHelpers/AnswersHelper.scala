@@ -57,6 +57,35 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
         )
     }
 
+  def getAnswerAndBuildRowWithRemove[T](
+    page: QuestionPage[T],
+    formatAnswer: T => Content,
+    prefix: String,
+    id: String,
+    change: Call,
+    remove: Call,
+    hiddenLink: String,
+    args: Any*
+  )(implicit rds: Reads[T]): SummaryListRow =
+    (userAnswers.get(page) map {
+      answer =>
+        buildRemovableRow(
+          prefix = prefix,
+          answer = formatAnswer(answer),
+          id = id,
+          changeCall = change,
+          removeCall = remove,
+          args = args: _*
+        )
+    }).getOrElse(
+      buildRow(
+        prefix = prefix,
+        answer = formatAsLink(messages(s"$hiddenLink.add.visuallyHidden"), change.url),
+        id = None,
+        call = None
+      )
+    )
+
   def buildRowWithNoChangeLink[T](
     data: Option[T],
     formatAnswer: T => Content,

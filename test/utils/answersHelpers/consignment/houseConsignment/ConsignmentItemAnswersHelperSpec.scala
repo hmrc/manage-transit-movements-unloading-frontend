@@ -113,10 +113,12 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
 
     "grossWeightRow" - {
       val page = GrossWeightPage(hcIndex, itemIndex)
-      "must return None" - {
+      "must return add link" - {
         s"when $page undefined" in {
           val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
-          helper.grossWeightRow mustBe None
+          helper.grossWeightRow.key.value mustBe "Gross weight"
+
+          helper.grossWeightRow.value.content.asHtml.toString() must include("Add gross weight")
         }
       }
 
@@ -127,14 +129,18 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
               val answers = emptyUserAnswers.setValue(page, value)
 
               val helper = new ConsignmentItemAnswersHelper(answers, hcIndex, itemIndex)
-              val result = helper.grossWeightRow.value
+              val result = helper.grossWeightRow
 
               result.key.value mustBe "Gross weight"
               result.value.value mustBe s"${value}kg"
-              val action = result.actions.value.items.head
-              action.content.value mustBe "Change"
-              action.visuallyHiddenText.value mustBe "gross weight of item 1"
-              action.href mustBe "#"
+              val action1 = result.actions.value.items.head
+              action1.content.value mustBe "Change"
+              action1.visuallyHiddenText.value mustBe "gross weight of item 1"
+              action1.href mustBe "#"
+              val action2 = result.actions.value.items(1)
+              action2.content.value mustBe "Remove"
+              action2.visuallyHiddenText.value mustBe "gross weight of item 1"
+              action2.href mustBe "#"
           }
         }
       }
@@ -142,10 +148,12 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
 
     "netWeightRow" - {
       val page = NetWeightPage(hcIndex, itemIndex)
-      "must return None" - {
+      "must return add link" - {
         s"when $page undefined" in {
           val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
-          helper.netWeightRow mustBe None
+          helper.netWeightRow.key.value mustBe "Net weight"
+
+          helper.netWeightRow.value.content.asHtml.toString() must include("Add net weight")
         }
       }
 
@@ -156,7 +164,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
               val answers = emptyUserAnswers.setValue(page, value)
 
               val helper = new ConsignmentItemAnswersHelper(answers, hcIndex, itemIndex)
-              val result = helper.netWeightRow.value
+              val result = helper.netWeightRow
 
               result.key.value mustBe "Net weight"
               result.value.value mustBe s"${value}kg"
@@ -165,6 +173,11 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
               action.href mustBe "#"
               action.visuallyHiddenText.value mustBe "net weight of item 1"
               action.id mustBe "change-net-weight-1"
+
+              val action2 = result.actions.value.items(1)
+              action2.content.value mustBe "Remove"
+              action2.visuallyHiddenText.value mustBe "net weight of item 1"
+              action2.href mustBe "#"
           }
         }
       }
@@ -206,12 +219,12 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
       val value = Gen.alphaLowerStr.sample.value
       val page  = CommodityCodePage(hcIndex, itemIndex)
 
-      "must return None" - {
+      "must return add link" - {
         s"when $page undefined" in {
-
           val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
-          val result = helper.commodityCodeRow
-          result mustBe None
+          helper.commodityCodeRow.key.value mustBe "Commodity code"
+
+          helper.commodityCodeRow.value.content.asHtml.toString() must include("Add commodity code")
         }
       }
 
@@ -220,7 +233,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
           val userAnswers = emptyUserAnswers.setValue(page, value)
 
           val helper = new ConsignmentItemAnswersHelper(userAnswers, hcIndex, itemIndex)
-          val result = helper.commodityCodeRow.value
+          val result = helper.commodityCodeRow
 
           result mustBe
             SummaryListRow(
@@ -237,12 +250,13 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
       val value = Gen.alphaLowerStr.sample.value
       val page  = CombinedNomenclatureCodePage(hcIndex, itemIndex)
 
-      "must return None" - {
+      "must return add link" - {
         s"when $page undefined" in {
-
           val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
           val result = helper.nomenclatureCodeRow
-          result mustBe None
+          result.key.value mustBe "Combined nomenclature code"
+
+          result.value.content.asHtml.toString() must include("Add nomenclature code")
         }
       }
 
@@ -251,7 +265,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
           val userAnswers = emptyUserAnswers.setValue(page, value)
 
           val helper = new ConsignmentItemAnswersHelper(userAnswers, hcIndex, itemIndex)
-          val result = helper.nomenclatureCodeRow.value
+          val result = helper.nomenclatureCodeRow
 
           result mustBe
             SummaryListRow(

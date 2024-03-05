@@ -17,6 +17,7 @@
 package utils.answersHelpers.consignment.houseConsignment
 
 import models.DocType.Previous
+import models.{Index, Link, UserAnswers}
 import models.reference.Country
 import models.{Index, RichOptionalJsArray, UserAnswers}
 import pages.NetWeightPage
@@ -68,22 +69,26 @@ class ConsignmentItemAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.item.countryOfDestination"
   )
 
-  def grossWeightRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
+  def grossWeightRow: SummaryListRow = getAnswerAndBuildRowWithRemove[BigDecimal](
     page = GrossWeightPage(houseConsignmentIndex, itemIndex),
     formatAnswer = formatAsWeight,
     prefix = "unloadingFindings.rowHeadings.item.grossWeight",
     args = itemIndex.display,
-    id = Some(s"change-gross-weight-${houseConsignmentIndex.display}"),
-    call = Some(Call(GET, "#"))
+    id = s"gross-weight-${itemIndex.display}",
+    change = Call(GET, "#"),
+    remove = Call(GET, "#"),
+    hiddenLink = "grossWeightLink"
   )
 
-  def netWeightRow: Option[SummaryListRow] = getAnswerAndBuildRow[Double](
+  def netWeightRow: SummaryListRow = getAnswerAndBuildRowWithRemove[Double](
     page = NetWeightPage(houseConsignmentIndex, itemIndex),
     formatAnswer = formatAsWeight,
     prefix = "unloadingFindings.rowHeadings.item.netWeight",
     args = itemIndex.display,
-    id = Some(s"change-net-weight-${houseConsignmentIndex.display}"),
-    call = Some(Call(GET, "#"))
+    id = s"net-weight-${itemIndex.display}",
+    change = Call(GET, "#"),
+    remove = Call(GET, "#"),
+    hiddenLink = "netWeightLink"
   )
 
   def additionalReferencesSection: Seq[Section] =
@@ -146,27 +151,55 @@ class ConsignmentItemAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.item.cusCode",
     args = itemIndex.display,
-    id = Some(s"change-cus-code-${houseConsignmentIndex.display}"),
+    id = Some(s"change-cus-code-${itemIndex.display}"),
     call = Some(Call(GET, "#"))
   )
 
-  def commodityCodeRow: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  def commodityCodeRow: SummaryListRow = getAnswerAndBuildRowWithRemove[String](
     page = CommodityCodePage(houseConsignmentIndex, itemIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.item.commodityCode",
     args = itemIndex.display,
-    id = Some(s"change-commodity-code-${houseConsignmentIndex.display}"),
-    call = Some(Call(GET, "#"))
+    id = s"commodity-code-${itemIndex.display}",
+    change = Call(GET, "#"),
+    remove = Call(GET, "#"),
+    hiddenLink = "commodityCodeLink"
   )
 
-  def nomenclatureCodeRow: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  def nomenclatureCodeRow: SummaryListRow = getAnswerAndBuildRowWithRemove[String](
     page = CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.item.nomenclatureCode",
     args = itemIndex.display,
-    id = Some(s"change-nomenclature-code-${houseConsignmentIndex.display}"),
-    call = Some(Call(GET, "#"))
+    id = s"nomenclature-code-${itemIndex.display}",
+    change = Call(GET, "#"),
+    remove = Call(GET, "#"),
+    hiddenLink = "nomenclatureCodeLink"
   )
+
+  private[consignment] def packagingAddRemoveLink: Link =
+    Link(
+      id = s"add-remove-packaging",
+      href = "#",
+      text = messages("packagingLink.addRemove"),
+      visuallyHidden = messages("packagingLink.visuallyHidden")
+    )
+
+  private[consignment] def documentAddRemoveLink: Link =
+    Link(
+      id = s"add-remove-document",
+      href = "#",
+      text = messages("documentLink.addRemove"),
+      visuallyHidden = messages("documentLink.visuallyHidden")
+    )
+
+  private[consignment] def additionalReferenceAddRemoveLink: Link =
+    Link(
+      id = s"add-remove-additionalReference",
+      href = "#",
+      text = messages("additionalReferenceLink.addRemove"),
+      visuallyHidden = messages("additionalReferenceLink.visuallyHidden")
+    )
 
   def itemLevelConsigneeSection: Section =
     StaticSection(
