@@ -16,11 +16,23 @@
 
 package models
 
-import play.api.i18n.Messages
+import base.SpecBase
 
-case class TransportEquipment(containerId: Option[String]) {
+class TransportEquipmentSpec extends SpecBase {
 
-  def asString(implicit messages: Messages): Option[String] = containerId.map(
-    id => messages("transportEquipment.containerId", id)
-  )
+  "TransportEquipment" - {
+    "asString" - {
+      "when container id is defined" in {
+        val transportEquipment = TransportEquipment(Some("123"))
+        val result             = transportEquipment.asString
+        result mustBe Some("container 123")
+      }
+
+      "when container id is undefined" in {
+        val transportEquipment = TransportEquipment(None)
+        val result             = transportEquipment.asString
+        result mustBe None
+      }
+    }
+  }
 }

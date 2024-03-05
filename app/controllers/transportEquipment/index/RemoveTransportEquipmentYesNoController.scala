@@ -22,12 +22,12 @@ import models.{ArrivalId, Index, Mode, TransportEquipment}
 import pages.ContainerIdentificationNumberPage
 import pages.sections.TransportEquipmentSection
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
-import uk.gov.hmrc.http.HttpVerbs.GET
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.RemoveTransportEquipmentYesNoView
+
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -46,9 +46,9 @@ class RemoveTransportEquipmentYesNoController @Inject() (
     formProvider("transportEquipment.index.removeTransportEquipmentYesNo", transportEquipmentIndex.display)
 
   private def addAnother(arrivalId: ArrivalId, mode: Mode): Call =
-    Call(GET, "#") //todo changes to AddAnotherTransportEquipmentController once implemented
+    controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, mode)
 
-  private def formatInsetText(containerId: Option[String]): Option[String] =
+  private def formatInsetText(containerId: Option[String])(implicit messages: Messages): Option[String] =
     TransportEquipment(containerId).asString
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, transportEquipmentIndex: Index): Action[AnyContent] = actions

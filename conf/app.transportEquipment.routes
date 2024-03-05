@@ -1,0 +1,4 @@
+GET         /:arrivalId/transport-equipment/add-another               controllers.transportEquipment.AddAnotherEquipmentController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST        /:arrivalId/transport-equipment/add-another               controllers.transportEquipment.AddAnotherEquipmentController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET         /:arrivalId/transport-equipment/change-add-another        controllers.transportEquipment.AddAnotherEquipmentController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST        /:arrivalId/transport-equipment/change-add-another        controllers.transportEquipment.AddAnotherEquipmentController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)

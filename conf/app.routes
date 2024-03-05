@@ -2,6 +2,7 @@
 
 ->         /                                            app.departureMeansOfTransport.Routes
 ->         /                                            app.houseConsignment.index.items.Routes
+->         /                                            app.transportEquipment.Routes
 ->         /                                            app.transportEquipment.index.Routes
 ->         /                                            app.documents.Routes
 ->         /                                            app.additionalReference.index.Routes
