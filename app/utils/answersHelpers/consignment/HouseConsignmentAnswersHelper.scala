@@ -18,6 +18,7 @@ package utils.answersHelpers.consignment
 
 import models.reference.Country
 import models.{Index, Link, UserAnswers}
+import models.{Index, RichOptionalJsArray, UserAnswers}
 import pages._
 import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
@@ -26,7 +27,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
 import utils.answersHelpers.consignment.houseConsignment.{ConsignmentItemAnswersHelper, DepartureTransportMeansAnswersHelper}
 import viewModels.sections.Section
-import viewModels.sections.Section.AccordionSection
+import viewModels.sections.Section.{AccordionSection, StaticSection}
 
 class HouseConsignmentAnswersHelper(
   userAnswers: UserAnswers,
@@ -66,6 +67,17 @@ class HouseConsignmentAnswersHelper(
     call = None
   )
 
+  def houseConsignmentConsigneeSection: Section =
+    StaticSection(
+      sectionTitle = messages("unloadingFindings.consignee.heading"),
+      rows = Seq(
+        consigneeIdentification,
+        consigneeName,
+        consigneeCountry,
+        consigneeAddress
+      ).flatten
+    )
+
   def consigneeCountry: Option[SummaryListRow] = buildRowWithNoChangeLink[Country](
     data = userAnswers.get(ConsigneeCountryPage(houseConsignmentIndex)),
     formatAnswer = formatAsText,
@@ -80,10 +92,10 @@ class HouseConsignmentAnswersHelper(
 
   def departureTransportMeansSections: Seq[Section] =
     userAnswers.get(DepartureTransportMeansListSection(houseConsignmentIndex)).mapWithIndex {
-      case (_, transportMeansIndex) =>
-        val helper = new DepartureTransportMeansAnswersHelper(userAnswers, houseConsignmentIndex, transportMeansIndex)
+      case (_, index) =>
+        val helper = new DepartureTransportMeansAnswersHelper(userAnswers, houseConsignmentIndex, index)
         AccordionSection(
-          sectionTitle = messages("unloadingFindings.subsections.transportMeans", transportMeansIndex.display),
+          sectionTitle = messages("unloadingFindings.subsections.transportMeans", index.display),
           rows = Seq(
             helper.transportMeansID,
             helper.transportMeansIDNumber,
@@ -94,10 +106,10 @@ class HouseConsignmentAnswersHelper(
 
   def itemSections: Seq[Section] =
     userAnswers.get(ItemsSection(houseConsignmentIndex)).mapWithIndex {
-      case (_, itemIndex) =>
-        val helper = new ConsignmentItemAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex)
+      case (_, index) =>
+        val helper = new ConsignmentItemAnswersHelper(userAnswers, houseConsignmentIndex, index)
         AccordionSection(
-          sectionTitle = Some(messages("unloadingFindings.subsections.item", itemIndex.display)),
+          sectionTitle = Some(messages("unloadingFindings.subsections.item", index.display)),
           rows = Seq(
             helper.descriptionRow,
             helper.declarationType,
@@ -110,12 +122,13 @@ class HouseConsignmentAnswersHelper(
             helper.dangerousGoodsRows
           ).flatten,
           children = Seq(
-            helper.packageSections,
+            Seq(helper.itemLevelConsigneeSection),
             helper.documentSections,
-            helper.additionalReferencesSection
+            helper.additionalReferencesSection,
+            helper.packageSections
           ).flatten,
           viewLinks = Seq(
-            itemsAddRemoveLink(itemIndex.position), //TODO move to respective parent section
+            itemsAddRemoveLink(index.position), //TODO move to respective parent section
             helper.packagingAddRemoveLink, //TODO move to respective parent section
             helper.documentAddRemoveLink, //TODO move to respective parent section
             helper.additionalReferenceAddRemoveLink //TODO move to respective parent section

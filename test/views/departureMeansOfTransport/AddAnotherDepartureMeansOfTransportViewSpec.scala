@@ -59,9 +59,9 @@ class AddAnotherDepartureMeansOfTransportViewSpec extends ListWithActionsViewBeh
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithMoreItemsAllowed(notMaxedOutViewModel.count)()
+  behave like pageWithMoreItemsAllowed(notMaxedOutViewModel.count)(notMaxedOutViewModel.count)
 
-  behave like pageWithItemsMaxedOut(maxedOutViewModel.count)
+  behave like pageWithItemsMaxedOut(maxedOutViewModel.count)()
 
   behave like pageWithSubmitButton("Continue")
 
@@ -73,7 +73,6 @@ class AddAnotherDepartureMeansOfTransportViewSpec extends ListWithActionsViewBeh
 
     behave like pageWithHeading(doc, s"$prefix.empty", noItemsViewModel.count)
 
-    behave like pageWithRadioItems(legendIsHeading = false, args = Seq(noItemsViewModel.count))
-
+    behave like pageWithRadioItems(document = doc, legendIsHeading = false, args = Seq(noItemsViewModel.count))
   }
 }

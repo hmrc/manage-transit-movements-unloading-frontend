@@ -14,60 +14,29 @@
  * limitations under the License.
  */
 
-package utils.answersHelpers.consignment.transhipment
+package utils.answersHelpers.consignment.replacementMeansOfTransport
 
 import generated.{ConsignmentType05, IncidentType04, Number0, TranshipmentType02}
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.Country
 import org.scalacheck.Arbitrary.arbitrary
-import pages.incident.transhipment.{IdentificationPage, NationalityPage}
+import pages.incident.replacementMeansOfTransport.{IdentificationPage, NationalityPage}
 import utils.answersHelpers.AnswersHelperSpecBase
 
-class TranshipmentAnswersHelperSpec extends AnswersHelperSpecBase {
+class ReplacementMeansOfTransportAnswersHelperSpec extends AnswersHelperSpecBase {
 
-  "TranshipmentAnswersHelperSpec" - {
-
-    "containerIndicator" - {
-      "must return None" - {
-        s"when transhipment undefined" in {
-          val helper = new TranshipmentAnswersHelper(emptyUserAnswers, None, index)
-          helper.containerIndicator mustBe None
-        }
-      }
-
-      "must return Some(Row)" - {
-        s"when transhipment defined" in {
-          forAll(arbitrary[TranshipmentType02], arbitrary[IncidentType04]) {
-            (transhipment, incident) =>
-              val consignment: ConsignmentType05 = ConsignmentType05(
-                containerIndicator = Number0,
-                Incident = Seq(incident.copy(Transhipment = Some(transhipment)))
-              )
-
-              val answers = emptyUserAnswers
-                .copy(ie043Data = emptyUserAnswers.ie043Data.copy(Consignment = Some(consignment)))
-
-              val helper = new TranshipmentAnswersHelper(answers, Some(transhipment), index)
-              val result = helper.containerIndicator.value
-
-              result.key.value mustBe "Container indicator"
-              result.value.value mustBe transhipment.containerIndicator.toString
-
-          }
-        }
-      }
-    }
+  "ReplacementMeansOfTransportAnswersHelperSpec" - {
 
     "typeOfIdentification" - {
       "must return None" - {
-        s"when transhipment undefined" in {
-          val helper = new TranshipmentAnswersHelper(emptyUserAnswers, None, index)
+        s"when replacementMeansOfTransport undefined" in {
+          val helper = new ReplacementMeansOfTransportAnswersHelper(emptyUserAnswers, None, index)
           helper.typeOfIdentification mustBe None
         }
       }
 
       "must return Some(Row)" - {
-        s"when transhipment defined" in {
+        s"when replacementMeansOfTransport defined" in {
           forAll(arbitrary[TranshipmentType02], arbitrary[IncidentType04], arbitrary[TransportMeansIdentification]) {
             (transhipment, incident, identification) =>
               val consignment: ConsignmentType05 = ConsignmentType05(
@@ -79,7 +48,7 @@ class TranshipmentAnswersHelperSpec extends AnswersHelperSpecBase {
                 .copy(ie043Data = emptyUserAnswers.ie043Data.copy(Consignment = Some(consignment)))
                 .setValue(IdentificationPage(index), identification)
 
-              val helper = new TranshipmentAnswersHelper(answers, Some(transhipment), index)
+              val helper = new ReplacementMeansOfTransportAnswersHelper(answers, Some(transhipment), index)
               val result = helper.typeOfIdentification.value
 
               result.key.value mustBe "Identification type"
@@ -92,14 +61,14 @@ class TranshipmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
     "identificationNumber" - {
       "must return None" - {
-        s"when transhipment undefined" in {
-          val helper = new TranshipmentAnswersHelper(emptyUserAnswers, None, index)
+        s"when replacementMeansOfTransport undefined" in {
+          val helper = new ReplacementMeansOfTransportAnswersHelper(emptyUserAnswers, None, index)
           helper.identificationNumber mustBe None
         }
       }
 
       "must return Some(Row)" - {
-        s"when transhipment defined" in {
+        s"when replacementMeansOfTransport defined" in {
           forAll(arbitrary[TranshipmentType02], arbitrary[IncidentType04]) {
             (transhipment, incident) =>
               val consignment: ConsignmentType05 = ConsignmentType05(
@@ -110,7 +79,7 @@ class TranshipmentAnswersHelperSpec extends AnswersHelperSpecBase {
               val answers = emptyUserAnswers
                 .copy(ie043Data = emptyUserAnswers.ie043Data.copy(Consignment = Some(consignment)))
 
-              val helper = new TranshipmentAnswersHelper(answers, Some(transhipment), index)
+              val helper = new ReplacementMeansOfTransportAnswersHelper(answers, Some(transhipment), index)
               val result = helper.identificationNumber.value
 
               result.key.value mustBe "Identification number"
@@ -123,14 +92,14 @@ class TranshipmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
     "nationality" - {
       "must return None" - {
-        s"when transhipment undefined" in {
-          val helper = new TranshipmentAnswersHelper(emptyUserAnswers, None, index)
+        s"when replacementMeansOfTransport undefined" in {
+          val helper = new ReplacementMeansOfTransportAnswersHelper(emptyUserAnswers, None, index)
           helper.nationality mustBe None
         }
       }
 
       "must return Some(Row)" - {
-        s"when transhipment defined" in {
+        s"when replacementMeansOfTransport defined" in {
           forAll(arbitrary[TranshipmentType02], arbitrary[IncidentType04], arbitrary[Country]) {
             (transhipment, incident, country) =>
               val consignment: ConsignmentType05 = ConsignmentType05(
@@ -142,7 +111,7 @@ class TranshipmentAnswersHelperSpec extends AnswersHelperSpecBase {
                 .copy(ie043Data = emptyUserAnswers.ie043Data.copy(Consignment = Some(consignment)))
                 .setValue(NationalityPage(index), country)
 
-              val helper = new TranshipmentAnswersHelper(answers, Some(transhipment), index)
+              val helper = new ReplacementMeansOfTransportAnswersHelper(answers, Some(transhipment), index)
               val result = helper.nationality.value
 
               result.key.value mustBe "Registered country"

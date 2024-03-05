@@ -38,7 +38,8 @@ class DepartureTransportMeansAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "checkYourAnswers.departureMeansOfTransport.identification",
     id = Some(s"change-transport-means-identification-${transportMeansIndex.display}"),
-    call = Some(Call(GET, "#"))
+    call = Some(Call(GET, "#")),
+    args = transportMeansIndex.display
   )
 
   def transportMeansNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
@@ -46,7 +47,8 @@ class DepartureTransportMeansAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "checkYourAnswers.departureMeansOfTransport.identificationNumber",
     id = Some(s"change-transport-means-identification-number-${transportMeansIndex.display}"),
-    call = Some(Call(GET, "#"))
+    call = Some(Call(GET, "#")),
+    args = transportMeansIndex.display
   )
 
   def transportRegisteredCountry: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
@@ -55,6 +57,6 @@ class DepartureTransportMeansAnswersHelper(
     prefix = "checkYourAnswers.departureMeansOfTransport.country",
     id = Some("change-registered-country"),
     call = Some(Call(GET, "#")),
-    args = Seq.empty
+    args = transportMeansIndex.display
   )
 }

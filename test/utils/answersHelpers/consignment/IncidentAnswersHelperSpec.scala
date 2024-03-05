@@ -16,7 +16,7 @@
 
 package utils.answersHelpers.consignment
 
-import generated.{AddressType18, ConsignmentType05, EndorsementType03, GNSSType, IncidentType04, LocationType02, Number0, TranshipmentType02}
+import generated.{AddressType18, ConsignmentType05, EndorsementType03, Flag, GNSSType, IncidentType04, LocationType02, Number0, TranshipmentType02}
 import models.Coordinates
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.{Country, Incident, QualifierOfIdentification}
@@ -24,7 +24,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.incident.endorsement.EndorsementCountryPage
 import pages.incident.location._
-import pages.incident.transhipment.{IdentificationPage, NationalityPage}
+import pages.incident.replacementMeansOfTransport.{IdentificationPage, NationalityPage}
 import pages.incident.{IncidentCodePage, IncidentTextPage}
 import utils.Format.cyaDateFormatter
 import utils.answersHelpers.AnswersHelperSpecBase
@@ -329,6 +329,32 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
         }
       }
     }
+    "containerIndicator" - {
+      "must return None" - {
+        s"when Container Indicator undefined" in {
+          val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
+          helper.containerIndicator mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when  Container Indicator  defined" in {
+
+          forAll(arbitrary[Flag]) {
+            containerIndicator =>
+              val consignment: ConsignmentType05 = ConsignmentType05(containerIndicator = containerIndicator)
+              val answers                        = emptyUserAnswers.copy(ie043Data = emptyUserAnswers.ie043Data.copy(Consignment = Some(consignment)))
+              val helper                         = new IncidentAnswersHelper(answers, index)
+              val result                         = helper.containerIndicator.value
+
+              result.key.value mustBe "Are you using any containers?"
+              result.value.value.contains(containerIndicator.toString)
+              val action = result.actions
+              action mustBe None
+          }
+        }
+      }
+    }
 
     "incidentUnLocodeRow" - {
       "must return None" - {
@@ -362,11 +388,11 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
       }
     }
 
-    "incidentTranshipment" - {
+    "incidentReplacementMeansOfTransport" - {
       "must return Nil" - {
-        s"when transhipment undefined" in {
+        s"when replacementMeansOfTransport undefined" in {
           val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
-          helper.incidentTranshipment mustBe Nil
+          helper.incidentReplacementMeansOfTransport mustBe Nil
         }
       }
 
@@ -385,19 +411,16 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
                 .setValue(NationalityPage(index), country)
 
               val helper = new IncidentAnswersHelper(answers, index)
-              val result = helper.incidentTranshipment
+              val result = helper.incidentReplacementMeansOfTransport
 
-              result.head.key.value mustBe "Container indicator"
-              result.head.value.value mustBe transhipment.containerIndicator.toString
+              result.head.key.value mustBe "Identification type"
+              result.head.value.value mustBe identification.toString
 
-              result(1).key.value mustBe "Identification type"
-              result(1).value.value mustBe identification.toString
+              result(1).key.value mustBe "Identification number"
+              result(1).value.value mustBe transhipment.TransportMeans.identificationNumber
 
-              result(2).key.value mustBe "Identification number"
-              result(2).value.value mustBe transhipment.TransportMeans.identificationNumber
-
-              result(3).key.value mustBe "Registered country"
-              result(3).value.value mustBe country.description
+              result(2).key.value mustBe "Registered country"
+              result(2).value.value mustBe country.description
 
           }
         }

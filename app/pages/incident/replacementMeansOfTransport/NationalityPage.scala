@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package pages.incident.transhipment
+package pages.incident.replacementMeansOfTransport
 
-import models.departureTransportMeans.TransportMeansIdentification
-import pages.behaviours.PageBehaviours
+import models.Index
+import models.reference.Country
+import pages.QuestionPage
+import pages.sections.incidents.IncidentSection
+import play.api.libs.json.JsPath
 
-class IdentificationPageSpec extends PageBehaviours {
+case class NationalityPage(incidentIndex: Index) extends QuestionPage[Country] {
 
-  "IdentificationPage" - {
+  override def path: JsPath = IncidentSection(incidentIndex).path \ "Transhipment" \ toString
 
-    beRetrievable[TransportMeansIdentification](IdentificationPage(index))
-
-    beSettable[TransportMeansIdentification](IdentificationPage(index))
-
-    beRemovable[TransportMeansIdentification](IdentificationPage(index))
-  }
+  override def toString: String = "nationality"
 }

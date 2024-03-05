@@ -34,7 +34,7 @@ import viewModels.houseConsignment.index.items.additionalReference.{AdditionalRe
 import viewModels.houseConsignment.index.items.document.{ItemsAdditionalInformationViewModel, ItemsDocumentReferenceNumberViewModel}
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
-import viewModels.transportEquipment.index.{ApplyAnotherItemViewModel, ContainerIdentificationNumberViewModel}
+import viewModels.transportEquipment.index.{AddAnotherSealViewModel, ApplyAnotherItemViewModel, ContainerIdentificationNumberViewModel}
 import viewModels.{ListItem, UnloadingFindingsViewModel}
 
 trait ViewModelGenerators {
@@ -246,14 +246,16 @@ trait ViewModelGenerators {
     for {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
-    } yield ApplyAnotherItemViewModel(listItems, onSubmitCall, Index(0), isNumberItemsZero = false)
+      nextIndex    <- arbitrary[Index]
+    } yield ApplyAnotherItemViewModel(listItems, onSubmitCall, Index(0), isNumberItemsZero = false, nextIndex)
   }
 
   implicit lazy val arbitraryAddAnotherDepartureMeansOfTransportViewModel: Arbitrary[AddAnotherDepartureMeansOfTransportViewModel] = Arbitrary {
     for {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
-    } yield AddAnotherDepartureMeansOfTransportViewModel(listItems, onSubmitCall)
+      nextIndex    <- arbitrary[Index]
+    } yield AddAnotherDepartureMeansOfTransportViewModel(listItems, onSubmitCall, nextIndex)
   }
 
   implicit lazy val arbitraryContainerIdentificationNumberViewModel: Arbitrary[ContainerIdentificationNumberViewModel] = Arbitrary {
@@ -332,4 +334,11 @@ trait ViewModelGenerators {
         requiredError <- nonEmptyString
       } yield viewModels.additionalReference.index.AdditionalReferenceNumberViewModel(heading, title, requiredError)
     }
+
+  implicit lazy val arbitraryAddAnotherSealViewModel: Arbitrary[AddAnotherSealViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+    } yield AddAnotherSealViewModel(listItems, onSubmitCall, Index(0), Index(0))
+  }
 }

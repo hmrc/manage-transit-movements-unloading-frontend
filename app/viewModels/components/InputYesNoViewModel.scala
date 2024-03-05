@@ -37,4 +37,13 @@ object InputYesNoViewModel {
   case class YesNoWithLegend(
     legend: String
   ) extends InputYesNoViewModel
+
+  def apply(
+    heading: String,
+    caption: Option[String],
+    additionalHtml: Option[Html]
+  ): InputYesNoViewModel = additionalHtml match {
+    case Some(value) => YesNoWithAdditionalHtml(heading, caption, value)
+    case None        => OrdinaryYesNo(heading, caption)
+  }
 }

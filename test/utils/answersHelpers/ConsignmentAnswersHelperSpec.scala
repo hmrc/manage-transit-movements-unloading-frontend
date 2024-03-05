@@ -224,6 +224,8 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         val helper  = new ConsignmentAnswersHelper(userAnswers)
         val section = helper.holderOfTheTransitProcedureSection.head
 
+        section mustBe a[StaticSection]
+
         section.sectionTitle.value mustBe "Transit holder"
         section.rows.size mustBe 5
         section.viewLinks mustBe Nil
@@ -416,12 +418,14 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
             result.children.head mustBe a[AccordionSection]
             result.children.head.sectionTitle.value mustBe "House consignment 1"
-            result.children.head.rows.size mustBe 4
+            result.children.head.rows.size mustBe 2
             result.children.head.rows.head.value.value mustBe consignorName
             result.children.head.rows(1).value.value mustBe consignorId
-            result.children.head.rows(2).value.value mustBe consigneeName
-            result.children.head.rows(3).value.value mustBe consigneeId
-            result.children.head.children mustBe empty
+            result.children.head.children must not be empty
+
+            result.children.head.children.head.sectionTitle.get mustBe "Consignee"
+            result.children.head.children.head.rows.head.value.value mustBe consigneeId
+            result.children.head.children.head.rows(1).value.value mustBe consigneeName
 
             val link = result.children.head.viewLinks.head
             link.id mustBe "view-house-consignment-1"
@@ -478,7 +482,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
         result mustBe a[AccordionSection]
         result.children.head.sectionTitle.value mustBe "Incident 1"
-        result.children.head.rows.size mustBe 7
+        result.children.head.rows.size mustBe 8
         result.children.head.rows.head.value.value mustBe country.toString
         result.children.head.rows(1).value.value mustBe inc.toString
         result.children.head.rows(2).value.value mustBe description

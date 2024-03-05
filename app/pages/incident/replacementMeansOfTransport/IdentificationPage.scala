@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages.incident.transhipment
+package pages.incident.replacementMeansOfTransport
 
 import models.Index
 import models.departureTransportMeans.TransportMeansIdentification

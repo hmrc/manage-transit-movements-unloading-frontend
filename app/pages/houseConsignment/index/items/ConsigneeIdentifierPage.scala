@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package pages.incident.transhipment
+package pages.houseConsignment.index.items
 
-import models.reference.Country
-import pages.behaviours.PageBehaviours
+import models.Index
+import pages.QuestionPage
+import pages.sections.houseConsignment.index.items.consignee.ConsigneeSection
+import play.api.libs.json.JsPath
 
-class NationalityPageSpec extends PageBehaviours {
+case class ConsigneeIdentifierPage(houseConsignmentIndex: Index, itemIndex: Index) extends QuestionPage[String] {
 
-  "NationalityPage" - {
+  override def path: JsPath = ConsigneeSection(houseConsignmentIndex: Index, itemIndex: Index).path \ toString
 
-    beRetrievable[Country](NationalityPage(index))
-
-    beSettable[Country](NationalityPage(index))
-
-    beRemovable[Country](NationalityPage(index))
-  }
+  override def toString: String = "identificationNumber"
 }
