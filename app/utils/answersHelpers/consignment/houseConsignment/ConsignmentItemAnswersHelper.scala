@@ -74,10 +74,10 @@ class ConsignmentItemAnswersHelper(
     formatAnswer = formatAsWeight,
     prefix = "unloadingFindings.rowHeadings.item.grossWeight",
     args = itemIndex.display,
-    id = s"gross-weight-${houseConsignmentIndex.display}",
+    id = s"gross-weight-${itemIndex.display}",
     change = Call(GET, "#"),
     remove = Call(GET, "#"),
-    hiddenLink = "grossWeightLink",
+    hiddenLink = "grossWeightLink"
   )
 
   def netWeightRow: SummaryListRow = getAnswerAndBuildRowWithRemove[Double](
@@ -85,10 +85,10 @@ class ConsignmentItemAnswersHelper(
     formatAnswer = formatAsWeight,
     prefix = "unloadingFindings.rowHeadings.item.netWeight",
     args = itemIndex.display,
-    id = s"net-weight-${houseConsignmentIndex.display}",
+    id = s"net-weight-${itemIndex.display}",
     change = Call(GET, "#"),
     remove = Call(GET, "#"),
-    hiddenLink = "netWeightLink",
+    hiddenLink = "netWeightLink"
   )
 
   def additionalReferencesSection: Seq[Section] =
@@ -151,7 +151,7 @@ class ConsignmentItemAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.item.cusCode",
     args = itemIndex.display,
-    id = Some(s"change-cus-code-${houseConsignmentIndex.display}"),
+    id = Some(s"change-cus-code-${itemIndex.display}"),
     call = Some(Call(GET, "#"))
   )
 
@@ -160,10 +160,10 @@ class ConsignmentItemAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.item.commodityCode",
     args = itemIndex.display,
-    id = s"commodity-code-${houseConsignmentIndex.display}",
+    id = s"commodity-code-${itemIndex.display}",
     change = Call(GET, "#"),
     remove = Call(GET, "#"),
-    hiddenLink = "commodityCodeLink",
+    hiddenLink = "commodityCodeLink"
   )
 
   def nomenclatureCodeRow: SummaryListRow = getAnswerAndBuildRowWithRemove[String](
@@ -171,10 +171,10 @@ class ConsignmentItemAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.item.nomenclatureCode",
     args = itemIndex.display,
-    id = s"nomenclature-code-${houseConsignmentIndex.display}",
+    id = s"nomenclature-code-${itemIndex.display}",
     change = Call(GET, "#"),
     remove = Call(GET, "#"),
-    hiddenLink = "nomenclatureCodeLink",
+    hiddenLink = "nomenclatureCodeLink"
   )
 
   private[consignment] def packagingAddRemoveLink: Link =
