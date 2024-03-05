@@ -34,7 +34,7 @@
                                 changeUrl =>
                                     ListWithActionsAction(
                                         content = Text(messages("site.edit")),
-                                        visuallyHiddenText = Some(messages("site.edit.hidden", listItem.name)),
+                                        visuallyHiddenText = Some(messages(s"${listItem.name}")),
                                         href = changeUrl
                                     )
                             ),
@@ -42,7 +42,7 @@
                                 removeUrl =>
                                     ListWithActionsAction(
                                         content = Text(messages("site.delete")),
-                                        visuallyHiddenText = Some(messages("site.delete.hidden", listItem.name)),
+                                        visuallyHiddenText = Some(messages(s"${listItem.name}")),
                                         href = removeUrl
                                     )
                             )
