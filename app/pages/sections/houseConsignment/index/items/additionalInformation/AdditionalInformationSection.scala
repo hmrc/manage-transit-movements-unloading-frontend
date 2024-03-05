@@ -19,10 +19,8 @@ package pages.sections.houseConsignment.index.items.additionalInformation
 import models.Index
 import models.reference.AdditionalInformationCode
 import pages.QuestionPage
-import pages.houseConsignment.index.items.additionalinformation.{HouseConsignmentAdditionalInformationCodePage, HouseConsignmentAdditionalInformationTextPage}
 import pages.sections.houseConsignment.index.items.additionalInformation.AdditionalInformationSection.AdditionalInformation
-import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.json.{__, JsPath, Reads}
+import play.api.libs.json.JsPath
 
 case class AdditionalInformationSection(houseConsignmentIndex: Index, itemIndex: Index, additionalInformationIndex: Index)
     extends QuestionPage[AdditionalInformation] {
@@ -41,12 +39,4 @@ object AdditionalInformationSection {
     }
   }
 
-  object AdditionalInformation {
-
-    def reads(houseConsignmentIndex: Index, itemIndex: Index, additionalInformationIndex: Index): Reads[AdditionalInformation] = (
-      (__ \ HouseConsignmentAdditionalInformationCodePage(houseConsignmentIndex, itemIndex, additionalInformationIndex).toString)
-        .read[AdditionalInformationCode] and
-        (__ \ HouseConsignmentAdditionalInformationTextPage(houseConsignmentIndex, itemIndex, additionalInformationIndex).toString).readNullable[String]
-    )(AdditionalInformation.apply _)
-  }
 }
