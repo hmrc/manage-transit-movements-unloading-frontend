@@ -56,6 +56,7 @@ class RemoveGoodsReferenceYesNoController @Inject() (
     .requireIndex(arrivalId, ItemSection(equipmentIndex, itemIndex), addAnother(arrivalId, equipmentIndex))
     .andThen(getMandatoryPage.getFirst(ItemPage(equipmentIndex, itemIndex))) {
       implicit request =>
+        // TODO - can we add some kind of helper method to extract the item description from user answers that corresponds to the declarationGoodsItemNumebr in ItemPage(equipmentIndex, itemIndex)
         Ok(view(form(equipmentIndex), request.userAnswers.mrn, arrivalId, equipmentIndex, itemIndex, request.arg.toString))
     }
 

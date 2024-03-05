@@ -22,6 +22,7 @@ import pages.QuestionPage
 import pages.sections.transport.equipment.ItemSection
 import play.api.libs.json.JsPath
 
+// TODO - can this be just a QuestionPage[BigInt]
 case class ItemPage(equipmentIndex: Index, itemIndex: Index) extends QuestionPage[Item] {
 
   override def path: JsPath = ItemSection(equipmentIndex, itemIndex).path

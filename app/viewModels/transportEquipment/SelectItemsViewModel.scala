@@ -23,11 +23,13 @@ import pages.sections.transport.equipment.ItemsSection
 import pages.sections.transport.equipment.EquipmentsSection
 import pages.transportEquipment.index.ItemPage
 
+// TODO - let's see some unit tests here
 case class SelectItemsViewModel(items: SelectableList[Item], allItemsCount: Int)
 
 object SelectItemsViewModel {
 
   def apply(userAnswers: UserAnswers, selectedItem: Option[Item] = None): SelectItemsViewModel = {
+    // TODO - extract these from user answers instead of the 43
     val allItems: Seq[Item] = userAnswers.ie043Data.Consignment.map(_.allItems).toList.flatten
 
     val filteredList = (for {

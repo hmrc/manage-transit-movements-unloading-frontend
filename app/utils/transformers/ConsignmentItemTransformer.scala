@@ -41,7 +41,9 @@ class ConsignmentItemTransformer @Inject() (
         acc.flatMap {
           userAnswers =>
             val itemIndex: Index = Index(i)
-            val pipeline: UserAnswers => Future[UserAnswers] =
+            val pipeline: UserAnswers => Future[UserAnswers] = {
+              // TODO - set the declaration goods item number in its own page (QuestionPage[BigInt])
+              // TODO - we could also setSequenceNumber with the goodsItemNumber
               set(DeclarationTypePage(hcIndex, itemIndex), consignmentItem.declarationType) andThen
                 countryOfDestinationTransformer.transform(consignmentItem.countryOfDestination, hcIndex, itemIndex) andThen
                 commodityTransformer.transform(consignmentItem.Commodity, hcIndex, itemIndex) andThen
@@ -55,6 +57,7 @@ class ConsignmentItemTransformer @Inject() (
                 ) andThen
                 additionalReferencesTransformer.transform(consignmentItem.AdditionalReference, hcIndex, itemIndex) andThen
                 consigneeTransformer.transform(consignmentItem.Consignee, hcIndex, itemIndex)
+            }
 
             pipeline(userAnswers)
         }
