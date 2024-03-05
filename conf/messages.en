@@ -70,6 +70,8 @@ grossWeightLink.add = Add gross weight
 grossWeightLink.add.visuallyHidden = Add gross weight
 netMassLink.remove = Remove net weight
 netMassLink.remove.visuallyHidden = Remove net weight
+netWeightLink.add.visuallyHidden = Add net weight
+netWeightLink.add = Add net weight
 
 
 

@@ -148,12 +148,14 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
 
     "netWeightRow" - {
       val page = NetWeightPage(hcIndex, itemIndex)
-//      "must return None" - {
-//        s"when $page undefined" in {
-//          val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
-//          helper.netWeightRow mustBe None
-//        }
-//      }
+      "must return add link" - {
+        s"when $page undefined" in {
+          val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
+          helper.netWeightRow.key.value mustBe "Net weight"
+
+          helper.netWeightRow.value.content.asHtml.toString() must include("Add net weight")
+        }
+      }
 
       "must return Some(Row)" - {
         s"when $page defined" in {
@@ -217,14 +219,14 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
       val value = Gen.alphaLowerStr.sample.value
       val page  = CommodityCodePage(hcIndex, itemIndex)
 
-//      "must return None" - {
-//        s"when $page undefined" in {
-//
-//          val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
-//          val result = helper.commodityCodeRow
-//          result mustBe None
-//        }
-//      }
+      "must return add link" - {
+        s"when $page undefined" in {
+          val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
+          helper.commodityCodeRow.key.value mustBe "Commodity code"
+
+          helper.commodityCodeRow.value.content.asHtml.toString() must include("Add commodity code")
+        }
+      }
 
       "must return Some(Row)" - {
         s"when $page defined" in {
@@ -248,14 +250,15 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
       val value = Gen.alphaLowerStr.sample.value
       val page  = CombinedNomenclatureCodePage(hcIndex, itemIndex)
 
-//      "must return None" - {
-//        s"when $page undefined" in {
-//
-//          val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
-//          val result = helper.nomenclatureCodeRow
-//          result mustBe None
-//        }
-//      }
+      "must return add link" - {
+        s"when $page undefined" in {
+          val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
+          val result = helper.nomenclatureCodeRow
+          result.key.value mustBe "Combined nomenclature code"
+
+          result.value.content.asHtml.toString() must include("Add nomenclature code")
+        }
+      }
 
       "must return Some(Row)" - {
         s"when $page defined" in {
