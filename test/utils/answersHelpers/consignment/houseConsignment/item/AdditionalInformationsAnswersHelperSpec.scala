@@ -18,20 +18,21 @@ package utils.answersHelpers.consignment.houseConsignment.item
 
 import models.reference.AdditionalInformationCode
 import org.scalacheck.Arbitrary.arbitrary
-import pages.houseConsignment.index.items.additionalinformation.HouseConsignmentAdditionalInformationCodePage
+import org.scalacheck.Gen
+import pages.houseConsignment.index.items.additionalinformation.{HouseConsignmentAdditionalInformationCodePage, HouseConsignmentAdditionalInformationTextPage}
 import utils.answersHelpers.AnswersHelperSpecBase
 
 class AdditionalInformationsAnswersHelperSpec extends AnswersHelperSpecBase {
 
   "AdditionalInformationsHelper" - {
 
-    "additionalInformationRow" - {
+    "additionalInformationCodeRow" - {
       val page = HouseConsignmentAdditionalInformationCodePage(hcIndex, itemIndex, additionalInformationIndex)
 
       "must return None" - {
         s"when $page undefined" in {
           val helper = new AdditionalInformationsAnswerHelper(emptyUserAnswers, hcIndex, itemIndex, additionalReferenceIndex)
-          helper.additionalInformationRow mustBe None
+          helper.additionalInformationCodeRow mustBe None
         }
       }
 
@@ -42,11 +43,38 @@ class AdditionalInformationsAnswersHelperSpec extends AnswersHelperSpecBase {
               val answers = emptyUserAnswers.setValue(page, value)
 
               val helper = new AdditionalInformationsAnswerHelper(answers, hcIndex, itemIndex, additionalReferenceIndex)
-              val result = helper.additionalInformationRow.value
+              val result = helper.additionalInformationCodeRow.value
 
-              result.key.value mustBe "Additional Information 1"
+              result.key.value mustBe "Code"
               result.value.value mustBe value.toString
-              result.actions.head.items.head.href mustBe "#"
+              result.actions must not be defined
+          }
+        }
+      }
+    }
+
+    "additionalInformationTextRow" - {
+      val page = HouseConsignmentAdditionalInformationTextPage(hcIndex, itemIndex, additionalInformationIndex)
+
+      "must return None" - {
+        s"when $page undefined" in {
+          val helper = new AdditionalInformationsAnswerHelper(emptyUserAnswers, hcIndex, itemIndex, additionalReferenceIndex)
+          helper.additionalInformationTextRow mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $page defined" in {
+          forAll(Gen.alphaNumStr) {
+            value =>
+              val answers = emptyUserAnswers.setValue(page, value)
+
+              val helper = new AdditionalInformationsAnswerHelper(answers, hcIndex, itemIndex, additionalReferenceIndex)
+              val result = helper.additionalInformationTextRow.value
+
+              result.key.value mustBe "Text"
+              result.value.value mustBe value
+              result.actions must not be defined
           }
         }
       }
