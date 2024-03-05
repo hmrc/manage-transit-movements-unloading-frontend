@@ -16,7 +16,9 @@
 
 package utils.answersHelpers.consignment.houseConsignment.item
 
+import models.reference.AdditionalInformationCode
 import models.{Index, UserAnswers}
+import pages.houseConsignment.index.items.additionalinformation.{HouseConsignmentAdditionalInformationCodePage, HouseConsignmentAdditionalInformationTextPage}
 import pages.sections.houseConsignment.index.items.additionalInformation.AdditionalInformationSection
 import pages.sections.houseConsignment.index.items.additionalInformation.AdditionalInformationSection.AdditionalInformation
 import play.api.i18n.Messages
@@ -33,13 +35,27 @@ class AdditionalInformationsAnswerHelper(
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
-  def additionalInformationRow: Option[SummaryListRow] = getAnswerAndBuildRow[AdditionalInformation](
-    page = AdditionalInformationSection(houseConsignmentIndex, itemIndex, additionalInformationIndex),
+//  def additionalInformationRow: Option[SummaryListRow] = getAnswerAndBuildRow[AdditionalInformation](
+//    page = AdditionalInformationSection(houseConsignmentIndex, itemIndex, additionalInformationIndex),
+//    formatAnswer = formatAsText,
+//    prefix = "unloadingFindings.additional.information",
+//    args = additionalInformationIndex.display,
+//    id = Some(s"change-additional-information-${additionalInformationIndex.display}"),
+//    call = Some(Call(GET, "#")) //TODO change me please
+//  )(AdditionalInformation.reads(houseConsignmentIndex, itemIndex, additionalInformationIndex))
+
+  def additionalInformationCodeRow: Option[SummaryListRow] = getAnswerAndBuildRow[AdditionalInformationCode](
+    page = HouseConsignmentAdditionalInformationCodePage(houseConsignmentIndex, itemIndex, additionalInformationIndex),
     formatAnswer = formatAsText,
-    prefix = "unloadingFindings.additional.information",
-    args = additionalInformationIndex.display,
-    id = Some(s"change-additional-information-${additionalInformationIndex.display}"),
-    call = Some(Call(GET, "#")) //TODO change me please
-  )(AdditionalInformation.reads(houseConsignmentIndex, itemIndex, additionalInformationIndex))
+    prefix = "unloadingFindings.additional.information.code",
+    id = None,
+    call = None
+  )
+
+  def additionalInformationTextRow: Option[SummaryListRow] = buildRowWithNoChangeLink[String](
+    data = HouseConsignmentAdditionalInformationTextPage(houseConsignmentIndex, itemIndex, additionalInformationIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.additional.information.description"
+  )
 
 }

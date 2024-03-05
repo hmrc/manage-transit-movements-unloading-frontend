@@ -17,7 +17,7 @@
 package utils.answersHelpers.consignment
 
 import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.{AdditionalInformationType, AdditionalReferenceType, Country, PackageType}
+import models.reference.{AdditionalInformationCode, AdditionalReferenceType, Country, PackageType}
 import models.{DynamicAddress, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -226,7 +226,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         forAll(Gen.alphaNumStr, arbitrary[BigDecimal], arbitrary[Double], arbitrary[PackageType], arbitrary[BigInt], arbitrary[AdditionalReferenceType]) {
           (description, grossWeight, netWeight, packageType, count, additionalReference) =>
             val (cusCode, commodityCode, nomenclatureCode, additionalInformation) =
-              ("cusCode", "commodityCode", "nomenclatureCode", AdditionalInformationType("code", "description"))
+              ("cusCode", "commodityCode", "nomenclatureCode", AdditionalInformationCode("code", "description"))
             val answers = emptyUserAnswers
               .setValue(ItemDescriptionPage(hcIndex, itemIndex), description)
               .setValue(GrossWeightPage(hcIndex, itemIndex), grossWeight)

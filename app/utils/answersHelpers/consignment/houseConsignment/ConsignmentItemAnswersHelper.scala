@@ -101,11 +101,15 @@ class ConsignmentItemAnswersHelper(
     }
 
   def additionalInformationsSection: Section = {
-    val rows = getAnswersAndBuildSectionRows(AdditionalInformationsSection(houseConsignmentIndex, itemIndex)) {
-      additionalInformationIndex =>
-        val helper = new AdditionalInformationsAnswerHelper(userAnswers, houseConsignmentIndex, itemIndex, additionalInformationIndex)
-        helper.additionalInformationRow
-    }
+    val rows = userAnswers
+      .get(AdditionalInformationsSection(houseConsignmentIndex, itemIndex))
+      .mapWithIndex {
+        case (_, additionalInformationIndex) =>
+          val helper = new AdditionalInformationsAnswerHelper(userAnswers, houseConsignmentIndex, itemIndex, additionalInformationIndex)
+          Seq(helper.additionalInformationCodeRow, helper.additionalInformationTextRow).flatten
+
+      }
+      .flatten
 
     AccordionSection(
       sectionTitle = messages("unloadingFindings.additional.information.heading"),

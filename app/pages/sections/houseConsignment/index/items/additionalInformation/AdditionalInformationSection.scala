@@ -17,7 +17,7 @@
 package pages.sections.houseConsignment.index.items.additionalInformation
 
 import models.Index
-import models.reference.AdditionalInformationType
+import models.reference.AdditionalInformationCode
 import pages.QuestionPage
 import pages.houseConsignment.index.items.additionalinformation.{HouseConsignmentAdditionalInformationCodePage, HouseConsignmentAdditionalInformationTextPage}
 import pages.sections.houseConsignment.index.items.additionalInformation.AdditionalInformationSection.AdditionalInformation
@@ -33,7 +33,7 @@ case class AdditionalInformationSection(houseConsignmentIndex: Index, itemIndex:
 
 object AdditionalInformationSection {
 
-  case class AdditionalInformation(typeValue: AdditionalInformationType, text: Option[String]) {
+  case class AdditionalInformation(typeValue: AdditionalInformationCode, text: Option[String]) {
 
     override def toString: String = text match {
       case Some(text) => s"${typeValue.toString} - $text"
@@ -45,7 +45,7 @@ object AdditionalInformationSection {
 
     def reads(houseConsignmentIndex: Index, itemIndex: Index, additionalInformationIndex: Index): Reads[AdditionalInformation] = (
       (__ \ HouseConsignmentAdditionalInformationCodePage(houseConsignmentIndex, itemIndex, additionalInformationIndex).toString)
-        .read[AdditionalInformationType] and
+        .read[AdditionalInformationCode] and
         (__ \ HouseConsignmentAdditionalInformationTextPage(houseConsignmentIndex, itemIndex, additionalInformationIndex).toString).readNullable[String]
     )(AdditionalInformation.apply _)
   }

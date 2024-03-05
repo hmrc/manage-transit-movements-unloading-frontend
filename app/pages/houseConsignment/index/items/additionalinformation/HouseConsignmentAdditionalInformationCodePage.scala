@@ -17,13 +17,13 @@
 package pages.houseConsignment.index.items.additionalinformation
 
 import models.Index
-import models.reference.AdditionalInformationType
+import models.reference.AdditionalInformationCode
 import pages.QuestionPage
 import pages.sections.houseConsignment.index.items.additionalInformation.AdditionalInformationSection
 import play.api.libs.json.JsPath
 
 case class HouseConsignmentAdditionalInformationCodePage(houseConsignmentIndex: Index, itemIndex: Index, additionalInformationIndex: Index)
-    extends QuestionPage[AdditionalInformationType] {
+    extends QuestionPage[AdditionalInformationCode] {
 
   override def path: JsPath =
     AdditionalInformationSection(houseConsignmentIndex, itemIndex, additionalInformationIndex).path \ toString

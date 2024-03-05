@@ -18,7 +18,7 @@ package utils.transformers
 
 import connectors.ReferenceDataConnector
 import generated.AdditionalInformationType02
-import models.reference.{AdditionalInformationCode, AdditionalInformationType}
+import models.reference.{AdditionalInformationCode}
 import models.{Index, UserAnswers}
 import pages.additionalInformation.{AdditionalInformationCodePage, AdditionalInformationTextPage}
 import pages.houseConsignment.index.items.additionalinformation.{HouseConsignmentAdditionalInformationCodePage, HouseConsignmentAdditionalInformationTextPage}
@@ -63,13 +63,13 @@ class AdditionalInformationTransformer @Inject() (referenceDataConnector: Refere
     lazy val referenceDataLookups = additionalReferences.map {
       additionalInformation =>
         referenceDataConnector
-          .getAdditionalInformationType(additionalInformation.code)
-          .map(TempAdditionalInformationType(additionalInformation, _))
+          .getAdditionalInformationCode(additionalInformation.code)
+          .map(TempAdditionalInformation(additionalInformation, _))
     }
 
     Future.sequence(referenceDataLookups).flatMap {
       _.zipWithIndex.foldLeft(Future.successful(userAnswers))({
-        case (acc, (TempAdditionalInformationType(underlying, additionalInformation), i)) =>
+        case (acc, (TempAdditionalInformation(underlying, additionalInformation), i)) =>
           acc.flatMap {
             userAnswers =>
               val index = Index(i)
@@ -86,11 +86,6 @@ class AdditionalInformationTransformer @Inject() (referenceDataConnector: Refere
   private case class TempAdditionalInformation[T](
     underlying: T,
     code: AdditionalInformationCode
-  )
-
-  private case class TempAdditionalInformationType[T](
-    underlying: T,
-    code: AdditionalInformationType
   )
 
 }

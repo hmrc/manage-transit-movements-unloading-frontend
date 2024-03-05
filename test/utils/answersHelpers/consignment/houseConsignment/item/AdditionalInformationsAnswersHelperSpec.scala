@@ -16,7 +16,7 @@
 
 package utils.answersHelpers.consignment.houseConsignment.item
 
-import models.reference.AdditionalInformationType
+import models.reference.AdditionalInformationCode
 import org.scalacheck.Arbitrary.arbitrary
 import pages.houseConsignment.index.items.additionalinformation.HouseConsignmentAdditionalInformationCodePage
 import utils.answersHelpers.AnswersHelperSpecBase
@@ -37,7 +37,7 @@ class AdditionalInformationsAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return Some(Row)" - {
         s"when $page defined" in {
-          forAll(arbitrary[AdditionalInformationType]) {
+          forAll(arbitrary[AdditionalInformationCode]) {
             value =>
               val answers = emptyUserAnswers.setValue(page, value)
 

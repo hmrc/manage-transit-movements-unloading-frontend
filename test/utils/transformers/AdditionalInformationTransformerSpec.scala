@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import connectors.ReferenceDataConnector
 import generators.Generators
 import models.Index
-import models.reference.{AdditionalInformationCode, AdditionalInformationType}
+import models.reference.AdditionalInformationCode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -78,9 +78,9 @@ class AdditionalInformationTransformerSpec extends SpecBase with AppWithDefaultM
 
     additionalInformationType02.map {
       type0 =>
-        when(mockRefDataConnector.getAdditionalInformationType(eqTo(type0.code))(any(), any()))
+        when(mockRefDataConnector.getAdditionalInformationCode(eqTo(type0.code))(any(), any()))
           .thenReturn(
-            Future.successful(AdditionalInformationType(code = type0.code, description = "describe me"))
+            Future.successful(AdditionalInformationCode(code = type0.code, description = "describe me"))
           )
     }
 

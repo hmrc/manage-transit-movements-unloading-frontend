@@ -16,17 +16,17 @@
 
 package pages.houseConsignment.index.items.additionalinformation
 
-import models.reference.AdditionalInformationType
+import models.reference.AdditionalInformationCode
 import pages.behaviours.PageBehaviours
 
 class HouseConsignmentAdditionalInformationCodePageSpec extends PageBehaviours {
 
   "HouseConsignmentAdditionalInformationCodePage" - {
 
-    beRetrievable[AdditionalInformationType](HouseConsignmentAdditionalInformationCodePage(index, index, index))
+    beRetrievable[AdditionalInformationCode](HouseConsignmentAdditionalInformationCodePage(index, index, index))
 
-    beSettable[AdditionalInformationType](HouseConsignmentAdditionalInformationCodePage(index, index, index))
+    beSettable[AdditionalInformationCode](HouseConsignmentAdditionalInformationCodePage(index, index, index))
 
-    beRemovable[AdditionalInformationType](HouseConsignmentAdditionalInformationCodePage(index, index, index))
+    beRemovable[AdditionalInformationCode](HouseConsignmentAdditionalInformationCodePage(index, index, index))
   }
 }
