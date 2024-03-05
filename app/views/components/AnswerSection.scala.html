@@ -34,8 +34,7 @@
         @if(section.rows.nonEmpty) {
             @govukSummaryList(
                 SummaryList(
-                    rows = section.rows,
-                    classes = s"govuk-!-margin-left-${2 * nestingLevel}"
+                    rows = section.rows
                 )
             )
         }
