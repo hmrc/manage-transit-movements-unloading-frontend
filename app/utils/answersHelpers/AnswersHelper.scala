@@ -65,7 +65,6 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
     change: Call,
     remove: Call,
     hiddenLink: String,
-    href: String,
     args: Any*
   )(implicit rds: Reads[T]): SummaryListRow =
     (userAnswers.get(page) map {
@@ -81,7 +80,7 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
     }).getOrElse(
       buildRow(
         prefix = prefix,
-        answer = formatAsLink(messages(s"$hiddenLink.add.visuallyHidden"), href),
+        answer = formatAsLink(messages(s"$hiddenLink.add.visuallyHidden"), change.url),
         id = None,
         call = None
       )

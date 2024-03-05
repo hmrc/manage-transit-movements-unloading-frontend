@@ -78,7 +78,6 @@ class ConsignmentItemAnswersHelper(
     change = Call(GET, "#"),
     remove = Call(GET, "#"),
     hiddenLink = "grossWeightLink",
-    href = "#"
   )
 
   def netWeightRow: SummaryListRow = getAnswerAndBuildRowWithRemove[Double](
@@ -90,7 +89,6 @@ class ConsignmentItemAnswersHelper(
     change = Call(GET, "#"),
     remove = Call(GET, "#"),
     hiddenLink = "netWeightLink",
-    href = "#"
   )
 
   def additionalReferencesSection: Seq[Section] =
@@ -166,7 +164,6 @@ class ConsignmentItemAnswersHelper(
     change = Call(GET, "#"),
     remove = Call(GET, "#"),
     hiddenLink = "commodityCodeLink",
-    href = "#"
   )
 
   def nomenclatureCodeRow: SummaryListRow = getAnswerAndBuildRowWithRemove[String](
@@ -178,7 +175,6 @@ class ConsignmentItemAnswersHelper(
     change = Call(GET, "#"),
     remove = Call(GET, "#"),
     hiddenLink = "nomenclatureCodeLink",
-    href = "#"
   )
 
   private[consignment] def packagingAddRemoveLink: Link =
