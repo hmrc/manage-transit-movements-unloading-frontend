@@ -27,7 +27,6 @@ import utils.Format.cyaDateFormatter
 
 import java.time.LocalDate
 import javax.xml.datatype.XMLGregorianCalendar
-import scala.language.implicitConversions
 
 class SummaryListRowHelper(implicit messages: Messages) {
 
