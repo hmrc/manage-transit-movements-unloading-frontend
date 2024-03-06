@@ -665,6 +665,18 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
 object ReferenceDataConnectorSpec {
 
+  private val additionalInformationResponseJson: String =
+    """
+      |{
+      |  "data": [
+      |    {
+      |      "code": "10600",
+      |      "description": "Negotiable Bill of lading 'to order blank endorsed'"
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+
   private val countryListResponseJson: String =
     """
       |{

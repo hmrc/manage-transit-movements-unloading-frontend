@@ -28,6 +28,7 @@ import pages.houseConsignment.index.items.{
   ConsigneeNamePage => ItemConsigneeNamePage,
   _
 }
+import pages.sections.houseConsignment.index.items.additionalInformation.AdditionalInformationsSection
 import pages.sections.PackagingListSection
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferencesSection
 import pages.sections.houseConsignment.index.items.dangerousGoods.DangerousGoodsListSection
@@ -101,6 +102,19 @@ class ConsignmentItemAnswersHelper(
           rows = Seq(
             helper.code,
             helper.referenceNumber
+          ).flatten
+        )
+    }
+
+  def additionalInformationsSection: Seq[Section] =
+    userAnswers.get(AdditionalInformationsSection(houseConsignmentIndex, itemIndex)).mapWithIndex {
+      case (_, index) =>
+        val helper = new AdditionalInformationsAnswerHelper(userAnswers, houseConsignmentIndex, itemIndex, index)
+        AccordionSection(
+          sectionTitle = messages("unloadingFindings.additional.information.heading", index.display),
+          rows = Seq(
+            helper.additionalInformationCodeRow,
+            helper.additionalInformationTextRow
           ).flatten
         )
     }
