@@ -19,13 +19,13 @@ package utils.transformers
 import connectors.ReferenceDataConnector
 import generated.TranshipmentType02
 import models.{Index, UserAnswers}
-import pages.incident.transhipment.{IdentificationPage, NationalityPage}
+import pages.incident.replacementMeansOfTransport.{IdentificationPage, NationalityPage}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TranshipmentTransformer @Inject() (
+class ReplacementMeansOfTransportTransformer @Inject() (
   referenceDataConnector: ReferenceDataConnector
 )(implicit ec: ExecutionContext)
     extends PageTransformer {

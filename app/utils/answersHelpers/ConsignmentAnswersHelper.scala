@@ -282,12 +282,13 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
             helper.incidentQualifierRow,
             helper.incidentCoordinatesRow,
             helper.incidentUnLocodeRow,
-            helper.incidentLocationAddressRow
+            helper.incidentLocationAddressRow,
+            helper.containerIndicator
           ).flatten
 
           val transhipment = StaticSection(
-            sectionTitle = Some(messages("unloadingFindings.subsections.incidents.transhipment")),
-            rows = helper.incidentTranshipment
+            sectionTitle = Some(messages("unloadingFindings.subsections.incidents.replacementMeansOfTransport")),
+            rows = helper.incidentReplacementMeansOfTransport
           )
           val endorsementSection = StaticSection(
             sectionTitle = Some(messages("unloadingFindings.subsections.incidents.endorsements")),

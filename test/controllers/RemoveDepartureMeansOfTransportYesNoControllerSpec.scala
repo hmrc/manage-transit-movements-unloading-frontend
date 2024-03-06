@@ -76,7 +76,7 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
     }
 
     "when yes submitted" - {
-      "must redirect to add another departureTransportMeans and remove departureTransportMeans at specified index" ignore {
+      "must redirect to add another departureTransportMeans and remove departureTransportMeans at specified index" in {
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
         val userAnswers = emptyUserAnswers.setValue(TransportMeansSection(transportMeansIndex), Json.obj())
 
@@ -100,7 +100,8 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
     }
 
     "when no submitted" - {
-      "must redirect to add another departureTransportMeans and not remove departureTransportMeans at specified index" ignore {
+      "must redirect to add another departureTransportMeans and not remove departureTransportMeans at specified index" in {
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
         val userAnswers = emptyUserAnswers.setValue(TransportMeansSection(transportMeansIndex), Json.obj())
 
         setExistingUserAnswers(userAnswers)

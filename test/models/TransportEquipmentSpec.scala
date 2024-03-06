@@ -14,17 +14,25 @@
  * limitations under the License.
  */
 
-package pages.incident.transhipment
+package models
 
-import models.Index
-import models.reference.Country
-import pages.QuestionPage
-import pages.sections.incidents.IncidentSection
-import play.api.libs.json.JsPath
+import base.SpecBase
 
-case class NationalityPage(incidentIndex: Index) extends QuestionPage[Country] {
+class TransportEquipmentSpec extends SpecBase {
 
-  override def path: JsPath = IncidentSection(incidentIndex).path \ "Transhipment" \ toString
+  "TransportEquipment" - {
+    "asString" - {
+      "when container id is defined" in {
+        val transportEquipment = TransportEquipment(Some("123"))
+        val result             = transportEquipment.asString
+        result mustBe Some("container 123")
+      }
 
-  override def toString: String = "nationality"
+      "when container id is undefined" in {
+        val transportEquipment = TransportEquipment(None)
+        val result             = transportEquipment.asString
+        result mustBe None
+      }
+    }
+  }
 }

@@ -113,7 +113,7 @@ class ReferenceDataServiceSpec extends AnyFreeSpec with ScalaFutures with Matche
       "return false when cusCode does not exist" in {
         val cusCode = "0010001-6"
 
-        when(mockConnector.getCUSCode(any())(any(), any())).thenReturn(Future.failed(new NoReferenceDataFoundException))
+        when(mockConnector.getCUSCode(any())(any(), any())).thenReturn(Future.failed(new NoReferenceDataFoundException("")))
 
         val service = new ReferenceDataServiceImpl(mockConnector)
 

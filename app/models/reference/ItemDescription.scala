@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package models
+package models.reference
 
-import play.api.i18n.Messages
+import play.api.libs.json.{Json, OFormat}
 
-case class TransportEquipment(containerId: Option[String]) {
+case class ItemDescription(declarationGoodsItemNumber: BigInt, description: String) extends Selectable {
+  override def toString: String = s"$declarationGoodsItemNumber"
 
-  def asString(implicit messages: Messages): Option[String] = containerId.map(
-    id => messages("transportEquipment.containerId", id)
-  )
+  override val value: String = declarationGoodsItemNumber.toString
+}
+
+object ItemDescription {
+  implicit val format: OFormat[ItemDescription] = Json.format[ItemDescription]
 }

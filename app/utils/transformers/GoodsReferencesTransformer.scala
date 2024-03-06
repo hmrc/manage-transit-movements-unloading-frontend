@@ -35,7 +35,9 @@ class GoodsReferencesTransformer @Inject() (implicit ec: ExecutionContext) exten
             val itemIndex: Index = Index(i)
             val pipeline: UserAnswers => Future[UserAnswers] =
               setSequenceNumber(ItemSection(equipmentIndex, itemIndex), sequenceNumber) andThen
-                set(ItemPage(equipmentIndex, itemIndex), Item(declarationGoodsItemNumber.intValue, sequenceNumber))
+                set(ItemPage(equipmentIndex, itemIndex),
+                    Item(declarationGoodsItemNumber.intValue, sequenceNumber)
+                ) // TODO - decide what to do here. Either just set the declarationGoodsItemNumber or do a lookup for the item description corresponding to the declarationGoodsItemNumber. Personal preference might be just to set the declarationGoodsItemNumber
 
             pipeline(userAnswers)
         }

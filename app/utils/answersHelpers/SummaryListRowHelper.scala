@@ -27,6 +27,7 @@ import utils.Format.cyaDateFormatter
 
 import java.time.LocalDate
 import javax.xml.datatype.XMLGregorianCalendar
+import scala.language.implicitConversions
 
 class SummaryListRowHelper(implicit messages: Messages) {
 
@@ -50,6 +51,17 @@ class SummaryListRowHelper(implicit messages: Messages) {
   protected def formatAsText[T](answer: T): Content           = s"$answer".toText
   protected def formatAsPackage(answer: PackageType): Content = s"${answer.asDescription}".toText
   protected def formatAsWeight[T](answer: T): Content         = s"${answer}kg".toText
+
+  protected def formatAsLink(answer: String, href: String): Content = {
+    val ans =
+      s"""
+         |<a class="govuk-link" href="$href">
+         |  $answer
+         |</a>
+        |""".stripMargin
+    HtmlContent(ans)
+
+  }
 
   protected def formatAsHtmlContent[T](answer: T): Content =
     HtmlContent(answer.toString)

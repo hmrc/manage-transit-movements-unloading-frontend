@@ -23,19 +23,18 @@ import models.{NormalMode, TransportEquipment, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
+import org.scalacheck.Gen
 import pages.ContainerIdentificationNumberPage
 import pages.sections.TransportMeansSection
 import pages.transportEquipment.index.AddContainerIdentificationNumberYesNoPage
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpVerbs.GET
 import views.html.RemoveTransportEquipmentYesNoView
 
 import scala.concurrent.Future
-import org.scalacheck.Gen
 
 class RemoveTransportEquipmentYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
@@ -93,7 +92,9 @@ class RemoveTransportEquipmentYesNoControllerSpec extends SpecBase with AppWithD
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual Call(GET, "#").url //todo update when add another page implemented
+        redirectLocation(result).value mustEqual controllers.transportEquipment.routes.AddAnotherEquipmentController
+          .onPageLoad(arrivalId, mode)
+          .url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -119,7 +120,9 @@ class RemoveTransportEquipmentYesNoControllerSpec extends SpecBase with AppWithD
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual Call(GET, "#").url //todo update when add another page implemented
+        redirectLocation(result).value mustEqual controllers.transportEquipment.routes.AddAnotherEquipmentController
+          .onPageLoad(arrivalId, mode)
+          .url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -144,7 +147,9 @@ class RemoveTransportEquipmentYesNoControllerSpec extends SpecBase with AppWithD
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual Call(GET, "#").url //todo update when add another page implemented
+      redirectLocation(result).value mustEqual controllers.transportEquipment.routes.AddAnotherEquipmentController
+        .onPageLoad(arrivalId, mode)
+        .url
 
     }
 

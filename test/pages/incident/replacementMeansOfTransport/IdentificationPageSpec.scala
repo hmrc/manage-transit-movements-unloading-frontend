@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package pages.incident.transhipment
+package pages.incident.replacementMeansOfTransport
 
-import models.reference.Country
+import models.departureTransportMeans.TransportMeansIdentification
 import pages.behaviours.PageBehaviours
 
-class NationalityPageSpec extends PageBehaviours {
+class IdentificationPageSpec extends PageBehaviours {
 
-  "NationalityPage" - {
+  "IdentificationPage" - {
 
-    beRetrievable[Country](NationalityPage(index))
+    beRetrievable[TransportMeansIdentification](IdentificationPage(index))
 
-    beSettable[Country](NationalityPage(index))
+    beSettable[TransportMeansIdentification](IdentificationPage(index))
 
-    beRemovable[Country](NationalityPage(index))
+    beRemovable[TransportMeansIdentification](IdentificationPage(index))
   }
 }

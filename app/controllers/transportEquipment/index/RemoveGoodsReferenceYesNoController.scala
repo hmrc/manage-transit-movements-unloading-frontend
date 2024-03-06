@@ -18,9 +18,10 @@ package controllers.transportEquipment.index
 
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.reference.Item
+import models.reference.{Item, ItemDescription}
 import models.requests.SpecificDataRequestProvider1
-import models.{ArrivalId, Index}
+import models.{ArrivalId, Index, RichOptionalJsArray, UserAnswers}
+import pages.sections.{HouseConsignmentsSection, ItemsSection}
 import pages.sections.transport.equipment.ItemSection
 import pages.transportEquipment.index.ItemPage
 import play.api.data.Form
@@ -32,6 +33,7 @@ import views.html.transportEquipment.index.RemoveItemYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import pages.houseConsignment.index.items.ItemGoodsReferenceDescriptionPage
 
 class RemoveGoodsReferenceYesNoController @Inject() (
   override val messagesApi: MessagesApi,
@@ -56,6 +58,9 @@ class RemoveGoodsReferenceYesNoController @Inject() (
     .requireIndex(arrivalId, ItemSection(equipmentIndex, itemIndex), addAnother(arrivalId, equipmentIndex))
     .andThen(getMandatoryPage.getFirst(ItemPage(equipmentIndex, itemIndex))) {
       implicit request =>
+        val allItemsFromData: Seq[ItemDescription] = request.userAnswers.allItems
+
+        // TODO - can we add some kind of helper method to extract the item description from user answers that corresponds to the declarationGoodsItemNumebr in ItemPage(equipmentIndex, itemIndex)
         Ok(view(form(equipmentIndex), request.userAnswers.mrn, arrivalId, equipmentIndex, itemIndex, request.arg.toString))
     }
 
@@ -81,4 +86,19 @@ class RemoveGoodsReferenceYesNoController @Inject() (
               } yield Redirect(addAnother(arrivalId, equipmentIndex))
           )
     }
+
+
+  implicit class userAnswersMethods(userAnswers:UserAnswers) {
+    def allItems: Seq[ItemDescription] = userAnswers
+      .get(HouseConsignmentsSection)
+      .mapWithIndex {
+        case (_, houseIndex) =>
+          userAnswers.get(ItemsSection(houseIndex)).mapWithIndex {
+            case (_, itemIndex) =>
+              userAnswers.get(ItemGoodsReferenceDescriptionPage(houseIndex, itemIndex))
+          }
+      }
+      .flatten
+      .flatten
+  }
 }
