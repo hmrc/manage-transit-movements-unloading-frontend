@@ -42,7 +42,7 @@ class RemoveCommodityCodeYesNoController @Inject() (
     with I18nSupport {
 
   private def form(houseConsignmentIndex: Index, itemIndex: Index): Form[Boolean] =
-    formProvider("houseConsignment.removeCommodityCodeYesNo", houseConsignmentIndex.display, itemIndex.display)
+    formProvider("houseConsignment.removeCommodityCodeYesNo", itemIndex.display, houseConsignmentIndex.display)
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId) {

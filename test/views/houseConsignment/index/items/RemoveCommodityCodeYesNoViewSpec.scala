@@ -35,13 +35,13 @@ class RemoveCommodityCodeYesNoViewSpec extends YesNoViewBehaviours with Generato
 
   override val prefix: String = "houseConsignment.removeCommodityCodeYesNo"
 
-  behave like pageWithTitle(houseConsignmentIndex.display, itemIndex.display)
+  behave like pageWithTitle(itemIndex.display, houseConsignmentIndex.display)
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithHeading(houseConsignmentIndex.display, itemIndex.display)
+  behave like pageWithHeading(itemIndex.display, houseConsignmentIndex.display)
 
   behave like pageWithRadioItems(args = Seq(houseConsignmentIndex.display, itemIndex.display))
 
