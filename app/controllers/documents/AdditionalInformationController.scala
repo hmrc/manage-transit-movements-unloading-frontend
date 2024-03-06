@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.AdditionalInformationFormProvider
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigator
+import navigation.DocumentNavigation
 import pages.documents.AdditionalInformationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -38,7 +38,7 @@ class AdditionalInformationController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   formProvider: AdditionalInformationFormProvider,
-  navigator: Navigator,
+  navigator: DocumentNavigation,
   view: AdditionalInformationView,
   viewModelProvider: AdditionalInformationViewModelProvider
 )(implicit ec: ExecutionContext)

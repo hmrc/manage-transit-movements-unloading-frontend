@@ -17,9 +17,8 @@
 package utils.answersHelpers.consignment.houseConsignment
 
 import models.DocType.Previous
-import models.{Index, Link, UserAnswers}
 import models.reference.Country
-import models.{Index, RichOptionalJsArray, UserAnswers}
+import models.{Index, Link, RichOptionalJsArray, UserAnswers}
 import pages.NetWeightPage
 import pages.houseConsignment.index.items.document.TypePage
 import pages.houseConsignment.index.items.{

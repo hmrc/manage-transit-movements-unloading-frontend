@@ -17,8 +17,7 @@
 package utils.answersHelpers.consignment
 
 import models.reference.Country
-import models.{Index, Link, UserAnswers}
-import models.{Index, RichOptionalJsArray, UserAnswers}
+import models.{Index, Link, RichOptionalJsArray, UserAnswers}
 import pages._
 import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
