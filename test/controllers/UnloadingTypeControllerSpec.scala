@@ -94,7 +94,7 @@ class UnloadingTypeControllerSpec extends SpecBase with Generators with AppWithD
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual "/manage-transit-movements/unloading/AB123/goods-unloaded-date"
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

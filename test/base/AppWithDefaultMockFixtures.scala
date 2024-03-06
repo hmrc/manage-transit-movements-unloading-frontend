@@ -17,6 +17,7 @@
 package base
 
 import controllers.actions._
+import controllers.routes
 import models.P5.ArrivalMessageType.UnloadingPermission
 import models.P5._
 import models.UserAnswers
@@ -70,7 +71,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   // TODO - delete?
   protected def checkArrivalStatus(): Unit = ()
 
-  protected val onwardRoute: Call = Call("GET", "/foo")
+  protected val onwardRoute: Call = routes.SessionExpiredController.onPageLoad()
 
   protected val fakeNavigator: Navigator = new FakeNavigator(onwardRoute)
 

@@ -21,7 +21,13 @@ import models.reference.Country
 import models.{Index, Link, NormalMode, RichOptionalJsArray, UserAnswers}
 import pages.NetWeightPage
 import pages.houseConsignment.index.items.document.TypePage
-import pages.houseConsignment.index.items.{ConsigneeAddressPage => ItemConsigneeAddressPage, ConsigneeCountryPage => ItemConsigneeCountryPage, ConsigneeIdentifierPage => ItemConsigneeIdentifierPage, ConsigneeNamePage => ItemConsigneeNamePage, _}
+import pages.houseConsignment.index.items.{
+  ConsigneeAddressPage => ItemConsigneeAddressPage,
+  ConsigneeCountryPage => ItemConsigneeCountryPage,
+  ConsigneeIdentifierPage => ItemConsigneeIdentifierPage,
+  ConsigneeNamePage => ItemConsigneeNamePage,
+  _
+}
 import pages.sections.PackagingListSection
 import pages.sections.houseConsignment.index.items.additionalInformation.AdditionalInformationsSection
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferencesSection

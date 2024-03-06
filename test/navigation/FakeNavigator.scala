@@ -24,4 +24,14 @@ class FakeNavigator(desiredRoute: Call) extends Navigator {
 
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
     desiredRoute
+
+  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case _ =>
+      _ => Some(desiredRoute)
+  }
+
+  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case _ =>
+      _ => Some(desiredRoute)
+  }
 }

@@ -31,5 +31,7 @@ class DocumentNavigation extends Navigator {
     case TypePage(_)                    => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
   }
 
-  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = ???
+  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case _ => _ => Some(Call("GET", "#")) //TODO: Update document navigation
+  }
 }
