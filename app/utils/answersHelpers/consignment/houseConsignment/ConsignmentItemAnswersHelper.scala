@@ -17,9 +17,8 @@
 package utils.answersHelpers.consignment.houseConsignment
 
 import models.DocType.Previous
-import models.{Index, Link, UserAnswers}
 import models.reference.Country
-import models.{Index, RichOptionalJsArray, UserAnswers}
+import models.{Index, Link, NormalMode, RichOptionalJsArray, UserAnswers}
 import pages.NetWeightPage
 import pages.houseConsignment.index.items.document.TypePage
 import pages.houseConsignment.index.items.{
@@ -41,6 +40,8 @@ import utils.answersHelpers.AnswersHelper
 import utils.answersHelpers.consignment.houseConsignment.item._
 import viewModels.sections.Section
 import viewModels.sections.Section.{AccordionSection, StaticSection}
+
+import java.lang.ProcessBuilder.Redirect
 
 class ConsignmentItemAnswersHelper(
   userAnswers: UserAnswers,
@@ -162,7 +163,8 @@ class ConsignmentItemAnswersHelper(
     args = itemIndex.display,
     id = s"commodity-code-${itemIndex.display}",
     change = Call(GET, "#"),
-    remove = Call(GET, "#"),
+    remove =
+      controllers.houseConsignment.index.items.routes.RemoveCommodityCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode),
     hiddenLink = "commodityCodeLink"
   )
 

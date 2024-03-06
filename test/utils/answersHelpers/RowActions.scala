@@ -16,6 +16,7 @@
 
 package utils.answersHelpers
 
+import models.{ArrivalId, Index, NormalMode}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions}
 
@@ -127,7 +128,13 @@ trait RowActions {
       "",
       List(
         ActionItem("#", Text("Change"), Some("commodity code for item 1"), "", Map("id" -> "change-commodity-code-1")),
-        ActionItem("#", Text("Remove"), Some("commodity code for item 1"), "", Map("id" -> "remove-commodity-code-1"))
+        ActionItem(
+          "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/commodity-code/remove",
+          Text("Remove"),
+          Some("commodity code for item 1"),
+          "",
+          Map("id" -> "remove-commodity-code-1")
+        )
       )
     )
   )

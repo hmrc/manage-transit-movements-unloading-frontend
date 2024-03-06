@@ -654,6 +654,10 @@ houseConsignment.commodityCode.error.required = Enter the new commodity code of 
 houseConsignment.commodityCode.error.invalid = The commodity code must only include letters a to z and numbers 0 to 9
 houseConsignment.commodityCode.error.length = The commodity code must be 6 characters long
 
+houseConsignment.removeCommodityCodeYesNo.title = Are you sure you want to remove the commodity code from item {0} in house consignment {1}?
+houseConsignment.removeCommodityCodeYesNo.heading = Are you sure you want to remove the commodity code from item {0} in house consignment {1}?
+houseConsignment.removeCommodityCodeYesNo.error.required = Select yes if you want to remove the commodity code from item {0} in house consignment {1}
+
 houseConsignment.combinedNomenclatureCode.title = What is the new combined nomenclature code for item {0} in house consignment {0}?
 houseConsignment.combinedNomenclatureCode.heading = What is the new combined nomenclature code for item {0} in house consignment {0}?
 houseConsignment.combinedNomenclatureCode.xi.paragraph = The combination of your combined nomenclature code and commodity code must be a valid code in TARIC. This is the European Union’s database for classifying goods and determining the amount of duties required.
