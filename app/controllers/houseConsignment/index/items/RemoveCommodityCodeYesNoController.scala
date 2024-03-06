@@ -17,11 +17,10 @@
 package controllers.houseConsignment.index.items
 
 import controllers.actions._
-import forms.ConfirmRemoveCommentsFormProvider
+import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigator
-import pages.ConfirmRemoveCommentsPage
 import pages.houseConsignment.index.items.CommodityCodePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -34,44 +33,41 @@ import scala.concurrent.{ExecutionContext, Future}
 class RemoveCommodityCodeYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
   actions: Actions,
-  formProvider: ConfirmRemoveCommentsFormProvider,
+  formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveCommodityCodeYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider()
+  private def form(houseConsignmentIndex: Index, itemIndex: Index): Form[Boolean] =
+    formProvider("houseConsignment.removeCommodityCodeYesNo", houseConsignmentIndex.display, itemIndex.display)
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId) {
       implicit request =>
         val insetText: Option[String] = request.userAnswers.get(CommodityCodePage(houseConsignmentIndex, itemIndex))
-        Ok(view(form, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode, insetText))
+        Ok(view(form(houseConsignmentIndex, itemIndex), request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode, insetText))
     }
 
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
         val insetText: Option[String] = request.userAnswers.get(CommodityCodePage(houseConsignmentIndex, itemIndex))
-        form
+        form(houseConsignmentIndex, itemIndex)
           .bindFromRequest()
           .fold(
             formWithErrors =>
               Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode, insetText))),
             value =>
-              if (value) {
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.remove(CommodityCodePage(houseConsignmentIndex, itemIndex)))
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex)) //todo update on navigation ticket
-              } else {
-                Future.successful(
-                  Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
-                ) //todo update on navigation ticket??
-              }
+              for {
+                updatedAnswers <-
+                  if (value) {
+                    Future.fromTry(request.userAnswers.remove(CommodityCodePage(houseConsignmentIndex, itemIndex)))
+                  } else { Future.successful(request.userAnswers) }
+                _ <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
           )
     }
 }
