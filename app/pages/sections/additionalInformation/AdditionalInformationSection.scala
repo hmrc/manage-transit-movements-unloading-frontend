@@ -17,10 +17,10 @@
 package pages.sections.additionalInformation
 
 import models.Index
-import pages.QuestionPage
+import pages.sections.Section
 import play.api.libs.json.{JsObject, JsPath}
 
-case class AdditionalInformationSection(informationIndex: Index) extends QuestionPage[JsObject] {
+case class AdditionalInformationSection(informationIndex: Index) extends Section[JsObject] {
 
   override def path: JsPath = AdditionalInformationListSection.path \ informationIndex.position
 

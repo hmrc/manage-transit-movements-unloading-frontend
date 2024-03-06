@@ -100,22 +100,18 @@ class ConsignmentItemAnswersHelper(
         )
     }
 
-  def additionalInformationsSection: Section = {
-    val rows = userAnswers
-      .get(AdditionalInformationsSection(houseConsignmentIndex, itemIndex))
-      .mapWithIndex {
-        case (_, additionalInformationIndex) =>
-          val helper = new AdditionalInformationsAnswerHelper(userAnswers, houseConsignmentIndex, itemIndex, additionalInformationIndex)
-          Seq(helper.additionalInformationCodeRow, helper.additionalInformationTextRow).flatten
-
-      }
-      .flatten
-
-    AccordionSection(
-      sectionTitle = messages("unloadingFindings.additional.information.heading"),
-      rows = rows
-    )
-  }
+  def additionalInformationsSection: Seq[Section] =
+    userAnswers.get(AdditionalInformationsSection(houseConsignmentIndex, itemIndex)).mapWithIndex {
+      case (_, index) =>
+        val helper = new AdditionalInformationsAnswerHelper(userAnswers, houseConsignmentIndex, itemIndex, index)
+        AccordionSection(
+          sectionTitle = messages("unloadingFindings.additional.information.heading", index.display),
+          rows = Seq(
+            helper.additionalInformationCodeRow,
+            helper.additionalInformationTextRow
+          ).flatten
+        )
+    }
 
   def documentSections: Seq[Section] =
     userAnswers

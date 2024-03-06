@@ -278,7 +278,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.head.children(3).rows.head.value.value mustBe additionalReference.toString
 
             result.head.children(4) mustBe a[AccordionSection]
-            result.head.children(4).sectionTitle.value mustBe "Additional information"
+            result.head.children(4).sectionTitle.value mustBe "Additional information 1"
             result.head.children(4).rows.size mustBe 1
             result.head.children(4).rows.head.value.value mustBe additionalInformation.toString
 

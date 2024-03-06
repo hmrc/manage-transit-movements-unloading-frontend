@@ -528,7 +528,7 @@ unloadingFindings.houseConsignment.item.additionalReference.type.change.hidden =
 unloadingFindings.houseConsignment.item.additionalReference.number = Reference number
 unloadingFindings.houseConsignment.item.additionalReference.number.change.hidden = reference number for additional reference {0} in item {1}
 
-unloadingFindings.additional.information.heading = Additional information
+unloadingFindings.additional.information.heading = Additional information {0}
 unloadingFindings.additional.information.code = Code
 unloadingFindings.additional.information.description = Text
 
