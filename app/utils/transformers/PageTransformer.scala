@@ -25,14 +25,14 @@ import scala.concurrent.Future
 
 trait PageTransformer {
 
-  def set[T](page: QuestionPage[T], t: T)(implicit writes: Writes[T]): UserAnswers => Future[UserAnswers] = userAnswers =>
-    Future.fromTry(userAnswers.set(page, t))
-
   def set[T](page: QuestionPage[T], value: Option[T])(implicit writes: Writes[T]): UserAnswers => Future[UserAnswers] = userAnswers =>
     value match {
       case Some(t) => set(page, t).apply(userAnswers)
       case None    => Future.successful(userAnswers)
     }
+
+  def set[T](page: QuestionPage[T], t: T)(implicit writes: Writes[T]): UserAnswers => Future[UserAnswers] = userAnswers =>
+    Future.fromTry(userAnswers.set(page, t))
 
   def setSequenceNumber(section: Section[JsObject], sequenceNumber: String): UserAnswers => Future[UserAnswers] = userAnswers =>
     Future.fromTry(userAnswers.set(section.path \ "sequenceNumber", sequenceNumber))

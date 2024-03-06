@@ -29,6 +29,8 @@ import pages.additionalInformation.AdditionalInformationCodePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import generated.AdditionalInformationType02
+import pages.houseConsignment.index.items.additionalinformation.HouseConsignmentAdditionalInformationCodePage
+
 import scala.concurrent.Future
 
 class AdditionalInformationTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
@@ -69,6 +71,26 @@ class AdditionalInformationTransformerSpec extends SpecBase with AppWithDefaultM
         result.getValue(AdditionalInformationCodePage(Index(i))).description mustBe "describe me"
     }
 
+  }
+
+  "must transform data at Item level" in {
+    val additionalInformationType02: Seq[AdditionalInformationType02] = arbitrary[Seq[AdditionalInformationType02]].sample.value
+
+    additionalInformationType02.map {
+      type0 =>
+        when(mockRefDataConnector.getAdditionalInformationCode(eqTo(type0.code))(any(), any()))
+          .thenReturn(
+            Future.successful(AdditionalInformationCode(code = type0.code, description = "describe me"))
+          )
+    }
+
+    val result = transformer.transform(additionalInformationType02, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
+
+    additionalInformationType02.zipWithIndex.map {
+      case (refType, i) =>
+        result.getValue(HouseConsignmentAdditionalInformationCodePage(hcIndex, itemIndex, Index(i))).value mustBe refType.code
+        result.getValue(HouseConsignmentAdditionalInformationCodePage(hcIndex, itemIndex, Index(i))).description mustBe "describe me"
+    }
   }
 
 }

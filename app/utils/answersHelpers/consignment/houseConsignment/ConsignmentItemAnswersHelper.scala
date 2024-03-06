@@ -19,6 +19,7 @@ package utils.answersHelpers.consignment.houseConsignment
 import models.DocType.Previous
 import models.reference.Country
 import models.{Index, Link, RichOptionalJsArray, UserAnswers}
+import models.{Index, Link, NormalMode, RichOptionalJsArray, UserAnswers}
 import pages.NetWeightPage
 import pages.houseConsignment.index.items.document.TypePage
 import pages.houseConsignment.index.items.{
@@ -28,6 +29,7 @@ import pages.houseConsignment.index.items.{
   ConsigneeNamePage => ItemConsigneeNamePage,
   _
 }
+import pages.sections.houseConsignment.index.items.additionalInformation.AdditionalInformationsSection
 import pages.sections.PackagingListSection
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferencesSection
 import pages.sections.houseConsignment.index.items.dangerousGoods.DangerousGoodsListSection
@@ -40,6 +42,8 @@ import utils.answersHelpers.AnswersHelper
 import utils.answersHelpers.consignment.houseConsignment.item._
 import viewModels.sections.Section
 import viewModels.sections.Section.{AccordionSection, StaticSection}
+
+import java.lang.ProcessBuilder.Redirect
 
 class ConsignmentItemAnswersHelper(
   userAnswers: UserAnswers,
@@ -103,6 +107,19 @@ class ConsignmentItemAnswersHelper(
         )
     }
 
+  def additionalInformationsSection: Seq[Section] =
+    userAnswers.get(AdditionalInformationsSection(houseConsignmentIndex, itemIndex)).mapWithIndex {
+      case (_, index) =>
+        val helper = new AdditionalInformationsAnswerHelper(userAnswers, houseConsignmentIndex, itemIndex, index)
+        AccordionSection(
+          sectionTitle = messages("unloadingFindings.additional.information.heading", index.display),
+          rows = Seq(
+            helper.additionalInformationCodeRow,
+            helper.additionalInformationTextRow
+          ).flatten
+        )
+    }
+
   def documentSections: Seq[Section] =
     userAnswers
       .get(DocumentsSection(houseConsignmentIndex, itemIndex))
@@ -161,7 +178,8 @@ class ConsignmentItemAnswersHelper(
     args = itemIndex.display,
     id = s"commodity-code-${itemIndex.display}",
     change = Call(GET, "#"),
-    remove = Call(GET, "#"),
+    remove =
+      controllers.houseConsignment.index.items.routes.RemoveCommodityCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode),
     hiddenLink = "commodityCodeLink"
   )
 
