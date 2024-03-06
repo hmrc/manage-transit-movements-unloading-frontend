@@ -17,6 +17,7 @@
 package views.transportEquipment.index
 
 import generators.Generators
+import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -25,9 +26,10 @@ import views.html.transportEquipment.index.RemoveItemYesNoView
 class RemoveItemYesNoViewSpec extends YesNoViewBehaviours with Generators {
 
   private val itemIdNumber = nonEmptyString.sample.value
+  private val insetText    = Gen.alphaNumStr.sample.value
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[RemoveItemYesNoView].apply(form, mrn, arrivalId, equipmentIndex, itemIndex, itemIdNumber)(fakeRequest, messages)
+    injector.instanceOf[RemoveItemYesNoView].apply(form, mrn, arrivalId, equipmentIndex, itemIndex, itemIdNumber, Some(insetText))(fakeRequest, messages)
 
   override val prefix: String = "transportEquipment.index.item.removeItemYesNo"
 
@@ -41,5 +43,16 @@ class RemoveItemYesNoViewSpec extends YesNoViewBehaviours with Generators {
 
   behave like pageWithRadioItems(args = Seq(equipmentIndex.display, itemIdNumber))
 
+  behave like pageWithInsetText(insetText)
+
   behave like pageWithSubmitButton("Continue")
+
+  "when inset text undefined" - {
+    val view = injector
+      .instanceOf[RemoveItemYesNoView]
+      .apply(form, mrn, arrivalId, equipmentIndex, itemIndex, itemIdNumber, None)(fakeRequest, messages)
+    val doc = parseView(view)
+
+    behave like pageWithoutInsetText(doc)
+  }
 }

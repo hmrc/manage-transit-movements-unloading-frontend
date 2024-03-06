@@ -58,10 +58,17 @@ class RemoveGoodsReferenceYesNoController @Inject() (
     .requireIndex(arrivalId, ItemSection(equipmentIndex, itemIndex), addAnother(arrivalId, equipmentIndex))
     .andThen(getMandatoryPage.getFirst(ItemPage(equipmentIndex, itemIndex))) {
       implicit request =>
-        val allItemsFromData: Seq[ItemDescription] = request.userAnswers.allItems
-
-        // TODO - can we add some kind of helper method to extract the item description from user answers that corresponds to the declarationGoodsItemNumebr in ItemPage(equipmentIndex, itemIndex)
-        Ok(view(form(equipmentIndex), request.userAnswers.mrn, arrivalId, equipmentIndex, itemIndex, request.arg.toString))
+        Ok(
+          view(
+            form(equipmentIndex),
+            request.userAnswers.mrn,
+            arrivalId,
+            equipmentIndex,
+            itemIndex,
+            request.arg.toString,
+            insetText(equipmentIndex, itemIndex, request.userAnswers)
+          )
+        )
     }
 
   def onSubmit(arrivalId: ArrivalId, equipmentIndex: Index, itemIndex: Index): Action[AnyContent] = actions
@@ -73,7 +80,19 @@ class RemoveGoodsReferenceYesNoController @Inject() (
           .bindFromRequest()
           .fold(
             formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, equipmentIndex, itemIndex, request.arg.toString))),
+              Future.successful(
+                BadRequest(
+                  view(
+                    formWithErrors,
+                    request.userAnswers.mrn,
+                    arrivalId,
+                    equipmentIndex,
+                    itemIndex,
+                    request.arg.toString,
+                    insetText(equipmentIndex, itemIndex, request.userAnswers)
+                  )
+                )
+              ),
             value =>
               for {
                 updatedAnswers <-
@@ -87,8 +106,33 @@ class RemoveGoodsReferenceYesNoController @Inject() (
           )
     }
 
+  private def insetText(equipmentIndex: Index, itemIndex: Index, userAnswers: UserAnswers): Option[String] = {
+    val item = userAnswers.get(ItemPage(equipmentIndex, itemIndex))
 
-  implicit class userAnswersMethods(userAnswers:UserAnswers) {
+    val description = itemDescription(userAnswers, item)
+
+    item.map(
+      item => item.value + "-" + description
+    )
+  }
+
+  private def itemDescription(userAnswers: UserAnswers, item: Option[Item]) =
+    userAnswers.allItems
+      .find(
+        id =>
+          id.declarationGoodsItemNumber.toString == item
+            .map(
+              item => item.value
+            )
+            .getOrElse("")
+      )
+      .map(
+        id => id.description
+      )
+      .getOrElse("")
+
+  implicit class userAnswersMethods(userAnswers: UserAnswers) {
+
     def allItems: Seq[ItemDescription] = userAnswers
       .get(HouseConsignmentsSection)
       .mapWithIndex {

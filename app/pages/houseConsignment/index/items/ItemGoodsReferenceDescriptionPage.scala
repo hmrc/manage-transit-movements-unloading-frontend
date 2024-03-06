@@ -28,5 +28,3 @@ case class ItemGoodsReferenceDescriptionPage(houseConsignmentIndex: Index, itemI
 
   override def toString: String = "itemAndDescription"
 }
-
-

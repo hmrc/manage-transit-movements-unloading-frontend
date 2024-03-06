@@ -52,7 +52,7 @@ class RemoveItemYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, equipmentIndex, itemIndex, itemIdNumber.toString)(request, messages).toString
+        view(form, mrn, arrivalId, equipmentIndex, itemIndex, itemIdNumber.toString, None)(request, messages).toString
     }
 
     "must redirect to the next page" - {
@@ -105,7 +105,7 @@ class RemoveItemYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
       val view = injector.instanceOf[RemoveItemYesNoView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, arrivalId, equipmentIndex, itemIndex, itemIdNumber.value)(request, messages).toString
+        view(boundForm, mrn, arrivalId, equipmentIndex, itemIndex, itemIdNumber.value, None)(request, messages).toString
     }
 
     "must redirect for a GET" - {
