@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items
 import controllers.actions._
 import forms.NumberOfPackagesFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigation
+import navigation.ConsignmentItemNavigator
 import pages.NumberOfPackagesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -30,11 +30,12 @@ import views.html.houseConsignment.index.items.NumberOfPackagesView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.math.BigInt
 
 class NumberOfPackagesController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigation,
+  navigator: ConsignmentItemNavigator,
   actions: Actions,
   formProvider: NumberOfPackagesFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -51,7 +52,7 @@ class NumberOfPackagesController @Inject() (
         val form      = formProvider(viewModel.requiredError)
         val preparedForm = request.userAnswers.get(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex)) match {
           case None        => form
-          case Some(value) => form.fill(value)
+          case Some(value) => form.fill(value.toString)
         }
         Ok(
           view(
@@ -93,8 +94,10 @@ class NumberOfPackagesController @Inject() (
               ),
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex), value))
-                _              <- sessionRepository.set(updatedAnswers)
+
+                updatedAnswers <- Future
+                  .fromTry(request.userAnswers.set(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex), BigInt(value.toInt)))
+                _ <- sessionRepository.set(updatedAnswers)
               } yield Redirect(navigator.nextPage(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex), mode, updatedAnswers))
           )
     }

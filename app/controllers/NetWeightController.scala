@@ -19,6 +19,7 @@ package controllers
 import controllers.actions._
 import forms.NetWeightFormProvider
 import models.{ArrivalId, Index, Mode}
+import navigation.ConsignmentItemNavigator
 import pages.NetWeightPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,6 +36,7 @@ class NetWeightController @Inject() (
   actions: Actions,
   formProvider: NetWeightFormProvider,
   val controllerComponents: MessagesControllerComponents,
+  navigator: ConsignmentItemNavigator,
   view: NetWeightView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -64,7 +66,7 @@ class NetWeightController @Inject() (
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(NetWeightPage(houseConsignmentIndex, itemIndex), value.toDouble))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+              } yield Redirect(navigator.nextPage(NetWeightPage(houseConsignmentIndex, itemIndex), mode, request.userAnswers))
           )
     }
 }

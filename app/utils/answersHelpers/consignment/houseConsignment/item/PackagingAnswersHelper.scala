@@ -17,8 +17,8 @@
 package utils.answersHelpers.consignment.houseConsignment.item
 
 import models.reference.PackageType
-import models.{Index, UserAnswers}
-import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
+import models.{CheckMode, Index, UserAnswers}
+import pages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -29,30 +29,38 @@ class PackagingAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: In
     extends AnswersHelper(userAnswers) {
 
   private[houseConsignment] def packageTypeRow: Option[SummaryListRow] = getAnswerAndBuildRow[PackageType](
-    page = PackagingTypePage(houseConsignmentIndex, itemIndex, packageIndex),
+    page = PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex),
     formatAnswer = formatAsPackage,
     prefix = "unloadingFindings.rowHeadings.item.packageType",
     args = Seq(packageIndex.display, itemIndex.display): _*,
     id = Some(s"change-package-type-${itemIndex.display}-${packageIndex.display}"),
-    call = Some(Call(GET, "#"))
+    call = Some(
+      controllers.houseConsignment.index.items.routes.PackageTypeController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, CheckMode)
+    )
   )
 
   private[houseConsignment] def packageMarksRow: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = PackagingMarksPage(houseConsignmentIndex, itemIndex, packageIndex),
+    page = PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.item.packageMarks",
     args = Seq(packageIndex.display, itemIndex.display): _*,
     id = Some(s"change-package-mark-${itemIndex.display}-${packageIndex.display}"),
-    call = Some(Call(GET, "#"))
+    call = Some(
+      controllers.houseConsignment.index.items.routes.PackageShippingMarkController
+        .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, CheckMode)
+    )
   )
 
   private[houseConsignment] def packageCountRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigInt](
-    page = PackagingCountPage(houseConsignmentIndex, itemIndex, packageIndex),
+    page = NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.item.packageCount",
     args = Seq(packageIndex.display, itemIndex.display): _*,
     id = Some(s"change-package-count-${itemIndex.display}-${packageIndex.display}"),
-    call = Some(Call(GET, "#"))
+    call = Some(
+      controllers.houseConsignment.index.items.routes.NumberOfPackagesController
+        .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, CheckMode)
+    )
   )
 
 }

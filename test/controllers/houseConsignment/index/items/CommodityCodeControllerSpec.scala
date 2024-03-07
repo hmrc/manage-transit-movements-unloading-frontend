@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.CommodityCodeFormProvider
 import generators.Generators
-import models.NormalMode
+import models.CheckMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.items.CommodityCodePage
@@ -34,7 +34,7 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
   private val formProvider = new CommodityCodeFormProvider()
   private val form         = formProvider(index, index)
-  private val mode         = NormalMode
+  private val mode         = CheckMode
 
   lazy val commodityCodeControllerRoute: String =
     controllers.houseConsignment.index.items.routes.CommodityCodeController.onPageLoad(arrivalId, index, index, mode).url
@@ -92,7 +92,7 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+      redirectLocation(result).value mustEqual controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex).url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

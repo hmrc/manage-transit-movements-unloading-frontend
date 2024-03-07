@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NumberOfPackagesFormProvider
 import generators.Generators
-import models.NormalMode
+import models.CheckMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -39,7 +39,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
   private val formProvider: NumberOfPackagesFormProvider = new NumberOfPackagesFormProvider()
   private val mockViewModelProvider                      = mock[NumberOfPackagesViewModelProvider]
   private val viewModel                                  = arbitrary[NumberOfPackagesViewModel].sample.value
-  private val mode                                       = NormalMode
+  private val mode                                       = CheckMode
   private val form                                       = formProvider(viewModel.requiredError)
   private val validAnswer                                = "1"
 
@@ -57,7 +57,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
   }
 
   lazy val totalNumberOfPackagesRoute: String =
-    routes.NumberOfPackagesController.onPageLoad(arrivalId, hcIndex, itemIndex, index, NormalMode).url
+    routes.NumberOfPackagesController.onPageLoad(arrivalId, hcIndex, itemIndex, index, CheckMode).url
 
   "TotalNumberOfPackages Controller" - {
 
@@ -73,7 +73,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, arrivalId, mrn, hcIndex, itemIndex, index, NormalMode, viewModel)(request, messages).toString
+        view(form, arrivalId, mrn, hcIndex, itemIndex, index, CheckMode, viewModel)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -92,7 +92,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
       val view       = injector.instanceOf[NumberOfPackagesView]
 
       contentAsString(result) mustEqual
-        view(filledForm, arrivalId, mrn, hcIndex, itemIndex, index, mode, viewModel)(request, messages).toString
+        view(filledForm, arrivalId, mrn, hcIndex, itemIndex, index, CheckMode, viewModel)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -110,7 +110,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex).url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
@@ -127,7 +127,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
       val view = injector.instanceOf[NumberOfPackagesView]
 
       contentAsString(result) mustEqual
-        view(boundForm, arrivalId, mrn, hcIndex, itemIndex, index, mode, viewModel)(request, messages).toString
+        view(boundForm, arrivalId, mrn, hcIndex, itemIndex, index, CheckMode, viewModel)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
