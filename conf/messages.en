@@ -564,8 +564,8 @@ unloadingFindings.houseConsignment.item.additionalReference.number = Reference n
 unloadingFindings.houseConsignment.item.additionalReference.number.change.hidden = reference number for additional reference {0} in item {1}
 
 unloadingFindings.additional.information.heading = Additional information {0}
-unloadingFindings.additional.information.code = Code
-unloadingFindings.additional.information.description = Text
+unloadingFindings.additional.information.code = Type
+unloadingFindings.additional.information.description = Description
 
 unloadingFindings.dangerousGoods.unNumber = UN number {0}
 unloadingFindings.dangerousGoods.unNumber.change.hidden = UN number {0} for item {1}
