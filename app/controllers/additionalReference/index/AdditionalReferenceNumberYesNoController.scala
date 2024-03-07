@@ -44,28 +44,28 @@ class AdditionalReferenceNumberYesNoController @Inject() (
 
   private val form = formProvider("additionalReference.index.additionalReferenceNumberYesNo")
 
-  def onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, additionalReferenceIndex: Index, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId) {
 
     implicit request =>
-      val preparedForm = request.userAnswers.get(AdditionalReferenceNumberYesNoPage(transportMeansIndex)) match {
+      val preparedForm = request.userAnswers.get(AdditionalReferenceNumberYesNoPage(additionalReferenceIndex)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode))
+      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, additionalReferenceIndex, mode))
   }
 
-  def onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId).async {
+  def onSubmit(arrivalId: ArrivalId, additionalReferenceIndex: Index, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, additionalReferenceIndex, mode))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AdditionalReferenceNumberYesNoPage(transportMeansIndex), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AdditionalReferenceNumberYesNoPage(additionalReferenceIndex), value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AdditionalReferenceNumberYesNoPage(transportMeansIndex), mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(AdditionalReferenceNumberYesNoPage(additionalReferenceIndex), mode, updatedAnswers))
         )
   }
 }

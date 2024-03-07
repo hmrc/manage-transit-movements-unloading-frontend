@@ -28,7 +28,7 @@ errorSummary: ErrorSummary,
 button: Button
 )
 
-@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, additionalReferenceIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("additionalReference.index.additionalReferenceNumberYesNo.title"),
@@ -37,7 +37,7 @@ button: Button
 
         @errorSummary(form.errors)
 
-        @formHelper(action = routes.AdditionalReferenceNumberYesNoController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
+        @formHelper(action = routes.AdditionalReferenceNumberYesNoController.onSubmit(arrivalId, additionalReferenceIndex, mode), Symbol("autoComplete") -> "off") {
 
         @inputYesNo(
             field = form("value"),
