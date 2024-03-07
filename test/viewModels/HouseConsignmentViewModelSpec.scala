@@ -109,13 +109,13 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         result.sections.head.sectionTitle.value mustBe "Item 1"
         result.sections.head.rows.size mustBe 5
 
-        result.sections(1) mustBe a[StaticSection]
-        result.sections(1).sectionTitle must not be defined
-        result.sections(1).rows.size mustBe 2
-
         result.sections(2) mustBe a[StaticSection]
-        result.sections(2).sectionTitle.value mustBe "Consignee"
+        result.sections(2).sectionTitle must not be defined
         result.sections(2).rows.size mustBe 2
+
+        result.sections(3) mustBe a[StaticSection]
+        result.sections(3).sectionTitle.value mustBe "Consignee"
+        result.sections(3).rows.size mustBe 2
 
       }
     }
