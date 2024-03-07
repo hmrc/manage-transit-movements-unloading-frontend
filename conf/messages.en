@@ -55,23 +55,23 @@ documentsLink.addRemove = Add or remove document
 documentsLink.visuallyHidden = Add or remove document
 additionalReferenceLink.addRemove = Add or remove additional reference
 additionalReferenceLink.visuallyHidden = Add or remove additional reference
-commodityCodeLink.add = Add commodity code
-commodityCodeLink.add.visuallyHidden = Add commodity code
+commodityCodeLink.add = Enter commodity code
+commodityCodeLink.add.visuallyHidden = Enter commodity code
 commodityCodeLink.remove = Remove commodity code
 commodityCodeLink.remove.visuallyHidden = Remove commodity code
 nomenclatureCodeLink.remove = Remove nomenclature code
 nomenclatureCodeLink.remove.visuallyHidden = Remove nomenclature code
 
-nomenclatureCodeLink.add = Add nomenclature code
-nomenclatureCodeLink.add.visuallyHidden = Add nomenclature code
+nomenclatureCodeLink.add = Enter nomenclature code
+nomenclatureCodeLink.add.visuallyHidden = Enter nomenclature code
 grossWeightLink.remove = Remove gross weight
 grossWeightLink.remove.visuallyHidden = Remove gross weight
-grossWeightLink.add = Add gross weight
-grossWeightLink.add.visuallyHidden = Add gross weight
+grossWeightLink.add = Enter gross weight
+grossWeightLink.add.visuallyHidden = Enter gross weight
 netMassLink.remove = Remove net weight
 netMassLink.remove.visuallyHidden = Remove net weight
-netWeightLink.add.visuallyHidden = Add net weight
-netWeightLink.add = Add net weight
+netWeightLink.add.visuallyHidden = Enter net weight
+netWeightLink.add = Enter net weight
 
 
 
