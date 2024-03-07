@@ -41,10 +41,9 @@ button: Button
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("additionalReference.index.additionalReferenceNumberYesNo..heading"),
+            yesNoType = OrdinaryYesNo(
+                heading = messages("additionalReference.index.additionalReferenceNumberYesNo.heading"),
                 caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = messages("additionalReference.index.additionalReferenceNumberYesNo.paragraph").toParagraph
             )
         )
 

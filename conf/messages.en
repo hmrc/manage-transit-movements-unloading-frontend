@@ -785,7 +785,6 @@ additionalReference.index.additionalReferenceType.placeholder = Select an additi
 
 additionalReference.index.additionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
 additionalReference.index.additionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
-additionalReference.index.additionalReferenceNumberYesNo.paragraph = Do you want to add an additional reference number?
 additionalReference.index.additionalReferenceNumberYesNo.error.required = Select yes if you want to add an additional reference number
 
 

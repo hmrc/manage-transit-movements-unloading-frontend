@@ -25,7 +25,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import pages.additionalReference.AdditionalReferenceNumberYesNoPage
-import views.html.houseConsignment.index.items.additionalReference.
+import views.html.additionalReference.index.AdditionalReferenceNumberYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,7 +37,7 @@ class AdditionalReferenceNumberYesNoController @Inject() (
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-//  view: AdditionalReferenceNumberYesNoView
+  view: AdditionalReferenceNumberYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -51,9 +51,8 @@ class AdditionalReferenceNumberYesNoController @Inject() (
         case None        => form
         case Some(value) => form.fill(value)
       }
-        Ok
 
-//      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode))
+      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode))
   }
 
   def onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId).async {
@@ -61,7 +60,7 @@ class AdditionalReferenceNumberYesNoController @Inject() (
       form
         .bindFromRequest()
         .fold(
-//          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(AdditionalReferenceNumberYesNoPage(transportMeansIndex), value))

@@ -10,3 +10,5 @@ POST       /:arrivalId/additional-reference/:referenceIndex/change-number       
 
 GET        /:arrivalId/additional-reference/:referenceIndex/add                           controllers.additionalReference.index.AdditionalReferenceNumberYesNoController.onPageLoad(arrivalId: ArrivalId, referenceIndex: Index, mode: Mode = NormalMode)
 POST       /:arrivalId/additional-reference/:referenceIndex/add                           controllers.additionalReference.index.AdditionalReferenceNumberYesNoController.onSubmit(arrivalId: ArrivalId, referenceIndex: Index, mode: Mode = NormalMode)
+GET        /:arrivalId/additional-reference/:referenceIndex/change-add                    controllers.additionalReference.index.AdditionalReferenceNumberYesNoController.onPageLoad(arrivalId: ArrivalId, referenceIndex: Index, mode: Mode = CheckMode)
+POST       /:arrivalId/additional-reference/:referenceIndex/change-add                    controllers.additionalReference.index.AdditionalReferenceNumberYesNoController.onSubmit(arrivalId: ArrivalId, referenceIndex: Index, mode: Mode = CheckMode)
