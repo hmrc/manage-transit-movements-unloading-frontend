@@ -105,14 +105,9 @@ class RemoveGoodsReferenceYesNoController @Inject() (
     }
 
   private def insetText(equipmentIndex: Index, itemIndex: Index, userAnswers: UserAnswers): Option[String] = {
-    println("before ini item page...")
     val item = userAnswers.get(ItemPage(equipmentIndex, itemIndex))
 
-    println("ini item page...")
-
     val description = itemDescription(userAnswers, item)
-
-    println("description " + description)
 
     item.map(
       item => "Item " + item.value + " - " + description
