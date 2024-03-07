@@ -21,7 +21,6 @@ import generators.Generators
 import models._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.ContainerIdentificationNumberPage
-import pages.documents.{AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 
 class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {

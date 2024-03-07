@@ -25,7 +25,9 @@ import play.api.mvc.Call
 @Singleton
 class TransportEquipmentNavigator extends Navigator {
 
-  override def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = ???
+  override def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case _ => _ => Some(Call("GET", "#")) //TODO: Implement nav for normalRoutes
+  }
 
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case ContainerIdentificationNumberPage(_) => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))

@@ -35,3 +35,7 @@ class FakeNavigator(desiredRoute: Call) extends Navigator {
       _ => Some(desiredRoute)
   }
 }
+
+class FakeTransportEquipmentNavigator(desiredRoute: Call) extends TransportEquipmentNavigator {
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
+}
