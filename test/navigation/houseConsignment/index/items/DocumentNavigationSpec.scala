@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package navigation
+package navigation.houseConsignment.index.items
 
 import base.SpecBase
 import generators.Generators
 import models._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.documents.{AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
+import pages.houseConsignment.index.items.document.{AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
 
 class DocumentNavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -34,19 +34,19 @@ class DocumentNavigationSpec extends SpecBase with ScalaCheckPropertyChecks with
 
       "must go from AdditionalInformationPage to UnloadingFindingsController" - {
 
-        val userAnswers = emptyUserAnswers.setValue(AdditionalInformationPage(documentIndex), "Additional Information")
+        val userAnswers = emptyUserAnswers.setValue(AdditionalInformationPage(houseConsignmentIndex, itemIndex, documentIndex), "Additional Information")
 
         navigator
-          .nextPage(AdditionalInformationPage(documentIndex), mode, userAnswers)
+          .nextPage(AdditionalInformationPage(houseConsignmentIndex, itemIndex, documentIndex), mode, userAnswers)
           .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
       }
 
       "must go from DocumentReferenceNumberPage to UnloadingFindingsController" - {
 
-        val userAnswers = emptyUserAnswers.setValue(DocumentReferenceNumberPage(documentIndex), "12345")
+        val userAnswers = emptyUserAnswers.setValue(DocumentReferenceNumberPage(houseConsignmentIndex, itemIndex, documentIndex), "12345")
 
         navigator
-          .nextPage(DocumentReferenceNumberPage(documentIndex), mode, userAnswers)
+          .nextPage(DocumentReferenceNumberPage(houseConsignmentIndex, itemIndex, documentIndex), mode, userAnswers)
           .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
       }
 
@@ -54,10 +54,10 @@ class DocumentNavigationSpec extends SpecBase with ScalaCheckPropertyChecks with
 
         val docType = arbitraryDocumentType.arbitrary.sample.value
 
-        val userAnswers = emptyUserAnswers.setValue(TypePage(documentIndex), docType)
+        val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex), docType)
 
         navigator
-          .nextPage(TypePage(documentIndex), mode, userAnswers)
+          .nextPage(TypePage(houseConsignmentIndex, itemIndex, documentIndex), mode, userAnswers)
           .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
       }
     }
