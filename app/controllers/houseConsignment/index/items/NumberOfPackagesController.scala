@@ -30,7 +30,6 @@ import views.html.houseConsignment.index.items.NumberOfPackagesView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.math.BigInt
 
 class NumberOfPackagesController @Inject() (
   override val messagesApi: MessagesApi,
@@ -52,7 +51,7 @@ class NumberOfPackagesController @Inject() (
         val form      = formProvider(viewModel.requiredError)
         val preparedForm = request.userAnswers.get(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex)) match {
           case None        => form
-          case Some(value) => form.fill(value.toString)
+          case Some(value) => form.fill(value)
         }
         Ok(
           view(
@@ -73,7 +72,7 @@ class NumberOfPackagesController @Inject() (
     actions.getStatus(arrivalId).async {
       implicit request =>
         val viewModel = modeViewModelProvider.apply(houseConsignmentIndex, itemIndex, mode)
-        val form      = formProvider(viewModel.requiredError)
+        val form      = formProvider(viewModel.requiredError, args = viewModel.args)
         form
           .bindFromRequest()
           .fold(
@@ -96,7 +95,7 @@ class NumberOfPackagesController @Inject() (
               for {
 
                 updatedAnswers <- Future
-                  .fromTry(request.userAnswers.set(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex), BigInt(value.toInt)))
+                  .fromTry(request.userAnswers.set(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex), value))
                 _ <- sessionRepository.set(updatedAnswers)
               } yield Redirect(navigator.nextPage(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex), mode, updatedAnswers))
           )

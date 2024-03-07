@@ -349,12 +349,11 @@ houseConsignment.index.item.numberOfPackages.CheckMode.title = How many of this 
 houseConsignment.index.item.numberOfPackages.NormalMode.title= How many of this package are you using?
 houseConsignment.index.item.numberOfPackages.CheckMode.heading = How many of this package are you using for item {0} in house consignment {1}?
 houseConsignment.index.item.numberOfPackages.NormalMode.heading = How many of this package are you using?
-houseConsignment.index.item.numberOfPackages.NormalMode.error.required =  Enter the quantity of the package type
-houseConsignment.index.item.numberOfPackages.CheckMode.error.required =  Enter the quantity of the package type
-houseConsignment.index.item.numberOfPackages.error.nonNumeric = The quantity of the package type must only include numbers 0 to 9
-houseConsignment.index.item.numberOfPackages.checkMode.error.required = Enter the quantity of the package type you are using for item {0} in house consignment {1}
+houseConsignment.index.item.numberOfPackages.CheckMode.error.required=  Enter the quantity of the package type
+houseConsignment.index.item.numberOfPackages.CheckMode.error.nonNumeric= The quantity of the package type must only include numbers 0 to 9
+houseConsignment.index.item.numberOfPackages.CheckMode.error.required = Enter the quantity of the package type you are using for item {0} in house consignment {1}
 houseConsignment.index.item.numberOfPackages.checkYourAnswersLabel = What is the new number of packages for item {0}?
-houseConsignment.index.item.numberOfPackages.error.outOfRange = The quantity of the package type must be 99,999,999 or less
+houseConsignment.index.item.numberOfPackages.CheckMode.error.maximum = The quantity of the package type must be 99,999,999 or less
 houseConsignment.index.item.numberOfPackages.change.CL182 = The quantity of the package type must be 1 or more
 houseConsignment.index.item.numberOfPackages.change.hidden = Enter the quantity of the package type
 

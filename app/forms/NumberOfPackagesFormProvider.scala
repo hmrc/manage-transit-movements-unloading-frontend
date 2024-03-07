@@ -16,21 +16,21 @@
 
 package forms
 
-import forms.mappings.Mappings
-import models.messages.UnloadingRemarksRequest
-import play.api.data.Form
+import forms.Constants.maxNumberOfPackages
 
 import javax.inject.Inject
+import forms.mappings.Mappings
+import play.api.data.Form
 
 class NumberOfPackagesFormProvider @Inject() extends Mappings {
 
-  def apply(requiredError: String): Form[String] =
+  def apply(prefix: String, minimum: BigInt = 1, args: Seq[String] = Seq.empty): Form[BigInt] =
     Form(
-      "value" -> text(requiredError)
+      "value" -> bigInt(s"$prefix.error.required", s"$prefix.error.wholeNumber", s"$prefix.error.nonNumeric", args = args)
         .verifying(
-          forms.StopOnFirstFail[String](
-            regexp(UnloadingRemarksRequest.numericRegex, "houseConsignment.index.item.numberOfPackages.error.nonNumeric"),
-            maxLength(UnloadingRemarksRequest.numberOfPackagesLength, "houseConsignment.index.item.numberOfPackages.error.outOfRange")
+          StopOnFirstFail[BigInt](
+            minimumValue(minimum, s"$prefix.error.negative"),
+            maximumValue(maxNumberOfPackages, s"$prefix.error.maximum")
           )
         )
     )

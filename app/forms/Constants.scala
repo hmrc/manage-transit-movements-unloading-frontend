@@ -26,5 +26,5 @@ object Constants {
   lazy val maxDocumentRefNumberLength: Int      = 70
   lazy val maxAdditionalInfoLength: Int         = 35
   lazy val maxAdditionalReferenceNumLength: Int = 70
-  lazy val maxNumberOfPackages: BigInt          = 100000000
+  lazy val maxNumberOfPackages: BigInt          = 999999999
 }
