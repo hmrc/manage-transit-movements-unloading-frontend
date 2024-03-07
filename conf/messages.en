@@ -459,7 +459,7 @@ unloadingFindings.rowHeadings.vehicleNationality.change.hidden = registered coun
 unloadingFindings.subsections.transportEquipment = Transport equipment {0}
 unloadingFindings.subsections.transportEquipment.parent.heading = Transport equipment
 unloadingFindings.rowHeadings.containerIdentificationNumber = Container identification number
-unloadingFindings.rowHeadings.item = Item {0}
+unloadingFindings.rowHeadings.item = Goods item number {0}
 unloadingFindings.rowHeadings.sealIdentifier = Seal {0}
 
 unloadingFindings.subsections.houseConsignment = House consignment {0}
