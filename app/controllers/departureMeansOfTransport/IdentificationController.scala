@@ -21,7 +21,7 @@ import forms.EnumerableFormProvider
 import models.departureTransportMeans.TransportMeansIdentification
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigation
+import navigation.Navigator
 import pages.departureMeansOfTransport.TransportMeansIdentificationPage
 import pages.equipment.InlandModePage
 import play.api.data.Form
@@ -43,7 +43,7 @@ class IdentificationController @Inject() (
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: IdentificationView,
-  navigator: Navigation,
+  navigator: Navigator,
   service: MeansOfTransportIdentificationTypesService,
   identificationViewModelProvider: IdentificationViewModelProvider
 )(implicit ec: ExecutionContext)

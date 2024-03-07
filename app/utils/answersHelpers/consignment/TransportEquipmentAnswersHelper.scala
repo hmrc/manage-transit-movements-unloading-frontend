@@ -20,9 +20,7 @@ import models.{CheckMode, Index, UserAnswers}
 import pages.ContainerIdentificationNumberPage
 import pages.sections.SealsSection
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
 import utils.answersHelpers.consignment.transportEquipment.SealAnswersHelper
 

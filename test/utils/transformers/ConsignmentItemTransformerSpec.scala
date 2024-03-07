@@ -80,7 +80,7 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
           case (_, i) =>
             val itemIndex = Index(i)
 
-            when(mockCommodityTransformer.transform(any(), any(), eqTo(itemIndex)))
+            when(mockCommodityTransformer.transform(any(), any(), any(), eqTo(itemIndex)))
               .thenReturn {
                 ua => Future.successful(ua.setValue(FakeCommoditySection(itemIndex), Json.obj("foo" -> i.toString)))
               }

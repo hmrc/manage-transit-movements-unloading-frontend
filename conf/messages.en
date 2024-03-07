@@ -55,23 +55,23 @@ documentsLink.addRemove = Add or remove document
 documentsLink.visuallyHidden = Add or remove document
 additionalReferenceLink.addRemove = Add or remove additional reference
 additionalReferenceLink.visuallyHidden = Add or remove additional reference
-commodityCodeLink.add = Add commodity code
-commodityCodeLink.add.visuallyHidden = Add commodity code
+commodityCodeLink.add = Enter commodity code
+commodityCodeLink.add.visuallyHidden = Enter commodity code
 commodityCodeLink.remove = Remove commodity code
 commodityCodeLink.remove.visuallyHidden = Remove commodity code
 nomenclatureCodeLink.remove = Remove nomenclature code
 nomenclatureCodeLink.remove.visuallyHidden = Remove nomenclature code
 
-nomenclatureCodeLink.add = Add nomenclature code
-nomenclatureCodeLink.add.visuallyHidden = Add nomenclature code
+nomenclatureCodeLink.add = Enter nomenclature code
+nomenclatureCodeLink.add.visuallyHidden = Enter nomenclature code
 grossWeightLink.remove = Remove gross weight
 grossWeightLink.remove.visuallyHidden = Remove gross weight
-grossWeightLink.add = Add gross weight
-grossWeightLink.add.visuallyHidden = Add gross weight
+grossWeightLink.add = Enter gross weight
+grossWeightLink.add.visuallyHidden = Enter gross weight
 netMassLink.remove = Remove net weight
 netMassLink.remove.visuallyHidden = Remove net weight
-netWeightLink.add.visuallyHidden = Add net weight
-netWeightLink.add = Add net weight
+netWeightLink.add.visuallyHidden = Enter net weight
+netWeightLink.add = Enter net weight
 
 
 
@@ -564,8 +564,8 @@ unloadingFindings.houseConsignment.item.additionalReference.number = Reference n
 unloadingFindings.houseConsignment.item.additionalReference.number.change.hidden = reference number for additional reference {0} in item {1}
 
 unloadingFindings.additional.information.heading = Additional information {0}
-unloadingFindings.additional.information.code = Code
-unloadingFindings.additional.information.description = Text
+unloadingFindings.additional.information.code = Type
+unloadingFindings.additional.information.description = Description
 
 unloadingFindings.dangerousGoods.unNumber = UN number {0}
 unloadingFindings.dangerousGoods.unNumber.change.hidden = UN number {0} for item {1}
@@ -830,9 +830,9 @@ transportEquipment.index.removeTransportEquipmentYesNo.title = Are you sure you 
 transportEquipment.index.removeTransportEquipmentYesNo.heading = Are you sure you want to remove transport equipment {0}?
 transportEquipment.index.removeTransportEquipmentYesNo.error.required = Select yes if you want to remove transport equipment {0}
 
-transportEquipment.index.item.removeItemYesNo.title = Are you sure you want to remove item {1} from transport equipment {0}?
-transportEquipment.index.item.removeItemYesNo.heading = Are you sure you want to remove item {1} from transport equipment {0}?
-transportEquipment.index.item.removeItemYesNo.error.required = Select yes if you want to remove item {1} from transport equipment {0}
+transportEquipment.index.item.removeItemYesNo.title = Are you sure you want to remove this item from transport equipment {0}?
+transportEquipment.index.item.removeItemYesNo.heading = Are you sure you want to remove this item from transport equipment {0}?
+transportEquipment.index.item.removeItemYesNo.error.required = Select yes if you want to remove this item from transport equipment {0}
 
 transportEquipment.prefix = Transport Equipment {0}
 transportEquipment.containerId = container {0}

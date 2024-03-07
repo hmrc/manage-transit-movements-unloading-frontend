@@ -18,9 +18,10 @@ package controllers.transportEquipment.index
 
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.reference.Item
+import models.reference.{Item, ItemDescription}
 import models.requests.SpecificDataRequestProvider1
-import models.{ArrivalId, Index}
+import models.{ArrivalId, Index, RichOptionalJsArray, UserAnswers}
+import pages.sections.{HouseConsignmentsSection, ItemsSection}
 import pages.sections.transport.equipment.ItemSection
 import pages.transportEquipment.index.ItemPage
 import play.api.data.Form
@@ -32,6 +33,7 @@ import views.html.transportEquipment.index.RemoveItemYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import pages.houseConsignment.index.items.ItemGoodsReferenceDescriptionPage
 
 class RemoveGoodsReferenceYesNoController @Inject() (
   override val messagesApi: MessagesApi,
@@ -48,7 +50,7 @@ class RemoveGoodsReferenceYesNoController @Inject() (
   private type Request = SpecificDataRequestProvider1[Item]#SpecificDataRequest[_]
 
   private def form(equipmentIndex: Index)(implicit request: Request): Form[Boolean] =
-    formProvider("transportEquipment.index.item.removeItemYesNo", equipmentIndex.display, request.arg)
+    formProvider("transportEquipment.index.item.removeItemYesNo", equipmentIndex.display)
 
   private def addAnother(arrivalId: ArrivalId, equipmentIndex: Index): Call = Call("GET", "#") // TODO should go to addAnotherItem controller
 
@@ -56,7 +58,16 @@ class RemoveGoodsReferenceYesNoController @Inject() (
     .requireIndex(arrivalId, ItemSection(equipmentIndex, itemIndex), addAnother(arrivalId, equipmentIndex))
     .andThen(getMandatoryPage.getFirst(ItemPage(equipmentIndex, itemIndex))) {
       implicit request =>
-        Ok(view(form(equipmentIndex), request.userAnswers.mrn, arrivalId, equipmentIndex, itemIndex, request.arg.toString))
+        Ok(
+          view(
+            form(equipmentIndex),
+            request.userAnswers.mrn,
+            arrivalId,
+            equipmentIndex,
+            itemIndex,
+            insetText(equipmentIndex, itemIndex, request.userAnswers)
+          )
+        )
     }
 
   def onSubmit(arrivalId: ArrivalId, equipmentIndex: Index, itemIndex: Index): Action[AnyContent] = actions
@@ -68,7 +79,18 @@ class RemoveGoodsReferenceYesNoController @Inject() (
           .bindFromRequest()
           .fold(
             formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, equipmentIndex, itemIndex, request.arg.toString))),
+              Future.successful(
+                BadRequest(
+                  view(
+                    formWithErrors,
+                    request.userAnswers.mrn,
+                    arrivalId,
+                    equipmentIndex,
+                    itemIndex,
+                    insetText(equipmentIndex, itemIndex, request.userAnswers)
+                  )
+                )
+              ),
             value =>
               for {
                 updatedAnswers <-
@@ -81,4 +103,37 @@ class RemoveGoodsReferenceYesNoController @Inject() (
               } yield Redirect(addAnother(arrivalId, equipmentIndex))
           )
     }
+
+  private def insetText(equipmentIndex: Index, itemIndex: Index, userAnswers: UserAnswers): Option[String] = {
+    val item = userAnswers.get(ItemPage(equipmentIndex, itemIndex))
+
+    val description = itemDescription(userAnswers, item)
+
+    item.map(
+      item => "Item " + item.value + " - " + description
+    )
+  }
+
+  private def itemDescription(userAnswers: UserAnswers, item: Option[Item]) =
+    userAnswers.allItems
+      .find(
+        id => item.map(_.value).contains(id.declarationGoodsItemNumber.toString)
+      )
+      .map(_.description)
+      .getOrElse("")
+
+  implicit class userAnswersMethods(userAnswers: UserAnswers) {
+
+    def allItems: Seq[ItemDescription] = userAnswers
+      .get(HouseConsignmentsSection)
+      .mapWithIndex {
+        case (_, houseIndex) =>
+          userAnswers.get(ItemsSection(houseIndex)).mapWithIndex {
+            case (_, itemIndex) =>
+              userAnswers.get(ItemGoodsReferenceDescriptionPage(houseIndex, itemIndex))
+          }
+      }
+      .flatten
+      .flatten
+  }
 }
