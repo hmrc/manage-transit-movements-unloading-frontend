@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.ItemsDocumentReferenceNumberFormProvider
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigation
+import navigation.houseConsignment.index.items.DocumentNavigator
 import pages.houseConsignment.index.items.document.DocumentReferenceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -36,7 +36,7 @@ class DocumentReferenceNumberController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
-  navigator: Navigation,
+  navigator: DocumentNavigator,
   formProvider: ItemsDocumentReferenceNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: DocumentReferenceNumberView,

@@ -16,6 +16,8 @@
 
 package utils.answersHelpers.consignment.houseConsignment.item
 
+import controllers.houseConsignment.index.items.document.routes
+import models.CheckMode
 import models.reference.DocumentType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -49,7 +51,7 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               result.value.value mustBe value.toString
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
-              action.href mustBe "#"
+              action.href mustBe routes.TypeController.onPageLoad(arrivalId, CheckMode, hcIndex, itemIndex, documentIndex).url
               action.visuallyHiddenText.value mustBe "document type for document 1 in item 1"
               action.id mustBe "change-document-type-1-1"
           }
@@ -85,7 +87,7 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return Some(Row)" - {
         s"when $page defined" in {
-          forAll(Gen.alphaNumStr) {
+          forAll(nonEmptyString) {
             value =>
               val answers = emptyUserAnswers.setValue(page, value)
 
@@ -96,7 +98,7 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               result.value.value mustBe value
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
-              action.href mustBe "#"
+              action.href mustBe routes.DocumentReferenceNumberController.onPageLoad(arrivalId, CheckMode, hcIndex, itemIndex, documentIndex).url
               action.visuallyHiddenText.value mustBe "reference number for document 1 in item 1"
               action.id mustBe "change-document-reference-number-1-1"
           }
@@ -143,7 +145,7 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               result.value.value mustBe value
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
-              action.href mustBe "#"
+              action.href mustBe routes.AdditionalInformationController.onPageLoad(arrivalId, CheckMode, hcIndex, itemIndex, documentIndex).url
               action.visuallyHiddenText.value mustBe "additional information for document 1 in item 1"
               action.id mustBe "change-document-additional-information-1-1"
           }
