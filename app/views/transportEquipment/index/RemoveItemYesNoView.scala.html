@@ -29,10 +29,10 @@
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, equipmentIndex: Index, itemIndex: Index, declarationGoodsItemNumber: String, insetText: Option[String])(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, equipmentIndex: Index, itemIndex: Index, insetText: Option[String])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transportEquipment.index.item.removeItemYesNo.title", equipmentIndex.display, declarationGoodsItemNumber),
+    title = messages("transportEquipment.index.item.removeItemYesNo.title", equipmentIndex.display),
     showBackLink = true
 ) {
 
@@ -43,7 +43,7 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = InputYesNoViewModel(
-                heading = messages("transportEquipment.index.item.removeItemYesNo.heading", equipmentIndex.display, declarationGoodsItemNumber),
+                heading = messages("transportEquipment.index.item.removeItemYesNo.heading", equipmentIndex.display),
                 caption = Some(messages("site.caption", mrn.toString)),
                 additionalHtml = insetText.map(x => govukInsetText(InsetText(content = Text(x))))
             )

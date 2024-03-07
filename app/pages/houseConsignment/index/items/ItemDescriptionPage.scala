@@ -27,17 +27,3 @@ case class ItemDescriptionPage(houseConsignmentIndex: Index, itemIndex: Index) e
 
   override def toString: String = "descriptionOfGoods"
 }
-
-// TODO - you will have some json that looks like
-/*
- "ConsignmentItem" : [
-   {
-     "declarationGoodsItemNumber" : 1, <- this needs to be set in the ConsignmentItemTransformer
-     "Commodity" : {
-        "descriptionOfGoods" : "foo" <- this gets set in the CommodityTransformer
-     }
-   }
- ]
-
- some kind of find within the array to find the object that has the declaration goods item number that you're after. We're then after the description inside that object.
- */

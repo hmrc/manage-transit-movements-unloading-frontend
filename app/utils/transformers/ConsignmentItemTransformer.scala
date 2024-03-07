@@ -42,8 +42,6 @@ class ConsignmentItemTransformer @Inject() (
           userAnswers =>
             val itemIndex: Index = Index(i)
             val pipeline: UserAnswers => Future[UserAnswers] = {
-              // TODO - set the declaration goods item number in its own page (QuestionPage[BigInt])
-              // TODO - we could also setSequenceNumber with the goodsItemNumber
               set(DeclarationTypePage(hcIndex, itemIndex), consignmentItem.declarationType) andThen
                 countryOfDestinationTransformer.transform(consignmentItem.countryOfDestination, hcIndex, itemIndex) andThen
                 commodityTransformer.transform(consignmentItem.Commodity, consignmentItem.declarationGoodsItemNumber, hcIndex, itemIndex) andThen

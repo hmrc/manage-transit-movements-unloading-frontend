@@ -50,7 +50,7 @@ class RemoveGoodsReferenceYesNoController @Inject() (
   private type Request = SpecificDataRequestProvider1[Item]#SpecificDataRequest[_]
 
   private def form(equipmentIndex: Index)(implicit request: Request): Form[Boolean] =
-    formProvider("transportEquipment.index.item.removeItemYesNo", equipmentIndex.display, request.arg)
+    formProvider("transportEquipment.index.item.removeItemYesNo", equipmentIndex.display)
 
   private def addAnother(arrivalId: ArrivalId, equipmentIndex: Index): Call = Call("GET", "#") // TODO should go to addAnotherItem controller
 
@@ -65,7 +65,6 @@ class RemoveGoodsReferenceYesNoController @Inject() (
             arrivalId,
             equipmentIndex,
             itemIndex,
-            request.arg.toString,
             insetText(equipmentIndex, itemIndex, request.userAnswers)
           )
         )
@@ -88,7 +87,6 @@ class RemoveGoodsReferenceYesNoController @Inject() (
                     arrivalId,
                     equipmentIndex,
                     itemIndex,
-                    request.arg.toString,
                     insetText(equipmentIndex, itemIndex, request.userAnswers)
                   )
                 )
@@ -107,12 +105,17 @@ class RemoveGoodsReferenceYesNoController @Inject() (
     }
 
   private def insetText(equipmentIndex: Index, itemIndex: Index, userAnswers: UserAnswers): Option[String] = {
+    println("before ini item page...")
     val item = userAnswers.get(ItemPage(equipmentIndex, itemIndex))
+
+    println("ini item page...")
 
     val description = itemDescription(userAnswers, item)
 
+    println("description " + description)
+
     item.map(
-      item => item.value + "-" + description
+      item => "Item " + item.value + " - " + description
     )
   }
 
