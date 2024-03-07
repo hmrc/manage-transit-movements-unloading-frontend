@@ -128,7 +128,6 @@ class HouseConsignmentAnswersHelper(
             helper.packageSections
           ).flatten,
           viewLinks = Seq(
-            itemsAddRemoveLink(index.position), //TODO move to respective parent section
             helper.packagingAddRemoveLink, //TODO move to respective parent section
             helper.documentAddRemoveLink, //TODO move to respective parent section
             helper.additionalReferenceAddRemoveLink //TODO move to respective parent section
@@ -136,9 +135,9 @@ class HouseConsignmentAnswersHelper(
         )
     }
 
-  private def itemsAddRemoveLink(index: Int): Link =
+  def itemsAddRemoveLink: Link =
     Link(
-      id = s"add-remove-items-$index",
+      id = s"add-remove-items",
       href = "#",
       text = messages("itemsLink.addRemove"),
       visuallyHidden = messages("itemsLink.visuallyHidden")
