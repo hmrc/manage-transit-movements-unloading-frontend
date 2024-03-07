@@ -21,7 +21,7 @@ import forms.Constants.{grossWeightCharacterCount, grossWeightDecimalPlaces}
 import forms.GrossWeightFormProvider
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigator
+import navigation.Navigation
 import pages.houseConsignment.index.items.GrossWeightPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -36,7 +36,7 @@ class GrossWeightController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
-  navigator: Navigator,
+  navigator: Navigation,
   formProvider: GrossWeightFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: GrossWeightView

@@ -21,7 +21,7 @@ import controllers.actions._
 import forms.AddAnotherFormProvider
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigator
+import navigation.Navigation
 import pages.transportEquipment.index.ApplyAnotherItemPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -44,7 +44,7 @@ class ApplyAnotherItemController @Inject() (
   view: ApplyAnotherItemView,
   viewModelProvider: ApplyAnotherItemViewModelProvider,
   sessionRepository: SessionRepository,
-  navigator: Navigator
+  navigator: Navigation
 )(implicit config: FrontendAppConfig, ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {

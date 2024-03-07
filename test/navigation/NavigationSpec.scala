@@ -27,9 +27,9 @@ import pages._
 import pages.houseConsignment.index.items.GrossWeightPage
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 
-class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  val navigator = new Navigator
+  val navigator = new Navigation
 
   "Navigator" - {
 

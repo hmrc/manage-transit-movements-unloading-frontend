@@ -31,7 +31,8 @@ class ConsignmentItemTransformer @Inject() (
   packagingTransformer: PackagingTransformer,
   documentsTransformer: DocumentsTransformer,
   additionalReferencesTransformer: AdditionalReferencesTransformer,
-  consigneeTransformer: ConsigneeTransformer
+  consigneeTransformer: ConsigneeTransformer,
+  additionalInformationTransformer: AdditionalInformationTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
@@ -41,7 +42,7 @@ class ConsignmentItemTransformer @Inject() (
         acc.flatMap {
           userAnswers =>
             val itemIndex: Index = Index(i)
-            val pipeline: UserAnswers => Future[UserAnswers] = {
+            val pipeline: UserAnswers => Future[UserAnswers] =
               set(DeclarationTypePage(hcIndex, itemIndex), consignmentItem.declarationType) andThen
                 countryOfDestinationTransformer.transform(consignmentItem.countryOfDestination, hcIndex, itemIndex) andThen
                 commodityTransformer.transform(consignmentItem.Commodity, consignmentItem.declarationGoodsItemNumber, hcIndex, itemIndex) andThen
@@ -54,9 +55,8 @@ class ConsignmentItemTransformer @Inject() (
                   itemIndex
                 ) andThen
                 additionalReferencesTransformer.transform(consignmentItem.AdditionalReference, hcIndex, itemIndex) andThen
-                consigneeTransformer.transform(consignmentItem.Consignee, hcIndex, itemIndex)
-            }
-
+                consigneeTransformer.transform(consignmentItem.Consignee, hcIndex, itemIndex) andThen
+                additionalInformationTransformer.transform(consignmentItem.AdditionalInformation, hcIndex, itemIndex)
             pipeline(userAnswers)
         }
     })

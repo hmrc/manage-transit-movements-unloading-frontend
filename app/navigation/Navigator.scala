@@ -16,62 +16,38 @@
 
 package navigation
 
-import com.google.inject.{Inject, Singleton}
 import controllers.routes
-import models.{CheckMode, Mode, NormalMode, RichCC043CType, UserAnswers}
+import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages._
 import play.api.mvc.Call
 
-@Singleton
-class Navigator @Inject() () {
+trait Navigator {
+  private type RouteMapping = PartialFunction[Page, UserAnswers => Option[Call]]
 
-  private val normalRoutes: Page => UserAnswers => Call = {
+  protected def normalRoutes: RouteMapping
 
-    case UnloadingTypePage => ua => routes.DateGoodsUnloadedController.onPageLoad(ua.id, NormalMode)
-    case DateGoodsUnloadedPage =>
-      ua =>
-        if (ua.ie043Data.sealsExist) {
-          controllers.routes.CanSealsBeReadController.onPageLoad(ua.id, NormalMode)
-        } else {
-          routes.AddUnloadingCommentsYesNoController.onPageLoad(ua.id, NormalMode)
+  protected def checkRoutes: RouteMapping
+
+  protected def defaultPage: Call =
+    routes.SessionExpiredController.onPageLoad()
+
+  private def handleCall(userAnswers: UserAnswers, call: UserAnswers => Option[Call]) =
+    call(userAnswers) match {
+      case Some(onwardRoute) => onwardRoute
+      case None              => defaultPage
+    }
+
+  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
+    mode match {
+      case NormalMode =>
+        normalRoutes.lift(page) match {
+          case None       => ??? //TODO: Change with a better default
+          case Some(call) => handleCall(userAnswers, call)
         }
-
-    case CanSealsBeReadPage    => ua => routes.AreAnySealsBrokenController.onPageLoad(ua.id, NormalMode)
-    case AreAnySealsBrokenPage => ua => routes.UnloadingFindingsController.onPageLoad(ua.id)
-    case UnloadingCommentsPage => ua => routes.CheckYourAnswersController.onPageLoad(ua.id)
-    case AddUnloadingCommentsYesNoPage =>
-      ua =>
-        ua.get(AddUnloadingCommentsYesNoPage) match {
-          case Some(true)  => controllers.routes.UnloadingCommentsController.onPageLoad(ua.id, NormalMode)
-          case Some(false) => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)
-          case _           => routes.SessionExpiredController.onPageLoad()
+      case CheckMode =>
+        checkRoutes.lift(page) match {
+          case None       => ??? //TODO: Change with a better default
+          case Some(call) => handleCall(userAnswers, call)
         }
-
-    case _ =>
-      ua => routes.SessionExpiredController.onPageLoad()
-
-  }
-
-  private val checkRoutes: Page => UserAnswers => Call = {
-    case AddUnloadingCommentsYesNoPage =>
-      ua =>
-        ua.get(AddUnloadingCommentsYesNoPage) match {
-          case Some(true) =>
-            ua.get(UnloadingCommentsPage) match {
-              case Some(_) => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)
-              case _       => controllers.routes.UnloadingCommentsController.onPageLoad(ua.id, CheckMode)
-            }
-          case Some(false) => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)
-          case _           => routes.SessionExpiredController.onPageLoad()
-        }
-    case _ => ua => routes.CheckYourAnswersController.onPageLoad(ua.id)
-  }
-
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
-    case NormalMode =>
-      normalRoutes(page)(userAnswers)
-    case CheckMode =>
-      checkRoutes(page)(userAnswers)
-  }
-
+    }
 }

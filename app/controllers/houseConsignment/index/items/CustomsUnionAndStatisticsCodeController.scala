@@ -18,17 +18,17 @@ package controllers.houseConsignment.index.items
 
 import controllers.actions._
 import forms.CUSCodeFormProvider
+import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import play.api.data.{Form, FormError}
-import navigation.Navigator
+import navigation.Navigation
 import pages.houseConsignment.index.items.CustomsUnionAndStatisticsCodePage
+import play.api.data.{Form, FormError}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
+import services.ReferenceDataService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.houseConsignment.index.items.CustomsUnionAndStatisticsCodeView
-import models.requests.MandatoryDataRequest
-import services.ReferenceDataService
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CustomsUnionAndStatisticsCodeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: Navigation,
   formProvider: CUSCodeFormProvider,
   service: ReferenceDataService,
   actions: Actions,

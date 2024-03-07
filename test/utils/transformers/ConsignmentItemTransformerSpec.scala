@@ -36,10 +36,11 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
 
   private val transformer = app.injector.instanceOf[ConsignmentItemTransformer]
 
-  private lazy val mockCommodityTransformer            = mock[CommodityTransformer]
-  private lazy val mockPackagingTransformer            = mock[PackagingTransformer]
-  private lazy val mockDocumentsTransformer            = mock[DocumentsTransformer]
-  private lazy val mockAdditionalReferencesTransformer = mock[AdditionalReferencesTransformer]
+  private lazy val mockCommodityTransformer             = mock[CommodityTransformer]
+  private lazy val mockPackagingTransformer             = mock[PackagingTransformer]
+  private lazy val mockDocumentsTransformer             = mock[DocumentsTransformer]
+  private lazy val mockAdditionalReferencesTransformer  = mock[AdditionalReferencesTransformer]
+  private lazy val mockAdditionalInformationTransformer = mock[AdditionalInformationTransformer]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -48,7 +49,8 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
         bind[CommodityTransformer].toInstance(mockCommodityTransformer),
         bind[PackagingTransformer].toInstance(mockPackagingTransformer),
         bind[DocumentsTransformer].toInstance(mockDocumentsTransformer),
-        bind[AdditionalReferencesTransformer].toInstance(mockAdditionalReferencesTransformer)
+        bind[AdditionalReferencesTransformer].toInstance(mockAdditionalReferencesTransformer),
+        bind[AdditionalInformationTransformer].toInstance(mockAdditionalInformationTransformer)
       )
 
   private case class FakeCommoditySection(itemIndex: Index) extends QuestionPage[JsObject] {
@@ -65,6 +67,10 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
 
   private case class FakeAdditionalReferencesSection(itemIndex: Index) extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ itemIndex.position.toString \ "additionalReferences"
+  }
+
+  private case class FakeAdditionalInformationSection(itemIndex: Index) extends QuestionPage[JsObject] {
+    override def path: JsPath = JsPath \ itemIndex.position.toString \ "additionalInformation"
   }
 
   "must transform data" in {
@@ -93,6 +99,11 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
               .thenReturn {
                 ua => Future.successful(ua.setValue(FakeAdditionalReferencesSection(itemIndex), Json.obj("foo" -> i.toString)))
               }
+
+            when(mockAdditionalInformationTransformer.transform(any(), any(), eqTo(itemIndex))(any()))
+              .thenReturn {
+                ua => Future.successful(ua.setValue(FakeAdditionalInformationSection(itemIndex), Json.obj("foo" -> i.toString)))
+              }
         }
 
         val result = transformer.transform(consignmentItems, hcIndex).apply(emptyUserAnswers).futureValue
@@ -106,6 +117,8 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
             result.getValue(FakePackagingSection(itemIndex)) mustBe Json.obj("foo" -> i.toString)
             result.getValue(FakeDocumentsSection(itemIndex)) mustBe Json.obj("foo" -> i.toString)
             result.getValue(FakeAdditionalReferencesSection(itemIndex)) mustBe Json.obj("foo" -> i.toString)
+            result.getValue(FakeAdditionalInformationSection(itemIndex)) mustBe Json.obj("foo" -> i.toString)
+
         }
     }
   }

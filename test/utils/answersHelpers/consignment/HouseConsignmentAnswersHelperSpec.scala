@@ -17,12 +17,13 @@
 package utils.answersHelpers.consignment
 
 import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.{AdditionalReferenceType, Country, PackageType}
+import models.reference.{AdditionalInformationCode, AdditionalReferenceType, Country, PackageType}
 import models.{DynamicAddress, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
 import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
+import pages.houseConsignment.index.items.additionalinformation.HouseConsignmentAdditionalInformationCodePage
 import pages.houseConsignment.index.items.document.DocumentReferenceNumberPage
 import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
 import pages.houseConsignment.index.items.{
@@ -224,7 +225,8 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must generate accordion sections" in {
         forAll(Gen.alphaNumStr, arbitrary[BigDecimal], arbitrary[Double], arbitrary[PackageType], arbitrary[BigInt], arbitrary[AdditionalReferenceType]) {
           (description, grossWeight, netWeight, packageType, count, additionalReference) =>
-            val (cusCode, commodityCode, nomenclatureCode) = ("cusCode", "commodityCode", "nomenclatureCode")
+            val (cusCode, commodityCode, nomenclatureCode, additionalInformation) =
+              ("cusCode", "commodityCode", "nomenclatureCode", AdditionalInformationCode("code", "description"))
             val answers = emptyUserAnswers
               .setValue(ItemDescriptionPage(hcIndex, itemIndex), description)
               .setValue(GrossWeightPage(hcIndex, itemIndex), grossWeight)
@@ -238,29 +240,26 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(0)), "doc 1 ref")
               .setValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(1)), "doc 2 ref")
               .setValue(AdditionalReferencePage(hcIndex, itemIndex, additionalReferenceIndex), additionalReference)
+              .setValue(HouseConsignmentAdditionalInformationCodePage(hcIndex, itemIndex, additionalInformationIndex), additionalInformation)
               .setValue(ItemConsigneeNamePage(hcIndex, itemIndex), "John Smith")
               .setValue(ItemConsigneeIdentifierPage(hcIndex, itemIndex), "csgee1")
 
             val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
             val result = helper.itemSections
 
-            result.head.viewLinks.length mustBe 4
+            result.head.viewLinks.length mustBe 3
 
-            result.head.viewLinks.head.href mustBe "#"
-            result.head.viewLinks.head.id mustBe "add-remove-items-0"
-            result.head.viewLinks.head.text mustBe "Add or remove item"
+            result.head.viewLinks(0).href mustBe "#"
+            result.head.viewLinks(0).id mustBe "add-remove-packaging"
+            result.head.viewLinks(0).text mustBe "Add or remove package"
 
             result.head.viewLinks(1).href mustBe "#"
-            result.head.viewLinks(1).id mustBe "add-remove-packaging"
-            result.head.viewLinks(1).text mustBe "Add or remove package"
+            result.head.viewLinks(1).id mustBe "add-remove-document"
+            result.head.viewLinks(1).text mustBe "Add or remove document"
 
             result.head.viewLinks(2).href mustBe "#"
-            result.head.viewLinks(2).id mustBe "add-remove-document"
-            result.head.viewLinks(2).text mustBe "Add or remove document"
-
-            result.head.viewLinks(3).href mustBe "#"
-            result.head.viewLinks(3).id mustBe "add-remove-additionalReference"
-            result.head.viewLinks(3).text mustBe "Add or remove additional reference"
+            result.head.viewLinks(2).id mustBe "add-remove-additionalReference"
+            result.head.viewLinks(2).text mustBe "Add or remove additional reference"
 
             result.head mustBe a[AccordionSection]
             result.head.sectionTitle.value mustBe "Item 1"
@@ -292,11 +291,16 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.head.children(3).rows.size mustBe 1
             result.head.children(3).rows.head.value.value mustBe additionalReference.toString
 
-            result.head.children(4).sectionTitle.get mustBe "Package 1"
-            result.head.children(4).rows.size mustBe 3
-            result.head.children(4).rows(0).value.value mustBe s"${packageType.asDescription}"
-            result.head.children(4).rows(1).value.value mustBe s"$count"
-            result.head.children(4).rows(2).value.value mustBe s"$description"
+            result.head.children(4) mustBe a[AccordionSection]
+            result.head.children(4).sectionTitle.value mustBe "Additional information 1"
+            result.head.children(4).rows.size mustBe 1
+            result.head.children(4).rows.head.value.value mustBe additionalInformation.toString
+
+            result.head.children(5).sectionTitle.get mustBe "Package 1"
+            result.head.children(5).rows.size mustBe 3
+            result.head.children(5).rows(0).value.value mustBe s"${packageType.asDescription}"
+            result.head.children(5).rows(1).value.value mustBe s"$count"
+            result.head.children(5).rows(2).value.value mustBe s"$description"
         }
       }
     }

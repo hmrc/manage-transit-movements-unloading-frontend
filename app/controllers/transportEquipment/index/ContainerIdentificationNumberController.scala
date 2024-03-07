@@ -20,14 +20,14 @@ import controllers.actions._
 import forms.ContainerIdentificationNumberFormProvider
 import models.requests.DataRequest
 import models.{ArrivalId, Index, Mode, RichOptionalJsArray}
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import repositories.SessionRepository
-import navigation.Navigator
+import navigation.Navigation
 import pages.ContainerIdentificationNumberPage
 import pages.sections.TransportEquipmentListSection
 import play.api.data.Form
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.transportEquipment.index.ContainerIdentificationNumberViewModel.ContainerIdentificationNumberViewModelProvider
 import views.html.transportEquipment.index.ContainerIdentificationNumberView
 
@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ContainerIdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: Navigation,
   actions: Actions,
   formProvider: ContainerIdentificationNumberFormProvider,
   viewModelProvider: ContainerIdentificationNumberViewModelProvider,

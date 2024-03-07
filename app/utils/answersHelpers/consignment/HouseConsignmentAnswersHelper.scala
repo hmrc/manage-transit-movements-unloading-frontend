@@ -17,8 +17,7 @@
 package utils.answersHelpers.consignment
 
 import models.reference.Country
-import models.{Index, Link, UserAnswers}
-import models.{Index, RichOptionalJsArray, UserAnswers}
+import models.{Index, Link, RichOptionalJsArray, UserAnswers}
 import pages._
 import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
@@ -125,10 +124,10 @@ class HouseConsignmentAnswersHelper(
             Seq(helper.itemLevelConsigneeSection),
             helper.documentSections,
             helper.additionalReferencesSection,
+            helper.additionalInformationsSection,
             helper.packageSections
           ).flatten,
           viewLinks = Seq(
-            itemsAddRemoveLink(index.position), //TODO move to respective parent section
             helper.packagingAddRemoveLink, //TODO move to respective parent section
             helper.documentAddRemoveLink, //TODO move to respective parent section
             helper.additionalReferenceAddRemoveLink //TODO move to respective parent section
@@ -136,9 +135,9 @@ class HouseConsignmentAnswersHelper(
         )
     }
 
-  private def itemsAddRemoveLink(index: Int): Link =
+  def itemsAddRemoveLink: Link =
     Link(
-      id = s"add-remove-items-$index",
+      id = s"add-remove-items",
       href = "#",
       text = messages("itemsLink.addRemove"),
       visuallyHidden = messages("itemsLink.visuallyHidden")

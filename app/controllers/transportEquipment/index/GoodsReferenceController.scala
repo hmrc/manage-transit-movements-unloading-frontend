@@ -19,7 +19,7 @@ package controllers.transportEquipment.index
 import controllers.actions._
 import forms.SelectableFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigator
+import navigation.Navigation
 import pages.transportEquipment.index.ItemPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -37,7 +37,7 @@ class GoodsReferenceController @Inject() (
   actions: Actions,
   formProvider: SelectableFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  navigator: Navigator,
+  navigator: Navigation,
   view: GoodsReferenceView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
