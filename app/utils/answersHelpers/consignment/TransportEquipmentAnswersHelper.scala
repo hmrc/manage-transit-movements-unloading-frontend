@@ -16,7 +16,7 @@
 
 package utils.answersHelpers.consignment
 
-import models.{Index, UserAnswers}
+import models.{CheckMode, Index, UserAnswers}
 import pages.ContainerIdentificationNumberPage
 import pages.sections.SealsSection
 import play.api.i18n.Messages
@@ -38,7 +38,7 @@ class TransportEquipmentAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.containerIdentificationNumber",
     id = Some(s"change-container-identification-number-${equipmentIndex.display}"),
     args = equipmentIndex.display,
-    call = Some(Call(GET, "#"))
+    call = Some(controllers.transportEquipment.index.routes.ContainerIdentificationNumberController.onPageLoad(arrivalId, equipmentIndex, CheckMode))
   )
 
   def transportEquipmentSeals: Seq[SummaryListRow] =

@@ -16,7 +16,7 @@
 
 package utils.answersHelpers.consignment
 
-import models.Index
+import models.{CheckMode, Index}
 import org.scalacheck.Gen
 import pages.ContainerIdentificationNumberPage
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
@@ -48,7 +48,8 @@ class TransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase {
               result.value.value mustBe value
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
-              action.href mustBe "#"
+              action.href mustBe
+                controllers.transportEquipment.index.routes.ContainerIdentificationNumberController.onPageLoad(arrivalId, equipmentIndex, CheckMode).url
               action.visuallyHiddenText.value mustBe "container identification number for transport equipment 1"
               action.id mustBe "change-container-identification-number-1"
           }

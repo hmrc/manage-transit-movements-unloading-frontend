@@ -16,6 +16,7 @@
 
 package utils.answersHelpers.consignment.transportEquipment
 
+import models.CheckMode
 import org.scalacheck.Gen
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import utils.answersHelpers.AnswersHelperSpecBase
@@ -46,7 +47,10 @@ class SealAnswersHelperSpec extends AnswersHelperSpecBase {
               result.value.value mustBe value
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
-              action.href mustBe "#"
+              action.href mustBe
+                controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController
+                  .onPageLoad(arrivalId, CheckMode, equipmentIndex, sealIndex)
+                  .url
               action.visuallyHiddenText.value mustBe "seal 1 for transport equipment 1"
               action.id mustBe "change-seal-details-1-1"
           }
