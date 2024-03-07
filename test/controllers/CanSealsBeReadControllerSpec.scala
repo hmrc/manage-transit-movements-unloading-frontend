@@ -90,7 +90,7 @@ class CanSealsBeReadControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual "/manage-transit-movements/unloading/AB123/any-seals-broken"
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

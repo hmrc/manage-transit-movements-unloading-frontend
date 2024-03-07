@@ -28,8 +28,8 @@ import pages.houseConsignment.index.items.{
   ConsigneeNamePage => ItemConsigneeNamePage,
   _
 }
-import pages.sections.houseConsignment.index.items.additionalInformation.AdditionalInformationsSection
 import pages.sections.PackagingListSection
+import pages.sections.houseConsignment.index.items.additionalInformation.AdditionalInformationsSection
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferencesSection
 import pages.sections.houseConsignment.index.items.dangerousGoods.DangerousGoodsListSection
 import pages.sections.houseConsignment.index.items.documents.DocumentsSection
@@ -41,8 +41,6 @@ import utils.answersHelpers.AnswersHelper
 import utils.answersHelpers.consignment.houseConsignment.item._
 import viewModels.sections.Section
 import viewModels.sections.Section.{AccordionSection, StaticSection}
-
-import java.lang.ProcessBuilder.Redirect
 
 class ConsignmentItemAnswersHelper(
   userAnswers: UserAnswers,

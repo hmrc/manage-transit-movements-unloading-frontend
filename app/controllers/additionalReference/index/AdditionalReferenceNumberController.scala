@@ -19,13 +19,12 @@ package controllers.additionalReference.index
 import controllers.actions._
 import forms.AdditionalReferenceNumberFormProvider
 import models.{ArrivalId, Index, Mode}
+import navigation.Navigation
+import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import repositories.SessionRepository
-import navigation.Navigator
-import pages.additionalReference.AdditionalReferenceNumberPage
-import pages.additionalReference.AdditionalReferenceTypePage
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.additionalReference.index.AdditionalReferenceNumberViewModel.AdditionalReferenceNumberViewModelProvider
 import views.html.additionalReference.index.AdditionalReferenceNumberView
 
@@ -35,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AdditionalReferenceNumberController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: Navigation,
   actions: Actions,
   formProvider: AdditionalReferenceNumberFormProvider,
   viewModelProvider: AdditionalReferenceNumberViewModelProvider,

@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.UnloadingCommentsFormProvider
 import models.messages.RemarksNonConform._
 import models.{ArrivalId, Mode}
-import navigation.Navigator
+import navigation.Navigation
 import pages.UnloadingCommentsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class UnloadingCommentsController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: Navigation,
   actions: Actions,
   formProvider: UnloadingCommentsFormProvider,
   val controllerComponents: MessagesControllerComponents,

@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import forms.AreAnySealsBrokenFormProvider
 import models.{ArrivalId, Mode}
-import navigation.Navigator
+import navigation.Navigation
 import pages.AreAnySealsBrokenPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AreAnySealsBrokenController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: Navigation,
   actions: Actions,
   formProvider: AreAnySealsBrokenFormProvider,
   val controllerComponents: MessagesControllerComponents,

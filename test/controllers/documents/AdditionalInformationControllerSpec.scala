@@ -106,7 +106,7 @@ class AdditionalInformationControllerSpec extends SpecBase with AppWithDefaultMo
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual "#"
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

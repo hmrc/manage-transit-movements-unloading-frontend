@@ -17,12 +17,10 @@
 package utils.answersHelpers.consignment
 
 import models.reference.DocumentType
-import models.{Index, UserAnswers}
+import models.{CheckMode, Index, UserAnswers}
 import pages.documents._
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
 
 class DocumentAnswersHelper(
@@ -45,7 +43,7 @@ class DocumentAnswersHelper(
         prefix = "unloadingFindings.document.type",
         args = documentIndex.display,
         id = Some(s"change-document-type-${documentIndex.display}"),
-        call = Some(Call(GET, "#")) //TODO change me please
+        call = Some(controllers.documents.routes.TypeController.onPageLoad(arrivalId, CheckMode, documentIndex))
       )
     }
 
@@ -63,7 +61,7 @@ class DocumentAnswersHelper(
         prefix = "unloadingFindings.document.referenceNumber",
         args = documentIndex.display,
         id = Some(s"change-document-reference-number-${documentIndex.display}"),
-        call = Some(Call(GET, "#")) //TODO change me please
+        call = Some(controllers.documents.routes.DocumentReferenceNumberController.onPageLoad(arrivalId, CheckMode, documentIndex))
       )
     }
 
@@ -81,7 +79,7 @@ class DocumentAnswersHelper(
         prefix = "unloadingFindings.document.additionalInformation",
         args = documentIndex.display,
         id = Some(s"change-document-additional-information-${documentIndex.display}"),
-        call = Some(Call(GET, "#")) //TODO change me please
+        call = Some(controllers.documents.routes.AdditionalInformationController.onPageLoad(arrivalId, CheckMode, documentIndex))
       )
     }
 }

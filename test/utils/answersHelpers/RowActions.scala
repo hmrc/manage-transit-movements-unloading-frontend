@@ -16,7 +16,6 @@
 
 package utils.answersHelpers
 
-import models.{ArrivalId, Index, NormalMode}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions}
 

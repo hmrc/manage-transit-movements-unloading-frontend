@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import forms.DateGoodsUnloadedFormProvider
 import models.{ArrivalId, Mode, RichCC043CType}
-import navigation.Navigator
+import navigation.Navigation
 import pages.DateGoodsUnloadedPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,7 +34,7 @@ class DateGoodsUnloadedController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
-  navigator: Navigator,
+  navigator: Navigation,
   formProvider: DateGoodsUnloadedFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: DateGoodsUnloadedView
