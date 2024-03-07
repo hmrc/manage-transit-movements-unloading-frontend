@@ -24,7 +24,7 @@ import play.api.data.Form
 
 class NumberOfPackagesFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String, minimum: BigInt = 1, args: Seq[String] = Seq.empty): Form[BigInt] =
+  def apply(prefix: String, minimum: BigInt = 0, args: Seq[String] = Seq.empty): Form[BigInt] =
     Form(
       "value" -> bigInt(s"$prefix.error.required", s"$prefix.error.wholeNumber", s"$prefix.error.nonNumeric", args = args)
         .verifying(

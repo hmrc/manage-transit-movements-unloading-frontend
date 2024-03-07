@@ -30,7 +30,7 @@ trait ModeViewModelProvider {
     messages(s"$prefix.${mode.toString}.title", houseConsignmentIndex.display, itemIndex.display)
 
   def requiredError(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
-    messages(s"$prefix.${mode.toString}", houseConsignmentIndex.display, itemIndex.display)
+    messages(s"$prefix.${mode.toString}.error.required", houseConsignmentIndex.display, itemIndex.display)
 
   def heading(mode: Mode)(implicit messages: Messages): String =
     messages(s"$prefix.${mode.toString}.heading")

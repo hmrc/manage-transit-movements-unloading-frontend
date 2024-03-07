@@ -48,7 +48,7 @@ class NumberOfPackagesController @Inject() (
     actions.getStatus(arrivalId) {
       implicit request =>
         val viewModel = modeViewModelProvider.apply(houseConsignmentIndex, itemIndex, mode)
-        val form      = formProvider(viewModel.requiredError)
+        val form      = formProvider(viewModel.requiredPrefix)
         val preparedForm = request.userAnswers.get(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
@@ -72,7 +72,7 @@ class NumberOfPackagesController @Inject() (
     actions.getStatus(arrivalId).async {
       implicit request =>
         val viewModel = modeViewModelProvider.apply(houseConsignmentIndex, itemIndex, mode)
-        val form      = formProvider(viewModel.requiredError, args = viewModel.args)
+        val form      = formProvider(viewModel.requiredPrefix, args = viewModel.args)
         form
           .bindFromRequest()
           .fold(
