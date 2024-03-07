@@ -117,16 +117,9 @@ class RemoveGoodsReferenceYesNoController @Inject() (
   private def itemDescription(userAnswers: UserAnswers, item: Option[Item]) =
     userAnswers.allItems
       .find(
-        id =>
-          id.declarationGoodsItemNumber.toString == item
-            .map(
-              item => item.value
-            )
-            .getOrElse("")
+        id => item.map(_.value).contains(id.declarationGoodsItemNumber.toString)
       )
-      .map(
-        id => id.description
-      )
+      .map(_.description)
       .getOrElse("")
 
   implicit class userAnswersMethods(userAnswers: UserAnswers) {
