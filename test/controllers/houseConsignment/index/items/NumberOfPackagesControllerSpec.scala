@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NumberOfPackagesFormProvider
 import generators.Generators
-import models.CheckMode
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -36,13 +36,14 @@ import views.html.houseConsignment.index.items.NumberOfPackagesView
 import scala.concurrent.Future
 
 class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+  val prefix = "houseConsignment.index.item.packageType"
 
-  val formProvider: NumberOfPackagesFormProvider = fakeApplication().injector.instanceOf[NumberOfPackagesFormProvider]
-  private val mockViewModelProvider              = mock[NumberOfPackagesViewModelProvider]
-  private val viewModel                          = arbitrary[NumberOfPackagesViewModel].sample.value
-  private val mode                               = CheckMode
-  val form: Form[BigInt]                         = new NumberOfPackagesFormProvider()("String", BigInt(0), Seq("2", "test"))
-  private val validAnswer                        = "1"
+  private val mockViewModelProvider = mock[NumberOfPackagesViewModelProvider]
+  private val viewModel             = arbitrary[NumberOfPackagesViewModel].sample.value
+  private val mode                  = NormalMode
+  val form: Form[BigInt]            = new NumberOfPackagesFormProvider()(prefix, BigInt(0), Seq("2", "test"))
+
+  private val validAnswer = "1"
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -58,7 +59,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
   }
 
   lazy val totalNumberOfPackagesRoute: String =
-    routes.NumberOfPackagesController.onPageLoad(arrivalId, hcIndex, itemIndex, index, CheckMode).url
+    routes.NumberOfPackagesController.onPageLoad(arrivalId, hcIndex, itemIndex, index, NormalMode).url
 
   "TotalNumberOfPackages Controller" - {
 
@@ -111,7 +112,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex).url
+      redirectLocation(result).value mustEqual onwardRoute.url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

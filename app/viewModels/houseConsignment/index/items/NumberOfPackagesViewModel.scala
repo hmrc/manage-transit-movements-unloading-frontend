@@ -22,7 +22,7 @@ import viewModels.ModeViewModelProvider
 
 import javax.inject.Inject
 
-case class NumberOfPackagesViewModel(heading: String, title: String, requiredPrefix: String, args: Seq[String])
+case class NumberOfPackagesViewModel(heading: String, title: String, args: Seq[String])
 
 object NumberOfPackagesViewModel {
 
@@ -34,7 +34,6 @@ object NumberOfPackagesViewModel {
       new NumberOfPackagesViewModel(
         heading(mode, houseConsignmentIndex, itemIndex),
         title(mode, houseConsignmentIndex, itemIndex),
-        s"$prefix.${mode.toString}",
         Seq(houseConsignmentIndex.display.toString, itemIndex.display.toString)
       )
   }

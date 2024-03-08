@@ -44,11 +44,13 @@ class NumberOfPackagesController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
+  val prefix = "houseConsignment.index.item.packageType"
+
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId) {
       implicit request =>
         val viewModel = modeViewModelProvider.apply(houseConsignmentIndex, itemIndex, mode)
-        val form      = formProvider(viewModel.requiredPrefix)
+        val form      = formProvider(prefix)
         val preparedForm = request.userAnswers.get(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
@@ -72,7 +74,7 @@ class NumberOfPackagesController @Inject() (
     actions.getStatus(arrivalId).async {
       implicit request =>
         val viewModel = modeViewModelProvider.apply(houseConsignmentIndex, itemIndex, mode)
-        val form      = formProvider(viewModel.requiredPrefix, args = viewModel.args)
+        val form      = formProvider(prefix, args = viewModel.args)
         form
           .bindFromRequest()
           .fold(
