@@ -16,6 +16,7 @@
 
 package forms
 
+import forms.Constants.maxNumberOfPackages
 import forms.behaviours.FieldBehaviours
 import generators.Generators
 import models.messages.UnloadingRemarksRequest
@@ -26,37 +27,69 @@ import scala.util.matching.Regex
 
 class NumberOfPackagesFormProviderSpec extends FieldBehaviours with Generators {
 
-  private val maxLength   = UnloadingRemarksRequest.numberOfPackagesLength
-  private val invalidKey  = "houseConsignment.index.item.numberOfPackages.error.nonNumeric"
-  private val requiredKey = "houseConsignment.index.item.numberOfPackages.error.required"
+  val prefix: String = "testPrefix"
 
-  val form: Form[String] = new NumberOfPackagesFormProvider()(requiredKey)
-  val fieldName          = "value"
+  "NumberOfPackagesFormProvider" - {
 
-  ".value" - {
+    "bind successfully with valid input" in {
+      val form     = new NumberOfPackagesFormProvider().apply(prefix)
+      val formData = Map("value" -> "10")
 
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      Gen.chooseNum(0, maxLength).toString
-    )
+      val boundForm = form.bind(formData)
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-  }
-
-  "must not bind strings that do not match regex" in {
-
-    val expectedError = FormError(fieldName, invalidKey, Seq(UnloadingRemarksRequest.numericRegex.regex))
-    val regex         = new Regex("[A-Za-z@~{}><!*&%$]{5}")
-
-    forAll(stringsThatMatchRegex(regex)) {
-      invalidString =>
-        val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-        result.errors must contain(expectedError)
+      boundForm.hasErrors mustBe false
+      boundForm.get mustBe BigInt(10)
     }
+
+    "fail to bind with a negative value" in {
+      val form     = new NumberOfPackagesFormProvider().apply(prefix)
+      val formData = Map("value" -> "-5")
+
+      val boundForm = form.bind(formData)
+
+      boundForm.hasErrors mustBe true
+      boundForm.errors.head.message mustBe s"$prefix.error.negative"
+    }
+
+    "fail to bind with a value exceeding the maximum" in {
+      val form     = new NumberOfPackagesFormProvider().apply(prefix, maxNumberOfPackages)
+      val formData = Map("value" -> "100000000000000000000")
+
+      val boundForm = form.bind(formData)
+
+      boundForm.hasErrors mustBe true
+      boundForm.errors.head.message mustBe s"$prefix.error.maximum"
+    }
+
+    "fail to bind with a non-numeric value" in {
+      val form     = new NumberOfPackagesFormProvider().apply(prefix)
+      val formData = Map("value" -> "abc")
+
+      val boundForm = form.bind(formData)
+
+      boundForm.hasErrors mustBe true
+      boundForm.errors.head.message mustBe s"$prefix.error.nonNumeric"
+    }
+
+    "fail to bind with a non-whole number value" in {
+      val form     = new NumberOfPackagesFormProvider().apply(prefix)
+      val formData = Map("value" -> "5.5")
+
+      val boundForm = form.bind(formData)
+
+      boundForm.hasErrors mustBe true
+      boundForm.errors.head.message mustBe s"$prefix.error.wholeNumber"
+    }
+
+    "fail to bind with a required field missing" in {
+      val form     = new NumberOfPackagesFormProvider().apply(prefix)
+      val formData = Map.empty[String, String]
+
+      val boundForm = form.bind(formData)
+
+      boundForm.hasErrors mustBe true
+      boundForm.errors.head.message mustBe s"$prefix.error.required"
+    }
+
   }
 }

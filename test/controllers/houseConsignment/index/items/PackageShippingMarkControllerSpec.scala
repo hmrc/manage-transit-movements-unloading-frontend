@@ -19,11 +19,11 @@ package controllers.houseConsignment.index.items
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.PackageShippingMarkFormProvider
 import generators.Generators
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.houseConsignment.index.items.packaging.PackagingMarksPage
+import pages.PackageShippingMarkPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -39,7 +39,7 @@ class PackageShippingMarkControllerSpec extends SpecBase with AppWithDefaultMock
   private lazy val formProvider     = new PackageShippingMarkFormProvider()
   private val mockViewModelProvider = mock[PackageShippingMarksViewModelProvider]
   private val viewModel             = arbitrary[PackageShippingMarksViewModel].sample.value
-  private lazy val mode             = NormalMode
+  private lazy val mode             = CheckMode
   private lazy val form             = formProvider(viewModel.requiredError)
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -79,7 +79,7 @@ class PackageShippingMarkControllerSpec extends SpecBase with AppWithDefaultMock
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(PackagingMarksPage(houseConsignmentIndex, itemIndex, packageIndex), "testString")
+      val userAnswers = emptyUserAnswers.setValue(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex), "testString")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, packageShippingMarkRoute)
@@ -109,7 +109,7 @@ class PackageShippingMarkControllerSpec extends SpecBase with AppWithDefaultMock
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, index).url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

@@ -23,7 +23,7 @@ import models.{CheckMode, SelectableList}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.houseConsignment.index.items.packaging.PackagingTypePage
+import pages.PackageTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -90,7 +90,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       when(mockPackagesService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
-      val userAnswers = emptyUserAnswers.setValue(PackagingTypePage(houseConsignmentIndex, itemIndex, packageIndex), packageType1)
+      val userAnswers = emptyUserAnswers.setValue(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex), packageType1)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, packageTypeRoute)
@@ -129,16 +129,19 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       when(mockPackagesService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, packageTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val request = FakeRequest(POST, packageTypeRoute)
+        .withFormUrlEncodedBody(("value", "invalid answer"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[PackageTypeView]
-
       status(result) mustEqual BAD_REQUEST
+
+      val view = injector.instanceOf[PackageTypeView]
 
       contentAsString(result) mustEqual
         view(viewModel, boundForm, mrn, arrivalId, packageTypeList.values, CheckMode, houseConsignmentIndex, itemIndex, packageIndex)(request,

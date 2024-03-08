@@ -24,6 +24,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.NumberOfPackagesPage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -36,12 +37,12 @@ import scala.concurrent.Future
 
 class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val formProvider: NumberOfPackagesFormProvider = new NumberOfPackagesFormProvider()
-  private val mockViewModelProvider                      = mock[NumberOfPackagesViewModelProvider]
-  private val viewModel                                  = arbitrary[NumberOfPackagesViewModel].sample.value
-  private val mode                                       = CheckMode
-  private val form                                       = formProvider(viewModel.requiredError)
-  private val validAnswer                                = "1"
+  val formProvider: NumberOfPackagesFormProvider = fakeApplication().injector.instanceOf[NumberOfPackagesFormProvider]
+  private val mockViewModelProvider              = mock[NumberOfPackagesViewModelProvider]
+  private val viewModel                          = arbitrary[NumberOfPackagesViewModel].sample.value
+  private val mode                               = CheckMode
+  val form: Form[BigInt]                         = new NumberOfPackagesFormProvider()("String", BigInt(0), Seq.empty)
+  private val validAnswer                        = "1"
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -79,7 +80,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(NumberOfPackagesPage(hcIndex, itemIndex, index), validAnswer)
+      val userAnswers = emptyUserAnswers.setValue(NumberOfPackagesPage(hcIndex, itemIndex, index), BigInt(validAnswer))
 
       setExistingUserAnswers(userAnswers)
 
