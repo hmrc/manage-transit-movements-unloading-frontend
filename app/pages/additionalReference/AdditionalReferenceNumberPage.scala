@@ -21,7 +21,6 @@ import pages.QuestionPage
 import pages.sections.additionalReference.AdditionalReferenceSection
 import play.api.libs.json.JsPath
 
-
 case class AdditionalReferenceNumberPage(referenceIndex: Index) extends QuestionPage[String] {
 
   override def path: JsPath = AdditionalReferenceSection(referenceIndex).path \ toString
