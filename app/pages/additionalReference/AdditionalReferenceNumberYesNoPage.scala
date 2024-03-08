@@ -16,14 +16,22 @@
 
 package pages.additionalReference
 
-import models.Index
-import pages.QuestionPage
+import models.{Index, UserAnswers}
+import pages.{QuestionPage}
 import pages.sections.additionalReference.AdditionalReferenceSection
 import play.api.libs.json.JsPath
+
+import scala.util.Try
 
 case class AdditionalReferenceNumberYesNoPage(referenceIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = AdditionalReferenceSection(referenceIndex).path \ toString
 
   override def toString: String = "additionalReferenceNumberYesNo"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(AdditionalReferenceNumberPage(referenceIndex))
+      case _           => super.cleanup(value, userAnswers)
+    }
 }
