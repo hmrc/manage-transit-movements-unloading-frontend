@@ -187,9 +187,10 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
   def transportEquipmentSection: Section =
     userAnswers.get(TransportEquipmentListSection).mapWithIndex {
       case (_, index) =>
-        val helper = new TransportEquipmentAnswersHelper(userAnswers, index)
-        val rows   = Seq(helper.containerIdentificationNumber, helper.transportEquipmentSeals).flatten
-        (rows, index)
+        val helper                = new TransportEquipmentAnswersHelper(userAnswers, index)
+        val containerAndSealsRows = Seq(helper.containerIdentificationNumber, helper.transportEquipmentSeals).flatten
+        val itemsRows             = Seq(helper.transportEquipmentItems).flatten
+        (containerAndSealsRows, itemsRows, index)
     } match {
       case Nil =>
         StaticSection(
@@ -198,14 +199,30 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         )
       case sectionsRows =>
         val transportEquipments = sectionsRows.map {
-          case (rows, index) =>
+          case (containerAndSeals, items, index) =>
             val equipmentIndex = index.display
+
+            val containerAndSealsSection =
+              StaticSection(
+                rows = containerAndSeals,
+                viewLinks = Seq(sealsAddRemoveLink(equipmentIndex))
+              )
+
+            val itemsSection =
+              StaticSection(
+                sectionTitle = None,
+                rows = items,
+                viewLinks = Seq(itemsAddRemoveLink(equipmentIndex)),
+                optionalInformationHeading = if (items.isEmpty) None else Some(messages("unloadingFindings.informationHeading.consignment.item"))
+              )
+
             AccordionSection(
               sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment", equipmentIndex)),
-              viewLinks = Seq(sealsAddRemoveLink(equipmentIndex)),
-              rows = rows
+              viewLinks = Nil,
+              children = Seq(containerAndSealsSection, itemsSection)
             )
         }
+
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment.parent.heading")),
           viewLinks = Seq(transportEquipmentAddRemoveLink),
@@ -418,6 +435,14 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       href = "#",
       text = messages("sealsLink.addRemove"),
       visuallyHidden = messages("sealsLink.visuallyHidden")
+    )
+
+  private def itemsAddRemoveLink(index: Int): Link =
+    Link(
+      id = s"add-remove-goods-reference-items-$index",
+      href = "#",
+      text = messages("goodsReferenceItemLink.addRemove", index),
+      visuallyHidden = messages("goodsReferenceItemLink.visuallyHidden", index)
     )
 
   private val transportEquipmentAddRemoveLink: Link = Link(
