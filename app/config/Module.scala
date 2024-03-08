@@ -18,6 +18,7 @@ package config
 
 import com.google.inject.AbstractModule
 import controllers.actions._
+import navigation.{Navigation, Navigator}
 import services._
 
 import java.time.{Clock, ZoneOffset}
@@ -25,6 +26,7 @@ import java.time.{Clock, ZoneOffset}
 class Module extends AbstractModule {
 
   override def configure(): Unit = {
+    bind(classOf[Navigator]).to(classOf[Navigation]) // TODO should this be bound to something else?
 
     bind(classOf[DataRetrievalActionProvider]).to(classOf[DataRetrievalActionProviderImpl]).asEagerSingleton()
 

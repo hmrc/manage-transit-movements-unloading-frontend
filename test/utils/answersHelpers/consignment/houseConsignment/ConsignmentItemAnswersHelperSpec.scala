@@ -121,7 +121,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
           val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
           helper.grossWeightRow.key.value mustBe "Gross weight"
 
-          helper.grossWeightRow.value.content.asHtml.toString() must include("Add gross weight")
+          helper.grossWeightRow.value.content.asHtml.toString() must include("Enter gross weight")
         }
       }
 
@@ -156,7 +156,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
           val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
           helper.netWeightRow.key.value mustBe "Net weight"
 
-          helper.netWeightRow.value.content.asHtml.toString() must include("Add net weight")
+          helper.netWeightRow.value.content.asHtml.toString() must include("Enter net weight")
         }
       }
 
@@ -227,7 +227,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
           val helper = new ConsignmentItemAnswersHelper(emptyUserAnswers, hcIndex, itemIndex)
           helper.commodityCodeRow.key.value mustBe "Commodity code"
 
-          helper.commodityCodeRow.value.content.asHtml.toString() must include("Add commodity code")
+          helper.commodityCodeRow.value.content.asHtml.toString() must include("Enter commodity code")
         }
       }
 
@@ -259,7 +259,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
           val result = helper.nomenclatureCodeRow
           result.key.value mustBe "Combined nomenclature code"
 
-          result.value.content.asHtml.toString() must include("Add nomenclature code")
+          result.value.content.asHtml.toString() must include("Enter nomenclature code")
         }
       }
 

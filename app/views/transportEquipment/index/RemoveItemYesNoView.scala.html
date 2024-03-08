@@ -16,21 +16,23 @@
 
 @import controllers.transportEquipment.index.routes
 @import models.MovementReferenceNumber
+@import viewModels.components.InputYesNoViewModel
 @import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
+    govukInsetText : GovukInsetText,
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, equipmentIndex: Index, itemIndex: Index, declarationGoodsItemNumber: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, equipmentIndex: Index, itemIndex: Index, insetText: Option[String])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transportEquipment.index.item.removeItemYesNo.title", equipmentIndex.display, declarationGoodsItemNumber),
+    title = messages("transportEquipment.index.item.removeItemYesNo.title", equipmentIndex.display),
     showBackLink = true
 ) {
 
@@ -40,9 +42,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
-                heading = messages("transportEquipment.index.item.removeItemYesNo.heading", equipmentIndex.display, declarationGoodsItemNumber),
-                caption = Some(messages("site.caption", mrn.toString))
+            yesNoType = InputYesNoViewModel(
+                heading = messages("transportEquipment.index.item.removeItemYesNo.heading", equipmentIndex.display),
+                caption = Some(messages("site.caption", mrn.toString)),
+                additionalHtml = insetText.map(x => govukInsetText(InsetText(content = Text(x))))
             )
         )
 

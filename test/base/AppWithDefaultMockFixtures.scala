@@ -17,11 +17,11 @@
 package base
 
 import controllers.actions._
-import controllers.routes
 import models.P5.ArrivalMessageType.UnloadingPermission
 import models.P5._
 import models.UserAnswers
-import navigation.{FakeNavigator, Navigator}
+import navigation.houseConsignment.index.items.{DocumentNavigator => ItemDocumentNavigator}
+import navigation._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
@@ -71,9 +71,12 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   // TODO - delete?
   protected def checkArrivalStatus(): Unit = ()
 
-  protected val onwardRoute: Call = routes.SessionExpiredController.onPageLoad()
+  protected val onwardRoute: Call = Call("GET", "/foo")
 
-  protected val fakeNavigator: Navigator = new FakeNavigator(onwardRoute)
+  protected val fakeNavigator: Navigator                                     = new FakeNavigator(onwardRoute)
+  protected val fakeDocumentNavigator: DocumentNavigator                     = new FakeDocumentNavigator(onwardRoute)
+  protected val fakeItemDocumentNavigator: ItemDocumentNavigator             = new FakeItemDocumentNavigator(onwardRoute)
+  protected val fakeTransportEquipmentNavigator: TransportEquipmentNavigator = new FakeTransportEquipmentNavigator(onwardRoute)
 
   def guiceApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
@@ -84,6 +87,9 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[UnloadingPermissionActionProvider].toInstance(mockUnloadingPermissionActionProvider),
         bind[UnloadingPermissionMessageService].toInstance(mockUnloadingPermissionMessageService),
         bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),
-        bind[Navigator].toInstance(fakeNavigator)
+        bind[Navigator].toInstance(fakeNavigator),
+        bind[DocumentNavigator].toInstance(fakeDocumentNavigator),
+        bind[ItemDocumentNavigator].toInstance(fakeItemDocumentNavigator),
+        bind[TransportEquipmentNavigator].toInstance(fakeTransportEquipmentNavigator)
       )
 }

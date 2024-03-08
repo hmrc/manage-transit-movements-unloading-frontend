@@ -20,9 +20,10 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import generators.Generators
 import models.UserAnswers
-import models.reference.Item
+import models.reference.{Item, ItemDescription}
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.verify
+import pages.houseConsignment.index.items.ItemGoodsReferenceDescriptionPage
 import pages.sections.ItemSection
 import pages.transportEquipment.index.ItemPage
 import play.api.mvc.Call
@@ -34,32 +35,31 @@ class RemoveItemYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
   private val itemIdNumber              = Item(123, "description")
   private val formProvider              = new YesNoFormProvider()
-  private val form                      = formProvider("transportEquipment.index.item.removeItemYesNo", equipmentIndex.display, itemIdNumber)
+  private val form                      = formProvider("transportEquipment.index.item.removeItemYesNo", equipmentIndex.display)
   private lazy val removeItemYesNoRoute = routes.RemoveGoodsReferenceYesNoController.onPageLoad(arrivalId, equipmentIndex, itemIndex).url
 
   "RemoveItemYesNo Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val userAnswers = emptyUserAnswers.setValue(ItemPage(equipmentIndex, itemIndex), itemIdNumber)
+      val userAnswers = emptyUserAnswers
+        .setValue(ItemPage(equipmentIndex, itemIndex), itemIdNumber)
+        .setValue(ItemGoodsReferenceDescriptionPage(houseConsignmentIndex, itemIndex), ItemDescription(itemIdNumber.declarationGoodsItemNumber, "shirts"))
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, removeItemYesNoRoute)
       val result  = route(app, request).value
 
-      val view = injector.instanceOf[RemoveItemYesNoView]
-
       status(result) mustEqual OK
 
+      val view = injector.instanceOf[RemoveItemYesNoView]
+
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, equipmentIndex, itemIndex, itemIdNumber.toString)(request, messages).toString
+        view(form, mrn, arrivalId, equipmentIndex, itemIndex, Some("Item 123 - shirts"))(request, messages).toString
     }
 
     "must redirect to the next page" - {
       "when yes is submitted" ignore {
-
-        val userAnswers = emptyUserAnswers.setValue(ItemPage(equipmentIndex, itemIndex), itemIdNumber)
-        setExistingUserAnswers(userAnswers)
 
         val request = FakeRequest(POST, removeItemYesNoRoute)
           .withFormUrlEncodedBody(("value", "true"))
@@ -76,8 +76,6 @@ class RemoveItemYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
       }
 
       "when no is submitted" ignore {
-        val userAnswers = emptyUserAnswers.setValue(ItemPage(equipmentIndex, itemIndex), itemIdNumber)
-        setExistingUserAnswers(userAnswers)
 
         val request = FakeRequest(POST, removeItemYesNoRoute)
           .withFormUrlEncodedBody(("value", "false"))
@@ -92,7 +90,9 @@ class RemoveItemYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val userAnswers = emptyUserAnswers.setValue(ItemPage(equipmentIndex, itemIndex), itemIdNumber)
+      val userAnswers = emptyUserAnswers
+        .setValue(ItemPage(equipmentIndex, itemIndex), itemIdNumber)
+        .setValue(ItemGoodsReferenceDescriptionPage(houseConsignmentIndex, itemIndex), ItemDescription(itemIdNumber.declarationGoodsItemNumber, "shirts"))
       setExistingUserAnswers(userAnswers)
 
       val request   = FakeRequest(POST, removeItemYesNoRoute).withFormUrlEncodedBody(("value", ""))
@@ -105,7 +105,7 @@ class RemoveItemYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
       val view = injector.instanceOf[RemoveItemYesNoView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, arrivalId, equipmentIndex, itemIndex, itemIdNumber.value)(request, messages).toString
+        view(boundForm, mrn, arrivalId, equipmentIndex, itemIndex, Some("Item 123 - shirts"))(request, messages).toString
     }
 
     "must redirect for a GET" - {

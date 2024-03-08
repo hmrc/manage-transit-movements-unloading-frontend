@@ -30,7 +30,6 @@ import viewModels.transportEquipment.AddAnotherEquipmentViewModel.AddAnotherEqui
 import views.html.transportEquipment.AddAnotherEquipmentView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 class AddAnotherEquipmentController @Inject() (
   override val messagesApi: MessagesApi,
@@ -40,7 +39,7 @@ class AddAnotherEquipmentController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherEquipmentView,
   viewModelProvider: AddAnotherEquipmentViewModelProvider
-)(implicit config: FrontendAppConfig, ec: ExecutionContext)
+)(implicit config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 

@@ -16,13 +16,12 @@
 
 package utils.answersHelpers.consignment.houseConsignment.item
 
+import controllers.houseConsignment.index.items.document.routes
 import models.reference.DocumentType
-import models.{Index, UserAnswers}
+import models.{CheckMode, Index, UserAnswers}
 import pages.houseConsignment.index.items.document._
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
 
 class DocumentAnswersHelper(
@@ -45,9 +44,9 @@ class DocumentAnswersHelper(
         page = TypePage(houseConsignmentIndex, itemIndex, documentIndex),
         formatAnswer = formatAsText,
         prefix = "unloadingFindings.houseConsignment.item.document.type",
-        args = Seq(documentIndex.display, itemIndex.display): _*,
+        args = Seq(itemIndex.display, documentIndex.display): _*,
         id = Some(s"change-document-type-${itemIndex.display}-${documentIndex.display}"),
-        call = Some(Call(GET, "#")) //TODO change me please
+        call = Some(routes.TypeController.onPageLoad(arrivalId, CheckMode, houseConsignmentIndex, itemIndex, documentIndex))
       )
     }
 
@@ -63,9 +62,9 @@ class DocumentAnswersHelper(
         page = DocumentReferenceNumberPage(houseConsignmentIndex, itemIndex, documentIndex),
         formatAnswer = formatAsText,
         prefix = "unloadingFindings.houseConsignment.item.document.referenceNumber",
-        args = Seq(documentIndex.display, itemIndex.display): _*,
+        args = Seq(itemIndex.display, documentIndex.display): _*,
         id = Some(s"change-document-reference-number-${itemIndex.display}-${documentIndex.display}"),
-        call = Some(Call(GET, "#")) //TODO change me please
+        call = Some(routes.DocumentReferenceNumberController.onPageLoad(arrivalId, CheckMode, houseConsignmentIndex, itemIndex, documentIndex))
       )
     }
 
@@ -81,9 +80,9 @@ class DocumentAnswersHelper(
         page = AdditionalInformationPage(houseConsignmentIndex, itemIndex, documentIndex),
         formatAnswer = formatAsText,
         prefix = "unloadingFindings.houseConsignment.item.document.additionalInformation",
-        args = Seq(documentIndex.display, itemIndex.display): _*,
+        args = Seq(itemIndex.display, documentIndex.display): _*,
         id = Some(s"change-document-additional-information-${itemIndex.display}-${documentIndex.display}"),
-        call = Some(Call(GET, "#")) //TODO change me please
+        call = Some(routes.AdditionalInformationController.onPageLoad(arrivalId, CheckMode, houseConsignmentIndex, itemIndex, documentIndex))
       )
     }
 }

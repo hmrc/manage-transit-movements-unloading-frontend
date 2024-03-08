@@ -21,7 +21,7 @@ import forms.SelectableFormProvider
 import models.reference.DocumentType
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.DocumentNavigation
+import navigation.DocumentNavigator
 import pages.documents.TypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TypeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: DocumentNavigation,
+  navigator: DocumentNavigator,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: SelectableFormProvider,

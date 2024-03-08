@@ -95,7 +95,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual "/manage-transit-movements/unloading/AB123/check-answers"
+          redirectLocation(result).value mustEqual onwardRoute.url
         }
 
         "must return a Bad Request and errors when invalid data is submitted" in {
@@ -182,7 +182,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual "/manage-transit-movements/unloading/AB123/check-answers"
+          redirectLocation(result).value mustEqual onwardRoute.url
         }
 
         "must return a Bad Request and errors when invalid data is submitted" in {
