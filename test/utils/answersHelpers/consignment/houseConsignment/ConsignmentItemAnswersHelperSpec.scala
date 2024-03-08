@@ -131,16 +131,12 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new ConsignmentItemAnswersHelper(answers, hcIndex, itemIndex)
               val result = helper.grossWeightRow
 
-              result.key.value mustBe "Gross weight"
-              result.value.value mustBe s"${value}kg"
-              val action1 = result.actions.value.items.head
-              action1.content.value mustBe "Change"
-              action1.visuallyHiddenText.value mustBe "gross weight of item 1"
-              action1.href mustBe "#"
-              val action2 = result.actions.value.items(1)
-              action2.content.value mustBe "Remove"
-              action2.visuallyHiddenText.value mustBe "gross weight of item 1"
-              action2.href mustBe "#"
+              result mustBe
+                SummaryListRow(
+                  key = Key("Gross weight".toText),
+                  value = Value(s"${value}kg".toText),
+                  actions = grossWeightAction
+                )
           }
         }
       }
