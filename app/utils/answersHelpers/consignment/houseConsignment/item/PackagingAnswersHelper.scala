@@ -20,9 +20,7 @@ import models.reference.PackageType
 import models.{CheckMode, Index, UserAnswers}
 import pages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
 
 class PackagingAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index)(implicit messages: Messages)

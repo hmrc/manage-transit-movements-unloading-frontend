@@ -19,11 +19,6 @@ package forms
 import forms.Constants.maxNumberOfPackages
 import forms.behaviours.FieldBehaviours
 import generators.Generators
-import models.messages.UnloadingRemarksRequest
-import org.scalacheck.Gen
-import play.api.data.{Field, Form, FormError}
-
-import scala.util.matching.Regex
 
 class NumberOfPackagesFormProviderSpec extends FieldBehaviours with Generators {
 

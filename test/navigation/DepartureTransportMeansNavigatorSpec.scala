@@ -20,9 +20,8 @@ import base.SpecBase
 import generators.Generators
 import models._
 import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.Country
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
+import pages.departureMeansOfTransport.{TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 
 class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

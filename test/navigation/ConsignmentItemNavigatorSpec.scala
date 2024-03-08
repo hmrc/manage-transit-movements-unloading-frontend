@@ -19,12 +19,10 @@ package navigation
 import base.SpecBase
 import generators.Generators
 import models._
-import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.PackageType
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.{NetWeightPage, NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
-import pages.departureMeansOfTransport.{TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 import pages.houseConsignment.index.items.{CommodityCodePage, ItemDescriptionPage}
+import pages.{NetWeightPage, NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
 
 class ConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
