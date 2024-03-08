@@ -17,7 +17,7 @@
 package pages.additionalReference
 
 import models.{Index, UserAnswers}
-import pages.{QuestionPage}
+import pages.QuestionPage
 import pages.sections.additionalReference.AdditionalReferenceSection
 import play.api.libs.json.JsPath
 

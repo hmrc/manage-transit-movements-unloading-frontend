@@ -31,7 +31,7 @@ class AdditionalReferenceNumberYesNoPageSpec extends PageBehaviours {
 
     "cleanup" - {
       "must remove additional reference number when no selected" in {
-        forAll(Gen.alphaNumStr) {
+        forAll(nonEmptyString) {
           value =>
             val userAnswers = emptyUserAnswers
               .setValue(AdditionalReferenceNumberYesNoPage(index), true)
@@ -45,7 +45,7 @@ class AdditionalReferenceNumberYesNoPageSpec extends PageBehaviours {
       }
 
       "must keep additional reference number when yes selected" in {
-        forAll(Gen.alphaNumStr) {
+        forAll(nonEmptyString) {
           value =>
             val userAnswers = emptyUserAnswers
               .setValue(AdditionalReferenceNumberYesNoPage(index), true)

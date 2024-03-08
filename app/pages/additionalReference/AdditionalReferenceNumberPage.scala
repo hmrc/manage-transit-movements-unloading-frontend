@@ -16,12 +16,11 @@
 
 package pages.additionalReference
 
-import models.{Index, UserAnswers}
-import pages.{QuestionPage, UnloadingCommentsPage}
+import models.Index
+import pages.QuestionPage
 import pages.sections.additionalReference.AdditionalReferenceSection
 import play.api.libs.json.JsPath
 
-import scala.util.Try
 
 case class AdditionalReferenceNumberPage(referenceIndex: Index) extends QuestionPage[String] {
 
