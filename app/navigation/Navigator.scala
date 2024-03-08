@@ -17,11 +17,12 @@
 package navigation
 
 import controllers.routes
+import logging.Logging
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages._
 import play.api.mvc.Call
 
-trait Navigator {
+trait Navigator extends Logging {
   private type RouteMapping = PartialFunction[Page, UserAnswers => Option[Call]]
 
   protected def normalRoutes: RouteMapping
@@ -41,12 +42,16 @@ trait Navigator {
     mode match {
       case NormalMode =>
         normalRoutes.lift(page) match {
-          case None       => ??? //TODO: Change with a better default
+          case None =>
+            logger.error(s"route for $page is missing in NormalMode")
+            ??? //TODO: Change with a better default
           case Some(call) => handleCall(userAnswers, call)
         }
       case CheckMode =>
         checkRoutes.lift(page) match {
-          case None       => ??? //TODO: Change with a better default
+          case None =>
+            logger.error(s"route for $page is missing in CheckMode")
+            ??? //TODO: Change with a better default
           case Some(call) => handleCall(userAnswers, call)
         }
     }
