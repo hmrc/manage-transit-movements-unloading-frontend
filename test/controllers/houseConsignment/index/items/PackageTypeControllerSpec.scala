@@ -129,12 +129,10 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       when(mockPackagesService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, packageTypeRoute)
-        .withFormUrlEncodedBody(("value", "invalid answer"))
+      val request   = FakeRequest(POST, packageTypeRoute).withFormUrlEncodedBody(("value", "invalid answer"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
       val result = route(app, request).value

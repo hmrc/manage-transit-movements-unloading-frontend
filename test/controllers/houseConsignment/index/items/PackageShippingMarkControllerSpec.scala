@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.PackageShippingMarkFormProvider
 import generators.Generators
-import models.{CheckMode, NormalMode}
+import models.CheckMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary

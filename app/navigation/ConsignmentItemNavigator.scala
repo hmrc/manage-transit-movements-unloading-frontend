@@ -38,8 +38,7 @@ class ConsignmentItemNavigator @Inject() () extends Navigator {
     case PackageTypePage(houseConsignmentIndex, _, _)  => ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
     case PackageShippingMarkPage(houseConsignmentIndex, _, _) =>
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
-    case PackageShippingMarkPage(houseConsignmentIndex, _, _) =>
-      ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
+
     case NumberOfPackagesPage(houseConsignmentIndex, _, _) =>
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
   }

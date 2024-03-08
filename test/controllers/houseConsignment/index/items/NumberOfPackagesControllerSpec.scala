@@ -41,7 +41,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
   private val mockViewModelProvider              = mock[NumberOfPackagesViewModelProvider]
   private val viewModel                          = arbitrary[NumberOfPackagesViewModel].sample.value
   private val mode                               = CheckMode
-  val form: Form[BigInt]                         = new NumberOfPackagesFormProvider()("String", BigInt(0), Seq.empty)
+  val form: Form[BigInt]                         = new NumberOfPackagesFormProvider()("String", BigInt(0), Seq("2", "test"))
   private val validAnswer                        = "1"
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -74,7 +74,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, arrivalId, mrn, hcIndex, itemIndex, index, CheckMode, viewModel)(request, messages).toString
+        view(form, arrivalId, mrn, hcIndex, itemIndex, index, mode, viewModel)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -93,7 +93,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
       val view       = injector.instanceOf[NumberOfPackagesView]
 
       contentAsString(result) mustEqual
-        view(filledForm, arrivalId, mrn, hcIndex, itemIndex, index, CheckMode, viewModel)(request, messages).toString
+        view(filledForm, arrivalId, mrn, hcIndex, itemIndex, index, mode, viewModel)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -128,7 +128,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
       val view = injector.instanceOf[NumberOfPackagesView]
 
       contentAsString(result) mustEqual
-        view(boundForm, arrivalId, mrn, hcIndex, itemIndex, index, CheckMode, viewModel)(request, messages).toString
+        view(boundForm, arrivalId, mrn, hcIndex, itemIndex, index, mode, viewModel)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

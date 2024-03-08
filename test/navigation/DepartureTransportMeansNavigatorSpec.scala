@@ -20,12 +20,13 @@ import base.SpecBase
 import generators.Generators
 import models._
 import models.departureTransportMeans.TransportMeansIdentification
+import models.reference.Country
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.departureMeansOfTransport.TransportMeansIdentificationPage
+import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 
 class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  val navigator = new DocumentNavigation
+  val navigator = new DepartureTransportMeansNavigator
 
   "DepartureTransportMeansNavigator" - {
 
@@ -40,6 +41,17 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
         navigator
           .nextPage(TransportMeansIdentificationPage(transportMeansIndex), mode, userAnswers)
+          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+
+      }
+
+      "must go from VehicleIdentificationNumberPage to UnloadingFindingsController" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(VehicleIdentificationNumberPage(transportMeansIndex), "test")
+
+        navigator
+          .nextPage(VehicleIdentificationNumberPage(transportMeansIndex), mode, userAnswers)
           .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
 
       }

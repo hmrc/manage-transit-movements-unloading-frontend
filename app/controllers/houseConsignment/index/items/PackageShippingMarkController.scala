@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items
 import controllers.actions._
 import forms.PackageShippingMarkFormProvider
 import models.requests.MandatoryDataRequest
-import models.{ArrivalId, Index, Mode}
+import models.{ArrivalId, CheckMode, Index, Mode}
 import navigation.ConsignmentItemNavigator
 import pages.PackageShippingMarkPage
 import play.api.i18n.{I18nSupport, MessagesApi}
