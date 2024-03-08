@@ -41,6 +41,10 @@ class FakeDocumentNavigator(desiredRoute: Call) extends DocumentNavigator {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
+class FakeNavigation(desiredRoute: Call) extends Navigation {
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
+}
+
 class FakeItemDocumentNavigator(desiredRoute: Call) extends ItemDocumentNavigator {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
