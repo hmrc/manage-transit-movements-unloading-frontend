@@ -746,6 +746,7 @@ additionalReferenceNumber.index.CheckMode.error.required = Enter the new additio
 additionalReferenceNumber.index.error.length = The additional reference number must be 70 characters or less
 additionalReferenceNumber.index.error.characters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 
+
 houseConsignment.index.items.document.additionalInformation.NormalMode.title = Enter the additional information
 houseConsignment.index.items.document.additionalInformation.CheckMode.title = Enter the new additional information for item {1} in house consignment {0}?
 houseConsignment.index.items.document.additionalInformation.NormalMode.heading = Enter the additional information
@@ -781,6 +782,11 @@ additionalReference.index.additionalReferenceType.error.required = Select the ty
 additionalReference.index.additionalReferenceType.check.error.required = Select the new additional reference type
 additionalReference.index.additionalReferenceType.hint = Enter the reference name or code, like Carrier (AEO certificate number) or Y028.
 additionalReference.index.additionalReferenceType.placeholder = Select an additional reference
+
+additionalReference.index.additionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
+additionalReference.index.additionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
+additionalReference.index.additionalReferenceNumberYesNo.error.required = Select yes if you want to add an additional reference number
+
 
 unloadingFindings.grossMass = Gross weight
 unloadingFindings.grossMass.change.hidden = gross weight
