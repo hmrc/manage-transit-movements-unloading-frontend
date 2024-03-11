@@ -19,7 +19,7 @@ package controllers.transportEquipment.index
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.{ArrivalId, Index, Mode}
+import models.{ArrivalId, Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -66,7 +66,7 @@ class AddAnotherSealController @Inject() (
                   .onPageLoad(arrivalId, mode, equipmentIndex, viewModel.nextIndex)
               )
             case false =>
-              Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+              Redirect(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, Index(0), NormalMode))
           }
         )
   }

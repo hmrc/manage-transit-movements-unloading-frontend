@@ -27,20 +27,27 @@ import viewModels.{AddAnotherViewModel, ListItem}
 case class AddAnotherEquipmentViewModel(
   listItems: Seq[ListItem],
   onSubmitCall: Call,
-  nextIndex: Index
+  nextIndex: Index,
+  isNumberItemsZero: Boolean
 ) extends AddAnotherViewModel {
   override val prefix: String = "transportEquipment.addAnotherEquipment"
 
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxTransportEquipment
 
   override def maxLimitLabel(implicit messages: Messages): String = messages(s"$prefix.maxLimit.label")
+
+  override def allowMore(implicit config: FrontendAppConfig): Boolean = count < maxCount && !isNumberItemsZero
+
+  def noMoreItemsLabel(implicit messages: Messages): String = messages(s"$prefix.noMoreItems.label")
 }
 
 object AddAnotherEquipmentViewModel {
 
   class AddAnotherEquipmentViewModelProvider() {
 
-    def apply(userAnswers: UserAnswers, arrivalId: ArrivalId, mode: Mode)(implicit messages: Messages): AddAnotherEquipmentViewModel = {
+    def apply(userAnswers: UserAnswers, arrivalId: ArrivalId, mode: Mode, isNumberItemsZero: Boolean)(implicit
+      messages: Messages
+    ): AddAnotherEquipmentViewModel = {
 
       val equipments = userAnswers.get(TransportEquipmentListSection)
 
@@ -66,7 +73,8 @@ object AddAnotherEquipmentViewModel {
       new AddAnotherEquipmentViewModel(
         listItems,
         onSubmitCall = controllers.transportEquipment.routes.AddAnotherEquipmentController.onSubmit(arrivalId, mode),
-        nextIndex = equipments.nextIndex
+        nextIndex = equipments.nextIndex,
+        isNumberItemsZero = isNumberItemsZero
       )
     }
   }

@@ -39,7 +39,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
             mode =>
               val userAnswers = emptyUserAnswers
 
-              val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, arrivalId, mode)
+              val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, arrivalId, mode, isNumberItemsZero = false)
               result.listItems mustBe Nil
               result.title mustBe "You have added 0 transport equipment"
               result.heading mustBe "You have added 0 transport equipment"
@@ -59,7 +59,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                 .setValue(ContainerIdentificationNumberPage(Index(0)), containerId)
                 .setValue(AddContainerIdentificationNumberYesNoPage(Index(0)), true)
 
-              val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, arrivalId, mode)
+              val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, arrivalId, mode, isNumberItemsZero = false)
 
               result.listItems.length mustBe 1
               result.listItems.head.name mustBe s"Transport Equipment 1 - container $containerId"
@@ -77,7 +77,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
               val userAnswers = emptyUserAnswers
                 .setValue(AddContainerIdentificationNumberYesNoPage(Index(0)), false)
 
-              val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, arrivalId, mode)
+              val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, arrivalId, mode, isNumberItemsZero = false)
 
               result.listItems.length mustBe 1
               result.listItems.head.name mustBe s"Transport Equipment 1"
@@ -98,7 +98,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                 .setValue(ContainerIdentificationNumberPage(Index(1)), containerId)
                 .setValue(AddContainerIdentificationNumberYesNoPage(Index(1)), true)
 
-              val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, arrivalId, mode)
+              val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, arrivalId, mode, isNumberItemsZero = false)
               result.listItems.length mustBe 2
               result.title mustBe s"You have added 2 transport equipment"
               result.heading mustBe s"You have added 2 transport equipment"
@@ -118,7 +118,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                 .setValue(ContainerIdentificationNumberPage(Index(2)), containerId)
                 .setValue(AddContainerIdentificationNumberYesNoPage(Index(2)), true)
 
-              val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, arrivalId, mode)
+              val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, arrivalId, mode, isNumberItemsZero = false)
               result.listItems.length mustBe 2
               result.title mustBe s"You have added 2 transport equipment"
               result.heading mustBe s"You have added 2 transport equipment"
@@ -137,7 +137,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                 .setValue(ContainerIdentificationNumberPage(Index(1)), containerId)
                 .setValue(AddContainerIdentificationNumberYesNoPage(Index(1)), true)
 
-              val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, arrivalId, mode)
+              val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, arrivalId, mode, isNumberItemsZero = false)
 
               result.listItems mustBe Seq(
                 ListItem(
