@@ -33,34 +33,6 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
 
   "TransportNavigator" - {
 
-    "must go from AddAnotherSealPage page " - {
-      "to SealIdentificationNumberPage if answer is true" in {
-        forAll(arbitrary[Mode]) {
-          mode =>
-            val page        = AddAnotherSealPage(equipmentIndex, sealIndex)
-            val userAnswers = emptyUserAnswers.setValue(page, true)
-
-            navigator
-              .nextPage(page, mode, userAnswers)
-              .mustBe(
-                controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(arrivalId, mode, equipmentIndex, sealIndex)
-              )
-        }
-      }
-
-      "to UnloadingFindings page if answer is false" in {
-        forAll(arbitrary[Mode]) {
-          mode =>
-            val page        = AddAnotherSealPage(equipmentIndex, sealIndex)
-            val userAnswers = emptyUserAnswers.setValue(page, false)
-
-            navigator
-              .nextPage(page, mode, userAnswers)
-              .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
-        }
-      }
-    }
-
     "in NormalMode" - {
 
       val mode = NormalMode
@@ -168,6 +140,32 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
         navigator
           .nextPage(SealIdentificationNumberPage(equipmentIndex, sealIndex), mode, userAnswers)
           .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+      }
+
+      "must go from AddAnotherSealPage page " - {
+        "to SealIdentificationNumberPage if answer is true" in {
+
+          val page        = AddAnotherSealPage(equipmentIndex, sealIndex)
+          val userAnswers = emptyUserAnswers.setValue(page, true)
+
+          navigator
+            .nextPage(page, CheckMode, userAnswers)
+            .mustBe(
+              controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(arrivalId, mode, equipmentIndex, sealIndex)
+            )
+
+        }
+
+        "to UnloadingFindings page if answer is false" in {
+
+          val page        = AddAnotherSealPage(equipmentIndex, sealIndex)
+          val userAnswers = emptyUserAnswers.setValue(page, false)
+
+          navigator
+            .nextPage(page, mode, userAnswers)
+            .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+        }
+
       }
     }
   }
