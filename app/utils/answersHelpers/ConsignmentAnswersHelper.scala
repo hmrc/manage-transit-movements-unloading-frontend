@@ -18,7 +18,7 @@ package utils.answersHelpers
 
 import models.DocType.Previous
 import models.reference.CustomsOffice
-import models.{Link, RichOptionalJsArray, SecurityType, UserAnswers}
+import models.{CheckMode, Index, Link, RichOptionalJsArray, SecurityType, UserAnswers}
 import pages.documents.TypePage
 import pages.grossMass.GrossMassPage
 import pages.sections._
@@ -432,17 +432,17 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
   private def sealsAddRemoveLink(index: Int): Link =
     Link(
       id = s"add-remove-seals-$index",
-      href = "#",
+      href = controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, CheckMode, Index(index)).url,
       text = messages("sealsLink.addRemove"),
       visuallyHidden = messages("sealsLink.visuallyHidden")
     )
 
   private def itemsAddRemoveLink(index: Int): Link =
     Link(
-      id = s"add-remove-goods-reference-items-$index",
+      id = s"add-remove-consignment-items-$index",
       href = "#",
-      text = messages("goodsReferenceItemLink.addRemove", index),
-      visuallyHidden = messages("goodsReferenceItemLink.visuallyHidden", index)
+      text = messages("consignmentItemLink.addRemove", index),
+      visuallyHidden = messages("consignmentItemLink.visuallyHidden", index)
     )
 
   private val transportEquipmentAddRemoveLink: Link = Link(

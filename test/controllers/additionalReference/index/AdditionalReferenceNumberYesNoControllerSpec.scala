@@ -14,69 +14,70 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.additionalReference.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.routes
 import forms.YesNoFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.AddUnloadingCommentsYesNoPage
+import pages.additionalReference.AdditionalReferenceNumberYesNoPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.AddUnloadingCommentsYesNoView
+import views.html.additionalReference.index.AdditionalReferenceNumberYesNoView
 
 import scala.concurrent.Future
 
-class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class AdditionalReferenceNumberYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider = new YesNoFormProvider()
-  private val form         = formProvider("addUnloadingCommentsYesNo")
+  private val form         = formProvider("additionalReference.index.additionalReferenceNumberYesNo")
   private val mode         = NormalMode
 
-  private lazy val addUnloadingCommentsYesNoRoute =
-    controllers.routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, mode).url
+  private lazy val additionalReferenceNumberYesNoRoute =
+    controllers.additionalReference.index.routes.AdditionalReferenceNumberYesNoController.onPageLoad(arrivalId, additionalReferenceIndex, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
 
-  "AddUnloadingCommentsYesNo Controller" - {
+  "AdditionalReferenceNumberYesNoController Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, addUnloadingCommentsYesNoRoute)
+      val request = FakeRequest(GET, additionalReferenceNumberYesNoRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[AddUnloadingCommentsYesNoView]
+      val view = injector.instanceOf[AdditionalReferenceNumberYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, mode)(request, messages).toString
+        view(form, mrn, arrivalId, additionalReferenceIndex, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, true)
+      val userAnswers = emptyUserAnswers.setValue(AdditionalReferenceNumberYesNoPage(index), true)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, addUnloadingCommentsYesNoRoute)
+      val request = FakeRequest(GET, additionalReferenceNumberYesNoRoute)
 
       val result = route(app, request).value
 
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[AddUnloadingCommentsYesNoView]
+      val view = injector.instanceOf[AdditionalReferenceNumberYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, additionalReferenceIndex, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -85,7 +86,7 @@ class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefau
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, addUnloadingCommentsYesNoRoute)
+      val request = FakeRequest(POST, additionalReferenceNumberYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
@@ -101,24 +102,24 @@ class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefau
 
       val invalidAnswer = ""
 
-      val request    = FakeRequest(POST, addUnloadingCommentsYesNoRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, additionalReferenceNumberYesNoRoute).withFormUrlEncodedBody(("value", ""))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AddUnloadingCommentsYesNoView]
+      val view = injector.instanceOf[AdditionalReferenceNumberYesNoView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, additionalReferenceIndex, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, addUnloadingCommentsYesNoRoute)
+      val request = FakeRequest(GET, additionalReferenceNumberYesNoRoute)
 
       val result = route(app, request).value
 
@@ -131,7 +132,7 @@ class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefau
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, addUnloadingCommentsYesNoRoute)
+      val request = FakeRequest(POST, additionalReferenceNumberYesNoRoute)
         .withFormUrlEncodedBody(("value", "test string"))
 
       val result = route(app, request).value

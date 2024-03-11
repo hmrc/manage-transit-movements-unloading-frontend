@@ -37,8 +37,8 @@ transportEquipmentLink.addRemove = Add or remove transport equipment
 transportEquipmentLink.visuallyHidden = Add or remove transport equipment
 sealsLink.addRemove = Add or remove seal
 sealsLink.visuallyHidden = Add or remove seal
-goodsReferenceItemLink.addRemove = Add or remove items from transport equipment {0}
-goodsReferenceItemLink.visuallyHidden = Add or remove items from transport equipment {0}
+consignmentItemLink.addRemove = Add or remove items from transport equipment {0}
+consignmentItemLink.visuallyHidden = Add or remove items from transport equipment {0}
 itemsLink.addRemove = Add or remove item
 itemsLink.visuallyHidden = Add or remove item
 packagingLink.addRemove = Add or remove package
@@ -732,6 +732,11 @@ document.additionalInformation.CheckMode.error.required = Enter the new addition
 document.additionalInformation.error.length = The additional information must be 35 characters or less
 document.additionalInformation.error.invalidCharacters = The additional information must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 
+document.addAdditionalInformationYesNo.title = Do you want to add any additional information for this document?
+document.addAdditionalInformationYesNo.heading = Do you want to add any additional information for this document?
+document.addAdditionalInformationYesNo.paragraph = This can be any other information you want to declare, such as a contact, any safety risks or further descriptions.
+document.addAdditionalInformationYesNo.error.required = Select yes if you want to add any additional information for this document
+
 houseConsignment.index.items.document.referenceNumber.NormalMode.title = What is the document’s reference number?
 houseConsignment.index.items.document.referenceNumber.CheckMode.title = What is the new document’s reference number for item {1} in house consignment {0}?
 houseConsignment.index.items.document.referenceNumber.NormalMode.heading = What is the document’s reference number?
@@ -750,6 +755,7 @@ additionalReferenceNumber.index.NormalMode.error.required = Enter the additional
 additionalReferenceNumber.index.CheckMode.error.required = Enter the new additional reference number
 additionalReferenceNumber.index.error.length = The additional reference number must be 70 characters or less
 additionalReferenceNumber.index.error.characters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+
 
 houseConsignment.index.items.document.additionalInformation.NormalMode.title = Enter the additional information
 houseConsignment.index.items.document.additionalInformation.CheckMode.title = Enter the new additional information for item {1} in house consignment {0}?
@@ -786,6 +792,11 @@ additionalReference.index.additionalReferenceType.error.required = Select the ty
 additionalReference.index.additionalReferenceType.check.error.required = Select the new additional reference type
 additionalReference.index.additionalReferenceType.hint = Enter the reference name or code, like Carrier (AEO certificate number) or Y028.
 additionalReference.index.additionalReferenceType.placeholder = Select an additional reference
+
+additionalReference.index.additionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
+additionalReference.index.additionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
+additionalReference.index.additionalReferenceNumberYesNo.error.required = Select yes if you want to add an additional reference number
+
 
 unloadingFindings.grossMass = Gross weight
 unloadingFindings.grossMass.change.hidden = gross weight
