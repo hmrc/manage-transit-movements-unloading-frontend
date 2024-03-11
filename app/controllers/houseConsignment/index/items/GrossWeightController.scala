@@ -21,7 +21,6 @@ import forms.Constants.{grossWeightCharacterCount, grossWeightDecimalPlaces}
 import forms.GrossWeightFormProvider
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigator
 import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator
 import pages.houseConsignment.index.items.GrossWeightPage
 import play.api.i18n.{I18nSupport, MessagesApi}

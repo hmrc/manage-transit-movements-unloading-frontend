@@ -18,7 +18,6 @@ package forms
 
 import forms.Constants.exactCUSCodeLength
 import forms.mappings.Mappings
-import models.messages.UnloadingRemarksRequest.alphaNumericRegex
 import play.api.data.Form
 import models.RichString
 
@@ -31,7 +30,6 @@ class CUSCodeFormProvider @Inject() extends Mappings {
       "value" -> adaptedText(s"$prefix.error.required", args = args.map(_.toString))(_.removeSpaces())
         .verifying(
           forms.StopOnFirstFail[String](
-//            regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
             exactLength(exactCUSCodeLength, s"$prefix.error.length")
           )
         )

@@ -107,7 +107,7 @@ trait RowActions {
       "",
       List(
         ActionItem(
-          "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/gross-weight",
+          "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/change-gross-weight",
           Text("Change"),
           Some("gross weight of item 1"),
           "",
@@ -135,7 +135,7 @@ trait RowActions {
       "",
       List(
         ActionItem(
-          "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/cus-code",
+          "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/change-cus-code",
           Text("Change"),
           Some("Customs Union and Statistics (CUS) code for item 1"),
           "",
@@ -166,7 +166,7 @@ trait RowActions {
       "",
       List(
         ActionItem(
-          "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/combined-nomenclature-code",
+          "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/change-combined-nomenclature-code",
           Text("Change"),
           Some("combined nomenclature code for item 1"),
           "",
