@@ -65,7 +65,7 @@ class CombinedNomenclatureCodeController @Inject() (
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+              } yield Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
           )
     }
 
