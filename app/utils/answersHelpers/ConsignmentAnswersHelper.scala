@@ -18,7 +18,7 @@ package utils.answersHelpers
 
 import models.DocType.Previous
 import models.reference.CustomsOffice
-import models.{Link, RichOptionalJsArray, SecurityType, UserAnswers}
+import models.{Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
 import pages.documents.TypePage
 import pages.grossMass.GrossMassPage
 import pages.sections._
@@ -422,7 +422,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
   private val transportEquipmentAddRemoveLink: Link = Link(
     id = s"add-remove-transport-equipment",
-    href = "#",
+    href = controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, NormalMode).url,
     text = messages("transportEquipmentLink.addRemove"),
     visuallyHidden = messages("transportEquipmentLink.visuallyHidden")
   )

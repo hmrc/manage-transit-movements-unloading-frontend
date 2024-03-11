@@ -17,8 +17,9 @@
 package navigation
 
 import com.google.inject.Singleton
-import models.UserAnswers
+import models.{CheckMode, Index, Mode, UserAnswers}
 import pages._
+import pages.transportEquipment.index.{AddContainerIdentificationNumberYesNoPage, AddSealYesNoPage}
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.mvc.Call
 
