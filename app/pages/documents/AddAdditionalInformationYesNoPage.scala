@@ -18,7 +18,6 @@ package pages.documents
 
 import models.{Index, UserAnswers}
 import pages.QuestionPage
-import pages.sections.TransportMeansSection
 import pages.sections.documents.DocumentSection
 import play.api.libs.json.JsPath
 
@@ -28,7 +27,7 @@ case class AddAdditionalInformationYesNoPage(documentIndex: Index) extends Quest
 
   override def path: JsPath = DocumentSection(documentIndex).path \ toString
 
-  override def toString: String = "addIdentificationYesNo"
+  override def toString: String = "addAdditionalInformationYesNo"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
