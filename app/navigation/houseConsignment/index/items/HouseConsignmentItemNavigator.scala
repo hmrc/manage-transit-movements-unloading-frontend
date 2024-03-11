@@ -20,8 +20,7 @@ import com.google.inject.Singleton
 import models.UserAnswers
 import navigation.Navigator
 import pages._
-import pages.houseConsignment.index.items.document.TypePage
-import pages.houseConsignment.index.items.{CustomsUnionAndStatisticsCodePage, GrossWeightPage}
+import pages.houseConsignment.index.items.{CombinedNomenclatureCodePage, CustomsUnionAndStatisticsCodePage, GrossWeightPage}
 import play.api.mvc.Call
 
 @Singleton
@@ -31,7 +30,8 @@ class HouseConsignmentItemNavigator extends Navigator {
     case GrossWeightPage(houseConsignmentIndex, _) => ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
     case CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, _) =>
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
-    case TypePage(_, _, _) => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
+    case CombinedNomenclatureCodePage(houseConsignmentIndex, _) =>
+      ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
   }
 
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {

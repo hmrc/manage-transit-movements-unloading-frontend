@@ -90,13 +90,13 @@ class CombinedNomenclatureCodeControllerSpec extends SpecBase with AppWithDefaul
       setExistingUserAnswers(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, combinedNomenclatureCodeControllerRoute)
+        FakeRequest(POST, combinedNomenclatureCodeControllerRouteCheckMode)
           .withFormUrlEncodedBody(("value", "A1"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
+      redirectLocation(result).value mustEqual onwardRoute.url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

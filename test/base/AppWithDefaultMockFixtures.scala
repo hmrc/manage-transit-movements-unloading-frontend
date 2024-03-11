@@ -20,8 +20,8 @@ import controllers.actions._
 import models.P5.ArrivalMessageType.UnloadingPermission
 import models.P5._
 import models.UserAnswers
-import navigation.houseConsignment.index.items.{DocumentNavigator => ItemDocumentNavigator}
-import navigation.{DocumentNavigator, FakeDocumentNavigator, FakeItemDocumentNavigator, FakeNavigator, Navigator}
+import navigation.houseConsignment.index.items.{HouseConsignmentItemNavigator, DocumentNavigator => ItemDocumentNavigator}
+import navigation._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
@@ -40,6 +40,35 @@ import scala.concurrent.Future
 trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerSuite with GuiceFakeApplicationFactory with MockitoSugar {
   self: TestSuite =>
 
+  final val mockSessionRepository: SessionRepository                            = mock[SessionRepository]
+  final val mockDataRetrievalActionProvider                                     = mock[DataRetrievalActionProvider]
+  final val mockUnloadingPermissionMessageService                               = mock[UnloadingPermissionMessageService]
+  final val mockUnloadingPermissionActionProvider                               = mock[UnloadingPermissionActionProvider]
+  protected val onwardRoute: Call                                               = Call("GET", "/foo")
+  protected val fakeNavigator: Navigator                                        = new FakeNavigator(onwardRoute)
+  protected val fakeDocumentNavigator: DocumentNavigator                        = new FakeDocumentNavigator(onwardRoute)
+  protected val fakeItemDocumentNavigator: ItemDocumentNavigator                = new FakeItemDocumentNavigator(onwardRoute)
+  protected val fakeHouseConsignmentIteNavigator: HouseConsignmentItemNavigator = new FakeHouseConsignmentItemNavigator(onwardRoute)
+
+  final override def fakeApplication(): Application =
+    guiceApplicationBuilder()
+      .build()
+
+  def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    new GuiceApplicationBuilder()
+      .overrides(
+        bind[DataRequiredAction].to[DataRequiredActionImpl],
+        bind[IdentifierAction].to[FakeIdentifierAction],
+        bind[SessionRepository].toInstance(mockSessionRepository),
+        bind[UnloadingPermissionActionProvider].toInstance(mockUnloadingPermissionActionProvider),
+        bind[UnloadingPermissionMessageService].toInstance(mockUnloadingPermissionMessageService),
+        bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),
+        bind[Navigator].toInstance(fakeNavigator),
+        bind[DocumentNavigator].toInstance(fakeDocumentNavigator),
+        bind[ItemDocumentNavigator].toInstance(fakeItemDocumentNavigator),
+        bind[HouseConsignmentItemNavigator].toInstance(fakeHouseConsignmentIteNavigator)
+      )
+
   override def beforeEach(): Unit = {
     reset(mockSessionRepository)
     reset(mockDataRetrievalActionProvider)
@@ -53,15 +82,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   }
 
-  final val mockSessionRepository: SessionRepository = mock[SessionRepository]
-  final val mockDataRetrievalActionProvider          = mock[DataRetrievalActionProvider]
-  final val mockUnloadingPermissionMessageService    = mock[UnloadingPermissionMessageService]
-  final val mockUnloadingPermissionActionProvider    = mock[UnloadingPermissionActionProvider]
-
-  final override def fakeApplication(): Application =
-    guiceApplicationBuilder()
-      .build()
-
   protected def setExistingUserAnswers(answers: UserAnswers): Unit =
     when(mockDataRetrievalActionProvider.apply(any())) thenReturn new FakeDataRetrievalAction(Some(answers))
 
@@ -70,24 +90,4 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   // TODO - delete?
   protected def checkArrivalStatus(): Unit = ()
-
-  protected val onwardRoute: Call = Call("GET", "/foo")
-
-  protected val fakeNavigator: Navigator                         = new FakeNavigator(onwardRoute)
-  protected val fakeDocumentNavigator: DocumentNavigator         = new FakeDocumentNavigator(onwardRoute)
-  protected val fakeItemDocumentNavigator: ItemDocumentNavigator = new FakeItemDocumentNavigator(onwardRoute)
-
-  def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    new GuiceApplicationBuilder()
-      .overrides(
-        bind[DataRequiredAction].to[DataRequiredActionImpl],
-        bind[IdentifierAction].to[FakeIdentifierAction],
-        bind[SessionRepository].toInstance(mockSessionRepository),
-        bind[UnloadingPermissionActionProvider].toInstance(mockUnloadingPermissionActionProvider),
-        bind[UnloadingPermissionMessageService].toInstance(mockUnloadingPermissionMessageService),
-        bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),
-        bind[Navigator].toInstance(fakeNavigator),
-        bind[DocumentNavigator].toInstance(fakeDocumentNavigator),
-        bind[ItemDocumentNavigator].toInstance(fakeItemDocumentNavigator)
-      )
 }
