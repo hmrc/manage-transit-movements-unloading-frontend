@@ -74,6 +74,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected val onwardRoute: Call = Call("GET", "/foo")
 
   protected val fakeNavigator: Navigator                                               = new FakeNavigator(onwardRoute)
+  protected val fakeNavigation: Navigation                                             = new FakeNavigation(onwardRoute)
   protected val fakeDocumentNavigator: DocumentNavigator                               = new FakeDocumentNavigator(onwardRoute)
   protected val fakeItemDocumentNavigator: ItemDocumentNavigator                       = new FakeItemDocumentNavigator(onwardRoute)
   protected val fakeTransportEquipmentNavigator: TransportEquipmentNavigator           = new FakeTransportEquipmentNavigator(onwardRoute)
@@ -90,6 +91,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[UnloadingPermissionMessageService].toInstance(mockUnloadingPermissionMessageService),
         bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),
         bind[Navigator].toInstance(fakeNavigator),
+        bind[Navigation].toInstance(fakeNavigation),
         bind[DocumentNavigator].toInstance(fakeDocumentNavigator),
         bind[ItemDocumentNavigator].toInstance(fakeItemDocumentNavigator),
         bind[TransportEquipmentNavigator].toInstance(fakeTransportEquipmentNavigator),

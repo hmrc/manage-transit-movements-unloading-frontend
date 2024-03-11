@@ -92,7 +92,7 @@ class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefau
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual "/manage-transit-movements/unloading/AB123/transit-declaration-discrepancies"
+      redirectLocation(result).value mustEqual onwardRoute.url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

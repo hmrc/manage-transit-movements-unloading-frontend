@@ -88,7 +88,7 @@ class UnloadingCommentsControllerSpec extends SpecBase with AppWithDefaultMockFi
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual "/manage-transit-movements/unloading/AB123/check-answers"
+      redirectLocation(result).value mustEqual onwardRoute.url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
