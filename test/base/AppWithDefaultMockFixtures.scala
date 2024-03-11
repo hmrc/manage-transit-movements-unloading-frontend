@@ -51,6 +51,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
     when(mockUnloadingPermissionMessageService.getUnloadingPermissionMessage(any())(any(), any()))
       .thenReturn(Future.successful(Some(MessageMetaData(LocalDateTime.now(), ArrivalMessageType.UnloadingPermission, "foo/bar"))))
 
+    when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
   }
 
   final val mockSessionRepository: SessionRepository = mock[SessionRepository]
