@@ -45,7 +45,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
   private val mode = NormalMode
 
   private lazy val applyAnotherItemRoute =
-    controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId.value, mode, equipmentIndex).url
+    controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, mode, equipmentIndex).url
 
   private lazy val mockViewModelProvider = mock[ApplyAnotherItemViewModelProvider]
 

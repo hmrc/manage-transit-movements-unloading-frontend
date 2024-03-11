@@ -37,7 +37,7 @@ class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaC
           val userAnswers = emptyUserAnswers
             .setValue(ItemPage(equipmentIndex, itemIndex), item)
 
-          val result = new ApplyAnotherItemViewModelProvider().apply(userAnswers, arrivalId.value, mode, equipmentIndex, isNumberItemsZero = false)
+          val result = new ApplyAnotherItemViewModelProvider().apply(userAnswers, arrivalId, mode, equipmentIndex, isNumberItemsZero = false)
 
           result.listItems.length mustBe 1
           result.title mustBe "You have applied 1 item to transport equipment 1"
@@ -63,7 +63,7 @@ class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaC
             .setValue(ItemPage(equipmentIndex, itemIndex), item1)
             .setValue(ItemPage(equipmentIndex, Index(1)), item2)
 
-          val result = new ApplyAnotherItemViewModelProvider().apply(userAnswers, arrivalId.value, mode, equipmentIndex, isNumberItemsZero = false)
+          val result = new ApplyAnotherItemViewModelProvider().apply(userAnswers, arrivalId, mode, equipmentIndex, isNumberItemsZero = false)
 
           result.listItems.length mustBe 2
           result.title mustBe "You have applied 2 items to transport equipment 1"
@@ -96,7 +96,7 @@ class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaC
           val userAnswers = emptyUserAnswers
             .setValue(ItemPage(equipmentIndex, itemIndex), item)
 
-          val result = new ApplyAnotherItemViewModelProvider().apply(userAnswers, arrivalId.value, mode, equipmentIndex, isNumberItemsZero = false)
+          val result = new ApplyAnotherItemViewModelProvider().apply(userAnswers, arrivalId, mode, equipmentIndex, isNumberItemsZero = false)
 
           result.listItems.length mustBe 1
           result.title mustBe "You have applied 1 item to transport equipment 1"
@@ -108,7 +108,8 @@ class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaC
             ListItem(
               name = s"Item ${item.toString}",
               changeUrl = None,
-              removeUrl = Some("") //TODO add in remove url
+              removeUrl =
+                Some(controllers.transportEquipment.index.routes.RemoveGoodsReferenceYesNoController.onPageLoad(arrivalId, equipmentIndex, itemIndex).url)
             )
           )
       }
@@ -122,7 +123,7 @@ class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaC
             .setValue(ItemPage(equipmentIndex, itemIndex), item1)
             .setValue(ItemPage(equipmentIndex, Index(1)), item2)
 
-          val result = new ApplyAnotherItemViewModelProvider().apply(userAnswers, arrivalId.value, mode, equipmentIndex, isNumberItemsZero = false)
+          val result = new ApplyAnotherItemViewModelProvider().apply(userAnswers, arrivalId, mode, equipmentIndex, isNumberItemsZero = false)
 
           result.listItems.length mustBe 2
           result.title mustBe "You have applied 2 items to transport equipment 1"
@@ -134,12 +135,14 @@ class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaC
             ListItem(
               name = s"Item ${item1.toString}",
               changeUrl = None,
-              removeUrl = Some("") //TODO add in remove url
+              removeUrl =
+                Some(controllers.transportEquipment.index.routes.RemoveGoodsReferenceYesNoController.onPageLoad(arrivalId, equipmentIndex, itemIndex).url)
             ),
             ListItem(
               name = s"Item ${item2.toString}",
               changeUrl = None,
-              removeUrl = Some("") //TODO add in remove url
+              removeUrl =
+                Some(controllers.transportEquipment.index.routes.RemoveGoodsReferenceYesNoController.onPageLoad(arrivalId, equipmentIndex, Index(1)).url)
             )
           )
       }

@@ -60,7 +60,7 @@ object ApplyAnotherItemViewModel {
 
   class ApplyAnotherItemViewModelProvider() {
 
-    def apply(userAnswers: UserAnswers, arrivalId: String, mode: Mode, equipmentIndex: Index, isNumberItemsZero: Boolean)(implicit
+    def apply(userAnswers: UserAnswers, arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index, isNumberItemsZero: Boolean)(implicit
       messages: Messages
     ): ApplyAnotherItemViewModel = {
       val array = userAnswers.get(ItemsSection(equipmentIndex))
@@ -80,7 +80,9 @@ object ApplyAnotherItemViewModel {
                 ListItem(
                   name = itemPrefix(item.toString),
                   changeUrl = Some(
-                    controllers.transportEquipment.index.routes.GoodsReferenceController.onSubmit(ArrivalId(arrivalId), equipmentIndex, itemIndex, mode).url
+                    controllers.transportEquipment.index.routes.GoodsReferenceController
+                      .onSubmit(ArrivalId(arrivalId.value), equipmentIndex, itemIndex, mode)
+                      .url
                   ),
                   removeUrl = None
                 )
@@ -88,7 +90,8 @@ object ApplyAnotherItemViewModel {
                 ListItem(
                   name = itemPrefix(item.toString),
                   changeUrl = None,
-                  removeUrl = Some("") //TODO Some(routes.RemoveItemController.onPageLoad(departureId, mode, equipmentIndex, itemIndex).url)
+                  removeUrl =
+                    Some(controllers.transportEquipment.index.routes.RemoveGoodsReferenceYesNoController.onPageLoad(arrivalId, equipmentIndex, itemIndex).url)
                 )
             }
 

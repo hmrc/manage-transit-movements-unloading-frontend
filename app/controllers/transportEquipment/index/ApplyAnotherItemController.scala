@@ -52,27 +52,27 @@ class ApplyAnotherItemController @Inject() (
   private def form(viewModel: ApplyAnotherItemViewModel, equipmentIndex: Index): Form[Boolean] =
     formProvider(viewModel.prefix, viewModel.allowMore, equipmentIndex.display)
 
-  def onPageLoad(arrivalId: String, mode: Mode, equipmentIndex: Index): Action[AnyContent] =
-    actions.requireData(ArrivalId(arrivalId)) {
+  def onPageLoad(arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index): Action[AnyContent] =
+    actions.requireData(arrivalId) {
       implicit request =>
         val isNumberItemsZero: Boolean = SelectItemsViewModel.apply(request.userAnswers).items.values.isEmpty
         val viewModel                  = viewModelProvider(request.userAnswers, arrivalId, mode, equipmentIndex, isNumberItemsZero)
         viewModel.count match {
           case 0 =>
-            Redirect(routes.GoodsReferenceController.onPageLoad(ArrivalId(arrivalId), equipmentIndex, Index(0), mode))
-          case _ => Ok(view(form(viewModel, equipmentIndex), request.userAnswers.mrn, arrivalId, viewModel))
+            Redirect(routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, Index(0), mode))
+          case _ => Ok(view(form(viewModel, equipmentIndex), request.userAnswers.mrn, arrivalId.value, viewModel))
         }
     }
 
-  def onSubmit(arrivalId: String, mode: Mode, equipmentIndex: Index): Action[AnyContent] =
-    actions.requireData(ArrivalId(arrivalId)).async {
+  def onSubmit(arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index): Action[AnyContent] =
+    actions.requireData(ArrivalId(arrivalId.value)).async {
       implicit request =>
         val isNumberItemsZero: Boolean = SelectItemsViewModel(request.userAnswers).items.values.isEmpty
         val viewModel                  = viewModelProvider(request.userAnswers, arrivalId, mode, equipmentIndex, isNumberItemsZero)
         form(viewModel, equipmentIndex)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId.value, viewModel))),
             value => redirect(mode, value, equipmentIndex, viewModel.nextIndex)
           )
     }
