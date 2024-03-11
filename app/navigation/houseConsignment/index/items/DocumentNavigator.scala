@@ -26,7 +26,7 @@ import play.api.mvc.Call
 @Singleton
 class DocumentNavigator extends Navigator {
 
-  override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case AdditionalInformationPage(_, _, _)   => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
     case DocumentReferenceNumberPage(_, _, _) => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
     case TypePage(_, _, _)                    => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))

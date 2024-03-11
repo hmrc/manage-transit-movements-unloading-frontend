@@ -16,7 +16,6 @@
 
 package pages.additionalReference
 
-import org.scalacheck.Gen
 import pages.behaviours.PageBehaviours
 
 class AdditionalReferenceNumberYesNoPageSpec extends PageBehaviours {

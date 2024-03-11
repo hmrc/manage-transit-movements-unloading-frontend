@@ -19,9 +19,11 @@ package navigation
 import base.SpecBase
 import generators.Generators
 import models._
+import org.scalacheck.Arbitrary.arbitrary
 import models.reference.Item
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.ContainerIdentificationNumberPage
+import pages.transportEquipment.index.AddAnotherSealPage
 import pages.transportEquipment.index.{AddContainerIdentificationNumberYesNoPage, AddSealYesNoPage, ApplyAnotherItemPage, ItemPage}
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 
@@ -30,6 +32,34 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
   val navigator = new TransportEquipmentNavigator
 
   "TransportNavigator" - {
+
+    "must go from AddAnotherSealPage page " - {
+      "to SealIdentificationNumberPage if answer is true" in {
+        forAll(arbitrary[Mode]) {
+          mode =>
+            val page        = AddAnotherSealPage(equipmentIndex, sealIndex)
+            val userAnswers = emptyUserAnswers.setValue(page, true)
+
+            navigator
+              .nextPage(page, mode, userAnswers)
+              .mustBe(
+                controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(arrivalId, mode, equipmentIndex, sealIndex)
+              )
+        }
+      }
+
+      "to UnloadingFindings page if answer is false" in {
+        forAll(arbitrary[Mode]) {
+          mode =>
+            val page        = AddAnotherSealPage(equipmentIndex, sealIndex)
+            val userAnswers = emptyUserAnswers.setValue(page, false)
+
+            navigator
+              .nextPage(page, mode, userAnswers)
+              .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+        }
+      }
+    }
 
     "in NormalMode" - {
 

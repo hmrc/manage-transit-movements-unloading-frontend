@@ -17,16 +17,18 @@
 package navigation
 
 import com.google.inject.Singleton
-import models.{Index, Mode, NormalMode, UserAnswers}
+import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, UserAnswers}
 import pages._
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
-import pages.transportEquipment.index.{AddContainerIdentificationNumberYesNoPage, AddSealYesNoPage, ApplyAnotherItemPage, ItemPage}
+import pages.transportEquipment.index._
 import play.api.mvc.Call
 
 @Singleton
 class TransportEquipmentNavigator extends Navigator {
 
-  override def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case AddAnotherSealPage(equipmentIndex, sealIndex) => ua => addAnotherSealRoute(ua, ua.id, NormalMode, equipmentIndex, sealIndex)
+
     case AddContainerIdentificationNumberYesNoPage(equipmentIndex) => ua => addContainerIdentificationNumberYesNoRoute(ua, equipmentIndex, NormalMode)
     case ContainerIdentificationNumberPage(equipmentIndex) =>
       ua => Some(controllers.transportEquipment.index.routes.AddSealYesNoController.onPageLoad(ua.id, equipmentIndex, NormalMode))
@@ -38,10 +40,19 @@ class TransportEquipmentNavigator extends Navigator {
     case ApplyAnotherItemPage(equipmentIndex, itemIndex) => ua => applyAnotherItemRoute(ua, equipmentIndex, itemIndex, NormalMode)
   }
 
-  override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case ContainerIdentificationNumberPage(_) => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
-    case SealIdentificationNumberPage(_, _)   => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
+  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case ContainerIdentificationNumberPage(_)          => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
+    case SealIdentificationNumberPage(_, _)            => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
+    case AddAnotherSealPage(equipmentIndex, sealIndex) => ua => addAnotherSealRoute(ua, ua.id, CheckMode, equipmentIndex, sealIndex)
   }
+
+  def addAnotherSealRoute(ua: UserAnswers, arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index, sealIndex: Index): Option[Call] =
+    ua.get(AddAnotherSealPage(equipmentIndex, sealIndex)) match {
+      case Some(true) =>
+        Some(controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(arrivalId, mode, equipmentIndex, sealIndex))
+      case Some(false) => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
+      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    }
 
   def addContainerIdentificationNumberYesNoRoute(ua: UserAnswers, equipmentIndex: Index, mode: Mode): Option[Call] =
     ua.get(AddContainerIdentificationNumberYesNoPage(equipmentIndex)) map {

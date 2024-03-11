@@ -20,7 +20,7 @@ import generated._
 import models.DocType.Previous
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference._
-import models.{Coordinates, Index, NormalMode, SecurityType}
+import models.{CheckMode, Coordinates, Index, NormalMode, SecurityType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import viewModels.sections.Section.{AccordionSection, StaticSection}
@@ -283,6 +283,10 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.children.head.rows.size mustBe 2
             result.children.head.rows.head.value.value mustBe containerId
             result.children.head.rows(1).value.value mustBe sealId
+
+            val nextSealIndex = equipmentIndex.position + 1
+            result.children.head.viewLinks.head.href mustBe
+              controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, CheckMode, Index(nextSealIndex)).url
         }
       }
     }

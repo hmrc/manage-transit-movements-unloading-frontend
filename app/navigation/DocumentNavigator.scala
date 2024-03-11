@@ -16,16 +16,16 @@
 
 package navigation
 
+import com.google.inject.Singleton
 import models.UserAnswers
 import pages._
 import pages.documents.{AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
 import play.api.mvc.Call
-import com.google.inject.Singleton
 
 @Singleton
 class DocumentNavigator extends Navigator {
 
-  override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case AdditionalInformationPage(_)   => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
     case DocumentReferenceNumberPage(_) => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
     case TypePage(_)                    => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
