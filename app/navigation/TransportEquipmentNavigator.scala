@@ -78,7 +78,7 @@ class TransportEquipmentNavigator extends Navigator {
   def applyAnotherItemRoute(ua: UserAnswers, equipmentIndex: Index, itemIndex: Index, mode: Mode): Option[Call] =
     ua.get(ApplyAnotherItemPage(equipmentIndex, itemIndex)) match {
       case Some(true) =>
-        Some(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(ua.id, equipmentIndex, Index(0), mode))
+        Some(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(ua.id, equipmentIndex, itemIndex, mode))
       case Some(false) =>
         Some(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(ua.id, mode))
       case _ =>
