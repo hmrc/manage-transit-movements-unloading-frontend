@@ -20,7 +20,7 @@ import generated._
 import models.DocType.Previous
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference._
-import models.{CheckMode, Coordinates, Index, SecurityType}
+import models.{Coordinates, Index, NormalMode, SecurityType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.transportEquipment.index.ItemPage
@@ -274,8 +274,6 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), sealId)
               .setValue(ItemPage(equipmentIndex, itemIndex), item)
 
-            val nextSealIndex = equipmentIndex.position + 1
-
             val helper = new ConsignmentAnswersHelper(answers)
             val result = helper.transportEquipmentSection
 
@@ -290,7 +288,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.children.head.children.head.rows.head.value.value mustBe containerId
             result.children.head.children.head.rows(1).value.value mustBe sealId
             result.children.head.children.head.viewLinks.head.href mustBe
-              controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, CheckMode, Index(nextSealIndex)).url
+              controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, NormalMode, equipmentIndex).url
             result.children.head.children(1) mustBe a[StaticSection]
             result.children.head.children(1).rows.size mustBe 1
             result.children.head.children(1).rows.head.value.value mustBe item.toString

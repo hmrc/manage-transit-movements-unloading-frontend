@@ -18,7 +18,7 @@ package utils.answersHelpers
 
 import models.DocType.Previous
 import models.reference.CustomsOffice
-import models.{CheckMode, Index, Link, RichOptionalJsArray, SecurityType, UserAnswers}
+import models.{Index, Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
 import pages.documents.TypePage
 import pages.grossMass.GrossMassPage
 import pages.sections._
@@ -200,24 +200,22 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       case sectionsRows =>
         val transportEquipments = sectionsRows.map {
           case (containerAndSeals, items, index) =>
-            val equipmentIndex = index.display
-
             val containerAndSealsSection =
               StaticSection(
                 rows = containerAndSeals,
-                viewLinks = Seq(sealsAddRemoveLink(equipmentIndex))
+                viewLinks = Seq(sealsAddRemoveLink(index))
               )
 
             val itemsSection =
               StaticSection(
                 sectionTitle = None,
                 rows = items,
-                viewLinks = Seq(itemsAddRemoveLink(equipmentIndex)),
+                viewLinks = Seq(itemsAddRemoveLink(index)),
                 optionalInformationHeading = if (items.isEmpty) None else Some(messages("unloadingFindings.informationHeading.consignment.item"))
               )
 
             AccordionSection(
-              sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment", equipmentIndex)),
+              sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment", index.display)),
               viewLinks = Nil,
               children = Seq(containerAndSealsSection, itemsSection)
             )
@@ -429,20 +427,20 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       visuallyHidden = messages("departureTransportMeans.visuallyHidden")
     )
 
-  private def sealsAddRemoveLink(index: Int): Link =
+  private def sealsAddRemoveLink(index: Index): Link =
     Link(
-      id = s"add-remove-seals-$index",
-      href = controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, CheckMode, Index(index)).url,
+      id = s"add-remove-seals-${index.display}",
+      href = controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, NormalMode, index).url,
       text = messages("sealsLink.addRemove"),
       visuallyHidden = messages("sealsLink.visuallyHidden")
     )
 
-  private def itemsAddRemoveLink(index: Int): Link =
+  private def itemsAddRemoveLink(index: Index): Link =
     Link(
-      id = s"add-remove-consignment-items-$index",
+      id = s"add-remove-consignment-items-${index.display}",
       href = "#",
-      text = messages("consignmentItemLink.addRemove", index),
-      visuallyHidden = messages("consignmentItemLink.visuallyHidden", index)
+      text = messages("consignmentItemLink.addRemove", index.display),
+      visuallyHidden = messages("consignmentItemLink.visuallyHidden", index.display)
     )
 
   private val transportEquipmentAddRemoveLink: Link = Link(
