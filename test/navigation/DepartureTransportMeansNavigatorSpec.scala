@@ -30,9 +30,9 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
   "DepartureTransportMeansNavigator" - {
 
-    "in Check mode" - {
+    "in Normal mode" - {
 
-      val mode = CheckMode
+      val mode = NormalMode
 
       "must go from AddAnotherDepartureMeansOfTransport page" - {
         "when user answers Yes to AddIdentificationYesNo page" in {
