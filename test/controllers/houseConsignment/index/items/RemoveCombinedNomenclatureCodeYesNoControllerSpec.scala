@@ -24,60 +24,61 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import pages.departureMeansOfTransport.VehicleIdentificationNumberPage
-import pages.houseConsignment.index.items.CommodityCodePage
+import pages.houseConsignment.index.items.CombinedNomenclatureCodePage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.houseConsignment.index.items.RemoveCommodityCodeYesNoView
+import views.html.houseConsignment.index.items.RemoveCombinedNomenclatureCodeYesNoView
 
 import scala.concurrent.Future
 
-class RemoveCommodityCodeYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class RemoveCombinedNomenclatureCodeYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider = new YesNoFormProvider()
-  private val form         = formProvider("houseConsignment.removeCommodityCodeYesNo", houseConsignmentIndex.display, itemIndex.display)
+  private val form         = formProvider("houseConsignment.removeCombinedNomenclatureCodeYesNo", houseConsignmentIndex.display, itemIndex.display)
   private val mode         = NormalMode
 
-  private lazy val removeCommodityCodeRoute =
-    controllers.houseConsignment.index.items.routes.RemoveCommodityCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode).url
+  private lazy val removeCombinedNomenclatureCodeRoute =
+    controllers.houseConsignment.index.items.routes.RemoveCombinedNomenclatureCodeYesNoController
+      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+      .url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
 
-  "RemoveCommodityCodeYesNoController " - {
+  "RemoveCombinedNomenclatureCodeYesNoController" - {
 
     "must return OK and the correct view for a GET" in {
 
       forAll(nonEmptyString) {
-        commodityCode =>
+        combinedNomenclatureCode =>
           val userAnswers = emptyUserAnswers
-            .setValue(CommodityCodePage(houseConsignmentIndex, itemIndex), commodityCode)
-            .setValue(VehicleIdentificationNumberPage(transportMeansIndex), commodityCode)
+            .setValue(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex), combinedNomenclatureCode)
 
           setExistingUserAnswers(userAnswers)
 
-          val request = FakeRequest(GET, removeCommodityCodeRoute)
+          val request = FakeRequest(GET, removeCombinedNomenclatureCodeRoute)
 
           val result = route(app, request).value
 
-          val view = injector.instanceOf[RemoveCommodityCodeYesNoView]
+          val view = injector.instanceOf[RemoveCombinedNomenclatureCodeYesNoView]
 
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, mode, Some(commodityCode))(request, messages).toString
+            view(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, mode, Some(combinedNomenclatureCode))(request, messages).toString
       }
     }
 
     "when yes submitted" - {
-      "must redirect to house consignment summary and remove commodity code at specified index" in {
-        val userAnswers = emptyUserAnswers.setValue(CommodityCodePage(houseConsignmentIndex, itemIndex), "3")
+      "must redirect to house consignment summary and remove combined nomenclature code at specified index" in {
+        val userAnswers = emptyUserAnswers.setValue(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex), "code")
 
         setExistingUserAnswers(userAnswers)
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-        val request = FakeRequest(POST, removeCommodityCodeRoute)
+        val request = FakeRequest(POST, removeCombinedNomenclatureCodeRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(app, request).value
@@ -88,18 +89,18 @@ class RemoveCommodityCodeYesNoControllerSpec extends SpecBase with AppWithDefaul
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
-        userAnswersCaptor.getValue.get(CommodityCodePage(houseConsignmentIndex, itemIndex)) mustNot be(defined)
+        userAnswersCaptor.getValue.get(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex)) mustNot be(defined)
       }
     }
 
     "when no submitted" - {
       "must redirect to house consignment summary and not remove departureTransportMeans at specified index" in {
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-        val userAnswers = emptyUserAnswers.setValue(CommodityCodePage(houseConsignmentIndex, itemIndex), "3")
+        val userAnswers = emptyUserAnswers.setValue(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex), "3")
 
         setExistingUserAnswers(userAnswers)
 
-        val request = FakeRequest(POST, removeCommodityCodeRoute)
+        val request = FakeRequest(POST, removeCombinedNomenclatureCodeRoute)
           .withFormUrlEncodedBody(("value", "false"))
 
         val result = route(app, request).value
@@ -110,32 +111,32 @@ class RemoveCommodityCodeYesNoControllerSpec extends SpecBase with AppWithDefaul
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
-        userAnswersCaptor.getValue.get(CommodityCodePage(houseConsignmentIndex, itemIndex)) must be(defined)
+        userAnswersCaptor.getValue.get(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex)) must be(defined)
       }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       forAll(nonEmptyString) {
-        commodityCode =>
+        combinedNomenClaturecCodeaturecCode =>
           val userAnswers = emptyUserAnswers
-            .setValue(CommodityCodePage(houseConsignmentIndex, itemIndex), commodityCode)
+            .setValue(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex), combinedNomenClaturecCodeaturecCode)
 
           setExistingUserAnswers(userAnswers)
 
           val invalidAnswer = ""
 
-          val request    = FakeRequest(POST, removeCommodityCodeRoute).withFormUrlEncodedBody(("value", ""))
+          val request    = FakeRequest(POST, removeCombinedNomenclatureCodeRoute).withFormUrlEncodedBody(("value", ""))
           val filledForm = form.bind(Map("value" -> invalidAnswer))
 
           val result = route(app, request).value
 
           status(result) mustEqual BAD_REQUEST
 
-          val view = injector.instanceOf[RemoveCommodityCodeYesNoView]
+          val view = injector.instanceOf[RemoveCombinedNomenclatureCodeYesNoView]
 
           contentAsString(result) mustEqual
-            view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, mode, Some(commodityCode))(request, messages).toString
+            view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, mode, Some(combinedNomenClaturecCodeaturecCode))(request, messages).toString
       }
     }
 
@@ -143,7 +144,7 @@ class RemoveCommodityCodeYesNoControllerSpec extends SpecBase with AppWithDefaul
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, removeCommodityCodeRoute)
+      val request = FakeRequest(GET, removeCombinedNomenclatureCodeRoute)
 
       val result = route(app, request).value
 
@@ -156,7 +157,7 @@ class RemoveCommodityCodeYesNoControllerSpec extends SpecBase with AppWithDefaul
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, removeCommodityCodeRoute)
+      val request = FakeRequest(POST, removeCombinedNomenclatureCodeRoute)
         .withFormUrlEncodedBody(("value", "test string"))
 
       val result = route(app, request).value

@@ -42,7 +42,7 @@ class RemoveCombinedNomenclatureCodeYesNoController @Inject() (
     with I18nSupport {
 
   private def form(houseConsignmentIndex: Index, itemIndex: Index): Form[Boolean] =
-    formProvider("houseConsignment.removeCombinedNomenclatureCodeCodeYesNo", itemIndex.display, houseConsignmentIndex.display)
+    formProvider("houseConsignment.removeCombinedNomenclatureCodeYesNo", itemIndex.display, houseConsignmentIndex.display)
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId) {
