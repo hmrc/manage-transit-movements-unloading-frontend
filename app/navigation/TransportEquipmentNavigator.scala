@@ -27,9 +27,8 @@ import play.api.mvc.Call
 class TransportEquipmentNavigator extends Navigator {
 
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case AddAnotherSealPage(equipmentIndex, sealIndex) => ua => addAnotherSealRoute(ua, ua.id, NormalMode, equipmentIndex, sealIndex)
-
-    case _ => _ => Some(Call("GET", "#")) //TODO: Implement nav for normalRoutes
+    case AddAnotherSealPage(equipmentIndex, sealIndex)   => ua => addAnotherSealRoute(ua, ua.id, NormalMode, equipmentIndex, sealIndex)
+    case ApplyAnotherItemPage(equipmentIndex, itemIndex) => ua => applyAnotherItemRoute(ua, ua.id, NormalMode, equipmentIndex, itemIndex)
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {

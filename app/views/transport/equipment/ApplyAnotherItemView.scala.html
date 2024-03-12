@@ -29,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, viewModel: ApplyAnotherItemViewModel)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, viewModel: ApplyAnotherItemViewModel)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
 
 @mainTemplate(
     title = viewModel.title,
