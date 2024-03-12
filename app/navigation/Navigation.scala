@@ -16,12 +16,11 @@
 
 package navigation
 
+import com.google.inject.Singleton
 import controllers.routes
 import models.{CheckMode, NormalMode, RichCC043CType, UserAnswers}
 import pages._
 import play.api.mvc.Call
-
-import com.google.inject.Singleton
 
 //TODO: Refactor navigation away from this file
 @Singleton

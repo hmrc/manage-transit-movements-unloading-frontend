@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.houseConsignment.index.items
 
 import controllers.actions._
 import forms.NetWeightFormProvider
 import models.{ArrivalId, Index, Mode}
-import pages.NetWeightPage
+import pages.houseConsignment.index.items.NetWeightPage
+import navigation.ConsignmentItemNavigator
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.NetWeightView
+import views.html.houseConsignment.index.items.NetWeightView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,6 +36,7 @@ class NetWeightController @Inject() (
   actions: Actions,
   formProvider: NetWeightFormProvider,
   val controllerComponents: MessagesControllerComponents,
+  navigator: ConsignmentItemNavigator,
   view: NetWeightView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -64,7 +66,7 @@ class NetWeightController @Inject() (
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(NetWeightPage(houseConsignmentIndex, itemIndex), value.toDouble))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+              } yield Redirect(navigator.nextPage(NetWeightPage(houseConsignmentIndex, itemIndex), mode, request.userAnswers))
           )
     }
 }

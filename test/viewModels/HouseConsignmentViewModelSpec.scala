@@ -26,6 +26,7 @@ import pages._
 import pages.houseConsignment.index.items.{
   GrossWeightPage,
   ItemDescriptionPage,
+  NetWeightPage,
   ConsigneeIdentifierPage => ItemConsigneeIdentifierPage,
   ConsigneeNamePage => ItemConsigneeNamePage
 }

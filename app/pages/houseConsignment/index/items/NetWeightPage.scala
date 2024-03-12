@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,13 @@
 package pages.houseConsignment.index.items
 
 import models.Index
-import models.reference.PackageType
 import pages.QuestionPage
-import pages.sections.PackagingSection
+import pages.sections.ItemsSection
 import play.api.libs.json.JsPath
 
-case class PackageTypePage(houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index) extends QuestionPage[PackageType] {
+case class NetWeightPage(houseConsignment: Index, itemIndex: Index) extends QuestionPage[Double] {
 
-  override def path: JsPath = PackagingSection(houseConsignmentIndex, itemIndex, packageIndex).path \ toString
+  override def path: JsPath = ItemsSection(houseConsignment).path \ itemIndex.position \ "Commodity" \ "GoodsMeasure" \ toString
 
-  override def toString: String = "typeOfPackages"
-
+  override def toString: String = "netMass"
 }

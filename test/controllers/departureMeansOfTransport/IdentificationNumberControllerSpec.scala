@@ -20,25 +20,25 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.VehicleIdentificationNumberFormProvider
 import generators.Generators
-import models.NormalMode
+import models.CheckMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.departureMeansOfTransport.VehicleIdentificationNumberPage
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.departureMeansOfTransport.IdentificationNumberView
-import org.scalacheck.Arbitrary.arbitrary
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.inject.bind
 import viewModels.departureTransportMeans.IdentificationNumberViewModel
 import viewModels.departureTransportMeans.IdentificationNumberViewModel.IdentificationNumberViewModelProvider
+import views.html.departureMeansOfTransport.IdentificationNumberView
 
 import scala.concurrent.Future
 
 class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider          = new VehicleIdentificationNumberFormProvider()
-  private val mode                  = NormalMode
+  private val mode                  = CheckMode
   private val form                  = formProvider(mode)
   private val viewModel             = arbitrary[IdentificationNumberViewModel].sample.value
   private val mockViewModelProvider = mock[IdentificationNumberViewModelProvider]
@@ -99,7 +99,6 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      checkArrivalStatus()
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -112,7 +111,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+      redirectLocation(result).value mustEqual onwardRoute.url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

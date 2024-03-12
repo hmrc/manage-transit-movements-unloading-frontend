@@ -16,6 +16,7 @@
 
 package pages.houseConsignment.index.items
 
+import pages.PackageShippingMarkPage
 import pages.behaviours.PageBehaviours
 
 class PackageShippingMarkPageSpec extends PageBehaviours {

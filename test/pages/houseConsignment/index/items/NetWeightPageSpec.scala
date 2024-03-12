@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package pages.houseConsignment.index.items.packaging
+package pages.houseConsignment.index.items
 
-import models.Index
-import models.reference.PackageType
-import pages.QuestionPage
-import pages.sections.PackagingSection
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case class PackagingTypePage(houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index) extends QuestionPage[PackageType] {
+class NetWeightPageSpec extends PageBehaviours {
 
-  override def path: JsPath = PackagingSection(houseConsignmentIndex, itemIndex, packageIndex).path \ toString
+  "GrossWeightAmountPage" - {
 
-  override def toString: String = "typeOfPackages"
+    beRetrievable[Double](NetWeightPage(index, itemIndex))
+
+    beSettable[Double](NetWeightPage(index, itemIndex))
+
+    beRemovable[Double](NetWeightPage(index, itemIndex))
+  }
 }
