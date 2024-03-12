@@ -870,3 +870,7 @@ transportEquipment.addAnotherEquipment.maxLimit.label = You cannot add any more 
 transportEquipment.addAnotherEquipment.error.required = Select yes if you want to add any other transport equipment
 transportEquipment.addAnotherEquipment.noMoreItems.label = You cannot add any more transport equipment. To add another, you need to remove one first.
 transportEquipment.addAnotherEquipment.paragraph = This means anything used to transport goods in transit. For example, a swap body, articulated lorry or trailer.
+
+houseConsignment.index.item.removeNetWeightYesNo.title = Are you sure you want to remove the net weight from item {1} in house consignment {0}?
+houseConsignment.index.item.removeNetWeightYesNo.heading = Are you sure you want to remove the net weight from item {1} in house consignment {0}?
+houseConsignment.index.item.removeNetWeightYesNo.error.required = Select yes if you want to remove the net weight from item {1} in house consignment {0}

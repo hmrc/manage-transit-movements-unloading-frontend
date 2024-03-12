@@ -19,7 +19,7 @@ package navigation
 import com.google.inject.Singleton
 import models._
 import pages._
-import pages.houseConsignment.index.items.{CommodityCodePage, ItemDescriptionPage}
+import pages.houseConsignment.index.items.{CommodityCodePage, ItemDescriptionPage, NetWeightPage}
 import play.api.mvc.Call
 
 import javax.inject.Inject

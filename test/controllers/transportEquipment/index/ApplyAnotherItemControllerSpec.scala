@@ -45,7 +45,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
   private val mode = NormalMode
 
   private lazy val applyAnotherItemRoute =
-    controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId.value, mode, equipmentIndex).url
+    controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, mode, equipmentIndex).url
 
   private lazy val mockViewModelProvider = mock[ApplyAnotherItemViewModelProvider]
 
@@ -105,7 +105,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(notMaxedOutViewModel, equipmentIndex), mrn, arrivalId.value, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
+          view(form(notMaxedOutViewModel, equipmentIndex), mrn, arrivalId, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
       }
 
       "when max limit reached" in {
@@ -123,7 +123,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(maxedOutViewModel, equipmentIndex), mrn, arrivalId.value, maxedOutViewModel)(request, messages, frontendAppConfig).toString
+          view(form(maxedOutViewModel, equipmentIndex), mrn, arrivalId, maxedOutViewModel)(request, messages, frontendAppConfig).toString
       }
     }
 
@@ -146,7 +146,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, mrn, arrivalId.value, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
+          view(boundForm, mrn, arrivalId, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
       }
     }
 
