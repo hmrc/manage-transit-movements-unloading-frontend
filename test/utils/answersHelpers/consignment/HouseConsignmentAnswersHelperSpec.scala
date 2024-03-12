@@ -32,6 +32,7 @@ import pages.houseConsignment.index.items.{
   CustomsUnionAndStatisticsCodePage,
   GrossWeightPage,
   ItemDescriptionPage,
+  NetWeightPage,
   ConsigneeIdentifierPage => ItemConsigneeIdentifierPage,
   ConsigneeNamePage => ItemConsigneeNamePage
 }

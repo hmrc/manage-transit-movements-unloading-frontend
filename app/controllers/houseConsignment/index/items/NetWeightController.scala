@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.houseConsignment.index.items
 
 import controllers.actions._
 import forms.NetWeightFormProvider
 import models.{ArrivalId, Index, Mode}
-import pages.NetWeightPage
+import pages.houseConsignment.index.items.NetWeightPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.NetWeightView
+import views.html.houseConsignment.index.items.NetWeightView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

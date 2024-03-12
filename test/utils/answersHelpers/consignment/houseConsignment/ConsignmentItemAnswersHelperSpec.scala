@@ -22,7 +22,6 @@ import models.reference.Country
 import models.reference.DocumentType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.NetWeightPage
 import pages.houseConsignment.index.items._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}

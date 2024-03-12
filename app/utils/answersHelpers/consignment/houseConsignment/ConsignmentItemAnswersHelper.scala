@@ -19,13 +19,12 @@ package utils.answersHelpers.consignment.houseConsignment
 import models.DocType.Previous
 import models.reference.Country
 import models.{Index, Link, NormalMode, RichOptionalJsArray, UserAnswers}
-import pages.NetWeightPage
 import pages.houseConsignment.index.items.document.TypePage
 import pages.houseConsignment.index.items.{
-  ConsigneeAddressPage => ItemConsigneeAddressPage,
-  ConsigneeCountryPage => ItemConsigneeCountryPage,
   ConsigneeIdentifierPage => ItemConsigneeIdentifierPage,
+  ConsigneeCountryPage => ItemConsigneeCountryPage,
   ConsigneeNamePage => ItemConsigneeNamePage,
+  ConsigneeAddressPage => ItemConsigneeAddressPage,
   _
 }
 import pages.sections.PackagingListSection

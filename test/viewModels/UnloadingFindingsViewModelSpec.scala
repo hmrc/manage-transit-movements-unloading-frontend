@@ -31,7 +31,7 @@ import pages.additionalInformation.{AdditionalInformationCodePage, AdditionalInf
 import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 import pages.holderOfTheTransitProcedure.{CountryPage => HotPCountryPage}
-import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage}
+import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage, NetWeightPage}
 import pages.incident.{IncidentCodePage, IncidentTextPage}
 import pages.transportEquipment.index.ItemPage
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
