@@ -12,3 +12,8 @@ GET        /:arrivalId/documents/:documentIndex/type                            
 POST       /:arrivalId/documents/:documentIndex/type                                     controllers.documents.TypeController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode, documentIndex: Index)
 GET        /:arrivalId/documents/:documentIndex/change-type                              controllers.documents.TypeController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode, documentIndex: Index)
 POST       /:arrivalId/documents/:documentIndex/change-type                              controllers.documents.TypeController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode, documentIndex: Index)
+
+GET        /:arrivalId/documents/:documentIndex/remove-document                          controllers.documents.RemoveDocumentYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode, documentIndex: Index)
+POST       /:arrivalId/documents/:documentIndex/remove-document                          controllers.documents.RemoveDocumentYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode, documentIndex: Index)
+GET        /:arrivalId/documents/:documentIndex/change-remove-document                   controllers.documents.RemoveDocumentYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode, documentIndex: Index)
+POST       /:arrivalId/documents/:documentIndex/change-remove-document                   controllers.documents.RemoveDocumentYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode, documentIndex: Index)

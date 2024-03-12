@@ -727,6 +727,10 @@ document.additionalInformation.CheckMode.error.required = Enter the new addition
 document.additionalInformation.error.length = The additional information must be 35 characters or less
 document.additionalInformation.error.invalidCharacters = The additional information must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 
+document.removeDocumentYesNo.title = Are you sure you want to remove this document from all items?
+document.removeDocumentYesNo.heading = Are you sure you want to remove this document from all items?
+document.removeDocumentYesNo.error.required = Select yes if you want to remove this document from all items
+
 houseConsignment.index.items.document.referenceNumber.NormalMode.title = What is the document’s reference number?
 houseConsignment.index.items.document.referenceNumber.CheckMode.title = What is the new document’s reference number for item {1} in house consignment {0}?
 houseConsignment.index.items.document.referenceNumber.NormalMode.heading = What is the document’s reference number?
