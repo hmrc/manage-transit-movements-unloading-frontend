@@ -29,8 +29,6 @@ class TransportEquipmentNavigator extends Navigator {
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case AddAnotherSealPage(equipmentIndex, sealIndex)   => ua => addAnotherSealRoute(ua, ua.id, NormalMode, equipmentIndex, sealIndex)
     case ApplyAnotherItemPage(equipmentIndex, itemIndex) => ua => applyAnotherItemRoute(ua, ua.id, NormalMode, equipmentIndex, itemIndex)
-
-    case _ => _ => Some(Call("GET", "#"))
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
