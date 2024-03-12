@@ -18,7 +18,7 @@ package utils.answersHelpers
 
 import models.DocType.Previous
 import models.reference.CustomsOffice
-import models.{CheckMode, Index, Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
+import models.{Index, Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
 import pages.documents.TypePage
 import pages.grossMass.GrossMassPage
 import pages.sections._
@@ -187,9 +187,10 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
   def transportEquipmentSection: Section =
     userAnswers.get(TransportEquipmentListSection).mapWithIndex {
       case (_, index) =>
-        val helper = new TransportEquipmentAnswersHelper(userAnswers, index)
-        val rows   = Seq(helper.containerIdentificationNumber, helper.transportEquipmentSeals).flatten
-        (rows, index)
+        val helper                = new TransportEquipmentAnswersHelper(userAnswers, index)
+        val containerAndSealsRows = Seq(helper.containerIdentificationNumber, helper.transportEquipmentSeals).flatten
+        val itemsRows             = Seq(helper.transportEquipmentItems).flatten
+        (containerAndSealsRows, itemsRows, index)
     } match {
       case Nil =>
         StaticSection(
@@ -198,14 +199,28 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         )
       case sectionsRows =>
         val transportEquipments = sectionsRows.map {
-          case (rows, index) =>
-            val equipmentIndex = index.display
+          case (containerAndSeals, items, index) =>
+            val containerAndSealsSection =
+              StaticSection(
+                rows = containerAndSeals,
+                viewLinks = Seq(sealsAddRemoveLink(index))
+              )
+
+            val itemsSection =
+              StaticSection(
+                sectionTitle = None,
+                rows = items,
+                viewLinks = Seq(itemsAddRemoveLink(index)),
+                optionalInformationHeading = if (items.isEmpty) None else Some(messages("unloadingFindings.informationHeading.consignment.item"))
+              )
+
             AccordionSection(
-              sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment", equipmentIndex)),
-              viewLinks = Seq(sealsAddRemoveLink(equipmentIndex)),
-              rows = rows
+              sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment", index.display)),
+              viewLinks = Nil,
+              children = Seq(containerAndSealsSection, itemsSection)
             )
         }
+
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment.parent.heading")),
           viewLinks = Seq(transportEquipmentAddRemoveLink),
@@ -412,12 +427,20 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       visuallyHidden = messages("departureTransportMeans.visuallyHidden")
     )
 
-  private def sealsAddRemoveLink(index: Int): Link =
+  private def sealsAddRemoveLink(index: Index): Link =
     Link(
-      id = s"add-remove-seals-$index",
-      href = controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, CheckMode, Index(index)).url,
+      id = s"add-remove-seals-${index.display}",
+      href = controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, NormalMode, index).url,
       text = messages("sealsLink.addRemove"),
       visuallyHidden = messages("sealsLink.visuallyHidden")
+    )
+
+  private def itemsAddRemoveLink(index: Index): Link =
+    Link(
+      id = s"add-remove-consignment-items-${index.display}",
+      href = "#",
+      text = messages("consignmentItemLink.addRemove", index.display),
+      visuallyHidden = messages("consignmentItemLink.visuallyHidden", index.display)
     )
 
   private val transportEquipmentAddRemoveLink: Link = Link(

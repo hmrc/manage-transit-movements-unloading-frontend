@@ -54,7 +54,7 @@ class IncidentTransportEquipmentAnswersHelper(
         buildRowWithNoChangeLink[String](
           data = Option(type0.declarationGoodsItemNumber.toString()),
           formatAnswer = formatAsText,
-          prefix = "unloadingFindings.rowHeadings.item",
+          prefix = "unloadingFindings.rowHeadings.incident.item",
           args = itemIndex.display
         )
 
