@@ -19,13 +19,13 @@ package controllers.houseConsignment.index.items
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode}
-import pages.houseConsignment.index.items.{CommodityCodePage, GrossWeightPage}
+import pages.houseConsignment.index.items.GrossWeightPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.houseConsignment.index.items.{RemoveCommodityCodeYesNoView, RemoveGrossWeightYesNoView}
+import views.html.houseConsignment.index.items.RemoveGrossWeightYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -64,7 +64,7 @@ class RemoveGrossWeightYesNoController @Inject() (
               for {
                 updatedAnswers <-
                   if (value) {
-                    Future.fromTry(request.userAnswers.remove(GrossWeightPage(houseConsignmentIndex, itemIndex))) //todo remove netWeight asd well?
+                    Future.fromTry(request.userAnswers.remove(GrossWeightPage(houseConsignmentIndex, itemIndex)))
                   } else { Future.successful(request.userAnswers) }
                 _ <- sessionRepository.set(updatedAnswers)
               } yield Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))

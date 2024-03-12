@@ -669,7 +669,7 @@ houseConsignment.removeCommodityCodeYesNo.error.required = Select yes if you wan
 
 houseConsignment.removeGrossWeightYesNo.title = Are you sure you want to remove the gross weight from item {0} in house consignment {0}?
 houseConsignment.removeGrossWeightYesNo.heading = Are you sure you want to remove the gross weight from item {0} in house consignment {0}?
-houseConsignment.removeGrossWeightYesNo.error.required = Select yes if you want to remove the commodity code from item {0} in house consignment {1}
+houseConsignment.removeGrossWeightYesNo.error.required = Select yes if you want to remove the gross weight from item {0} in house consignment {1}
 
 houseConsignment.combinedNomenclatureCode.title = What is the new combined nomenclature code for item {0} in house consignment {0}?
 houseConsignment.combinedNomenclatureCode.heading = What is the new combined nomenclature code for item {0} in house consignment {0}?
