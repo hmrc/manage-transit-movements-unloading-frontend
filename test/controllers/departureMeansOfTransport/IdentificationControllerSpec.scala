@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.EnumerableFormProvider
 import generators.Generators
-import models.NormalMode
+import models.CheckMode
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.transport.TransportMode.InlandMode
 import org.mockito.ArgumentMatchers.any
@@ -49,7 +49,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private val mockViewModelProvider = mock[IdentificationViewModelProvider]
   val formProvider                  = new EnumerableFormProvider()
 
-  private val mode = NormalMode
+  private val mode = CheckMode
   private val form = formProvider(mode, viewModel.requiredError, identificationTypes)
 
   private lazy val identificationRoute =
@@ -87,9 +87,8 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[IdentificationView]
-
       status(result) mustEqual OK
+      val view = injector.instanceOf[IdentificationView]
 
       contentAsString(result) mustEqual
         view(form, mrn, arrivalId, index, identificationTypes, mode, viewModel)(request, messages).toString
@@ -127,7 +126,6 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         .setValue(InlandModePage, InlandMode("4", "Air"))
 
       setExistingUserAnswers(userAnswers)
-
       val request = FakeRequest(POST, identificationRoute)
         .withFormUrlEncodedBody(("value", identificationType1.code))
 

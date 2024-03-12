@@ -23,10 +23,10 @@ class NumberOfPackagesPageSpec extends PageBehaviours {
 
   "NumberOfPackagesPage" - {
 
-    beRetrievable[String](NumberOfPackagesPage(hcIndex, itemIndex, index))
+    beRetrievable[BigInt](NumberOfPackagesPage(hcIndex, itemIndex, index))
 
-    beSettable[String](NumberOfPackagesPage(hcIndex, itemIndex, index))
+    beSettable[BigInt](NumberOfPackagesPage(hcIndex, itemIndex, index))
 
-    beRemovable[String](NumberOfPackagesPage(hcIndex, itemIndex, index))
+    beRemovable[BigInt](NumberOfPackagesPage(hcIndex, itemIndex, index))
   }
 }

@@ -16,10 +16,11 @@
 
 package utils.answersHelpers.consignment.houseConsignment.item
 
+import models.CheckMode
 import models.reference.PackageType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
+import pages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
 import utils.answersHelpers.AnswersHelperSpecBase
 
 class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
@@ -27,7 +28,7 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
   "PackagingAnswersHelper" - {
 
     "packageTypeRow" - {
-      val page = PackagingTypePage(hcIndex, itemIndex, packageIndex)
+      val page = PackageTypePage(hcIndex, itemIndex, packageIndex)
       "must return None" - {
         s"when $page undefined" in {
           val helper = new PackagingAnswersHelper(emptyUserAnswers, hcIndex, itemIndex, packageIndex)
@@ -49,7 +50,9 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
               action.visuallyHiddenText.value mustBe "type of package 1 for item 1"
-              action.href mustBe "#"
+              action.href mustBe controllers.houseConsignment.index.items.routes.PackageTypeController
+                .onPageLoad(arrivalId, hcIndex, packageIndex, itemIndex, CheckMode)
+                .url
               action.id mustBe "change-package-type-1-1"
           }
         }
@@ -57,7 +60,7 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
     }
 
     "packageCountRow" - {
-      val page = PackagingCountPage(hcIndex, itemIndex, packageIndex)
+      val page = NumberOfPackagesPage(hcIndex, itemIndex, packageIndex)
       "must return None" - {
         s"when $page undefined" in {
           val helper = new PackagingAnswersHelper(emptyUserAnswers, hcIndex, itemIndex, packageIndex)
@@ -79,7 +82,9 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
               action.visuallyHiddenText.value mustBe "quantity of package 1 for item 1"
-              action.href mustBe "#"
+              action.href mustBe controllers.houseConsignment.index.items.routes.NumberOfPackagesController
+                .onPageLoad(arrivalId, hcIndex, itemIndex, packageIndex, CheckMode)
+                .url
               action.id mustBe "change-package-count-1-1"
           }
         }
@@ -87,7 +92,7 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
     }
 
     "packageMarksRow" - {
-      val page = PackagingMarksPage(hcIndex, itemIndex, packageIndex)
+      val page = PackageShippingMarkPage(hcIndex, itemIndex, packageIndex)
       "must return None" - {
         s"when $page undefined" in {
           val helper = new PackagingAnswersHelper(emptyUserAnswers, hcIndex, itemIndex, packageIndex)
@@ -109,7 +114,9 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
               action.visuallyHiddenText.value mustBe "shipping mark of package 1 for item 1"
-              action.href mustBe "#"
+              action.href mustBe controllers.houseConsignment.index.items.routes.PackageShippingMarkController
+                .onPageLoad(arrivalId, hcIndex, itemIndex, packageIndex, CheckMode)
+                .url
               action.id mustBe "change-package-mark-1-1"
           }
         }

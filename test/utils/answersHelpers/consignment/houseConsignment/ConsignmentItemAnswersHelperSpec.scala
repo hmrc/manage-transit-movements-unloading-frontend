@@ -17,7 +17,7 @@
 package utils.answersHelpers.consignment.houseConsignment
 
 import models.DocType.Previous
-import models.Index
+import models.{CheckMode, Index}
 import models.reference.Country
 import models.reference.DocumentType
 import org.scalacheck.Arbitrary.arbitrary
@@ -50,10 +50,13 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
 
               val helper = new ConsignmentItemAnswersHelper(answers, hcIndex, itemIndex)
               val result = helper.descriptionRow.value
-
-              result.key.value mustBe "Description"
               result.value.value mustBe value
-              result.actions must not be defined
+              val actions = result.actions.get.items
+              result.key.value mustBe "Description"
+              val action = actions.head
+              action.href mustBe controllers.houseConsignment.index.items.routes.DescriptionController.onPageLoad(arrivalId, CheckMode, hcIndex, itemIndex).url
+              action.visuallyHiddenText.get mustBe "description"
+
           }
         }
       }
@@ -170,7 +173,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
               result.value.value mustBe s"${value}kg"
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
-              action.href mustBe "#"
+              action.href mustBe controllers.routes.NetWeightController.onPageLoad(arrivalId, hcIndex, itemIndex, CheckMode).url
               action.visuallyHiddenText.value mustBe "net weight of item 1"
               action.id mustBe "change-net-weight-1"
 
@@ -235,12 +238,12 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
           val helper = new ConsignmentItemAnswersHelper(userAnswers, hcIndex, itemIndex)
           val result = helper.commodityCodeRow
 
-          result mustBe
-            SummaryListRow(
-              key = Key("Commodity code".toText),
-              value = Value(s"$value".toText),
-              actions = commodityCodeItemAction
-            )
+          val actions = result.actions.get.items
+          result.key.value mustBe "Commodity code"
+          val action = actions.head
+          action.href mustBe controllers.houseConsignment.index.items.routes.CommodityCodeController.onPageLoad(arrivalId, hcIndex, itemIndex, CheckMode).url
+          action.visuallyHiddenText.get mustBe s"commodity code for item ${itemIndex.display}"
+
         }
       }
     }
