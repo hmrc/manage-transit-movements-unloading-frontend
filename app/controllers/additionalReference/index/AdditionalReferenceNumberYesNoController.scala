@@ -14,57 +14,58 @@
  * limitations under the License.
  */
 
-package controllers.transportEquipment.index
+package controllers.additionalReference.index
 
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.TransportEquipmentNavigator
-import pages.transportEquipment.index.AddSealYesNoPage
+import navigation.Navigation
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transportEquipment.index.AddSealYesNoView
+import pages.additionalReference.AdditionalReferenceNumberYesNoPage
+import views.html.additionalReference.index.AdditionalReferenceNumberYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddSealYesNoController @Inject() (
+class AdditionalReferenceNumberYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: TransportEquipmentNavigator,
+  navigator: Navigation,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddSealYesNoView
+  view: AdditionalReferenceNumberYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transportEquipment.index.addSealYesNo")
+  private val form = formProvider("additionalReference.index.additionalReferenceNumberYesNo")
 
-  def onPageLoad(arrivalId: ArrivalId, transportEquipmentIndex: Index, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, additionalReferenceIndex: Index, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId) {
+
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddSealYesNoPage(transportEquipmentIndex)) match {
+      val preparedForm = request.userAnswers.get(AdditionalReferenceNumberYesNoPage(additionalReferenceIndex)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, transportEquipmentIndex, mode))
+      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, additionalReferenceIndex, mode))
   }
 
-  def onSubmit(arrivalId: ArrivalId, transportEquipmentIndex: Index, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId).async {
+  def onSubmit(arrivalId: ArrivalId, additionalReferenceIndex: Index, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, transportEquipmentIndex, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, additionalReferenceIndex, mode))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddSealYesNoPage(transportEquipmentIndex), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AdditionalReferenceNumberYesNoPage(additionalReferenceIndex), value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddSealYesNoPage(transportEquipmentIndex), mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(AdditionalReferenceNumberYesNoPage(additionalReferenceIndex), mode, updatedAnswers))
         )
   }
 }

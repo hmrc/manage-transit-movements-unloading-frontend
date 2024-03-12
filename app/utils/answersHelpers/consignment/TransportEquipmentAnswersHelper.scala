@@ -16,15 +16,14 @@
 
 package utils.answersHelpers.consignment
 
-import models.{Index, UserAnswers}
+import models.{CheckMode, Index, UserAnswers}
 import pages.ContainerIdentificationNumberPage
 import pages.sections.SealsSection
+import pages.sections.transport.equipment.ItemsSection
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
-import utils.answersHelpers.consignment.transportEquipment.SealAnswersHelper
+import utils.answersHelpers.consignment.transportEquipment.{ItemAnswersHelper, SealAnswersHelper}
 
 class TransportEquipmentAnswersHelper(
   userAnswers: UserAnswers,
@@ -38,7 +37,7 @@ class TransportEquipmentAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.containerIdentificationNumber",
     id = Some(s"change-container-identification-number-${equipmentIndex.display}"),
     args = equipmentIndex.display,
-    call = Some(Call(GET, "#"))
+    call = Some(controllers.transportEquipment.index.routes.ContainerIdentificationNumberController.onPageLoad(arrivalId, equipmentIndex, CheckMode))
   )
 
   def transportEquipmentSeals: Seq[SummaryListRow] =
@@ -46,5 +45,12 @@ class TransportEquipmentAnswersHelper(
       index =>
         val helper = new SealAnswersHelper(userAnswers, equipmentIndex, index)
         helper.transportEquipmentSeal
+    }
+
+  def transportEquipmentItems: Seq[SummaryListRow] =
+    getAnswersAndBuildSectionRows(ItemsSection(equipmentIndex)) {
+      index =>
+        val helper = new ItemAnswersHelper(userAnswers, equipmentIndex, index)
+        helper.transportEquipmentItem
     }
 }

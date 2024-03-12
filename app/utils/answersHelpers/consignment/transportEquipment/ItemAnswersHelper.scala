@@ -16,26 +16,27 @@
 
 package utils.answersHelpers.consignment.transportEquipment
 
-import models.{CheckMode, Index, UserAnswers}
-import pages.transportEquipment.index.seals.SealIdentificationNumberPage
+import models.reference.Item
+import models.{Index, UserAnswers}
+import pages.transportEquipment.index.ItemPage
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
 
-class SealAnswersHelper(
+class ItemAnswersHelper(
   userAnswers: UserAnswers,
   equipmentIndex: Index,
-  sealIndex: Index
+  itemIndex: Index
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
-  def transportEquipmentSeal: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = SealIdentificationNumberPage(equipmentIndex, sealIndex),
+  def transportEquipmentItem: Option[SummaryListRow] = getAnswerAndBuildRow[Item](
+    page = ItemPage(equipmentIndex, itemIndex),
     formatAnswer = formatAsText,
-    prefix = "unloadingFindings.rowHeadings.sealIdentifier",
-    args = Seq(sealIndex.display, equipmentIndex.display): _*,
-    id = Some(s"change-seal-details-${equipmentIndex.display}-${sealIndex.display}"),
-    call =
-      Some(controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(arrivalId, CheckMode, equipmentIndex, sealIndex))
+    prefix = "unloadingFindings.rowHeadings.consignment.item",
+    args = Seq(itemIndex.display, equipmentIndex.display): _*,
+    id = Some(s"change-consignment-item-details-${equipmentIndex.display}-${itemIndex.display}"),
+    call = Some(Call("GET", "#")) //TODO: Add change link
   )
 }

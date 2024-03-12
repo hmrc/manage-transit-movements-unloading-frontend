@@ -33,6 +33,7 @@ import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificatio
 import pages.holderOfTheTransitProcedure.{CountryPage => HotPCountryPage}
 import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage}
 import pages.incident.{IncidentCodePage, IncidentTextPage}
+import pages.transportEquipment.index.ItemPage
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -40,6 +41,7 @@ import scalaxb.XMLCalendar
 import services.ReferenceDataService
 import viewModels.UnloadingFindingsViewModel.UnloadingFindingsViewModelProvider
 
+import scala.Nil
 import scala.concurrent.Future
 
 class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
@@ -271,8 +273,15 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           section.children.length mustBe 1
 
           section.children.head.sectionTitle.value mustBe "Transport equipment 1"
-          section.children.head.rows.size mustBe 1
-          section.children.head.viewLinks must not be Nil
+          section.children.head.rows.size mustBe 0
+          section.children.head.viewLinks mustBe Nil
+
+          section.children.head.children.size mustBe 2
+
+          section.children.head.children.head.sectionTitle mustBe None
+          section.children.head.children.head.rows.size mustBe 1
+          section.children.head.children.head.viewLinks must not be Nil
+          section.children.head.children.head.optionalInformationHeading mustBe None
         }
 
         "with seals" in {
@@ -293,8 +302,15 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           section.children.length mustBe 1
 
           section.children.head.sectionTitle.value mustBe "Transport equipment 1"
-          section.children.head.rows.size mustBe 2
-          section.children.head.viewLinks must not be Nil
+          section.children.head.rows.size mustBe 0
+          section.children.head.viewLinks mustBe Nil
+
+          section.children.head.children.size mustBe 2
+
+          section.children.head.children.head.sectionTitle mustBe None
+          section.children.head.children.head.rows.size mustBe 2
+          section.children.head.children.head.viewLinks must not be Nil
+          section.children.head.children.head.optionalInformationHeading mustBe None
         }
       }
       "when there is multiple" - {
@@ -317,12 +333,24 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           section.children.length mustBe 2
 
           section.children.head.sectionTitle.value mustBe "Transport equipment 1"
-          section.children.head.rows.size mustBe 1
-          section.children.head.viewLinks must not be Nil
+          section.children.head.rows.size mustBe 0
+          section.children.head.viewLinks mustBe Nil
+
+          section.children.head.children.size mustBe 2
+
+          section.children.head.children.head.sectionTitle mustBe None
+          section.children.head.children.head.rows.size mustBe 1
+          section.children.head.children.head.viewLinks must not be Nil
+          section.children.head.children.head.optionalInformationHeading mustBe None
 
           section.children(1).sectionTitle.value mustBe "Transport equipment 2"
-          section.children(1).rows.size mustBe 1
-          section.children(1).viewLinks must not be Nil
+          section.children(1).rows.size mustBe 0
+          section.children(1).viewLinks mustBe Nil
+
+          section.children(1).children.head.sectionTitle mustBe None
+          section.children(1).children.head.rows.size mustBe 1
+          section.children(1).children.head.viewLinks must not be Nil
+          section.children(1).children.head.optionalInformationHeading mustBe None
         }
 
         "with seals" in {
@@ -344,8 +372,183 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           section.children.length mustBe 2
 
           section.children.head.sectionTitle.value mustBe "Transport equipment 1"
-          section.children.head.rows.size mustBe 2
-          section.children.head.viewLinks must not be Nil
+          section.children.head.rows.size mustBe 0
+          section.children.head.viewLinks mustBe Nil
+
+          section.children.head.children.size mustBe 2
+
+          section.children.head.children.head.sectionTitle mustBe None
+          section.children.head.children.head.rows.size mustBe 2
+          section.children.head.children.head.viewLinks must not be Nil
+          section.children.head.children.head.optionalInformationHeading mustBe None
+
+          section.children(1).sectionTitle.value mustBe "Transport equipment 2"
+          section.children(1).rows.size mustBe 0
+          section.children(1).viewLinks mustBe Nil
+
+          section.children(1).children.head.sectionTitle mustBe None
+          section.children(1).children.head.rows.size mustBe 2
+          section.children(1).children.head.viewLinks must not be Nil
+          section.children(1).children.head.optionalInformationHeading mustBe None
+        }
+      }
+
+      "when there is one" - {
+
+        "with no items" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(ContainerIdentificationNumberPage(equipmentIndex), "cin-1")
+            .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "1002")
+            .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
+
+          setExistingUserAnswers(userAnswers)
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
+
+          val viewModelProvider = new UnloadingFindingsViewModelProvider()
+          val result            = viewModelProvider.apply(userAnswers)
+          val section           = result.sections(2)
+
+          section.sectionTitle.value mustBe "Transport equipment"
+          section.viewLinks must not be Nil
+          section.children.length mustBe 1
+
+          section.children.head.sectionTitle.value mustBe "Transport equipment 1"
+          section.children.head.rows.size mustBe 0
+          section.children.head.viewLinks mustBe Nil
+
+          section.children.head.children.size mustBe 2
+
+          section.children.head.children.head.sectionTitle mustBe None
+          section.children.head.children.head.rows.size mustBe 2
+          section.children.head.children.head.viewLinks must not be Nil
+          section.children.head.children.head.optionalInformationHeading mustBe None
+        }
+
+        "with items" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(ContainerIdentificationNumberPage(equipmentIndex), "cin-1")
+            .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "1002")
+            .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
+            .setValue(ItemPage(equipmentIndex, itemIndex), Item(10, "12345"))
+
+          setExistingUserAnswers(userAnswers)
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
+
+          val viewModelProvider = new UnloadingFindingsViewModelProvider()
+          val result            = viewModelProvider.apply(userAnswers)
+          val section           = result.sections(2)
+
+          section.sectionTitle.value mustBe "Transport equipment"
+          section.viewLinks must not be Nil
+          section.children.length mustBe 1
+
+          section.children.head.sectionTitle.value mustBe "Transport equipment 1"
+          section.children.head.rows.size mustBe 0
+          section.children.head.viewLinks mustBe Nil
+
+          section.children.head.children.size mustBe 2
+
+          section.children.head.children.head.sectionTitle mustBe None
+          section.children.head.children.head.rows.size mustBe 2
+          section.children.head.children.head.viewLinks must not be Nil
+          section.children.head.children.head.optionalInformationHeading mustBe None
+
+          section.children.head.children(1).sectionTitle mustBe None
+          section.children.head.children(1).rows.size mustBe 1
+          section.children.head.children(1).viewLinks must not be Nil
+          section.children.head.children(1).optionalInformationHeading must not be None
+        }
+      }
+      "when there is multiple" - {
+
+        "with no items" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(ContainerIdentificationNumberPage(Index(0)), "cin-1")
+            .setValue(SealIdentificationNumberPage(Index(0), sealIndex), "1002")
+            .setValue(ContainerIdentificationNumberPage(Index(1)), "cin-1")
+            .setValue(SealIdentificationNumberPage(Index(1), sealIndex), "1002")
+            .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
+
+          setExistingUserAnswers(userAnswers)
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
+
+          val viewModelProvider = new UnloadingFindingsViewModelProvider()
+          val result            = viewModelProvider.apply(userAnswers)
+          val section           = result.sections(2)
+
+          section.sectionTitle.value mustBe "Transport equipment"
+          section.children.length mustBe 2
+
+          section.children.head.sectionTitle.value mustBe "Transport equipment 1"
+          section.children.head.rows.size mustBe 0
+          section.children.head.viewLinks mustBe Nil
+
+          section.children.head.children.size mustBe 2
+
+          section.children.head.children.head.sectionTitle mustBe None
+          section.children.head.children.head.rows.size mustBe 2
+          section.children.head.children.head.viewLinks must not be Nil
+          section.children.head.children.head.optionalInformationHeading mustBe None
+
+          section.children(1).sectionTitle.value mustBe "Transport equipment 2"
+          section.children(1).rows.size mustBe 0
+          section.children(1).viewLinks mustBe Nil
+
+          section.children(1).children.head.sectionTitle mustBe None
+          section.children(1).children.head.rows.size mustBe 2
+          section.children(1).children.head.viewLinks must not be Nil
+          section.children(1).children.head.optionalInformationHeading mustBe None
+        }
+
+        "with items" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(ContainerIdentificationNumberPage(Index(0)), "cin-1")
+            .setValue(SealIdentificationNumberPage(Index(0), sealIndex), "1002")
+            .setValue(ItemPage(equipmentIndex, Index(0)), Item(10, "12345"))
+            .setValue(ContainerIdentificationNumberPage(Index(1)), "cin-1")
+            .setValue(SealIdentificationNumberPage(Index(1), sealIndex), "1002")
+            .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
+            .setValue(ItemPage(equipmentIndex, Index(1)), Item(10, "12345"))
+
+          setExistingUserAnswers(userAnswers)
+          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
+
+          val viewModelProvider = new UnloadingFindingsViewModelProvider()
+          val result            = viewModelProvider.apply(userAnswers)
+          val section           = result.sections(2)
+
+          section.sectionTitle.value mustBe "Transport equipment"
+          section.children.length mustBe 2
+
+          section.children.head.sectionTitle.value mustBe "Transport equipment 1"
+          section.children.head.rows.size mustBe 0
+          section.children.head.viewLinks mustBe Nil
+
+          section.children.head.children.size mustBe 2
+
+          section.children.head.children.head.sectionTitle mustBe None
+          section.children.head.children.head.rows.size mustBe 2
+          section.children.head.children.head.viewLinks must not be Nil
+          section.children.head.children.head.optionalInformationHeading mustBe None
+
+          section.children.head.children(1).sectionTitle mustBe None
+          section.children.head.children(1).rows.size mustBe 2
+          section.children.head.children(1).viewLinks must not be Nil
+          section.children.head.children(1).optionalInformationHeading must not be None
+
+          section.children(1).sectionTitle.value mustBe "Transport equipment 2"
+          section.children(1).rows.size mustBe 0
+          section.children(1).viewLinks mustBe Nil
+
+          section.children(1).children.head.sectionTitle mustBe None
+          section.children(1).children.head.rows.size mustBe 2
+          section.children(1).children.head.viewLinks must not be Nil
+          section.children(1).children.head.optionalInformationHeading mustBe None
+
+          section.children.head.children(1).sectionTitle mustBe None
+          section.children.head.children(1).rows.size mustBe 2
+          section.children.head.children(1).viewLinks must not be Nil
+          section.children.head.children(1).optionalInformationHeading must not be None
         }
       }
     }

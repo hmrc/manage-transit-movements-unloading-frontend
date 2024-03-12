@@ -20,9 +20,10 @@ import generated._
 import models.DocType.Previous
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference._
-import models.{Coordinates, Index, SecurityType}
+import models.{Coordinates, Index, NormalMode, SecurityType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import pages.transportEquipment.index.ItemPage
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 
 import javax.xml.datatype.XMLGregorianCalendar
@@ -265,12 +266,13 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       import pages._
       import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 
-      "must generate accordion sections" in {
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (containerId, sealId) =>
+      "must generate accordion section with accordion and static children sections" in {
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr, arbitrary[Item]) {
+          (containerId, sealId, item) =>
             val answers = emptyUserAnswers
               .setValue(ContainerIdentificationNumberPage(equipmentIndex), containerId)
               .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), sealId)
+              .setValue(ItemPage(equipmentIndex, itemIndex), item)
 
             val helper = new ConsignmentAnswersHelper(answers)
             val result = helper.transportEquipmentSection
@@ -281,9 +283,17 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
             result.children.head mustBe a[AccordionSection]
             result.children.head.sectionTitle.value mustBe "Transport equipment 1"
-            result.children.head.rows.size mustBe 2
-            result.children.head.rows.head.value.value mustBe containerId
-            result.children.head.rows(1).value.value mustBe sealId
+            result.children.head.children.head mustBe a[StaticSection]
+            result.children.head.children.head.rows.size mustBe 2
+            result.children.head.children.head.rows.head.value.value mustBe containerId
+            result.children.head.children.head.rows(1).value.value mustBe sealId
+            result.children.head.children.head.viewLinks.head.href mustBe
+              controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, NormalMode, equipmentIndex).url
+            result.children.head.children(1) mustBe a[StaticSection]
+            result.children.head.children(1).rows.size mustBe 1
+            result.children.head.children(1).rows.head.value.value mustBe item.toString
+            result.children.head.children(1).viewLinks must not be Nil
+            result.children.head.children(1).optionalInformationHeading mustBe Some("Which items does this transport equipment apply to?")
         }
       }
     }

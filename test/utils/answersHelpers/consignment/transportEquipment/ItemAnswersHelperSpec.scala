@@ -16,43 +16,40 @@
 
 package utils.answersHelpers.consignment.transportEquipment
 
-import models.CheckMode
-import org.scalacheck.Gen
-import pages.transportEquipment.index.seals.SealIdentificationNumberPage
+import models.reference.Item
+import org.scalacheck.Arbitrary.arbitrary
+import pages.transportEquipment.index.ItemPage
 import utils.answersHelpers.AnswersHelperSpecBase
 
-class SealAnswersHelperSpec extends AnswersHelperSpecBase {
+class ItemAnswersHelperSpec extends AnswersHelperSpecBase {
 
-  "SealAnswersHelper" - {
+  "ItemAnswersHelper" - {
 
-    "transportEquipmentSeal" - {
-      val page = SealIdentificationNumberPage(equipmentIndex, sealIndex)
+    "transportEquipmentItem" - {
+      val page = ItemPage(equipmentIndex, itemIndex)
       "must return None" - {
         s"when $page undefined" in {
-          val helper = new SealAnswersHelper(emptyUserAnswers, equipmentIndex, sealIndex)
-          helper.transportEquipmentSeal mustBe None
+          val helper = new ItemAnswersHelper(emptyUserAnswers, equipmentIndex, itemIndex)
+          helper.transportEquipmentItem mustBe None
         }
       }
 
       "must return Some(Row)" - {
         s"when $page defined" in {
-          forAll(Gen.alphaNumStr) {
+          forAll(arbitrary[Item]) {
             value =>
               val answers = emptyUserAnswers.setValue(page, value)
 
-              val helper = new SealAnswersHelper(answers, equipmentIndex, sealIndex)
-              val result = helper.transportEquipmentSeal.value
+              val helper = new ItemAnswersHelper(answers, equipmentIndex, itemIndex)
+              val result = helper.transportEquipmentItem.value
 
-              result.key.value mustBe "Seal 1"
-              result.value.value mustBe value
+              result.key.value mustBe "Item 1"
+              result.value.value mustBe value.toString
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
-              action.href mustBe
-                controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController
-                  .onPageLoad(arrivalId, CheckMode, equipmentIndex, sealIndex)
-                  .url
-              action.visuallyHiddenText.value mustBe "seal 1 for transport equipment 1"
-              action.id mustBe "change-seal-details-1-1"
+              action.href mustBe "#" //TODO: Add href for goods ref controller
+              action.visuallyHiddenText.value mustBe "item 1 for transport equipment 1"
+              action.id mustBe "change-consignment-item-details-1-1"
           }
         }
       }

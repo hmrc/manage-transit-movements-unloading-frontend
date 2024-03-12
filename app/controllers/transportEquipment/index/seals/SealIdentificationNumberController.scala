@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.SealIdentificationNumberFormProvider
 import models.requests.{DataRequest, MandatoryDataRequest}
 import models.{ArrivalId, Index, Mode, RichOptionalJsArray}
-import navigation.Navigator
+import navigation.TransportEquipmentNavigator
 import pages.sections.SealsSection
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -37,7 +37,7 @@ class SealIdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
-  navigator: Navigator,
+  navigator: TransportEquipmentNavigator,
   formProvider: SealIdentificationNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: SealIdentificationNumberView,
