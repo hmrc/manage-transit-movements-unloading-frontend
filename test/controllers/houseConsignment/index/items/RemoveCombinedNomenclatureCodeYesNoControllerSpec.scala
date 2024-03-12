@@ -23,7 +23,6 @@ import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
-import pages.departureMeansOfTransport.VehicleIdentificationNumberPage
 import pages.houseConsignment.index.items.CombinedNomenclatureCodePage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
