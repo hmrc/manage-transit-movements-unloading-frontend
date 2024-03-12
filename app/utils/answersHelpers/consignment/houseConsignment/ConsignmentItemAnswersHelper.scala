@@ -18,7 +18,7 @@ package utils.answersHelpers.consignment.houseConsignment
 
 import models.DocType.Previous
 import models.reference.Country
-import models.{Index, Link, NormalMode, RichOptionalJsArray, UserAnswers}
+import models.{CheckMode, Index, Link, NormalMode, RichOptionalJsArray, UserAnswers}
 import pages.NetWeightPage
 import pages.houseConsignment.index.items.document.TypePage
 import pages.houseConsignment.index.items.{
@@ -75,7 +75,7 @@ class ConsignmentItemAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.item.grossWeight",
     args = itemIndex.display,
     id = s"gross-weight-${itemIndex.display}",
-    change = Call(GET, "#"),
+    change = controllers.houseConsignment.index.items.routes.GrossWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode),
     remove =
       controllers.houseConsignment.index.items.routes.RemoveGrossWeightYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode),
     hiddenLink = "grossWeightLink"
