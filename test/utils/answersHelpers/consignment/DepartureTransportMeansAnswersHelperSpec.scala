@@ -16,6 +16,7 @@
 
 package utils.answersHelpers.consignment
 
+import models.CheckMode
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.Country
 import org.scalacheck.Arbitrary.arbitrary
@@ -49,7 +50,7 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
               result.value.value mustBe value.description
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
-              action.href mustBe "#"
+              action.href mustBe controllers.departureMeansOfTransport.routes.IdentificationController.onPageLoad(arrivalId, transportMeansIndex, CheckMode).url
               action.visuallyHiddenText.value mustBe "identification type for departure means of transport 1"
               action.id mustBe "change-transport-means-identification-1"
           }
@@ -79,7 +80,9 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
               result.value.value mustBe value
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
-              action.href mustBe "#"
+              action.href mustBe controllers.departureMeansOfTransport.routes.IdentificationNumberController
+                .onPageLoad(arrivalId, transportMeansIndex, CheckMode)
+                .url
               action.visuallyHiddenText.value mustBe "identification number for departure means of transport 1"
               action.id mustBe "change-transport-means-identification-number-1"
           }
@@ -109,7 +112,7 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
               result.value.value mustBe value.description
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
-              action.href mustBe "#"
+              action.href mustBe controllers.departureMeansOfTransport.routes.CountryController.onPageLoad(arrivalId, transportMeansIndex, CheckMode).url
               action.visuallyHiddenText.value mustBe "registered country for departure means of transport 1"
               action.id mustBe "change-registered-country"
           }

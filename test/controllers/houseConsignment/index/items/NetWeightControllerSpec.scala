@@ -20,9 +20,9 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.NetWeightFormProvider
 import generators.Generators
-import models.NormalMode
 import models.P5.ArrivalMessageType.UnloadingPermission
 import models.P5.{ArrivalMessageType, MessageMetaData}
+import models.{CheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -38,7 +38,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
 
   private val formProvider        = new NetWeightFormProvider()
   private val form                = formProvider(hcIndex, itemIndex)
-  private val mode                = NormalMode
+  private val mode                = CheckMode
   private lazy val NetWeightRoute = controllers.houseConsignment.index.items.routes.NetWeightController.onPageLoad(arrivalId, hcIndex, itemIndex, mode).url
 
   "NetWeightAmount Controller" - {
@@ -94,7 +94,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+      redirectLocation(result).value mustEqual onwardRoute.url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.DescriptionFormProvider
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigator
+import navigation.ConsignmentItemNavigator
 import pages.houseConsignment.index.items.ItemDescriptionPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -36,7 +36,7 @@ class DescriptionController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   actions: Actions,
-  navigator: Navigator,
+  navigator: ConsignmentItemNavigator,
   val controllerComponents: MessagesControllerComponents,
   formProvider: DescriptionFormProvider,
   view: DescriptionView
