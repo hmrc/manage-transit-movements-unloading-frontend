@@ -16,9 +16,12 @@
 
 package utils.answersHelpers.consignment
 
+import models.reference.Item
 import models.{CheckMode, Index}
 import org.scalacheck.Gen
+import org.scalacheck.Arbitrary.arbitrary
 import pages.ContainerIdentificationNumberPage
+import pages.transportEquipment.index.ItemPage
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import utils.answersHelpers.AnswersHelperSpecBase
 
@@ -71,6 +74,24 @@ class TransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.size mustBe 2
             result.head.value.value mustBe value1
             result(1).value.value mustBe value2
+        }
+      }
+    }
+
+    "transportEquipmentItems" - {
+      "must generate row for each consignment item" in {
+        forAll(arbitrary[Item].sample.value, arbitrary[Item].sample.value) {
+          (item1, item2) =>
+            val answers = emptyUserAnswers
+              .setValue(ItemPage(equipmentIndex, Index(0)), item1)
+              .setValue(ItemPage(equipmentIndex, Index(1)), item2)
+
+            val helper = new TransportEquipmentAnswersHelper(answers, equipmentIndex)
+            val result = helper.transportEquipmentItems
+
+            result.size mustBe 2
+            result.head.value.value mustBe item1.toString
+            result(1).value.value mustBe item2.toString
         }
       }
     }

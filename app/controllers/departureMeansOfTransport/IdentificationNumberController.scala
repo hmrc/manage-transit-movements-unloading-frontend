@@ -19,6 +19,7 @@ package controllers.departureMeansOfTransport
 import controllers.actions._
 import forms.VehicleIdentificationNumberFormProvider
 import models.{ArrivalId, Index, Mode}
+import navigation.DepartureTransportMeansNavigator
 import pages.departureMeansOfTransport.VehicleIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,6 +37,7 @@ class IdentificationNumberController @Inject() (
   actions: Actions,
   formProvider: VehicleIdentificationNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
+  navigator: DepartureTransportMeansNavigator,
   view: IdentificationNumberView,
   identificationNUmberViewModelProvider: IdentificationNumberViewModelProvider
 )(implicit ec: ExecutionContext)
@@ -69,7 +71,7 @@ class IdentificationNumberController @Inject() (
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleIdentificationNumberPage(transportMeansIndex), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+              } yield Redirect(navigator.nextPage(VehicleIdentificationNumberPage(transportMeansIndex), mode, request.userAnswers))
           )
     }
 }

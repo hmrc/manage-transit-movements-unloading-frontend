@@ -31,6 +31,10 @@
             <h2 class="govuk-heading-m">@title</h2>
         }
 
+        @section.optionalInformationHeading.map { heading =>
+            <h3 class="govuk-heading-s">@heading</h3>
+        }
+
         @if(section.rows.nonEmpty) {
             @govukSummaryList(
                 SummaryList(

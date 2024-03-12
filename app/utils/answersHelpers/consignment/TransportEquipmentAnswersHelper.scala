@@ -19,10 +19,11 @@ package utils.answersHelpers.consignment
 import models.{CheckMode, Index, UserAnswers}
 import pages.ContainerIdentificationNumberPage
 import pages.sections.SealsSection
+import pages.sections.transport.equipment.ItemsSection
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
-import utils.answersHelpers.consignment.transportEquipment.SealAnswersHelper
+import utils.answersHelpers.consignment.transportEquipment.{ItemAnswersHelper, SealAnswersHelper}
 
 class TransportEquipmentAnswersHelper(
   userAnswers: UserAnswers,
@@ -44,5 +45,12 @@ class TransportEquipmentAnswersHelper(
       index =>
         val helper = new SealAnswersHelper(userAnswers, equipmentIndex, index)
         helper.transportEquipmentSeal
+    }
+
+  def transportEquipmentItems: Seq[SummaryListRow] =
+    getAnswersAndBuildSectionRows(ItemsSection(equipmentIndex)) {
+      index =>
+        val helper = new ItemAnswersHelper(userAnswers, equipmentIndex, index)
+        helper.transportEquipmentItem
     }
 }
