@@ -19,11 +19,12 @@ package navigation
 import base.SpecBase
 import generators.Generators
 import models._
+import models.reference.Item
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.ContainerIdentificationNumberPage
-import pages.transportEquipment.index.AddAnotherSealPage
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
+import pages.transportEquipment.index.{AddAnotherSealPage, ApplyAnotherItemPage, ItemPage}
 
 class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -79,6 +80,43 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
         navigator
           .nextPage(SealIdentificationNumberPage(equipmentIndex, sealIndex), mode, userAnswers)
           .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+      }
+
+      "must go from Item page to ApplyAnotherItem page" in {
+        forAll(arbitrary[Item]) {
+          item =>
+            val userAnswers = emptyUserAnswers.setValue(ItemPage(equipmentIndex, itemIndex), item)
+
+            navigator
+              .nextPage(ItemPage(equipmentIndex, itemIndex), mode, userAnswers)
+              .mustBe(controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, mode, equipmentIndex))
+        }
+      }
+
+      "must go from ApplyAnotherItem page to Item page when answer is true" in {
+        forAll(arbitrary[Item]) {
+          item =>
+            val userAnswers = emptyUserAnswers
+              .setValue(ItemPage(equipmentIndex, itemIndex), item)
+              .setValue(ApplyAnotherItemPage(equipmentIndex, itemIndex), true)
+
+            navigator
+              .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), mode, userAnswers)
+              .mustBe(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, itemIndex, mode))
+        }
+      }
+
+      "must go from ApplyAnotherItem page to UnloadingFindings page when answer is false" in {
+        forAll(arbitrary[Item]) {
+          item =>
+            val userAnswers = emptyUserAnswers
+              .setValue(ItemPage(equipmentIndex, itemIndex), item)
+              .setValue(ApplyAnotherItemPage(equipmentIndex, itemIndex), false)
+
+            navigator
+              .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), mode, userAnswers)
+              .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+        }
       }
     }
   }
