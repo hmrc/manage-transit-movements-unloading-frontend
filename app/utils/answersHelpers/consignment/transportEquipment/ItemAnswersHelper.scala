@@ -17,7 +17,7 @@
 package utils.answersHelpers.consignment.transportEquipment
 
 import models.reference.Item
-import models.{Index, UserAnswers}
+import models.{CheckMode, Index, UserAnswers}
 import pages.transportEquipment.index.ItemPage
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -37,6 +37,6 @@ class ItemAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.consignment.item",
     args = Seq(itemIndex.display, equipmentIndex.display): _*,
     id = Some(s"change-consignment-item-details-${equipmentIndex.display}-${itemIndex.display}"),
-    call = Some(Call("GET", "#")) //TODO: Add change link
+    call = Some(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, itemIndex, CheckMode))
   )
 }
