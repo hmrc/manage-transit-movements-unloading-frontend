@@ -21,8 +21,8 @@ import generators.Generators
 import models._
 import models.reference.PackageType
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.houseConsignment.index.items.{CommodityCodePage, ItemDescriptionPage}
-import pages.{NetWeightPage, NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
+import pages.houseConsignment.index.items.{CommodityCodePage, ItemDescriptionPage, NetWeightPage}
+import pages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
 
 class ConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

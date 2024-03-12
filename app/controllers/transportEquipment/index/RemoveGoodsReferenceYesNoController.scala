@@ -19,7 +19,6 @@ package controllers.transportEquipment.index
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.reference.{Item, ItemDescription}
-import models.requests.SpecificDataRequestProvider1
 import models.{ArrivalId, Index, RichOptionalJsArray, UserAnswers}
 import pages.houseConsignment.index.items.ItemGoodsReferenceDescriptionPage
 import pages.sections.transport.equipment.ItemSection
@@ -47,9 +46,7 @@ class RemoveGoodsReferenceYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private type Request = SpecificDataRequestProvider1[Item]#SpecificDataRequest[_]
-
-  private def form(equipmentIndex: Index)(implicit request: Request): Form[Boolean] =
+  private def form(equipmentIndex: Index): Form[Boolean] =
     formProvider("transportEquipment.index.item.removeItemYesNo", equipmentIndex.display)
 
   private def addAnother(arrivalId: ArrivalId, equipmentIndex: Index): Call = Call("GET", "#") // TODO should go to addAnotherItem controller

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages
+package pages.houseConsignment.index.items
 
 import pages.behaviours.PageBehaviours
 

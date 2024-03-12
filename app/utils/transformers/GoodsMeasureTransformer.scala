@@ -18,8 +18,7 @@ package utils.transformers
 
 import generated.GoodsMeasureType03
 import models.{Index, UserAnswers}
-import pages.NetWeightPage
-import pages.houseConsignment.index.items.GrossWeightPage
+import pages.houseConsignment.index.items.{GrossWeightPage, NetWeightPage}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
