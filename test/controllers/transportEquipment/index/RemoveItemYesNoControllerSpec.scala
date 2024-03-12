@@ -23,7 +23,7 @@ import models.UserAnswers
 import models.reference.{Item, ItemDescription}
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.verify
-import pages.houseConsignment.index.items.{ItemDescriptionPage, ItemGoodsReferenceDescriptionPage}
+import pages.houseConsignment.index.items.ItemGoodsReferenceDescriptionPage
 import pages.sections.ItemSection
 import pages.transportEquipment.index.ItemPage
 import play.api.mvc.Call

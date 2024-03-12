@@ -17,6 +17,7 @@
 package pages.houseConsignment.index.items
 
 import models.reference.PackageType
+import pages.PackageTypePage
 import pages.behaviours.PageBehaviours
 
 class PackageTypePageSpec extends PageBehaviours {

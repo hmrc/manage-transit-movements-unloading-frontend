@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.DescriptionFormProvider
-import models.NormalMode
+import models.CheckMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.items.ItemDescriptionPage
@@ -34,7 +34,7 @@ class DescriptionControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
   private lazy val formProvider = new DescriptionFormProvider()
   private lazy val form         = formProvider("houseConsignment.item.description", itemIndex.display, houseConsignmentIndex.display)
-  private val mode              = NormalMode
+  private val mode              = CheckMode
 
   private lazy val itemDescriptionRoute =
     controllers.houseConsignment.index.items.routes.DescriptionController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex).url

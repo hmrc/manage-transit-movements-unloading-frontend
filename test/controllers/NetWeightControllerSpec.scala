@@ -19,16 +19,16 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NetWeightFormProvider
 import generators.Generators
-import models.NormalMode
 import models.P5.ArrivalMessageType.UnloadingPermission
 import models.P5.{ArrivalMessageType, MessageMetaData}
+import models.{CheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalacheck.Arbitrary.arbitrary
 import pages.NetWeightPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.NetWeightView
-import org.scalacheck.Arbitrary.arbitrary
 
 import java.time.LocalDateTime
 import scala.concurrent.Future
@@ -37,7 +37,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
 
   private val formProvider        = new NetWeightFormProvider()
   private val form                = formProvider(hcIndex, itemIndex)
-  private val mode                = NormalMode
+  private val mode                = CheckMode
   private lazy val NetWeightRoute = controllers.routes.NetWeightController.onPageLoad(arrivalId, hcIndex, itemIndex, mode).url
 
   "NetWeightAmount Controller" - {
@@ -93,7 +93,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+      redirectLocation(result).value mustEqual onwardRoute.url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

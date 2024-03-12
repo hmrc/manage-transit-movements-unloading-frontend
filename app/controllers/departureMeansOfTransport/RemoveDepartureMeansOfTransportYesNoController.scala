@@ -19,6 +19,7 @@ package controllers.departureMeansOfTransport
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode, TransportMeans, UserAnswers}
+import navigation.DepartureTransportMeansNavigator
 import pages.sections.TransportMeansSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -35,6 +36,7 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
   sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: YesNoFormProvider,
+  navigator: DepartureTransportMeansNavigator,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveDepartureMeansOfTransportYesNoView
 )(implicit ec: ExecutionContext)

@@ -20,7 +20,7 @@ import connectors.ReferenceDataConnector
 import generated.PackagingType02
 import models.reference.PackageType
 import models.{Index, UserAnswers}
-import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
+import pages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
 import pages.sections.PackagingSection
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -52,9 +52,9 @@ class PackagingTransformer @Inject() (referenceDataConnector: ReferenceDataConne
               userAnswers =>
                 val pipeline: UserAnswers => Future[UserAnswers] = {
                   setSequenceNumber(PackagingSection(hcIndex, itemIndex, packageIndex), underlying.sequenceNumber) andThen
-                    set(PackagingTypePage(hcIndex, itemIndex, packageIndex), typeValue) andThen
-                    set(PackagingCountPage(hcIndex, itemIndex, packageIndex), underlying.numberOfPackages) andThen
-                    set(PackagingMarksPage(hcIndex, itemIndex, packageIndex), underlying.shippingMarks)
+                    set(PackageTypePage(hcIndex, itemIndex, packageIndex), typeValue) andThen
+                    set(NumberOfPackagesPage(hcIndex, itemIndex, packageIndex), underlying.numberOfPackages) andThen
+                    set(PackageShippingMarkPage(hcIndex, itemIndex, packageIndex), underlying.shippingMarks)
                 }
 
                 pipeline(userAnswers)

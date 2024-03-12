@@ -19,8 +19,8 @@ package navigation
 import com.google.inject.Singleton
 import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, UserAnswers}
 import pages._
-import pages.transportEquipment.index.{AddAnotherSealPage, ApplyAnotherItemPage}
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
+import pages.transportEquipment.index.{AddAnotherSealPage, ApplyAnotherItemPage, ItemPage}
 import play.api.mvc.Call
 
 @Singleton
@@ -34,9 +34,11 @@ class TransportEquipmentNavigator extends Navigator {
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case ContainerIdentificationNumberPage(_)            => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
-    case SealIdentificationNumberPage(_, _)              => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
-    case AddAnotherSealPage(equipmentIndex, sealIndex)   => ua => addAnotherSealRoute(ua, ua.id, CheckMode, equipmentIndex, sealIndex)
+    case ContainerIdentificationNumberPage(_)          => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
+    case SealIdentificationNumberPage(_, _)            => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
+    case AddAnotherSealPage(equipmentIndex, sealIndex) => ua => addAnotherSealRoute(ua, ua.id, CheckMode, equipmentIndex, sealIndex)
+    case ItemPage(equipmentIndex, _) =>
+      ua => Some(controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(ua.id, CheckMode, equipmentIndex))
     case ApplyAnotherItemPage(equipmentIndex, itemIndex) => ua => applyAnotherItemRoute(ua, ua.id, CheckMode, equipmentIndex, itemIndex)
   }
 
@@ -55,5 +57,4 @@ class TransportEquipmentNavigator extends Navigator {
       case Some(false) => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
       case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
     }
-
 }

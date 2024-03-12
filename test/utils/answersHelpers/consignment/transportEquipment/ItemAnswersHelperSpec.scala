@@ -16,6 +16,7 @@
 
 package utils.answersHelpers.consignment.transportEquipment
 
+import models.CheckMode
 import models.reference.Item
 import org.scalacheck.Arbitrary.arbitrary
 import pages.transportEquipment.index.ItemPage
@@ -47,7 +48,10 @@ class ItemAnswersHelperSpec extends AnswersHelperSpecBase {
               result.value.value mustBe value.toString
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
-              action.href mustBe "#" //TODO: Add href for goods ref controller
+              action.href mustBe
+                controllers.transportEquipment.index.routes.GoodsReferenceController
+                  .onPageLoad(arrivalId, equipmentIndex, itemIndex, CheckMode)
+                  .url
               action.visuallyHiddenText.value mustBe "item 1 for transport equipment 1"
               action.id mustBe "change-consignment-item-details-1-1"
           }
