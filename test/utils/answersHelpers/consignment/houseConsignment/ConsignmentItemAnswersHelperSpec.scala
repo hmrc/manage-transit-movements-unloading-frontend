@@ -17,7 +17,7 @@
 package utils.answersHelpers.consignment.houseConsignment
 
 import models.DocType.Previous
-import models.Index
+import models.{Index, NormalMode}
 import models.reference.Country
 import models.reference.DocumentType
 import org.scalacheck.Arbitrary.arbitrary
@@ -140,7 +140,9 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
               val action2 = result.actions.value.items(1)
               action2.content.value mustBe "Remove"
               action2.visuallyHiddenText.value mustBe "gross weight of item 1"
-              action2.href mustBe "#"
+              action2.href mustBe controllers.houseConsignment.index.items.routes.RemoveGrossWeightYesNoController
+                .onPageLoad(arrivalId, hcIndex, itemIndex, NormalMode)
+                .url
           }
         }
       }

@@ -76,7 +76,8 @@ class ConsignmentItemAnswersHelper(
     args = itemIndex.display,
     id = s"gross-weight-${itemIndex.display}",
     change = Call(GET, "#"),
-    remove = Call(GET, "#"),
+    remove =
+      controllers.houseConsignment.index.items.routes.RemoveGrossWeightYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode),
     hiddenLink = "grossWeightLink"
   )
 
