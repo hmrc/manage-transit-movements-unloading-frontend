@@ -19,7 +19,7 @@ package controllers.documents
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.reference.DocumentType
-import models.{ArrivalId, Index, Mode}
+import models.{ArrivalId, Index, Mode, UserAnswers}
 import pages.documents.{DocumentReferenceNumberPage, TypePage}
 import pages.sections.documents.DocumentSection
 import play.api.data.Form
@@ -46,21 +46,22 @@ class RemoveDocumentYesNoController @Inject() (
 
   private val form: Form[Boolean] = formProvider("document.removeDocumentYesNo")
 
-  // TODO: change once other page is ready
+  // TODO: update once AddAnotherDocumentController implemented
   private def addAnother(arrivalId: ArrivalId, mode: Mode): Call = new Call("GET", "/foo")
 
-  private def formatInsetText(documentType: DocumentType, documentReferenceNumber: String): String =
+  private def formatInsetText(userAnswers: UserAnswers, documentIndex: Index): String = {
+    val documentType: DocumentType = userAnswers.get(TypePage(documentIndex)).get
+    val documentReferenceNumber: String  = userAnswers.get(DocumentReferenceNumberPage(documentIndex)).get
+
     s"${documentType.`type`} - $documentReferenceNumber"
+  }
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
     .requireIndex(arrivalId, DocumentSection(documentIndex), addAnother(arrivalId, mode))
     .andThen(getMandatoryPage.getFirst(TypePage(documentIndex)))
     .andThen(getMandatoryPage.getSecond(DocumentReferenceNumberPage(documentIndex))) {
       implicit request =>
-        val documentType: Option[DocumentType] = request.userAnswers.get(TypePage(documentIndex))
-        val documentReference: Option[String]  = request.userAnswers.get(DocumentReferenceNumberPage(documentIndex))
-
-        val insetText = formatInsetText(documentType.get, documentReference.get)
+        val insetText = formatInsetText(request.userAnswers, documentIndex)
         Ok(view(form, request.userAnswers.mrn, arrivalId, documentIndex, mode, insetText))
     }
 
@@ -70,10 +71,7 @@ class RemoveDocumentYesNoController @Inject() (
     .andThen(getMandatoryPage.getSecond(DocumentReferenceNumberPage(documentIndex)))
     .async {
       implicit request =>
-        val documentType: Option[DocumentType] = request.userAnswers.get(TypePage(documentIndex));
-        val documentReference: Option[String]  = request.userAnswers.get(DocumentReferenceNumberPage(documentIndex));
-
-        val insetText = formatInsetText(documentType.get, documentReference.get)
+        val insetText = formatInsetText(request.userAnswers, documentIndex)
         form
           .bindFromRequest()
           .fold(

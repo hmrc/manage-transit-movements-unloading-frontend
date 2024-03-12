@@ -95,7 +95,7 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
         status(result) mustEqual SEE_OTHER
 
-        // TODO: Update when implemented
+        // TODO: update once AddAnotherDocumentController implemented
         redirectLocation(result).value mustEqual Call("GET", "/foo").url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
@@ -120,7 +120,7 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
         status(result) mustEqual SEE_OTHER
 
-        // TODO: Update when implemented
+        // TODO: update once AddAnotherDocumentController implemented
         redirectLocation(result).value mustEqual Call("GET", "/foo").url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
@@ -142,7 +142,7 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
       status(result) mustEqual SEE_OTHER
 
-      // TODO: Update when implemented
+      // TODO: update once AddAnotherDocumentController implemented
       redirectLocation(result).value mustEqual onwardRoute.url
     }
 
