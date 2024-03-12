@@ -438,7 +438,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
   private def itemsAddRemoveLink(index: Index): Link =
     Link(
       id = s"add-remove-consignment-items-${index.display}",
-      href = "#",
+      href = controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, NormalMode, index).url,
       text = messages("consignmentItemLink.addRemove", index.display),
       visuallyHidden = messages("consignmentItemLink.visuallyHidden", index.display)
     )

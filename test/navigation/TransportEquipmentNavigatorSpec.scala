@@ -22,7 +22,7 @@ import models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.ContainerIdentificationNumberPage
-import pages.transportEquipment.index.AddAnotherSealPage
+import pages.transportEquipment.index.{AddAnotherSealPage, ApplyAnotherItemPage}
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 
 class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -50,6 +50,34 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
         forAll(arbitrary[Mode]) {
           mode =>
             val page        = AddAnotherSealPage(equipmentIndex, sealIndex)
+            val userAnswers = emptyUserAnswers.setValue(page, false)
+
+            navigator
+              .nextPage(page, mode, userAnswers)
+              .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+        }
+      }
+    }
+
+    "must go from ApplyAnotherItemPage page " - {
+      "to GoodsReferencePage if answer is true" in {
+        forAll(arbitrary[Mode]) {
+          mode =>
+            val page        = ApplyAnotherItemPage(equipmentIndex, itemIndex)
+            val userAnswers = emptyUserAnswers.setValue(page, true)
+
+            navigator
+              .nextPage(page, mode, userAnswers)
+              .mustBe(
+                controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, itemIndex, mode)
+              )
+        }
+      }
+
+      "to UnloadingFindings page if answer is false" in {
+        forAll(arbitrary[Mode]) {
+          mode =>
+            val page        = ApplyAnotherItemPage(equipmentIndex, itemIndex)
             val userAnswers = emptyUserAnswers.setValue(page, false)
 
             navigator
