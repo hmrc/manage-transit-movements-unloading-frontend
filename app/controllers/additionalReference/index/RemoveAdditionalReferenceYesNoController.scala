@@ -36,6 +36,7 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveAdditionalReferenceYesNoView
@@ -47,7 +48,7 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
     formProvider("additionalReference.index.removeAdditionalReferenceYesNo", additionalReferenceIndex.display)
 
   private def addAnother(arrivalId: ArrivalId, additionalReferenceIndex: Index, mode: Mode): Call =
-    controllers.additionalReference.index.routes.AdditionalReferenceNumberController.onPageLoad(arrivalId, additionalReferenceIndex, mode)
+    Call("GET", "#")
   //TODO: replace with AddAnotherAdditionalReferenceController
 
   def insetText(userAnswers: UserAnswers, additionalReferenceIndex: Index): Option[String] = {
@@ -57,7 +58,8 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
   }
 
   def onPageLoad(arrivalId: ArrivalId, additionalReferenceIndex: Index, mode: Mode): Action[AnyContent] = actions
-    .requireIndex(arrivalId, AdditionalReferenceSection(additionalReferenceIndex), addAnother(arrivalId, additionalReferenceIndex, mode)) {
+    .requireIndex(arrivalId, AdditionalReferenceSection(additionalReferenceIndex), addAnother(arrivalId, additionalReferenceIndex, mode))
+    .andThen(getMandatoryPage.getFirst(AdditionalReferenceNumberPage(additionalReferenceIndex))) {
       implicit request =>
         Ok(
           view(
