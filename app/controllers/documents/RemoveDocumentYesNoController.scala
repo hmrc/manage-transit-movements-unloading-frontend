@@ -50,8 +50,8 @@ class RemoveDocumentYesNoController @Inject() (
   private def addAnother(arrivalId: ArrivalId, mode: Mode): Call = new Call("GET", "/foo")
 
   private def formatInsetText(userAnswers: UserAnswers, documentIndex: Index): String = {
-    val documentType: DocumentType = userAnswers.get(TypePage(documentIndex)).get
-    val documentReferenceNumber: String  = userAnswers.get(DocumentReferenceNumberPage(documentIndex)).get
+    val documentType: DocumentType      = userAnswers.get(TypePage(documentIndex)).get
+    val documentReferenceNumber: String = userAnswers.get(DocumentReferenceNumberPage(documentIndex)).get
 
     s"${documentType.`type`} - $documentReferenceNumber"
   }
