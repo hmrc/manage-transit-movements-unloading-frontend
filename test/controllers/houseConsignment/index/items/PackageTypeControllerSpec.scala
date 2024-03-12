@@ -23,7 +23,7 @@ import models.{NormalMode, SelectableList}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.houseConsignment.index.items.PackageTypePage
+import pages.PackageTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -47,7 +47,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val mockPackagesService: PackagesService = mock[PackagesService]
 
   private lazy val packageTypeRoute =
-    controllers.houseConsignment.index.items.routes.PackageTypeController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode).url
+    controllers.houseConsignment.index.items.routes.PackageTypeController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -84,7 +84,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(viewModel, form, mrn, arrivalId, packageTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex)(request, messages).toString
+        view(viewModel, form, mrn, arrivalId, packageTypeList.values, NormalMode, houseConsignmentIndex, itemIndex, packageIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -104,7 +104,9 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(viewModel, filledForm, mrn, arrivalId, packageTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex)(request, messages).toString
+        view(viewModel, filledForm, mrn, arrivalId, packageTypeList.values, NormalMode, houseConsignmentIndex, itemIndex, packageIndex)(request,
+                                                                                                                                        messages
+        ).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -127,6 +129,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       when(mockPackagesService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
+
       setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, packageTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))
@@ -134,9 +137,9 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[PackageTypeView]
-
       status(result) mustEqual BAD_REQUEST
+
+      val view = injector.instanceOf[PackageTypeView]
 
       contentAsString(result) mustEqual
         view(viewModel, boundForm, mrn, arrivalId, packageTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex)(request, messages).toString

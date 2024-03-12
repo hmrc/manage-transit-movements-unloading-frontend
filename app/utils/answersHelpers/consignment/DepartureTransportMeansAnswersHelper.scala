@@ -18,13 +18,11 @@ package utils.answersHelpers.consignment
 
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.Country
-import models.{Index, UserAnswers}
+import models.{CheckMode, Index, UserAnswers}
 import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
 
 class DepartureTransportMeansAnswersHelper(
@@ -38,7 +36,7 @@ class DepartureTransportMeansAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "checkYourAnswers.departureMeansOfTransport.identification",
     id = Some(s"change-transport-means-identification-${transportMeansIndex.display}"),
-    call = Some(Call(GET, "#")),
+    call = Some(controllers.departureMeansOfTransport.routes.IdentificationController.onPageLoad(arrivalId, transportMeansIndex, CheckMode)),
     args = transportMeansIndex.display
   )
 
@@ -47,7 +45,7 @@ class DepartureTransportMeansAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "checkYourAnswers.departureMeansOfTransport.identificationNumber",
     id = Some(s"change-transport-means-identification-number-${transportMeansIndex.display}"),
-    call = Some(Call(GET, "#")),
+    call = Some(controllers.departureMeansOfTransport.routes.IdentificationNumberController.onPageLoad(arrivalId, transportMeansIndex, CheckMode)),
     args = transportMeansIndex.display
   )
 
@@ -56,7 +54,7 @@ class DepartureTransportMeansAnswersHelper(
     formatAnswer = x => Text(x.description),
     prefix = "checkYourAnswers.departureMeansOfTransport.country",
     id = Some("change-registered-country"),
-    call = Some(Call(GET, "#")),
+    call = Some(controllers.departureMeansOfTransport.routes.CountryController.onPageLoad(arrivalId, transportMeansIndex, CheckMode)),
     args = transportMeansIndex.display
   )
 }

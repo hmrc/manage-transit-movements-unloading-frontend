@@ -24,8 +24,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
-import pages.houseConsignment.index.items.{CommodityCodePage, GrossWeightPage}
+import pages.houseConsignment.index.items.GrossWeightPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

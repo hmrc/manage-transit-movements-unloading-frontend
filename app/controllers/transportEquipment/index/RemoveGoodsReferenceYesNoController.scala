@@ -21,8 +21,9 @@ import forms.YesNoFormProvider
 import models.reference.{Item, ItemDescription}
 import models.requests.SpecificDataRequestProvider1
 import models.{ArrivalId, Index, RichOptionalJsArray, UserAnswers}
-import pages.sections.{HouseConsignmentsSection, ItemsSection}
+import pages.houseConsignment.index.items.ItemGoodsReferenceDescriptionPage
 import pages.sections.transport.equipment.ItemSection
+import pages.sections.{HouseConsignmentsSection, ItemsSection}
 import pages.transportEquipment.index.ItemPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -33,7 +34,6 @@ import views.html.transportEquipment.index.RemoveItemYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import pages.houseConsignment.index.items.ItemGoodsReferenceDescriptionPage
 
 class RemoveGoodsReferenceYesNoController @Inject() (
   override val messagesApi: MessagesApi,

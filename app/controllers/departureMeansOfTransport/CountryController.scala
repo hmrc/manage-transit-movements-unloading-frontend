@@ -19,6 +19,7 @@ package controllers.departureMeansOfTransport
 import controllers.actions._
 import forms.DepartureMeansOfTransportCountryFormProvider
 import models.{ArrivalId, Index, Mode}
+import navigation.DepartureTransportMeansNavigator
 import pages.departureMeansOfTransport.CountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -38,6 +39,7 @@ class CountryController @Inject() (
   formProvider: DepartureMeansOfTransportCountryFormProvider,
   referenceDataService: ReferenceDataService,
   val controllerComponents: MessagesControllerComponents,
+  navigator: DepartureTransportMeansNavigator,
   view: CountryView,
   countryViewModelProvider: CountryViewModelProvider
 )(implicit ec: ExecutionContext)
@@ -76,7 +78,7 @@ class CountryController @Inject() (
                     updatedAnswers <- Future
                       .fromTry(request.userAnswers.set(CountryPage(transportMeansIndex), value))
                     _ <- sessionRepository.set(updatedAnswers)
-                  } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+                  } yield Redirect(navigator.nextPage(CountryPage(transportMeansIndex), mode, request.userAnswers))
               )
         }
     }
