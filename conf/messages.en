@@ -805,10 +805,13 @@ additionalReference.index.additionalReferenceNumberYesNo.error.required = Select
 unloadingFindings.grossMass = Gross weight
 unloadingFindings.grossMass.change.hidden = gross weight
 
-document.type.title = What is the new document type?
-document.type.heading = What is the new document type?
+document.type.NormalMode.title = What type of document do you want to add?
+document.type.CheckMode.title = What is the new document type?
+document.type.NormalMode.heading = What type of document do you want to add?
+document.type.CheckMode.heading = What is the new document type?
 document.type.hint = Enter the document name or code.
 document.type.placeholder = Select a document type
+document.type.error.required = Select the type of document you want to add
 document.type.check.error.required = Select the new document type
 
 houseConsignment.index.items.document.type.title = What is the new document type for item {1} in house consignment {0}?
