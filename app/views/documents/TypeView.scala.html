@@ -22,6 +22,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import viewModels.components.InputSelectViewModel._
 @import views.html.components.{Button, ErrorSummary, InputSelect}
+@import viewModels.documents.TypeViewModel
 
 @this(
     mainTemplate: MainTemplate,
@@ -31,10 +32,10 @@
     button: Button
 )
 
-@(form: Form[DocumentType], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode, documents: Seq[DocumentType], documentIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[DocumentType], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode, documents: Seq[DocumentType], viewModel: TypeViewModel, documentIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("document.type.title"),
+    title = viewModel.title,
     showBackLink = true
 ) {
 
@@ -45,7 +46,7 @@
         @inputSelect(
             field = form("value"),
             selectType = OrdinarySelect(
-                heading = messages("document.type.heading"),
+                heading = viewModel.heading,
                 caption = Some(messages("site.caption", mrn.toString))
             ),
             hint = Some(messages("document.type.hint")),
