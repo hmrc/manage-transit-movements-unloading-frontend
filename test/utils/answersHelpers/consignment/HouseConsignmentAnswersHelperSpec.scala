@@ -25,13 +25,13 @@ import pages._
 import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
 import pages.houseConsignment.index.items.additionalinformation.HouseConsignmentAdditionalInformationCodePage
 import pages.houseConsignment.index.items.document.DocumentReferenceNumberPage
-import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
 import pages.houseConsignment.index.items.{
   CombinedNomenclatureCodePage,
   CommodityCodePage,
   CustomsUnionAndStatisticsCodePage,
   GrossWeightPage,
   ItemDescriptionPage,
+  NetWeightPage,
   ConsigneeIdentifierPage => ItemConsigneeIdentifierPage,
   ConsigneeNamePage => ItemConsigneeNamePage
 }
@@ -231,9 +231,9 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(ItemDescriptionPage(hcIndex, itemIndex), description)
               .setValue(GrossWeightPage(hcIndex, itemIndex), grossWeight)
               .setValue(NetWeightPage(hcIndex, itemIndex), netWeight)
-              .setValue(PackagingTypePage(hcIndex, itemIndex, packageIndex), packageType)
-              .setValue(PackagingCountPage(hcIndex, itemIndex, packageIndex), count)
-              .setValue(PackagingMarksPage(hcIndex, itemIndex, packageIndex), description)
+              .setValue(PackageTypePage(hcIndex, itemIndex, packageIndex), packageType)
+              .setValue(NumberOfPackagesPage(hcIndex, itemIndex, packageIndex), count)
+              .setValue(PackageShippingMarkPage(hcIndex, itemIndex, packageIndex), description)
               .setValue(CustomsUnionAndStatisticsCodePage(hcIndex, itemIndex), cusCode)
               .setValue(CommodityCodePage(hcIndex, itemIndex), commodityCode)
               .setValue(CombinedNomenclatureCodePage(hcIndex, itemIndex), nomenclatureCode)

@@ -291,7 +291,8 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.children.head.children(1) mustBe a[StaticSection]
             result.children.head.children(1).rows.size mustBe 1
             result.children.head.children(1).rows.head.value.value mustBe item.toString
-            result.children.head.children(1).viewLinks must not be Nil
+            result.children.head.children(1).viewLinks.head.href mustBe
+              controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, NormalMode, index).url
             result.children.head.children(1).optionalInformationHeading mustBe Some("Which items does this transport equipment apply to?")
         }
       }

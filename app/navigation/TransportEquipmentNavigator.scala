@@ -44,6 +44,9 @@ class TransportEquipmentNavigator extends Navigator {
     case ContainerIdentificationNumberPage(_)          => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
     case SealIdentificationNumberPage(_, _)            => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
     case AddAnotherSealPage(equipmentIndex, sealIndex) => ua => addAnotherSealRoute(ua, CheckMode, equipmentIndex, sealIndex)
+    case ItemPage(equipmentIndex, _) =>
+      ua => Some(controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(ua.id, CheckMode, equipmentIndex))
+    case ApplyAnotherItemPage(equipmentIndex, itemIndex) => ua => applyAnotherItemCheckModeRoute(ua, ua.id, CheckMode, equipmentIndex, itemIndex)
   }
 
   def addAnotherSealRoute(ua: UserAnswers, mode: Mode, equipmentIndex: Index, sealIndex: Index): Option[Call] =
@@ -57,6 +60,14 @@ class TransportEquipmentNavigator extends Navigator {
         }
 
       case _ => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+
+  def applyAnotherItemCheckModeRoute(ua: UserAnswers, arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index, itemIndex: Index): Option[Call] =
+    ua.get(ApplyAnotherItemPage(equipmentIndex, itemIndex)) match {
+      case Some(true) =>
+        Some(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, itemIndex, mode))
+      case Some(false) => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
+      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
     }
 
   def addContainerIdentificationNumberYesNoRoute(ua: UserAnswers, equipmentIndex: Index, mode: Mode): Option[Call] =
@@ -79,8 +90,7 @@ class TransportEquipmentNavigator extends Navigator {
     ua.get(ApplyAnotherItemPage(equipmentIndex, itemIndex)) match {
       case Some(true) =>
         Some(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(ua.id, equipmentIndex, itemIndex, mode))
-      case Some(false) =>
-        Some(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(ua.id, mode))
+      case Some(false) => Some(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(ua.id, NormalMode))
       case _ =>
         Some(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(ua.id, mode))
     }

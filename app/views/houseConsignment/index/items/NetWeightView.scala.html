@@ -18,6 +18,8 @@
 @import viewModels.components.InputTextViewModel._
 @import views.html.components.{Button, ErrorSummary, InputText}
 @import views.utils.ViewUtils.StringImplicits
+@import controllers.houseConsignment.index.items.routes
+
 
 @this(
     mainTemplate: MainTemplate,
@@ -33,7 +35,7 @@
     title = messages("netWeight.title", itemIndex.display, houseConsignmentIndex.display),
     showBackLink = true
 ) {
-        @formHelper(action = controllers.routes.NetWeightController.onSubmit(arrivalId, houseConsignmentIndex, itemIndex, mode), Symbol("autoComplete") -> "off") {
+        @formHelper(action = routes.NetWeightController.onSubmit(arrivalId, houseConsignmentIndex, itemIndex, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

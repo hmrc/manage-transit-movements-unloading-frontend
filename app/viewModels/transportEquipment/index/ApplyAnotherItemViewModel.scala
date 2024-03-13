@@ -80,9 +80,7 @@ object ApplyAnotherItemViewModel {
                 ListItem(
                   name = itemPrefix(item.toString),
                   changeUrl = Some(
-                    controllers.transportEquipment.index.routes.GoodsReferenceController
-                      .onSubmit(ArrivalId(arrivalId.value), equipmentIndex, itemIndex, mode)
-                      .url
+                    controllers.transportEquipment.index.routes.GoodsReferenceController.onSubmit(arrivalId, equipmentIndex, itemIndex, mode).url
                   ),
                   removeUrl = None
                 )
