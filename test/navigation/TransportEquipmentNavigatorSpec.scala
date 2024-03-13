@@ -23,7 +23,6 @@ import models.reference.Item
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.ContainerIdentificationNumberPage
-import pages.transportEquipment.index.{AddAnotherSealPage, ApplyAnotherItemPage}
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import pages.transportEquipment.index.{AddAnotherSealPage, ApplyAnotherItemPage, ItemPage}
 
