@@ -870,3 +870,7 @@ transportEquipment.addAnotherEquipment.paragraph = This means anything used to t
 houseConsignment.index.item.removeNetWeightYesNo.title = Are you sure you want to remove the net weight from item {1} in house consignment {0}?
 houseConsignment.index.item.removeNetWeightYesNo.heading = Are you sure you want to remove the net weight from item {1} in house consignment {0}?
 houseConsignment.index.item.removeNetWeightYesNo.error.required = Select yes if you want to remove the net weight from item {1} in house consignment {0}
+
+additionalReference.index.removeAdditionalReferenceYesNo.title = Are you sure you want to remove this additional reference?
+additionalReference.index.removeAdditionalReferenceYesNo.heading = Are you sure you want to remove this additional reference?
+additionalReference.index.removeAdditionalReferenceYesNo.error.required = Select yes if you want to remove this additional reference
