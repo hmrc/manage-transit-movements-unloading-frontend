@@ -19,6 +19,7 @@ package controllers.houseConsignment.index.items
 import controllers.actions._
 import forms.CombinedNomenclatureCodeFormProvider
 import models.{ArrivalId, Index, Mode, RichCC043CType}
+import navigation.houseConsignment.index.items.ItemNavigator
 import pages.houseConsignment.index.items.CombinedNomenclatureCodePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,6 +34,7 @@ class CombinedNomenclatureCodeController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
+  navigator: ItemNavigator,
   formProvider: CombinedNomenclatureCodeFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: CombinedNomenclatureCodeView
@@ -65,7 +67,7 @@ class CombinedNomenclatureCodeController @Inject() (
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+              } yield Redirect(navigator.nextPage(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex), mode, request.userAnswers))
           )
     }
 

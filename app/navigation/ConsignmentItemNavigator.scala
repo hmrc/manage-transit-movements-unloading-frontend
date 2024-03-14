@@ -19,7 +19,7 @@ package navigation
 import com.google.inject.Singleton
 import models._
 import pages._
-import pages.houseConsignment.index.items.{CommodityCodePage, ItemDescriptionPage, NetWeightPage}
+import pages.houseConsignment.index.items.ItemDescriptionPage
 import play.api.mvc.Call
 
 import javax.inject.Inject
@@ -32,9 +32,7 @@ class ConsignmentItemNavigator @Inject() () extends Navigator {
 
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
 
-    case CommodityCodePage(houseConsignmentIndex, _)   => ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
     case ItemDescriptionPage(houseConsignmentIndex, _) => ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
-    case NetWeightPage(houseConsignmentIndex, _)       => ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
     case PackageTypePage(houseConsignmentIndex, _, _)  => ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
     case PackageShippingMarkPage(houseConsignmentIndex, _, _) =>
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))

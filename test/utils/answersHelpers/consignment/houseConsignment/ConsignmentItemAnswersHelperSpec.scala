@@ -182,7 +182,9 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
               val action2 = result.actions.value.items(1)
               action2.content.value mustBe "Remove"
               action2.visuallyHiddenText.value mustBe "net weight of item 1"
-              action2.href mustBe "#"
+              action2.href mustBe controllers.houseConsignment.index.items.routes.RemoveNetWeightYesNoController
+                .onPageLoad(arrivalId, NormalMode, hcIndex, itemIndex)
+                .url
           }
         }
       }

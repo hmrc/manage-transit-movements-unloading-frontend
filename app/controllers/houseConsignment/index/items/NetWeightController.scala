@@ -19,8 +19,8 @@ package controllers.houseConsignment.index.items
 import controllers.actions._
 import forms.NetWeightFormProvider
 import models.{ArrivalId, Index, Mode}
+import navigation.houseConsignment.index.items.ItemNavigator
 import pages.houseConsignment.index.items.NetWeightPage
-import navigation.ConsignmentItemNavigator
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -36,7 +36,7 @@ class NetWeightController @Inject() (
   actions: Actions,
   formProvider: NetWeightFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  navigator: ConsignmentItemNavigator,
+  navigator: ItemNavigator,
   view: NetWeightView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController

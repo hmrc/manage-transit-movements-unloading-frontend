@@ -34,17 +34,6 @@ class ConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
       val mode = CheckMode
 
-      "must go from CommodityCodePage to UnloadingFindingsController" in {
-
-        val userAnswers = emptyUserAnswers
-          .setValue(CommodityCodePage(houseConsignmentIndex, itemIndex), "Commodity code")
-
-        navigator
-          .nextPage(CommodityCodePage(houseConsignmentIndex, itemIndex), mode, userAnswers)
-          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
-
-      }
-
       "must go from ItemDescriptionPage to UnloadingFindingsController" in {
 
         val userAnswers = emptyUserAnswers
@@ -52,17 +41,6 @@ class ConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
         navigator
           .nextPage(ItemDescriptionPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
-          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
-
-      }
-
-      "must go from NetWeightPage to UnloadingFindingsController" in {
-
-        val userAnswers = emptyUserAnswers
-          .setValue(NetWeightPage(houseConsignmentIndex, itemIndex), 1.111)
-
-        navigator
-          .nextPage(NetWeightPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
           .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
 
       }

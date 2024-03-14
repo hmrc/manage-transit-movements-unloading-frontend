@@ -87,7 +87,8 @@ class ConsignmentItemAnswersHelper(
     args = itemIndex.display,
     id = s"net-weight-${itemIndex.display}",
     change = controllers.houseConsignment.index.items.routes.NetWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode),
-    remove = Call(GET, "#"),
+    remove = controllers.houseConsignment.index.items.routes.RemoveNetWeightYesNoController
+      .onPageLoad(arrivalId, NormalMode, houseConsignmentIndex, itemIndex),
     hiddenLink = "netWeightLink"
   )
 
