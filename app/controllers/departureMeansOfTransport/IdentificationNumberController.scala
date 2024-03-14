@@ -18,12 +18,11 @@ package controllers.departureMeansOfTransport
 
 import controllers.actions._
 import forms.VehicleIdentificationNumberFormProvider
-import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
 import navigation.DepartureTransportMeansNavigator
 import pages.departureMeansOfTransport.VehicleIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.departureTransportMeans.IdentificationNumberViewModel.IdentificationNumberViewModelProvider
@@ -38,8 +37,8 @@ class IdentificationNumberController @Inject() (
   actions: Actions,
   formProvider: VehicleIdentificationNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: IdentificationNumberView,
   navigator: DepartureTransportMeansNavigator,
+  view: IdentificationNumberView,
   identificationNUmberViewModelProvider: IdentificationNumberViewModelProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -68,17 +67,11 @@ class IdentificationNumberController @Inject() (
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode, viewModel))),
-            value => redirect(value, transportMeansIndex, mode)
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleIdentificationNumberPage(transportMeansIndex), value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(VehicleIdentificationNumberPage(transportMeansIndex), mode, request.userAnswers))
           )
     }
-
-  private def redirect(
-    value: String,
-    transportMeansIndex: Index,
-    mode: Mode
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
-    for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleIdentificationNumberPage(transportMeansIndex), value))
-      _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(VehicleIdentificationNumberPage(transportMeansIndex), mode, request.userAnswers))
 }

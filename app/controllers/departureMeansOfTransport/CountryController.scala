@@ -18,8 +18,6 @@ package controllers.departureMeansOfTransport
 
 import controllers.actions._
 import forms.DepartureMeansOfTransportCountryFormProvider
-import models.reference.Country
-import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
 import navigation.DepartureTransportMeansNavigator
 import pages.departureMeansOfTransport.CountryPage
@@ -75,18 +73,13 @@ class CountryController @Inject() (
               .fold(
                 formWithErrors =>
                   Future.successful(BadRequest(view(formWithErrors, countries, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode, viewModel))),
-                value => redirect(value, transportMeansIndex, mode)
+                value =>
+                  for {
+                    updatedAnswers <- Future
+                      .fromTry(request.userAnswers.set(CountryPage(transportMeansIndex), value))
+                    _ <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(navigator.nextPage(CountryPage(transportMeansIndex), mode, request.userAnswers))
               )
         }
     }
-
-  private def redirect(
-    value: Country,
-    transportMeansIndex: Index,
-    mode: Mode
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
-    for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryPage(transportMeansIndex), value))
-      _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(CountryPage(transportMeansIndex), mode, request.userAnswers))
 }

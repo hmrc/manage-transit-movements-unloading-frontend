@@ -19,6 +19,7 @@ package controllers.houseConsignment.index.items
 import controllers.actions._
 import forms.CommodityCodeFormProvider
 import models.{ArrivalId, Index, Mode, RichCC043CType}
+import navigation.ConsignmentItemNavigator
 import pages.houseConsignment.index.items.CommodityCodePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,6 +35,7 @@ class CommodityCodeController @Inject() (
   sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: CommodityCodeFormProvider,
+  navigator: ConsignmentItemNavigator,
   val controllerComponents: MessagesControllerComponents,
   view: CommodityCodeView
 )(implicit ec: ExecutionContext)
@@ -66,7 +68,7 @@ class CommodityCodeController @Inject() (
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(CommodityCodePage(houseConsignmentIndex, itemIndex), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+              } yield Redirect(navigator.nextPage(CommodityCodePage(houseConsignmentIndex, itemIndex), mode, request.userAnswers))
           )
     }
 

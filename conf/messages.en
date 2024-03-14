@@ -37,6 +37,8 @@ transportEquipmentLink.addRemove = Add or remove transport equipment
 transportEquipmentLink.visuallyHidden = Add or remove transport equipment
 sealsLink.addRemove = Add or remove seal
 sealsLink.visuallyHidden = Add or remove seal
+consignmentItemLink.addRemove = Add or remove items from transport equipment {0}
+consignmentItemLink.visuallyHidden = Add or remove items from transport equipment {0}
 itemsLink.addRemove = Add or remove item
 itemsLink.visuallyHidden = Add or remove item
 packagingLink.addRemove = Add or remove package
@@ -349,12 +351,11 @@ houseConsignment.index.item.numberOfPackages.CheckMode.title = How many of this 
 houseConsignment.index.item.numberOfPackages.NormalMode.title= How many of this package are you using?
 houseConsignment.index.item.numberOfPackages.CheckMode.heading = How many of this package are you using for item {0} in house consignment {1}?
 houseConsignment.index.item.numberOfPackages.NormalMode.heading = How many of this package are you using?
-houseConsignment.index.item.numberOfPackages.NormalMode.error.required =  Enter the quantity of the package type
-houseConsignment.index.item.numberOfPackages.CheckMode.error.required =  Enter the quantity of the package type
-houseConsignment.index.item.numberOfPackages.error.nonNumeric = The quantity of the package type must only include numbers 0 to 9
-houseConsignment.index.item.numberOfPackages.checkMode.error.required = Enter the quantity of the package type you are using for item {0} in house consignment {1}
+houseConsignment.index.item.numberOfPackages.CheckMode.error.required=  Enter the quantity of the package type
+houseConsignment.index.item.numberOfPackages.CheckMode.error.nonNumeric= The quantity of the package type must only include numbers 0 to 9
+houseConsignment.index.item.numberOfPackages.CheckMode.error.required = Enter the quantity of the package type you are using for item {0} in house consignment {1}
 houseConsignment.index.item.numberOfPackages.checkYourAnswersLabel = What is the new number of packages for item {0}?
-houseConsignment.index.item.numberOfPackages.error.outOfRange = The quantity of the package type must be 99,999,999 or less
+houseConsignment.index.item.numberOfPackages.CheckMode.error.maximum = The quantity of the package type must be 99,999,999 or less
 houseConsignment.index.item.numberOfPackages.change.CL182 = The quantity of the package type must be 1 or more
 houseConsignment.index.item.numberOfPackages.change.hidden = Enter the quantity of the package type
 
@@ -452,6 +453,7 @@ unloadingFindings.rowHeadings.identificationType.unknown.change.hidden = unknown
 
 unloadingFindings.rowHeadings.sealIdentifier.change.hidden = seal {0} for transport equipment {1}
 unloadingFindings.rowHeadings.containerIdentificationNumber.change.hidden = container identification number for transport equipment {0}
+unloadingFindings.rowHeadings.consignment.item.change.hidden = item {0} for transport equipment {1}
 
 unloadingFindings.rowHeadings.vehicleNationality = Registered country
 unloadingFindings.rowHeadings.vehicleNationality.change.hidden = registered country
@@ -459,8 +461,10 @@ unloadingFindings.rowHeadings.vehicleNationality.change.hidden = registered coun
 unloadingFindings.subsections.transportEquipment = Transport equipment {0}
 unloadingFindings.subsections.transportEquipment.parent.heading = Transport equipment
 unloadingFindings.rowHeadings.containerIdentificationNumber = Container identification number
-unloadingFindings.rowHeadings.item = Goods item number {0}
+unloadingFindings.rowHeadings.incident.item = Goods item number {0}
 unloadingFindings.rowHeadings.sealIdentifier = Seal {0}
+unloadingFindings.rowHeadings.consignment.item = Item {0}
+unloadingFindings.informationHeading.consignment.item = Which items does this transport equipment apply to?
 
 unloadingFindings.subsections.houseConsignment = House consignment {0}
 unloadingFindings.subsections.houseConsignment.parent.heading = House consignments
@@ -484,6 +488,7 @@ unloadingFindings.rowHeadings.totalNetWeight = Total net weight of all items
 
 unloadingFindings.subsections.item = Item {0}
 unloadingFindings.rowHeadings.item.description = Description
+unloadingFindings.rowHeadings.item.description.change.hidden = description
 unloadingFindings.rowHeadings.item.declarationType = Declaration type
 unloadingFindings.rowHeadings.item.countryOfDestination = Country of destination
 unloadingFindings.rowHeadings.item.grossWeight = Gross weight
@@ -660,7 +665,15 @@ houseConsignment.commodityCode.error.length = The commodity code must be 6 chara
 
 houseConsignment.removeCommodityCodeYesNo.title = Are you sure you want to remove the commodity code from item {0} in house consignment {1}?
 houseConsignment.removeCommodityCodeYesNo.heading = Are you sure you want to remove the commodity code from item {0} in house consignment {1}?
-houseConsignment.removeCommodityCodeYesNo.error.required = Select yes if you want to remove the commodity code from item {0} in house consignment {1}
+houseConsignment.removeCommodityCodeYesNo.error.required = Select yes if you want to remove the gross weight from item {0} in house consignment {1}
+
+houseConsignment.removeGrossWeightYesNo.title = Are you sure you want to remove the gross weight from item {0} in house consignment {0}?
+houseConsignment.removeGrossWeightYesNo.heading = Are you sure you want to remove the gross weight from item {0} in house consignment {0}?
+houseConsignment.removeGrossWeightYesNo.error.required = Select yes if you want to remove the gross weight from item {0} in house consignment {1}
+
+houseConsignment.removeCombinedNomenclatureCodeYesNo.title = Are you sure you want to remove the combined nomenclature code from item {0} in house consignment {1}?
+houseConsignment.removeCombinedNomenclatureCodeYesNo.heading = Are you sure you want to remove the combined nomenclature code from item {0} in house consignment {1}?
+houseConsignment.removeCombinedNomenclatureCodeYesNo.error.required = Select yes if you want to remove the combined nomenclature code from item {0} in house consignment {1}
 
 houseConsignment.combinedNomenclatureCode.title = What is the new combined nomenclature code for item {0} in house consignment {0}?
 houseConsignment.combinedNomenclatureCode.heading = What is the new combined nomenclature code for item {0} in house consignment {0}?
@@ -726,6 +739,10 @@ document.additionalInformation.NormalMode.error.required = Enter the additional 
 document.additionalInformation.CheckMode.error.required = Enter the new additional information
 document.additionalInformation.error.length = The additional information must be 35 characters or less
 document.additionalInformation.error.invalidCharacters = The additional information must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+
+document.removeDocumentYesNo.title = Are you sure you want to remove this document from all items?
+document.removeDocumentYesNo.heading = Are you sure you want to remove this document from all items?
+document.removeDocumentYesNo.error.required = Select yes if you want to remove this document from all items
 
 document.addAdditionalInformationYesNo.title = Do you want to add any additional information for this document?
 document.addAdditionalInformationYesNo.heading = Do you want to add any additional information for this document?
@@ -796,10 +813,13 @@ additionalReference.index.additionalReferenceNumberYesNo.error.required = Select
 unloadingFindings.grossMass = Gross weight
 unloadingFindings.grossMass.change.hidden = gross weight
 
-document.type.title = What is the new document type?
-document.type.heading = What is the new document type?
+document.type.NormalMode.title = What type of document do you want to add?
+document.type.CheckMode.title = What is the new document type?
+document.type.NormalMode.heading = What type of document do you want to add?
+document.type.CheckMode.heading = What is the new document type?
 document.type.hint = Enter the document name or code.
 document.type.placeholder = Select a document type
+document.type.error.required = Select the type of document you want to add
 document.type.check.error.required = Select the new document type
 
 houseConsignment.index.items.document.type.title = What is the new document type for item {1} in house consignment {0}?
@@ -861,3 +881,11 @@ transportEquipment.addAnotherEquipment.maxLimit.label = You cannot add any more 
 transportEquipment.addAnotherEquipment.error.required = Select yes if you want to add any other transport equipment
 transportEquipment.addAnotherEquipment.noMoreItems.label = You cannot add any more transport equipment. To add another, you need to remove one first.
 transportEquipment.addAnotherEquipment.paragraph = This means anything used to transport goods in transit. For example, a swap body, articulated lorry or trailer.
+
+houseConsignment.index.item.removeNetWeightYesNo.title = Are you sure you want to remove the net weight from item {1} in house consignment {0}?
+houseConsignment.index.item.removeNetWeightYesNo.heading = Are you sure you want to remove the net weight from item {1} in house consignment {0}?
+houseConsignment.index.item.removeNetWeightYesNo.error.required = Select yes if you want to remove the net weight from item {1} in house consignment {0}
+
+additionalReference.index.removeAdditionalReferenceYesNo.title = Are you sure you want to remove this additional reference?
+additionalReference.index.removeAdditionalReferenceYesNo.heading = Are you sure you want to remove this additional reference?
+additionalReference.index.removeAdditionalReferenceYesNo.error.required = Select yes if you want to remove this additional reference

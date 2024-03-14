@@ -38,7 +38,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(AdditionalInformationPage(houseConsignmentIndex, itemIndex, documentIndex), mode, userAnswers)
-          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
       }
 
       "must go from DocumentReferenceNumberPage to UnloadingFindingsController" - {
@@ -47,7 +47,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(DocumentReferenceNumberPage(houseConsignmentIndex, itemIndex, documentIndex), mode, userAnswers)
-          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
       }
 
       "must go from TypePage to UnloadingFindingsController" - {
@@ -58,7 +58,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         navigator
           .nextPage(TypePage(houseConsignmentIndex, itemIndex, documentIndex), mode, userAnswers)
-          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
       }
     }
   }

@@ -17,7 +17,7 @@
 package navigation
 
 import com.google.inject.Singleton
-import models.{ArrivalId, Index, NormalMode, UserAnswers}
+import models._
 import pages._
 import pages.departureMeansOfTransport._
 import play.api.mvc.Call
@@ -39,8 +39,12 @@ class DepartureTransportMeansNavigator extends Navigator {
 
   }
 
-  override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case _ => _ => Some(Call("GET", "#")) //TODO: Update with check route navigation
+  override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+
+    case TransportMeansIdentificationPage(_) => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
+    case CountryPage(_)                      => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
+    case VehicleIdentificationNumberPage(_)  => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
+
   }
 
   private def addAnotherDepartureTransportMeansNavigation(arrivalId: ArrivalId, ua: UserAnswers, transportIndex: Index): Option[Call] =
@@ -77,4 +81,5 @@ class DepartureTransportMeansNavigator extends Navigator {
         Some(controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, NormalMode))
       case _ => Some(controllers.routes.SessionExpiredController.onPageLoad())
     }
+
 }

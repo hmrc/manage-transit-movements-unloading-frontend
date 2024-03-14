@@ -26,7 +26,7 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.houseConsignment.index.items.packaging.{PackagingCountPage, PackagingMarksPage, PackagingTypePage}
+import pages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
 import pages.sections.PackagingSection
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -70,10 +70,10 @@ class PackagingTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
         val ind = Index(i)
 
         result.getSequenceNumber(PackagingSection(hcIndex, itemIndex, ind)) mustBe packagingType0.sequenceNumber
-        result.getValue(PackagingTypePage(hcIndex, itemIndex, ind)).code mustBe packagingType0.typeOfPackages
-        result.getValue(PackagingTypePage(hcIndex, itemIndex, ind)).description mustBe Some("describe me")
-        result.get(PackagingMarksPage(hcIndex, itemIndex, ind)) mustBe packagingType0.shippingMarks
-        result.get(PackagingCountPage(hcIndex, itemIndex, ind)) mustBe packagingType0.numberOfPackages
+        result.getValue(PackageTypePage(hcIndex, itemIndex, ind)).code mustBe packagingType0.typeOfPackages
+        result.getValue(PackageTypePage(hcIndex, itemIndex, ind)).description mustBe Some("describe me")
+        result.get(PackageShippingMarkPage(hcIndex, itemIndex, ind)) mustBe packagingType0.shippingMarks
+        result.get(NumberOfPackagesPage(hcIndex, itemIndex, ind)) mustBe packagingType0.numberOfPackages
 
     }
 

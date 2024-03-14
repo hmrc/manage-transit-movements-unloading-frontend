@@ -20,10 +20,11 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.DepartureMeansOfTransportCountryFormProvider
 import generators.Generators
-import models.NormalMode
+import models.CheckMode
 import models.reference.Country
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.departureMeansOfTransport.CountryPage
 import play.api.data.Form
 import play.api.inject.bind
@@ -32,9 +33,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.ReferenceDataService
 import viewModels.departureTransportMeans.CountryViewModel
-import views.html.departureMeansOfTransport.CountryView
-import org.scalacheck.Arbitrary.arbitrary
 import viewModels.departureTransportMeans.CountryViewModel.CountryViewModelProvider
+import views.html.departureMeansOfTransport.CountryView
 
 import scala.concurrent.Future
 
@@ -45,7 +45,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
   val countries: Seq[Country]                            = Seq(Country("GB", "United Kingdom"))
   private val mockViewModelProvider                      = mock[CountryViewModelProvider]
   private val viewModel: CountryViewModel                = arbitrary[CountryViewModel].sample.value
-  private val mode                                       = NormalMode
+  private val mode                                       = CheckMode
   val form: Form[Country]                                = formProvider(mode, countries)
   val mockReferenceDataService: ReferenceDataService     = mock[ReferenceDataService]
   lazy val DepartureMeansOfTransportCountryRoute: String = controllers.departureMeansOfTransport.routes.CountryController.onPageLoad(arrivalId, index, mode).url
@@ -109,7 +109,6 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      checkArrivalStatus()
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
       when(mockReferenceDataService.getCountries()(any(), any())).thenReturn(Future.successful(countries))

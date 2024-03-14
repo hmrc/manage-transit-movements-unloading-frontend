@@ -14,57 +14,60 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.houseConsignment.index.items
 
 import controllers.actions._
-import forms.NetWeightFormProvider
+import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode}
-import pages.NetWeightPage
+import pages.houseConsignment.index.items.GrossWeightPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.NetWeightView
+import views.html.houseConsignment.index.items.RemoveGrossWeightYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class NetWeightController @Inject() (
+class RemoveGrossWeightYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
-  formProvider: NetWeightFormProvider,
+  formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: NetWeightView
+  view: RemoveGrossWeightYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(houseConsignmentIndex: Index, itemIndex: Index) = formProvider(houseConsignmentIndex, itemIndex)
+  private def form(houseConsignmentIndex: Index, itemIndex: Index): Form[Boolean] =
+    formProvider("houseConsignment.removeGrossWeightYesNo", itemIndex.display, houseConsignmentIndex.display)
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId) {
       implicit request =>
-        val preparedForm = request.userAnswers.get(NetWeightPage(houseConsignmentIndex, itemIndex)) match {
-          case None        => form(houseConsignmentIndex, itemIndex)
-          case Some(value) => form(houseConsignmentIndex, itemIndex).fill(value.toString)
-        }
-
-        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))
+        val insetText: Option[String] = request.userAnswers.get(GrossWeightPage(houseConsignmentIndex, itemIndex)).map(_.toString())
+        Ok(view(form(houseConsignmentIndex, itemIndex), request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode, insetText))
     }
 
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
+        val insetText: Option[String] = request.userAnswers.get(GrossWeightPage(houseConsignmentIndex, itemIndex)).map(_.toString())
         form(houseConsignmentIndex, itemIndex)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))),
+            formWithErrors =>
+              Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode, insetText))),
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(NetWeightPage(houseConsignmentIndex, itemIndex), value.toDouble))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+                updatedAnswers <-
+                  if (value) {
+                    Future.fromTry(request.userAnswers.remove(GrossWeightPage(houseConsignmentIndex, itemIndex)))
+                  } else { Future.successful(request.userAnswers) }
+                _ <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
           )
     }
 }

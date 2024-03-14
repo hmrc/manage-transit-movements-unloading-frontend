@@ -132,6 +132,33 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
           .nextPage(CountryPage(transportMeansIndex), mode, userAnswers)
           .mustBe(controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, mode))
       }
+
+      "in Check mode" - {
+
+        val mode = CheckMode
+
+        "must go from TransportMeansIdentificationPage to UnloadingFindingsController" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(TransportMeansIdentificationPage(transportMeansIndex), TransportMeansIdentification("test", "test"))
+
+          navigator
+            .nextPage(TransportMeansIdentificationPage(transportMeansIndex), mode, userAnswers)
+            .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+
+        }
+
+        "must go from VehicleIdentificationNumberPage to UnloadingFindingsController" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(VehicleIdentificationNumberPage(transportMeansIndex), "test")
+
+          navigator
+            .nextPage(VehicleIdentificationNumberPage(transportMeansIndex), mode, userAnswers)
+            .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+
+        }
+      }
     }
   }
 }

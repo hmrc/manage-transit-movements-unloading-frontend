@@ -17,12 +17,12 @@
 package pages
 
 import models.Index
-import pages.sections.ItemsSection
+import pages.sections.PackagingSection
 import play.api.libs.json.JsPath
 
-case class NetWeightPage(houseConsignment: Index, itemIndex: Index) extends QuestionPage[Double] {
+case class PackageShippingMarkPage(houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = ItemsSection(houseConsignment).path \ itemIndex.position \ "Commodity" \ "GoodsMeasure" \ toString
+  override def path: JsPath = PackagingSection(houseConsignmentIndex, itemIndex, packageIndex).path \ toString
 
-  override def toString: String = "netMass"
+  override def toString: String = "shippingMarks"
 }

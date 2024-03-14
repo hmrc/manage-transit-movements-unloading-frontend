@@ -16,11 +16,12 @@
 
 package forms
 
-import javax.inject.Inject
 import forms.mappings.Mappings
 import models.Mode
 import models.reference.Country
 import play.api.data.Form
+
+import javax.inject.Inject
 
 class DepartureMeansOfTransportCountryFormProvider @Inject() extends Mappings {
 
