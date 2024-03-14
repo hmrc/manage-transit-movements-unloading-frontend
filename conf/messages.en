@@ -871,6 +871,19 @@ transportEquipment.addAnotherEquipment.error.required = Select yes if you want t
 transportEquipment.addAnotherEquipment.noMoreItems.label = You cannot add any more transport equipment. To add another, you need to remove one first.
 transportEquipment.addAnotherEquipment.paragraph = This means anything used to transport goods in transit. For example, a swap body, articulated lorry or trailer.
 
+
+additionalReference.index.addAnotherAdditionalReference.empty.title = You have added 0 additional references
+additionalReference.index.addAnotherAdditionalReference.singular.title = You have added 1 additional reference
+additionalReference.index.addAnotherAdditionalReference.plural.title = You have added {0} additional references
+additionalReference.index.addAnotherAdditionalReference.empty.heading = You have added 0 additional references
+additionalReference.index.addAnotherAdditionalReference.singular.heading = You have added 1 additional reference
+additionalReference.index.addAnotherAdditionalReference.plural.heading = You have added {0} additional references
+additionalReference.index.addAnotherAdditionalReference.empty.label = Do you want to add a additional reference?
+additionalReference.index.addAnotherAdditionalReference.label = Do you want to add another additional reference?
+additionalReference.index.addAnotherAdditionalReference.maxLimit.label = You cannot add any more additional references. To add another, you need to remove one first.
+additionalReference.index.addAnotherAdditionalReference.error.required = Select yes if you want to add another additional reference
+additionalReference.index.addAnotherAdditionalReference.paragraph = This can be any other reference you want to declare, such as a certificate number, import licence or accompanying document.
+
 houseConsignment.index.item.removeNetWeightYesNo.title = Are you sure you want to remove the net weight from item {1} in house consignment {0}?
 houseConsignment.index.item.removeNetWeightYesNo.heading = Are you sure you want to remove the net weight from item {1} in house consignment {0}?
 houseConsignment.index.item.removeNetWeightYesNo.error.required = Select yes if you want to remove the net weight from item {1} in house consignment {0}
