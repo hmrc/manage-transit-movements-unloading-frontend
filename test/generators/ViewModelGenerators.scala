@@ -264,7 +264,7 @@ trait ViewModelGenerators {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
       nextIndex    <- arbitrary[Index]
-    } yield AddAnotherEquipmentViewModel(listItems, onSubmitCall, nextIndex, isNumberItemsZero = false)
+    } yield AddAnotherEquipmentViewModel(listItems, onSubmitCall, nextIndex)
   }
 
   implicit lazy val arbitraryContainerIdentificationNumberViewModel: Arbitrary[ContainerIdentificationNumberViewModel] = Arbitrary {
