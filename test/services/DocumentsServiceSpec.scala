@@ -20,8 +20,8 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import models.DocType.{Support, Transport}
-import models.SelectableList
 import models.reference.DocumentType
+import models.{CheckMode, NormalMode, SelectableList}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -92,34 +92,47 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
 
     "getDocumentList" - {
       "when consignment level" - {
-        "returns a list of list of transport and supporting documents when no document type selected previously" in {
-          when(mockRefDataConnector.getTransportDocuments()(any(), any()))
-            .thenReturn(Future.successful(transportDocuments))
-          when(mockRefDataConnector.getSupportingDocuments()(any(), any()))
-            .thenReturn(Future.successful(supportingDocuments))
+        "and in Check Mode" - {
+          "returns a list of list of transport and supporting documents when no document type selected previously" in {
+            when(mockRefDataConnector.getTransportDocuments()(any(), any()))
+              .thenReturn(Future.successful(transportDocuments))
+            when(mockRefDataConnector.getSupportingDocuments()(any(), any()))
+              .thenReturn(Future.successful(supportingDocuments))
 
-          service.getDocumentList(emptyUserAnswers, documentIndex).futureValue mustBe
-            SelectableList(Seq(supportingDocument1, transportDocument1, transportDocument2, supportingDocument2))
+            service.getDocumentList(emptyUserAnswers, documentIndex, CheckMode).futureValue mustBe
+              SelectableList(Seq(supportingDocument1, transportDocument1, transportDocument2, supportingDocument2))
+          }
+
+          "returns a list of list of transport documents when a transport document type selected previously" in {
+            when(mockRefDataConnector.getTransportDocuments()(any(), any()))
+              .thenReturn(Future.successful(transportDocuments))
+
+            val userAnswers = emptyUserAnswers.setValue(TypePage(documentIndex), transportDocument2)
+
+            service.getDocumentList(userAnswers, documentIndex, CheckMode).futureValue mustBe
+              SelectableList(Seq(transportDocument1, transportDocument2))
+          }
+
+          "returns a list of list of supporting documents when a supporting document type selected previously" in {
+            when(mockRefDataConnector.getSupportingDocuments()(any(), any()))
+              .thenReturn(Future.successful(supportingDocuments))
+
+            val userAnswers = emptyUserAnswers.setValue(TypePage(documentIndex), supportingDocument2)
+
+            service.getDocumentList(userAnswers, documentIndex, CheckMode).futureValue mustBe
+              SelectableList(Seq(supportingDocument1, supportingDocument2))
+          }
         }
+        "and in Normal Mode" - {
+          "returns a list of transport and supporting documents" in {
+            when(mockRefDataConnector.getTransportDocuments()(any(), any()))
+              .thenReturn(Future.successful(transportDocuments))
+            when(mockRefDataConnector.getSupportingDocuments()(any(), any()))
+              .thenReturn(Future.successful(supportingDocuments))
 
-        "returns a list of list of transport documents when a transport document type selected previously" in {
-          when(mockRefDataConnector.getTransportDocuments()(any(), any()))
-            .thenReturn(Future.successful(transportDocuments))
-
-          val userAnswers = emptyUserAnswers.setValue(TypePage(documentIndex), transportDocument2)
-
-          service.getDocumentList(userAnswers, documentIndex).futureValue mustBe
-            SelectableList(Seq(transportDocument1, transportDocument2))
-        }
-
-        "returns a list of list of supporting documents when a supporting document type selected previously" in {
-          when(mockRefDataConnector.getSupportingDocuments()(any(), any()))
-            .thenReturn(Future.successful(supportingDocuments))
-
-          val userAnswers = emptyUserAnswers.setValue(TypePage(documentIndex), supportingDocument2)
-
-          service.getDocumentList(userAnswers, documentIndex).futureValue mustBe
-            SelectableList(Seq(supportingDocument1, supportingDocument2))
+            service.getDocumentList(emptyUserAnswers, documentIndex, NormalMode).futureValue mustBe
+              SelectableList(Seq(supportingDocument1, transportDocument1, transportDocument2, supportingDocument2))
+          }
         }
       }
 

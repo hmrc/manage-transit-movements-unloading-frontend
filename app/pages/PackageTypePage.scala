@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package pages.houseConsignment.index.items
+package pages
 
 import models.Index
 import models.reference.PackageType
-import pages.QuestionPage
 import pages.sections.PackagingSection
 import play.api.libs.json.JsPath
 

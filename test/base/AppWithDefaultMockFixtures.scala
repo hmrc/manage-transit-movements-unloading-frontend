@@ -21,7 +21,7 @@ import models.P5.ArrivalMessageType.UnloadingPermission
 import models.P5._
 import models.UserAnswers
 import navigation.houseConsignment.index.items.{HouseConsignmentItemNavigator, DocumentNavigator => ItemDocumentNavigator}
-import navigation._
+import navigation.{DepartureTransportMeansNavigator, _}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
@@ -74,12 +74,14 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   protected val onwardRoute: Call = Call("GET", "/foo")
 
-  protected val fakeNavigator: Navigator                                        = new FakeNavigator(onwardRoute)
-  protected val fakeNavigation: Navigation                                      = new FakeNavigation(onwardRoute)
-  protected val fakeDocumentNavigator: DocumentNavigator                        = new FakeDocumentNavigator(onwardRoute)
-  protected val fakeItemDocumentNavigator: ItemDocumentNavigator                = new FakeItemDocumentNavigator(onwardRoute)
-  protected val fakeTransportEquipmentNavigator: TransportEquipmentNavigator    = new FakeTransportEquipmentNavigator(onwardRoute)
-  protected val fakeHouseConsignmentIteNavigator: HouseConsignmentItemNavigator = new FakeHouseConsignmentItemNavigator(onwardRoute)
+  protected val fakeNavigator: Navigator                                               = new FakeNavigator(onwardRoute)
+  protected val fakeNavigation: Navigation                                             = new FakeNavigation(onwardRoute)
+  protected val fakeDocumentNavigator: DocumentNavigator                               = new FakeDocumentNavigator(onwardRoute)
+  protected val fakeItemDocumentNavigator: ItemDocumentNavigator                       = new FakeItemDocumentNavigator(onwardRoute)
+  protected val fakeTransportEquipmentNavigator: TransportEquipmentNavigator           = new FakeTransportEquipmentNavigator(onwardRoute)
+  protected val fakeDepartureTransportMeansNavigator: DepartureTransportMeansNavigator = new FakeDepartureTransportMeansNavigator(onwardRoute)
+  protected val fakeConsignmentItemNavigator: ConsignmentItemNavigator                 = new FakeConsignmentItemNavigator(onwardRoute)
+  protected val fakeHouseConsignmentIteNavigator: HouseConsignmentItemNavigator        = new FakeHouseConsignmentItemNavigator(onwardRoute)
 
   def guiceApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
@@ -95,6 +97,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[DocumentNavigator].toInstance(fakeDocumentNavigator),
         bind[ItemDocumentNavigator].toInstance(fakeItemDocumentNavigator),
         bind[TransportEquipmentNavigator].toInstance(fakeTransportEquipmentNavigator),
-        bind[HouseConsignmentItemNavigator].toInstance(fakeHouseConsignmentIteNavigator)
+        bind[HouseConsignmentItemNavigator].toInstance(fakeHouseConsignmentIteNavigator),
+        bind[DepartureTransportMeansNavigator].toInstance(fakeDepartureTransportMeansNavigator),
+        bind[ConsignmentItemNavigator].toInstance(fakeConsignmentItemNavigator)
       )
 }

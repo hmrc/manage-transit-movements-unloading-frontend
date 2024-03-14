@@ -24,6 +24,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.NumberOfPackagesPage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -35,13 +36,14 @@ import views.html.houseConsignment.index.items.NumberOfPackagesView
 import scala.concurrent.Future
 
 class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+  val prefix = "houseConsignment.index.item.packageType"
 
-  private val formProvider: NumberOfPackagesFormProvider = new NumberOfPackagesFormProvider()
-  private val mockViewModelProvider                      = mock[NumberOfPackagesViewModelProvider]
-  private val viewModel                                  = arbitrary[NumberOfPackagesViewModel].sample.value
-  private val mode                                       = NormalMode
-  private val form                                       = formProvider(viewModel.requiredError)
-  private val validAnswer                                = "1"
+  private val mockViewModelProvider = mock[NumberOfPackagesViewModelProvider]
+  private val viewModel             = arbitrary[NumberOfPackagesViewModel].sample.value
+  private val mode                  = NormalMode
+  val form: Form[BigInt]            = new NumberOfPackagesFormProvider()(prefix, BigInt(0), Seq("2", "test"))
+
+  private val validAnswer = "1"
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -73,13 +75,13 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, arrivalId, mrn, hcIndex, itemIndex, index, NormalMode, viewModel)(request, messages).toString
+        view(form, arrivalId, mrn, hcIndex, itemIndex, index, mode, viewModel)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(NumberOfPackagesPage(hcIndex, itemIndex, index), validAnswer)
+      val userAnswers = emptyUserAnswers.setValue(NumberOfPackagesPage(hcIndex, itemIndex, index), BigInt(validAnswer))
 
       setExistingUserAnswers(userAnswers)
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.houseConsignment.index.items
 
 import forms.NetWeightFormProvider
 import models.NormalMode
@@ -23,7 +23,7 @@ import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.NetWeightView
+import views.html.houseConsignment.index.items.NetWeightView
 
 class NetWeightViewSpec extends InputTextViewBehaviours[String] {
 

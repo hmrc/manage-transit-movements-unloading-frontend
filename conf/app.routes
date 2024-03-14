@@ -36,11 +36,6 @@ POST       /:arrivalId/goods-unloaded-date                                      
 GET        /:arrivalId/change-goods-unloaded-date                                                                    controllers.DateGoodsUnloadedController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-goods-unloaded-date                                                                    controllers.DateGoodsUnloadedController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/house-consignment/:houseConsignmentIndex/items/:itemIndex/net-weight                          controllers.NetWeightController.onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode = NormalMode)
-POST       /:arrivalId/house-consignment/:houseConsignmentIndex/items/:itemIndex/net-weight                          controllers.NetWeightController.onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode = NormalMode)
-GET        /:arrivalId/house-consignment/:houseConsignmentIndex/items/:itemIndex/change-net-weight                   controllers.NetWeightController.onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode = CheckMode)
-POST       /:arrivalId/house-consignment/:houseConsignmentIndex/items/:itemIndex/change-net-weight                   controllers.NetWeightController.onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode = CheckMode)
-
 GET        /:arrivalId/container/:index/container-identification-number                                              controllers.NewContainerIdentificationNumberController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
 POST       /:arrivalId/container/:index/container-identification-number                                              controllers.NewContainerIdentificationNumberController.onSubmit(arrivalId: ArrivalId, index: Index, mode: Mode = NormalMode)
 GET        /:arrivalId/container/:index/change-container-identification-number                                       controllers.NewContainerIdentificationNumberController.onPageLoad(arrivalId: ArrivalId, index: Index, mode: Mode = CheckMode)

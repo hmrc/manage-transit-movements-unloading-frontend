@@ -28,6 +28,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.DocumentsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewModels.documents.TypeViewModel.TypeViewModelProvider
 import views.html.documents.TypeView
 
 import javax.inject.Inject
@@ -42,7 +43,8 @@ class TypeController @Inject() (
   formProvider: SelectableFormProvider,
   service: DocumentsService,
   val controllerComponents: MessagesControllerComponents,
-  view: TypeView
+  view: TypeView,
+  viewModelProvider: TypeViewModelProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -53,15 +55,16 @@ class TypeController @Inject() (
     .requireData(arrivalId)
     .async {
       implicit request =>
-        service.getDocumentList(request.userAnswers, documentIndex).map {
+        service.getDocumentList(request.userAnswers, documentIndex, mode).map {
           documentList =>
-            val form = formProvider(mode, prefix, documentList)
+            val viewModel = viewModelProvider.apply(mode)
+            val form      = formProvider(mode, prefix, documentList)
             val preparedForm = request.userAnswers.get(TypePage(documentIndex)) match {
               case None        => form
               case Some(value) => form.fill(value)
             }
 
-            Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode, documentList.values, documentIndex))
+            Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode, documentList.values, viewModel, documentIndex))
         }
     }
 
@@ -69,14 +72,15 @@ class TypeController @Inject() (
     .requireData(arrivalId)
     .async {
       implicit request =>
-        service.getDocumentList(request.userAnswers, documentIndex).flatMap {
+        service.getDocumentList(request.userAnswers, documentIndex, mode).flatMap {
           documentList =>
-            val form = formProvider(mode, prefix, documentList)
+            val viewModel = viewModelProvider.apply(mode)
+            val form      = formProvider(mode, prefix, documentList)
             form
               .bindFromRequest()
               .fold(
                 formWithErrors =>
-                  Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode, documentList.values, documentIndex))),
+                  Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode, documentList.values, viewModel, documentIndex))),
                 value => redirect(mode, value, documentIndex)
               )
         }

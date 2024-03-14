@@ -28,7 +28,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import viewModels.additionalReference.index.AdditionalReferenceTypeViewModel
 import viewModels.departureTransportMeans._
-import viewModels.documents.{AdditionalInformationViewModel, DocumentReferenceNumberViewModel}
+import viewModels.documents.{AdditionalInformationViewModel, DocumentReferenceNumberViewModel, TypeViewModel}
 import viewModels.houseConsignment.index.items._
 import viewModels.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberViewModel, AdditionalReferenceViewModel}
 import viewModels.houseConsignment.index.items.document.{ItemsAdditionalInformationViewModel, ItemsDocumentReferenceNumberViewModel}
@@ -181,10 +181,10 @@ trait ViewModelGenerators {
 
   implicit lazy val arbitraryNumberOfPackagesViewModel: Arbitrary[NumberOfPackagesViewModel] = Arbitrary {
     for {
-      heading       <- nonEmptyString
-      title         <- nonEmptyString
-      requiredError <- nonEmptyString
-    } yield NumberOfPackagesViewModel(heading, title, requiredError)
+      heading <- nonEmptyString
+      title   <- nonEmptyString
+      args    <- nonEmptyString
+    } yield NumberOfPackagesViewModel(heading, title, Seq(args))
   }
 
   implicit lazy val arbitraryPackageTypeViewModel: Arbitrary[PackageTypeViewModel] = Arbitrary {
@@ -290,6 +290,14 @@ trait ViewModelGenerators {
       title         <- nonEmptyString
       requiredError <- nonEmptyString
     } yield AdditionalInformationViewModel(heading, title, requiredError)
+  }
+
+  implicit lazy val arbitraryTypeViewModel: Arbitrary[TypeViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+    } yield TypeViewModel(heading, title, requiredError)
   }
 
   implicit lazy val arbitraryItemsDocumentReferenceNumberViewModel: Arbitrary[ItemsDocumentReferenceNumberViewModel] = Arbitrary {

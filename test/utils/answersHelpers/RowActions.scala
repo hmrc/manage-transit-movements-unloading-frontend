@@ -113,7 +113,13 @@ trait RowActions {
           "",
           Map("id" -> "change-gross-weight-1")
         ),
-        ActionItem("#", Text("Remove"), Some("gross weight of item 1"), "", Map("id" -> "remove-gross-weight-1"))
+        ActionItem(
+          "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/gross-weight/remove",
+          Text("Remove"),
+          Some("gross weight of item 1"),
+          "",
+          Map("id" -> "remove-gross-weight-1")
+        )
       )
     )
   )
@@ -149,7 +155,13 @@ trait RowActions {
     Actions(
       "",
       List(
-        ActionItem("#", Text("Change"), Some("commodity code for item 1"), "", Map("id" -> "change-commodity-code-1")),
+        ActionItem(
+          "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/change-commodity-code",
+          Text("Change"),
+          Some("commodity code for item 1"),
+          "",
+          Map("id" -> "change-commodity-code-1")
+        ),
         ActionItem(
           "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/commodity-code/remove",
           Text("Remove"),
@@ -172,7 +184,13 @@ trait RowActions {
           "",
           Map("id" -> "change-nomenclature-code-1")
         ),
-        ActionItem("#", Text("Remove"), Some("combined nomenclature code for item 1"), "", Map("id" -> "remove-nomenclature-code-1"))
+        ActionItem(
+          "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/combined-nomenclature-code/remove",
+          Text("Remove"),
+          Some("combined nomenclature code for item 1"),
+          "",
+          Map("id" -> "remove-nomenclature-code-1")
+        )
       )
     )
   )

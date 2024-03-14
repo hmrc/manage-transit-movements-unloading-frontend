@@ -17,12 +17,10 @@
 package utils.answersHelpers.consignment.houseConsignment
 
 import models.DocType.Previous
-import models.Index
-import models.reference.Country
-import models.reference.DocumentType
+import models.reference.{Country, DocumentType}
+import models.{CheckMode, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.NetWeightPage
 import pages.houseConsignment.index.items._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow, Value}
@@ -50,10 +48,13 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
 
               val helper = new ConsignmentItemAnswersHelper(answers, hcIndex, itemIndex)
               val result = helper.descriptionRow.value
-
-              result.key.value mustBe "Description"
               result.value.value mustBe value
-              result.actions must not be defined
+              val actions = result.actions.get.items
+              result.key.value mustBe "Description"
+              val action = actions.head
+              action.href mustBe controllers.houseConsignment.index.items.routes.DescriptionController.onPageLoad(arrivalId, CheckMode, hcIndex, itemIndex).url
+              action.visuallyHiddenText.get mustBe "description"
+
           }
         }
       }
@@ -166,7 +167,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
               result.value.value mustBe s"${value}kg"
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
-              action.href mustBe "#"
+              action.href mustBe controllers.houseConsignment.index.items.routes.NetWeightController.onPageLoad(arrivalId, hcIndex, itemIndex, CheckMode).url
               action.visuallyHiddenText.value mustBe "net weight of item 1"
               action.id mustBe "change-net-weight-1"
 

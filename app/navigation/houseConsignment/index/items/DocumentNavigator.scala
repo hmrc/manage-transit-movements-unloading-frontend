@@ -27,9 +27,12 @@ import play.api.mvc.Call
 class DocumentNavigator extends Navigator {
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case AdditionalInformationPage(_, _, _)   => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
-    case DocumentReferenceNumberPage(_, _, _) => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
-    case TypePage(_, _, _)                    => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
+    case AdditionalInformationPage(houseConsignmentIndex, itemIndex, documentIndex) =>
+      ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
+    case DocumentReferenceNumberPage(houseConsignmentIndex, itemIndex, documentIndex) =>
+      ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
+    case TypePage(houseConsignmentIndex, index, documentIndex) =>
+      ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
   }
 
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {

@@ -19,7 +19,6 @@ package utils.answersHelpers.consignment.houseConsignment
 import models.DocType.Previous
 import models.reference.Country
 import models.{CheckMode, Index, Link, NormalMode, RichOptionalJsArray, UserAnswers}
-import pages.NetWeightPage
 import pages.houseConsignment.index.items.document.TypePage
 import pages.houseConsignment.index.items.{
   ConsigneeAddressPage => ItemConsigneeAddressPage,
@@ -54,7 +53,7 @@ class ConsignmentItemAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.item.description",
     id = None,
-    call = None
+    call = Some(controllers.houseConsignment.index.items.routes.DescriptionController.onPageLoad(arrivalId, CheckMode, houseConsignmentIndex, itemIndex))
   )
 
   def declarationType: Option[SummaryListRow] = buildRowWithNoChangeLink[String](
@@ -76,7 +75,8 @@ class ConsignmentItemAnswersHelper(
     args = itemIndex.display,
     id = s"gross-weight-${itemIndex.display}",
     change = controllers.houseConsignment.index.items.routes.GrossWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode),
-    remove = Call(GET, "#"),
+    remove =
+      controllers.houseConsignment.index.items.routes.RemoveGrossWeightYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode),
     hiddenLink = "grossWeightLink"
   )
 
@@ -86,7 +86,7 @@ class ConsignmentItemAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.item.netWeight",
     args = itemIndex.display,
     id = s"net-weight-${itemIndex.display}",
-    change = Call(GET, "#"),
+    change = controllers.houseConsignment.index.items.routes.NetWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode),
     remove = Call(GET, "#"),
     hiddenLink = "netWeightLink"
   )
@@ -177,7 +177,7 @@ class ConsignmentItemAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.item.commodityCode",
     args = itemIndex.display,
     id = s"commodity-code-${itemIndex.display}",
-    change = Call(GET, "#"),
+    change = controllers.houseConsignment.index.items.routes.CommodityCodeController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode),
     remove =
       controllers.houseConsignment.index.items.routes.RemoveCommodityCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode),
     hiddenLink = "commodityCodeLink"
@@ -191,7 +191,8 @@ class ConsignmentItemAnswersHelper(
     id = s"nomenclature-code-${itemIndex.display}",
     change = controllers.houseConsignment.index.items.routes.CombinedNomenclatureCodeController
       .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode),
-    remove = Call(GET, "#"),
+    remove = controllers.houseConsignment.index.items.routes.RemoveCombinedNomenclatureCodeYesNoController
+      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode),
     hiddenLink = "nomenclatureCodeLink"
   )
 

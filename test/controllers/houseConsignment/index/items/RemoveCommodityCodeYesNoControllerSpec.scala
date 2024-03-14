@@ -45,7 +45,7 @@ class RemoveCommodityCodeYesNoControllerSpec extends SpecBase with AppWithDefaul
     super
       .guiceApplicationBuilder()
 
-  "RemoveBorderTransportYesNoController Controller" - {
+  "RemoveCommodityCodeYesNoController " - {
 
     "must return OK and the correct view for a GET" in {
 

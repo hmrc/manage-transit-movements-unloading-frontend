@@ -53,6 +53,14 @@ class FakeTransportEquipmentNavigator(desiredRoute: Call) extends TransportEquip
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
+class FakeDepartureTransportMeansNavigator(desiredRoute: Call) extends DepartureTransportMeansNavigator {
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
+}
+
+class FakeConsignmentItemNavigator(desiredRoute: Call) extends ConsignmentItemNavigator {
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
+}
+
 class FakeHouseConsignmentItemNavigator(desiredRoute: Call) extends HouseConsignmentItemNavigator {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
