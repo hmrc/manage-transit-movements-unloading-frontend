@@ -142,8 +142,20 @@ trait RowActions {
     Actions(
       "",
       List(
-        ActionItem("#", Text("Change"), Some("combined nomenclature code for item 1"), "", Map("id" -> "change-nomenclature-code-1")),
-        ActionItem("#", Text("Remove"), Some("combined nomenclature code for item 1"), "", Map("id" -> "remove-nomenclature-code-1"))
+        ActionItem(
+          "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/change-combined-nomenclature-code",
+          Text("Change"),
+          Some("combined nomenclature code for item 1"),
+          "",
+          Map("id" -> "change-nomenclature-code-1")
+        ),
+        ActionItem(
+          "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/combined-nomenclature-code/remove",
+          Text("Remove"),
+          Some("combined nomenclature code for item 1"),
+          "",
+          Map("id" -> "remove-nomenclature-code-1")
+        )
       )
     )
   )

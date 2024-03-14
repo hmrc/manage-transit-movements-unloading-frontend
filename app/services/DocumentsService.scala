@@ -17,8 +17,8 @@
 package services
 
 import connectors.ReferenceDataConnector
-import models.{DocType, Index, SelectableList, UserAnswers}
 import models.reference.DocumentType
+import models.{CheckMode, DocType, Index, Mode, SelectableList, UserAnswers}
 import pages.documents.TypePage
 import pages.houseConsignment.index.items.document.{TypePage => ItemDocTypePage}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -47,17 +47,21 @@ class DocumentsService @Inject() (referenceDataConnector: ReferenceDataConnector
       .map(_.toSeq)
       .map(SelectableList(_))
 
-  def getDocumentList(userAnswers: UserAnswers, documentIndex: Index)(implicit
+  def getDocumentList(userAnswers: UserAnswers, documentIndex: Index, mode: Mode)(implicit
     hc: HeaderCarrier
   ): Future[SelectableList[DocumentType]] =
-    userAnswers.get(TypePage(documentIndex)) match {
-      case None => getDocuments()
-      case Some(value) =>
-        value.`type` match {
-          case DocType.Transport => getTransportDocuments()
-          case DocType.Support   => getSupportingDocuments()
-          case _                 => getDocuments()
-        }
+    if (mode == CheckMode) {
+      userAnswers.get(TypePage(documentIndex)) match {
+        case None => getDocuments()
+        case Some(value) =>
+          value.`type` match {
+            case DocType.Transport => getTransportDocuments()
+            case DocType.Support   => getSupportingDocuments()
+            case _                 => getDocuments()
+          }
+      }
+    } else {
+      getDocuments()
     }
 
   def getDocumentList(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index)(implicit

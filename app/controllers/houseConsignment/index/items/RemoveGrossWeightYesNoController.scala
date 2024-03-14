@@ -17,56 +17,57 @@
 package controllers.houseConsignment.index.items
 
 import controllers.actions._
-import forms.CombinedNomenclatureCodeFormProvider
-import models.{ArrivalId, Index, Mode, RichCC043CType}
-import pages.houseConsignment.index.items.CombinedNomenclatureCodePage
+import forms.YesNoFormProvider
+import models.{ArrivalId, Index, Mode}
+import pages.houseConsignment.index.items.GrossWeightPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.houseConsignment.index.items.CombinedNomenclatureCodeView
+import views.html.houseConsignment.index.items.RemoveGrossWeightYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CombinedNomenclatureCodeController @Inject() (
+class RemoveGrossWeightYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
-  formProvider: CombinedNomenclatureCodeFormProvider,
+  formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: CombinedNomenclatureCodeView
+  view: RemoveGrossWeightYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
+  private def form(houseConsignmentIndex: Index, itemIndex: Index): Form[Boolean] =
+    formProvider("houseConsignment.removeGrossWeightYesNo", itemIndex.display, houseConsignmentIndex.display)
+
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId) {
       implicit request =>
-        val isXI = request.userAnswers.ie043Data.hasXIOfficeOfDestination
-        val preparedForm = request.userAnswers.get(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex)) match {
-          case None        => formProvider(houseConsignmentIndex, itemIndex)
-          case Some(value) => formProvider(houseConsignmentIndex, itemIndex).fill(value)
-        }
-
-        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, isXI, mode))
+        val insetText: Option[String] = request.userAnswers.get(GrossWeightPage(houseConsignmentIndex, itemIndex)).map(_.toString())
+        Ok(view(form(houseConsignmentIndex, itemIndex), request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode, insetText))
     }
 
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
-        val isXI = request.userAnswers.ie043Data.hasXIOfficeOfDestination
-        formProvider(houseConsignmentIndex, itemIndex)
+        val insetText: Option[String] = request.userAnswers.get(GrossWeightPage(houseConsignmentIndex, itemIndex)).map(_.toString())
+        form(houseConsignmentIndex, itemIndex)
           .bindFromRequest()
           .fold(
             formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, isXI, mode))),
+              Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode, insetText))),
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex), value))
-                _              <- sessionRepository.set(updatedAnswers)
+                updatedAnswers <-
+                  if (value) {
+                    Future.fromTry(request.userAnswers.remove(GrossWeightPage(houseConsignmentIndex, itemIndex)))
+                  } else { Future.successful(request.userAnswers) }
+                _ <- sessionRepository.set(updatedAnswers)
               } yield Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
           )
     }
-
 }

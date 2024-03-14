@@ -665,7 +665,15 @@ houseConsignment.commodityCode.error.length = The commodity code must be 6 chara
 
 houseConsignment.removeCommodityCodeYesNo.title = Are you sure you want to remove the commodity code from item {0} in house consignment {1}?
 houseConsignment.removeCommodityCodeYesNo.heading = Are you sure you want to remove the commodity code from item {0} in house consignment {1}?
-houseConsignment.removeCommodityCodeYesNo.error.required = Select yes if you want to remove the commodity code from item {0} in house consignment {1}
+houseConsignment.removeCommodityCodeYesNo.error.required = Select yes if you want to remove the gross weight from item {0} in house consignment {1}
+
+houseConsignment.removeGrossWeightYesNo.title = Are you sure you want to remove the gross weight from item {0} in house consignment {0}?
+houseConsignment.removeGrossWeightYesNo.heading = Are you sure you want to remove the gross weight from item {0} in house consignment {0}?
+houseConsignment.removeGrossWeightYesNo.error.required = Select yes if you want to remove the gross weight from item {0} in house consignment {1}
+
+houseConsignment.removeCombinedNomenclatureCodeYesNo.title = Are you sure you want to remove the combined nomenclature code from item {0} in house consignment {1}?
+houseConsignment.removeCombinedNomenclatureCodeYesNo.heading = Are you sure you want to remove the combined nomenclature code from item {0} in house consignment {1}?
+houseConsignment.removeCombinedNomenclatureCodeYesNo.error.required = Select yes if you want to remove the combined nomenclature code from item {0} in house consignment {1}
 
 houseConsignment.combinedNomenclatureCode.title = What is the new combined nomenclature code for item {0} in house consignment {0}?
 houseConsignment.combinedNomenclatureCode.heading = What is the new combined nomenclature code for item {0} in house consignment {0}?
@@ -805,10 +813,13 @@ additionalReference.index.additionalReferenceNumberYesNo.error.required = Select
 unloadingFindings.grossMass = Gross weight
 unloadingFindings.grossMass.change.hidden = gross weight
 
-document.type.title = What is the new document type?
-document.type.heading = What is the new document type?
+document.type.NormalMode.title = What type of document do you want to add?
+document.type.CheckMode.title = What is the new document type?
+document.type.NormalMode.heading = What type of document do you want to add?
+document.type.CheckMode.heading = What is the new document type?
 document.type.hint = Enter the document name or code.
 document.type.placeholder = Select a document type
+document.type.error.required = Select the type of document you want to add
 document.type.check.error.required = Select the new document type
 
 houseConsignment.index.items.document.type.title = What is the new document type for item {1} in house consignment {0}?
