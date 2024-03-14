@@ -665,7 +665,11 @@ houseConsignment.commodityCode.error.length = The commodity code must be 6 chara
 
 houseConsignment.removeCommodityCodeYesNo.title = Are you sure you want to remove the commodity code from item {0} in house consignment {1}?
 houseConsignment.removeCommodityCodeYesNo.heading = Are you sure you want to remove the commodity code from item {0} in house consignment {1}?
-houseConsignment.removeCommodityCodeYesNo.error.required = Select yes if you want to remove the commodity code from item {0} in house consignment {1}
+houseConsignment.removeCommodityCodeYesNo.error.required = Select yes if you want to remove the gross weight from item {0} in house consignment {1}
+
+houseConsignment.removeGrossWeightYesNo.title = Are you sure you want to remove the gross weight from item {0} in house consignment {0}?
+houseConsignment.removeGrossWeightYesNo.heading = Are you sure you want to remove the gross weight from item {0} in house consignment {0}?
+houseConsignment.removeGrossWeightYesNo.error.required = Select yes if you want to remove the gross weight from item {0} in house consignment {1}
 
 houseConsignment.removeCombinedNomenclatureCodeYesNo.title = Are you sure you want to remove the combined nomenclature code from item {0} in house consignment {1}?
 houseConsignment.removeCombinedNomenclatureCodeYesNo.heading = Are you sure you want to remove the combined nomenclature code from item {0} in house consignment {1}?
