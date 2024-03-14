@@ -82,7 +82,7 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
 
           navigator
             .nextPage(AddSealYesNoPage(equipmentIndex), mode, userAnswers)
-            .mustBe(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, itemIndex, mode))
+            .mustBe(controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, equipmentIndex, mode))
 
         }
       }
@@ -112,6 +112,27 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
 
           navigator
             .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), mode, userAnswers)
+            .mustBe(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, mode))
+
+        }
+      }
+
+      "must go from ApplyAnItemYesNoPage" - {
+
+        "to ItemPage when answered Yes" in {
+          val userAnswers = emptyUserAnswers.setValue(ApplyAnItemYesNoPage(equipmentIndex), true)
+
+          navigator
+            .nextPage(ApplyAnItemYesNoPage(equipmentIndex), mode, userAnswers)
+            .mustBe(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, itemIndex, mode))
+
+        }
+
+        "to AddAnotherEquipment page  when answered No" in {
+          val userAnswers = emptyUserAnswers.setValue(ApplyAnItemYesNoPage(equipmentIndex), false)
+
+          navigator
+            .nextPage(ApplyAnItemYesNoPage(equipmentIndex), mode, userAnswers)
             .mustBe(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, mode))
 
         }
@@ -201,6 +222,27 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
             navigator
               .nextPage(ItemPage(equipmentIndex, itemIndex), mode, userAnswers)
               .mustBe(controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, mode, equipmentIndex))
+        }
+      }
+
+      "must go from ApplyAnItemYesNoPage" - {
+
+        "to ItemPage when answered Yes" in {
+          val userAnswers = emptyUserAnswers.setValue(ApplyAnItemYesNoPage(equipmentIndex), true)
+
+          navigator
+            .nextPage(ApplyAnItemYesNoPage(equipmentIndex), mode, userAnswers)
+            .mustBe(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, itemIndex, mode))
+
+        }
+
+        "to AddAnotherEquipment page  when answered No" in {
+          val userAnswers = emptyUserAnswers.setValue(ApplyAnItemYesNoPage(equipmentIndex), false)
+
+          navigator
+            .nextPage(ApplyAnItemYesNoPage(equipmentIndex), mode, userAnswers)
+            .mustBe(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, mode))
+
         }
       }
 

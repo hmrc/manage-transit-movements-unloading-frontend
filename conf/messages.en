@@ -245,6 +245,11 @@ transportEquipment.index.addSealYesNo.heading = Do you want to add a seal for th
 transportEquipment.index.addSealYesNo.paragraph = You can only add a seal if you are authorised to use customs seals.
 transportEquipment.index.addSealYesNo.error.required = Select yes if you want to add a seal for the transport equipment
 
+transportEquipment.index.applyAnItemYesNo.title = Do you want to apply an item to the transport equipment?
+transportEquipment.index.applyAnItemYesNo.heading = Do you want to apply an item to the transport equipment?
+transportEquipment.index.applyAnItemYesNo.paragraph = You can only apply an item if there any any left to apply.
+transportEquipment.index.applyAnItemYesNo.error.required = Select yes if you want to apply an item to the transport equipment
+
 unloadingSummary.title = Check what you found against the transit declaration
 unloadingSummary.heading = Check what you found against the transit declaration
 unloadingSummary.addSeal.link.text = Add a new official customs seal number
