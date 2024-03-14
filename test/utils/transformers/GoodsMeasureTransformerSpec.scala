@@ -21,8 +21,7 @@ import generated.GoodsMeasureType03
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.NetWeightPage
-import pages.houseConsignment.index.items.GrossWeightPage
+import pages.houseConsignment.index.items.{GrossWeightPage, NetWeightPage}
 
 class GoodsMeasureTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 

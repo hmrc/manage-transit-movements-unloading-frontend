@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.houseConsignment.index.items
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.routes
 import forms.NetWeightFormProvider
 import generators.Generators
+import models.CheckMode
 import models.P5.ArrivalMessageType.UnloadingPermission
 import models.P5.{ArrivalMessageType, MessageMetaData}
-import models.{CheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
-import pages.NetWeightPage
+import pages.houseConsignment.index.items.NetWeightPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.NetWeightView
+import views.html.houseConsignment.index.items.NetWeightView
 
 import java.time.LocalDateTime
 import scala.concurrent.Future
@@ -38,7 +39,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
   private val formProvider        = new NetWeightFormProvider()
   private val form                = formProvider(hcIndex, itemIndex)
   private val mode                = CheckMode
-  private lazy val NetWeightRoute = controllers.routes.NetWeightController.onPageLoad(arrivalId, hcIndex, itemIndex, mode).url
+  private lazy val NetWeightRoute = controllers.houseConsignment.index.items.routes.NetWeightController.onPageLoad(arrivalId, hcIndex, itemIndex, mode).url
 
   "NetWeightAmount Controller" - {
 
@@ -151,7 +152,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, routes.NetWeightController.onPageLoad(arrivalId, hcIndex, itemIndex, NormalMode).url)
+      val request = FakeRequest(GET, NetWeightRoute)
 
       val result = route(app, request).value
 

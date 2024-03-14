@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,23 @@
  * limitations under the License.
  */
 
-package pages
+package viewModels.documents
 
-import models.Index
-import pages.sections.ItemsSection
-import play.api.libs.json.JsPath
+import models.Mode
+import play.api.i18n.Messages
+import viewModels.ModeViewModelProvider
 
-case class NetWeightPage(houseConsignment: Index, itemIndex: Index) extends QuestionPage[Double] {
+import javax.inject.Inject
 
-  override def path: JsPath = ItemsSection(houseConsignment).path \ itemIndex.position \ "Commodity" \ "GoodsMeasure" \ toString
+case class TypeViewModel(heading: String, title: String, requiredError: String)
 
-  override def toString: String = "netMass"
+object TypeViewModel {
+
+  class TypeViewModelProvider @Inject() extends ModeViewModelProvider {
+
+    override val prefix = "document.type"
+
+    def apply(mode: Mode)(implicit messages: Messages): TypeViewModel =
+      new TypeViewModel(heading(mode), title(mode), requiredError(mode))
+  }
 }

@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package pages
+package pages.houseConsignment.index.items
 
-import pages.behaviours.PageBehaviours
+import models.Index
+import pages.QuestionPage
+import pages.sections.ItemsSection
+import play.api.libs.json.JsPath
 
-class NetWeightPageSpec extends PageBehaviours {
+case class NetWeightPage(houseConsignment: Index, itemIndex: Index) extends QuestionPage[Double] {
 
-  "GrossWeightAmountPage" - {
+  override def path: JsPath = ItemsSection(houseConsignment).path \ itemIndex.position \ "Commodity" \ "GoodsMeasure" \ toString
 
-    beRetrievable[Double](NetWeightPage(index, itemIndex))
-
-    beSettable[Double](NetWeightPage(index, itemIndex))
-
-    beRemovable[Double](NetWeightPage(index, itemIndex))
-  }
+  override def toString: String = "netMass"
 }
