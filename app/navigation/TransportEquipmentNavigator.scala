@@ -62,7 +62,7 @@ class TransportEquipmentNavigator extends Navigator {
       case _ => Some(controllers.routes.SessionExpiredController.onPageLoad())
     }
 
-  def applyAnotherItemCheckModeRoute(ua: UserAnswers, arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index, itemIndex: Index): Option[Call] =
+  private def applyAnotherItemCheckModeRoute(ua: UserAnswers, arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index, itemIndex: Index): Option[Call] =
     ua.get(ApplyAnotherItemPage(equipmentIndex, itemIndex)) match {
       case Some(true) =>
         Some(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, itemIndex, mode))
@@ -70,13 +70,13 @@ class TransportEquipmentNavigator extends Navigator {
       case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
     }
 
-  def addContainerIdentificationNumberYesNoRoute(ua: UserAnswers, equipmentIndex: Index, mode: Mode): Option[Call] =
+  private def addContainerIdentificationNumberYesNoRoute(ua: UserAnswers, equipmentIndex: Index, mode: Mode): Option[Call] =
     ua.get(AddContainerIdentificationNumberYesNoPage(equipmentIndex)) map {
       case true  => controllers.transportEquipment.index.routes.ContainerIdentificationNumberController.onPageLoad(ua.id, equipmentIndex, mode)
       case false => controllers.transportEquipment.index.routes.AddSealYesNoController.onPageLoad(ua.id, equipmentIndex, mode)
     }
 
-  def addSealYesNoRoute(ua: UserAnswers, equipmentIndex: Index, mode: Mode): Option[Call] =
+  private def addSealYesNoRoute(ua: UserAnswers, equipmentIndex: Index, mode: Mode): Option[Call] =
     ua.get(AddSealYesNoPage(equipmentIndex)) match {
       case Some(true) =>
         Some(controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(ua.id, mode, equipmentIndex, Index(0)))
@@ -86,7 +86,7 @@ class TransportEquipmentNavigator extends Navigator {
         Some(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(ua.id, equipmentIndex, Index(0), mode))
     }
 
-  def applyAnotherItemRoute(ua: UserAnswers, equipmentIndex: Index, itemIndex: Index, mode: Mode): Option[Call] =
+  private def applyAnotherItemRoute(ua: UserAnswers, equipmentIndex: Index, itemIndex: Index, mode: Mode): Option[Call] =
     ua.get(ApplyAnotherItemPage(equipmentIndex, itemIndex)) match {
       case Some(true) =>
         Some(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(ua.id, equipmentIndex, itemIndex, mode))
