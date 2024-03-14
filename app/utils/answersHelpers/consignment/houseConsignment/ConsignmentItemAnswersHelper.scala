@@ -186,8 +186,10 @@ class ConsignmentItemAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.item.nomenclatureCode",
     args = itemIndex.display,
     id = s"nomenclature-code-${itemIndex.display}",
-    change = Call(GET, "#"),
-    remove = Call(GET, "#"),
+    change =
+      controllers.houseConsignment.index.items.routes.CombinedNomenclatureCodeController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode),
+    remove = controllers.houseConsignment.index.items.routes.RemoveCombinedNomenclatureCodeYesNoController
+      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode),
     hiddenLink = "nomenclatureCodeLink"
   )
 
