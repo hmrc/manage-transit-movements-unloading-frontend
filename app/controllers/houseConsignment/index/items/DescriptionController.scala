@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.DescriptionFormProvider
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.ConsignmentItemNavigator
+import navigation.houseConsignment.index.items.ConsignmentItemNavigator
 import pages.houseConsignment.index.items.ItemDescriptionPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}

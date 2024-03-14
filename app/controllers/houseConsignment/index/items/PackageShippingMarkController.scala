@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.PackageShippingMarkFormProvider
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.ConsignmentItemNavigator
+import navigation.houseConsignment.index.items.ConsignmentItemNavigator
 import pages.PackageShippingMarkPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}

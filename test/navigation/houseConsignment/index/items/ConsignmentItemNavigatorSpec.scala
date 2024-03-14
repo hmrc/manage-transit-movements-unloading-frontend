@@ -19,19 +19,65 @@ package navigation.houseConsignment.index.items
 import base.SpecBase
 import generators.Generators
 import models._
+import models.reference.PackageType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.houseConsignment.index.items._
+import pages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
 
-class ItemNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class ConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  val navigator = new ItemNavigator
+  val navigator = new ConsignmentItemNavigator
 
-  "ItemNavigator" - {
+  "ConsignmentItemNavigator" - {
 
     "in Check mode" - {
 
       val mode = CheckMode
+
+      "must go from ItemDescriptionPage to UnloadingFindingsController" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(ItemDescriptionPage(houseConsignmentIndex, itemIndex), "test")
+
+        navigator
+          .nextPage(ItemDescriptionPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+
+      }
+
+      "must go from PackageTypePage to UnloadingFindingsController" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex), PackageType("code", Some("description")))
+
+        navigator
+          .nextPage(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex), mode, userAnswers)
+          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+
+      }
+
+      "must go from PackageShippingMarkPage to UnloadingFindingsController" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex), "Shipping mark")
+
+        navigator
+          .nextPage(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex), mode, userAnswers)
+          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+
+      }
+
+      "must go from NumberOfPackagesPage to UnloadingFindingsController" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex), BigInt(1))
+
+        navigator
+          .nextPage(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex), mode, userAnswers)
+          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+
+      }
 
       "must go from Gross Mass page to CrossCheck page" in {
         forAll(arbitrary[BigDecimal]) {
@@ -76,6 +122,7 @@ class ItemNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
               .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
         }
       }
+
     }
   }
 }

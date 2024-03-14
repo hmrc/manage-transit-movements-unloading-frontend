@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package navigation
+package navigation.houseConsignment.index.items
 
 import com.google.inject.Singleton
 import models._
+import navigation.Navigator
 import pages._
-import pages.houseConsignment.index.items.ItemDescriptionPage
+import pages.houseConsignment.index.items._
 import play.api.mvc.Call
 
 import javax.inject.Inject
@@ -37,6 +38,11 @@ class ConsignmentItemNavigator @Inject() () extends Navigator {
     case PackageShippingMarkPage(houseConsignmentIndex, _, _) =>
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
     case NumberOfPackagesPage(houseConsignmentIndex, _, _) => ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
+    case GrossWeightPage(houseConsignmentIndex, _)         => ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
+    case NetWeightPage(houseConsignmentIndex, _)           => ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
+    case CombinedNomenclatureCodePage(houseConsignmentIndex, _) =>
+      ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
+    case CommodityCodePage(houseConsignmentIndex, _) => ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
   }
 
 }

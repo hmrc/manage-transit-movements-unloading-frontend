@@ -21,7 +21,7 @@ import forms.SelectableFormProvider
 import models.reference.PackageType
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.ConsignmentItemNavigator
+import navigation.houseConsignment.index.items.ConsignmentItemNavigator
 import pages.PackageTypePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
