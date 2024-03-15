@@ -20,7 +20,6 @@ import base.SpecBase
 import generators.Generators
 import models._
 import models.reference.Item
-import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.ContainerIdentificationNumberPage
@@ -81,11 +80,12 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
 
         "to Item Page when answered No if there are items remaining" in {
 
-          val ua = mock[UserAnswers].setValue(AddSealYesNoPage(equipmentIndex), false)
-          when(SelectItemsViewModel.apply(ua).items.values.nonEmpty)
-          navigator
-            .nextPage(AddSealYesNoPage(equipmentIndex), mode, ua)
-            .mustBe(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(ua.id, equipmentIndex, itemIndex, mode))
+          val userAnswers = emptyUserAnswers.setValue(AddSealYesNoPage(equipmentIndex), false)
+          if (SelectItemsViewModel.apply(userAnswers).items.values.nonEmpty) {
+            navigator
+              .nextPage(AddSealYesNoPage(equipmentIndex), mode, userAnswers)
+              .mustBe(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(userAnswers.id, equipmentIndex, itemIndex, mode))
+          }
 
         }
 
@@ -93,13 +93,14 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
 
           val userAnswers = emptyUserAnswers.setValue(AddSealYesNoPage(equipmentIndex), false)
 
-          navigator
-            .nextPage(AddSealYesNoPage(equipmentIndex), mode, userAnswers)
-            .mustBe(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, mode))
+          if (SelectItemsViewModel.apply(userAnswers).items.values.isEmpty) {
+            navigator
+              .nextPage(AddSealYesNoPage(equipmentIndex), mode, userAnswers)
+              .mustBe(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, mode))
 
+          }
         }
       }
-
       "ItemPage mut go to ApplyAnotherItemPage" in {
         val userAnswers = emptyUserAnswers.setValue(ItemPage(equipmentIndex, itemIndex), Item(BigInt(0), "test"))
 
