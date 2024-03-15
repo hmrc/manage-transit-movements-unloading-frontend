@@ -108,7 +108,8 @@ class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaC
             ListItem(
               name = s"Item ${item.toString}",
               changeUrl = None,
-              removeUrl = Some("") //TODO add in remove url
+              removeUrl =
+                Some(controllers.transportEquipment.index.routes.RemoveGoodsReferenceYesNoController.onPageLoad(arrivalId, equipmentIndex, itemIndex).url)
             )
           )
       }
@@ -134,12 +135,14 @@ class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaC
             ListItem(
               name = s"Item ${item1.toString}",
               changeUrl = None,
-              removeUrl = Some("") //TODO add in remove url
+              removeUrl =
+                Some(controllers.transportEquipment.index.routes.RemoveGoodsReferenceYesNoController.onPageLoad(arrivalId, equipmentIndex, itemIndex).url)
             ),
             ListItem(
               name = s"Item ${item2.toString}",
               changeUrl = None,
-              removeUrl = Some("") //TODO add in remove url
+              removeUrl =
+                Some(controllers.transportEquipment.index.routes.RemoveGoodsReferenceYesNoController.onPageLoad(arrivalId, equipmentIndex, Index(1)).url)
             )
           )
       }

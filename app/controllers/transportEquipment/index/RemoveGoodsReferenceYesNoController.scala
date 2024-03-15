@@ -19,7 +19,7 @@ package controllers.transportEquipment.index
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.reference.{Item, ItemDescription}
-import models.{ArrivalId, Index, RichOptionalJsArray, UserAnswers}
+import models.{ArrivalId, Index, NormalMode, RichOptionalJsArray, UserAnswers}
 import pages.houseConsignment.index.items.ItemGoodsReferenceDescriptionPage
 import pages.sections.transport.equipment.ItemSection
 import pages.sections.{HouseConsignmentsSection, ItemsSection}
@@ -49,7 +49,8 @@ class RemoveGoodsReferenceYesNoController @Inject() (
   private def form(equipmentIndex: Index): Form[Boolean] =
     formProvider("transportEquipment.index.item.removeItemYesNo", equipmentIndex.display)
 
-  private def addAnother(arrivalId: ArrivalId, equipmentIndex: Index): Call = Call("GET", "#") // TODO should go to addAnotherItem controller
+  private def addAnother(arrivalId: ArrivalId, equipmentIndex: Index): Call =
+    controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, NormalMode, equipmentIndex)
 
   def onPageLoad(arrivalId: ArrivalId, equipmentIndex: Index, itemIndex: Index): Action[AnyContent] = actions
     .requireIndex(arrivalId, ItemSection(equipmentIndex, itemIndex), addAnother(arrivalId, equipmentIndex))

@@ -29,4 +29,9 @@ case class ApplyAnItemYesNoPage(equipmentIndex: Index) extends QuestionPage[Bool
 
   override def toString: String = "applyAnItemYesNo"
 
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(ItemsSection(equipmentIndex))
+      case _           => super.cleanup(value, userAnswers)
+    }
 }

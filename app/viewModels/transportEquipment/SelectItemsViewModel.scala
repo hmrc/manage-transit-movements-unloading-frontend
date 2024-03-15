@@ -19,8 +19,8 @@ package viewModels.transportEquipment
 import generated.ConsignmentType05
 import models.reference.Item
 import models.{Index, SelectableList, UserAnswers}
+import pages.sections.TransportEquipmentListSection
 import pages.sections.transport.equipment.ItemsSection
-import pages.sections.transport.equipment.EquipmentsSection
 import pages.transportEquipment.index.ItemPage
 
 case class SelectItemsViewModel(items: SelectableList[Item], allItemsCount: Int)
@@ -31,7 +31,7 @@ object SelectItemsViewModel {
     val allItems: Seq[Item] = userAnswers.ie043Data.Consignment.map(_.allItems).toList.flatten
 
     val filteredList = (for {
-      equipmentIndex <- 0 until userAnswers.get(EquipmentsSection).map(_.value.length).getOrElse(0)
+      equipmentIndex <- 0 until userAnswers.get(TransportEquipmentListSection).map(_.value.length).getOrElse(0)
       itemIndex      <- 0 until userAnswers.get(ItemsSection(Index(equipmentIndex))).map(_.value.length).getOrElse(0)
       itemToFilter   <- userAnswers.get(ItemPage(Index(equipmentIndex), Index(itemIndex)))
     } yield itemToFilter).foldLeft(allItems) {

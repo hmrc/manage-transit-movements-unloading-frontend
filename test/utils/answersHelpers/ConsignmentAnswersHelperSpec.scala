@@ -279,8 +279,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
             result mustBe a[AccordionSection]
             result.sectionTitle.value mustBe "Transport equipment"
-            result.viewLinks.head.href mustBe "#"
-
+            result.viewLinks.head.href mustBe controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, NormalMode).url
             result.children.head mustBe a[AccordionSection]
             result.children.head.sectionTitle.value mustBe "Transport equipment 1"
             result.children.head.children.head mustBe a[StaticSection]

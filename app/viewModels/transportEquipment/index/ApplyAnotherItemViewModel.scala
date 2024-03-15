@@ -88,7 +88,8 @@ object ApplyAnotherItemViewModel {
                 ListItem(
                   name = itemPrefix(item.toString),
                   changeUrl = None,
-                  removeUrl = Some("") //TODO Some(routes.RemoveItemController.onPageLoad(departureId, mode, equipmentIndex, itemIndex).url)
+                  removeUrl =
+                    Some(controllers.transportEquipment.index.routes.RemoveGoodsReferenceYesNoController.onPageLoad(arrivalId, equipmentIndex, itemIndex).url)
                 )
             }
 
