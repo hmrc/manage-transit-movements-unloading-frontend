@@ -45,14 +45,8 @@ object HouseConsignmentViewModel {
         ).flatten
       )
 
-      val staticItemSectionLink: Section =
-        StaticSection(
-          sectionTitle = None,
-          viewLinks = Seq(helper.itemsAddRemoveLink)
-        )
-
       val sections: Seq[Section] =
-        helper.departureTransportMeansSections ++ helper.itemSections ++ Seq(staticItemSectionLink) ++ Seq(houseConsignmentSection) ++ Seq(
+        helper.departureTransportMeansSections ++ Seq(helper.itemSection) ++ Seq(houseConsignmentSection) ++ Seq(
           helper.houseConsignmentConsigneeSection
         )
 
