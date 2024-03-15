@@ -48,15 +48,15 @@
     @formHelper(action = viewModel.onSubmitCall, Symbol("autoComplete") -> "off") {
 
         @if(viewModel.isNumberItemsZero) {
-        <p class="govuk-body" id="noItems">@viewModel.noMoreItemsLabel</p>
-        }else if(viewModel.allowMore) {
+            <p class="govuk-body" id="noItems">@viewModel.noMoreItemsLabel</p>
+        } else if(viewModel.allowMore) {
             @inputYesNo(
                 field = form("value"),
                 yesNoType = YesNoWithLegend(
                     legend = viewModel.legend
                 )
             )
-        }else{
+        } else {
             <p class="govuk-body" data-testId="maxLimit">@viewModel.maxLimitLabel</p>
         }
 

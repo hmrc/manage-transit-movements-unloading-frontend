@@ -19,13 +19,11 @@ package navigation
 import base.SpecBase
 import generators.Generators
 import models._
-import models.reference.Item
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.ContainerIdentificationNumberPage
 import pages.transportEquipment.index._
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
-import viewModels.transportEquipment.SelectItemsViewModel
 
 class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -78,31 +76,17 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
 
         }
 
-        "to Item Page when answered No if there are items remaining" in {
+        "to Apply Item Page when answered No" in {
 
           val userAnswers = emptyUserAnswers.setValue(AddSealYesNoPage(equipmentIndex), false)
-          if (SelectItemsViewModel.apply(userAnswers).items.values.nonEmpty) {
-            navigator
-              .nextPage(AddSealYesNoPage(equipmentIndex), mode, userAnswers)
-              .mustBe(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(userAnswers.id, equipmentIndex, itemIndex, mode))
-          }
-
-        }
-
-        "to Add equipment page when answered No if there are 0 items remaining" in {
-
-          val userAnswers = emptyUserAnswers.setValue(AddSealYesNoPage(equipmentIndex), false)
-
-          if (SelectItemsViewModel.apply(userAnswers).items.values.isEmpty) {
-            navigator
-              .nextPage(AddSealYesNoPage(equipmentIndex), mode, userAnswers)
-              .mustBe(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, mode))
-
-          }
+          navigator
+            .nextPage(AddSealYesNoPage(equipmentIndex), mode, userAnswers)
+            .mustBe(controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, equipmentIndex, mode))
         }
       }
+
       "ItemPage mut go to ApplyAnotherItemPage" in {
-        val userAnswers = emptyUserAnswers.setValue(ItemPage(equipmentIndex, itemIndex), Item(BigInt(0), "test"))
+        val userAnswers = emptyUserAnswers.setValue(ItemPage(equipmentIndex, itemIndex), BigInt(0))
 
         navigator
           .nextPage(ItemPage(equipmentIndex, itemIndex), mode, userAnswers)
@@ -229,7 +213,7 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
       }
 
       "must go from Item page to ApplyAnotherItem page" in {
-        forAll(arbitrary[Item]) {
+        forAll(arbitrary[BigInt]) {
           item =>
             val userAnswers = emptyUserAnswers.setValue(ItemPage(equipmentIndex, itemIndex), item)
 
@@ -261,7 +245,7 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
       }
 
       "must go from ApplyAnotherItem page to Item page when answer is true" in {
-        forAll(arbitrary[Item]) {
+        forAll(arbitrary[BigInt]) {
           item =>
             val userAnswers = emptyUserAnswers
               .setValue(ItemPage(equipmentIndex, itemIndex), item)
@@ -274,7 +258,7 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
       }
 
       "must go from ApplyAnotherItem page to UnloadingFindings page when answer is false" in {
-        forAll(arbitrary[Item]) {
+        forAll(arbitrary[BigInt]) {
           item =>
             val userAnswers = emptyUserAnswers
               .setValue(ItemPage(equipmentIndex, itemIndex), item)

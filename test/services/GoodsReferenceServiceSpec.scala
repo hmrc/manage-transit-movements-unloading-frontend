@@ -17,8 +17,8 @@
 package services
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import models.{GoodsReference, Index}
-import models.reference.Item
+import models.Index
+import models.reference.GoodsReference
 import pages.houseConsignment.index.items.{DeclarationGoodsItemNumberPage, ItemDescriptionPage}
 import pages.transportEquipment.index.ItemPage
 
@@ -29,10 +29,10 @@ class GoodsReferenceServiceSpec extends SpecBase with AppWithDefaultMockFixtures
   "getGoodsReference" - {
     "must get goods reference" in {
       val userAnswers = emptyUserAnswers
-        .setValue(ItemPage(Index(0), Index(0)), Item(1))
-        .setValue(ItemPage(Index(0), Index(1)), Item(2))
-        .setValue(ItemPage(Index(1), Index(0)), Item(3))
-        .setValue(ItemPage(Index(1), Index(1)), Item(4))
+        .setValue(ItemPage(Index(0), Index(0)), BigInt(1))
+        .setValue(ItemPage(Index(0), Index(1)), BigInt(2))
+        .setValue(ItemPage(Index(1), Index(0)), BigInt(3))
+        .setValue(ItemPage(Index(1), Index(1)), BigInt(4))
         .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
         .setValue(ItemDescriptionPage(Index(0), Index(0)), "description 1")
         .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(1)), BigInt(2))
@@ -57,29 +57,137 @@ class GoodsReferenceServiceSpec extends SpecBase with AppWithDefaultMockFixtures
   }
 
   "getGoodsReferences" - {
-    "must get goods references" in {
-      val userAnswers = emptyUserAnswers
-        .setValue(ItemPage(Index(0), Index(0)), Item(1))
-        .setValue(ItemPage(Index(0), Index(1)), Item(2))
-        .setValue(ItemPage(Index(1), Index(0)), Item(3))
-        .setValue(ItemPage(Index(1), Index(1)), Item(4))
-        .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
-        .setValue(ItemDescriptionPage(Index(0), Index(0)), "description 1")
-        .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(1)), BigInt(2))
-        .setValue(ItemDescriptionPage(Index(0), Index(1)), "description 2")
-        .setValue(DeclarationGoodsItemNumberPage(Index(1), Index(0)), BigInt(3))
-        .setValue(ItemDescriptionPage(Index(1), Index(0)), "description 3")
-        .setValue(DeclarationGoodsItemNumberPage(Index(1), Index(1)), BigInt(4))
-        .setValue(ItemDescriptionPage(Index(1), Index(1)), "description 4")
+    "must get goods references that have not already been applied to the transport equipment" - {
+      "when there is no current index" - {
+        "and none have been applied to the transport equipment" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
+            .setValue(ItemDescriptionPage(Index(0), Index(0)), "description 1")
+            .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(1)), BigInt(2))
+            .setValue(ItemDescriptionPage(Index(0), Index(1)), "description 2")
+            .setValue(DeclarationGoodsItemNumberPage(Index(1), Index(0)), BigInt(3))
+            .setValue(ItemDescriptionPage(Index(1), Index(0)), "description 3")
+            .setValue(DeclarationGoodsItemNumberPage(Index(1), Index(1)), BigInt(4))
+            .setValue(ItemDescriptionPage(Index(1), Index(1)), "description 4")
 
-      val result = service.getGoodsReferences(userAnswers)
+          val result = service.getGoodsReferences(userAnswers, Index(0), None)
 
-      result mustBe Seq(
-        GoodsReference(BigInt(1), "description 1"),
-        GoodsReference(BigInt(2), "description 2"),
-        GoodsReference(BigInt(3), "description 3"),
-        GoodsReference(BigInt(4), "description 4")
-      )
+          result mustBe Seq(
+            GoodsReference(BigInt(1), "description 1"),
+            GoodsReference(BigInt(2), "description 2"),
+            GoodsReference(BigInt(3), "description 3"),
+            GoodsReference(BigInt(4), "description 4")
+          )
+        }
+
+        "and one has been applied to the transport equipment" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(ItemPage(Index(0), Index(0)), BigInt(1))
+            .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
+            .setValue(ItemDescriptionPage(Index(0), Index(0)), "description 1")
+            .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(1)), BigInt(2))
+            .setValue(ItemDescriptionPage(Index(0), Index(1)), "description 2")
+            .setValue(DeclarationGoodsItemNumberPage(Index(1), Index(0)), BigInt(3))
+            .setValue(ItemDescriptionPage(Index(1), Index(0)), "description 3")
+            .setValue(DeclarationGoodsItemNumberPage(Index(1), Index(1)), BigInt(4))
+            .setValue(ItemDescriptionPage(Index(1), Index(1)), "description 4")
+
+          val result = service.getGoodsReferences(userAnswers, Index(0), None)
+
+          result mustBe Seq(
+            GoodsReference(BigInt(2), "description 2"),
+            GoodsReference(BigInt(3), "description 3"),
+            GoodsReference(BigInt(4), "description 4")
+          )
+        }
+
+        "and multiple have been applied to the transport equipment" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(ItemPage(Index(0), Index(0)), BigInt(1))
+            .setValue(ItemPage(Index(0), Index(1)), BigInt(2))
+            .setValue(ItemPage(Index(0), Index(2)), BigInt(3))
+            .setValue(ItemPage(Index(0), Index(3)), BigInt(4))
+            .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
+            .setValue(ItemDescriptionPage(Index(0), Index(0)), "description 1")
+            .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(1)), BigInt(2))
+            .setValue(ItemDescriptionPage(Index(0), Index(1)), "description 2")
+            .setValue(DeclarationGoodsItemNumberPage(Index(1), Index(0)), BigInt(3))
+            .setValue(ItemDescriptionPage(Index(1), Index(0)), "description 3")
+            .setValue(DeclarationGoodsItemNumberPage(Index(1), Index(1)), BigInt(4))
+            .setValue(ItemDescriptionPage(Index(1), Index(1)), "description 4")
+
+          val result = service.getGoodsReferences(userAnswers, Index(0), None)
+
+          result mustBe Nil
+        }
+      }
+
+      "when there is a current index" - {
+        "and none have been applied to the transport equipment" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
+            .setValue(ItemDescriptionPage(Index(0), Index(0)), "description 1")
+            .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(1)), BigInt(2))
+            .setValue(ItemDescriptionPage(Index(0), Index(1)), "description 2")
+            .setValue(DeclarationGoodsItemNumberPage(Index(1), Index(0)), BigInt(3))
+            .setValue(ItemDescriptionPage(Index(1), Index(0)), "description 3")
+            .setValue(DeclarationGoodsItemNumberPage(Index(1), Index(1)), BigInt(4))
+            .setValue(ItemDescriptionPage(Index(1), Index(1)), "description 4")
+
+          val result = service.getGoodsReferences(userAnswers, Index(0), Some(Index(0)))
+
+          result mustBe Seq(
+            GoodsReference(BigInt(1), "description 1"),
+            GoodsReference(BigInt(2), "description 2"),
+            GoodsReference(BigInt(3), "description 3"),
+            GoodsReference(BigInt(4), "description 4")
+          )
+        }
+
+        "and one has been applied to the transport equipment" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(ItemPage(Index(0), Index(0)), BigInt(1))
+            .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
+            .setValue(ItemDescriptionPage(Index(0), Index(0)), "description 1")
+            .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(1)), BigInt(2))
+            .setValue(ItemDescriptionPage(Index(0), Index(1)), "description 2")
+            .setValue(DeclarationGoodsItemNumberPage(Index(1), Index(0)), BigInt(3))
+            .setValue(ItemDescriptionPage(Index(1), Index(0)), "description 3")
+            .setValue(DeclarationGoodsItemNumberPage(Index(1), Index(1)), BigInt(4))
+            .setValue(ItemDescriptionPage(Index(1), Index(1)), "description 4")
+
+          val result = service.getGoodsReferences(userAnswers, Index(0), Some(Index(0)))
+
+          result mustBe Seq(
+            GoodsReference(BigInt(1), "description 1"),
+            GoodsReference(BigInt(2), "description 2"),
+            GoodsReference(BigInt(3), "description 3"),
+            GoodsReference(BigInt(4), "description 4")
+          )
+        }
+
+        "and multiple have been applied to the transport equipment" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(ItemPage(Index(0), Index(0)), BigInt(1))
+            .setValue(ItemPage(Index(0), Index(1)), BigInt(2))
+            .setValue(ItemPage(Index(0), Index(2)), BigInt(3))
+            .setValue(ItemPage(Index(0), Index(3)), BigInt(4))
+            .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
+            .setValue(ItemDescriptionPage(Index(0), Index(0)), "description 1")
+            .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(1)), BigInt(2))
+            .setValue(ItemDescriptionPage(Index(0), Index(1)), "description 2")
+            .setValue(DeclarationGoodsItemNumberPage(Index(1), Index(0)), BigInt(3))
+            .setValue(ItemDescriptionPage(Index(1), Index(0)), "description 3")
+            .setValue(DeclarationGoodsItemNumberPage(Index(1), Index(1)), BigInt(4))
+            .setValue(ItemDescriptionPage(Index(1), Index(1)), "description 4")
+
+          val result = service.getGoodsReferences(userAnswers, Index(0), Some(Index(0)))
+
+          result mustBe Seq(
+            GoodsReference(BigInt(1), "description 1")
+          )
+        }
+      }
     }
   }
 }

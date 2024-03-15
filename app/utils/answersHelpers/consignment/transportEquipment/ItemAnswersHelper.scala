@@ -16,7 +16,6 @@
 
 package utils.answersHelpers.consignment.transportEquipment
 
-import models.reference.Item
 import models.{CheckMode, Index, UserAnswers}
 import pages.transportEquipment.index.ItemPage
 import play.api.i18n.Messages
@@ -30,7 +29,7 @@ class ItemAnswersHelper(
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
-  def transportEquipmentItem: Option[SummaryListRow] = getAnswerAndBuildRow[Item](
+  def transportEquipmentItem: Option[SummaryListRow] = getAnswerAndBuildRow[BigInt](
     page = ItemPage(equipmentIndex, itemIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.consignment.item",

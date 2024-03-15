@@ -14,7 +14,15 @@
  * limitations under the License.
  */
 
-package models
+package models.reference
 
-// todo - extend Selectable
-case class GoodsReference(declarationGoodsItemNumber: BigInt, itemDescription: String) {}
+import play.api.i18n.Messages
+
+case class GoodsReference(declarationGoodsItemNumber: BigInt, itemDescription: String) extends Selectable {
+  override val value: String = declarationGoodsItemNumber.toString()
+
+  override def toString: String = value
+
+  def asString(implicit messages: Messages): String =
+    messages("goodsReference.label", declarationGoodsItemNumber, itemDescription)
+}

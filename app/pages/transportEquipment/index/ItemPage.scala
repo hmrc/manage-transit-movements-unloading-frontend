@@ -17,15 +17,14 @@
 package pages.transportEquipment.index
 
 import models.Index
-import models.reference.Item
 import pages.QuestionPage
 import pages.sections.transport.equipment.ItemSection
 import play.api.libs.json.JsPath
 
-case class ItemPage(equipmentIndex: Index, itemIndex: Index) extends QuestionPage[Item] {
+case class ItemPage(equipmentIndex: Index, itemIndex: Index) extends QuestionPage[BigInt] {
 
   override def path: JsPath = ItemSection(equipmentIndex, itemIndex).path \ toString
 
-  override def toString: String = "item"
+  override def toString: String = "declarationGoodsItemNumber"
 
 }

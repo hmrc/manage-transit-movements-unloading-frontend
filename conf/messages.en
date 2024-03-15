@@ -246,6 +246,8 @@ transportEquipment.index.applyAnItemYesNo.title = Do any items apply to this tra
 transportEquipment.index.applyAnItemYesNo.heading = Do any items apply to this transport equipment?
 transportEquipment.index.applyAnItemYesNo.error.required = Select yes if any items apply to this transport equipment
 
+goodsReference.label = Item {0} - {1}
+
 unloadingSummary.title = Check what you found against the transit declaration
 unloadingSummary.heading = Check what you found against the transit declaration
 unloadingSummary.addSeal.link.text = Add a new official customs seal number

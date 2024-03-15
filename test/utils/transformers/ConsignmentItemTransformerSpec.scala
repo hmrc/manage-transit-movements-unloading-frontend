@@ -81,7 +81,7 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
           case (_, i) =>
             val itemIndex = Index(i)
 
-            when(mockCommodityTransformer.transform(any(), any(), any(), eqTo(itemIndex)))
+            when(mockCommodityTransformer.transform(any(), any(), eqTo(itemIndex)))
               .thenReturn {
                 ua => Future.successful(ua.setValue(FakeCommoditySection(itemIndex), Json.obj("foo" -> i.toString)))
               }
@@ -114,7 +114,7 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
             val itemIndex = Index(i)
 
             result.getSequenceNumber(ItemSection(hcIndex, itemIndex)) mustBe consignmentItem.goodsItemNumber
-            result.get(DeclarationGoodsItemNumberPage(hcIndex, itemIndex)) mustBe consignmentItem.declarationGoodsItemNumber
+            result.getValue(DeclarationGoodsItemNumberPage(hcIndex, itemIndex)) mustBe consignmentItem.declarationGoodsItemNumber
             result.get(DeclarationTypePage(hcIndex, itemIndex)) mustBe consignmentItem.declarationType
             result.getValue(FakeCommoditySection(itemIndex)) mustBe Json.obj("foo" -> i.toString)
             result.getValue(FakePackagingSection(itemIndex)) mustBe Json.obj("foo" -> i.toString)

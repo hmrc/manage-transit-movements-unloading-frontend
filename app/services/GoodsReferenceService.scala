@@ -16,7 +16,8 @@
 
 package services
 
-import models.{GoodsReference, Index, RichOptionalJsArray, UserAnswers}
+import models.reference.GoodsReference
+import models.{Index, RichOptionalJsArray, UserAnswers}
 import pages.houseConsignment.index.items.{DeclarationGoodsItemNumberPage, ItemDescriptionPage}
 import pages.transportEquipment.index.ItemPage
 
@@ -24,35 +25,34 @@ import javax.inject.Inject
 
 class GoodsReferenceService @Inject() {
 
-  def getGoodsReferences(userAnswers: UserAnswers): Seq[GoodsReference] = {
-    import pages.sections.TransportEquipmentListSection
-    import pages.sections.transport.equipment.ItemsSection
-    println("***")
-    println(userAnswers.data)
-    (for {
-      equipmentIndex      <- 0 until userAnswers.get(TransportEquipmentListSection).length
-      goodsReferenceIndex <- 0 until userAnswers.get(ItemsSection(Index(equipmentIndex))).length
-    } yield {
-      println("***")
-      println(equipmentIndex)
-      println(goodsReferenceIndex)
-      getGoodsReference(userAnswers, Index(equipmentIndex), Index(goodsReferenceIndex))
-    }).flatten
+  def getGoodsReferences(userAnswers: UserAnswers, equipmentIndex: Index, goodsReferenceIndex: Option[Index]): Seq[GoodsReference] = {
+    import pages.sections.transport.equipment.{ItemsSection => GoodsReferencesSection}
+
+    val availableDeclarationGoodsItemNumbers = (for {
+      goodsReferenceIndex <- (0 until userAnswers.get(GoodsReferencesSection(equipmentIndex)).length).map(Index(_)).filterNot(goodsReferenceIndex.contains)
+    } yield userAnswers.get(ItemPage(equipmentIndex, goodsReferenceIndex))).flatten
+
+    getGoodsReferences(userAnswers).filterNot {
+      goodsReference =>
+        availableDeclarationGoodsItemNumbers.contains(goodsReference.declarationGoodsItemNumber)
+    }
   }
 
-  def getGoodsReference(userAnswers: UserAnswers, equipmentIndex: Index, goodsReferenceIndex: Index): Option[GoodsReference] = {
-    import pages.sections.{HouseConsignmentsSection, ItemsSection}
-
+  def getGoodsReference(userAnswers: UserAnswers, equipmentIndex: Index, goodsReferenceIndex: Index): Option[GoodsReference] =
     userAnswers.get(ItemPage(equipmentIndex, goodsReferenceIndex)).flatMap {
-      goodsReference =>
-        (for {
-          hcIndex                    <- 0 until userAnswers.get(HouseConsignmentsSection).length
-          itemIndex                  <- 0 until userAnswers.get(ItemsSection(Index(hcIndex))).length
-          declarationGoodsItemNumber <- userAnswers.get(DeclarationGoodsItemNumberPage(Index(hcIndex), Index(itemIndex)))
-          description                <- userAnswers.get(ItemDescriptionPage(Index(hcIndex), Index(itemIndex)))
-        } yield GoodsReference(declarationGoodsItemNumber, description)).find {
-          _.declarationGoodsItemNumber == goodsReference.declarationGoodsItemNumber
+      declarationGoodsItemNumber =>
+        getGoodsReferences(userAnswers).find {
+          _.declarationGoodsItemNumber == declarationGoodsItemNumber
         }
     }
+
+  private def getGoodsReferences(userAnswers: UserAnswers): Seq[GoodsReference] = {
+    import pages.sections.{HouseConsignmentsSection, ItemsSection}
+    for {
+      hcIndex                    <- (0 until userAnswers.get(HouseConsignmentsSection).length).map(Index(_))
+      itemIndex                  <- (0 until userAnswers.get(ItemsSection(hcIndex)).length).map(Index(_))
+      declarationGoodsItemNumber <- userAnswers.get(DeclarationGoodsItemNumberPage(hcIndex, itemIndex))
+      description                <- userAnswers.get(ItemDescriptionPage(hcIndex, itemIndex))
+    } yield GoodsReference(declarationGoodsItemNumber, description)
   }
 }

@@ -20,29 +20,53 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.SelectableFormProvider
 import generators.Generators
-import models.reference.Item
+import models.reference.GoodsReference
 import models.{Index, NormalMode, SelectableList}
-import pages.transportEquipment.index.ItemPage
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewModels.transportEquipment.SelectItemsViewModel
+import services.GoodsReferenceService
 import views.html.transportEquipment.index.GoodsReferenceView
 
 class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val viewModel: SelectItemsViewModel = SelectItemsViewModel(emptyUserAnswers, None)
+  private val mockGoodsReferenceService = mock[GoodsReferenceService]
 
-  private val items = SelectableList(Seq(Item(123)))
+  private val goodsReferences = Seq(
+    GoodsReference(1, "description 1"),
+    GoodsReference(2, "description 2")
+  )
+
+  private val goodsReference = goodsReferences.head
 
   private val formProvider = new SelectableFormProvider()
   private val mode         = NormalMode
-  private val form         = formProvider(mode, "transport.equipment.selectItems", items)
+  private val form         = formProvider(mode, "transport.equipment.selectItems", SelectableList(goodsReferences))
 
   private lazy val controllerRoute = controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), itemIndex, mode).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind[GoodsReferenceService].toInstance(mockGoodsReferenceService))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockGoodsReferenceService)
+
+    when(mockGoodsReferenceService.getGoodsReferences(any(), any(), any()))
+      .thenReturn(goodsReferences)
+  }
 
   "GoodsReferenceController" - {
 
     "must return OK and the correct view for a GET" in {
+
+      when(mockGoodsReferenceService.getGoodsReference(any(), any(), any()))
+        .thenReturn(None)
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -55,30 +79,28 @@ class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, arrivalId, Index(0), itemIndex, mrn, viewModel, mode)(request, messages).toString
+        view(form, arrivalId, Index(0), itemIndex, mrn, goodsReferences, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val item = Item(123)
+      when(mockGoodsReferenceService.getGoodsReference(any(), any(), any()))
+        .thenReturn(Some(goodsReference))
 
-      val userAnswers = emptyUserAnswers.setValue(ItemPage(equipmentIndex, itemIndex), item)
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, controllerRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "123"))
+      val filledForm = form.bind(Map("value" -> goodsReference.declarationGoodsItemNumber.toString()))
 
       val view = injector.instanceOf[GoodsReferenceView]
 
       status(result) mustEqual OK
 
-      val viewModelSelected: SelectItemsViewModel = SelectItemsViewModel(items = SelectableList(Seq(item)), 1)
-
       contentAsString(result) mustEqual
-        view(filledForm, arrivalId, Index(0), itemIndex, mrn, viewModelSelected, mode)(request, messages).toString
+        view(filledForm, arrivalId, Index(0), itemIndex, mrn, goodsReferences, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -107,7 +129,7 @@ class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, arrivalId, Index(0), itemIndex, mrn, viewModel, mode)(request, messages).toString
+        view(boundForm, arrivalId, Index(0), itemIndex, mrn, goodsReferences, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

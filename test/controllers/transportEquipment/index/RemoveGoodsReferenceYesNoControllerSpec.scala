@@ -19,32 +19,49 @@ package controllers.transportEquipment.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import generators.Generators
-import models.UserAnswers
-import models.reference.{Item, ItemDescription}
+import models.reference.GoodsReference
+import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
-import org.mockito.Mockito.verify
-import pages.houseConsignment.index.items.ItemGoodsReferenceDescriptionPage
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import pages.sections.ItemSection
 import pages.transportEquipment.index.ItemPage
-import play.api.mvc.Call
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.GoodsReferenceService
 import views.html.transportEquipment.index.RemoveItemYesNoView
 
-class RemoveItemYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class RemoveGoodsReferenceYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val itemIdNumber              = Item(123)
+  private val declarationGoodsItemNumber = BigInt(123)
+  private val itemDescription            = "shirts"
+
   private val formProvider              = new YesNoFormProvider()
   private val form                      = formProvider("transportEquipment.index.item.removeItemYesNo", equipmentIndex.display)
   private lazy val removeItemYesNoRoute = routes.RemoveGoodsReferenceYesNoController.onPageLoad(arrivalId, equipmentIndex, itemIndex).url
+
+  private val mockGoodsReferenceService = mock[GoodsReferenceService]
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind[GoodsReferenceService].toInstance(mockGoodsReferenceService))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockGoodsReferenceService)
+
+    when(mockGoodsReferenceService.getGoodsReference(any(), any(), any()))
+      .thenReturn(Some(GoodsReference(declarationGoodsItemNumber, itemDescription)))
+  }
 
   "RemoveItemYesNo Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val userAnswers = emptyUserAnswers
-        .setValue(ItemPage(equipmentIndex, itemIndex), itemIdNumber)
-        .setValue(ItemGoodsReferenceDescriptionPage(houseConsignmentIndex, itemIndex), ItemDescription(itemIdNumber.declarationGoodsItemNumber, "shirts"))
+      val userAnswers = emptyUserAnswers.setValue(ItemPage(equipmentIndex, itemIndex), declarationGoodsItemNumber)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, removeItemYesNoRoute)
@@ -59,7 +76,10 @@ class RemoveItemYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
     }
 
     "must redirect to the next page" - {
-      "when yes is submitted" ignore {
+      "when yes is submitted" in {
+
+        val userAnswers = emptyUserAnswers.setValue(ItemPage(equipmentIndex, itemIndex), declarationGoodsItemNumber)
+        setExistingUserAnswers(userAnswers)
 
         val request = FakeRequest(POST, removeItemYesNoRoute)
           .withFormUrlEncodedBody(("value", "true"))
@@ -68,14 +88,17 @@ class RemoveItemYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual Call("GET", "#") // TODO Should go to addAnotherItemController
+        redirectLocation(result).value mustEqual
+          routes.ApplyAnotherItemController.onPageLoad(arrivalId, NormalMode, equipmentIndex).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
         userAnswersCaptor.getValue.get(ItemSection(equipmentIndex, itemIndex)) mustNot be(defined)
       }
 
-      "when no is submitted" ignore {
+      "when no is submitted" in {
+
+        setExistingUserAnswers(emptyUserAnswers)
 
         val request = FakeRequest(POST, removeItemYesNoRoute)
           .withFormUrlEncodedBody(("value", "false"))
@@ -84,15 +107,16 @@ class RemoveItemYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual Call("GET", "#") // TODO Should go to addAnotherItemController
+        redirectLocation(result).value mustEqual
+          routes.ApplyAnotherItemController.onPageLoad(arrivalId, NormalMode, equipmentIndex).url
+
+        verifyNoInteractions(mockSessionRepository)
       }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val userAnswers = emptyUserAnswers
-        .setValue(ItemPage(equipmentIndex, itemIndex), itemIdNumber)
-        .setValue(ItemGoodsReferenceDescriptionPage(houseConsignmentIndex, itemIndex), ItemDescription(itemIdNumber.declarationGoodsItemNumber, "shirts"))
+      val userAnswers = emptyUserAnswers.setValue(ItemPage(equipmentIndex, itemIndex), declarationGoodsItemNumber)
       setExistingUserAnswers(userAnswers)
 
       val request   = FakeRequest(POST, removeItemYesNoRoute).withFormUrlEncodedBody(("value", ""))
@@ -122,7 +146,7 @@ class RemoveItemYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
         redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
       }
 
-      "if no item is found" ignore {
+      "if no item is found" in {
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -132,7 +156,8 @@ class RemoveItemYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual Call("GET", "#") // TODO Should go to addAnotherItemController
+        redirectLocation(result).value mustEqual
+          routes.ApplyAnotherItemController.onPageLoad(arrivalId, NormalMode, equipmentIndex).url
       }
     }
 
@@ -151,7 +176,7 @@ class RemoveItemYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
         redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
       }
 
-      "if no item is found" ignore {
+      "if no item is found" in {
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -162,7 +187,8 @@ class RemoveItemYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual Call("GET", "#") // TODO Should go to addAnotherItemController
+        redirectLocation(result).value mustEqual
+          routes.ApplyAnotherItemController.onPageLoad(arrivalId, NormalMode, equipmentIndex).url
       }
     }
   }

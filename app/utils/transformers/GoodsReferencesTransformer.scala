@@ -17,7 +17,6 @@
 package utils.transformers
 
 import generated.GoodsReferenceType02
-import models.reference.Item
 import models.{Index, UserAnswers}
 import pages.sections.transport.equipment.ItemSection
 import pages.transportEquipment.index.ItemPage
@@ -35,7 +34,7 @@ class GoodsReferencesTransformer @Inject() (implicit ec: ExecutionContext) exten
             val itemIndex: Index = Index(i)
             val pipeline: UserAnswers => Future[UserAnswers] =
               setSequenceNumber(ItemSection(equipmentIndex, itemIndex), sequenceNumber) andThen
-                set(ItemPage(equipmentIndex, itemIndex), Item(declarationGoodsItemNumber.intValue))
+                set(ItemPage(equipmentIndex, itemIndex), declarationGoodsItemNumber)
 
             pipeline(userAnswers)
         }

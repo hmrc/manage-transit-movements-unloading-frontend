@@ -19,19 +19,12 @@ package utils.transformers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated.CommodityType08
 import generators.Generators
-import models.reference.ItemDescription
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
-import pages.houseConsignment.index.items.{
-  CombinedNomenclatureCodePage,
-  CommodityCodePage,
-  CustomsUnionAndStatisticsCodePage,
-  ItemDescriptionPage,
-  ItemGoodsReferenceDescriptionPage
-}
+import pages.houseConsignment.index.items.{CombinedNomenclatureCodePage, CommodityCodePage, CustomsUnionAndStatisticsCodePage, ItemDescriptionPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, JsPath, Json}
@@ -64,7 +57,6 @@ class CommodityTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
   "must transform data" in {
     forAll(arbitrary[CommodityType08]) {
       commodity =>
-        val declarationGoodsItemNumber = positiveBigInts.sample.get
         when(mockGoodsMeasureTransformer.transform(any(), any(), any()))
           .thenReturn {
             ua => Future.successful(ua.setValue(FakeGoodsMeasureSection, Json.obj("foo" -> "bar")))
@@ -74,7 +66,7 @@ class CommodityTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
             ua => Future.successful(ua.setValue(FakeDangerousGoodsSection, Json.obj("foo1" -> "bar1")))
           }
 
-        val result = transformer.transform(commodity, declarationGoodsItemNumber, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
+        val result = transformer.transform(commodity, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
 
         result.getValue(ItemDescriptionPage(hcIndex, itemIndex)) mustBe commodity.descriptionOfGoods
         result.get(CustomsUnionAndStatisticsCodePage(hcIndex, itemIndex)) mustBe commodity.cusCode
@@ -82,7 +74,6 @@ class CommodityTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
         result.get(CombinedNomenclatureCodePage(hcIndex, itemIndex)) mustBe commodity.CommodityCode.flatMap(_.combinedNomenclatureCode)
         result.getValue(FakeGoodsMeasureSection) mustBe Json.obj("foo" -> "bar")
         result.getValue(FakeDangerousGoodsSection) mustBe Json.obj("foo1" -> "bar1")
-        result.getValue(ItemGoodsReferenceDescriptionPage(hcIndex, itemIndex)) mustBe ItemDescription(declarationGoodsItemNumber, commodity.descriptionOfGoods)
     }
   }
 }

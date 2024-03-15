@@ -47,7 +47,7 @@ class ConsignmentItemTransformer @Inject() (
                 set(DeclarationGoodsItemNumberPage(hcIndex, itemIndex), consignmentItem.declarationGoodsItemNumber) andThen
                 set(DeclarationTypePage(hcIndex, itemIndex), consignmentItem.declarationType) andThen
                 countryOfDestinationTransformer.transform(consignmentItem.countryOfDestination, hcIndex, itemIndex) andThen
-                commodityTransformer.transform(consignmentItem.Commodity, consignmentItem.declarationGoodsItemNumber, hcIndex, itemIndex) andThen
+                commodityTransformer.transform(consignmentItem.Commodity, hcIndex, itemIndex) andThen
                 packagingTransformer.transform(consignmentItem.Packaging, hcIndex, itemIndex) andThen
                 documentsTransformer.transform(
                   consignmentItem.SupportingDocument,
