@@ -319,7 +319,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.children.head.rows.size mustBe 2
             result.children.head.rows.head.value.value mustBe `type`.toString
             result.children.head.rows(1).value.value mustBe number
-            result.viewLinks.head.href mustBe "#"
+            result.viewLinks.head.href mustBe "/manage-transit-movements/unloading/AB123/additional-reference/change-add-another"
             result.id.value mustBe "additionalReferences"
         }
       }

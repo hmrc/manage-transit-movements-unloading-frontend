@@ -62,8 +62,8 @@ class AddAnotherAdditionalReferenceController @Inject() (
           {
             case true =>
               Redirect(
-                controllers.additionalReference.index.routes.AdditionalReferenceNumberYesNoController
-                  .onPageLoad(arrivalId, viewModel.nextIndex, mode)
+                controllers.additionalReference.index.routes.AdditionalReferenceTypeController
+                  .onPageLoad(arrivalId, mode, viewModel.nextIndex)
               )
             case false =>
               Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
