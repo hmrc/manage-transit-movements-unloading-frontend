@@ -18,12 +18,11 @@ package controllers.additionalReference.index
 
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.reference.AdditionalReferenceType
 import models.{ArrivalId, Index, Mode, UserAnswers}
 import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import pages.sections.additionalReference.AdditionalReferenceSection
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
