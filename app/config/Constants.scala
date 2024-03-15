@@ -17,20 +17,11 @@
 package config
 
 object Constants {
-  val GB = "GB"
-  val AD = "AD"
 
-  val T2 = "T2"
-  val T  = "T"
-
-  val Maritime = "1"
-  val Rail     = "2"
-  val Road     = "3"
-  val Air      = "4"
-  val Mail     = "5"
-  val Fixed    = "7"
-  val Unknown  = "9"
-  val Other    = "D"
+  object TransportModeCode {
+    val Fixed   = "7"
+    val Unknown = "9"
+  }
 
   object MeansOfTransportIdentification {
     val UnknownIdentification = "99"

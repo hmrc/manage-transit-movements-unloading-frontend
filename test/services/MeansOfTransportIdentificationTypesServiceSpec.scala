@@ -18,7 +18,7 @@ package services
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import cats.data.NonEmptySet
-import config.Constants._
+import config.Constants.TransportModeCode._
 import connectors.ReferenceDataConnector
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.transport.TransportMode.InlandMode

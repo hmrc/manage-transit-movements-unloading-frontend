@@ -17,7 +17,7 @@
 package services
 
 import config.Constants.MeansOfTransportIdentification.UnknownIdentification
-import config.Constants.{Fixed, Unknown}
+import config.Constants.TransportModeCode._
 import connectors.ReferenceDataConnector
 import models.UserAnswers
 import models.departureTransportMeans.TransportMeansIdentification
