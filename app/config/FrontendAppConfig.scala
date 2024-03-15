@@ -29,8 +29,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   lazy val contactHost: String = configuration.get[String]("contact-frontend.host")
 
-  lazy val maxItems: Int = configuration.get[Int]("limits.maxItems")
-  lazy val maxSeals: Int = configuration.get[Int]("limits.maxSeals")
+  lazy val maxItems: Int                = configuration.get[Int]("limits.maxItems")
+  lazy val maxSeals: Int                = configuration.get[Int]("limits.maxSeals")
+  lazy val maxAdditionalReferences: Int = configuration.get[Int]("limits.maxAdditionalReferences")
 
   lazy val maxDepartureMeansOfTransport: Int = configuration.get[Int]("limits.maxDepartureMeansOfTransport")
 

@@ -131,7 +131,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
             .willReturn(okJson(customsOfficeResponseJsonWithPhone))
         )
 
-        val expectedResult = NonEmptySet.of(CustomsOffice("ID1", "NAME001", "GB", Some("004412323232345")))
+        val expectedResult = CustomsOffice("ID1", "NAME001", "GB", Some("004412323232345"))
 
         connector.getCustomsOffice(code).futureValue mustBe expectedResult
       }
@@ -142,7 +142,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
             .willReturn(okJson(customsOfficeResponseJsonWithOutPhone))
         )
 
-        val expectedResult = NonEmptySet.of(CustomsOffice("ID1", "NAME001", "GB", None))
+        val expectedResult = CustomsOffice("ID1", "NAME001", "GB", None)
 
         connector.getCustomsOffice(code).futureValue mustBe expectedResult
       }
@@ -184,7 +184,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
             .willReturn(okJson(countryCodeResponseJson))
         )
 
-        val expectedResult = NonEmptySet.of(Country(countryCode, "United Kingdom"))
+        val expectedResult = Country(countryCode, "United Kingdom")
 
         connector.getCountryNameByCode(countryCode).futureValue mustBe expectedResult
       }
@@ -208,8 +208,8 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         )
 
         val expectedResult = NonEmptySet.of(
-          PackageType("1A", Some("Drum, aluminum")),
-          PackageType("1B", Some("Drum, plywood"))
+          PackageType("1A", "Drum, aluminum"),
+          PackageType("1B", "Drum, plywood")
         )
 
         connector.getPackageTypes.futureValue mustBe expectedResult
@@ -309,7 +309,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
             .willReturn(okJson(packageTypeResponseJson))
         )
 
-        val expectedResult: PackageType = PackageType(documentType, Some("Drum, steel"))
+        val expectedResult: PackageType = PackageType(documentType, "Drum, steel")
 
         connector.getPackageType(documentType).futureValue mustEqual expectedResult
       }
@@ -664,18 +664,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 }
 
 object ReferenceDataConnectorSpec {
-
-  private val additionalInformationResponseJson: String =
-    """
-      |{
-      |  "data": [
-      |    {
-      |      "code": "10600",
-      |      "description": "Negotiable Bill of lading 'to order blank endorsed'"
-      |    }
-      |  ]
-      |}
-      |""".stripMargin
 
   private val countryListResponseJson: String =
     """

@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package services
+package pages.transportEquipment.index
 
-import connectors.ReferenceDataConnector
-import models.SelectableList
-import models.reference.AdditionalReferenceType
-import uk.gov.hmrc.http.HeaderCarrier
+import models.Index
+import pages.QuestionPage
+import pages.sections.TransportEquipmentSection
+import play.api.libs.json.JsPath
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+case class ApplyAnItemYesNoPage(equipmentIndex: Index) extends QuestionPage[Boolean] {
 
-class AdditionalReferencesService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
+  override def path: JsPath = TransportEquipmentSection(equipmentIndex).path \ toString
 
-  def getAdditionalReferences()(implicit hc: HeaderCarrier): Future[SelectableList[AdditionalReferenceType]] =
-    referenceDataConnector
-      .getAdditionalReferences()
-      .map(_.toSeq)
-      .map(SelectableList(_))
+  override def toString: String = "applyAnItemYesNo"
+
 }

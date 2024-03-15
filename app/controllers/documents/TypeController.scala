@@ -19,7 +19,7 @@ package controllers.documents
 import controllers.actions._
 import forms.SelectableFormProvider
 import models.reference.DocumentType
-import models.requests.MandatoryDataRequest
+import models.requests.DataRequest
 import models.{ArrivalId, Index, Mode}
 import navigation.DocumentNavigator
 import pages.documents.TypePage
@@ -39,7 +39,6 @@ class TypeController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigator: DocumentNavigator,
   actions: Actions,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: SelectableFormProvider,
   service: DocumentsService,
   val controllerComponents: MessagesControllerComponents,
@@ -90,7 +89,7 @@ class TypeController @Inject() (
     mode: Mode,
     value: DocumentType,
     documentIndex: Index
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
+  )(implicit request: DataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(TypePage(documentIndex), value))
       _              <- sessionRepository.set(updatedAnswers)

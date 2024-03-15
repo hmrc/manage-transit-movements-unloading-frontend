@@ -16,7 +16,6 @@
 
 package services
 
-import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.reference.{Country, CustomsOffice}
@@ -33,21 +32,11 @@ class ReferenceDataServiceImpl @Inject() (connector: ReferenceDataConnector) ext
   def getCountryByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Country] =
     connector.getCountry(code)
 
-  def getCustomsOfficeByCode(customsOfficeCode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[CustomsOffice] = {
-    val customsOfficesResult: Future[NonEmptySet[CustomsOffice]] = connector.getCustomsOffice(customsOfficeCode)
+  def getCustomsOfficeByCode(customsOfficeCode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[CustomsOffice] =
+    connector.getCustomsOffice(customsOfficeCode)
 
-    customsOfficesResult.flatMap(
-      offices => Future.successful(offices.head)
-    )
-  }
-
-  def getCountryNameByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[String] = {
-    val countriesResult: Future[NonEmptySet[Country]] = connector.getCountryNameByCode(code)
-
-    countriesResult.flatMap(
-      countries => Future.successful(countries.head.code)
-    )
-  }
+  def getCountryNameByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[String] =
+    connector.getCountryNameByCode(code).map(_.code)
 
   def doesCUSCodeExist(cusCode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Boolean] =
     connector
