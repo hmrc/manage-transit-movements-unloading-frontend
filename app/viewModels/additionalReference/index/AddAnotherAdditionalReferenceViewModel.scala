@@ -31,15 +31,6 @@ case class AddAnotherAdditionalReferenceViewModel(listItems: Seq[ListItem], onSu
 
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxAdditionalReferences
 
-  override def title(implicit messages: Messages): String = messages(s"$prefix.$emptyOrSingularOrPlural.title", count)
-
-  override def heading(implicit messages: Messages): String = messages(s"$prefix.$emptyOrSingularOrPlural.heading", count)
-
-  override def legend(implicit messages: Messages): String =
-    if (count > 0) messages(s"$prefix.label", count) else messages(s"$prefix.empty.label", count)
-
-  override def maxLimitLabel(implicit messages: Messages): String = messages(s"$prefix.maxLimit.label")
-
 }
 
 object AddAnotherAdditionalReferenceViewModel {
