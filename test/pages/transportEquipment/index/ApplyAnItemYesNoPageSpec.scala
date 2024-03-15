@@ -17,6 +17,8 @@
 package pages.transportEquipment.index
 
 import pages.behaviours.PageBehaviours
+import pages.sections.ItemsSection
+import play.api.libs.json.{JsArray, Json}
 
 class ApplyAnItemYesNoPageSpec extends PageBehaviours {
 
@@ -28,5 +30,15 @@ class ApplyAnItemYesNoPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](ApplyAnItemYesNoPage(index))
 
+    "cleanup must remove contact details when no selected" in {
+      val userAnswers = emptyUserAnswers
+        .setValue(ItemsSection(equipmentIndex), JsArray(Seq(Json.obj("foo" -> "bar"))))
+
+      val result = userAnswers.setValue(ApplyAnItemYesNoPage(equipmentIndex), false)
+
+      result.get(ItemsSection(equipmentIndex)) must not be defined
+    }
+
   }
+
 }
