@@ -24,7 +24,7 @@ import play.api.libs.json.JsPath
 
 case class ItemPage(equipmentIndex: Index, itemIndex: Index) extends QuestionPage[Item] {
 
-  override def path: JsPath = ItemSection(equipmentIndex, itemIndex).path
+  override def path: JsPath = ItemSection(equipmentIndex, itemIndex).path \ toString
 
   override def toString: String = "item"
 

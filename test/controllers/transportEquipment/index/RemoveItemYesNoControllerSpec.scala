@@ -33,7 +33,7 @@ import views.html.transportEquipment.index.RemoveItemYesNoView
 
 class RemoveItemYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val itemIdNumber              = Item(123, "description")
+  private val itemIdNumber              = Item(123)
   private val formProvider              = new YesNoFormProvider()
   private val form                      = formProvider("transportEquipment.index.item.removeItemYesNo", equipmentIndex.display)
   private lazy val removeItemYesNoRoute = routes.RemoveGoodsReferenceYesNoController.onPageLoad(arrivalId, equipmentIndex, itemIndex).url

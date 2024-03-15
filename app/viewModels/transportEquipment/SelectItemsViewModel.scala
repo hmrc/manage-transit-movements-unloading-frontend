@@ -48,7 +48,7 @@ object SelectItemsViewModel {
       .foldLeft(Seq.empty[Item]) {
         (listOfItems, houseConsignment) =>
           houseConsignment.ConsignmentItem.map(
-            item => Item(item.declarationGoodsItemNumber.toInt, item.Commodity.descriptionOfGoods)
+            item => Item(item.declarationGoodsItemNumber.toInt)
           ) ++ listOfItems
       }
       .sortBy(_.declarationGoodsItemNumber)

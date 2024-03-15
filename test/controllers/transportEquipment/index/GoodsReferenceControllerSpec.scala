@@ -32,7 +32,7 @@ class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
   private val viewModel: SelectItemsViewModel = SelectItemsViewModel(emptyUserAnswers, None)
 
-  private val items = SelectableList(Seq(Item(123, "description")))
+  private val items = SelectableList(Seq(Item(123)))
 
   private val formProvider = new SelectableFormProvider()
   private val mode         = NormalMode
@@ -60,7 +60,7 @@ class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val item = Item(123, "description")
+      val item = Item(123)
 
       val userAnswers = emptyUserAnswers.setValue(ItemPage(equipmentIndex, itemIndex), item)
       setExistingUserAnswers(userAnswers)

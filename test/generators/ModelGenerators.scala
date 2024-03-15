@@ -158,9 +158,8 @@ trait ModelGenerators {
   implicit lazy val arbitraryItem: Arbitrary[Item] =
     Arbitrary {
       for {
-        no   <- positiveInts
-        desc <- nonEmptyString
-      } yield Item(no, desc)
+        no <- positiveInts
+      } yield Item(no)
     }
 
   implicit lazy val arbitraryCall: Arbitrary[Call] = Arbitrary {

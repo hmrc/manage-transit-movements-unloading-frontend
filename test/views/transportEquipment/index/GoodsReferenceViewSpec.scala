@@ -31,7 +31,7 @@ class GoodsReferenceViewSpec extends InputSelectViewBehaviours[Item] {
 
   implicit override val arbitraryT: Arbitrary[Item] = arbitraryItem
 
-  override lazy val values: Seq[Item] = Seq(Item(123, "seq1"))
+  override lazy val values: Seq[Item] = Seq(Item(123))
 
   val ie043Answers: CC043CType = emptyUserAnswers.ie043Data.copy(Consignment =
     Some(

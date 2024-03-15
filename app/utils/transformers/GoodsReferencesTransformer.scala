@@ -35,7 +35,7 @@ class GoodsReferencesTransformer @Inject() (implicit ec: ExecutionContext) exten
             val itemIndex: Index = Index(i)
             val pipeline: UserAnswers => Future[UserAnswers] =
               setSequenceNumber(ItemSection(equipmentIndex, itemIndex), sequenceNumber) andThen
-                set(ItemPage(equipmentIndex, itemIndex), Item(declarationGoodsItemNumber.intValue, sequenceNumber))
+                set(ItemPage(equipmentIndex, itemIndex), Item(declarationGoodsItemNumber.intValue))
 
             pipeline(userAnswers)
         }
