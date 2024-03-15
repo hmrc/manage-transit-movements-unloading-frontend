@@ -20,11 +20,13 @@ import base.SpecBase
 import generators.Generators
 import models._
 import models.reference.Item
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.ContainerIdentificationNumberPage
 import pages.transportEquipment.index._
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
+import viewModels.transportEquipment.SelectItemsViewModel
 
 class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -79,13 +81,11 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
 
         "to Item Page when answered No if there are items remaining" in {
 
-//          val ua                         = mock[UserAnswers]
-//          val isNumberItemsZero: Boolean = SelectItemsViewModel.apply(ua).items.values.isEmpty
-//          ua.setValue(AddSealYesNoPage(equipmentIndex), false)
-//          when(!isNumberItemsZero)
-//          navigator
-//            .nextPage(AddSealYesNoPage(equipmentIndex), mode, ua)
-//            .mustBe(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(ua.id, equipmentIndex, itemIndex, mode))
+          val ua = mock[UserAnswers].setValue(AddSealYesNoPage(equipmentIndex), false)
+          when(SelectItemsViewModel.apply(ua).items.values.nonEmpty)
+          navigator
+            .nextPage(AddSealYesNoPage(equipmentIndex), mode, ua)
+            .mustBe(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(ua.id, equipmentIndex, itemIndex, mode))
 
         }
 
