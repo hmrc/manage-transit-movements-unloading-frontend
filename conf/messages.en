@@ -48,9 +48,6 @@ documentLink.visuallyHidden = Add or remove document
 additionalReferenceLink.addRemove = Add or remove additional reference
 additionalReferenceLink.visuallyHidden = Add or remove additional reference
 
-
-
-
 departureTransportMeans.addRemove = Add or remove departure means of transport
 departureTransportMeans.visuallyHidden = Add or remove departure means of transport
 documentsLink.addRemove = Add or remove document
@@ -245,10 +242,9 @@ transportEquipment.index.addSealYesNo.heading = Do you want to add a seal for th
 transportEquipment.index.addSealYesNo.paragraph = You can only add a seal if you are authorised to use customs seals.
 transportEquipment.index.addSealYesNo.error.required = Select yes if you want to add a seal for the transport equipment
 
-transportEquipment.index.applyAnItemYesNo.title = Do you want to apply an item to the transport equipment?
-transportEquipment.index.applyAnItemYesNo.heading = Do you want to apply an item to the transport equipment?
-transportEquipment.index.applyAnItemYesNo.paragraph = You can only apply an item if there any any left to apply.
-transportEquipment.index.applyAnItemYesNo.error.required = Select yes if you want to apply an item to the transport equipment
+transportEquipment.index.applyAnItemYesNo.title = Do any items apply to this transport equipment?
+transportEquipment.index.applyAnItemYesNo.heading = Do any items apply to this transport equipment?
+transportEquipment.index.applyAnItemYesNo.error.required = Select yes if any items apply to this transport equipment
 
 unloadingSummary.title = Check what you found against the transit declaration
 unloadingSummary.heading = Check what you found against the transit declaration
