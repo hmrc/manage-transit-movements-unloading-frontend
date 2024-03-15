@@ -30,8 +30,5 @@ class AdditionalReferencesService @Inject() (referenceDataConnector: ReferenceDa
     referenceDataConnector
       .getAdditionalReferences()
       .map(_.toSeq)
-      .map(sort)
-
-  private def sort(additionalReferences: Seq[AdditionalReferenceType]): SelectableList[AdditionalReferenceType] =
-    SelectableList(additionalReferences.sortBy(_.description.toLowerCase))
+      .map(SelectableList(_))
 }

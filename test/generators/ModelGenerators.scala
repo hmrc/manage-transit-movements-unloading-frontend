@@ -135,7 +135,7 @@ trait ModelGenerators {
     Arbitrary {
       for {
         code <- nonEmptyString
-        desc <- Gen.option(nonEmptyString)
+        desc <- nonEmptyString
       } yield PackageType(code, desc)
     }
 
