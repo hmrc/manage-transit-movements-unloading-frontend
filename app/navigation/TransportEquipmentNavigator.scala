@@ -82,13 +82,16 @@ class TransportEquipmentNavigator extends Navigator {
     }
 
   private def addSealYesNoRoute(ua: UserAnswers, equipmentIndex: Index, mode: Mode): Option[Call] = {
-    def isNumberItemsZero: Boolean = SelectItemsViewModel.apply(ua).items.values.isEmpty
+    val isNumberItemsZero: Boolean = SelectItemsViewModel.apply(ua).items.values.isEmpty
     ua.get(AddSealYesNoPage(equipmentIndex)) match {
       case Some(true) =>
         Some(controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(ua.id, mode, equipmentIndex, Index(0)))
-      case Some(false) if !isNumberItemsZero =>
-        Some(controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(ua.id, equipmentIndex, mode))
-      case Some(false) => Some(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(ua.id, mode))
+      case Some(false) =>
+        if (!isNumberItemsZero)
+          Some(controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(ua.id, equipmentIndex, mode))
+        else
+          Some(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(ua.id, mode))
+
       case _ =>
         Some(controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(ua.id, equipmentIndex, mode))
     }

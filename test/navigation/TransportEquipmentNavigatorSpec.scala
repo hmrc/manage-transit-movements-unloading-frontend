@@ -23,8 +23,8 @@ import models.reference.Item
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.ContainerIdentificationNumberPage
-import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import pages.transportEquipment.index._
+import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 
 class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -77,12 +77,25 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
 
         }
 
-        "to GoodsReferencePAge  when answered No" in {
+        "to Item Page when answered No if there are items remaining" in {
+
+//          val ua                         = mock[UserAnswers]
+//          val isNumberItemsZero: Boolean = SelectItemsViewModel.apply(ua).items.values.isEmpty
+//          ua.setValue(AddSealYesNoPage(equipmentIndex), false)
+//          when(!isNumberItemsZero)
+//          navigator
+//            .nextPage(AddSealYesNoPage(equipmentIndex), mode, ua)
+//            .mustBe(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(ua.id, equipmentIndex, itemIndex, mode))
+
+        }
+
+        "to Add equipment page when answered No if there are 0 items remaining" in {
+
           val userAnswers = emptyUserAnswers.setValue(AddSealYesNoPage(equipmentIndex), false)
 
           navigator
             .nextPage(AddSealYesNoPage(equipmentIndex), mode, userAnswers)
-            .mustBe(controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, equipmentIndex, mode))
+            .mustBe(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, mode))
 
         }
       }
