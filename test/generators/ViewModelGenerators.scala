@@ -26,7 +26,7 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{Content, Hint, Label, RadioItem}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
-import viewModels.additionalReference.index.AdditionalReferenceTypeViewModel
+import viewModels.additionalReference.index.{AddAnotherAdditionalReferenceViewModel, AdditionalReferenceTypeViewModel}
 import viewModels.departureTransportMeans._
 import viewModels.documents.{AdditionalInformationViewModel, DocumentReferenceNumberViewModel, TypeViewModel}
 import viewModels.houseConsignment.index.items._
@@ -358,4 +358,13 @@ trait ViewModelGenerators {
       onSubmitCall <- arbitrary[Call]
     } yield AddAnotherSealViewModel(listItems, onSubmitCall, Index(0), Index(0))
   }
+
+  implicit lazy val addAnotherAdditionalReferenceViewModelViewModel: Arbitrary[AddAnotherAdditionalReferenceViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+      nextIndex    <- arbitrary[Index]
+    } yield AddAnotherAdditionalReferenceViewModel(listItems, onSubmitCall, nextIndex)
+  }
+
 }
