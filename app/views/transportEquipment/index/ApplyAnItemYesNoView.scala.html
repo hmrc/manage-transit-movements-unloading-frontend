@@ -20,11 +20,11 @@
 @import views.html.components.{Button, ErrorSummary, InputYesNo}
 
 @this(
-mainTemplate: MainTemplate,
-formHelper: FormWithCSRF,
-inputYesNo: InputYesNo,
-errorSummary: ErrorSummary,
-button: Button
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    inputYesNo: InputYesNo,
+    errorSummary: ErrorSummary,
+    button: Button
 )
 
 @(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, transportEquipmentIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -34,9 +34,9 @@ button: Button
     showBackLink = true
 ) {
 
-        @errorSummary(form.errors)
+    @errorSummary(form.errors)
 
-        @formHelper(action = controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onSubmit(arrivalId, transportEquipmentIndex, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onSubmit(arrivalId, transportEquipmentIndex, mode), Symbol("autoComplete") -> "off") {
 
         @inputYesNo(
             field = form("value"),
