@@ -30,7 +30,7 @@ class ApplyAnItemYesNoPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](ApplyAnItemYesNoPage(index))
 
-    "cleanup must remove contact details when no selected" in {
+    "cleanup must Items Section when no selected" in {
       val userAnswers = emptyUserAnswers
         .setValue(ItemsSection(equipmentIndex), JsArray(Seq(Json.obj("foo" -> "bar"))))
 
