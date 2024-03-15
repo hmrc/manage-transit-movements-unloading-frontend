@@ -37,8 +37,6 @@ class ApplyAnItemYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithHeading()
 
-  behave like pageWithContent("p", "You can only apply an item if there any any left to apply.")
-
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Continue")

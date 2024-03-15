@@ -40,10 +40,9 @@ button: Button
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = YesNoWithAdditionalHtml(
+            yesNoType = OrdinaryYesNo(
                 heading = messages("transportEquipment.index.applyAnItemYesNo.heading"),
-                caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = messages("transportEquipment.index.applyAnItemYesNo.paragraph").toParagraph
+                caption = Some(messages("site.caption", mrn.toString))
             )
         )
 
