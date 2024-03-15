@@ -142,7 +142,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
               result.listItems mustBe Seq(
                 ListItem(
                   name = s"Transport Equipment 1 - container $containerId",
-                  changeUrl = Some("#"), //TODO: To be added later
+                  changeUrl = None,
                   removeUrl = Some(
                     controllers.transportEquipment.index.routes.RemoveTransportEquipmentYesNoController
                       .onPageLoad(arrivalId, mode, Index(0))
@@ -151,7 +151,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                 ),
                 ListItem(
                   name = s"Transport Equipment 2 - container $containerId",
-                  changeUrl = Some("#"), //TODO: To be added later
+                  changeUrl = None,
                   removeUrl = Some(
                     controllers.transportEquipment.index.routes.RemoveTransportEquipmentYesNoController
                       .onPageLoad(arrivalId, mode, Index(1))

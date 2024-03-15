@@ -64,7 +64,7 @@ object AddAnotherEquipmentViewModel {
 
           ListItem(
             name = name,
-            changeUrl = Some(Call("GET", "#").url), //TODO: To be added later
+            changeUrl = None,
             removeUrl = Some(controllers.transportEquipment.index.routes.RemoveTransportEquipmentYesNoController.onPageLoad(arrivalId, mode, index).url)
           )
       }
