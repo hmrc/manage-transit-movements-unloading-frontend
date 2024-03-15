@@ -23,7 +23,6 @@ import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
 import navigation.DepartureTransportMeansNavigator
 import pages.departureMeansOfTransport.TransportMeansIdentificationPage
-import pages.equipment.InlandModePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -56,7 +55,7 @@ class IdentificationController @Inject() (
   def onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
-        service.getMeansOfTransportIdentificationTypes(request.userAnswers.get(InlandModePage), transportMeansIndex).flatMap {
+        service.getMeansOfTransportIdentificationTypes(request.userAnswers).flatMap {
           identifiers =>
             val viewModel = identificationViewModelProvider.apply(mode)
             val preparedForm = request.userAnswers.get(TransportMeansIdentificationPage(transportMeansIndex)) match {
@@ -70,7 +69,7 @@ class IdentificationController @Inject() (
   def onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
-        service.getMeansOfTransportIdentificationTypes(request.userAnswers.get(InlandModePage), transportMeansIndex).flatMap {
+        service.getMeansOfTransportIdentificationTypes(request.userAnswers).flatMap {
           identifiers =>
             val viewModel = identificationViewModelProvider.apply(mode)
             form(mode, identifiers)
