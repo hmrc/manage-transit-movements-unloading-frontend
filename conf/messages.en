@@ -752,6 +752,19 @@ document.addAdditionalInformationYesNo.heading = Do you want to add any addition
 document.addAdditionalInformationYesNo.paragraph = This can be any other information you want to declare, such as a contact, any safety risks or further descriptions.
 document.addAdditionalInformationYesNo.error.required = Select yes if you want to add any additional information for this document
 
+document.addAnotherDocument.empty.title = You have added 0 document to all items
+document.addAnotherDocument.empty.heading = You have added 0 document to all items
+document.addAnotherDocument.empty.label = Do you want to add a document to all items?
+
+document.addAnotherDocument.singular.title = You have added 1 document to all items
+document.addAnotherDocument.plural.title = You have added {0} documents to all items
+document.addAnotherDocument.singular.heading = You have added 1 document to all items
+document.addAnotherDocument.plural.heading = You have added {0} documents to all items
+document.addAnotherDocument.label = Do you want to add another document to all items?
+document.addAnotherDocument.maxLimit.label = You cannot add any more documents to all items. You can still add and attach documents to individual items from their house consignment cross-check screens.
+document.addAnotherDocument.error.required = Select yes if you want to add another document to all items
+document.addAnotherDocument.noMoreItems.label = You cannot add any more documents to all items. You can still add and attach documents to individual items from their house consignment cross-check screens.
+
 houseConsignment.index.items.document.referenceNumber.NormalMode.title = What is the document’s reference number?
 houseConsignment.index.items.document.referenceNumber.CheckMode.title = What is the new document’s reference number for item {1} in house consignment {0}?
 houseConsignment.index.items.document.referenceNumber.NormalMode.heading = What is the document’s reference number?

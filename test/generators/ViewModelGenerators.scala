@@ -28,7 +28,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import viewModels.additionalReference.index.{AddAnotherAdditionalReferenceViewModel, AdditionalReferenceTypeViewModel}
 import viewModels.departureTransportMeans._
-import viewModels.documents.{AdditionalInformationViewModel, DocumentReferenceNumberViewModel, TypeViewModel}
+import viewModels.documents.{AddAnotherDocumentViewModel, AdditionalInformationViewModel, DocumentReferenceNumberViewModel, TypeViewModel}
 import viewModels.houseConsignment.index.items._
 import viewModels.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberViewModel, AdditionalReferenceViewModel}
 import viewModels.houseConsignment.index.items.document.{ItemsAdditionalInformationViewModel, ItemsDocumentReferenceNumberViewModel}
@@ -259,12 +259,20 @@ trait ViewModelGenerators {
     } yield AddAnotherDepartureMeansOfTransportViewModel(listItems, onSubmitCall, nextIndex)
   }
 
-  implicit lazy val addAnotherEquipmentViewModelViewModel: Arbitrary[AddAnotherEquipmentViewModel] = Arbitrary {
+  implicit lazy val addAnotherEquipmentViewModel: Arbitrary[AddAnotherEquipmentViewModel] = Arbitrary {
     for {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
       nextIndex    <- arbitrary[Index]
     } yield AddAnotherEquipmentViewModel(listItems, onSubmitCall, nextIndex)
+  }
+
+  implicit lazy val addAnotherDocumentViewModel: Arbitrary[AddAnotherDocumentViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+      nextIndex    <- arbitrary[Index]
+    } yield AddAnotherDocumentViewModel(listItems, onSubmitCall, nextIndex)
   }
 
   implicit lazy val arbitraryContainerIdentificationNumberViewModel: Arbitrary[ContainerIdentificationNumberViewModel] = Arbitrary {

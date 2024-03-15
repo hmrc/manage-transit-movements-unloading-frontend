@@ -46,8 +46,7 @@ class RemoveDocumentYesNoController @Inject() (
 
   private val form: Form[Boolean] = formProvider("document.removeDocumentYesNo")
 
-  // TODO: update once AddAnotherDocumentController implemented
-  private def addAnother(arrivalId: ArrivalId, mode: Mode): Call = new Call("GET", "/foo")
+  private def addAnother(arrivalId: ArrivalId, mode: Mode): Call = controllers.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, mode)
 
   private def formatInsetText(userAnswers: UserAnswers, documentIndex: Index): String = {
     val documentType: DocumentType      = userAnswers.get(TypePage(documentIndex)).get
