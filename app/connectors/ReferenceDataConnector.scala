@@ -65,13 +65,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getSecurityType(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[SecurityType] = {
     val queryParams: Seq[(String, String)] = Seq("data.code" -> typeValue)
     val url                                = s"${config.referenceDataUrl}/lists/DeclarationTypeSecurity"
-    http
-      .GET[NonEmptySet[SecurityType]](url, headers = version2Header, queryParams = queryParams)(
-        responseHandlerGeneric(SecurityType.format, SecurityType.order),
-        hc,
-        ec
-      )
-      .map(_.head)
+    http.GET[NonEmptySet[SecurityType]](url, headers = version2Header, queryParams = queryParams).map(_.head)
   }
 
   def getMeansOfTransportIdentificationType(
@@ -82,15 +76,10 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[NonEmptySet[TransportMeansIdentification]](url, headers = version2Header, queryParams = queryParams).map(_.head)
   }
 
-  def getCountryNameByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Country]] = {
-
-    val queryParams: Seq[(String, String)] = Seq(
-      "data.code" -> code
-    )
-
-    val url = s"${config.referenceDataUrl}/lists/CountryCodesFullList"
-
-    http.GET[NonEmptySet[Country]](url, headers = version2Header, queryParams = queryParams)
+  def getCountryNameByCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Country] = {
+    val queryParams: Seq[(String, String)] = Seq("data.code" -> code)
+    val url                                = s"${config.referenceDataUrl}/lists/CountryCodesFullList"
+    http.GET[NonEmptySet[Country]](url, headers = version2Header, queryParams = queryParams).map(_.head)
   }
 
   def getCUSCode(cusCode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[CUSCode]] = {
@@ -100,44 +89,27 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[NonEmptySet[CUSCode]](url, headers = version2Header, queryParams = queryParams)
   }
 
-  def getCustomsOffice(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[CustomsOffice]] = {
-
-    val queryParams: Seq[(String, String)] = Seq(
-      "data.id" -> code
-    )
-
-    val url = s"${config.referenceDataUrl}/lists/CustomsOffices"
-
-    http.GET[NonEmptySet[CustomsOffice]](url, headers = version2Header, queryParams = queryParams)
+  def getCustomsOffice(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[CustomsOffice] = {
+    val queryParams: Seq[(String, String)] = Seq("data.id" -> code)
+    val url                                = s"${config.referenceDataUrl}/lists/CustomsOffices"
+    http.GET[NonEmptySet[CustomsOffice]](url, headers = version2Header, queryParams = queryParams).map(_.head)
   }
 
   def getPackageTypes(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[PackageType]] = {
     val url = s"${config.referenceDataUrl}/lists/KindOfPackages"
-    http.GET[NonEmptySet[PackageType]](url, headers = version2Header)(responseHandlerGeneric(PackageType.format, PackageType.order), hc, ec)
+    http.GET[NonEmptySet[PackageType]](url, headers = version2Header)
   }
 
   def getPackageType(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[PackageType] = {
     val queryParams: Seq[(String, String)] = Seq("data.code" -> typeValue)
     val url                                = s"${config.referenceDataUrl}/lists/KindOfPackages"
-    http
-      .GET[NonEmptySet[PackageType]](url, headers = version2Header, queryParams = queryParams)(
-        responseHandlerGeneric(PackageType.format, PackageType.order),
-        hc,
-        ec
-      )
-      .map(_.head)
+    http.GET[NonEmptySet[PackageType]](url, headers = version2Header, queryParams = queryParams).map(_.head)
   }
 
   def getIncidentType(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Incident] = {
     val queryParams: Seq[(String, String)] = Seq("data.code" -> typeValue)
     val serviceUrl                         = s"${config.referenceDataUrl}/lists/IncidentCode"
-    http
-      .GET[NonEmptySet[Incident]](serviceUrl, headers = version2Header, queryParams = queryParams)(
-        responseHandlerGeneric(Incident.format, Incident.order),
-        hc,
-        ec
-      )
-      .map(_.head)
+    http.GET[NonEmptySet[Incident]](serviceUrl, headers = version2Header, queryParams = queryParams).map(_.head)
   }
 
   def getSupportingDocument(typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DocumentType] =
@@ -190,7 +162,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[NonEmptySet[QualifierOfIdentification]](url, headers = version2Header, queryParams = queryParams).map(_.head)
   }
 
-  def getDocument(dt: DocType, path: String, typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DocumentType] =
+  private def getDocument(dt: DocType, path: String, typeValue: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DocumentType] =
     getDocuments(dt, path, Seq("data.code" -> typeValue)).map(_.head)
 
   private def version2Header: Seq[(String, String)] = Seq(
