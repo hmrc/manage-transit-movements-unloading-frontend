@@ -101,14 +101,16 @@ class ConsignmentItemAnswersHelper(
       case Nil =>
         StaticSection(
           sectionTitle = Some(messages("unloadingFindings.additional.reference.heading")),
-          viewLinks = Seq(additionalReferenceAddRemoveLink)
+          viewLinks = Seq(additionalReferenceAddRemoveLink),
+          id = Some("additionalReferences")
         )
       case sectionsRows =>
         val children = sectionsRows.map {
           case (rows, index) =>
             AccordionSection(
               sectionTitle = Some(messages("unloadingFindings.houseConsignment.item.additionalReference", index.display)),
-              rows = rows
+              rows = rows,
+              id = Some(s"item-${itemIndex.display}-additional-reference-${index.display}")
             )
         }
         AccordionSection(
@@ -136,7 +138,8 @@ class ConsignmentItemAnswersHelper(
           case (rows, index) =>
             AccordionSection(
               sectionTitle = Some(messages("unloadingFindings.additionalInformation.label", index.display)),
-              rows = rows
+              rows = rows,
+              id = Some(s"item-${itemIndex.display}-additional-information-${index.display}")
             )
         }
         Some(
@@ -164,14 +167,16 @@ class ConsignmentItemAnswersHelper(
       case Nil =>
         StaticSection(
           sectionTitle = Some(messages("unloadingFindings.document.heading.parent.heading")),
-          viewLinks = Seq(documentAddRemoveLink)
+          viewLinks = Seq(documentAddRemoveLink),
+          id = Some("documents")
         )
       case documentSectionRows =>
         val documents = documentSectionRows.map {
           case (rows, index) =>
             AccordionSection(
               sectionTitle = Some(messages("unloadingFindings.document.heading", index.display)),
-              rows = rows
+              rows = rows,
+              id = Some(s"item-${itemIndex.display}-document-${index.display}")
             )
         }
         AccordionSection(
@@ -200,14 +205,16 @@ class ConsignmentItemAnswersHelper(
       case Nil =>
         StaticSection(
           sectionTitle = Some(messages("unloadingFindings.subsections.packages.parent.heading")),
-          viewLinks = Seq(packagingAddRemoveLink)
+          viewLinks = Seq(packagingAddRemoveLink),
+          id = Some("packages")
         )
       case packageSectionRows =>
         val packages = packageSectionRows.map {
           case (rows, index) =>
             AccordionSection(
               sectionTitle = Some(messages("unloadingFindings.subsections.packages", index.display)),
-              rows = rows
+              rows = rows,
+              id = Some(s"item-${itemIndex.display}-package-${index.display}")
             )
         }
         AccordionSection(

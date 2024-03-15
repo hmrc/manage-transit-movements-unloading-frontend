@@ -142,7 +142,8 @@ class HouseConsignmentAnswersHelper(
             AccordionSection(
               sectionTitle = Some(messages("unloadingFindings.subsections.item", index.display)),
               rows = rows,
-              children = children
+              children = children,
+              id = Some(s"item-${index.display}")
             )
         }
         AccordionSection(
