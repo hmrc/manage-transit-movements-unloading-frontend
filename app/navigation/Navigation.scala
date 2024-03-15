@@ -18,7 +18,7 @@ package navigation
 
 import com.google.inject.Singleton
 import controllers.routes
-import models.{CheckMode, NormalMode, RichCC043CType, UserAnswers}
+import models.{CheckMode, Index, NormalMode, RichCC043CType, UserAnswers}
 import pages._
 import play.api.mvc.Call
 
