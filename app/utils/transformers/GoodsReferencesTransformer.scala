@@ -27,8 +27,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class GoodsReferencesTransformer @Inject() (implicit ec: ExecutionContext) extends PageTransformer {
 
-  def transform(goodsReferenceSeq: Seq[GoodsReferenceType02], equipmentIndex: Index): UserAnswers => Future[UserAnswers] = userAnswers =>
-    goodsReferenceSeq.zipWithIndex.foldLeft(Future.successful(userAnswers))({
+  def transform(goodsReferences: Seq[GoodsReferenceType02], equipmentIndex: Index): UserAnswers => Future[UserAnswers] = userAnswers =>
+    goodsReferences.zipWithIndex.foldLeft(Future.successful(userAnswers))({
       case (acc, (GoodsReferenceType02(sequenceNumber, declarationGoodsItemNumber), i)) =>
         acc.flatMap {
           userAnswers =>
