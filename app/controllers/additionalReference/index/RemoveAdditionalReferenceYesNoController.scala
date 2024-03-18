@@ -46,9 +46,8 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
   def form(additionalReferenceIndex: Index): Form[Boolean] =
     formProvider("additionalReference.index.removeAdditionalReferenceYesNo", additionalReferenceIndex.display)
 
-  private def addAnother(arrivalId: ArrivalId, additionalReferenceIndex: Index, mode: Mode): Call =
-    Call("GET", "#")
-  //TODO: replace with
+  private def addAnother(arrivalId: ArrivalId, mode: Mode): Call =
+    controllers.additionalReference.index.routes.AddAnotherAdditionalReferenceController.onSubmit(arrivalId, mode)
 
   def insetText(userAnswers: UserAnswers, additionalReferenceIndex: Index): Option[String] = {
     val additionalReferenceType   = userAnswers.get(AdditionalReferenceTypePage(additionalReferenceIndex)).map(_.value).getOrElse("")
@@ -57,7 +56,7 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
   }
 
   def onPageLoad(arrivalId: ArrivalId, additionalReferenceIndex: Index, mode: Mode): Action[AnyContent] = actions
-    .requireIndex(arrivalId, AdditionalReferenceSection(additionalReferenceIndex), addAnother(arrivalId, additionalReferenceIndex, mode))
+    .requireIndex(arrivalId, AdditionalReferenceSection(additionalReferenceIndex), addAnother(arrivalId, mode))
     .andThen(getMandatoryPage.getFirst(AdditionalReferenceNumberPage(additionalReferenceIndex))) {
       implicit request =>
         Ok(
@@ -73,7 +72,7 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, additionalReferenceIndex: Index, mode: Mode): Action[AnyContent] = actions
-    .requireIndex(arrivalId, AdditionalReferenceSection(additionalReferenceIndex), addAnother(arrivalId, additionalReferenceIndex, mode))
+    .requireIndex(arrivalId, AdditionalReferenceSection(additionalReferenceIndex), addAnother(arrivalId, mode))
     .async {
       implicit request =>
         form(additionalReferenceIndex)
@@ -101,7 +100,7 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
                     Future.successful(request.userAnswers)
                   }
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(addAnother(arrivalId, additionalReferenceIndex, mode))
+              } yield Redirect(addAnother(arrivalId, mode))
           )
     }
 }
