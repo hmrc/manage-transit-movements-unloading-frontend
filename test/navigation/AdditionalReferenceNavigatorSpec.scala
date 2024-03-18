@@ -24,11 +24,11 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.additionalReference._
 
-class ItemNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  val navigator = new ItemNavigator
+  val navigator = new AdditionalReferenceNavigator
 
-  "ItemNavigator" - {
+  "AdditionalReferenceNavigator" - {
 
     "in Check mode" - {
 

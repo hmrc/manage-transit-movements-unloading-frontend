@@ -48,7 +48,7 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
 
   private def addAnother(arrivalId: ArrivalId, additionalReferenceIndex: Index, mode: Mode): Call =
     Call("GET", "#")
-  //TODO: replace with AddAnotherAdditionalReferenceController
+  //TODO: replace with
 
   def insetText(userAnswers: UserAnswers, additionalReferenceIndex: Index): Option[String] = {
     val additionalReferenceType   = userAnswers.get(AdditionalReferenceTypePage(additionalReferenceIndex)).map(_.value).getOrElse("")

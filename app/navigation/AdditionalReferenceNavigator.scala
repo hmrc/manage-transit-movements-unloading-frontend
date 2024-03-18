@@ -23,7 +23,7 @@ import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalRefer
 import play.api.mvc.Call
 
 @Singleton
-class ItemNavigator extends Navigator {
+class AdditionalReferenceNavigator extends Navigator {
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case AdditionalReferenceNumberPage(_) =>
