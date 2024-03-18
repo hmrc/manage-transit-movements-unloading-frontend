@@ -16,12 +16,10 @@
 
 package pages.transportEquipment.index
 
-import models.{Index, UserAnswers}
-import pages.sections.{ItemsSection, TransportEquipmentSection}
-import pages.{ContainerIdentificationNumberPage, QuestionPage}
+import models.Index
+import pages.sections.TransportEquipmentSection
+import pages.QuestionPage
 import play.api.libs.json.JsPath
-
-import scala.util.Try
 
 case class ApplyAnItemYesNoPage(equipmentIndex: Index) extends QuestionPage[Boolean] {
 

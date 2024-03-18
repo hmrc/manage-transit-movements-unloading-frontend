@@ -231,7 +231,10 @@ class ConsignmentItemAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.item.cusCode",
     args = itemIndex.display,
     id = Some(s"change-cus-code-${itemIndex.display}"),
-    call = Some(Call(GET, "#"))
+    call = Some(
+      controllers.houseConsignment.index.items.routes.CustomsUnionAndStatisticsCodeController
+        .onPageLoad(arrivalId, CheckMode, houseConsignmentIndex, itemIndex)
+    )
   )
 
   def commodityCodeRow: SummaryListRow = getAnswerAndBuildRowWithRemove[String](
@@ -251,34 +254,11 @@ class ConsignmentItemAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.item.nomenclatureCode",
     args = itemIndex.display,
     id = s"nomenclature-code-${itemIndex.display}",
-    change = routes.CombinedNomenclatureCodeController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode),
+    change = routes.CombinedNomenclatureCodeController
+      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode),
     remove = routes.RemoveCombinedNomenclatureCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode),
     hiddenLink = "nomenclatureCodeLink"
   )
-
-  private[consignment] def packagingAddRemoveLink: Link =
-    Link(
-      id = s"add-remove-packaging",
-      href = "#",
-      text = messages("packagingLink.addRemove"),
-      visuallyHidden = messages("packagingLink.visuallyHidden")
-    )
-
-  private[consignment] def documentAddRemoveLink: Link =
-    Link(
-      id = s"add-remove-document",
-      href = "#",
-      text = messages("documentLink.addRemove"),
-      visuallyHidden = messages("documentLink.visuallyHidden")
-    )
-
-  private[consignment] def additionalReferenceAddRemoveLink: Link =
-    Link(
-      id = s"add-remove-additionalReference",
-      href = "#",
-      text = messages("additionalReferenceLink.addRemove"),
-      visuallyHidden = messages("additionalReferenceLink.visuallyHidden")
-    )
 
   def itemLevelConsigneeSection: Section =
     StaticSection(
@@ -318,4 +298,28 @@ class ConsignmentItemAnswersHelper(
     formatAnswer = formatAsHtmlContent,
     prefix = "unloadingFindings.rowHeadings.houseConsignment.consigneeAddress"
   )
+
+  private[consignment] def packagingAddRemoveLink: Link =
+    Link(
+      id = s"add-remove-packaging",
+      href = "#",
+      text = messages("packagingLink.addRemove"),
+      visuallyHidden = messages("packagingLink.visuallyHidden")
+    )
+
+  private[consignment] def documentAddRemoveLink: Link =
+    Link(
+      id = s"add-remove-document",
+      href = "#",
+      text = messages("documentLink.addRemove"),
+      visuallyHidden = messages("documentLink.visuallyHidden")
+    )
+
+  private[consignment] def additionalReferenceAddRemoveLink: Link =
+    Link(
+      id = s"add-remove-additionalReference",
+      href = "#",
+      text = messages("additionalReferenceLink.addRemove"),
+      visuallyHidden = messages("additionalReferenceLink.visuallyHidden")
+    )
 }
