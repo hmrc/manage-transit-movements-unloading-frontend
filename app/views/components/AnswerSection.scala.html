@@ -31,10 +31,6 @@
             <h2 class="govuk-heading-m">@title</h2>
         }
 
-        @section.optionalInformationHeading.map { heading =>
-            <h3 class="govuk-heading-s">@heading</h3>
-        }
-
         @if(section.rows.nonEmpty) {
             @govukSummaryList(
                 SummaryList(
@@ -80,6 +76,8 @@
                 )
             )
         </dl>
+    } else if(section.children.isEmpty) {
+        <p class="govuk-body">Some content here explaining that user has answered NO to everything</p>
     }
 
     @section.children.map(this(_, nestingLevel + 1))
