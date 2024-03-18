@@ -399,6 +399,7 @@ unloadingFindings.paragraph = Compare the transit that arrived with the followin
 
 unloadingFindings.subsections.transportMeans = Departure means of transport {0}
 unloadingFindings.subsections.transportMeans.parent.header = Departure means of transport
+unloadingFindings.subsections.packages.parent.heading = Packages
 unloadingFindings.subsections.packages = Package {0}
 
 unloadingFindings.subsections.incidents = Incident {0}
@@ -487,6 +488,7 @@ unloadingFindings.rowHeadings.numberOfItems = Total number of items
 unloadingFindings.rowHeadings.totalGrossWeight = Total gross weight of all items
 unloadingFindings.rowHeadings.totalNetWeight = Total net weight of all items
 
+unloadingFindings.subsections.item.parent.heading = Items
 unloadingFindings.subsections.item = Item {0}
 unloadingFindings.rowHeadings.item.description = Description
 unloadingFindings.rowHeadings.item.description.change.hidden = description

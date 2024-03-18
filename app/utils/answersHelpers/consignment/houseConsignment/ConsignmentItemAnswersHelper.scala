@@ -16,6 +16,7 @@
 
 package utils.answersHelpers.consignment.houseConsignment
 
+import controllers.houseConsignment.index.items.routes
 import models.DocType.Previous
 import models.reference.Country
 import models.{CheckMode, Index, Link, NormalMode, RichOptionalJsArray, UserAnswers}
@@ -53,7 +54,7 @@ class ConsignmentItemAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.item.description",
     id = None,
-    call = Some(controllers.houseConsignment.index.items.routes.DescriptionController.onPageLoad(arrivalId, CheckMode, houseConsignmentIndex, itemIndex))
+    call = Some(routes.DescriptionController.onPageLoad(arrivalId, CheckMode, houseConsignmentIndex, itemIndex))
   )
 
   def declarationType: Option[SummaryListRow] = buildRowWithNoChangeLink[String](
@@ -74,9 +75,8 @@ class ConsignmentItemAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.item.grossWeight",
     args = itemIndex.display,
     id = s"gross-weight-${itemIndex.display}",
-    change = controllers.houseConsignment.index.items.routes.GrossWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode),
-    remove =
-      controllers.houseConsignment.index.items.routes.RemoveGrossWeightYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode),
+    change = routes.GrossWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode),
+    remove = routes.RemoveGrossWeightYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode),
     hiddenLink = "grossWeightLink"
   )
 
@@ -92,51 +92,101 @@ class ConsignmentItemAnswersHelper(
     hiddenLink = "netWeightLink"
   )
 
-  def additionalReferencesSection: Seq[Section] =
+  def additionalReferencesSection: Section =
     userAnswers.get(AdditionalReferencesSection(houseConsignmentIndex, itemIndex)).mapWithIndex {
       case (_, index) =>
         val helper = new AdditionalReferencesAnswerHelper(userAnswers, houseConsignmentIndex, itemIndex, index)
+        val rows   = Seq(helper.code, helper.referenceNumber).flatten
+        (rows, index)
+    } match {
+      case Nil =>
+        StaticSection(
+          sectionTitle = Some(messages("unloadingFindings.additional.reference.heading")),
+          viewLinks = Seq(additionalReferenceAddRemoveLink),
+          id = Some(s"item-$itemIndex-additional-references")
+        )
+      case sectionsRows =>
+        val children = sectionsRows.map {
+          case (rows, index) =>
+            AccordionSection(
+              sectionTitle = Some(messages("unloadingFindings.houseConsignment.item.additionalReference", index.display)),
+              rows = rows,
+              id = Some(s"item-$itemIndex-additional-reference-$index")
+            )
+        }
         AccordionSection(
-          sectionTitle = messages("unloadingFindings.houseConsignment.item.additionalReference", index.display),
-          rows = Seq(
-            helper.code,
-            helper.referenceNumber
-          ).flatten
+          sectionTitle = Some(messages("unloadingFindings.additional.reference.heading")),
+          viewLinks = Seq(additionalReferenceAddRemoveLink),
+          children = children,
+          id = Some(s"item-$itemIndex-additional-references")
         )
     }
 
-  def additionalInformationsSection: Seq[Section] =
+  def additionalInformationSection: Option[Section] =
     userAnswers.get(AdditionalInformationsSection(houseConsignmentIndex, itemIndex)).mapWithIndex {
       case (_, index) =>
         val helper = new AdditionalInformationsAnswerHelper(userAnswers, houseConsignmentIndex, itemIndex, index)
-        AccordionSection(
-          sectionTitle = messages("unloadingFindings.additional.information.heading", index.display),
-          rows = Seq(
-            helper.additionalInformationCodeRow,
-            helper.additionalInformationTextRow
-          ).flatten
+        val rows = Seq(
+          helper.additionalInformationCodeRow,
+          helper.additionalInformationTextRow
+        ).flatten
+        (rows, index)
+    } match {
+      case Nil =>
+        None
+      case sectionsRows =>
+        val children = sectionsRows.map {
+          case (rows, index) =>
+            AccordionSection(
+              sectionTitle = Some(messages("unloadingFindings.additionalInformation.label", index.display)),
+              rows = rows,
+              id = Some(s"item-$itemIndex-additional-information-$index")
+            )
+        }
+        Some(
+          AccordionSection(
+            sectionTitle = Some(messages("unloadingFindings.additionalInformation.heading")),
+            children = children,
+            id = Some(s"item-$itemIndex-additional-information")
+          )
         )
     }
 
-  def documentSections: Seq[Section] =
-    userAnswers
-      .get(DocumentsSection(houseConsignmentIndex, itemIndex))
-      .mapWithIndex {
-        case (_, index) =>
-          val helper   = new DocumentAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex, index)
-          val readOnly = userAnswers.get(TypePage(houseConsignmentIndex, itemIndex, index)).map(_.`type`).contains(Previous)
+  def documentSection: Section =
+    userAnswers.get(DocumentsSection(houseConsignmentIndex, itemIndex)).mapWithIndex {
+      case (_, index) =>
+        val helper   = new DocumentAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex, index)
+        val readOnly = userAnswers.get(TypePage(houseConsignmentIndex, itemIndex, index)).map(_.`type`).contains(Previous)
 
-          val rows = Seq(
-            helper.documentType(readOnly),
-            helper.referenceNumber(readOnly),
-            helper.additionalInformation(readOnly)
-          ).flatten
-
-          AccordionSection(
-            sectionTitle = messages("unloadingFindings.houseConsignment.item.document.heading", index.display),
-            rows = rows
-          )
-      }
+        val rows = Seq(
+          helper.documentType(readOnly),
+          helper.referenceNumber(readOnly),
+          helper.additionalInformation(readOnly)
+        ).flatten
+        (rows, index)
+    } match {
+      case Nil =>
+        StaticSection(
+          sectionTitle = Some(messages("unloadingFindings.document.heading.parent.heading")),
+          viewLinks = Seq(documentAddRemoveLink),
+          id = Some(s"item-$itemIndex-documents")
+        )
+      case documentSectionRows =>
+        val documents = documentSectionRows.map {
+          case (rows, index) =>
+            AccordionSection(
+              sectionTitle = Some(messages("unloadingFindings.document.heading", index.display)),
+              rows = rows,
+              id = Some(s"item-$itemIndex-document-$index")
+            )
+        }
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.document.heading.parent.heading")),
+          viewLinks = Seq(documentAddRemoveLink),
+          children = documents,
+          id = Some(s"item-$itemIndex-documents")
+        )
+    }
 
   def dangerousGoodsRows: Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(DangerousGoodsListSection(houseConsignmentIndex, itemIndex)) {
@@ -145,20 +195,36 @@ class ConsignmentItemAnswersHelper(
         helper.dangerousGoodsRow
     }
 
-  def packageSections: Seq[Section] =
-    userAnswers
-      .get(PackagingListSection(houseConsignmentIndex, itemIndex))
-      .mapWithIndex {
-        case (_, index) =>
-          val helper = new PackagingAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex, index)
+  def packageSection: Section =
+    userAnswers.get(PackagingListSection(houseConsignmentIndex, itemIndex)).mapWithIndex {
+      case (_, index) =>
+        val helper = new PackagingAnswersHelper(userAnswers, houseConsignmentIndex, itemIndex, index)
 
-          val rows = Seq(helper.packageTypeRow, helper.packageCountRow, helper.packageMarksRow).flatten
-
-          AccordionSection(
-            sectionTitle = messages("unloadingFindings.subsections.packages", index.display),
-            rows = rows
-          )
-      }
+        val rows = Seq(helper.packageTypeRow, helper.packageCountRow, helper.packageMarksRow).flatten
+        (rows, index)
+    } match {
+      case Nil =>
+        StaticSection(
+          sectionTitle = Some(messages("unloadingFindings.subsections.packages.parent.heading")),
+          viewLinks = Seq(packagingAddRemoveLink),
+          id = Some(s"item-$itemIndex-packages")
+        )
+      case packageSectionRows =>
+        val packages = packageSectionRows.map {
+          case (rows, index) =>
+            AccordionSection(
+              sectionTitle = Some(messages("unloadingFindings.subsections.packages", index.display)),
+              rows = rows,
+              id = Some(s"item-$itemIndex-package-$index")
+            )
+        }
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.subsections.packages.parent.heading")),
+          viewLinks = Seq(packagingAddRemoveLink),
+          children = packages,
+          id = Some(s"item-$itemIndex-packages")
+        )
+    }
 
   def cusCodeRow: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex),
@@ -175,9 +241,8 @@ class ConsignmentItemAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.item.commodityCode",
     args = itemIndex.display,
     id = s"commodity-code-${itemIndex.display}",
-    change = controllers.houseConsignment.index.items.routes.CommodityCodeController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode),
-    remove =
-      controllers.houseConsignment.index.items.routes.RemoveCommodityCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode),
+    change = routes.CommodityCodeController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode),
+    remove = routes.RemoveCommodityCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode),
     hiddenLink = "commodityCodeLink"
   )
 
@@ -187,10 +252,8 @@ class ConsignmentItemAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.item.nomenclatureCode",
     args = itemIndex.display,
     id = s"nomenclature-code-${itemIndex.display}",
-    change =
-      controllers.houseConsignment.index.items.routes.CombinedNomenclatureCodeController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode),
-    remove = controllers.houseConsignment.index.items.routes.RemoveCombinedNomenclatureCodeYesNoController
-      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode),
+    change = routes.CombinedNomenclatureCodeController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode),
+    remove = routes.RemoveCombinedNomenclatureCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode),
     hiddenLink = "nomenclatureCodeLink"
   )
 
