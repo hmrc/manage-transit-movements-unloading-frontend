@@ -303,17 +303,21 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
 
             result mustBe a[AccordionSection]
             result.sectionTitle.value mustBe "Documents"
+            result.id.value mustBe "item-1-documents"
 
             result.children.head mustBe a[AccordionSection]
             result.children.head.sectionTitle.value mustBe "Document 1"
+            result.children.head.id.value mustBe "item-1-document-1"
             result.children.head.rows.size mustBe 3
 
             result.children(1) mustBe a[AccordionSection]
             result.children(1).sectionTitle.value mustBe "Document 2"
+            result.children(1).id.value mustBe "item-1-document-2"
             result.children(1).rows.size mustBe 3
 
             result.children(2) mustBe a[AccordionSection]
             result.children(2).sectionTitle.value mustBe "Document 3"
+            result.children(2).id.value mustBe "item-1-document-3"
             result.children(2).rows.size mustBe 3
         }
       }
