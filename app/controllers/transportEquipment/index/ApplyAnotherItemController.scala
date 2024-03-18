@@ -27,8 +27,8 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import repositories.SessionRepository
+import services.GoodsReferenceService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.transportEquipment.SelectItemsViewModel
 import viewModels.transportEquipment.index.ApplyAnotherItemViewModel
 import viewModels.transportEquipment.index.ApplyAnotherItemViewModel.ApplyAnotherItemViewModelProvider
 import views.html.transport.equipment.ApplyAnotherItemView
@@ -44,7 +44,8 @@ class ApplyAnotherItemController @Inject() (
   view: ApplyAnotherItemView,
   viewModelProvider: ApplyAnotherItemViewModelProvider,
   sessionRepository: SessionRepository,
-  navigator: TransportEquipmentNavigator
+  navigator: TransportEquipmentNavigator,
+  goodsReferenceService: GoodsReferenceService
 )(implicit config: FrontendAppConfig, ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -55,20 +56,21 @@ class ApplyAnotherItemController @Inject() (
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
-        val isNumberItemsZero: Boolean = SelectItemsViewModel.apply(request.userAnswers).items.values.isEmpty
-        val viewModel                  = viewModelProvider(request.userAnswers, arrivalId, mode, equipmentIndex, isNumberItemsZero)
+        val availableGoodsReferences = goodsReferenceService.getGoodsReferences(request.userAnswers, equipmentIndex, None)
+        val viewModel                = viewModelProvider(request.userAnswers, arrivalId, mode, equipmentIndex, availableGoodsReferences)
         viewModel.count match {
           case 0 =>
-            Redirect(routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, Index(0), mode))
-          case _ => Ok(view(form(viewModel, equipmentIndex), request.userAnswers.mrn, arrivalId, viewModel))
+            Redirect(routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, equipmentIndex, mode))
+          case _ =>
+            Ok(view(form(viewModel, equipmentIndex), request.userAnswers.mrn, arrivalId, viewModel))
         }
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
-        val isNumberItemsZero: Boolean = SelectItemsViewModel(request.userAnswers).items.values.isEmpty
-        val viewModel                  = viewModelProvider(request.userAnswers, arrivalId, mode, equipmentIndex, isNumberItemsZero)
+        val availableGoodsReferences = goodsReferenceService.getGoodsReferences(request.userAnswers, equipmentIndex, None)
+        val viewModel                = viewModelProvider(request.userAnswers, arrivalId, mode, equipmentIndex, availableGoodsReferences)
         form(viewModel, equipmentIndex)
           .bindFromRequest()
           .fold(

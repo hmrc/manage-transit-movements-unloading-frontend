@@ -20,12 +20,15 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.YesNoFormProvider
 import models.NormalMode
+import models.reference.GoodsReference
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
 import pages.transportEquipment.index.ApplyAnItemYesNoPage
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.GoodsReferenceService
 import views.html.transportEquipment.index.ApplyAnItemYesNoView
 
 import scala.concurrent.Future
@@ -39,11 +42,39 @@ class ApplyAnItemYesNoControllerSpec extends SpecBase with AppWithDefaultMockFix
   private lazy val applyAnItemYesNoRoute =
     controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, index, mode).url
 
+  private val mockGoodsReferenceService = mock[GoodsReferenceService]
+
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(bind[GoodsReferenceService].toInstance(mockGoodsReferenceService))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockGoodsReferenceService)
+
+    when(mockGoodsReferenceService.getGoodsReferences(any(), any(), any()))
+      .thenReturn(Seq(GoodsReference(1, "Description 1")))
+  }
 
   "ApplyAnItemYesNoController" - {
+
+    "must redirect to add another equipment when no goods references to attach" in {
+
+      when(mockGoodsReferenceService.getGoodsReferences(any(), any(), any()))
+        .thenReturn(Nil)
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(GET, applyAnItemYesNoRoute)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual
+        controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, mode).url
+    }
 
     "must return OK and the correct view for a GET" in {
 

@@ -19,11 +19,9 @@ package navigation
 import com.google.inject.Singleton
 import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, UserAnswers}
 import pages._
-import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import pages.transportEquipment.index._
-import pages.transportEquipment.index.{AddAnotherSealPage, ApplyAnItemYesNoPage, ApplyAnotherItemPage, ItemPage}
+import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.mvc.Call
-import viewModels.transportEquipment.SelectItemsViewModel
 
 @Singleton
 class TransportEquipmentNavigator extends Navigator {
@@ -81,21 +79,13 @@ class TransportEquipmentNavigator extends Navigator {
       case false => controllers.transportEquipment.index.routes.AddSealYesNoController.onPageLoad(ua.id, equipmentIndex, mode)
     }
 
-  private def addSealYesNoRoute(ua: UserAnswers, equipmentIndex: Index, mode: Mode): Option[Call] = {
-    val isNumberItemsZero: Boolean = SelectItemsViewModel.apply(ua).items.values.isEmpty
-    ua.get(AddSealYesNoPage(equipmentIndex)) match {
-      case Some(true) =>
-        Some(controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(ua.id, mode, equipmentIndex, Index(0)))
-      case Some(false) =>
-        if (!isNumberItemsZero)
-          Some(controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(ua.id, equipmentIndex, mode))
-        else
-          Some(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(ua.id, mode))
-
-      case _ =>
-        Some(controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(ua.id, equipmentIndex, mode))
+  private def addSealYesNoRoute(ua: UserAnswers, equipmentIndex: Index, mode: Mode): Option[Call] =
+    ua.get(AddSealYesNoPage(equipmentIndex)) map {
+      case true =>
+        controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(ua.id, mode, equipmentIndex, Index(0))
+      case false =>
+        controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(ua.id, equipmentIndex, mode)
     }
-  }
 
   private def applyAnotherItemRoute(ua: UserAnswers, equipmentIndex: Index, itemIndex: Index, mode: Mode): Option[Call] =
     ua.get(ApplyAnotherItemPage(equipmentIndex, itemIndex)) match {

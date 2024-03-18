@@ -41,7 +41,6 @@ import scalaxb.XMLCalendar
 import services.ReferenceDataService
 import viewModels.UnloadingFindingsViewModel.UnloadingFindingsViewModelProvider
 
-import scala.Nil
 import scala.concurrent.Future
 
 class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
@@ -429,7 +428,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             .setValue(ContainerIdentificationNumberPage(equipmentIndex), "cin-1")
             .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "1002")
             .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
-            .setValue(ItemPage(equipmentIndex, itemIndex), Item(10, "12345"))
+            .setValue(ItemPage(equipmentIndex, itemIndex), BigInt(10))
 
           setExistingUserAnswers(userAnswers)
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
@@ -504,11 +503,11 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           val userAnswers = emptyUserAnswers
             .setValue(ContainerIdentificationNumberPage(Index(0)), "cin-1")
             .setValue(SealIdentificationNumberPage(Index(0), sealIndex), "1002")
-            .setValue(ItemPage(equipmentIndex, Index(0)), Item(10, "12345"))
+            .setValue(ItemPage(equipmentIndex, Index(0)), BigInt(10))
             .setValue(ContainerIdentificationNumberPage(Index(1)), "cin-1")
             .setValue(SealIdentificationNumberPage(Index(1), sealIndex), "1002")
             .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
-            .setValue(ItemPage(equipmentIndex, Index(1)), Item(10, "12345"))
+            .setValue(ItemPage(equipmentIndex, Index(1)), BigInt(10))
 
           setExistingUserAnswers(userAnswers)
           when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))

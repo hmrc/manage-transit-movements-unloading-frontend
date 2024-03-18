@@ -17,14 +17,13 @@
 package pages.houseConsignment.index.items
 
 import models.Index
-import models.reference.ItemDescription
 import pages.QuestionPage
 import pages.sections.ItemSection
 import play.api.libs.json.JsPath
 
-case class ItemGoodsReferenceDescriptionPage(houseConsignmentIndex: Index, itemIndex: Index) extends QuestionPage[ItemDescription] {
+case class DeclarationGoodsItemNumberPage(houseConsignmentIndex: Index, itemIndex: Index) extends QuestionPage[BigInt] {
 
-  override def path: JsPath = ItemSection(houseConsignmentIndex, itemIndex).path \ "Commodity" \ toString
+  override def path: JsPath = ItemSection(houseConsignmentIndex, itemIndex).path \ toString
 
-  override def toString: String = "itemAndDescription"
+  override def toString: String = "declarationGoodsItemNumber"
 }

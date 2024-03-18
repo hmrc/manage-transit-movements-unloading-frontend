@@ -18,7 +18,7 @@ package viewModels.transportEquipment.index
 
 import config.FrontendAppConfig
 import controllers.transportEquipment.index.routes
-import models.reference.Item
+import models.reference.GoodsReference
 import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, RichOptionalJsArray, UserAnswers}
 import pages.sections.transport.equipment.ItemsSection
 import pages.transportEquipment.index.ItemPage
@@ -60,9 +60,14 @@ object ApplyAnotherItemViewModel {
 
   class ApplyAnotherItemViewModelProvider() {
 
-    def apply(userAnswers: UserAnswers, arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index, isNumberItemsZero: Boolean)(implicit
-      messages: Messages
-    ): ApplyAnotherItemViewModel = {
+    // scalastyle:off method.length
+    def apply(
+      userAnswers: UserAnswers,
+      arrivalId: ArrivalId,
+      mode: Mode,
+      equipmentIndex: Index,
+      availableGoodsReferences: Seq[GoodsReference]
+    )(implicit messages: Messages): ApplyAnotherItemViewModel = {
       val array = userAnswers.get(ItemsSection(equipmentIndex))
 
       val listItems = array
@@ -75,10 +80,10 @@ object ApplyAnotherItemViewModel {
 
             def itemPrefix(item: String) = messages("transport.item.prefix", item)
 
-            def buildListItem(item: Item): ListItem = mode match {
+            def buildListItem(declarationGoodsItemNumber: BigInt): ListItem = mode match {
               case CheckMode =>
                 ListItem(
-                  name = itemPrefix(item.toString),
+                  name = itemPrefix(declarationGoodsItemNumber.toString),
                   changeUrl = Some(
                     controllers.transportEquipment.index.routes.GoodsReferenceController.onSubmit(arrivalId, equipmentIndex, itemIndex, mode).url
                   ),
@@ -86,7 +91,7 @@ object ApplyAnotherItemViewModel {
                 )
               case NormalMode =>
                 ListItem(
-                  name = itemPrefix(item.toString),
+                  name = itemPrefix(declarationGoodsItemNumber.toString),
                   changeUrl = None,
                   removeUrl =
                     Some(controllers.transportEquipment.index.routes.RemoveGoodsReferenceYesNoController.onPageLoad(arrivalId, equipmentIndex, itemIndex).url)
@@ -95,9 +100,7 @@ object ApplyAnotherItemViewModel {
 
             userAnswers
               .get(ItemPage(equipmentIndex, itemIndex))
-              .map(
-                item => buildListItem(item)
-              )
+              .map(buildListItem)
         }
         .toSeq
 
@@ -105,9 +108,10 @@ object ApplyAnotherItemViewModel {
         listItems = listItems,
         onSubmitCall = routes.ApplyAnotherItemController.onSubmit(arrivalId, mode, equipmentIndex),
         equipmentIndex = equipmentIndex,
-        isNumberItemsZero = isNumberItemsZero,
+        isNumberItemsZero = availableGoodsReferences.isEmpty,
         nextIndex = array.nextIndex
       )
     }
+    // scalastyle:on method.length
   }
 }

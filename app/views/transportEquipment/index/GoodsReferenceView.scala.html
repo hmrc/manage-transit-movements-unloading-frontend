@@ -16,11 +16,10 @@
 
 @import controllers.transportEquipment.index.routes
 @import models.reference.Selectable._
+@import models.reference.GoodsReference
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import viewModels.components.InputSelectViewModel._
 @import views.html.components.{Button, ErrorSummary, InputSelect}
-@import models.reference.Item
-@import viewModels.transportEquipment.SelectItemsViewModel
 
 @this(
     mainTemplate: MainTemplate,
@@ -30,14 +29,20 @@
     button: Button
 )
 
-@(form: Form[Item], arrivalId: ArrivalId, equipmentIndex: Index, itemIndex: Index, mrn: MovementReferenceNumber, viewModel: SelectItemsViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[GoodsReference], arrivalId: ArrivalId, equipmentIndex: Index, itemIndex: Index, mrn: MovementReferenceNumber, goodsReferences: Seq[GoodsReference], mode: Mode)(implicit request: Request[_], messages: Messages)
+
+@paragraphs = {
+    @messages("transport.equipment.selectItems.paragraph").toParagraph
+
+    @messages("transport.equipment.selectItems.label", goodsReferences.length).toParagraph
+}
 
 @mainTemplate(
     title = messages("transport.equipment.selectItems.title"),
     showBackLink = true
 ) {
 
-        @formHelper(action = routes.GoodsReferenceController.onSubmit(arrivalId, equipmentIndex, itemIndex, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.GoodsReferenceController.onSubmit(arrivalId, equipmentIndex, itemIndex, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
@@ -46,14 +51,9 @@
             selectType = SelectWithAdditionalHtml(
                 heading = messages("transport.equipment.selectItems.heading"),
                 caption = Some(messages(s"MRN: $mrn")),
-                additionalHtml = {
-                    (
-                        messages("transport.equipment.selectItems.paragraph").toParagraphString ++
-                        messages("transport.equipment.selectItems.label", viewModel.items.values.length).toParagraphString
-                    ).toParagraph
-                }
+                additionalHtml = paragraphs
             ),
-            selectItems = viewModel.items.values.toSelectItems(form.value),
+            selectItems = goodsReferences.toSelectItems(form.value),
             placeholder = messages("transport.equipment.selectItems.placeholder")
         )
 

@@ -17,7 +17,6 @@
 package utils.answersHelpers.consignment.transportEquipment
 
 import models.CheckMode
-import models.reference.Item
 import org.scalacheck.Arbitrary.arbitrary
 import pages.transportEquipment.index.ItemPage
 import utils.answersHelpers.AnswersHelperSpecBase
@@ -37,7 +36,7 @@ class ItemAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return Some(Row)" - {
         s"when $page defined" in {
-          forAll(arbitrary[Item]) {
+          forAll(arbitrary[BigInt]) {
             value =>
               val answers = emptyUserAnswers.setValue(page, value)
 

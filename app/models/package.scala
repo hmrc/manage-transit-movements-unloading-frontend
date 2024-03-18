@@ -227,6 +227,9 @@ package object models {
     def mapWithIndex[T](f: (JsValue, Index) => T): Seq[T] =
       arr.map(_.mapWithIndex(f)).getOrElse(Nil)
 
+    def flatMapWithIndex[T](f: (JsValue, Index) => Option[T]): Seq[T] =
+      mapWithIndex(f).flatten
+
     def validate[T](implicit rds: Reads[T]): Option[T] =
       arr.flatMap(_.validate[T].asOpt)
 

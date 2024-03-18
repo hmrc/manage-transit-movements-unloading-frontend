@@ -18,7 +18,7 @@ package viewModels.transportEquipment.index
 
 import base.SpecBase
 import generators.Generators
-import models.reference.Item
+import models.reference.GoodsReference
 import models.{CheckMode, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -28,16 +28,20 @@ import viewModels.transportEquipment.index.ApplyAnotherItemViewModel.ApplyAnothe
 
 class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
+  private val availableGoodsReferences = Seq(
+    GoodsReference(BigInt(1), "")
+  )
+
   "must get list items in check mode" - {
     val mode = CheckMode
 
     "when there is one item" in {
-      forAll(arbitrary[Item]) {
+      forAll(arbitrary[BigInt]) {
         item =>
           val userAnswers = emptyUserAnswers
             .setValue(ItemPage(equipmentIndex, itemIndex), item)
 
-          val result = new ApplyAnotherItemViewModelProvider().apply(userAnswers, arrivalId, mode, equipmentIndex, isNumberItemsZero = false)
+          val result = new ApplyAnotherItemViewModelProvider().apply(userAnswers, arrivalId, mode, equipmentIndex, availableGoodsReferences)
 
           result.listItems.length mustBe 1
           result.title mustBe "You have applied 1 item to transport equipment 1"
@@ -57,13 +61,13 @@ class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaC
 
     "when there are multiple items" in {
 
-      forAll(arbitrary[Item], arbitrary[Item]) {
+      forAll(arbitrary[BigInt], arbitrary[BigInt]) {
         (item1, item2) =>
           val userAnswers = emptyUserAnswers
             .setValue(ItemPage(equipmentIndex, itemIndex), item1)
             .setValue(ItemPage(equipmentIndex, Index(1)), item2)
 
-          val result = new ApplyAnotherItemViewModelProvider().apply(userAnswers, arrivalId, mode, equipmentIndex, isNumberItemsZero = false)
+          val result = new ApplyAnotherItemViewModelProvider().apply(userAnswers, arrivalId, mode, equipmentIndex, availableGoodsReferences)
 
           result.listItems.length mustBe 2
           result.title mustBe "You have applied 2 items to transport equipment 1"
@@ -91,12 +95,12 @@ class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaC
     val mode = NormalMode
 
     "when there is one item" in {
-      forAll(arbitrary[Item]) {
+      forAll(arbitrary[BigInt]) {
         item =>
           val userAnswers = emptyUserAnswers
             .setValue(ItemPage(equipmentIndex, itemIndex), item)
 
-          val result = new ApplyAnotherItemViewModelProvider().apply(userAnswers, arrivalId, mode, equipmentIndex, isNumberItemsZero = false)
+          val result = new ApplyAnotherItemViewModelProvider().apply(userAnswers, arrivalId, mode, equipmentIndex, availableGoodsReferences)
 
           result.listItems.length mustBe 1
           result.title mustBe "You have applied 1 item to transport equipment 1"
@@ -117,13 +121,13 @@ class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaC
 
     "when there are multiple items" in {
 
-      forAll(arbitrary[Item], arbitrary[Item]) {
+      forAll(arbitrary[BigInt], arbitrary[BigInt]) {
         (item1, item2) =>
           val userAnswers = emptyUserAnswers
             .setValue(ItemPage(equipmentIndex, itemIndex), item1)
             .setValue(ItemPage(equipmentIndex, Index(1)), item2)
 
-          val result = new ApplyAnotherItemViewModelProvider().apply(userAnswers, arrivalId, mode, equipmentIndex, isNumberItemsZero = false)
+          val result = new ApplyAnotherItemViewModelProvider().apply(userAnswers, arrivalId, mode, equipmentIndex, availableGoodsReferences)
 
           result.listItems.length mustBe 2
           result.title mustBe "You have applied 2 items to transport equipment 1"

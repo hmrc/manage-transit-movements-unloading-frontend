@@ -267,7 +267,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 
       "must generate accordion section with accordion and static children sections" in {
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr, arbitrary[Item]) {
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr, arbitrary[BigInt]) {
           (containerId, sealId, item) =>
             val answers = emptyUserAnswers
               .setValue(ContainerIdentificationNumberPage(equipmentIndex), containerId)

@@ -16,14 +16,13 @@
 
 package models.reference
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.i18n.Messages
 
-case class ItemDescription(declarationGoodsItemNumber: BigInt, description: String) extends Selectable {
-  override def toString: String = s"$declarationGoodsItemNumber"
+case class GoodsReference(declarationGoodsItemNumber: BigInt, itemDescription: String) extends Selectable {
+  override val value: String = declarationGoodsItemNumber.toString()
 
-  override val value: String = declarationGoodsItemNumber.toString
-}
+  override def toString: String = value
 
-object ItemDescription {
-  implicit val format: OFormat[ItemDescription] = Json.format[ItemDescription]
+  def asString(implicit messages: Messages): String =
+    messages("goodsReference.label", declarationGoodsItemNumber, itemDescription)
 }

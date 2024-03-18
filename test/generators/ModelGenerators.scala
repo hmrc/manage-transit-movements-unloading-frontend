@@ -155,12 +155,12 @@ trait ModelGenerators {
       } yield QualifierOfIdentification(qualifier, description)
     }
 
-  implicit lazy val arbitraryItem: Arbitrary[Item] =
+  implicit lazy val arbitraryGoodsReference: Arbitrary[GoodsReference] =
     Arbitrary {
       for {
-        no   <- positiveInts
-        desc <- nonEmptyString
-      } yield Item(no, desc)
+        declarationGoodsItemNumber <- positiveInts
+        itemDescription            <- nonEmptyString
+      } yield GoodsReference(declarationGoodsItemNumber, itemDescription)
     }
 
   implicit lazy val arbitraryCall: Arbitrary[Call] = Arbitrary {
