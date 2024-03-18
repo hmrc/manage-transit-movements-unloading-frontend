@@ -17,3 +17,8 @@ GET        /:arrivalId/additional-reference/:referenceIndex/remove              
 POST       /:arrivalId/additional-reference/:referenceIndex/remove                        controllers.additionalReference.index.RemoveAdditionalReferenceYesNoController.onSubmit(arrivalId: ArrivalId, referenceIndex: Index, mode: Mode = NormalMode)
 GET        /:arrivalId/additional-reference/:referenceIndex/change-remove                 controllers.additionalReference.index.RemoveAdditionalReferenceYesNoController.onPageLoad(arrivalId: ArrivalId, referenceIndex: Index, mode: Mode = CheckMode)
 POST       /:arrivalId/additional-reference/:referenceIndex/change-remove                 controllers.additionalReference.index.RemoveAdditionalReferenceYesNoController.onSubmit(arrivalId: ArrivalId, referenceIndex: Index,  mode: Mode = CheckMode)
+
+GET        /:arrivalId/additional-reference/add-another                                   controllers.additionalReference.index.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/additional-reference/add-another                                   controllers.additionalReference.index.AddAnotherAdditionalReferenceController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/additional-reference/change-add-another                            controllers.additionalReference.index.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/additional-reference/change-add-another                            controllers.additionalReference.index.AddAnotherAdditionalReferenceController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)

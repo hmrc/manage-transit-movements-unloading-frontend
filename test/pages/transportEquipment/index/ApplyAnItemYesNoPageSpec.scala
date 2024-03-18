@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package services
+package pages.transportEquipment.index
 
-import connectors.ReferenceDataConnector
-import models.SelectableList
-import models.reference.AdditionalReferenceType
-import uk.gov.hmrc.http.HeaderCarrier
+import pages.behaviours.PageBehaviours
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+class ApplyAnItemYesNoPageSpec extends PageBehaviours {
 
-class AdditionalReferencesService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
+  "ApplyAnItemYesNoPage" - {
 
-  def getAdditionalReferences()(implicit hc: HeaderCarrier): Future[SelectableList[AdditionalReferenceType]] =
-    referenceDataConnector
-      .getAdditionalReferences()
-      .map(_.toSeq)
-      .map(SelectableList(_))
+    beRetrievable[Boolean](ApplyAnItemYesNoPage(index))
+
+    beSettable[Boolean](ApplyAnItemYesNoPage(index))
+
+    beRemovable[Boolean](ApplyAnItemYesNoPage(index))
+
+  }
 }

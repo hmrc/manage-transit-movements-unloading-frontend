@@ -173,7 +173,8 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           case (rows, index) =>
             AccordionSection(
               sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans", index.display)),
-              rows
+              rows = rows,
+              id = Some(s"departureTransportMeans$index")
             )
         }
         AccordionSection(
@@ -217,7 +218,8 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
             AccordionSection(
               sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment", index.display)),
               viewLinks = Nil,
-              children = Seq(containerAndSealsSection, itemsSection)
+              children = Seq(containerAndSealsSection, itemsSection),
+              id = Some(s"transportEquipment$index")
             )
         }
 
@@ -246,7 +248,8 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           case (rows, index) =>
             AccordionSection(
               sectionTitle = Some(messages("unloadingFindings.additional.reference", index.display)),
-              rows = rows
+              rows = rows,
+              id = Some(s"additionalReference$index")
             )
         }
         AccordionSection(
@@ -271,7 +274,8 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           case (rows, index) =>
             AccordionSection(
               sectionTitle = Some(messages("unloadingFindings.additionalInformation.label", index.display)),
-              rows = rows
+              rows = rows,
+              id = Some(s"additionalInformation$index")
             )
         }
         Some(
@@ -318,7 +322,8 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           AccordionSection(
             sectionTitle = Some(messages("unloadingFindings.subsections.incidents", index.display)),
             rows = rows,
-            children = Seq(endorsementSection) ++ helper.incidentTransportEquipments ++ Seq(transhipment)
+            children = Seq(endorsementSection) ++ helper.incidentTransportEquipments ++ Seq(transhipment),
+            id = Some(s"incident$index")
           )
       }
       .toList match {
@@ -356,7 +361,8 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           case (rows, index) =>
             AccordionSection(
               sectionTitle = Some(messages("unloadingFindings.document.heading", index.display)),
-              rows = rows
+              rows = rows,
+              id = Some(s"document$index")
             )
         }
         AccordionSection(
@@ -389,7 +395,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
                 visuallyHidden = messages("summaryDetails.visuallyHidden", index.display)
               )
             ),
-            id = s"houseConsignment${index.display}",
+            id = s"houseConsignment$index",
             children = Seq(helper.houseConsignmentConsigneeSection)
           )
       }

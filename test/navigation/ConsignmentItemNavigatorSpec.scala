@@ -70,7 +70,7 @@ class ConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
       "must go from PackageTypePage to UnloadingFindingsController" in {
 
         val userAnswers = emptyUserAnswers
-          .setValue(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex), PackageType("code", Some("description")))
+          .setValue(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex), PackageType("code", "description"))
 
         navigator
           .nextPage(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex), mode, userAnswers)
