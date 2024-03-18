@@ -16,18 +16,21 @@
 
 package controllers.documents
 
+import config.FrontendAppConfig
 import controllers.actions._
 import forms.SelectableFormProvider
 import models.reference.DocumentType
 import models.requests.DataRequest
-import models.{ArrivalId, Index, Mode}
+import models._
 import navigation.DocumentNavigator
 import pages.documents.TypePage
+import pages.sections.documents.DocumentsSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.DocumentsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewModels.documents.AddAnotherDocumentViewModel.allowedDocTypes
 import viewModels.documents.TypeViewModel.TypeViewModelProvider
 import views.html.documents.TypeView
 
@@ -44,26 +47,44 @@ class TypeController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: TypeView,
   viewModelProvider: TypeViewModelProvider
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
   private val prefix: String = "document.type"
+
+  private def findDocTypesNotMaxed(userAnswers: UserAnswers) =
+    userAnswers
+      .get(DocumentsSection)
+      .mapWithIndex {
+        case (_, index) =>
+          userAnswers.get(TypePage(index)).map(_.`type`)
+      }
+      .flatten
+      .filter(allowedDocTypes.contains)
+      .groupBy(identity)
+      .filter(_._2.length < config.maxDocumentsPerType)
+      .keys
+      .toSeq
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
     .requireData(arrivalId)
     .async {
       implicit request =>
         service.getDocumentList(request.userAnswers, documentIndex, mode).map {
+          val docTypesNotMaxed = findDocTypesNotMaxed(request.userAnswers)
           documentList =>
+            val availableDocumentList = documentList.values.filter(
+              documentType => docTypesNotMaxed.contains(documentType.`type`)
+            )
             val viewModel = viewModelProvider.apply(mode)
-            val form      = formProvider(mode, prefix, documentList)
+            val form      = formProvider(mode, prefix, SelectableList(availableDocumentList))
             val preparedForm = request.userAnswers.get(TypePage(documentIndex)) match {
               case None        => form
               case Some(value) => form.fill(value)
             }
 
-            Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode, documentList.values, viewModel, documentIndex))
+            Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode, availableDocumentList, viewModel, documentIndex))
         }
     }
 

@@ -16,7 +16,8 @@
 
 package generators
 
-import models.{ArrivalId, Index, NormalMode}
+import models.DocType.Previous
+import models.{ArrivalId, DocType, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.FormError
@@ -272,7 +273,8 @@ trait ViewModelGenerators {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
       nextIndex    <- arbitrary[Index]
-    } yield AddAnotherDocumentViewModel(listItems, onSubmitCall, nextIndex)
+      docTypes     <- arbitrary[Seq[DocType]]
+    } yield AddAnotherDocumentViewModel(listItems, onSubmitCall, nextIndex, docTypes.filter(_ != Previous))
   }
 
   implicit lazy val arbitraryContainerIdentificationNumberViewModel: Arbitrary[ContainerIdentificationNumberViewModel] = Arbitrary {

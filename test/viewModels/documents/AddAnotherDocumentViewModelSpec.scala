@@ -71,6 +71,66 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
           }
         }
 
+        "when transport documents reached max limit" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val maxDocLimit  = 99
+              val transportDoc = arbitrary[DocumentType](arbitraryTransportDocument).sample.value
+              val maxTransportDocs = (0 until maxDocLimit).foldLeft(emptyUserAnswers) {
+                (answers, index) =>
+                  answers.setValue(TypePage(Index(index)), transportDoc)
+              }
+              val userAnswers = maxTransportDocs
+
+              val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, arrivalId, mode)
+
+              result.maxLimitLabelForType mustBe "You cannot add any more transport documents to all items. To add another, you need to remove one first. You can, however, still add a supporting document to your items."
+              result.allowMore mustBe true
+          }
+        }
+
+        "when supporting documents reached max limit" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val maxDocLimit = 99
+              val supportDoc  = arbitrary[DocumentType](arbitrarySupportDocument).sample.value
+              val maxSupportDocs = (0 until maxDocLimit).foldLeft(emptyUserAnswers) {
+                (answers, index) =>
+                  answers.setValue(TypePage(Index(index)), supportDoc)
+              }
+              val userAnswers = maxSupportDocs
+
+              val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, arrivalId, mode)
+
+              result.maxLimitLabelForType mustBe "You cannot add any more supporting documents to all items. To add another, you need to remove one first. You can, however, still add a transport document to your items."
+              result.allowMore mustBe true
+          }
+        }
+
+        "when all documents reached max limit" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val maxDocLimit  = 99
+              val supportDoc   = arbitrary[DocumentType](arbitrarySupportDocument).sample.value
+              val transportDoc = arbitrary[DocumentType](arbitraryTransportDocument).sample.value
+
+              val maxSupportDocs = (0 until maxDocLimit).foldLeft(emptyUserAnswers) {
+                (answers, index) =>
+                  answers.setValue(TypePage(Index(index)), supportDoc)
+              }
+
+              val maxDocs = (maxDocLimit until maxDocLimit * 2).foldLeft(maxSupportDocs) {
+                (answers, index) =>
+                  answers.setValue(TypePage(Index(index)), transportDoc)
+              }
+              val userAnswers = maxDocs
+
+              val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, arrivalId, mode)
+
+              result.allowMore mustBe false
+          }
+        }
+
         "when there are multiple documents" in {
           forAll(arbitrary[Mode]) {
             mode =>

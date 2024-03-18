@@ -26,7 +26,7 @@ import views.html.documents.AddAnotherDocumentView
 
 class AddAnotherDocumentViewSpec extends ListWithActionsViewBehaviours {
 
-  override def maxNumber: Int = frontendAppConfig.maxDocuments
+  override def maxNumber: Int = frontendAppConfig.maxDocumentsPerType * 2
 
   private def formProvider(viewModel: AddAnotherDocumentViewModel) =
     new AddAnotherFormProvider()(viewModel.prefix, viewModel.allowMore)

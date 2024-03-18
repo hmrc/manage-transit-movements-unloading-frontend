@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SelectableFormProvider
 import generators.Generators
 import models.reference.DocumentType
-import models.{CheckMode, Mode, NormalMode, SelectableList}
+import models.{CheckMode, Index, Mode, NormalMode, SelectableList}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -252,7 +252,11 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
       "must return OK and the correct view for a GET" in {
 
         when(mockDocumentTypesService.getDocumentList(any(), any(), any())(any())).thenReturn(Future.successful(documentsList))
-        val userAnswers = emptyUserAnswers.setValue(TypePage(documentIndex), document1)
+        val userAnswers = emptyUserAnswers
+          .setValue(TypePage(Index(0)), document1)
+          .setValue(TypePage(Index(1)), document2)
+          .setValue(TypePage(Index(2)), document3)
+          .setValue(TypePage(Index(3)), document4)
         setExistingUserAnswers(userAnswers)
 
         val request = FakeRequest(GET, typeRoute(NormalMode))
@@ -267,6 +271,33 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
         contentAsString(result) mustEqual
           view(filledForm, mrn, arrivalId, NormalMode, documentsList.values, viewModel, documentIndex)(request, messages).toString
+      }
+
+      "must fılter out maxed document types that cannot be added any more" in {
+
+        when(mockDocumentTypesService.getDocumentList(any(), any(), any())(any())).thenReturn(Future.successful(documentsList))
+        val maxDocLimit = 99
+        val maxTransportDocs = (0 until maxDocLimit).foldLeft(emptyUserAnswers) {
+          (answers, index) => answers.setValue(TypePage(Index(index)), document1)
+        }
+        val userAnswers = maxTransportDocs
+          .setValue(TypePage(Index(maxDocLimit)), document3) // support
+          .setValue(TypePage(Index(maxDocLimit + 1)), document4) // support
+        setExistingUserAnswers(userAnswers)
+
+        val request = FakeRequest(GET, typeRoute(NormalMode))
+
+        val result = route(app, request).value
+
+        val filledForm = form.bind(Map("value" -> document1.value))
+
+        val view = injector.instanceOf[TypeView]
+
+        status(result) mustEqual OK
+
+        // view should have only support docs listed. new transport docs cannot be added since they reached the limit
+        contentAsString(result) mustEqual
+          view(filledForm, mrn, arrivalId, NormalMode, supportingDocumentList.values, viewModel, documentIndex)(request, messages).toString
       }
 
       "must redirect to the next page when valid data is submitted" in {

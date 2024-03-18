@@ -55,6 +55,9 @@
                     legend = viewModel.legend
                 )
             )
+            @if(viewModel.limitReachedForType) {
+                <p class="govuk-body" data-testId="maxLimitForType">@viewModel.maxLimitLabelForType</p>
+            }
         } else {
             <p class="govuk-body" data-testId="maxLimit">@viewModel.maxLimitLabel</p>
         }

@@ -58,9 +58,11 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
     reset(mockViewModelProvider)
   }
 
-  private val listItem          = arbitrary[ListItem].sample.value
-  private val listItems         = Seq.fill(Gen.choose(1, frontendAppConfig.maxDocuments - 1).sample.value)(listItem)
-  private val maxedOutListItems = Seq.fill(frontendAppConfig.maxDocuments)(listItem)
+  private val allowedDocTypesSize = 2
+  private val maxItemsSize        = frontendAppConfig.maxDocumentsPerType * allowedDocTypesSize
+  private val listItem            = arbitrary[ListItem].sample.value
+  private val listItems           = Seq.fill(Gen.choose(1, maxItemsSize - 1).sample.value)(listItem)
+  private val maxedOutListItems   = Seq.fill(maxItemsSize)(listItem)
 
   private val viewModel = arbitrary[AddAnotherDocumentViewModel].sample.value
 
