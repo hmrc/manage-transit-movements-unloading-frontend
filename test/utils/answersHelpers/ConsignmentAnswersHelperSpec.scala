@@ -250,7 +250,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result mustBe a[AccordionSection]
             result.sectionTitle.value mustBe "Departure means of transport"
             result.viewLinks.head.href mustBe
-              controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, CheckMode).url
+              controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, NormalMode).url
 
             result.children.head mustBe a[AccordionSection]
             result.children.head.sectionTitle.value mustBe "Departure means of transport 1"

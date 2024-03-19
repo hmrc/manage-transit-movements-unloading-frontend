@@ -422,7 +422,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
   private val departureTransportMeansAddRemoveLink: Link =
     Link(
       id = s"add-remove-departure-transport-means",
-      href = controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, CheckMode).url,
+      href = controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, NormalMode).url,
       text = messages("departureTransportMeans.addRemove"),
       visuallyHidden = messages("departureTransportMeans.visuallyHidden")
     )

@@ -149,7 +149,7 @@ class AddAnotherDepartureMeansOfTransportViewModelSpec extends SpecBase with Gen
               result.listItems mustBe Seq(
                 ListItem(
                   name = s"Departure means of transport 1 - $identification - $identificationNumber",
-                  changeUrl = Some("#"), //TODO: To be added later
+                  changeUrl = None,
                   removeUrl = Some(
                     controllers.departureMeansOfTransport.routes.RemoveDepartureMeansOfTransportYesNoController
                       .onPageLoad(arrivalId, mode, Index(0))
@@ -158,7 +158,7 @@ class AddAnotherDepartureMeansOfTransportViewModelSpec extends SpecBase with Gen
                 ),
                 ListItem(
                   name = s"Departure means of transport 2",
-                  changeUrl = Some("#"), //TODO: To be added later
+                  changeUrl = None,
                   removeUrl = Some(
                     controllers.departureMeansOfTransport.routes.RemoveDepartureMeansOfTransportYesNoController
                       .onPageLoad(arrivalId, mode, Index(1))
