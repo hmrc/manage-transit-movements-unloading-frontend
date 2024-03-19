@@ -17,8 +17,8 @@
 package pages.transportEquipment.index
 
 import models.Index
-import pages.sections.TransportEquipmentSection
 import pages.QuestionPage
+import pages.sections.TransportEquipmentSection
 import play.api.libs.json.JsPath
 
 case class ApplyAnItemYesNoPage(equipmentIndex: Index) extends QuestionPage[Boolean] {

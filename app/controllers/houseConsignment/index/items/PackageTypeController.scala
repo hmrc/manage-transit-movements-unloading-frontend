@@ -21,7 +21,7 @@ import forms.SelectableFormProvider
 import models.reference.PackageType
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.ConsignmentItemNavigator
+import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator
 import pages.PackageTypePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -39,7 +39,7 @@ class PackageTypeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   actions: Actions,
-  navigator: ConsignmentItemNavigator,
+  navigator: HouseConsignmentItemNavigator,
   val controllerComponents: MessagesControllerComponents,
   formProvider: SelectableFormProvider,
   service: PackagesService,

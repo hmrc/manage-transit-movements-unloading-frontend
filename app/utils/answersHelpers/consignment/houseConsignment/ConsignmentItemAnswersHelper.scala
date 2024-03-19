@@ -34,9 +34,7 @@ import pages.sections.houseConsignment.index.items.additionalReference.Additiona
 import pages.sections.houseConsignment.index.items.dangerousGoods.DangerousGoodsListSection
 import pages.sections.houseConsignment.index.items.documents.DocumentsSection
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
 import utils.answersHelpers.consignment.houseConsignment.item._
 import viewModels.sections.Section
@@ -86,8 +84,9 @@ class ConsignmentItemAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.item.netWeight",
     args = itemIndex.display,
     id = s"net-weight-${itemIndex.display}",
-    change = routes.NetWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode),
-    remove = Call(GET, "#"),
+    change = controllers.houseConsignment.index.items.routes.NetWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode),
+    remove = controllers.houseConsignment.index.items.routes.RemoveNetWeightYesNoController
+      .onPageLoad(arrivalId, NormalMode, houseConsignmentIndex, itemIndex),
     hiddenLink = "netWeightLink"
   )
 
