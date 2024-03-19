@@ -18,12 +18,13 @@ package utils.answersHelpers.consignment
 
 import models.reference.Item
 import models.{CheckMode, Index}
-import org.scalacheck.Gen
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import pages.ContainerIdentificationNumberPage
 import pages.transportEquipment.index.ItemPage
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import utils.answersHelpers.AnswersHelperSpecBase
+import viewModels.sections.Section.AccordionSection
 
 class TransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
@@ -61,7 +62,7 @@ class TransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase {
     }
 
     "transportEquipmentSeals" - {
-      "must generate row for each seal" in {
+      "must generate accordion section" in {
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
           (value1, value2) =>
             val answers = emptyUserAnswers
@@ -69,17 +70,21 @@ class TransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(SealIdentificationNumberPage(equipmentIndex, Index(1)), value2)
 
             val helper = new TransportEquipmentAnswersHelper(answers, equipmentIndex)
-            val result = helper.transportEquipmentSeals
+            val result = helper.transportEquipmentSeals.value
 
-            result.size mustBe 2
-            result.head.value.value mustBe value1
-            result(1).value.value mustBe value2
+            result mustBe a[AccordionSection]
+            result.sectionTitle.value mustBe "Seals"
+            result.id.value mustBe "transport-equipment-1-seals"
+
+            result.rows.size mustBe 2
+            result.rows.head.value.value mustBe value1
+            result.rows(1).value.value mustBe value2
         }
       }
     }
 
     "transportEquipmentItems" - {
-      "must generate row for each consignment item" in {
+      "must generate accordion section" in {
         forAll(arbitrary[Item].sample.value, arbitrary[Item].sample.value) {
           (item1, item2) =>
             val answers = emptyUserAnswers
@@ -87,11 +92,15 @@ class TransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(ItemPage(equipmentIndex, Index(1)), item2)
 
             val helper = new TransportEquipmentAnswersHelper(answers, equipmentIndex)
-            val result = helper.transportEquipmentItems
+            val result = helper.transportEquipmentItems.value
 
-            result.size mustBe 2
-            result.head.value.value mustBe item1.toString
-            result(1).value.value mustBe item2.toString
+            result mustBe a[AccordionSection]
+            result.sectionTitle.value mustBe "Items applied to this transport equipment"
+            result.id.value mustBe "transport-equipment-1-items"
+
+            result.rows.size mustBe 2
+            result.rows.head.value.value mustBe item1.toString
+            result.rows(1).value.value mustBe item2.toString
         }
       }
     }

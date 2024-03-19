@@ -69,15 +69,13 @@
 
 @content = {
     @if(section.rows.nonEmpty) {
-        <dl class="govuk-summary-list">
-            @govukSummaryList(
-                SummaryList(
-                    rows = section.rows
-                )
+        @govukSummaryList(
+            SummaryList(
+                rows = section.rows
             )
-        </dl>
+        )
     } else if(section.children.isEmpty) {
-        <p class="govuk-body">Some content here explaining that user has answered NO to everything</p>
+        <p class="govuk-body">@messages("unloadingFindings.noInformationProvided")</p>
     }
 
     @section.children.map(this(_, nestingLevel + 1))

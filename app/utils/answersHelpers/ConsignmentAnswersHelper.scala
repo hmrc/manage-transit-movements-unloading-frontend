@@ -18,7 +18,7 @@ package utils.answersHelpers
 
 import models.DocType.Previous
 import models.reference.CustomsOffice
-import models.{Index, Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
+import models.{Link, RichOptionalJsArray, SecurityType, UserAnswers}
 import pages.documents.TypePage
 import pages.grossMass.GrossMassPage
 import pages.sections._
@@ -201,16 +201,12 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         )
       case sectionsRows =>
         val transportEquipments = sectionsRows.map {
-          case (container, sealsSection, itemsSection, index) =>
-            val containerSection = container.map(
-              x => StaticSection(rows = Seq(x))
-            )
-
+          case (containerRow, sealsSection, itemsSection, index) =>
             AccordionSection(
               sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment", index.display)),
               viewLinks = Nil,
+              rows = Seq(containerRow).flatten,
               children = Seq(
-                containerSection,
                 sealsSection,
                 itemsSection
               ).flatten,

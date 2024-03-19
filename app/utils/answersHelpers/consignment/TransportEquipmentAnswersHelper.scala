@@ -55,7 +55,7 @@ class TransportEquipmentAnswersHelper(
       case rows =>
         Some(
           AccordionSection(
-            sectionTitle = Some("Seals"),
+            sectionTitle = Some(messages("unloadingFindings.subsections.seals")),
             rows = rows.flatten,
             id = Some(s"transport-equipment-$equipmentIndex-seals"),
             viewLinks = Seq(sealsAddRemoveLink(equipmentIndex))
@@ -76,7 +76,7 @@ class TransportEquipmentAnswersHelper(
       case rows =>
         Some(
           AccordionSection(
-            sectionTitle = Some("Items that this transport equipment applies to"),
+            sectionTitle = Some(messages("unloadingFindings.subsections.goodsReferences")),
             rows = rows.flatten,
             id = Some(s"transport-equipment-$equipmentIndex-items"),
             viewLinks = Seq(itemsAddRemoveLink(equipmentIndex))
