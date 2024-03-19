@@ -17,7 +17,7 @@
 package navigation
 
 import com.google.inject.Singleton
-import models.DocType.{Support, Transport}
+import models.DocType.{Previous, Support, Transport}
 import models.reference.DocumentType
 import models._
 import pages._
@@ -41,17 +41,18 @@ class DocumentNavigator extends Navigator {
   }
 
   def documentReferenceNumberRoute(ua: UserAnswers, arrivalId: ArrivalId, mode: Mode, documentIndex: Index): Option[Call] =
-    ua.get(TypePage(documentIndex)) match {
-      case Some(DocumentType(Support, _, _)) =>
-        Some(controllers.documents.routes.AddAdditionalInformationYesNoController.onPageLoad(arrivalId, mode, documentIndex))
-      case Some(DocumentType(Transport, _, _)) => Some(controllers.documents.routes.AddAnotherDocumentController.onPageLoad(ua.id, NormalMode))
-      case _                                   => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    ua.get(TypePage(documentIndex)).map {
+      case DocumentType(Support, _, _) =>
+        controllers.documents.routes.AddAdditionalInformationYesNoController.onPageLoad(arrivalId, mode, documentIndex)
+      case DocumentType(Transport, _, _) => controllers.documents.routes.AddAnotherDocumentController.onPageLoad(ua.id, mode)
+      case DocumentType(Previous, _, _) =>
+        logger.error(s"Previous document unexpectedly selected for consignment level document type")
+        controllers.documents.routes.TypeController.onPageLoad(arrivalId, mode, documentIndex)
     }
 
   def addAdditionalInformationYesNoRoute(ua: UserAnswers, arrivalId: ArrivalId, mode: Mode, documentIndex: Index): Option[Call] =
-    ua.get(AddAdditionalInformationYesNoPage(documentIndex)) match {
-      case Some(true)  => Some(controllers.documents.routes.AdditionalInformationController.onPageLoad(arrivalId, mode, documentIndex))
-      case Some(false) => Some(controllers.documents.routes.AddAnotherDocumentController.onPageLoad(ua.id, NormalMode))
-      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    ua.get(AddAdditionalInformationYesNoPage(documentIndex)).map {
+      case true  => controllers.documents.routes.AdditionalInformationController.onPageLoad(arrivalId, mode, documentIndex)
+      case false => controllers.documents.routes.AddAnotherDocumentController.onPageLoad(ua.id, mode)
     }
 }

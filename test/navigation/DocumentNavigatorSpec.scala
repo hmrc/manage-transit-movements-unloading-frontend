@@ -69,6 +69,19 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           .mustBe(controllers.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, mode))
       }
 
+      "must go from DocumentReferenceNumberPage to TypePage when Document Type is unexpectedly Previous" in {
+
+        val docType = arbitraryPreviousDocument.arbitrary.sample.value
+
+        val userAnswers = emptyUserAnswers
+          .setValue(TypePage(documentIndex), docType)
+          .setValue(DocumentReferenceNumberPage(documentIndex), "docRef")
+
+        navigator
+          .nextPage(DocumentReferenceNumberPage(documentIndex), mode, userAnswers)
+          .mustBe(controllers.documents.routes.TypeController.onPageLoad(arrivalId, mode, documentIndex))
+      }
+
       "must go from AddAdditionalInformationYesNoPage to AdditionalInformationPage when answer is true" in {
 
         val docType = arbitraryTransportOrSupportDocument.arbitrary.sample.value
