@@ -14,25 +14,15 @@
  * limitations under the License.
  */
 
-package pages.transportEquipment.index
+package pages.departureMeansOfTransport
 
-
-import models.{Index, UserAnswers}
-import pages.sections.{ItemsSection, TransportEquipmentSection}
+import models.Index
 import pages.QuestionPage
+import pages.sections.TransportMeansSection
 import play.api.libs.json.JsPath
 
-import scala.util.Try
+case class AddAnotherDepartureMeansOfTransportPage(transportIndex: Index) extends QuestionPage[Boolean] {
+  override def toString: String = "addAnotherTransportMeans"
 
-case class ApplyAnItemYesNoPage(equipmentIndex: Index) extends QuestionPage[Boolean] {
-
-  override def path: JsPath = TransportEquipmentSection(equipmentIndex).path \ toString
-
-  override def toString: String = "applyAnItemYesNo"
-
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(false) => userAnswers.remove(ItemsSection(equipmentIndex))
-      case _           => super.cleanup(value, userAnswers)
-    }
+  override def path: JsPath = TransportMeansSection(Index(0)).path \ toString
 }

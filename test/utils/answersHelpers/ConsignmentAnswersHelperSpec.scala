@@ -249,7 +249,8 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
             result mustBe a[AccordionSection]
             result.sectionTitle.value mustBe "Departure means of transport"
-            result.viewLinks.head.href mustBe "#"
+            result.viewLinks.head.href mustBe
+              controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, NormalMode).url
 
             result.children.head mustBe a[AccordionSection]
             result.children.head.sectionTitle.value mustBe "Departure means of transport 1"
@@ -383,7 +384,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
             result mustBe a[AccordionSection]
             result.sectionTitle.value mustBe "Documents"
-            result.viewLinks.head.href mustBe "#"
+            result.viewLinks.head.href mustBe controllers.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, NormalMode).url
 
             result.children.head.sectionTitle.value mustBe "Document 1"
             result.children.head.rows.size mustBe 3

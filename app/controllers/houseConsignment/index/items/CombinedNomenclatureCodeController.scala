@@ -35,7 +35,7 @@ class CombinedNomenclatureCodeController @Inject() (
   sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: CombinedNomenclatureCodeFormProvider,
-  houseConsignmentItemNavigator: HouseConsignmentItemNavigator,
+  navigator: HouseConsignmentItemNavigator,
   val controllerComponents: MessagesControllerComponents,
   view: CombinedNomenclatureCodeView
 )(implicit ec: ExecutionContext)
@@ -67,9 +67,7 @@ class CombinedNomenclatureCodeController @Inject() (
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(
-                houseConsignmentItemNavigator.nextPage(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex), mode, request.userAnswers)
-              )
+              } yield Redirect(navigator.nextPage(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex), mode, request.userAnswers))
           )
     }
 

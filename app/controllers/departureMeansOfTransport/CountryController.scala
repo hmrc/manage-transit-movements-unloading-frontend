@@ -39,8 +39,8 @@ class CountryController @Inject() (
   formProvider: DepartureMeansOfTransportCountryFormProvider,
   referenceDataService: ReferenceDataService,
   val controllerComponents: MessagesControllerComponents,
-  navigator: DepartureTransportMeansNavigator,
   view: CountryView,
+  navigator: DepartureTransportMeansNavigator,
   countryViewModelProvider: CountryViewModelProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
