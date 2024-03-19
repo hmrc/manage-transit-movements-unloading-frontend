@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.CUSCodeFormProvider
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.items.CustomsUnionAndStatisticsCodePage
@@ -37,10 +37,16 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
   private val formProvider                                   = new CUSCodeFormProvider()
   private val form                                           = formProvider("houseConsignment.item.customsUnionAndStatisticsCode", itemIndex.display, houseConsignmentIndex.display)
   private val mode                                           = NormalMode
+  private val checkMode                                      = CheckMode
   private val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   private lazy val customsUnionAndStatisticsCodeRoute =
     controllers.houseConsignment.index.items.routes.CustomsUnionAndStatisticsCodeController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex).url
+
+  private lazy val customsUnionAndStatisticsCodeRouteCheckMode =
+    controllers.houseConsignment.index.items.routes.CustomsUnionAndStatisticsCodeController
+      .onPageLoad(arrivalId, checkMode, houseConsignmentIndex, itemIndex)
+      .url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -91,8 +97,8 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, customsUnionAndStatisticsCodeRoute)
-        .withFormUrlEncodedBody(("value", "validCode"))
+      val request = FakeRequest(POST, customsUnionAndStatisticsCodeRouteCheckMode)
+        .withFormUrlEncodedBody(("value", "0010007-2"))
 
       val result = route(app, request).value
 

@@ -25,7 +25,6 @@ sealed trait Section {
   val children: Seq[Section]
   val viewLinks: Seq[Link]
   val id: Option[String]
-  val optionalInformationHeading: Option[String]
 }
 
 object Section {
@@ -35,8 +34,7 @@ object Section {
     rows: Seq[SummaryListRow] = Nil,
     children: Seq[Section] = Nil,
     viewLinks: Seq[Link] = Nil,
-    id: Option[String] = None,
-    optionalInformationHeading: Option[String] = None
+    id: Option[String] = None
   ) extends Section
 
   object AccordionSection {
@@ -55,8 +53,7 @@ object Section {
     sectionTitle: Option[String] = None,
     rows: Seq[SummaryListRow] = Nil,
     viewLinks: Seq[Link] = Nil,
-    id: Option[String] = None,
-    optionalInformationHeading: Option[String] = None
+    id: Option[String] = None
   ) extends Section {
 
     override val children: Seq[Section] = Seq.empty
@@ -66,8 +63,5 @@ object Section {
 
     def apply(sectionTitle: String, rows: Seq[SummaryListRow]): StaticSection =
       new StaticSection(sectionTitle = Some(sectionTitle), rows = rows)
-
-    def apply(sectionTitle: String, rows: Seq[SummaryListRow], optionalInformationHeading: String): StaticSection =
-      new StaticSection(sectionTitle = Some(sectionTitle), rows = rows, optionalInformationHeading = Some(optionalInformationHeading))
   }
 }
