@@ -39,6 +39,6 @@ class DangerousGoodsAnswerHelper(
       prefix = "unloadingFindings.dangerousGoods.unNumber",
       args = Seq(dangerousGoodsIndex.display, itemIndex.display): _*,
       id = Some(s"change-unNumber-${itemIndex.display}-${dangerousGoodsIndex.display}"),
-      call = Some(Call(GET, "#")) //TODO change me please
+      call = None
     )
 }
