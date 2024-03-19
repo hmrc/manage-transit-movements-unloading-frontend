@@ -22,7 +22,7 @@ import models._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.documents.{AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
 
-class DocumentNavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   val navigator = new DocumentNavigator
 
