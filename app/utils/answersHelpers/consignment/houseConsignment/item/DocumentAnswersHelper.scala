@@ -44,7 +44,7 @@ class DocumentAnswersHelper(
         page = TypePage(houseConsignmentIndex, itemIndex, documentIndex),
         formatAnswer = formatAsText,
         prefix = "unloadingFindings.houseConsignment.item.document.type",
-        args = Seq(itemIndex.display, documentIndex.display): _*,
+        args = Seq(documentIndex.display, itemIndex.display): _*,
         id = Some(s"change-document-type-${itemIndex.display}-${documentIndex.display}"),
         call = Some(routes.TypeController.onPageLoad(arrivalId, CheckMode, houseConsignmentIndex, itemIndex, documentIndex))
       )
@@ -62,7 +62,7 @@ class DocumentAnswersHelper(
         page = DocumentReferenceNumberPage(houseConsignmentIndex, itemIndex, documentIndex),
         formatAnswer = formatAsText,
         prefix = "unloadingFindings.houseConsignment.item.document.referenceNumber",
-        args = Seq(itemIndex.display, documentIndex.display): _*,
+        args = Seq(documentIndex.display, itemIndex.display): _*,
         id = Some(s"change-document-reference-number-${itemIndex.display}-${documentIndex.display}"),
         call = Some(routes.DocumentReferenceNumberController.onPageLoad(arrivalId, CheckMode, houseConsignmentIndex, itemIndex, documentIndex))
       )
@@ -80,7 +80,7 @@ class DocumentAnswersHelper(
         page = AdditionalInformationPage(houseConsignmentIndex, itemIndex, documentIndex),
         formatAnswer = formatAsText,
         prefix = "unloadingFindings.houseConsignment.item.document.additionalInformation",
-        args = Seq(itemIndex.display, documentIndex.display): _*,
+        args = Seq(documentIndex.display, itemIndex.display): _*,
         id = Some(s"change-document-additional-information-${itemIndex.display}-${documentIndex.display}"),
         call = Some(routes.AdditionalInformationController.onPageLoad(arrivalId, CheckMode, houseConsignmentIndex, itemIndex, documentIndex))
       )
