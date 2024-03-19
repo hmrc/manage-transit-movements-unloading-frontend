@@ -404,7 +404,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
   private val documentAddRemoveLink: Link = Link(
     id = s"add-remove-documents",
-    href = "#",
+    href = controllers.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, NormalMode).url,
     text = messages("documentsLink.addRemove"),
     visuallyHidden = messages("documentsLink.visuallyHidden")
   )

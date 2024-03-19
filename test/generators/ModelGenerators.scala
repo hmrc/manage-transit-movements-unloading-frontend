@@ -195,6 +195,23 @@ trait ModelGenerators {
       } yield DocumentType(DocType.Support, code, desc)
     }
 
+  lazy val arbitraryPreviousDocument: Arbitrary[DocumentType] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+        desc <- nonEmptyString
+      } yield DocumentType(DocType.Previous, code, desc)
+    }
+
+  lazy val arbitraryTransportOrSupportDocument: Arbitrary[DocumentType] =
+    Arbitrary {
+      for {
+        docType <- Gen.oneOf(DocType.Transport, DocType.Support)
+        code    <- nonEmptyString
+        desc    <- nonEmptyString
+      } yield DocumentType(docType, code, desc)
+    }
+
   implicit lazy val arbitraryDocType: Arbitrary[DocType] =
     Arbitrary {
       Gen.oneOf(DocType.values)
