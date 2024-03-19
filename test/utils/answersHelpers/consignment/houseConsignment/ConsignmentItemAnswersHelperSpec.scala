@@ -18,7 +18,7 @@ package utils.answersHelpers.consignment.houseConsignment
 
 import models.DocType.Previous
 import models.reference.{Country, DocumentType}
-import models.{CheckMode, Index}
+import models.{CheckMode, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.houseConsignment.index.items._

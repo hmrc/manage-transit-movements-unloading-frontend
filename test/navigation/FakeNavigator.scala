@@ -17,7 +17,7 @@
 package navigation
 
 import models.{Mode, UserAnswers}
-import navigation.houseConsignment.index.items.{HouseConsignmentItemNavigator, ConsignmentItemNavigator, DocumentNavigator => ItemDocumentNavigator}
+import navigation.houseConsignment.index.items.{HouseConsignmentItemNavigator, DocumentNavigator => ItemDocumentNavigator}
 import pages._
 import play.api.mvc.Call
 
@@ -54,10 +54,6 @@ class FakeTransportEquipmentNavigator(desiredRoute: Call) extends TransportEquip
 }
 
 class FakeDepartureTransportMeansNavigator(desiredRoute: Call) extends DepartureTransportMeansNavigator {
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
-}
-
-class FakeConsignmentItemNavigator(desiredRoute: Call) extends ConsignmentItemNavigator {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 

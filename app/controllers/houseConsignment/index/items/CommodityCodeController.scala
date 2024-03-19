@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items
 import controllers.actions._
 import forms.CommodityCodeFormProvider
 import models.{ArrivalId, Index, Mode, RichCC043CType}
-import navigation.houseConsignment.index.items.ConsignmentItemNavigator
+import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator
 import pages.houseConsignment.index.items.CommodityCodePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,7 +35,7 @@ class CommodityCodeController @Inject() (
   sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: CommodityCodeFormProvider,
-  navigator: ConsignmentItemNavigator,
+  navigator: HouseConsignmentItemNavigator,
   val controllerComponents: MessagesControllerComponents,
   view: CommodityCodeView
 )(implicit ec: ExecutionContext)
