@@ -19,8 +19,6 @@ package services
 import connectors.ReferenceDataConnector
 import models.reference.DocumentType
 import models.{CheckMode, DocType, Index, Mode, SelectableList, UserAnswers}
-import pages.documents.TypePage
-import pages.houseConsignment.index.items.document.{TypePage => ItemDocTypePage}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -47,33 +45,36 @@ class DocumentsService @Inject() (referenceDataConnector: ReferenceDataConnector
       .map(_.toSeq)
       .map(SelectableList(_))
 
-  def getDocumentList(userAnswers: UserAnswers, documentIndex: Index, mode: Mode)(implicit
-    hc: HeaderCarrier
-  ): Future[SelectableList[DocumentType]] =
+  def getDocumentList(
+    userAnswers: UserAnswers,
+    documentIndex: Index,
+    mode: Mode
+  )(implicit hc: HeaderCarrier): Future[SelectableList[DocumentType]] = {
+    import pages.documents.TypePage
+
     if (mode == CheckMode) {
-      userAnswers.get(TypePage(documentIndex)) match {
-        case None => getDocuments()
-        case Some(value) =>
-          value.`type` match {
-            case DocType.Transport => getTransportDocuments()
-            case DocType.Support   => getSupportingDocuments()
-            case _                 => getDocuments()
-          }
+      userAnswers.get(TypePage(documentIndex)).map(_.`type`) match {
+        case Some(DocType.Transport) => getTransportDocuments()
+        case Some(DocType.Support)   => getSupportingDocuments()
+        case _                       => getDocuments()
       }
     } else {
       getDocuments()
     }
+  }
 
-  def getDocumentList(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index)(implicit
-    hc: HeaderCarrier
-  ): Future[SelectableList[DocumentType]] =
-    userAnswers.get(ItemDocTypePage(houseConsignmentIndex, itemIndex, documentIndex)) match {
-      case None => getDocuments()
-      case Some(value) =>
-        value.`type` match {
-          case DocType.Transport => getTransportDocuments()
-          case DocType.Support   => getSupportingDocuments()
-          case _                 => getDocuments()
-        }
+  def getDocumentList(
+    userAnswers: UserAnswers,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
+    documentIndex: Index
+  )(implicit hc: HeaderCarrier): Future[SelectableList[DocumentType]] = {
+    import pages.houseConsignment.index.items.document.TypePage
+
+    userAnswers.get(TypePage(houseConsignmentIndex, itemIndex, documentIndex)).map(_.`type`) match {
+      case Some(DocType.Transport) => getTransportDocuments()
+      case Some(DocType.Support)   => getSupportingDocuments()
+      case _                       => getDocuments()
     }
+  }
 }

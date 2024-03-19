@@ -31,7 +31,6 @@ import pages.sections.TransportMeansSection
 import pages.sections.documents.DocumentSection
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.documents.RemoveDocumentYesNoView
@@ -95,8 +94,7 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
         status(result) mustEqual SEE_OTHER
 
-        // TODO: update once AddAnotherDocumentController implemented
-        redirectLocation(result).value mustEqual Call("GET", "/foo").url
+        redirectLocation(result).value mustEqual controllers.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, mode).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -120,8 +118,7 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
         status(result) mustEqual SEE_OTHER
 
-        // TODO: update once AddAnotherDocumentController implemented
-        redirectLocation(result).value mustEqual Call("GET", "/foo").url
+        redirectLocation(result).value mustEqual controllers.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, mode).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -142,8 +139,7 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
       status(result) mustEqual SEE_OTHER
 
-      // TODO: update once AddAnotherDocumentController implemented
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual controllers.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, mode).url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

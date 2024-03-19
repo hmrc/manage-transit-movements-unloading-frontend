@@ -20,7 +20,7 @@ import com.google.inject.Singleton
 import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, UserAnswers}
 import pages._
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
-import pages.transportEquipment.index.{AddAnotherSealPage, ApplyAnotherItemPage, ItemPage}
+import pages.transportEquipment.index.{AddAnotherSealPage, ApplyAnItemYesNoPage, ApplyAnotherItemPage, ItemPage}
 import play.api.mvc.Call
 
 @Singleton
@@ -29,6 +29,7 @@ class TransportEquipmentNavigator extends Navigator {
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case AddAnotherSealPage(equipmentIndex, sealIndex)   => ua => addAnotherSealRoute(ua, ua.id, NormalMode, equipmentIndex, sealIndex)
     case ApplyAnotherItemPage(equipmentIndex, itemIndex) => ua => applyAnotherItemRoute(ua, ua.id, NormalMode, equipmentIndex, itemIndex)
+    case ApplyAnItemYesNoPage(equipmentIndex)            => ua => applyAnItemYesNoRoute(ua, ua.id, NormalMode, equipmentIndex)
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
@@ -53,6 +54,14 @@ class TransportEquipmentNavigator extends Navigator {
       case Some(true) =>
         Some(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, itemIndex, mode))
       case Some(false) => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
+      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+
+  def applyAnItemYesNoRoute(ua: UserAnswers, arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index): Option[Call] =
+    ua.get(ApplyAnItemYesNoPage(equipmentIndex)) match {
+      case Some(true) =>
+        Some(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, Index(0), mode))
+      case Some(false) => Some(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(ua.id, mode))
       case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
     }
 }

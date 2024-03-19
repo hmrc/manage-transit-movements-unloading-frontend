@@ -174,7 +174,11 @@ class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(impl
 
           val rows = Seq(helper.containerIdentificationNumber, helper.transportEquipmentSeals, helper.itemNumber).flatten
 
-          AccordionSection(messages("unloadingFindings.incident.transportEquipment.heading", equipmentIndex.display), rows)
+          AccordionSection(
+            sectionTitle = Some(messages("unloadingFindings.incident.transportEquipment.heading", equipmentIndex.display)),
+            rows = rows,
+            id = Some(s"incident-$incidentIndex-transport-equipment-$index")
+          )
       }
 
   def incidentReplacementMeansOfTransport: Seq[SummaryListRow] = {
