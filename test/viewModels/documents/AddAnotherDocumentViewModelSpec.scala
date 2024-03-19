@@ -45,6 +45,7 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
               result.heading mustBe "You have added 0 document to all items"
               result.legend mustBe "Do you want to add a document to all items?"
               result.maxLimitLabel mustBe "You cannot add any more documents to all items. You can still add and attach documents to individual items from their house consignment cross-check screens."
+              result.maxLimitLabelForType mustBe None
               result.nextIndex mustBe Index(0)
           }
         }
@@ -84,7 +85,7 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
 
               val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, arrivalId, mode)
 
-              result.maxLimitLabelForType mustBe "You cannot add any more transport documents to all items. To add another, you need to remove one first. You can, however, still add a supporting document to your items."
+              result.maxLimitLabelForType.get mustBe "You cannot add any more transport documents to all items. To add another, you need to remove one first. You can, however, still add a supporting document to your items."
               result.allowMore mustBe true
           }
         }
@@ -102,7 +103,7 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
 
               val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, arrivalId, mode)
 
-              result.maxLimitLabelForType mustBe "You cannot add any more supporting documents to all items. To add another, you need to remove one first. You can, however, still add a transport document to your items."
+              result.maxLimitLabelForType.get mustBe "You cannot add any more supporting documents to all items. To add another, you need to remove one first. You can, however, still add a transport document to your items."
               result.allowMore mustBe true
           }
         }

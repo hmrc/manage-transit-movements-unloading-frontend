@@ -39,19 +39,15 @@ case class AddAnotherDocumentViewModel(
 
   override def maxLimitLabel(implicit messages: Messages): String = messages(s"$prefix.maxLimit.label")
 
-  def maxLimitLabelForType(implicit config: FrontendAppConfig, messages: Messages): String = {
+  def maxLimitLabelForType(implicit config: FrontendAppConfig, messages: Messages): Option[String] = {
     val groupedByType = docTypeList.groupBy(identity)
     if (groupedByType.getOrElse(Support, Seq.empty).length == config.maxSupportingDocuments) {
-      messages(s"$prefix.maxLimitForType.label", Support.display.toLowerCase, Transport.display.toLowerCase)
+      Some(messages(s"$prefix.maxLimitForType.label", Support.display.toLowerCase, Transport.display.toLowerCase))
+    } else if (groupedByType.getOrElse(Transport, Seq.empty).length == config.maxTransportDocuments) {
+      Some(messages(s"$prefix.maxLimitForType.label", Transport.display.toLowerCase, Support.display.toLowerCase))
     } else {
-      messages(s"$prefix.maxLimitForType.label", Transport.display.toLowerCase, Support.display.toLowerCase)
+      None
     }
-  }
-
-  def limitReachedForType(implicit config: FrontendAppConfig): Boolean = {
-    val groupedByType = docTypeList.groupBy(identity)
-    groupedByType.getOrElse(Support, Seq.empty).length == config.maxSupportingDocuments ||
-    groupedByType.getOrElse(Transport, Seq.empty).length == config.maxTransportDocuments
   }
 }
 
