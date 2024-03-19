@@ -17,8 +17,8 @@
 package controllers.departureMeansOfTransport
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import controllers.departureMeansOfTransport.{routes => departureMeansOfTransportRoutes}
+import controllers.routes
 import forms.AddAnotherFormProvider
 import generators.Generators
 import models.NormalMode
@@ -35,6 +35,8 @@ import viewModels.ListItem
 import viewModels.departureTransportMeans.AddAnotherDepartureMeansOfTransportViewModel
 import viewModels.departureTransportMeans.AddAnotherDepartureMeansOfTransportViewModel.AddAnotherDepartureMeansOfTransportViewModelProvider
 import views.html.departureMeansOfTransport.AddAnotherDepartureMeansOfTransportView
+
+import scala.concurrent.Future
 
 class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar with Generators {
 
@@ -114,6 +116,8 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
           when(mockViewModelProvider.apply(any(), any(), any())(any()))
             .thenReturn(notMaxedOutViewModel)
 
+          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
           setExistingUserAnswers(emptyUserAnswers)
 
           val request = FakeRequest(POST, addAnotherDepartureMeansOfTransportRoute)
@@ -123,9 +127,7 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual departureMeansOfTransportRoutes.AddIdentificationYesNoController
-            .onPageLoad(arrivalId, notMaxedOutViewModel.nextIndex, mode)
-            .url
+          redirectLocation(result).value mustEqual onwardRoute.url
         }
       }
 
@@ -133,6 +135,8 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
         "must redirect to next page" in {
           when(mockViewModelProvider.apply(any(), any(), any())(any()))
             .thenReturn(notMaxedOutViewModel)
+
+          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
           setExistingUserAnswers(emptyUserAnswers)
 
@@ -143,7 +147,7 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+          redirectLocation(result).value mustEqual onwardRoute.url
         }
       }
     }
@@ -152,6 +156,8 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
       "must redirect to next page" in {
         when(mockViewModelProvider.apply(any(), any(), any())(any()))
           .thenReturn(maxedOutViewModel)
+
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -162,7 +168,7 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+        redirectLocation(result).value mustEqual onwardRoute.url
       }
     }
 
