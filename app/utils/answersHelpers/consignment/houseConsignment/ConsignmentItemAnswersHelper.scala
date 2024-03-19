@@ -258,7 +258,7 @@ class ConsignmentItemAnswersHelper(
 
   private[consignment] def packagingAddRemoveLink: Link =
     Link(
-      id = s"add-remove-packaging",
+      id = s"add-remove-item-$itemIndex-packaging",
       href = "#",
       text = messages("packagingLink.addRemove"),
       visuallyHidden = messages("packagingLink.visuallyHidden")
@@ -266,7 +266,7 @@ class ConsignmentItemAnswersHelper(
 
   private[consignment] def documentAddRemoveLink: Link =
     Link(
-      id = s"add-remove-document",
+      id = s"add-remove-item-$itemIndex-document",
       href = "#",
       text = messages("documentLink.addRemove"),
       visuallyHidden = messages("documentLink.visuallyHidden")
@@ -274,7 +274,7 @@ class ConsignmentItemAnswersHelper(
 
   private[consignment] def additionalReferenceAddRemoveLink: Link =
     Link(
-      id = s"add-remove-additionalReference",
+      id = s"add-remove-item-$itemIndex-additional-reference",
       href = "#",
       text = messages("additionalReferenceLink.addRemove"),
       visuallyHidden = messages("additionalReferenceLink.visuallyHidden")

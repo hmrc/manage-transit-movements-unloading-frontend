@@ -58,7 +58,7 @@ class TransportEquipmentAnswersHelper(
             sectionTitle = Some(messages("unloadingFindings.subsections.seals")),
             rows = rows.flatten,
             id = Some(s"transport-equipment-$equipmentIndex-seals"),
-            viewLinks = Seq(sealsAddRemoveLink(equipmentIndex))
+            viewLinks = Seq(sealsAddRemoveLink)
           )
         )
     }
@@ -79,24 +79,24 @@ class TransportEquipmentAnswersHelper(
             sectionTitle = Some(messages("unloadingFindings.subsections.goodsReferences")),
             rows = rows.flatten,
             id = Some(s"transport-equipment-$equipmentIndex-items"),
-            viewLinks = Seq(itemsAddRemoveLink(equipmentIndex))
+            viewLinks = Seq(itemsAddRemoveLink)
           )
         )
     }
 
-  private def sealsAddRemoveLink(index: Index): Link =
+  private def sealsAddRemoveLink: Link =
     Link(
-      id = s"add-remove-seals-${index.display}",
-      href = controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, NormalMode, index).url,
+      id = s"add-remove-transport-equipment-${equipmentIndex.display}-seal",
+      href = controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, NormalMode, equipmentIndex).url,
       text = messages("sealsLink.addRemove"),
       visuallyHidden = messages("sealsLink.visuallyHidden")
     )
 
-  private def itemsAddRemoveLink(index: Index): Link =
+  private def itemsAddRemoveLink: Link =
     Link(
-      id = s"add-remove-consignment-items-${index.display}",
-      href = controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, NormalMode, index).url,
-      text = messages("consignmentItemLink.addRemove", index.display),
-      visuallyHidden = messages("consignmentItemLink.visuallyHidden", index.display)
+      id = s"add-remove-transport-equipment-${equipmentIndex.display}-item",
+      href = controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, NormalMode, equipmentIndex).url,
+      text = messages("consignmentItemLink.addRemove", equipmentIndex.display),
+      visuallyHidden = messages("consignmentItemLink.visuallyHidden", equipmentIndex.display)
     )
 }

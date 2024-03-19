@@ -120,7 +120,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
 
         result.sections.head.children.head.children(1) mustBe a[StaticSection]
         result.sections.head.children.head.children(1).sectionTitle.value mustBe "Documents"
-        result.sections.head.children.head.children(1).viewLinks.head.id mustBe "add-remove-document"
+        result.sections.head.children.head.children(1).viewLinks.head.id mustBe "add-remove-item-1-document"
 
       }
     }

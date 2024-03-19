@@ -305,6 +305,10 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
             result.sectionTitle.value mustBe "Documents"
             result.id.value mustBe "item-1-documents"
 
+            val addOrRemove = result.viewLinks.head
+            addOrRemove.id mustBe "add-remove-item-1-document"
+            addOrRemove.text mustBe "Add or remove document"
+
             result.children.head mustBe a[AccordionSection]
             result.children.head.sectionTitle.value mustBe "Document 1"
             result.children.head.id.value mustBe "item-1-document-1"

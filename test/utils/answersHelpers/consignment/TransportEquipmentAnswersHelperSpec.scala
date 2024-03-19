@@ -76,6 +76,10 @@ class TransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.sectionTitle.value mustBe "Seals"
             result.id.value mustBe "transport-equipment-1-seals"
 
+            val addOrRemove = result.viewLinks.head
+            addOrRemove.id mustBe "add-remove-transport-equipment-1-seal"
+            addOrRemove.text mustBe "Add or remove seal"
+
             result.rows.size mustBe 2
             result.rows.head.value.value mustBe value1
             result.rows(1).value.value mustBe value2
@@ -97,6 +101,10 @@ class TransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result mustBe a[AccordionSection]
             result.sectionTitle.value mustBe "Items applied to this transport equipment"
             result.id.value mustBe "transport-equipment-1-items"
+
+            val addOrRemove = result.viewLinks.head
+            addOrRemove.id mustBe "add-remove-transport-equipment-1-item"
+            addOrRemove.text mustBe "Add or remove items from transport equipment 1"
 
             result.rows.size mustBe 2
             result.rows.head.value.value mustBe item1.toString
