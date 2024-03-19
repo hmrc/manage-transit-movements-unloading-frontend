@@ -16,11 +16,12 @@
 
 package controllers.documents
 
+import config.FrontendAppConfig
 import controllers.actions._
 import forms.SelectableFormProvider
+import models._
 import models.reference.DocumentType
 import models.requests.DataRequest
-import models.{ArrivalId, Index, Mode}
 import navigation.DocumentNavigator
 import pages.documents.TypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -44,11 +45,14 @@ class TypeController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: TypeView,
   viewModelProvider: TypeViewModelProvider
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
   private val prefix: String = "document.type"
+
+  private def consignmentLevelDocuments(documentIndex: Index)(implicit request: DataRequest[AnyContent]): ConsignmentLevelDocuments =
+    ConsignmentLevelDocuments(request.userAnswers, documentIndex)
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
     .requireData(arrivalId)
@@ -56,14 +60,16 @@ class TypeController @Inject() (
       implicit request =>
         service.getDocumentList(request.userAnswers, documentIndex, mode).map {
           documentList =>
-            val viewModel = viewModelProvider.apply(mode)
-            val form      = formProvider(mode, prefix, documentList)
+            val viewModel          = viewModelProvider.apply(mode)
+            val documents          = consignmentLevelDocuments(documentIndex)
+            val availableDocuments = documents.availableDocuments(documentList.values)
+            val form               = formProvider(mode, prefix, SelectableList(availableDocuments))
             val preparedForm = request.userAnswers.get(TypePage(documentIndex)) match {
               case None        => form
               case Some(value) => form.fill(value)
             }
 
-            Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode, documentList.values, viewModel, documentIndex))
+            Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode, availableDocuments, viewModel, documentIndex))
         }
     }
 
