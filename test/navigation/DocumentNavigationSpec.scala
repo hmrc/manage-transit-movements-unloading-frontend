@@ -20,7 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.documents.{AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
+import pages.documents._
 
 class DocumentNavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -28,11 +28,79 @@ class DocumentNavigationSpec extends SpecBase with ScalaCheckPropertyChecks with
 
   "DocumentNavigation" - {
 
+    "in Normal mode" - {
+
+      val mode = NormalMode
+
+      "must go from TypePage to DocumentReferenceNumberPage" in {
+
+        val docType = arbitraryTransportOrSupportDocument.arbitrary.sample.value
+
+        val userAnswers = emptyUserAnswers.setValue(TypePage(documentIndex), docType)
+
+        navigator
+          .nextPage(TypePage(documentIndex), mode, userAnswers)
+          .mustBe(controllers.documents.routes.DocumentReferenceNumberController.onPageLoad(arrivalId, mode, documentIndex))
+      }
+
+      "must go from DocumentReferenceNumberPage to AddAdditionalInformationYesNoPage when Document Type is Support" in {
+
+        val docType = arbitrarySupportDocument.arbitrary.sample.value
+
+        val userAnswers = emptyUserAnswers
+          .setValue(TypePage(documentIndex), docType)
+          .setValue(DocumentReferenceNumberPage(documentIndex), "docRef")
+
+        navigator
+          .nextPage(DocumentReferenceNumberPage(documentIndex), mode, userAnswers)
+          .mustBe(controllers.documents.routes.AddAdditionalInformationYesNoController.onPageLoad(arrivalId, mode, documentIndex))
+      }
+
+      "must go from DocumentReferenceNumberPage to AddAnotherDocumentPage when Document Type is Transport" in {
+
+        val docType = arbitraryTransportDocument.arbitrary.sample.value
+
+        val userAnswers = emptyUserAnswers
+          .setValue(TypePage(documentIndex), docType)
+          .setValue(DocumentReferenceNumberPage(documentIndex), "docRef")
+
+        navigator
+          .nextPage(DocumentReferenceNumberPage(documentIndex), mode, userAnswers)
+          .mustBe(controllers.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, mode))
+      }
+
+      "must go from AddAdditionalInformationYesNoPage to AdditionalInformationPage when answer is true" in {
+
+        val docType = arbitraryTransportOrSupportDocument.arbitrary.sample.value
+
+        val userAnswers = emptyUserAnswers
+          .setValue(TypePage(documentIndex), docType)
+          .setValue(AddAdditionalInformationYesNoPage(documentIndex), true)
+
+        navigator
+          .nextPage(AddAdditionalInformationYesNoPage(documentIndex), mode, userAnswers)
+          .mustBe(controllers.documents.routes.AdditionalInformationController.onPageLoad(arrivalId, mode, documentIndex))
+      }
+
+      "must go from AddAdditionalInformationYesNoPage to AddAnotherDocumentPage when answer is false" in {
+
+        val docType = arbitraryTransportOrSupportDocument.arbitrary.sample.value
+
+        val userAnswers = emptyUserAnswers
+          .setValue(TypePage(documentIndex), docType)
+          .setValue(AddAdditionalInformationYesNoPage(documentIndex), false)
+
+        navigator
+          .nextPage(AddAdditionalInformationYesNoPage(documentIndex), mode, userAnswers)
+          .mustBe(controllers.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, mode))
+      }
+    }
+
     "in Check mode" - {
 
       val mode = CheckMode
 
-      "must go from AdditionalInformationPage to UnloadingFindingsController" - {
+      "must go from AdditionalInformationPage to UnloadingFindingsController" in {
 
         val userAnswers = emptyUserAnswers.setValue(AdditionalInformationPage(documentIndex), "Additional Information")
 
@@ -41,7 +109,7 @@ class DocumentNavigationSpec extends SpecBase with ScalaCheckPropertyChecks with
           .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
       }
 
-      "must go from DocumentReferenceNumberPage to UnloadingFindingsController" - {
+      "must go from DocumentReferenceNumberPage to UnloadingFindingsController" in {
 
         val userAnswers = emptyUserAnswers.setValue(DocumentReferenceNumberPage(documentIndex), "12345")
 
@@ -50,7 +118,7 @@ class DocumentNavigationSpec extends SpecBase with ScalaCheckPropertyChecks with
           .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
       }
 
-      "must go from TypePage to UnloadingFindingsController" - {
+      "must go from TypePage to UnloadingFindingsController" in {
 
         val docType = arbitraryDocumentType.arbitrary.sample.value
 

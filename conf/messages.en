@@ -469,7 +469,6 @@ unloadingFindings.rowHeadings.containerIdentificationNumber = Container identifi
 unloadingFindings.rowHeadings.incident.item = Goods item number {0}
 unloadingFindings.rowHeadings.sealIdentifier = Seal {0}
 unloadingFindings.rowHeadings.consignment.item = Item {0}
-unloadingFindings.informationHeading.consignment.item = Which items does this transport equipment apply to?
 
 unloadingFindings.subsections.houseConsignment = House consignment {0}
 unloadingFindings.subsections.houseConsignment.parent.heading = House consignments
