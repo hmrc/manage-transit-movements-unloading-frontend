@@ -66,6 +66,14 @@ class HouseConsignmentAnswersHelper(
     call = None
   )
 
+  def houseConsignmentConsignorSection: Section =
+    StaticSection(
+      rows = Seq(
+        consignorName,
+        consignorIdentification
+      ).flatten
+    )
+
   def houseConsignmentConsigneeSection: Section =
     StaticSection(
       sectionTitle = messages("unloadingFindings.consignee.heading"),
@@ -94,50 +102,69 @@ class HouseConsignmentAnswersHelper(
       case (_, index) =>
         val helper = new DepartureTransportMeansAnswersHelper(userAnswers, houseConsignmentIndex, index)
         AccordionSection(
-          sectionTitle = messages("unloadingFindings.subsections.transportMeans", index.display),
+          sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans", index.display)),
           rows = Seq(
             helper.transportMeansID,
             helper.transportMeansIDNumber,
             helper.buildVehicleNationalityRow
-          ).flatten
+          ).flatten,
+          id = Some(s"departureTransportMeans$index")
         )
     }
 
-  def itemSections: Seq[Section] =
+  def itemSection: Section =
     userAnswers.get(ItemsSection(houseConsignmentIndex)).mapWithIndex {
       case (_, index) =>
         val helper = new ConsignmentItemAnswersHelper(userAnswers, houseConsignmentIndex, index)
+
+        val rows = Seq(
+          helper.descriptionRow,
+          helper.declarationType,
+          helper.countryOfDestination,
+          Seq(helper.grossWeightRow),
+          Seq(helper.netWeightRow),
+          helper.cusCodeRow,
+          Seq(helper.commodityCodeRow),
+          Seq(helper.nomenclatureCodeRow),
+          helper.dangerousGoodsRows
+        ).flatten
+
+        val children = Seq(
+          Seq(helper.itemLevelConsigneeSection),
+          Seq(helper.documentSection),
+          Seq(helper.additionalReferencesSection),
+          helper.additionalInformationSection,
+          Seq(helper.packageSection)
+        ).flatten
+
+        (rows, children, index)
+    } match {
+      case Nil =>
+        StaticSection(
+          sectionTitle = Some(messages("unloadingFindings.subsections.item.parent.heading")),
+          viewLinks = Seq(itemsAddRemoveLink)
+        )
+      case items =>
+        val itemSections = items.map {
+          case (rows, children, index) =>
+            AccordionSection(
+              sectionTitle = Some(messages("unloadingFindings.subsections.item", index.display)),
+              rows = rows,
+              children = children,
+              id = Some(s"item-$index")
+            )
+        }
         AccordionSection(
-          sectionTitle = Some(messages("unloadingFindings.subsections.item", index.display)),
-          rows = Seq(
-            helper.descriptionRow,
-            helper.declarationType,
-            helper.countryOfDestination,
-            Seq(helper.grossWeightRow),
-            Seq(helper.netWeightRow),
-            helper.cusCodeRow,
-            Seq(helper.commodityCodeRow),
-            Seq(helper.nomenclatureCodeRow),
-            helper.dangerousGoodsRows
-          ).flatten,
-          children = Seq(
-            Seq(helper.itemLevelConsigneeSection),
-            helper.documentSections,
-            helper.additionalReferencesSection,
-            helper.additionalInformationsSection,
-            helper.packageSections
-          ).flatten,
-          viewLinks = Seq(
-            helper.packagingAddRemoveLink, //TODO move to respective parent section
-            helper.documentAddRemoveLink, //TODO move to respective parent section
-            helper.additionalReferenceAddRemoveLink //TODO move to respective parent section
-          )
+          sectionTitle = Some(messages("unloadingFindings.subsections.item.parent.heading")),
+          viewLinks = Seq(itemsAddRemoveLink),
+          children = itemSections,
+          id = Some("items")
         )
     }
 
   def itemsAddRemoveLink: Link =
     Link(
-      id = s"add-remove-items",
+      id = "add-remove-items",
       href = "#",
       text = messages("itemsLink.addRemove"),
       visuallyHidden = messages("itemsLink.visuallyHidden")

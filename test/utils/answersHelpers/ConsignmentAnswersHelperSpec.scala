@@ -20,7 +20,7 @@ import generated._
 import models.DocType.Previous
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference._
-import models.{CheckMode, Coordinates, Index, NormalMode, SecurityType}
+import models.{Coordinates, Index, NormalMode, SecurityType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.transportEquipment.index.ItemPage
@@ -284,18 +284,21 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
             result.children.head mustBe a[AccordionSection]
             result.children.head.sectionTitle.value mustBe "Transport equipment 1"
-            result.children.head.children.head mustBe a[StaticSection]
-            result.children.head.children.head.rows.size mustBe 2
-            result.children.head.children.head.rows.head.value.value mustBe containerId
-            result.children.head.children.head.rows(1).value.value mustBe sealId
+
+            result.children.head.rows.size mustBe 1
+            result.children.head.rows.head.value.value mustBe containerId
+
+            result.children.head.children.head mustBe a[AccordionSection]
+            result.children.head.children.head.rows.size mustBe 1
+            result.children.head.children.head.rows.head.value.value mustBe sealId
             result.children.head.children.head.viewLinks.head.href mustBe
               controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, NormalMode, equipmentIndex).url
-            result.children.head.children(1) mustBe a[StaticSection]
+
+            result.children.head.children(1) mustBe a[AccordionSection]
             result.children.head.children(1).rows.size mustBe 1
             result.children.head.children(1).rows.head.value.value mustBe item.toString
             result.children.head.children(1).viewLinks.head.href mustBe
               controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, NormalMode, index).url
-            result.children.head.children(1).optionalInformationHeading mustBe Some("Which items does this transport equipment apply to?")
         }
       }
     }
