@@ -62,7 +62,7 @@ object AddAnotherDepartureMeansOfTransportViewModel {
 
           ListItem(
             name = name,
-            changeUrl = Some(Call("GET", "#").url), //TODO: To be added later
+            changeUrl = None,
             removeUrl = Some(controllers.departureMeansOfTransport.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(arrivalId, mode, index).url)
           )
       }

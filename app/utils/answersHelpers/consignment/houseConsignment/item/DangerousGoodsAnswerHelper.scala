@@ -19,9 +19,7 @@ package utils.answersHelpers.consignment.houseConsignment.item
 import models.{Index, UserAnswers}
 import pages.houseConsignment.index.items.DangerousGoodsPage
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
 
 class DangerousGoodsAnswerHelper(
@@ -39,6 +37,6 @@ class DangerousGoodsAnswerHelper(
       prefix = "unloadingFindings.dangerousGoods.unNumber",
       args = Seq(dangerousGoodsIndex.display, itemIndex.display): _*,
       id = Some(s"change-unNumber-${itemIndex.display}-${dangerousGoodsIndex.display}"),
-      call = Some(Call(GET, "#")) //TODO change me please
+      call = None
     )
 }

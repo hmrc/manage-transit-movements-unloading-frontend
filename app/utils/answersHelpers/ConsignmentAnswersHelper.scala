@@ -41,7 +41,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
   private val documentAddRemoveLink: Link = Link(
     id = s"add-remove-documents",
-    href = "#",
+    href = controllers.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, NormalMode).url,
     text = messages("documentsLink.addRemove"),
     visuallyHidden = messages("documentsLink.visuallyHidden")
   )
@@ -56,7 +56,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
   private val departureTransportMeansAddRemoveLink: Link =
     Link(
       id = s"add-remove-departure-transport-means",
-      href = "#",
+      href = controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, NormalMode).url,
       text = messages("departureTransportMeans.addRemove"),
       visuallyHidden = messages("departureTransportMeans.visuallyHidden")
     )

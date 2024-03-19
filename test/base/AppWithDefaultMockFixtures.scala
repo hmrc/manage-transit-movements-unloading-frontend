@@ -20,8 +20,8 @@ import controllers.actions._
 import models.P5.ArrivalMessageType.UnloadingPermission
 import models.P5._
 import models.UserAnswers
+import navigation._
 import navigation.houseConsignment.index.items.{HouseConsignmentItemNavigator, DocumentNavigator => ItemDocumentNavigator}
-import navigation.{DepartureTransportMeansNavigator, _}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
@@ -80,7 +80,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected val fakeItemDocumentNavigator: ItemDocumentNavigator                       = new FakeItemDocumentNavigator(onwardRoute)
   protected val fakeTransportEquipmentNavigator: TransportEquipmentNavigator           = new FakeTransportEquipmentNavigator(onwardRoute)
   protected val fakeDepartureTransportMeansNavigator: DepartureTransportMeansNavigator = new FakeDepartureTransportMeansNavigator(onwardRoute)
-  protected val fakeConsignmentItemNavigator: ConsignmentItemNavigator                 = new FakeConsignmentItemNavigator(onwardRoute)
   protected val fakeAdditionalReferenceNavigator: AdditionalReferenceNavigator         = new FakeAdditionalReferenceNavigator(onwardRoute)
   protected val fakeHouseConsignmentIteNavigator: HouseConsignmentItemNavigator        = new FakeHouseConsignmentItemNavigator(onwardRoute)
 
@@ -100,7 +99,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[TransportEquipmentNavigator].toInstance(fakeTransportEquipmentNavigator),
         bind[HouseConsignmentItemNavigator].toInstance(fakeHouseConsignmentIteNavigator),
         bind[DepartureTransportMeansNavigator].toInstance(fakeDepartureTransportMeansNavigator),
-        bind[ConsignmentItemNavigator].toInstance(fakeConsignmentItemNavigator),
         bind[AdditionalReferenceNavigator].toInstance(fakeAdditionalReferenceNavigator)
       )
 }

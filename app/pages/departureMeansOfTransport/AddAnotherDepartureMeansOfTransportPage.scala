@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package pages.transportEquipment.index
+package pages.departureMeansOfTransport
 
 import models.Index
 import pages.QuestionPage
-import pages.sections.TransportEquipmentSection
+import pages.sections.TransportMeansSection
 import play.api.libs.json.JsPath
 
-case class ApplyAnItemYesNoPage(equipmentIndex: Index) extends QuestionPage[Boolean] {
+case class AddAnotherDepartureMeansOfTransportPage(transportIndex: Index) extends QuestionPage[Boolean] {
+  override def toString: String = "addAnotherTransportMeans"
 
-  override def path: JsPath = TransportEquipmentSection(equipmentIndex).path \ toString
-
-  override def toString: String = "applyAnItemYesNo"
-
+  override def path: JsPath = TransportMeansSection(Index(0)).path \ toString
 }

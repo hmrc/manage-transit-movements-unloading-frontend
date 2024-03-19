@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package controllers.departureMeansOfTransport
+package controllers.documents
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.departureMeansOfTransport.{routes => departureMeansOfTransportRoutes}
 import controllers.routes
 import forms.AddAnotherFormProvider
 import generators.Generators
@@ -32,46 +31,44 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewModels.ListItem
-import viewModels.departureTransportMeans.AddAnotherDepartureMeansOfTransportViewModel
-import viewModels.departureTransportMeans.AddAnotherDepartureMeansOfTransportViewModel.AddAnotherDepartureMeansOfTransportViewModelProvider
-import views.html.departureMeansOfTransport.AddAnotherDepartureMeansOfTransportView
+import viewModels.documents.AddAnotherDocumentViewModel
+import viewModels.documents.AddAnotherDocumentViewModel.AddAnotherDocumentViewModelProvider
+import views.html.documents.AddAnotherDocumentView
 
-import scala.concurrent.Future
-
-class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar with Generators {
+class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar with Generators {
 
   private val formProvider = new AddAnotherFormProvider()
 
-  private def form(viewModel: AddAnotherDepartureMeansOfTransportViewModel) =
+  private def form(viewModel: AddAnotherDocumentViewModel) =
     formProvider(viewModel.prefix, viewModel.allowMore)
 
   private val mode = NormalMode
 
-  private lazy val addAnotherDepartureMeansOfTransportRoute =
-    departureMeansOfTransportRoutes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, mode).url
+  private lazy val addAnotherDocumentRoute = controllers.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, mode).url
 
-  private val mockViewModelProvider = mock[AddAnotherDepartureMeansOfTransportViewModelProvider]
+  private val mockViewModelProvider = mock[AddAnotherDocumentViewModelProvider]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[AddAnotherDepartureMeansOfTransportViewModelProvider]).toInstance(mockViewModelProvider))
+      .overrides(bind(classOf[AddAnotherDocumentViewModelProvider]).toInstance(mockViewModelProvider))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockViewModelProvider)
   }
 
+  private val maxItemsSize      = frontendAppConfig.maxTransportDocuments + frontendAppConfig.maxSupportingDocuments
   private val listItem          = arbitrary[ListItem].sample.value
-  private val listItems         = Seq.fill(Gen.choose(1, frontendAppConfig.maxDepartureMeansOfTransport - 1).sample.value)(listItem)
-  private val maxedOutListItems = Seq.fill(frontendAppConfig.maxDepartureMeansOfTransport)(listItem)
+  private val listItems         = Seq.fill(Gen.choose(1, maxItemsSize - 1).sample.value)(listItem)
+  private val maxedOutListItems = Seq.fill(maxItemsSize)(listItem)
 
-  private val viewModel = arbitrary[AddAnotherDepartureMeansOfTransportViewModel].sample.value
+  private val viewModel = arbitrary[AddAnotherDocumentViewModel].sample.value
 
-  private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
-  private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
+  private val notMaxedOutViewModel = viewModel.copy(listItems = listItems, allowMore = true)
+  private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems, allowMore = false)
 
-  "AddAnotherDepartureMeansOfTransportController" - {
+  "AddAnotherDocumentController" - {
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
         when(mockViewModelProvider.apply(any(), any(), any())(any()))
@@ -79,11 +76,11 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
 
         setExistingUserAnswers(emptyUserAnswers)
 
-        val request = FakeRequest(GET, addAnotherDepartureMeansOfTransportRoute)
+        val request = FakeRequest(GET, addAnotherDocumentRoute)
 
         val result = route(app, request).value
 
-        val view = injector.instanceOf[AddAnotherDepartureMeansOfTransportView]
+        val view = injector.instanceOf[AddAnotherDocumentView]
 
         status(result) mustEqual OK
 
@@ -97,11 +94,11 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
 
         setExistingUserAnswers(emptyUserAnswers)
 
-        val request = FakeRequest(GET, addAnotherDepartureMeansOfTransportRoute)
+        val request = FakeRequest(GET, addAnotherDocumentRoute)
 
         val result = route(app, request).value
 
-        val view = injector.instanceOf[AddAnotherDepartureMeansOfTransportView]
+        val view = injector.instanceOf[AddAnotherDocumentView]
 
         status(result) mustEqual OK
 
@@ -112,22 +109,22 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
 
     "when max limit not reached" - {
       "when yes submitted" - {
-        "must redirect to add identification yes no page at next index" in {
+        "must redirect to type page at next index" in {
           when(mockViewModelProvider.apply(any(), any(), any())(any()))
             .thenReturn(notMaxedOutViewModel)
 
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
           setExistingUserAnswers(emptyUserAnswers)
 
-          val request = FakeRequest(POST, addAnotherDepartureMeansOfTransportRoute)
+          val request = FakeRequest(POST, addAnotherDocumentRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
           val result = route(app, request).value
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual onwardRoute.url
+          redirectLocation(result).value mustEqual controllers.documents.routes.TypeController
+            .onPageLoad(arrivalId, mode, notMaxedOutViewModel.nextIndex)
+            .url
         }
       }
 
@@ -136,18 +133,16 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
           when(mockViewModelProvider.apply(any(), any(), any())(any()))
             .thenReturn(notMaxedOutViewModel)
 
-          when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
           setExistingUserAnswers(emptyUserAnswers)
 
-          val request = FakeRequest(POST, addAnotherDepartureMeansOfTransportRoute)
+          val request = FakeRequest(POST, addAnotherDocumentRoute)
             .withFormUrlEncodedBody(("value", "false"))
 
           val result = route(app, request).value
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual onwardRoute.url
+          redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
         }
       }
     }
@@ -157,18 +152,16 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
         when(mockViewModelProvider.apply(any(), any(), any())(any()))
           .thenReturn(maxedOutViewModel)
 
-        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
         setExistingUserAnswers(emptyUserAnswers)
 
-        val request = FakeRequest(POST, addAnotherDepartureMeansOfTransportRoute)
+        val request = FakeRequest(POST, addAnotherDocumentRoute)
           .withFormUrlEncodedBody(("value", ""))
 
         val result = route(app, request).value
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual onwardRoute.url
+        redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
       }
     }
 
@@ -179,14 +172,14 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
 
         setExistingUserAnswers(emptyUserAnswers)
 
-        val request = FakeRequest(POST, addAnotherDepartureMeansOfTransportRoute)
+        val request = FakeRequest(POST, addAnotherDocumentRoute)
           .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form(notMaxedOutViewModel).bind(Map("value" -> ""))
 
         val result = route(app, request).value
 
-        val view = injector.instanceOf[AddAnotherDepartureMeansOfTransportView]
+        val view = injector.instanceOf[AddAnotherDocumentView]
 
         status(result) mustEqual BAD_REQUEST
 
@@ -198,7 +191,7 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
     "must redirect to Session Expired for a GET if no existing data is found" in {
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, addAnotherDepartureMeansOfTransportRoute)
+      val request = FakeRequest(GET, addAnotherDocumentRoute)
 
       val result = route(app, request).value
 
@@ -210,7 +203,7 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
     "must redirect to Session Expired for a POST if no existing data is found" in {
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, addAnotherDepartureMeansOfTransportRoute)
+      val request = FakeRequest(POST, addAnotherDocumentRoute)
         .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
