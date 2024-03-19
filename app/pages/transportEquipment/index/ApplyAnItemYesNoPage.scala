@@ -16,7 +16,6 @@
 
 package pages.transportEquipment.index
 
-
 import models.{Index, UserAnswers}
 import pages.sections.{ItemsSection, TransportEquipmentSection}
 import pages.QuestionPage
