@@ -60,31 +60,31 @@ trait DetailsListViewBehaviours extends ViewBehaviours with Generators {
                     Text(value) mustBe row.value.content
                   }
 
-//                  row.actions match {
-//                    case None =>
-//                      "must not render any actions" in {
-//                        assert(renderedRow.getElementsByClass("govuk-summary-list__actions").isEmpty)
-//                      }
-//                    case Some(value) =>
-//                      val actions = renderedRow
-//                        .getElementsByClass("govuk-summary-list__actions")
-//                        .first()
-//                        .getElementsByClass("govuk-link")
-//
-//                      value.items.zipWithIndex.foreach {
-//                        case (item, itemIndex) =>
-//                          s"must contain action ${itemIndex + 1}" in {
-//                            assertElementExists(
-//                              actions,
-//                              element =>
-//                                element.attr("href") == item.href && (item.visuallyHiddenText match {
-//                                  case Some(value) => element.getElementsByClass("govuk-visually-hidden").text() == value
-//                                  case None        => Text(element.text()) == item.content
-//                                })
-//                            )
-//                          }
-//                      }
-//                  }
+                  row.actions match {
+                    case None =>
+                      "must not render any actions" in {
+                        assert(renderedRow.getElementsByClass("govuk-summary-list__actions").isEmpty)
+                      }
+                    case Some(value) =>
+                      val actions = renderedRow
+                        .getElementsByClass("govuk-summary-list__actions")
+                        .first()
+                        .getElementsByClass("govuk-link")
+
+                      value.items.zipWithIndex.foreach {
+                        case (item, itemIndex) =>
+                          s"must contain action ${itemIndex + 1}" in {
+                            assertElementExists(
+                              actions,
+                              element =>
+                                element.attr("href") == item.href && (item.visuallyHiddenText match {
+                                  case Some(value) => element.getElementsByClass("govuk-visually-hidden").text() == value
+                                  case None        => Text(element.text()) == item.content
+                                })
+                            )
+                          }
+                      }
+                  }
                 }
             }
           }
