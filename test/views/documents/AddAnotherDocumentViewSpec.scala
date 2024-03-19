@@ -26,15 +26,15 @@ import views.html.documents.AddAnotherDocumentView
 
 class AddAnotherDocumentViewSpec extends ListWithActionsViewBehaviours {
 
-  override def maxNumber: Int = frontendAppConfig.maxDocumentsPerType * 2
+  override def maxNumber: Int = frontendAppConfig.maxTransportDocuments + frontendAppConfig.maxSupportingDocuments
 
   private def formProvider(viewModel: AddAnotherDocumentViewModel) =
     new AddAnotherFormProvider()(viewModel.prefix, viewModel.allowMore)
 
   private val viewModel            = arbitrary[AddAnotherDocumentViewModel].sample.value
-  private val noItemsViewModel     = viewModel.copy(listItems = Nil)
-  private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
-  private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
+  private val noItemsViewModel     = viewModel.copy(listItems = Nil, allowMore = true)
+  private val notMaxedOutViewModel = viewModel.copy(listItems = listItems, allowMore = true)
+  private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems, allowMore = false)
 
   override def form: Form[Boolean] = formProvider(notMaxedOutViewModel)
 

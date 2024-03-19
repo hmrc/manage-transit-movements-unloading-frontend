@@ -273,23 +273,29 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
           view(filledForm, mrn, arrivalId, NormalMode, documentsList.values, viewModel, documentIndex)(request, messages).toString
       }
 
-      "must fılter out maxed document types that cannot be added any more" in {
+      "must filter out maxed document types that cannot be added any more" in {
 
         when(mockDocumentTypesService.getDocumentList(any(), any(), any())(any())).thenReturn(Future.successful(documentsList))
-        val maxDocLimit = 99
-        val maxTransportDocs = (0 until maxDocLimit).foldLeft(emptyUserAnswers) {
+        val maxTransportLimit = frontendAppConfig.maxTransportDocuments
+        val supportDocsSize   = 2
+
+        val withTransportDocs = (0 until maxTransportLimit).foldLeft(emptyUserAnswers) {
           (answers, index) => answers.setValue(TypePage(Index(index)), document1)
         }
-        val userAnswers = maxTransportDocs
-          .setValue(TypePage(Index(maxDocLimit)), document3) // support
-          .setValue(TypePage(Index(maxDocLimit + 1)), document4) // support
-        setExistingUserAnswers(userAnswers)
 
-        val request = FakeRequest(GET, typeRoute(NormalMode))
+        val withBothDocs = (maxTransportLimit until maxTransportLimit + supportDocsSize).foldLeft(withTransportDocs) {
+          (answers, index) => answers.setValue(TypePage(Index(index)), document3)
+        }
+
+        setExistingUserAnswers(withBothDocs)
+
+        val nextIndex = Index(maxTransportLimit + supportDocsSize)
+
+        val request = FakeRequest(GET, routes.TypeController.onPageLoad(arrivalId, NormalMode, nextIndex).url)
 
         val result = route(app, request).value
 
-        val filledForm = form.bind(Map("value" -> document1.value))
+        val filledForm = form
 
         val view = injector.instanceOf[TypeView]
 
@@ -297,7 +303,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
         // view should have only support docs listed. new transport docs cannot be added since they reached the limit
         contentAsString(result) mustEqual
-          view(filledForm, mrn, arrivalId, NormalMode, supportingDocumentList.values, viewModel, documentIndex)(request, messages).toString
+          view(filledForm, mrn, arrivalId, NormalMode, supportingDocumentList.values, viewModel, nextIndex)(request, messages).toString
       }
 
       "must redirect to the next page when valid data is submitted" in {
