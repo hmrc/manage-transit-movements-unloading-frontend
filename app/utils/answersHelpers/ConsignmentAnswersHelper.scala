@@ -18,7 +18,7 @@ package utils.answersHelpers
 
 import models.DocType.Previous
 import models.reference.CustomsOffice
-import models.{CheckMode, Link, RichOptionalJsArray, SecurityType, UserAnswers}
+import models.{Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
 import pages.documents.TypePage
 import pages.grossMass.GrossMassPage
 import pages.sections._
@@ -48,7 +48,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
   private val additionalReferenceAddRemoveLink: Link = Link(
     id = "add-remove-additional-reference",
-    href = controllers.additionalReference.index.routes.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId, CheckMode).url,
+    href = controllers.additionalReference.index.routes.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId, NormalMode).url,
     text = messages("additionalReferenceLink.addRemove"),
     visuallyHidden = messages("additionalReferenceLink.visuallyHidden")
   )

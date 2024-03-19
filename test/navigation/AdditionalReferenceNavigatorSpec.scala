@@ -30,9 +30,9 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
   "AdditionalReferenceNavigator" - {
 
-    "in Check mode" - {
+    "in Normal mode" - {
 
-      val mode = CheckMode
+      val mode = NormalMode
 
       "must go from AdditionalReferenceTypePage to AddAnotherAdditionalReferenceController" in {
 

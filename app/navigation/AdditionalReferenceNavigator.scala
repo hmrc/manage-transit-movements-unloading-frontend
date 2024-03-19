@@ -17,7 +17,7 @@
 package navigation
 
 import com.google.inject.Singleton
-import models.{CheckMode, UserAnswers}
+import models.{NormalMode, UserAnswers}
 import pages._
 import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import play.api.mvc.Call
@@ -26,13 +26,13 @@ import play.api.mvc.Call
 class AdditionalReferenceNavigator extends Navigator {
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case AdditionalReferenceNumberPage(_) =>
-      ua => Some(controllers.additionalReference.index.routes.AddAnotherAdditionalReferenceController.onPageLoad(ua.id, CheckMode))
-    case AdditionalReferenceTypePage(referenceIndex) =>
-      ua => Some(controllers.additionalReference.index.routes.AdditionalReferenceNumberController.onPageLoad(ua.id, referenceIndex, CheckMode))
+    case _ => _ => Some(Call("GET", "#")) //TODO: Update additional Reference navigation
   }
 
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case _ => _ => Some(Call("GET", "#")) //TODO: Update document navigation
+    case AdditionalReferenceNumberPage(_) =>
+      ua => Some(controllers.additionalReference.index.routes.AddAnotherAdditionalReferenceController.onPageLoad(ua.id, NormalMode))
+    case AdditionalReferenceTypePage(referenceIndex) =>
+      ua => Some(controllers.additionalReference.index.routes.AdditionalReferenceNumberController.onPageLoad(ua.id, referenceIndex, NormalMode))
   }
 }
