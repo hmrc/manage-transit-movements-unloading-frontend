@@ -21,7 +21,7 @@ import models.P5.ArrivalMessageType.UnloadingPermission
 import models.P5._
 import models.UserAnswers
 import navigation.houseConsignment.index.items.{HouseConsignmentItemNavigator, DocumentNavigator => ItemDocumentNavigator}
-import navigation.{DepartureTransportMeansNavigator, _}
+import navigation._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
