@@ -22,8 +22,6 @@ import generators.Generators
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference._
 import models.{Index, SecurityType, UserAnswers}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
@@ -35,27 +33,12 @@ import pages.houseConsignment.index.items.{GrossWeightPage, ItemDescriptionPage,
 import pages.incident.{IncidentCodePage, IncidentTextPage}
 import pages.transportEquipment.index.ItemPage
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import scalaxb.XMLCalendar
-import services.ReferenceDataService
 import viewModels.UnloadingFindingsViewModel.UnloadingFindingsViewModelProvider
-
-import scala.concurrent.Future
 
 class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
-  private val countryDesc                            = "Great Britain"
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
-      .overrides(bind[ReferenceDataService].toInstance(mockReferenceDataService))
-
   "Unloading findings sections" - {
-
-    val customsOffice = CustomsOffice("id", "name", "countryId", None)
 
     "must render header section" in {
       val viewModelProvider = new UnloadingFindingsViewModelProvider()
@@ -68,6 +51,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           )
         )
       )
+
+      val customsOffice = CustomsOffice("id", "name", "countryId", None)
 
       val result = viewModelProvider.apply(
         userAnswers
@@ -162,12 +147,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
               )
             )
           )
-          .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
           .setValue(HotPCountryPage, country)
-
-        setExistingUserAnswers(userAnswers)
-
-        when(mockReferenceDataService.getCountryByCode(any())(any(), any())).thenReturn(Future.successful(country))
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
@@ -181,10 +161,6 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
       "when there is none" in {
         val userAnswers = emptyUserAnswers
           .copy(ie043Data = basicIe043.copy(HolderOfTheTransitProcedure = None))
-          .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
-
-        setExistingUserAnswers(userAnswers)
-        when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
@@ -200,11 +176,6 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         .setValue(TransportMeansIdentificationPage(dtmIndex), TransportMeansIdentification("4", ""))
         .setValue(VehicleIdentificationNumberPage(dtmIndex), "28")
         .setValue(CountryPage(dtmIndex), Country("GB", ""))
-        .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
-
-      setExistingUserAnswers(userAnswers)
-
-      when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
       val viewModelProvider = new UnloadingFindingsViewModelProvider()
       val result            = viewModelProvider.apply(userAnswers)
@@ -227,13 +198,6 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         .setValue(TransportMeansIdentificationPage(Index(1)), TransportMeansIdentification("4", ""))
         .setValue(VehicleIdentificationNumberPage(Index(1)), "28")
         .setValue(CountryPage(Index(1)), Country("GB", ""))
-        .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
-
-      setExistingUserAnswers(userAnswers)
-      when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
-      setExistingUserAnswers(userAnswers)
-
-      when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
       val viewModelProvider = new UnloadingFindingsViewModelProvider()
       val result            = viewModelProvider.apply(userAnswers)
@@ -258,10 +222,6 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         "with no seals" in {
           val userAnswers = emptyUserAnswers
             .setValue(ContainerIdentificationNumberPage(equipmentIndex), "cin-1")
-            .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
-
-          setExistingUserAnswers(userAnswers)
-          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
           val viewModelProvider = new UnloadingFindingsViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers)
@@ -272,25 +232,15 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           section.children.length mustBe 1
 
           section.children.head.sectionTitle.value mustBe "Transport equipment 1"
-          section.children.head.rows.size mustBe 0
+          section.children.head.rows.size mustBe 1
           section.children.head.viewLinks mustBe Nil
-
-          section.children.head.children.size mustBe 2
-
-          section.children.head.children.head.sectionTitle mustBe None
-          section.children.head.children.head.rows.size mustBe 1
-          section.children.head.children.head.viewLinks must not be Nil
-          section.children.head.children.head.optionalInformationHeading mustBe None
+          section.children.head.children.size mustBe 0
         }
 
         "with seals" in {
           val userAnswers = emptyUserAnswers
             .setValue(ContainerIdentificationNumberPage(equipmentIndex), "cin-1")
             .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "1002")
-            .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
-
-          setExistingUserAnswers(userAnswers)
-          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
           val viewModelProvider = new UnloadingFindingsViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers)
@@ -301,15 +251,14 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           section.children.length mustBe 1
 
           section.children.head.sectionTitle.value mustBe "Transport equipment 1"
-          section.children.head.rows.size mustBe 0
+          section.children.head.rows.size mustBe 1
           section.children.head.viewLinks mustBe Nil
+          section.children.head.children.size mustBe 1
 
-          section.children.head.children.size mustBe 2
-
-          section.children.head.children.head.sectionTitle mustBe None
-          section.children.head.children.head.rows.size mustBe 2
-          section.children.head.children.head.viewLinks must not be Nil
-          section.children.head.children.head.optionalInformationHeading mustBe None
+          val seals = section.children.head.children.head
+          seals.sectionTitle.value mustBe "Seals"
+          seals.rows.size mustBe 1
+          seals.viewLinks must not be Nil
         }
       }
       "when there is multiple" - {
@@ -318,10 +267,6 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           val userAnswers = emptyUserAnswers
             .setValue(ContainerIdentificationNumberPage(Index(0)), "cin-1")
             .setValue(ContainerIdentificationNumberPage(Index(1)), "cin-1")
-            .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
-
-          setExistingUserAnswers(userAnswers)
-          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
           val viewModelProvider = new UnloadingFindingsViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers)
@@ -332,24 +277,14 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           section.children.length mustBe 2
 
           section.children.head.sectionTitle.value mustBe "Transport equipment 1"
-          section.children.head.rows.size mustBe 0
+          section.children.head.rows.size mustBe 1
           section.children.head.viewLinks mustBe Nil
-
-          section.children.head.children.size mustBe 2
-
-          section.children.head.children.head.sectionTitle mustBe None
-          section.children.head.children.head.rows.size mustBe 1
-          section.children.head.children.head.viewLinks must not be Nil
-          section.children.head.children.head.optionalInformationHeading mustBe None
+          section.children.head.children.size mustBe 0
 
           section.children(1).sectionTitle.value mustBe "Transport equipment 2"
-          section.children(1).rows.size mustBe 0
+          section.children(1).rows.size mustBe 1
           section.children(1).viewLinks mustBe Nil
-
-          section.children(1).children.head.sectionTitle mustBe None
-          section.children(1).children.head.rows.size mustBe 1
-          section.children(1).children.head.viewLinks must not be Nil
-          section.children(1).children.head.optionalInformationHeading mustBe None
+          section.children.head.children.size mustBe 0
         }
 
         "with seals" in {
@@ -358,10 +293,6 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             .setValue(SealIdentificationNumberPage(Index(0), sealIndex), "1002")
             .setValue(ContainerIdentificationNumberPage(Index(1)), "cin-1")
             .setValue(SealIdentificationNumberPage(Index(1), sealIndex), "1002")
-            .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
-
-          setExistingUserAnswers(userAnswers)
-          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
           val viewModelProvider = new UnloadingFindingsViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers)
@@ -371,24 +302,24 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           section.children.length mustBe 2
 
           section.children.head.sectionTitle.value mustBe "Transport equipment 1"
-          section.children.head.rows.size mustBe 0
+          section.children.head.rows.size mustBe 1
           section.children.head.viewLinks mustBe Nil
+          section.children.head.children.size mustBe 1
 
-          section.children.head.children.size mustBe 2
-
-          section.children.head.children.head.sectionTitle mustBe None
-          section.children.head.children.head.rows.size mustBe 2
-          section.children.head.children.head.viewLinks must not be Nil
-          section.children.head.children.head.optionalInformationHeading mustBe None
+          val transportEquipment1Seals = section.children.head.children.head
+          transportEquipment1Seals.sectionTitle.value mustBe "Seals"
+          transportEquipment1Seals.rows.size mustBe 1
+          transportEquipment1Seals.viewLinks must not be Nil
 
           section.children(1).sectionTitle.value mustBe "Transport equipment 2"
-          section.children(1).rows.size mustBe 0
+          section.children(1).rows.size mustBe 1
           section.children(1).viewLinks mustBe Nil
+          section.children(1).children.size mustBe 1
 
-          section.children(1).children.head.sectionTitle mustBe None
-          section.children(1).children.head.rows.size mustBe 2
-          section.children(1).children.head.viewLinks must not be Nil
-          section.children(1).children.head.optionalInformationHeading mustBe None
+          val transportEquipment2Seals = section.children(1).children.head
+          transportEquipment2Seals.sectionTitle.value mustBe "Seals"
+          transportEquipment2Seals.rows.size mustBe 1
+          transportEquipment2Seals.viewLinks must not be Nil
         }
       }
 
@@ -398,10 +329,6 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           val userAnswers = emptyUserAnswers
             .setValue(ContainerIdentificationNumberPage(equipmentIndex), "cin-1")
             .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "1002")
-            .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
-
-          setExistingUserAnswers(userAnswers)
-          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
           val viewModelProvider = new UnloadingFindingsViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers)
@@ -412,26 +339,21 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           section.children.length mustBe 1
 
           section.children.head.sectionTitle.value mustBe "Transport equipment 1"
-          section.children.head.rows.size mustBe 0
+          section.children.head.rows.size mustBe 1
           section.children.head.viewLinks mustBe Nil
+          section.children.head.children.size mustBe 1
 
-          section.children.head.children.size mustBe 2
-
-          section.children.head.children.head.sectionTitle mustBe None
-          section.children.head.children.head.rows.size mustBe 2
-          section.children.head.children.head.viewLinks must not be Nil
-          section.children.head.children.head.optionalInformationHeading mustBe None
+          val seals = section.children.head.children.head
+          seals.sectionTitle.value mustBe "Seals"
+          seals.rows.size mustBe 1
+          seals.viewLinks must not be Nil
         }
 
         "with items" in {
           val userAnswers = emptyUserAnswers
             .setValue(ContainerIdentificationNumberPage(equipmentIndex), "cin-1")
             .setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "1002")
-            .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
             .setValue(ItemPage(equipmentIndex, itemIndex), BigInt(10))
-
-          setExistingUserAnswers(userAnswers)
-          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
           val viewModelProvider = new UnloadingFindingsViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers)
@@ -442,20 +364,20 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           section.children.length mustBe 1
 
           section.children.head.sectionTitle.value mustBe "Transport equipment 1"
-          section.children.head.rows.size mustBe 0
+          section.children.head.rows.size mustBe 1
           section.children.head.viewLinks mustBe Nil
 
           section.children.head.children.size mustBe 2
 
-          section.children.head.children.head.sectionTitle mustBe None
-          section.children.head.children.head.rows.size mustBe 2
-          section.children.head.children.head.viewLinks must not be Nil
-          section.children.head.children.head.optionalInformationHeading mustBe None
+          val seals = section.children.head.children.head
+          seals.sectionTitle.value mustBe "Seals"
+          seals.rows.size mustBe 1
+          seals.viewLinks must not be Nil
 
-          section.children.head.children(1).sectionTitle mustBe None
-          section.children.head.children(1).rows.size mustBe 1
-          section.children.head.children(1).viewLinks must not be Nil
-          section.children.head.children(1).optionalInformationHeading must not be None
+          val goodsReferences = section.children.head.children(1)
+          goodsReferences.sectionTitle.value mustBe "Items applied to this transport equipment"
+          goodsReferences.rows.size mustBe 1
+          goodsReferences.viewLinks must not be Nil
         }
       }
       "when there is multiple" - {
@@ -466,10 +388,6 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             .setValue(SealIdentificationNumberPage(Index(0), sealIndex), "1002")
             .setValue(ContainerIdentificationNumberPage(Index(1)), "cin-1")
             .setValue(SealIdentificationNumberPage(Index(1), sealIndex), "1002")
-            .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
-
-          setExistingUserAnswers(userAnswers)
-          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
           val viewModelProvider = new UnloadingFindingsViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers)
@@ -479,38 +397,34 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           section.children.length mustBe 2
 
           section.children.head.sectionTitle.value mustBe "Transport equipment 1"
-          section.children.head.rows.size mustBe 0
+          section.children.head.rows.size mustBe 1
           section.children.head.viewLinks mustBe Nil
+          section.children.head.children.size mustBe 1
 
-          section.children.head.children.size mustBe 2
-
-          section.children.head.children.head.sectionTitle mustBe None
-          section.children.head.children.head.rows.size mustBe 2
-          section.children.head.children.head.viewLinks must not be Nil
-          section.children.head.children.head.optionalInformationHeading mustBe None
+          val transportEquipment1Seals = section.children.head.children.head
+          transportEquipment1Seals.sectionTitle.value mustBe "Seals"
+          transportEquipment1Seals.rows.size mustBe 1
+          transportEquipment1Seals.viewLinks must not be Nil
 
           section.children(1).sectionTitle.value mustBe "Transport equipment 2"
-          section.children(1).rows.size mustBe 0
+          section.children(1).rows.size mustBe 1
           section.children(1).viewLinks mustBe Nil
+          section.children(1).children.size mustBe 1
 
-          section.children(1).children.head.sectionTitle mustBe None
-          section.children(1).children.head.rows.size mustBe 2
-          section.children(1).children.head.viewLinks must not be Nil
-          section.children(1).children.head.optionalInformationHeading mustBe None
+          val transportEquipment2Seals = section.children(1).children.head
+          transportEquipment2Seals.sectionTitle.value mustBe "Seals"
+          transportEquipment2Seals.rows.size mustBe 1
+          transportEquipment2Seals.viewLinks must not be Nil
         }
 
         "with items" in {
           val userAnswers = emptyUserAnswers
             .setValue(ContainerIdentificationNumberPage(Index(0)), "cin-1")
-            .setValue(SealIdentificationNumberPage(Index(0), sealIndex), "1002")
-            .setValue(ItemPage(equipmentIndex, Index(0)), BigInt(10))
+            .setValue(SealIdentificationNumberPage(Index(0), Index(0)), "1002")
+            .setValue(ItemPage(Index(0), Index(0)), BigInt(10))
             .setValue(ContainerIdentificationNumberPage(Index(1)), "cin-1")
-            .setValue(SealIdentificationNumberPage(Index(1), sealIndex), "1002")
-            .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
-            .setValue(ItemPage(equipmentIndex, Index(1)), BigInt(10))
-
-          setExistingUserAnswers(userAnswers)
-          when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
+            .setValue(SealIdentificationNumberPage(Index(1), Index(0)), "1002")
+            .setValue(ItemPage(Index(1), Index(0)), BigInt(10))
 
           val viewModelProvider = new UnloadingFindingsViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers)
@@ -520,34 +434,34 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           section.children.length mustBe 2
 
           section.children.head.sectionTitle.value mustBe "Transport equipment 1"
-          section.children.head.rows.size mustBe 0
+          section.children.head.rows.size mustBe 1
           section.children.head.viewLinks mustBe Nil
-
           section.children.head.children.size mustBe 2
 
-          section.children.head.children.head.sectionTitle mustBe None
-          section.children.head.children.head.rows.size mustBe 2
-          section.children.head.children.head.viewLinks must not be Nil
-          section.children.head.children.head.optionalInformationHeading mustBe None
+          val transportEquipment1Seals = section.children.head.children.head
+          transportEquipment1Seals.sectionTitle.value mustBe "Seals"
+          transportEquipment1Seals.rows.size mustBe 1
+          transportEquipment1Seals.viewLinks must not be Nil
 
-          section.children.head.children(1).sectionTitle mustBe None
-          section.children.head.children(1).rows.size mustBe 2
-          section.children.head.children(1).viewLinks must not be Nil
-          section.children.head.children(1).optionalInformationHeading must not be None
+          val transportEquipment1GoodsReferences = section.children.head.children(1)
+          transportEquipment1GoodsReferences.sectionTitle.value mustBe "Items applied to this transport equipment"
+          transportEquipment1GoodsReferences.rows.size mustBe 1
+          transportEquipment1GoodsReferences.viewLinks must not be Nil
 
           section.children(1).sectionTitle.value mustBe "Transport equipment 2"
-          section.children(1).rows.size mustBe 0
+          section.children(1).rows.size mustBe 1
           section.children(1).viewLinks mustBe Nil
+          section.children.head.children.size mustBe 2
 
-          section.children(1).children.head.sectionTitle mustBe None
-          section.children(1).children.head.rows.size mustBe 2
-          section.children(1).children.head.viewLinks must not be Nil
-          section.children(1).children.head.optionalInformationHeading mustBe None
+          val transportEquipment2Seals = section.children(1).children.head
+          transportEquipment2Seals.sectionTitle.value mustBe "Seals"
+          transportEquipment2Seals.rows.size mustBe 1
+          transportEquipment2Seals.viewLinks must not be Nil
 
-          section.children.head.children(1).sectionTitle mustBe None
-          section.children.head.children(1).rows.size mustBe 2
-          section.children.head.children(1).viewLinks must not be Nil
-          section.children.head.children(1).optionalInformationHeading must not be None
+          val transportEquipment2GoodsReferences = section.children(1).children(1)
+          transportEquipment2GoodsReferences.sectionTitle.value mustBe "Items applied to this transport equipment"
+          transportEquipment2GoodsReferences.rows.size mustBe 1
+          transportEquipment2GoodsReferences.viewLinks must not be Nil
         }
       }
     }
@@ -565,10 +479,6 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(ItemDescriptionPage(hcIndex, itemIndex), "shirts")
           .setValue(GrossWeightPage(hcIndex, itemIndex), BigDecimal(123.45))
           .setValue(NetWeightPage(hcIndex, itemIndex), 123.45)
-          .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
-
-        setExistingUserAnswers(userAnswers)
-        when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
@@ -606,10 +516,6 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(ItemDescriptionPage(Index(1), itemIndex), "shirts")
           .setValue(GrossWeightPage(Index(1), itemIndex), BigDecimal(123.45))
           .setValue(NetWeightPage(Index(1), itemIndex), 123.45)
-          .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
-
-        setExistingUserAnswers(userAnswers)
-        when(mockReferenceDataService.getCountryNameByCode(any())(any(), any())).thenReturn(Future.successful(countryDesc))
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
@@ -633,9 +539,6 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         val userAnswers = emptyUserAnswers
           .setValue(AdditionalReferenceTypePage(index), AdditionalReferenceType("Y015", "The rough diamonds are contained in ..."))
           .setValue(AdditionalReferenceNumberPage(index), "addref-1")
-          .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
-
-        setExistingUserAnswers(userAnswers)
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
@@ -652,9 +555,6 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(AdditionalReferenceNumberPage(Index(0)), "addref-1")
           .setValue(AdditionalReferenceTypePage(Index(1)), AdditionalReferenceType("Y022", "Consignor / exporter (AEO certificate number)"))
           .setValue(AdditionalReferenceNumberPage(Index(1)), "addref-2")
-          .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
-
-        setExistingUserAnswers(userAnswers)
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
@@ -672,9 +572,6 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         val userAnswers = emptyUserAnswers
           .setValue(AdditionalInformationCodePage(index), AdditionalInformationCode("20300", "Export"))
           .setValue(AdditionalInformationTextPage(index), "a string")
-          .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
-
-        setExistingUserAnswers(userAnswers)
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
@@ -697,9 +594,6 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
             )
           )
           .setValue(AdditionalInformationTextPage(Index(1)), "another string")
-          .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
-
-        setExistingUserAnswers(userAnswers)
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
@@ -716,9 +610,6 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         val userAnswers = emptyUserAnswers
           .setValue(IncidentCodePage(index), Incident("1", "bad wrapping paper"))
           .setValue(IncidentTextPage(index), "it got wet")
-          .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
-
-        setExistingUserAnswers(userAnswers)
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
@@ -739,9 +630,6 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(IncidentTextPage(Index(0)), "free text 1")
           .setValue(IncidentCodePage(Index(1)), Incident("2", "desc 2"))
           .setValue(IncidentTextPage(Index(1)), "free text 2")
-          .setValue(CustomsOfficeOfDestinationActualPage, customsOffice)
-
-        setExistingUserAnswers(userAnswers)
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)

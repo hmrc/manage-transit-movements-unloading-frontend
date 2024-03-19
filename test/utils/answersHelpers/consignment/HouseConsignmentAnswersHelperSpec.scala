@@ -214,6 +214,8 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.head mustBe a[AccordionSection]
             result.head.sectionTitle.value mustBe "Departure means of transport 1"
             result.head.rows.size mustBe 3
+            result.head.id.value mustBe "departureTransportMeans1"
+
             result.head.rows.head.value.value mustBe `type`.description
             result.head.rows(1).value.value mustBe number
             result.head.rows(2).value.value mustBe country.description
@@ -256,9 +258,11 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result mustBe a[AccordionSection]
             result.sectionTitle.value mustBe "Items"
             result.rows.size mustBe 0
+            result.id.value mustBe "items"
 
             result.children.head mustBe a[AccordionSection]
             result.children.head.sectionTitle.value mustBe "Item 1"
+            result.children.head.id.value mustBe "item-1"
             result.children.head.rows.size mustBe 6
             result.children.head.rows.head.value.value mustBe description
             result.children.head.rows(1).value.value mustBe s"${grossWeight}kg"
@@ -274,45 +278,54 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
             result.children.head.children(1) mustBe a[AccordionSection]
             result.children.head.children(1).sectionTitle.value mustBe "Documents"
+            result.children.head.children(1).id.value mustBe "item-1-documents"
             result.children.head.children(1).rows.size mustBe 0
             result.children.head.children(1).viewLinks must not be empty
 
             result.children.head.children(1).children.head mustBe a[AccordionSection]
             result.children.head.children(1).children.head.sectionTitle.value mustBe "Document 1"
+            result.children.head.children(1).children.head.id.value mustBe "item-1-document-1"
             result.children.head.children(1).children.head.rows.size mustBe 1
             result.children.head.children(1).children.head.rows.head.value.value mustBe "doc 1 ref"
 
             result.children.head.children(1).children(1) mustBe a[AccordionSection]
             result.children.head.children(1).children(1).sectionTitle.value mustBe "Document 2"
+            result.children.head.children(1).children(1).id.value mustBe "item-1-document-2"
             result.children.head.children(1).children(1).rows.size mustBe 1
             result.children.head.children(1).children(1).rows.head.value.value mustBe "doc 2 ref"
 
             result.children.head.children(2) mustBe a[AccordionSection]
             result.children.head.children(2).sectionTitle.value mustBe "Additional references"
+            result.children.head.children(2).id.value mustBe "item-1-additional-references"
             result.children.head.children(2).rows.size mustBe 0
             result.children.head.children(2).viewLinks must not be empty
 
             result.children.head.children(2).children.head mustBe a[AccordionSection]
             result.children.head.children(2).children.head.sectionTitle.value mustBe "Additional reference 1"
+            result.children.head.children(2).children.head.id.value mustBe "item-1-additional-reference-1"
             result.children.head.children(2).children.head.rows.size mustBe 1
             result.children.head.children(2).children.head.rows.head.value.value mustBe additionalReference.toString
 
             result.children.head.children(3) mustBe a[AccordionSection]
             result.children.head.children(3).sectionTitle.value mustBe "Additional information"
+            result.children.head.children(3).id.value mustBe "item-1-additional-information"
             result.children.head.children(3).rows.size mustBe 0
             result.children.head.children(3).viewLinks mustBe empty
 
             result.children.head.children(3).children.head mustBe a[AccordionSection]
             result.children.head.children(3).children.head.sectionTitle.value mustBe "Additional information 1"
+            result.children.head.children(3).children.head.id.value mustBe "item-1-additional-information-1"
             result.children.head.children(3).children.head.rows.size mustBe 1
             result.children.head.children(3).children.head.rows.head.value.value mustBe additionalInformation.toString
 
             result.children.head.children(4) mustBe a[AccordionSection]
             result.children.head.children(4).sectionTitle.value mustBe "Packages"
+            result.children.head.children(4).id.value mustBe "item-1-packages"
             result.children.head.children(4).rows.size mustBe 0
             result.children.head.children(4).viewLinks must not be empty
 
             result.children.head.children(4).children.head.sectionTitle.get mustBe "Package 1"
+            result.children.head.children(4).children.head.id.get mustBe "item-1-package-1"
             result.children.head.children(4).children.head.rows.size mustBe 3
             result.children.head.children(4).children.head.rows(0).value.value mustBe s"${packageType.asDescription}"
             result.children.head.children(4).children.head.rows(1).value.value mustBe s"$count"

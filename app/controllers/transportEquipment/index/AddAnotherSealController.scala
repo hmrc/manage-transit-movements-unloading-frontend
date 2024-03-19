@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
 import models.requests.MandatoryDataRequest
-import models.{ArrivalId, Index, Mode, NormalMode}
+import models.{ArrivalId, Index, Mode}
 import navigation.TransportEquipmentNavigator
 import pages.transportEquipment.index.AddAnotherSealPage
 import play.api.data.Form

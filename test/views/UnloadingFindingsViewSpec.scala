@@ -20,6 +20,7 @@ import generators.Generators
 import models.NormalMode
 import play.twirl.api.HtmlFormat
 import viewModels.UnloadingFindingsViewModel
+import viewModels.sections.Section.AccordionSection
 import views.behaviours.DetailsListViewBehaviours
 import views.html.UnloadingFindingsView
 
@@ -29,7 +30,7 @@ class UnloadingFindingsViewSpec extends DetailsListViewBehaviours with Generator
 
   override def view: HtmlFormat.Appendable = injector.instanceOf[UnloadingFindingsView].apply(mrn, arrivalId, unloadingFindingsViewModel)(fakeRequest, messages)
 
-  val unloadingFindingsViewModel: UnloadingFindingsViewModel = new UnloadingFindingsViewModel(sections)
+  private val unloadingFindingsViewModel: UnloadingFindingsViewModel = new UnloadingFindingsViewModel(sections)
 
   behave like pageWithTitle()
 
@@ -50,4 +51,16 @@ class UnloadingFindingsViewSpec extends DetailsListViewBehaviours with Generator
     })
   }
 
+  "must render 'No information provided' when rows and children are empty" in {
+    val accordionId                = "foo"
+    val sections                   = Seq(AccordionSection(rows = Nil, children = Nil, id = Some(accordionId)))
+    val unloadingFindingsViewModel = new UnloadingFindingsViewModel(sections)
+
+    val view = injector.instanceOf[UnloadingFindingsView].apply(mrn, arrivalId, unloadingFindingsViewModel)(fakeRequest, messages)
+
+    val doc       = parseView(view)
+    val accordion = doc.getElementById(accordionId)
+
+    accordion.text() mustBe "No information provided"
+  }
 }

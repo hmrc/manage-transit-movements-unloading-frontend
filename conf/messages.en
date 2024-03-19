@@ -27,6 +27,7 @@ site.email.link = If you have any questions or issues, email us at {0}
 site.email.subject = NCTS Phase 5 - Help with testing
 
 unloadingFindings.sequenceNumber = Sequence number
+unloadingFindings.noInformationProvided = No information provided
 
 error.title.prefix = Error:
 error.summary.title = There is a problem
@@ -464,6 +465,8 @@ unloadingFindings.rowHeadings.vehicleNationality.change.hidden = registered coun
 
 unloadingFindings.subsections.transportEquipment = Transport equipment {0}
 unloadingFindings.subsections.transportEquipment.parent.heading = Transport equipment
+unloadingFindings.subsections.seals = Seals
+unloadingFindings.subsections.goodsReferences = Items applied to this transport equipment
 unloadingFindings.rowHeadings.containerIdentificationNumber = Container identification number
 unloadingFindings.rowHeadings.incident.item = Goods item number {0}
 unloadingFindings.rowHeadings.sealIdentifier = Seal {0}

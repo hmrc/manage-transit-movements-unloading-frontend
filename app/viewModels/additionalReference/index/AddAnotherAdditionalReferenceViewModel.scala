@@ -21,7 +21,6 @@ import controllers.additionalReference.index.routes
 import models.{ArrivalId, Index, Mode, RichOptionalJsArray, UserAnswers}
 import pages.additionalReference.AdditionalReferenceNumberPage
 import pages.sections.additionalReference.AdditionalReferencesSection
-import play.api.i18n.Messages
 import play.api.libs.json.JsArray
 import play.api.mvc.Call
 import viewModels.{AddAnotherViewModel, ListItem}

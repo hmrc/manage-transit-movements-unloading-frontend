@@ -66,6 +66,14 @@ class HouseConsignmentAnswersHelper(
     call = None
   )
 
+  def houseConsignmentConsignorSection: Section =
+    StaticSection(
+      rows = Seq(
+        consignorName,
+        consignorIdentification
+      ).flatten
+    )
+
   def houseConsignmentConsigneeSection: Section =
     StaticSection(
       sectionTitle = messages("unloadingFindings.consignee.heading"),
@@ -94,12 +102,13 @@ class HouseConsignmentAnswersHelper(
       case (_, index) =>
         val helper = new DepartureTransportMeansAnswersHelper(userAnswers, houseConsignmentIndex, index)
         AccordionSection(
-          sectionTitle = messages("unloadingFindings.subsections.transportMeans", index.display),
+          sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans", index.display)),
           rows = Seq(
             helper.transportMeansID,
             helper.transportMeansIDNumber,
             helper.buildVehicleNationalityRow
-          ).flatten
+          ).flatten,
+          id = Some(s"departureTransportMeans$index")
         )
     }
 
@@ -128,8 +137,7 @@ class HouseConsignmentAnswersHelper(
           Seq(helper.packageSection)
         ).flatten
 
-        (rows, index, children)
-
+        (rows, children, index)
     } match {
       case Nil =>
         StaticSection(
@@ -138,12 +146,12 @@ class HouseConsignmentAnswersHelper(
         )
       case items =>
         val itemSections = items.map {
-          case (rows, index, children) =>
+          case (rows, children, index) =>
             AccordionSection(
               sectionTitle = Some(messages("unloadingFindings.subsections.item", index.display)),
               rows = rows,
               children = children,
-              id = Some(s"item-${index.display}")
+              id = Some(s"item-$index")
             )
         }
         AccordionSection(

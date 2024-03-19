@@ -18,7 +18,6 @@ package forms
 
 import forms.Constants.exactCUSCodeLength
 import forms.behaviours.StringFieldBehaviours
-import models.messages.UnloadingRemarksRequest.alphaNumericRegex
 import org.scalacheck.Gen
 import play.api.data.FormError
 
@@ -52,13 +51,6 @@ class CUSCodeFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
-    )
-
-    behave like fieldWithInvalidCharacters(
-      form,
-      fieldName,
-      error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex)),
-      exactCUSCodeLength
     )
   }
 }

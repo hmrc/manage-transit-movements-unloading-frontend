@@ -18,7 +18,7 @@ package utils.answersHelpers.consignment.houseConsignment
 
 import models.DocType.Previous
 import models.reference.{Country, DocumentType}
-import models.{CheckMode, Index, NormalMode}
+import models.{CheckMode, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.houseConsignment.index.items._
@@ -132,20 +132,12 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new ConsignmentItemAnswersHelper(answers, hcIndex, itemIndex)
               val result = helper.grossWeightRow
 
-              result.key.value mustBe "Gross weight"
-              result.value.value mustBe s"${value}kg"
-              val action1 = result.actions.value.items.head
-              action1.content.value mustBe "Change"
-              action1.visuallyHiddenText.value mustBe "gross weight of item 1"
-              action1.href mustBe controllers.houseConsignment.index.items.routes.GrossWeightController
-                .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode)
-                .url
-              val action2 = result.actions.value.items(1)
-              action2.content.value mustBe "Remove"
-              action2.visuallyHiddenText.value mustBe "gross weight of item 1"
-              action2.href mustBe controllers.houseConsignment.index.items.routes.RemoveGrossWeightYesNoController
-                .onPageLoad(arrivalId, hcIndex, itemIndex, NormalMode)
-                .url
+              result mustBe
+                SummaryListRow(
+                  key = Key("Gross weight".toText),
+                  value = Value(s"${value}kg".toText),
+                  actions = grossWeightAction
+                )
           }
         }
       }
@@ -240,12 +232,12 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
           val helper = new ConsignmentItemAnswersHelper(userAnswers, hcIndex, itemIndex)
           val result = helper.commodityCodeRow
 
-          val actions = result.actions.get.items
-          result.key.value mustBe "Commodity code"
-          val action = actions.head
-          action.href mustBe controllers.houseConsignment.index.items.routes.CommodityCodeController.onPageLoad(arrivalId, hcIndex, itemIndex, CheckMode).url
-          action.visuallyHiddenText.get mustBe s"commodity code for item ${itemIndex.display}"
-
+          result mustBe
+            SummaryListRow(
+              key = Key("Commodity code".toText),
+              value = Value(s"$value".toText),
+              actions = commodityCodeItemAction
+            )
         }
       }
     }
@@ -303,17 +295,25 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
 
             result mustBe a[AccordionSection]
             result.sectionTitle.value mustBe "Documents"
+            result.id.value mustBe "item-1-documents"
+
+            val addOrRemove = result.viewLinks.head
+            addOrRemove.id mustBe "add-remove-item-1-document"
+            addOrRemove.text mustBe "Add or remove document"
 
             result.children.head mustBe a[AccordionSection]
             result.children.head.sectionTitle.value mustBe "Document 1"
+            result.children.head.id.value mustBe "item-1-document-1"
             result.children.head.rows.size mustBe 3
 
             result.children(1) mustBe a[AccordionSection]
             result.children(1).sectionTitle.value mustBe "Document 2"
+            result.children(1).id.value mustBe "item-1-document-2"
             result.children(1).rows.size mustBe 3
 
             result.children(2) mustBe a[AccordionSection]
             result.children(2).sectionTitle.value mustBe "Document 3"
+            result.children(2).id.value mustBe "item-1-document-3"
             result.children(2).rows.size mustBe 3
         }
       }

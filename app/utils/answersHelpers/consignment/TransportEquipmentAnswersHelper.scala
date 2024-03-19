@@ -16,7 +16,7 @@
 
 package utils.answersHelpers.consignment
 
-import models.{CheckMode, Index, UserAnswers}
+import models.{CheckMode, Index, Link, NormalMode, RichOptionalJsArray, UserAnswers}
 import pages.ContainerIdentificationNumberPage
 import pages.sections.SealsSection
 import pages.sections.transport.equipment.ItemsSection
@@ -24,6 +24,8 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
 import utils.answersHelpers.consignment.transportEquipment.{ItemAnswersHelper, SealAnswersHelper}
+import viewModels.sections.Section
+import viewModels.sections.Section.AccordionSection
 
 class TransportEquipmentAnswersHelper(
   userAnswers: UserAnswers,
@@ -40,17 +42,61 @@ class TransportEquipmentAnswersHelper(
     call = Some(controllers.transportEquipment.index.routes.ContainerIdentificationNumberController.onPageLoad(arrivalId, equipmentIndex, CheckMode))
   )
 
-  def transportEquipmentSeals: Seq[SummaryListRow] =
-    getAnswersAndBuildSectionRows(SealsSection(equipmentIndex)) {
-      index =>
-        val helper = new SealAnswersHelper(userAnswers, equipmentIndex, index)
-        helper.transportEquipmentSeal
+  def transportEquipmentSeals: Option[Section] =
+    userAnswers
+      .get(SealsSection(equipmentIndex))
+      .mapWithIndex {
+        case (_, index) =>
+          val helper = new SealAnswersHelper(userAnswers, equipmentIndex, index)
+          Seq(helper.transportEquipmentSeal).flatten
+      }
+      .toList match {
+      case Nil => None
+      case rows =>
+        Some(
+          AccordionSection(
+            sectionTitle = Some(messages("unloadingFindings.subsections.seals")),
+            rows = rows.flatten,
+            id = Some(s"transport-equipment-$equipmentIndex-seals"),
+            viewLinks = Seq(sealsAddRemoveLink)
+          )
+        )
     }
 
-  def transportEquipmentItems: Seq[SummaryListRow] =
-    getAnswersAndBuildSectionRows(ItemsSection(equipmentIndex)) {
-      index =>
-        val helper = new ItemAnswersHelper(userAnswers, equipmentIndex, index)
-        helper.transportEquipmentItem
+  def transportEquipmentItems: Option[Section] =
+    userAnswers
+      .get(ItemsSection(equipmentIndex))
+      .mapWithIndex {
+        case (_, index) =>
+          val helper = new ItemAnswersHelper(userAnswers, equipmentIndex, index)
+          Seq(helper.transportEquipmentItem).flatten
+      }
+      .toList match {
+      case Nil => None
+      case rows =>
+        Some(
+          AccordionSection(
+            sectionTitle = Some(messages("unloadingFindings.subsections.goodsReferences")),
+            rows = rows.flatten,
+            id = Some(s"transport-equipment-$equipmentIndex-items"),
+            viewLinks = Seq(itemsAddRemoveLink)
+          )
+        )
     }
+
+  private def sealsAddRemoveLink: Link =
+    Link(
+      id = s"add-remove-transport-equipment-${equipmentIndex.display}-seal",
+      href = controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, NormalMode, equipmentIndex).url,
+      text = messages("sealsLink.addRemove"),
+      visuallyHidden = messages("sealsLink.visuallyHidden")
+    )
+
+  private def itemsAddRemoveLink: Link =
+    Link(
+      id = s"add-remove-transport-equipment-${equipmentIndex.display}-item",
+      href = controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, NormalMode, equipmentIndex).url,
+      text = messages("consignmentItemLink.addRemove", equipmentIndex.display),
+      visuallyHidden = messages("consignmentItemLink.visuallyHidden", equipmentIndex.display)
+    )
 }
