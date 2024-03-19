@@ -103,7 +103,25 @@ trait RowActions {
   )
 
   val grossWeightAction: Some[Actions] = Some(
-    Actions("", List(ActionItem("#", Text("Change"), Some("Change Gross weight"), "", Map("id" -> "change-gross-weight-1"))))
+    Actions(
+      "",
+      List(
+        ActionItem(
+          "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/change-gross-weight",
+          Text("Change"),
+          Some("gross weight of item 1"),
+          "",
+          Map("id" -> "change-gross-weight-1")
+        ),
+        ActionItem(
+          "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/gross-weight/remove",
+          Text("Remove"),
+          Some("gross weight of item 1"),
+          "",
+          Map("id" -> "remove-gross-weight-1")
+        )
+      )
+    )
   )
 
   val grossWeightItemAction: Some[Actions] = Some(
@@ -119,14 +137,31 @@ trait RowActions {
   )
 
   val cusCodeItemAction: Some[Actions] = Some(
-    Actions("", List(ActionItem("#", Text("Change"), Some("Customs Union and Statistics (CUS) code for item 1"), "", Map("id" -> "change-cus-code-1"))))
+    Actions(
+      "",
+      List(
+        ActionItem(
+          "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/change-cus-code",
+          Text("Change"),
+          Some("Customs Union and Statistics (CUS) code for item 1"),
+          "",
+          Map("id" -> "change-cus-code-1")
+        )
+      )
+    )
   )
 
   val commodityCodeItemAction: Some[Actions] = Some(
     Actions(
       "",
       List(
-        ActionItem("#", Text("Change"), Some("commodity code for item 1"), "", Map("id" -> "change-commodity-code-1")),
+        ActionItem(
+          "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/change-commodity-code",
+          Text("Change"),
+          Some("commodity code for item 1"),
+          "",
+          Map("id" -> "change-commodity-code-1")
+        ),
         ActionItem(
           "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/commodity-code/remove",
           Text("Remove"),

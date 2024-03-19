@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.CUSCodeFormProvider
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigator
+import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator
 import pages.houseConsignment.index.items.CustomsUnionAndStatisticsCodePage
 import play.api.data.{Form, FormError}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CustomsUnionAndStatisticsCodeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: HouseConsignmentItemNavigator,
   formProvider: CUSCodeFormProvider,
   service: ReferenceDataService,
   actions: Actions,

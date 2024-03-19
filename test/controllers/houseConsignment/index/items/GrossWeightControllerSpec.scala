@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.GrossWeightFormProvider
 import generators.Generators
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.items.GrossWeightPage
@@ -36,10 +36,14 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val formProvider   = new GrossWeightFormProvider()
   private val form           = formProvider("houseConsignment.item.grossWeight", decimalPlace, characterCount, itemIndex.display, houseConsignmentIndex.display)
   private val mode           = NormalMode
-  private val validAnswer    = BigDecimal(1)
+  private val checkMode      = CheckMode
+  private val validAnswer    = BigDecimal(123.45)
 
   private lazy val GrossWeightAmountRoute =
     controllers.houseConsignment.index.items.routes.GrossWeightController.onPageLoad(arrivalId, index, index, mode).url
+
+  private lazy val GrossWeightAmountRouteCheckMode =
+    controllers.houseConsignment.index.items.routes.GrossWeightController.onPageLoad(arrivalId, index, index, checkMode).url
 
   "GrossWeightAmount Controller" - {
 
@@ -88,7 +92,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       setExistingUserAnswers(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, GrossWeightAmountRoute)
+        FakeRequest(POST, GrossWeightAmountRouteCheckMode)
           .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(app, request).value

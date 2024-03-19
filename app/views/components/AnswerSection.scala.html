@@ -31,10 +31,6 @@
             <h2 class="govuk-heading-m">@title</h2>
         }
 
-        @section.optionalInformationHeading.map { heading =>
-            <h3 class="govuk-heading-s">@heading</h3>
-        }
-
         @if(section.rows.nonEmpty) {
             @govukSummaryList(
                 SummaryList(
@@ -73,13 +69,13 @@
 
 @content = {
     @if(section.rows.nonEmpty) {
-        <dl class="govuk-summary-list">
-            @govukSummaryList(
-                SummaryList(
-                    rows = section.rows
-                )
+        @govukSummaryList(
+            SummaryList(
+                rows = section.rows
             )
-        </dl>
+        )
+    } else if(section.children.isEmpty) {
+        <p class="govuk-body">@messages("unloadingFindings.noInformationProvided")</p>
     }
 
     @section.children.map(this(_, nestingLevel + 1))

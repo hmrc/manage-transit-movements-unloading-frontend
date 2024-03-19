@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.CombinedNomenclatureCodeFormProvider
 import generators.Generators
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.items.CombinedNomenclatureCodePage
@@ -35,9 +35,13 @@ class CombinedNomenclatureCodeControllerSpec extends SpecBase with AppWithDefaul
   private val formProvider = new CombinedNomenclatureCodeFormProvider()
   private val form         = formProvider(index, index)
   private val mode         = NormalMode
+  private val checkMode    = CheckMode
 
   lazy val combinedNomenclatureCodeControllerRoute: String =
     controllers.houseConsignment.index.items.routes.CombinedNomenclatureCodeController.onPageLoad(arrivalId, index, index, mode).url
+
+  lazy val combinedNomenclatureCodeControllerRouteCheckMode: String =
+    controllers.houseConsignment.index.items.routes.CombinedNomenclatureCodeController.onPageLoad(arrivalId, index, index, checkMode).url
 
   "CombinedNomenclatureCodeController" - {
 
@@ -86,7 +90,7 @@ class CombinedNomenclatureCodeControllerSpec extends SpecBase with AppWithDefaul
       setExistingUserAnswers(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, combinedNomenclatureCodeControllerRoute)
+        FakeRequest(POST, combinedNomenclatureCodeControllerRouteCheckMode)
           .withFormUrlEncodedBody(("value", "A1"))
 
       val result = route(app, request).value
