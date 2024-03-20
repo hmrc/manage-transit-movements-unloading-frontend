@@ -21,7 +21,7 @@ import generators.Generators
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.additionalReference.AdditionalReferenceNumberPage
+import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import viewModels.additionalReference.index.AddAnotherAdditionalReferenceViewModel.AddAnotherAdditionalReferenceViewModelProvider
 
 class AddAnotherAdditionalReferenceViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
@@ -44,10 +44,10 @@ class AddAnotherAdditionalReferenceViewModelSpec extends SpecBase with Generator
     }
 
     "when there is one additional reference" in {
-      forAll(arbitrary[Mode], nonEmptyString) {
-        (mode, identificationNumber) =>
+      forAll(arbitrary[Mode], arbitraryAdditionalReference.arbitrary.sample.value) {
+        (mode, identificationReference) =>
           val userAnswers = emptyUserAnswers
-            .setValue(AdditionalReferenceNumberPage(additionalReferenceIndex), identificationNumber)
+            .setValue(AdditionalReferenceTypePage(additionalReferenceIndex), identificationReference)
 
           val result = new AddAnotherAdditionalReferenceViewModelProvider().apply(userAnswers, arrivalId, mode)
 
@@ -62,13 +62,13 @@ class AddAnotherAdditionalReferenceViewModelSpec extends SpecBase with Generator
 
     "when there are multiple additional references" in {
 
-      forAll(arbitrary[Mode], nonEmptyString) {
-        (mode, identificationNumber) =>
+      forAll(arbitrary[Mode], arbitraryAdditionalReference.arbitrary.sample.value) {
+        (mode, identificationReference) =>
           val userAnswers = emptyUserAnswers
-            .setValue(AdditionalReferenceNumberPage(Index(0)), identificationNumber)
-            .setValue(AdditionalReferenceNumberPage(Index(1)), identificationNumber)
-            .setValue(AdditionalReferenceNumberPage(Index(2)), identificationNumber)
-            .setValue(AdditionalReferenceNumberPage(Index(3)), identificationNumber)
+            .setValue(AdditionalReferenceTypePage(Index(0)), identificationReference)
+            .setValue(AdditionalReferenceTypePage(Index(1)), identificationReference)
+            .setValue(AdditionalReferenceTypePage(Index(2)), identificationReference)
+            .setValue(AdditionalReferenceTypePage(Index(3)), identificationReference)
 
           val result = new AddAnotherAdditionalReferenceViewModelProvider().apply(userAnswers, arrivalId, mode)
           result.listItems.length mustBe 4

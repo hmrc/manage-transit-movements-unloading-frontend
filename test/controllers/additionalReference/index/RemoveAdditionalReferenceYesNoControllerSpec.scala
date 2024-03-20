@@ -50,13 +50,32 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
 
   "RemoveAdditionalReferenceYesNoController Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET when number exists" in {
       val userAnswers = emptyUserAnswers
         .setValue(AdditionalReferenceTypePage(additionalReferenceIndex), AdditionalReferenceType("Y015", "The rough diamonds are contained in ..."))
         .setValue(AdditionalReferenceNumberPage(additionalReferenceIndex), "addref-1")
 
       setExistingUserAnswers(userAnswers)
       val insetText = Some("Y015 - addref-1")
+
+      val request = FakeRequest(GET, removeAdditionalReferenceRoute)
+
+      val result = route(app, request).value
+
+      val view = injector.instanceOf[RemoveAdditionalReferenceYesNoView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(form, mrn, arrivalId, additionalReferenceIndex, insetText, mode)(request, messages).toString
+
+    }
+    "must return OK and the correct view for a GET when no number exists" in {
+      val userAnswers = emptyUserAnswers
+        .setValue(AdditionalReferenceTypePage(additionalReferenceIndex), AdditionalReferenceType("Y015", "The rough diamonds are contained in ..."))
+
+      setExistingUserAnswers(userAnswers)
+      val insetText = Some("Y015")
 
       val request = FakeRequest(GET, removeAdditionalReferenceRoute)
 
