@@ -50,14 +50,15 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
     controllers.additionalReference.index.routes.AddAnotherAdditionalReferenceController.onSubmit(arrivalId, mode)
 
   def insetText(userAnswers: UserAnswers, additionalReferenceIndex: Index): Option[String] = {
-    val additionalReferenceType   = userAnswers.get(AdditionalReferenceTypePage(additionalReferenceIndex)).map(_.value).getOrElse("")
-    val additionalReferenceNumber = userAnswers.get(AdditionalReferenceNumberPage(additionalReferenceIndex)).getOrElse("")
-    Some(additionalReferenceType + " - " + additionalReferenceNumber)
+    val additionalReferenceType           = userAnswers.get(AdditionalReferenceTypePage(additionalReferenceIndex)).map(_.value).getOrElse("")
+    val additionalReferenceNumber: String = userAnswers.get(AdditionalReferenceNumberPage(additionalReferenceIndex)).getOrElse("")
+    val insetTestAddRef                   = if (additionalReferenceNumber.isEmpty) "" else s" - $additionalReferenceNumber"
+    Some(additionalReferenceType + insetTestAddRef)
   }
 
   def onPageLoad(arrivalId: ArrivalId, additionalReferenceIndex: Index, mode: Mode): Action[AnyContent] = actions
     .requireIndex(arrivalId, AdditionalReferenceSection(additionalReferenceIndex), addAnother(arrivalId, mode))
-    .andThen(getMandatoryPage.getFirst(AdditionalReferenceNumberPage(additionalReferenceIndex))) {
+    .andThen(getMandatoryPage.getFirst(AdditionalReferenceTypePage(additionalReferenceIndex))) {
       implicit request =>
         Ok(
           view(
