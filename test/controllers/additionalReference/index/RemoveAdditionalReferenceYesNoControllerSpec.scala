@@ -139,7 +139,9 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual "#" // TODO Should go to AddAnotherAdditionalReferenceController
+      redirectLocation(result).value mustEqual controllers.additionalReference.index.routes.AddAnotherAdditionalReferenceController
+        .onPageLoad(arrivalId, mode)
+        .url
 
     }
 

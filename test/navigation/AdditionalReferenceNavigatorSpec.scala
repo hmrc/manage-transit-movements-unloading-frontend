@@ -19,11 +19,9 @@ package navigation
 import base.SpecBase
 import generators.Generators
 import models._
-import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.{AdditionalReferenceType, Country}
+import models.reference.AdditionalReferenceType
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
-import pages.departureMeansOfTransport._
 
 class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

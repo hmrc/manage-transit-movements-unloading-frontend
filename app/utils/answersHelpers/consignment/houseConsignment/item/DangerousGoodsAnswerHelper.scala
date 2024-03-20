@@ -19,9 +19,7 @@ package utils.answersHelpers.consignment.houseConsignment.item
 import models.{Index, UserAnswers}
 import pages.houseConsignment.index.items.DangerousGoodsPage
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
 
 class DangerousGoodsAnswerHelper(

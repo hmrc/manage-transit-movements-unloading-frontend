@@ -18,7 +18,6 @@ package utils.answersHelpers.consignment.houseConsignment.item
 
 import org.scalacheck.Gen
 import pages.houseConsignment.index.items.DangerousGoodsPage
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.ActionItem
 import utils.answersHelpers.AnswersHelperSpecBase
 
 class DangerousGoodsAnswersHelperSpec extends AnswersHelperSpecBase {

@@ -19,7 +19,7 @@ package controllers.additionalReference.index
 import controllers.actions._
 import forms.AdditionalReferenceNumberFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.{AdditionalReferenceNavigator, Navigator}
+import navigation.AdditionalReferenceNavigator
 import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

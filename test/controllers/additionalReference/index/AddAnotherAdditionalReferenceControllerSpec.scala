@@ -122,8 +122,8 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual controllers.additionalReference.index.routes.AdditionalReferenceNumberYesNoController
-            .onPageLoad(arrivalId, notMaxedOutViewModel.nextIndex, mode)
+          redirectLocation(result).value mustEqual controllers.additionalReference.index.routes.AdditionalReferenceTypeController
+            .onPageLoad(arrivalId, mode, notMaxedOutViewModel.nextIndex)
             .url
         }
       }
