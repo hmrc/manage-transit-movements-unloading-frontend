@@ -24,6 +24,7 @@ import pages.transportEquipment.index.ApplyAnItemYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.GoodsReferenceService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transportEquipment.index.ApplyAnItemYesNoView
 
@@ -37,7 +38,8 @@ class ApplyAnItemYesNoController @Inject() (
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: ApplyAnItemYesNoView
+  view: ApplyAnItemYesNoView,
+  goodsReferenceService: GoodsReferenceService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -46,12 +48,17 @@ class ApplyAnItemYesNoController @Inject() (
 
   def onPageLoad(arrivalId: ArrivalId, transportEquipmentIndex: Index, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(ApplyAnItemYesNoPage(transportEquipmentIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+      goodsReferenceService.getGoodsReferences(request.userAnswers, transportEquipmentIndex, None) match {
+        case Nil =>
+          Redirect(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, mode))
+        case _ =>
+          val preparedForm = request.userAnswers.get(ApplyAnItemYesNoPage(transportEquipmentIndex)) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
 
-      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, transportEquipmentIndex, mode))
+          Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, transportEquipmentIndex, mode))
+      }
   }
 
   def onSubmit(arrivalId: ArrivalId, transportEquipmentIndex: Index, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId).async {

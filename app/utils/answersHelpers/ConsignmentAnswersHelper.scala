@@ -426,7 +426,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
   private val transportEquipmentAddRemoveLink: Link = Link(
     id = s"add-remove-transport-equipment",
-    href = "#",
+    href = controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, NormalMode).url,
     text = messages("transportEquipmentLink.addRemove"),
     visuallyHidden = messages("transportEquipmentLink.visuallyHidden")
   )

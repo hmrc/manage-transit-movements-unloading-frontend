@@ -17,12 +17,12 @@
 package pages.sections.transport.equipment
 
 import models.Index
-import pages.sections.Section
+import pages.sections.{Section, TransportEquipmentSection}
 import play.api.libs.json.{JsArray, JsPath}
 
 case class ItemsSection(equipmentIndex: Index) extends Section[JsArray] {
 
-  override def path: JsPath = EquipmentSection(equipmentIndex).path \ toString
+  override def path: JsPath = TransportEquipmentSection(equipmentIndex).path \ toString
 
   override def toString: String = "items"
 

@@ -18,14 +18,14 @@ package controllers.transportEquipment.index
 
 import controllers.actions._
 import forms.SelectableFormProvider
-import models.{ArrivalId, Index, Mode}
+import models.{ArrivalId, Index, Mode, SelectableList}
 import navigation.TransportEquipmentNavigator
 import pages.transportEquipment.index.ItemPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.GoodsReferenceService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.transportEquipment.SelectItemsViewModel
 import views.html.transportEquipment.index.GoodsReferenceView
 
 import javax.inject.Inject
@@ -38,7 +38,8 @@ class GoodsReferenceController @Inject() (
   formProvider: SelectableFormProvider,
   val controllerComponents: MessagesControllerComponents,
   navigator: TransportEquipmentNavigator,
-  view: GoodsReferenceView
+  view: GoodsReferenceView,
+  goodsReferenceService: GoodsReferenceService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -46,34 +47,32 @@ class GoodsReferenceController @Inject() (
   def onPageLoad(arrivalId: ArrivalId, transportEquipmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
-        val selectedItem = request.userAnswers.get(ItemPage(transportEquipmentIndex, itemIndex))
-        val viewModel    = SelectItemsViewModel.apply(request.userAnswers, selectedItem)
-        val form         = formProvider(mode, "transport.equipment.selectItems", viewModel.items)
-        val preparedForm = selectedItem match {
+        val availableGoodsReferences = goodsReferenceService.getGoodsReferences(request.userAnswers, transportEquipmentIndex, Some(itemIndex))
+        val form                     = formProvider(mode, "transport.equipment.selectItems", SelectableList(availableGoodsReferences))
+        val preparedForm = goodsReferenceService.getGoodsReference(request.userAnswers, transportEquipmentIndex, itemIndex) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
 
-        Ok(view(preparedForm, arrivalId, transportEquipmentIndex, itemIndex, request.userAnswers.mrn, viewModel, mode))
+        Ok(view(preparedForm, arrivalId, transportEquipmentIndex, itemIndex, request.userAnswers.mrn, availableGoodsReferences, mode))
     }
 
   def onSubmit(arrivalId: ArrivalId, transportEquipmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
-        val selectedItem = request.userAnswers.get(ItemPage(transportEquipmentIndex, itemIndex))
-        val viewModel    = SelectItemsViewModel(request.userAnswers, selectedItem)
+        val availableGoodsReferences = goodsReferenceService.getGoodsReferences(request.userAnswers, transportEquipmentIndex, Some(itemIndex))
 
-        val form = formProvider(mode, "transport.equipment.selectItems", viewModel.items)
+        val form = formProvider(mode, "transport.equipment.selectItems", SelectableList(availableGoodsReferences))
         form
           .bindFromRequest()
           .fold(
             formWithErrors =>
               Future.successful(
-                BadRequest(view(formWithErrors, arrivalId, transportEquipmentIndex, itemIndex, request.userAnswers.mrn, viewModel, mode))
+                BadRequest(view(formWithErrors, arrivalId, transportEquipmentIndex, itemIndex, request.userAnswers.mrn, availableGoodsReferences, mode))
               ),
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(ItemPage(transportEquipmentIndex, itemIndex), value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(ItemPage(transportEquipmentIndex, itemIndex), value.declarationGoodsItemNumber))
                 _              <- sessionRepository.set(updatedAnswers)
               } yield Redirect(navigator.nextPage(ItemPage(transportEquipmentIndex, itemIndex), mode, updatedAnswers))
           )

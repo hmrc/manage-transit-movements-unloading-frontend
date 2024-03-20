@@ -16,7 +16,6 @@
 
 package utils.answersHelpers.consignment
 
-import models.reference.Item
 import models.{CheckMode, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -89,7 +88,7 @@ class TransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
     "transportEquipmentItems" - {
       "must generate accordion section" in {
-        forAll(arbitrary[Item].sample.value, arbitrary[Item].sample.value) {
+        forAll(arbitrary[BigInt], arbitrary[BigInt]) {
           (item1, item2) =>
             val answers = emptyUserAnswers
               .setValue(ItemPage(equipmentIndex, Index(0)), item1)

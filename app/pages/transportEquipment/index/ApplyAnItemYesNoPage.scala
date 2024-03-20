@@ -16,10 +16,12 @@
 
 package pages.transportEquipment.index
 
-import models.Index
+import models.{Index, UserAnswers}
+import pages.sections.{ItemsSection, TransportEquipmentSection}
 import pages.QuestionPage
-import pages.sections.TransportEquipmentSection
 import play.api.libs.json.JsPath
+
+import scala.util.Try
 
 case class ApplyAnItemYesNoPage(equipmentIndex: Index) extends QuestionPage[Boolean] {
 
@@ -27,4 +29,9 @@ case class ApplyAnItemYesNoPage(equipmentIndex: Index) extends QuestionPage[Bool
 
   override def toString: String = "applyAnItemYesNo"
 
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(ItemsSection(equipmentIndex))
+      case _           => super.cleanup(value, userAnswers)
+    }
 }
