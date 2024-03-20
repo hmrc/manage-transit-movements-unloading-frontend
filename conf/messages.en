@@ -887,7 +887,7 @@ transportEquipment.index.item.removeItemYesNo.heading = Are you sure you want to
 transportEquipment.index.item.removeItemYesNo.error.required = Select yes if you want to remove this item from transport equipment {0}
 
 transportEquipment.prefix = Transport Equipment {0}
-transportEquipment.containerId = container {0}
+transportEquipment.containerId = Container {0}
 
 transportEquipment.addAnotherEquipment.empty.title = You have added 0 transport equipment
 transportEquipment.addAnotherEquipment.empty.heading = You have added 0 transport equipment

@@ -25,7 +25,7 @@ class TransportEquipmentSpec extends SpecBase {
       "when container id is defined" in {
         val transportEquipment = TransportEquipment(Some("123"))
         val result             = transportEquipment.asString
-        result mustBe Some("container 123")
+        result mustBe Some("Container 123")
       }
 
       "when container id is undefined" in {
