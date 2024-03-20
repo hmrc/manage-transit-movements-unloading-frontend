@@ -127,6 +127,64 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
       }
     }
 
+    "when max limit not reached" - {
+      "when yes submitted" - {
+        "must redirect to goods reference page at next index" in {
+          when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
+            .thenReturn(notMaxedOutViewModel)
+
+          setExistingUserAnswers(emptyUserAnswers)
+
+          val request = FakeRequest(POST, applyAnotherItemRoute)
+            .withFormUrlEncodedBody(("value", "true"))
+
+          val result = route(app, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual controllers.transportEquipment.index.routes.GoodsReferenceController
+            .onPageLoad(arrivalId, equipmentIndex, notMaxedOutViewModel.nextIndex, mode)
+            .url
+        }
+      }
+
+      "when no submitted" - {
+        "must redirect to next page" in {
+          when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
+            .thenReturn(notMaxedOutViewModel)
+
+          setExistingUserAnswers(emptyUserAnswers)
+
+          val request = FakeRequest(POST, applyAnotherItemRoute)
+            .withFormUrlEncodedBody(("value", "false"))
+
+          val result = route(app, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, mode).url
+        }
+      }
+    }
+
+    "when max limit reached" - {
+      "must redirect to next page" in {
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
+          .thenReturn(maxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(POST, applyAnotherItemRoute)
+          .withFormUrlEncodedBody(("value", ""))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, mode).url
+      }
+    }
+
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
         when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))

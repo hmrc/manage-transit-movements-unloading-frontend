@@ -19,13 +19,10 @@ package controllers.transportEquipment.index
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.TransportEquipmentNavigator
-import pages.transportEquipment.index.AddAnotherSealPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.transportEquipment.index.AddAnotherSealViewModel
@@ -33,18 +30,16 @@ import viewModels.transportEquipment.index.AddAnotherSealViewModel.AddAnotherSea
 import views.html.transportEquipment.index.AddAnotherSealView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherSealController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
-  navigator: TransportEquipmentNavigator,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherSealView,
   viewModelProvider: AddAnotherSealViewModelProvider
-)(implicit config: FrontendAppConfig, ec: ExecutionContext)
+)(implicit config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -57,23 +52,24 @@ class AddAnotherSealController @Inject() (
       Ok(view(form(viewModel, equipmentIndex), request.userAnswers.mrn, arrivalId, viewModel))
   }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId).async {
+  def onSubmit(arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode, equipmentIndex)
       form(viewModel, equipmentIndex)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel))),
-          value => redirect(mode, value, equipmentIndex, viewModel.nextIndex)
+          formWithErrors => BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel)),
+          {
+            case true =>
+              Redirect(
+                controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController
+                  .onPageLoad(arrivalId, mode, equipmentIndex, viewModel.nextIndex)
+              )
+            case false =>
+              //TODO: Need to amend nav depending on whether they've come from cross check page or seal identification page
+              Redirect(controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, equipmentIndex, mode))
+          }
         )
   }
-
-  def redirect(mode: Mode, value: Boolean, equipmentIndex: Index, sealIndex: Index)(implicit
-    request: MandatoryDataRequest[_]
-  ): Future[Result] =
-    for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnotherSealPage(equipmentIndex, sealIndex), value))
-      _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(AddAnotherSealPage(equipmentIndex, sealIndex), mode, updatedAnswers))
 
 }

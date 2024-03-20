@@ -19,14 +19,10 @@ package controllers.transportEquipment.index
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.TransportEquipmentNavigator
-import pages.transportEquipment.index.ApplyAnotherItemPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
-import repositories.SessionRepository
 import services.GoodsReferenceService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.transportEquipment.index.ApplyAnotherItemViewModel
@@ -34,7 +30,6 @@ import viewModels.transportEquipment.index.ApplyAnotherItemViewModel.ApplyAnothe
 import views.html.transport.equipment.ApplyAnotherItemView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class ApplyAnotherItemController @Inject() (
   override val messagesApi: MessagesApi,
@@ -43,10 +38,8 @@ class ApplyAnotherItemController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: ApplyAnotherItemView,
   viewModelProvider: ApplyAnotherItemViewModelProvider,
-  sessionRepository: SessionRepository,
-  navigator: TransportEquipmentNavigator,
   goodsReferenceService: GoodsReferenceService
-)(implicit config: FrontendAppConfig, ec: ExecutionContext)
+)(implicit config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -67,27 +60,21 @@ class ApplyAnotherItemController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index): Action[AnyContent] =
-    actions.requireData(arrivalId).async {
+    actions.requireData(arrivalId) {
       implicit request =>
         val availableGoodsReferences = goodsReferenceService.getGoodsReferences(request.userAnswers, equipmentIndex, None)
         val viewModel                = viewModelProvider(request.userAnswers, arrivalId, mode, equipmentIndex, availableGoodsReferences)
         form(viewModel, equipmentIndex)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel))),
-            value => redirect(mode, value, equipmentIndex, viewModel.nextIndex)
+            formWithErrors => BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel)),
+            {
+              case true =>
+                Redirect(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, viewModel.nextIndex, mode))
+              case false =>
+                Redirect(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, mode))
+            }
           )
     }
-
-  private def redirect(
-    mode: Mode,
-    value: Boolean,
-    equipmentIndex: Index,
-    itemIndex: Index
-  )(implicit request: MandatoryDataRequest[_]): Future[Result] =
-    for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(ApplyAnotherItemPage(equipmentIndex, itemIndex), value))
-      _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), mode, updatedAnswers))
 
 }
