@@ -39,6 +39,35 @@ import viewModels.sections.Section.{AccordionSection, StaticSection}
 
 class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) extends AnswersHelper(userAnswers) {
 
+  private val documentAddRemoveLink: Link = Link(
+    id = s"add-remove-documents",
+    href = controllers.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, NormalMode).url,
+    text = messages("documentsLink.addRemove"),
+    visuallyHidden = messages("documentsLink.visuallyHidden")
+  )
+
+  private val additionalReferenceAddRemoveLink: Link = Link(
+    id = "add-remove-additional-reference",
+    href = controllers.additionalReference.index.routes.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId, NormalMode).url,
+    text = messages("additionalReferenceLink.addRemove"),
+    visuallyHidden = messages("additionalReferenceLink.visuallyHidden")
+  )
+
+  private val transportEquipmentAddRemoveLink: Link = Link(
+    id = s"add-remove-transport-equipment",
+    href = controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, NormalMode).url,
+    text = messages("transportEquipmentLink.addRemove"),
+    visuallyHidden = messages("transportEquipmentLink.visuallyHidden")
+  )
+
+  private val departureTransportMeansAddRemoveLink: Link =
+    Link(
+      id = s"add-remove-departure-transport-means",
+      href = controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, NormalMode).url,
+      text = messages("departureTransportMeans.addRemove"),
+      visuallyHidden = messages("departureTransportMeans.visuallyHidden")
+    )
+
   def headerSection: Section = StaticSection(
     rows = Seq(
       declarationAcceptanceDateRow,
@@ -87,6 +116,23 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     call = None
   )
 
+  def customsOfficeOfDestinationActual: Option[SummaryListRow] =
+    getAnswerAndBuildRow[CustomsOffice](
+      page = CustomsOfficeOfDestinationActualPage,
+      formatAnswer = x => formatAsText(x.name),
+      prefix = "customsOfficeOfDestinationActual",
+      id = None,
+      call = None
+    )
+
+  def grossMassRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
+    page = GrossMassPage,
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.grossMass",
+    id = Some(s"change-gross-mass"),
+    call = Some(Call(GET, "#"))
+  )
+
   def consignorSection: Option[Section] =
     userAnswers.ie043Data.Consignment.flatMap(_.Consignor).map {
       consignor =>
@@ -117,15 +163,6 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         )
     }
 
-  def customsOfficeOfDestinationActual: Option[SummaryListRow] =
-    getAnswerAndBuildRow[CustomsOffice](
-      page = CustomsOfficeOfDestinationActualPage,
-      formatAnswer = x => formatAsText(x.name),
-      prefix = "customsOfficeOfDestinationActual",
-      id = None,
-      call = None
-    )
-
   def holderOfTheTransitProcedureSection: Seq[Section] =
     userAnswers.ie043Data.HolderOfTheTransitProcedure.map {
       hotP =>
@@ -141,14 +178,6 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           ).flatten
         )
     }.toList
-
-  def grossMassRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
-    page = GrossMassPage,
-    formatAnswer = formatAsText,
-    prefix = "unloadingFindings.grossMass",
-    id = Some(s"change-gross-mass"),
-    call = Some(Call(GET, "#"))
-  )
 
   def departureTransportMeansSection: Section =
     userAnswers
@@ -402,32 +431,4 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         )
     }
 
-  private val documentAddRemoveLink: Link = Link(
-    id = s"add-remove-documents",
-    href = controllers.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, NormalMode).url,
-    text = messages("documentsLink.addRemove"),
-    visuallyHidden = messages("documentsLink.visuallyHidden")
-  )
-
-  private val additionalReferenceAddRemoveLink: Link = Link(
-    id = "add-remove-additional-reference",
-    href = "#",
-    text = messages("additionalReferenceLink.addRemove"),
-    visuallyHidden = messages("additionalReferenceLink.visuallyHidden")
-  )
-
-  private val departureTransportMeansAddRemoveLink: Link =
-    Link(
-      id = s"add-remove-departure-transport-means",
-      href = controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, NormalMode).url,
-      text = messages("departureTransportMeans.addRemove"),
-      visuallyHidden = messages("departureTransportMeans.visuallyHidden")
-    )
-
-  private val transportEquipmentAddRemoveLink: Link = Link(
-    id = s"add-remove-transport-equipment",
-    href = controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, NormalMode).url,
-    text = messages("transportEquipmentLink.addRemove"),
-    visuallyHidden = messages("transportEquipmentLink.visuallyHidden")
-  )
 }
