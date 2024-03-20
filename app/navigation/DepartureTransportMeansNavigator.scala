@@ -26,8 +26,7 @@ import play.api.mvc.Call
 class DepartureTransportMeansNavigator extends Navigator {
 
   override def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case AddAnotherDepartureMeansOfTransportPage(transportIndex) => ua => addAnotherDepartureTransportMeansNavigation(ua.id, ua, transportIndex)
-    case AddIdentificationYesNoPage(transportIndex)              => ua => addIdentificationYesNoNavigation(ua.id, ua, transportIndex)
+    case AddIdentificationYesNoPage(transportIndex) => ua => addIdentificationYesNoNavigation(ua.id, ua, transportIndex)
     case TransportMeansIdentificationPage(transportIndex) =>
       ua => Some(controllers.departureMeansOfTransport.routes.AddIdentificationNumberYesNoController.onPageLoad(ua.id, transportIndex, NormalMode))
     case AddIdentificationNumberYesNoPage(transportIndex) => ua => addIdentificationNumberYesNoNavigation(ua.id, ua, transportIndex)
@@ -47,39 +46,28 @@ class DepartureTransportMeansNavigator extends Navigator {
 
   }
 
-  private def addAnotherDepartureTransportMeansNavigation(arrivalId: ArrivalId, ua: UserAnswers, transportIndex: Index): Option[Call] =
-    ua.get(AddAnotherDepartureMeansOfTransportPage(transportIndex)) match {
-      case Some(true) =>
-        Some(controllers.departureMeansOfTransport.routes.AddIdentificationYesNoController.onPageLoad(arrivalId, transportIndex, NormalMode))
-      case Some(false) => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
-      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
-    }
-
   private def addIdentificationYesNoNavigation(arrivalId: ArrivalId, ua: UserAnswers, transportIndex: Index): Option[Call] =
-    ua.get(AddIdentificationYesNoPage(transportIndex)) match {
-      case Some(true) =>
-        Some(controllers.departureMeansOfTransport.routes.IdentificationController.onPageLoad(arrivalId, transportIndex, NormalMode))
-      case Some(false) =>
-        Some(controllers.departureMeansOfTransport.routes.AddIdentificationNumberYesNoController.onPageLoad(arrivalId, transportIndex, NormalMode))
-      case _ => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    ua.get(AddIdentificationYesNoPage(transportIndex)).map {
+      case true =>
+        controllers.departureMeansOfTransport.routes.IdentificationController.onPageLoad(arrivalId, transportIndex, NormalMode)
+      case false =>
+        controllers.departureMeansOfTransport.routes.AddIdentificationNumberYesNoController.onPageLoad(arrivalId, transportIndex, NormalMode)
     }
 
   private def addIdentificationNumberYesNoNavigation(arrivalId: ArrivalId, ua: UserAnswers, transportIndex: Index): Option[Call] =
-    ua.get(AddIdentificationNumberYesNoPage(transportIndex)) match {
-      case Some(true) =>
-        Some(controllers.departureMeansOfTransport.routes.IdentificationNumberController.onPageLoad(arrivalId, transportIndex, NormalMode))
-      case Some(false) =>
-        Some(controllers.departureMeansOfTransport.routes.AddNationalityYesNoController.onPageLoad(arrivalId, transportIndex, NormalMode))
-      case _ => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    ua.get(AddIdentificationNumberYesNoPage(transportIndex)).map {
+      case true =>
+        controllers.departureMeansOfTransport.routes.IdentificationNumberController.onPageLoad(arrivalId, transportIndex, NormalMode)
+      case false =>
+        controllers.departureMeansOfTransport.routes.AddNationalityYesNoController.onPageLoad(arrivalId, transportIndex, NormalMode)
     }
 
   private def addNationalityYesNoNavigation(arrivalId: ArrivalId, ua: UserAnswers, transportIndex: Index): Option[Call] =
-    ua.get(AddNationalityYesNoPage(transportIndex)) match {
-      case Some(true) =>
-        Some(controllers.departureMeansOfTransport.routes.CountryController.onPageLoad(arrivalId, transportIndex, NormalMode))
-      case Some(false) =>
-        Some(controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, NormalMode))
-      case _ => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    ua.get(AddNationalityYesNoPage(transportIndex)).map {
+      case true =>
+        controllers.departureMeansOfTransport.routes.CountryController.onPageLoad(arrivalId, transportIndex, NormalMode)
+      case false =>
+        controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, NormalMode)
     }
 
 }
