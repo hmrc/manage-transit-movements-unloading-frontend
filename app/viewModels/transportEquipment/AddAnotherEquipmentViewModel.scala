@@ -34,13 +34,19 @@ case class AddAnotherEquipmentViewModel(
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxTransportEquipment
 
   override def maxLimitLabel(implicit messages: Messages): String = messages(s"$prefix.maxLimit.label")
+
+  override def allowMore(implicit config: FrontendAppConfig): Boolean = count < maxCount
+
+  def noMoreItemsLabel(implicit messages: Messages): String = messages(s"$prefix.noMoreItems.label")
 }
 
 object AddAnotherEquipmentViewModel {
 
   class AddAnotherEquipmentViewModelProvider() {
 
-    def apply(userAnswers: UserAnswers, arrivalId: ArrivalId, mode: Mode)(implicit messages: Messages): AddAnotherEquipmentViewModel = {
+    def apply(userAnswers: UserAnswers, arrivalId: ArrivalId, mode: Mode)(implicit
+      messages: Messages
+    ): AddAnotherEquipmentViewModel = {
 
       val equipments = userAnswers.get(TransportEquipmentListSection)
 
@@ -58,7 +64,7 @@ object AddAnotherEquipmentViewModel {
 
           ListItem(
             name = name,
-            changeUrl = Some(Call("GET", "#").url), //TODO: To be added later
+            changeUrl = None,
             removeUrl = Some(controllers.transportEquipment.index.routes.RemoveTransportEquipmentYesNoController.onPageLoad(arrivalId, mode, index).url)
           )
       }

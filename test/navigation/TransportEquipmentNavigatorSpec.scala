@@ -19,12 +19,11 @@ package navigation
 import base.SpecBase
 import generators.Generators
 import models._
-import models.reference.Item
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.ContainerIdentificationNumberPage
+import pages.transportEquipment.index._
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
-import pages.transportEquipment.index.{AddAnotherSealPage, ApplyAnotherItemPage, ItemPage}
 
 class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -32,32 +31,111 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
 
   "TransportNavigator" - {
 
-    "must go from AddAnotherSealPage page " - {
-      "to SealIdentificationNumberPage if answer is true" in {
-        forAll(arbitrary[Mode]) {
-          mode =>
-            val page        = AddAnotherSealPage(equipmentIndex, sealIndex)
-            val userAnswers = emptyUserAnswers.setValue(page, true)
+    "in NormalMode" - {
 
-            navigator
-              .nextPage(page, mode, userAnswers)
-              .mustBe(
-                controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(arrivalId, mode, equipmentIndex, sealIndex)
-              )
+      val mode = NormalMode
+
+      "must go from AddContainerIdentificationNumberYesNoPage" - {
+
+        "to AddContainerIdentificationNumberYesNoPage when answered Yes" in {
+          val userAnswers = emptyUserAnswers.setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), true)
+
+          navigator
+            .nextPage(AddContainerIdentificationNumberYesNoPage(equipmentIndex), mode, userAnswers)
+            .mustBe(controllers.transportEquipment.index.routes.ContainerIdentificationNumberController.onPageLoad(arrivalId, equipmentIndex, mode))
+
+        }
+
+        "to AddSealsYesNoPage when answered No" in {
+          val userAnswers = emptyUserAnswers.setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), false)
+
+          navigator
+            .nextPage(AddContainerIdentificationNumberYesNoPage(equipmentIndex), mode, userAnswers)
+            .mustBe(controllers.transportEquipment.index.routes.AddSealYesNoController.onPageLoad(arrivalId, equipmentIndex, mode))
+
         }
       }
 
-      "to UnloadingFindings page if answer is false" in {
-        forAll(arbitrary[Mode]) {
-          mode =>
-            val page        = AddAnotherSealPage(equipmentIndex, sealIndex)
-            val userAnswers = emptyUserAnswers.setValue(page, false)
+      "ContainerIdentificationNumberPage mut go to AddSealsYesNoPage" in {
+        val userAnswers = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(equipmentIndex), "123")
 
-            navigator
-              .nextPage(page, mode, userAnswers)
-              .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+        navigator
+          .nextPage(ContainerIdentificationNumberPage(equipmentIndex), mode, userAnswers)
+          .mustBe(controllers.transportEquipment.index.routes.AddSealYesNoController.onPageLoad(arrivalId, equipmentIndex, mode))
+
+      }
+
+      "must go from AddSealYesNoPage" - {
+
+        "to SealsIdentificationNumberPage when answered Yes" in {
+          val userAnswers = emptyUserAnswers.setValue(AddSealYesNoPage(equipmentIndex), true)
+
+          navigator
+            .nextPage(AddSealYesNoPage(equipmentIndex), mode, userAnswers)
+            .mustBe(controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(arrivalId, mode, equipmentIndex, sealIndex))
+
+        }
+
+        "to Apply Item Page when answered No" in {
+
+          val userAnswers = emptyUserAnswers.setValue(AddSealYesNoPage(equipmentIndex), false)
+          navigator
+            .nextPage(AddSealYesNoPage(equipmentIndex), mode, userAnswers)
+            .mustBe(controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, equipmentIndex, mode))
         }
       }
+
+      "ItemPage mut go to ApplyAnotherItemPage" in {
+        val userAnswers = emptyUserAnswers.setValue(ItemPage(equipmentIndex, itemIndex), BigInt(0))
+
+        navigator
+          .nextPage(ItemPage(equipmentIndex, itemIndex), mode, userAnswers)
+          .mustBe(controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, NormalMode, equipmentIndex))
+
+      }
+
+      "must go from ApplyAnotherItemPage" - {
+
+        "to ItemPage when answered Yes" in {
+          val userAnswers = emptyUserAnswers.setValue(ApplyAnotherItemPage(equipmentIndex, itemIndex), true)
+
+          navigator
+            .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), mode, userAnswers)
+            .mustBe(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, itemIndex, mode))
+
+        }
+
+        "to AddAnotherEquipment page  when answered No" in {
+          val userAnswers = emptyUserAnswers.setValue(ApplyAnotherItemPage(equipmentIndex, itemIndex), false)
+
+          navigator
+            .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), mode, userAnswers)
+            .mustBe(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, mode))
+
+        }
+      }
+
+      "must go from ApplyAnItemYesNoPage" - {
+
+        "to ItemPage when answered Yes" in {
+          val userAnswers = emptyUserAnswers.setValue(ApplyAnItemYesNoPage(equipmentIndex), true)
+
+          navigator
+            .nextPage(ApplyAnItemYesNoPage(equipmentIndex), mode, userAnswers)
+            .mustBe(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, itemIndex, mode))
+
+        }
+
+        "to AddAnotherEquipment page  when answered No" in {
+          val userAnswers = emptyUserAnswers.setValue(ApplyAnItemYesNoPage(equipmentIndex), false)
+
+          navigator
+            .nextPage(ApplyAnItemYesNoPage(equipmentIndex), mode, userAnswers)
+            .mustBe(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, mode))
+
+        }
+      }
+
     }
 
     "must go from ApplyAnotherItemPage page " - {
@@ -76,16 +154,14 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
       }
 
       "to UnloadingFindings page if answer is false" in {
-        forAll(arbitrary[Mode]) {
-          mode =>
-            val page        = ApplyAnotherItemPage(equipmentIndex, itemIndex)
-            val userAnswers = emptyUserAnswers.setValue(page, false)
+        val page        = ApplyAnotherItemPage(equipmentIndex, itemIndex)
+        val userAnswers = emptyUserAnswers.setValue(page, false)
 
-            navigator
-              .nextPage(page, mode, userAnswers)
-              .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
-        }
+        navigator
+          .nextPage(page, NormalMode, userAnswers)
+          .mustBe(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, NormalMode))
       }
+
     }
 
     "in CheckMode" - {
@@ -110,8 +186,34 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
           .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
       }
 
+      "must go from AddAnotherSealPage page " - {
+        "to SealIdentificationNumberPage if answer is true" in {
+
+          val page        = AddAnotherSealPage(equipmentIndex, sealIndex)
+          val userAnswers = emptyUserAnswers.setValue(page, true)
+
+          navigator
+            .nextPage(page, CheckMode, userAnswers)
+            .mustBe(
+              controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(arrivalId, mode, equipmentIndex, sealIndex)
+            )
+
+        }
+
+        "to UnloadingFindings page if answer is false" in {
+
+          val page        = AddAnotherSealPage(equipmentIndex, sealIndex)
+          val userAnswers = emptyUserAnswers.setValue(page, false)
+
+          navigator
+            .nextPage(page, mode, userAnswers)
+            .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+        }
+
+      }
+
       "must go from Item page to ApplyAnotherItem page" in {
-        forAll(arbitrary[Item]) {
+        forAll(arbitrary[BigInt]) {
           item =>
             val userAnswers = emptyUserAnswers.setValue(ItemPage(equipmentIndex, itemIndex), item)
 
@@ -121,8 +223,29 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
         }
       }
 
+      "must go from ApplyAnItemYesNoPage" - {
+
+        "to ItemPage when answered Yes" in {
+          val userAnswers = emptyUserAnswers.setValue(ApplyAnItemYesNoPage(equipmentIndex), true)
+
+          navigator
+            .nextPage(ApplyAnItemYesNoPage(equipmentIndex), mode, userAnswers)
+            .mustBe(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, itemIndex, mode))
+
+        }
+
+        "to AddAnotherEquipment page  when answered No" in {
+          val userAnswers = emptyUserAnswers.setValue(ApplyAnItemYesNoPage(equipmentIndex), false)
+
+          navigator
+            .nextPage(ApplyAnItemYesNoPage(equipmentIndex), mode, userAnswers)
+            .mustBe(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, mode))
+
+        }
+      }
+
       "must go from ApplyAnotherItem page to Item page when answer is true" in {
-        forAll(arbitrary[Item]) {
+        forAll(arbitrary[BigInt]) {
           item =>
             val userAnswers = emptyUserAnswers
               .setValue(ItemPage(equipmentIndex, itemIndex), item)
@@ -135,7 +258,7 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
       }
 
       "must go from ApplyAnotherItem page to UnloadingFindings page when answer is false" in {
-        forAll(arbitrary[Item]) {
+        forAll(arbitrary[BigInt]) {
           item =>
             val userAnswers = emptyUserAnswers
               .setValue(ItemPage(equipmentIndex, itemIndex), item)

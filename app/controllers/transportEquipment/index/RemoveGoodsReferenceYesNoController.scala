@@ -18,16 +18,14 @@ package controllers.transportEquipment.index
 
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.reference.{Item, ItemDescription}
-import models.{ArrivalId, Index, RichOptionalJsArray, UserAnswers}
-import pages.houseConsignment.index.items.ItemGoodsReferenceDescriptionPage
+import models.{ArrivalId, Index, NormalMode, UserAnswers}
 import pages.sections.transport.equipment.ItemSection
-import pages.sections.{HouseConsignmentsSection, ItemsSection}
 import pages.transportEquipment.index.ItemPage
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.GoodsReferenceService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transportEquipment.index.RemoveItemYesNoView
 
@@ -41,7 +39,8 @@ class RemoveGoodsReferenceYesNoController @Inject() (
   getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: RemoveItemYesNoView
+  view: RemoveItemYesNoView,
+  goodsReferenceService: GoodsReferenceService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -49,7 +48,8 @@ class RemoveGoodsReferenceYesNoController @Inject() (
   private def form(equipmentIndex: Index): Form[Boolean] =
     formProvider("transportEquipment.index.item.removeItemYesNo", equipmentIndex.display)
 
-  private def addAnother(arrivalId: ArrivalId, equipmentIndex: Index): Call = Call("GET", "#") // TODO should go to addAnotherItem controller
+  private def addAnother(arrivalId: ArrivalId, equipmentIndex: Index): Call =
+    controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, NormalMode, equipmentIndex)
 
   def onPageLoad(arrivalId: ArrivalId, equipmentIndex: Index, itemIndex: Index): Action[AnyContent] = actions
     .requireIndex(arrivalId, ItemSection(equipmentIndex, itemIndex), addAnother(arrivalId, equipmentIndex))
@@ -62,7 +62,7 @@ class RemoveGoodsReferenceYesNoController @Inject() (
             arrivalId,
             equipmentIndex,
             itemIndex,
-            insetText(equipmentIndex, itemIndex, request.userAnswers)
+            insetText(request.userAnswers, equipmentIndex, itemIndex)
           )
         )
     }
@@ -84,7 +84,7 @@ class RemoveGoodsReferenceYesNoController @Inject() (
                     arrivalId,
                     equipmentIndex,
                     itemIndex,
-                    insetText(equipmentIndex, itemIndex, request.userAnswers)
+                    insetText(request.userAnswers, equipmentIndex, itemIndex)
                   )
                 )
               ),
@@ -101,36 +101,6 @@ class RemoveGoodsReferenceYesNoController @Inject() (
           )
     }
 
-  private def insetText(equipmentIndex: Index, itemIndex: Index, userAnswers: UserAnswers): Option[String] = {
-    val item = userAnswers.get(ItemPage(equipmentIndex, itemIndex))
-
-    val description = itemDescription(userAnswers, item)
-
-    item.map(
-      item => "Item " + item.value + " - " + description
-    )
-  }
-
-  private def itemDescription(userAnswers: UserAnswers, item: Option[Item]) =
-    userAnswers.allItems
-      .find(
-        id => item.map(_.value).contains(id.declarationGoodsItemNumber.toString)
-      )
-      .map(_.description)
-      .getOrElse("")
-
-  implicit class userAnswersMethods(userAnswers: UserAnswers) {
-
-    def allItems: Seq[ItemDescription] = userAnswers
-      .get(HouseConsignmentsSection)
-      .mapWithIndex {
-        case (_, houseIndex) =>
-          userAnswers.get(ItemsSection(houseIndex)).mapWithIndex {
-            case (_, itemIndex) =>
-              userAnswers.get(ItemGoodsReferenceDescriptionPage(houseIndex, itemIndex))
-          }
-      }
-      .flatten
-      .flatten
-  }
+  private def insetText(userAnswers: UserAnswers, equipmentIndex: Index, itemIndex: Index)(implicit messages: Messages): Option[String] =
+    goodsReferenceService.getGoodsReference(userAnswers, equipmentIndex, itemIndex).map(_.asString)
 }

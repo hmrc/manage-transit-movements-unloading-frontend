@@ -18,20 +18,19 @@ package views.transportEquipment.index
 
 import forms.SelectableFormProvider
 import generated.{CC043CType, ConsignmentType05, GoodsReferenceType02, TransportEquipmentType05}
-import models.reference.Item
+import models.reference.GoodsReference
 import models.{Index, NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.transportEquipment.SelectItemsViewModel
 import views.behaviours.InputSelectViewBehaviours
 import views.html.transportEquipment.index.GoodsReferenceView
 
-class GoodsReferenceViewSpec extends InputSelectViewBehaviours[Item] {
+class GoodsReferenceViewSpec extends InputSelectViewBehaviours[GoodsReference] {
 
-  implicit override val arbitraryT: Arbitrary[Item] = arbitraryItem
+  implicit override val arbitraryT: Arbitrary[GoodsReference] = arbitraryGoodsReference
 
-  override lazy val values: Seq[Item] = Seq(Item(123, "seq1"))
+  override lazy val values: Seq[GoodsReference] = Seq(GoodsReference(123, "Description 1"))
 
   val ie043Answers: CC043CType = emptyUserAnswers.ie043Data.copy(Consignment =
     Some(
@@ -41,13 +40,12 @@ class GoodsReferenceViewSpec extends InputSelectViewBehaviours[Item] {
       )
     )
   )
-  override def form: Form[Item] = new SelectableFormProvider()(NormalMode, prefix, SelectableList(values))
-  private val viewModel         = SelectItemsViewModel(emptyUserAnswers.copy(ie043Data = ie043Answers), None)
+  override def form: Form[GoodsReference] = new SelectableFormProvider()(NormalMode, prefix, SelectableList(values))
 
-  override def applyView(form: Form[Item]): HtmlFormat.Appendable =
+  override def applyView(form: Form[GoodsReference]): HtmlFormat.Appendable =
     injector
       .instanceOf[GoodsReferenceView]
-      .apply(form, arrivalId, Index(0), itemIndex, mrn, viewModel.copy(SelectableList(values)), NormalMode)(fakeRequest, messages)
+      .apply(form, arrivalId, Index(0), itemIndex, mrn, values, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "transport.equipment.selectItems"
 

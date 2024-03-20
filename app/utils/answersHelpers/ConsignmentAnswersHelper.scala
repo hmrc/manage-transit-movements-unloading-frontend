@@ -53,6 +53,13 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     visuallyHidden = messages("additionalReferenceLink.visuallyHidden")
   )
 
+  private val transportEquipmentAddRemoveLink: Link = Link(
+    id = s"add-remove-transport-equipment",
+    href = controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, NormalMode).url,
+    text = messages("transportEquipmentLink.addRemove"),
+    visuallyHidden = messages("transportEquipmentLink.visuallyHidden")
+  )
+
   private val departureTransportMeansAddRemoveLink: Link =
     Link(
       id = s"add-remove-departure-transport-means",
@@ -60,13 +67,6 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       text = messages("departureTransportMeans.addRemove"),
       visuallyHidden = messages("departureTransportMeans.visuallyHidden")
     )
-
-  private val transportEquipmentAddRemoveLink: Link = Link(
-    id = s"add-remove-transport-equipment",
-    href = "#",
-    text = messages("transportEquipmentLink.addRemove"),
-    visuallyHidden = messages("transportEquipmentLink.visuallyHidden")
-  )
 
   def headerSection: Section = StaticSection(
     rows = Seq(
@@ -430,4 +430,5 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           )
         )
     }
+
 }

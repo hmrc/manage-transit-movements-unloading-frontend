@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package pages.sections.transport.equipment
+package models.reference
 
-import models.Index
-import pages.sections.Section
-import play.api.libs.json.{JsObject, JsPath}
+import play.api.i18n.Messages
 
-case class EquipmentSection(equipmentIndex: Index) extends Section[JsObject] {
+case class GoodsReference(declarationGoodsItemNumber: BigInt, itemDescription: String) extends Selectable {
+  override val value: String = declarationGoodsItemNumber.toString()
 
-  override def path: JsPath = EquipmentsSection.path \ equipmentIndex.position
+  override def toString: String = value
 
+  def asString(implicit messages: Messages): String =
+    messages("goodsReference.label", declarationGoodsItemNumber, itemDescription)
 }

@@ -17,15 +17,8 @@
 package utils.transformers
 
 import generated.CommodityType08
-import models.reference.ItemDescription
 import models.{Index, UserAnswers}
-import pages.houseConsignment.index.items.{
-  CombinedNomenclatureCodePage,
-  CommodityCodePage,
-  CustomsUnionAndStatisticsCodePage,
-  ItemDescriptionPage,
-  ItemGoodsReferenceDescriptionPage
-}
+import pages.houseConsignment.index.items.{CombinedNomenclatureCodePage, CommodityCodePage, CustomsUnionAndStatisticsCodePage, ItemDescriptionPage}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,13 +29,12 @@ class CommodityTransformer @Inject() (
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
-  def transform(commodity: CommodityType08, declarationGoodsItemNumber: BigInt, hcIndex: Index, itemIndex: Index): UserAnswers => Future[UserAnswers] =
+  def transform(commodity: CommodityType08, hcIndex: Index, itemIndex: Index): UserAnswers => Future[UserAnswers] =
     userAnswers =>
       commodity match {
         case CommodityType08(descriptionOfGoods, cusCode, commodityCode, dangerousGoods, goodsMeasure) =>
           lazy val pipeline: UserAnswers => Future[UserAnswers] =
             set(ItemDescriptionPage(hcIndex, itemIndex), descriptionOfGoods) andThen
-              set(ItemGoodsReferenceDescriptionPage(hcIndex, itemIndex), ItemDescription(declarationGoodsItemNumber, descriptionOfGoods)) andThen
               set(CustomsUnionAndStatisticsCodePage(hcIndex, itemIndex), cusCode) andThen
               set(CommodityCodePage(hcIndex, itemIndex), commodityCode.map(_.harmonizedSystemSubHeadingCode)) andThen
               set(CombinedNomenclatureCodePage(hcIndex, itemIndex), commodityCode.flatMap(_.combinedNomenclatureCode)) andThen

@@ -17,7 +17,6 @@
 package utils.transformers
 
 import generated.GoodsReferenceType02
-import models.reference.Item
 import models.{Index, UserAnswers}
 import pages.sections.transport.equipment.ItemSection
 import pages.transportEquipment.index.ItemPage
@@ -27,15 +26,15 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class GoodsReferencesTransformer @Inject() (implicit ec: ExecutionContext) extends PageTransformer {
 
-  def transform(goodsReferenceSeq: Seq[GoodsReferenceType02], equipmentIndex: Index): UserAnswers => Future[UserAnswers] = userAnswers =>
-    goodsReferenceSeq.zipWithIndex.foldLeft(Future.successful(userAnswers))({
+  def transform(goodsReferences: Seq[GoodsReferenceType02], equipmentIndex: Index): UserAnswers => Future[UserAnswers] = userAnswers =>
+    goodsReferences.zipWithIndex.foldLeft(Future.successful(userAnswers))({
       case (acc, (GoodsReferenceType02(sequenceNumber, declarationGoodsItemNumber), i)) =>
         acc.flatMap {
           userAnswers =>
             val itemIndex: Index = Index(i)
             val pipeline: UserAnswers => Future[UserAnswers] =
               setSequenceNumber(ItemSection(equipmentIndex, itemIndex), sequenceNumber) andThen
-                set(ItemPage(equipmentIndex, itemIndex), Item(declarationGoodsItemNumber.intValue, sequenceNumber))
+                set(ItemPage(equipmentIndex, itemIndex), declarationGoodsItemNumber)
 
             pipeline(userAnswers)
         }

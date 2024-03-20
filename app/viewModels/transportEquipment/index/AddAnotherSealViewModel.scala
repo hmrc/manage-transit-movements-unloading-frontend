@@ -61,7 +61,7 @@ object AddAnotherSealViewModel {
               number =>
                 ListItem(
                   name = number,
-                  changeUrl = Some(routes.SealIdentificationNumberController.onPageLoad(arrivalId, mode, equipmentIndex, sealIndex).url),
+                  changeUrl = None,
                   removeUrl = Some(routes.RemoveSealYesNoController.onPageLoad(arrivalId, mode, equipmentIndex, sealIndex).url)
                 )
             }
