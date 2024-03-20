@@ -19,7 +19,7 @@ package viewModels.additionalReference.index
 import config.FrontendAppConfig
 import controllers.additionalReference.index.routes
 import models.{ArrivalId, Index, Mode, RichOptionalJsArray, UserAnswers}
-import pages.additionalReference.AdditionalReferenceNumberPage
+import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import pages.sections.additionalReference.AdditionalReferencesSection
 import play.api.libs.json.JsArray
 import play.api.mvc.Call
@@ -47,10 +47,12 @@ object AddAnotherAdditionalReferenceViewModel {
         .flatMap {
           case (_, i) =>
             val additionalReferenceIndex = Index(i)
-            userAnswers.get(AdditionalReferenceNumberPage(additionalReferenceIndex)).map {
-              number =>
+            val number                   = userAnswers.get(AdditionalReferenceNumberPage(additionalReferenceIndex)).getOrElse("")
+            val numberString             = if (number.nonEmpty) s"- $number" else ""
+            userAnswers.get(AdditionalReferenceTypePage(additionalReferenceIndex)).map {
+              `type` =>
                 ListItem(
-                  name = number,
+                  name = s"${`type`.value} $numberString",
                   changeUrl = None,
                   removeUrl = Some(routes.RemoveAdditionalReferenceYesNoController.onPageLoad(arrivalId, additionalReferenceIndex, mode).url)
                 )
