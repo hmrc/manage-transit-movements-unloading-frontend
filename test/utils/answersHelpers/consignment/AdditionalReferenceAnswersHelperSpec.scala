@@ -16,6 +16,7 @@
 
 package utils.answersHelpers.consignment
 
+import models.CheckMode
 import models.reference.AdditionalReferenceType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -48,7 +49,7 @@ class AdditionalReferenceAnswersHelperSpec extends AnswersHelperSpecBase {
             result.value.value mustBe value.toString
             val action = result.actions.value.items.head
             action.content.value mustBe "Change"
-            action.href mustBe "#"
+            action.href mustBe controllers.additionalReference.index.routes.AdditionalReferenceTypeController.onPageLoad(arrivalId, CheckMode, index).url
             action.visuallyHiddenText.value mustBe "type for additional reference 1"
             action.id mustBe "change-additional-reference-type-1"
         }
@@ -77,7 +78,7 @@ class AdditionalReferenceAnswersHelperSpec extends AnswersHelperSpecBase {
             result.value.value mustBe value
             val action = result.actions.value.items.head
             action.content.value mustBe "Change"
-            action.href mustBe "#"
+            action.href mustBe controllers.additionalReference.index.routes.AdditionalReferenceNumberController.onPageLoad(arrivalId, index, CheckMode).url
             action.visuallyHiddenText.value mustBe "reference number for additional reference 1"
             action.id mustBe "change-additional-reference-number-1"
         }

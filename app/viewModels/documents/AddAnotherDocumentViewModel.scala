@@ -71,7 +71,7 @@ object AddAnotherDocumentViewModel {
                       refNo => s"$docType - $refNo"
                     )
                     .getOrElse(s"$docType")}",
-                  changeUrl = Some(Call("GET", "#").url), //TODO: To be added later
+                  changeUrl = None,
                   removeUrl = Some(controllers.documents.routes.RemoveDocumentYesNoController.onPageLoad(arrivalId, mode, index).url)
                 )
               )

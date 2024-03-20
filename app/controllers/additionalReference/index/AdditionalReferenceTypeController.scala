@@ -21,7 +21,7 @@ import forms.SelectableFormProvider
 import models.reference.AdditionalReferenceType
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigator
+import navigation.{AdditionalReferenceNavigator, Navigator}
 import pages.additionalReference.AdditionalReferenceTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AdditionalReferenceTypeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: AdditionalReferenceNavigator,
   actions: Actions,
   formProvider: SelectableFormProvider,
   service: AdditionalReferencesService,
