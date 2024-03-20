@@ -82,7 +82,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected val fakeDepartureTransportMeansNavigator: DepartureTransportMeansNavigator = new FakeDepartureTransportMeansNavigator(onwardRoute)
   protected val fakeAdditionalReferenceNavigator: AdditionalReferenceNavigator         = new FakeAdditionalReferenceNavigator(onwardRoute)
   protected val fakeHouseConsignmentIteNavigator: HouseConsignmentItemNavigator        = new FakeHouseConsignmentItemNavigator(onwardRoute)
-  protected val fakeAdditionalReferenceNavigator: AdditionalReferenceNavigator         = new FakeAdditionalReferenceNavigator(onwardRoute)
 
   def guiceApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
