@@ -17,15 +17,30 @@
 package navigation
 
 import com.google.inject.Singleton
-import models.{Index, UserAnswers}
+import models.{Index, NormalMode, UserAnswers}
 import pages._
-import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
+import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceNumberYesNoPage, AdditionalReferenceTypePage}
 import play.api.mvc.Call
 
 @Singleton
 class AdditionalReferenceNavigator extends Navigator {
 
-  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = ???
+  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+
+    case AdditionalReferenceTypePage(referenceIndex) =>
+      ua => Some(controllers.additionalReference.index.routes.AdditionalReferenceNumberYesNoController.onPageLoad(ua.id, referenceIndex, NormalMode))
+    case AdditionalReferenceNumberPage(referenceIndex) =>
+      ua => Some(controllers.additionalReference.index.routes.AddAnotherAdditionalReferenceController.onPageLoad(ua.id, NormalMode))
+    case AdditionalReferenceNumberYesNoPage(referenceIndex) => ua => additionalReferenceNumberYesNoRoute(ua, referenceIndex)
+  }
+
+  private def additionalReferenceNumberYesNoRoute(ua: UserAnswers, referenceIndex: Index): Option[Call] =
+    ua.get(AdditionalReferenceNumberYesNoPage(referenceIndex)) match {
+      case Some(true) =>
+        Some(controllers.additionalReference.index.routes.AdditionalReferenceNumberController.onPageLoad(ua.id, referenceIndex, NormalMode))
+      case Some(false) => Some(controllers.additionalReference.index.routes.AddAnotherAdditionalReferenceController.onPageLoad(ua.id, NormalMode))
+      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
+    }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case AdditionalReferenceTypePage(_)   => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
