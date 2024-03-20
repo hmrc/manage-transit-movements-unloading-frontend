@@ -62,7 +62,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
               val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, arrivalId, mode)
 
               result.listItems.length mustBe 1
-              result.listItems.head.name mustBe s"Transport Equipment 1 - container $containerId"
+              result.listItems.head.name mustBe s"Transport Equipment 1 - Container $containerId"
               result.title mustBe "You have added 1 transport equipment"
               result.heading mustBe "You have added 1 transport equipment"
               result.legend mustBe "Do you want to add any other transport equipment?"
@@ -141,7 +141,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
 
               result.listItems mustBe Seq(
                 ListItem(
-                  name = s"Transport Equipment 1 - container $containerId",
+                  name = s"Transport Equipment 1 - Container $containerId",
                   changeUrl = None,
                   removeUrl = Some(
                     controllers.transportEquipment.index.routes.RemoveTransportEquipmentYesNoController
@@ -150,7 +150,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
                   )
                 ),
                 ListItem(
-                  name = s"Transport Equipment 2 - container $containerId",
+                  name = s"Transport Equipment 2 - Container $containerId",
                   changeUrl = None,
                   removeUrl = Some(
                     controllers.transportEquipment.index.routes.RemoveTransportEquipmentYesNoController
