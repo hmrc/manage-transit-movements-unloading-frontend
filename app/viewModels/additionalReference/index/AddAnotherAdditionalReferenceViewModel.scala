@@ -51,7 +51,7 @@ object AddAnotherAdditionalReferenceViewModel {
               number =>
                 ListItem(
                   name = number,
-                  changeUrl = Some(routes.AdditionalReferenceNumberController.onPageLoad(arrivalId, additionalReferenceIndex, mode).url),
+                  changeUrl = None,
                   removeUrl = Some(routes.RemoveAdditionalReferenceYesNoController.onPageLoad(arrivalId, additionalReferenceIndex, mode).url)
                 )
             }
