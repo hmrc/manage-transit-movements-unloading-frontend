@@ -17,12 +17,10 @@
 package utils.answersHelpers.consignment
 
 import models.reference.AdditionalReferenceType
-import models.{CheckMode, Index, NormalMode, UserAnswers}
+import models.{CheckMode, Index, UserAnswers}
 import pages.additionalReference._
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
 
 class AdditionalReferenceAnswersHelper(
