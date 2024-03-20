@@ -57,7 +57,7 @@ class TransportEquipmentNavigator extends Navigator {
   private def addSealYesNoRoute(ua: UserAnswers, equipmentIndex: Index, mode: Mode): Option[Call] =
     ua.get(AddSealYesNoPage(equipmentIndex)).map {
       case true =>
-        controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(ua.id, mode, equipmentIndex, Index(0))
+        controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(ua.id, mode, NormalMode, equipmentIndex, Index(0))
       case false =>
         controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(ua.id, equipmentIndex, mode)
     }

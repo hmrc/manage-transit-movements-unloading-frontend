@@ -49,7 +49,7 @@ class SealAnswersHelperSpec extends AnswersHelperSpecBase {
               action.content.value mustBe "Change"
               action.href mustBe
                 controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController
-                  .onPageLoad(arrivalId, CheckMode, equipmentIndex, sealIndex)
+                  .onPageLoad(arrivalId, CheckMode, CheckMode, equipmentIndex, sealIndex)
                   .url
               action.visuallyHiddenText.value mustBe "seal 1 for transport equipment 1"
               action.id mustBe "change-seal-details-1-1"

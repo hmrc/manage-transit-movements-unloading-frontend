@@ -19,7 +19,7 @@ package controllers.transportEquipment.index
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.{ArrivalId, Index, Mode}
+import models.{ArrivalId, Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -63,7 +63,7 @@ class AddAnotherSealController @Inject() (
             case true =>
               Redirect(
                 controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController
-                  .onPageLoad(arrivalId, mode, equipmentIndex, viewModel.nextIndex)
+                  .onPageLoad(arrivalId, mode, NormalMode, equipmentIndex, viewModel.nextIndex)
               )
             case false =>
               //TODO: Need to amend nav depending on whether they've come from cross check page or seal identification page

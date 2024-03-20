@@ -72,7 +72,10 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
 
           navigator
             .nextPage(AddSealYesNoPage(equipmentIndex), mode, userAnswers)
-            .mustBe(controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(arrivalId, mode, equipmentIndex, sealIndex))
+            .mustBe(
+              controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController
+                .onPageLoad(arrivalId, mode, NormalMode, equipmentIndex, sealIndex)
+            )
 
         }
 
