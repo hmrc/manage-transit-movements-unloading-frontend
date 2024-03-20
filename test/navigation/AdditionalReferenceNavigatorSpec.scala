@@ -20,42 +20,35 @@ import base.SpecBase
 import generators.Generators
 import models._
 import models.reference.AdditionalReferenceType
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.additionalReference._
+import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 
 class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   val navigator = new AdditionalReferenceNavigator
 
-  "AdditionalReferenceNavigator" - {
+  "DepartureTransportMeansNavigator" - {
 
-    "in Normal mode" - {
+    "in Checkmode" - {
 
-      val mode = NormalMode
+      val mode = CheckMode
 
-      "must go from AdditionalReferenceTypePage to AddAnotherAdditionalReferenceController" in {
+      "must go from AdditionalReferenceTypePage to UnloadingFindingsPage page" - {
 
-        val additionalReference = arbitrary[AdditionalReferenceType].sample.value
-
-        val userAnswers = emptyUserAnswers
-          .setValue(AdditionalReferenceTypePage(itemIndex), additionalReference)
+        val userAnswers = emptyUserAnswers.setValue(AdditionalReferenceTypePage(additionalReferenceIndex), AdditionalReferenceType("test", "test"))
 
         navigator
-          .nextPage(AdditionalReferenceNumberPage(itemIndex), mode, userAnswers)
-          .mustBe(controllers.additionalReference.index.routes.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId, mode))
-
+          .nextPage(AdditionalReferenceTypePage(additionalReferenceIndex), mode, userAnswers)
+          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
       }
 
-      "must go from AdditionalReferenceNumberPage to AddAnotherAdditionalReferenceController" in {
+      "must go from AdditionalReferenceNumberPage to UnloadingFindingsPage page" - {
 
-        val userAnswers = emptyUserAnswers
-          .setValue(AdditionalReferenceNumberPage(itemIndex), "test")
+        val userAnswers = emptyUserAnswers.setValue(AdditionalReferenceNumberPage(additionalReferenceIndex), "test")
 
         navigator
-          .nextPage(AdditionalReferenceNumberPage(itemIndex), mode, userAnswers)
-          .mustBe(controllers.additionalReference.index.routes.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId, mode))
-
+          .nextPage(AdditionalReferenceNumberPage(additionalReferenceIndex), mode, userAnswers)
+          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
       }
 
     }

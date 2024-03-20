@@ -206,7 +206,7 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
               result.listItems mustBe Seq(
                 ListItem(
                   name = "Support - ref1",
-                  changeUrl = Some("#"), //TODO: To be added later
+                  changeUrl = None,
                   removeUrl = Some(
                     controllers.documents.routes.RemoveDocumentYesNoController
                       .onPageLoad(arrivalId, mode, Index(0))
@@ -215,7 +215,7 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
                 ),
                 ListItem(
                   name = "Transport - ref2",
-                  changeUrl = Some("#"), //TODO: To be added later
+                  changeUrl = None,
                   removeUrl = Some(
                     controllers.documents.routes.RemoveDocumentYesNoController
                       .onPageLoad(arrivalId, mode, Index(1))

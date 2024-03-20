@@ -17,7 +17,7 @@
 package utils.answersHelpers.consignment
 
 import models.reference.AdditionalReferenceType
-import models.{Index, UserAnswers}
+import models.{CheckMode, Index, NormalMode, UserAnswers}
 import pages.additionalReference._
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -36,7 +36,7 @@ class AdditionalReferenceAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.additional.reference.type",
     id = Some(s"change-additional-reference-type-${referenceIndex.display}"),
-    call = Some(Call(GET, "#")),
+    call = Some(controllers.additionalReference.index.routes.AdditionalReferenceTypeController.onPageLoad(arrivalId, CheckMode, referenceIndex)),
     args = referenceIndex.display
   )
 
@@ -45,7 +45,7 @@ class AdditionalReferenceAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.additional.reference.number",
     id = Some(s"change-additional-reference-number-${referenceIndex.display}"),
-    call = Some(Call(GET, "#")),
+    call = Some(controllers.additionalReference.index.routes.AdditionalReferenceNumberController.onPageLoad(arrivalId, referenceIndex, CheckMode)),
     args = referenceIndex.display
   )
 }
