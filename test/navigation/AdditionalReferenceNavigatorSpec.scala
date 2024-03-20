@@ -75,7 +75,7 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
           .mustBe(controllers.additionalReference.index.routes.AdditionalReferenceNumberController.onPageLoad(arrivalId, additionalReferenceIndex, mode))
       }
 
-      "must go from AdditionalReferenceNumberYesNoPage to AddAnotherAdditionalReference page when user chooses Yes" in {
+      "must go from AdditionalReferenceNumberYesNoPage to AddAnotherAdditionalReference page when Yes is selected" in {
 
         val userAnswers = emptyUserAnswers.setValue(AdditionalReferenceNumberYesNoPage(additionalReferenceIndex), true)
 
@@ -84,7 +84,7 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
           .mustBe(controllers.additionalReference.index.routes.AdditionalReferenceNumberController.onPageLoad(arrivalId, additionalReferenceIndex, NormalMode))
       }
 
-      "must go from AdditionalReferenceNumberYesNoPage to AddAnotherAdditionalReference page when user chooses No" in {
+      "must go from AdditionalReferenceNumberYesNoPage to AddAnotherAdditionalReference page when No is selected" in {
 
         val userAnswers = emptyUserAnswers.setValue(AdditionalReferenceNumberYesNoPage(additionalReferenceIndex), false)
 

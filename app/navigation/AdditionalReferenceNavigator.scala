@@ -39,7 +39,6 @@ class AdditionalReferenceNavigator extends Navigator {
       case Some(true) =>
         Some(controllers.additionalReference.index.routes.AdditionalReferenceNumberController.onPageLoad(ua.id, referenceIndex, NormalMode))
       case Some(false) => Some(controllers.additionalReference.index.routes.AddAnotherAdditionalReferenceController.onPageLoad(ua.id, NormalMode))
-      case _           => Some(controllers.routes.SessionExpiredController.onPageLoad())
     }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
