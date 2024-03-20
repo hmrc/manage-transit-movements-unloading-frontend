@@ -56,7 +56,7 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
         }
       }
 
-      "ContainerIdentificationNumberPage mut go to AddSealsYesNoPage" in {
+      "must go from ContainerIdentificationNumberPage to AddSealsYesNoPage" in {
         val userAnswers = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(equipmentIndex), "123")
 
         navigator
@@ -85,34 +85,22 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
         }
       }
 
-      "ItemPage mut go to ApplyAnotherItemPage" in {
+      "must go from SealIdentificationNumber page to AddAnotherSeal page" in {
+        val userAnswers = emptyUserAnswers.setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "seal1")
+
+        navigator
+          .nextPage(SealIdentificationNumberPage(equipmentIndex, sealIndex), mode, userAnswers)
+          .mustBe(controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, NormalMode, equipmentIndex))
+
+      }
+
+      "must go from ItemPage to ApplyAnotherItemPage" in {
         val userAnswers = emptyUserAnswers.setValue(ItemPage(equipmentIndex, itemIndex), BigInt(0))
 
         navigator
           .nextPage(ItemPage(equipmentIndex, itemIndex), mode, userAnswers)
           .mustBe(controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, NormalMode, equipmentIndex))
 
-      }
-
-      "must go from ApplyAnotherItemPage" - {
-
-        "to ItemPage when answered Yes" in {
-          val userAnswers = emptyUserAnswers.setValue(ApplyAnotherItemPage(equipmentIndex, itemIndex), true)
-
-          navigator
-            .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), mode, userAnswers)
-            .mustBe(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, itemIndex, mode))
-
-        }
-
-        "to AddAnotherEquipment page  when answered No" in {
-          val userAnswers = emptyUserAnswers.setValue(ApplyAnotherItemPage(equipmentIndex, itemIndex), false)
-
-          navigator
-            .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), mode, userAnswers)
-            .mustBe(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, mode))
-
-        }
       }
 
       "must go from ApplyAnItemYesNoPage" - {
@@ -138,32 +126,6 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
 
     }
 
-    "must go from ApplyAnotherItemPage page " - {
-      "to GoodsReferencePage if answer is true" in {
-        forAll(arbitrary[Mode]) {
-          mode =>
-            val page        = ApplyAnotherItemPage(equipmentIndex, itemIndex)
-            val userAnswers = emptyUserAnswers.setValue(page, true)
-
-            navigator
-              .nextPage(page, mode, userAnswers)
-              .mustBe(
-                controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, itemIndex, mode)
-              )
-        }
-      }
-
-      "to UnloadingFindings page if answer is false" in {
-        val page        = ApplyAnotherItemPage(equipmentIndex, itemIndex)
-        val userAnswers = emptyUserAnswers.setValue(page, false)
-
-        navigator
-          .nextPage(page, NormalMode, userAnswers)
-          .mustBe(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, NormalMode))
-      }
-
-    }
-
     "in CheckMode" - {
 
       val mode = CheckMode
@@ -184,32 +146,6 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
         navigator
           .nextPage(SealIdentificationNumberPage(equipmentIndex, sealIndex), mode, userAnswers)
           .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
-      }
-
-      "must go from AddAnotherSealPage page " - {
-        "to SealIdentificationNumberPage if answer is true" in {
-
-          val page        = AddAnotherSealPage(equipmentIndex, sealIndex)
-          val userAnswers = emptyUserAnswers.setValue(page, true)
-
-          navigator
-            .nextPage(page, CheckMode, userAnswers)
-            .mustBe(
-              controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController.onPageLoad(arrivalId, mode, equipmentIndex, sealIndex)
-            )
-
-        }
-
-        "to UnloadingFindings page if answer is false" in {
-
-          val page        = AddAnotherSealPage(equipmentIndex, sealIndex)
-          val userAnswers = emptyUserAnswers.setValue(page, false)
-
-          navigator
-            .nextPage(page, mode, userAnswers)
-            .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
-        }
-
       }
 
       "must go from Item page to ApplyAnotherItem page" in {
@@ -241,32 +177,6 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
             .nextPage(ApplyAnItemYesNoPage(equipmentIndex), mode, userAnswers)
             .mustBe(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, mode))
 
-        }
-      }
-
-      "must go from ApplyAnotherItem page to Item page when answer is true" in {
-        forAll(arbitrary[BigInt]) {
-          item =>
-            val userAnswers = emptyUserAnswers
-              .setValue(ItemPage(equipmentIndex, itemIndex), item)
-              .setValue(ApplyAnotherItemPage(equipmentIndex, itemIndex), true)
-
-            navigator
-              .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), mode, userAnswers)
-              .mustBe(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, itemIndex, mode))
-        }
-      }
-
-      "must go from ApplyAnotherItem page to UnloadingFindings page when answer is false" in {
-        forAll(arbitrary[BigInt]) {
-          item =>
-            val userAnswers = emptyUserAnswers
-              .setValue(ItemPage(equipmentIndex, itemIndex), item)
-              .setValue(ApplyAnotherItemPage(equipmentIndex, itemIndex), false)
-
-            navigator
-              .nextPage(ApplyAnotherItemPage(equipmentIndex, itemIndex), mode, userAnswers)
-              .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
         }
       }
     }

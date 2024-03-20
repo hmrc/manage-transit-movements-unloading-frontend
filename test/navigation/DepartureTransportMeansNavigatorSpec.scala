@@ -34,24 +34,6 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
       val mode = NormalMode
 
-      "must go from AddAnotherDepartureMeansOfTransport page" - {
-        "when user answers Yes to AddIdentificationYesNo page" in {
-          val userAnswers = emptyUserAnswers.setValue(AddAnotherDepartureMeansOfTransportPage(transportMeansIndex), true)
-
-          navigator
-            .nextPage(AddAnotherDepartureMeansOfTransportPage(transportMeansIndex), mode, userAnswers)
-            .mustBe(controllers.departureMeansOfTransport.routes.AddIdentificationYesNoController.onPageLoad(arrivalId, transportMeansIndex, mode))
-        }
-
-        "when user answers No to UnloadingFindingsController" in {
-          val userAnswers = emptyUserAnswers.setValue(AddAnotherDepartureMeansOfTransportPage(transportMeansIndex), false)
-
-          navigator
-            .nextPage(AddAnotherDepartureMeansOfTransportPage(transportMeansIndex), mode, userAnswers)
-            .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
-        }
-      }
-
       "must go from AddIdentificationYesNo page" - {
         "when user answers Yes to TransportMeansIdentification page" in {
           val userAnswers = emptyUserAnswers.setValue(AddIdentificationYesNoPage(transportMeansIndex), true)

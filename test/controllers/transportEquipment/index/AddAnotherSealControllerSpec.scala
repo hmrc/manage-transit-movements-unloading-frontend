@@ -140,7 +140,9 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual onwardRoute.url
+          redirectLocation(result).value mustEqual controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController
+            .onPageLoad(arrivalId, mode, equipmentIndex, notMaxedOutViewModel.nextIndex)
+            .url
         }
       }
 
@@ -158,7 +160,8 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual onwardRoute.url
+          redirectLocation(result).value mustEqual
+            controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, equipmentIndex, mode).url
         }
       }
     }
@@ -177,7 +180,8 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual onwardRoute.url
+        redirectLocation(result).value mustEqual
+          controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, equipmentIndex, mode).url
       }
     }
 
