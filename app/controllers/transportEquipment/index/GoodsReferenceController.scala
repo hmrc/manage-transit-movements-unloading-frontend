@@ -55,14 +55,15 @@ class GoodsReferenceController @Inject() (
         }
 
         Ok(
-          view(preparedForm,
-               arrivalId,
-               transportEquipmentIndex,
-               itemIndex,
-               request.userAnswers.mrn,
-               availableGoodsReferences,
-               equipmentMode,
-               goodsReferenceMode
+          view(
+            preparedForm,
+            arrivalId,
+            transportEquipmentIndex,
+            itemIndex,
+            request.userAnswers.mrn,
+            availableGoodsReferences,
+            equipmentMode,
+            goodsReferenceMode
           )
         )
     }
@@ -79,14 +80,15 @@ class GoodsReferenceController @Inject() (
             formWithErrors =>
               Future.successful(
                 BadRequest(
-                  view(formWithErrors,
-                       arrivalId,
-                       transportEquipmentIndex,
-                       itemIndex,
-                       request.userAnswers.mrn,
-                       availableGoodsReferences,
-                       equipmentMode,
-                       goodsReferenceMode
+                  view(
+                    formWithErrors,
+                    arrivalId,
+                    transportEquipmentIndex,
+                    itemIndex,
+                    request.userAnswers.mrn,
+                    availableGoodsReferences,
+                    equipmentMode,
+                    goodsReferenceMode
                   )
                 )
               ),

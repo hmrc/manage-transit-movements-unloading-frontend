@@ -85,11 +85,7 @@ object ApplyAnotherItemViewModel {
               case CheckMode =>
                 ListItem(
                   name = itemPrefix(declarationGoodsItemNumber.toString),
-                  changeUrl = Some(
-                    controllers.transportEquipment.index.routes.GoodsReferenceController
-                      .onSubmit(arrivalId, equipmentIndex, itemIndex, equipmentMode, goodsReferenceMode)
-                      .url
-                  ),
+                  changeUrl = Some(routes.GoodsReferenceController.onSubmit(arrivalId, equipmentIndex, itemIndex, equipmentMode, goodsReferenceMode).url),
                   removeUrl = None
                 )
               case NormalMode =>
@@ -97,9 +93,7 @@ object ApplyAnotherItemViewModel {
                   name = itemPrefix(declarationGoodsItemNumber.toString),
                   changeUrl = None,
                   removeUrl = Some(
-                    controllers.transportEquipment.index.routes.RemoveGoodsReferenceYesNoController
-                      .onPageLoad(arrivalId, equipmentIndex, itemIndex, equipmentMode, goodsReferenceMode)
-                      .url
+                    routes.RemoveGoodsReferenceYesNoController.onPageLoad(arrivalId, equipmentIndex, itemIndex, equipmentMode, goodsReferenceMode).url
                   )
                 )
             }
