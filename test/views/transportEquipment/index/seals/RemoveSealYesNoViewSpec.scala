@@ -28,7 +28,7 @@ class RemoveSealYesNoViewSpec extends YesNoViewBehaviours with Generators {
   private val sealIdNumber = nonEmptyString.sample.value
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[RemoveSealYesNoView].apply(form, mrn, arrivalId, NormalMode, equipmentIndex, sealIndex, sealIdNumber)(fakeRequest, messages)
+    injector.instanceOf[RemoveSealYesNoView].apply(form, mrn, arrivalId, NormalMode, NormalMode, equipmentIndex, sealIndex, sealIdNumber)(fakeRequest, messages)
 
   override val prefix: String = "transportEquipment.index.seal.removeSealYesNo"
 

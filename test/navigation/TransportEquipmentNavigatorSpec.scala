@@ -23,7 +23,6 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.ContainerIdentificationNumberPage
 import pages.transportEquipment.index._
-import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 
 class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -88,15 +87,6 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
         }
       }
 
-      "must go from SealIdentificationNumber page to AddAnotherSeal page" in {
-        val userAnswers = emptyUserAnswers.setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "seal1")
-
-        navigator
-          .nextPage(SealIdentificationNumberPage(equipmentIndex, sealIndex), mode, userAnswers)
-          .mustBe(controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, NormalMode, equipmentIndex))
-
-      }
-
       "must go from ItemPage to ApplyAnotherItemPage" in {
         val userAnswers = emptyUserAnswers.setValue(ItemPage(equipmentIndex, itemIndex), BigInt(0))
 
@@ -139,15 +129,6 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
 
         navigator
           .nextPage(ContainerIdentificationNumberPage(equipmentIndex), mode, userAnswers)
-          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
-      }
-
-      "must go from SealIdentificationNumber page to UnloadingFindings page" in {
-
-        val userAnswers = emptyUserAnswers.setValue(SealIdentificationNumberPage(equipmentIndex, sealIndex), "seal1")
-
-        navigator
-          .nextPage(SealIdentificationNumberPage(equipmentIndex, sealIndex), mode, userAnswers)
           .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
       }
 

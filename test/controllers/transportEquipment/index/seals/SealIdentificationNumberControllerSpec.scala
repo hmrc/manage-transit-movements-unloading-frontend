@@ -116,7 +116,7 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
             status(result) mustEqual SEE_OTHER
 
             redirectLocation(result).value mustEqual
-              controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, mode, equipmentIndex).url
+              controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, NormalMode, mode, equipmentIndex).url
         }
       }
 

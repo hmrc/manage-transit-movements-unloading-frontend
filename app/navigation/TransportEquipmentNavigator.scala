@@ -20,7 +20,6 @@ import com.google.inject.Singleton
 import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, UserAnswers}
 import pages._
 import pages.transportEquipment.index._
-import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.mvc.Call
 
 @Singleton
@@ -32,8 +31,6 @@ class TransportEquipmentNavigator extends Navigator {
     case ContainerIdentificationNumberPage(equipmentIndex) =>
       ua => Some(controllers.transportEquipment.index.routes.AddSealYesNoController.onPageLoad(ua.id, equipmentIndex, NormalMode))
     case AddSealYesNoPage(equipmentIndex) => ua => addSealYesNoRoute(ua, equipmentIndex, NormalMode)
-    case SealIdentificationNumberPage(equipmentIndex, _) =>
-      ua => Some(controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(ua.id, NormalMode, equipmentIndex))
     case ItemPage(equipmentIndex, _) =>
       ua => Some(controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(ua.id, NormalMode, equipmentIndex))
     case ApplyAnItemYesNoPage(equipmentIndex) => ua => applyAnItemYesNoRoute(ua, ua.id, NormalMode, equipmentIndex)
@@ -41,7 +38,6 @@ class TransportEquipmentNavigator extends Navigator {
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case ContainerIdentificationNumberPage(_) => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
-    case SealIdentificationNumberPage(_, _)   => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
     case ItemPage(equipmentIndex, _) =>
       ua => Some(controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(ua.id, CheckMode, equipmentIndex))
     case ApplyAnItemYesNoPage(equipmentIndex) => ua => applyAnItemYesNoRoute(ua, ua.id, CheckMode, equipmentIndex)

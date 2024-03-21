@@ -17,6 +17,8 @@
 package controllers.transportEquipment.index.seals
 
 import controllers.actions._
+import controllers.routes._
+import controllers.transportEquipment.index.routes._
 import forms.SealIdentificationNumberFormProvider
 import models.requests.{DataRequest, MandatoryDataRequest}
 import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, RichOptionalJsArray}
@@ -100,8 +102,8 @@ class SealIdentificationNumberController @Inject() (
       _              <- sessionRepository.set(updatedAnswers)
     } yield equipmentMode match {
       case NormalMode =>
-        Redirect(controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(request.userAnswers.id, sealMode, equipmentIndex))
+        Redirect(AddAnotherSealController.onPageLoad(request.userAnswers.id, equipmentMode, sealMode, equipmentIndex))
       case CheckMode =>
-        Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(request.userAnswers.id))
+        Redirect(UnloadingFindingsController.onPageLoad(request.userAnswers.id))
     }
 }

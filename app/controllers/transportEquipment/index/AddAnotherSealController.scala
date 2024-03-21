@@ -18,8 +18,10 @@ package controllers.transportEquipment.index
 
 import config.FrontendAppConfig
 import controllers.actions._
+import controllers.routes._
+import controllers.transportEquipment.index.seals.routes._
 import forms.AddAnotherFormProvider
-import models.{ArrivalId, Index, Mode, NormalMode}
+import models.{ArrivalId, CheckMode, Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -46,28 +48,29 @@ class AddAnotherSealController @Inject() (
   private def form(viewModel: AddAnotherSealViewModel, equipmentIndex: Index): Form[Boolean] =
     formProvider(viewModel.prefix, viewModel.allowMore, equipmentIndex.display)
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, equipmentMode: Mode, sealMode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode, equipmentIndex)
+      val viewModel = viewModelProvider(request.userAnswers, arrivalId, equipmentMode, sealMode, equipmentIndex)
       Ok(view(form(viewModel, equipmentIndex), request.userAnswers.mrn, arrivalId, viewModel))
   }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onSubmit(arrivalId: ArrivalId, equipmentMode: Mode, sealMode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode, equipmentIndex)
+      val viewModel = viewModelProvider(request.userAnswers, arrivalId, equipmentMode, sealMode, equipmentIndex)
       form(viewModel, equipmentIndex)
         .bindFromRequest()
         .fold(
           formWithErrors => BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel)),
           {
             case true =>
-              Redirect(
-                controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController
-                  .onPageLoad(arrivalId, mode, NormalMode, equipmentIndex, viewModel.nextIndex)
-              )
+              Redirect(SealIdentificationNumberController.onPageLoad(arrivalId, equipmentMode, sealMode, equipmentIndex, viewModel.nextIndex))
             case false =>
-              //TODO: Need to amend nav depending on whether they've come from cross check page or seal identification page
-              Redirect(controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, equipmentIndex, mode))
+              equipmentMode match {
+                case NormalMode =>
+                  Redirect(routes.ApplyAnItemYesNoController.onSubmit(arrivalId, equipmentIndex, equipmentMode))
+                case CheckMode =>
+                  Redirect(UnloadingFindingsController.onPageLoad(arrivalId))
+              }
           }
         )
   }
