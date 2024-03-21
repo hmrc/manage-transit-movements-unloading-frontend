@@ -49,7 +49,7 @@ class ItemAnswersHelperSpec extends AnswersHelperSpecBase {
               action.content.value mustBe "Change"
               action.href mustBe
                 controllers.transportEquipment.index.routes.GoodsReferenceController
-                  .onPageLoad(arrivalId, equipmentIndex, itemIndex, CheckMode)
+                  .onPageLoad(arrivalId, equipmentIndex, itemIndex, CheckMode, CheckMode)
                   .url
               action.visuallyHiddenText.value mustBe "item 1 for transport equipment 1"
               action.id mustBe "change-consignment-item-details-1-1"

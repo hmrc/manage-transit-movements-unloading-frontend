@@ -18,7 +18,7 @@ package controllers.transportEquipment.index
 
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.{ArrivalId, Index, NormalMode, UserAnswers}
+import models.{ArrivalId, Index, Mode, UserAnswers}
 import pages.sections.transport.equipment.ItemSection
 import pages.transportEquipment.index.ItemPage
 import play.api.data.Form
@@ -48,11 +48,11 @@ class RemoveGoodsReferenceYesNoController @Inject() (
   private def form(equipmentIndex: Index): Form[Boolean] =
     formProvider("transportEquipment.index.item.removeItemYesNo", equipmentIndex.display)
 
-  private def addAnother(arrivalId: ArrivalId, equipmentIndex: Index): Call =
-    controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, NormalMode, equipmentIndex)
+  private def addAnother(arrivalId: ArrivalId, equipmentIndex: Index, equipmentMode: Mode, goodsReferenceMode: Mode): Call =
+    controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, equipmentMode, goodsReferenceMode, equipmentIndex)
 
-  def onPageLoad(arrivalId: ArrivalId, equipmentIndex: Index, itemIndex: Index): Action[AnyContent] = actions
-    .requireIndex(arrivalId, ItemSection(equipmentIndex, itemIndex), addAnother(arrivalId, equipmentIndex))
+  def onPageLoad(arrivalId: ArrivalId, equipmentIndex: Index, itemIndex: Index, equipmentMode: Mode, goodsReferenceMode: Mode): Action[AnyContent] = actions
+    .requireIndex(arrivalId, ItemSection(equipmentIndex, itemIndex), addAnother(arrivalId, equipmentIndex, equipmentMode, goodsReferenceMode))
     .andThen(getMandatoryPage.getFirst(ItemPage(equipmentIndex, itemIndex))) {
       implicit request =>
         Ok(
@@ -62,13 +62,15 @@ class RemoveGoodsReferenceYesNoController @Inject() (
             arrivalId,
             equipmentIndex,
             itemIndex,
+            equipmentMode,
+            goodsReferenceMode,
             insetText(request.userAnswers, equipmentIndex, itemIndex)
           )
         )
     }
 
-  def onSubmit(arrivalId: ArrivalId, equipmentIndex: Index, itemIndex: Index): Action[AnyContent] = actions
-    .requireIndex(arrivalId, ItemSection(equipmentIndex, itemIndex), addAnother(arrivalId, equipmentIndex))
+  def onSubmit(arrivalId: ArrivalId, equipmentIndex: Index, itemIndex: Index, equipmentMode: Mode, goodsReferenceMode: Mode): Action[AnyContent] = actions
+    .requireIndex(arrivalId, ItemSection(equipmentIndex, itemIndex), addAnother(arrivalId, equipmentIndex, equipmentMode, goodsReferenceMode))
     .andThen(getMandatoryPage.getFirst(ItemPage(equipmentIndex, itemIndex)))
     .async {
       implicit request =>
@@ -84,6 +86,8 @@ class RemoveGoodsReferenceYesNoController @Inject() (
                     arrivalId,
                     equipmentIndex,
                     itemIndex,
+                    equipmentMode,
+                    goodsReferenceMode,
                     insetText(request.userAnswers, equipmentIndex, itemIndex)
                   )
                 )
@@ -97,7 +101,7 @@ class RemoveGoodsReferenceYesNoController @Inject() (
                     Future.successful(request.userAnswers)
                   }
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(addAnother(arrivalId, equipmentIndex))
+              } yield Redirect(addAnother(arrivalId, equipmentIndex, equipmentMode, goodsReferenceMode))
           )
     }
 

@@ -21,7 +21,6 @@ import controllers.additionalReference.index.routes
 import models.{ArrivalId, Index, Mode, RichOptionalJsArray, UserAnswers}
 import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import pages.sections.additionalReference.AdditionalReferencesSection
-import play.api.libs.json.JsArray
 import play.api.mvc.Call
 import viewModels.{AddAnotherViewModel, ListItem}
 
@@ -37,18 +36,13 @@ object AddAnotherAdditionalReferenceViewModel {
   class AddAnotherAdditionalReferenceViewModelProvider() {
 
     def apply(userAnswers: UserAnswers, arrivalId: ArrivalId, mode: Mode): AddAnotherAdditionalReferenceViewModel = {
-
       val array = userAnswers.get(AdditionalReferencesSection)
 
       val listItems = array
-        .getOrElse(JsArray())
-        .value
-        .zipWithIndex
-        .flatMap {
-          case (_, i) =>
-            val additionalReferenceIndex = Index(i)
-            val number                   = userAnswers.get(AdditionalReferenceNumberPage(additionalReferenceIndex)).getOrElse("")
-            val numberString             = if (number.nonEmpty) s"- $number" else ""
+        .flatMapWithIndex {
+          case (_, additionalReferenceIndex) =>
+            val number       = userAnswers.get(AdditionalReferenceNumberPage(additionalReferenceIndex)).getOrElse("")
+            val numberString = if (number.nonEmpty) s"- $number" else ""
             userAnswers.get(AdditionalReferenceTypePage(additionalReferenceIndex)).map {
               `type` =>
                 ListItem(
@@ -58,7 +52,6 @@ object AddAnotherAdditionalReferenceViewModel {
                 )
             }
         }
-        .toSeq
 
       new AddAnotherAdditionalReferenceViewModel(
         listItems,
