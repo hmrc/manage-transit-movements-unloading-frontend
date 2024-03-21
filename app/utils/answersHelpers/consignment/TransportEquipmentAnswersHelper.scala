@@ -51,7 +51,8 @@ class TransportEquipmentAnswersHelper(
           Seq(helper.transportEquipmentSeal).flatten
       }
       .toList match {
-      case Nil => None
+      case Nil =>
+        None
       case rows =>
         Some(
           AccordionSection(
@@ -72,7 +73,8 @@ class TransportEquipmentAnswersHelper(
           Seq(helper.transportEquipmentItem).flatten
       }
       .toList match {
-      case Nil => None
+      case Nil =>
+        None
       case rows =>
         Some(
           AccordionSection(

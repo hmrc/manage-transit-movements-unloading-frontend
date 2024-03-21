@@ -112,7 +112,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         val viewModelProvider = new HouseConsignmentViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers, index)
 
-        result.sections.head mustBe a[StaticSection]
+        result.sections.head mustBe a[AccordionSection]
         result.sections.head.sectionTitle.value mustBe "Departure means of transport"
 
         result.sections(1) mustBe a[AccordionSection]
@@ -127,7 +127,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         result.sections(1).children.head.children.head.sectionTitle.value mustBe "Consignee"
         result.sections(1).children.head.children.head.rows.size mustBe 2
 
-        result.sections(1).children.head.children(1) mustBe a[StaticSection]
+        result.sections(1).children.head.children(1) mustBe a[AccordionSection]
         result.sections(1).children.head.children(1).sectionTitle.value mustBe "Documents"
         result.sections(1).children.head.children(1).viewLinks.head.id mustBe "add-remove-item-1-document"
       }
