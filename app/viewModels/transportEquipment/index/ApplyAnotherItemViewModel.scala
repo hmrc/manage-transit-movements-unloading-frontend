@@ -19,7 +19,7 @@ package viewModels.transportEquipment.index
 import config.FrontendAppConfig
 import controllers.transportEquipment.index.routes
 import models.reference.GoodsReference
-import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, RichOptionalJsArray, UserAnswers}
+import models.{ArrivalId, Index, Mode, RichOptionalJsArray, UserAnswers}
 import pages.sections.transport.equipment.ItemsSection
 import pages.transportEquipment.index.ItemPage
 import play.api.i18n.Messages
@@ -78,29 +78,16 @@ object ApplyAnotherItemViewModel {
         .flatMap {
           case (_, i) =>
             val itemIndex = Index(i)
-
-            def itemPrefix(item: String) = messages("transport.item.prefix", item)
-
-            def buildListItem(declarationGoodsItemNumber: BigInt): ListItem = goodsReferenceMode match {
-              case CheckMode =>
+            userAnswers.get(ItemPage(equipmentIndex, itemIndex)).map {
+              declarationGoodsItemNumber =>
                 ListItem(
-                  name = itemPrefix(declarationGoodsItemNumber.toString),
-                  changeUrl = Some(routes.GoodsReferenceController.onSubmit(arrivalId, equipmentIndex, itemIndex, equipmentMode, goodsReferenceMode).url),
-                  removeUrl = None
-                )
-              case NormalMode =>
-                ListItem(
-                  name = itemPrefix(declarationGoodsItemNumber.toString),
+                  name = messages("transport.item.prefix", declarationGoodsItemNumber.toString),
                   changeUrl = None,
                   removeUrl = Some(
                     routes.RemoveGoodsReferenceYesNoController.onPageLoad(arrivalId, equipmentIndex, itemIndex, equipmentMode, goodsReferenceMode).url
                   )
                 )
             }
-
-            userAnswers
-              .get(ItemPage(equipmentIndex, itemIndex))
-              .map(buildListItem)
         }
         .toSeq
 

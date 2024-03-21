@@ -19,7 +19,7 @@ package viewModels.transportEquipment.index
 import base.SpecBase
 import generators.Generators
 import models.reference.GoodsReference
-import models.{CheckMode, Index, NormalMode}
+import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transportEquipment.index.ItemPage
@@ -32,71 +32,10 @@ class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaC
     GoodsReference(BigInt(1), "")
   )
 
-  "must get list items in check mode" - {
-    val mode = CheckMode
-
+  "must get list items" - {
     "when there is one item" in {
-      forAll(arbitrary[BigInt]) {
-        item =>
-          val userAnswers = emptyUserAnswers
-            .setValue(ItemPage(equipmentIndex, itemIndex), item)
-
-          val result = new ApplyAnotherItemViewModelProvider().apply(userAnswers, arrivalId, mode, mode, equipmentIndex, availableGoodsReferences)
-
-          result.listItems.length mustBe 1
-          result.title mustBe "You have applied 1 item to transport equipment 1"
-          result.heading mustBe "You have applied 1 item to transport equipment 1"
-          result.legend mustBe "Do any other items apply to transport equipment 1?"
-          result.maxLimitLabel mustBe "You cannot apply any more items. To apply another, you need to remove one first."
-
-          result.listItems mustBe Seq(
-            ListItem(
-              name = s"Item ${item.toString}",
-              changeUrl = Some(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), itemIndex, mode, mode).url),
-              removeUrl = None
-            )
-          )
-      }
-    }
-
-    "when there are multiple items" in {
-
-      forAll(arbitrary[BigInt], arbitrary[BigInt]) {
-        (item1, item2) =>
-          val userAnswers = emptyUserAnswers
-            .setValue(ItemPage(equipmentIndex, itemIndex), item1)
-            .setValue(ItemPage(equipmentIndex, Index(1)), item2)
-
-          val result = new ApplyAnotherItemViewModelProvider().apply(userAnswers, arrivalId, mode, mode, equipmentIndex, availableGoodsReferences)
-
-          result.listItems.length mustBe 2
-          result.title mustBe "You have applied 2 items to transport equipment 1"
-          result.heading mustBe "You have applied 2 items to transport equipment 1"
-          result.legend mustBe "Do any other items apply to transport equipment 1?"
-          result.maxLimitLabel mustBe "You cannot apply any more items. To apply another, you need to remove one first."
-
-          result.listItems mustBe Seq(
-            ListItem(
-              name = s"Item ${item1.toString}",
-              changeUrl = Some(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), itemIndex, mode, mode).url),
-              removeUrl = None
-            ),
-            ListItem(
-              name = s"Item ${item2.toString}",
-              changeUrl = Some(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), Index(1), mode, mode).url),
-              removeUrl = None
-            )
-          )
-      }
-    }
-  }
-
-  "must get list items in normal mode" - {
-    val mode = NormalMode
-
-    "when there is one item" in {
-      forAll(arbitrary[BigInt]) {
-        item =>
+      forAll(arbitrary[Mode], arbitrary[BigInt]) {
+        (mode, item) =>
           val userAnswers = emptyUserAnswers
             .setValue(ItemPage(equipmentIndex, itemIndex), item)
 
@@ -122,8 +61,8 @@ class ApplyAnotherItemViewModelSpec extends SpecBase with Generators with ScalaC
 
     "when there are multiple items" in {
 
-      forAll(arbitrary[BigInt], arbitrary[BigInt]) {
-        (item1, item2) =>
+      forAll(arbitrary[Mode], arbitrary[BigInt], arbitrary[BigInt]) {
+        (mode, item1, item2) =>
           val userAnswers = emptyUserAnswers
             .setValue(ItemPage(equipmentIndex, itemIndex), item1)
             .setValue(ItemPage(equipmentIndex, Index(1)), item2)
