@@ -98,11 +98,13 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
     }
 
     "must redirect to the next page when valid data is submitted" - {
-      "when equipment mode is NormalMode" in {
+      "when seal mode is NormalMode" in {
         forAll(arbitrary[Mode]) {
-          mode =>
+          equipmentMode =>
+            val sealMode = NormalMode
+
             lazy val sealIdentificationNumberRoute =
-              routes.SealIdentificationNumberController.onPageLoad(arrivalId, NormalMode, mode, equipmentIndex, sealIndex).url
+              routes.SealIdentificationNumberController.onPageLoad(arrivalId, equipmentMode, sealMode, equipmentIndex, sealIndex).url
 
             setExistingUserAnswers(emptyUserAnswers)
 
@@ -116,15 +118,17 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
             status(result) mustEqual SEE_OTHER
 
             redirectLocation(result).value mustEqual
-              controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, NormalMode, mode, equipmentIndex).url
+              controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, equipmentMode, sealMode, equipmentIndex).url
         }
       }
 
-      "when equipment mode is CheckMode" in {
+      "when seal mode is CheckMode" in {
         forAll(arbitrary[Mode]) {
-          mode =>
+          equipmentMode =>
+            val sealMode = CheckMode
+
             lazy val sealIdentificationNumberRoute =
-              routes.SealIdentificationNumberController.onPageLoad(arrivalId, CheckMode, mode, equipmentIndex, sealIndex).url
+              routes.SealIdentificationNumberController.onPageLoad(arrivalId, equipmentMode, sealMode, equipmentIndex, sealIndex).url
 
             setExistingUserAnswers(emptyUserAnswers)
 

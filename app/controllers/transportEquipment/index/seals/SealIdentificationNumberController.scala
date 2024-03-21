@@ -100,7 +100,7 @@ class SealIdentificationNumberController @Inject() (
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(SealIdentificationNumberPage(equipmentIndex, sealIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield equipmentMode match {
+    } yield sealMode match {
       case NormalMode =>
         Redirect(AddAnotherSealController.onPageLoad(request.userAnswers.id, equipmentMode, sealMode, equipmentIndex))
       case CheckMode =>
