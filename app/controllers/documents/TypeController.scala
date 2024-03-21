@@ -60,8 +60,8 @@ class TypeController @Inject() (
       implicit request =>
         service.getDocumentList(request.userAnswers, documentIndex, mode).map {
           documentList =>
-            val viewModel          = viewModelProvider.apply(mode)
             val documents          = consignmentLevelDocuments(documentIndex)
+            val viewModel          = viewModelProvider.apply(mode, documents)
             val availableDocuments = documents.availableDocuments(documentList.values)
             val form               = formProvider(mode, prefix, SelectableList(availableDocuments))
             val preparedForm = request.userAnswers.get(TypePage(documentIndex)) match {
@@ -79,7 +79,7 @@ class TypeController @Inject() (
       implicit request =>
         service.getDocumentList(request.userAnswers, documentIndex, mode).flatMap {
           documentList =>
-            val viewModel = viewModelProvider.apply(mode)
+            val viewModel = viewModelProvider.apply(mode, consignmentLevelDocuments(documentIndex))
             val form      = formProvider(mode, prefix, documentList)
             form
               .bindFromRequest()

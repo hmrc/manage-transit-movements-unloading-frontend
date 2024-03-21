@@ -842,6 +842,8 @@ document.type.hint = Enter the document name or code.
 document.type.placeholder = Select a document type
 document.type.error.required = Select the type of document you want to add
 document.type.check.error.required = Select the new document type
+document.type.maxLimitForType.label = You cannot add any more {0} documents to all items. To add another, you need to remove one first. You can, however, still add a {1} document to your items.
+
 
 houseConsignment.index.items.document.type.title = What is the new document type for item {1} in house consignment {0}?
 houseConsignment.index.items.document.type.heading = What is the new document type for item {1} in house consignment {0}?
