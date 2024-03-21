@@ -87,7 +87,7 @@ class TransportEquipmentAnswersHelper(
   private def sealsAddRemoveLink: Link =
     Link(
       id = s"add-remove-transport-equipment-${equipmentIndex.display}-seal",
-      href = controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, NormalMode, equipmentIndex).url,
+      href = controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, CheckMode, NormalMode, equipmentIndex).url,
       text = messages("sealsLink.addRemove"),
       visuallyHidden = messages("sealsLink.visuallyHidden")
     )

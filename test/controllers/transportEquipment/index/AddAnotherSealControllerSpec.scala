@@ -19,7 +19,7 @@ package controllers.transportEquipment.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.{Index, NormalMode}
+import models.{CheckMode, Index, Mode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -41,9 +41,10 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private def form(viewModel: AddAnotherSealViewModel, equipmentIndex: Index) =
     formProvider(viewModel.prefix, viewModel.allowMore(frontendAppConfig), equipmentIndex.display)
 
-  private val mode = NormalMode
+  private val equipmentMode = NormalMode
+  private val sealMode      = NormalMode
 
-  private lazy val addAnotherSealRoute = routes.AddAnotherSealController.onPageLoad(arrivalId, mode, equipmentIndex).url
+  private lazy val addAnotherSealRoute = routes.AddAnotherSealController.onPageLoad(arrivalId, equipmentMode, sealMode, equipmentIndex).url
 
   private val mockViewModelProvider = mock[AddAnotherSealViewModelProvider]
 
@@ -70,7 +71,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   "AddAnotherSeal Controller" - {
     "must return OK and the correct view for a GET" - {
       "when 0 seals" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any()))
           .thenReturn(emptyViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -89,7 +90,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       }
 
       "when max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -107,7 +108,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       }
 
       "when max limit reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -128,47 +129,81 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to seal id number page at next index" in {
-          when(mockViewModelProvider.apply(any(), any(), any(), any()))
-            .thenReturn(notMaxedOutViewModel)
+          forAll(arbitrary[Mode], arbitrary[Mode]) {
+            (equipmentMode, sealMode) =>
+              lazy val addAnotherSealRoute = routes.AddAnotherSealController.onPageLoad(arrivalId, equipmentMode, sealMode, equipmentIndex).url
 
-          setExistingUserAnswers(emptyUserAnswers)
+              when(mockViewModelProvider.apply(any(), any(), any(), any(), any()))
+                .thenReturn(notMaxedOutViewModel)
 
-          val request = FakeRequest(POST, addAnotherSealRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+              setExistingUserAnswers(emptyUserAnswers)
 
-          val result = route(app, request).value
+              val request = FakeRequest(POST, addAnotherSealRoute)
+                .withFormUrlEncodedBody(("value", "true"))
 
-          status(result) mustEqual SEE_OTHER
+              val result = route(app, request).value
 
-          redirectLocation(result).value mustEqual controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController
-            .onPageLoad(arrivalId, mode, equipmentIndex, notMaxedOutViewModel.nextIndex)
-            .url
+              status(result) mustEqual SEE_OTHER
+
+              redirectLocation(result).value mustEqual controllers.transportEquipment.index.seals.routes.SealIdentificationNumberController
+                .onPageLoad(arrivalId, equipmentMode, sealMode, equipmentIndex, notMaxedOutViewModel.nextIndex)
+                .url
+          }
         }
       }
 
       "when no submitted" - {
-        "must redirect to next page" in {
-          when(mockViewModelProvider.apply(any(), any(), any(), any()))
-            .thenReturn(notMaxedOutViewModel)
+        "must redirect to next page" - {
+          "when equipment mode is CheckMode" in {
+            forAll(arbitrary[Mode]) {
+              sealMode =>
+                lazy val addAnotherSealRoute = routes.AddAnotherSealController.onPageLoad(arrivalId, CheckMode, sealMode, equipmentIndex).url
 
-          setExistingUserAnswers(emptyUserAnswers)
+                when(mockViewModelProvider.apply(any(), any(), any(), any(), any()))
+                  .thenReturn(notMaxedOutViewModel)
 
-          val request = FakeRequest(POST, addAnotherSealRoute)
-            .withFormUrlEncodedBody(("value", "false"))
+                setExistingUserAnswers(emptyUserAnswers)
 
-          val result = route(app, request).value
+                val request = FakeRequest(POST, addAnotherSealRoute)
+                  .withFormUrlEncodedBody(("value", "false"))
 
-          status(result) mustEqual SEE_OTHER
+                val result = route(app, request).value
 
-          redirectLocation(result).value mustEqual
-            controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, equipmentIndex, mode).url
+                status(result) mustEqual SEE_OTHER
+
+                redirectLocation(result).value mustEqual
+                  controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+            }
+          }
+
+          "when equipment mode is NormalMode" in {
+            forAll(arbitrary[Mode]) {
+              sealMode =>
+                lazy val addAnotherSealRoute = routes.AddAnotherSealController.onPageLoad(arrivalId, NormalMode, sealMode, equipmentIndex).url
+
+                when(mockViewModelProvider.apply(any(), any(), any(), any(), any()))
+                  .thenReturn(notMaxedOutViewModel)
+
+                setExistingUserAnswers(emptyUserAnswers)
+
+                val request = FakeRequest(POST, addAnotherSealRoute)
+                  .withFormUrlEncodedBody(("value", "false"))
+
+                val result = route(app, request).value
+
+                status(result) mustEqual SEE_OTHER
+
+                redirectLocation(result).value mustEqual
+                  controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, equipmentIndex, NormalMode).url
+            }
+          }
         }
       }
     }
 
     "when max limit reached" - {
       "must redirect to next page" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -181,13 +216,13 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, equipmentIndex, mode).url
+          controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, equipmentIndex, equipmentMode).url
       }
     }
 
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
