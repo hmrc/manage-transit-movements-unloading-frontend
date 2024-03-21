@@ -593,6 +593,7 @@ houseConsignment.departureMeansSubHeading = Departure means of transport {0}
 unloadingRemarksSent.title = Unloading remarks sent
 unloadingRemarksSent.heading = Unloading remarks sent
 unloadingRemarksSent.panel.body = for Movement Reference Number (MRN) {0}
+unloadingRemarksSent.panel.body = for Movement Reference Number (MRN) {0}
 unloadingRemarksSent.subHeading = What happens next
 unloadingRemarksSent.checkStatus = Check the status of arrival notifications
 unloadingRemarksSent.createArrivalNotification = Make another arrival notification
@@ -789,6 +790,20 @@ houseConsignment.index.items.document.addAdditionalInformationYesNo.heading = Do
 houseConsignment.index.items.document.addAdditionalInformationYesNo.paragraph = This can be any other information you want to declare, such as a contact, any safety risks or further descriptions.
 houseConsignment.index.items.document.addAdditionalInformationYesNo.error.required = Select yes if you want to add any additional information for this document
 
+houseConsignment.index.items.document.addAnotherDocument.singular.title = You have added 1 document to item {0} in house consignment {1}
+houseConsignment.index.items.document.addAnotherDocument.plural.title = You have added {0} documents to item {1} in house consignment {2}
+houseConsignment.index.items.document.addAnotherDocument.empty.title = You have added {0} documents to item {1} in house consignment {2}
+houseConsignment.index.items.document.addAnotherDocument.singular.heading = You have added 1 document to item {0} in house consignment {1}
+houseConsignment.index.items.document.addAnotherDocument.empty.heading = You have added {0} documents to item {1} in house consignment {2}
+houseConsignment.index.items.document.addAnotherDocument.plural.heading = You have added {0} documents to item {1} in house consignment {2}
+houseConsignment.index.items.document.addAnotherDocument.singular.label = Do you want to add a document to item {0} in house consignment {1}?
+houseConsignment.index.items.document.addAnotherDocument.plural.label = Do you want to add another document to item {0} in house consignment {1}?
+houseConsignment.index.items.document.addAnotherDocument.maxLimit.label = You cannot add any more documents to item {0} in house consignment {1}. To add another, you need to remove one first.
+houseConsignment.index.items.document.addAnotherDocument.error.required = Select yes if you want to add another document to item {0} in house consignment {1}
+houseConsignment.index.items.document.addAnotherDocument.label = Do you want to add another document to item {0} in house consignment {1}?
+houseConsignment.index.items.document.addAnotherDocument.maxLimitForType.label = You cannot add any more {0} documents to all items. To add another, you need to remove one first. You can, however, still add a {1} document to your items.
+
+
 additionalReferenceNumber.index.NormalMode.title = What is the additional reference number?
 additionalReferenceNumber.index.CheckMode.title = What is the new additional reference number?
 additionalReferenceNumber.index.NormalMode.heading = What is the additional reference number?
@@ -797,7 +812,6 @@ additionalReferenceNumber.index.NormalMode.error.required = Enter the additional
 additionalReferenceNumber.index.CheckMode.error.required = Enter the new additional reference number
 additionalReferenceNumber.index.error.length = The additional reference number must be 70 characters or less
 additionalReferenceNumber.index.error.characters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
-
 
 houseConsignment.index.items.document.additionalInformation.NormalMode.title = Enter the additional information
 houseConsignment.index.items.document.additionalInformation.CheckMode.title = Enter the new additional information for item {1} in house consignment {0}?

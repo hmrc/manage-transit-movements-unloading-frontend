@@ -25,6 +25,7 @@ import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -38,7 +39,7 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
   private val formProvider = new AddAnotherFormProvider()
 
-  private def form(viewModel: AddAnotherSealViewModel, equipmentIndex: Index) =
+  private def form(viewModel: AddAnotherSealViewModel, equipmentIndex: Index): Form[Boolean] =
     formProvider(viewModel.prefix, viewModel.allowMore(frontendAppConfig), equipmentIndex.display)
 
   private val equipmentMode = NormalMode
