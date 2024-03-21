@@ -20,16 +20,16 @@ import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.houseConsignment.index.items.additionalReference.AdditionalReferenceNumberYesNoView
+import views.html.houseConsignment.index.items.additionalReference.AddAdditionalReferenceNumberYesNoView
 
-class AdditionalReferenceNumberYesNoViewSpec extends YesNoViewBehaviours {
+class AddAdditionalReferenceNumberYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
-      .instanceOf[AdditionalReferenceNumberYesNoView]
+      .instanceOf[AddAdditionalReferenceNumberYesNoView]
       .apply(form, mrn, arrivalId, NormalMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)(fakeRequest, messages)
 
-  override val prefix: String = "houseConsignment.index.items.additionalReference.additionalReferenceNumberYesNo"
+  override val prefix: String = "houseConsignment.index.items.additionalReference.addAdditionalReferenceNumberYesNo"
 
   behave like pageWithTitle()
 

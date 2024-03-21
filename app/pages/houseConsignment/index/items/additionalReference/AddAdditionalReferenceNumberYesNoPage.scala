@@ -23,11 +23,12 @@ import play.api.libs.json.JsPath
 
 import scala.util.Try
 
-case class AdditionalReferenceNumberYesNoPage(houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index) extends QuestionPage[Boolean] {
+case class AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index)
+    extends QuestionPage[Boolean] {
 
   override def path: JsPath = AdditionalReferenceSection(houseConsignmentIndex, itemIndex, additionalReferenceIndex).path \ toString
 
-  override def toString: String = "additionalReferenceNumberYesNo"
+  override def toString: String = "addAdditionalReferenceNumberYesNo"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {

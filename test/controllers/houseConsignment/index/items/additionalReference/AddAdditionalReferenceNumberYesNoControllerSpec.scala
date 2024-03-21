@@ -21,22 +21,22 @@ import forms.YesNoFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.houseConsignment.index.items.additionalReference.AdditionalReferenceNumberYesNoPage
+import pages.houseConsignment.index.items.additionalReference.AddAdditionalReferenceNumberYesNoPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.houseConsignment.index.items.additionalReference.AdditionalReferenceNumberYesNoView
+import views.html.houseConsignment.index.items.additionalReference.AddAdditionalReferenceNumberYesNoView
 
 import scala.concurrent.Future
 
-class AdditionalReferenceNumberYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class AddAdditionalReferenceNumberYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider = new YesNoFormProvider()
-  private val form         = formProvider("houseConsignment.index.items.additionalReference.additionalReferenceNumberYesNo")
+  private val form         = formProvider("houseConsignment.index.items.additionalReference.addAdditionalReferenceNumberYesNo")
   private val mode         = NormalMode
 
   private lazy val additionalReferenceNumberYesNoRoute =
-    routes.AdditionalReferenceNumberYesNoController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex).url
+    routes.AddAdditionalReferenceNumberYesNoController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -52,7 +52,7 @@ class AdditionalReferenceNumberYesNoControllerSpec extends SpecBase with AppWith
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[AdditionalReferenceNumberYesNoView]
+      val view = injector.instanceOf[AddAdditionalReferenceNumberYesNoView]
 
       status(result) mustEqual OK
 
@@ -62,7 +62,7 @@ class AdditionalReferenceNumberYesNoControllerSpec extends SpecBase with AppWith
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), true)
+      val userAnswers = emptyUserAnswers.setValue(AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), true)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, additionalReferenceNumberYesNoRoute)
@@ -71,7 +71,7 @@ class AdditionalReferenceNumberYesNoControllerSpec extends SpecBase with AppWith
 
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[AdditionalReferenceNumberYesNoView]
+      val view = injector.instanceOf[AddAdditionalReferenceNumberYesNoView]
 
       status(result) mustEqual OK
 
@@ -108,7 +108,7 @@ class AdditionalReferenceNumberYesNoControllerSpec extends SpecBase with AppWith
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AdditionalReferenceNumberYesNoView]
+      val view = injector.instanceOf[AddAdditionalReferenceNumberYesNoView]
 
       contentAsString(result) mustEqual
         view(filledForm, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)(request, messages).toString

@@ -18,25 +18,25 @@ package pages.houseConsignment.index.items.additionalReference
 
 import pages.behaviours.PageBehaviours
 
-class AdditionalReferenceNumberYesNoPageSpec extends PageBehaviours {
+class AddAdditionalReferenceNumberYesNoPageSpec extends PageBehaviours {
 
-  "AdditionalIdentificationNumberYesNoPage" - {
+  "AddAdditionalIdentificationNumberYesNoPage" - {
 
-    beRetrievable[Boolean](AdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
+    beRetrievable[Boolean](AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
 
-    beSettable[Boolean](AdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
+    beSettable[Boolean](AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
 
-    beRemovable[Boolean](AdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
+    beRemovable[Boolean](AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
 
     "cleanup" - {
       "must remove additional reference number when no selected" in {
         forAll(nonEmptyString) {
           value =>
             val userAnswers = emptyUserAnswers
-              .setValue(AdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), true)
+              .setValue(AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), true)
               .setValue(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), value)
 
-            val result = userAnswers.setValue(AdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), false)
+            val result = userAnswers.setValue(AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), false)
 
             result.get(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) must not be defined
 
@@ -47,10 +47,10 @@ class AdditionalReferenceNumberYesNoPageSpec extends PageBehaviours {
         forAll(nonEmptyString) {
           value =>
             val userAnswers = emptyUserAnswers
-              .setValue(AdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), true)
+              .setValue(AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), true)
               .setValue(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), value)
 
-            val result = userAnswers.setValue(AdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), true)
+            val result = userAnswers.setValue(AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), true)
 
             result.get(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) mustBe defined
         }

@@ -31,18 +31,18 @@
 @(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("houseConsignment.index.items.additionalReference.additionalReferenceNumberYesNo.title"),
+    title = messages("houseConsignment.index.items.additionalReference.addAdditionalReferenceNumberYesNo.title"),
     showBackLink = true
 ) {
 
         @errorSummary(form.errors)
 
-        @formHelper(action = routes.AdditionalReferenceNumberYesNoController.onSubmit(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex), Symbol("autoComplete") -> "off") {
+        @formHelper(action = routes.AddAdditionalReferenceNumberYesNoController.onSubmit(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex), Symbol("autoComplete") -> "off") {
 
         @inputYesNo(
             field = form("value"),
             yesNoType = OrdinaryYesNo(
-                heading = messages("houseConsignment.index.items.additionalReference.additionalReferenceNumberYesNo.heading"),
+                heading = messages("houseConsignment.index.items.additionalReference.addAdditionalReferenceNumberYesNo.heading"),
                 caption = Some(messages("site.caption", mrn.toString)),
             )
         )

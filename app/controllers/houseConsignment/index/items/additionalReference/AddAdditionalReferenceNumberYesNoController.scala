@@ -20,35 +20,35 @@ import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
-import pages.houseConsignment.index.items.additionalReference.AdditionalReferenceNumberYesNoPage
+import pages.houseConsignment.index.items.additionalReference.AddAdditionalReferenceNumberYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.houseConsignment.index.items.additionalReference.AdditionalReferenceNumberYesNoView
+import views.html.houseConsignment.index.items.additionalReference.AddAdditionalReferenceNumberYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalReferenceNumberYesNoController @Inject() (
+class AddAdditionalReferenceNumberYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AdditionalReferenceNumberYesNoView
+  view: AddAdditionalReferenceNumberYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("houseConsignment.index.items.additionalReference.additionalReferenceNumberYesNo")
+  private val form = formProvider("houseConsignment.index.items.additionalReference.addAdditionalReferenceNumberYesNo")
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] =
     actions.getStatus(arrivalId) {
 
       implicit request =>
-        val preparedForm = request.userAnswers.get(AdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) match {
+        val preparedForm = request.userAnswers.get(AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
@@ -69,10 +69,10 @@ class AdditionalReferenceNumberYesNoController @Inject() (
             value =>
               for {
                 updatedAnswers <- Future
-                  .fromTry(request.userAnswers.set(AdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), value))
+                  .fromTry(request.userAnswers.set(AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), value))
                 _ <- sessionRepository.set(updatedAnswers)
               } yield Redirect(
-                navigator.nextPage(AdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), mode, updatedAnswers)
+                navigator.nextPage(AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), mode, updatedAnswers)
               )
           )
     }
