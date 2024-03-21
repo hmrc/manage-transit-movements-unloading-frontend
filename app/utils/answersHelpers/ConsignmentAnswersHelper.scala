@@ -400,14 +400,10 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       .mapWithIndex {
         case (_, index) =>
           val helper = new HouseConsignmentAnswersHelper(userAnswers, index)
-          val rows = Seq(
-            helper.consignorName,
-            helper.consignorIdentification
-          ).flatten
 
           AccordionSection(
             sectionTitle = messages("unloadingFindings.subsections.houseConsignment", index.display),
-            rows = rows,
+            rows = Nil,
             viewLinks = Seq(
               Link(
                 id = s"view-house-consignment-${index.display}",
@@ -416,7 +412,10 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
               )
             ),
             id = s"houseConsignment$index",
-            children = Seq(helper.houseConsignmentConsigneeSection)
+            children = Seq(
+              helper.houseConsignmentConsignorSection,
+              helper.houseConsignmentConsigneeSection
+            )
           )
       }
       .toList match {

@@ -209,16 +209,21 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(DepartureTransportMeansCountryPage(hcIndex, dtmIndex), country)
 
             val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
-            val result = helper.departureTransportMeansSections
+            val result = helper.departureTransportMeansSection
 
-            result.head mustBe a[AccordionSection]
-            result.head.sectionTitle.value mustBe "Departure means of transport 1"
-            result.head.rows.size mustBe 3
-            result.head.id.value mustBe "departureTransportMeans1"
+            result mustBe a[AccordionSection]
+            result.sectionTitle.value mustBe "Departure means of transport"
+            result.children.size mustBe 1
 
-            result.head.rows.head.value.value mustBe `type`.description
-            result.head.rows(1).value.value mustBe number
-            result.head.rows(2).value.value mustBe country.description
+            val dtm1 = result.children.head
+            dtm1 mustBe a[AccordionSection]
+            dtm1.sectionTitle.value mustBe "Departure means of transport 1"
+            dtm1.id.value mustBe "departureTransportMeans1"
+            dtm1.rows.size mustBe 3
+
+            dtm1.rows.head.value.value mustBe `type`.description
+            dtm1.rows(1).value.value mustBe number
+            dtm1.rows(2).value.value mustBe country.description
         }
       }
     }

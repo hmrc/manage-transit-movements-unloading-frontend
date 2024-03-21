@@ -68,9 +68,10 @@ class HouseConsignmentAnswersHelper(
 
   def houseConsignmentConsignorSection: Section =
     StaticSection(
+      sectionTitle = messages("unloadingFindings.consignor.heading"),
       rows = Seq(
-        consignorName,
-        consignorIdentification
+        consignorIdentification,
+        consignorName
       ).flatten
     )
 
@@ -97,18 +98,35 @@ class HouseConsignmentAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.houseConsignment.consigneeAddress"
   )
 
-  def departureTransportMeansSections: Seq[Section] =
+  def departureTransportMeansSection: Section =
     userAnswers.get(DepartureTransportMeansListSection(houseConsignmentIndex)).mapWithIndex {
       case (_, index) =>
         val helper = new DepartureTransportMeansAnswersHelper(userAnswers, houseConsignmentIndex, index)
+        val rows = Seq(
+          helper.transportMeansID,
+          helper.transportMeansIDNumber,
+          helper.buildVehicleNationalityRow
+        ).flatten
+        (rows, index)
+    } match {
+      case Nil =>
+        StaticSection(
+          sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans.parent.header")),
+          id = Some("departureTransportMeans")
+        )
+      case dtmSectionRows =>
+        val dtms = dtmSectionRows.map {
+          case (rows, index) =>
+            AccordionSection(
+              sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans", index.display)),
+              rows = rows,
+              id = Some(s"departureTransportMeans$index")
+            )
+        }
         AccordionSection(
-          sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans", index.display)),
-          rows = Seq(
-            helper.transportMeansID,
-            helper.transportMeansIDNumber,
-            helper.buildVehicleNationalityRow
-          ).flatten,
-          id = Some(s"departureTransportMeans$index")
+          sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans.parent.header")),
+          children = dtms,
+          id = Some("departureTransportMeans")
         )
     }
 
