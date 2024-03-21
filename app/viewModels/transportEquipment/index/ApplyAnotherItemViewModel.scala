@@ -19,11 +19,10 @@ package viewModels.transportEquipment.index
 import config.FrontendAppConfig
 import controllers.transportEquipment.index.routes
 import models.reference.GoodsReference
-import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, RichOptionalJsArray, UserAnswers}
+import models.{ArrivalId, Index, Mode, RichOptionalJsArray, UserAnswers}
 import pages.sections.transport.equipment.ItemsSection
 import pages.transportEquipment.index.ItemPage
 import play.api.i18n.Messages
-import play.api.libs.json.JsArray
 import play.api.mvc.Call
 import viewModels.{AddAnotherViewModel, ListItem}
 
@@ -64,49 +63,31 @@ object ApplyAnotherItemViewModel {
     def apply(
       userAnswers: UserAnswers,
       arrivalId: ArrivalId,
-      mode: Mode,
+      equipmentMode: Mode,
+      goodsReferenceMode: Mode,
       equipmentIndex: Index,
       availableGoodsReferences: Seq[GoodsReference]
     )(implicit messages: Messages): ApplyAnotherItemViewModel = {
       val array = userAnswers.get(ItemsSection(equipmentIndex))
 
       val listItems = array
-        .getOrElse(JsArray())
-        .value
-        .zipWithIndex
-        .flatMap {
-          case (_, i) =>
-            val itemIndex = Index(i)
-
-            def itemPrefix(item: String) = messages("transport.item.prefix", item)
-
-            def buildListItem(declarationGoodsItemNumber: BigInt): ListItem = mode match {
-              case CheckMode =>
+        .flatMapWithIndex {
+          case (_, itemIndex) =>
+            userAnswers.get(ItemPage(equipmentIndex, itemIndex)).map {
+              declarationGoodsItemNumber =>
                 ListItem(
-                  name = itemPrefix(declarationGoodsItemNumber.toString),
-                  changeUrl = Some(
-                    controllers.transportEquipment.index.routes.GoodsReferenceController.onSubmit(arrivalId, equipmentIndex, itemIndex, mode).url
-                  ),
-                  removeUrl = None
-                )
-              case NormalMode =>
-                ListItem(
-                  name = itemPrefix(declarationGoodsItemNumber.toString),
+                  name = messages("transport.item.prefix", declarationGoodsItemNumber.toString),
                   changeUrl = None,
-                  removeUrl =
-                    Some(controllers.transportEquipment.index.routes.RemoveGoodsReferenceYesNoController.onPageLoad(arrivalId, equipmentIndex, itemIndex).url)
+                  removeUrl = Some(
+                    routes.RemoveGoodsReferenceYesNoController.onPageLoad(arrivalId, equipmentIndex, itemIndex, equipmentMode, goodsReferenceMode).url
+                  )
                 )
             }
-
-            userAnswers
-              .get(ItemPage(equipmentIndex, itemIndex))
-              .map(buildListItem)
         }
-        .toSeq
 
       new ApplyAnotherItemViewModel(
         listItems = listItems,
-        onSubmitCall = routes.ApplyAnotherItemController.onSubmit(arrivalId, mode, equipmentIndex),
+        onSubmitCall = routes.ApplyAnotherItemController.onSubmit(arrivalId, equipmentMode, goodsReferenceMode, equipmentIndex),
         equipmentIndex = equipmentIndex,
         isNumberItemsZero = availableGoodsReferences.isEmpty,
         nextIndex = array.nextIndex

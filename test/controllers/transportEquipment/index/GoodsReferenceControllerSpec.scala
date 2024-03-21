@@ -17,19 +17,21 @@
 package controllers.transportEquipment.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import forms.SelectableFormProvider
 import generators.Generators
 import models.reference.GoodsReference
-import models.{Index, NormalMode, SelectableList}
+import models.{CheckMode, Index, Mode, NormalMode, SelectableList}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.GoodsReferenceService
 import views.html.transportEquipment.index.GoodsReferenceView
+
+import scala.concurrent.Future
 
 class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
@@ -42,11 +44,13 @@ class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
   private val goodsReference = goodsReferences.head
 
-  private val formProvider = new SelectableFormProvider()
-  private val mode         = NormalMode
-  private val form         = formProvider(mode, "transport.equipment.selectItems", SelectableList(goodsReferences))
+  private val formProvider       = new SelectableFormProvider()
+  private val equipmentMode      = NormalMode
+  private val goodsReferenceMode = NormalMode
+  private val form               = formProvider(equipmentMode, "transport.equipment.selectItems", SelectableList(goodsReferences))
 
-  private lazy val controllerRoute = controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), itemIndex, mode).url
+  private lazy val controllerRoute =
+    routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), itemIndex, equipmentMode, goodsReferenceMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -79,7 +83,7 @@ class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, arrivalId, Index(0), itemIndex, mrn, goodsReferences, mode)(request, messages).toString
+        view(form, arrivalId, Index(0), itemIndex, mrn, goodsReferences, equipmentMode, goodsReferenceMode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -100,19 +104,57 @@ class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, arrivalId, Index(0), itemIndex, mrn, goodsReferences, mode)(request, messages).toString
+        view(filledForm, arrivalId, Index(0), itemIndex, mrn, goodsReferences, equipmentMode, goodsReferenceMode)(request, messages).toString
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the next page when valid data is submitted" - {
+      "when goods reference mode is NormalMode" in {
+        forAll(arbitrary[Mode]) {
+          equipmentMode =>
+            val goodsReferenceMode = NormalMode
 
-      setExistingUserAnswers(emptyUserAnswers)
+            lazy val controllerRoute =
+              routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), itemIndex, equipmentMode, goodsReferenceMode).url
 
-      val request = FakeRequest(POST, controllerRoute)
-        .withFormUrlEncodedBody(("value", "123"))
+            setExistingUserAnswers(emptyUserAnswers)
 
-      val result = route(app, request).value
+            when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      status(result) mustEqual BAD_REQUEST //TODO: update once we have navigation in place
+            val request = FakeRequest(POST, controllerRoute)
+              .withFormUrlEncodedBody(("value", goodsReference.declarationGoodsItemNumber.toString()))
+
+            val result = route(app, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual
+              routes.ApplyAnotherItemController.onPageLoad(arrivalId, equipmentMode, goodsReferenceMode, equipmentIndex).url
+        }
+      }
+
+      "when goods reference mode is CheckMode" in {
+        forAll(arbitrary[Mode]) {
+          equipmentMode =>
+            val goodsReferenceMode = CheckMode
+
+            lazy val controllerRoute =
+              routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), itemIndex, equipmentMode, goodsReferenceMode).url
+
+            setExistingUserAnswers(emptyUserAnswers)
+
+            when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+            val request = FakeRequest(POST, controllerRoute)
+              .withFormUrlEncodedBody(("value", goodsReference.declarationGoodsItemNumber.toString()))
+
+            val result = route(app, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual
+              controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+        }
+      }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
@@ -129,7 +171,7 @@ class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, arrivalId, Index(0), itemIndex, mrn, goodsReferences, mode)(request, messages).toString
+        view(boundForm, arrivalId, Index(0), itemIndex, mrn, goodsReferences, equipmentMode, goodsReferenceMode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -141,7 +183,7 @@ class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -155,7 +197,7 @@ class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
   }
 }

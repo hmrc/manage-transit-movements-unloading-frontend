@@ -35,6 +35,6 @@ class ItemAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.consignment.item",
     args = Seq(itemIndex.display, equipmentIndex.display): _*,
     id = Some(s"change-consignment-item-details-${equipmentIndex.display}-${itemIndex.display}"),
-    call = Some(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, itemIndex, CheckMode))
+    call = Some(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, itemIndex, CheckMode, CheckMode))
   )
 }
