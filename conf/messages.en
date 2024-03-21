@@ -931,3 +931,7 @@ houseConsignment.index.item.removeNetWeightYesNo.error.required = Select yes if 
 additionalReference.index.removeAdditionalReferenceYesNo.title = Are you sure you want to remove this additional reference?
 additionalReference.index.removeAdditionalReferenceYesNo.heading = Are you sure you want to remove this additional reference?
 additionalReference.index.removeAdditionalReferenceYesNo.error.required = Select yes if you want to remove this additional reference
+
+houseConsignment.index.items.packages.packageShippingMarkYesNo.title = Do you want to add a shipping mark?
+houseConsignment.index.items.packages.packageShippingMarkYesNo.heading = Do you want to add a shipping mark?
+houseConsignment.index.items.packages.packageShippingMarkYesNo.error.required = Select yes if you want to add a shipping mark
