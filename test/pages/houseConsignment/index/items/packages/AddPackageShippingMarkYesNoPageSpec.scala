@@ -18,25 +18,25 @@ package pages.houseConsignment.index.items.packages
 
 import pages.behaviours.PageBehaviours
 
-class PackageShippingMarkYesNoPageSpec extends PageBehaviours {
+class AddPackageShippingMarkYesNoPageSpec extends PageBehaviours {
 
-  "PackageShippingMarkYesNoPage" - {
+  "AddPackageShippingMarkYesNoPage" - {
 
-    beRetrievable[Boolean](PackageShippingMarkYesNoPage(index, index, index))
+    beRetrievable[Boolean](AddPackageShippingMarkYesNoPage(index, index, index))
 
-    beSettable[Boolean](PackageShippingMarkYesNoPage(index, index, index))
+    beSettable[Boolean](AddPackageShippingMarkYesNoPage(index, index, index))
 
-    beRemovable[Boolean](PackageShippingMarkYesNoPage(index, index, index))
+    beRemovable[Boolean](AddPackageShippingMarkYesNoPage(index, index, index))
 
     "cleanup" - {
       "must remove package shipping mark when no selected" in {
         forAll(nonEmptyString) {
           value =>
             val userAnswers = emptyUserAnswers
-              .setValue(PackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), true)
+              .setValue(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), true)
               .setValue(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex), value)
 
-            val result = userAnswers.setValue(PackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), false)
+            val result = userAnswers.setValue(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), false)
 
             result.get(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex)) must not be defined
 
@@ -47,10 +47,10 @@ class PackageShippingMarkYesNoPageSpec extends PageBehaviours {
         forAll(nonEmptyString) {
           value =>
             val userAnswers = emptyUserAnswers
-              .setValue(PackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), true)
+              .setValue(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), true)
               .setValue(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), value)
 
-            val result = userAnswers.setValue(PackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), true)
+            val result = userAnswers.setValue(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), true)
 
             result.get(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) mustBe defined
         }

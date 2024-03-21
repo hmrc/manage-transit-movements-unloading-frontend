@@ -20,16 +20,16 @@ import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.houseConsignment.index.items.packages.PackageShippingMarkYesNoView
+import views.html.houseConsignment.index.items.packages.AddPackageShippingMarkYesNoView
 
-class PackageShippingMarkYesNoViewSpec extends YesNoViewBehaviours {
+class AddPackageShippingMarkYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
-      .instanceOf[PackageShippingMarkYesNoView]
+      .instanceOf[AddPackageShippingMarkYesNoView]
       .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "houseConsignment.index.items.packages.packageShippingMarkYesNo"
+  override val prefix: String = "houseConsignment.index.items.packages.addPackageShippingMarkYesNo"
 
   behave like pageWithTitle()
 

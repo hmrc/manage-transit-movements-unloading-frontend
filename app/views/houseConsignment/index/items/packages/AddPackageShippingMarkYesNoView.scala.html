@@ -31,18 +31,18 @@
 @(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("houseConsignment.index.items.packages.packageShippingMarkYesNo.title"),
+    title = messages("houseConsignment.index.items.packages.addPackageShippingMarkYesNo.title"),
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.PackageShippingMarkYesNoController.onSubmit(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AddPackageShippingMarkYesNoController.onSubmit(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode), Symbol("autoComplete") -> "off") {
 
     @errorSummary(form.errors)
 
     @inputYesNo(
         field = form("value"),
             yesNoType = OrdinaryYesNo(
-            heading = messages("houseConsignment.index.items.packages.packageShippingMarkYesNo.heading"),
+            heading = messages("houseConsignment.index.items.packages.addPackageShippingMarkYesNo.heading"),
             caption = Some(messages("site.caption", mrn.toString)),
         )
     )

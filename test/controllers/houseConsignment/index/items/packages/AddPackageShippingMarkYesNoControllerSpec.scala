@@ -21,22 +21,22 @@ import forms.YesNoFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.houseConsignment.index.items.packages.PackageShippingMarkYesNoPage
+import pages.houseConsignment.index.items.packages.AddPackageShippingMarkYesNoPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.houseConsignment.index.items.packages.PackageShippingMarkYesNoView
+import views.html.houseConsignment.index.items.packages.AddPackageShippingMarkYesNoView
 
 import scala.concurrent.Future
 
-class PackageShippingMarkYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class AddPackageShippingMarkYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider = new YesNoFormProvider()
-  private val form         = formProvider("houseConsignment.index.items.packages.packageShippingMarkYesNo")
+  private val form         = formProvider("houseConsignment.index.items.packages.addPackageShippingMarkYesNo")
   private val mode         = NormalMode
 
-  private lazy val packageShippingMarkYesNoRoute =
-    routes.PackageShippingMarkYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode).url
+  private lazy val addPackageShippingMarkYesNoRoute =
+    routes.AddPackageShippingMarkYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -48,11 +48,11 @@ class PackageShippingMarkYesNoControllerSpec extends SpecBase with AppWithDefaul
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, packageShippingMarkYesNoRoute)
+      val request = FakeRequest(GET, addPackageShippingMarkYesNoRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[PackageShippingMarkYesNoView]
+      val view = injector.instanceOf[AddPackageShippingMarkYesNoView]
 
       status(result) mustEqual OK
 
@@ -62,16 +62,16 @@ class PackageShippingMarkYesNoControllerSpec extends SpecBase with AppWithDefaul
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(PackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), true)
+      val userAnswers = emptyUserAnswers.setValue(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), true)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, packageShippingMarkYesNoRoute)
+      val request = FakeRequest(GET, addPackageShippingMarkYesNoRoute)
 
       val result = route(app, request).value
 
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[PackageShippingMarkYesNoView]
+      val view = injector.instanceOf[AddPackageShippingMarkYesNoView]
 
       status(result) mustEqual OK
 
@@ -85,7 +85,7 @@ class PackageShippingMarkYesNoControllerSpec extends SpecBase with AppWithDefaul
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, packageShippingMarkYesNoRoute)
+      val request = FakeRequest(POST, addPackageShippingMarkYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
@@ -101,14 +101,14 @@ class PackageShippingMarkYesNoControllerSpec extends SpecBase with AppWithDefaul
 
       val invalidAnswer = ""
 
-      val request    = FakeRequest(POST, packageShippingMarkYesNoRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, addPackageShippingMarkYesNoRoute).withFormUrlEncodedBody(("value", ""))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[PackageShippingMarkYesNoView]
+      val view = injector.instanceOf[AddPackageShippingMarkYesNoView]
 
       contentAsString(result) mustEqual
         view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)(request, messages).toString
@@ -118,7 +118,7 @@ class PackageShippingMarkYesNoControllerSpec extends SpecBase with AppWithDefaul
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, packageShippingMarkYesNoRoute)
+      val request = FakeRequest(GET, addPackageShippingMarkYesNoRoute)
 
       val result = route(app, request).value
 
@@ -131,7 +131,7 @@ class PackageShippingMarkYesNoControllerSpec extends SpecBase with AppWithDefaul
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, packageShippingMarkYesNoRoute)
+      val request = FakeRequest(POST, addPackageShippingMarkYesNoRoute)
         .withFormUrlEncodedBody(("value", "test string"))
 
       val result = route(app, request).value

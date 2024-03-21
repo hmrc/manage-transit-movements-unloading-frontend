@@ -20,35 +20,35 @@ import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
-import pages.houseConsignment.index.items.packages.PackageShippingMarkYesNoPage
+import pages.houseConsignment.index.items.packages.AddPackageShippingMarkYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.houseConsignment.index.items.packages.PackageShippingMarkYesNoView
+import views.html.houseConsignment.index.items.packages.AddPackageShippingMarkYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PackageShippingMarkYesNoController @Inject() (
+class AddPackageShippingMarkYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: PackageShippingMarkYesNoView
+  view: AddPackageShippingMarkYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("houseConsignment.index.items.packages.packageShippingMarkYesNo")
+  private val form = formProvider("houseConsignment.index.items.packages.addPackageShippingMarkYesNo")
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId) {
 
       implicit request =>
-        val preparedForm = request.userAnswers.get(PackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex)) match {
+        val preparedForm = request.userAnswers.get(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
@@ -69,10 +69,10 @@ class PackageShippingMarkYesNoController @Inject() (
             value =>
               for {
                 updatedAnswers <- Future
-                  .fromTry(request.userAnswers.set(PackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), value))
+                  .fromTry(request.userAnswers.set(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), value))
                 _ <- sessionRepository.set(updatedAnswers)
               } yield Redirect(
-                navigator.nextPage(PackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), mode, updatedAnswers)
+                navigator.nextPage(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), mode, updatedAnswers)
               )
           )
     }

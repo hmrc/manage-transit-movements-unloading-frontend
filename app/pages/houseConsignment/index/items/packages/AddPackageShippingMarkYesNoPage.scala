@@ -23,11 +23,11 @@ import play.api.libs.json.JsPath
 
 import scala.util.Try
 
-case class PackageShippingMarkYesNoPage(houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index) extends QuestionPage[Boolean] {
+case class AddPackageShippingMarkYesNoPage(houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = PackagingSection(houseConsignmentIndex, itemIndex, packageIndex).path \ toString
 
-  override def toString: String = "shippingMarksYesNo"
+  override def toString: String = "addShippingMarksYesNo"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
