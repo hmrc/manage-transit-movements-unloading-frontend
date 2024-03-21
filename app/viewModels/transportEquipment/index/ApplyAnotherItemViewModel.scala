@@ -23,7 +23,6 @@ import models.{ArrivalId, Index, Mode, RichOptionalJsArray, UserAnswers}
 import pages.sections.transport.equipment.ItemsSection
 import pages.transportEquipment.index.ItemPage
 import play.api.i18n.Messages
-import play.api.libs.json.JsArray
 import play.api.mvc.Call
 import viewModels.{AddAnotherViewModel, ListItem}
 
@@ -72,12 +71,8 @@ object ApplyAnotherItemViewModel {
       val array = userAnswers.get(ItemsSection(equipmentIndex))
 
       val listItems = array
-        .getOrElse(JsArray())
-        .value
-        .zipWithIndex
-        .flatMap {
-          case (_, i) =>
-            val itemIndex = Index(i)
+        .flatMapWithIndex {
+          case (_, itemIndex) =>
             userAnswers.get(ItemPage(equipmentIndex, itemIndex)).map {
               declarationGoodsItemNumber =>
                 ListItem(
@@ -89,7 +84,6 @@ object ApplyAnotherItemViewModel {
                 )
             }
         }
-        .toSeq
 
       new ApplyAnotherItemViewModel(
         listItems = listItems,
