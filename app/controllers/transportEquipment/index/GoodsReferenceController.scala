@@ -48,7 +48,7 @@ class GoodsReferenceController @Inject() (
     actions.requireData(arrivalId) {
       implicit request =>
         val availableGoodsReferences = goodsReferenceService.getGoodsReferences(request.userAnswers, transportEquipmentIndex, Some(itemIndex))
-        val form                     = formProvider(equipmentMode, "transport.equipment.selectItems", SelectableList(availableGoodsReferences))
+        val form                     = formProvider(goodsReferenceMode, "transport.equipment.selectItems", SelectableList(availableGoodsReferences))
         val preparedForm = goodsReferenceService.getGoodsReference(request.userAnswers, transportEquipmentIndex, itemIndex) match {
           case None        => form
           case Some(value) => form.fill(value)
@@ -73,7 +73,7 @@ class GoodsReferenceController @Inject() (
       implicit request =>
         val availableGoodsReferences = goodsReferenceService.getGoodsReferences(request.userAnswers, transportEquipmentIndex, Some(itemIndex))
 
-        val form = formProvider(equipmentMode, "transport.equipment.selectItems", SelectableList(availableGoodsReferences))
+        val form = formProvider(goodsReferenceMode, "transport.equipment.selectItems", SelectableList(availableGoodsReferences))
         form
           .bindFromRequest()
           .fold(
