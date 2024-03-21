@@ -64,7 +64,8 @@ object ApplyAnotherItemViewModel {
     def apply(
       userAnswers: UserAnswers,
       arrivalId: ArrivalId,
-      mode: Mode,
+      equipmentMode: Mode,
+      goodsReferenceMode: Mode,
       equipmentIndex: Index,
       availableGoodsReferences: Seq[GoodsReference]
     )(implicit messages: Messages): ApplyAnotherItemViewModel = {
@@ -80,12 +81,14 @@ object ApplyAnotherItemViewModel {
 
             def itemPrefix(item: String) = messages("transport.item.prefix", item)
 
-            def buildListItem(declarationGoodsItemNumber: BigInt): ListItem = mode match {
+            def buildListItem(declarationGoodsItemNumber: BigInt): ListItem = goodsReferenceMode match {
               case CheckMode =>
                 ListItem(
                   name = itemPrefix(declarationGoodsItemNumber.toString),
                   changeUrl = Some(
-                    controllers.transportEquipment.index.routes.GoodsReferenceController.onSubmit(arrivalId, equipmentIndex, itemIndex, mode).url
+                    controllers.transportEquipment.index.routes.GoodsReferenceController
+                      .onSubmit(arrivalId, equipmentIndex, itemIndex, equipmentMode, goodsReferenceMode)
+                      .url
                   ),
                   removeUrl = None
                 )
@@ -93,8 +96,11 @@ object ApplyAnotherItemViewModel {
                 ListItem(
                   name = itemPrefix(declarationGoodsItemNumber.toString),
                   changeUrl = None,
-                  removeUrl =
-                    Some(controllers.transportEquipment.index.routes.RemoveGoodsReferenceYesNoController.onPageLoad(arrivalId, equipmentIndex, itemIndex).url)
+                  removeUrl = Some(
+                    controllers.transportEquipment.index.routes.RemoveGoodsReferenceYesNoController
+                      .onPageLoad(arrivalId, equipmentIndex, itemIndex, equipmentMode, goodsReferenceMode)
+                      .url
+                  )
                 )
             }
 
@@ -106,7 +112,7 @@ object ApplyAnotherItemViewModel {
 
       new ApplyAnotherItemViewModel(
         listItems = listItems,
-        onSubmitCall = routes.ApplyAnotherItemController.onSubmit(arrivalId, mode, equipmentIndex),
+        onSubmitCall = routes.ApplyAnotherItemController.onSubmit(arrivalId, equipmentMode, goodsReferenceMode, equipmentIndex),
         equipmentIndex = equipmentIndex,
         isNumberItemsZero = availableGoodsReferences.isEmpty,
         nextIndex = array.nextIndex

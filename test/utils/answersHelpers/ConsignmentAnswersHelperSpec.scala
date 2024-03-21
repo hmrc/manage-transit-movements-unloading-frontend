@@ -297,7 +297,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.children.head.children(1).rows.size mustBe 1
             result.children.head.children(1).rows.head.value.value mustBe item.toString
             result.children.head.children(1).viewLinks.head.href mustBe
-              controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, NormalMode, index).url
+              controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, CheckMode, NormalMode, equipmentIndex).url
         }
       }
     }

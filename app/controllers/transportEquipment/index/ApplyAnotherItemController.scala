@@ -19,7 +19,7 @@ package controllers.transportEquipment.index
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.{ArrivalId, Index, Mode}
+import models.{ArrivalId, CheckMode, Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -27,7 +27,7 @@ import services.GoodsReferenceService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.transportEquipment.index.ApplyAnotherItemViewModel
 import viewModels.transportEquipment.index.ApplyAnotherItemViewModel.ApplyAnotherItemViewModelProvider
-import views.html.transport.equipment.ApplyAnotherItemView
+import views.html.transportEquipment.index.ApplyAnotherItemView
 
 import javax.inject.Inject
 
@@ -46,33 +46,38 @@ class ApplyAnotherItemController @Inject() (
   private def form(viewModel: ApplyAnotherItemViewModel, equipmentIndex: Index): Form[Boolean] =
     formProvider(viewModel.prefix, viewModel.allowMore, equipmentIndex.display)
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index): Action[AnyContent] =
+  def onPageLoad(arrivalId: ArrivalId, equipmentMode: Mode, goodsReferenceMode: Mode, equipmentIndex: Index): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
         val availableGoodsReferences = goodsReferenceService.getGoodsReferences(request.userAnswers, equipmentIndex, None)
-        val viewModel                = viewModelProvider(request.userAnswers, arrivalId, mode, equipmentIndex, availableGoodsReferences)
+        val viewModel                = viewModelProvider(request.userAnswers, arrivalId, equipmentMode, goodsReferenceMode, equipmentIndex, availableGoodsReferences)
         viewModel.count match {
           case 0 =>
-            Redirect(routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, equipmentIndex, mode))
+            Redirect(routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, equipmentIndex, equipmentMode))
           case _ =>
             Ok(view(form(viewModel, equipmentIndex), request.userAnswers.mrn, arrivalId, viewModel))
         }
     }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index): Action[AnyContent] =
+  def onSubmit(arrivalId: ArrivalId, equipmentMode: Mode, goodsReferenceMode: Mode, equipmentIndex: Index): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
         val availableGoodsReferences = goodsReferenceService.getGoodsReferences(request.userAnswers, equipmentIndex, None)
-        val viewModel                = viewModelProvider(request.userAnswers, arrivalId, mode, equipmentIndex, availableGoodsReferences)
+        val viewModel                = viewModelProvider(request.userAnswers, arrivalId, equipmentMode, goodsReferenceMode, equipmentIndex, availableGoodsReferences)
         form(viewModel, equipmentIndex)
           .bindFromRequest()
           .fold(
             formWithErrors => BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel)),
             {
               case true =>
-                Redirect(controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, viewModel.nextIndex, mode))
+                Redirect(routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, viewModel.nextIndex, equipmentMode, goodsReferenceMode))
               case false =>
-                Redirect(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, mode))
+                equipmentMode match {
+                  case NormalMode =>
+                    Redirect(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, equipmentMode))
+                  case CheckMode =>
+                    Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+                }
             }
           )
     }

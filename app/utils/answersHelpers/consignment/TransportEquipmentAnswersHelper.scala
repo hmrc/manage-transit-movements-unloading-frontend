@@ -95,7 +95,7 @@ class TransportEquipmentAnswersHelper(
   private def itemsAddRemoveLink: Link =
     Link(
       id = s"add-remove-transport-equipment-${equipmentIndex.display}-item",
-      href = controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, NormalMode, equipmentIndex).url,
+      href = controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, CheckMode, NormalMode, equipmentIndex).url,
       text = messages("consignmentItemLink.addRemove", equipmentIndex.display),
       visuallyHidden = messages("consignmentItemLink.visuallyHidden", equipmentIndex.display)
     )

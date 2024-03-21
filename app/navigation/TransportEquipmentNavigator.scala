@@ -30,16 +30,12 @@ class TransportEquipmentNavigator extends Navigator {
     case AddContainerIdentificationNumberYesNoPage(equipmentIndex) => ua => addContainerIdentificationNumberYesNoRoute(ua, equipmentIndex, NormalMode)
     case ContainerIdentificationNumberPage(equipmentIndex) =>
       ua => Some(controllers.transportEquipment.index.routes.AddSealYesNoController.onPageLoad(ua.id, equipmentIndex, NormalMode))
-    case AddSealYesNoPage(equipmentIndex) => ua => addSealYesNoRoute(ua, equipmentIndex, NormalMode)
-    case ItemPage(equipmentIndex, _) =>
-      ua => Some(controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(ua.id, NormalMode, equipmentIndex))
+    case AddSealYesNoPage(equipmentIndex)     => ua => addSealYesNoRoute(ua, equipmentIndex, NormalMode)
     case ApplyAnItemYesNoPage(equipmentIndex) => ua => applyAnItemYesNoRoute(ua, ua.id, NormalMode, equipmentIndex)
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case ContainerIdentificationNumberPage(_) => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
-    case ItemPage(equipmentIndex, _) =>
-      ua => Some(controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(ua.id, CheckMode, equipmentIndex))
     case ApplyAnItemYesNoPage(equipmentIndex) => ua => applyAnItemYesNoRoute(ua, ua.id, CheckMode, equipmentIndex)
 
   }
@@ -61,7 +57,7 @@ class TransportEquipmentNavigator extends Navigator {
   def applyAnItemYesNoRoute(ua: UserAnswers, arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index): Option[Call] =
     ua.get(ApplyAnItemYesNoPage(equipmentIndex)).map {
       case true =>
-        controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, Index(0), mode)
+        controllers.transportEquipment.index.routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, Index(0), mode, NormalMode)
       case false => controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(ua.id, mode)
     }
 }
