@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package views.houseConsignment.index.items.document
+package views.documents
 
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.houseConsignment.index.items.document.AddAdditionalInformationYesNoView
+import views.html.documents.AddAdditionalInformationYesNoView
 
 class AddAdditionalInformationYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[AddAdditionalInformationYesNoView]
-      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, documentIndex, NormalMode)(fakeRequest, messages)
+      .apply(form, mrn, arrivalId, documentIndex, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "houseConsignment.index.items.document.addAdditionalInformationYesNo"
+  override val prefix: String = "document.addAdditionalInformationYesNo"
 
   behave like pageWithTitle(documentIndex)
 

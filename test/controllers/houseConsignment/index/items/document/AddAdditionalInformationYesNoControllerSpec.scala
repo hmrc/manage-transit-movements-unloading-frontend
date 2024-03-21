@@ -14,29 +14,31 @@
  * limitations under the License.
  */
 
-package controllers.documents
+package controllers.houseConsignment.index.items.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.documents.AddAdditionalInformationYesNoPage
+import pages.houseConsignment.index.items.document.AddAdditionalInformationYesNoPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.documents.AddAdditionalInformationYesNoView
+import views.html.houseConsignment.index.items.document.AddAdditionalInformationYesNoView
 
 import scala.concurrent.Future
 
 class AddAdditionalInformationYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider = new YesNoFormProvider()
-  private val form         = formProvider("houseConsignment.index.items.document.addAdditionalInformationYesNo")
+  private val form         = formProvider("document.addAdditionalInformationYesNo")
   private val mode         = NormalMode
 
   private lazy val addAdditionalInformationYesNoRoute =
-    controllers.documents.routes.AddAdditionalInformationYesNoController.onPageLoad(arrivalId, mode, documentIndex).url
+    controllers.houseConsignment.index.items.document.routes.AddAdditionalInformationYesNoController
+      .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, documentIndex)
+      .url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -57,12 +59,12 @@ class AddAdditionalInformationYesNoControllerSpec extends SpecBase with AppWithD
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, documentIndex, mode)(request, messages).toString
+        view(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, documentIndex, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddAdditionalInformationYesNoPage(documentIndex), true)
+      val userAnswers = emptyUserAnswers.setValue(AddAdditionalInformationYesNoPage(houseConsignmentIndex, itemIndex, documentIndex), true)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, addAdditionalInformationYesNoRoute)
@@ -76,7 +78,7 @@ class AddAdditionalInformationYesNoControllerSpec extends SpecBase with AppWithD
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, documentIndex, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, documentIndex, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -111,7 +113,7 @@ class AddAdditionalInformationYesNoControllerSpec extends SpecBase with AppWithD
       val view = injector.instanceOf[AddAdditionalInformationYesNoView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, documentIndex, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, documentIndex, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
