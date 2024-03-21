@@ -71,24 +71,6 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
 
   "ApplyAnotherItem Controller" - {
 
-    "redirect to select items page" - {
-      "when 0 items" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
-          .thenReturn(emptyViewModel)
-
-        setExistingUserAnswers(emptyUserAnswers)
-
-        val request = FakeRequest(GET, applyAnotherItemRoute)
-
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual
-          controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, equipmentIndex, equipmentMode).url
-      }
-    }
-
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
         when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))

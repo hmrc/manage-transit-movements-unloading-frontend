@@ -51,12 +51,7 @@ class ApplyAnotherItemController @Inject() (
       implicit request =>
         val availableGoodsReferences = goodsReferenceService.getGoodsReferences(request.userAnswers, equipmentIndex, None)
         val viewModel                = viewModelProvider(request.userAnswers, arrivalId, equipmentMode, goodsReferenceMode, equipmentIndex, availableGoodsReferences)
-        viewModel.count match {
-          case 0 =>
-            Redirect(routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, equipmentIndex, equipmentMode))
-          case _ =>
-            Ok(view(form(viewModel, equipmentIndex), request.userAnswers.mrn, arrivalId, viewModel))
-        }
+        Ok(view(form(viewModel, equipmentIndex), request.userAnswers.mrn, arrivalId, viewModel))
     }
 
   def onSubmit(arrivalId: ArrivalId, equipmentMode: Mode, goodsReferenceMode: Mode, equipmentIndex: Index): Action[AnyContent] =
