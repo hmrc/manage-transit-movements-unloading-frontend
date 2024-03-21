@@ -16,21 +16,27 @@
 
 package viewModels.documents
 
-import models.Mode
+import config.FrontendAppConfig
+import models.{ConsignmentLevelDocuments, Mode}
 import play.api.i18n.Messages
 import viewModels.ModeViewModelProvider
+import viewModels.documents.TypeViewModel.typePrefix
 
 import javax.inject.Inject
 
-case class TypeViewModel(heading: String, title: String, requiredError: String)
+case class TypeViewModel(heading: String, title: String, requiredError: String, documents: ConsignmentLevelDocuments) {
+  def maxLimitLabelForType(implicit config: FrontendAppConfig, messages: Messages): Option[String] = Documents.maxLimitLabelForType(documents, typePrefix)
+}
 
 object TypeViewModel {
 
+  val typePrefix = "document.type"
+
   class TypeViewModelProvider @Inject() extends ModeViewModelProvider {
 
-    override val prefix = "document.type"
+    override val prefix = typePrefix
 
-    def apply(mode: Mode)(implicit messages: Messages): TypeViewModel =
-      new TypeViewModel(heading(mode), title(mode), requiredError(mode))
+    def apply(mode: Mode, documents: ConsignmentLevelDocuments)(implicit messages: Messages): TypeViewModel =
+      new TypeViewModel(heading(mode), title(mode), requiredError(mode), documents)
   }
 }

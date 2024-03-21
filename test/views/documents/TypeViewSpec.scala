@@ -35,7 +35,7 @@ class TypeViewSpec extends InputSelectViewBehaviours[DocumentType] {
   override def form: Form[DocumentType] = new SelectableFormProvider()(NormalMode, prefix, SelectableList(values))
 
   override def applyView(form: Form[DocumentType]): HtmlFormat.Appendable =
-    injector.instanceOf[TypeView].apply(form, mrn, arrivalId, NormalMode, values, viewModel, documentIndex)(fakeRequest, messages)
+    injector.instanceOf[TypeView].apply(form, mrn, arrivalId, NormalMode, values, viewModel, documentIndex)(fakeRequest, messages, frontendAppConfig)
 
   implicit override val arbitraryT: Arbitrary[DocumentType] = arbitraryDocumentType
 
