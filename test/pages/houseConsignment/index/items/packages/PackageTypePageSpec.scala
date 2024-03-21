@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package pages.houseConsignment.index.items
+package pages.houseConsignment.index.items.packages
 
 import models.reference.PackageType
-import pages.PackageTypePage
 import pages.behaviours.PageBehaviours
 
 class PackageTypePageSpec extends PageBehaviours {

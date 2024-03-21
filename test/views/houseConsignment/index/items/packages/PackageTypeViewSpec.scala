@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package views.houseConsignment.index.items
+package views.houseConsignment.index.items.packages
 
 import forms.SelectableFormProvider
 import models.reference.PackageType
 import models.{NormalMode, SelectableList}
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.houseConsignment.index.items.PackageTypeViewModel
+import viewModels.houseConsignment.index.items.packages.PackageTypeViewModel
 import views.behaviours.InputSelectViewBehaviours
-import views.html.houseConsignment.index.items.PackageTypeView
+import views.html.houseConsignment.index.items.packages.PackageTypeView
 
 class PackageTypeViewSpec extends InputSelectViewBehaviours[PackageType] {
 

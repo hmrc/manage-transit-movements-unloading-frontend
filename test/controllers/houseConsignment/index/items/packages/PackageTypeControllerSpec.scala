@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.houseConsignment.index.items
+package controllers.houseConsignment.index.items.packages
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SelectableFormProvider
@@ -23,15 +23,15 @@ import models.{NormalMode, SelectableList}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.PackageTypePage
+import pages.houseConsignment.index.items.packages.PackageTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.PackagesService
-import viewModels.houseConsignment.index.items.PackageTypeViewModel
-import viewModels.houseConsignment.index.items.PackageTypeViewModel.PackageTypeViewModelProvider
-import views.html.houseConsignment.index.items.PackageTypeView
+import viewModels.houseConsignment.index.items.packages.PackageTypeViewModel
+import viewModels.houseConsignment.index.items.packages.PackageTypeViewModel.PackageTypeViewModelProvider
+import views.html.houseConsignment.index.items.packages.PackageTypeView
 
 import scala.concurrent.Future
 
@@ -47,7 +47,9 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val mockPackagesService: PackagesService = mock[PackagesService]
 
   private lazy val packageTypeRoute =
-    controllers.houseConsignment.index.items.routes.PackageTypeController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, NormalMode).url
+    controllers.houseConsignment.index.items.packages.routes.PackageTypeController
+      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, NormalMode)
+      .url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.houseConsignment.index.items
+package views.houseConsignment.index.items.packages
 
 import forms.Constants.maxPackageShippingMarkLength
 import forms.PackageShippingMarkFormProvider
@@ -24,9 +24,9 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.houseConsignment.index.items.PackageShippingMarksViewModel
+import viewModels.houseConsignment.index.items.packages.PackageShippingMarksViewModel
 import views.behaviours.CharacterCountViewBehaviours
-import views.html.houseConsignment.index.items.PackageShippingMarkView
+import views.html.houseConsignment.index.items.packages.PackageShippingMarkView
 
 class PackageShippingMarkViewSpec extends CharacterCountViewBehaviours with Generators {
 

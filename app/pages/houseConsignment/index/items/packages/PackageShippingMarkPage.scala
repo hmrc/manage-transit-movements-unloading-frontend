@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package pages.houseConsignment.index.items
+package pages.houseConsignment.index.items.packages
 
-import pages.NumberOfPackagesPage
-import pages.behaviours.PageBehaviours
+import models.Index
+import pages.QuestionPage
+import pages.sections.PackagingSection
+import play.api.libs.json.JsPath
 
-class NumberOfPackagesPageSpec extends PageBehaviours {
+case class PackageShippingMarkPage(houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index) extends QuestionPage[String] {
 
-  "NumberOfPackagesPage" - {
+  override def path: JsPath = PackagingSection(houseConsignmentIndex, itemIndex, packageIndex).path \ toString
 
-    beRetrievable[BigInt](NumberOfPackagesPage(hcIndex, itemIndex, index))
-
-    beSettable[BigInt](NumberOfPackagesPage(hcIndex, itemIndex, index))
-
-    beRemovable[BigInt](NumberOfPackagesPage(hcIndex, itemIndex, index))
-  }
+  override def toString: String = "shippingMarks"
 }

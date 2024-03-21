@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.houseConsignment.index.items
+package controllers.houseConsignment.index.items.packages
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NumberOfPackagesFormProvider
@@ -23,15 +23,15 @@ import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.NumberOfPackagesPage
+import pages.houseConsignment.index.items.packages.NumberOfPackagesPage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewModels.houseConsignment.index.items.NumberOfPackagesViewModel
-import viewModels.houseConsignment.index.items.NumberOfPackagesViewModel.NumberOfPackagesViewModelProvider
-import views.html.houseConsignment.index.items.NumberOfPackagesView
+import viewModels.houseConsignment.index.items.packages.NumberOfPackagesViewModel
+import viewModels.houseConsignment.index.items.packages.NumberOfPackagesViewModel.NumberOfPackagesViewModelProvider
+import views.html.houseConsignment.index.items.packages.NumberOfPackagesView
 
 import scala.concurrent.Future
 

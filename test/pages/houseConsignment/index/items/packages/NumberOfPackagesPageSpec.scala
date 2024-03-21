@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package pages.houseConsignment.index.items
+package pages.houseConsignment.index.items.packages
 
-import pages.PackageShippingMarkPage
 import pages.behaviours.PageBehaviours
 
-class PackageShippingMarkPageSpec extends PageBehaviours {
+class NumberOfPackagesPageSpec extends PageBehaviours {
 
-  "PackageShippingMarkPage" - {
+  "NumberOfPackagesPage" - {
 
-    beRetrievable[String](PackageShippingMarkPage(index, index, index))
+    beRetrievable[BigInt](NumberOfPackagesPage(hcIndex, itemIndex, index))
 
-    beSettable[String](PackageShippingMarkPage(index, index, index))
+    beSettable[BigInt](NumberOfPackagesPage(hcIndex, itemIndex, index))
 
-    beRemovable[String](PackageShippingMarkPage(index, index, index))
+    beRemovable[BigInt](NumberOfPackagesPage(hcIndex, itemIndex, index))
   }
 }
