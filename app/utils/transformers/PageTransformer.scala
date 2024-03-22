@@ -36,7 +36,7 @@ trait PageTransformer {
 
   /** @param section a JsObject within a JsArray
     * @param sequenceNumber the sequence number as defined in the IE043
-    * @return user answers with the sequence number and a placeholder. We set the placeholder value so we can distinguish between:
+    * @return user answers with the sequence number and a `removed` value of `false`. We set this so we can distinguish between:
     *  - something that has been removed in session and;
     *  - something with no information provided from the IE043
     */
