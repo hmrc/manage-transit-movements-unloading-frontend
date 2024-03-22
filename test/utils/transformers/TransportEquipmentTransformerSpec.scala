@@ -28,7 +28,7 @@ import pages.sections.TransportEquipmentSection
 import pages.{ContainerIdentificationNumberPage, QuestionPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, JsPath, Json}
+import play.api.libs.json.{JsBoolean, JsObject, JsPath, Json}
 
 import scala.concurrent.Future
 
@@ -79,6 +79,7 @@ class TransportEquipmentTransformerSpec extends SpecBase with AppWithDefaultMock
             val equipmentIndex = Index(i)
 
             result.getSequenceNumber(TransportEquipmentSection(equipmentIndex)) mustBe te.sequenceNumber
+            result.getValue[JsBoolean](TransportEquipmentSection(equipmentIndex), "addedFromIE043").value mustBe true
             result.get(ContainerIdentificationNumberPage(equipmentIndex)) mustBe te.containerIdentificationNumber
             result.getValue(FakeSealsSection(equipmentIndex)) mustBe Json.obj("foo" -> i.toString)
             result.getValue(FakeGoodsReferencesSection(equipmentIndex)) mustBe Json.obj("foo" -> i.toString)

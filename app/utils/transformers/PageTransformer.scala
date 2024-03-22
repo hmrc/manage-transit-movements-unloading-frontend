@@ -34,7 +34,12 @@ trait PageTransformer {
   def set[T](page: QuestionPage[T], t: T)(implicit writes: Writes[T]): UserAnswers => Future[UserAnswers] = userAnswers =>
     Future.fromTry(userAnswers.set(page, t))
 
-  def setSequenceNumber(section: Section[JsObject], sequenceNumber: String): UserAnswers => Future[UserAnswers] = userAnswers =>
-    Future.fromTry(userAnswers.set(section.path \ "sequenceNumber", sequenceNumber))
+  def setSequenceNumber(section: Section[JsObject], sequenceNumber: String): UserAnswers => Future[UserAnswers] =
+    setValue(section, "sequenceNumber", sequenceNumber)
 
+  def setPlaceholder(section: Section[JsObject]): UserAnswers => Future[UserAnswers] =
+    setValue(section, "addedFromIE043", true)
+
+  private def setValue[A](section: Section[JsObject], key: String, value: A)(implicit writes: Writes[A]): UserAnswers => Future[UserAnswers] = userAnswers =>
+    Future.fromTry(userAnswers.set(section.path \ key, value))
 }
