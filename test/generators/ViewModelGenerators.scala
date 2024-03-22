@@ -384,7 +384,12 @@ trait ViewModelGenerators {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
       nextIndex    <- arbitrary[Index]
-    } yield viewModels.houseConsignment.index.items.additionalReference.AddAnotherAdditionalReferenceViewModel(listItems, onSubmitCall, nextIndex, Index(0), Index(0))
+    } yield viewModels.houseConsignment.index.items.additionalReference.AddAnotherAdditionalReferenceViewModel(listItems,
+                                                                                                               onSubmitCall,
+                                                                                                               nextIndex,
+                                                                                                               Index(0),
+                                                                                                               Index(0)
+    )
   }
 
 }

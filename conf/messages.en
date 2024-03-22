@@ -822,11 +822,11 @@ houseConsignment.index.items.additionalReference.additionalReferenceNumber.error
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.NormalMode.error.required = Enter the additional reference number
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.CheckMode.error.required = Enter the new additional reference number for item {1} in house consignment {0}
 
-houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.empty.title = You have added 0 additional references for item {1} in house consignment {0}
-houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.singular.title = You have added 1 additional reference for item {1} in house consignment {0}
+houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.empty.title = You have added 0 additional references for item {2} in house consignment {1}
+houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.singular.title = You have added 1 additional reference for item {2} in house consignment {1}
 houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.plural.title = You have added {0} additional references for item {2} in house consignment {1}
-houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.empty.heading = You have added 0 additional references for item {1} in house consignment {0}
-houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.singular.heading = You have added 1 additional reference for item {1} in house consignment {0}
+houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.empty.heading = You have added 0 additional references for item {2} in house consignment {1}
+houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.singular.heading = You have added 1 additional reference for item {2} in house consignment {1}
 houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.plural.heading = You have added {0} additional references for item {2} in house consignment {1}
 houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.empty.label = Do you want to add a additional reference for item {1} in house consignment {0}?
 houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.label = Do you want to add another additional reference for item {1} in house consignment {0}?
