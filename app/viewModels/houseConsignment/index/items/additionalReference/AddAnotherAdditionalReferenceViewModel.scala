@@ -20,13 +20,32 @@ import config.FrontendAppConfig
 import models.{ArrivalId, Index, Mode, RichOptionalJsArray, UserAnswers}
 import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import pages.sections.additionalReference.AdditionalReferencesSection
+import play.api.i18n.Messages
 import play.api.libs.json.JsArray
 import play.api.mvc.Call
 import viewModels.{AddAnotherViewModel, ListItem}
 
-case class AddAnotherAdditionalReferenceViewModel(listItems: Seq[ListItem], onSubmitCall: Call, nextIndex: Index) extends AddAnotherViewModel {
+case class AddAnotherAdditionalReferenceViewModel(listItems: Seq[ListItem],
+                                                  onSubmitCall: Call,
+                                                  nextIndex: Index,
+                                                  houseConsignmentIndex: Index,
+                                                  itemIndex: Index
+) extends AddAnotherViewModel {
   override val prefix: String                                    = "houseConsignment.index.items.additionalReference.addAnotherAdditionalReference"
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxAdditionalReferences
+
+  override def title(implicit messages: Messages): String =
+    messages(s"$prefix.$emptyOrSingularOrPlural.title", count, houseConsignmentIndex.display, itemIndex.display)
+
+  override def heading(implicit messages: Messages): String =
+    messages(s"$prefix.$emptyOrSingularOrPlural.heading", count, houseConsignmentIndex.display, itemIndex.display)
+
+  override def legend(implicit messages: Messages): String = if (count > 0) {
+    messages(s"$prefix.label", houseConsignmentIndex.display, itemIndex.display)
+  } else { messages(s"$prefix.empty.label", houseConsignmentIndex.display, itemIndex.display) }
+
+  override def maxLimitLabel(implicit messages: Messages): String =
+    messages(s"$prefix.maxLimit.label", houseConsignmentIndex.display, itemIndex.display)
 
 }
 
@@ -68,7 +87,9 @@ object AddAnotherAdditionalReferenceViewModel {
         listItems,
         onSubmitCall = controllers.houseConsignment.index.items.additionalReference.routes.AddAnotherAdditionalReferenceController
           .onSubmit(arrivalId, mode, houseConsignmentIndex, itemIndex),
-        nextIndex = array.nextIndex
+        nextIndex = array.nextIndex,
+        houseConsignmentIndex,
+        itemIndex
       )
     }
 

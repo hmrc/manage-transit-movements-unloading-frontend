@@ -41,17 +41,17 @@ class AddAnotherAdditionalReferenceViewSpec extends ListWithActionsViewBehaviour
   def applyNoItemsView: HtmlFormat.Appendable =
     injector
       .instanceOf[AddAnotherAdditionalReferenceView]
-      .apply(formProvider(noItemsViewModel), mrn, arrivalId, noItemsViewModel, houseConsignmentIndex, itemIndex)(fakeRequest, messages, frontendAppConfig)
+      .apply(formProvider(noItemsViewModel), mrn, arrivalId, noItemsViewModel)(fakeRequest, messages, frontendAppConfig)
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[AddAnotherAdditionalReferenceView]
-      .apply(form, mrn, arrivalId, notMaxedOutViewModel, houseConsignmentIndex, itemIndex)(fakeRequest, messages, frontendAppConfig)
+      .apply(form, mrn, arrivalId, notMaxedOutViewModel)(fakeRequest, messages, frontendAppConfig)
 
   override def applyMaxedOutView: HtmlFormat.Appendable =
     injector
       .instanceOf[AddAnotherAdditionalReferenceView]
-      .apply(formProvider(maxedOutViewModel), mrn, arrivalId, maxedOutViewModel, houseConsignmentIndex, itemIndex)(fakeRequest, messages, frontendAppConfig)
+      .apply(formProvider(maxedOutViewModel), mrn, arrivalId, maxedOutViewModel)(fakeRequest, messages, frontendAppConfig)
 
   override val prefix: String = "houseConsignment.index.items.additionalReference.addAnotherAdditionalReference"
 

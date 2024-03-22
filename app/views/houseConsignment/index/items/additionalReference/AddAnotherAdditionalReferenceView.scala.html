@@ -29,17 +29,17 @@
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, viewModel: AddAnotherAdditionalReferenceViewModel, houseConsignmentIndex: Index, itemIndex: Index)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, viewModel: AddAnotherAdditionalReferenceViewModel)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
 
 @mainTemplate(
-    title = viewModel.title(houseConsignmentIndex, itemIndex),
+    title = viewModel.title,
     showBackLink = true
 ) {
 
     @errorSummary(form.errors)
 
     @heading(
-        heading = viewModel.heading(houseConsignmentIndex, itemIndex),
+        heading = viewModel.heading,
         caption = Some(messages("site.caption", mrn.toString))
     )
 
@@ -53,11 +53,11 @@
             @inputYesNo(
                 field = form("value"),
                 yesNoType = YesNoWithLegend(
-                    legend = viewModel.legend(houseConsignmentIndex, itemIndex)
+                    legend = viewModel.legend
                 )
             )
         } else {
-            <p class="govuk-body" data-testId="maxLimit">@viewModel.maxLimitLabel(houseConsignmentIndex, itemIndex)</p>
+            <p class="govuk-body" data-testId="maxLimit">@viewModel.maxLimitLabel</p>
         }
 
         @button(messageKey = "site.continue", attributes = Map("id" -> "submit"))
