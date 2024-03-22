@@ -202,9 +202,9 @@ package object models {
           case (value, i) =>
             value match {
               case JsObject(underlying) =>
-                underlying.keys.toSeq match {
-                  case "sequenceNumber" :: Nil => None
-                  case _                       => Some((value, i))
+                underlying.get("removed") match {
+                  case Some(JsBoolean(true)) => None
+                  case _                     => Some((value, i))
                 }
               case _ => Some((value, i))
             }

@@ -106,8 +106,8 @@ trait SpecBase
     def getValue[A <: JsValue](section: Section[JsObject], key: String)(implicit reads: Reads[A]): A =
       userAnswers.data.transform((section.path \ key).json.pick[A]).get
 
-    def setSequenceNumber(section: Section[JsObject], sequenceNumber: String): UserAnswers =
-      userAnswers.set(section.path, Json.obj("sequenceNumber" -> sequenceNumber)).success.value
+    def setRemoved(section: Section[JsObject]): UserAnswers =
+      userAnswers.set(section.path, Json.obj("removed" -> true)).success.value
   }
 
   implicit class RichContent(c: Content) {

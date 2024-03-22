@@ -111,7 +111,7 @@ class AddAnotherDepartureMeansOfTransportViewModelSpec extends SpecBase with Gen
                 .setValue(AddIdentificationNumberYesNoPage(Index(0)), false)
                 .setValue(AddNationalityYesNoPage(Index(0)), true)
                 .setValue(CountryPage(Index(0)), country)
-                .setSequenceNumber(TransportMeansSection(Index(1)), "2")
+                .setRemoved(TransportMeansSection(Index(1)))
                 .setValue(AddIdentificationYesNoPage(Index(2)), false)
                 .setValue(AddIdentificationNumberYesNoPage(Index(2)), true)
                 .setValue(VehicleIdentificationNumberPage(Index(2)), identificationNumber)
