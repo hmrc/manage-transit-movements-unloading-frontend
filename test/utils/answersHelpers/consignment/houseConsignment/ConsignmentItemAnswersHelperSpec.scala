@@ -320,5 +320,29 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
         }
       }
     }
+
+    "dangerousGoodsSection" - {
+      "must generate accordion section" in {
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+          (value1, value2) =>
+            val answers = emptyUserAnswers
+              .setValue(DangerousGoodsPage(hcIndex, itemIndex, Index(0)), value1)
+              .setValue(DangerousGoodsPage(hcIndex, itemIndex, Index(1)), value2)
+
+            val helper = new ConsignmentItemAnswersHelper(answers, hcIndex, itemIndex)
+            val result = helper.dangerousGoodsSection.value
+
+            result mustBe a[AccordionSection]
+            result.sectionTitle.value mustBe "UN numbers"
+            result.id.value mustBe "item-1-dangerous-goods"
+
+            result.viewLinks mustBe empty
+
+            result.rows.size mustBe 2
+            result.rows.head.value.value mustBe value1
+            result.rows(1).value.value mustBe value2
+        }
+      }
+    }
   }
 }

@@ -127,8 +127,7 @@ class ConsignmentItemAnswersHelper(
             rows = rows,
             id = Some(s"item-$itemIndex-additional-information-$index")
           )
-      }
-      .toList match {
+      } match {
       case Nil =>
         None
       case children =>
@@ -170,12 +169,22 @@ class ConsignmentItemAnswersHelper(
         )
     }
 
-  // TODO - should be in a parent accordion
-  def dangerousGoodsRows: Seq[SummaryListRow] =
-    getAnswersAndBuildSectionRows(DangerousGoodsListSection(houseConsignmentIndex, itemIndex)) {
-      index =>
+  def dangerousGoodsSection: Option[Section] =
+    userAnswers.get(DangerousGoodsListSection(houseConsignmentIndex, itemIndex)).mapWithIndex {
+      case (_, index) =>
         val helper = new DangerousGoodsAnswerHelper(userAnswers, houseConsignmentIndex, itemIndex, index)
         helper.dangerousGoodsRow
+    } match {
+      case Nil =>
+        None
+      case rows =>
+        Some(
+          AccordionSection(
+            sectionTitle = Some(messages("unloadingFindings.dangerousGoods.unNumbers")),
+            rows = rows.flatten,
+            id = Some(s"item-$itemIndex-dangerous-goods")
+          )
+        )
     }
 
   def packageSection: Section =

@@ -26,7 +26,6 @@ site.caption = MRN: {0}
 site.email.link = If you have any questions or issues, email us at {0}
 site.email.subject = NCTS Phase 5 - Help with testing
 
-unloadingFindings.sequenceNumber = Sequence number
 unloadingFindings.noInformationProvided = No information provided
 
 error.title.prefix = Error:
@@ -579,6 +578,7 @@ unloadingFindings.additional.information.heading = Additional information {0}
 unloadingFindings.additional.information.code = Type
 unloadingFindings.additional.information.description = Description
 
+unloadingFindings.dangerousGoods.unNumbers = UN numbers
 unloadingFindings.dangerousGoods.unNumber = UN number {0}
 unloadingFindings.dangerousGoods.unNumber.change.hidden = UN number {0} for item {1}
 

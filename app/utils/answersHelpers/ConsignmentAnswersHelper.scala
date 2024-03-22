@@ -263,8 +263,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
             rows = rows,
             id = Some(s"additionalInformation$index")
           )
-      }
-      .toList match {
+      } match {
       case Nil =>
         None
       case children =>
@@ -315,8 +314,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
             children = Seq(endorsementSection) ++ helper.incidentTransportEquipments ++ Seq(transhipment),
             id = Some(s"incident$index")
           )
-      }
-      .toList match {
+      } match {
       case Nil =>
         None
       case children =>
@@ -380,8 +378,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
               helper.houseConsignmentConsigneeSection
             )
           )
-      }
-      .toList match {
+      } match {
       case Nil =>
         None
       case children =>

@@ -134,16 +134,16 @@ class HouseConsignmentAnswersHelper(
           Seq(helper.netWeightRow),
           helper.cusCodeRow,
           Seq(helper.commodityCodeRow),
-          Seq(helper.nomenclatureCodeRow),
-          helper.dangerousGoodsRows
+          Seq(helper.nomenclatureCodeRow)
         ).flatten
 
         val children = Seq(
-          Seq(helper.itemLevelConsigneeSection),
-          Seq(helper.documentSection),
-          Seq(helper.additionalReferencesSection),
+          helper.dangerousGoodsSection,
+          Some(helper.itemLevelConsigneeSection),
+          Some(helper.documentSection),
+          Some(helper.additionalReferencesSection),
           helper.additionalInformationSection,
-          Seq(helper.packageSection)
+          Some(helper.packageSection)
         ).flatten
 
         AccordionSection(

@@ -49,8 +49,7 @@ class TransportEquipmentAnswersHelper(
         case (_, index) =>
           val helper = new SealAnswersHelper(userAnswers, equipmentIndex, index)
           Seq(helper.transportEquipmentSeal).flatten
-      }
-      .toList match {
+      } match {
       case Nil =>
         None
       case rows =>
@@ -71,8 +70,7 @@ class TransportEquipmentAnswersHelper(
         case (_, index) =>
           val helper = new ItemAnswersHelper(userAnswers, equipmentIndex, index)
           Seq(helper.transportEquipmentItem).flatten
-      }
-      .toList match {
+      } match {
       case Nil =>
         None
       case rows =>
