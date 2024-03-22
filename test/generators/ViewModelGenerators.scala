@@ -29,10 +29,9 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import viewModels.additionalReference.index.{AddAnotherAdditionalReferenceViewModel, AdditionalReferenceTypeViewModel}
 import viewModels.departureTransportMeans._
 import viewModels.documents.{AddAnotherDocumentViewModel, AdditionalInformationViewModel, DocumentReferenceNumberViewModel, TypeViewModel}
-import viewModels.houseConsignment.index.items._
 import viewModels.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberViewModel, AdditionalReferenceViewModel}
 import viewModels.houseConsignment.index.items.document.{ItemsAdditionalInformationViewModel, ItemsDocumentReferenceNumberViewModel}
-import viewModels.houseConsignment.index.items.{document => hcViewModel}
+import viewModels.houseConsignment.index.items.{document => hcViewModel, _}
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 import viewModels.transportEquipment.AddAnotherEquipmentViewModel
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
@@ -43,6 +42,9 @@ trait ViewModelGenerators {
   self: Generators =>
 
   private val maxSeqLength = 10
+
+  private val maxTransportDocHC = 99
+  private val maxSupportDocHC   = 99
 
   implicit lazy val arbitraryText: Arbitrary[Text] = Arbitrary {
     for {
@@ -326,12 +328,20 @@ trait ViewModelGenerators {
     } yield HouseConsignmentLevelDocuments(support, transport)
   }
 
+  implicit lazy val arbitraryHouseConsignmentLevelDocumentsMaxedOutTransport: Arbitrary[HouseConsignmentLevelDocuments] = Arbitrary {
+    HouseConsignmentLevelDocuments(0, maxTransportDocHC)
+  }
+
+  implicit lazy val arbitraryHouseConsignmentLevelDocumentsMaxedOutSupport: Arbitrary[HouseConsignmentLevelDocuments] = Arbitrary {
+    HouseConsignmentLevelDocuments(maxSupportDocHC, 0)
+  }
+
   implicit lazy val arbitraryTypeHouseConsignmentViewModel: Arbitrary[hcViewModel.TypeViewModel] = Arbitrary {
     for {
       heading       <- nonEmptyString
       title         <- nonEmptyString
       requiredError <- nonEmptyString
-      documents     <- arbitrary[HouseConsignmentLevelDocuments]
+      documents     <- arbitrary[HouseConsignmentLevelDocuments](arbitraryHouseConsignmentLevelDocuments)
     } yield hcViewModel.TypeViewModel(heading, title, requiredError, documents)
   }
 
