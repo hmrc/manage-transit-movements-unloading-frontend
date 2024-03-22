@@ -45,12 +45,12 @@ trait AddAnotherViewModel {
   def heading(houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
     messages(s"$prefix.$emptyOrSingularOrPlural.heading", count, houseConsignmentIndex.display, itemIndex.display)
 
-  def legend(houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String = if (count > 0)
-    messages(s"$prefix.label", houseConsignmentIndex, itemIndex)
-  else messages(s"$prefix.empty.label", houseConsignmentIndex.display, itemIndex.display)
+  def legend(houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String = if (count > 0) {
+    messages(s"$prefix.label", houseConsignmentIndex.display, itemIndex.display)
+  } else { messages(s"$prefix.empty.label", houseConsignmentIndex.display, itemIndex.display) }
 
   def maxLimitLabel(houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
-    messages(s"$prefix.maxLimit.label", houseConsignmentIndex, itemIndex)
+    messages(s"$prefix.maxLimit.label", houseConsignmentIndex.display, itemIndex.display)
 
   def maxCount(implicit config: FrontendAppConfig): Int
   def allowMore(implicit config: FrontendAppConfig): Boolean = count < maxCount

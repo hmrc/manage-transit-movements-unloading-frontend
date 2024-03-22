@@ -48,13 +48,13 @@ class AddAnotherAdditionalReferenceController @Inject() (
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode)
+      val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode, houseConsignmentIndex, itemIndex)
       Ok(view(form(viewModel), request.userAnswers.mrn, arrivalId, viewModel, houseConsignmentIndex, itemIndex))
   }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode)
+      val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode, houseConsignmentIndex, itemIndex)
       form(viewModel)
         .bindFromRequest()
         .fold(

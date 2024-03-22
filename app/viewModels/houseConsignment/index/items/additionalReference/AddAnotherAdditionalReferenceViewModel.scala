@@ -17,16 +17,12 @@
 package viewModels.houseConsignment.index.items.additionalReference
 
 import config.FrontendAppConfig
-import controllers.houseConsignment.index.items.additionalReference.routes
 import models.{ArrivalId, Index, Mode, RichOptionalJsArray, UserAnswers}
 import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import pages.sections.additionalReference.AdditionalReferencesSection
 import play.api.libs.json.JsArray
 import play.api.mvc.Call
-import sttp.model.Method.GET
-import viewModels.{AddAnotherViewModel, ListItem, ModeViewModelProvider}
-
-import javax.inject.Inject
+import viewModels.{AddAnotherViewModel, ListItem}
 
 case class AddAnotherAdditionalReferenceViewModel(listItems: Seq[ListItem], onSubmitCall: Call, nextIndex: Index) extends AddAnotherViewModel {
   override val prefix: String                                    = "houseConsignment.index.items.additionalReference.addAnotherAdditionalReference"
@@ -38,7 +34,12 @@ object AddAnotherAdditionalReferenceViewModel {
 
   class AddAnotherAdditionalReferenceViewModelProvider {
 
-    def apply(userAnswers: UserAnswers, arrivalId: ArrivalId, mode: Mode): AddAnotherAdditionalReferenceViewModel = {
+    def apply(userAnswers: UserAnswers,
+              arrivalId: ArrivalId,
+              mode: Mode,
+              houseConsignmentIndex: Index,
+              itemIndex: Index
+    ): AddAnotherAdditionalReferenceViewModel = {
 
       val array = userAnswers.get(AdditionalReferencesSection)
 
@@ -65,7 +66,8 @@ object AddAnotherAdditionalReferenceViewModel {
 
       new AddAnotherAdditionalReferenceViewModel(
         listItems,
-        onSubmitCall = controllers.additionalReference.index.routes.AddAnotherAdditionalReferenceController.onSubmit(arrivalId, mode),
+        onSubmitCall = controllers.houseConsignment.index.items.additionalReference.routes.AddAnotherAdditionalReferenceController
+          .onSubmit(arrivalId, mode, houseConsignmentIndex, itemIndex),
         nextIndex = array.nextIndex
       )
     }
