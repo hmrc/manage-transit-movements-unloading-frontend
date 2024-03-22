@@ -426,6 +426,8 @@ unloadingFindings.rowHeadings.replacementMeansOfTransport.identificationNumber =
 unloadingFindings.rowHeadings.replacementMeansOfTransport.nationality = Registered country
 
 unloadingFindings.incident.transportEquipment.heading = Transport equipment {0}
+unloadingFindings.incident.transportEquipment.seals.heading = Seals
+unloadingFindings.incident.transportEquipment.goodsItemNumbers.heading = Goods item numbers
 
 declarationType = Declaration type
 securityType = Safety and security details

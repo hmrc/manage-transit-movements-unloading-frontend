@@ -172,11 +172,17 @@ class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(impl
           val equipmentIndex = Index(index)
           val helper         = new IncidentTransportEquipmentAnswersHelper(userAnswers, transportEquipmentType0)
 
-          val rows = Seq(helper.containerIdentificationNumber, helper.transportEquipmentSeals, helper.itemNumber).flatten
+          val rows = Seq(helper.containerIdentificationNumber).flatten
+
+          val children = Seq(
+            helper.transportEquipmentSeals,
+            helper.itemNumbers
+          ).flatten
 
           AccordionSection(
             sectionTitle = Some(messages("unloadingFindings.incident.transportEquipment.heading", equipmentIndex.display)),
             rows = rows,
+            children = children,
             id = Some(s"incident-$incidentIndex-transport-equipment-$index")
           )
       }
