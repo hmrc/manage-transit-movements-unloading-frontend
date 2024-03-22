@@ -16,7 +16,7 @@
 
 package generators
 
-import models.{ArrivalId, ConsignmentLevelDocuments, Index, NormalMode}
+import models.{ArrivalId, ConsignmentLevelDocuments, HouseConsignmentLevelDocuments, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.FormError
@@ -32,6 +32,7 @@ import viewModels.documents.{AddAnotherDocumentViewModel, AdditionalInformationV
 import viewModels.houseConsignment.index.items._
 import viewModels.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberViewModel, AdditionalReferenceViewModel}
 import viewModels.houseConsignment.index.items.document.{ItemsAdditionalInformationViewModel, ItemsDocumentReferenceNumberViewModel}
+import viewModels.houseConsignment.index.items.{document => hcViewModel}
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 import viewModels.transportEquipment.AddAnotherEquipmentViewModel
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
@@ -316,6 +317,22 @@ trait ViewModelGenerators {
       requiredError <- nonEmptyString
       documents     <- arbitrary[ConsignmentLevelDocuments]
     } yield TypeViewModel(heading, title, requiredError, documents)
+  }
+
+  implicit lazy val arbitraryHouseConsignmentLevelDocuments: Arbitrary[HouseConsignmentLevelDocuments] = Arbitrary {
+    for {
+      support   <- positiveInts
+      transport <- positiveInts
+    } yield HouseConsignmentLevelDocuments(support, transport)
+  }
+
+  implicit lazy val arbitraryTypeHouseConsignmentViewModel: Arbitrary[hcViewModel.TypeViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+      documents     <- arbitrary[HouseConsignmentLevelDocuments]
+    } yield hcViewModel.TypeViewModel(heading, title, requiredError, documents)
   }
 
   implicit lazy val arbitraryItemsDocumentReferenceNumberViewModel: Arbitrary[ItemsDocumentReferenceNumberViewModel] = Arbitrary {

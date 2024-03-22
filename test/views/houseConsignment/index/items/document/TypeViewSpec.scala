@@ -19,30 +19,43 @@ package views.houseConsignment.index.items.document
 import forms.SelectableFormProvider
 import models.reference.DocumentType
 import models.{NormalMode, SelectableList}
-import org.scalacheck.Arbitrary
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import viewModels.houseConsignment.index.items.document.TypeViewModel
 import views.behaviours.InputSelectViewBehaviours
 import views.html.houseConsignment.index.items.document.TypeView
 
 class TypeViewSpec extends InputSelectViewBehaviours[DocumentType] {
 
+  private val viewModel: TypeViewModel =
+    arbitrary[TypeViewModel].sample.value
+
   override def form: Form[DocumentType] = new SelectableFormProvider()(NormalMode, prefix, SelectableList(values))
 
   override def applyView(form: Form[DocumentType]): HtmlFormat.Appendable =
-    injector.instanceOf[TypeView].apply(form, mrn, arrivalId, NormalMode, values, houseConsignmentIndex, itemIndex, documentIndex)(fakeRequest, messages)
+    injector
+      .instanceOf[TypeView]
+      .apply(form, mrn, arrivalId, NormalMode, values, viewModel, houseConsignmentIndex, itemIndex, documentIndex)(fakeRequest, messages, frontendAppConfig)
 
   implicit override val arbitraryT: Arbitrary[DocumentType] = arbitraryDocumentType
 
-  override val prefix: String = "houseConsignment.index.items.document.type"
+  override val prefix: String = Gen
+    .oneOf(
+      "houseConsignment.index.items.document.type.NormalMode",
+      "houseConsignment.index.items.document.type.CheckMode"
+    )
+    .sample
+    .value
 
-  behave like pageWithTitle(houseConsignmentIndex.display, itemIndex.display)
+  behave like pageWithTitle(text = viewModel.title)
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithHeading(houseConsignmentIndex.display, itemIndex.display)
+  behave like pageWithHeading(text = viewModel.heading)
 
   behave like pageWithSelect()
 
