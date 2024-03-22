@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.houseConsignment.index.items.routes
+@import controllers.houseConsignment.index.items.packages.routes
 @import models.MovementReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
@@ -29,21 +29,21 @@
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode, insetText: Option[String])(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode, insetText: Option[String])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("houseConsignment.removeGrossWeightYesNo.title", itemIndex.display, houseConsignmentIndex.display),
+    title = messages("houseConsignment.index.items.packages.removePackageTypeYesNo.title", houseConsignmentIndex.display, itemIndex.display),
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.RemoveGrossWeightYesNoController.onSubmit(arrivalId, houseConsignmentIndex, itemIndex, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.RemovePackageTypeYesNoController.onSubmit(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),
             yesNoType = InputYesNoViewModel(
-                heading = messages("houseConsignment.removeGrossWeightYesNo.heading", itemIndex.display, houseConsignmentIndex.display),
+                heading = messages("houseConsignment.index.items.packages.removePackageTypeYesNo.heading", houseConsignmentIndex.display, itemIndex.display),
                 caption = Some(messages("site.caption", mrn.toString)),
                 additionalHtml = insetText.map(x => govukInsetText(InsetText(content = Text(x))))
             )
