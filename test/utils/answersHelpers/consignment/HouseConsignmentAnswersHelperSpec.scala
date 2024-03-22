@@ -29,6 +29,7 @@ import pages.houseConsignment.index.items.{
   CombinedNomenclatureCodePage,
   CommodityCodePage,
   CustomsUnionAndStatisticsCodePage,
+  DangerousGoodsPage,
   GrossWeightPage,
   ItemDescriptionPage,
   NetWeightPage,
@@ -209,128 +210,146 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(DepartureTransportMeansCountryPage(hcIndex, dtmIndex), country)
 
             val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
-            val result = helper.departureTransportMeansSections
+            val result = helper.departureTransportMeansSection
 
-            result.head mustBe a[AccordionSection]
-            result.head.sectionTitle.value mustBe "Departure means of transport 1"
-            result.head.rows.size mustBe 3
-            result.head.id.value mustBe "departureTransportMeans1"
+            result mustBe a[AccordionSection]
+            result.sectionTitle.value mustBe "Departure means of transport"
+            result.children.size mustBe 1
 
-            result.head.rows.head.value.value mustBe `type`.description
-            result.head.rows(1).value.value mustBe number
-            result.head.rows(2).value.value mustBe country.description
+            val dtm1 = result.children.head
+            dtm1 mustBe a[AccordionSection]
+            dtm1.sectionTitle.value mustBe "Departure means of transport 1"
+            dtm1.id.value mustBe "departureTransportMeans1"
+            dtm1.rows.size mustBe 3
+
+            dtm1.rows.head.value.value mustBe `type`.description
+            dtm1.rows(1).value.value mustBe number
+            dtm1.rows(2).value.value mustBe country.description
         }
       }
     }
 
     "itemSections" - {
       "must generate accordion sections" in {
-        forAll(Gen.alphaNumStr, arbitrary[BigDecimal], arbitrary[Double], arbitrary[PackageType], arbitrary[BigInt], arbitrary[AdditionalReferenceType]) {
-          (description, grossWeight, netWeight, packageType, count, additionalReference) =>
-            val (cusCode, commodityCode, nomenclatureCode, additionalInformation) =
-              ("cusCode", "commodityCode", "nomenclatureCode", AdditionalInformationCode("code", "description"))
-            val answers = emptyUserAnswers
-              .setValue(ItemDescriptionPage(hcIndex, itemIndex), description)
-              .setValue(GrossWeightPage(hcIndex, itemIndex), grossWeight)
-              .setValue(NetWeightPage(hcIndex, itemIndex), netWeight)
-              .setValue(PackageTypePage(hcIndex, itemIndex, packageIndex), packageType)
-              .setValue(NumberOfPackagesPage(hcIndex, itemIndex, packageIndex), count)
-              .setValue(PackageShippingMarkPage(hcIndex, itemIndex, packageIndex), description)
-              .setValue(CustomsUnionAndStatisticsCodePage(hcIndex, itemIndex), cusCode)
-              .setValue(CommodityCodePage(hcIndex, itemIndex), commodityCode)
-              .setValue(CombinedNomenclatureCodePage(hcIndex, itemIndex), nomenclatureCode)
-              .setValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(0)), "doc 1 ref")
-              .setValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(1)), "doc 2 ref")
-              .setValue(AdditionalReferencePage(hcIndex, itemIndex, additionalReferenceIndex), additionalReference)
-              .setValue(HouseConsignmentAdditionalInformationCodePage(hcIndex, itemIndex, additionalInformationIndex), additionalInformation)
-              .setValue(ItemConsigneeNamePage(hcIndex, itemIndex), "John Smith")
-              .setValue(ItemConsigneeIdentifierPage(hcIndex, itemIndex), "csgee1")
+        val description           = Gen.alphaNumStr.sample.value
+        val grossWeight           = arbitrary[BigDecimal].sample.value
+        val netWeight             = arbitrary[Double].sample.value
+        val packageType           = arbitrary[PackageType].sample.value
+        val count                 = arbitrary[BigInt].sample.value
+        val additionalReference   = arbitrary[AdditionalReferenceType].sample.value
+        val cusCode               = "cusCode"
+        val commodityCode         = "commodityCode"
+        val nomenclatureCode      = "nomenclatureCode"
+        val additionalInformation = AdditionalInformationCode("code", "description")
 
-            val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
-            val result = helper.itemSection
+        val answers = emptyUserAnswers
+          .setValue(ItemDescriptionPage(hcIndex, itemIndex), description)
+          .setValue(GrossWeightPage(hcIndex, itemIndex), grossWeight)
+          .setValue(NetWeightPage(hcIndex, itemIndex), netWeight)
+          .setValue(PackageTypePage(hcIndex, itemIndex, packageIndex), packageType)
+          .setValue(NumberOfPackagesPage(hcIndex, itemIndex, packageIndex), count)
+          .setValue(PackageShippingMarkPage(hcIndex, itemIndex, packageIndex), description)
+          .setValue(CustomsUnionAndStatisticsCodePage(hcIndex, itemIndex), cusCode)
+          .setValue(CommodityCodePage(hcIndex, itemIndex), commodityCode)
+          .setValue(CombinedNomenclatureCodePage(hcIndex, itemIndex), nomenclatureCode)
+          .setValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(0)), "doc 1 ref")
+          .setValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(1)), "doc 2 ref")
+          .setValue(AdditionalReferencePage(hcIndex, itemIndex, additionalReferenceIndex), additionalReference)
+          .setValue(HouseConsignmentAdditionalInformationCodePage(hcIndex, itemIndex, additionalInformationIndex), additionalInformation)
+          .setValue(ItemConsigneeNamePage(hcIndex, itemIndex), "John Smith")
+          .setValue(ItemConsigneeIdentifierPage(hcIndex, itemIndex), "csgee1")
+          .setValue(DangerousGoodsPage(hcIndex, itemIndex, Index(0)), "dg1")
+          .setValue(DangerousGoodsPage(hcIndex, itemIndex, Index(1)), "dg2")
 
-            result.viewLinks.length mustBe 1
+        val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
+        val result = helper.itemSection
 
-            result.viewLinks.head.href mustBe "#"
-            result.viewLinks.head.id mustBe "add-remove-items"
-            result.viewLinks.head.text mustBe "Add or remove item"
+        result.viewLinks.length mustBe 1
 
-            result mustBe a[AccordionSection]
-            result.sectionTitle.value mustBe "Items"
-            result.rows.size mustBe 0
-            result.id.value mustBe "items"
+        result.viewLinks.head.href mustBe "#"
+        result.viewLinks.head.id mustBe "add-remove-items"
+        result.viewLinks.head.text mustBe "Add or remove item"
 
-            result.children.head mustBe a[AccordionSection]
-            result.children.head.sectionTitle.value mustBe "Item 1"
-            result.children.head.id.value mustBe "item-1"
-            result.children.head.rows.size mustBe 6
-            result.children.head.rows.head.value.value mustBe description
-            result.children.head.rows(1).value.value mustBe s"${grossWeight}kg"
-            result.children.head.rows(2).value.value mustBe s"${netWeight}kg"
-            result.children.head.rows(3).value.value mustBe s"$cusCode"
-            result.children.head.rows(4).value.value mustBe s"$commodityCode"
-            result.children.head.rows(5).value.value mustBe s"$nomenclatureCode"
+        result mustBe a[AccordionSection]
+        result.sectionTitle.value mustBe "Items"
+        result.rows.size mustBe 0
+        result.id.value mustBe "items"
 
-            result.children.head.children.head.sectionTitle.get mustBe "Consignee"
-            result.children.head.children.head.rows.size mustBe 2
-            result.children.head.children.head.rows.head.value.value mustBe "csgee1"
-            result.children.head.children.head.rows(1).value.value mustBe "John Smith"
+        result.children.head mustBe a[AccordionSection]
+        result.children.head.sectionTitle.value mustBe "Item 1"
+        result.children.head.id.value mustBe "item-1"
+        result.children.head.rows.size mustBe 6
+        result.children.head.rows.head.value.value mustBe description
+        result.children.head.rows(1).value.value mustBe s"${grossWeight}kg"
+        result.children.head.rows(2).value.value mustBe s"${netWeight}kg"
+        result.children.head.rows(3).value.value mustBe s"$cusCode"
+        result.children.head.rows(4).value.value mustBe s"$commodityCode"
+        result.children.head.rows(5).value.value mustBe s"$nomenclatureCode"
 
-            result.children.head.children(1) mustBe a[AccordionSection]
-            result.children.head.children(1).sectionTitle.value mustBe "Documents"
-            result.children.head.children(1).id.value mustBe "item-1-documents"
-            result.children.head.children(1).rows.size mustBe 0
-            result.children.head.children(1).viewLinks must not be empty
+        result.children.head.children.head.sectionTitle.get mustBe "UN numbers"
+        result.children.head.children.head.rows.size mustBe 2
+        result.children.head.children.head.rows.head.value.value mustBe "dg1"
+        result.children.head.children.head.rows(1).value.value mustBe "dg2"
 
-            result.children.head.children(1).children.head mustBe a[AccordionSection]
-            result.children.head.children(1).children.head.sectionTitle.value mustBe "Document 1"
-            result.children.head.children(1).children.head.id.value mustBe "item-1-document-1"
-            result.children.head.children(1).children.head.rows.size mustBe 1
-            result.children.head.children(1).children.head.rows.head.value.value mustBe "doc 1 ref"
+        result.children.head.children(1).sectionTitle.get mustBe "Consignee"
+        result.children.head.children(1).rows.size mustBe 2
+        result.children.head.children(1).rows.head.value.value mustBe "csgee1"
+        result.children.head.children(1).rows(1).value.value mustBe "John Smith"
 
-            result.children.head.children(1).children(1) mustBe a[AccordionSection]
-            result.children.head.children(1).children(1).sectionTitle.value mustBe "Document 2"
-            result.children.head.children(1).children(1).id.value mustBe "item-1-document-2"
-            result.children.head.children(1).children(1).rows.size mustBe 1
-            result.children.head.children(1).children(1).rows.head.value.value mustBe "doc 2 ref"
+        result.children.head.children(2) mustBe a[AccordionSection]
+        result.children.head.children(2).sectionTitle.value mustBe "Documents"
+        result.children.head.children(2).id.value mustBe "item-1-documents"
+        result.children.head.children(2).rows.size mustBe 0
+        result.children.head.children(2).viewLinks must not be empty
 
-            result.children.head.children(2) mustBe a[AccordionSection]
-            result.children.head.children(2).sectionTitle.value mustBe "Additional references"
-            result.children.head.children(2).id.value mustBe "item-1-additional-references"
-            result.children.head.children(2).rows.size mustBe 0
-            result.children.head.children(2).viewLinks must not be empty
+        result.children.head.children(2).children.head mustBe a[AccordionSection]
+        result.children.head.children(2).children.head.sectionTitle.value mustBe "Document 1"
+        result.children.head.children(2).children.head.id.value mustBe "item-1-document-1"
+        result.children.head.children(2).children.head.rows.size mustBe 1
+        result.children.head.children(2).children.head.rows.head.value.value mustBe "doc 1 ref"
 
-            result.children.head.children(2).children.head mustBe a[AccordionSection]
-            result.children.head.children(2).children.head.sectionTitle.value mustBe "Additional reference 1"
-            result.children.head.children(2).children.head.id.value mustBe "item-1-additional-reference-1"
-            result.children.head.children(2).children.head.rows.size mustBe 1
-            result.children.head.children(2).children.head.rows.head.value.value mustBe additionalReference.toString
+        result.children.head.children(2).children(1) mustBe a[AccordionSection]
+        result.children.head.children(2).children(1).sectionTitle.value mustBe "Document 2"
+        result.children.head.children(2).children(1).id.value mustBe "item-1-document-2"
+        result.children.head.children(2).children(1).rows.size mustBe 1
+        result.children.head.children(2).children(1).rows.head.value.value mustBe "doc 2 ref"
 
-            result.children.head.children(3) mustBe a[AccordionSection]
-            result.children.head.children(3).sectionTitle.value mustBe "Additional information"
-            result.children.head.children(3).id.value mustBe "item-1-additional-information"
-            result.children.head.children(3).rows.size mustBe 0
-            result.children.head.children(3).viewLinks mustBe empty
+        result.children.head.children(3) mustBe a[AccordionSection]
+        result.children.head.children(3).sectionTitle.value mustBe "Additional references"
+        result.children.head.children(3).id.value mustBe "item-1-additional-references"
+        result.children.head.children(3).rows.size mustBe 0
+        result.children.head.children(3).viewLinks must not be empty
 
-            result.children.head.children(3).children.head mustBe a[AccordionSection]
-            result.children.head.children(3).children.head.sectionTitle.value mustBe "Additional information 1"
-            result.children.head.children(3).children.head.id.value mustBe "item-1-additional-information-1"
-            result.children.head.children(3).children.head.rows.size mustBe 1
-            result.children.head.children(3).children.head.rows.head.value.value mustBe additionalInformation.toString
+        result.children.head.children(3).children.head mustBe a[AccordionSection]
+        result.children.head.children(3).children.head.sectionTitle.value mustBe "Additional reference 1"
+        result.children.head.children(3).children.head.id.value mustBe "item-1-additional-reference-1"
+        result.children.head.children(3).children.head.rows.size mustBe 1
+        result.children.head.children(3).children.head.rows.head.value.value mustBe additionalReference.toString
 
-            result.children.head.children(4) mustBe a[AccordionSection]
-            result.children.head.children(4).sectionTitle.value mustBe "Packages"
-            result.children.head.children(4).id.value mustBe "item-1-packages"
-            result.children.head.children(4).rows.size mustBe 0
-            result.children.head.children(4).viewLinks must not be empty
+        result.children.head.children(4) mustBe a[AccordionSection]
+        result.children.head.children(4).sectionTitle.value mustBe "Additional information"
+        result.children.head.children(4).id.value mustBe "item-1-additional-information"
+        result.children.head.children(4).rows.size mustBe 0
+        result.children.head.children(4).viewLinks mustBe empty
 
-            result.children.head.children(4).children.head.sectionTitle.get mustBe "Package 1"
-            result.children.head.children(4).children.head.id.get mustBe "item-1-package-1"
-            result.children.head.children(4).children.head.rows.size mustBe 3
-            result.children.head.children(4).children.head.rows(0).value.value mustBe s"${packageType.asDescription}"
-            result.children.head.children(4).children.head.rows(1).value.value mustBe s"$count"
-            result.children.head.children(4).children.head.rows(2).value.value mustBe s"$description"
-        }
+        result.children.head.children(4).children.head mustBe a[AccordionSection]
+        result.children.head.children(4).children.head.sectionTitle.value mustBe "Additional information 1"
+        result.children.head.children(4).children.head.id.value mustBe "item-1-additional-information-1"
+        result.children.head.children(4).children.head.rows.size mustBe 1
+        result.children.head.children(4).children.head.rows.head.value.value mustBe additionalInformation.toString
+
+        result.children.head.children(5) mustBe a[AccordionSection]
+        result.children.head.children(5).sectionTitle.value mustBe "Packages"
+        result.children.head.children(5).id.value mustBe "item-1-packages"
+        result.children.head.children(5).rows.size mustBe 0
+        result.children.head.children(5).viewLinks must not be empty
+
+        result.children.head.children(5).children.head.sectionTitle.get mustBe "Package 1"
+        result.children.head.children(5).children.head.id.get mustBe "item-1-package-1"
+        result.children.head.children(5).children.head.rows.size mustBe 3
+        result.children.head.children(5).children.head.rows(0).value.value mustBe s"${packageType.asDescription}"
+        result.children.head.children(5).children.head.rows(1).value.value mustBe s"$count"
+        result.children.head.children(5).children.head.rows(2).value.value mustBe s"$description"
       }
     }
   }

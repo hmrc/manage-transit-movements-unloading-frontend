@@ -25,6 +25,15 @@ sealed trait Section {
   val children: Seq[Section]
   val viewLinks: Seq[Link]
   val id: Option[String]
+
+  def margin: String = {
+    val indent = if (sectionTitle.isDefined) 1 else 0
+    s"govuk-!-margin-left-${2 * indent}"
+  }
+
+  def isEmpty: Boolean
+
+  def nonEmpty: Boolean = !isEmpty
 }
 
 object Section {
@@ -35,7 +44,10 @@ object Section {
     children: Seq[Section] = Nil,
     viewLinks: Seq[Link] = Nil,
     id: Option[String] = None
-  ) extends Section
+  ) extends Section {
+
+    override def isEmpty: Boolean = false
+  }
 
   object AccordionSection {
 
@@ -55,6 +67,8 @@ object Section {
     viewLinks: Seq[Link] = Nil,
     id: Option[String] = None
   ) extends Section {
+
+    override def isEmpty: Boolean = rows.isEmpty
 
     override val children: Seq[Section] = Seq.empty
   }

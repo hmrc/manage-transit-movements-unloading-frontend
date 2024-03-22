@@ -72,6 +72,24 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
   "ApplyAnotherItem Controller" - {
 
     "must return OK and the correct view for a GET" - {
+      "when 0 goods references" in {
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
+          .thenReturn(emptyViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, applyAnotherItemRoute)
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[ApplyAnotherItemView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(form(emptyViewModel, equipmentIndex), mrn, arrivalId, emptyViewModel)(request, messages, frontendAppConfig).toString
+      }
+
       "when max limit not reached" in {
         when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
           .thenReturn(notMaxedOutViewModel)

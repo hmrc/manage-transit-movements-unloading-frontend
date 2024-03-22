@@ -21,6 +21,8 @@ import models.{Index, UserAnswers}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
+import viewModels.sections.Section
+import viewModels.sections.Section.AccordionSection
 
 class IncidentTransportEquipmentAnswersHelper(
   userAnswers: UserAnswers,
@@ -34,7 +36,7 @@ class IncidentTransportEquipmentAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.containerIdentificationNumber"
   )
 
-  def transportEquipmentSeals: Seq[SummaryListRow] =
+  def transportEquipmentSeals: Option[Section] =
     transportEquipmentType7.Seal.zipWithIndex.flatMap {
       case (sealType0, i) =>
         val sealIndex = Index(i)
@@ -44,10 +46,19 @@ class IncidentTransportEquipmentAnswersHelper(
           prefix = "unloadingFindings.rowHeadings.sealIdentifier",
           args = sealIndex.display
         )
-
+    } match {
+      case Nil =>
+        None
+      case rows =>
+        Some(
+          AccordionSection(
+            sectionTitle = Some(messages("unloadingFindings.incident.transportEquipment.seals.heading")),
+            rows = rows
+          )
+        )
     }
 
-  def itemNumber: Seq[SummaryListRow] =
+  def itemNumbers: Option[Section] =
     transportEquipmentType7.GoodsReference.zipWithIndex.flatMap {
       case (type0, i) =>
         val itemIndex = Index(i)
@@ -57,7 +68,15 @@ class IncidentTransportEquipmentAnswersHelper(
           prefix = "unloadingFindings.rowHeadings.incident.item",
           args = itemIndex.display
         )
-
+    } match {
+      case Nil =>
+        None
+      case rows =>
+        Some(
+          AccordionSection(
+            sectionTitle = Some(messages("unloadingFindings.incident.transportEquipment.goodsItemNumbers.heading")),
+            rows = rows
+          )
+        )
     }
-
 }
