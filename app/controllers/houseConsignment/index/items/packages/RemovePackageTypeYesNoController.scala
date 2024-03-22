@@ -19,6 +19,7 @@ package controllers.houseConsignment.index.items.packages
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.reference.PackageType
+import models.requests.SpecificDataRequestProvider1
 import models.{ArrivalId, Index, Mode}
 import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageTypePage}
 import pages.sections.PackagingSection
@@ -37,6 +38,7 @@ class RemovePackageTypeYesNoController @Inject() (
   sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: YesNoFormProvider,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemovePackageTypeYesNoView
 )(implicit ec: ExecutionContext)
@@ -46,21 +48,21 @@ class RemovePackageTypeYesNoController @Inject() (
   private def addAnother(arrivalId: ArrivalId, mode: Mode): Call =
     Call("GET", "#") //TODO should go to addAnother package page
 
-  private def form(packageType: Option[PackageType]): Form[Boolean] =
-    formProvider("houseConsignment.index.items.packages.removePackageTypeYesNo", packageType.map(_.toString()).getOrElse(""))
+  private type Request = SpecificDataRequestProvider1[PackageType]#SpecificDataRequest[_]
+
+  private def packageType(implicit request: Request): PackageType = request.arg
+
+  private def form(packageType: PackageType): Form[Boolean] =
+    formProvider("houseConsignment.index.items.packages.removePackageTypeYesNo", packageType.toString)
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     actions
-      .getStatus(arrivalId) {
+      .getStatus(arrivalId)
+      .andThen(getMandatoryPage(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex))) {
         implicit request =>
-          val quantity          = request.userAnswers.get(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex)).map(_.toString())
-          val packageType       = request.userAnswers.get(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex))
-          val packageTypeString = packageType.map(_.toString())
-          val insetText: Option[String] = quantity.flatMap(
-            numberOfPackages =>
-              packageTypeString.map(
-                packageType => s"$numberOfPackages $packageType"
-              )
+          val quantity = request.userAnswers.get(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex)).map(_.toString())
+          val insetText: Option[String] = quantity.map(
+            numberOfPackages => s"$numberOfPackages ${packageType.toString}"
           )
           Ok(view(form(packageType), request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode, insetText))
       }
@@ -68,16 +70,12 @@ class RemovePackageTypeYesNoController @Inject() (
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     actions
       .getStatus(arrivalId)
+      .andThen(getMandatoryPage(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex)))
       .async {
         implicit request =>
-          val quantity          = request.userAnswers.get(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex)).map(_.toString())
-          val packageType       = request.userAnswers.get(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex))
-          val packageTypeString = packageType.map(_.toString())
-          val insetText: Option[String] = quantity.flatMap(
-            numberOfPackages =>
-              packageTypeString.map(
-                packageType => s"$numberOfPackages $packageType"
-              )
+          val quantity = request.userAnswers.get(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex)).map(_.toString())
+          val insetText: Option[String] = quantity.map(
+            numberOfPackages => s"$numberOfPackages ${packageType.toString}"
           )
           form(packageType)
             .bindFromRequest()
