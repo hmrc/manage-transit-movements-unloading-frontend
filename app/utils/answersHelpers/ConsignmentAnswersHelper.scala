@@ -276,6 +276,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         )
     }
 
+  // scalastyle:off method.length
   def incidentSection: Option[Section] =
     userAnswers
       .get(IncidentsSection)
@@ -311,7 +312,11 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           AccordionSection(
             sectionTitle = Some(messages("unloadingFindings.subsections.incidents", index.display)),
             rows = rows,
-            children = Seq(endorsementSection) ++ helper.incidentTransportEquipments ++ Seq(transhipment),
+            children = Seq(
+              Some(endorsementSection),
+              helper.incidentTransportEquipments,
+              Some(transhipment)
+            ).flatten,
             id = Some(s"incident$index")
           )
       } match {
@@ -326,6 +331,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           )
         )
     }
+  // scalastyle:on method.length
 
   def documentSection: Section =
     userAnswers.get(DocumentsSection).mapWithIndex {

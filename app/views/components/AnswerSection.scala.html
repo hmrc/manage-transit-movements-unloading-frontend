@@ -28,26 +28,28 @@
 @if(section.nonEmpty) {
     @section match {
         case x: StaticSection => {
-            @section.sectionTitle.map { title =>
-                <h2 class="govuk-heading-m">@title</h2>
-            }
+            <div class="govuk-!-margin-bottom-9">
+                @section.sectionTitle.map { title =>
+                    <h2 class="govuk-heading-m">@title</h2>
+                }
 
-            <div class="@section.margin">
-                @if(section.rows.nonEmpty) {
-                    @govukSummaryList(
-                        SummaryList(
-                            rows = section.rows
+                <div class="@section.margin">
+                    @if(section.rows.nonEmpty) {
+                        @govukSummaryList(
+                            SummaryList(
+                                rows = section.rows
+                            )
                         )
-                    )
-                }
+                    }
 
-                @section.viewLinks.map { link =>
-                    <p class="govuk-body">
-                        <a class="govuk-link" href=@link.href id="@link.id">
-                            @messages(link.text) <span class="govuk-visually-hidden">@link.visuallyHidden</span>
-                        </a>
-                    </p>
-                }
+                    @section.viewLinks.map { link =>
+                        <p class="govuk-body">
+                            <a class="govuk-link" href=@link.href id="@link.id">
+                                @messages(link.text) <span class="govuk-visually-hidden">@link.visuallyHidden</span>
+                            </a>
+                        </p>
+                    }
+                </div>
             </div>
         }
         case x: AccordionSection => {

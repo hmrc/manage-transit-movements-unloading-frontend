@@ -160,7 +160,7 @@ class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(impl
     prefix = "unloadingFindings.rowHeadings.containerIndicator"
   )
 
-  def incidentTransportEquipments: Seq[Section] =
+  def incidentTransportEquipments: Option[Section] =
     userAnswers.ie043Data.Consignment
       .flatMap(_.Incident.lift(incidentIndex.position))
       .map(_.TransportEquipment)
@@ -168,9 +168,9 @@ class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(impl
       .flatten
       .zipWithIndex
       .map {
-        case (transportEquipmentType0, index) =>
+        case (transportEquipment, index) =>
           val equipmentIndex = Index(index)
-          val helper         = new IncidentTransportEquipmentAnswersHelper(userAnswers, transportEquipmentType0)
+          val helper         = new IncidentTransportEquipmentAnswersHelper(userAnswers, transportEquipment)
 
           val rows = Seq(helper.containerIdentificationNumber).flatten
 
@@ -185,7 +185,17 @@ class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(impl
             children = children,
             id = Some(s"incident-$incidentIndex-transport-equipment-$index")
           )
-      }
+      } match {
+      case Nil =>
+        None
+      case children =>
+        Some(
+          AccordionSection(
+            sectionTitle = Some(messages("unloadingFindings.incident.transportEquipment.parent.heading")),
+            children = children
+          )
+        )
+    }
 
   def incidentReplacementMeansOfTransport: Seq[SummaryListRow] = {
     val maybeTranshipmentType0: Option[TranshipmentType02] = userAnswers.ie043Data.Consignment
