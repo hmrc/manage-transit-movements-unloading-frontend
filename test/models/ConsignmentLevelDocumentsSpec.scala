@@ -89,7 +89,8 @@ class ConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChec
       val transportDoc = arbitrary[DocumentType](arbitraryTransportDocument).sample.value
       val documents    = Seq(transportDoc, supportDoc)
 
-      val consignmentLevelDocuments = ConsignmentLevelDocuments(frontendAppConfig.maxSupportingDocuments - 1, frontendAppConfig.maxTransportDocuments)
+      val consignmentLevelDocuments =
+        ConsignmentLevelDocuments(frontendAppConfig.maxSupportingDocumentsConsignment - 1, frontendAppConfig.maxTransportDocumentsConsignment)
 
       consignmentLevelDocuments.availableDocuments(documents) mustBe Seq(supportDoc)
     }

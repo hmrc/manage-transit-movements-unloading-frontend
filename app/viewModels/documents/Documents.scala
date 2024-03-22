@@ -24,9 +24,9 @@ import play.api.i18n.Messages
 object Documents {
 
   def maxLimitLabelForType(documents: ConsignmentLevelDocuments, prefix: String)(implicit config: FrontendAppConfig, messages: Messages): Option[String] =
-    if (documents.supporting >= config.maxSupportingDocuments) {
+    if (documents.supporting >= config.maxSupportingDocumentsConsignment) {
       Some(messages(s"$prefix.maxLimitForType.label", Support.display.toLowerCase, Transport.display.toLowerCase))
-    } else if (documents.transport >= config.maxTransportDocuments) {
+    } else if (documents.transport >= config.maxTransportDocumentsConsignment) {
       Some(messages(s"$prefix.maxLimitForType.label", Transport.display.toLowerCase, Support.display.toLowerCase))
     } else {
       None
