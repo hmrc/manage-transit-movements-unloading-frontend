@@ -36,7 +36,7 @@ class AddNumberOfPackagesYesNoControllerSpec extends SpecBase with AppWithDefaul
   private val form         = formProvider("houseConsignment.index.items.packages.addNumberOfPackagesYesNo")
   private val mode         = NormalMode
 
-  private val packageType = PackageType("VQ", "Bulk")
+  private val packageType = PackageType("1A", "Drum, steel")
 
   private lazy val addNumberOfPackagesYesNoRoute =
     routes.AddNumberOfPackagesYesNoController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, packageIndex).url
@@ -89,7 +89,10 @@ class AddNumberOfPackagesYesNoControllerSpec extends SpecBase with AppWithDefaul
 
     "must redirect to the next page when valid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(
+        emptyUserAnswers
+          .setValue(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex), packageType)
+      )
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -105,7 +108,9 @@ class AddNumberOfPackagesYesNoControllerSpec extends SpecBase with AppWithDefaul
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(
+        emptyUserAnswers.setValue(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex), packageType)
+      )
 
       val invalidAnswer = ""
 
