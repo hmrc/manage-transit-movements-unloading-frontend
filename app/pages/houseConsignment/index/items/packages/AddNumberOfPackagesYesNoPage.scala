@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages.houseConsignment.index.items
+package pages.houseConsignment.index.items.packages
 
 import models.Index
 import pages.QuestionPage

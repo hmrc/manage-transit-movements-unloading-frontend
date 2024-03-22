@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package controllers.houseConsignment.index.items
+package controllers.houseConsignment.index.items.packages
 
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode}
 import navigation.DocumentNavigator
-import pages.PackageTypePage
-import pages.houseConsignment.index.items.AddNumberOfPackagesYesNoPage
+import pages.houseConsignment.index.items.packages.{AddNumberOfPackagesYesNoPage, PackageTypePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.houseConsignment.index.items.AddNumberOfPackagesYesNoView
+import views.html.houseConsignment.index.items.packages.AddNumberOfPackagesYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,43 +39,46 @@ class AddNumberOfPackagesYesNoController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AddNumberOfPackagesYesNoView,
   getMandatoryPage: SpecificDataRequiredActionProvider
-                                                   )(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   private val form = formProvider("houseConsignment.index.items.packages.addNumberOfPackagesYesNo")
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index): Action[AnyContent] =
-    actions.getStatus(arrivalId)
-      .andThen(getMandatoryPage(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex)))
-      {
-      implicit request =>
-        val preparedForm = request.userAnswers.get(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex)) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
+    actions
+      .getStatus(arrivalId)
+      .andThen(getMandatoryPage(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex))) {
+        implicit request =>
+          val preparedForm = request.userAnswers.get(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex)) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
 
-        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, request.arg.toString, mode))
-    }
+          Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, request.arg.toString, mode))
+      }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index): Action[AnyContent] =
-    actions.getStatus(arrivalId)
+    actions
+      .getStatus(arrivalId)
       .andThen(getMandatoryPage(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex)))
       .async {
-      implicit request =>
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors =>
-              Future.successful(
-                BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, request.arg.toString, mode))
-              ),
-            value =>
-              for {
-                updatedAnswers <- Future
-                  .fromTry(request.userAnswers.set(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), value))
-                _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), mode, updatedAnswers))
-          )
-    }
+        implicit request =>
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors =>
+                Future.successful(
+                  BadRequest(
+                    view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, request.arg.toString, mode)
+                  )
+                ),
+              value =>
+                for {
+                  updatedAnswers <- Future
+                    .fromTry(request.userAnswers.set(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), value))
+                  _ <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), mode, updatedAnswers))
+            )
+      }
 }

@@ -36,7 +36,7 @@ button: Button,
 
         @errorSummary(form.errors)
 
-        @formHelper(action = controllers.houseConsignment.index.items.routes.AddNumberOfPackagesYesNoController.onSubmit(arrivalId, mode, houseConsignmentIndex, itemIndex, packageIndex), Symbol("autoComplete") -> "off") {
+        @formHelper(action = controllers.houseConsignment.index.items.packages.routes.AddNumberOfPackagesYesNoController.onSubmit(arrivalId, mode, houseConsignmentIndex, itemIndex, packageIndex), Symbol("autoComplete") -> "off") {
 
         @inputYesNo(
             field = form("value"),
