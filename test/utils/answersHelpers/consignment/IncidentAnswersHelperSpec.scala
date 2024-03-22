@@ -16,7 +16,7 @@
 
 package utils.answersHelpers.consignment
 
-import generated.{AddressType18, ConsignmentType05, EndorsementType03, Flag, GNSSType, IncidentType04, LocationType02, Number0, TranshipmentType02}
+import generated._
 import models.Coordinates
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.{Country, Incident, QualifierOfIdentification}
@@ -383,6 +383,64 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
               result.value.value mustBe unLocode
               val action = result.actions
               action mustBe None
+          }
+        }
+      }
+    }
+
+    "incidentTransportEquipments" - {
+      "when no transport equipment" - {
+        "must return None" in {
+          val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
+          val result = helper.incidentTransportEquipments
+          result must not be defined
+        }
+      }
+
+      "when there are transport equipment" - {
+        "must return Some" in {
+          val transportEquipment = TransportEquipmentType07(
+            sequenceNumber = "1",
+            containerIdentificationNumber = Some("cin"),
+            numberOfSeals = Some(2),
+            Seal = Seq(
+              SealType04(
+                sequenceNumber = "1",
+                identifier = "seal1"
+              ),
+              SealType04(
+                sequenceNumber = "2",
+                identifier = "seal2"
+              )
+            ),
+            GoodsReference = Seq(
+              GoodsReferenceType01(
+                sequenceNumber = "1",
+                declarationGoodsItemNumber = 1
+              ),
+              GoodsReferenceType01(
+                sequenceNumber = "2",
+                declarationGoodsItemNumber = 2
+              )
+            )
+          )
+
+          forAll(arbitrary[IncidentType04]) {
+            incident =>
+              val consignment: ConsignmentType05 = ConsignmentType05(
+                containerIndicator = Number0,
+                Incident = Seq(incident.copy(TransportEquipment = Seq(transportEquipment)))
+              )
+
+              val answers = emptyUserAnswers.copy(ie043Data = emptyUserAnswers.ie043Data.copy(Consignment = Some(consignment)))
+
+              val helper = new IncidentAnswersHelper(answers, index)
+              val result = helper.incidentTransportEquipments.value
+              result.sectionTitle.value mustBe "Transport equipment"
+
+              result.children.size mustBe 1
+
+              result.children.head.sectionTitle.value mustBe "Transport equipment 1"
           }
         }
       }

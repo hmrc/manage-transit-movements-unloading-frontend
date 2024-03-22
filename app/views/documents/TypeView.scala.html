@@ -23,6 +23,7 @@
 @import viewModels.components.InputSelectViewModel._
 @import views.html.components.{Button, ErrorSummary, InputSelect}
 @import viewModels.documents.TypeViewModel
+@import config.FrontendAppConfig
 
 @this(
     mainTemplate: MainTemplate,
@@ -32,7 +33,8 @@
     button: Button
 )
 
-@(form: Form[DocumentType], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode, documents: Seq[DocumentType], viewModel: TypeViewModel, documentIndex: Index)(implicit request: Request[_], messages: Messages)
+
+@(form: Form[DocumentType], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode, documents: Seq[DocumentType], viewModel: TypeViewModel, documentIndex: Index)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
 
 @mainTemplate(
     title = viewModel.title,
@@ -53,6 +55,9 @@
             selectItems = documents.toSelectItems(form.value),
             placeholder = messages("document.type.placeholder")
         )
+        @viewModel.maxLimitLabelForType.map { label =>
+            <p class="govuk-body" data-testId="maxLimitForType">@label</p>
+        }
 
         @button(attributes = Map("id" -> "submit"))
     }

@@ -21,9 +21,8 @@ import controllers.transportEquipment.index.seals.routes
 import models.{ArrivalId, Index, Mode, RichOptionalJsArray, UserAnswers}
 import pages.sections.SealsSection
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
-import play.api.libs.json.JsArray
-import play.api.mvc.Call
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import viewModels.{AddAnotherViewModel, ListItem}
 
 case class AddAnotherSealViewModel(listItems: Seq[ListItem], onSubmitCall: Call, equipmentIndex: Index, nextIndex: Index) extends AddAnotherViewModel {
@@ -46,31 +45,26 @@ object AddAnotherSealViewModel {
 
   class AddAnotherSealViewModelProvider() {
 
-    def apply(userAnswers: UserAnswers, arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index): AddAnotherSealViewModel = {
+    def apply(userAnswers: UserAnswers, arrivalId: ArrivalId, equipmentMode: Mode, sealMode: Mode, equipmentIndex: Index): AddAnotherSealViewModel = {
 
       val array = userAnswers.get(SealsSection(equipmentIndex))
 
       val listItems = array
-        .getOrElse(JsArray())
-        .value
-        .zipWithIndex
-        .flatMap {
-          case (_, i) =>
-            val sealIndex = Index(i)
+        .flatMapWithIndex {
+          case (_, sealIndex) =>
             userAnswers.get(SealIdentificationNumberPage(equipmentIndex, sealIndex)).map {
               number =>
                 ListItem(
                   name = number,
                   changeUrl = None,
-                  removeUrl = Some(routes.RemoveSealYesNoController.onPageLoad(arrivalId, mode, equipmentIndex, sealIndex).url)
+                  removeUrl = Some(routes.RemoveSealYesNoController.onPageLoad(arrivalId, equipmentMode, sealMode, equipmentIndex, sealIndex).url)
                 )
             }
         }
-        .toSeq
 
       new AddAnotherSealViewModel(
         listItems,
-        onSubmitCall = controllers.transportEquipment.index.routes.AddAnotherSealController.onSubmit(arrivalId, mode, equipmentIndex),
+        onSubmitCall = controllers.transportEquipment.index.routes.AddAnotherSealController.onSubmit(arrivalId, equipmentMode, sealMode, equipmentIndex),
         equipmentIndex = equipmentIndex,
         nextIndex = array.nextIndex
       )

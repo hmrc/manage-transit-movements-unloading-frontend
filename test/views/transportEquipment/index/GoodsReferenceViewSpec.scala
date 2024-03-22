@@ -45,7 +45,7 @@ class GoodsReferenceViewSpec extends InputSelectViewBehaviours[GoodsReference] {
   override def applyView(form: Form[GoodsReference]): HtmlFormat.Appendable =
     injector
       .instanceOf[GoodsReferenceView]
-      .apply(form, arrivalId, Index(0), itemIndex, mrn, values, NormalMode)(fakeRequest, messages)
+      .apply(form, arrivalId, Index(0), itemIndex, mrn, values, NormalMode, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "transport.equipment.selectItems"
 

@@ -19,7 +19,7 @@ package controllers.transportEquipment.index.seals
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SealIdentificationNumberFormProvider
 import generators.Generators
-import models.NormalMode
+import models.{CheckMode, Mode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -27,7 +27,7 @@ import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.{status, _}
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel.SealIdentificationNumberViewModelProvider
 import views.html.transportEquipment.index.seals.SealIdentificationNumberView
@@ -36,10 +36,11 @@ import scala.concurrent.Future
 
 class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val viewModel    = arbitrary[SealIdentificationNumberViewModel].sample.value
-  private val formProvider = new SealIdentificationNumberFormProvider()
-  private val form         = formProvider(viewModel.requiredError, Seq.empty)
-  private val mode         = NormalMode
+  private val viewModel     = arbitrary[SealIdentificationNumberViewModel].sample.value
+  private val formProvider  = new SealIdentificationNumberFormProvider()
+  private val form          = formProvider(viewModel.requiredError, Seq.empty)
+  private val equipmentMode = NormalMode
+  private val sealMode      = NormalMode
 
   private val mockViewModelProvider = mock[SealIdentificationNumberViewModelProvider]
 
@@ -56,7 +57,8 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
       .thenReturn(viewModel)
   }
 
-  private lazy val sealIdentificationNumberRoute = routes.SealIdentificationNumberController.onPageLoad(arrivalId, mode, equipmentIndex, sealIndex).url
+  private lazy val sealIdentificationNumberRoute =
+    routes.SealIdentificationNumberController.onPageLoad(arrivalId, equipmentMode, sealMode, equipmentIndex, sealIndex).url
 
   "SealIdentificationNumber Controller" - {
 
@@ -73,7 +75,7 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, mode, viewModel, equipmentIndex, sealIndex)(request, messages).toString
+        view(form, mrn, arrivalId, equipmentMode, sealMode, viewModel, equipmentIndex, sealIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -92,23 +94,57 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, mode, viewModel, equipmentIndex, sealIndex)(request, messages).toString
+        view(filledForm, mrn, arrivalId, equipmentMode, sealMode, viewModel, equipmentIndex, sealIndex)(request, messages).toString
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the next page when valid data is submitted" - {
+      "when seal mode is NormalMode" in {
+        forAll(arbitrary[Mode]) {
+          equipmentMode =>
+            val sealMode = NormalMode
 
-      setExistingUserAnswers(emptyUserAnswers)
+            lazy val sealIdentificationNumberRoute =
+              routes.SealIdentificationNumberController.onPageLoad(arrivalId, equipmentMode, sealMode, equipmentIndex, sealIndex).url
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+            setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, sealIdentificationNumberRoute)
-        .withFormUrlEncodedBody(("value", "testString"))
+            when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val result = route(app, request).value
+            val request = FakeRequest(POST, sealIdentificationNumberRoute)
+              .withFormUrlEncodedBody(("value", "testString"))
 
-      status(result) mustEqual SEE_OTHER
+            val result = route(app, request).value
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual
+              controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, equipmentMode, sealMode, equipmentIndex).url
+        }
+      }
+
+      "when seal mode is CheckMode" in {
+        forAll(arbitrary[Mode]) {
+          equipmentMode =>
+            val sealMode = CheckMode
+
+            lazy val sealIdentificationNumberRoute =
+              routes.SealIdentificationNumberController.onPageLoad(arrivalId, equipmentMode, sealMode, equipmentIndex, sealIndex).url
+
+            setExistingUserAnswers(emptyUserAnswers)
+
+            when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+            val request = FakeRequest(POST, sealIdentificationNumberRoute)
+              .withFormUrlEncodedBody(("value", "testString"))
+
+            val result = route(app, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual
+              controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+        }
+      }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
@@ -127,7 +163,7 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
       val view = injector.instanceOf[SealIdentificationNumberView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, mode, viewModel, equipmentIndex, sealIndex)(request, messages).toString
+        view(filledForm, mrn, arrivalId, equipmentMode, sealMode, viewModel, equipmentIndex, sealIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

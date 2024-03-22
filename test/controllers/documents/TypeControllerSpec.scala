@@ -58,7 +58,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
     super.beforeEach()
     reset(mockViewModelProvider)
 
-    when(mockViewModelProvider.apply(any())(any()))
+    when(mockViewModelProvider.apply(any(), any())(any()))
       .thenReturn(viewModel)
   }
 
@@ -91,7 +91,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(filledForm, mrn, arrivalId, CheckMode, transportDocumentList.values, viewModel, documentIndex)(request, messages).toString
+            view(filledForm, mrn, arrivalId, CheckMode, transportDocumentList.values, viewModel, documentIndex)(request, messages, frontendAppConfig).toString
         }
 
         "must redirect to the next page when valid data is submitted" in {
@@ -128,7 +128,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
           status(result) mustEqual BAD_REQUEST
 
           contentAsString(result) mustEqual
-            view(boundForm, mrn, arrivalId, CheckMode, transportDocumentList.values, viewModel, documentIndex)(request, messages).toString
+            view(boundForm, mrn, arrivalId, CheckMode, transportDocumentList.values, viewModel, documentIndex)(request, messages, frontendAppConfig).toString
         }
 
         "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -178,7 +178,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(filledForm, mrn, arrivalId, CheckMode, supportingDocumentList.values, viewModel, documentIndex)(request, messages).toString
+            view(filledForm, mrn, arrivalId, CheckMode, supportingDocumentList.values, viewModel, documentIndex)(request, messages, frontendAppConfig).toString
         }
 
         "must redirect to the next page when valid data is submitted" in {
@@ -215,7 +215,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
           status(result) mustEqual BAD_REQUEST
 
           contentAsString(result) mustEqual
-            view(boundForm, mrn, arrivalId, CheckMode, supportingDocumentList.values, viewModel, documentIndex)(request, messages).toString
+            view(boundForm, mrn, arrivalId, CheckMode, supportingDocumentList.values, viewModel, documentIndex)(request, messages, frontendAppConfig).toString
         }
 
         "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -270,7 +270,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(filledForm, mrn, arrivalId, NormalMode, documentsList.values, viewModel, documentIndex)(request, messages).toString
+          view(filledForm, mrn, arrivalId, NormalMode, documentsList.values, viewModel, documentIndex)(request, messages, frontendAppConfig).toString
       }
 
       "must filter out maxed document types that cannot be added any more" in {
@@ -303,7 +303,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
         // view should have only support docs listed. new transport docs cannot be added since they reached the limit
         contentAsString(result) mustEqual
-          view(filledForm, mrn, arrivalId, NormalMode, supportingDocumentList.values, viewModel, nextIndex)(request, messages).toString
+          view(filledForm, mrn, arrivalId, NormalMode, supportingDocumentList.values, viewModel, nextIndex)(request, messages, frontendAppConfig).toString
       }
 
       "must redirect to the next page when valid data is submitted" in {
@@ -340,7 +340,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, mrn, arrivalId, NormalMode, transportDocumentList.values, viewModel, documentIndex)(request, messages).toString
+          view(boundForm, mrn, arrivalId, NormalMode, transportDocumentList.values, viewModel, documentIndex)(request, messages, frontendAppConfig).toString
       }
 
       "must redirect to Session Expired for a GET if no existing data is found" in {

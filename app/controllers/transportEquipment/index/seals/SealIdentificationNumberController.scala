@@ -17,12 +17,14 @@
 package controllers.transportEquipment.index.seals
 
 import controllers.actions._
+import controllers.routes._
+import controllers.transportEquipment.index.routes._
 import forms.SealIdentificationNumberFormProvider
 import models.requests.{DataRequest, MandatoryDataRequest}
-import models.{ArrivalId, Index, Mode, RichOptionalJsArray}
-import navigation.TransportEquipmentNavigator
+import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, RichOptionalJsArray}
 import pages.sections.SealsSection
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -37,7 +39,6 @@ class SealIdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
-  navigator: TransportEquipmentNavigator,
   formProvider: SealIdentificationNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: SealIdentificationNumberView,
@@ -46,49 +47,52 @@ class SealIdentificationNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(requiredError: String, equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[_]) =
+  private def form(requiredError: String, equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[_]): Form[String] =
     formProvider(requiredError, otherSealIdentificationNumbers(equipmentIndex, sealIndex))
 
   private def otherSealIdentificationNumbers(equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[_]): Seq[String] = {
     val numberOfSeals = request.userAnswers.get(SealsSection(equipmentIndex)).length
     (0 until numberOfSeals)
       .filterNot(_ == sealIndex.position)
-      .map(
-        sealInd => SealIdentificationNumberPage(equipmentIndex, Index(sealInd))
-      )
+      .map(Index(_))
+      .map(SealIdentificationNumberPage(equipmentIndex, _))
       .flatMap(request.userAnswers.get(_))
   }
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index, sealIndex: Index): Action[AnyContent] =
+  def onPageLoad(arrivalId: ArrivalId, equipmentMode: Mode, sealMode: Mode, equipmentIndex: Index, sealIndex: Index): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
-        val viewModel = viewModelProvider.apply(mode)
+        val viewModel = viewModelProvider.apply(equipmentMode)
         val preparedForm = request.userAnswers.get(SealIdentificationNumberPage(equipmentIndex, sealIndex)) match {
           case None        => form(viewModel.requiredError, equipmentIndex, sealIndex)
           case Some(value) => form(viewModel.requiredError, equipmentIndex, sealIndex).fill(value)
         }
 
-        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode, viewModel, equipmentIndex, sealIndex))
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, equipmentMode, sealMode, viewModel, equipmentIndex, sealIndex))
     }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode, equipmentIndex: Index, sealIndex: Index): Action[AnyContent] =
+  def onSubmit(arrivalId: ArrivalId, equipmentMode: Mode, sealMode: Mode, equipmentIndex: Index, sealIndex: Index): Action[AnyContent] =
     actions
       .requireData(arrivalId)
       .async {
         implicit request =>
-          val viewModel = viewModelProvider.apply(mode)
+          val viewModel = viewModelProvider.apply(equipmentMode)
           form(viewModel.requiredError, equipmentIndex, sealIndex)
             .bindFromRequest()
             .fold(
               formWithErrors =>
-                Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode, viewModel, equipmentIndex, sealIndex))),
-              value => redirect(mode, value, equipmentIndex, sealIndex)
+                Future.successful(
+                  BadRequest(
+                    view(formWithErrors, request.userAnswers.mrn, arrivalId, equipmentMode, sealMode, viewModel, equipmentIndex, sealIndex)
+                  )
+                ),
+              value => redirect(equipmentMode, sealMode, value, equipmentIndex, sealIndex)
             )
-
       }
 
   private def redirect(
-    mode: Mode,
+    equipmentMode: Mode,
+    sealMode: Mode,
     value: String,
     equipmentIndex: Index,
     sealIndex: Index
@@ -96,5 +100,10 @@ class SealIdentificationNumberController @Inject() (
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(SealIdentificationNumberPage(equipmentIndex, sealIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(SealIdentificationNumberPage(equipmentIndex, sealIndex), mode, request.userAnswers))
+    } yield sealMode match {
+      case NormalMode =>
+        Redirect(AddAnotherSealController.onPageLoad(request.userAnswers.id, equipmentMode, sealMode, equipmentIndex))
+      case CheckMode =>
+        Redirect(UnloadingFindingsController.onPageLoad(request.userAnswers.id))
+    }
 }

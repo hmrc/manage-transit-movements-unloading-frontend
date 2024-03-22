@@ -49,9 +49,9 @@ class TransportEquipmentAnswersHelper(
         case (_, index) =>
           val helper = new SealAnswersHelper(userAnswers, equipmentIndex, index)
           Seq(helper.transportEquipmentSeal).flatten
-      }
-      .toList match {
-      case Nil => None
+      } match {
+      case Nil =>
+        None
       case rows =>
         Some(
           AccordionSection(
@@ -70,9 +70,9 @@ class TransportEquipmentAnswersHelper(
         case (_, index) =>
           val helper = new ItemAnswersHelper(userAnswers, equipmentIndex, index)
           Seq(helper.transportEquipmentItem).flatten
-      }
-      .toList match {
-      case Nil => None
+      } match {
+      case Nil =>
+        None
       case rows =>
         Some(
           AccordionSection(
@@ -87,7 +87,7 @@ class TransportEquipmentAnswersHelper(
   private def sealsAddRemoveLink: Link =
     Link(
       id = s"add-remove-transport-equipment-${equipmentIndex.display}-seal",
-      href = controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, NormalMode, equipmentIndex).url,
+      href = controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, CheckMode, NormalMode, equipmentIndex).url,
       text = messages("sealsLink.addRemove"),
       visuallyHidden = messages("sealsLink.visuallyHidden")
     )
@@ -95,7 +95,7 @@ class TransportEquipmentAnswersHelper(
   private def itemsAddRemoveLink: Link =
     Link(
       id = s"add-remove-transport-equipment-${equipmentIndex.display}-item",
-      href = controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, NormalMode, equipmentIndex).url,
+      href = controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, CheckMode, NormalMode, equipmentIndex).url,
       text = messages("consignmentItemLink.addRemove", equipmentIndex.display),
       visuallyHidden = messages("consignmentItemLink.visuallyHidden", equipmentIndex.display)
     )

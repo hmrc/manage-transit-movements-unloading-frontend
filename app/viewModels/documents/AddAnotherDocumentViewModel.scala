@@ -17,8 +17,8 @@
 package viewModels.documents
 
 import config.FrontendAppConfig
-import models.DocType.{Previous, Support, Transport}
-import models.{ArrivalId, ConsignmentLevelDocuments, DocType, Index, Mode, RichOptionalJsArray, UserAnswers}
+import models.DocType.Previous
+import models.{ArrivalId, ConsignmentLevelDocuments, Index, Mode, RichOptionalJsArray, UserAnswers}
 import pages.documents.{DocumentReferenceNumberPage, TypePage}
 import pages.sections.documents.DocumentsSection
 import play.api.i18n.Messages
@@ -29,7 +29,7 @@ case class AddAnotherDocumentViewModel(
   listItems: Seq[ListItem],
   onSubmitCall: Call,
   nextIndex: Index,
-  docTypeList: Seq[DocType],
+  documents: ConsignmentLevelDocuments,
   allowMore: Boolean
 ) extends AddAnotherViewModel {
 
@@ -39,16 +39,7 @@ case class AddAnotherDocumentViewModel(
 
   override def maxLimitLabel(implicit messages: Messages): String = messages(s"$prefix.maxLimit.label")
 
-  def maxLimitLabelForType(implicit config: FrontendAppConfig, messages: Messages): Option[String] = {
-    val groupedByType = docTypeList.groupBy(identity)
-    if (groupedByType.getOrElse(Support, Seq.empty).length == config.maxSupportingDocuments) {
-      Some(messages(s"$prefix.maxLimitForType.label", Support.display.toLowerCase, Transport.display.toLowerCase))
-    } else if (groupedByType.getOrElse(Transport, Seq.empty).length == config.maxTransportDocuments) {
-      Some(messages(s"$prefix.maxLimitForType.label", Transport.display.toLowerCase, Support.display.toLowerCase))
-    } else {
-      None
-    }
-  }
+  def maxLimitLabelForType(implicit config: FrontendAppConfig, messages: Messages): Option[String] = Documents.maxLimitLabelForType(documents, prefix)
 }
 
 object AddAnotherDocumentViewModel {
@@ -79,21 +70,13 @@ object AddAnotherDocumentViewModel {
           }
       }.flatten
 
-      val docTypeList = documents
-        .mapWithIndex {
-          case (_, index) =>
-            userAnswers.get(TypePage(index)).map(_.`type`)
-        }
-        .flatten
-        .filter(_ != Previous)
-
       val consignmentLevelDocuments = ConsignmentLevelDocuments(userAnswers)
 
       new AddAnotherDocumentViewModel(
         listItems,
         onSubmitCall = controllers.documents.routes.AddAnotherDocumentController.onSubmit(arrivalId, mode),
         nextIndex = documents.nextIndex,
-        docTypeList,
+        consignmentLevelDocuments,
         allowMore = consignmentLevelDocuments.canAddMore
       )
     }

@@ -37,11 +37,12 @@ object HouseConsignmentViewModel {
     def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index)(implicit messages: Messages): HouseConsignmentViewModel = {
       val helper = new HouseConsignmentAnswersHelper(userAnswers, houseConsignmentIndex)
 
-      val sections: Seq[Section] =
-        helper.departureTransportMeansSections ++
-          Seq(helper.itemSection) ++
-          Seq(helper.houseConsignmentConsignorSection) ++
-          Seq(helper.houseConsignmentConsigneeSection)
+      val sections: Seq[Section] = Seq(
+        helper.departureTransportMeansSection,
+        helper.itemSection,
+        helper.houseConsignmentConsignorSection,
+        helper.houseConsignmentConsigneeSection
+      )
 
       HouseConsignmentViewModel(sections)
     }

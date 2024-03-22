@@ -22,7 +22,7 @@ import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.transportEquipment.index.ApplyAnotherItemViewModel
 import views.behaviours.ListWithActionsViewBehaviours
-import views.html.transport.equipment.ApplyAnotherItemView
+import views.html.transportEquipment.index.ApplyAnotherItemView
 
 class ApplyAnotherItemViewSpec extends ListWithActionsViewBehaviours {
 

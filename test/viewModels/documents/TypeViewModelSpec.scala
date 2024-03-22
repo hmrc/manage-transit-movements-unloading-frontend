@@ -18,7 +18,8 @@ package viewModels.documents
 
 import base.SpecBase
 import generators.Generators
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, ConsignmentLevelDocuments, Mode, NormalMode}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import viewModels.documents.TypeViewModel.TypeViewModelProvider
 
@@ -27,7 +28,7 @@ class TypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
   "must create view model" - {
     "when Normal mode" in {
       val viewModelProvider = new TypeViewModelProvider()
-      val result            = viewModelProvider.apply(NormalMode)
+      val result            = viewModelProvider.apply(NormalMode, ConsignmentLevelDocuments(0, 0))
 
       result.title mustBe "What type of document do you want to add?"
       result.heading mustBe "What type of document do you want to add?"
@@ -35,10 +36,28 @@ class TypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
     "when Check mode" in {
       val viewModelProvider = new TypeViewModelProvider()
-      val result            = viewModelProvider.apply(CheckMode)
+      val result            = viewModelProvider.apply(CheckMode, ConsignmentLevelDocuments(0, 0))
 
       result.title mustBe "What is the new document type?"
       result.heading mustBe "What is the new document type?"
+    }
+  }
+
+  "when transport documents reached max limit" in {
+    forAll(arbitrary[Mode]) {
+      mode =>
+        val result = new TypeViewModelProvider().apply(mode, ConsignmentLevelDocuments(0, frontendAppConfig.maxTransportDocuments))
+
+        result.maxLimitLabelForType.get mustBe "You cannot add any more transport documents to all items. To add another, you need to remove one first. You can, however, still add a supporting document to your items."
+    }
+  }
+
+  "when supporting documents reached max limit" in {
+    forAll(arbitrary[Mode]) {
+      mode =>
+        val result = new TypeViewModelProvider().apply(mode, ConsignmentLevelDocuments(frontendAppConfig.maxSupportingDocuments, 0))
+
+        result.maxLimitLabelForType.get mustBe "You cannot add any more supporting documents to all items. To add another, you need to remove one first. You can, however, still add a transport document to your items."
     }
   }
 }

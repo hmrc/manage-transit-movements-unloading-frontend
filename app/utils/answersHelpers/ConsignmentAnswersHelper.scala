@@ -190,22 +190,13 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
             helper.transportMeansNumber,
             helper.transportRegisteredCountry
           ).flatten
-          (rows, index)
+          AccordionSection(
+            sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans", index.display)),
+            rows = rows,
+            id = Some(s"departureTransportMeans$index")
+          )
       } match {
-      case Nil =>
-        StaticSection(
-          sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans.parent.header")),
-          viewLinks = Seq(departureTransportMeansAddRemoveLink)
-        )
-      case sections =>
-        val children = sections.map {
-          case (rows, index) =>
-            AccordionSection(
-              sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans", index.display)),
-              rows = rows,
-              id = Some(s"departureTransportMeans$index")
-            )
-        }
+      case children =>
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans.parent.header")),
           children = children,
@@ -217,36 +208,25 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
   def transportEquipmentSection: Section =
     userAnswers.get(TransportEquipmentListSection).mapWithIndex {
       case (_, index) =>
-        val helper       = new TransportEquipmentAnswersHelper(userAnswers, index)
-        val container    = helper.containerIdentificationNumber
-        val sealsSection = helper.transportEquipmentSeals
-        val itemsSection = helper.transportEquipmentItems
-        (container, sealsSection, itemsSection, index)
-    } match {
-      case Nil =>
-        StaticSection(
-          sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment.parent.heading")),
-          viewLinks = Seq(transportEquipmentAddRemoveLink)
+        val helper = new TransportEquipmentAnswersHelper(userAnswers, index)
+        val rows   = Seq(helper.containerIdentificationNumber).flatten
+        val children = Seq(
+          helper.transportEquipmentSeals,
+          helper.transportEquipmentItems
+        ).flatten
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment", index.display)),
+          viewLinks = Nil,
+          rows = rows,
+          children = children,
+          id = Some(s"transportEquipment$index")
         )
-      case sectionsRows =>
-        val transportEquipments = sectionsRows.map {
-          case (containerRow, sealsSection, itemsSection, index) =>
-            AccordionSection(
-              sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment", index.display)),
-              viewLinks = Nil,
-              rows = Seq(containerRow).flatten,
-              children = Seq(
-                sealsSection,
-                itemsSection
-              ).flatten,
-              id = Some(s"transportEquipment$index")
-            )
-        }
-
+    } match {
+      case children =>
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment.parent.heading")),
           viewLinks = Seq(transportEquipmentAddRemoveLink),
-          children = transportEquipments,
+          children = children,
           id = Some("transportEquipments")
         )
     }
@@ -256,22 +236,13 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       case (_, index) =>
         val helper = new AdditionalReferenceAnswersHelper(userAnswers, index)
         val rows   = Seq(helper.code, helper.referenceNumber).flatten
-        (rows, index)
-    } match {
-      case Nil =>
-        StaticSection(
-          sectionTitle = Some(messages("unloadingFindings.additional.reference.heading")),
-          viewLinks = Seq(additionalReferenceAddRemoveLink)
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.additional.reference", index.display)),
+          rows = rows,
+          id = Some(s"additionalReference$index")
         )
-      case sectionsRows =>
-        val children = sectionsRows.map {
-          case (rows, index) =>
-            AccordionSection(
-              sectionTitle = Some(messages("unloadingFindings.additional.reference", index.display)),
-              rows = rows,
-              id = Some(s"additionalReference$index")
-            )
-        }
+    } match {
+      case children =>
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.additional.reference.heading")),
           viewLinks = Seq(additionalReferenceAddRemoveLink),
@@ -281,23 +252,21 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     }
 
   def additionalInformationSection: Option[Section] =
-    userAnswers.get(AdditionalInformationListSection).mapWithIndex {
-      case (_, index) =>
-        val helper = new AdditionalInformationAnswersHelper(userAnswers, index)
-        val rows   = Seq(helper.code, helper.description).flatten
-        (rows, index)
-    } match {
+    userAnswers
+      .get(AdditionalInformationListSection)
+      .mapWithIndex {
+        case (_, index) =>
+          val helper = new AdditionalInformationAnswersHelper(userAnswers, index)
+          val rows   = Seq(helper.code, helper.description).flatten
+          AccordionSection(
+            sectionTitle = Some(messages("unloadingFindings.additionalInformation.label", index.display)),
+            rows = rows,
+            id = Some(s"additionalInformation$index")
+          )
+      } match {
       case Nil =>
         None
-      case sectionsRows =>
-        val children = sectionsRows.map {
-          case (rows, index) =>
-            AccordionSection(
-              sectionTitle = Some(messages("unloadingFindings.additionalInformation.label", index.display)),
-              rows = rows,
-              id = Some(s"additionalInformation$index")
-            )
-        }
+      case children =>
         Some(
           AccordionSection(
             sectionTitle = Some(messages("unloadingFindings.additionalInformation.heading")),
@@ -307,6 +276,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         )
     }
 
+  // scalastyle:off method.length
   def incidentSection: Option[Section] =
     userAnswers
       .get(IncidentsSection)
@@ -342,21 +312,26 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           AccordionSection(
             sectionTitle = Some(messages("unloadingFindings.subsections.incidents", index.display)),
             rows = rows,
-            children = Seq(endorsementSection) ++ helper.incidentTransportEquipments ++ Seq(transhipment),
+            children = Seq(
+              Some(endorsementSection),
+              helper.incidentTransportEquipments,
+              Some(transhipment)
+            ).flatten,
             id = Some(s"incident$index")
           )
-      }
-      .toList match {
-      case Nil => None
-      case sections =>
+      } match {
+      case Nil =>
+        None
+      case children =>
         Some(
           AccordionSection(
             sectionTitle = Some(messages("unloadingFindings.subsections.incidents.parent.header")),
-            children = sections,
+            children = children,
             id = Some("incidents")
           )
         )
     }
+  // scalastyle:on method.length
 
   def documentSection: Section =
     userAnswers.get(DocumentsSection).mapWithIndex {
@@ -369,26 +344,18 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
           helper.referenceNumber(readOnly),
           helper.additionalInformation(readOnly)
         ).flatten
-        (rows, index)
-    } match {
-      case Nil =>
-        StaticSection(
-          sectionTitle = Some(messages("unloadingFindings.document.heading.parent.heading")),
-          viewLinks = Seq(documentAddRemoveLink)
+
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.document.heading", index.display)),
+          rows = rows,
+          id = Some(s"document$index")
         )
-      case documentSectionRows =>
-        val documents = documentSectionRows.map {
-          case (rows, index) =>
-            AccordionSection(
-              sectionTitle = Some(messages("unloadingFindings.document.heading", index.display)),
-              rows = rows,
-              id = Some(s"document$index")
-            )
-        }
+    } match {
+      case children =>
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.document.heading.parent.heading")),
           viewLinks = Seq(documentAddRemoveLink),
-          children = documents,
+          children = children,
           id = Some("documents")
         )
     }
@@ -400,14 +367,10 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       .mapWithIndex {
         case (_, index) =>
           val helper = new HouseConsignmentAnswersHelper(userAnswers, index)
-          val rows = Seq(
-            helper.consignorName,
-            helper.consignorIdentification
-          ).flatten
 
           AccordionSection(
             sectionTitle = messages("unloadingFindings.subsections.houseConsignment", index.display),
-            rows = rows,
+            rows = Nil,
             viewLinks = Seq(
               Link(
                 id = s"view-house-consignment-${index.display}",
@@ -416,16 +379,19 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
               )
             ),
             id = s"houseConsignment$index",
-            children = Seq(helper.houseConsignmentConsigneeSection)
+            children = Seq(
+              helper.houseConsignmentConsignorSection,
+              helper.houseConsignmentConsigneeSection
+            )
           )
-      }
-      .toList match {
-      case Nil => None
-      case sections =>
+      } match {
+      case Nil =>
+        None
+      case children =>
         Some(
           AccordionSection(
             sectionTitle = Some(messages("unloadingFindings.subsections.houseConsignment.parent.heading")),
-            children = sections,
+            children = children,
             id = Some("houseConsignments")
           )
         )

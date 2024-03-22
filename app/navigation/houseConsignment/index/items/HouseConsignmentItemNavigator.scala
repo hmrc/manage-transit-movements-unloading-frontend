@@ -21,6 +21,7 @@ import models.UserAnswers
 import navigation.Navigator
 import pages._
 import pages.houseConsignment.index.items._
+import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
 import play.api.mvc.Call
 
 @Singleton

@@ -36,6 +36,6 @@ class SealAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.sealIdentifier",
     args = Seq(sealIndex.display, equipmentIndex.display): _*,
     id = Some(s"change-seal-details-${equipmentIndex.display}-${sealIndex.display}"),
-    call = Some(routes.SealIdentificationNumberController.onPageLoad(arrivalId, CheckMode, equipmentIndex, sealIndex))
+    call = Some(routes.SealIdentificationNumberController.onPageLoad(arrivalId, CheckMode, CheckMode, equipmentIndex, sealIndex))
   )
 }
