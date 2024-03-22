@@ -35,10 +35,11 @@ class AdditionalReferenceNavigator extends Navigator {
   }
 
   private def additionalReferenceNumberYesNoRoute(ua: UserAnswers, referenceIndex: Index): Option[Call] =
-    ua.get(AdditionalReferenceNumberYesNoPage(referenceIndex)) match {
-      case Some(true) =>
-        Some(controllers.additionalReference.index.routes.AdditionalReferenceNumberController.onPageLoad(ua.id, referenceIndex, NormalMode))
-      case Some(false) => Some(controllers.additionalReference.index.routes.AddAnotherAdditionalReferenceController.onPageLoad(ua.id, NormalMode))
+    ua.get(AdditionalReferenceNumberYesNoPage(referenceIndex)) map {
+      case true =>
+        controllers.additionalReference.index.routes.AdditionalReferenceNumberController.onPageLoad(ua.id, referenceIndex, NormalMode)
+      case false =>
+        controllers.additionalReference.index.routes.AddAnotherAdditionalReferenceController.onPageLoad(ua.id, NormalMode)
     }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {

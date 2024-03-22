@@ -17,9 +17,10 @@
 package controllers.transportEquipment.index
 
 import controllers.actions._
+import controllers.routes._
+import controllers.transportEquipment.index.routes._
 import forms.SelectableFormProvider
-import models.{ArrivalId, Index, Mode, SelectableList}
-import navigation.TransportEquipmentNavigator
+import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, SelectableList}
 import pages.transportEquipment.index.ItemPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -37,44 +38,70 @@ class GoodsReferenceController @Inject() (
   actions: Actions,
   formProvider: SelectableFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  navigator: TransportEquipmentNavigator,
   view: GoodsReferenceView,
   goodsReferenceService: GoodsReferenceService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, transportEquipmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(arrivalId: ArrivalId, transportEquipmentIndex: Index, itemIndex: Index, equipmentMode: Mode, goodsReferenceMode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
         val availableGoodsReferences = goodsReferenceService.getGoodsReferences(request.userAnswers, transportEquipmentIndex, Some(itemIndex))
-        val form                     = formProvider(mode, "transport.equipment.selectItems", SelectableList(availableGoodsReferences))
+        val form                     = formProvider(goodsReferenceMode, "transport.equipment.selectItems", SelectableList(availableGoodsReferences))
         val preparedForm = goodsReferenceService.getGoodsReference(request.userAnswers, transportEquipmentIndex, itemIndex) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
 
-        Ok(view(preparedForm, arrivalId, transportEquipmentIndex, itemIndex, request.userAnswers.mrn, availableGoodsReferences, mode))
+        Ok(
+          view(
+            preparedForm,
+            arrivalId,
+            transportEquipmentIndex,
+            itemIndex,
+            request.userAnswers.mrn,
+            availableGoodsReferences,
+            equipmentMode,
+            goodsReferenceMode
+          )
+        )
     }
 
-  def onSubmit(arrivalId: ArrivalId, transportEquipmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(arrivalId: ArrivalId, transportEquipmentIndex: Index, itemIndex: Index, equipmentMode: Mode, goodsReferenceMode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
         val availableGoodsReferences = goodsReferenceService.getGoodsReferences(request.userAnswers, transportEquipmentIndex, Some(itemIndex))
 
-        val form = formProvider(mode, "transport.equipment.selectItems", SelectableList(availableGoodsReferences))
+        val form = formProvider(goodsReferenceMode, "transport.equipment.selectItems", SelectableList(availableGoodsReferences))
         form
           .bindFromRequest()
           .fold(
             formWithErrors =>
               Future.successful(
-                BadRequest(view(formWithErrors, arrivalId, transportEquipmentIndex, itemIndex, request.userAnswers.mrn, availableGoodsReferences, mode))
+                BadRequest(
+                  view(
+                    formWithErrors,
+                    arrivalId,
+                    transportEquipmentIndex,
+                    itemIndex,
+                    request.userAnswers.mrn,
+                    availableGoodsReferences,
+                    equipmentMode,
+                    goodsReferenceMode
+                  )
+                )
               ),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(ItemPage(transportEquipmentIndex, itemIndex), value.declarationGoodsItemNumber))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(ItemPage(transportEquipmentIndex, itemIndex), mode, updatedAnswers))
+              } yield goodsReferenceMode match {
+                case NormalMode =>
+                  Redirect(ApplyAnotherItemController.onPageLoad(request.userAnswers.id, equipmentMode, goodsReferenceMode, transportEquipmentIndex))
+                case CheckMode =>
+                  Redirect(UnloadingFindingsController.onPageLoad(request.userAnswers.id))
+              }
           )
     }
 }

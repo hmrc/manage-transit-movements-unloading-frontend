@@ -20,7 +20,7 @@ import connectors.ReferenceDataConnector
 import generated.PackagingType02
 import models.reference.PackageType
 import models.{Index, UserAnswers}
-import pages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
+import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
 import pages.sections.PackagingSection
 import uk.gov.hmrc.http.HeaderCarrier
 

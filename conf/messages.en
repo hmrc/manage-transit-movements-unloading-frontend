@@ -26,7 +26,6 @@ site.caption = MRN: {0}
 site.email.link = If you have any questions or issues, email us at {0}
 site.email.subject = NCTS Phase 5 - Help with testing
 
-unloadingFindings.sequenceNumber = Sequence number
 unloadingFindings.noInformationProvided = No information provided
 
 error.title.prefix = Error:
@@ -426,7 +425,10 @@ unloadingFindings.rowHeadings.replacementMeansOfTransport.typeOfIdentification =
 unloadingFindings.rowHeadings.replacementMeansOfTransport.identificationNumber = Identification number
 unloadingFindings.rowHeadings.replacementMeansOfTransport.nationality = Registered country
 
+unloadingFindings.incident.transportEquipment.parent.heading = Transport equipment
 unloadingFindings.incident.transportEquipment.heading = Transport equipment {0}
+unloadingFindings.incident.transportEquipment.seals.heading = Seals
+unloadingFindings.incident.transportEquipment.goodsItemNumbers.heading = Goods item numbers
 
 declarationType = Declaration type
 securityType = Safety and security details
@@ -579,6 +581,7 @@ unloadingFindings.additional.information.heading = Additional information {0}
 unloadingFindings.additional.information.code = Type
 unloadingFindings.additional.information.description = Description
 
+unloadingFindings.dangerousGoods.unNumbers = UN numbers
 unloadingFindings.dangerousGoods.unNumber = UN number {0}
 unloadingFindings.dangerousGoods.unNumber.change.hidden = UN number {0} for item {1}
 
@@ -691,8 +694,8 @@ houseConsignment.combinedNomenclatureCode.error.invalid = The combined nomenclat
 houseConsignment.combinedNomenclatureCode.error.length = The combined nomenclature code must be 2 characters long
 
 
-houseConsignment.item.customsUnionAndStatisticsCode.title = What is the new Customs Union and Statistics (CUS) code for item {0} in house consignment {1}
-houseConsignment.item.customsUnionAndStatisticsCode.heading = What is the new Customs Union and Statistics (CUS) code for item {0} in house consignment {1}
+houseConsignment.item.customsUnionAndStatisticsCode.title = What is the new Customs Union and Statistics (CUS) code for item {0} in house consignment {1}?
+houseConsignment.item.customsUnionAndStatisticsCode.heading = What is the new Customs Union and Statistics (CUS) code for item {0} in house consignment {1}?
 houseConsignment.item.customsUnionAndStatisticsCode.hint = This will be 9 characters long and include both letters and numbers.
 houseConsignment.item.customsUnionAndStatisticsCode.error.required = Enter the new Customs Union and Statistics (CUS) code for item {0} in house consignment {1}
 houseConsignment.item.customsUnionAndStatisticsCode.error.length = The Customs Union and Statistics (CUS) code must be 9 characters long
@@ -715,6 +718,7 @@ transport.equipment.selectItems.heading = Which item does this transport equipme
 transport.equipment.selectItems.paragraph = You can only select from the items added when making the declaration.
 transport.equipment.selectItems.label = Search your {0} items.
 transport.equipment.selectItems.error.required = Select which item this transport equipment applies to
+transport.equipment.selectItems.check.error.required = Select which item this transport equipment applies to
 transport.equipment.selectItems.placeholder = Select an item
 
 transport.equipment.applyAnotherItem.singular.title = You have applied 1 item to transport equipment {0}
@@ -859,6 +863,8 @@ document.type.hint = Enter the document name or code.
 document.type.placeholder = Select a document type
 document.type.error.required = Select the type of document you want to add
 document.type.check.error.required = Select the new document type
+document.type.maxLimitForType.label = You cannot add any more {0} documents to all items. To add another, you need to remove one first. You can, however, still add a {1} document to your items.
+
 
 houseConsignment.index.items.document.type.title = What is the new document type for item {1} in house consignment {0}?
 houseConsignment.index.items.document.type.heading = What is the new document type for item {1} in house consignment {0}?
@@ -940,3 +946,11 @@ houseConsignment.index.item.removeNetWeightYesNo.error.required = Select yes if 
 additionalReference.index.removeAdditionalReferenceYesNo.title = Are you sure you want to remove this additional reference?
 additionalReference.index.removeAdditionalReferenceYesNo.heading = Are you sure you want to remove this additional reference?
 additionalReference.index.removeAdditionalReferenceYesNo.error.required = Select yes if you want to remove this additional reference
+
+houseConsignment.index.items.additionalReference.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
+houseConsignment.index.items.additionalReference.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
+houseConsignment.index.items.additionalReference.addAdditionalReferenceNumberYesNo.error.required = Select yes if you want to add an additional reference number
+
+houseConsignment.index.items.packages.addPackageShippingMarkYesNo.title = Do you want to add a shipping mark?
+houseConsignment.index.items.packages.addPackageShippingMarkYesNo.heading = Do you want to add a shipping mark?
+houseConsignment.index.items.packages.addPackageShippingMarkYesNo.error.required = Select yes if you want to add a shipping mark

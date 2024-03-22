@@ -18,7 +18,7 @@ package utils.answersHelpers.consignment.houseConsignment.item
 
 import models.reference.PackageType
 import models.{CheckMode, Index, UserAnswers}
-import pages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
+import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
@@ -33,7 +33,8 @@ class PackagingAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: In
     args = Seq(packageIndex.display, itemIndex.display): _*,
     id = Some(s"change-package-type-${itemIndex.display}-${packageIndex.display}"),
     call = Some(
-      controllers.houseConsignment.index.items.routes.PackageTypeController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, CheckMode)
+      controllers.houseConsignment.index.items.packages.routes.PackageTypeController
+        .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, CheckMode)
     )
   )
 
@@ -44,7 +45,7 @@ class PackagingAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: In
     args = Seq(packageIndex.display, itemIndex.display): _*,
     id = Some(s"change-package-mark-${itemIndex.display}-${packageIndex.display}"),
     call = Some(
-      controllers.houseConsignment.index.items.routes.PackageShippingMarkController
+      controllers.houseConsignment.index.items.packages.routes.PackageShippingMarkController
         .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, CheckMode)
     )
   )
@@ -56,7 +57,7 @@ class PackagingAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: In
     args = Seq(packageIndex.display, itemIndex.display): _*,
     id = Some(s"change-package-count-${itemIndex.display}-${packageIndex.display}"),
     call = Some(
-      controllers.houseConsignment.index.items.routes.NumberOfPackagesController
+      controllers.houseConsignment.index.items.packages.routes.NumberOfPackagesController
         .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, CheckMode)
     )
   )

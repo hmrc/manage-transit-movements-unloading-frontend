@@ -23,39 +23,44 @@
     govukDetails: GovukDetails
 )
 
-@(section: Section, nestingLevel: Int = 0)(implicit messages: Messages)
+@(section: Section)(implicit messages: Messages)
 
-@section match {
-    case x: StaticSection => {
-        @section.sectionTitle.map { title =>
-            <h2 class="govuk-heading-m">@title</h2>
+@if(section.nonEmpty) {
+    @section match {
+        case x: StaticSection => {
+            <div class="govuk-!-margin-bottom-9">
+                @section.sectionTitle.map { title =>
+                    <h2 class="govuk-heading-m">@title</h2>
+                }
+
+                <div class="@section.margin">
+                    @if(section.rows.nonEmpty) {
+                        @govukSummaryList(
+                            SummaryList(
+                                rows = section.rows
+                            )
+                        )
+                    }
+
+                    @section.viewLinks.map { link =>
+                        <p class="govuk-body">
+                            <a class="govuk-link" href=@link.href id="@link.id">
+                                @messages(link.text) <span class="govuk-visually-hidden">@link.visuallyHidden</span>
+                            </a>
+                        </p>
+                    }
+                </div>
+            </div>
         }
-
-        @if(section.rows.nonEmpty) {
-            @govukSummaryList(
-                SummaryList(
-                    rows = section.rows
+        case x: AccordionSection => {
+            @govukDetails(
+                Details(
+                    summary = HtmlContent(header),
+                    content = HtmlContent(content),
+                    id = section.id
                 )
             )
         }
-
-        @section.viewLinks.map { link =>
-            <p class="govuk-body">
-                <a class="govuk-link" href=@link.href id="@link.id">
-                    @messages(link.text) <span class="govuk-visually-hidden">@link.visuallyHidden</span>
-                </a>
-            </p>
-        }
-    }
-    case x: AccordionSection => {
-        @govukDetails(
-            Details(
-                summary = HtmlContent(header),
-                content = HtmlContent(content),
-                id = section.id,
-                classes = s"govuk-!-margin-left-${2 * nestingLevel}"
-            )
-        )
     }
 }
 
@@ -68,23 +73,25 @@
 }
 
 @content = {
-    @if(section.rows.nonEmpty) {
-        @govukSummaryList(
-            SummaryList(
-                rows = section.rows
+    <div class="@section.margin">
+        @if(section.rows.nonEmpty) {
+            @govukSummaryList(
+                SummaryList(
+                    rows = section.rows
+                )
             )
-        )
-    } else if(section.children.isEmpty) {
-        <p class="govuk-body">@messages("unloadingFindings.noInformationProvided")</p>
-    }
+        } else if(section.children.isEmpty) {
+            <p class="govuk-body">@messages("unloadingFindings.noInformationProvided")</p>
+        }
 
-    @section.children.map(this(_, nestingLevel + 1))
+        @section.children.map(this(_))
 
-    @section.viewLinks.map { link =>
-        <p class="govuk-body">
-            <a class="govuk-link" href=@link.href id="@link.id">
-                @messages(link.text) <span class="govuk-visually-hidden">@link.visuallyHidden</span>
-            </a>
-        </p>
-    }
+        @section.viewLinks.map { link =>
+            <p class="govuk-body">
+                <a class="govuk-link" href=@link.href id="@link.id">
+                    @messages(link.text) <span class="govuk-visually-hidden">@link.visuallyHidden</span>
+                </a>
+            </p>
+        }
+    </div>
 }

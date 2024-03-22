@@ -297,7 +297,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.children.head.children(1).rows.size mustBe 1
             result.children.head.children(1).rows.head.value.value mustBe item.toString
             result.children.head.children(1).viewLinks.head.href mustBe
-              controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, NormalMode, index).url
+              controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, CheckMode, NormalMode, equipmentIndex).url
         }
       }
     }
@@ -432,14 +432,15 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
             result.children.head mustBe a[AccordionSection]
             result.children.head.sectionTitle.value mustBe "House consignment 1"
-            result.children.head.rows.size mustBe 2
-            result.children.head.rows.head.value.value mustBe consignorName
-            result.children.head.rows(1).value.value mustBe consignorId
-            result.children.head.children must not be empty
+            result.children.head.rows.size mustBe 0
 
-            result.children.head.children.head.sectionTitle.get mustBe "Consignee"
-            result.children.head.children.head.rows.head.value.value mustBe consigneeId
-            result.children.head.children.head.rows(1).value.value mustBe consigneeName
+            result.children.head.children.head.sectionTitle.value mustBe "Consignor"
+            result.children.head.children.head.rows.head.value.value mustBe consignorId
+            result.children.head.children.head.rows(1).value.value mustBe consignorName
+
+            result.children.head.children(1).sectionTitle.value mustBe "Consignee"
+            result.children.head.children(1).rows.head.value.value mustBe consigneeId
+            result.children.head.children(1).rows(1).value.value mustBe consigneeName
 
             val link = result.children.head.viewLinks.head
             link.id mustBe "view-house-consignment-1"

@@ -1,0 +1,60 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.houseConsignment.index.items.packages.routes
+@import models.ArrivalId
+@import models.reference.PackageType
+@import models.reference.Selectable
+@import models.reference.Selectable._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import viewModels.components.InputSelectViewModel._
+@import views.html.components.{Button, ErrorSummary, InputSelect}
+@import viewModels.houseConsignment.index.items.packages.PackageTypeViewModel
+
+@this(
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    inputSelect: InputSelect,
+    errorSummary: ErrorSummary,
+    button: Button
+)
+
+@(viewModel: PackageTypeViewModel,form: Form[PackageType],mrn: MovementReferenceNumber, arrivalId: ArrivalId, packageTypes: Seq[PackageType], mode: Mode,houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index)(implicit request: Request[_], messages: Messages)
+
+@mainTemplate(
+    title = viewModel.title,
+    showBackLink = true
+) {
+
+    @formHelper(action = routes.PackageTypeController.onSubmit(arrivalId, houseConsignmentIndex,itemIndex, packageIndex, mode), Symbol("autoComplete") -> "off") {
+
+        @errorSummary(form.errors)
+
+        @inputSelect(
+                field = form("value"),
+                selectType = SelectWithAdditionalHtml(
+                    heading = viewModel.heading,
+                    caption = Some(messages("site.caption", mrn.toString)),
+                additionalHtml = messages("houseConsignment.index.item.packageType.paragraph").toParagraph
+            ),
+                hint = Some(messages("houseConsignment.index.item.packageType.hint")),
+                selectItems = packageTypes.toSelectItems(form.value),
+                placeholder = messages("item.packages.index.packageType.placeholder")
+        )
+
+        @button(attributes = Map("id" -> "submit"))
+    }
+}
