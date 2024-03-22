@@ -928,3 +928,7 @@ houseConsignment.index.item.removeNetWeightYesNo.error.required = Select yes if 
 additionalReference.index.removeAdditionalReferenceYesNo.title = Are you sure you want to remove this additional reference?
 additionalReference.index.removeAdditionalReferenceYesNo.heading = Are you sure you want to remove this additional reference?
 additionalReference.index.removeAdditionalReferenceYesNo.error.required = Select yes if you want to remove this additional reference
+
+houseConsignment.index.items.packages.addNumberOfPackagesYesNo.title = Do you want to add the quantity of this package?
+houseConsignment.index.items.packages.addNumberOfPackagesYesNo.heading = Do you want to add the quantity of this package?
+houseConsignment.index.items.packages.addNumberOfPackagesYesNo.error.required = Select yes if you want to add the quantity of the package type
