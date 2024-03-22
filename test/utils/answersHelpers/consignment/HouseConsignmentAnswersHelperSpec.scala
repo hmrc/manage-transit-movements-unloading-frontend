@@ -25,6 +25,7 @@ import pages._
 import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
 import pages.houseConsignment.index.items.additionalinformation.HouseConsignmentAdditionalInformationCodePage
 import pages.houseConsignment.index.items.document.DocumentReferenceNumberPage
+import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
 import pages.houseConsignment.index.items.{
   CombinedNomenclatureCodePage,
   CommodityCodePage,

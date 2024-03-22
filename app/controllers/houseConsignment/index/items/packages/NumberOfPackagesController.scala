@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package controllers.houseConsignment.index.items
+package controllers.houseConsignment.index.items.packages
 
 import controllers.actions._
 import forms.NumberOfPackagesFormProvider
 import models.{ArrivalId, Index, Mode}
 import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator
-import pages.NumberOfPackagesPage
+import pages.houseConsignment.index.items.packages.NumberOfPackagesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.houseConsignment.index.items.NumberOfPackagesViewModel.NumberOfPackagesViewModelProvider
-import views.html.houseConsignment.index.items.NumberOfPackagesView
+import viewModels.houseConsignment.index.items.packages.NumberOfPackagesViewModel.NumberOfPackagesViewModelProvider
+import views.html.houseConsignment.index.items.packages.NumberOfPackagesView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

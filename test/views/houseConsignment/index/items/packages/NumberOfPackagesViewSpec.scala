@@ -30,7 +30,7 @@
  * limitations under the License.
  */
 
-package views.houseConsignment.index.items
+package views.houseConsignment.index.items.packages
 
 import forms.NumberOfPackagesFormProvider
 import models.CheckMode
@@ -39,9 +39,9 @@ import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
-import viewModels.houseConsignment.index.items.NumberOfPackagesViewModel
+import viewModels.houseConsignment.index.items.packages.NumberOfPackagesViewModel
 import views.behaviours.InputTextViewBehaviours
-import views.html.houseConsignment.index.items.NumberOfPackagesView
+import views.html.houseConsignment.index.items.packages.NumberOfPackagesView
 
 class NumberOfPackagesViewSpec extends InputTextViewBehaviours[BigInt] {
 

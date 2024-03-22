@@ -21,6 +21,7 @@ import org.scalacheck.Arbitrary
 import pages._
 import pages.departureMeansOfTransport.{CountryPage, VehicleIdentificationNumberPage}
 import pages.houseConsignment.index.items.GrossWeightPage
+import pages.houseConsignment.index.items.packages.NumberOfPackagesPage
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 
 trait PageGenerators {

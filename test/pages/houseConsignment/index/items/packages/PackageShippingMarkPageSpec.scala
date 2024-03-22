@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.houseConsignment.index.items.packages
 
-import models.Index
-import models.reference.PackageType
-import pages.sections.PackagingSection
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case class PackageTypePage(houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index) extends QuestionPage[PackageType] {
+class PackageShippingMarkPageSpec extends PageBehaviours {
 
-  override def path: JsPath = PackagingSection(houseConsignmentIndex, itemIndex, packageIndex).path \ toString
+  "PackageShippingMarkPage" - {
 
-  override def toString: String = "typeOfPackages"
+    beRetrievable[String](PackageShippingMarkPage(index, index, index))
 
+    beSettable[String](PackageShippingMarkPage(index, index, index))
+
+    beRemovable[String](PackageShippingMarkPage(index, index, index))
+  }
 }

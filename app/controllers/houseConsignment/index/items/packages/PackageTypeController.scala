@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.houseConsignment.index.items
+package controllers.houseConsignment.index.items.packages
 
 import controllers.actions._
 import forms.SelectableFormProvider
@@ -22,15 +22,15 @@ import models.reference.PackageType
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
 import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator
-import pages.PackageTypePage
+import pages.houseConsignment.index.items.packages.PackageTypePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.PackagesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.houseConsignment.index.items.PackageTypeViewModel.PackageTypeViewModelProvider
-import views.html.houseConsignment.index.items.PackageTypeView
+import viewModels.houseConsignment.index.items.packages.PackageTypeViewModel.PackageTypeViewModelProvider
+import views.html.houseConsignment.index.items.packages.PackageTypeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

@@ -23,7 +23,7 @@ import models.reference.PackageType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.houseConsignment.index.items._
-import pages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
+import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
 
 class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

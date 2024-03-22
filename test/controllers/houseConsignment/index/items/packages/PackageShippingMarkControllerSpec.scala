@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package controllers.houseConsignment.index.items
+package controllers.houseConsignment.index.items.packages
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.houseConsignment.index.items.packages.routes
 import forms.PackageShippingMarkFormProvider
 import generators.Generators
 import models.CheckMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.PackageShippingMarkPage
+import pages.houseConsignment.index.items.packages.PackageShippingMarkPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewModels.houseConsignment.index.items.PackageShippingMarksViewModel
-import viewModels.houseConsignment.index.items.PackageShippingMarksViewModel.PackageShippingMarksViewModelProvider
-import views.html.houseConsignment.index.items.PackageShippingMarkView
+import viewModels.houseConsignment.index.items.packages.PackageShippingMarksViewModel.PackageShippingMarksViewModelProvider
+import viewModels.houseConsignment.index.items.packages.PackageShippingMarksViewModel
+import views.html.houseConsignment.index.items.packages.PackageShippingMarkView
 
 import scala.concurrent.Future
 
