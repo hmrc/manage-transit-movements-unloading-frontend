@@ -90,7 +90,7 @@ final case class UserAnswers(
         )
       userAnswers <- obj.fields.find(_._1 == "sequenceNumber") match {
         case None                 => remove(section)
-        case Some(sequenceNumber) => set(section.path, JsObject(Seq(sequenceNumber, ("removed", JsBoolean(true)))))
+        case Some(sequenceNumber) => set(section.path, JsObject(Seq(sequenceNumber, "removed" -> JsBoolean(true))))
       }
     } yield userAnswers
 }
