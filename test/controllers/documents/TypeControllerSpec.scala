@@ -276,7 +276,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
       "must filter out maxed document types that cannot be added any more" in {
 
         when(mockDocumentTypesService.getDocumentList(any(), any(), any())(any())).thenReturn(Future.successful(documentsList))
-        val maxTransportLimit = frontendAppConfig.maxTransportDocuments
+        val maxTransportLimit = frontendAppConfig.maxTransportDocumentsConsignment
         val supportDocsSize   = 2
 
         val withTransportDocs = (0 until maxTransportLimit).foldLeft(emptyUserAnswers) {

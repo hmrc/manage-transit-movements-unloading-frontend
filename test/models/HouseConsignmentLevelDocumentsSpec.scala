@@ -21,35 +21,35 @@ import generators.Generators
 import models.reference.DocumentType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.documents.TypePage
+import pages.houseConsignment.index.items.document.TypePage
 
-class ConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class HouseConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  "Consignment Level Documents" - {
+  "House Consignment Level Documents" - {
 
-    "must return counts of each document type at consignment level" - {
+    "must return counts of each document type at house consignment level" - {
 
       "when there is a supporting document" - {
 
-        "when index not provided" in {
+        "when document index not provided" in {
           forAll(arbitrary[DocumentType](arbitrarySupportDocument)) {
             document =>
               val userAnswers = emptyUserAnswers
-                .setValue(TypePage(index), document)
+                .setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex), document)
 
-              val result = ConsignmentLevelDocuments.apply(userAnswers)
+              val result = HouseConsignmentLevelDocuments.apply(userAnswers, houseConsignmentIndex, itemIndex)
               result.supporting mustBe 1
               result.transport mustBe 0
           }
         }
 
-        "when filtering out current index (to allow an amend)" in {
+        "when filtering out current document index (to allow an amend)" in {
           forAll(arbitrary[DocumentType](arbitrarySupportDocument)) {
             document =>
               val userAnswers = emptyUserAnswers
-                .setValue(TypePage(index), document)
+                .setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex), document)
 
-              val result = ConsignmentLevelDocuments.apply(userAnswers, Some(index))
+              val result = HouseConsignmentLevelDocuments.apply(userAnswers, houseConsignmentIndex, itemIndex, Some(index))
               result.supporting mustBe 0
               result.transport mustBe 0
           }
@@ -58,25 +58,25 @@ class ConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChec
 
       "when there is a transport document" - {
 
-        "when index not provided" in {
+        "when document index not provided" in {
           forAll(arbitrary[DocumentType](arbitraryTransportDocument)) {
             document =>
               val userAnswers = emptyUserAnswers
-                .setValue(TypePage(index), document)
+                .setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex), document)
 
-              val result = ConsignmentLevelDocuments.apply(userAnswers)
+              val result = HouseConsignmentLevelDocuments.apply(userAnswers, houseConsignmentIndex, itemIndex)
               result.supporting mustBe 0
               result.transport mustBe 1
           }
         }
 
-        "when filtering out current index (to allow an amend)" in {
+        "when filtering out current document index (to allow an amend)" in {
           forAll(arbitrary[DocumentType](arbitraryTransportDocument)) {
             document =>
               val userAnswers = emptyUserAnswers
-                .setValue(TypePage(index), document)
+                .setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex), document)
 
-              val result = ConsignmentLevelDocuments.apply(userAnswers, Some(index))
+              val result = HouseConsignmentLevelDocuments.apply(userAnswers, houseConsignmentIndex, itemIndex, Some(index))
               result.supporting mustBe 0
               result.transport mustBe 0
           }
@@ -89,10 +89,10 @@ class ConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChec
       val transportDoc = arbitrary[DocumentType](arbitraryTransportDocument).sample.value
       val documents    = Seq(transportDoc, supportDoc)
 
-      val consignmentLevelDocuments =
-        ConsignmentLevelDocuments(frontendAppConfig.maxSupportingDocumentsConsignment - 1, frontendAppConfig.maxTransportDocumentsConsignment)
+      val houseConsignmentLevelDocuments =
+        HouseConsignmentLevelDocuments(frontendAppConfig.maxSupportingDocumentsHouseConsignment - 1, frontendAppConfig.maxTransportDocumentsHouseConsignment)
 
-      consignmentLevelDocuments.availableDocuments(documents) mustBe Seq(supportDoc)
+      houseConsignmentLevelDocuments.availableDocuments(documents) mustBe Seq(supportDoc)
     }
   }
 }
