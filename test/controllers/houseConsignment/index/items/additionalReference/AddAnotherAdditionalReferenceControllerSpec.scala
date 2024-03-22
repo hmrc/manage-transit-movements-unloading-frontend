@@ -35,7 +35,6 @@ import viewModels.ListItem
 import viewModels.houseConsignment.index.items.additionalReference.AddAnotherAdditionalReferenceViewModel
 import viewModels.houseConsignment.index.items.additionalReference.AddAnotherAdditionalReferenceViewModel.AddAnotherAdditionalReferenceViewModelProvider
 import views.html.houseConsignment.index.items.additionalReference.AddAnotherAdditionalReferenceView
-import org.mockito.ArgumentMatchers.eq
 
 class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar with Generators {
 
@@ -179,7 +178,8 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
         val request = FakeRequest(POST, addAnotherAdditionalReferenceRoute)
           .withFormUrlEncodedBody(("value", ""))
 
-        val boundForm = form(notMaxedOutViewModel).bind(Map("value" -> ""))
+        val boundForm = formProvider(notMaxedOutViewModel.prefix, notMaxedOutViewModel.allowMore, houseConsignmentIndex, itemIndex)
+          .bind(Map("value" -> ""))
 
         val result = route(app, request).value
 
