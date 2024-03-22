@@ -16,10 +16,12 @@
 
 package pages.houseConsignment.index.items.packages
 
-import models.Index
+import models.{Index, UserAnswers}
 import pages.QuestionPage
 import pages.sections.PackagingSection
 import play.api.libs.json.JsPath
+
+import scala.util.Try
 
 case class AddNumberOfPackagesYesNoPage(houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index) extends QuestionPage[Boolean] {
 
@@ -27,4 +29,10 @@ case class AddNumberOfPackagesYesNoPage(houseConsignmentIndex: Index, itemIndex:
     PackagingSection(houseConsignmentIndex, itemIndex, packageIndex).path \ toString
 
   override def toString: String = "addNumberOfPackagesYesNo"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex))
+      case _           => super.cleanup(value, userAnswers)
+    }
 }
