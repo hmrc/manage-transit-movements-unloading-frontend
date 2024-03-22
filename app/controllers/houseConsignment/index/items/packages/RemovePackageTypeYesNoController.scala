@@ -19,7 +19,6 @@ package controllers.houseConsignment.index.items.packages
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.reference.PackageType
-import models.requests.SpecificDataRequestProvider2
 import models.{ArrivalId, Index, Mode}
 import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageTypePage}
 import pages.sections.PackagingSection
@@ -38,7 +37,6 @@ class RemovePackageTypeYesNoController @Inject() (
   sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: YesNoFormProvider,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemovePackageTypeYesNoView
 )(implicit ec: ExecutionContext)
@@ -48,33 +46,39 @@ class RemovePackageTypeYesNoController @Inject() (
   private def addAnother(arrivalId: ArrivalId, mode: Mode): Call =
     Call("GET", "#") //TODO should go to addAnother package page
 
-  private type Request = SpecificDataRequestProvider2[BigInt, PackageType]#SpecificDataRequest[_]
-
-  private def quantity(implicit request: Request): BigInt = request.arg._1
-
-  private def packageType(implicit request: Request): PackageType = request.arg._2
-
-  private def form(packageType: PackageType): Form[Boolean] =
-    formProvider("houseConsignment.index.items.packages.removePackageTypeYesNo", packageType.toString)
+  private def form(packageType: Option[PackageType]): Form[Boolean] =
+    formProvider("houseConsignment.index.items.packages.removePackageTypeYesNo", packageType.map(_.toString()).getOrElse(""))
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     actions
-      .getStatus(arrivalId)
-      .andThen(getMandatoryPage.getFirst(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex)))
-      .andThen(getMandatoryPage.getSecond(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex))) {
+      .getStatus(arrivalId) {
         implicit request =>
-          val insetText: Option[String] = Some(s"${quantity.toString} ${packageType.toString}")
+          val quantity          = request.userAnswers.get(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex)).map(_.toString())
+          val packageType       = request.userAnswers.get(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex))
+          val packageTypeString = packageType.map(_.toString())
+          val insetText: Option[String] = quantity.flatMap(
+            numberOfPackages =>
+              packageTypeString.map(
+                packageType => s"$numberOfPackages $packageType"
+              )
+          )
           Ok(view(form(packageType), request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode, insetText))
       }
 
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     actions
       .getStatus(arrivalId)
-      .andThen(getMandatoryPage.getFirst(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex)))
-      .andThen(getMandatoryPage.getSecond(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex)))
       .async {
         implicit request =>
-          val insetText: Option[String] = Some(s"${quantity.toString} ${packageType.toString}")
+          val quantity          = request.userAnswers.get(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex)).map(_.toString())
+          val packageType       = request.userAnswers.get(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex))
+          val packageTypeString = packageType.map(_.toString())
+          val insetText: Option[String] = quantity.flatMap(
+            numberOfPackages =>
+              packageTypeString.map(
+                packageType => s"$numberOfPackages $packageType"
+              )
+          )
           form(packageType)
             .bindFromRequest()
             .fold(
