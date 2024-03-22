@@ -835,7 +835,7 @@ houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.p
 houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.empty.label = Do you want to add a additional reference for item {2} in house consignment {1}?
 houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.label = Do you want to add another additional reference for item {2} in house consignment {1}?
 houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.maxLimit.label = You cannot add any more additional references for item {2} in house consignment {1}. To add another, you need to remove one first.
-houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.error.required = Select yes if you want to add another additional reference for item {2} in house consignment {1}
+houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.error.required = Select yes if you want to add another additional reference for item {1} in house consignment {0}
 houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.paragraph = This can be any other reference you want to declare, such as a certificate number, import licence or accompanying document.
 
 additionalReference.index.additionalReferenceType.NormalMode.title = What type of additional reference do you want to add?

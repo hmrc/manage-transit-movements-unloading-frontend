@@ -55,7 +55,8 @@ class AddAnotherAdditionalReferenceController @Inject() (
   def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode, houseConsignmentIndex, itemIndex)
-      form(viewModel)
+      val form      = formProvider(viewModel.prefix, viewModel.allowMore, houseConsignmentIndex.display, itemIndex.display)
+      form
         .bindFromRequest()
         .fold(
           formWithErrors => BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel)),
