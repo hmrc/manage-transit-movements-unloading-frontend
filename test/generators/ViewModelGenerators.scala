@@ -31,7 +31,8 @@ import viewModels.departureTransportMeans._
 import viewModels.documents.{AddAnotherDocumentViewModel, AdditionalInformationViewModel, DocumentReferenceNumberViewModel, TypeViewModel}
 import viewModels.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberViewModel, AdditionalReferenceViewModel}
 import viewModels.houseConsignment.index.items.document.{ItemsAdditionalInformationViewModel, ItemsDocumentReferenceNumberViewModel}
-import viewModels.houseConsignment.index.items.{document => hcViewModel, _}
+import viewModels.houseConsignment.index.items.{document => hcViewModel}
+import viewModels.houseConsignment.index.items.packages.{NumberOfPackagesViewModel, PackageShippingMarksViewModel, PackageTypeViewModel}
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 import viewModels.transportEquipment.AddAnotherEquipmentViewModel
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
@@ -43,6 +44,8 @@ trait ViewModelGenerators {
 
   private val maxSeqLength = 10
 
+  private val maxTransportDoc   = 99
+  private val maxSupportDoc     = 99
   private val maxTransportDocHC = 99
   private val maxSupportDocHC   = 99
 
@@ -275,7 +278,7 @@ trait ViewModelGenerators {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
       nextIndex    <- arbitrary[Index]
-      documents    <- arbitrary[ConsignmentLevelDocuments]
+      documents    <- arbitrary[ConsignmentLevelDocuments](arbitraryConsignmentLevelDocuments)
       allowMore    <- arbitrary[Boolean]
     } yield AddAnotherDocumentViewModel(listItems, onSubmitCall, nextIndex, documents, allowMore)
   }
@@ -312,12 +315,20 @@ trait ViewModelGenerators {
     } yield ConsignmentLevelDocuments(support, transport)
   }
 
+  implicit lazy val arbitraryConsignmentLevelDocumentsMaxedOutTransport: Arbitrary[ConsignmentLevelDocuments] = Arbitrary {
+    ConsignmentLevelDocuments(0, maxTransportDoc)
+  }
+
+  implicit lazy val arbitraryConsignmentLevelDocumentsMaxedOutSupport: Arbitrary[ConsignmentLevelDocuments] = Arbitrary {
+    ConsignmentLevelDocuments(maxSupportDoc, 0)
+  }
+
   implicit lazy val arbitraryTypeViewModel: Arbitrary[TypeViewModel] = Arbitrary {
     for {
       heading       <- nonEmptyString
       title         <- nonEmptyString
       requiredError <- nonEmptyString
-      documents     <- arbitrary[ConsignmentLevelDocuments]
+      documents     <- arbitrary[ConsignmentLevelDocuments](arbitraryConsignmentLevelDocuments)
     } yield TypeViewModel(heading, title, requiredError, documents)
   }
 
@@ -336,7 +347,7 @@ trait ViewModelGenerators {
     HouseConsignmentLevelDocuments(maxSupportDocHC, 0)
   }
 
-  implicit lazy val arbitraryTypeHouseConsignmentViewModel: Arbitrary[hcViewModel.TypeViewModel] = Arbitrary {
+  implicit lazy val arbitraryHouseConsignmentTypeViewModel: Arbitrary[hcViewModel.TypeViewModel] = Arbitrary {
     for {
       heading       <- nonEmptyString
       title         <- nonEmptyString

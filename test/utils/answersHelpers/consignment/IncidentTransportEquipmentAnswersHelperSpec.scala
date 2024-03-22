@@ -68,14 +68,19 @@ class IncidentTransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase 
         val helper: IncidentTransportEquipmentAnswersHelper = new IncidentTransportEquipmentAnswersHelper(mockUserAnswers, mockTransportEquipmentType)
         when(mockTransportEquipmentType.Seal).thenReturn(Seq(SealType04("1", "Seal1"), SealType04("2", "Seal2")))
 
-        val result = helper.transportEquipmentSeals
+        val result = helper.transportEquipmentSeals.value
 
-        result.size mustBe 2
-        result.head.value.value mustBe "Seal1"
-        result(1).value.value mustBe "Seal2"
-        result.head.actions must not be defined
-        result(1).actions must not be defined
+        result.sectionTitle.value mustBe "Seals"
 
+        result.rows.size mustBe 2
+
+        result.rows.head.key.value mustBe "Seal 1"
+        result.rows.head.value.value mustBe "Seal1"
+        result.rows.head.actions must not be defined
+
+        result.rows(1).key.value mustBe "Seal 2"
+        result.rows(1).value.value mustBe "Seal2"
+        result.rows(1).actions must not be defined
       }
     }
 
@@ -85,17 +90,20 @@ class IncidentTransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase 
         val helper: IncidentTransportEquipmentAnswersHelper = new IncidentTransportEquipmentAnswersHelper(mockUserAnswers, mockTransportEquipmentType)
         when(mockTransportEquipmentType.GoodsReference).thenReturn(Seq(GoodsReferenceType01("1", 123), GoodsReferenceType01("2", 234)))
 
-        val result = helper.itemNumber
+        val result = helper.itemNumbers.value
 
-        result.size mustBe 2
-        result.head.value.value mustBe "123"
-        result(1).value.value mustBe "234"
-        result.head.actions must not be defined
-        result(1).actions must not be defined
+        result.sectionTitle.value mustBe "Goods item numbers"
 
+        result.rows.size mustBe 2
+
+        result.rows.head.key.value mustBe "Goods item number 1"
+        result.rows.head.value.value mustBe "123"
+        result.rows.head.actions must not be defined
+
+        result.rows(1).key.value mustBe "Goods item number 2"
+        result.rows(1).value.value mustBe "234"
+        result.rows(1).actions must not be defined
       }
     }
-
   }
-
 }

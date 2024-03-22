@@ -49,9 +49,9 @@ class TransportEquipmentAnswersHelper(
         case (_, index) =>
           val helper = new SealAnswersHelper(userAnswers, equipmentIndex, index)
           Seq(helper.transportEquipmentSeal).flatten
-      }
-      .toList match {
-      case Nil => None
+      } match {
+      case Nil =>
+        None
       case rows =>
         Some(
           AccordionSection(
@@ -70,9 +70,9 @@ class TransportEquipmentAnswersHelper(
         case (_, index) =>
           val helper = new ItemAnswersHelper(userAnswers, equipmentIndex, index)
           Seq(helper.transportEquipmentItem).flatten
-      }
-      .toList match {
-      case Nil => None
+      } match {
+      case Nil =>
+        None
       case rows =>
         Some(
           AccordionSection(

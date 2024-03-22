@@ -20,7 +20,7 @@ import models.CheckMode
 import models.reference.PackageType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
+import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
 import utils.answersHelpers.AnswersHelperSpecBase
 
 class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
@@ -50,7 +50,7 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
               action.visuallyHiddenText.value mustBe "type of package 1 for item 1"
-              action.href mustBe controllers.houseConsignment.index.items.routes.PackageTypeController
+              action.href mustBe controllers.houseConsignment.index.items.packages.routes.PackageTypeController
                 .onPageLoad(arrivalId, hcIndex, packageIndex, itemIndex, CheckMode)
                 .url
               action.id mustBe "change-package-type-1-1"
@@ -82,7 +82,7 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
               action.visuallyHiddenText.value mustBe "quantity of package 1 for item 1"
-              action.href mustBe controllers.houseConsignment.index.items.routes.NumberOfPackagesController
+              action.href mustBe controllers.houseConsignment.index.items.packages.routes.NumberOfPackagesController
                 .onPageLoad(arrivalId, hcIndex, itemIndex, packageIndex, CheckMode)
                 .url
               action.id mustBe "change-package-count-1-1"
@@ -114,7 +114,7 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
               action.visuallyHiddenText.value mustBe "shipping mark of package 1 for item 1"
-              action.href mustBe controllers.houseConsignment.index.items.routes.PackageShippingMarkController
+              action.href mustBe controllers.houseConsignment.index.items.packages.routes.PackageShippingMarkController
                 .onPageLoad(arrivalId, hcIndex, itemIndex, packageIndex, CheckMode)
                 .url
               action.id mustBe "change-package-mark-1-1"

@@ -68,9 +68,10 @@ class HouseConsignmentAnswersHelper(
 
   def houseConsignmentConsignorSection: Section =
     StaticSection(
+      sectionTitle = messages("unloadingFindings.consignor.heading"),
       rows = Seq(
-        consignorName,
-        consignorIdentification
+        consignorIdentification,
+        consignorName
       ).flatten
     )
 
@@ -97,18 +98,26 @@ class HouseConsignmentAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.houseConsignment.consigneeAddress"
   )
 
-  def departureTransportMeansSections: Seq[Section] =
+  def departureTransportMeansSection: Section =
     userAnswers.get(DepartureTransportMeansListSection(houseConsignmentIndex)).mapWithIndex {
       case (_, index) =>
         val helper = new DepartureTransportMeansAnswersHelper(userAnswers, houseConsignmentIndex, index)
+        val rows = Seq(
+          helper.transportMeansID,
+          helper.transportMeansIDNumber,
+          helper.buildVehicleNationalityRow
+        ).flatten
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans", index.display)),
-          rows = Seq(
-            helper.transportMeansID,
-            helper.transportMeansIDNumber,
-            helper.buildVehicleNationalityRow
-          ).flatten,
+          rows = rows,
           id = Some(s"departureTransportMeans$index")
+        )
+    } match {
+      case children =>
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans.parent.header")),
+          children = children,
+          id = Some("departureTransportMeans")
         )
     }
 
@@ -125,39 +134,30 @@ class HouseConsignmentAnswersHelper(
           Seq(helper.netWeightRow),
           helper.cusCodeRow,
           Seq(helper.commodityCodeRow),
-          Seq(helper.nomenclatureCodeRow),
-          helper.dangerousGoodsRows
+          Seq(helper.nomenclatureCodeRow)
         ).flatten
 
         val children = Seq(
-          Seq(helper.itemLevelConsigneeSection),
-          Seq(helper.documentSection),
-          Seq(helper.additionalReferencesSection),
+          helper.dangerousGoodsSection,
+          Some(helper.itemLevelConsigneeSection),
+          Some(helper.documentSection),
+          Some(helper.additionalReferencesSection),
           helper.additionalInformationSection,
-          Seq(helper.packageSection)
+          Some(helper.packageSection)
         ).flatten
 
-        (rows, children, index)
-    } match {
-      case Nil =>
-        StaticSection(
-          sectionTitle = Some(messages("unloadingFindings.subsections.item.parent.heading")),
-          viewLinks = Seq(itemsAddRemoveLink)
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.subsections.item", index.display)),
+          rows = rows,
+          children = children,
+          id = Some(s"item-$index")
         )
-      case items =>
-        val itemSections = items.map {
-          case (rows, children, index) =>
-            AccordionSection(
-              sectionTitle = Some(messages("unloadingFindings.subsections.item", index.display)),
-              rows = rows,
-              children = children,
-              id = Some(s"item-$index")
-            )
-        }
+    } match {
+      case children =>
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.subsections.item.parent.heading")),
           viewLinks = Seq(itemsAddRemoveLink),
-          children = itemSections,
+          children = children,
           id = Some("items")
         )
     }
