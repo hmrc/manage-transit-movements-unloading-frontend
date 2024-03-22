@@ -89,9 +89,9 @@ final case class UserAnswers(
           Success(_)
         )
       userAnswers <- {
-        obj.fields.filter(_._1 == "sequenceNumber") match {
-          case Nil            => remove(section)
-          case sequenceNumber => set(section.path, JsObject(sequenceNumber :+ ("removed", JsBoolean(true))))
+        obj.fields.find(_._1 == "sequenceNumber") match {
+          case None                 => remove(section)
+          case Some(sequenceNumber) => set(section.path, JsObject(Seq(sequenceNumber, ("removed", JsBoolean(true)))))
         }
       }
     } yield userAnswers
