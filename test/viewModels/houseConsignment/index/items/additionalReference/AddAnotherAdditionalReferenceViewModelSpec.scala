@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewModels.documents
+package viewModels.houseConsignment.index.items.additionalReference
 
 import base.SpecBase
 import generators.Generators

@@ -41,11 +41,11 @@ case class AddAnotherAdditionalReferenceViewModel(listItems: Seq[ListItem],
     messages(s"$prefix.$emptyOrSingularOrPlural.heading", count, houseConsignmentIndex.display, itemIndex.display)
 
   override def legend(implicit messages: Messages): String = if (count > 0) {
-    messages(s"$prefix.label", houseConsignmentIndex.display, itemIndex.display)
-  } else { messages(s"$prefix.empty.label", houseConsignmentIndex.display, itemIndex.display) }
+    messages(s"$prefix.label", count, houseConsignmentIndex.display, itemIndex.display)
+  } else { messages(s"$prefix.empty.label", count, houseConsignmentIndex.display, itemIndex.display) }
 
   override def maxLimitLabel(implicit messages: Messages): String =
-    messages(s"$prefix.maxLimit.label", houseConsignmentIndex.display, itemIndex.display)
+    messages(s"$prefix.maxLimit.label", count, houseConsignmentIndex.display, itemIndex.display)
 
 }
 

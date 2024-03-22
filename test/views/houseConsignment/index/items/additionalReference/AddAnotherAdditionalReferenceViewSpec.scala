@@ -66,7 +66,7 @@ class AddAnotherAdditionalReferenceViewSpec extends ListWithActionsViewBehaviour
                                                                                                      itemIndex
   )
 
-  behave like pageWithItemsMaxedOut(maxedOutViewModel.count, houseConsignmentIndex, itemIndex)(houseConsignmentIndex, itemIndex)
+  behave like pageWithItemsMaxedOut(maxedOutViewModel.count, houseConsignmentIndex, itemIndex)(maxedOutViewModel.count, houseConsignmentIndex, itemIndex)
 
   behave like pageWithSubmitButton("Continue")
 
