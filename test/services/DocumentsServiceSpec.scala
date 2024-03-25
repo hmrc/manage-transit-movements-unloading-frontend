@@ -137,34 +137,48 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
       }
 
       "when house consignment level" - {
-        "returns a list of list of transport and supporting documents when no document type selected previously" in {
-          when(mockRefDataConnector.getTransportDocuments()(any(), any()))
-            .thenReturn(Future.successful(transportDocuments))
-          when(mockRefDataConnector.getSupportingDocuments()(any(), any()))
-            .thenReturn(Future.successful(supportingDocuments))
+        "and in Check Mode" - {
+          "returns a list of list of transport and supporting documents when no document type selected previously" in {
+            when(mockRefDataConnector.getTransportDocuments()(any(), any()))
+              .thenReturn(Future.successful(transportDocuments))
+            when(mockRefDataConnector.getSupportingDocuments()(any(), any()))
+              .thenReturn(Future.successful(supportingDocuments))
 
-          service.getDocumentList(emptyUserAnswers, houseConsignmentIndex, itemIndex, documentIndex).futureValue mustBe
-            SelectableList(Seq(supportingDocument1, transportDocument1, transportDocument2, supportingDocument2))
+            service.getDocumentList(emptyUserAnswers, houseConsignmentIndex, itemIndex, documentIndex, CheckMode).futureValue mustBe
+              SelectableList(Seq(supportingDocument1, transportDocument1, transportDocument2, supportingDocument2))
+          }
+
+          "returns a list of list of transport documents when a transport document type selected previously" in {
+            when(mockRefDataConnector.getTransportDocuments()(any(), any()))
+              .thenReturn(Future.successful(transportDocuments))
+
+            val userAnswers = emptyUserAnswers.setValue(ItemDocTypePage(houseConsignmentIndex, itemIndex, documentIndex), transportDocument2)
+
+            service.getDocumentList(userAnswers, houseConsignmentIndex, itemIndex, documentIndex, CheckMode).futureValue mustBe
+              SelectableList(Seq(transportDocument1, transportDocument2))
+          }
+
+          "returns a list of list of supporting documents when a supporting document type selected previously" in {
+            when(mockRefDataConnector.getSupportingDocuments()(any(), any()))
+              .thenReturn(Future.successful(supportingDocuments))
+
+            val userAnswers = emptyUserAnswers.setValue(ItemDocTypePage(houseConsignmentIndex, itemIndex, documentIndex), supportingDocument2)
+
+            service.getDocumentList(userAnswers, houseConsignmentIndex, itemIndex, documentIndex, CheckMode).futureValue mustBe
+              SelectableList(Seq(supportingDocument1, supportingDocument2))
+          }
         }
 
-        "returns a list of list of transport documents when a transport document type selected previously" in {
-          when(mockRefDataConnector.getTransportDocuments()(any(), any()))
-            .thenReturn(Future.successful(transportDocuments))
+        "and in NormalMode" - {
+          "returns a list of transport and supporting documents" in {
+            when(mockRefDataConnector.getTransportDocuments()(any(), any()))
+              .thenReturn(Future.successful(transportDocuments))
+            when(mockRefDataConnector.getSupportingDocuments()(any(), any()))
+              .thenReturn(Future.successful(supportingDocuments))
 
-          val userAnswers = emptyUserAnswers.setValue(ItemDocTypePage(houseConsignmentIndex, itemIndex, documentIndex), transportDocument2)
-
-          service.getDocumentList(userAnswers, houseConsignmentIndex, itemIndex, documentIndex).futureValue mustBe
-            SelectableList(Seq(transportDocument1, transportDocument2))
-        }
-
-        "returns a list of list of supporting documents when a supporting document type selected previously" in {
-          when(mockRefDataConnector.getSupportingDocuments()(any(), any()))
-            .thenReturn(Future.successful(supportingDocuments))
-
-          val userAnswers = emptyUserAnswers.setValue(ItemDocTypePage(houseConsignmentIndex, itemIndex, documentIndex), supportingDocument2)
-
-          service.getDocumentList(userAnswers, houseConsignmentIndex, itemIndex, documentIndex).futureValue mustBe
-            SelectableList(Seq(supportingDocument1, supportingDocument2))
+            service.getDocumentList(emptyUserAnswers, houseConsignmentIndex, itemIndex, documentIndex, NormalMode).futureValue mustBe
+              SelectableList(Seq(supportingDocument1, transportDocument1, transportDocument2, supportingDocument2))
+          }
         }
       }
     }

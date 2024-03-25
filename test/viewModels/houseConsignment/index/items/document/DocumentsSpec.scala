@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 
-package viewModels.documents
+package viewModels.houseConsignment.index.items.document
 
 import base.SpecBase
-import models.ConsignmentLevelDocuments
+import models.HouseConsignmentLevelDocuments
 
 class DocumentsSpec extends SpecBase {
 
   "Documents" - {
 
     "must return message if max limit reached" in {
-      Documents.maxLimitLabelForType(ConsignmentLevelDocuments(0, frontendAppConfig.maxTransportDocumentsConsignment), "prefix").isDefined mustBe true
-      Documents.maxLimitLabelForType(ConsignmentLevelDocuments(frontendAppConfig.maxSupportingDocumentsConsignment, 0), "prefix").isDefined mustBe true
+      Documents.maxLimitLabelForType(HouseConsignmentLevelDocuments(0, frontendAppConfig.maxTransportDocumentsHouseConsignment), "prefix").isDefined mustBe true
+      Documents
+        .maxLimitLabelForType(HouseConsignmentLevelDocuments(frontendAppConfig.maxSupportingDocumentsHouseConsignment, 0), "prefix")
+        .isDefined mustBe true
     }
 
     "must return None if max limit not reached" in {
-      Documents.maxLimitLabelForType(ConsignmentLevelDocuments(0, 0), "prefix") mustBe None
+      Documents.maxLimitLabelForType(HouseConsignmentLevelDocuments(0, 0), "prefix") mustBe None
     }
   }
 }
