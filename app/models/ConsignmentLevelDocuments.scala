@@ -27,8 +27,8 @@ case class ConsignmentLevelDocuments(
 ) {
 
   def canAdd(documentType: DocType)(implicit config: FrontendAppConfig): Boolean = documentType match {
-    case DocType.Support   => supporting < config.maxSupportingDocuments
-    case DocType.Transport => transport < config.maxTransportDocuments
+    case DocType.Support   => supporting < config.maxSupportingDocumentsConsignment
+    case DocType.Transport => transport < config.maxTransportDocumentsConsignment
     case DocType.Previous  => false
   }
 

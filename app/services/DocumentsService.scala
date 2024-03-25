@@ -67,14 +67,19 @@ class DocumentsService @Inject() (referenceDataConnector: ReferenceDataConnector
     userAnswers: UserAnswers,
     houseConsignmentIndex: Index,
     itemIndex: Index,
-    documentIndex: Index
+    documentIndex: Index,
+    mode: Mode
   )(implicit hc: HeaderCarrier): Future[SelectableList[DocumentType]] = {
     import pages.houseConsignment.index.items.document.TypePage
 
-    userAnswers.get(TypePage(houseConsignmentIndex, itemIndex, documentIndex)).map(_.`type`) match {
-      case Some(DocType.Transport) => getTransportDocuments()
-      case Some(DocType.Support)   => getSupportingDocuments()
-      case _                       => getDocuments()
+    if (mode == CheckMode) {
+      userAnswers.get(TypePage(houseConsignmentIndex, itemIndex, documentIndex)).map(_.`type`) match {
+        case Some(DocType.Transport) => getTransportDocuments()
+        case Some(DocType.Support)   => getSupportingDocuments()
+        case _                       => getDocuments()
+      }
+    } else {
+      getDocuments()
     }
   }
 }

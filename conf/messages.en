@@ -677,8 +677,8 @@ houseConsignment.removeCommodityCodeYesNo.title = Are you sure you want to remov
 houseConsignment.removeCommodityCodeYesNo.heading = Are you sure you want to remove the commodity code from item {0} in house consignment {1}?
 houseConsignment.removeCommodityCodeYesNo.error.required = Select yes if you want to remove the gross weight from item {0} in house consignment {1}
 
-houseConsignment.removeGrossWeightYesNo.title = Are you sure you want to remove the gross weight from item {0} in house consignment {0}?
-houseConsignment.removeGrossWeightYesNo.heading = Are you sure you want to remove the gross weight from item {0} in house consignment {0}?
+houseConsignment.removeGrossWeightYesNo.title = Are you sure you want to remove the gross weight from item {0} in house consignment {1}?
+houseConsignment.removeGrossWeightYesNo.heading = Are you sure you want to remove the gross weight from item {0} in house consignment {1}?
 houseConsignment.removeGrossWeightYesNo.error.required = Select yes if you want to remove the gross weight from item {0} in house consignment {1}
 
 houseConsignment.removeCombinedNomenclatureCodeYesNo.title = Are you sure you want to remove the combined nomenclature code from item {0} in house consignment {1}?
@@ -826,6 +826,18 @@ houseConsignment.index.items.additionalReference.additionalReferenceNumber.error
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.NormalMode.error.required = Enter the additional reference number
 houseConsignment.index.items.additionalReference.additionalReferenceNumber.CheckMode.error.required = Enter the new additional reference number for item {1} in house consignment {0}
 
+houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.empty.title = You have added 0 additional references for item {2} in house consignment {1}
+houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.singular.title = You have added 1 additional reference for item {2} in house consignment {1}
+houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.plural.title = You have added {0} additional references for item {2} in house consignment {1}
+houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.empty.heading = You have added 0 additional references for item {2} in house consignment {1}
+houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.singular.heading = You have added 1 additional reference for item {2} in house consignment {1}
+houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.plural.heading = You have added {0} additional references for item {2} in house consignment {1}
+houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.empty.label = Do you want to add a additional reference for item {2} in house consignment {1}?
+houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.label = Do you want to add another additional reference for item {2} in house consignment {1}?
+houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.maxLimit.label = You cannot add any more additional references for item {2} in house consignment {1}. To add another, you need to remove one first.
+houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.error.required = Select yes if you want to add another additional reference for item {1} in house consignment {0}
+houseConsignment.index.items.additionalReference.addAnotherAdditionalReference.paragraph = This can be any other reference you want to declare, such as a certificate number, import licence or accompanying document.
+
 additionalReference.index.additionalReferenceType.NormalMode.title = What type of additional reference do you want to add?
 additionalReference.index.additionalReferenceType.NormalMode.heading = What type of additional reference do you want to add?
 additionalReference.index.additionalReferenceType.CheckMode.title = What is the new additional reference type?
@@ -854,11 +866,15 @@ document.type.check.error.required = Select the new document type
 document.type.maxLimitForType.label = You cannot add any more {0} documents to all items. To add another, you need to remove one first. You can, however, still add a {1} document to your items.
 
 
-houseConsignment.index.items.document.type.title = What is the new document type for item {1} in house consignment {0}?
-houseConsignment.index.items.document.type.heading = What is the new document type for item {1} in house consignment {0}?
+houseConsignment.index.items.document.type.NormalMode.title = What type of document do you want to add?
+houseConsignment.index.items.document.type.CheckMode.title = What is the new document type for item {1} in house consignment {0}?
+houseConsignment.index.items.document.type.NormalMode.heading = What type of document do you want to add?
+houseConsignment.index.items.document.type.CheckMode.heading = What is the new document type for item {1} in house consignment {0}?
 houseConsignment.index.items.document.type.hint = Enter the document name or code.
 houseConsignment.index.items.document.type.placeholder = Select a document type
+houseConsignment.index.items.document.type.error.required = Select the type of document you want to add
 houseConsignment.index.items.document.type.check.error.required = Select the new document type for item {1} in house consignment {0}
+houseConsignment.index.items.document.type.maxLimitForType.label = You cannot add any more {0} documents to all items. To add another, you need to remove one first. You can, however, still add a {1} document to your items.
 
 transportEquipment.index.addContainerIdentificationNumberYesNo.title = Do you want to add a container identification number for the transport equipment?
 transportEquipment.index.addContainerIdentificationNumberYesNo.heading = Do you want to add a container identification number for the transport equipment?
@@ -942,6 +958,10 @@ houseConsignment.index.items.additionalReference.addAdditionalReferenceNumberYes
 houseConsignment.index.items.packages.addPackageShippingMarkYesNo.title = Do you want to add a shipping mark?
 houseConsignment.index.items.packages.addPackageShippingMarkYesNo.heading = Do you want to add a shipping mark?
 houseConsignment.index.items.packages.addPackageShippingMarkYesNo.error.required = Select yes if you want to add a shipping mark
+
+houseConsignment.index.items.packages.removePackageTypeYesNo.title = Are you sure you want to remove this package from item {1} in house consignment {0}?
+houseConsignment.index.items.packages.removePackageTypeYesNo.heading = Are you sure you want to remove this package from item {1} in house consignment {0}?
+houseConsignment.index.items.packages.removePackageTypeYesNo.error.required = Select yes if you want to remove {0} from this item
 
 houseConsignment.index.items.additionalReference.removeAdditionalReferenceYesNo.title = Are you sure you want to remove this additional reference?
 houseConsignment.index.items.additionalReference.removeAdditionalReferenceYesNo.heading = Are you sure you want to remove this additional reference?
