@@ -57,7 +57,12 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
 
     val additionalReferenceNumber = userAnswers.get(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)).getOrElse("")
     val insetTestAddRef           = if (additionalReferenceNumber.isEmpty) "" else s" - $additionalReferenceNumber"
-    Some(additionalReferenceType + insetTestAddRef)
+
+    if (additionalReferenceType.isEmpty) {
+      None
+    } else {
+      Some(additionalReferenceType + insetTestAddRef)
+    }
   }
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] =
