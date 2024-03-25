@@ -18,11 +18,8 @@ package utils.transformers
 
 import connectors.ReferenceDataConnector
 import generated.AdditionalInformationType02
-import models.reference.{AdditionalInformationCode}
+import models.reference.AdditionalInformationCode
 import models.{Index, UserAnswers}
-import pages.additionalInformation.{AdditionalInformationCodePage, AdditionalInformationTextPage}
-import pages.houseConsignment.index.items.additionalinformation.{HouseConsignmentAdditionalInformationCodePage, HouseConsignmentAdditionalInformationTextPage}
-import pages.sections.additionalInformation.AdditionalInformationSection
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -31,6 +28,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class AdditionalInformationTransformer @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) extends PageTransformer {
 
   def transform(additionalInformation: Seq[AdditionalInformationType02])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
+    import pages.sections.additionalInformation.AdditionalInformationSection
+    import pages.additionalInformation._
 
     lazy val referenceDataLookups = additionalInformation.map {
       additionalInformation =>
@@ -56,9 +55,13 @@ class AdditionalInformationTransformer @Inject() (referenceDataConnector: Refere
     }
   }
 
-  def transform(additionalReferences: Seq[AdditionalInformationType02], hcIndex: Index, itemIndex: Index)(implicit
-    hc: HeaderCarrier
-  ): UserAnswers => Future[UserAnswers] = userAnswers => {
+  def transform(
+    additionalReferences: Seq[AdditionalInformationType02],
+    hcIndex: Index,
+    itemIndex: Index
+  )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
+    import pages.sections.houseConsignment.index.items.additionalInformation.AdditionalInformationSection
+    import pages.houseConsignment.index.items.additionalinformation._
 
     lazy val referenceDataLookups = additionalReferences.map {
       additionalInformation =>
@@ -74,7 +77,7 @@ class AdditionalInformationTransformer @Inject() (referenceDataConnector: Refere
             userAnswers =>
               val index = Index(i)
               val pipeline: UserAnswers => Future[UserAnswers] = {
-                setSequenceNumber(AdditionalInformationSection(index), underlying.sequenceNumber) andThen
+                setSequenceNumber(AdditionalInformationSection(hcIndex, itemIndex, index), underlying.sequenceNumber) andThen
                   set(HouseConsignmentAdditionalInformationCodePage(hcIndex, itemIndex, index), additionalInformation) andThen
                   set(HouseConsignmentAdditionalInformationTextPage(hcIndex, itemIndex, index), underlying.text)
               }
@@ -88,5 +91,4 @@ class AdditionalInformationTransformer @Inject() (referenceDataConnector: Refere
     underlying: T,
     code: AdditionalInformationCode
   )
-
 }
