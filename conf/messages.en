@@ -967,3 +967,8 @@ houseConsignment.item.addGrossWeightYesNo.title = Do you want to add the item’
 houseConsignment.item.addGrossWeightYesNo.heading = Do you want to add the item’s gross weight?
 houseConsignment.item.addGrossWeightYesNo.error.required = Select yes if you want to add the item’s gross weight
 houseConsignment.item.addGrossWeightYesNo.paragraph = This is the combined weight of the item’s goods and packaging.
+
+houseConsignment.item.addNetWeightYesNo.title = Do you want to add the item’s net weight?
+houseConsignment.item.addNetWeightYesNo.heading = Do you want to add the item’s net weight?
+houseConsignment.item.addNetWeightYesNo.error.required = Select yes if you want to add the item’s net weight
+houseConsignment.item.addNetWeightYesNo.paragraph = This is the weight of the item’s goods, excluding all packaging.
