@@ -61,9 +61,11 @@ class RemovePackageTypeYesNoController @Inject() (
       .andThen(getMandatoryPage(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex))) {
         implicit request =>
           val quantity = request.userAnswers.get(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex)).map(_.toString())
-          val insetText: Option[String] = quantity.map(
-            numberOfPackages => s"$numberOfPackages ${packageType.toString}"
-          )
+          val insetText = quantity
+            .map(
+              value => s"$value ${packageType.toString}"
+            )
+            .orElse(Some(packageType.toString))
           Ok(view(form(packageType), request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode, insetText))
       }
 
