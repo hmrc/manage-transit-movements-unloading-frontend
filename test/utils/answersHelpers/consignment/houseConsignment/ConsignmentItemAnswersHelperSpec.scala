@@ -17,7 +17,7 @@
 package utils.answersHelpers.consignment.houseConsignment
 
 import models.DocType.Previous
-import models.reference.{Country, DocumentType}
+import models.reference.{AdditionalReferenceType, Country, DocumentType}
 import models.{CheckMode, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -317,6 +317,33 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
             result.children(2).sectionTitle.value mustBe "Document 3"
             result.children(2).id.value mustBe "item-1-document-3"
             result.children(2).rows.size mustBe 3
+        }
+      }
+    }
+
+    "additionalReferencesSections" - {
+      import pages.houseConsignment.index.items.additionalReference._
+
+      "must generate accordion sections" in {
+        forAll(arbitrary[AdditionalReferenceType], nonEmptyString) {
+          (`type`, number) =>
+            val answers = emptyUserAnswers
+              .setValue(AdditionalReferencePage(additionalReferenceIndex, hcIndex, itemIndex), `type`)
+              .setValue(AdditionalReferenceNumberPage(additionalReferenceIndex, hcIndex, itemIndex), number)
+
+            val helper = new ConsignmentItemAnswersHelper(answers, hcIndex, itemIndex);
+            val result = helper.additionalReferencesSection
+
+            result mustBe a[AccordionSection]
+            result.sectionTitle.value mustBe "Additional references"
+            result.children.size mustBe 1
+            result.children.head.sectionTitle.value mustBe "Additional reference 1"
+            result.children.head.rows.size mustBe 2
+            result.children.head.rows.head.value.value mustBe `type`.toString
+            result.children.head.rows(1).value.value mustBe number
+            result.viewLinks.head.href mustBe "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/additional-reference/add-another"
+            result.id.value mustBe "item-1-additional-references"
+
         }
       }
     }
