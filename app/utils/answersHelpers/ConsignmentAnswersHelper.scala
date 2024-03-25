@@ -163,7 +163,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         )
     }
 
-  def holderOfTheTransitProcedureSection: Seq[Section] =
+  def holderOfTheTransitProcedureSection: Option[Section] =
     userAnswers.ie043Data.HolderOfTheTransitProcedure.map {
       hotP =>
         val helper = new HolderOfTheTransitProcedureHelper(userAnswers)
@@ -177,7 +177,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
             helper.tirHolderIdentificationNumber(hotP.TIRHolderIdentificationNumber)
           ).flatten
         )
-    }.toList
+    }
 
   def departureTransportMeansSection: Section =
     userAnswers
@@ -213,7 +213,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         val children = Seq(
           helper.transportEquipmentSeals,
           helper.transportEquipmentItems
-        ).flatten
+        )
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.subsections.transportEquipment", index.display)),
           viewLinks = Nil,
@@ -251,7 +251,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         )
     }
 
-  def additionalInformationSection: Option[Section] =
+  def additionalInformationSection: Section =
     userAnswers
       .get(AdditionalInformationListSection)
       .mapWithIndex {
@@ -264,20 +264,15 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
             id = Some(s"additionalInformation$index")
           )
       } match {
-      case Nil =>
-        None
       case children =>
-        Some(
-          AccordionSection(
-            sectionTitle = Some(messages("unloadingFindings.additionalInformation.heading")),
-            children = children,
-            id = Some("additionalInformation")
-          )
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.additionalInformation.heading")),
+          children = children,
+          id = Some("additionalInformation")
         )
     }
 
-  // scalastyle:off method.length
-  def incidentSection: Option[Section] =
+  def incidentSection: Section =
     userAnswers
       .get(IncidentsSection)
       .mapWithIndex {
@@ -313,25 +308,20 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
             sectionTitle = Some(messages("unloadingFindings.subsections.incidents", index.display)),
             rows = rows,
             children = Seq(
-              Some(endorsementSection),
+              endorsementSection,
               helper.incidentTransportEquipments,
-              Some(transhipment)
-            ).flatten,
+              transhipment
+            ),
             id = Some(s"incident$index")
           )
       } match {
-      case Nil =>
-        None
       case children =>
-        Some(
-          AccordionSection(
-            sectionTitle = Some(messages("unloadingFindings.subsections.incidents.parent.header")),
-            children = children,
-            id = Some("incidents")
-          )
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.subsections.incidents.parent.header")),
+          children = children,
+          id = Some("incidents")
         )
     }
-  // scalastyle:on method.length
 
   def documentSection: Section =
     userAnswers.get(DocumentsSection).mapWithIndex {
@@ -361,7 +351,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     }
 
   // Don't show children sections here. These are accessed from the 'More details' link
-  def houseConsignmentSection: Option[Section] =
+  def houseConsignmentSection: Section =
     userAnswers
       .get(HouseConsignmentsSection)
       .mapWithIndex {
@@ -385,15 +375,11 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
             )
           )
       } match {
-      case Nil =>
-        None
       case children =>
-        Some(
-          AccordionSection(
-            sectionTitle = Some(messages("unloadingFindings.subsections.houseConsignment.parent.heading")),
-            children = children,
-            id = Some("houseConsignments")
-          )
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.subsections.houseConsignment.parent.heading")),
+          children = children,
+          id = Some("houseConsignments")
         )
     }
 

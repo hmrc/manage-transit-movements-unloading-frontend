@@ -330,7 +330,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(DangerousGoodsPage(hcIndex, itemIndex, Index(1)), value2)
 
             val helper = new ConsignmentItemAnswersHelper(answers, hcIndex, itemIndex)
-            val result = helper.dangerousGoodsSection.value
+            val result = helper.dangerousGoodsSection
 
             result mustBe a[AccordionSection]
             result.sectionTitle.value mustBe "UN numbers"

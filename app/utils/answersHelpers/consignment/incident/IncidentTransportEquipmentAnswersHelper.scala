@@ -36,47 +36,39 @@ class IncidentTransportEquipmentAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.containerIdentificationNumber"
   )
 
-  def transportEquipmentSeals: Option[Section] =
+  def transportEquipmentSeals: Section =
     transportEquipmentType7.Seal.zipWithIndex.flatMap {
-      case (sealType0, i) =>
+      case (seal, i) =>
         val sealIndex = Index(i)
         buildRowWithNoChangeLink[String](
-          data = Option(sealType0.identifier),
+          data = Option(seal.identifier),
           formatAnswer = formatAsText,
           prefix = "unloadingFindings.rowHeadings.sealIdentifier",
           args = sealIndex.display
         )
     } match {
-      case Nil =>
-        None
       case rows =>
-        Some(
-          AccordionSection(
-            sectionTitle = Some(messages("unloadingFindings.incident.transportEquipment.seals.heading")),
-            rows = rows
-          )
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.incident.transportEquipment.seals.heading")),
+          rows = rows
         )
     }
 
-  def itemNumbers: Option[Section] =
+  def itemNumbers: Section =
     transportEquipmentType7.GoodsReference.zipWithIndex.flatMap {
-      case (type0, i) =>
+      case (goodsReference, i) =>
         val itemIndex = Index(i)
         buildRowWithNoChangeLink[String](
-          data = Option(type0.declarationGoodsItemNumber.toString()),
+          data = Option(goodsReference.declarationGoodsItemNumber.toString()),
           formatAnswer = formatAsText,
           prefix = "unloadingFindings.rowHeadings.incident.item",
           args = itemIndex.display
         )
     } match {
-      case Nil =>
-        None
       case rows =>
-        Some(
-          AccordionSection(
-            sectionTitle = Some(messages("unloadingFindings.incident.transportEquipment.goodsItemNumbers.heading")),
-            rows = rows
-          )
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.incident.transportEquipment.goodsItemNumbers.heading")),
+          rows = rows
         )
     }
 }
