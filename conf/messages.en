@@ -963,6 +963,11 @@ houseConsignment.index.items.packages.removePackageTypeYesNo.title = Are you sur
 houseConsignment.index.items.packages.removePackageTypeYesNo.heading = Are you sure you want to remove this package from item {1} in house consignment {0}?
 houseConsignment.index.items.packages.removePackageTypeYesNo.error.required = Select yes if you want to remove {0} from this item
 
+houseConsignment.item.addGrossWeightYesNo.title = Do you want to add the item’s gross weight?
+houseConsignment.item.addGrossWeightYesNo.heading = Do you want to add the item’s gross weight?
+houseConsignment.item.addGrossWeightYesNo.error.required = Select yes if you want to add the item’s gross weight
+houseConsignment.item.addGrossWeightYesNo.paragraph = This is the combined weight of the item’s goods and packaging.
+
 houseConsignment.index.items.additionalReference.removeAdditionalReferenceYesNo.title = Are you sure you want to remove this additional reference?
 houseConsignment.index.items.additionalReference.removeAdditionalReferenceYesNo.heading = Are you sure you want to remove this additional reference?
 houseConsignment.index.items.additionalReference.removeAdditionalReferenceYesNo.error.required = Select yes if you want to remove this additional reference
