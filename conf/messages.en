@@ -876,6 +876,10 @@ houseConsignment.index.items.document.type.error.required = Select the type of d
 houseConsignment.index.items.document.type.check.error.required = Select the new document type for item {1} in house consignment {0}
 houseConsignment.index.items.document.type.maxLimitForType.label = You cannot add any more {0} documents to all items. To add another, you need to remove one first. You can, however, still add a {1} document to your items.
 
+houseConsignment.index.items.document.removeDocumentYesNo.title = Are you sure you want to remove this document from item {1} in house consignment {0}?
+houseConsignment.index.items.document.removeDocumentYesNo.heading = Are you sure you want to remove this document from item {1} in house consignment {0}?
+houseConsignment.index.items.document.removeDocumentYesNo.error.required = Select yes if you want to remove this document from item {1} in house consignment {0}
+
 transportEquipment.index.addContainerIdentificationNumberYesNo.title = Do you want to add a container identification number for the transport equipment?
 transportEquipment.index.addContainerIdentificationNumberYesNo.heading = Do you want to add a container identification number for the transport equipment?
 transportEquipment.index.addContainerIdentificationNumberYesNo.paragraph = This is a unique number used to identify the container.
