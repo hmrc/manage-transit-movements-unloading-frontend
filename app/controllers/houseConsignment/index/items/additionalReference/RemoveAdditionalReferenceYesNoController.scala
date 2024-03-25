@@ -18,6 +18,7 @@ package controllers.houseConsignment.index.items.additionalReference
 
 import controllers.actions._
 import forms.YesNoFormProvider
+import models.requests.DataRequest
 import models.{ArrivalId, Index, Mode, UserAnswers}
 import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferencePage, RemoveAdditionalReferenceNumberYesNoPage}
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
@@ -114,17 +115,26 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
                     )
                   )
                 ),
-            value =>
-              for {
-                updatedAnswers <-
-                  if (value) {
-                    val additionalReferenceSection = AdditionalReferenceSection(houseConsignmentIndex, itemIndex, additionalReferenceIndex)
-                    Future.fromTry(request.userAnswers.removeExceptSequenceNumber(additionalReferenceSection))
-                  } else {
-                    Future.successful(request.userAnswers)
-                  }
-                _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(addAnother(arrivalId, mode))
+            value => redirect(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex, request, value)
           )
     }
+
+  private def redirect(arrivalId: ArrivalId,
+                       mode: Mode,
+                       houseConsignmentIndex: Index,
+                       itemIndex: Index,
+                       additionalReferenceIndex: Index,
+                       request: DataRequest[AnyContent],
+                       value: Boolean
+  ) =
+    for {
+      updatedAnswers <-
+        if (value) {
+          val additionalReferenceSection = AdditionalReferenceSection(houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+          Future.fromTry(request.userAnswers.removeExceptSequenceNumber(additionalReferenceSection))
+        } else {
+          Future.successful(request.userAnswers)
+        }
+      _ <- sessionRepository.set(updatedAnswers)
+    } yield Redirect(addAnother(arrivalId, mode))
 }
