@@ -31,7 +31,7 @@ class RemoveAdditionalReferenceYesNoViewSpec extends YesNoViewBehaviours {
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[RemoveAdditionalReferenceYesNoView]
-      .apply(form, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex, Some(insetText))(fakeRequest, messages)
+      .apply(form, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex, insetText)(fakeRequest, messages)
 
   override val prefix: String = "houseConsignment.index.items.additionalReference.removeAdditionalReferenceYesNo"
 
@@ -49,12 +49,4 @@ class RemoveAdditionalReferenceYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithSubmitButton("Continue")
 
-  "when inset text undefined" - {
-    val view = injector
-      .instanceOf[RemoveAdditionalReferenceYesNoView]
-      .apply(form, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex, None)(fakeRequest, messages)
-    val doc = parseView(view)
-
-    behave like pageWithoutInsetText(doc)
-  }
 }

@@ -59,7 +59,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
         .setValue(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), "addref-1")
 
       setExistingUserAnswers(userAnswers)
-      val insetText = Some("Y015 - addref-1")
+      val insetText = "Y015 - addref-1"
 
       val request = FakeRequest(GET, removeAdditionalReferenceRoute)
 
@@ -81,7 +81,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
         )
 
       setExistingUserAnswers(userAnswers)
-      val insetText = Some("Y015")
+      val insetText = "Y015"
 
       val request = FakeRequest(GET, removeAdditionalReferenceRoute)
 
@@ -193,7 +193,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
           val request       = FakeRequest(POST, removeAdditionalReferenceRoute).withFormUrlEncodedBody(("value", ""))
           val filledForm    = form.bind(Map("value" -> invalidAnswer))
           val result        = route(app, request).value
-          val insetText     = Some("Y015 - addref-1")
+          val insetText     = "Y015 - addref-1"
 
           status(result) mustEqual BAD_REQUEST
 

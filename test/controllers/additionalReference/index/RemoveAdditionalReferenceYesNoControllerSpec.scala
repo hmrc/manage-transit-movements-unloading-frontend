@@ -89,23 +89,6 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
         view(form, mrn, arrivalId, additionalReferenceIndex, insetText, mode)(request, messages).toString
 
     }
-
-    "must return OK and the correct view for a GET when no referenceType exists" in {
-      setExistingUserAnswers(emptyUserAnswers)
-      val insetText = None
-
-      val request = FakeRequest(GET, removeAdditionalReferenceRoute)
-
-      val result = route(app, request).value
-
-      val view = injector.instanceOf[RemoveAdditionalReferenceYesNoView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, additionalReferenceIndex, insetText, mode)(request, messages).toString
-
-    }
     "when yes submitted" - {
       "must redirect to add another Additional Reference and remove AdditionalReference at specified index" ignore {
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)

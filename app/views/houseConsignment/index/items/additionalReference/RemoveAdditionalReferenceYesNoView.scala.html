@@ -29,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId,  mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index, insetText: Option[String])(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId,  mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index, insetText: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("houseConsignment.index.items.additionalReference.removeAdditionalReferenceYesNo.title", additionalReferenceIndex.display),
@@ -42,10 +42,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = InputYesNoViewModel(
+            yesNoType = YesNoWithAdditionalHtml(
                 heading = messages("houseConsignment.index.items.additionalReference.removeAdditionalReferenceYesNo.heading", additionalReferenceIndex.display),
                 caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = insetText.map(x => govukInsetText(InsetText(content = Text(x))))
+                additionalHtml = govukInsetText(InsetText(content = Text(insetText)))
             )
         )
 

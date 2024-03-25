@@ -49,7 +49,7 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
     Call("GET", "#")
   // TODO: update with AddAnotherAdditionalReferenceController
 
-  def insetText(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): Option[String] = {
+  def insetText(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): String = {
     val additionalReferenceType = userAnswers
       .get(AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
       .map(_.value)
@@ -58,11 +58,7 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
     val additionalReferenceNumber = userAnswers.get(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)).getOrElse("")
     val insetTestAddRef           = if (additionalReferenceNumber.isEmpty) "" else s" - $additionalReferenceNumber"
 
-    if (additionalReferenceType.isEmpty) {
-      None
-    } else {
-      Some(additionalReferenceType + insetTestAddRef)
-    }
+    additionalReferenceType + insetTestAddRef
   }
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] =
