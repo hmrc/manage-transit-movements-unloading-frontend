@@ -69,7 +69,7 @@ class TransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(SealIdentificationNumberPage(equipmentIndex, Index(1)), value2)
 
             val helper = new TransportEquipmentAnswersHelper(answers, equipmentIndex)
-            val result = helper.transportEquipmentSeals.value
+            val result = helper.transportEquipmentSeals
 
             result mustBe a[AccordionSection]
             result.sectionTitle.value mustBe "Seals"
@@ -95,7 +95,7 @@ class TransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(ItemPage(equipmentIndex, Index(1)), item2)
 
             val helper = new TransportEquipmentAnswersHelper(answers, equipmentIndex)
-            val result = helper.transportEquipmentItems.value
+            val result = helper.transportEquipmentItems
 
             result mustBe a[AccordionSection]
             result.sectionTitle.value mustBe "Items applied to this transport equipment"

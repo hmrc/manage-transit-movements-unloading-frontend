@@ -42,7 +42,7 @@ class TransportEquipmentAnswersHelper(
     call = Some(controllers.transportEquipment.index.routes.ContainerIdentificationNumberController.onPageLoad(arrivalId, equipmentIndex, CheckMode))
   )
 
-  def transportEquipmentSeals: Option[Section] =
+  def transportEquipmentSeals: Section =
     userAnswers
       .get(SealsSection(equipmentIndex))
       .mapWithIndex {
@@ -50,20 +50,16 @@ class TransportEquipmentAnswersHelper(
           val helper = new SealAnswersHelper(userAnswers, equipmentIndex, index)
           Seq(helper.transportEquipmentSeal).flatten
       } match {
-      case Nil =>
-        None
       case rows =>
-        Some(
-          AccordionSection(
-            sectionTitle = Some(messages("unloadingFindings.subsections.seals")),
-            rows = rows.flatten,
-            id = Some(s"transport-equipment-$equipmentIndex-seals"),
-            viewLinks = Seq(sealsAddRemoveLink)
-          )
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.subsections.seals")),
+          rows = rows.flatten,
+          id = Some(s"transport-equipment-$equipmentIndex-seals"),
+          viewLinks = Seq(sealsAddRemoveLink)
         )
     }
 
-  def transportEquipmentItems: Option[Section] =
+  def transportEquipmentItems: Section =
     userAnswers
       .get(ItemsSection(equipmentIndex))
       .mapWithIndex {
@@ -71,16 +67,12 @@ class TransportEquipmentAnswersHelper(
           val helper = new ItemAnswersHelper(userAnswers, equipmentIndex, index)
           Seq(helper.transportEquipmentItem).flatten
       } match {
-      case Nil =>
-        None
       case rows =>
-        Some(
-          AccordionSection(
-            sectionTitle = Some(messages("unloadingFindings.subsections.goodsReferences")),
-            rows = rows.flatten,
-            id = Some(s"transport-equipment-$equipmentIndex-items"),
-            viewLinks = Seq(itemsAddRemoveLink)
-          )
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.subsections.goodsReferences")),
+          rows = rows.flatten,
+          id = Some(s"transport-equipment-$equipmentIndex-items"),
+          viewLinks = Seq(itemsAddRemoveLink)
         )
     }
 

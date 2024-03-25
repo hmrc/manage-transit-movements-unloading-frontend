@@ -101,10 +101,13 @@ trait SpecBase
       userAnswers.remove(page).success.value
 
     def getSequenceNumber(section: Section[JsObject]): String =
-      userAnswers.data.transform((section.path \ "sequenceNumber").json.pick[JsString]).get.value
+      getValue[JsString](section, "sequenceNumber").value
 
-    def setSequenceNumber(section: Section[JsObject], sequenceNumber: String): UserAnswers =
-      userAnswers.set(section.path, Json.obj("sequenceNumber" -> sequenceNumber)).success.value
+    def getValue[A <: JsValue](section: Section[JsObject], key: String)(implicit reads: Reads[A]): A =
+      userAnswers.data.transform((section.path \ key).json.pick[A]).get
+
+    def setRemoved(section: Section[JsObject]): UserAnswers =
+      userAnswers.set(section.path, Json.obj("removed" -> true)).success.value
   }
 
   implicit class RichContent(c: Content) {

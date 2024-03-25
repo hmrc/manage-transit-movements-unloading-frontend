@@ -34,60 +34,52 @@ class AdditionalReferencesTransformer @Inject() (referenceDataConnector: Referen
     typeValue: AdditionalReferenceType
   )
 
-  def transform(additionalReferences: Seq[AdditionalReferenceType03])(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
+  def transform(
+    additionalReferences: Seq[AdditionalReferenceType03]
+  )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.sections.additionalReference.AdditionalReferenceSection
 
-    lazy val referenceDataLookups = additionalReferences.map {
-      additionalReference =>
-        referenceDataConnector
-          .getAdditionalReferenceType(additionalReference.typeValue)
-          .map(TempAdditionalReference(additionalReference, _))
-    }
-
-    Future.sequence(referenceDataLookups).flatMap {
-      _.zipWithIndex.foldLeft(Future.successful(userAnswers))({
-        case (acc, (TempAdditionalReference(underlying, typeValue), i)) =>
-          acc.flatMap {
-            userAnswers =>
-              val index = Index(i)
-              val pipeline: UserAnswers => Future[UserAnswers] = {
-                setSequenceNumber(AdditionalReferenceSection(index), underlying.sequenceNumber) andThen
-                  set(AdditionalReferenceTypePage(index), typeValue) andThen
-                  set(AdditionalReferenceNumberPage(index), underlying.referenceNumber)
-              }
-
-              pipeline(userAnswers)
-          }
-      })
+    genericTransform(additionalReferences)(_.typeValue) {
+      case (TempAdditionalReference(underlying, typeValue), index) =>
+        setSequenceNumber(AdditionalReferenceSection(index), underlying.sequenceNumber) andThen
+          set(AdditionalReferenceTypePage(index), typeValue) andThen
+          set(AdditionalReferenceNumberPage(index), underlying.referenceNumber)
     }
   }
 
-  def transform(additionalReferences: Seq[AdditionalReferenceType02], hcIndex: Index, itemIndex: Index)(implicit
-    hc: HeaderCarrier
-  ): UserAnswers => Future[UserAnswers] = userAnswers => {
+  def transform(
+    additionalReferences: Seq[AdditionalReferenceType02],
+    hcIndex: Index,
+    itemIndex: Index
+  )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
 
+    genericTransform(additionalReferences)(_.typeValue) {
+      case (TempAdditionalReference(underlying, typeValue), index) =>
+        setSequenceNumber(AdditionalReferenceSection(hcIndex, itemIndex, index), underlying.sequenceNumber) andThen
+          set(AdditionalReferencePage(hcIndex, itemIndex, index), typeValue) andThen
+          set(AdditionalReferenceNumberItemPage(hcIndex, itemIndex, index), underlying.referenceNumber)
+    }
+  }
+
+  private def genericTransform[T](
+    additionalReferences: Seq[T]
+  )(
+    lookup: T => String
+  )(
+    pipeline: (TempAdditionalReference[T], Index) => UserAnswers => Future[UserAnswers]
+  )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
     lazy val referenceDataLookups = additionalReferences.map {
       additionalReference =>
         referenceDataConnector
-          .getAdditionalReferenceType(additionalReference.typeValue)
+          .getAdditionalReferenceType(lookup(additionalReference))
           .map(TempAdditionalReference(additionalReference, _))
     }
 
     Future.sequence(referenceDataLookups).flatMap {
       _.zipWithIndex.foldLeft(Future.successful(userAnswers))({
-        case (acc, (TempAdditionalReference(underlying, additionalReference), i)) =>
-          acc.flatMap {
-            userAnswers =>
-              val index = Index(i)
-              val pipeline: UserAnswers => Future[UserAnswers] = {
-                setSequenceNumber(AdditionalReferenceSection(hcIndex, itemIndex, index), underlying.sequenceNumber) andThen
-                  set(AdditionalReferencePage(hcIndex, itemIndex, index), additionalReference) andThen
-                  set(AdditionalReferenceNumberItemPage(hcIndex, itemIndex, index), underlying.referenceNumber)
-              }
-
-              pipeline(userAnswers)
-          }
+        case (acc, (additionalReference, i)) =>
+          acc.flatMap(pipeline(additionalReference, Index(i)))
       })
     }
   }

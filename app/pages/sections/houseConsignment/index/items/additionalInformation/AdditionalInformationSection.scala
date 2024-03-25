@@ -17,26 +17,11 @@
 package pages.sections.houseConsignment.index.items.additionalInformation
 
 import models.Index
-import models.reference.AdditionalInformationCode
-import pages.QuestionPage
-import pages.sections.houseConsignment.index.items.additionalInformation.AdditionalInformationSection.AdditionalInformation
-import play.api.libs.json.JsPath
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-case class AdditionalInformationSection(houseConsignmentIndex: Index, itemIndex: Index, additionalInformationIndex: Index)
-    extends QuestionPage[AdditionalInformation] {
+case class AdditionalInformationSection(houseConsignmentIndex: Index, itemIndex: Index, additionalInformationIndex: Index) extends Section[JsObject] {
 
   override def path: JsPath = AdditionalInformationsSection(houseConsignmentIndex, itemIndex).path \ additionalInformationIndex.position
-
-}
-
-object AdditionalInformationSection {
-
-  case class AdditionalInformation(typeValue: AdditionalInformationCode, text: Option[String]) {
-
-    override def toString: String = text match {
-      case Some(text) => s"${typeValue.toString} - $text"
-      case None       => typeValue.toString
-    }
-  }
 
 }
