@@ -942,3 +942,7 @@ houseConsignment.index.items.additionalReference.addAdditionalReferenceNumberYes
 houseConsignment.index.items.packages.addPackageShippingMarkYesNo.title = Do you want to add a shipping mark?
 houseConsignment.index.items.packages.addPackageShippingMarkYesNo.heading = Do you want to add a shipping mark?
 houseConsignment.index.items.packages.addPackageShippingMarkYesNo.error.required = Select yes if you want to add a shipping mark
+
+houseConsignment.index.items.additionalReference.removeAdditionalReferenceYesNo.title = Are you sure you want to remove this additional reference?
+houseConsignment.index.items.additionalReference.removeAdditionalReferenceYesNo.heading = Are you sure you want to remove this additional reference?
+houseConsignment.index.items.additionalReference.removeAdditionalReferenceYesNo.error.required = Select yes if you want to remove this additional reference
