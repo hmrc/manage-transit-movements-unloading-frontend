@@ -35,7 +35,7 @@ case class AddAnotherDocumentViewModel(
 
   override val prefix: String = "document.addAnotherDocument"
 
-  override def maxCount(implicit config: FrontendAppConfig): Int = config.maxSupportingDocuments + config.maxSupportingDocuments
+  override def maxCount(implicit config: FrontendAppConfig): Int = config.maxSupportingDocumentsConsignment + config.maxSupportingDocumentsConsignment
 
   override def maxLimitLabel(implicit messages: Messages): String = messages(s"$prefix.maxLimit.label")
 

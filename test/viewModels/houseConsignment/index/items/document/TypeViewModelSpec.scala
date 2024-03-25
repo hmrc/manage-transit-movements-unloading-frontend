@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package viewModels.documents
+package viewModels.houseConsignment.index.items.document
 
 import base.SpecBase
 import generators.Generators
-import models.{CheckMode, ConsignmentLevelDocuments, Mode, NormalMode}
+import models.{CheckMode, HouseConsignmentLevelDocuments, Mode, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import viewModels.documents.TypeViewModel.TypeViewModelProvider
+import viewModels.houseConsignment.index.items.document.TypeViewModel.TypeViewModelProvider
 
 class TypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "must create view model" - {
     "when Normal mode" in {
       val viewModelProvider = new TypeViewModelProvider()
-      val result            = viewModelProvider.apply(NormalMode, ConsignmentLevelDocuments(0, 0))
+      val result            = viewModelProvider.apply(NormalMode, HouseConsignmentLevelDocuments(0, 0), houseConsignmentIndex, itemIndex)
 
       result.title mustBe "What type of document do you want to add?"
       result.heading mustBe "What type of document do you want to add?"
@@ -36,17 +36,21 @@ class TypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
     "when Check mode" in {
       val viewModelProvider = new TypeViewModelProvider()
-      val result            = viewModelProvider.apply(CheckMode, ConsignmentLevelDocuments(0, 0))
+      val result            = viewModelProvider.apply(CheckMode, HouseConsignmentLevelDocuments(0, 0), houseConsignmentIndex, itemIndex)
 
-      result.title mustBe "What is the new document type?"
-      result.heading mustBe "What is the new document type?"
+      result.title mustBe s"What is the new document type for item ${itemIndex.display} in house consignment ${houseConsignmentIndex.display}?"
+      result.heading mustBe s"What is the new document type for item ${itemIndex.display} in house consignment ${houseConsignmentIndex.display}?"
     }
   }
 
   "when transport documents reached max limit" in {
     forAll(arbitrary[Mode]) {
       mode =>
-        val result = new TypeViewModelProvider().apply(mode, ConsignmentLevelDocuments(0, frontendAppConfig.maxTransportDocumentsConsignment))
+        val result = new TypeViewModelProvider().apply(mode,
+                                                       HouseConsignmentLevelDocuments(0, frontendAppConfig.maxTransportDocumentsHouseConsignment),
+                                                       houseConsignmentIndex,
+                                                       itemIndex
+        )
 
         result.maxLimitLabelForType.get mustBe "You cannot add any more transport documents to all items. To add another, you need to remove one first. You can, however, still add a supporting document to your items."
     }
@@ -55,7 +59,11 @@ class TypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
   "when supporting documents reached max limit" in {
     forAll(arbitrary[Mode]) {
       mode =>
-        val result = new TypeViewModelProvider().apply(mode, ConsignmentLevelDocuments(frontendAppConfig.maxSupportingDocumentsConsignment, 0))
+        val result = new TypeViewModelProvider().apply(mode,
+                                                       HouseConsignmentLevelDocuments(frontendAppConfig.maxSupportingDocumentsHouseConsignment, 0),
+                                                       houseConsignmentIndex,
+                                                       itemIndex
+        )
 
         result.maxLimitLabelForType.get mustBe "You cannot add any more supporting documents to all items. To add another, you need to remove one first. You can, however, still add a transport document to your items."
     }

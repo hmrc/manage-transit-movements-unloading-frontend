@@ -75,7 +75,7 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
         "when transport documents reached max limit" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val maxDocLimit  = frontendAppConfig.maxTransportDocuments
+              val maxDocLimit  = frontendAppConfig.maxTransportDocumentsConsignment
               val transportDoc = arbitrary[DocumentType](arbitraryTransportDocument).sample.value
               val maxTransportDocs = (0 until maxDocLimit).foldLeft(emptyUserAnswers) {
                 (answers, index) =>
@@ -93,7 +93,7 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
         "when supporting documents reached max limit" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val maxDocLimit = frontendAppConfig.maxSupportingDocuments
+              val maxDocLimit = frontendAppConfig.maxSupportingDocumentsConsignment
               val supportDoc  = arbitrary[DocumentType](arbitrarySupportDocument).sample.value
               val maxSupportDocs = (0 until maxDocLimit).foldLeft(emptyUserAnswers) {
                 (answers, index) =>
@@ -111,7 +111,7 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
         "when all documents reached max limit" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val maxDocLimit  = frontendAppConfig.maxSupportingDocuments + frontendAppConfig.maxTransportDocuments
+              val maxDocLimit  = frontendAppConfig.maxSupportingDocumentsConsignment + frontendAppConfig.maxTransportDocumentsConsignment
               val supportDoc   = arbitrary[DocumentType](arbitrarySupportDocument).sample.value
               val transportDoc = arbitrary[DocumentType](arbitraryTransportDocument).sample.value
 
