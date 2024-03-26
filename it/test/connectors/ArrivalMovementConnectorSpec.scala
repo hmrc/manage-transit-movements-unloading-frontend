@@ -16,9 +16,8 @@
 
 package connectors
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock._
-import generators.Generators
+import itbase.{ItSpecBase, WireMockServerHandler}
 import models.MovementReferenceNumber
 import models.P5._
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -27,7 +26,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockSuite with Generators {
+class ArrivalMovementConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

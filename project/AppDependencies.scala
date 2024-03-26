@@ -28,7 +28,7 @@ object AppDependencies {
     "org.scalatestplus"          %% "scalacheck-1-17"          % "3.2.17.0",
     "io.github.wolfendale"       %% "scalacheck-gen-regexp"    % "1.1.0",
     "org.jsoup"                   % "jsoup"                    % "1.15.4",
-  ).map(_ % "test, it")
+  ).map(_ % "test")
 
   def apply(): Seq[ModuleID] = compile ++ test
 

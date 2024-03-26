@@ -16,15 +16,14 @@
 
 package connectors
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock._
-import generators.Generators
+import itbase.{ItSpecBase, WireMockServerHandler}
 import play.api.http.Status.OK
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers.{await, _}
 import uk.gov.hmrc.http.HttpResponse
 
-class ApiConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockSuite with Generators {
+class ApiConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
