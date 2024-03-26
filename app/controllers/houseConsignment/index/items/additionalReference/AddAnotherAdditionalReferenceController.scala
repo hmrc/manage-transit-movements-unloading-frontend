@@ -63,8 +63,8 @@ class AddAnotherAdditionalReferenceController @Inject() (
           {
             case true =>
               Redirect(
-                controllers.additionalReference.index.routes.AdditionalReferenceTypeController
-                  .onPageLoad(arrivalId, mode, viewModel.nextIndex)
+                controllers.houseConsignment.index.items.additionalReference.routes.AdditionalReferenceTypeController
+                  .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, viewModel.nextIndex)
               )
             case false =>
               Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))

@@ -31,7 +31,7 @@ import play.api.test.Helpers._
 import services.AdditionalReferencesService
 import viewModels.houseConsignment.index.items.additionalReference.AdditionalReferenceViewModel
 import viewModels.houseConsignment.index.items.additionalReference.AdditionalReferenceViewModel.AdditionalReferenceViewModelProvider
-import views.html.houseConsignment.index.items.additionalReference.AdditionalReferenceView
+import views.html.houseConsignment.index.items.additionalReference.AdditionalReferenceTypeView
 
 import scala.concurrent.Future
 
@@ -50,7 +50,7 @@ class AdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMock
   private val form                                                         = formProvider(mode, "houseConsignment.index.items.additionalReference.additionalReferenceType", additionalReferenceList)
 
   private lazy val additionalReferenceRoute =
-    routes.AdditionalReferenceController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex).url
+    routes.AdditionalReferenceTypeController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -77,7 +77,7 @@ class AdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMock
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[AdditionalReferenceView]
+      val view = injector.instanceOf[AdditionalReferenceTypeView]
 
       status(result) mustEqual OK
 
@@ -97,7 +97,7 @@ class AdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMock
 
       val filledForm = form.bind(Map("value" -> additionalReference1.value))
 
-      val view = injector.instanceOf[AdditionalReferenceView]
+      val view = injector.instanceOf[AdditionalReferenceTypeView]
 
       status(result) mustEqual OK
 
@@ -132,7 +132,7 @@ class AdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMock
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[AdditionalReferenceView]
+      val view = injector.instanceOf[AdditionalReferenceTypeView]
 
       status(result) mustEqual BAD_REQUEST
 

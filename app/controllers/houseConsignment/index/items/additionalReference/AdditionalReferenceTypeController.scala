@@ -21,7 +21,7 @@ import forms.SelectableFormProvider
 import models.reference.AdditionalReferenceType
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigator
+import navigation.houseConsignment.index.items.AdditionalReferenceNavigator
 import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -29,20 +29,20 @@ import repositories.SessionRepository
 import services.AdditionalReferencesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.houseConsignment.index.items.additionalReference.AdditionalReferenceViewModel.AdditionalReferenceViewModelProvider
-import views.html.houseConsignment.index.items.additionalReference.AdditionalReferenceView
+import views.html.houseConsignment.index.items.additionalReference.AdditionalReferenceTypeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalReferenceController @Inject() (
+class AdditionalReferenceTypeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: AdditionalReferenceNavigator,
   actions: Actions,
   formProvider: SelectableFormProvider,
   service: AdditionalReferencesService,
   val controllerComponents: MessagesControllerComponents,
-  view: AdditionalReferenceView,
+  view: AdditionalReferenceTypeView,
   viewModelProvider: AdditionalReferenceViewModelProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController

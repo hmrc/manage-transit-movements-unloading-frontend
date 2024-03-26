@@ -25,7 +25,7 @@ import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.houseConsignment.index.items.additionalReference.AdditionalReferenceViewModel
 import views.behaviours.InputSelectViewBehaviours
-import views.html.houseConsignment.index.items.additionalReference.AdditionalReferenceView
+import views.html.houseConsignment.index.items.additionalReference.AdditionalReferenceTypeView
 
 class AdditionalReferenceViewSpec extends InputSelectViewBehaviours[AdditionalReferenceType] {
 
@@ -36,7 +36,7 @@ class AdditionalReferenceViewSpec extends InputSelectViewBehaviours[AdditionalRe
 
   override def applyView(form: Form[AdditionalReferenceType]): HtmlFormat.Appendable =
     injector
-      .instanceOf[AdditionalReferenceView]
+      .instanceOf[AdditionalReferenceTypeView]
       .apply(form, mrn, values, viewModel)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[AdditionalReferenceType] = arbitraryAdditionalReference
