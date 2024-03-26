@@ -989,3 +989,8 @@ houseConsignment.item.addGrossWeightYesNo.paragraph = This is the combined weigh
 houseConsignment.index.items.additionalReference.removeAdditionalReferenceYesNo.title = Are you sure you want to remove this additional reference?
 houseConsignment.index.items.additionalReference.removeAdditionalReferenceYesNo.heading = Are you sure you want to remove this additional reference?
 houseConsignment.index.items.additionalReference.removeAdditionalReferenceYesNo.error.required = Select yes if you want to remove this additional reference
+
+houseConsignment.item.addNetWeightYesNo.title = Do you want to add the item’s net weight?
+houseConsignment.item.addNetWeightYesNo.heading = Do you want to add the item’s net weight?
+houseConsignment.item.addNetWeightYesNo.error.required = Select yes if you want to add the item’s net weight
+houseConsignment.item.addNetWeightYesNo.paragraph = This is the weight of the item’s goods, excluding all packaging.

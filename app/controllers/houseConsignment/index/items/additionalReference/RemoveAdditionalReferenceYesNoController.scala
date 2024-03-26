@@ -22,7 +22,6 @@ import models.requests.DataRequest
 import models.{ArrivalId, Index, Mode, UserAnswers}
 import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferencePage, RemoveAdditionalReferenceNumberYesNoPage}
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
