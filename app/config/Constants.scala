@@ -18,6 +18,10 @@ package config
 
 object Constants {
 
+  object CountryCode {
+    val XI = "XI"
+  }
+
   object TransportModeCode {
     val Fixed   = "7"
     val Unknown = "9"
