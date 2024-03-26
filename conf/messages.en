@@ -593,6 +593,7 @@ houseConsignment.departureMeansSubHeading = Departure means of transport {0}
 unloadingRemarksSent.title = Unloading remarks sent
 unloadingRemarksSent.heading = Unloading remarks sent
 unloadingRemarksSent.panel.body = for Movement Reference Number (MRN) {0}
+unloadingRemarksSent.panel.body = for Movement Reference Number (MRN) {0}
 unloadingRemarksSent.subHeading = What happens next
 unloadingRemarksSent.checkStatus = Check the status of arrival notifications
 unloadingRemarksSent.createArrivalNotification = Make another arrival notification
@@ -789,6 +790,20 @@ houseConsignment.index.items.document.addAdditionalInformationYesNo.heading = Do
 houseConsignment.index.items.document.addAdditionalInformationYesNo.paragraph = This can be any other information you want to declare, such as a contact, any safety risks or further descriptions.
 houseConsignment.index.items.document.addAdditionalInformationYesNo.error.required = Select yes if you want to add any additional information for this document
 
+houseConsignment.index.items.document.addAnotherDocument.singular.title = You have added 1 document to item {0} in house consignment {1}
+houseConsignment.index.items.document.addAnotherDocument.plural.title = You have added {0} documents to item {1} in house consignment {2}
+houseConsignment.index.items.document.addAnotherDocument.empty.title = You have added {0} documents to item {1} in house consignment {2}
+houseConsignment.index.items.document.addAnotherDocument.singular.heading = You have added 1 document to item {0} in house consignment {1}
+houseConsignment.index.items.document.addAnotherDocument.empty.heading = You have added {0} documents to item {1} in house consignment {2}
+houseConsignment.index.items.document.addAnotherDocument.plural.heading = You have added {0} documents to item {1} in house consignment {2}
+houseConsignment.index.items.document.addAnotherDocument.singular.label = Do you want to add a document to item {0} in house consignment {1}?
+houseConsignment.index.items.document.addAnotherDocument.plural.label = Do you want to add another document to item {0} in house consignment {1}?
+houseConsignment.index.items.document.addAnotherDocument.maxLimit.label = You cannot add any more documents to item {0} in house consignment {1}. To add another, you need to remove one first.
+houseConsignment.index.items.document.addAnotherDocument.error.required = Select yes if you want to add another document to item {0} in house consignment {1}
+houseConsignment.index.items.document.addAnotherDocument.label = Do you want to add another document to item {0} in house consignment {1}?
+houseConsignment.index.items.document.addAnotherDocument.maxLimitForType.label = You cannot add any more {0} documents to all items. To add another, you need to remove one first. You can, however, still add a {1} document to your items.
+
+
 additionalReferenceNumber.index.NormalMode.title = What is the additional reference number?
 additionalReferenceNumber.index.CheckMode.title = What is the new additional reference number?
 additionalReferenceNumber.index.NormalMode.heading = What is the additional reference number?
@@ -797,7 +812,6 @@ additionalReferenceNumber.index.NormalMode.error.required = Enter the additional
 additionalReferenceNumber.index.CheckMode.error.required = Enter the new additional reference number
 additionalReferenceNumber.index.error.length = The additional reference number must be 70 characters or less
 additionalReferenceNumber.index.error.characters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
-
 
 houseConsignment.index.items.document.additionalInformation.NormalMode.title = Enter the additional information
 houseConsignment.index.items.document.additionalInformation.CheckMode.title = Enter the new additional information for item {1} in house consignment {0}?
@@ -875,6 +889,10 @@ houseConsignment.index.items.document.type.placeholder = Select a document type
 houseConsignment.index.items.document.type.error.required = Select the type of document you want to add
 houseConsignment.index.items.document.type.check.error.required = Select the new document type for item {1} in house consignment {0}
 houseConsignment.index.items.document.type.maxLimitForType.label = You cannot add any more {0} documents to all items. To add another, you need to remove one first. You can, however, still add a {1} document to your items.
+
+houseConsignment.index.items.document.removeDocumentYesNo.title = Are you sure you want to remove this document from item {1} in house consignment {0}?
+houseConsignment.index.items.document.removeDocumentYesNo.heading = Are you sure you want to remove this document from item {1} in house consignment {0}?
+houseConsignment.index.items.document.removeDocumentYesNo.error.required = Select yes if you want to remove this document from item {1} in house consignment {0}
 
 transportEquipment.index.addContainerIdentificationNumberYesNo.title = Do you want to add a container identification number for the transport equipment?
 transportEquipment.index.addContainerIdentificationNumberYesNo.heading = Do you want to add a container identification number for the transport equipment?
@@ -962,3 +980,17 @@ houseConsignment.index.items.packages.addPackageShippingMarkYesNo.error.required
 houseConsignment.index.items.packages.removePackageTypeYesNo.title = Are you sure you want to remove this package from item {1} in house consignment {0}?
 houseConsignment.index.items.packages.removePackageTypeYesNo.heading = Are you sure you want to remove this package from item {1} in house consignment {0}?
 houseConsignment.index.items.packages.removePackageTypeYesNo.error.required = Select yes if you want to remove {0} from this item
+
+houseConsignment.item.addGrossWeightYesNo.title = Do you want to add the item’s gross weight?
+houseConsignment.item.addGrossWeightYesNo.heading = Do you want to add the item’s gross weight?
+houseConsignment.item.addGrossWeightYesNo.error.required = Select yes if you want to add the item’s gross weight
+houseConsignment.item.addGrossWeightYesNo.paragraph = This is the combined weight of the item’s goods and packaging.
+
+houseConsignment.index.items.additionalReference.removeAdditionalReferenceYesNo.title = Are you sure you want to remove this additional reference?
+houseConsignment.index.items.additionalReference.removeAdditionalReferenceYesNo.heading = Are you sure you want to remove this additional reference?
+houseConsignment.index.items.additionalReference.removeAdditionalReferenceYesNo.error.required = Select yes if you want to remove this additional reference
+
+houseConsignment.item.addNetWeightYesNo.title = Do you want to add the item’s net weight?
+houseConsignment.item.addNetWeightYesNo.heading = Do you want to add the item’s net weight?
+houseConsignment.item.addNetWeightYesNo.error.required = Select yes if you want to add the item’s net weight
+houseConsignment.item.addNetWeightYesNo.paragraph = This is the weight of the item’s goods, excluding all packaging.

@@ -207,7 +207,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
           .copy(ie043Data = basicIe043.copy(HolderOfTheTransitProcedure = None))
 
         val helper = new ConsignmentAnswersHelper(userAnswers)
-        helper.holderOfTheTransitProcedureSection mustBe Seq()
+        helper.holderOfTheTransitProcedureSection mustBe None
       }
 
       "must return section title and rows when HolderOfTheTransitProcedure is defined" in {
@@ -331,7 +331,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
     "additionalInformationSections" - {
       import pages.additionalInformation._
 
-      "must generate accordion sections when additional information defined" in {
+      "must generate accordion section with children when additional information defined" in {
         forAll(arbitrary[AdditionalInformationCode], Gen.alphaNumStr) {
           (code, text) =>
             val answers = emptyUserAnswers
@@ -339,7 +339,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(AdditionalInformationTextPage(index), text)
 
             val helper = new ConsignmentAnswersHelper(answers)
-            val result = helper.additionalInformationSection.value
+            val result = helper.additionalInformationSection
 
             result mustBe a[AccordionSection]
             result.sectionTitle.value mustBe "Additional information"
@@ -353,11 +353,11 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         }
       }
 
-      "must not generate accordion sections when additional information undefined" in {
+      "must generate accordion section with no children when additional information undefined" in {
         val helper = new ConsignmentAnswersHelper(emptyUserAnswers)
         val result = helper.additionalInformationSection
 
-        result must not be defined
+        result.children.size mustBe 0
       }
     }
 
@@ -425,7 +425,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(ConsigneeIdentifierPage(hcIndex), consigneeId)
 
             val helper = new ConsignmentAnswersHelper(answers)
-            val result = helper.houseConsignmentSection.get
+            val result = helper.houseConsignmentSection
 
             result mustBe a[AccordionSection]
             result.sectionTitle.value mustBe "House consignments"
@@ -490,7 +490,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
           .setValue(EndorsementCountryPage(index), country)
 
         val helper = new ConsignmentAnswersHelper(answers)
-        val result = helper.incidentSection.get
+        val result = helper.incidentSection
 
         result mustBe a[AccordionSection]
         result.sectionTitle.value mustBe "Incidents"

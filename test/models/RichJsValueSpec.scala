@@ -350,19 +350,22 @@ class RichJsValueSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
   }
 
   "mapWithIndex" - {
-    "must filter out js objects which only contain a sequence number" in {
+    "must filter out js objects which have removed set to true" in {
       val array = Json
         .parse("""
             |[
             |  {
             |    "sequenceNumber" : "1",
+            |    "removed" : false,
             |    "foo" : "foo"
             |  },
             |  {
-            |    "sequenceNumber" : "2"
+            |    "sequenceNumber" : "2",
+            |    "removed" : true
             |  },
             |  {
             |    "sequenceNumber" : "3",
+            |    "removed" : false,
             |    "bar" : "bar"
             |  }
             |]
@@ -377,12 +380,14 @@ class RichJsValueSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
 
       result.head._1 mustBe Json.obj(
         "sequenceNumber" -> "1",
+        "removed"        -> false,
         "foo"            -> "foo"
       )
       result.head._2 mustBe Index(0)
 
       result(1)._1 mustBe Json.obj(
         "sequenceNumber" -> "3",
+        "removed"        -> false,
         "bar"            -> "bar"
       )
       result(1)._2 mustBe Index(2)

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import config.Constants.CountryCode
 import generated._
 import play.api.libs.json._
 import scalaxb.`package`.toScope
@@ -183,9 +184,16 @@ package object models {
       value.messageSequence1.messagE_1Sequence2.preparationDateAndTime.toLocalDate
 
     def sealsExist: Boolean =
-      value.Consignment.exists(_.TransportEquipment.exists(_.Seal.nonEmpty))
+      value.Consignment.exists {
+        consignment =>
+          val seals         = consignment.TransportEquipment.flatMap(_.Seal)
+          val incidentSeals = consignment.Incident.flatMap(_.TransportEquipment.flatMap(_.Seal))
 
-    def hasXIOfficeOfDestination: Boolean = value.CustomsOfficeOfDestinationActual.referenceNumber.startsWith("XI")
+          seals.nonEmpty || incidentSeals.nonEmpty
+      }
+
+    def hasXIOfficeOfDestination: Boolean =
+      value.CustomsOfficeOfDestinationActual.referenceNumber.startsWith(CountryCode.XI)
   }
 
   implicit class RichXMLGregorianCalendar(value: XMLGregorianCalendar) {
@@ -202,9 +210,9 @@ package object models {
           case (value, i) =>
             value match {
               case JsObject(underlying) =>
-                underlying.keys.toSeq match {
-                  case "sequenceNumber" :: Nil => None
-                  case _                       => Some((value, i))
+                underlying.get("removed") match {
+                  case Some(JsBoolean(true)) => None
+                  case _                     => Some((value, i))
                 }
               case _ => Some((value, i))
             }

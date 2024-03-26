@@ -30,91 +30,69 @@ class DepartureTransportMeansTransformer @Inject() (referenceDataConnector: Refe
   ec: ExecutionContext
 ) extends PageTransformer {
 
-  private case class TempDepartureTransportMeans[T](
-    underlying: T,
+  private case class TempDepartureTransportMeans(
+    underlying: DepartureTransportMeansType02,
     typeOfIdentification: TransportMeansIdentification,
     nationality: Country
   )
 
-  def transform(departureTransportMeans: Seq[DepartureTransportMeansType02])(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
+  def transform(
+    departureTransportMeans: Seq[DepartureTransportMeansType02]
+  )(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.departureMeansOfTransport._
     import pages.sections.TransportMeansSection
 
-    userAnswers => {
-      lazy val referenceDataLookups = departureTransportMeans.map {
-        dtm =>
-          // Defining futures here as for-comprehension creates a dependency between Futures, making the code synchronous
-          val typeOfIdentificationF = referenceDataConnector.getMeansOfTransportIdentificationType(dtm.typeOfIdentification)
-          val nationalityF          = referenceDataConnector.getCountry(dtm.nationality)
-
-          for {
-            typeOfIdentification <- typeOfIdentificationF
-            nationality          <- nationalityF
-          } yield TempDepartureTransportMeans(
-            underlying = dtm,
-            typeOfIdentification = typeOfIdentification,
-            nationality = nationality
-          )
-      }
-
-      Future.sequence(referenceDataLookups).flatMap {
-        _.zipWithIndex.foldLeft(Future.successful(userAnswers))({
-          case (acc, (TempDepartureTransportMeans(underlying, typeOfIdentification, nationality), i)) =>
-            acc.flatMap {
-              userAnswers =>
-                val dtmIndex = Index(i)
-                val pipeline: UserAnswers => Future[UserAnswers] =
-                  setSequenceNumber(TransportMeansSection(dtmIndex), underlying.sequenceNumber) andThen
-                    set(TransportMeansIdentificationPage(dtmIndex), typeOfIdentification) andThen
-                    set(VehicleIdentificationNumberPage(dtmIndex), underlying.identificationNumber) andThen
-                    set(CountryPage(dtmIndex), nationality)
-
-                pipeline(userAnswers)
-            }
-        })
-      }
+    genericTransform(departureTransportMeans) {
+      case (TempDepartureTransportMeans(underlying, typeOfIdentification, nationality), index) =>
+        setSequenceNumber(TransportMeansSection(index), underlying.sequenceNumber) andThen
+          set(TransportMeansIdentificationPage(index), typeOfIdentification) andThen
+          set(VehicleIdentificationNumberPage(index), underlying.identificationNumber) andThen
+          set(CountryPage(index), nationality)
     }
   }
 
-  def transform(departureTransportMeans: Seq[DepartureTransportMeansType02], hcIndex: Index)(implicit
-    headerCarrier: HeaderCarrier
-  ): UserAnswers => Future[UserAnswers] = {
+  def transform(
+    departureTransportMeans: Seq[DepartureTransportMeansType02],
+    hcIndex: Index
+  )(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages._
     import pages.sections.houseConsignment.index.departureTransportMeans.TransportMeansSection
 
-    userAnswers => {
-      lazy val referenceDataLookups = departureTransportMeans.map {
-        dtm =>
-          // Defining futures here as for-comprehension creates a dependency between Futures, making the code synchronous
-          val typeOfIdentificationF = referenceDataConnector.getMeansOfTransportIdentificationType(dtm.typeOfIdentification)
-          val nationalityF          = referenceDataConnector.getCountry(dtm.nationality)
+    genericTransform(departureTransportMeans) {
+      case (TempDepartureTransportMeans(underlying, typeOfIdentification, nationality), index) =>
+        setSequenceNumber(TransportMeansSection(hcIndex, index), underlying.sequenceNumber) andThen
+          set(DepartureTransportMeansIdentificationTypePage(hcIndex, index), typeOfIdentification) andThen
+          set(DepartureTransportMeansIdentificationNumberPage(hcIndex, index), underlying.identificationNumber) andThen
+          set(DepartureTransportMeansCountryPage(hcIndex, index), nationality)
+    }
+  }
 
-          for {
-            typeOfIdentification <- typeOfIdentificationF
-            nationality          <- nationalityF
-          } yield TempDepartureTransportMeans(
-            underlying = dtm,
-            typeOfIdentification = typeOfIdentification,
-            nationality = nationality
-          )
-      }
+  private def genericTransform(
+    departureTransportMeans: Seq[DepartureTransportMeansType02]
+  )(
+    pipeline: (TempDepartureTransportMeans, Index) => UserAnswers => Future[UserAnswers]
+  )(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
+    lazy val referenceDataLookups = departureTransportMeans.map {
+      dtm =>
+        // Defining futures here as for-comprehension creates a dependency between Futures, making the code synchronous
+        val typeOfIdentificationF = referenceDataConnector.getMeansOfTransportIdentificationType(dtm.typeOfIdentification)
+        val nationalityF          = referenceDataConnector.getCountry(dtm.nationality)
 
-      Future.sequence(referenceDataLookups).flatMap {
-        _.zipWithIndex.foldLeft(Future.successful(userAnswers))({
-          case (acc, (TempDepartureTransportMeans(underlying, typeOfIdentification, nationality), i)) =>
-            acc.flatMap {
-              userAnswers =>
-                val dtmIndex = Index(i)
-                val pipeline: UserAnswers => Future[UserAnswers] =
-                  setSequenceNumber(TransportMeansSection(hcIndex, dtmIndex), underlying.sequenceNumber) andThen
-                    set(DepartureTransportMeansIdentificationTypePage(hcIndex, dtmIndex), typeOfIdentification) andThen
-                    set(DepartureTransportMeansIdentificationNumberPage(hcIndex, dtmIndex), underlying.identificationNumber) andThen
-                    set(DepartureTransportMeansCountryPage(hcIndex, dtmIndex), nationality)
+        for {
+          typeOfIdentification <- typeOfIdentificationF
+          nationality          <- nationalityF
+        } yield TempDepartureTransportMeans(
+          underlying = dtm,
+          typeOfIdentification = typeOfIdentification,
+          nationality = nationality
+        )
+    }
 
-                pipeline(userAnswers)
-            }
-        })
-      }
+    Future.sequence(referenceDataLookups).flatMap {
+      _.zipWithIndex.foldLeft(Future.successful(userAnswers))({
+        case (acc, (dtm, i)) =>
+          acc.flatMap(pipeline(dtm, Index(i)))
+      })
     }
   }
 }

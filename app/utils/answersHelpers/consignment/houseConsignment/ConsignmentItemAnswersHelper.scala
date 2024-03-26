@@ -112,7 +112,7 @@ class ConsignmentItemAnswersHelper(
         )
     }
 
-  def additionalInformationSection: Option[Section] =
+  def additionalInformationSection: Section =
     userAnswers
       .get(AdditionalInformationsSection(houseConsignmentIndex, itemIndex))
       .mapWithIndex {
@@ -128,15 +128,11 @@ class ConsignmentItemAnswersHelper(
             id = Some(s"item-$itemIndex-additional-information-$index")
           )
       } match {
-      case Nil =>
-        None
       case children =>
-        Some(
-          AccordionSection(
-            sectionTitle = Some(messages("unloadingFindings.additionalInformation.heading")),
-            children = children,
-            id = Some(s"item-$itemIndex-additional-information")
-          )
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.additionalInformation.heading")),
+          children = children,
+          id = Some(s"item-$itemIndex-additional-information")
         )
     }
 
@@ -169,21 +165,17 @@ class ConsignmentItemAnswersHelper(
         )
     }
 
-  def dangerousGoodsSection: Option[Section] =
+  def dangerousGoodsSection: Section =
     userAnswers.get(DangerousGoodsListSection(houseConsignmentIndex, itemIndex)).mapWithIndex {
       case (_, index) =>
         val helper = new DangerousGoodsAnswerHelper(userAnswers, houseConsignmentIndex, itemIndex, index)
         helper.dangerousGoodsRow
     } match {
-      case Nil =>
-        None
       case rows =>
-        Some(
-          AccordionSection(
-            sectionTitle = Some(messages("unloadingFindings.dangerousGoods.unNumbers")),
-            rows = rows.flatten,
-            id = Some(s"item-$itemIndex-dangerous-goods")
-          )
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.dangerousGoods.unNumbers")),
+          rows = rows.flatten,
+          id = Some(s"item-$itemIndex-dangerous-goods")
         )
     }
 
@@ -296,7 +288,9 @@ class ConsignmentItemAnswersHelper(
   private[consignment] def documentAddRemoveLink: Link =
     Link(
       id = s"add-remove-item-$itemIndex-document",
-      href = "#",
+      href = controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
+        .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
+        .url,
       text = messages("documentLink.addRemove"),
       visuallyHidden = messages("documentLink.visuallyHidden")
     )
