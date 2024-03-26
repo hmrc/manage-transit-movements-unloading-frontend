@@ -35,7 +35,7 @@ import views.html.houseConsignment.index.items.additionalReference.AdditionalRef
 
 import scala.concurrent.Future
 
-class AdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class AdditionalReferenceTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val additionalReference1    = arbitraryAdditionalReference.arbitrary.sample.get
   private val additionalReference2    = arbitraryAdditionalReference.arbitrary.sample.get
@@ -119,7 +119,7 @@ class AdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMock
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.additionalReference.routes.AddAdditionalReferenceNumberYesNoController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex).url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
