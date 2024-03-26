@@ -979,7 +979,7 @@ houseConsignment.index.items.packages.addPackageShippingMarkYesNo.error.required
 
 houseConsignment.index.items.packages.removePackageTypeYesNo.title = Are you sure you want to remove this package from item {1} in house consignment {0}?
 houseConsignment.index.items.packages.removePackageTypeYesNo.heading = Are you sure you want to remove this package from item {1} in house consignment {0}?
-houseConsignment.index.items.packages.removePackageTypeYesNo.error.required = Select yes if you want to remove {0} from this item
+houseConsignment.index.items.packages.removePackageTypeYesNo.error.required = Select yes if you want to remove this package from item {1} in house consignment {0}
 
 houseConsignment.item.addGrossWeightYesNo.title = Do you want to add the item’s gross weight?
 houseConsignment.item.addGrossWeightYesNo.heading = Do you want to add the item’s gross weight?
@@ -994,3 +994,8 @@ houseConsignment.item.addNetWeightYesNo.title = Do you want to add the item’s 
 houseConsignment.item.addNetWeightYesNo.heading = Do you want to add the item’s net weight?
 houseConsignment.item.addNetWeightYesNo.error.required = Select yes if you want to add the item’s net weight
 houseConsignment.item.addNetWeightYesNo.paragraph = This is the weight of the item’s goods, excluding all packaging.
+
+houseConsignment.item.addCustomsUnionAndStatisticsCodeYesNo.title = Do you want to add a Customs Union and Statistics (CUS) code for the item?
+houseConsignment.item.addCustomsUnionAndStatisticsCodeYesNo.heading = Do you want to add a Customs Union and Statistics (CUS) code for the item?
+houseConsignment.item.addCustomsUnionAndStatisticsCodeYesNo.error.required = Select yes if you want to declare a Customs Union and Statistics (CUS) code for the item
+houseConsignment.item.addCustomsUnionAndStatisticsCodeYesNo.paragraph = This is a reference number to identify any chemicals in your transit, such as haemoglobin or insulin.
