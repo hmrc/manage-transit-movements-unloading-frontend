@@ -38,7 +38,7 @@ class RemovePackageTypeYesNoControllerSpec extends SpecBase with AppWithDefaultM
 
   private val formProvider = new YesNoFormProvider()
   private val packageType  = arbitrary[PackageType].sample.value
-  private val form         = formProvider("houseConsignment.index.items.packages.removePackageTypeYesNo", packageType.toString)
+  private val form         = formProvider("houseConsignment.index.items.packages.removePackageTypeYesNo", houseConsignmentIndex, itemIndex)
   private val mode         = NormalMode
 
   private lazy val removePackageTypeYesNoRoute =

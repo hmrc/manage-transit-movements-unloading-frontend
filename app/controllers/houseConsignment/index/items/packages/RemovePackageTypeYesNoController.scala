@@ -52,8 +52,8 @@ class RemovePackageTypeYesNoController @Inject() (
 
   private def packageType(implicit request: Request): PackageType = request.arg
 
-  private def form(packageType: PackageType): Form[Boolean] =
-    formProvider("houseConsignment.index.items.packages.removePackageTypeYesNo", packageType.toString)
+  private def form(houseConsignmentIndex: Index, itemIndex: Index): Form[Boolean] =
+    formProvider("houseConsignment.index.items.packages.removePackageTypeYesNo", houseConsignmentIndex, itemIndex)
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     actions
@@ -62,7 +62,16 @@ class RemovePackageTypeYesNoController @Inject() (
         implicit request =>
           val quantity = request.userAnswers.get(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex)).map(_.toString())
           Ok(
-            view(form(packageType), request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode, insetText(quantity, packageType))
+            view(
+              form(houseConsignmentIndex, itemIndex),
+              request.userAnswers.mrn,
+              arrivalId,
+              houseConsignmentIndex,
+              itemIndex,
+              packageIndex,
+              mode,
+              insetText(quantity, packageType)
+            )
           )
       }
 
@@ -73,7 +82,7 @@ class RemovePackageTypeYesNoController @Inject() (
       .async {
         implicit request =>
           val quantity = request.userAnswers.get(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex)).map(_.toString())
-          form(packageType)
+          form(houseConsignmentIndex, itemIndex)
             .bindFromRequest()
             .fold(
               formWithErrors =>
