@@ -302,6 +302,9 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
             val addOrRemove = result.viewLinks.head
             addOrRemove.id mustBe "add-remove-item-1-document"
             addOrRemove.text mustBe "Add or remove document"
+            addOrRemove.href mustBe controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
+              .url
 
             result.children.head mustBe a[AccordionSection]
             result.children.head.sectionTitle.value mustBe "Document 1"
@@ -330,7 +333,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
               .setValue(DangerousGoodsPage(hcIndex, itemIndex, Index(1)), value2)
 
             val helper = new ConsignmentItemAnswersHelper(answers, hcIndex, itemIndex)
-            val result = helper.dangerousGoodsSection.value
+            val result = helper.dangerousGoodsSection
 
             result mustBe a[AccordionSection]
             result.sectionTitle.value mustBe "UN numbers"

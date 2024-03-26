@@ -139,12 +139,12 @@ class HouseConsignmentAnswersHelper(
 
         val children = Seq(
           helper.dangerousGoodsSection,
-          Some(helper.itemLevelConsigneeSection),
-          Some(helper.documentSection),
-          Some(helper.additionalReferencesSection),
+          helper.itemLevelConsigneeSection,
+          helper.documentSection,
+          helper.additionalReferencesSection,
           helper.additionalInformationSection,
-          Some(helper.packageSection)
-        ).flatten
+          helper.packageSection
+        )
 
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.subsections.item", index.display)),

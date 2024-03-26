@@ -178,7 +178,7 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
               val userAnswers = emptyUserAnswers
                 .setValue(TypePage(Index(0)), DocumentType(Support, "code1", "description1"))
                 .setValue(DocumentReferenceNumberPage(Index(0)), "ref1")
-                .setSequenceNumber(DocumentSection(Index(1)), "2") // keep only sequence number for the removed item (index 1 for this example)
+                .setRemoved(DocumentSection(Index(1)))
                 .setValue(TypePage(Index(2)), DocumentType(Transport, "code2", "description2"))
                 .setValue(DocumentReferenceNumberPage(Index(2)), "ref2")
 
