@@ -113,7 +113,9 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.additionalReference.routes.AddAnotherAdditionalReferenceController
+        .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex)
+        .url
 
     }
 

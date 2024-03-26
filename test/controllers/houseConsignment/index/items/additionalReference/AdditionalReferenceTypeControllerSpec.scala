@@ -119,7 +119,9 @@ class AdditionalReferenceTypeControllerSpec extends SpecBase with AppWithDefault
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.additionalReference.routes.AddAdditionalReferenceNumberYesNoController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex).url
+      redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.additionalReference.routes.AddAdditionalReferenceNumberYesNoController
+        .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+        .url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

@@ -45,9 +45,9 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
 
   private val form = formProvider("houseConsignment.index.items.additionalReference.removeAdditionalReferenceYesNo")
 
-  private def addAnother(arrivalId: ArrivalId, mode: Mode): Call =
-    Call("GET", "#")
-  // TODO: update with AddAnotherAdditionalReferenceController
+  private def addAnother(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Call =
+    controllers.houseConsignment.index.items.additionalReference.routes.AddAnotherAdditionalReferenceController
+      .onSubmit(arrivalId, mode, houseConsignmentIndex, itemIndex)
 
   def insetText(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): String = {
     val additionalReferenceType = userAnswers
@@ -63,7 +63,11 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] =
     actions
-      .requireIndex(arrivalId, AdditionalReferenceSection(houseConsignmentIndex, itemIndex, additionalReferenceIndex), addAnother(arrivalId, mode))
+      .requireIndex(
+        arrivalId,
+        AdditionalReferenceSection(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
+        addAnother(arrivalId, mode, houseConsignmentIndex, itemIndex)
+      )
       .andThen(getMandatoryPage.getFirst(AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))) {
         implicit request =>
           val preparedForm =
@@ -87,7 +91,11 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
       }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] = actions
-    .requireIndex(arrivalId, AdditionalReferenceSection(houseConsignmentIndex, itemIndex, additionalReferenceIndex), addAnother(arrivalId, mode))
+    .requireIndex(
+      arrivalId,
+      AdditionalReferenceSection(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
+      addAnother(arrivalId, mode, houseConsignmentIndex, itemIndex)
+    )
     .async {
       implicit request =>
         val preparedForm = request.userAnswers.get(RemoveAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) match {
@@ -135,5 +143,5 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
           Future.successful(request.userAnswers)
         }
       _ <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(addAnother(arrivalId, mode))
+    } yield Redirect(addAnother(arrivalId, mode, houseConsignmentIndex, itemIndex))
 }

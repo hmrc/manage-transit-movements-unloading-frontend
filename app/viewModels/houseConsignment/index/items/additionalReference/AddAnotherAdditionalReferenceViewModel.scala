@@ -24,6 +24,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.JsArray
 import play.api.mvc.Call
 import viewModels.{AddAnotherViewModel, ListItem}
+import controllers.houseConsignment.index.items.additionalReference.routes
 
 case class AddAnotherAdditionalReferenceViewModel(listItems: Seq[ListItem],
                                                   onSubmitCall: Call,
@@ -76,8 +77,9 @@ object AddAnotherAdditionalReferenceViewModel {
                 ListItem(
                   name = s"${`type`.value} $numberString",
                   changeUrl = None,
-                  // TODO: Update once remove controller ready
-                  removeUrl = Some(Call("GET", "#").url)
+                  removeUrl = Some(
+                    routes.RemoveAdditionalReferenceYesNoController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex).url
+                  )
                 )
             }
         }

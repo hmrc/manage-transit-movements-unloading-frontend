@@ -173,7 +173,9 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual "#" //TODO: update with addAnother controller
+      redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.additionalReference.routes.AddAnotherAdditionalReferenceController
+        .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex)
+        .url
 
     }
 
