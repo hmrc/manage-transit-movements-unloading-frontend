@@ -61,40 +61,38 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
       }
 
       "must go from date goods unloaded page" - {
-        "to can seals be read page when seals exist" in {
+        "to can seals be read page when transport equipment seals exist" in {
           val json: JsObject = Json
             .parse(
-              """{
-                |            "TransitOperation": {
-                |                "MRN": "38VYQTYFU3T0KUTUM3"
-                |            },
-                |            "preparationDateAndTime": "2007-10-26T07:36:28",
-                |            "Consignment": {
-                |               "HouseConsignment": [],
-                |
-                |                "TransportEquipment": [
-                |                    {
-                |                        "sequenceNumber": "te1",
-                |                        "containerIdentificationNumber": "cin-1",
-                |                        "numberOfSeals": 103,
-                |                        "Seal": [
-                |                            {
-                |                                "sequenceNumber": "1001",
-                |                                "identifier": "1002"
-                |                            }
-                |                        ]
-                |
-                |                    }
-                |                ]
-                |            },
-                |            "CustomsOfficeOfDestinationActual": {
-                |                "referenceNumber": "GB000008"
-                |            },
-                |            "TraderAtDestination": {
-                |                 "identificationNumber" : "AB123"
-                |            }
-                |
-                |     }
+              """
+                |{
+                |  "TransitOperation": {
+                |    "MRN": "38VYQTYFU3T0KUTUM3"
+                |  },
+                |  "preparationDateAndTime": "2007-10-26T07:36:28",
+                |  "Consignment": {
+                |    "HouseConsignment": [],
+                |    "TransportEquipment": [
+                |      {
+                |        "sequenceNumber": "te1",
+                |        "containerIdentificationNumber": "cin-1",
+                |        "numberOfSeals": 103,
+                |        "Seal": [
+                |          {
+                |            "sequenceNumber": "1001",
+                |            "identifier": "1002"
+                |          }
+                |        ]
+                |      }
+                |    ]
+                |  },
+                |  "CustomsOfficeOfDestinationActual": {
+                |    "referenceNumber": "GB000008"
+                |  },
+                |  "TraderAtDestination": {
+                |    "identificationNumber" : "AB123"
+                |  }
+                |}
                 |""".stripMargin
             )
             .as[JsObject]
@@ -105,41 +103,87 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
             .mustBe(controllers.routes.CanSealsBeReadController.onPageLoad(userAnswers.id, mode))
         }
-      }
 
-      "to additional comments yes no page when seals does not exist" in {
-        val json: JsObject = Json
-          .parse(
-            """{
-              |            "TransitOperation": {
-              |                "MRN": "38VYQTYFU3T0KUTUM3"
-              |            },
-              |            "preparationDateAndTime": "2007-10-26T07:36:28",
-              |            "Consignment": {
-              |               "HouseConsignment": [],
-              |
-              |                "TransportEquipment": [
-              |                    {
-              |                        "sequenceNumber": "te1",
-              |                        "containerIdentificationNumber": "cin-1",
-              |                        "numberOfSeals": 0
-              |                    }
-              |                ]
-              |            },
-              |            "CustomsOfficeOfDestinationActual": {
-              |                "referenceNumber": "GB000008"
-              |            }
-              |
-              |     }
-              |""".stripMargin
-          )
-          .as[JsObject]
+        "to can seals be read page when incident transport equipment seals exist" in {
+          val json: JsObject = Json
+            .parse(
+              """
+                |{
+                |  "TransitOperation": {
+                |    "MRN": "38VYQTYFU3T0KUTUM3"
+                |  },
+                |  "preparationDateAndTime": "2007-10-26T07:36:28",
+                |  "Consignment": {
+                |    "HouseConsignment": [],
+                |    "Incident" : [
+                |      {
+                |        "TransportEquipment" : [
+                |          {
+                |            "sequenceNumber": "te1",
+                |            "containerIdentificationNumber": "cin-1",
+                |            "numberOfSeals": 103,
+                |            "Seal": [
+                |              {
+                |                "sequenceNumber": "1001",
+                |                "identifier": "1002"
+                |              }
+                |            ]
+                |          }
+                |        ]
+                |      }
+                |    ]
+                |  },
+                |  "CustomsOfficeOfDestinationActual": {
+                |    "referenceNumber": "GB000008"
+                |  },
+                |  "TraderAtDestination": {
+                |    "identificationNumber" : "AB123"
+                |  }
+                |}
+                |""".stripMargin
+            )
+            .as[JsObject]
 
-        val userAnswers = emptyUserAnswers.copy(data = json)
+          val userAnswers = emptyUserAnswers.copy(ie043Data = json)
 
-        navigator
-          .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
-          .mustBe(routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, mode))
+          navigator
+            .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
+            .mustBe(controllers.routes.CanSealsBeReadController.onPageLoad(userAnswers.id, mode))
+        }
+
+        "to additional comments yes no page when seals does not exist" in {
+          val json: JsObject = Json
+            .parse(
+              """
+                |{
+                |  "TransitOperation": {
+                |    "MRN": "38VYQTYFU3T0KUTUM3"
+                |  },
+                |  "preparationDateAndTime": "2007-10-26T07:36:28",
+                |  "Consignment": {
+                |    "HouseConsignment": [],
+                |     "TransportEquipment": [
+                |      {
+                |        "sequenceNumber": "te1",
+                |        "containerIdentificationNumber": "cin-1",
+                |        "numberOfSeals": 0
+                |      }
+                |    ]
+                |  },
+                |  "CustomsOfficeOfDestinationActual": {
+                |    "referenceNumber": "GB000008"
+                |  }
+                |}
+                |""".stripMargin
+            )
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(data = json)
+
+          navigator
+            .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
+            .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
+        }
       }
 
       "must go from can seals be read page" - {

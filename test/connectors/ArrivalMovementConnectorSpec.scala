@@ -120,7 +120,7 @@ class ArrivalMovementConnectorSpec extends SpecBase with AppWithDefaultMockFixtu
           MessageData(
             preparationDateAndTime = LocalDateTime.parse("2022-11-10T15:32:51.459Z", DateTimeFormatter.ISO_DATE_TIME),
             TransitOperation = TransitOperation(MovementReferenceNumber("99IT9876AB88901209")),
-            Consignment = Consignment(None, None, List.empty),
+            Consignment = Consignment(None, None, None, List.empty),
             CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("GB0008"),
             TraderAtDestination = TraderAtDestination("AB123")
           )

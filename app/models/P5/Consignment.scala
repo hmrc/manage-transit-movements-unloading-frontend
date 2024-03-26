@@ -21,12 +21,15 @@ import play.api.libs.json.{Json, OFormat}
 case class Consignment(
   TransportEquipment: Option[List[TransportEquipment]],
   DepartureTransportMeans: Option[List[DepartureTransportMeans]],
+  Incident: Option[List[Incident]],
   HouseConsignment: List[HouseConsignment]
 ) {
 
   def sealsExist: Boolean = {
-    val sealsCount = TransportEquipment.map(_.map(_.numberOfSeals.getOrElse(0)).sum).getOrElse(0)
-    if (sealsCount > 0) true else false
+    val seals         = TransportEquipment.getOrElse(List.empty).flatMap(_.Seal).flatten
+    val incidentSeals = Incident.getOrElse(List.empty).flatMap(_.TransportEquipment.getOrElse(List.empty)).flatMap(_.Seal).flatten
+
+    seals.nonEmpty || incidentSeals.nonEmpty
   }
 }
 

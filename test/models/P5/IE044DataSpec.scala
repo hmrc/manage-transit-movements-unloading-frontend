@@ -38,7 +38,7 @@ class IE044DataSpec extends SpecBase {
           preparationDateAndTime = prepDateTime,
           TransitOperation = TransitOperation(MovementReferenceNumber("99IT9876AB889012096")),
           TraderAtDestination = TraderAtDestination("tad-1"),
-          Consignment = Consignment(None, None, List.empty),
+          Consignment = Consignment(None, None, None, List.empty),
           CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("GB000068")
         )
 

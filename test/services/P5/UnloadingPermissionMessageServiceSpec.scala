@@ -95,7 +95,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
           MessageData(
             preparationDateAndTime = LocalDateTime.now(),
             TransitOperation = TransitOperation(MovementReferenceNumber("23GB123")),
-            Consignment = Consignment(None, None, List.empty),
+            Consignment = Consignment(None, None, None, List.empty),
             CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActual("GB0008"),
             TraderAtDestination = TraderAtDestination("AB123")
           )

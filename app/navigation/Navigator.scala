@@ -37,7 +37,7 @@ class Navigator @Inject() () {
         if (sealsExist) {
           controllers.routes.CanSealsBeReadController.onPageLoad(ua.id, NormalMode)
         } else {
-          routes.AddUnloadingCommentsYesNoController.onPageLoad(ua.id, NormalMode)
+          routes.UnloadingFindingsController.onPageLoad(ua.id)
         }
       }
 

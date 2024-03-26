@@ -199,6 +199,23 @@ class IE043DataSpec extends SpecBase {
           |                        }
           |                    }
           |                ],
+          |                "Incident" : [
+          |                    {
+          |                        "TransportEquipment": [
+          |                            {
+          |                                "sequenceNumber": "1",
+          |                                "containerIdentificationNumber": "i1-te1-cin",
+          |                                "numberOfSeals": 1,
+          |                                "Seal": [
+          |                                    {
+          |                                        "sequenceNumber": "1",
+          |                                        "identifier": "1"
+          |                                    }
+          |                                ]
+          |                            }
+          |                        ]
+          |                    }
+          |                ],
           |                "HouseConsignment": [
           |                    {
           |                        "sequenceNumber": "hc1",
@@ -389,11 +406,11 @@ class IE043DataSpec extends SpecBase {
       val expectedResult: IE043Data = IE043Data(
         MessageData(
           preparationDateAndTime = LocalDateTime.parse("2007-10-26T07:36:28", DateTimeFormatter.ISO_DATE_TIME),
-          TransitOperation(
+          TransitOperation = TransitOperation(
             MRN = MovementReferenceNumber("38VYQTYFU3T0KUTUM3")
           ),
           Consignment = Consignment(
-            Option(
+            TransportEquipment = Option(
               List(
                 TransportEquipment(
                   sequenceNumber = Option("te1"),
@@ -420,9 +437,32 @@ class IE043DataSpec extends SpecBase {
                 )
               )
             ),
+            Incident = Option(
+              List(
+                Incident(
+                  TransportEquipment = Option(
+                    List(
+                      TransportEquipment(
+                        sequenceNumber = Option("1"),
+                        containerIdentificationNumber = Option("i1-te1-cin"),
+                        numberOfSeals = Option(1),
+                        Seal = Option(
+                          List(
+                            Seal(
+                              sequenceNumber = Option("1"),
+                              identifier = Option("1")
+                            )
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+            ),
             HouseConsignment = List(
               HouseConsignment(
-                Option("hc1"),
+                sequenceNumber = Option("hc1"),
                 Consignor = Option(
                   Consignor(
                     identificationNumber = Option("csgr1"),
@@ -448,8 +488,8 @@ class IE043DataSpec extends SpecBase {
                 ConsignmentItem = Option(
                   List(
                     ConsignmentItem(
-                      Option("6"),
-                      Option(100),
+                      goodsItemNumber = Option("6"),
+                      declarationGoodsItemNumber = Option(100),
                       Commodity = Option(
                         Commodity(
                           Option("shirts"),
@@ -464,8 +504,8 @@ class IE043DataSpec extends SpecBase {
                       Packaging = Option(
                         List(
                           Packaging(
-                            Some("5"),
-                            Some(99)
+                            sequenceNumber = Some("5"),
+                            numberOfPackages = Some(99)
                           )
                         )
                       )
