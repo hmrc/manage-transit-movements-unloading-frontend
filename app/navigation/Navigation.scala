@@ -22,7 +22,6 @@ import models.{CheckMode, NormalMode, RichCC043CType, UserAnswers}
 import pages._
 import play.api.mvc.Call
 
-//TODO: Refactor navigation away from this file
 @Singleton
 class Navigation extends Navigator {
 
@@ -34,7 +33,7 @@ class Navigation extends Navigator {
         if (ua.ie043Data.sealsExist) {
           Some(controllers.routes.CanSealsBeReadController.onPageLoad(ua.id, NormalMode))
         } else {
-          Some(routes.AddUnloadingCommentsYesNoController.onPageLoad(ua.id, NormalMode))
+          Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
         }
 
     case CanSealsBeReadPage    => ua => Some(routes.AreAnySealsBrokenController.onPageLoad(ua.id, NormalMode))
@@ -42,10 +41,9 @@ class Navigation extends Navigator {
     case UnloadingCommentsPage => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
     case AddUnloadingCommentsYesNoPage =>
       ua =>
-        ua.get(AddUnloadingCommentsYesNoPage) match {
-          case Some(true)  => Some(controllers.routes.UnloadingCommentsController.onPageLoad(ua.id, NormalMode))
-          case Some(false) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
-          case _           => Some(routes.SessionExpiredController.onPageLoad())
+        ua.get(AddUnloadingCommentsYesNoPage) map {
+          case true  => controllers.routes.UnloadingCommentsController.onPageLoad(ua.id, NormalMode)
+          case false => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)
         }
 
     case _ =>
