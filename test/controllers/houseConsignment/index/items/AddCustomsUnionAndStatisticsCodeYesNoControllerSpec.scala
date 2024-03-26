@@ -21,22 +21,22 @@ import forms.YesNoFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.houseConsignment.index.items.AddGrossWeightYesNoPage
-import views.html.houseConsignment.index.items.AddGrossWeightYesNoView
+import pages.houseConsignment.index.items.AddCustomsUnionAndStatisticsCodeYesNoPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import views.html.houseConsignment.index.items.AddCustomsUnionAndStatisticsCodeYesNoView
 
 import scala.concurrent.Future
 
-class AddGrossWeightYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class AddCustomsUnionAndStatisticsCodeYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider = new YesNoFormProvider()
-  private val form         = formProvider("houseConsignment.item.addGrossWeightYesNo")
+  private val form         = formProvider("houseConsignment.item.addCustomsUnionAndStatisticsCodeYesNo")
   private val mode         = NormalMode
 
-  private lazy val addGrossWeightYesNoRoute =
-    controllers.houseConsignment.index.items.routes.AddGrossWeightYesNoController
+  private lazy val addCustomsUnionAndStatisticsCodeYesNoRoute =
+    controllers.houseConsignment.index.items.routes.AddCustomsUnionAndStatisticsCodeYesNoController
       .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
       .url
 
@@ -44,17 +44,17 @@ class AddGrossWeightYesNoControllerSpec extends SpecBase with AppWithDefaultMock
     super
       .guiceApplicationBuilder()
 
-  "AddGrossWeightYesNoController" - {
+  "AddCustomsUnionAndStatisticsCodeYesNoController" - {
 
     "must return OK and the correct view for a GET" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, addGrossWeightYesNoRoute)
+      val request = FakeRequest(GET, addCustomsUnionAndStatisticsCodeYesNoRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[AddGrossWeightYesNoView]
+      val view = injector.instanceOf[AddCustomsUnionAndStatisticsCodeYesNoView]
 
       status(result) mustEqual OK
 
@@ -64,16 +64,16 @@ class AddGrossWeightYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddGrossWeightYesNoPage(houseConsignmentIndex, itemIndex), true)
+      val userAnswers = emptyUserAnswers.setValue(AddCustomsUnionAndStatisticsCodeYesNoPage(houseConsignmentIndex, itemIndex), true)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, addGrossWeightYesNoRoute)
+      val request = FakeRequest(GET, addCustomsUnionAndStatisticsCodeYesNoRoute)
 
       val result = route(app, request).value
 
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[AddGrossWeightYesNoView]
+      val view = injector.instanceOf[AddCustomsUnionAndStatisticsCodeYesNoView]
 
       status(result) mustEqual OK
 
@@ -87,7 +87,7 @@ class AddGrossWeightYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, addGrossWeightYesNoRoute)
+      val request = FakeRequest(POST, addCustomsUnionAndStatisticsCodeYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
@@ -103,14 +103,14 @@ class AddGrossWeightYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
       val invalidAnswer = ""
 
-      val request    = FakeRequest(POST, addGrossWeightYesNoRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, addCustomsUnionAndStatisticsCodeYesNoRoute).withFormUrlEncodedBody(("value", ""))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AddGrossWeightYesNoView]
+      val view = injector.instanceOf[AddCustomsUnionAndStatisticsCodeYesNoView]
 
       contentAsString(result) mustEqual
         view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, mode)(request, messages).toString
@@ -120,7 +120,7 @@ class AddGrossWeightYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, addGrossWeightYesNoRoute)
+      val request = FakeRequest(GET, addCustomsUnionAndStatisticsCodeYesNoRoute)
 
       val result = route(app, request).value
 
@@ -133,7 +133,7 @@ class AddGrossWeightYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, addGrossWeightYesNoRoute)
+      val request = FakeRequest(POST, addCustomsUnionAndStatisticsCodeYesNoRoute)
         .withFormUrlEncodedBody(("value", "test string"))
 
       val result = route(app, request).value
