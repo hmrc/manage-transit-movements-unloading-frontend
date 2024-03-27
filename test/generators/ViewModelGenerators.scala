@@ -30,7 +30,10 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import viewModels.additionalReference.index.{AddAnotherAdditionalReferenceViewModel, AdditionalReferenceTypeViewModel}
 import viewModels.departureTransportMeans._
 import viewModels.documents.{AddAnotherDocumentViewModel, AdditionalInformationViewModel, DocumentReferenceNumberViewModel, TypeViewModel}
-import viewModels.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberViewModel, AdditionalReferenceViewModel}
+import viewModels.houseConsignment.index.items.additionalReference.{
+  AdditionalReferenceNumberViewModel,
+  AdditionalReferenceTypeViewModel => AdditionalReferenceTypeItemViewModel
+}
 import viewModels.houseConsignment.index.items.document.{
   AddAnotherHouseConsignmentDocumentViewModel,
   ItemsAdditionalInformationViewModel,
@@ -392,13 +395,13 @@ trait ViewModelGenerators {
     } yield ItemsAdditionalInformationViewModel(heading, title, requiredError)
   }
 
-  implicit lazy val arbitraryItemsAdditionalReferenceViewModel: Arbitrary[AdditionalReferenceViewModel] = Arbitrary {
+  implicit lazy val arbitraryItemsAdditionalReferenceViewModel: Arbitrary[AdditionalReferenceTypeItemViewModel] = Arbitrary {
     for {
       heading       <- nonEmptyString
       title         <- nonEmptyString
       requiredError <- nonEmptyString
       arrivalId     <- nonEmptyString
-    } yield AdditionalReferenceViewModel(heading, title, requiredError, ArrivalId(arrivalId), NormalMode, Index(0), Index(0), Index(0))
+    } yield AdditionalReferenceTypeItemViewModel(heading, title, requiredError, ArrivalId(arrivalId), NormalMode, Index(0), Index(0), Index(0))
   }
 
   implicit lazy val arbitraryItemsAdditionalReferenceNumberViewModel: Arbitrary[AdditionalReferenceNumberViewModel] = Arbitrary {

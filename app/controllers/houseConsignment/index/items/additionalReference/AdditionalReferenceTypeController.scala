@@ -21,29 +21,29 @@ import forms.SelectableFormProvider
 import models.reference.AdditionalReferenceType
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigator
-import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
+import navigation.houseConsignment.index.items.AdditionalReferenceNavigator
+import pages.houseConsignment.index.items.additionalReference.AdditionalReferenceTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.AdditionalReferencesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.houseConsignment.index.items.additionalReference.AdditionalReferenceViewModel.AdditionalReferenceViewModelProvider
-import views.html.houseConsignment.index.items.additionalReference.AdditionalReferenceView
+import viewModels.houseConsignment.index.items.additionalReference.AdditionalReferenceTypeViewModel.AdditionalReferenceTypeViewModelProvider
+import views.html.houseConsignment.index.items.additionalReference.AdditionalReferenceTypeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalReferenceController @Inject() (
+class AdditionalReferenceTypeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: AdditionalReferenceNavigator,
   actions: Actions,
   formProvider: SelectableFormProvider,
   service: AdditionalReferencesService,
   val controllerComponents: MessagesControllerComponents,
-  view: AdditionalReferenceView,
-  viewModelProvider: AdditionalReferenceViewModelProvider
+  view: AdditionalReferenceTypeView,
+  viewModelProvider: AdditionalReferenceTypeViewModelProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -59,7 +59,7 @@ class AdditionalReferenceController @Inject() (
             additionalReferences =>
               val form      = formProvider(mode, prefix, additionalReferences, houseConsignmentIndex.display, itemIndex.display)
               val viewModel = viewModelProvider.apply(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
-              val preparedForm = request.userAnswers.get(AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) match {
+              val preparedForm = request.userAnswers.get(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) match {
                 case None        => form
                 case Some(value) => form.fill(value)
               }
@@ -99,7 +99,7 @@ class AdditionalReferenceController @Inject() (
     mode: Mode
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
-      updatedAnswers <- Future.fromTry(request.userAnswers.set(AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), value))
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), mode, request.userAnswers))
+    } yield Redirect(navigator.nextPage(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), mode, request.userAnswers))
 }

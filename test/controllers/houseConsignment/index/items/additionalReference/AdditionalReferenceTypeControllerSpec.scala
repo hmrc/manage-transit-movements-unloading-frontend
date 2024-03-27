@@ -23,26 +23,26 @@ import models.{NormalMode, SelectableList}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
+import pages.houseConsignment.index.items.additionalReference.AdditionalReferenceTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.AdditionalReferencesService
-import viewModels.houseConsignment.index.items.additionalReference.AdditionalReferenceViewModel
-import viewModels.houseConsignment.index.items.additionalReference.AdditionalReferenceViewModel.AdditionalReferenceViewModelProvider
-import views.html.houseConsignment.index.items.additionalReference.AdditionalReferenceView
+import viewModels.houseConsignment.index.items.additionalReference.AdditionalReferenceTypeViewModel
+import viewModels.houseConsignment.index.items.additionalReference.AdditionalReferenceTypeViewModel.AdditionalReferenceTypeViewModelProvider
+import views.html.houseConsignment.index.items.additionalReference.AdditionalReferenceTypeView
 
 import scala.concurrent.Future
 
-class AdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class AdditionalReferenceTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val additionalReference1    = arbitraryAdditionalReference.arbitrary.sample.get
   private val additionalReference2    = arbitraryAdditionalReference.arbitrary.sample.get
   private val additionalReferenceList = SelectableList(Seq(additionalReference1, additionalReference2))
 
-  private val mockViewModelProvider = mock[AdditionalReferenceViewModelProvider]
-  private val viewModel             = arbitrary[AdditionalReferenceViewModel].sample.value
+  private val mockViewModelProvider = mock[AdditionalReferenceTypeViewModelProvider]
+  private val viewModel             = arbitrary[AdditionalReferenceTypeViewModel].sample.value
 
   private val mockAdditionalReferencesService: AdditionalReferencesService = mock[AdditionalReferencesService]
   private val formProvider                                                 = new SelectableFormProvider()
@@ -50,12 +50,12 @@ class AdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMock
   private val form                                                         = formProvider(mode, "houseConsignment.index.items.additionalReference.additionalReferenceType", additionalReferenceList)
 
   private lazy val additionalReferenceRoute =
-    routes.AdditionalReferenceController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex).url
+    routes.AdditionalReferenceTypeController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[AdditionalReferenceViewModelProvider]).toInstance(mockViewModelProvider))
+      .overrides(bind(classOf[AdditionalReferenceTypeViewModelProvider]).toInstance(mockViewModelProvider))
       .overrides(bind(classOf[AdditionalReferencesService]).toInstance(mockAdditionalReferencesService))
 
   override def beforeEach(): Unit = {
@@ -77,7 +77,7 @@ class AdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMock
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[AdditionalReferenceView]
+      val view = injector.instanceOf[AdditionalReferenceTypeView]
 
       status(result) mustEqual OK
 
@@ -88,7 +88,7 @@ class AdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMock
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       when(mockAdditionalReferencesService.getAdditionalReferences()(any())).thenReturn(Future.successful(additionalReferenceList))
-      val userAnswers = emptyUserAnswers.setValue(AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), additionalReference1)
+      val userAnswers = emptyUserAnswers.setValue(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), additionalReference1)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, additionalReferenceRoute)
@@ -97,7 +97,7 @@ class AdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMock
 
       val filledForm = form.bind(Map("value" -> additionalReference1.value))
 
-      val view = injector.instanceOf[AdditionalReferenceView]
+      val view = injector.instanceOf[AdditionalReferenceTypeView]
 
       status(result) mustEqual OK
 
@@ -119,7 +119,9 @@ class AdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMock
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.additionalReference.routes.AddAdditionalReferenceNumberYesNoController
+        .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+        .url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
@@ -132,7 +134,7 @@ class AdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMock
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[AdditionalReferenceView]
+      val view = injector.instanceOf[AdditionalReferenceTypeView]
 
       status(result) mustEqual BAD_REQUEST
 

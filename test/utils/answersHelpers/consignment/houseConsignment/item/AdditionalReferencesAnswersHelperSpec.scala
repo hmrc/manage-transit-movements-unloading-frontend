@@ -27,7 +27,7 @@ class AdditionalReferencesAnswersHelperSpec extends AnswersHelperSpecBase {
   "AdditionalReferencesAnswersHelper" - {
 
     "code" - {
-      val page = AdditionalReferencePage(hcIndex, itemIndex, index)
+      val page = AdditionalReferenceTypePage(hcIndex, itemIndex, index)
 
       "must return None" - {
         s"when $page undefined" in {

@@ -125,8 +125,8 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual controllers.additionalReference.index.routes.AdditionalReferenceTypeController
-            .onPageLoad(arrivalId, mode, notMaxedOutViewModel.nextIndex)
+          redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.additionalReference.routes.AdditionalReferenceTypeController
+            .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, notMaxedOutViewModel.nextIndex)
             .url
         }
       }
@@ -145,7 +145,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+          redirectLocation(result).value mustEqual controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
         }
       }
     }
@@ -164,7 +164,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+        redirectLocation(result).value mustEqual controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
       }
     }
 
