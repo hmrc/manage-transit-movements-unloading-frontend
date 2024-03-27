@@ -17,19 +17,22 @@
 package views.houseConsignment.index.items.packages
 
 import models.NormalMode
+import models.reference.PackageType
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.houseConsignment.index.items.packages.AddPackageShippingMarkYesNoView
+import views.html.houseConsignment.index.items.packages.AddNumberOfPackagesYesNoView
 
-class AddPackageShippingMarkYesNoViewSpec extends YesNoViewBehaviours {
+class AddNumberOfPackagesYesNoViewSpec extends YesNoViewBehaviours {
+
+  private val packageType = PackageType("A1", "Steel, drum")
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
-      .instanceOf[AddPackageShippingMarkYesNoView]
-      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, NormalMode)(fakeRequest, messages)
+      .instanceOf[AddNumberOfPackagesYesNoView]
+      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, packageType.toString, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "houseConsignment.index.items.packages.addPackageShippingMarkYesNo"
+  override val prefix: String = "houseConsignment.index.items.packages.addNumberOfPackagesYesNo"
 
   behave like pageWithTitle()
 
@@ -37,11 +40,9 @@ class AddPackageShippingMarkYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithContent("p",
-                              "This tells carriers what type of product is inside the package and helps consignees identify the order once it’s been delivered."
-  )
-
   behave like pageWithHeading()
+
+  behave like pageWithInsetText(packageType.toString)
 
   behave like pageWithRadioItems()
 

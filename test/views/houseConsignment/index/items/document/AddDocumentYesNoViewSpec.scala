@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package views.houseConsignment.index.items.packages
+package views.houseConsignment.index.items.document
 
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.houseConsignment.index.items.packages.AddPackageShippingMarkYesNoView
+import views.html.houseConsignment.index.items.document.AddDocumentYesNoView
 
-class AddPackageShippingMarkYesNoViewSpec extends YesNoViewBehaviours {
+class AddDocumentYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
-      .instanceOf[AddPackageShippingMarkYesNoView]
-      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, NormalMode)(fakeRequest, messages)
+      .instanceOf[AddDocumentYesNoView]
+      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "houseConsignment.index.items.packages.addPackageShippingMarkYesNo"
+  override val prefix: String = "houseConsignment.item.addDocumentYesNo"
 
   behave like pageWithTitle()
 
@@ -37,11 +37,9 @@ class AddPackageShippingMarkYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithContent("p",
-                              "This tells carriers what type of product is inside the package and helps consignees identify the order once it’s been delivered."
-  )
-
   behave like pageWithHeading()
+
+  behave like pageWithContent("p", "This is to provide handling instructions or information, like packing lists or insurance details, for the item.")
 
   behave like pageWithRadioItems()
 

@@ -890,6 +890,11 @@ houseConsignment.index.items.document.type.error.required = Select the type of d
 houseConsignment.index.items.document.type.check.error.required = Select the new document type for item {1} in house consignment {0}
 houseConsignment.index.items.document.type.maxLimitForType.label = You cannot add any more {0} documents to all items. To add another, you need to remove one first. You can, however, still add a {1} document to your items.
 
+houseConsignment.item.addDocumentYesNo.title = Do you want to add a document for the item?
+houseConsignment.item.addDocumentYesNo.heading = Do you want to add a document for the item?
+houseConsignment.item.addDocumentYesNo.error.required = Select yes if you you want to add a document for the item
+houseConsignment.item.addDocumentYesNo.paragraph = This is to provide handling instructions or information, like packing lists or insurance details, for the item.
+
 houseConsignment.index.items.document.removeDocumentYesNo.title = Are you sure you want to remove this document from item {1} in house consignment {0}?
 houseConsignment.index.items.document.removeDocumentYesNo.heading = Are you sure you want to remove this document from item {1} in house consignment {0}?
 houseConsignment.index.items.document.removeDocumentYesNo.error.required = Select yes if you want to remove this document from item {1} in house consignment {0}
@@ -975,11 +980,27 @@ houseConsignment.index.items.additionalReference.addAdditionalReferenceNumberYes
 
 houseConsignment.index.items.packages.addPackageShippingMarkYesNo.title = Do you want to add a shipping mark?
 houseConsignment.index.items.packages.addPackageShippingMarkYesNo.heading = Do you want to add a shipping mark?
+houseConsignment.index.items.packages.addPackageShippingMarkYesNo.paragraph = This tells carriers what type of product is inside the package and helps consignees identify the order once it’s been delivered.
 houseConsignment.index.items.packages.addPackageShippingMarkYesNo.error.required = Select yes if you want to add a shipping mark
+
+houseConsignment.index.items.packages.addNumberOfPackagesYesNo.title = Do you want to add the quantity of this package?
+houseConsignment.index.items.packages.addNumberOfPackagesYesNo.heading = Do you want to add the quantity of this package?
+houseConsignment.index.items.packages.addNumberOfPackagesYesNo.error.required = Select yes if you want to add the quantity of the package type
 
 houseConsignment.index.items.packages.removePackageTypeYesNo.title = Are you sure you want to remove this package from item {1} in house consignment {0}?
 houseConsignment.index.items.packages.removePackageTypeYesNo.heading = Are you sure you want to remove this package from item {1} in house consignment {0}?
 houseConsignment.index.items.packages.removePackageTypeYesNo.error.required = Select yes if you want to remove this package from item {1} in house consignment {0}
+
+houseConsignment.index.items.packages.addAnotherPackage.empty.title = You have added {0} types of packages for item {1} in house consignment {2}
+houseConsignment.index.items.packages.addAnotherPackage.singular.title = You have added {0} type of package for item {1} in house consignment {2}
+houseConsignment.index.items.packages.addAnotherPackage.plural.title = You have added {0} types of packages for item {1} in house consignment {2}
+houseConsignment.index.items.packages.addAnotherPackage.empty.heading = You have added {0} types of packages for item {1} in house consignment {2}
+houseConsignment.index.items.packages.addAnotherPackage.singular.heading = You have added {0} type of package for item {1} in house consignment {2}
+houseConsignment.index.items.packages.addAnotherPackage.plural.heading = You have added {0} types of packages for item {1} in house consignment {2}
+houseConsignment.index.items.packages.addAnotherPackage.empty.label = Do you want to add a type of package for item {1} in house consignment {2}?
+houseConsignment.index.items.packages.addAnotherPackage.label = Do you want to add another type of package for item {1} in house consignment {2}?
+houseConsignment.index.items.packages.addAnotherPackage.maxLimit.label = You cannot add any more types of packages for item {1} in house consignment {2}. To add another, you need to remove one first.
+houseConsignment.index.items.packages.addAnotherPackage.error.required = Select yes if you want to add a type of package for item {1} in house consignment {2}
 
 houseConsignment.item.addGrossWeightYesNo.title = Do you want to add the item’s gross weight?
 houseConsignment.item.addGrossWeightYesNo.heading = Do you want to add the item’s gross weight?
@@ -1004,6 +1025,10 @@ houseConsignment.item.addPackagesYesNo.title = Do you want to add a package for 
 houseConsignment.item.addPackagesYesNo.heading = Do you want to add a package for the item?
 houseConsignment.item.addPackagesYesNo.error.required = Select yes if you want to add a package for the item
 houseConsignment.item.addPackagesYesNo.paragraph = This means the packaging used to store and protect the item during transit.
+
+houseConsignment.item.addAdditionalReferenceYesNo.title = Do you want to add an additional reference for the item?
+houseConsignment.item.addAdditionalReferenceYesNo.heading = Do you want to add an additional reference for the item?
+houseConsignment.item.addAdditionalReferenceYesNo.error.required = Select yes if you want to add an additional reference for the item
 
 houseConsignment.removeConsignmentItemYesNo.title = Are you sure you want to remove item {0} from house consignment {1}?
 houseConsignment.removeConsignmentItemYesNo.heading = Are you sure you want to remove item {0} from house consignment {1}?
