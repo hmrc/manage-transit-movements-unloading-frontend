@@ -17,7 +17,7 @@
 package navigation.houseConsignment.index.items
 
 import com.google.inject.Singleton
-import models.UserAnswers
+import models.{NormalMode, UserAnswers}
 import navigation.Navigator
 import pages._
 import pages.houseConsignment.index.items.document.{AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
@@ -36,6 +36,9 @@ class DocumentNavigator extends Navigator {
   }
 
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case TypePage(houseConsignmentIndex, index, _) =>
+      ua =>
+        Some(controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController.onPageLoad(ua.id, houseConsignmentIndex, index, NormalMode))
     case _ => _ => Some(Call("GET", "#")) //TODO: Update document navigation
   }
 }

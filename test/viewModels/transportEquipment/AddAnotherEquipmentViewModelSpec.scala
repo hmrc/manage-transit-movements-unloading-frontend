@@ -114,7 +114,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
               val userAnswers = emptyUserAnswers
                 .setValue(ContainerIdentificationNumberPage(Index(0)), containerId)
                 .setValue(AddContainerIdentificationNumberYesNoPage(Index(0)), true)
-                .setSequenceNumber(TransportEquipmentSection(Index(1)), "2") // keep only sequence number for the removed item (index 1 for this example)
+                .setRemoved(TransportEquipmentSection(Index(1)))
                 .setValue(ContainerIdentificationNumberPage(Index(2)), containerId)
                 .setValue(AddContainerIdentificationNumberYesNoPage(Index(2)), true)
 

@@ -14,14 +14,15 @@
  * limitations under the License.
  *@
 
+@import config.FrontendAppConfig
 @import controllers.houseConsignment.index.items.document.routes
 @import models.MovementReferenceNumber
 @import models.reference.DocumentType
-@import models.reference.Selectable
 @import models.reference.Selectable._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import viewModels.components.InputSelectViewModel._
+@import viewModels.houseConsignment.index.items.document.TypeViewModel
 @import views.html.components.{Button, ErrorSummary, InputSelect}
+
 
 @this(
     mainTemplate: MainTemplate,
@@ -31,10 +32,10 @@
     button: Button
 )
 
-@(form: Form[DocumentType], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode, documents: Seq[DocumentType], houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[DocumentType], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode, documents: Seq[DocumentType], viewModel: TypeViewModel, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
 
 @mainTemplate(
-    title = messages("houseConsignment.index.items.document.type.title", houseConsignmentIndex.display, itemIndex.display),
+    title = viewModel.title,
     showBackLink = true
 ) {
 
@@ -45,13 +46,16 @@
         @inputSelect(
             field = form("value"),
             selectType = OrdinarySelect(
-                heading = messages("houseConsignment.index.items.document.type.heading", houseConsignmentIndex.display, itemIndex.display),
+                heading = viewModel.heading,
                 caption = Some(messages("site.caption", mrn.toString))
             ),
             hint = Some(messages("houseConsignment.index.items.document.type.hint")),
             selectItems = documents.toSelectItems(form.value),
             placeholder = messages("houseConsignment.index.items.document.type.placeholder")
         )
+        @viewModel.maxLimitLabelForType.map { label =>
+            <p class="govuk-body" data-testId="maxLimitForType">@label</p>
+        }
 
         @button(attributes = Map("id" -> "submit"))
     }

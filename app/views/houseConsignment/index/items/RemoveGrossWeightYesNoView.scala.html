@@ -32,7 +32,7 @@
 @(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode, insetText: Option[String])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("houseConsignment.removeGrossWeightYesNo.title", itemIndex.display, houseConsignmentIndex.display, itemIndex.display),
+    title = messages("houseConsignment.removeGrossWeightYesNo.title", itemIndex.display, houseConsignmentIndex.display),
     showBackLink = true
 ) {
 
@@ -43,7 +43,7 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = InputYesNoViewModel(
-                heading = messages("houseConsignment.removeGrossWeightYesNo.heading", itemIndex.display,houseConsignmentIndex.display),
+                heading = messages("houseConsignment.removeGrossWeightYesNo.heading", itemIndex.display, houseConsignmentIndex.display),
                 caption = Some(messages("site.caption", mrn.toString)),
                 additionalHtml = insetText.map(x => govukInsetText(InsetText(content = Text(x))))
             )

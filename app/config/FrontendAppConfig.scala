@@ -37,8 +37,11 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   lazy val maxTransportEquipment: Int = configuration.get[Int]("limits.maxTransportEquipment")
 
-  lazy val maxSupportingDocuments: Int = configuration.get[Int]("limits.maxSupportingDocuments")
-  lazy val maxTransportDocuments: Int  = configuration.get[Int]("limits.maxTransportDocuments")
+  lazy val maxSupportingDocumentsConsignment: Int = configuration.get[Int]("limits.documents.consignment.maxSupporting")
+  lazy val maxTransportDocumentsConsignment: Int  = configuration.get[Int]("limits.documents.consignment.maxTransport")
+
+  lazy val maxSupportingDocumentsHouseConsignment: Int = configuration.get[Int]("limits.documents.houseConsignment.maxSupporting")
+  lazy val maxTransportDocumentsHouseConsignment: Int  = configuration.get[Int]("limits.documents.houseConsignment.maxTransport")
 
   val showPhaseBanner: Boolean        = configuration.get[Boolean]("banners.showPhase")
   val userResearchUrl: String         = configuration.get[String]("urls.userResearch")

@@ -68,7 +68,7 @@ class IncidentTransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase 
         val helper: IncidentTransportEquipmentAnswersHelper = new IncidentTransportEquipmentAnswersHelper(mockUserAnswers, mockTransportEquipmentType)
         when(mockTransportEquipmentType.Seal).thenReturn(Seq(SealType04("1", "Seal1"), SealType04("2", "Seal2")))
 
-        val result = helper.transportEquipmentSeals.value
+        val result = helper.transportEquipmentSeals
 
         result.sectionTitle.value mustBe "Seals"
 
@@ -90,7 +90,7 @@ class IncidentTransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase 
         val helper: IncidentTransportEquipmentAnswersHelper = new IncidentTransportEquipmentAnswersHelper(mockUserAnswers, mockTransportEquipmentType)
         when(mockTransportEquipmentType.GoodsReference).thenReturn(Seq(GoodsReferenceType01("1", 123), GoodsReferenceType01("2", 234)))
 
-        val result = helper.itemNumbers.value
+        val result = helper.itemNumbers
 
         result.sectionTitle.value mustBe "Goods item numbers"
 

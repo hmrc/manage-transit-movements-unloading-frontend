@@ -46,7 +46,7 @@ class TypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
   "when transport documents reached max limit" in {
     forAll(arbitrary[Mode]) {
       mode =>
-        val result = new TypeViewModelProvider().apply(mode, ConsignmentLevelDocuments(0, frontendAppConfig.maxTransportDocuments))
+        val result = new TypeViewModelProvider().apply(mode, ConsignmentLevelDocuments(0, frontendAppConfig.maxTransportDocumentsConsignment))
 
         result.maxLimitLabelForType.get mustBe "You cannot add any more transport documents to all items. To add another, you need to remove one first. You can, however, still add a supporting document to your items."
     }
@@ -55,7 +55,7 @@ class TypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
   "when supporting documents reached max limit" in {
     forAll(arbitrary[Mode]) {
       mode =>
-        val result = new TypeViewModelProvider().apply(mode, ConsignmentLevelDocuments(frontendAppConfig.maxSupportingDocuments, 0))
+        val result = new TypeViewModelProvider().apply(mode, ConsignmentLevelDocuments(frontendAppConfig.maxSupportingDocumentsConsignment, 0))
 
         result.maxLimitLabelForType.get mustBe "You cannot add any more supporting documents to all items. To add another, you need to remove one first. You can, however, still add a transport document to your items."
     }

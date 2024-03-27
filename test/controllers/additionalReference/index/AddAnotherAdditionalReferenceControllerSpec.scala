@@ -109,7 +109,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
 
     "when max limit not reached" - {
       "when yes submitted" - {
-        "must redirect to add additional reference yes no page at next index" in {
+        "must redirect to additional reference type page at next index" in {
           when(mockViewModelProvider.apply(any(), any(), any()))
             .thenReturn(notMaxedOutViewModel)
 

@@ -160,7 +160,7 @@ class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(impl
     prefix = "unloadingFindings.rowHeadings.containerIndicator"
   )
 
-  def incidentTransportEquipments: Option[Section] =
+  def incidentTransportEquipments: Section =
     userAnswers.ie043Data.Consignment
       .flatMap(_.Incident.lift(incidentIndex.position))
       .map(_.TransportEquipment)
@@ -177,7 +177,7 @@ class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(impl
           val children = Seq(
             helper.transportEquipmentSeals,
             helper.itemNumbers
-          ).flatten
+          )
 
           AccordionSection(
             sectionTitle = Some(messages("unloadingFindings.incident.transportEquipment.heading", equipmentIndex.display)),
@@ -186,14 +186,10 @@ class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(impl
             id = Some(s"incident-$incidentIndex-transport-equipment-$index")
           )
       } match {
-      case Nil =>
-        None
       case children =>
-        Some(
-          AccordionSection(
-            sectionTitle = Some(messages("unloadingFindings.incident.transportEquipment.parent.heading")),
-            children = children
-          )
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.incident.transportEquipment.parent.heading")),
+          children = children
         )
     }
 

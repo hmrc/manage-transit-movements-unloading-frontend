@@ -123,13 +123,17 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         result.sections(1).children.head.sectionTitle.value mustBe "Item 1"
         result.sections(1).children.head.rows.size mustBe 5
 
-        result.sections(1).children.head.children.head mustBe a[StaticSection]
-        result.sections(1).children.head.children.head.sectionTitle.value mustBe "Consignee"
-        result.sections(1).children.head.children.head.rows.size mustBe 2
+        result.sections(1).children.head.children.head mustBe a[AccordionSection]
+        result.sections(1).children.head.children.head.sectionTitle.value mustBe "UN numbers"
+        result.sections(1).children.head.children.head.rows.size mustBe 0
 
-        result.sections(1).children.head.children(1) mustBe a[AccordionSection]
-        result.sections(1).children.head.children(1).sectionTitle.value mustBe "Documents"
-        result.sections(1).children.head.children(1).viewLinks.head.id mustBe "add-remove-item-1-document"
+        result.sections(1).children.head.children(1) mustBe a[StaticSection]
+        result.sections(1).children.head.children(1).sectionTitle.value mustBe "Consignee"
+        result.sections(1).children.head.children(1).rows.size mustBe 2
+
+        result.sections(1).children.head.children(2) mustBe a[AccordionSection]
+        result.sections(1).children.head.children(2).sectionTitle.value mustBe "Documents"
+        result.sections(1).children.head.children(2).viewLinks.head.id mustBe "add-remove-item-1-document"
       }
     }
 
@@ -185,9 +189,13 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         result.sections(1).children(1).sectionTitle.value mustBe "Item 2"
         result.sections(1).children(1).rows.size mustBe 5
 
-        result.sections(1).children.head.children.head mustBe a[StaticSection]
-        result.sections(1).children.head.children.head.sectionTitle.value mustBe "Consignee"
-        result.sections(1).children.head.children.head.rows.size mustBe 2
+        result.sections(1).children.head.children.head mustBe a[AccordionSection]
+        result.sections(1).children.head.children.head.sectionTitle.value mustBe "UN numbers"
+        result.sections(1).children.head.children.head.rows.size mustBe 0
+
+        result.sections(1).children.head.children(1) mustBe a[StaticSection]
+        result.sections(1).children.head.children(1).sectionTitle.value mustBe "Consignee"
+        result.sections(1).children.head.children(1).rows.size mustBe 2
       }
     }
   }

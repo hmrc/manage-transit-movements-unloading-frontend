@@ -24,8 +24,8 @@ class DocumentsSpec extends SpecBase {
   "Documents" - {
 
     "must return message if max limit reached" in {
-      Documents.maxLimitLabelForType(ConsignmentLevelDocuments(0, frontendAppConfig.maxTransportDocuments), "prefix").isDefined mustBe true
-      Documents.maxLimitLabelForType(ConsignmentLevelDocuments(frontendAppConfig.maxSupportingDocuments, 0), "prefix").isDefined mustBe true
+      Documents.maxLimitLabelForType(ConsignmentLevelDocuments(0, frontendAppConfig.maxTransportDocumentsConsignment), "prefix").isDefined mustBe true
+      Documents.maxLimitLabelForType(ConsignmentLevelDocuments(frontendAppConfig.maxSupportingDocumentsConsignment, 0), "prefix").isDefined mustBe true
     }
 
     "must return None if max limit not reached" in {
