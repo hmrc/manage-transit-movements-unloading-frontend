@@ -25,7 +25,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import org.scalacheck.Gen
-import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferencePage}
+import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -53,7 +53,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
     "must return OK and the correct view for a GET when number exists" in {
       val userAnswers = emptyUserAnswers
         .setValue(
-          AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
+          AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
           AdditionalReferenceType("Y015", "The rough diamonds are contained in ...")
         )
         .setValue(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), "addref-1")
@@ -76,7 +76,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
     "must return OK and the correct view for a GET when no number exists" in {
       val userAnswers = emptyUserAnswers
         .setValue(
-          AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
+          AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
           AdditionalReferenceType("Y015", "The rough diamonds are contained in ...")
         )
 
@@ -100,7 +100,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
         val userAnswers = emptyUserAnswers
           .setValue(
-            AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
+            AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
             AdditionalReferenceType("Y015", "The rough diamonds are contained in ...")
           )
           .setValue(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), "addref-1")
@@ -130,7 +130,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
 
         val userAnswers = emptyUserAnswers
           .setValue(
-            AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
+            AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
             AdditionalReferenceType("Y015", "The rough diamonds are contained in ...")
           )
           .setValue(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), "addref-1")
@@ -158,7 +158,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
 
       val userAnswers = emptyUserAnswers
         .setValue(
-          AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
+          AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
           AdditionalReferenceType("Y015", "The rough diamonds are contained in ...")
         )
         .setValue(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), "addref-1")
@@ -173,7 +173,9 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual "#" //TODO: update with addAnother controller
+      redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.additionalReference.routes.AddAnotherAdditionalReferenceController
+        .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex)
+        .url
 
     }
 
@@ -182,7 +184,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
         containerId =>
           val userAnswers = emptyUserAnswers
             .setValue(
-              AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
+              AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
               AdditionalReferenceType("Y015", "The rough diamonds are contained in ...")
             )
             .setValue(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), "addref-1")

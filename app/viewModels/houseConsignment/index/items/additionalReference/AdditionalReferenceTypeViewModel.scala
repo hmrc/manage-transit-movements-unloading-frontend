@@ -22,26 +22,26 @@ import viewModels.ModeViewModelProvider
 
 import javax.inject.Inject
 
-case class AdditionalReferenceViewModel(heading: String,
-                                        title: String,
-                                        requiredError: String,
-                                        arrivalId: ArrivalId,
-                                        mode: Mode,
-                                        houseConsignmentIndex: Index,
-                                        itemIndex: Index,
-                                        additionalReferenceIndex: Index
+case class AdditionalReferenceTypeViewModel(heading: String,
+                                            title: String,
+                                            requiredError: String,
+                                            arrivalId: ArrivalId,
+                                            mode: Mode,
+                                            houseConsignmentIndex: Index,
+                                            itemIndex: Index,
+                                            additionalReferenceIndex: Index
 )
 
-object AdditionalReferenceViewModel {
+object AdditionalReferenceTypeViewModel {
 
-  class AdditionalReferenceViewModelProvider @Inject() extends ModeViewModelProvider {
+  class AdditionalReferenceTypeViewModelProvider @Inject() extends ModeViewModelProvider {
 
     override val prefix = "houseConsignment.index.items.additionalReference.additionalReferenceType"
 
     def apply(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index)(implicit
       message: Messages
-    ): AdditionalReferenceViewModel =
-      new AdditionalReferenceViewModel(
+    ): AdditionalReferenceTypeViewModel =
+      new AdditionalReferenceTypeViewModel(
         heading(mode, houseConsignmentIndex, itemIndex),
         title(mode, houseConsignmentIndex, itemIndex),
         requiredError(mode, houseConsignmentIndex, itemIndex),

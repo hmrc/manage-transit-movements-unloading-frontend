@@ -27,7 +27,7 @@ import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.additionalReference.AdditionalReferenceTypePage
-import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
+import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceTypePage => AdditionalReferenceTypeItemPage}
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -90,7 +90,7 @@ class AdditionalReferencesTransformerSpec extends SpecBase with AppWithDefaultMo
     additionalReferenceType02.zipWithIndex.map {
       case (refType, i) =>
         result.getSequenceNumber(AdditionalReferenceSection(hcIndex, itemIndex, Index(i))) mustBe refType.sequenceNumber
-        result.getValue(AdditionalReferencePage(hcIndex, itemIndex, Index(i))).documentType mustBe refType.typeValue
+        result.getValue(AdditionalReferenceTypeItemPage(hcIndex, itemIndex, Index(i))).documentType mustBe refType.typeValue
     }
   }
 }

@@ -20,7 +20,11 @@ import controllers.actions._
 import forms.YesNoFormProvider
 import models.requests.DataRequest
 import models.{ArrivalId, Index, Mode, UserAnswers}
-import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferencePage, RemoveAdditionalReferenceNumberYesNoPage}
+import pages.houseConsignment.index.items.additionalReference.{
+  AdditionalReferenceNumberPage,
+  AdditionalReferenceTypePage,
+  RemoveAdditionalReferenceNumberYesNoPage
+}
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -45,13 +49,13 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
 
   private val form = formProvider("houseConsignment.index.items.additionalReference.removeAdditionalReferenceYesNo")
 
-  private def addAnother(arrivalId: ArrivalId, mode: Mode): Call =
-    Call("GET", "#")
-  // TODO: update with AddAnotherAdditionalReferenceController
+  private def addAnother(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Call =
+    controllers.houseConsignment.index.items.additionalReference.routes.AddAnotherAdditionalReferenceController
+      .onSubmit(arrivalId, mode, houseConsignmentIndex, itemIndex)
 
   def insetText(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): String = {
     val additionalReferenceType = userAnswers
-      .get(AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
+      .get(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
       .map(_.value)
       .getOrElse("")
 
@@ -63,8 +67,12 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] =
     actions
-      .requireIndex(arrivalId, AdditionalReferenceSection(houseConsignmentIndex, itemIndex, additionalReferenceIndex), addAnother(arrivalId, mode))
-      .andThen(getMandatoryPage.getFirst(AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))) {
+      .requireIndex(
+        arrivalId,
+        AdditionalReferenceSection(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
+        addAnother(arrivalId, mode, houseConsignmentIndex, itemIndex)
+      )
+      .andThen(getMandatoryPage.getFirst(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))) {
         implicit request =>
           val preparedForm =
             request.userAnswers.get(RemoveAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) match {
@@ -87,7 +95,11 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
       }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] = actions
-    .requireIndex(arrivalId, AdditionalReferenceSection(houseConsignmentIndex, itemIndex, additionalReferenceIndex), addAnother(arrivalId, mode))
+    .requireIndex(
+      arrivalId,
+      AdditionalReferenceSection(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
+      addAnother(arrivalId, mode, houseConsignmentIndex, itemIndex)
+    )
     .async {
       implicit request =>
         val preparedForm = request.userAnswers.get(RemoveAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) match {
@@ -135,5 +147,5 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
           Future.successful(request.userAnswers)
         }
       _ <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(addAnother(arrivalId, mode))
+    } yield Redirect(addAnother(arrivalId, mode, houseConsignmentIndex, itemIndex))
 }
