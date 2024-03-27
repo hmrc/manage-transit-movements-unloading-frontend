@@ -22,7 +22,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import viewModels.components.InputSelectViewModel._
 @import views.html.components.{Button, ErrorSummary, InputSelect}
-@import viewModels.houseConsignment.index.items.additionalReference.AdditionalReferenceViewModel
+@import viewModels.houseConsignment.index.items.additionalReference.AdditionalReferenceTypeViewModel
 
 
 @this(
@@ -33,7 +33,7 @@
     button: Button
 )
 
-@(form: Form[AdditionalReferenceType], mrn: MovementReferenceNumber, additionalReferences: Seq[AdditionalReferenceType], viewModel: AdditionalReferenceViewModel)(implicit request: Request[_], messages: Messages)
+@(form: Form[AdditionalReferenceType], mrn: MovementReferenceNumber, additionalReferences: Seq[AdditionalReferenceType], viewModel: AdditionalReferenceTypeViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = viewModel.title,
