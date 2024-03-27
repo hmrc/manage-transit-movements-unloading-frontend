@@ -14,32 +14,28 @@
  * limitations under the License.
  */
 
-package views.houseConsignment.index.items.packages
+package views.houseConsignment.index.items
 
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.houseConsignment.index.items.packages.AddPackageShippingMarkYesNoView
+import views.html.houseConsignment.index.items.AddAdditionalReferenceYesNoView
 
-class AddPackageShippingMarkYesNoViewSpec extends YesNoViewBehaviours {
+class AddAdditionalReferenceYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
-      .instanceOf[AddPackageShippingMarkYesNoView]
-      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, NormalMode)(fakeRequest, messages)
+      .instanceOf[AddAdditionalReferenceYesNoView]
+      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "houseConsignment.index.items.packages.addPackageShippingMarkYesNo"
+  override val prefix: String = "houseConsignment.item.addAdditionalReferenceYesNo"
 
   behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
-
-  behave like pageWithContent("p",
-                              "This tells carriers what type of product is inside the package and helps consignees identify the order once it’s been delivered."
-  )
 
   behave like pageWithHeading()
 
