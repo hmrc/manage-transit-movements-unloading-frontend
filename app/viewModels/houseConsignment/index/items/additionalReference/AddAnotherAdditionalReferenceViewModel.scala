@@ -63,29 +63,23 @@ object AddAnotherAdditionalReferenceViewModel {
 
       val array = userAnswers.get(AdditionalReferencesSection(houseConsignmentIndex, itemIndex))
 
-      val listItems = array
-        .getOrElse(JsArray())
-        .value
-        .zipWithIndex
-        .flatMap {
-          case (_, i) =>
-            val additionalReferenceIndex = Index(i)
-            val numberString = userAnswers.get(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) match {
-              case None        => ""
-              case Some(value) => s"- $value"
-            }
-            userAnswers.get(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)).map {
-              `type` =>
-                ListItem(
-                  name = s"${`type`.value} $numberString",
-                  changeUrl = None,
-                  removeUrl = Some(
-                    routes.RemoveAdditionalReferenceYesNoController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex).url
-                  )
+      val listItems = array.flatMapWithIndex {
+        case (_, additionalReferenceIndex) =>
+          lazy val numberString = userAnswers.get(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) match {
+            case None        => ""
+            case Some(value) => s"- $value"
+          }
+          userAnswers.get(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)).map {
+            `type` =>
+              ListItem(
+                name = s"${`type`.value} $numberString",
+                changeUrl = None,
+                removeUrl = Some(
+                  routes.RemoveAdditionalReferenceYesNoController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex).url
                 )
-            }
-        }
-        .toSeq
+              )
+          }
+      }.toSeq
 
       new AddAnotherAdditionalReferenceViewModel(
         listItems,

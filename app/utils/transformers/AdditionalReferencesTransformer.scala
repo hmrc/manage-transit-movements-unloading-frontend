@@ -20,11 +20,7 @@ import connectors.ReferenceDataConnector
 import generated.{AdditionalReferenceType02, AdditionalReferenceType03}
 import models.reference.AdditionalReferenceType
 import models.{Index, UserAnswers}
-import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
-import pages.houseConsignment.index.items.additionalReference.{
-  AdditionalReferenceTypePage => AdditionalReferenceTypeItemPage,
-  AdditionalReferenceNumberPage => AdditionalReferenceNumberItemPage
-}
+
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -41,6 +37,7 @@ class AdditionalReferencesTransformer @Inject() (referenceDataConnector: Referen
     additionalReferences: Seq[AdditionalReferenceType03]
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.sections.additionalReference.AdditionalReferenceSection
+    import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 
     genericTransform(additionalReferences)(_.typeValue) {
       case (TempAdditionalReference(underlying, typeValue), index) =>
@@ -56,12 +53,13 @@ class AdditionalReferencesTransformer @Inject() (referenceDataConnector: Referen
     itemIndex: Index
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
+    import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 
     genericTransform(additionalReferences)(_.typeValue) {
       case (TempAdditionalReference(underlying, typeValue), index) =>
         setSequenceNumber(AdditionalReferenceSection(hcIndex, itemIndex, index), underlying.sequenceNumber) andThen
-          set(AdditionalReferenceTypeItemPage(hcIndex, itemIndex, index), typeValue) andThen
-          set(AdditionalReferenceNumberItemPage(hcIndex, itemIndex, index), underlying.referenceNumber)
+          set(AdditionalReferenceTypePage(hcIndex, itemIndex, index), typeValue) andThen
+          set(AdditionalReferenceNumberPage(hcIndex, itemIndex, index), underlying.referenceNumber)
     }
   }
 
