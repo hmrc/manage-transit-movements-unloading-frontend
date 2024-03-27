@@ -20,13 +20,13 @@ import base.SpecBase
 import generators.Generators
 import models.{CheckMode, NormalMode}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import viewModels.houseConsignment.index.items.additionalReference.AdditionalReferenceViewModel.AdditionalReferenceViewModelProvider
+import viewModels.houseConsignment.index.items.additionalReference.AdditionalReferenceTypeViewModel.AdditionalReferenceTypeViewModelProvider
 
-class AdditionalReferenceViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class AdditionalReferenceTypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "must create view model" - {
     "when Normal mode" in {
-      val viewModelProvider = new AdditionalReferenceViewModelProvider()
+      val viewModelProvider = new AdditionalReferenceTypeViewModelProvider()
       val result            = viewModelProvider.apply(arrivalId, NormalMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
 
       result.title mustBe "What type of additional reference do you want to add?"
@@ -34,7 +34,7 @@ class AdditionalReferenceViewModelSpec extends SpecBase with ScalaCheckPropertyC
     }
 
     "when Check mode" in {
-      val viewModelProvider = new AdditionalReferenceViewModelProvider()
+      val viewModelProvider = new AdditionalReferenceTypeViewModelProvider()
 
       val result = viewModelProvider.apply(arrivalId, CheckMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
 

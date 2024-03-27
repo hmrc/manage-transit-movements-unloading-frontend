@@ -20,7 +20,11 @@ import controllers.actions._
 import forms.YesNoFormProvider
 import models.requests.DataRequest
 import models.{ArrivalId, Index, Mode, UserAnswers}
-import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferencePage, RemoveAdditionalReferenceNumberYesNoPage}
+import pages.houseConsignment.index.items.additionalReference.{
+  AdditionalReferenceNumberPage,
+  AdditionalReferenceTypePage,
+  RemoveAdditionalReferenceNumberYesNoPage
+}
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -51,7 +55,7 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
 
   def insetText(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): String = {
     val additionalReferenceType = userAnswers
-      .get(AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
+      .get(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
       .map(_.value)
       .getOrElse("")
 
@@ -68,7 +72,7 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
         AdditionalReferenceSection(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
         addAnother(arrivalId, mode, houseConsignmentIndex, itemIndex)
       )
-      .andThen(getMandatoryPage.getFirst(AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))) {
+      .andThen(getMandatoryPage.getFirst(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))) {
         implicit request =>
           val preparedForm =
             request.userAnswers.get(RemoveAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) match {

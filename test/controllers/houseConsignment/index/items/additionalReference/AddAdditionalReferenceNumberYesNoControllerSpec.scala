@@ -94,6 +94,7 @@ class AddAdditionalReferenceNumberYesNoControllerSpec extends SpecBase with AppW
 
       redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.additionalReference.routes.AdditionalReferenceNumberController
         .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+        .url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

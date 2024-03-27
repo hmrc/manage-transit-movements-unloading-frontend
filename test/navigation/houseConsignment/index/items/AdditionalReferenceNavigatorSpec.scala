@@ -37,10 +37,10 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
       "must go from AdditionalReferenceTypePage to UnloadingFindingsPage page" in {
 
         val userAnswers =
-          emptyUserAnswers.setValue(AdditionalReferencePage(additionalReferenceIndex, hcIndex, itemIndex), AdditionalReferenceType("test", "test"))
+          emptyUserAnswers.setValue(AdditionalReferenceTypePage(additionalReferenceIndex, hcIndex, itemIndex), AdditionalReferenceType("test", "test"))
 
         navigator
-          .nextPage(AdditionalReferencePage(additionalReferenceIndex, hcIndex, itemIndex), mode, userAnswers)
+          .nextPage(AdditionalReferenceTypePage(additionalReferenceIndex, hcIndex, itemIndex), mode, userAnswers)
           .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
       }
 
@@ -62,10 +62,10 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
       "must go from AdditionalReferenceTypePage to AdditionalReferenceNumberYesNoPage page" in {
 
         val userAnswers =
-          emptyUserAnswers.setValue(AdditionalReferencePage(additionalReferenceIndex, hcIndex, itemIndex), AdditionalReferenceType("test", "test"))
+          emptyUserAnswers.setValue(AdditionalReferenceTypePage(additionalReferenceIndex, hcIndex, itemIndex), AdditionalReferenceType("test", "test"))
 
         navigator
-          .nextPage(AdditionalReferencePage(additionalReferenceIndex, houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .nextPage(AdditionalReferenceTypePage(additionalReferenceIndex, houseConsignmentIndex, itemIndex), mode, userAnswers)
           .mustBe(routes.AddAdditionalReferenceNumberYesNoController.onPageLoad(arrivalId, mode, additionalReferenceIndex, hcIndex, itemIndex))
       }
 

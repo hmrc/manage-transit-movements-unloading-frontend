@@ -21,10 +21,10 @@ import generators.Generators
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
+import pages.houseConsignment.index.items.additionalReference.AdditionalReferenceTypePage
 import viewModels.houseConsignment.index.items.additionalReference.AddAnotherAdditionalReferenceViewModel.AddAnotherAdditionalReferenceViewModelProvider
 
-class AddAnotherAdditionalReferenceViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
+class AddAnotherAdditionalReferenceTypeViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
   "must get list items" - {
 
@@ -47,7 +47,7 @@ class AddAnotherAdditionalReferenceViewModelSpec extends SpecBase with Generator
       forAll(arbitrary[Mode], arbitraryAdditionalReference.arbitrary.sample.value) {
         (mode, identificationReference) =>
           val userAnswers = emptyUserAnswers
-            .setValue(AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), identificationReference)
+            .setValue(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), identificationReference)
 
           val result = new AddAnotherAdditionalReferenceViewModelProvider().apply(userAnswers, arrivalId, mode, houseConsignmentIndex, itemIndex)
 
@@ -65,10 +65,10 @@ class AddAnotherAdditionalReferenceViewModelSpec extends SpecBase with Generator
       forAll(arbitrary[Mode], arbitraryAdditionalReference.arbitrary.sample.value) {
         (mode, identificationReference) =>
           val userAnswers = emptyUserAnswers
-            .setValue(AdditionalReferencePage(houseConsignmentIndex, itemIndex, Index(0)), identificationReference)
-            .setValue(AdditionalReferencePage(houseConsignmentIndex, itemIndex, Index(1)), identificationReference)
-            .setValue(AdditionalReferencePage(houseConsignmentIndex, itemIndex, Index(2)), identificationReference)
-            .setValue(AdditionalReferencePage(houseConsignmentIndex, itemIndex, Index(3)), identificationReference)
+            .setValue(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, Index(0)), identificationReference)
+            .setValue(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, Index(1)), identificationReference)
+            .setValue(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, Index(2)), identificationReference)
+            .setValue(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, Index(3)), identificationReference)
 
           val result = new AddAnotherAdditionalReferenceViewModelProvider().apply(userAnswers, arrivalId, mode, houseConsignmentIndex, itemIndex)
           result.listItems.length mustBe 4

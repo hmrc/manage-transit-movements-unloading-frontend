@@ -331,7 +331,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
         forAll(arbitrary[AdditionalReferenceType], nonEmptyString) {
           (`type`, number) =>
             val answers = emptyUserAnswers
-              .setValue(AdditionalReferencePage(additionalReferenceIndex, hcIndex, itemIndex), `type`)
+              .setValue(AdditionalReferenceTypePage(additionalReferenceIndex, hcIndex, itemIndex), `type`)
               .setValue(AdditionalReferenceNumberPage(additionalReferenceIndex, hcIndex, itemIndex), number)
 
             val helper = new ConsignmentItemAnswersHelper(answers, hcIndex, itemIndex);

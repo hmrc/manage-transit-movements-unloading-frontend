@@ -19,14 +19,14 @@ package pages.houseConsignment.index.items.additionalReference
 import models.reference.AdditionalReferenceType
 import pages.behaviours.PageBehaviours
 
-class AdditionalReferencePageSpec extends PageBehaviours {
+class AdditionalReferenceTypePageSpec extends PageBehaviours {
 
   "AdditionalReferencePage" - {
 
-    beRetrievable[AdditionalReferenceType](AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
+    beRetrievable[AdditionalReferenceType](AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
 
-    beSettable[AdditionalReferenceType](AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
+    beSettable[AdditionalReferenceType](AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
 
-    beRemovable[AdditionalReferenceType](AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
+    beRemovable[AdditionalReferenceType](AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
   }
 }

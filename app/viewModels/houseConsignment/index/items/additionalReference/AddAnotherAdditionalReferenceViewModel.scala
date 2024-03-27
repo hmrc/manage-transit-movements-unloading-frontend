@@ -23,7 +23,7 @@ import play.api.libs.json.JsArray
 import play.api.mvc.Call
 import viewModels.{AddAnotherViewModel, ListItem}
 import controllers.houseConsignment.index.items.additionalReference.routes
-import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferencePage}
+import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferencesSection
 
 case class AddAnotherAdditionalReferenceViewModel(listItems: Seq[ListItem],
@@ -74,7 +74,7 @@ object AddAnotherAdditionalReferenceViewModel {
               case None        => ""
               case Some(value) => s"- $value"
             }
-            userAnswers.get(AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)).map {
+            userAnswers.get(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)).map {
               `type` =>
                 ListItem(
                   name = s"${`type`.value} $numberString",

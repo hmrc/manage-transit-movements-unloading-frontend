@@ -22,7 +22,7 @@ import models.{DynamicAddress, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
-import pages.houseConsignment.index.items.additionalReference.AdditionalReferencePage
+import pages.houseConsignment.index.items.additionalReference.AdditionalReferenceTypePage
 import pages.houseConsignment.index.items.additionalinformation.HouseConsignmentAdditionalInformationCodePage
 import pages.houseConsignment.index.items.document.DocumentReferenceNumberPage
 import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
@@ -255,7 +255,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
           .setValue(CombinedNomenclatureCodePage(hcIndex, itemIndex), nomenclatureCode)
           .setValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(0)), "doc 1 ref")
           .setValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(1)), "doc 2 ref")
-          .setValue(AdditionalReferencePage(hcIndex, itemIndex, additionalReferenceIndex), additionalReference)
+          .setValue(AdditionalReferenceTypePage(hcIndex, itemIndex, additionalReferenceIndex), additionalReference)
           .setValue(HouseConsignmentAdditionalInformationCodePage(hcIndex, itemIndex, additionalInformationIndex), additionalInformation)
           .setValue(ItemConsigneeNamePage(hcIndex, itemIndex), "John Smith")
           .setValue(ItemConsigneeIdentifierPage(hcIndex, itemIndex), "csgee1")

@@ -23,14 +23,14 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.houseConsignment.index.items.additionalReference.AdditionalReferenceViewModel
+import viewModels.houseConsignment.index.items.additionalReference.AdditionalReferenceTypeViewModel
 import views.behaviours.InputSelectViewBehaviours
 import views.html.houseConsignment.index.items.additionalReference.AdditionalReferenceTypeView
 
 class AdditionalReferenceViewSpec extends InputSelectViewBehaviours[AdditionalReferenceType] {
 
-  private val viewModel: AdditionalReferenceViewModel =
-    arbitrary[AdditionalReferenceViewModel].sample.value
+  private val viewModel: AdditionalReferenceTypeViewModel =
+    arbitrary[AdditionalReferenceTypeViewModel].sample.value
 
   override def form: Form[AdditionalReferenceType] = new SelectableFormProvider().apply(NormalMode, prefix, SelectableList(values))
 

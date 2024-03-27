@@ -21,7 +21,10 @@ import generated.{AdditionalReferenceType02, AdditionalReferenceType03}
 import models.reference.AdditionalReferenceType
 import models.{Index, UserAnswers}
 import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
-import pages.houseConsignment.index.items.additionalReference.{AdditionalReferencePage, AdditionalReferenceNumberPage => AdditionalReferenceNumberItemPage}
+import pages.houseConsignment.index.items.additionalReference.{
+  AdditionalReferenceTypePage => AdditionalReferenceTypeItemPage,
+  AdditionalReferenceNumberPage => AdditionalReferenceNumberItemPage
+}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -57,7 +60,7 @@ class AdditionalReferencesTransformer @Inject() (referenceDataConnector: Referen
     genericTransform(additionalReferences)(_.typeValue) {
       case (TempAdditionalReference(underlying, typeValue), index) =>
         setSequenceNumber(AdditionalReferenceSection(hcIndex, itemIndex, index), underlying.sequenceNumber) andThen
-          set(AdditionalReferencePage(hcIndex, itemIndex, index), typeValue) andThen
+          set(AdditionalReferenceTypeItemPage(hcIndex, itemIndex, index), typeValue) andThen
           set(AdditionalReferenceNumberItemPage(hcIndex, itemIndex, index), underlying.referenceNumber)
     }
   }

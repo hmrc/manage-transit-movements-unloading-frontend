@@ -20,14 +20,18 @@ import models.{Index, NormalMode, UserAnswers}
 import controllers.houseConsignment.index.items.additionalReference.routes
 import navigation.Navigator
 import pages.Page
-import pages.houseConsignment.index.items.additionalReference.{AddAdditionalReferenceNumberYesNoPage, AdditionalReferenceNumberPage, AdditionalReferencePage}
+import pages.houseConsignment.index.items.additionalReference.{
+  AddAdditionalReferenceNumberYesNoPage,
+  AdditionalReferenceNumberPage,
+  AdditionalReferenceTypePage
+}
 import play.api.mvc.Call
 
 class AdditionalReferenceNavigator extends Navigator {
 
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
 
-    case AdditionalReferencePage(houseConsignmentIndex, itemIndex, referenceIndex) =>
+    case AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, referenceIndex) =>
       ua => Some(routes.AddAdditionalReferenceNumberYesNoController.onPageLoad(ua.id, NormalMode, houseConsignmentIndex, itemIndex, referenceIndex))
     case AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, referenceIndex) =>
       ua => additionalReferenceNumberYesNoRoute(ua, houseConsignmentIndex, itemIndex, referenceIndex)
@@ -44,7 +48,7 @@ class AdditionalReferenceNavigator extends Navigator {
     }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case AdditionalReferencePage(_, _, _)       => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
+    case AdditionalReferenceTypePage(_, _, _)   => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
     case AdditionalReferenceNumberPage(_, _, _) => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
 
   }

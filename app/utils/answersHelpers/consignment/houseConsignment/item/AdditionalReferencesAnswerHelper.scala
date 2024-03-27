@@ -34,7 +34,7 @@ class AdditionalReferencesAnswerHelper(
     extends AnswersHelper(userAnswers) {
 
   def code: Option[SummaryListRow] = getAnswerAndBuildRow[AdditionalReferenceType](
-    page = AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
+    page = AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.houseConsignment.item.additionalReference.type",
     id = Some(s"change-additional-reference-type-${itemIndex.display}-${additionalReferenceIndex.display}"),
