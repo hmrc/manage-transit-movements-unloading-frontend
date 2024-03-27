@@ -65,17 +65,14 @@ object AddAnotherPackageViewModel {
           case (_, packageIndex) =>
             userAnswers
               .get(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex))
-              .flatMap(
+              .map {
                 packageType =>
                   userAnswers
                     .get(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex))
-                    .map {
+                    .fold(s"$packageType") {
                       quantity => s"$quantity * $packageType"
                     }
-                    .orElse {
-                      Some(s"$packageType")
-                    }
-              )
+              }
               .map {
                 name =>
                   ListItem(
