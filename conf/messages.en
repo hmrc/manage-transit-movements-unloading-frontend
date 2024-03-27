@@ -975,6 +975,7 @@ houseConsignment.index.items.additionalReference.addAdditionalReferenceNumberYes
 
 houseConsignment.index.items.packages.addPackageShippingMarkYesNo.title = Do you want to add a shipping mark?
 houseConsignment.index.items.packages.addPackageShippingMarkYesNo.heading = Do you want to add a shipping mark?
+houseConsignment.index.items.packages.addPackageShippingMarkYesNo.paragraph = This tells carriers what type of product is inside the package and helps consignees identify the order once it’s been delivered.
 houseConsignment.index.items.packages.addPackageShippingMarkYesNo.error.required = Select yes if you want to add a shipping mark
 
 houseConsignment.index.items.packages.removePackageTypeYesNo.title = Are you sure you want to remove this package from item {1} in house consignment {0}?
@@ -1005,3 +1006,6 @@ houseConsignment.item.addPackagesYesNo.heading = Do you want to add a package fo
 houseConsignment.item.addPackagesYesNo.error.required = Select yes if you want to add a package for the item
 houseConsignment.item.addPackagesYesNo.paragraph = This means the packaging used to store and protect the item during transit.
 
+houseConsignment.item.addAdditionalReferenceYesNo.title = Do you want to add an additional reference for the item?
+houseConsignment.item.addAdditionalReferenceYesNo.heading = Do you want to add an additional reference for the item?
+houseConsignment.item.addAdditionalReferenceYesNo.error.required = Select yes if you want to add an additional reference for the item
