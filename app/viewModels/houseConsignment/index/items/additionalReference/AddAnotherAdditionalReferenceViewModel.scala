@@ -18,13 +18,13 @@ package viewModels.houseConsignment.index.items.additionalReference
 
 import config.FrontendAppConfig
 import models.{ArrivalId, Index, Mode, RichOptionalJsArray, UserAnswers}
-import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
-import pages.sections.additionalReference.AdditionalReferencesSection
 import play.api.i18n.Messages
 import play.api.libs.json.JsArray
 import play.api.mvc.Call
 import viewModels.{AddAnotherViewModel, ListItem}
 import controllers.houseConsignment.index.items.additionalReference.routes
+import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferencePage}
+import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferencesSection
 
 case class AddAnotherAdditionalReferenceViewModel(listItems: Seq[ListItem],
                                                   onSubmitCall: Call,
@@ -61,7 +61,7 @@ object AddAnotherAdditionalReferenceViewModel {
               itemIndex: Index
     ): AddAnotherAdditionalReferenceViewModel = {
 
-      val array = userAnswers.get(AdditionalReferencesSection)
+      val array = userAnswers.get(AdditionalReferencesSection(houseConsignmentIndex, itemIndex))
 
       val listItems = array
         .getOrElse(JsArray())
@@ -70,9 +70,11 @@ object AddAnotherAdditionalReferenceViewModel {
         .flatMap {
           case (_, i) =>
             val additionalReferenceIndex = Index(i)
-            val number                   = userAnswers.get(AdditionalReferenceNumberPage(additionalReferenceIndex)).getOrElse("")
-            val numberString             = if (number.nonEmpty) s"- $number" else ""
-            userAnswers.get(AdditionalReferenceTypePage(additionalReferenceIndex)).map {
+            val numberString = userAnswers.get(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) match {
+              case None        => ""
+              case Some(value) => s"- $value"
+            }
+            userAnswers.get(AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)).map {
               `type` =>
                 ListItem(
                   name = s"${`type`.value} $numberString",

@@ -27,16 +27,16 @@ class AdditionalReferenceNavigator extends Navigator {
 
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
 
-    case AdditionalReferencePage(referenceIndex, houseConsignmentIndex, itemIndex) =>
-      ua => Some(routes.AddAdditionalReferenceNumberYesNoController.onPageLoad(ua.id, NormalMode, referenceIndex, houseConsignmentIndex, itemIndex))
-    case AddAdditionalReferenceNumberYesNoPage(referenceIndex, houseConsignmentIndex, itemIndex) =>
-      ua => additionalReferenceNumberYesNoRoute(ua, referenceIndex, houseConsignmentIndex, itemIndex)
-    case AdditionalReferenceNumberPage(_, houseConsignmentIndex, itemIndex) =>
+    case AdditionalReferencePage(houseConsignmentIndex, itemIndex, referenceIndex) =>
+      ua => Some(routes.AddAdditionalReferenceNumberYesNoController.onPageLoad(ua.id, NormalMode, houseConsignmentIndex, itemIndex, referenceIndex))
+    case AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, referenceIndex) =>
+      ua => additionalReferenceNumberYesNoRoute(ua, houseConsignmentIndex, itemIndex, referenceIndex)
+    case AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, _) =>
       ua => Some(routes.AddAnotherAdditionalReferenceController.onPageLoad(ua.id, NormalMode, houseConsignmentIndex, itemIndex))
   }
 
-  private def additionalReferenceNumberYesNoRoute(ua: UserAnswers, referenceIndex: Index, houseConsignmentIndex: Index, itemIndex: Index): Option[Call] =
-    ua.get(AddAdditionalReferenceNumberYesNoPage(referenceIndex, houseConsignmentIndex, itemIndex)) map {
+  private def additionalReferenceNumberYesNoRoute(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, referenceIndex: Index): Option[Call] =
+    ua.get(AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, referenceIndex)) map {
       case true =>
         routes.AdditionalReferenceNumberController.onPageLoad(ua.id, NormalMode, houseConsignmentIndex, itemIndex, referenceIndex)
       case false =>
