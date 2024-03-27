@@ -32,7 +32,12 @@ import viewModels.documents.{AddAnotherDocumentViewModel, AdditionalInformationV
 import viewModels.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberViewModel, AdditionalReferenceViewModel}
 import viewModels.houseConsignment.index.items.document.{ItemsAdditionalInformationViewModel, ItemsDocumentReferenceNumberViewModel}
 import viewModels.houseConsignment.index.items.{document => hcViewModel}
-import viewModels.houseConsignment.index.items.packages.{NumberOfPackagesViewModel, PackageShippingMarksViewModel, PackageTypeViewModel}
+import viewModels.houseConsignment.index.items.packages.{
+  AddAnotherPackageViewModel,
+  NumberOfPackagesViewModel,
+  PackageShippingMarksViewModel,
+  PackageTypeViewModel
+}
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 import viewModels.transportEquipment.AddAnotherEquipmentViewModel
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
@@ -435,6 +440,14 @@ trait ViewModelGenerators {
                                                                                                                Index(0),
                                                                                                                Index(0)
     )
+  }
+
+  implicit lazy val arbitraryAddAnotherPackageViewModel: Arbitrary[AddAnotherPackageViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+      nextIndex    <- arbitrary[Index]
+    } yield AddAnotherPackageViewModel(listItems, onSubmitCall, nextIndex)
   }
 
 }
