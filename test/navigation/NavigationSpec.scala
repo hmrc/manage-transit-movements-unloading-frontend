@@ -18,7 +18,7 @@ package navigation
 
 import base.SpecBase
 import controllers.routes
-import generated.CC043CType
+import generated._
 import generators.Generators
 import models._
 import org.scalacheck.Arbitrary.arbitrary
@@ -57,8 +57,15 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
       }
 
       "must go from date goods unloaded page" - {
-        "to can seals be read page when seals exist" in {
-          val ie043 = arbitrary[CC043CType].retryUntil(_.sealsExist).sample.value
+        "to can seals be read page when seals exist in transport equipment" in {
+          val transportEquipment = arbitrary[TransportEquipmentType05].retryUntil(_.Seal.nonEmpty).sample.value
+
+          val consignment = arbitrary[ConsignmentType05].sample.value.copy(
+            TransportEquipment = Seq(transportEquipment),
+            Incident = Nil
+          )
+
+          val ie043 = arbitrary[CC043CType].sample.value.copy(Consignment = Some(consignment))
 
           val userAnswers = emptyUserAnswers.copy(ie043Data = ie043)
 
@@ -66,16 +73,35 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
             .mustBe(controllers.routes.CanSealsBeReadController.onPageLoad(userAnswers.id, mode))
         }
-      }
 
-      "to additional comments yes no page when seals does not exist" in {
-        val ie043 = arbitrary[CC043CType].map(_.copy(Consignment = None)).sample.value
+        "to can seals be read page when seals exist in incident transport equipment" in {
+          val transportEquipment = arbitrary[TransportEquipmentType07].retryUntil(_.Seal.nonEmpty).sample.value
 
-        val userAnswers = emptyUserAnswers.copy(ie043Data = ie043)
+          val incident = arbitrary[IncidentType04].sample.value.copy(TransportEquipment = Seq(transportEquipment))
 
-        navigator
-          .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
-          .mustBe(routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, mode))
+          val consignment = arbitrary[ConsignmentType05].sample.value.copy(
+            TransportEquipment = Nil,
+            Incident = Seq(incident)
+          )
+
+          val ie043 = arbitrary[CC043CType].sample.value.copy(Consignment = Some(consignment))
+
+          val userAnswers = emptyUserAnswers.copy(ie043Data = ie043)
+
+          navigator
+            .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
+            .mustBe(controllers.routes.CanSealsBeReadController.onPageLoad(userAnswers.id, mode))
+        }
+
+        "to cross-check page when no seals exist" in {
+          val ie043 = arbitrary[CC043CType].map(_.copy(Consignment = None)).sample.value
+
+          val userAnswers = emptyUserAnswers.copy(ie043Data = ie043)
+
+          navigator
+            .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
+            .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
+        }
       }
 
       "must go from can seals be read page" - {

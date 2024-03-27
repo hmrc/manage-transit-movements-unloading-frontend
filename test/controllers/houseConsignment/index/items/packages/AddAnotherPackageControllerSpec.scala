@@ -40,7 +40,7 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
   private val formProvider = new AddAnotherFormProvider()
 
   private def form(viewModel: AddAnotherPackageViewModel) =
-    formProvider(viewModel.prefix, viewModel.allowMore, viewModel.count, itemIndex, houseConsignmentIndex)
+    formProvider(viewModel.prefix, viewModel.allowMore, viewModel.count, itemIndex.display, houseConsignmentIndex.display)
 
   private val mode = NormalMode
 
@@ -180,7 +180,12 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
         val request = FakeRequest(POST, addAnotherPackageRoute)
           .withFormUrlEncodedBody(("value", ""))
 
-        val boundForm = formProvider(notMaxedOutViewModel.prefix, notMaxedOutViewModel.allowMore, notMaxedOutViewModel.count, itemIndex, houseConsignmentIndex)
+        val boundForm = formProvider(notMaxedOutViewModel.prefix,
+                                     notMaxedOutViewModel.allowMore,
+                                     notMaxedOutViewModel.count,
+                                     itemIndex.display,
+                                     houseConsignmentIndex.display
+        )
           .bind(Map("value" -> ""))
 
         val result = route(app, request).value

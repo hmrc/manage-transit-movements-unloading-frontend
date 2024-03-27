@@ -228,7 +228,8 @@ class UserAnswersSpec extends SpecBase with AppWithDefaultMockFixtures {
               |    "example" : {
               |      "path" : [
               |        {
-              |          "sequenceNumber" : "1"
+              |          "sequenceNumber" : "1",
+              |          "removed" : true
               |        }
               |      ]
               |    }
@@ -286,7 +287,8 @@ class UserAnswersSpec extends SpecBase with AppWithDefaultMockFixtures {
               |          "baz" : "baz"
               |        },
               |        {
-              |          "sequenceNumber" : "2"
+              |          "sequenceNumber" : "2",
+              |          "removed" : true
               |        },
               |        {
               |          "sequenceNumber" : "3",

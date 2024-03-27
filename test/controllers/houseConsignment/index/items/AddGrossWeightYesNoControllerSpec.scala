@@ -35,7 +35,7 @@ class AddGrossWeightYesNoControllerSpec extends SpecBase with AppWithDefaultMock
   private val form         = formProvider("houseConsignment.item.addGrossWeightYesNo")
   private val mode         = NormalMode
 
-  private lazy val addAdditionalInformationYesNoRoute =
+  private lazy val addGrossWeightYesNoRoute =
     controllers.houseConsignment.index.items.routes.AddGrossWeightYesNoController
       .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
       .url
@@ -50,7 +50,7 @@ class AddGrossWeightYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, addAdditionalInformationYesNoRoute)
+      val request = FakeRequest(GET, addGrossWeightYesNoRoute)
 
       val result = route(app, request).value
 
@@ -67,7 +67,7 @@ class AddGrossWeightYesNoControllerSpec extends SpecBase with AppWithDefaultMock
       val userAnswers = emptyUserAnswers.setValue(AddGrossWeightYesNoPage(houseConsignmentIndex, itemIndex), true)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, addAdditionalInformationYesNoRoute)
+      val request = FakeRequest(GET, addGrossWeightYesNoRoute)
 
       val result = route(app, request).value
 
@@ -87,7 +87,7 @@ class AddGrossWeightYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, addAdditionalInformationYesNoRoute)
+      val request = FakeRequest(POST, addGrossWeightYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
@@ -103,7 +103,7 @@ class AddGrossWeightYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
       val invalidAnswer = ""
 
-      val request    = FakeRequest(POST, addAdditionalInformationYesNoRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, addGrossWeightYesNoRoute).withFormUrlEncodedBody(("value", ""))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
@@ -120,7 +120,7 @@ class AddGrossWeightYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, addAdditionalInformationYesNoRoute)
+      val request = FakeRequest(GET, addGrossWeightYesNoRoute)
 
       val result = route(app, request).value
 
@@ -133,7 +133,7 @@ class AddGrossWeightYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, addAdditionalInformationYesNoRoute)
+      val request = FakeRequest(POST, addGrossWeightYesNoRoute)
         .withFormUrlEncodedBody(("value", "test string"))
 
       val result = route(app, request).value

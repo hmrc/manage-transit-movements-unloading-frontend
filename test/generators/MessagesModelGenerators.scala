@@ -161,6 +161,7 @@ trait MessagesModelGenerators {
         consignor             <- Gen.option(arbitrary[ConsignorType05])
         consignee             <- Gen.option(arbitrary[ConsigneeType04])
         transportEquipment    <- arbitrary[Seq[TransportEquipmentType05]]
+        incidents             <- arbitrary[Seq[IncidentType04]]
       } yield ConsignmentType05(
         countryOfDestination = countryOfDestination,
         containerIndicator = containerIndicator,
@@ -175,7 +176,7 @@ trait MessagesModelGenerators {
         TransportDocument = Nil,
         AdditionalReference = Nil,
         AdditionalInformation = Nil,
-        Incident = Nil,
+        Incident = incidents,
         HouseConsignment = Nil
       )
     }
@@ -296,11 +297,12 @@ trait MessagesModelGenerators {
         seals                         <- arbitrary[Seq[SealType04]]
         numberOfSeals                 <- Gen.option(positiveBigInts)
         goodsReferences               <- arbitrary[Seq[GoodsReferenceType01]]
-      } yield TransportEquipmentType07(sequenceNumber,
-                                       containerIdentificationNumber = containerIdentificationNumber,
-                                       numberOfSeals = numberOfSeals,
-                                       Seal = seals,
-                                       GoodsReference = goodsReferences
+      } yield TransportEquipmentType07(
+        sequenceNumber = sequenceNumber,
+        containerIdentificationNumber = containerIdentificationNumber,
+        numberOfSeals = numberOfSeals,
+        Seal = seals,
+        GoodsReference = goodsReferences
       )
     }
 

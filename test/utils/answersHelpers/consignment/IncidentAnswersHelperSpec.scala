@@ -390,15 +390,15 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
 
     "incidentTransportEquipments" - {
       "when no transport equipment" - {
-        "must return None" in {
+        "must return no children" in {
           val helper = new IncidentAnswersHelper(emptyUserAnswers, index)
           val result = helper.incidentTransportEquipments
-          result must not be defined
+          result.children.size mustBe 0
         }
       }
 
       "when there are transport equipment" - {
-        "must return Some" in {
+        "must return children" in {
           val transportEquipment = TransportEquipmentType07(
             sequenceNumber = "1",
             containerIdentificationNumber = Some("cin"),
@@ -435,7 +435,7 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
               val answers = emptyUserAnswers.copy(ie043Data = emptyUserAnswers.ie043Data.copy(Consignment = Some(consignment)))
 
               val helper = new IncidentAnswersHelper(answers, index)
-              val result = helper.incidentTransportEquipments.value
+              val result = helper.incidentTransportEquipments
               result.sectionTitle.value mustBe "Transport equipment"
 
               result.children.size mustBe 1

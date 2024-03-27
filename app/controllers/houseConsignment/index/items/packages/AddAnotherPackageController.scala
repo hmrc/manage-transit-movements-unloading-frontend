@@ -44,7 +44,7 @@ class AddAnotherPackageController @Inject() (
     with I18nSupport {
 
   private def form(viewModel: AddAnotherPackageViewModel, houseConsignmentIndex: Index, itemIndex: Index): Form[Boolean] =
-    formProvider(viewModel.prefix, viewModel.allowMore, viewModel.count, itemIndex, houseConsignmentIndex)
+    formProvider(viewModel.prefix, viewModel.allowMore, viewModel.count, itemIndex.display, houseConsignmentIndex.display)
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>

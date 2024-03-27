@@ -61,6 +61,8 @@ class AddUnloadingCommentsYesNoController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
           value =>
+            // TODO - if user selects No we need to wipe their user answers and re-transform the IE043
+            //  we need to persist the answers to the pre-cross-check questions
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(AddUnloadingCommentsYesNoPage, value))
               _              <- sessionRepository.set(updatedAnswers)

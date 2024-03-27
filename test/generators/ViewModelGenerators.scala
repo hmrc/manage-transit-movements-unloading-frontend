@@ -16,7 +16,8 @@
 
 package generators
 
-import models.{ArrivalId, ConsignmentLevelDocuments, HouseConsignmentLevelDocuments, Index, NormalMode}
+import models.DocType.Previous
+import models.{ArrivalId, ConsignmentLevelDocuments, DocType, HouseConsignmentLevelDocuments, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.FormError
@@ -30,14 +31,18 @@ import viewModels.additionalReference.index.{AddAnotherAdditionalReferenceViewMo
 import viewModels.departureTransportMeans._
 import viewModels.documents.{AddAnotherDocumentViewModel, AdditionalInformationViewModel, DocumentReferenceNumberViewModel, TypeViewModel}
 import viewModels.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberViewModel, AdditionalReferenceViewModel}
-import viewModels.houseConsignment.index.items.document.{ItemsAdditionalInformationViewModel, ItemsDocumentReferenceNumberViewModel}
-import viewModels.houseConsignment.index.items.{document => hcViewModel}
+import viewModels.houseConsignment.index.items.document.{
+  AddAnotherHouseConsignmentDocumentViewModel,
+  ItemsAdditionalInformationViewModel,
+  ItemsDocumentReferenceNumberViewModel
+}
 import viewModels.houseConsignment.index.items.packages.{
   AddAnotherPackageViewModel,
   NumberOfPackagesViewModel,
   PackageShippingMarksViewModel,
   PackageTypeViewModel
 }
+import viewModels.houseConsignment.index.items.{document => hcViewModel}
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 import viewModels.transportEquipment.AddAnotherEquipmentViewModel
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
@@ -286,6 +291,16 @@ trait ViewModelGenerators {
       documents    <- arbitrary[ConsignmentLevelDocuments](arbitraryConsignmentLevelDocuments)
       allowMore    <- arbitrary[Boolean]
     } yield AddAnotherDocumentViewModel(listItems, onSubmitCall, nextIndex, documents, allowMore)
+  }
+
+  implicit lazy val houseConsignmentAddAnotherDocumentViewModel: Arbitrary[AddAnotherHouseConsignmentDocumentViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+      nextIndex    <- arbitrary[Index]
+      docTypes     <- arbitrary[Seq[DocType]]
+      allowMore    <- arbitrary[Boolean]
+    } yield AddAnotherHouseConsignmentDocumentViewModel(listItems, onSubmitCall, nextIndex, docTypes.filter(_ != Previous), allowMore)
   }
 
   implicit lazy val arbitraryContainerIdentificationNumberViewModel: Arbitrary[ContainerIdentificationNumberViewModel] = Arbitrary {

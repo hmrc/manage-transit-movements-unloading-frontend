@@ -20,6 +20,7 @@ import config.FrontendAppConfig
 import models.{ArrivalId, Index, Mode, RichOptionalJsArray, UserAnswers}
 import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageTypePage}
 import pages.sections.PackagingListSection
+import play.api.i18n.Messages
 import play.api.libs.json.JsArray
 import play.api.mvc.Call
 import viewModels.{AddAnotherViewModel, ListItem}
@@ -32,6 +33,22 @@ case class AddAnotherPackageViewModel(
   override val prefix: String = "houseConsignment.index.items.packages.addAnotherPackage"
 
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxPackages
+
+  def title(houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
+    messages(s"$prefix.$emptyOrSingularOrPlural.title", count, itemIndex.display, houseConsignmentIndex.display)
+
+  def heading(houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
+    messages(s"$prefix.$emptyOrSingularOrPlural.heading", count, itemIndex.display, houseConsignmentIndex.display)
+
+  def legend(houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
+    if (count <= 0) {
+      messages(s"$prefix.empty.label", count, itemIndex.display, houseConsignmentIndex.display)
+    } else {
+      messages(s"$prefix.label", count, itemIndex.display, houseConsignmentIndex.display)
+    }
+
+  def maxLimitLabel(houseConsignment: Index, itemIndex: Index)(implicit messages: Messages): String =
+    messages(s"$prefix.maxLimit.label", count, itemIndex.display, houseConsignment.display)
 
 }
 

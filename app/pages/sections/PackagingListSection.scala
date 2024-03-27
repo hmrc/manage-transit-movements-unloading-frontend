@@ -23,5 +23,5 @@ case class PackagingListSection(houseConsignmentIndex: Index, itemIndex: Index) 
 
   override def path: JsPath = ItemSection(houseConsignmentIndex, itemIndex).path \ toString
 
-  override def toString: String = "Packaging"
+  override def toString: String = "Packages"
 }
