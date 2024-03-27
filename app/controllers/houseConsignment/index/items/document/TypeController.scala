@@ -21,7 +21,7 @@ import controllers.actions._
 import forms.SelectableFormProvider
 import models.reference.DocumentType
 import models.requests.DataRequest
-import models.{ArrivalId, HouseConsignmentLevelDocuments, Index, Mode}
+import models.{ArrivalId, DocType, HouseConsignmentLevelDocuments, Index, Mode}
 import navigation.houseConsignment.index.items.DocumentNavigator
 import pages.houseConsignment.index.items.document.TypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -118,5 +118,13 @@ class TypeController @Inject() (
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(TypePage(houseConsignmentIndex, itemIndex, documentIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(TypePage(houseConsignmentIndex, itemIndex, documentIndex), mode, request.userAnswers))
+      redirection = value.`type` match {
+        case DocType.Support =>
+          controllers.houseConsignment.index.items.document.routes.AddAdditionalInformationYesNoController
+            .onPageLoad(request.userAnswers.id, mode, houseConsignmentIndex, itemIndex, documentIndex)
+        case _ =>
+          controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
+            .onPageLoad(request.userAnswers.id, houseConsignmentIndex, itemIndex, mode)
+      }
+    } yield Redirect(redirection)
 }

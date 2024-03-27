@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SelectableFormProvider
 import generators.Generators
 import models.reference.DocumentType
-import models.{CheckMode, Index, Mode, NormalMode, SelectableList}
+import models.{CheckMode, DocType, Index, Mode, NormalMode, SelectableList, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -45,6 +45,13 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
   private val transportDocumentList  = SelectableList(Seq(document1, document2))
   private val supportingDocumentList = SelectableList(Seq(document3, document4))
   private val documentsList          = SelectableList(transportDocumentList.values ++ supportingDocumentList.values)
+
+  def additionalInformationRoute(userAnswers: UserAnswers, mode: Mode) =
+    controllers.houseConsignment.index.items.document.routes.AddAdditionalInformationYesNoController
+      .onPageLoad(userAnswers.id, mode, houseConsignmentIndex, itemIndex, documentIndex)
+
+  def addAnotherRoute(userAnswers: UserAnswers, mode: Mode) = controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
+    .onPageLoad(userAnswers.id, houseConsignmentIndex, itemIndex, mode)
 
   private lazy val formProvider = new SelectableFormProvider()
 
@@ -115,7 +122,10 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual onwardRoute.url
+          document1.`type` match {
+            case DocType.Support => redirectLocation(result).value mustEqual additionalInformationRoute(userAnswers, CheckMode).url
+            case _               => redirectLocation(result).value mustEqual addAnotherRoute(userAnswers, CheckMode).url
+          }
         }
 
         "must return a Bad Request and errors when invalid data is submitted" in {
@@ -211,7 +221,11 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual onwardRoute.url
+          document4.`type` match {
+            case DocType.Support => redirectLocation(result).value mustEqual additionalInformationRoute(userAnswers, CheckMode).url
+            case _               => redirectLocation(result).value mustEqual addAnotherRoute(userAnswers, CheckMode).url
+          }
+
         }
 
         "must return a Bad Request and errors when invalid data is submitted" in {
@@ -349,7 +363,10 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual onwardRoute.url
+        document1.`type` match {
+          case DocType.Support => redirectLocation(result).value mustEqual additionalInformationRoute(userAnswers, NormalMode).url
+          case _               => redirectLocation(result).value mustEqual addAnotherRoute(userAnswers, NormalMode).url
+        }
       }
 
       "must return a Bad Request and errors when invalid data is submitted" in {

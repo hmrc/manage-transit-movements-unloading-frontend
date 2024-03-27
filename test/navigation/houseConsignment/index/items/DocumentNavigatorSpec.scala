@@ -20,7 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.houseConsignment.index.items.document.{AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
+import pages.houseConsignment.index.items.document.{AddAdditionalInformationYesNoPage, AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
 
 class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -60,6 +60,47 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           .nextPage(TypePage(houseConsignmentIndex, itemIndex, documentIndex), mode, userAnswers)
           .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
       }
+    }
+
+    "in Normal mode" - {
+
+      val mode = NormalMode
+
+      "must go from AddAdditionalInformationPage to AddAnotherDocumentPage" - {
+
+        val userAnswers = emptyUserAnswers.setValue(AdditionalInformationPage(houseConsignmentIndex, itemIndex, documentIndex), "Additional Information")
+
+        navigator
+          .nextPage(AdditionalInformationPage(houseConsignmentIndex, itemIndex, documentIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+          )
+      }
+
+      "must go from AddAdditionalInformationYesNoPage to AddAdditionalInformationPage when yes" - {
+
+        val userAnswers = emptyUserAnswers.setValue(AddAdditionalInformationYesNoPage(houseConsignmentIndex, itemIndex, documentIndex), true)
+
+        navigator
+          .nextPage(AddAdditionalInformationYesNoPage(houseConsignmentIndex, itemIndex, documentIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.document.routes.AdditionalInformationController
+              .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, documentIndex)
+          )
+      }
+
+      "must go from AddAdditionalInformationYesNoPage to AddAnotherDocumentPage when no" - {
+
+        val userAnswers = emptyUserAnswers.setValue(AddAdditionalInformationYesNoPage(houseConsignmentIndex, itemIndex, documentIndex), false)
+
+        navigator
+          .nextPage(AddAdditionalInformationYesNoPage(houseConsignmentIndex, itemIndex, documentIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+          )
+      }
+
     }
   }
 }
