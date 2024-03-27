@@ -17,11 +17,11 @@
 package viewModels.houseConsignment.index.items.packages
 
 import config.FrontendAppConfig
+import controllers.houseConsignment.index.items.packages.routes
 import models.{ArrivalId, Index, Mode, RichOptionalJsArray, UserAnswers}
 import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageTypePage}
 import pages.sections.PackagingListSection
 import play.api.i18n.Messages
-import play.api.libs.json.JsArray
 import play.api.mvc.Call
 import viewModels.{AddAnotherViewModel, ListItem}
 
@@ -61,29 +61,20 @@ object AddAnotherPackageViewModel {
       val array = userAnswers.get(PackagingListSection(houseConsignmentIndex, itemIndex))
 
       val listItems = array
-        .getOrElse(JsArray())
-        .value
-        .zipWithIndex
-        .flatMap {
-          case (_, index) =>
-            val packageIndex = Index(index)
-
+        .flatMapWithIndex {
+          case (_, packageIndex) =>
             userAnswers
               .get(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex))
               .flatMap(
                 packageType =>
                   userAnswers
                     .get(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex))
-                    .map(
+                    .map {
                       quantity => s"$quantity * $packageType"
-                    )
-              )
-              .orElse(
-                userAnswers
-                  .get(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex))
-                  .map(
-                    packageType => s"$packageType"
-                  )
+                    }
+                    .orElse {
+                      Some(s"$packageType")
+                    }
               )
               .map {
                 name =>
@@ -91,19 +82,17 @@ object AddAnotherPackageViewModel {
                     name = name,
                     changeUrl = None,
                     removeUrl = Some(
-                      controllers.houseConsignment.index.items.packages.routes.RemovePackageTypeYesNoController
+                      routes.RemovePackageTypeYesNoController
                         .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)
                         .url
                     )
                   )
               }
         }
-        .toSeq
 
       new AddAnotherPackageViewModel(
         listItems,
-        onSubmitCall =
-          controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController.onSubmit(arrivalId, houseConsignmentIndex, itemIndex, mode),
+        onSubmitCall = routes.AddAnotherPackageController.onSubmit(arrivalId, houseConsignmentIndex, itemIndex, mode),
         nextIndex = array.nextIndex
       )
     }
