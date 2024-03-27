@@ -19,7 +19,6 @@ package viewModels.houseConsignment.index.items.additionalReference
 import config.FrontendAppConfig
 import models.{ArrivalId, Index, Mode, RichOptionalJsArray, UserAnswers}
 import play.api.i18n.Messages
-import play.api.libs.json.JsArray
 import play.api.mvc.Call
 import viewModels.{AddAnotherViewModel, ListItem}
 import controllers.houseConsignment.index.items.additionalReference.routes

@@ -19,52 +19,55 @@ package controllers.houseConsignment.index.items
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode}
-import pages.houseConsignment.index.items.ConsignmentItemPage
-import views.html.houseConsignment.index.items.RemoveConsignmentItemYesNoView
-import play.api.data.Form
+import navigation.Navigator
+import pages.houseConsignment.index.items.AddCommodityCodeYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.houseConsignment.index.items.AddCommodityCodeYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveConsignmentItemYesNoController @Inject() (
+class AddCommodityCodeYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
+  navigator: Navigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: RemoveConsignmentItemYesNoView
+  view: AddCommodityCodeYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(houseConsignmentIndex: Index, itemIndex: Index): Form[Boolean] =
-    formProvider("houseConsignment.removeConsignmentItemYesNo", itemIndex.display, houseConsignmentIndex.display)
+  private val form = formProvider("houseConsignment.item.addCommodityCodeYesNo")
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId) {
       implicit request =>
-        Ok(view(form(houseConsignmentIndex, itemIndex), request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))
+        val preparedForm = request.userAnswers.get(AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex)) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
+
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))
     }
 
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
-        form(houseConsignmentIndex, itemIndex)
+        form
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))),
             value =>
               for {
-                updatedAnswers <-
-                  if (value) {
-                    Future.fromTry(request.userAnswers.remove(ConsignmentItemPage(houseConsignmentIndex, itemIndex)))
-                  } else { Future.successful(request.userAnswers) }
+                updatedAnswers <- Future
+                  .fromTry(request.userAnswers.set(AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex), value))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+              } yield Redirect(navigator.nextPage(AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex), mode, updatedAnswers))
           )
     }
 }
