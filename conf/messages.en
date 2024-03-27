@@ -1005,3 +1005,7 @@ houseConsignment.item.addPackagesYesNo.heading = Do you want to add a package fo
 houseConsignment.item.addPackagesYesNo.error.required = Select yes if you want to add a package for the item
 houseConsignment.item.addPackagesYesNo.paragraph = This means the packaging used to store and protect the item during transit.
 
+houseConsignment.removeConsignmentItemYesNo.title = Are you sure you want to remove item {0} from house consignment {1}?
+houseConsignment.removeConsignmentItemYesNo.heading = Are you sure you want to remove item {0} from house consignment {1}?
+houseConsignment.removeConsignmentItemYesNo.error.required = Select yes if you want to remove item {0} from house consignment {1}
+
