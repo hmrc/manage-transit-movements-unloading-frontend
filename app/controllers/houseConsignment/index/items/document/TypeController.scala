@@ -21,7 +21,7 @@ import controllers.actions._
 import forms.SelectableFormProvider
 import models.reference.DocumentType
 import models.requests.DataRequest
-import models.{ArrivalId, HouseConsignmentLevelDocuments, Index, Mode}
+import models.{ArrivalId, DocType, HouseConsignmentLevelDocuments, Index, Mode}
 import navigation.houseConsignment.index.items.DocumentNavigator
 import pages.houseConsignment.index.items.document.TypePage
 import play.api.i18n.{I18nSupport, MessagesApi}

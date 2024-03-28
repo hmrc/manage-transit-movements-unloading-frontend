@@ -18,9 +18,11 @@ package navigation.houseConsignment.index.items
 
 import base.SpecBase
 import generators.Generators
+import models.DocType.{Previous, Support, Transport}
 import models._
+import models.reference.DocumentType
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.houseConsignment.index.items.document.{AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
+import pages.houseConsignment.index.items.document.{AddAdditionalInformationYesNoPage, AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
 
 class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -60,6 +62,89 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           .nextPage(TypePage(houseConsignmentIndex, itemIndex, documentIndex), mode, userAnswers)
           .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
       }
+    }
+
+    "in Normal mode" - {
+
+      val mode = NormalMode
+
+      "must go from AddAdditionalInformationPage to AddAnotherDocumentPage" - {
+
+        val userAnswers = emptyUserAnswers.setValue(AdditionalInformationPage(houseConsignmentIndex, itemIndex, documentIndex), "Additional Information")
+
+        navigator
+          .nextPage(AdditionalInformationPage(houseConsignmentIndex, itemIndex, documentIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+          )
+      }
+
+      "must go from AddAdditionalInformationYesNoPage to AddAdditionalInformationPage when yes" - {
+
+        val userAnswers = emptyUserAnswers.setValue(AddAdditionalInformationYesNoPage(houseConsignmentIndex, itemIndex, documentIndex), true)
+
+        navigator
+          .nextPage(AddAdditionalInformationYesNoPage(houseConsignmentIndex, itemIndex, documentIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.document.routes.AdditionalInformationController
+              .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, documentIndex)
+          )
+      }
+
+      "must go from AddAdditionalInformationYesNoPage to AddAnotherDocumentPage when no" - {
+
+        val userAnswers = emptyUserAnswers.setValue(AddAdditionalInformationYesNoPage(houseConsignmentIndex, itemIndex, documentIndex), false)
+
+        navigator
+          .nextPage(AddAdditionalInformationYesNoPage(houseConsignmentIndex, itemIndex, documentIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+          )
+      }
+
+      "must go from TypePage to AddAdditionalInformationYesNoPage when DocType is supporting" - {
+
+        val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex),
+                                                    DocumentType(`type` = Support, code = "codeValue", description = "descriptionValue")
+        )
+
+        navigator
+          .nextPage(TypePage(houseConsignmentIndex, itemIndex, documentIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.document.routes.AddAdditionalInformationYesNoController
+              .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, documentIndex)
+          )
+      }
+
+      "must go from TypePage to AddAnotherDocumentPage when DocType is not supporting" - {
+
+        val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex),
+                                                    DocumentType(`type` = Transport, code = "codeValue", description = "descriptionValue")
+        )
+        navigator
+          .nextPage(TypePage(houseConsignmentIndex, itemIndex, documentIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+          )
+
+      }
+
+      "must redirect to the  TypePage when Previous DocType is selected" - {
+
+        val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex),
+                                                    DocumentType(`type` = Previous, code = "codeValue", description = "descriptionValue")
+        )
+        navigator
+          .nextPage(TypePage(houseConsignmentIndex, itemIndex, documentIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.document.routes.TypeController
+              .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, documentIndex)
+          )
+
+      }
+
     }
   }
 }

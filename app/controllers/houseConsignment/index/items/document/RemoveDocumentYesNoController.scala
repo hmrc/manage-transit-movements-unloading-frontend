@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items.document
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.reference.DocumentType
-import models.{ArrivalId, Index, Mode, UserAnswers}
+import models.{ArrivalId, Index, Mode, NormalMode, UserAnswers}
 import pages.houseConsignment.index.items.document.{DocumentReferenceNumberPage, TypePage}
 import pages.sections.houseConsignment.index.items.documents.DocumentSection
 import play.api.data.Form
@@ -47,7 +47,10 @@ class RemoveDocumentYesNoController @Inject() (
   def form(houseConsignmentIndex: Index, itemIndex: Index): Form[Boolean] =
     formProvider("houseConsignment.index.items.document.removeDocumentYesNo", houseConsignmentIndex.display, itemIndex.display)
 
-  private def addAnother(arrivalId: ArrivalId, mode: Mode): Call = Call("GET", "#") //TODO: Update navigation
+  private def addAnother(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Call = Call(
+    "GET",
+    controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode).url
+  )
 
   private def formatInsetText(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index): String = {
     val documentType: DocumentType      = userAnswers.get(TypePage(houseConsignmentIndex, itemIndex, documentIndex)).get
@@ -57,7 +60,7 @@ class RemoveDocumentYesNoController @Inject() (
   }
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions
-    .requireIndex(arrivalId, DocumentSection(houseConsignmentIndex, itemIndex, documentIndex), addAnother(arrivalId, mode))
+    .requireIndex(arrivalId, DocumentSection(houseConsignmentIndex, itemIndex, documentIndex), addAnother(arrivalId, mode, houseConsignmentIndex, itemIndex))
     .andThen(getMandatoryPage.getFirst(TypePage(houseConsignmentIndex, itemIndex, documentIndex)))
     .andThen(getMandatoryPage.getSecond(DocumentReferenceNumberPage(houseConsignmentIndex, itemIndex, documentIndex))) {
       implicit request =>
@@ -66,7 +69,7 @@ class RemoveDocumentYesNoController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions
-    .requireIndex(arrivalId, DocumentSection(houseConsignmentIndex, itemIndex, documentIndex), addAnother(arrivalId, mode))
+    .requireIndex(arrivalId, DocumentSection(houseConsignmentIndex, itemIndex, documentIndex), addAnother(arrivalId, mode, houseConsignmentIndex, itemIndex))
     .andThen(getMandatoryPage.getFirst(TypePage(houseConsignmentIndex, itemIndex, documentIndex)))
     .andThen(getMandatoryPage.getSecond(DocumentReferenceNumberPage(houseConsignmentIndex, itemIndex, documentIndex)))
     .async {
@@ -91,7 +94,7 @@ class RemoveDocumentYesNoController @Inject() (
                     Future.successful(request.userAnswers)
                   }
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(addAnother(arrivalId, mode))
+              } yield Redirect(addAnother(arrivalId, mode, houseConsignmentIndex, itemIndex))
           )
     }
 }

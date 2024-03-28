@@ -17,10 +17,11 @@
 package navigation.houseConsignment.index.items
 
 import com.google.inject.Singleton
-import models.{NormalMode, UserAnswers}
+import models.{CheckMode, DocType, Index, Mode, NormalMode, UserAnswers}
 import navigation.Navigator
+import org.checkerframework.checker.units.qual.h
 import pages._
-import pages.houseConsignment.index.items.document.{AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
+import pages.houseConsignment.index.items.document.{AddAdditionalInformationYesNoPage, AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
 import play.api.mvc.Call
 
 @Singleton
@@ -36,9 +37,42 @@ class DocumentNavigator extends Navigator {
   }
 
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case TypePage(houseConsignmentIndex, index, _) =>
+    case AddAdditionalInformationYesNoPage(houseConsignmentIndex, itemIndex, documentIndex) =>
+      ua => addAdditionalInformationYesNoNavigation(ua, houseConsignmentIndex, itemIndex, documentIndex, NormalMode)
+    case AdditionalInformationPage(houseConsignmentIndex, itemIndex, documentIndex) =>
       ua =>
-        Some(controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController.onPageLoad(ua.id, houseConsignmentIndex, index, NormalMode))
+        Some(
+          controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
+        )
+    case TypePage(houseConsignmentIndex, index, documentIndex) =>
+      ua => typePageNavigation(ua, houseConsignmentIndex, index, documentIndex, NormalMode)
     case _ => _ => Some(Call("GET", "#")) //TODO: Update document navigation
   }
+
+  def addAdditionalInformationYesNoNavigation(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index, mode: Mode): Option[Call] =
+    ua.get(AddAdditionalInformationYesNoPage(houseConsignmentIndex, itemIndex, documentIndex)).map {
+      case true =>
+        controllers.houseConsignment.index.items.document.routes.AdditionalInformationController
+          .onPageLoad(ua.id, mode, houseConsignmentIndex, itemIndex, documentIndex)
+      case false =>
+        controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
+          .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, mode)
+    }
+
+  def typePageNavigation(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index, mode: Mode): Option[Call] =
+    ua.get(TypePage(houseConsignmentIndex, itemIndex, documentIndex)).map {
+      _.`type` match {
+        case DocType.Support =>
+          controllers.houseConsignment.index.items.document.routes.AddAdditionalInformationYesNoController
+            .onPageLoad(ua.id, mode, houseConsignmentIndex, itemIndex, documentIndex)
+        case DocType.Transport =>
+          controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
+            .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, mode)
+        case DocType.Previous =>
+          logger.logger.error(s"Previous document unexpectedly selected for consignment level document type")
+          controllers.houseConsignment.index.items.document.routes.TypeController
+            .onPageLoad(ua.id, mode, houseConsignmentIndex, itemIndex, documentIndex)
+      }
+    }
+
 }
