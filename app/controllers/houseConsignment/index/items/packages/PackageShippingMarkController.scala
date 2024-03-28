@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.PackageShippingMarkFormProvider
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator
+import navigation.houseConsignment.index.items.PackagesNavigator
 import pages.houseConsignment.index.items.packages.PackageShippingMarkPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -36,7 +36,7 @@ class PackageShippingMarkController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   actions: Actions,
-  navigator: HouseConsignmentItemNavigator,
+  navigator: PackagesNavigator,
   val controllerComponents: MessagesControllerComponents,
   formProvider: PackageShippingMarkFormProvider,
   viewModelProvider: PackageShippingMarksViewModelProvider,
