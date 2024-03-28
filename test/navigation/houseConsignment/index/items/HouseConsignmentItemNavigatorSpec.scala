@@ -17,6 +17,7 @@
 package navigation.houseConsignment.index.items
 
 import base.SpecBase
+import controllers.houseConsignment.index.items.routes
 import generators.Generators
 import models._
 import models.reference.PackageType
@@ -30,6 +31,111 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
   val navigator = new HouseConsignmentItemNavigator
 
   "HouseConsignmentItemNavigator" - {
+
+    "in Normal mode" - {
+
+      val mode = NormalMode
+
+      "must go from ItemDescriptionPage to AddGrossWeightYesNoPage" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(ItemDescriptionPage(houseConsignmentIndex, itemIndex), "test")
+
+        navigator
+          .nextPage(ItemDescriptionPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .mustBe(routes.AddGrossWeightYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode))
+      }
+
+      "must go from AddGrossWeightYesNoPage to GrossWeightPage when answer is true" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(AddGrossWeightYesNoPage(houseConsignmentIndex, itemIndex), true)
+
+        navigator
+          .nextPage(AddGrossWeightYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .mustBe(routes.GrossWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode))
+      }
+
+      "must go from AddGrossWeightYesNoPage to AddNetWeightYesNoPage when answer is false" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(AddGrossWeightYesNoPage(houseConsignmentIndex, itemIndex), false)
+
+        navigator
+          .nextPage(AddGrossWeightYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .mustBe(routes.AddNetWeightYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode))
+      }
+
+      "must go from GrossWeightPage to AddNetWeightYesNoPage" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(GrossWeightPage(houseConsignmentIndex, itemIndex), BigDecimal(123.45))
+
+        navigator
+          .nextPage(GrossWeightPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .mustBe(routes.AddNetWeightYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode))
+      }
+
+      "must go from AddNetWeightYesNoPage to NetWeightPage when answer is true" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(AddNetWeightYesNoPage(houseConsignmentIndex, itemIndex), true)
+
+        navigator
+          .nextPage(AddNetWeightYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .mustBe(routes.NetWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode))
+      }
+
+      "must go from AddNetWeightYesNoPage to AddCustomsUnionAndStatisticsCodeYesNoPage when answer is false" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(AddNetWeightYesNoPage(houseConsignmentIndex, itemIndex), false)
+
+        navigator
+          .nextPage(AddNetWeightYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .mustBe(routes.AddCustomsUnionAndStatisticsCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode))
+      }
+
+      "must go from NetWeightPage to AddCustomsUnionAndStatisticsCodeYesNoPage" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(NetWeightPage(houseConsignmentIndex, itemIndex), 20.351)
+
+        navigator
+          .nextPage(NetWeightPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .mustBe(routes.AddCustomsUnionAndStatisticsCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode))
+      }
+
+      "must go from AddCustomsUnionAndStatisticsCodeYesNoPage to CustomsUnionAndStatisticsCodePage when answer is true" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(AddCustomsUnionAndStatisticsCodeYesNoPage(houseConsignmentIndex, itemIndex), true)
+
+        navigator
+          .nextPage(AddCustomsUnionAndStatisticsCodeYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .mustBe(routes.CustomsUnionAndStatisticsCodeController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex))
+      }
+
+      "must go from AddCustomsUnionAndStatisticsCodeYesNoPage to AddCommodityCodeYesNoPage when answer is false" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(AddCustomsUnionAndStatisticsCodeYesNoPage(houseConsignmentIndex, itemIndex), false)
+
+        navigator
+          .nextPage(AddCustomsUnionAndStatisticsCodeYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .mustBe(routes.AddCommodityCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode))
+      }
+
+      "must go from CustomsUnionAndStatisticsCodePage to AddCommodityCodeYesNoPage" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex), "code")
+
+        navigator
+          .nextPage(CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .mustBe(routes.AddCommodityCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode))
+      }
+    }
 
     "in Check mode" - {
 
