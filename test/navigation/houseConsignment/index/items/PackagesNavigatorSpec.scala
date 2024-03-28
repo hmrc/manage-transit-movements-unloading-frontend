@@ -23,6 +23,7 @@ import models.reference.PackageType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.houseConsignment.index.items.packages._
+import controllers.houseConsignment.index.items.packages.routes
 
 class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -43,7 +44,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             navigator
               .nextPage(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex), mode, userAnswers)
               .mustBe(
-                controllers.houseConsignment.index.items.packages.routes.AddNumberOfPackagesYesNoController
+                routes.AddNumberOfPackagesYesNoController
                   .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, packageIndex)
               )
         }
@@ -56,7 +57,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           navigator
             .nextPage(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), mode, userAnswers)
             .mustBe(
-              controllers.houseConsignment.index.items.packages.routes.NumberOfPackagesController
+              routes.NumberOfPackagesController
                 .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)
             )
         }
@@ -67,7 +68,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           navigator
             .nextPage(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), mode, userAnswers)
             .mustBe(
-              controllers.houseConsignment.index.items.packages.routes.AddPackageShippingMarkYesNoController
+              routes.AddPackageShippingMarkYesNoController
                 .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)
             )
         }
@@ -81,7 +82,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             navigator
               .nextPage(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex), mode, userAnswers)
               .mustBe(
-                controllers.houseConsignment.index.items.packages.routes.AddPackageShippingMarkYesNoController
+                routes.AddPackageShippingMarkYesNoController
                   .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)
               )
         }
@@ -94,7 +95,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           navigator
             .nextPage(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), mode, userAnswers)
             .mustBe(
-              controllers.houseConsignment.index.items.packages.routes.PackageShippingMarkController
+              routes.PackageShippingMarkController
                 .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)
             )
         }
@@ -105,7 +106,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           navigator
             .nextPage(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), mode, userAnswers)
             .mustBe(
-              controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+              routes.AddAnotherPackageController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
             )
         }
       }
@@ -118,7 +119,7 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             navigator
               .nextPage(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex), mode, userAnswers)
               .mustBe(
-                controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController
+                routes.AddAnotherPackageController
                   .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
               )
         }

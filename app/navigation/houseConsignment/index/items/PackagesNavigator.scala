@@ -19,6 +19,7 @@ package navigation.houseConsignment.index.items
 import com.google.inject.Singleton
 import models.{ArrivalId, Index, NormalMode, UserAnswers}
 import navigation.Navigator
+import controllers.houseConsignment.index.items.packages.routes
 import pages._
 import pages.houseConsignment.index.items.packages._
 import play.api.mvc.Call
@@ -30,7 +31,7 @@ class PackagesNavigator extends Navigator {
     case PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex) =>
       ua =>
         Some(
-          controllers.houseConsignment.index.items.packages.routes.AddNumberOfPackagesYesNoController
+          routes.AddNumberOfPackagesYesNoController
             .onPageLoad(ua.id, NormalMode, houseConsignmentIndex, itemIndex, packageIndex)
         )
 
@@ -39,7 +40,7 @@ class PackagesNavigator extends Navigator {
     case NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex) =>
       ua =>
         Some(
-          controllers.houseConsignment.index.items.packages.routes.AddPackageShippingMarkYesNoController
+          routes.AddPackageShippingMarkYesNoController
             .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, packageIndex, NormalMode)
         )
     case AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex) =>
@@ -47,7 +48,7 @@ class PackagesNavigator extends Navigator {
     case PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex) =>
       ua =>
         Some(
-          controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController
+          routes.AddAnotherPackageController
             .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
         )
   }
@@ -64,10 +65,10 @@ class PackagesNavigator extends Navigator {
   ): Option[Call] =
     ua.get(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex)).map {
       case true =>
-        controllers.houseConsignment.index.items.packages.routes.NumberOfPackagesController
+        routes.NumberOfPackagesController
           .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, NormalMode)
       case false =>
-        controllers.houseConsignment.index.items.packages.routes.AddPackageShippingMarkYesNoController
+        routes.AddPackageShippingMarkYesNoController
           .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, NormalMode)
     }
 
@@ -79,10 +80,10 @@ class PackagesNavigator extends Navigator {
   ): Option[Call] =
     ua.get(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex)).map {
       case true =>
-        controllers.houseConsignment.index.items.packages.routes.PackageShippingMarkController
+        routes.PackageShippingMarkController
           .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, NormalMode)
       case false =>
-        controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController
+        routes.AddAnotherPackageController
           .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
     }
 }
