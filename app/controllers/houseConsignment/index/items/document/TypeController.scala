@@ -118,13 +118,5 @@ class TypeController @Inject() (
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(TypePage(houseConsignmentIndex, itemIndex, documentIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-      redirection = value.`type` match {
-        case DocType.Support =>
-          controllers.houseConsignment.index.items.document.routes.AddAdditionalInformationYesNoController
-            .onPageLoad(request.userAnswers.id, mode, houseConsignmentIndex, itemIndex, documentIndex)
-        case _ =>
-          controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
-            .onPageLoad(request.userAnswers.id, houseConsignmentIndex, itemIndex, mode)
-      }
-    } yield Redirect(redirection)
+    } yield Redirect(navigator.nextPage(TypePage(houseConsignmentIndex, itemIndex, documentIndex), mode, request.userAnswers))
 }

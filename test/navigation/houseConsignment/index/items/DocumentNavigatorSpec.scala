@@ -18,7 +18,9 @@ package navigation.houseConsignment.index.items
 
 import base.SpecBase
 import generators.Generators
+import models.DocType.Support
 import models._
+import models.reference.DocumentType
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.houseConsignment.index.items.document.{AddAdditionalInformationYesNoPage, AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
 
@@ -99,6 +101,41 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
               .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
           )
+      }
+
+      "must go from TypePage to AddAdditionalInformationYesNoPage when DocType is supporting" - {
+
+        val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex),
+                                                    DocumentType(`type` = Support, code = "codeValue", description = "descriptionValue")
+        )
+
+        navigator
+          .nextPage(TypePage(houseConsignmentIndex, itemIndex, documentIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.document.routes.AddAdditionalInformationYesNoController
+              .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, documentIndex)
+          )
+      }
+
+      "must go from TypePage to AddAnotherDocumentPage when DocType is not supporting" - {
+
+        forAll(
+          arbitraryDocType.arbitrary.filter(
+            _ != Support
+          )
+        ) {
+          nonSupportDoc =>
+            val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex),
+                                                        DocumentType(`type` = nonSupportDoc, code = "codeValue", description = "descriptionValue")
+            )
+            navigator
+              .nextPage(TypePage(houseConsignmentIndex, itemIndex, documentIndex), mode, userAnswers)
+              .mustBe(
+                controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
+                  .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+              )
+        }
+
       }
 
     }

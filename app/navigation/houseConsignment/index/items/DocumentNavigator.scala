@@ -44,9 +44,8 @@ class DocumentNavigator extends Navigator {
         Some(
           controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
         )
-    case TypePage(houseConsignmentIndex, index, _) =>
-      ua =>
-        Some(controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController.onPageLoad(ua.id, houseConsignmentIndex, index, NormalMode))
+    case TypePage(houseConsignmentIndex, index, documentIndex) =>
+      ua => typePageNavigation(ua, houseConsignmentIndex, index, documentIndex, NormalMode)
     case _ => _ => Some(Call("GET", "#")) //TODO: Update document navigation
   }
 
@@ -58,6 +57,18 @@ class DocumentNavigator extends Navigator {
       case false =>
         controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
           .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, mode)
+    }
+
+  def typePageNavigation(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index, mode: Mode): Option[Call] =
+    ua.get(TypePage(houseConsignmentIndex, itemIndex, documentIndex)).map {
+      _.`type` match {
+        case DocType.Support =>
+          controllers.houseConsignment.index.items.document.routes.AddAdditionalInformationYesNoController
+            .onPageLoad(ua.id, mode, houseConsignmentIndex, itemIndex, documentIndex)
+        case _ =>
+          controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
+            .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, mode)
+      }
     }
 
 }
