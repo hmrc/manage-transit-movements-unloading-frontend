@@ -65,9 +65,13 @@ class DocumentNavigator extends Navigator {
         case DocType.Support =>
           controllers.houseConsignment.index.items.document.routes.AddAdditionalInformationYesNoController
             .onPageLoad(ua.id, mode, houseConsignmentIndex, itemIndex, documentIndex)
-        case _ =>
+        case DocType.Transport =>
           controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
             .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, mode)
+        case DocType.Previous =>
+          logger.logger.error(s"Previous document unexpectedly selected for consignment level document type")
+          controllers.houseConsignment.index.items.document.routes.TypeController
+            .onPageLoad(ua.id, mode, houseConsignmentIndex, itemIndex, documentIndex)
       }
     }
 
