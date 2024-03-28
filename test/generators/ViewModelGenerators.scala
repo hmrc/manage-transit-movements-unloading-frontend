@@ -45,7 +45,7 @@ import viewModels.houseConsignment.index.items.packages.{
   PackageShippingMarksViewModel,
   PackageTypeViewModel
 }
-import viewModels.houseConsignment.index.items.{document => hcViewModel}
+import viewModels.houseConsignment.index.items.{AddAnotherItemViewModel, document => hcViewModel}
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 import viewModels.transportEquipment.AddAnotherEquipmentViewModel
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
@@ -228,6 +228,14 @@ trait ViewModelGenerators {
       title         <- nonEmptyString
       requiredError <- nonEmptyString
     } yield SealIdentificationNumberViewModel(heading, title, requiredError)
+  }
+
+  implicit lazy val addAnotherHouseConsignmentItemViewModelViewModel: Arbitrary[AddAnotherItemViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+      nextIndex    <- arbitrary[Index]
+    } yield AddAnotherItemViewModel(listItems, onSubmitCall, Index(0), nextIndex)
   }
 
   implicit lazy val arbitraryCountryViewModel: Arbitrary[CountryViewModel] = Arbitrary {
