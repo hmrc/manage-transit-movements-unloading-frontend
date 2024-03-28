@@ -1029,3 +1029,12 @@ houseConsignment.item.addPackagesYesNo.paragraph = This means the packaging used
 houseConsignment.item.addAdditionalReferenceYesNo.title = Do you want to add an additional reference for the item?
 houseConsignment.item.addAdditionalReferenceYesNo.heading = Do you want to add an additional reference for the item?
 houseConsignment.item.addAdditionalReferenceYesNo.error.required = Select yes if you want to add an additional reference for the item
+
+houseConsignment.removeConsignmentItemYesNo.title = Are you sure you want to remove item {0} from house consignment {1}?
+houseConsignment.removeConsignmentItemYesNo.heading = Are you sure you want to remove item {0} from house consignment {1}?
+houseConsignment.removeConsignmentItemYesNo.error.required = Select yes if you want to remove item {0} from house consignment {1}
+
+houseConsignment.item.addCommodityCodeYesNo.title = Do you want to add a commodity code for the item?
+houseConsignment.item.addCommodityCodeYesNo.heading = Do you want to add a commodity code for the item?
+houseConsignment.item.addCommodityCodeYesNo.error.required = Select yes if you want to add a commodity code for the item
+houseConsignment.item.addCommodityCodeYesNo.paragraph = This is an internationally recognised reference number used to identify the specific product in transit.

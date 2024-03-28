@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items.packages
 import controllers.actions._
 import forms.NumberOfPackagesFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.houseConsignment.index.items.{HouseConsignmentItemNavigator, PackagesNavigator}
+import navigation.houseConsignment.index.items.PackagesNavigator
 import pages.houseConsignment.index.items.packages.NumberOfPackagesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

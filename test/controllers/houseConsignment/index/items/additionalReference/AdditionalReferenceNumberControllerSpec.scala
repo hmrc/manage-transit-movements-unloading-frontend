@@ -24,7 +24,7 @@ import models.reference.AdditionalReferenceType
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferencePage}
+import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -55,7 +55,8 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
 
   private val additionalReference = arbitrary[AdditionalReferenceType].sample.value
 
-  private val baseAnswers = emptyUserAnswers.setValue(AdditionalReferencePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), additionalReference)
+  private val baseAnswers =
+    emptyUserAnswers.setValue(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), additionalReference)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -113,7 +114,9 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.additionalReference.routes.AddAnotherAdditionalReferenceController
+        .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex)
+        .url
 
     }
 

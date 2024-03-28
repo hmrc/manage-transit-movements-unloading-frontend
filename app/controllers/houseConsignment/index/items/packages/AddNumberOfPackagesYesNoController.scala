@@ -19,7 +19,6 @@ package controllers.houseConsignment.index.items.packages
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigator
 import navigation.houseConsignment.index.items.PackagesNavigator
 import pages.houseConsignment.index.items.packages.{AddNumberOfPackagesYesNoPage, PackageTypePage}
 import play.api.i18n.{I18nSupport, MessagesApi}

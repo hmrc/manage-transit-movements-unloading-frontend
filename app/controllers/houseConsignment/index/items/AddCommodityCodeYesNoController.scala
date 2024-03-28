@@ -14,66 +14,60 @@
  * limitations under the License.
  */
 
-package controllers.houseConsignment.index.items.packages
+package controllers.houseConsignment.index.items
 
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.houseConsignment.index.items.PackagesNavigator
-import pages.houseConsignment.index.items.packages.AddPackageShippingMarkYesNoPage
+import navigation.Navigator
+import pages.houseConsignment.index.items.AddCommodityCodeYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.houseConsignment.index.items.packages.AddPackageShippingMarkYesNoView
+import views.html.houseConsignment.index.items.AddCommodityCodeYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddPackageShippingMarkYesNoController @Inject() (
+class AddCommodityCodeYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: PackagesNavigator,
+  navigator: Navigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddPackageShippingMarkYesNoView
+  view: AddCommodityCodeYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("houseConsignment.index.items.packages.addPackageShippingMarkYesNo")
+  private val form = formProvider("houseConsignment.item.addCommodityCodeYesNo")
 
-  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId) {
-
       implicit request =>
-        val preparedForm = request.userAnswers.get(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex)) match {
+        val preparedForm = request.userAnswers.get(AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
 
-        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode))
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))
     }
 
-  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
         form
           .bindFromRequest()
           .fold(
-            formWithErrors =>
-              Future.successful(
-                BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode))
-              ),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))),
             value =>
               for {
                 updatedAnswers <- Future
-                  .fromTry(request.userAnswers.set(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), value))
+                  .fromTry(request.userAnswers.set(AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex), value))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(
-                navigator.nextPage(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), mode, updatedAnswers)
-              )
+              } yield Redirect(navigator.nextPage(AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex), mode, updatedAnswers))
           )
     }
 }

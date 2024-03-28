@@ -14,69 +14,71 @@
  * limitations under the License.
  */
 
-package controllers.houseConsignment.index.items.additionalReference
+package controllers.houseConsignment.index.items
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.houseConsignment.index.items.additionalReference.AddAdditionalReferenceNumberYesNoPage
+import pages.houseConsignment.index.items.AddCommodityCodeYesNoPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.houseConsignment.index.items.additionalReference.AddAdditionalReferenceNumberYesNoView
+import views.html.houseConsignment.index.items.AddCommodityCodeYesNoView
 
 import scala.concurrent.Future
 
-class AddAdditionalReferenceNumberYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class AddCommodityCodeYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider = new YesNoFormProvider()
-  private val form         = formProvider("houseConsignment.index.items.additionalReference.addAdditionalReferenceNumberYesNo")
+  private val form         = formProvider("houseConsignment.item.addCommodityCodeYesNo")
   private val mode         = NormalMode
 
-  private lazy val additionalReferenceNumberYesNoRoute =
-    routes.AddAdditionalReferenceNumberYesNoController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex).url
+  private lazy val addCommodityCodeYesNoRoute =
+    controllers.houseConsignment.index.items.routes.AddCommodityCodeYesNoController
+      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+      .url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
 
-  "AdditionalReferenceNumberYesNoController Controller" - {
+  "AddCommodityCodeYesNoController" - {
 
     "must return OK and the correct view for a GET" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, additionalReferenceNumberYesNoRoute)
+      val request = FakeRequest(GET, addCommodityCodeYesNoRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[AddAdditionalReferenceNumberYesNoView]
+      val view = injector.instanceOf[AddCommodityCodeYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)(request, messages).toString
+        view(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), true)
+      val userAnswers = emptyUserAnswers.setValue(AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex), true)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, additionalReferenceNumberYesNoRoute)
+      val request = FakeRequest(GET, addCommodityCodeYesNoRoute)
 
       val result = route(app, request).value
 
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[AddAdditionalReferenceNumberYesNoView]
+      val view = injector.instanceOf[AddCommodityCodeYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -85,16 +87,14 @@ class AddAdditionalReferenceNumberYesNoControllerSpec extends SpecBase with AppW
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, additionalReferenceNumberYesNoRoute)
+      val request = FakeRequest(POST, addCommodityCodeYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.additionalReference.routes.AdditionalReferenceNumberController
-        .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
-        .url
+      redirectLocation(result).value mustEqual onwardRoute.url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
@@ -103,24 +103,24 @@ class AddAdditionalReferenceNumberYesNoControllerSpec extends SpecBase with AppW
 
       val invalidAnswer = ""
 
-      val request    = FakeRequest(POST, additionalReferenceNumberYesNoRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, addCommodityCodeYesNoRoute).withFormUrlEncodedBody(("value", ""))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AddAdditionalReferenceNumberYesNoView]
+      val view = injector.instanceOf[AddCommodityCodeYesNoView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, additionalReferenceNumberYesNoRoute)
+      val request = FakeRequest(GET, addCommodityCodeYesNoRoute)
 
       val result = route(app, request).value
 
@@ -133,7 +133,7 @@ class AddAdditionalReferenceNumberYesNoControllerSpec extends SpecBase with AppW
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, additionalReferenceNumberYesNoRoute)
+      val request = FakeRequest(POST, addCommodityCodeYesNoRoute)
         .withFormUrlEncodedBody(("value", "test string"))
 
       val result = route(app, request).value
