@@ -20,6 +20,7 @@ import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
+import navigation.houseConsignment.index.items.PackagesNavigator
 import pages.houseConsignment.index.items.packages.{AddNumberOfPackagesYesNoPage, PackageTypePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddNumberOfPackagesYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: PackagesNavigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,

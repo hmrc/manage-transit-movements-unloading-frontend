@@ -45,8 +45,8 @@ class RemovePackageTypeYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def addAnother(arrivalId: ArrivalId, mode: Mode): Call =
-    Call("GET", "#") //TODO should go to addAnother package page
+  private def addAnother(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Call =
+    routes.AddAnotherPackageController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
 
   private type Request = SpecificDataRequestProvider1[PackageType]#SpecificDataRequest[_]
 
@@ -106,7 +106,7 @@ class RemovePackageTypeYesNoController @Inject() (
                       Future.fromTry(request.userAnswers.removeExceptSequenceNumber(PackagingSection(houseConsignmentIndex, itemIndex, packageIndex)))
                     } else { Future.successful(request.userAnswers) }
                   _ <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(addAnother(arrivalId, mode))
+                } yield Redirect(addAnother(arrivalId, houseConsignmentIndex, itemIndex, mode))
             )
       }
 
