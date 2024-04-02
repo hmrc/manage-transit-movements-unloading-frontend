@@ -107,7 +107,10 @@ trait SpecBase
       userAnswers.data.transform((section.path \ key).json.pick[A]).get
 
     def setRemoved(section: Section[JsObject]): UserAnswers =
-      userAnswers.set(section.path, Json.obj("removed" -> true)).success.value
+      setValue(section, "removed", true)
+
+    def setValue[T](section: Section[JsObject], key: String, value: T)(implicit writes: Writes[T]): UserAnswers =
+      userAnswers.set(section.path \ key, value).success.value
   }
 
   implicit class RichContent(c: Content) {

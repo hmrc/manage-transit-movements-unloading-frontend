@@ -23,8 +23,9 @@ import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
-import pages.houseConsignment.index.items.ConsignmentItemPage
-import play.api.inject.guice.GuiceApplicationBuilder
+import pages.houseConsignment.index.items.DeclarationGoodsItemNumberPage
+import pages.sections.ItemSection
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.houseConsignment.index.items.RemoveConsignmentItemYesNoView
@@ -39,10 +40,6 @@ class RemoveConsignmentItemYesNoControllerSpec extends SpecBase with AppWithDefa
 
   private lazy val removeConsignmentItemRoute =
     controllers.houseConsignment.index.items.routes.RemoveConsignmentItemYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode).url
-
-  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    super
-      .guiceApplicationBuilder()
 
   "RemoveConsignmentItemYesNoController " - {
 
@@ -65,7 +62,10 @@ class RemoveConsignmentItemYesNoControllerSpec extends SpecBase with AppWithDefa
     "when yes submitted" - {
       "must redirect to cross check page and remove consignment item at specified index" in {
         val userAnswers = emptyUserAnswers
-          .setValue(ConsignmentItemPage(houseConsignmentIndex, itemIndex), "3")
+          .setValue(ItemSection(houseConsignmentIndex, itemIndex), Json.obj("foo" -> "bar"))
+          .setValue(ItemSection(houseConsignmentIndex, itemIndex), "sequenceNumber", "1")
+          .setValue(DeclarationGoodsItemNumberPage(houseConsignmentIndex, itemIndex), BigInt(1))
+          .setValue(ItemSection(houseConsignmentIndex, itemIndex), "removed", false)
 
         setExistingUserAnswers(userAnswers)
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
@@ -82,7 +82,13 @@ class RemoveConsignmentItemYesNoControllerSpec extends SpecBase with AppWithDefa
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
-        userAnswersCaptor.getValue.get(ConsignmentItemPage(houseConsignmentIndex, itemIndex)) mustNot be(defined)
+        userAnswersCaptor.getValue.get(ItemSection(houseConsignmentIndex, itemIndex)).value mustBe Json.parse("""
+            |{
+            |  "declarationGoodsItemNumber" : 1,
+            |  "sequenceNumber" : "1",
+            |  "removed" : true
+            |}
+            |""".stripMargin)
       }
     }
 
@@ -90,7 +96,10 @@ class RemoveConsignmentItemYesNoControllerSpec extends SpecBase with AppWithDefa
       "must redirect to cross check page and not remove consignment item at specified index" in {
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
         val userAnswers = emptyUserAnswers
-          .setValue(ConsignmentItemPage(houseConsignmentIndex, itemIndex), "3")
+          .setValue(ItemSection(houseConsignmentIndex, itemIndex), Json.obj("foo" -> "bar"))
+          .setValue(ItemSection(houseConsignmentIndex, itemIndex), "sequenceNumber", "1")
+          .setValue(DeclarationGoodsItemNumberPage(houseConsignmentIndex, itemIndex), BigInt(1))
+          .setValue(ItemSection(houseConsignmentIndex, itemIndex), "removed", false)
 
         setExistingUserAnswers(userAnswers)
 
@@ -106,7 +115,14 @@ class RemoveConsignmentItemYesNoControllerSpec extends SpecBase with AppWithDefa
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
-        userAnswersCaptor.getValue.get(ConsignmentItemPage(houseConsignmentIndex, itemIndex)) must be(defined)
+        userAnswersCaptor.getValue.get(ItemSection(houseConsignmentIndex, itemIndex)).value mustBe Json.parse("""
+            |{
+            |  "declarationGoodsItemNumber" : 1,
+            |  "sequenceNumber" : "1",
+            |  "foo" : "bar",
+            |  "removed" : false
+            |}
+            |""".stripMargin)
       }
     }
 
