@@ -76,8 +76,8 @@ object AddAnotherHouseConsignmentDocumentViewModel {
 
       val listItems = documents.mapWithIndex {
         case (_, index) =>
-          userAnswers.get(TypePage(houseConsignmentIndex, itemsIndex, index)).map(_.`type`) match {
-            case Some(docType) if docType != Previous =>
+          userAnswers.get(TypePage(houseConsignmentIndex, itemsIndex, index)) match {
+            case Some(docType) if docType.`type` != Previous =>
               Some(
                 ListItem(
                   name = s"${userAnswers

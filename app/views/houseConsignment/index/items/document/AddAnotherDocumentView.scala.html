@@ -18,8 +18,8 @@
 @import models.MovementReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
 @import viewModels.houseConsignment.index.items.document.AddAnotherHouseConsignmentDocumentViewModel
-@import viewModels.houseConsignment.index.items.document.AddAnotherHouseConsignmentDocumentViewModel._
 @import views.html.components.{Button, ErrorSummary, Heading, InputYesNo, ListWithActions}
+@import views.html.templates.MainTemplate
 
 @this(
     mainTemplate: MainTemplate,
@@ -30,6 +30,7 @@
     errorSummary: ErrorSummary,
     button: Button
 )
+
 
 @(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex:Index, itemsIndex:Index, viewModel: AddAnotherHouseConsignmentDocumentViewModel)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
 
@@ -49,18 +50,19 @@
 
     @formHelper(action = viewModel.onSubmitCall, Symbol("autoComplete") -> "off") {
 
-        @if(viewModel.allowMore) {
+        @if(!viewModel.allowMore) {
+            <p class="govuk-body" data-testId="maxLimit">@viewModel.maxLimitLabel(itemsIndex, houseConsignmentIndex)</p>
+        } else {
+            @viewModel.maxLimitLabelForType.map { label =>
+                <p class="govuk-body" data-testId="maxLimitForType">@label</p>
+            }
+
             @inputYesNo(
                 field = form("value"),
                 yesNoType = YesNoWithLegend(
                     legend = viewModel.legend(itemsIndex,houseConsignmentIndex)
                 )
             )
-            @viewModel.maxLimitLabelForType.map { label =>
-                <p class="govuk-body" data-testId="maxLimitForType">@label</p>
-            }
-        } else {
-            <p class="govuk-body" data-testId="maxLimit">@viewModel.maxLimitLabel(itemsIndex,houseConsignmentIndex)</p>
         }
 
         @button(messageKey = "site.continue", attributes = Map("id" -> "submit"))
