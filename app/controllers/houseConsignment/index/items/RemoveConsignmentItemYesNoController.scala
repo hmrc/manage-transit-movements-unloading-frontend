@@ -64,7 +64,7 @@ class RemoveConsignmentItemYesNoController @Inject() (
                     Future.fromTry(request.userAnswers.remove(ConsignmentItemPage(houseConsignmentIndex, itemIndex)))
                   } else { Future.successful(request.userAnswers) }
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+              } yield Redirect(controllers.houseConsignment.index.items.routes.AddAnotherItemController.onPageLoad(arrivalId, houseConsignmentIndex, mode))
           )
     }
 }

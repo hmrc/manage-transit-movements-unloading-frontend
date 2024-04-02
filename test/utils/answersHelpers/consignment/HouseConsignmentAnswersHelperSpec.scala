@@ -18,7 +18,7 @@ package utils.answersHelpers.consignment
 
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference.{AdditionalInformationCode, AdditionalReferenceType, Country, PackageType}
-import models.{DynamicAddress, Index}
+import models.{DynamicAddress, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
@@ -267,7 +267,8 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
         result.viewLinks.length mustBe 1
 
-        result.viewLinks.head.href mustBe "#"
+        result.viewLinks.head.href mustBe
+          controllers.houseConsignment.index.items.routes.AddAnotherItemController.onPageLoad(arrivalId, houseConsignmentIndex, NormalMode).url
         result.viewLinks.head.id mustBe "add-remove-items"
         result.viewLinks.head.text mustBe "Add or remove item"
 

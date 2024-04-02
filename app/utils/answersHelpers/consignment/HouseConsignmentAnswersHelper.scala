@@ -17,7 +17,7 @@
 package utils.answersHelpers.consignment
 
 import models.reference.Country
-import models.{Index, Link, RichOptionalJsArray, UserAnswers}
+import models.{Index, Link, NormalMode, RichOptionalJsArray, UserAnswers}
 import pages._
 import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
@@ -165,7 +165,7 @@ class HouseConsignmentAnswersHelper(
   def itemsAddRemoveLink: Link =
     Link(
       id = "add-remove-items",
-      href = "#",
+      href = controllers.houseConsignment.index.items.routes.AddAnotherItemController.onPageLoad(arrivalId, houseConsignmentIndex, NormalMode).url,
       text = messages("itemsLink.addRemove"),
       visuallyHidden = messages("itemsLink.visuallyHidden")
     )
