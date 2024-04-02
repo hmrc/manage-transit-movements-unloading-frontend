@@ -81,6 +81,12 @@ final case class UserAnswers(
   }
 
   def removeExceptSequenceNumber[A](section: QuestionPage[A]): Try[UserAnswers] =
+    removeExceptFields(section, "sequenceNumber")
+
+  def removeExceptSequenceNumberAndDeclarationGoodsItemNumber[A](section: QuestionPage[A]): Try[UserAnswers] =
+    removeExceptFields(section, "sequenceNumber", "declarationGoodsItemNumber")
+
+  private def removeExceptFields[A](section: QuestionPage[A], fields: String*): Try[UserAnswers] =
     for {
       obj <- data
         .transform(section.path.json.pick[JsObject])
@@ -88,9 +94,11 @@ final case class UserAnswers(
           errors => Failure(JsResultException(errors)),
           Success(_)
         )
-      userAnswers <- obj.fields.find(_._1 == "sequenceNumber") match {
-        case None                 => remove(section)
-        case Some(sequenceNumber) => set(section.path, JsObject(Seq(sequenceNumber, "removed" -> JsBoolean(true))))
+      userAnswers <- obj.fields.filter {
+        field => fields.contains(field._1)
+      } match {
+        case Nil    => remove(section)
+        case values => set(section.path, JsObject(values :+ ("removed" -> JsBoolean(true))))
       }
     } yield userAnswers
 }
