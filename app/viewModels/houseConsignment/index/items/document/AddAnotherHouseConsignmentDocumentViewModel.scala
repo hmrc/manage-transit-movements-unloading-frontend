@@ -87,7 +87,11 @@ object AddAnotherHouseConsignmentDocumentViewModel {
                     )
                     .getOrElse(s"$docType")}",
                   changeUrl = None,
-                  removeUrl = Some("#") //todo will be remove at house consignment level once built
+                  removeUrl = Some(
+                    controllers.houseConsignment.index.items.document.routes.RemoveDocumentYesNoController
+                      .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemsIndex, index)
+                      .url
+                  )
                 )
               )
             case _ => None

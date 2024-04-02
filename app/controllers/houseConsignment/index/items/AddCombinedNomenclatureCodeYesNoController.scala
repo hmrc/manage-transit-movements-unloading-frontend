@@ -14,61 +14,60 @@
  * limitations under the License.
  */
 
-package controllers.houseConsignment.index.items.document
+package controllers.houseConsignment.index.items
 
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.houseConsignment.index.items.DocumentNavigator
-import pages.houseConsignment.index.items.document.AddAdditionalInformationYesNoPage
+import navigation.Navigator
+import pages.houseConsignment.index.items.AddCombinedNomenclatureCodeYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.houseConsignment.index.items.document.AddAdditionalInformationYesNoView
+import views.html.houseConsignment.index.items.AddCombinedNomenclatureCodeYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddAdditionalInformationYesNoController @Inject() (
+class AddCombinedNomenclatureCodeYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: DocumentNavigator,
+  navigator: Navigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddAdditionalInformationYesNoView
+  view: AddCombinedNomenclatureCodeYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("houseConsignment.index.items.document.addAdditionalInformationYesNo")
+  private val form = formProvider("houseConsignment.item.addCombinedNomenclatureCodeYesNo")
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index): Action[AnyContent] =
+  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId) {
       implicit request =>
-        val preparedForm = request.userAnswers.get(AddAdditionalInformationYesNoPage(houseConsignmentIndex, itemIndex, documentIndex)) match {
+        val preparedForm = request.userAnswers.get(AddCombinedNomenclatureCodeYesNoPage(houseConsignmentIndex, itemIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
 
-        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, documentIndex, mode))
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))
     }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index): Action[AnyContent] =
+  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
         form
           .bindFromRequest()
           .fold(
-            formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, documentIndex, mode))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))),
             value =>
               for {
                 updatedAnswers <- Future
-                  .fromTry(request.userAnswers.set(AddAdditionalInformationYesNoPage(houseConsignmentIndex, itemIndex, documentIndex), value))
+                  .fromTry(request.userAnswers.set(AddCombinedNomenclatureCodeYesNoPage(houseConsignmentIndex, itemIndex), value))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(AddAdditionalInformationYesNoPage(houseConsignmentIndex, itemIndex, documentIndex), mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(AddCombinedNomenclatureCodeYesNoPage(houseConsignmentIndex, itemIndex), mode, updatedAnswers))
           )
     }
 }

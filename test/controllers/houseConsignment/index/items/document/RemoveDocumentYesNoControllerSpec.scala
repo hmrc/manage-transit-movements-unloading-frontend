@@ -99,7 +99,12 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual Call("GET", "#").url // TODO update
+        redirectLocation(result).value mustEqual Call(
+          "GET",
+          controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
+            .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+            .url
+        ).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -123,7 +128,12 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual Call("GET", "#").url // TODO update
+        redirectLocation(result).value mustEqual Call(
+          "GET",
+          controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
+            .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+            .url
+        ).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -144,7 +154,12 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual Call("GET", "#").url // TODO update
+      redirectLocation(result).value mustEqual Call(
+        "GET",
+        controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
+          .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+          .url
+      ).url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

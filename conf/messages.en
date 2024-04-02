@@ -1030,6 +1030,19 @@ houseConsignment.item.addAdditionalReferenceYesNo.title = Do you want to add an 
 houseConsignment.item.addAdditionalReferenceYesNo.heading = Do you want to add an additional reference for the item?
 houseConsignment.item.addAdditionalReferenceYesNo.error.required = Select yes if you want to add an additional reference for the item
 
+houseConsignment.index.itemPrefix = Item {0}
+houseConsignment.index.items.addAnotherItem.empty.title = You have added 0 items for house consignment {1}
+houseConsignment.index.items.addAnotherItem.empty.heading = You have added 0 items for house consignment {1}
+houseConsignment.index.items.addAnotherItem.empty.label = Do you want to add an item for house consignment {1}?
+houseConsignment.index.items.addAnotherItem.singular.title = You have added 1 item for house consignment {1}
+houseConsignment.index.items.addAnotherItem.plural.title = You have added {0} items for house consignment {1}
+houseConsignment.index.items.addAnotherItem.singular.heading = You have added 1 item for house consignment {1}
+houseConsignment.index.items.addAnotherItem.plural.heading = You have added {0} items for house consignment {1}
+houseConsignment.index.items.addAnotherItem.label = Do you want to add another item for house consignment {1}?
+houseConsignment.index.items.addAnotherItem.maxLimit.label = You cannot add any more items for house consignment {0}. To add another, you need to remove one first.
+houseConsignment.index.items.addAnotherItem.error.required = Select yes if you want to add another item for house consignment {0}
+houseConsignment.index.items.addAnotherItem.noMoreItems.label = You cannot add any more items for house consignment {0}. To add another, you need to remove one first.
+
 houseConsignment.removeConsignmentItemYesNo.title = Are you sure you want to remove item {0} from house consignment {1}?
 houseConsignment.removeConsignmentItemYesNo.heading = Are you sure you want to remove item {0} from house consignment {1}?
 houseConsignment.removeConsignmentItemYesNo.error.required = Select yes if you want to remove item {0} from house consignment {1}
@@ -1038,3 +1051,8 @@ houseConsignment.item.addCommodityCodeYesNo.title = Do you want to add a commodi
 houseConsignment.item.addCommodityCodeYesNo.heading = Do you want to add a commodity code for the item?
 houseConsignment.item.addCommodityCodeYesNo.error.required = Select yes if you want to add a commodity code for the item
 houseConsignment.item.addCommodityCodeYesNo.paragraph = This is an internationally recognised reference number used to identify the specific product in transit.
+
+houseConsignment.item.addCombinedNomenclatureCodeYesNo.title = Do you want to add a combined nomenclature code for the item?
+houseConsignment.item.addCombinedNomenclatureCodeYesNo.heading = Do you want to add a combined nomenclature for the item?
+houseConsignment.item.addCombinedNomenclatureCodeYesNo.error.required = Select yes if you want to add a combined nomenclature code for the item
+houseConsignment.item.addCombinedNomenclatureCodeYesNo.paragraph = This is used to classify goods when they’re declared to Customs in the EU.
