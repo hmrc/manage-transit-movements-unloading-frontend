@@ -45,11 +45,17 @@ object ViewUtils {
         case None        => radios.withHeading(Text(heading))
       }
 
-    def withLegend(legend: String, legendIsVisible: Boolean = true): Radios = {
-      val labelClass = if (legendIsVisible) "govuk-fieldset__legend--m" else "govuk-visually-hidden govuk-!-display-inline"
+    def withLegend(legend: String, legendIsVisible: Boolean = true): Radios =
       radios.copy(
-        fieldset = Some(Fieldset(legend = Some(Legend(content = Text(legend), classes = labelClass, isPageHeading = false))))
+        fieldset = Some(Fieldset().withLegend(legend, legendIsVisible))
       )
+  }
+
+  implicit class FieldsetImplicits(fieldset: Fieldset) {
+
+    def withLegend(legend: String, legendIsVisible: Boolean): Fieldset = {
+      val labelClass = if (legendIsVisible) "govuk-fieldset__legend--m" else "govuk-visually-hidden govuk-!-display-inline"
+      fieldset.copy(legend = Some(Legend(content = Text(legend), classes = labelClass, isPageHeading = false)))
     }
   }
 

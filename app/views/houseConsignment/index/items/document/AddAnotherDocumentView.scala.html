@@ -53,12 +53,12 @@
             @inputYesNo(
                 field = form("value"),
                 yesNoType = YesNoWithLegend(
-                    legend = viewModel.legend(itemsIndex,houseConsignmentIndex)
+                    legend = viewModel.legend(itemsIndex,houseConsignmentIndex),
+                    additionalHtml = viewModel.maxLimitLabelForType.map { label =>
+                        Html(s"""<p class="govuk-body" data-testId="maxLimitForType">$label</p>""")
+                    }
                 )
             )
-            @viewModel.maxLimitLabelForType.map { label =>
-                <p class="govuk-body" data-testId="maxLimitForType">@label</p>
-            }
         } else {
             <p class="govuk-body" data-testId="maxLimit">@viewModel.maxLimitLabel(itemsIndex,houseConsignmentIndex)</p>
         }
