@@ -21,6 +21,7 @@
 @import views.utils.ViewUtils._
 
 @this(
+    govukFieldset: GovukFieldset,
     govukRadios: GovukRadios,
     hmrcHeading: Heading
 )
@@ -60,7 +61,14 @@
         @additionalHtml
         @govukRadios(radios.withLegend(heading, false))
     }
-    case YesNoWithLegend(legend) => {
+    case YesNoWithLegend(legend, None) => {
         @govukRadios(radios.withLegend(legend))
+    }
+    case YesNoWithLegend(legend, Some(additionalHtml)) => {
+        @govukFieldset(
+            Fieldset(
+                html = HtmlFormat.fill(Seq(additionalHtml, govukRadios(radios)))
+            ).withLegend(legend, true)
+        )
     }
 }

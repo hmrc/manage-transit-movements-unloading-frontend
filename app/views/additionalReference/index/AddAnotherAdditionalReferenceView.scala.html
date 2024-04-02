@@ -45,15 +45,14 @@
 
     @listWithActions(viewModel.listItems)
 
-    <p class="govuk-body">@messages("additionalReference.index.addAnotherAdditionalReference.paragraph")</p>
-
     @formHelper(action = viewModel.onSubmitCall, Symbol("autoComplete") -> "off") {
 
         @if(viewModel.allowMore) {
             @inputYesNo(
                 field = form("value"),
                 yesNoType = YesNoWithLegend(
-                    legend = viewModel.legend
+                    legend = viewModel.legend,
+                    additionalHtml = Some(messages("additionalReference.index.addAnotherAdditionalReference.paragraph").toParagraph)
                 )
             )
         } else {

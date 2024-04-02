@@ -35,7 +35,8 @@ object InputYesNoViewModel {
       with AdditionalHtmlViewModel
 
   case class YesNoWithLegend(
-    legend: String
+    legend: String,
+    additionalHtml: Option[Html] = None
   ) extends InputYesNoViewModel
 
   def apply(
