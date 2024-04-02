@@ -85,7 +85,7 @@ class AddAnotherHouseConsignmentDocumentViewModelSpec extends SpecBase with Scal
               val result = new AddAnotherHouseConsignmentDocumentViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode)
 
               result.listItems.length mustBe 1
-              result.listItems.head.name mustBe "Support - ref1"
+              result.listItems.head.name mustBe "Supporting - (code1) description1 - ref1"
               result.title(itemIndex, houseConsignmentIndex) mustBe "You have added 1 document to item 1 in house consignment 1"
               result.heading(itemIndex, houseConsignmentIndex) mustBe "You have added 1 document to item 1 in house consignment 1"
               result.legend(itemIndex, houseConsignmentIndex) mustBe "Do you want to add another document to item 1 in house consignment 1?"
@@ -167,8 +167,8 @@ class AddAnotherHouseConsignmentDocumentViewModelSpec extends SpecBase with Scal
 
               val result = new AddAnotherHouseConsignmentDocumentViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode)
               result.listItems.length mustBe 2
-              result.listItems.head.name mustBe "Support - ref1"
-              result.listItems.last.name mustBe "Transport - ref2"
+              result.listItems.head.name mustBe "Supporting - (code1) description1 - ref1"
+              result.listItems.last.name mustBe "Transport - (code2) description2 - ref2"
               result.title(itemIndex, houseConsignmentIndex) mustBe "You have added 2 documents to item 1 in house consignment 1"
               result.heading(itemIndex, houseConsignmentIndex) mustBe "You have added 2 documents to item 1 in house consignment 1"
               result.legend(itemIndex, houseConsignmentIndex) mustBe "Do you want to add another document to item 1 in house consignment 1?"
@@ -235,7 +235,7 @@ class AddAnotherHouseConsignmentDocumentViewModelSpec extends SpecBase with Scal
 
               result.listItems mustBe Seq(
                 ListItem(
-                  name = "Support - ref1",
+                  name = "Supporting - (code1) description1 - ref1",
                   changeUrl = None,
                   removeUrl = Some(
                     controllers.houseConsignment.index.items.document.routes.RemoveDocumentYesNoController
@@ -244,7 +244,7 @@ class AddAnotherHouseConsignmentDocumentViewModelSpec extends SpecBase with Scal
                   )
                 ),
                 ListItem(
-                  name = "Transport - ref2",
+                  name = "Transport - (code2) description2 - ref2",
                   changeUrl = None,
                   removeUrl = Some(
                     controllers.houseConsignment.index.items.document.routes.RemoveDocumentYesNoController

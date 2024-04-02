@@ -19,6 +19,7 @@
 @import viewModels.components.InputYesNoViewModel._
 @import viewModels.documents.AddAnotherDocumentViewModel
 @import views.html.components.{Button, ErrorSummary, Heading, InputYesNo, ListWithActions}
+@import views.html.templates.MainTemplate
 
 @this(
     mainTemplate: MainTemplate,
@@ -48,18 +49,20 @@
 
     @formHelper(action = viewModel.onSubmitCall, Symbol("autoComplete") -> "off") {
 
-        @if(viewModel.allowMore) {
+        @if(!viewModel.allowMore) {
+            <p class="govuk-body" data-testId="maxLimit">@viewModel.maxLimitLabel</p>
+
+        } else {
+            @viewModel.maxLimitLabelForType.map { label =>
+                <p class="govuk-body" data-testId="maxLimitForType">@label</p>
+            }
+
             @inputYesNo(
                 field = form("value"),
                 yesNoType = YesNoWithLegend(
                     legend = viewModel.legend
                 )
             )
-            @viewModel.maxLimitLabelForType.map { label =>
-                <p class="govuk-body" data-testId="maxLimitForType">@label</p>
-            }
-        } else {
-            <p class="govuk-body" data-testId="maxLimit">@viewModel.maxLimitLabel</p>
         }
 
         @button(messageKey = "site.continue", attributes = Map("id" -> "submit"))
