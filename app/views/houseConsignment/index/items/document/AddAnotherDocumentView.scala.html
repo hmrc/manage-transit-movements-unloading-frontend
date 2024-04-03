@@ -18,7 +18,6 @@
 @import models.MovementReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
 @import viewModels.houseConsignment.index.items.document.AddAnotherHouseConsignmentDocumentViewModel
-@import viewModels.houseConsignment.index.items.document.AddAnotherHouseConsignmentDocumentViewModel._
 @import views.html.components.{Button, ErrorSummary, Heading, InputYesNo, ListWithActions}
 
 @this(
@@ -54,13 +53,13 @@
                 field = form("value"),
                 yesNoType = YesNoWithLegend(
                     legend = viewModel.legend(itemsIndex,houseConsignmentIndex),
-                    additionalHtml = viewModel.maxLimitLabelForType.map { label =>
+                    additionalHtml = viewModel.maxLimitLabelForType(itemsIndex, houseConsignmentIndex).map { label =>
                         Html(s"""<p class="govuk-body" data-testId="maxLimitForType">$label</p>""")
                     }
                 )
             )
         } else {
-            <p class="govuk-body" data-testId="maxLimit">@viewModel.maxLimitLabel(itemsIndex,houseConsignmentIndex)</p>
+            <p class="govuk-body" data-testId="maxLimit">@viewModel.maxLimitLabel(itemsIndex, houseConsignmentIndex)</p>
         }
 
         @button(messageKey = "site.continue", attributes = Map("id" -> "submit"))

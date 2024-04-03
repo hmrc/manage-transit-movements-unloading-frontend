@@ -17,9 +17,8 @@
 package navigation.houseConsignment.index.items
 
 import com.google.inject.Singleton
-import models.{CheckMode, DocType, Index, Mode, NormalMode, UserAnswers}
+import models.{DocType, Index, Mode, NormalMode, UserAnswers}
 import navigation.Navigator
-import org.checkerframework.checker.units.qual.h
 import pages._
 import pages.houseConsignment.index.items.document.{AddAdditionalInformationYesNoPage, AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
 import play.api.mvc.Call

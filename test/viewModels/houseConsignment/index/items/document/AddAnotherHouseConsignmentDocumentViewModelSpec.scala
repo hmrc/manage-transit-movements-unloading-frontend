@@ -67,7 +67,7 @@ class AddAnotherHouseConsignmentDocumentViewModelSpec extends SpecBase with Scal
               result.maxLimitLabel(itemIndex,
                                    houseConsignmentIndex
               ) mustBe "You cannot add any more documents to item 1 in house consignment 1. To add another, you need to remove one first."
-              result.maxLimitLabelForType mustBe None
+              result.maxLimitLabelForType(itemIndex, houseConsignmentIndex) mustBe None
               result.nextIndex mustBe Index(0)
           }
         }
@@ -109,7 +109,9 @@ class AddAnotherHouseConsignmentDocumentViewModelSpec extends SpecBase with Scal
 
               val result = new AddAnotherHouseConsignmentDocumentViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode)
 
-              result.maxLimitLabelForType.get mustBe "You cannot add any more transport documents to all items. To add another, you need to remove one first. You can, however, still add a supporting document to your items."
+              result
+                .maxLimitLabelForType(itemIndex, houseConsignmentIndex)
+                .get mustBe "You cannot add any more transport documents to item 1 in house consignment 1. To add another, you need to remove one first. You can, however, still add a supporting document to your item."
               result.allowMore mustBe true
           }
         }
@@ -127,7 +129,9 @@ class AddAnotherHouseConsignmentDocumentViewModelSpec extends SpecBase with Scal
 
               val result = new AddAnotherHouseConsignmentDocumentViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode)
 
-              result.maxLimitLabelForType.get mustBe "You cannot add any more supporting documents to all items. To add another, you need to remove one first. You can, however, still add a transport document to your items."
+              result
+                .maxLimitLabelForType(itemIndex, houseConsignmentIndex)
+                .get mustBe "You cannot add any more supporting documents to item 1 in house consignment 1. To add another, you need to remove one first. You can, however, still add a transport document to your item."
               result.allowMore mustBe true
           }
         }

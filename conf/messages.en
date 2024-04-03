@@ -801,7 +801,7 @@ houseConsignment.index.items.document.addAnotherDocument.plural.label = Do you w
 houseConsignment.index.items.document.addAnotherDocument.maxLimit.label = You cannot add any more documents to item {0} in house consignment {1}. To add another, you need to remove one first.
 houseConsignment.index.items.document.addAnotherDocument.error.required = Select yes if you want to add another document to item {0} in house consignment {1}
 houseConsignment.index.items.document.addAnotherDocument.label = Do you want to add another document to item {0} in house consignment {1}?
-houseConsignment.index.items.document.addAnotherDocument.maxLimitForType.label = You cannot add any more {0} documents to all items. To add another, you need to remove one first. You can, however, still add a {1} document to your items.
+houseConsignment.index.items.document.addAnotherDocument.maxLimitForType.label = You cannot add any more {0} documents to item {3} in house consignment {2}. To add another, you need to remove one first. You can, however, still add a {1} document to your item.
 
 
 additionalReferenceNumber.index.NormalMode.title = What is the additional reference number?
