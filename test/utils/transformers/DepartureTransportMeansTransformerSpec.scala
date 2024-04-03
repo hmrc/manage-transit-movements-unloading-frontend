@@ -21,8 +21,7 @@ import connectors.ReferenceDataConnector
 import generated.DepartureTransportMeansType02
 import generators.Generators
 import models.Index
-import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.Country
+import models.reference.{Country, TransportMeansIdentification}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary

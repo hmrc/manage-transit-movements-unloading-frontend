@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items.document
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.reference.DocumentType
-import models.{ArrivalId, Index, Mode, NormalMode, UserAnswers}
+import models.{ArrivalId, Index, Mode, UserAnswers}
 import pages.houseConsignment.index.items.document.{DocumentReferenceNumberPage, TypePage}
 import pages.sections.houseConsignment.index.items.documents.DocumentSection
 import play.api.data.Form

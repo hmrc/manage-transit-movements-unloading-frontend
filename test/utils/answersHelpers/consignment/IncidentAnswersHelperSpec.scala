@@ -18,8 +18,7 @@ package utils.answersHelpers.consignment
 
 import generated._
 import models.Coordinates
-import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.{Country, Incident, QualifierOfIdentification}
+import models.reference.{Country, Incident, QualifierOfIdentification, TransportMeansIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.incident.endorsement.EndorsementCountryPage

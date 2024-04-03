@@ -16,7 +16,7 @@
 
 package pages.departureTransportMeans
 
-import models.departureTransportMeans.TransportMeansIdentification
+import models.reference.TransportMeansIdentification
 import pages.behaviours.PageBehaviours
 import pages.departureMeansOfTransport.TransportMeansIdentificationPage
 

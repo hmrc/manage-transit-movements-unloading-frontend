@@ -16,8 +16,7 @@
 
 package utils.answersHelpers.consignment
 
-import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.{AdditionalInformationCode, AdditionalReferenceType, Country, PackageType}
+import models.reference.{AdditionalInformationCode, AdditionalReferenceType, Country, PackageType, TransportMeansIdentification}
 import models.{DynamicAddress, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen

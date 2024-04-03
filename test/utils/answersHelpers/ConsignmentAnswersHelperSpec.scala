@@ -18,7 +18,6 @@ package utils.answersHelpers
 
 import generated._
 import models.DocType.Previous
-import models.departureTransportMeans.TransportMeansIdentification
 import models.reference._
 import models.{CheckMode, Coordinates, Index, NormalMode, SecurityType}
 import org.scalacheck.Arbitrary.arbitrary

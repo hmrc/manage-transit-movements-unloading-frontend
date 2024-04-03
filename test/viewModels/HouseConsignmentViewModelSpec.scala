@@ -19,8 +19,7 @@ package viewModels
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.Index
-import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.Country
+import models.reference.{Country, TransportMeansIdentification}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
 import pages.houseConsignment.index.items.{

@@ -19,8 +19,9 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import generators.Generators
-import models.departureTransportMeans.TransportMeansIdentification
-import models.{NormalMode, TransportMeans, UserAnswers}
+import models.reference.TransportMeansIdentification
+import models.removable.TransportMeans
+import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}

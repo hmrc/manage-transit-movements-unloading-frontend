@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package models
+package models.removable
 
-import models.departureTransportMeans.TransportMeansIdentification
+import models.reference.TransportMeansIdentification
+import models.{Index, UserAnswers}
 
 case class TransportMeans(identificationType: Option[TransportMeansIdentification], identificationNumber: Option[String]) {
 

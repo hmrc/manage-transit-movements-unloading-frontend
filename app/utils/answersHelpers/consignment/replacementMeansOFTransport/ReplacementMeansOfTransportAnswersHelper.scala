@@ -17,8 +17,7 @@
 package utils.answersHelpers.consignment.replacementMeansOfTransport
 
 import generated.TranshipmentType02
-import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.Country
+import models.reference.{Country, TransportMeansIdentification}
 import models.{Index, UserAnswers}
 import pages.incident.replacementMeansOfTransport.{IdentificationPage, NationalityPage}
 import play.api.i18n.Messages

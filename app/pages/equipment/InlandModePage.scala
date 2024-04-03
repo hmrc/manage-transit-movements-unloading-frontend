@@ -16,7 +16,7 @@
 
 package pages.equipment
 
-import models.reference.transport.TransportMode.InlandMode
+import models.reference.TransportMode.InlandMode
 import pages.QuestionPage
 import pages.sections.equipment.TransportSection
 import play.api.libs.json.JsPath
