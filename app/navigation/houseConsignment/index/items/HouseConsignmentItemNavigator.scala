@@ -17,11 +17,13 @@
 package navigation.houseConsignment.index.items
 
 import com.google.inject.Singleton
-import models.UserAnswers
+import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
 import navigation.Navigator
 import pages._
 import pages.houseConsignment.index.items._
+import pages.houseConsignment.index.items.document.AddDocumentYesNoPage
 import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
+import pages.sections.houseConsignment.index.items.documents.DocumentsSection
 import play.api.mvc.Call
 
 @Singleton
@@ -43,6 +45,55 @@ class HouseConsignmentItemNavigator extends Navigator {
   }
 
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex)            => ua => addCommodityCodeNav(ua, houseConsignmentIndex, itemIndex)
+    case AddCombinedNomenclatureCodeYesNoPage(houseConsignmentIndex, itemIndex) => ua => addCombinedNomenclatureCodeNav(ua, houseConsignmentIndex, itemIndex)
+    case AddDocumentYesNoPage(houseConsignmentIndex, itemIndex)                 => ua => addDocumentYesNoNav(ua, houseConsignmentIndex, itemIndex)
+    case CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex) =>
+      ua =>
+        Some(
+          controllers.houseConsignment.index.items.document.routes.AddDocumentYesNoController
+            .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
+        )
+    case CommodityCodePage(houseConsignmentIndex, itemIndex) =>
+      ua =>
+        Some(
+          controllers.houseConsignment.index.items.routes.AddCombinedNomenclatureCodeYesNoController
+            .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
+        )
     case _ => _ => Some(Call("GET", "#")) //TODO: Update document navigation
+  }
+
+  def addCommodityCodeNav(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index): Option[Call] =
+    ua.get(AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex)).map {
+      case true =>
+        controllers.houseConsignment.index.items.routes.CommodityCodeController
+          .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, CheckMode)
+      case false =>
+        controllers.houseConsignment.index.items.document.routes.AddDocumentYesNoController
+          .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
+    }
+
+  def addCombinedNomenclatureCodeNav(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index): Option[Call] =
+    ua.get(AddCombinedNomenclatureCodeYesNoPage(houseConsignmentIndex, itemIndex)).map {
+      case true =>
+        controllers.houseConsignment.index.items.routes.CombinedNomenclatureCodeController
+          .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, CheckMode)
+      case false =>
+        controllers.houseConsignment.index.items.document.routes.AddDocumentYesNoController
+          .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
+    }
+
+  def addDocumentYesNoNav(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index): Option[Call] = {
+
+    val documentIndex = ua.get(DocumentsSection(houseConsignmentIndex, itemIndex)).map(_.value.length).getOrElse(0)
+
+    ua.get(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex)).map {
+      case true =>
+        controllers.houseConsignment.index.items.document.routes.TypeController
+          .onPageLoad(ua.id, NormalMode, houseConsignmentIndex, itemIndex, Index(documentIndex))
+      case false =>
+        controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
+          .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
+    }
   }
 }
