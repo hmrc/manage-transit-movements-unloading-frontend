@@ -135,6 +135,50 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
           .nextPage(CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex), mode, userAnswers)
           .mustBe(routes.AddCommodityCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode))
       }
+
+      "must go from AddAdditionalReferenceYesNo page" - {
+        "when user answers Yes to AdditionalReferenceType page" in {
+          val userAnswers = emptyUserAnswers.setValue(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex), true)
+
+          navigator
+            .nextPage(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+            .mustBe(
+              controllers.houseConsignment.index.items.additionalReference.routes.AdditionalReferenceTypeController
+                .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+            )
+        }
+
+        "when user answers No to AddPackagesYesNoPage" in {
+          val userAnswers = emptyUserAnswers.setValue(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex), false)
+
+          navigator
+            .nextPage(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+            .mustBe(controllers.houseConsignment.index.items.routes.AddPackagesYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode))
+        }
+      }
+
+      "must go from AddPackagesYesNo page" - {
+        "when user answers Yes to PackageType page" in {
+          val userAnswers = emptyUserAnswers.setValue(AddPackagesYesNoPage(houseConsignmentIndex, itemIndex), true)
+
+          navigator
+            .nextPage(AddPackagesYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+            .mustBe(
+              controllers.houseConsignment.index.items.packages.routes.PackageTypeController
+                .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)
+            )
+        }
+
+        "when user answers No to AddAnotherItem Page" in {
+          val userAnswers = emptyUserAnswers.setValue(AddPackagesYesNoPage(houseConsignmentIndex, itemIndex), false)
+
+          navigator
+            .nextPage(AddPackagesYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+            .mustBe(
+              controllers.houseConsignment.index.items.routes.AddAnotherItemController.onPageLoad(arrivalId, houseConsignmentIndex, mode)
+            )
+        }
+      }
     }
 
     "in Check mode" - {

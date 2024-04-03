@@ -41,6 +41,8 @@ class HouseConsignmentItemNavigator extends Navigator {
       ua => addCustomsUnionAndStatisticsCodeYesNoRoute(ua, ua.id, houseConsignmentIndex, itemIndex, NormalMode)
     case CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex) =>
       ua => Some(routes.AddCommodityCodeYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode))
+    case AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex) => ua => addAdditionalReferenceYesNoRoute(ua, houseConsignmentIndex, itemIndex)
+    case AddPackagesYesNoPage(houseConsignmentIndex, itemIndex)            => ua => addPackagesYesNoRoute(ua, houseConsignmentIndex, itemIndex)
   }
 
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
@@ -79,5 +81,23 @@ class HouseConsignmentItemNavigator extends Navigator {
     ua.get(AddCustomsUnionAndStatisticsCodeYesNoPage(houseConsignmentIndex, itemIndex)).map {
       case true  => routes.CustomsUnionAndStatisticsCodeController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex)
       case false => routes.AddCommodityCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+    }
+
+  private def addAdditionalReferenceYesNoRoute(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index): Option[Call] =
+    ua.get(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex)) map {
+      case true =>
+        controllers.houseConsignment.index.items.additionalReference.routes.AdditionalReferenceTypeController
+          .onPageLoad(ua.id, NormalMode, houseConsignmentIndex, itemIndex, Index(0))
+      case false =>
+        controllers.houseConsignment.index.items.routes.AddPackagesYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
+    }
+
+  private def addPackagesYesNoRoute(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index): Option[Call] =
+    ua.get(AddPackagesYesNoPage(houseConsignmentIndex, itemIndex)) map {
+      case true =>
+        controllers.houseConsignment.index.items.packages.routes.PackageTypeController
+          .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, Index(0), NormalMode)
+      case false =>
+        controllers.houseConsignment.index.items.routes.AddAnotherItemController.onPageLoad(ua.id, houseConsignmentIndex, NormalMode)
     }
 }
