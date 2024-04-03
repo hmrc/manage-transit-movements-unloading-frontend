@@ -1,5 +1,5 @@
 @*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,11 @@
  *@
 
 @import config.FrontendAppConfig
+@import models.MovementReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
-@import viewModels.additionalReference.index.AddAnotherAdditionalReferenceViewModel
+@import viewModels.houseConsignment.index.items.AddAnotherItemViewModel
 @import views.html.components.{Button, ErrorSummary, Heading, InputYesNo, ListWithActions}
+@import views.html.templates.MainTemplate
 
 @this(
     mainTemplate: MainTemplate,
@@ -29,7 +31,7 @@
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, viewModel: AddAnotherAdditionalReferenceViewModel)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, viewModel: AddAnotherItemViewModel)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
 
 @mainTemplate(
     title = viewModel.title,
@@ -47,12 +49,11 @@
 
     @formHelper(action = viewModel.onSubmitCall, Symbol("autoComplete") -> "off") {
 
-        @if(viewModel.allowMore) {
+     @if(viewModel.allowMore) {
             @inputYesNo(
                 field = form("value"),
                 yesNoType = YesNoWithLegend(
-                    legend = viewModel.legend,
-                    additionalHtml = Some(messages("additionalReference.index.addAnotherAdditionalReference.paragraph").toParagraph)
+                    legend = viewModel.legend
                 )
             )
         } else {

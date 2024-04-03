@@ -63,7 +63,7 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
               val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, arrivalId, mode)
 
               result.listItems.length mustBe 1
-              result.listItems.head.name mustBe "Support - ref1"
+              result.listItems.head.name mustBe "Supporting - (code1) description1 - ref1"
               result.title mustBe "You have added 1 document to all items"
               result.heading mustBe "You have added 1 document to all items"
               result.legend mustBe "Do you want to add another document to all items?"
@@ -143,8 +143,8 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
 
               val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, arrivalId, mode)
               result.listItems.length mustBe 2
-              result.listItems.head.name mustBe "Support - ref1"
-              result.listItems.last.name mustBe "Transport - ref2"
+              result.listItems.head.name mustBe "Supporting - (code1) description1 - ref1"
+              result.listItems.last.name mustBe "Transport - (code2) description2 - ref2"
               result.title mustBe "You have added 2 documents to all items"
               result.heading mustBe "You have added 2 documents to all items"
               result.legend mustBe "Do you want to add another document to all items?"
@@ -205,7 +205,7 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
 
               result.listItems mustBe Seq(
                 ListItem(
-                  name = "Support - ref1",
+                  name = "Supporting - (code1) description1 - ref1",
                   changeUrl = None,
                   removeUrl = Some(
                     controllers.documents.routes.RemoveDocumentYesNoController
@@ -214,7 +214,7 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
                   )
                 ),
                 ListItem(
-                  name = "Transport - ref2",
+                  name = "Transport - (code2) description2 - ref2",
                   changeUrl = None,
                   removeUrl = Some(
                     controllers.documents.routes.RemoveDocumentYesNoController

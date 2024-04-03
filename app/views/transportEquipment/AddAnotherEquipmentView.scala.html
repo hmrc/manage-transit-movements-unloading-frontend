@@ -46,15 +46,14 @@
 
     @listWithActions(viewModel.listItems)
 
-    <p class="govuk-body">@messages("transportEquipment.addAnotherEquipment.paragraph")</p>
-
     @formHelper(action = viewModel.onSubmitCall, Symbol("autoComplete") -> "off") {
 
-     @if(viewModel.allowMore) {
+        @if(viewModel.allowMore) {
             @inputYesNo(
                 field = form("value"),
                 yesNoType = YesNoWithLegend(
-                    legend = viewModel.legend
+                    legend = viewModel.legend,
+                    additionalHtml = Some(messages("transportEquipment.addAnotherEquipment.paragraph").toParagraph)
                 )
             )
         } else {
