@@ -18,14 +18,25 @@ package models.removable
 
 import models.reference.TransportMeansIdentification
 import models.{Index, UserAnswers}
+import play.api.i18n.Messages
 
-case class TransportMeans(identificationType: Option[TransportMeansIdentification], identificationNumber: Option[String]) {
+case class TransportMeans(index: Index, identificationType: Option[TransportMeansIdentification], identificationNumber: Option[String]) {
 
-  def asString: Option[String] = (identificationType, identificationNumber) match {
+  def forRemoveDisplay: Option[String] = (identificationType, identificationNumber) match {
     case (Some(a), Some(b)) => Some(s"$a - $b")
     case (Some(a), None)    => Some(a.toString)
     case (None, Some(b))    => Some(b)
     case (None, None)       => None
+  }
+
+  def forAddAnotherDisplay(implicit messages: Messages): String = {
+    val prefix = messages("departureMeansOfTransportPrefix.prefix", index.display)
+    (identificationType, identificationNumber) match {
+      case (Some(a), Some(b)) => s"$prefix - $a - $b"
+      case (Some(a), None)    => s"$prefix - $a"
+      case (None, Some(b))    => s"$prefix - $b"
+      case (None, None)       => prefix
+    }
   }
 }
 
@@ -34,6 +45,7 @@ object TransportMeans {
   def apply(userAnswers: UserAnswers, transportMeansIndex: Index): TransportMeans = {
     import pages.departureMeansOfTransport._
     new TransportMeans(
+      transportMeansIndex,
       userAnswers.get(TransportMeansIdentificationPage(transportMeansIndex)),
       userAnswers.get(VehicleIdentificationNumberPage(transportMeansIndex))
     )

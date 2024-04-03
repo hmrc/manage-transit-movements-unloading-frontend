@@ -31,8 +31,8 @@ class TransportMeansSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
     "when identification type and identification number defined" in {
       forAll(arbitrary[TransportMeansIdentification], Gen.alphaNumStr) {
         (identificationType, identificationNumber) =>
-          val transportMeans = TransportMeans(Some(identificationType), Some(identificationNumber))
-          val result         = transportMeans.asString
+          val transportMeans = TransportMeans(index, Some(identificationType), Some(identificationNumber))
+          val result         = transportMeans.forRemoveDisplay
           result.value mustBe s"${identificationType.toString} - $identificationNumber"
       }
     }
@@ -40,8 +40,8 @@ class TransportMeansSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
     "when identification type defined" in {
       forAll(arbitrary[TransportMeansIdentification]) {
         identificationType =>
-          val transportMeans = TransportMeans(Some(identificationType), None)
-          val result         = transportMeans.asString
+          val transportMeans = TransportMeans(index, Some(identificationType), None)
+          val result         = transportMeans.forRemoveDisplay
           result.value mustBe identificationType.toString
       }
     }
@@ -49,15 +49,15 @@ class TransportMeansSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
     "when identification number defined" in {
       forAll(Gen.alphaNumStr) {
         identificationNumber =>
-          val transportMeans = TransportMeans(None, Some(identificationNumber))
-          val result         = transportMeans.asString
+          val transportMeans = TransportMeans(index, None, Some(identificationNumber))
+          val result         = transportMeans.forRemoveDisplay
           result.value mustBe identificationNumber
       }
     }
 
     "when nothing defined" in {
-      val transportMeans = TransportMeans(None, None)
-      val result         = transportMeans.asString
+      val transportMeans = TransportMeans(index, None, None)
+      val result         = transportMeans.forRemoveDisplay
       result mustBe None
     }
   }

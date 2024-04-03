@@ -17,8 +17,8 @@
 package viewModels.departureTransportMeans
 
 import config.FrontendAppConfig
+import models.removable.TransportMeans
 import models.{ArrivalId, Index, Mode, RichOptionalJsArray, UserAnswers}
-import pages.departureMeansOfTransport.{TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 import pages.sections.TransportMeansListSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -46,22 +46,8 @@ object AddAnotherDepartureMeansOfTransportViewModel {
 
       val listItems = array.mapWithIndex {
         case (_, index) =>
-          def prefix(increment: Int) = messages("departureMeansOfTransportPrefix.prefix", increment)
-
-          val name =
-            (userAnswers.get(TransportMeansIdentificationPage(index)), userAnswers.get(VehicleIdentificationNumberPage(index))) match {
-              case (Some(identification), Some(identificationNumber)) =>
-                s"${prefix(index.display)} - $identification - $identificationNumber"
-              case (Some(identification), None) =>
-                s"${prefix(index.display)} - $identification"
-              case (None, Some(identificationNumber)) =>
-                s"${prefix(index.display)} - $identificationNumber"
-              case _ =>
-                s"${prefix(index.display)}"
-            }
-
           ListItem(
-            name = name,
+            name = TransportMeans(userAnswers, index).forAddAnotherDisplay,
             changeUrl = None,
             removeUrl = Some(controllers.departureMeansOfTransport.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(arrivalId, mode, index).url)
           )
