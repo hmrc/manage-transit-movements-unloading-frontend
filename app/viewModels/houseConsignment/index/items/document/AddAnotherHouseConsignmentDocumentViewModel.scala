@@ -52,12 +52,12 @@ case class AddAnotherHouseConsignmentDocumentViewModel(
     case _ => messages(s"$prefix.plural.label", itemIndex, houseConsignmentIndex)
   }
 
-  def maxLimitLabelForType(implicit config: FrontendAppConfig, messages: Messages): Option[String] = {
+  def maxLimitLabelForType(itemIndex: Index, houseConsignmentIndex: Index)(implicit config: FrontendAppConfig, messages: Messages): Option[String] = {
     val groupedByType = docTypeList.groupBy(identity)
     if (groupedByType.getOrElse(Support, Seq.empty).length == config.maxSupportingDocumentsHouseConsignment) {
-      Some(messages(s"$prefix.maxLimitForType.label", Support.display.toLowerCase, Transport.display.toLowerCase))
+      Some(messages(s"$prefix.maxLimitForType.label", Support.display.toLowerCase, Transport.display.toLowerCase, houseConsignmentIndex, itemIndex))
     } else if (groupedByType.getOrElse(Transport, Seq.empty).length == config.maxTransportDocumentsHouseConsignment) {
-      Some(messages(s"$prefix.maxLimitForType.label", Transport.display.toLowerCase, Support.display.toLowerCase))
+      Some(messages(s"$prefix.maxLimitForType.label", Transport.display.toLowerCase, Support.display.toLowerCase, houseConsignmentIndex, itemIndex))
     } else {
       None
     }
