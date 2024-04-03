@@ -42,7 +42,7 @@ class HouseConsignmentItemNavigator extends Navigator {
     case CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex) =>
       ua => Some(routes.AddCommodityCodeYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode))
     case AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex) => ua => addAdditionalReferenceYesNoRoute(ua, houseConsignmentIndex, itemIndex)
-    case AddPackagesYesNoPage(houseConsignmentIndex, itemIndex) => ua => addPackagesYesNoRoute(ua, houseConsignmentIndex, itemIndex)
+    case AddPackagesYesNoPage(houseConsignmentIndex, itemIndex)            => ua => addPackagesYesNoRoute(ua, houseConsignmentIndex, itemIndex)
   }
 
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
