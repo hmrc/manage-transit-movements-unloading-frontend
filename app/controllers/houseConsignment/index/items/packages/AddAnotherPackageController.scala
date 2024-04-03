@@ -67,7 +67,7 @@ class AddAnotherPackageController @Inject() (
                   .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, viewModel.nextIndex, mode)
               )
             case false =>
-              Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url)
+              Redirect(controllers.houseConsignment.index.items.routes.AddAnotherItemController.onPageLoad(arrivalId, houseConsignmentIndex, mode).url)
           }
         )
   }
