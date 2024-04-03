@@ -34,23 +34,23 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
       val mode = CheckMode
 
-      "must go from AdditionalReferenceTypePage to UnloadingFindingsPage page" in {
+      "must go from AdditionalReferenceTypePage to HouseConsignmentController page" in {
 
         val userAnswers =
           emptyUserAnswers.setValue(AdditionalReferenceTypePage(additionalReferenceIndex, hcIndex, itemIndex), AdditionalReferenceType("test", "test"))
 
         navigator
           .nextPage(AdditionalReferenceTypePage(additionalReferenceIndex, hcIndex, itemIndex), mode, userAnswers)
-          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
       }
 
-      "must go from AdditionalReferenceNumberPage to UnloadingFindingsPage page" in {
+      "must go from AdditionalReferenceNumberPage to HouseConsignmentController page" in {
 
         val userAnswers = emptyUserAnswers.setValue(AdditionalReferenceNumberPage(additionalReferenceIndex, hcIndex, itemIndex), "test")
 
         navigator
           .nextPage(AdditionalReferenceNumberPage(additionalReferenceIndex, hcIndex, itemIndex), mode, userAnswers)
-          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
       }
 
     }

@@ -17,12 +17,11 @@
 package utils.answersHelpers.consignment.houseConsignment.item
 
 import models.reference.AdditionalReferenceType
-import models.{Index, UserAnswers}
+import controllers.houseConsignment.index.items.additionalReference.routes
+import models.{CheckMode, Index, UserAnswers}
 import pages.houseConsignment.index.items.additionalReference._
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
 
 class AdditionalReferencesAnswerHelper(
@@ -38,7 +37,10 @@ class AdditionalReferencesAnswerHelper(
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.houseConsignment.item.additionalReference.type",
     id = Some(s"change-additional-reference-type-${itemIndex.display}-${additionalReferenceIndex.display}"),
-    call = Some(Call(GET, "#")),
+    call = Some(
+      routes.AdditionalReferenceTypeController
+        .onPageLoad(arrivalId, CheckMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+    ),
     args = Seq(itemIndex.display, additionalReferenceIndex.display): _*
   )
 
@@ -47,7 +49,10 @@ class AdditionalReferencesAnswerHelper(
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.houseConsignment.item.additionalReference.number",
     id = Some(s"change-additional-reference-number-${itemIndex.display}-${additionalReferenceIndex.display}"),
-    call = Some(Call(GET, "#")),
+    call = Some(
+      routes.AdditionalReferenceNumberController
+        .onPageLoad(arrivalId, CheckMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+    ),
     args = Seq(itemIndex.display, additionalReferenceIndex.display): _*
   )
 }
