@@ -17,7 +17,8 @@
 package navigation.houseConsignment.index.items
 
 import com.google.inject.Singleton
-import models.UserAnswers
+import controllers.houseConsignment.index.items.routes
+import models.{ArrivalId, Index, Mode, NormalMode, UserAnswers}
 import navigation.Navigator
 import pages._
 import pages.houseConsignment.index.items._
@@ -26,6 +27,21 @@ import play.api.mvc.Call
 
 @Singleton
 class HouseConsignmentItemNavigator extends Navigator {
+
+  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case ItemDescriptionPage(houseConsignmentIndex, itemIndex) =>
+      ua => Some(routes.AddGrossWeightYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode))
+    case AddGrossWeightYesNoPage(houseConsignmentIndex, itemIndex) => ua => addGrossWeightYesNoRoute(ua, ua.id, houseConsignmentIndex, itemIndex, NormalMode)
+    case GrossWeightPage(houseConsignmentIndex, itemIndex) =>
+      ua => Some(routes.AddNetWeightYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode))
+    case AddNetWeightYesNoPage(houseConsignmentIndex, itemIndex) => ua => addNetWeightYesNoRoute(ua, ua.id, houseConsignmentIndex, itemIndex, NormalMode)
+    case NetWeightPage(houseConsignment, itemIndex) =>
+      ua => Some(routes.AddCustomsUnionAndStatisticsCodeYesNoController.onPageLoad(ua.id, houseConsignment, itemIndex, NormalMode))
+    case AddCustomsUnionAndStatisticsCodeYesNoPage(houseConsignmentIndex, itemIndex) =>
+      ua => addCustomsUnionAndStatisticsCodeYesNoRoute(ua, ua.id, houseConsignmentIndex, itemIndex, NormalMode)
+    case CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex) =>
+      ua => Some(routes.AddCommodityCodeYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode))
+  }
 
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case ItemDescriptionPage(houseConsignmentIndex, _) => ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
@@ -42,7 +58,26 @@ class HouseConsignmentItemNavigator extends Navigator {
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
   }
 
-  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case _ => _ => Some(Call("GET", "#")) //TODO: Update document navigation
-  }
+  def addGrossWeightYesNoRoute(ua: UserAnswers, arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Option[Call] =
+    ua.get(AddGrossWeightYesNoPage(houseConsignmentIndex, itemIndex)).map {
+      case true  => routes.GrossWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+      case false => routes.AddNetWeightYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+    }
+
+  def addNetWeightYesNoRoute(ua: UserAnswers, arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Option[Call] =
+    ua.get(AddNetWeightYesNoPage(houseConsignmentIndex, itemIndex)).map {
+      case true  => routes.NetWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+      case false => routes.AddCustomsUnionAndStatisticsCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+    }
+
+  def addCustomsUnionAndStatisticsCodeYesNoRoute(ua: UserAnswers,
+                                                 arrivalId: ArrivalId,
+                                                 houseConsignmentIndex: Index,
+                                                 itemIndex: Index,
+                                                 mode: Mode
+  ): Option[Call] =
+    ua.get(AddCustomsUnionAndStatisticsCodeYesNoPage(houseConsignmentIndex, itemIndex)).map {
+      case true  => routes.CustomsUnionAndStatisticsCodeController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex)
+      case false => routes.AddCommodityCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+    }
 }
