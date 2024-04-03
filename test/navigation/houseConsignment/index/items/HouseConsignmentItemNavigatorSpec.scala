@@ -24,6 +24,7 @@ import models.reference.PackageType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.houseConsignment.index.items._
+import pages.houseConsignment.index.items.document.AddDocumentYesNoPage
 import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
 
 class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -278,5 +279,118 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
         }
       }
     }
+
+    "in Normal mode" - {
+      val mode = NormalMode
+
+      "must go from AddCommodityCodeYesNoPage to CommodityCodePage when answered Yes" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex), true)
+
+        navigator
+          .nextPage(AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .mustBe(controllers.houseConsignment.index.items.routes.CommodityCodeController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode))
+
+      }
+
+      "must go from AddCommodityCodeYesNoPage to AddDocumentYesNoPage when answered No" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex), false)
+
+        navigator
+          .nextPage(AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.document.routes.AddDocumentYesNoController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
+          )
+
+      }
+
+      "must go from CommodityCodePage to AddCombinedNomenclatureCodeYesNoPage " in {
+
+        val userAnswers = emptyUserAnswers
+
+        navigator
+          .nextPage(CommodityCodePage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.routes.AddCombinedNomenclatureCodeYesNoController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
+          )
+
+      }
+
+      "must go from AddCombinedNomenclatureCodeYesNoPage to CombinedNomenclatureCodePage when answered Yes" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(AddCombinedNomenclatureCodeYesNoPage(houseConsignmentIndex, itemIndex), true)
+
+        navigator
+          .nextPage(AddCombinedNomenclatureCodeYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.routes.CombinedNomenclatureCodeController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode)
+          )
+
+      }
+
+      "must go from AddCombinedNomenclatureCodeYesNoPage to AddDocumentYesNoPage when answered No" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(AddCombinedNomenclatureCodeYesNoPage(houseConsignmentIndex, itemIndex), false)
+
+        navigator
+          .nextPage(AddCombinedNomenclatureCodeYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.document.routes.AddDocumentYesNoController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
+          )
+
+      }
+
+      "must go from CombinedNomenclatureCodePage to AddDocumentYesNoPage" in {
+
+        val userAnswers = emptyUserAnswers
+
+        navigator
+          .nextPage(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.document.routes.AddDocumentYesNoController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
+          )
+
+      }
+
+      "must go from AddDocumentYesNoPage to TypePage when answered Yes" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex), true)
+
+        navigator
+          .nextPage(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.document.routes.TypeController
+              .onPageLoad(arrivalId, NormalMode, houseConsignmentIndex, itemIndex, documentIndex)
+          )
+
+      }
+
+      "must go from AddDocumentYesNoPage to AddAdditionalReferenceYesNoPage when answered No" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex), false)
+
+        navigator
+          .nextPage(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
+          )
+
+      }
+
+    }
+
   }
 }
