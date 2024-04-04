@@ -16,21 +16,17 @@
 
 package pages
 
-import models.UserAnswers
-import pages.sections.UnloadingRemarksSection
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-import scala.util.Try
+class AddCommentsYesNoPageSpec extends PageBehaviours {
 
-case object AddUnloadingCommentsYesNoPage extends QuestionPage[Boolean] {
+  "AddCommentsYesNoPage" - {
 
-  override def path: JsPath = UnloadingRemarksSection.path \ toString
+    beRetrievable[Boolean](AddCommentsYesNoPage)
 
-  override def toString: String = "addUnloadingCommentsYesNo"
+    beSettable[Boolean](AddCommentsYesNoPage)
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(false) => userAnswers.remove(UnloadingCommentsPage)
-      case _           => super.cleanup(value, userAnswers)
-    }
+    beRemovable[Boolean](AddCommentsYesNoPage)
+
+  }
 }

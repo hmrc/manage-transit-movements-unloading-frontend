@@ -324,6 +324,11 @@ addUnloadingCommentsYesNo.heading = Were there any discrepancies between the tra
 addUnloadingCommentsYesNo.paragraph = This includes any changes to the means of transport, items or transport equipment.
 addUnloadingCommentsYesNo.error.required = Select yes if there were any discrepancies between the transit and the declaration summary
 
+addCommentsYesNo.title = Do you want to add any comments?
+addCommentsYesNo.heading = Do you want to add any comments?
+addCommentsYesNo.paragraph = This can be anything else you want to tell us about the discrepancies you spotted when unloading.
+addCommentsYesNo.error.required = Select yes if you want to add any comments
+
 changesToReport.title = Describe the discrepancies between the transit and the declaration summary
 changesToReport.heading = Describe the discrepancies between the transit and the declaration summary
 changesToReport.checkYourAnswersLabel = What comments do you want to add?
@@ -1064,3 +1069,12 @@ houseConsignment.item.addCombinedNomenclatureCodeYesNo.title = Do you want to ad
 houseConsignment.item.addCombinedNomenclatureCodeYesNo.heading = Do you want to add a combined nomenclature for the item?
 houseConsignment.item.addCombinedNomenclatureCodeYesNo.error.required = Select yes if you want to add a combined nomenclature code for the item
 houseConsignment.item.addCombinedNomenclatureCodeYesNo.paragraph = This is used to classify goods when they’re declared to Customs in the EU.
+
+houseConsignment.index.grossWeight.title = What is the new gross weight of house consignment {0}?
+houseConsignment.index.grossWeight.heading = What is the new gross weight of house consignment {0}?
+houseConsignment.index.grossWeight.paragraph = This is the combined weight of the house consignment’s goods and packaging.
+houseConsignment.index.grossWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
+houseConsignment.index.grossWeight.error.required = Enter the new gross weight of house consignment {0}
+houseConsignment.index.grossWeight.error.invalidValue = The new gross weight must be 16 characters or less
+houseConsignment.index.grossWeight.error.invalidCharacters = The new gross weight must only include numbers 0 to 9 and a decimal point
+houseConsignment.index.grossWeight.error.invalidFormat = The new gross weight must only include 6 decimal places or less

@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package pages
+package pages.houseConsignment.index
 
+import models.Index
+import pages.QuestionPage
+import pages.sections.HouseConsignmentSection
 import play.api.libs.json.JsPath
 
-case object StateOfSealsPage extends QuestionPage[String] {
+case class GrossWeightPage(houseConsignmentIndex: Index) extends QuestionPage[BigDecimal] {
 
-  override def path: JsPath = JsPath \ "n1:CC044C" \ "UnloadingRemark" \ toString
+  override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ toString
 
-  override def toString: String = "stateOfSeals"
+  override def toString: String = "grossMass"
 }
