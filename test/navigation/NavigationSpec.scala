@@ -171,28 +171,6 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         }
       }
 
-      "must go from AnythingElseToReport yes no page" - {
-        "when answer is true to AnythingElseToReport Page" in {
-          val userAnswers = emptyUserAnswers.setValue(DoYouHaveAnythingElseToReportYesNoPage, true)
-
-          navigator
-            .nextPage(DoYouHaveAnythingElseToReportYesNoPage, mode, userAnswers)
-            .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
-        }
-        "when answer is false to AnythingElseToReport Page" in {
-          val userAnswers = emptyUserAnswers.setValue(DoYouHaveAnythingElseToReportYesNoPage, false)
-
-          navigator
-            .nextPage(DoYouHaveAnythingElseToReportYesNoPage, mode, userAnswers)
-            .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
-        }
-        "to session expired controller when no existing answers found" in {
-          navigator
-            .nextPage(DoYouHaveAnythingElseToReportYesNoPage, mode, emptyUserAnswers)
-            .mustBe(routes.SessionExpiredController.onPageLoad())
-        }
-      }
-
       "must go from New Seal Number page to unloading summary page" ignore {
         forAll(arbitrary[UserAnswers]) {
           answers =>

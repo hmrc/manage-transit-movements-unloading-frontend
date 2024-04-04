@@ -90,5 +90,5 @@ POST       /:arrivalId/report                                                   
 GET        /:arrivalId/change-report                                                                                 controllers.OtherThingsToReportController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-report                                                                                 controllers.OtherThingsToReportController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/do-you-have-anything-else-to-report                                                           controllers.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/do-you-have-anything-else-to-report                                                           controllers.DoYouHaveAnythingElseToReportYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/add-report                                                           controllers.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/add-report                                                           controllers.DoYouHaveAnythingElseToReportYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)

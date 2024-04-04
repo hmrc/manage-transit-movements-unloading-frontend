@@ -21,6 +21,7 @@ import controllers.routes
 import models.{CheckMode, NormalMode, RichCC043CType, UserAnswers}
 import pages._
 import play.api.mvc.Call
+import uk.gov.hmrc.http.HttpVerbs.GET
 
 @Singleton
 class Navigation extends Navigator {
@@ -48,8 +49,7 @@ class Navigation extends Navigator {
     case DoYouHaveAnythingElseToReportYesNoPage =>
       ua =>
         ua.get(DoYouHaveAnythingElseToReportYesNoPage) map {
-          case true  => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)
-          case false => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)
+          case _ => Call(GET, "#") //TODO: Update DoYouHaveAnythingElseToReport navigation
         }
 
     case _ =>
