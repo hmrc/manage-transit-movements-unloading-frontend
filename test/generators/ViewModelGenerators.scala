@@ -16,8 +16,7 @@
 
 package generators
 
-import models.DocType.Previous
-import models.{ArrivalId, ConsignmentLevelDocuments, DocType, HouseConsignmentLevelDocuments, Index, NormalMode}
+import models.{ArrivalId, ConsignmentLevelDocuments, HouseConsignmentLevelDocuments, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.FormError
@@ -309,9 +308,9 @@ trait ViewModelGenerators {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
       nextIndex    <- arbitrary[Index]
-      docTypes     <- arbitrary[Seq[DocType]]
+      documents    <- arbitrary[HouseConsignmentLevelDocuments](arbitraryHouseConsignmentLevelDocuments)
       allowMore    <- arbitrary[Boolean]
-    } yield AddAnotherHouseConsignmentDocumentViewModel(listItems, onSubmitCall, nextIndex, docTypes.filter(_ != Previous), allowMore)
+    } yield AddAnotherHouseConsignmentDocumentViewModel(listItems, onSubmitCall, nextIndex, documents, allowMore)
   }
 
   implicit lazy val arbitraryContainerIdentificationNumberViewModel: Arbitrary[ContainerIdentificationNumberViewModel] = Arbitrary {

@@ -49,7 +49,7 @@ class RemoveDocumentYesNoController @Inject() (
     controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
 
   private def formatInsetText(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index): Option[String] =
-    Document(userAnswers, houseConsignmentIndex, itemIndex, documentIndex).map(_.asRemoveString)
+    Document(userAnswers, houseConsignmentIndex, itemIndex, documentIndex).map(_.forRemoveDisplay)
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions
     .requireIndex(arrivalId, DocumentSection(houseConsignmentIndex, itemIndex, documentIndex), addAnother(arrivalId, mode, houseConsignmentIndex, itemIndex)) {

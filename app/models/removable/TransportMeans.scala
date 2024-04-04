@@ -19,6 +19,8 @@ package models.removable
 import models.reference.TransportMeansIdentification
 import models.{Index, UserAnswers}
 import play.api.i18n.Messages
+import play.api.libs.functional.syntax._
+import play.api.libs.json.Reads
 
 case class TransportMeans(index: Index, identificationType: Option[TransportMeansIdentification], identificationNumber: Option[String]) {
 
@@ -42,12 +44,14 @@ case class TransportMeans(index: Index, identificationType: Option[TransportMean
 
 object TransportMeans {
 
-  def apply(userAnswers: UserAnswers, transportMeansIndex: Index): TransportMeans = {
+  def apply(userAnswers: UserAnswers, transportMeansIndex: Index): Option[TransportMeans] = {
     import pages.departureMeansOfTransport._
-    new TransportMeans(
-      transportMeansIndex,
-      userAnswers.get(TransportMeansIdentificationPage(transportMeansIndex)),
-      userAnswers.get(VehicleIdentificationNumberPage(transportMeansIndex))
-    )
+    implicit val reads: Reads[TransportMeans] = (
+      TransportMeansIdentificationPage(transportMeansIndex).path.readNullable[TransportMeansIdentification] and
+        VehicleIdentificationNumberPage(transportMeansIndex).path.readNullable[String]
+    ).apply {
+      (identifier, identificationNumber) => TransportMeans(transportMeansIndex, identifier, identificationNumber)
+    }
+    userAnswers.data.asOpt[TransportMeans]
   }
 }

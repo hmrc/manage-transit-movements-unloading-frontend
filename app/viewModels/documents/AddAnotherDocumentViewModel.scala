@@ -17,6 +17,7 @@
 package viewModels.documents
 
 import config.FrontendAppConfig
+import controllers.documents.routes
 import models.DocType.Previous
 import models.removable.Document
 import models.{ArrivalId, ConsignmentLevelDocuments, Index, Mode, RichOptionalJsArray, UserAnswers}
@@ -64,9 +65,9 @@ object AddAnotherDocumentViewModel {
               Document(userAnswers, index).map {
                 document =>
                   ListItem(
-                    name = document.toString,
+                    name = document.forAddAnotherDisplay,
                     changeUrl = None,
-                    removeUrl = Some(controllers.documents.routes.RemoveDocumentYesNoController.onPageLoad(arrivalId, mode, index).url)
+                    removeUrl = Some(routes.RemoveDocumentYesNoController.onPageLoad(arrivalId, mode, index).url)
                   )
               }
           }
@@ -75,10 +76,10 @@ object AddAnotherDocumentViewModel {
       val consignmentLevelDocuments = ConsignmentLevelDocuments(userAnswers)
 
       new AddAnotherDocumentViewModel(
-        listItems,
-        onSubmitCall = controllers.documents.routes.AddAnotherDocumentController.onSubmit(arrivalId, mode),
+        listItems = listItems,
+        onSubmitCall = routes.AddAnotherDocumentController.onSubmit(arrivalId, mode),
         nextIndex = documents.nextIndex,
-        consignmentLevelDocuments,
+        documents = consignmentLevelDocuments,
         allowMore = consignmentLevelDocuments.canAddMore
       )
     }

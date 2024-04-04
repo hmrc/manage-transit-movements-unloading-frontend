@@ -17,6 +17,7 @@
 package viewModels.departureTransportMeans
 
 import config.FrontendAppConfig
+import controllers.departureMeansOfTransport.routes
 import models.removable.TransportMeans
 import models.{ArrivalId, Index, Mode, RichOptionalJsArray, UserAnswers}
 import pages.sections.TransportMeansListSection
@@ -44,18 +45,21 @@ object AddAnotherDepartureMeansOfTransportViewModel {
 
       val array = userAnswers.get(TransportMeansListSection)
 
-      val listItems = array.mapWithIndex {
+      val listItems = array.flatMapWithIndex {
         case (_, index) =>
-          ListItem(
-            name = TransportMeans(userAnswers, index).forAddAnotherDisplay,
-            changeUrl = None,
-            removeUrl = Some(controllers.departureMeansOfTransport.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(arrivalId, mode, index).url)
-          )
+          TransportMeans(userAnswers, index).map {
+            transportMeans =>
+              ListItem(
+                name = transportMeans.forAddAnotherDisplay,
+                changeUrl = None,
+                removeUrl = Some(routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(arrivalId, mode, index).url)
+              )
+          }
       }
 
       new AddAnotherDepartureMeansOfTransportViewModel(
         listItems,
-        onSubmitCall = controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController.onSubmit(arrivalId, mode),
+        onSubmitCall = routes.AddAnotherDepartureMeansOfTransportController.onSubmit(arrivalId, mode),
         nextIndex = array.nextIndex
       )
     }

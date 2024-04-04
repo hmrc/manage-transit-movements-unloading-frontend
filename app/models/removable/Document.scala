@@ -23,14 +23,14 @@ import play.api.libs.json.Reads
 
 case class Document(`type`: DocumentType, referenceNumber: Option[String]) {
 
-  override def toString: String = referenceNumber match {
-    case Some(rn) => s"${`type`.toString} - $rn"
-    case None     => `type`.toString
-  }
-
-  def asRemoveString: String = referenceNumber match {
+  def forRemoveDisplay: String = referenceNumber match {
     case Some(rn) => s"${`type`.`type`.toString} - $rn"
     case None     => `type`.`type`.toString
+  }
+
+  def forAddAnotherDisplay: String = referenceNumber match {
+    case Some(rn) => s"${`type`.toString} - $rn"
+    case None     => `type`.toString
   }
 }
 

@@ -48,7 +48,7 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
     routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, mode)
 
   private def formatInsetText(userAnswers: UserAnswers, transportMeansIndex: Index): Option[String] =
-    TransportMeans(userAnswers, transportMeansIndex).forRemoveDisplay
+    TransportMeans(userAnswers, transportMeansIndex).flatMap(_.forRemoveDisplay)
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, transportMeansIndex: Index): Action[AnyContent] = actions
     .requireIndex(arrivalId, TransportMeansSection(transportMeansIndex), addAnother(arrivalId, mode)) {
