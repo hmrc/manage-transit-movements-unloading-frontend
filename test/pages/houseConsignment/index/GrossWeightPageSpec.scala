@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.houseConsignment.index
 
-import pages.sections.UnloadingRemarksSection
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-import java.time.LocalDate
+class GrossWeightPageSpec extends PageBehaviours {
 
-case object DateGoodsUnloadedPage extends QuestionPage[LocalDate] {
+  "GrossWeightPage" - {
 
-  override def path: JsPath = UnloadingRemarksSection.path \ toString
+    beRetrievable[BigDecimal](GrossWeightPage(houseConsignmentIndex))
 
-  override def toString: String = "unloadingDate"
+    beSettable[BigDecimal](GrossWeightPage(houseConsignmentIndex))
+
+    beRemovable[BigDecimal](GrossWeightPage(houseConsignmentIndex))
+  }
 }

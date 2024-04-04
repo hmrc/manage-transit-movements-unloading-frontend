@@ -666,6 +666,7 @@ houseConsignment.index.item.packageType.CheckMode.heading = What is the new pack
 houseConsignment.index.item.packageType.hint = Enter the package or code, like cylinder or CY.
 houseConsignment.index.item.packageType.paragraph = This means the packaging used to store and protect the item during transit.
 houseConsignment.index.item.packageType.error.required = Enter the type of package you are using for the item
+houseConsignment.index.item.packageType.error.nonNumeric = The quantity of the package type must only include numbers 0 to 9
 houseConsignment.index.item.packageType.check.error.required = Enter the new package type for item {0} in house consignment {1}
 houseConsignment.index.item.packageType.placeholder = Select a package type
 
@@ -1068,3 +1069,12 @@ houseConsignment.item.addCombinedNomenclatureCodeYesNo.title = Do you want to ad
 houseConsignment.item.addCombinedNomenclatureCodeYesNo.heading = Do you want to add a combined nomenclature for the item?
 houseConsignment.item.addCombinedNomenclatureCodeYesNo.error.required = Select yes if you want to add a combined nomenclature code for the item
 houseConsignment.item.addCombinedNomenclatureCodeYesNo.paragraph = This is used to classify goods when they’re declared to Customs in the EU.
+
+houseConsignment.index.grossWeight.title = What is the new gross weight of house consignment {0}?
+houseConsignment.index.grossWeight.heading = What is the new gross weight of house consignment {0}?
+houseConsignment.index.grossWeight.paragraph = This is the combined weight of the house consignment’s goods and packaging.
+houseConsignment.index.grossWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
+houseConsignment.index.grossWeight.error.required = Enter the new gross weight of house consignment {0}
+houseConsignment.index.grossWeight.error.invalidValue = The new gross weight must be 16 characters or less
+houseConsignment.index.grossWeight.error.invalidCharacters = The new gross weight must only include numbers 0 to 9 and a decimal point
+houseConsignment.index.grossWeight.error.invalidFormat = The new gross weight must only include 6 decimal places or less
