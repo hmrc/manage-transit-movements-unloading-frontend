@@ -17,8 +17,9 @@
 package viewModels.departureTransportMeans
 
 import config.FrontendAppConfig
+import controllers.departureMeansOfTransport.routes
+import models.removable.TransportMeans
 import models.{ArrivalId, Index, Mode, RichOptionalJsArray, UserAnswers}
-import pages.departureMeansOfTransport.{TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 import pages.sections.TransportMeansListSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -44,32 +45,21 @@ object AddAnotherDepartureMeansOfTransportViewModel {
 
       val array = userAnswers.get(TransportMeansListSection)
 
-      val listItems = array.mapWithIndex {
+      val listItems = array.flatMapWithIndex {
         case (_, index) =>
-          def prefix(increment: Int) = messages("departureMeansOfTransportPrefix.prefix", increment)
-
-          val name =
-            (userAnswers.get(TransportMeansIdentificationPage(index)), userAnswers.get(VehicleIdentificationNumberPage(index))) match {
-              case (Some(identification), Some(identificationNumber)) =>
-                s"${prefix(index.display)} - $identification - $identificationNumber"
-              case (Some(identification), None) =>
-                s"${prefix(index.display)} - $identification"
-              case (None, Some(identificationNumber)) =>
-                s"${prefix(index.display)} - $identificationNumber"
-              case _ =>
-                s"${prefix(index.display)}"
-            }
-
-          ListItem(
-            name = name,
-            changeUrl = None,
-            removeUrl = Some(controllers.departureMeansOfTransport.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(arrivalId, mode, index).url)
-          )
+          TransportMeans(userAnswers, index).map {
+            transportMeans =>
+              ListItem(
+                name = transportMeans.forAddAnotherDisplay,
+                changeUrl = None,
+                removeUrl = Some(routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(arrivalId, mode, index).url)
+              )
+          }
       }
 
       new AddAnotherDepartureMeansOfTransportViewModel(
         listItems,
-        onSubmitCall = controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController.onSubmit(arrivalId, mode),
+        onSubmitCall = routes.AddAnotherDepartureMeansOfTransportController.onSubmit(arrivalId, mode),
         nextIndex = array.nextIndex
       )
     }

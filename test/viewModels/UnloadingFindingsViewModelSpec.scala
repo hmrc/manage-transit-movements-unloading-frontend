@@ -19,7 +19,6 @@ package viewModels
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated.{AddressType10, CC043CType, ConsignmentType05, HolderOfTheTransitProcedureType06, Number0}
 import generators.Generators
-import models.departureTransportMeans.TransportMeansIdentification
 import models.reference._
 import models.{Index, SecurityType, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary

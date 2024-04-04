@@ -22,7 +22,6 @@ import config.FrontendAppConfig
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import logging.Logging
 import models.DocType.{Previous, Support, Transport}
-import models.departureTransportMeans.TransportMeansIdentification
 import models.reference._
 import models.reference.transport.TransportMode
 import models.reference.transport.TransportMode.InlandMode

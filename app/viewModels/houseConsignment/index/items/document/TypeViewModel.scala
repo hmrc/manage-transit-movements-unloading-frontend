@@ -20,12 +20,15 @@ import config.FrontendAppConfig
 import models.{HouseConsignmentLevelDocuments, Index, Mode}
 import play.api.i18n.Messages
 import viewModels.ModeViewModelProvider
+import viewModels.documents.Documents
 import viewModels.houseConsignment.index.items.document.TypeViewModel.typePrefix
 
 import javax.inject.Inject
 
 case class TypeViewModel(heading: String, title: String, requiredError: String, documents: HouseConsignmentLevelDocuments) {
-  def maxLimitLabelForType(implicit config: FrontendAppConfig, messages: Messages): Option[String] = Documents.maxLimitLabelForType(documents, typePrefix)
+
+  def maxLimitLabelForType(implicit config: FrontendAppConfig, messages: Messages): Option[String] =
+    Documents.maxLimitLabelForType(documents, typePrefix)
 }
 
 object TypeViewModel {
@@ -39,10 +42,11 @@ object TypeViewModel {
     def apply(mode: Mode, documents: HouseConsignmentLevelDocuments, houseConsignmentIndex: Index, itemIndex: Index)(implicit
       messages: Messages
     ): TypeViewModel =
-      new TypeViewModel(heading(mode, houseConsignmentIndex, itemIndex),
-                        title(mode, houseConsignmentIndex, itemIndex),
-                        requiredError(mode, houseConsignmentIndex, itemIndex),
-                        documents
+      new TypeViewModel(
+        heading(mode, houseConsignmentIndex, itemIndex),
+        title(mode, houseConsignmentIndex, itemIndex),
+        requiredError(mode, houseConsignmentIndex, itemIndex),
+        documents
       )
   }
 }

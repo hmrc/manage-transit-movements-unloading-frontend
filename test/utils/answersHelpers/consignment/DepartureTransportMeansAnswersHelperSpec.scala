@@ -17,8 +17,7 @@
 package utils.answersHelpers.consignment
 
 import models.CheckMode
-import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.Country
+import models.reference.{Country, TransportMeansIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}

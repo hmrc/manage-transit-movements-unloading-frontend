@@ -17,8 +17,7 @@
 package utils.answersHelpers.consignment.replacementMeansOfTransport
 
 import generated.{ConsignmentType05, IncidentType04, Number0, TranshipmentType02}
-import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.Country
+import models.reference.{Country, TransportMeansIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.incident.replacementMeansOfTransport.{IdentificationPage, NationalityPage}
 import utils.answersHelpers.AnswersHelperSpecBase

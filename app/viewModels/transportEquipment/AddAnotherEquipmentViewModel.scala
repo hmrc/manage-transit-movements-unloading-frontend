@@ -17,8 +17,8 @@
 package viewModels.transportEquipment
 
 import config.FrontendAppConfig
+import models.removable.TransportEquipment
 import models.{ArrivalId, Index, Mode, RichOptionalJsArray, UserAnswers}
-import pages.ContainerIdentificationNumberPage
 import pages.sections.TransportEquipmentListSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -50,23 +50,16 @@ object AddAnotherEquipmentViewModel {
 
       val equipments = userAnswers.get(TransportEquipmentListSection)
 
-      val listItems = equipments.mapWithIndex {
+      val listItems = equipments.flatMapWithIndex {
         case (_, index) =>
-          def equipmentPrefix(increment: Int) = messages("transportEquipment.prefix", increment)
-          def container(id: String)           = messages("transportEquipment.containerId", id)
-
-          val name = userAnswers.get(ContainerIdentificationNumberPage(index)) flatMap {
-            identificationNumber =>
-              Some(s"${equipmentPrefix(index.display)} - ${container(identificationNumber)}")
-          } getOrElse {
-            s"${equipmentPrefix(index.display)}"
+          TransportEquipment(userAnswers, index).map {
+            transportEquipment =>
+              ListItem(
+                name = transportEquipment.forAddAnotherDisplay,
+                changeUrl = None,
+                removeUrl = Some(controllers.transportEquipment.index.routes.RemoveTransportEquipmentYesNoController.onPageLoad(arrivalId, mode, index).url)
+              )
           }
-
-          ListItem(
-            name = name,
-            changeUrl = None,
-            removeUrl = Some(controllers.transportEquipment.index.routes.RemoveTransportEquipmentYesNoController.onPageLoad(arrivalId, mode, index).url)
-          )
       }
 
       new AddAnotherEquipmentViewModel(

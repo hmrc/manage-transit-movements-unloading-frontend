@@ -24,7 +24,7 @@ import itbase.{ItSpecBase, WireMockServerHandler}
 import models.DocType.{Previous, Support, Transport}
 import models.SecurityType
 import models.reference._
-import models.reference.transport.TransportMode.{BorderMode, InlandMode}
+import TransportMode.{BorderMode, InlandMode}
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks

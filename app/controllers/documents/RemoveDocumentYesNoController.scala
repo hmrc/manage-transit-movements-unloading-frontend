@@ -18,9 +18,8 @@ package controllers.documents
 
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.reference.DocumentType
+import models.removable.Document
 import models.{ArrivalId, Index, Mode, UserAnswers}
-import pages.documents.{DocumentReferenceNumberPage, TypePage}
 import pages.sections.documents.DocumentSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -38,8 +37,7 @@ class RemoveDocumentYesNoController @Inject() (
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: RemoveDocumentYesNoView,
-  getMandatoryPage: SpecificDataRequiredActionProvider
+  view: RemoveDocumentYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -48,17 +46,11 @@ class RemoveDocumentYesNoController @Inject() (
 
   private def addAnother(arrivalId: ArrivalId, mode: Mode): Call = controllers.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, mode)
 
-  private def formatInsetText(userAnswers: UserAnswers, documentIndex: Index): String = {
-    val documentType: DocumentType      = userAnswers.get(TypePage(documentIndex)).get
-    val documentReferenceNumber: String = userAnswers.get(DocumentReferenceNumberPage(documentIndex)).get
-
-    s"${documentType.`type`} - $documentReferenceNumber"
-  }
+  private def formatInsetText(userAnswers: UserAnswers, documentIndex: Index): Option[String] =
+    Document(userAnswers, documentIndex).map(_.forRemoveDisplay)
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
-    .requireIndex(arrivalId, DocumentSection(documentIndex), addAnother(arrivalId, mode))
-    .andThen(getMandatoryPage.getFirst(TypePage(documentIndex)))
-    .andThen(getMandatoryPage.getSecond(DocumentReferenceNumberPage(documentIndex))) {
+    .requireIndex(arrivalId, DocumentSection(documentIndex), addAnother(arrivalId, mode)) {
       implicit request =>
         val insetText = formatInsetText(request.userAnswers, documentIndex)
         Ok(view(form, request.userAnswers.mrn, arrivalId, documentIndex, mode, insetText))
@@ -66,8 +58,6 @@ class RemoveDocumentYesNoController @Inject() (
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
     .requireIndex(arrivalId, DocumentSection(documentIndex), addAnother(arrivalId, mode))
-    .andThen(getMandatoryPage.getFirst(TypePage(documentIndex)))
-    .andThen(getMandatoryPage.getSecond(DocumentReferenceNumberPage(documentIndex)))
     .async {
       implicit request =>
         val insetText = formatInsetText(request.userAnswers, documentIndex)

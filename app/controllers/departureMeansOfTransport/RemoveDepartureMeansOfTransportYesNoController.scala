@@ -18,8 +18,8 @@ package controllers.departureMeansOfTransport
 
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.{ArrivalId, Index, Mode, TransportMeans, UserAnswers}
-import navigation.DepartureTransportMeansNavigator
+import models.removable.TransportMeans
+import models.{ArrivalId, Index, Mode, UserAnswers}
 import pages.sections.TransportMeansSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -36,7 +36,6 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
   sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: YesNoFormProvider,
-  navigator: DepartureTransportMeansNavigator,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveDepartureMeansOfTransportYesNoView
 )(implicit ec: ExecutionContext)
@@ -49,7 +48,7 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
     routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, mode)
 
   private def formatInsetText(userAnswers: UserAnswers, transportMeansIndex: Index): Option[String] =
-    TransportMeans(userAnswers, transportMeansIndex).asString
+    TransportMeans(userAnswers, transportMeansIndex).flatMap(_.forRemoveDisplay)
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, transportMeansIndex: Index): Action[AnyContent] = actions
     .requireIndex(arrivalId, TransportMeansSection(transportMeansIndex), addAnother(arrivalId, mode)) {

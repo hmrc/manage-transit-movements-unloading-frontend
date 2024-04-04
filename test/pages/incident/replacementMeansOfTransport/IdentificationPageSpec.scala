@@ -16,7 +16,7 @@
 
 package pages.incident.replacementMeansOfTransport
 
-import models.departureTransportMeans.TransportMeansIdentification
+import models.reference.TransportMeansIdentification
 import pages.behaviours.PageBehaviours
 
 class IdentificationPageSpec extends PageBehaviours {

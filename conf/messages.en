@@ -331,6 +331,13 @@ changesToReport.error.required = Describe the discrepancies between the transit 
 changesToReport.error.length = Your description must be 512 characters or less
 changesToReport.error.invalid = Your description must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 
+otherThingsToReport.title = What do you want to report?
+otherThingsToReport.heading = What do you want to report?
+otherThingsToReport.checkYourAnswersLabel = What do you want to report?
+otherThingsToReport.error.required = Enter what you want to report
+otherThingsToReport.error.length = Your report must be 512 characters or less
+otherThingsToReport.error.invalid = Your report must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+
 confirmRemoveComments.title = Are you sure you want to remove your comments?
 confirmRemoveComments.heading = Are you sure you want to remove your comments?
 confirmRemoveComments.checkYourAnswersLabel = Are you sure you want to remove your comments?
@@ -654,6 +661,7 @@ houseConsignment.index.item.packageType.CheckMode.heading = What is the new pack
 houseConsignment.index.item.packageType.hint = Enter the package or code, like cylinder or CY.
 houseConsignment.index.item.packageType.paragraph = This means the packaging used to store and protect the item during transit.
 houseConsignment.index.item.packageType.error.required = Enter the type of package you are using for the item
+houseConsignment.index.item.packageType.error.nonNumeric = The quantity of the package type must only include numbers 0 to 9
 houseConsignment.index.item.packageType.check.error.required = Enter the new package type for item {0} in house consignment {1}
 houseConsignment.index.item.packageType.placeholder = Select a package type
 
@@ -801,7 +809,7 @@ houseConsignment.index.items.document.addAnotherDocument.plural.label = Do you w
 houseConsignment.index.items.document.addAnotherDocument.maxLimit.label = You cannot add any more documents to item {0} in house consignment {1}. To add another, you need to remove one first.
 houseConsignment.index.items.document.addAnotherDocument.error.required = Select yes if you want to add another document to item {0} in house consignment {1}
 houseConsignment.index.items.document.addAnotherDocument.label = Do you want to add another document to item {0} in house consignment {1}?
-houseConsignment.index.items.document.addAnotherDocument.maxLimitForType.label = You cannot add any more {0} documents to all items. To add another, you need to remove one first. You can, however, still add a {1} document to your items.
+houseConsignment.index.items.document.addAnotherDocument.maxLimitForType.label = You cannot add any more {0} documents to item {3} in house consignment {2}. To add another, you need to remove one first. You can, however, still add a {1} document to your item.
 
 
 additionalReferenceNumber.index.NormalMode.title = What is the additional reference number?

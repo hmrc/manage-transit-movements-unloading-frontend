@@ -48,8 +48,10 @@ class AdditionalReferenceNavigator extends Navigator {
     }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case AdditionalReferenceTypePage(_, _, _)   => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
-    case AdditionalReferenceNumberPage(_, _, _) => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
+    case AdditionalReferenceTypePage(houseConsignmentIndex, _, _) =>
+      ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
+    case AdditionalReferenceNumberPage(houseConsignmentIndex, _, _) =>
+      ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
 
   }
 }

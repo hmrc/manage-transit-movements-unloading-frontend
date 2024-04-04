@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.reference.transport
+package models.reference
 
 import cats.Order
 import models.{DynamicEnumerableType, Radioable}

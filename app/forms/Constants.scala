@@ -27,6 +27,7 @@ object Constants {
   lazy val maxAdditionalInfoLength: Int         = 35
   lazy val maxAdditionalReferenceNumLength: Int = 70
   lazy val maxNumberOfPackages: BigInt          = 999999999
+  lazy val otherThingsToReportLength: Int       = 512
 
   lazy val YES: String = "Yes"
   lazy val NO: String  = "No"

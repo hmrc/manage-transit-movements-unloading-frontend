@@ -24,7 +24,6 @@ import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
-import org.scalacheck.Gen
 import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -70,7 +69,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex, insetText)(request, messages).toString
+        view(form, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex, Some(insetText))(request, messages).toString
 
     }
     "must return OK and the correct view for a GET when no number exists" in {
@@ -92,7 +91,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex, insetText)(request, messages).toString
+        view(form, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex, Some(insetText))(request, messages).toString
 
     }
     "when yes submitted" - {
@@ -180,31 +179,27 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      forAll(Gen.alphaNumStr) {
-        containerId =>
-          val userAnswers = emptyUserAnswers
-            .setValue(
-              AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
-              AdditionalReferenceType("Y015", "The rough diamonds are contained in ...")
-            )
-            .setValue(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), "addref-1")
+      val userAnswers = emptyUserAnswers
+        .setValue(
+          AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
+          AdditionalReferenceType("Y015", "The rough diamonds are contained in ...")
+        )
+        .setValue(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), "addref-1")
 
-          setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(userAnswers)
 
-          val invalidAnswer = ""
-          val request       = FakeRequest(POST, removeAdditionalReferenceRoute).withFormUrlEncodedBody(("value", ""))
-          val filledForm    = form.bind(Map("value" -> invalidAnswer))
-          val result        = route(app, request).value
-          val insetText     = "Y015 - addref-1"
+      val invalidAnswer = ""
+      val request       = FakeRequest(POST, removeAdditionalReferenceRoute).withFormUrlEncodedBody(("value", ""))
+      val filledForm    = form.bind(Map("value" -> invalidAnswer))
+      val result        = route(app, request).value
+      val insetText     = "Y015 - addref-1"
 
-          status(result) mustEqual BAD_REQUEST
+      status(result) mustEqual BAD_REQUEST
 
-          val view = injector.instanceOf[RemoveAdditionalReferenceYesNoView]
+      val view = injector.instanceOf[RemoveAdditionalReferenceYesNoView]
 
-          contentAsString(result) mustEqual
-            view(filledForm, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex, insetText)(request, messages).toString
-
-      }
+      contentAsString(result) mustEqual
+        view(filledForm, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex, Some(insetText))(request, messages).toString
     }
     "must redirect to Session Expired for a GET if no existing data is found" in {
 

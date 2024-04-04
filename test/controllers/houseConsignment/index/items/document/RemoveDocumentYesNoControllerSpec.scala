@@ -29,7 +29,6 @@ import org.scalacheck.Arbitrary.arbitrary
 import pages.houseConsignment.index.items.document.{DocumentReferenceNumberPage, TypePage}
 import pages.sections.houseConsignment.index.items.documents.DocumentSection
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.houseConsignment.index.items.document.RemoveDocumentYesNoView
@@ -63,7 +62,7 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
             .setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex), documentType)
             .setValue(DocumentReferenceNumberPage(houseConsignmentIndex, itemIndex, documentIndex), documentReferenceNumber)
 
-          val insetText = s"${documentType.`type`} - $documentReferenceNumber"
+          val insetText = s"${documentType.`type`.display} - $documentReferenceNumber"
 
           setExistingUserAnswers(userAnswers)
 
@@ -76,9 +75,16 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form(houseConsignmentIndex, itemIndex), mrn, arrivalId, houseConsignmentIndex, itemIndex, documentIndex, mode, insetText)(request,
-                                                                                                                                           messages
-            ).toString
+            view(
+              form(houseConsignmentIndex, itemIndex),
+              mrn,
+              arrivalId,
+              houseConsignmentIndex,
+              itemIndex,
+              documentIndex,
+              mode,
+              Some(insetText)
+            )(request, messages).toString
       }
     }
 
@@ -99,12 +105,10 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual Call(
-          "GET",
+        redirectLocation(result).value mustEqual
           controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
             .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
             .url
-        ).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -128,12 +132,10 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual Call(
-          "GET",
+        redirectLocation(result).value mustEqual
           controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
             .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
             .url
-        ).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -154,12 +156,10 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual Call(
-        "GET",
+      redirectLocation(result).value mustEqual
         controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
           .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
           .url
-      ).url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
@@ -170,7 +170,7 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
             .setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex), documentType)
             .setValue(DocumentReferenceNumberPage(houseConsignmentIndex, itemIndex, documentIndex), documentReferenceNumber)
 
-          val insetText = s"${documentType.`type`} - $documentReferenceNumber"
+          val insetText = s"${documentType.`type`.display} - $documentReferenceNumber"
 
           setExistingUserAnswers(userAnswers)
 
@@ -186,7 +186,7 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
           val view = injector.instanceOf[RemoveDocumentYesNoView]
 
           contentAsString(result) mustEqual
-            view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, documentIndex, mode, insetText)(request, messages).toString
+            view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, documentIndex, mode, Some(insetText))(request, messages).toString
       }
     }
 

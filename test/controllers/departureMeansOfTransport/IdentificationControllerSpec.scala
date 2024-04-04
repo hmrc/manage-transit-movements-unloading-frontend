@@ -21,8 +21,8 @@ import controllers.routes
 import forms.EnumerableFormProvider
 import generators.Generators
 import models.CheckMode
-import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.transport.TransportMode.InlandMode
+import models.reference.TransportMeansIdentification
+import models.reference.TransportMode.InlandMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary

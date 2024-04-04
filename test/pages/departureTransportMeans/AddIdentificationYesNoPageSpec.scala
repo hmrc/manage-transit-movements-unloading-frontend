@@ -16,7 +16,7 @@
 
 package pages.departureTransportMeans
 
-import models.departureTransportMeans.TransportMeansIdentification
+import models.reference.TransportMeansIdentification
 import org.scalacheck.Arbitrary
 import pages.behaviours.PageBehaviours
 import pages.departureMeansOfTransport.{AddIdentificationYesNoPage, TransportMeansIdentificationPage}
