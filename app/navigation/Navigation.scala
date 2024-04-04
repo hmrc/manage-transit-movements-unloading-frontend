@@ -45,6 +45,12 @@ class Navigation extends Navigator {
           case true  => controllers.routes.UnloadingCommentsController.onPageLoad(ua.id, NormalMode)
           case false => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)
         }
+    case DoYouHaveAnythingElseToReportYesNoPage =>
+      ua =>
+        ua.get(DoYouHaveAnythingElseToReportYesNoPage) map {
+          case true  => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)
+          case false => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)
+        }
 
     case _ =>
       _ => Some(routes.SessionExpiredController.onPageLoad())
