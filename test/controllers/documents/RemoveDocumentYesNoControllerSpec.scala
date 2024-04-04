@@ -60,7 +60,7 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
             .setValue(TypePage(documentIndex), documentType)
             .setValue(DocumentReferenceNumberPage(documentIndex), documentReferenceNumber)
 
-          val insetText = s"${documentType.`type`} - $documentReferenceNumber"
+          val insetText = s"${documentType.`type`.display} - $documentReferenceNumber"
 
           setExistingUserAnswers(userAnswers)
 
@@ -73,7 +73,7 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, mrn, arrivalId, documentIndex, mode, insetText)(request, messages).toString
+            view(form, mrn, arrivalId, documentIndex, mode, Some(insetText))(request, messages).toString
       }
     }
 
@@ -150,7 +150,7 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
             .setValue(TypePage(documentIndex), documentType)
             .setValue(DocumentReferenceNumberPage(documentIndex), documentReferenceNumber)
 
-          val insetText = s"${documentType.`type`} - $documentReferenceNumber"
+          val insetText = s"${documentType.`type`.display} - $documentReferenceNumber"
 
           setExistingUserAnswers(userAnswers)
 
@@ -166,7 +166,7 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
           val view = injector.instanceOf[RemoveDocumentYesNoView]
 
           contentAsString(result) mustEqual
-            view(filledForm, mrn, arrivalId, documentIndex, mode, insetText)(request, messages).toString
+            view(filledForm, mrn, arrivalId, documentIndex, mode, Some(insetText))(request, messages).toString
       }
     }
 

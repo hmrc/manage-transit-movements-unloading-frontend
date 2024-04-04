@@ -18,8 +18,9 @@ package viewModels.documents
 
 import config.FrontendAppConfig
 import models.DocType.Previous
+import models.removable.Document
 import models.{ArrivalId, ConsignmentLevelDocuments, Index, Mode, RichOptionalJsArray, UserAnswers}
-import pages.documents.{DocumentReferenceNumberPage, TypePage}
+import pages.documents.TypePage
 import pages.sections.documents.DocumentsSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -46,27 +47,28 @@ object AddAnotherDocumentViewModel {
 
   class AddAnotherDocumentViewModelProvider {
 
-    def apply(userAnswers: UserAnswers, arrivalId: ArrivalId, mode: Mode)(implicit config: FrontendAppConfig): AddAnotherDocumentViewModel = {
+    def apply(
+      userAnswers: UserAnswers,
+      arrivalId: ArrivalId,
+      mode: Mode
+    )(implicit config: FrontendAppConfig): AddAnotherDocumentViewModel = {
 
       val documents = userAnswers.get(DocumentsSection)
 
       val listItems = documents.mapWithIndex {
         case (_, index) =>
-          userAnswers.get(TypePage(index)) match {
-            case Some(docType) if docType.`type` != Previous =>
-              Some(
-                ListItem(
-                  name = s"${userAnswers
-                    .get(DocumentReferenceNumberPage(index))
-                    .map(
-                      refNo => s"$docType - $refNo"
-                    )
-                    .getOrElse(s"$docType")}",
-                  changeUrl = None,
-                  removeUrl = Some(controllers.documents.routes.RemoveDocumentYesNoController.onPageLoad(arrivalId, mode, index).url)
-                )
-              )
-            case _ => None
+          userAnswers.get(TypePage(index)).map(_.`type`).flatMap {
+            case Previous =>
+              None
+            case _ =>
+              Document(userAnswers, index).map {
+                document =>
+                  ListItem(
+                    name = document.toString,
+                    changeUrl = None,
+                    removeUrl = Some(controllers.documents.routes.RemoveDocumentYesNoController.onPageLoad(arrivalId, mode, index).url)
+                  )
+              }
           }
       }.flatten
 
