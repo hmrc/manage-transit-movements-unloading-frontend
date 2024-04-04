@@ -37,15 +37,14 @@ class Navigation extends Navigator {
         }
 
     case CanSealsBeReadPage    => ua => Some(routes.AreAnySealsBrokenController.onPageLoad(ua.id, NormalMode))
-    case AreAnySealsBrokenPage => ua => Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
-    case UnloadingCommentsPage => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
+    case AreAnySealsBrokenPage => ua => Some(routes.AddUnloadingCommentsYesNoController.onPageLoad(ua.id, NormalMode))
     case AddUnloadingCommentsYesNoPage =>
       ua =>
         ua.get(AddUnloadingCommentsYesNoPage) map {
-          case true  => controllers.routes.UnloadingCommentsController.onPageLoad(ua.id, NormalMode)
-          case false => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)
+          case true  => controllers.routes.UnloadingFindingsController.onPageLoad(ua.id)
+          case false => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id) //TODO change to AddUnloadingRemarksYesNo (CTCP-4930)
         }
-
+    case UnloadingCommentsPage => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
     case _ =>
       _ => Some(routes.SessionExpiredController.onPageLoad())
 
