@@ -18,15 +18,20 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
-import models.NormalMode
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import models.{NormalMode, UserAnswers}
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import pages.AddUnloadingCommentsYesNoPage
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import utils.transformers.IE043Transformer
 import views.html.AddUnloadingCommentsYesNoView
 
+import java.time.Instant
 import scala.concurrent.Future
 
 class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
@@ -38,9 +43,19 @@ class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefau
   private lazy val addUnloadingCommentsYesNoRoute =
     controllers.routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, mode).url
 
+  private val mockTransformer = mock[IE043Transformer]
+
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(
+        bind[IE043Transformer].toInstance(mockTransformer)
+      )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockTransformer)
+  }
 
   "AddUnloadingCommentsYesNo Controller" - {
 
@@ -79,7 +94,7 @@ class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefau
         view(filledForm, mrn, arrivalId, mode)(request, messages).toString
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the next page when Yes is submitted" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -93,6 +108,85 @@ class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
+
+      verifyNoInteractions(mockTransformer)
+    }
+
+    "must drop discrepancies, re-transform data and redirect to the next page when No is submitted" in {
+
+      val jsonBeforeEverything = Json
+        .parse(s"""
+           |{
+           |  "UnloadingRemark" : {
+           |    "foo" : "bar"
+           |  },
+           |  "someDummyTransformedData" : {
+           |    "foo" : "bar"
+           |  },
+           |  "someDummyDiscrepancies" : {
+           |    "foo" : "bar"
+           |  }
+           |}
+           |""".stripMargin)
+        .as[JsObject]
+
+      val jsonAfterWipe = Json
+        .parse(s"""
+             |{}
+             |""".stripMargin)
+        .as[JsObject]
+
+      val jsonAfterTransformation = Json
+        .parse(s"""
+           |{
+           |  "someDummyTransformedData" : {
+           |    "foo" : "bar"
+           |  }
+           |}
+           |""".stripMargin)
+        .as[JsObject]
+
+      val jsonAfterEverything = Json
+        .parse(s"""
+           |{
+           |  "someDummyTransformedData" : {
+           |    "foo" : "bar"
+           |  },
+           |  "UnloadingRemark" : {
+           |    "foo" : "bar",
+           |    "addUnloadingCommentsYesNo" : false
+           |  }
+           |}
+           |""".stripMargin)
+        .as[JsObject]
+
+      val now                            = Instant.now()
+      val userAnswersBeforeEverything    = emptyUserAnswers.copy(data = jsonBeforeEverything, lastUpdated = now)
+      val userAnswersAfterWipe           = emptyUserAnswers.copy(data = jsonAfterWipe, lastUpdated = now)
+      val userAnswersAfterTransformation = emptyUserAnswers.copy(data = jsonAfterTransformation, lastUpdated = now)
+      val userAnswersAfterEverything     = emptyUserAnswers.copy(data = jsonAfterEverything, lastUpdated = now)
+
+      setExistingUserAnswers(userAnswersBeforeEverything)
+
+      when(mockTransformer.transform(any())(any(), any()))
+        .thenReturn(Future.successful(userAnswersAfterTransformation))
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val request = FakeRequest(POST, addUnloadingCommentsYesNoRoute)
+        .withFormUrlEncodedBody(("value", "false"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      verify(mockTransformer).transform(eqTo(userAnswersAfterWipe))(any(), any())
+
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())
+      userAnswersCaptor.getValue mustBe userAnswersAfterEverything
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
