@@ -16,9 +16,9 @@
 
 package pages.sections
 
-import play.api.libs.json.{JsArray, JsPath}
+import play.api.libs.json.{JsObject, JsPath}
 
-case object UnloadingRemarksSection extends Section[JsArray] {
+case object UnloadingRemarksSection extends Section[JsObject] {
 
   override def path: JsPath = JsPath \ toString
 
