@@ -16,14 +16,16 @@
 
 package pages
 
-import pages.sections.UnloadingRemarksSection
+import models.UserAnswers
 import play.api.libs.json.JsPath
 
-import java.time.LocalDate
+import scala.util.Try
 
-case object DateGoodsUnloadedPage extends QuestionPage[LocalDate] {
+case object AddCommentsYesNoPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = UnloadingRemarksSection.path \ toString
+  override def path: JsPath = JsPath \ "UnloadingRemark" \ toString
 
-  override def toString: String = "unloadingDate"
+  override def toString: String = "comments"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = super.cleanup(value, userAnswers)
 }

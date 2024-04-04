@@ -21,37 +21,38 @@ import forms.YesNoFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.DoYouHaveAnythingElseToReportYesNoPage
+import pages.AddCommentsYesNoPage
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.DoYouHaveAnythingElseToReportYesNoView
+import views.html.AddCommentsYesNoView
 
 import scala.concurrent.Future
 
-class DoYouHaveAnythingElseToReportYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class AddCommentsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private lazy val doYouHaveAnythingElseToReportYesNoRoute =
-    controllers.routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId).url
   private val formProvider = new YesNoFormProvider()
-  private val form         = formProvider("doYouHaveAnythingElseToReportYesNo")
+  private val form         = formProvider("addCommentsYesNo")
   private val mode         = NormalMode
+
+  private lazy val addCommentsYesNoRoute =
+    controllers.routes.AddCommentsYesNoController.onPageLoad(arrivalId, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
 
-  "DoYouHaveAnythingElseToReportYesNo Controller" - {
+  "AddCommentsYesNo Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, doYouHaveAnythingElseToReportYesNoRoute)
+      val request = FakeRequest(GET, addCommentsYesNoRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[DoYouHaveAnythingElseToReportYesNoView]
+      val view = injector.instanceOf[AddCommentsYesNoView]
 
       status(result) mustEqual OK
 
@@ -61,16 +62,16 @@ class DoYouHaveAnythingElseToReportYesNoControllerSpec extends SpecBase with App
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(DoYouHaveAnythingElseToReportYesNoPage, true)
+      val userAnswers = emptyUserAnswers.setValue(AddCommentsYesNoPage, true)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, doYouHaveAnythingElseToReportYesNoRoute)
+      val request = FakeRequest(GET, addCommentsYesNoRoute)
 
       val result = route(app, request).value
 
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[DoYouHaveAnythingElseToReportYesNoView]
+      val view = injector.instanceOf[AddCommentsYesNoView]
 
       status(result) mustEqual OK
 
@@ -84,7 +85,7 @@ class DoYouHaveAnythingElseToReportYesNoControllerSpec extends SpecBase with App
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, doYouHaveAnythingElseToReportYesNoRoute)
+      val request = FakeRequest(POST, addCommentsYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
@@ -100,14 +101,14 @@ class DoYouHaveAnythingElseToReportYesNoControllerSpec extends SpecBase with App
 
       val invalidAnswer = ""
 
-      val request    = FakeRequest(POST, doYouHaveAnythingElseToReportYesNoRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, addCommentsYesNoRoute).withFormUrlEncodedBody(("value", ""))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[DoYouHaveAnythingElseToReportYesNoView]
+      val view = injector.instanceOf[AddCommentsYesNoView]
 
       contentAsString(result) mustEqual
         view(filledForm, mrn, arrivalId, mode)(request, messages).toString
@@ -117,7 +118,7 @@ class DoYouHaveAnythingElseToReportYesNoControllerSpec extends SpecBase with App
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, doYouHaveAnythingElseToReportYesNoRoute)
+      val request = FakeRequest(GET, addCommentsYesNoRoute)
 
       val result = route(app, request).value
 
@@ -130,7 +131,7 @@ class DoYouHaveAnythingElseToReportYesNoControllerSpec extends SpecBase with App
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, doYouHaveAnythingElseToReportYesNoRoute)
+      val request = FakeRequest(POST, addCommentsYesNoRoute)
         .withFormUrlEncodedBody(("value", "test string"))
 
       val result = route(app, request).value

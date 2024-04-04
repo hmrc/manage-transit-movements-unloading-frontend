@@ -18,40 +18,35 @@ package controllers
 
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.{ArrivalId, Mode, UserAnswers}
+import models.{ArrivalId, Mode}
 import navigation.Navigation
-import pages.AddUnloadingCommentsYesNoPage
-import pages.sections.UnloadingRemarksSection
+import pages.AddCommentsYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.transformers.IE043Transformer
-import views.html.AddUnloadingCommentsYesNoView
+import views.html.AddCommentsYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
-class AddUnloadingCommentsYesNoController @Inject() (
+class AddCommentsYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigation,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddUnloadingCommentsYesNoView,
-  dataTransformer: IE043Transformer
+  view: AddCommentsYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("addUnloadingCommentsYesNo")
+  private val form = formProvider("addCommentsYesNo")
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddUnloadingCommentsYesNoPage) match {
+      val preparedForm = request.userAnswers.get(AddCommentsYesNoPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -65,25 +60,11 @@ class AddUnloadingCommentsYesNoController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
-          value => {
-            def updateUserAnswers(): Future[UserAnswers] =
-              if (value) {
-                Future.successful(request.userAnswers)
-              } else {
-                for {
-                  unloadingRemarks <- Future.successful(request.userAnswers.get(UnloadingRemarksSection))
-                  wipedAnswers = request.userAnswers.copy(data = Json.obj())
-                  transformedAnswers <- dataTransformer.transform(wipedAnswers)
-                  updatedAnswers     <- Future.fromTry(unloadingRemarks.fold(Try(transformedAnswers))(transformedAnswers.set(UnloadingRemarksSection, _)))
-                } yield updatedAnswers
-              }
-
+          value =>
             for {
-              userAnswers    <- updateUserAnswers()
-              updatedAnswers <- Future.fromTry(userAnswers.set(AddUnloadingCommentsYesNoPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddCommentsYesNoPage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddUnloadingCommentsYesNoPage, mode, updatedAnswers))
-          }
+            } yield Redirect(navigator.nextPage(AddCommentsYesNoPage, mode, updatedAnswers))
         )
   }
 }
