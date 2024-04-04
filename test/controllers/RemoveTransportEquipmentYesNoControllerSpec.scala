@@ -19,7 +19,7 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import generators.Generators
-import models.{NormalMode, TransportEquipment, UserAnswers}
+import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
@@ -60,7 +60,7 @@ class RemoveTransportEquipmentYesNoControllerSpec extends SpecBase with AppWithD
             .setValue(ContainerIdentificationNumberPage(equipmentIndex), containerId)
 
           setExistingUserAnswers(userAnswers)
-          val insetText = TransportEquipment(Some(containerId)).asString
+          val insetText = Some(s"Container $containerId")
 
           val request = FakeRequest(GET, removeTransportEquipmentMeansRoute)
 
@@ -167,7 +167,7 @@ class RemoveTransportEquipmentYesNoControllerSpec extends SpecBase with AppWithD
           val request       = FakeRequest(POST, removeTransportEquipmentMeansRoute).withFormUrlEncodedBody(("value", ""))
           val filledForm    = form.bind(Map("value" -> invalidAnswer))
           val result        = route(app, request).value
-          val insetText     = TransportEquipment(Some(containerId)).asString
+          val insetText     = Some(s"Container $containerId")
 
           status(result) mustEqual BAD_REQUEST
 

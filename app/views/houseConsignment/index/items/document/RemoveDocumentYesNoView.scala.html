@@ -15,19 +15,19 @@
  *@
 
 @import models.MovementReferenceNumber
-@import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import viewModels.components.InputYesNoViewModel
+@import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 
 @this(
-        mainTemplate: MainTemplate,
-        formHelper: FormWithCSRF,
-        inputYesNo: InputYesNo,
-        errorSummary: ErrorSummary,
-        govukInsetText: GovukInsetText,
-        button: Button
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    inputYesNo: InputYesNo,
+    errorSummary: ErrorSummary,
+    insetText: InsetText,
+    button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index, mode: Mode, insetText: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index, mode: Mode, document: Option[String])(implicit request: Request[_], messages: Messages)
 
     @mainTemplate(
         title = messages("houseConsignment.index.items.document.removeDocumentYesNo.title", houseConsignmentIndex.display, itemIndex.display),
@@ -40,10 +40,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = YesNoWithAdditionalHtml(
+            yesNoType = InputYesNoViewModel(
                 heading = messages("houseConsignment.index.items.document.removeDocumentYesNo.title", houseConsignmentIndex.display, itemIndex.display),
                 caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = govukInsetText(InsetText(content = Text(insetText)))
+                additionalHtml = document.map(insetText(_))
             )
         )
 

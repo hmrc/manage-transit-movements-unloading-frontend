@@ -18,8 +18,8 @@ package viewModels.houseConsignment.index.items.packages
 
 import config.FrontendAppConfig
 import controllers.houseConsignment.index.items.packages.routes
+import models.removable.Packaging
 import models.{ArrivalId, Index, Mode, RichOptionalJsArray, UserAnswers}
-import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageTypePage}
 import pages.sections.PackagingListSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -63,28 +63,18 @@ object AddAnotherPackageViewModel {
       val listItems = array
         .flatMapWithIndex {
           case (_, packageIndex) =>
-            userAnswers
-              .get(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex))
-              .map {
-                packageType =>
-                  userAnswers
-                    .get(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex))
-                    .fold(s"$packageType") {
-                      quantity => s"$quantity * $packageType"
-                    }
-              }
-              .map {
-                name =>
-                  ListItem(
-                    name = name,
-                    changeUrl = None,
-                    removeUrl = Some(
-                      routes.RemovePackageTypeYesNoController
-                        .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)
-                        .url
-                    )
+            Packaging(userAnswers, houseConsignmentIndex, itemIndex, packageIndex).map {
+              packaging =>
+                ListItem(
+                  name = packaging.forAddAnotherDisplay,
+                  changeUrl = None,
+                  removeUrl = Some(
+                    routes.RemovePackageTypeYesNoController
+                      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)
+                      .url
                   )
-              }
+                )
+            }
         }
 
       new AddAnotherPackageViewModel(

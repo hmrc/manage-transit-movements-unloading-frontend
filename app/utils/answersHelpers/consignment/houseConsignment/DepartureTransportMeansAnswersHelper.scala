@@ -16,8 +16,7 @@
 
 package utils.answersHelpers.consignment.houseConsignment
 
-import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.Country
+import models.reference.{Country, TransportMeansIdentification}
 import models.{Index, UserAnswers}
 import pages._
 import play.api.i18n.Messages

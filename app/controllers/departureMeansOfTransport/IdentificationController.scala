@@ -18,7 +18,7 @@ package controllers.departureMeansOfTransport
 
 import controllers.actions._
 import forms.EnumerableFormProvider
-import models.departureTransportMeans.TransportMeansIdentification
+import models.reference.TransportMeansIdentification
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
 import navigation.DepartureTransportMeansNavigator

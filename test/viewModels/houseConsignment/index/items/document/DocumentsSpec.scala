@@ -18,20 +18,27 @@ package viewModels.houseConsignment.index.items.document
 
 import base.SpecBase
 import models.HouseConsignmentLevelDocuments
+import viewModels.documents.Documents
 
 class DocumentsSpec extends SpecBase {
 
   "Documents" - {
 
-    "must return message if max limit reached" in {
-      Documents.maxLimitLabelForType(HouseConsignmentLevelDocuments(0, frontendAppConfig.maxTransportDocumentsHouseConsignment), "prefix").isDefined mustBe true
-      Documents
-        .maxLimitLabelForType(HouseConsignmentLevelDocuments(frontendAppConfig.maxSupportingDocumentsHouseConsignment, 0), "prefix")
-        .isDefined mustBe true
+    "must return message if max limit reached" - {
+      "when transport" in {
+        val result = Documents.maxLimitLabelForType(HouseConsignmentLevelDocuments(0, frontendAppConfig.maxTransportDocumentsHouseConsignment), "prefix")
+        result.isDefined mustBe true
+      }
+
+      "when supporting" in {
+        val result = Documents.maxLimitLabelForType(HouseConsignmentLevelDocuments(frontendAppConfig.maxSupportingDocumentsHouseConsignment, 0), "prefix")
+        result.isDefined mustBe true
+      }
     }
 
     "must return None if max limit not reached" in {
-      Documents.maxLimitLabelForType(HouseConsignmentLevelDocuments(0, 0), "prefix") mustBe None
+      val result = Documents.maxLimitLabelForType(HouseConsignmentLevelDocuments(0, 0), "prefix")
+      result.isDefined mustBe false
     }
   }
 }

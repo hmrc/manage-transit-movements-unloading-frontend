@@ -20,8 +20,8 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import cats.data.NonEmptySet
 import config.Constants.TransportModeCode._
 import connectors.ReferenceDataConnector
-import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.transport.TransportMode.InlandMode
+import models.reference.TransportMeansIdentification
+import models.reference.TransportMode.InlandMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Gen

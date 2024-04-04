@@ -19,8 +19,7 @@ package navigation
 import base.SpecBase
 import generators.Generators
 import models._
-import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.Country
+import models.reference.{Country, TransportMeansIdentification}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.departureMeansOfTransport._
 

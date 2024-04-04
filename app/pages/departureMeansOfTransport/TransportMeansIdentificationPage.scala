@@ -17,7 +17,7 @@
 package pages.departureMeansOfTransport
 
 import models.Index
-import models.departureTransportMeans.TransportMeansIdentification
+import models.reference.TransportMeansIdentification
 import pages.QuestionPage
 import pages.sections.TransportMeansSection
 import play.api.libs.json.JsPath
