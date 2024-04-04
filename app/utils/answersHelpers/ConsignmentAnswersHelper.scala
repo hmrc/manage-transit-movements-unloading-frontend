@@ -18,7 +18,7 @@ package utils.answersHelpers
 
 import generated.{Number0, Number1}
 import models.DocType.Previous
-import models.reference.transport.TransportMode.InlandMode
+import models.reference.TransportMode.InlandMode
 import models.reference.{Country, CustomsOffice}
 import models.{Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
 import pages.countryOfDestination.CountryOfDestinationPage

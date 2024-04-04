@@ -21,8 +21,8 @@ import connectors.ReferenceDataConnector
 import generated.ConsignmentType05
 import generators.Generators
 import models.reference.Country
-import models.reference.transport.TransportMode
-import models.reference.transport.TransportMode.InlandMode
+import models.reference.TransportMode
+import models.reference.TransportMode.InlandMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary

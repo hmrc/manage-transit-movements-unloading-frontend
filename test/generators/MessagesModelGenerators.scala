@@ -18,7 +18,7 @@ package generators
 
 import generated._
 import models.Coordinates
-import models.reference.transport.TransportMode.InlandMode
+import models.reference.TransportMode.InlandMode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen.const
 import org.scalacheck.{Arbitrary, Gen}

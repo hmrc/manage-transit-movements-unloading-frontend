@@ -19,7 +19,7 @@ package utils.answersHelpers
 import generated._
 import models.DocType.Previous
 import models.reference._
-import models.reference.transport.TransportMode.InlandMode
+import models.reference.TransportMode.InlandMode
 import models.{CheckMode, Coordinates, Index, NormalMode, SecurityType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
