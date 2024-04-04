@@ -19,10 +19,13 @@ package utils.answersHelpers.consignment
 import models.reference.Country
 import models.{Index, Link, RichOptionalJsArray, UserAnswers}
 import pages._
+import pages.houseConsignment.index.grossMass.GrossMassPage
 import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
 import utils.answersHelpers.consignment.houseConsignment.{ConsignmentItemAnswersHelper, DepartureTransportMeansAnswersHelper}
 import viewModels.sections.Section
@@ -33,6 +36,20 @@ class HouseConsignmentAnswersHelper(
   houseConsignmentIndex: Index
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
+
+  def headerSection: Section = StaticSection(
+    rows = Seq(
+      grossMassRow
+    ).flatten
+  )
+
+  def grossMassRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
+    page = GrossMassPage(houseConsignmentIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.grossMass",
+    id = Some(s"change-gross-mass"),
+    call = Some(Call(GET, "#"))
+  )
 
   def consignorName: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = ConsignorNamePage(houseConsignmentIndex),

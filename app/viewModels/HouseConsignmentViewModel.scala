@@ -38,6 +38,7 @@ object HouseConsignmentViewModel {
       val helper = new HouseConsignmentAnswersHelper(userAnswers, houseConsignmentIndex)
 
       val sections: Seq[Section] = Seq(
+        helper.headerSection,
         helper.departureTransportMeansSection,
         helper.itemSection,
         helper.houseConsignmentConsignorSection,
