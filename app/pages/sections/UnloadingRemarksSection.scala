@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-package pages
+package pages.sections
 
-import pages.sections.UnloadingRemarksSection
-import play.api.libs.json.JsPath
+import play.api.libs.json.{JsArray, JsPath}
 
-import java.time.LocalDate
+case object UnloadingRemarksSection extends Section[JsArray] {
 
-case object DateGoodsUnloadedPage extends QuestionPage[LocalDate] {
+  override def path: JsPath = JsPath \ toString
 
-  override def path: JsPath = UnloadingRemarksSection.path \ toString
-
-  override def toString: String = "unloadingDate"
+  override def toString: String = "UnloadingRemark"
 }

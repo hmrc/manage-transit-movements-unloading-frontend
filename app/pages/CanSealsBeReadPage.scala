@@ -16,11 +16,12 @@
 
 package pages
 
+import pages.sections.UnloadingRemarksSection
 import play.api.libs.json.JsPath
 
 case object CanSealsBeReadPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ "navigationData" \ toString
+  override def path: JsPath = UnloadingRemarksSection.path \ toString
 
   override def toString: String = "canSealsBeRead"
 }
