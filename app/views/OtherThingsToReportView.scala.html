@@ -31,22 +31,22 @@
 @(form: Form[_],mrn: MovementReferenceNumber, arrivalId: ArrivalId, maxLength: Int, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("changesToReport.title"),
+    title = messages("otherThingsToReport.title"),
     showBackLink = true
 ) {
 
     @errorSummary(form.errors)
 
-    @formHelper(action = controllers.routes.UnloadingCommentsController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.routes.OtherThingsToReportController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
 
         @inputCharacterCount(
           field = form("value"),
           inputCharacterCountType = OrdinaryInputCharacterCount(
-              heading = messages("changesToReport.heading"),
+              heading = messages("otherThingsToReport.heading"),
               caption = Some(messages("site.caption", mrn.toString)),
         ),
-          label = messages("changesToReport.heading"),
+          label = messages("otherThingsToReport.heading"),
           maxLength = maxLength,
         )
 
