@@ -17,17 +17,46 @@
 package viewModels.documents
 
 import config.FrontendAppConfig
-import models.ConsignmentLevelDocuments
+import models.{ConsignmentLevelDocuments, HouseConsignmentLevelDocuments, Index}
 import models.DocType.{Support, Transport}
 import play.api.i18n.Messages
 
 object Documents {
 
-  def maxLimitLabelForType(documents: ConsignmentLevelDocuments, prefix: String)(implicit config: FrontendAppConfig, messages: Messages): Option[String] =
+  def maxLimitLabelForType(
+    documents: ConsignmentLevelDocuments,
+    prefix: String
+  )(implicit config: FrontendAppConfig, messages: Messages): Option[String] =
     if (documents.supporting >= config.maxSupportingDocumentsConsignment) {
       Some(messages(s"$prefix.maxLimitForType.label", Support.display.toLowerCase, Transport.display.toLowerCase))
     } else if (documents.transport >= config.maxTransportDocumentsConsignment) {
       Some(messages(s"$prefix.maxLimitForType.label", Transport.display.toLowerCase, Support.display.toLowerCase))
+    } else {
+      None
+    }
+
+  def maxLimitLabelForType(
+    documents: HouseConsignmentLevelDocuments,
+    prefix: String
+  )(implicit config: FrontendAppConfig, messages: Messages): Option[String] =
+    if (documents.supporting >= config.maxSupportingDocumentsHouseConsignment) {
+      Some(messages(s"$prefix.maxLimitForType.label", Support.display.toLowerCase, Transport.display.toLowerCase))
+    } else if (documents.transport >= config.maxTransportDocumentsHouseConsignment) {
+      Some(messages(s"$prefix.maxLimitForType.label", Transport.display.toLowerCase, Support.display.toLowerCase))
+    } else {
+      None
+    }
+
+  def maxLimitLabelForType(
+    documents: HouseConsignmentLevelDocuments,
+    itemIndex: Index,
+    houseConsignmentIndex: Index,
+    prefix: String
+  )(implicit config: FrontendAppConfig, messages: Messages): Option[String] =
+    if (documents.supporting >= config.maxSupportingDocumentsHouseConsignment) {
+      Some(messages(s"$prefix.maxLimitForType.label", Support.display.toLowerCase, Transport.display.toLowerCase, houseConsignmentIndex, itemIndex))
+    } else if (documents.transport >= config.maxTransportDocumentsHouseConsignment) {
+      Some(messages(s"$prefix.maxLimitForType.label", Transport.display.toLowerCase, Support.display.toLowerCase, houseConsignmentIndex, itemIndex))
     } else {
       None
     }

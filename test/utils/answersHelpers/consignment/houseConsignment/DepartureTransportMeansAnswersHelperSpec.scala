@@ -16,8 +16,7 @@
 
 package utils.answersHelpers.consignment.houseConsignment
 
-import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.Country
+import models.reference.{Country, TransportMeansIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._

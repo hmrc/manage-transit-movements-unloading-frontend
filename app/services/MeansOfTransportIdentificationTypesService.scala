@@ -20,8 +20,8 @@ import config.Constants.MeansOfTransportIdentification.UnknownIdentification
 import config.Constants.TransportModeCode._
 import connectors.ReferenceDataConnector
 import models.UserAnswers
-import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.transport.TransportMode.InlandMode
+import models.reference.TransportMeansIdentification
+import models.reference.TransportMode.InlandMode
 import pages.equipment.InlandModePage
 import uk.gov.hmrc.http.HeaderCarrier
 

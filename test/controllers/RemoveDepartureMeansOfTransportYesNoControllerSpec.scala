@@ -19,8 +19,9 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import generators.Generators
-import models.departureTransportMeans.TransportMeansIdentification
-import models.{NormalMode, TransportMeans, UserAnswers}
+import models.reference.TransportMeansIdentification
+import models.removable.TransportMeans
+import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
@@ -58,7 +59,7 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
             .setValue(TransportMeansIdentificationPage(transportMeansIndex), identifier)
             .setValue(VehicleIdentificationNumberPage(transportMeansIndex), identificationNumber)
 
-          val insetText = TransportMeans(Some(identifier), Some(identificationNumber)).asString
+          val insetText = TransportMeans(transportMeansIndex, Some(identifier), Some(identificationNumber)).forRemoveDisplay
 
           setExistingUserAnswers(userAnswers)
 
@@ -149,7 +150,7 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
             .setValue(TransportMeansIdentificationPage(transportMeansIndex), identifier)
             .setValue(VehicleIdentificationNumberPage(transportMeansIndex), identificationNumber)
 
-          val insetText = TransportMeans(Some(identifier), Some(identificationNumber)).asString
+          val insetText = TransportMeans(transportMeansIndex, Some(identifier), Some(identificationNumber)).forRemoveDisplay
 
           setExistingUserAnswers(userAnswers)
 

@@ -15,7 +15,7 @@
  *@
 
 @import models.MovementReferenceNumber
-@import viewModels.components.InputYesNoViewModel._
+@import viewModels.components.InputYesNoViewModel
 @import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 @import views.utils.ViewUtils.StringImplicits
 
@@ -24,11 +24,11 @@
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
-    govukInsetText : GovukInsetText,
+    insetText: InsetText,
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, documentIndex: Index, mode: Mode, insetText: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, documentIndex: Index, mode: Mode, document: Option[String])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("document.removeDocumentYesNo.title"),
@@ -41,10 +41,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = YesNoWithAdditionalHtml(
+            yesNoType = InputYesNoViewModel(
                 heading = messages("document.removeDocumentYesNo.title"),
                 caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = govukInsetText(InsetText(content = Text(insetText)))
+                additionalHtml = document.map(insetText(_))
             )
         )
 

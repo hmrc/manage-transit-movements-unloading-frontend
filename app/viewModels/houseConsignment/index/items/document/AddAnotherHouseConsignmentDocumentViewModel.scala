@@ -17,20 +17,23 @@
 package viewModels.houseConsignment.index.items.document
 
 import config.FrontendAppConfig
-import models.DocType.{Previous, Support, Transport}
-import models.{ArrivalId, DocType, HouseConsignmentLevelDocuments, Index, Mode, RichOptionalJsArray, UserAnswers}
-import pages.houseConsignment.index.items.document.{DocumentReferenceNumberPage, TypePage}
+import controllers.houseConsignment.index.items.document.routes
+import models.DocType.Previous
+import models.removable.Document
+import models.{ArrivalId, HouseConsignmentLevelDocuments, Index, Mode, RichOptionalJsArray, UserAnswers}
+import pages.houseConsignment.index.items.document.TypePage
 import pages.sections.houseConsignment.index.items.documents.DocumentsSection
 import play.api.i18n.Messages
 import play.api.libs.json.JsArray
 import play.api.mvc.Call
+import viewModels.documents.Documents
 import viewModels.{AddAnotherViewModel, ListItem}
 
 case class AddAnotherHouseConsignmentDocumentViewModel(
   listItems: Seq[ListItem],
   onSubmitCall: Call,
   nextIndex: Index,
-  docTypeList: Seq[DocType],
+  documents: HouseConsignmentLevelDocuments,
   allowMore: Boolean
 ) extends AddAnotherViewModel {
 
@@ -52,16 +55,8 @@ case class AddAnotherHouseConsignmentDocumentViewModel(
     case _ => messages(s"$prefix.plural.label", itemIndex, houseConsignmentIndex)
   }
 
-  def maxLimitLabelForType(itemIndex: Index, houseConsignmentIndex: Index)(implicit config: FrontendAppConfig, messages: Messages): Option[String] = {
-    val groupedByType = docTypeList.groupBy(identity)
-    if (groupedByType.getOrElse(Support, Seq.empty).length == config.maxSupportingDocumentsHouseConsignment) {
-      Some(messages(s"$prefix.maxLimitForType.label", Support.display.toLowerCase, Transport.display.toLowerCase, houseConsignmentIndex, itemIndex))
-    } else if (groupedByType.getOrElse(Transport, Seq.empty).length == config.maxTransportDocumentsHouseConsignment) {
-      Some(messages(s"$prefix.maxLimitForType.label", Transport.display.toLowerCase, Support.display.toLowerCase, houseConsignmentIndex, itemIndex))
-    } else {
-      None
-    }
-  }
+  def maxLimitLabelForType(itemIndex: Index, houseConsignmentIndex: Index)(implicit config: FrontendAppConfig, messages: Messages): Option[String] =
+    Documents.maxLimitLabelForType(documents, houseConsignmentIndex, itemIndex, prefix)
 }
 
 object AddAnotherHouseConsignmentDocumentViewModel {
@@ -76,44 +71,28 @@ object AddAnotherHouseConsignmentDocumentViewModel {
 
       val listItems = documents.mapWithIndex {
         case (_, index) =>
-          userAnswers.get(TypePage(houseConsignmentIndex, itemsIndex, index)) match {
-            case Some(docType) if docType.`type` != Previous =>
-              Some(
-                ListItem(
-                  name = s"${userAnswers
-                    .get(DocumentReferenceNumberPage(houseConsignmentIndex, itemsIndex, index))
-                    .map(
-                      refNo => s"$docType - $refNo"
-                    )
-                    .getOrElse(s"$docType")}",
-                  changeUrl = None,
-                  removeUrl = Some(
-                    controllers.houseConsignment.index.items.document.routes.RemoveDocumentYesNoController
-                      .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemsIndex, index)
-                      .url
+          userAnswers.get(TypePage(houseConsignmentIndex, itemsIndex, index)).map(_.`type`).flatMap {
+            case Previous =>
+              None
+            case _ =>
+              Document(userAnswers, houseConsignmentIndex, itemsIndex, index).map {
+                document =>
+                  ListItem(
+                    name = document.forAddAnotherDisplay,
+                    changeUrl = None,
+                    removeUrl = Some(routes.RemoveDocumentYesNoController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemsIndex, index).url)
                   )
-                )
-              )
-            case _ => None
+              }
           }
       }.flatten
-
-      val docTypeList = documents
-        .mapWithIndex {
-          case (_, index) =>
-            userAnswers.get(TypePage(houseConsignmentIndex, itemsIndex, index)).map(_.`type`)
-        }
-        .flatten
-        .filter(_ != Previous)
 
       val houseConsignmentLevelDocuments = HouseConsignmentLevelDocuments(userAnswers, houseConsignmentIndex, itemsIndex)
 
       new AddAnotherHouseConsignmentDocumentViewModel(
-        listItems,
-        onSubmitCall =
-          controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController.onSubmit(arrivalId, houseConsignmentIndex, itemsIndex, mode),
+        listItems = listItems,
+        onSubmitCall = routes.AddAnotherDocumentController.onSubmit(arrivalId, houseConsignmentIndex, itemsIndex, mode),
         nextIndex = documents.nextIndex,
-        docTypeList,
+        documents = houseConsignmentLevelDocuments,
         allowMore = houseConsignmentLevelDocuments.canAddMore
       )
     }

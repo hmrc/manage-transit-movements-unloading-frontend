@@ -18,8 +18,8 @@ package views.departureMeansOfTransport
 
 import forms.EnumerableFormProvider
 import generators.Generators
+import models.reference.TransportMeansIdentification
 import models.{CheckMode, NormalMode}
-import models.departureTransportMeans.TransportMeansIdentification
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.data.Form

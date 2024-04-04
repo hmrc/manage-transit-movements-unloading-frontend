@@ -18,8 +18,7 @@ package utils.transformers
 
 import connectors.ReferenceDataConnector
 import generated.DepartureTransportMeansType02
-import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.Country
+import models.reference.{Country, TransportMeansIdentification}
 import models.{Index, UserAnswers}
 import uk.gov.hmrc.http.HeaderCarrier
 

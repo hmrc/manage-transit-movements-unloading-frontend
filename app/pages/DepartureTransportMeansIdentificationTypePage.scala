@@ -17,7 +17,7 @@
 package pages
 
 import models.Index
-import models.departureTransportMeans.TransportMeansIdentification
+import models.reference.TransportMeansIdentification
 import pages.sections.houseConsignment.index.departureTransportMeans.TransportMeansSection
 import play.api.libs.json.JsPath
 

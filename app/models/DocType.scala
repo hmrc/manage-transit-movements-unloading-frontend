@@ -18,6 +18,8 @@ package models
 
 sealed trait DocType {
   val display: String
+
+  override def toString: String = display
 }
 
 object DocType extends EnumerableType[DocType] {
