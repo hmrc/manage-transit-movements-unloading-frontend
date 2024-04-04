@@ -48,6 +48,21 @@ class AdditionalInformationTransformer @Inject() (referenceDataConnector: Refere
 
   def transform(
     additionalReferences: Seq[AdditionalInformationType02],
+    hcIndex: Index
+  )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
+    import pages.houseConsignment.index.additionalinformation._
+    import pages.sections.houseConsignment.index.additionalInformation.AdditionalInformationSection
+
+    genericTransform(additionalReferences) {
+      case (TempAdditionalInformation(underlying, code), index) =>
+        setSequenceNumber(AdditionalInformationSection(hcIndex, index), underlying.sequenceNumber) andThen
+          set(HouseConsignmentAdditionalInformationCodePage(hcIndex, index), code) andThen
+          set(HouseConsignmentAdditionalInformationTextPage(hcIndex, index), underlying.text)
+    }
+  }
+
+  def transform(
+    additionalReferences: Seq[AdditionalInformationType02],
     hcIndex: Index,
     itemIndex: Index
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
@@ -57,8 +72,8 @@ class AdditionalInformationTransformer @Inject() (referenceDataConnector: Refere
     genericTransform(additionalReferences) {
       case (TempAdditionalInformation(underlying, code), index) =>
         setSequenceNumber(AdditionalInformationSection(hcIndex, itemIndex, index), underlying.sequenceNumber) andThen
-          set(HouseConsignmentAdditionalInformationCodePage(hcIndex, itemIndex, index), code) andThen
-          set(HouseConsignmentAdditionalInformationTextPage(hcIndex, itemIndex, index), underlying.text)
+          set(HouseConsignmentItemAdditionalInformationCodePage(hcIndex, itemIndex, index), code) andThen
+          set(HouseConsignmentItemAdditionalInformationTextPage(hcIndex, itemIndex, index), underlying.text)
     }
   }
 
