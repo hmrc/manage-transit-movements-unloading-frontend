@@ -17,7 +17,7 @@
 package forms
 
 import forms.mappings.Mappings
-import models.messages.RemarksNonConform
+import forms.Constants.otherThingsToReportLength
 import models.messages.UnloadingRemarksRequest.stringFieldRegexComma
 import play.api.data.Form
 
@@ -30,7 +30,7 @@ class OtherThingsToReportFormProvider @Inject() extends Mappings {
       "value" -> text("otherThingsToReport.error.required")
         .verifying(
           forms.StopOnFirstFail[String](
-            maxLength(RemarksNonConform.unloadingRemarkLength, "otherThingsToReport.error.length"),
+            maxLength(otherThingsToReportLength, "otherThingsToReport.error.length"),
             regexp(stringFieldRegexComma, "otherThingsToReport.error.invalid")
           )
         )
