@@ -18,8 +18,8 @@ package viewModels.additionalReference.index
 
 import config.FrontendAppConfig
 import controllers.additionalReference.index.routes
+import models.removable.AdditionalReference
 import models.{ArrivalId, Index, Mode, RichOptionalJsArray, UserAnswers}
-import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import pages.sections.additionalReference.AdditionalReferencesSection
 import play.api.mvc.Call
 import viewModels.{AddAnotherViewModel, ListItem}
@@ -41,12 +41,10 @@ object AddAnotherAdditionalReferenceViewModel {
       val listItems = array
         .flatMapWithIndex {
           case (_, additionalReferenceIndex) =>
-            val number       = userAnswers.get(AdditionalReferenceNumberPage(additionalReferenceIndex)).getOrElse("")
-            val numberString = if (number.nonEmpty) s"- $number" else ""
-            userAnswers.get(AdditionalReferenceTypePage(additionalReferenceIndex)).map {
-              `type` =>
+            AdditionalReference(userAnswers, additionalReferenceIndex).map {
+              additionalReference =>
                 ListItem(
-                  name = s"${`type`.value} $numberString",
+                  name = additionalReference.forAddAnotherDisplay,
                   changeUrl = None,
                   removeUrl = Some(routes.RemoveAdditionalReferenceYesNoController.onPageLoad(arrivalId, additionalReferenceIndex, mode).url)
                 )
@@ -55,7 +53,7 @@ object AddAnotherAdditionalReferenceViewModel {
 
       new AddAnotherAdditionalReferenceViewModel(
         listItems,
-        onSubmitCall = controllers.additionalReference.index.routes.AddAnotherAdditionalReferenceController.onSubmit(arrivalId, mode),
+        onSubmitCall = routes.AddAnotherAdditionalReferenceController.onSubmit(arrivalId, mode),
         nextIndex = array.nextIndex
       )
     }

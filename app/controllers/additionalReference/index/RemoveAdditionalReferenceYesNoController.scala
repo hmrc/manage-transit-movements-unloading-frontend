@@ -18,8 +18,8 @@ package controllers.additionalReference.index
 
 import controllers.actions._
 import forms.YesNoFormProvider
+import models.removable.AdditionalReference
 import models.{ArrivalId, Index, Mode, UserAnswers}
-import pages.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import pages.sections.additionalReference.AdditionalReferenceSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -35,7 +35,6 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveAdditionalReferenceYesNoView
@@ -49,16 +48,11 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
   private def addAnother(arrivalId: ArrivalId, mode: Mode): Call =
     controllers.additionalReference.index.routes.AddAnotherAdditionalReferenceController.onSubmit(arrivalId, mode)
 
-  def insetText(userAnswers: UserAnswers, additionalReferenceIndex: Index): Option[String] = {
-    val additionalReferenceType           = userAnswers.get(AdditionalReferenceTypePage(additionalReferenceIndex)).map(_.value).getOrElse("")
-    val additionalReferenceNumber: String = userAnswers.get(AdditionalReferenceNumberPage(additionalReferenceIndex)).getOrElse("")
-    val insetTestAddRef                   = if (additionalReferenceNumber.isEmpty) "" else s" - $additionalReferenceNumber"
-    Some(additionalReferenceType + insetTestAddRef)
-  }
+  def insetText(userAnswers: UserAnswers, additionalReferenceIndex: Index): Option[String] =
+    AdditionalReference(userAnswers, additionalReferenceIndex).map(_.forRemoveDisplay)
 
   def onPageLoad(arrivalId: ArrivalId, additionalReferenceIndex: Index, mode: Mode): Action[AnyContent] = actions
-    .requireIndex(arrivalId, AdditionalReferenceSection(additionalReferenceIndex), addAnother(arrivalId, mode))
-    .andThen(getMandatoryPage.getFirst(AdditionalReferenceTypePage(additionalReferenceIndex))) {
+    .requireIndex(arrivalId, AdditionalReferenceSection(additionalReferenceIndex), addAnother(arrivalId, mode)) {
       implicit request =>
         Ok(
           view(
@@ -83,12 +77,13 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
               Future
                 .successful(
                   BadRequest(
-                    view(formWithErrors,
-                         request.userAnswers.mrn,
-                         arrivalId,
-                         additionalReferenceIndex,
-                         insetText(request.userAnswers, additionalReferenceIndex),
-                         mode
+                    view(
+                      formWithErrors,
+                      request.userAnswers.mrn,
+                      arrivalId,
+                      additionalReferenceIndex,
+                      insetText(request.userAnswers, additionalReferenceIndex),
+                      mode
                     )
                   )
                 ),

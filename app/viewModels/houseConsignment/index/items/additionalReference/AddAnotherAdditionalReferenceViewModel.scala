@@ -17,21 +17,23 @@
 package viewModels.houseConsignment.index.items.additionalReference
 
 import config.FrontendAppConfig
+import controllers.houseConsignment.index.items.additionalReference.routes
+import models.removable.AdditionalReference
 import models.{ArrivalId, Index, Mode, RichOptionalJsArray, UserAnswers}
+import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferencesSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import viewModels.{AddAnotherViewModel, ListItem}
-import controllers.houseConsignment.index.items.additionalReference.routes
-import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
-import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferencesSection
 
-case class AddAnotherAdditionalReferenceViewModel(listItems: Seq[ListItem],
-                                                  onSubmitCall: Call,
-                                                  nextIndex: Index,
-                                                  houseConsignmentIndex: Index,
-                                                  itemIndex: Index
+case class AddAnotherAdditionalReferenceViewModel(
+  listItems: Seq[ListItem],
+  onSubmitCall: Call,
+  nextIndex: Index,
+  houseConsignmentIndex: Index,
+  itemIndex: Index
 ) extends AddAnotherViewModel {
-  override val prefix: String                                    = "houseConsignment.index.items.additionalReference.addAnotherAdditionalReference"
+  override val prefix: String = "houseConsignment.index.items.additionalReference.addAnotherAdditionalReference"
+
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxAdditionalReferences
 
   override def title(implicit messages: Messages): String =
@@ -53,42 +55,37 @@ object AddAnotherAdditionalReferenceViewModel {
 
   class AddAnotherAdditionalReferenceViewModelProvider {
 
-    def apply(userAnswers: UserAnswers,
-              arrivalId: ArrivalId,
-              mode: Mode,
-              houseConsignmentIndex: Index,
-              itemIndex: Index
+    def apply(
+      userAnswers: UserAnswers,
+      arrivalId: ArrivalId,
+      mode: Mode,
+      houseConsignmentIndex: Index,
+      itemIndex: Index
     ): AddAnotherAdditionalReferenceViewModel = {
 
       val array = userAnswers.get(AdditionalReferencesSection(houseConsignmentIndex, itemIndex))
 
       val listItems = array.flatMapWithIndex {
         case (_, additionalReferenceIndex) =>
-          lazy val numberString = userAnswers.get(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) match {
-            case None        => ""
-            case Some(value) => s"- $value"
-          }
-          userAnswers.get(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)).map {
-            `type` =>
+          AdditionalReference(userAnswers, houseConsignmentIndex, itemIndex, additionalReferenceIndex).map {
+            additionalReference =>
               ListItem(
-                name = s"${`type`.value} $numberString",
+                name = additionalReference.forAddAnotherDisplay,
                 changeUrl = None,
                 removeUrl = Some(
                   routes.RemoveAdditionalReferenceYesNoController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex).url
                 )
               )
           }
-      }.toSeq
+      }
 
       new AddAnotherAdditionalReferenceViewModel(
         listItems,
-        onSubmitCall = controllers.houseConsignment.index.items.additionalReference.routes.AddAnotherAdditionalReferenceController
-          .onSubmit(arrivalId, mode, houseConsignmentIndex, itemIndex),
+        onSubmitCall = routes.AddAnotherAdditionalReferenceController.onSubmit(arrivalId, mode, houseConsignmentIndex, itemIndex),
         nextIndex = array.nextIndex,
         houseConsignmentIndex,
         itemIndex
       )
     }
-
   }
 }
