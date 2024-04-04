@@ -42,9 +42,23 @@ class Navigation extends Navigator {
       ua =>
         ua.get(AddUnloadingCommentsYesNoPage) map {
           case true  => controllers.routes.UnloadingFindingsController.onPageLoad(ua.id)
-          case false => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id) //TODO change to AddUnloadingRemarksYesNo (CTCP-4930)
+          case false => controllers.routes.AddCommentsYesNoController.onPageLoad(ua.id, NormalMode)
         }
-    case UnloadingCommentsPage => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
+    case AddCommentsYesNoPage =>
+      ua =>
+        ua.get(AddCommentsYesNoPage) map {
+          case true  => controllers.routes.UnloadingCommentsController.onPageLoad(ua.id, NormalMode)
+          case false => controllers.routes.AddCommentsYesNoController.onPageLoad(ua.id, NormalMode) //4530 - DoYouHaveAnythingElseToReport
+        }
+    case UnloadingCommentsPage =>
+      ua =>
+        Some(routes.CheckYourAnswersController.onPageLoad(ua.id)) //4530 - DoYouHaveAnythingElseToReport
+//    case DoYouHaveAnythingElseToReportPage ua =>
+//      ua.get(DoYouHaveAnythingElseToReportPage) map {
+//        case true  => controllers.routes.OtherThingsToReportController.onPageLoad(ua.id, NormalMode)
+//        case false => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id, NormalMode)
+//      }
+    case OtherThingsToReportPage => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
     case _ =>
       _ => Some(routes.SessionExpiredController.onPageLoad())
 

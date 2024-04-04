@@ -130,14 +130,6 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         }
       }
 
-      "must go from can unloading comment page to check your answers page" in {
-
-        val userAnswers = emptyUserAnswers.setValue(UnloadingCommentsPage, "test")
-        navigator
-          .nextPage(UnloadingCommentsPage, mode, userAnswers)
-          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
-      }
-
       "must go from add unloading comments yes/no page" - {
         "when answer is true to unloading comments controller" in {
           val userAnswers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, true)
@@ -152,7 +144,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           navigator
             .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
-            .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId)) //TODO: Change to AddUnloadingRemarksYesNo
+            .mustBe(routes.AddCommentsYesNoController.onPageLoad(arrivalId, NormalMode))
         }
 
         "to session expired controller when no existing answers found" in {
@@ -160,6 +152,57 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             .nextPage(AddUnloadingCommentsYesNoPage, mode, emptyUserAnswers)
             .mustBe(routes.SessionExpiredController.onPageLoad())
         }
+      }
+
+      "must go from add comments yes/no page" - {
+        "when answer is true to unloading comments controller" in {
+          val userAnswers = emptyUserAnswers.setValue(AddCommentsYesNoPage, true)
+
+          navigator
+            .nextPage(AddCommentsYesNoPage, mode, userAnswers)
+            .mustBe(routes.UnloadingCommentsController.onPageLoad(arrivalId, NormalMode))
+        }
+
+        "when answer is false to do you have anything else to report yes/no page" in {
+          val userAnswers = emptyUserAnswers.setValue(AddCommentsYesNoPage, false)
+
+          navigator
+            .nextPage(AddCommentsYesNoPage, mode, userAnswers)
+            .mustBe(routes.AddCommentsYesNoController.onPageLoad(arrivalId, NormalMode)) //Do you have any thing else to report page
+        }
+      }
+
+      "must go from can unloading comment page to do you have anything else to report yes/no page" in {
+        val userAnswers = emptyUserAnswers.setValue(UnloadingCommentsPage, "test")
+        navigator
+          .nextPage(UnloadingCommentsPage, mode, userAnswers)
+          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id)) //Do you have any thing else to report page
+      }
+
+//      "must go from do you have anything else to report page" - {
+//        "when answer is true to other things to report controller" in {
+//          val userAnswers = emptyUserAnswers.setValue(AddCommentsYesNoPage, true) //Do you have any thing else to report page
+//
+//          navigator
+//            .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers) //Do you have any thing else to report page
+//            .mustBe(routes.OtherThingsToReportController.onPageLoad(arrivalId, NormalMode))
+//        }
+//
+//        "when answer is false to check your answers page" in {
+//          val userAnswers = emptyUserAnswers.setValue(AddCommentsYesNoPage, false) //Do you have any thing else to report page
+//
+//          navigator
+//            .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers) //Do you have any thing else to report page
+//            .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
+//        }
+//      }
+
+      "must go from can other things to report page to check your answers page" in {
+        val userAnswers = emptyUserAnswers.setValue(OtherThingsToReportPage, "test")
+        navigator
+          .nextPage(OtherThingsToReportPage, mode, userAnswers)
+          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id)) //Do you have any thing else to report page
+
       }
 
       "must go from a page that doesn't exist in the route map to session expired" in {

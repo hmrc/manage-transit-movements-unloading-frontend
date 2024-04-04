@@ -42,7 +42,7 @@ class UnloadingFindingsViewSpec extends DetailsListViewBehaviours with Generator
 
   behave like pageWithSections()
 
-  behave like pageWithLinkAsButton("Continue", controllers.routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, NormalMode).url)
+  behave like pageWithLinkAsButton("Continue", controllers.routes.AddCommentsYesNoController.onPageLoad(arrivalId, NormalMode).url)
 
   "must render section titles when rows are non-empty" - {
     sections.foreach(_.sectionTitle.map {
