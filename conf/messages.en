@@ -331,6 +331,13 @@ changesToReport.error.required = Describe the discrepancies between the transit 
 changesToReport.error.length = Your description must be 512 characters or less
 changesToReport.error.invalid = Your description must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 
+otherThingsToReport.title = What do you want to report?
+otherThingsToReport.heading = What do you want to report?
+otherThingsToReport.checkYourAnswersLabel = What do you want to report?
+otherThingsToReport.error.required = Enter what you want to report
+otherThingsToReport.error.length = Your report must be 512 characters or less
+otherThingsToReport.error.invalid = Your report must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+
 confirmRemoveComments.title = Are you sure you want to remove your comments?
 confirmRemoveComments.heading = Are you sure you want to remove your comments?
 confirmRemoveComments.checkYourAnswersLabel = Are you sure you want to remove your comments?
