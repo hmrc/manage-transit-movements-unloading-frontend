@@ -79,3 +79,8 @@ GET        /:arrivalId/unloading-remarks-sent                                   
 
 GET        /:arrivalId/check-answers                                                                                 controllers.CheckYourAnswersController.onPageLoad(arrivalId: ArrivalId)
 POST       /:arrivalId/check-answers                                                                                 controllers.CheckYourAnswersController.onSubmit(arrivalId: ArrivalId)
+
+GET        /:arrivalId/add-comments                                                         controllers.AddCommentsYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/add-comments                                                         controllers.AddCommentsYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-add-comments                                                  controllers.AddCommentsYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-add-comments                                                  controllers.AddCommentsYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)

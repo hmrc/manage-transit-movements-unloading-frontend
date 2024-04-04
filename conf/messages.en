@@ -324,6 +324,11 @@ addUnloadingCommentsYesNo.heading = Were there any discrepancies between the tra
 addUnloadingCommentsYesNo.paragraph = This includes any changes to the means of transport, items or transport equipment.
 addUnloadingCommentsYesNo.error.required = Select yes if there were any discrepancies between the transit and the declaration summary
 
+addCommentsYesNo.title = Do you want to add any comments?
+addCommentsYesNo.heading = Do you want to add any comments?
+addCommentsYesNo.paragraph = This can be anything else you want to tell us about the discrepancies you spotted when unloading.
+addCommentsYesNo.error.required = Select yes if you want to add any comments
+
 changesToReport.title = Describe the discrepancies between the transit and the declaration summary
 changesToReport.heading = Describe the discrepancies between the transit and the declaration summary
 changesToReport.checkYourAnswersLabel = What comments do you want to add?
