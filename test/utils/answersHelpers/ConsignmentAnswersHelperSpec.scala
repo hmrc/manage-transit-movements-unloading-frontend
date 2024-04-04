@@ -20,6 +20,7 @@ import generated._
 import models.DocType.Previous
 import models.departureTransportMeans.TransportMeansIdentification
 import models.reference._
+import models.reference.transport.TransportMode.InlandMode
 import models.{CheckMode, Coordinates, Index, NormalMode, SecurityType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -519,5 +520,79 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         result.children.head.children.head.rows(3).key.value mustBe "Location"
       }
     }
+
+    "inlandModeOfTransportRow" - {
+      import pages.inlandModeOfTransport.InlandModeOfTransportPage
+
+      "must return None" - {
+        s"when no inland mode of transport defined" in {
+          val helper = new ConsignmentAnswersHelper(emptyUserAnswers)
+          val result = helper.inlandModeOfTransportRow
+          result.isEmpty mustBe true
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $InlandModeOfTransportPage is defined" in {
+          val answers = emptyUserAnswers
+            .setValue(InlandModeOfTransportPage, InlandMode("1", "Maritime Transport"))
+
+          val helper = new ConsignmentAnswersHelper(answers)
+          val result = helper.inlandModeOfTransportRow.value
+
+          result.key.value mustBe "Mode"
+          result.value.value mustBe "Maritime Transport"
+        }
+      }
+    }
+
+    "countryOfDestinationRow" - {
+      import pages.countryOfDestination.CountryOfDestinationPage
+
+      "must return None" - {
+        s"when no country of destination defined" in {
+          val helper = new ConsignmentAnswersHelper(emptyUserAnswers)
+          val result = helper.countryOfDestinationRow
+          result.isEmpty mustBe true
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $CountryOfDestinationPage is defined" in {
+          val answers = emptyUserAnswers
+            .setValue(CountryOfDestinationPage, Country("FR", "France"))
+
+          val helper = new ConsignmentAnswersHelper(answers)
+          val result = helper.countryOfDestinationRow.value
+
+          result.key.value mustBe "Country Of Destination"
+          result.value.value mustBe "France - FR"
+        }
+      }
+    }
+
+    "containerIndicatorRow" - {
+      "must return row" in {
+        val userAnswers = emptyUserAnswers
+          .copy(ie043Data =
+            basicIe043.copy(Consignment =
+              Some(
+                ConsignmentType05(
+                  containerIndicator = Number1,
+                  inlandModeOfTransport = Some("Mode")
+                )
+              )
+            )
+          )
+
+        val helper = new ConsignmentAnswersHelper(userAnswers)
+        val result = helper.containerIndicatorRow
+
+        result.get.key.value mustBe "Are you using any containers?"
+        result.value.value.value mustBe "Yes"
+        result.get.actions must not be defined
+      }
+    }
+
   }
 }

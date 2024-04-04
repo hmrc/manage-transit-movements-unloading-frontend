@@ -869,6 +869,13 @@ additionalReference.index.additionalReferenceNumberYesNo.error.required = Select
 unloadingFindings.grossMass = Gross weight
 unloadingFindings.grossMass.change.hidden = gross weight
 
+unloadingFindings.inlandModeOfTransport = Inland mode Of transport
+unloadingFindings.inlandModeOfTransport.label = Mode
+
+unloadingFindings.countryOfDestination = Country Of Destination
+
+unloadingFindings.containerIndicator = Are you using any containers?
+
 document.type.NormalMode.title = What type of document do you want to add?
 document.type.CheckMode.title = What is the new document type?
 document.type.NormalMode.heading = What type of document do you want to add?

@@ -605,6 +605,60 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       }
     }
 
+    "getTransportModeCode" - {
+      val code = "1"
+      val url: String = s"/$baseUrl/lists/TransportModeCode?data.code=$code"
+
+      "must return transport mode code when successful" in {
+        val responseJson: String =
+          """
+            |{
+            |  "_links": {
+            |    "self": {
+            |      "href": "/customs-reference-data/lists/TransportModeCode"
+            |    }
+            |  },
+            |  "meta": {
+            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+            |    "snapshotDate": "2023-01-01"
+            |  },
+            |  "id": "TransportModeCode",
+            |  "data": [
+            |    {
+            |      "code": "1",
+            |      "description": "Maritime Transport"
+            |    },
+            |    {
+            |      "code": "2",
+            |      "description": "Rail Transport"
+            |    }
+            |  ]
+            |}
+            |""".stripMargin
+
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(responseJson))
+        )
+
+        val expectedResult = NonEmptySet.of(
+          InlandMode("1", "Maritime Transport"),
+          InlandMode("2", "Rail Transport")
+        )
+
+        connector.getTransportModeCode(code).futureValue mustEqual expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getTransportModeCode(code))
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getTransportModeCode(code))
+      }
+
+    }
+
     "getPreviousDocuments" - {
       val url = s"/$baseUrl/lists/PreviousDocumentType"
 
