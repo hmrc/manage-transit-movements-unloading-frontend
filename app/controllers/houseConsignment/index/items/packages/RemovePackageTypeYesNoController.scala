@@ -18,10 +18,8 @@ package controllers.houseConsignment.index.items.packages
 
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.reference.PackageType
-import models.requests.SpecificDataRequestProvider1
-import models.{ArrivalId, Index, Mode}
-import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageTypePage}
+import models.removable.Packaging
+import models.{ArrivalId, Index, Mode, UserAnswers}
 import pages.sections.PackagingSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -38,7 +36,6 @@ class RemovePackageTypeYesNoController @Inject() (
   sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: YesNoFormProvider,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemovePackageTypeYesNoView
 )(implicit ec: ExecutionContext)
@@ -48,19 +45,13 @@ class RemovePackageTypeYesNoController @Inject() (
   private def addAnother(arrivalId: ArrivalId, mode: Mode): Call =
     Call("GET", "#") //TODO should go to addAnother package page
 
-  private type Request = SpecificDataRequestProvider1[PackageType]#SpecificDataRequest[_]
-
-  private def packageType(implicit request: Request): PackageType = request.arg
-
   private def form(houseConsignmentIndex: Index, itemIndex: Index): Form[Boolean] =
     formProvider("houseConsignment.index.items.packages.removePackageTypeYesNo", houseConsignmentIndex, itemIndex)
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     actions
-      .getStatus(arrivalId)
-      .andThen(getMandatoryPage(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex))) {
+      .getStatus(arrivalId) {
         implicit request =>
-          val quantity = request.userAnswers.get(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex)).map(_.toString())
           Ok(
             view(
               form(houseConsignmentIndex, itemIndex),
@@ -70,7 +61,7 @@ class RemovePackageTypeYesNoController @Inject() (
               itemIndex,
               packageIndex,
               mode,
-              insetText(quantity, packageType)
+              insetText(request.userAnswers, houseConsignmentIndex, itemIndex, packageIndex)
             )
           )
       }
@@ -78,24 +69,23 @@ class RemovePackageTypeYesNoController @Inject() (
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
     actions
       .getStatus(arrivalId)
-      .andThen(getMandatoryPage(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex)))
       .async {
         implicit request =>
-          val quantity = request.userAnswers.get(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex)).map(_.toString())
           form(houseConsignmentIndex, itemIndex)
             .bindFromRequest()
             .fold(
               formWithErrors =>
                 Future.successful(
                   BadRequest(
-                    view(formWithErrors,
-                         request.userAnswers.mrn,
-                         arrivalId,
-                         houseConsignmentIndex,
-                         itemIndex,
-                         packageIndex,
-                         mode,
-                         insetText(quantity, packageType)
+                    view(
+                      formWithErrors,
+                      request.userAnswers.mrn,
+                      arrivalId,
+                      houseConsignmentIndex,
+                      itemIndex,
+                      packageIndex,
+                      mode,
+                      insetText(request.userAnswers, houseConsignmentIndex, itemIndex, packageIndex)
                     )
                   )
                 ),
@@ -110,10 +100,6 @@ class RemovePackageTypeYesNoController @Inject() (
             )
       }
 
-  private def insetText(quantity: Option[String], packageType: PackageType): Option[String] =
-    quantity
-      .map(
-        value => s"$value ${packageType.toString}"
-      )
-      .orElse(Some(packageType.toString))
+  private def insetText(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index): Option[String] =
+    Packaging(userAnswers, houseConsignmentIndex, itemIndex, packageIndex).map(_.forRemoveDisplay)
 }

@@ -18,8 +18,8 @@ package controllers.transportEquipment.index
 
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.{ArrivalId, Index, Mode, TransportEquipment}
-import pages.ContainerIdentificationNumberPage
+import models.removable.TransportEquipment
+import models.{ArrivalId, Index, Mode, UserAnswers}
 import pages.sections.TransportEquipmentSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -48,14 +48,13 @@ class RemoveTransportEquipmentYesNoController @Inject() (
   private def addAnother(arrivalId: ArrivalId, mode: Mode): Call =
     controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, mode)
 
-  private def formatInsetText(containerId: Option[String])(implicit messages: Messages): Option[String] =
-    TransportEquipment(containerId).asString
+  private def formatInsetText(userAnswers: UserAnswers, transportEquipmentIndex: Index)(implicit messages: Messages): Option[String] =
+    TransportEquipment(userAnswers, transportEquipmentIndex).flatMap(_.forRemoveDisplay)
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, transportEquipmentIndex: Index): Action[AnyContent] = actions
     .requireIndex(arrivalId, TransportEquipmentSection(transportEquipmentIndex), addAnother(arrivalId, mode)) {
       implicit request =>
-        val containerId: Option[String] = request.userAnswers.get(ContainerIdentificationNumberPage(transportEquipmentIndex))
-        val insetText                   = formatInsetText(containerId)
+        val insetText = formatInsetText(request.userAnswers, transportEquipmentIndex)
         Ok(view(form(transportEquipmentIndex), request.userAnswers.mrn, arrivalId, transportEquipmentIndex, insetText, mode))
     }
 
@@ -63,8 +62,7 @@ class RemoveTransportEquipmentYesNoController @Inject() (
     .requireIndex(arrivalId, TransportEquipmentSection(transportEquipmentIndex), addAnother(arrivalId, mode))
     .async {
       implicit request =>
-        val containerId: Option[String] = request.userAnswers.get(ContainerIdentificationNumberPage(transportEquipmentIndex))
-        val insetText                   = formatInsetText(containerId)
+        val insetText = formatInsetText(request.userAnswers, transportEquipmentIndex)
         form(transportEquipmentIndex)
           .bindFromRequest()
           .fold(
