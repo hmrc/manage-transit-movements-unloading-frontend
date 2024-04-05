@@ -1,7 +1,7 @@
 # microservice specific routes
 
 ->         /                                            app.departureMeansOfTransport.Routes
-->         /                                            app.houseConsignment.index.items.Routes
+->         /                                            app.houseConsignment.index.Routes
 ->         /                                            app.transportEquipment.Routes
 ->         /                                            app.transportEquipment.index.Routes
 ->         /                                            app.documents.Routes
@@ -79,6 +79,11 @@ GET        /:arrivalId/unloading-remarks-sent                                   
 
 GET        /:arrivalId/check-answers                                                                                 controllers.CheckYourAnswersController.onPageLoad(arrivalId: ArrivalId)
 POST       /:arrivalId/check-answers                                                                                 controllers.CheckYourAnswersController.onSubmit(arrivalId: ArrivalId)
+
+GET        /:arrivalId/add-comments                                                         controllers.AddCommentsYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/add-comments                                                         controllers.AddCommentsYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-add-comments                                                  controllers.AddCommentsYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-add-comments                                                  controllers.AddCommentsYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
 GET        /:arrivalId/report                                                                                        controllers.OtherThingsToReportController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/report                                                                                        controllers.OtherThingsToReportController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)

@@ -16,14 +16,17 @@
 
 package pages
 
-import pages.sections.UnloadingRemarksSection
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-import java.time.LocalDate
+class AddCommentsYesNoPageSpec extends PageBehaviours {
 
-case object DateGoodsUnloadedPage extends QuestionPage[LocalDate] {
+  "AddCommentsYesNoPage" - {
 
-  override def path: JsPath = UnloadingRemarksSection.path \ toString
+    beRetrievable[Boolean](AddCommentsYesNoPage)
 
-  override def toString: String = "unloadingDate"
+    beSettable[Boolean](AddCommentsYesNoPage)
+
+    beRemovable[Boolean](AddCommentsYesNoPage)
+
+  }
 }

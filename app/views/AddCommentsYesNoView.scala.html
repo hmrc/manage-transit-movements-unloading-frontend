@@ -14,40 +14,40 @@
  * limitations under the License.
  *@
 
-@import controllers.houseConsignment.index.items.additionalReference.routes
 @import models.MovementReferenceNumber
-@import viewModels.components.InputYesNoViewModel
 @import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
+@import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import views.utils.ViewUtils.StringImplicits
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
-    insetText: InsetText,
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId,  mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index, additionalReference: Option[String])(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("houseConsignment.index.items.additionalReference.removeAdditionalReferenceYesNo.title", additionalReferenceIndex.display),
+    title = messages("addCommentsYesNo.title"),
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.RemoveAdditionalReferenceYesNoController.onSubmit(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex), Symbol("autoComplete") -> "off") {
-
         @errorSummary(form.errors)
+
+        @formHelper(action = controllers.routes.AddCommentsYesNoController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = InputYesNoViewModel(
-                heading = messages("houseConsignment.index.items.additionalReference.removeAdditionalReferenceYesNo.heading", additionalReferenceIndex.display),
+            yesNoType = YesNoWithAdditionalHtml(
+                heading = messages("addCommentsYesNo.heading"),
                 caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = additionalReference.map(insetText(_))
+                additionalHtml = messages("addCommentsYesNo.paragraph").toParagraph
             )
         )
+
+
 
         @button(attributes = Map("id" -> "submit"))
     }

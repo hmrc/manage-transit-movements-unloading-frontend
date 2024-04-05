@@ -18,13 +18,10 @@ package controllers.houseConsignment.index.items.additionalReference
 
 import controllers.actions._
 import forms.YesNoFormProvider
+import models.removable.AdditionalReference
 import models.requests.DataRequest
 import models.{ArrivalId, Index, Mode, UserAnswers}
-import pages.houseConsignment.index.items.additionalReference.{
-  AdditionalReferenceNumberPage,
-  AdditionalReferenceTypePage,
-  RemoveAdditionalReferenceNumberYesNoPage
-}
+import pages.houseConsignment.index.items.additionalReference.{AdditionalReferenceTypePage, RemoveAdditionalReferenceNumberYesNoPage}
 import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -53,17 +50,8 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
     controllers.houseConsignment.index.items.additionalReference.routes.AddAnotherAdditionalReferenceController
       .onSubmit(arrivalId, mode, houseConsignmentIndex, itemIndex)
 
-  def insetText(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): String = {
-    val additionalReferenceType = userAnswers
-      .get(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))
-      .map(_.value)
-      .getOrElse("")
-
-    val additionalReferenceNumber = userAnswers.get(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)).getOrElse("")
-    val insetTestAddRef           = if (additionalReferenceNumber.isEmpty) "" else s" - $additionalReferenceNumber"
-
-    additionalReferenceType + insetTestAddRef
-  }
+  def insetText(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): Option[String] =
+    AdditionalReference(userAnswers, houseConsignmentIndex, itemIndex, additionalReferenceIndex).map(_.forRemoveDisplay)
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] =
     actions

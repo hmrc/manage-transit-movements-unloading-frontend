@@ -16,11 +16,16 @@
 
 package pages
 
+import models.UserAnswers
 import play.api.libs.json.JsPath
 
-case object StateOfSealsPage extends QuestionPage[String] {
+import scala.util.Try
 
-  override def path: JsPath = JsPath \ "n1:CC044C" \ "UnloadingRemark" \ toString
+case object AddCommentsYesNoPage extends QuestionPage[Boolean] {
 
-  override def toString: String = "stateOfSeals"
+  override def path: JsPath = JsPath \ "UnloadingRemark" \ toString
+
+  override def toString: String = "comments"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = super.cleanup(value, userAnswers)
 }
