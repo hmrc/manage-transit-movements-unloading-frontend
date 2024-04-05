@@ -588,6 +588,13 @@ unloadingFindings.additional.reference.type.change.hidden = type for additional 
 unloadingFindings.additional.reference.number = Reference number
 unloadingFindings.additional.reference.number.change.hidden = reference number for additional reference {0}
 
+unloadingFindings.houseConsignment.additionalReference.heading = Additional references
+unloadingFindings.houseConsignment.additionalReference = Additional reference {0}
+unloadingFindings.houseConsignment.additionalReference.type = Type
+unloadingFindings.houseConsignment.additionalReference.type.change.hidden = type for additional reference {0}
+unloadingFindings.houseConsignment.additionalReference.number = Reference number
+unloadingFindings.houseConsignment.additionalReference.number.change.hidden = reference number for additional reference {0}
+
 unloadingFindings.houseConsignment.item.additionalReference = Additional reference {0}
 unloadingFindings.houseConsignment.item.additionalReference.type = Type
 unloadingFindings.houseConsignment.item.additionalReference.type.change.hidden = type for additional reference {0} in item {1}

@@ -39,6 +39,7 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
   private lazy val mockConsigneeTransformer               = mock[ConsigneeTransformer]
   private lazy val mockConsignorTransformer               = mock[ConsignorTransformer]
   private lazy val mockDepartureTransportMeansTransformer = mock[DepartureTransportMeansTransformer]
+  private lazy val mockAdditionalReferenceTransformer     = mock[AdditionalReferencesTransformer]
   private lazy val mockAdditionalInformationTransformer   = mock[AdditionalInformationTransformer]
   private lazy val mockConsignmentItemTransformer         = mock[ConsignmentItemTransformer]
 
@@ -49,6 +50,7 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
         bind[ConsigneeTransformer].toInstance(mockConsigneeTransformer),
         bind[ConsignorTransformer].toInstance(mockConsignorTransformer),
         bind[DepartureTransportMeansTransformer].toInstance(mockDepartureTransportMeansTransformer),
+        bind[AdditionalReferencesTransformer].toInstance(mockAdditionalReferenceTransformer),
         bind[AdditionalInformationTransformer].toInstance(mockAdditionalInformationTransformer),
         bind[ConsignmentItemTransformer].toInstance(mockConsignmentItemTransformer)
       )
@@ -63,6 +65,10 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
 
   private case class FakeDepartureTransportMeansSection(hcIndex: Index) extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ hcIndex.position.toString \ "departureTransportMeans"
+  }
+
+  private case class FakeAdditionalReferenceSection(hcIndex: Index) extends QuestionPage[JsObject] {
+    override def path: JsPath = JsPath \ hcIndex.position.toString \ "additionalReference"
   }
 
   private case class FakeAdditionalInformationSection(hcIndex: Index) extends QuestionPage[JsObject] {
@@ -95,6 +101,11 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
                 ua => Future.successful(ua.setValue(FakeDepartureTransportMeansSection(hcIndex), Json.obj("foo" -> i.toString)))
               }
 
+            when(mockAdditionalReferenceTransformer.transform(any(), eqTo(hcIndex))(any()))
+              .thenReturn {
+                ua => Future.successful(ua.setValue(FakeAdditionalReferenceSection(hcIndex), Json.obj("foo" -> i.toString)))
+              }
+
             when(mockAdditionalInformationTransformer.transform(any(), eqTo(hcIndex))(any()))
               .thenReturn {
                 ua => Future.successful(ua.setValue(FakeAdditionalInformationSection(hcIndex), Json.obj("foo" -> i.toString)))
@@ -116,6 +127,7 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
             result.getValue(FakeConsigneeSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
             result.getValue(FakeConsignorSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
             result.getValue(FakeDepartureTransportMeansSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
+            result.getValue(FakeAdditionalReferenceSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
             result.getValue(FakeAdditionalInformationSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
             result.getValue(FakeConsignmentItemSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
         }
