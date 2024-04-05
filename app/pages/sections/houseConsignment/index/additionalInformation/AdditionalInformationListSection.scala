@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package pages.houseConsignment.index.items.additionalinformation
+package pages.sections.houseConsignment.index.additionalInformation
 
-import pages.behaviours.PageBehaviours
+import models.Index
+import pages.sections.{HouseConsignmentSection, Section}
+import play.api.libs.json.{JsArray, JsPath}
 
-class HouseConsignmentAdditionalInformationTextPageSpec extends PageBehaviours {
+case class AdditionalInformationListSection(houseConsignmentIndex: Index) extends Section[JsArray] {
 
-  "HouseConsignmentAdditionalInformationTextPage" - {
+  override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ toString
 
-    beRetrievable[String](HouseConsignmentAdditionalInformationTextPage(index, index, index))
-
-    beSettable[String](HouseConsignmentAdditionalInformationTextPage(index, index, index))
-
-    beRemovable[String](HouseConsignmentAdditionalInformationTextPage(index, index, index))
-  }
+  override def toString: String = "AdditionalInformation"
 }

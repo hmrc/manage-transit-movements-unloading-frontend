@@ -21,8 +21,9 @@ import models.{DynamicAddress, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
+import pages.houseConsignment.index.additionalinformation.{HouseConsignmentAdditionalInformationCodePage, HouseConsignmentAdditionalInformationTextPage}
 import pages.houseConsignment.index.items.additionalReference.AdditionalReferenceTypePage
-import pages.houseConsignment.index.items.additionalinformation.HouseConsignmentAdditionalInformationCodePage
+import pages.houseConsignment.index.items.additionalinformation.HouseConsignmentItemAdditionalInformationCodePage
 import pages.houseConsignment.index.items.document.DocumentReferenceNumberPage
 import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
 import pages.houseConsignment.index.items.{
@@ -229,6 +230,33 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       }
     }
 
+    "additionalInformationSections" - {
+      "must generate accordion sections" in {
+        forAll(arbitrary[AdditionalInformationCode], nonEmptyString) {
+          (code, description) =>
+            val answers = emptyUserAnswers
+              .setValue(HouseConsignmentAdditionalInformationCodePage(hcIndex, additionalInformationIndex), code)
+              .setValue(HouseConsignmentAdditionalInformationTextPage(hcIndex, additionalInformationIndex), description)
+
+            val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
+            val result = helper.additionalInformationSection
+
+            result mustBe a[AccordionSection]
+            result.sectionTitle.value mustBe "Additional information"
+            result.children.size mustBe 1
+
+            val additionalInfo1 = result.children.head
+            additionalInfo1 mustBe a[AccordionSection]
+            additionalInfo1.sectionTitle.value mustBe "Additional information 1"
+            additionalInfo1.id.value mustBe "additionalInformation1"
+            additionalInfo1.rows.size mustBe 2
+
+            additionalInfo1.rows.head.value.value mustBe code.toString
+            additionalInfo1.rows(1).value.value mustBe description
+        }
+      }
+    }
+
     "itemSections" - {
       "must generate accordion sections" in {
         val description           = Gen.alphaNumStr.sample.value
@@ -255,7 +283,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
           .setValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(0)), "doc 1 ref")
           .setValue(DocumentReferenceNumberPage(hcIndex, itemIndex, Index(1)), "doc 2 ref")
           .setValue(AdditionalReferenceTypePage(hcIndex, itemIndex, additionalReferenceIndex), additionalReference)
-          .setValue(HouseConsignmentAdditionalInformationCodePage(hcIndex, itemIndex, additionalInformationIndex), additionalInformation)
+          .setValue(HouseConsignmentItemAdditionalInformationCodePage(hcIndex, itemIndex, additionalInformationIndex), additionalInformation)
           .setValue(ItemConsigneeNamePage(hcIndex, itemIndex), "John Smith")
           .setValue(ItemConsigneeIdentifierPage(hcIndex, itemIndex), "csgee1")
           .setValue(DangerousGoodsPage(hcIndex, itemIndex, Index(0)), "dg1")

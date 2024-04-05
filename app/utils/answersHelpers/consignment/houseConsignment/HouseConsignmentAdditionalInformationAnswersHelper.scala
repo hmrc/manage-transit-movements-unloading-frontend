@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,38 +14,35 @@
  * limitations under the License.
  */
 
-package utils.answersHelpers.consignment.houseConsignment.item
+package utils.answersHelpers.consignment.houseConsignment
 
 import models.reference.AdditionalInformationCode
 import models.{Index, UserAnswers}
-import pages.houseConsignment.index.items.additionalinformation.{
-  HouseConsignmentItemAdditionalInformationCodePage,
-  HouseConsignmentItemAdditionalInformationTextPage
-}
+import pages.houseConsignment.index.additionalinformation.{HouseConsignmentAdditionalInformationCodePage, HouseConsignmentAdditionalInformationTextPage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
 
-class AdditionalInformationsAnswerHelper(
+class HouseConsignmentAdditionalInformationAnswersHelper(
   userAnswers: UserAnswers,
   houseConsignmentIndex: Index,
-  itemIndex: Index,
   additionalInformationIndex: Index
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
-  def additionalInformationCodeRow: Option[SummaryListRow] = getAnswerAndBuildRow[AdditionalInformationCode](
-    page = HouseConsignmentItemAdditionalInformationCodePage(houseConsignmentIndex, itemIndex, additionalInformationIndex),
+  def code: Option[SummaryListRow] = getAnswerAndBuildRow[AdditionalInformationCode](
+    page = HouseConsignmentAdditionalInformationCodePage(houseConsignmentIndex, additionalInformationIndex),
     formatAnswer = formatAsText,
-    prefix = "unloadingFindings.additional.information.code",
+    prefix = "unloadingFindings.additionalInformation.type",
     id = None,
     call = None
   )
 
-  def additionalInformationTextRow: Option[SummaryListRow] = buildRowWithNoChangeLink[String](
-    data = userAnswers.get(HouseConsignmentItemAdditionalInformationTextPage(houseConsignmentIndex, itemIndex, additionalInformationIndex)),
+  def description: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = HouseConsignmentAdditionalInformationTextPage(houseConsignmentIndex, additionalInformationIndex),
     formatAnswer = formatAsText,
-    prefix = "unloadingFindings.additional.information.description"
+    prefix = "unloadingFindings.additionalInformation.description",
+    id = None,
+    call = None
   )
-
 }
