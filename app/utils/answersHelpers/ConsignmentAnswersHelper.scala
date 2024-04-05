@@ -161,7 +161,8 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
   )
 
   def containerIndicatorRow: Option[SummaryListRow] =
-    userAnswers.ie043Data.Consignment.map(_.containerIndicator)
+    userAnswers.ie043Data.Consignment
+      .map(_.containerIndicator)
       .map {
         containerIndicator =>
           buildRow(
