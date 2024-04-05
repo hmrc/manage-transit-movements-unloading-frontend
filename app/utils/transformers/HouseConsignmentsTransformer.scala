@@ -29,6 +29,7 @@ class HouseConsignmentsTransformer @Inject() (
   consignorTransformer: ConsignorTransformer,
   departureTransportMeansTransformer: DepartureTransportMeansTransformer,
   documentsTransformer: DocumentsTransformer,
+  additionalInformationTransformer: AdditionalInformationTransformer,
   consignmentItemTransformer: ConsignmentItemTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
@@ -51,6 +52,7 @@ class HouseConsignmentsTransformer @Inject() (
                     houseConsignment.PreviousDocument.toPreviousDocumentType06,
                     hcIndex
                   ) andThen
+                  additionalInformationTransformer.transform(houseConsignment.AdditionalInformation, hcIndex) andThen
                   consignmentItemTransformer.transform(houseConsignment.ConsignmentItem, hcIndex)
 
               pipeline(userAnswers)

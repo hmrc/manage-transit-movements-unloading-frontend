@@ -22,11 +22,17 @@ import models.{Index, Link, RichOptionalJsArray, UserAnswers}
 import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
 import pages.sections.houseConsignment.index
+import pages.sections.houseConsignment.index.additionalInformation.AdditionalInformationListSection
 import pages.{houseConsignment, _}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
-import utils.answersHelpers.consignment.houseConsignment.{ConsignmentItemAnswersHelper, DepartureTransportMeansAnswersHelper, DocumentAnswersHelper}
+import utils.answersHelpers.consignment.houseConsignment.{
+  ConsignmentItemAnswersHelper,
+  DepartureTransportMeansAnswersHelper,
+  DocumentAnswersHelper,
+  HouseConsignmentAdditionalInformationAnswersHelper
+}
 import viewModels.sections.Section
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 
@@ -149,6 +155,28 @@ class HouseConsignmentAnswersHelper(
           viewLinks = Seq(documentAddRemoveLink),
           children = children,
           id = Some(s"documents")
+        )
+    }
+
+  def additionalInformationSection: Section =
+    userAnswers.get(AdditionalInformationListSection(houseConsignmentIndex)).mapWithIndex {
+      case (_, index) =>
+        val helper = new HouseConsignmentAdditionalInformationAnswersHelper(userAnswers, houseConsignmentIndex, index)
+        val rows = Seq(
+          helper.code,
+          helper.description
+        ).flatten
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.additionalInformation.label", index.display)),
+          rows = rows,
+          id = Some(s"additionalInformation$index")
+        )
+    } match {
+      case children =>
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.additionalInformation.heading")),
+          children = children,
+          id = Some("additionalInformation")
         )
     }
 

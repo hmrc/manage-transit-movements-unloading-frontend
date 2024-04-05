@@ -74,6 +74,31 @@ class AdditionalInformationTransformerSpec extends SpecBase with AppWithDefaultM
     }
   }
 
+  "must transform data at HC level" in {
+    import pages.houseConsignment.index.additionalinformation._
+    import pages.sections.houseConsignment.index.additionalInformation.AdditionalInformationSection
+
+    val additionalInformationType02: Seq[AdditionalInformationType02] = arbitrary[Seq[AdditionalInformationType02]].sample.value
+
+    additionalInformationType02.map {
+      type0 =>
+        when(mockRefDataConnector.getAdditionalInformationCode(eqTo(type0.code))(any(), any()))
+          .thenReturn(
+            Future.successful(AdditionalInformationCode(code = type0.code, description = "describe me"))
+          )
+    }
+
+    val result = transformer.transform(additionalInformationType02, hcIndex).apply(emptyUserAnswers).futureValue
+
+    additionalInformationType02.zipWithIndex.map {
+      case (refType, i) =>
+        result.getSequenceNumber(AdditionalInformationSection(hcIndex, Index(i))) mustBe refType.sequenceNumber
+        result.getValue(HouseConsignmentAdditionalInformationCodePage(hcIndex, Index(i))).value mustBe refType.code
+        result.getValue(HouseConsignmentAdditionalInformationCodePage(hcIndex, Index(i))).description mustBe "describe me"
+        result.get(HouseConsignmentAdditionalInformationTextPage(hcIndex, Index(i))) mustBe refType.text
+    }
+  }
+
   "must transform data at Item level" in {
     import pages.houseConsignment.index.items.additionalinformation._
     import pages.sections.houseConsignment.index.items.additionalInformation.AdditionalInformationSection
@@ -93,9 +118,9 @@ class AdditionalInformationTransformerSpec extends SpecBase with AppWithDefaultM
     additionalInformationType02.zipWithIndex.map {
       case (refType, i) =>
         result.getSequenceNumber(AdditionalInformationSection(hcIndex, itemIndex, Index(i))) mustBe refType.sequenceNumber
-        result.getValue(HouseConsignmentAdditionalInformationCodePage(hcIndex, itemIndex, Index(i))).value mustBe refType.code
-        result.getValue(HouseConsignmentAdditionalInformationCodePage(hcIndex, itemIndex, Index(i))).description mustBe "describe me"
-        result.get(HouseConsignmentAdditionalInformationTextPage(hcIndex, itemIndex, Index(i))) mustBe refType.text
+        result.getValue(HouseConsignmentItemAdditionalInformationCodePage(hcIndex, itemIndex, Index(i))).value mustBe refType.code
+        result.getValue(HouseConsignmentItemAdditionalInformationCodePage(hcIndex, itemIndex, Index(i))).description mustBe "describe me"
+        result.get(HouseConsignmentItemAdditionalInformationTextPage(hcIndex, itemIndex, Index(i))) mustBe refType.text
     }
   }
 
