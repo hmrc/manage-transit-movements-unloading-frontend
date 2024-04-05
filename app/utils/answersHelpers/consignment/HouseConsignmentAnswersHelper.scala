@@ -22,12 +22,17 @@ import pages._
 import pages.houseConsignment.index.GrossWeightPage
 import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
+import pages.sections.houseConsignment.index.additionalInformation.AdditionalInformationListSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
-import utils.answersHelpers.consignment.houseConsignment.{ConsignmentItemAnswersHelper, DepartureTransportMeansAnswersHelper}
+import utils.answersHelpers.consignment.houseConsignment.{
+  ConsignmentItemAnswersHelper,
+  DepartureTransportMeansAnswersHelper,
+  HouseConsignmentAdditionalInformationAnswersHelper
+}
 import viewModels.sections.Section
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 
@@ -135,6 +140,28 @@ class HouseConsignmentAnswersHelper(
           sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans.parent.header")),
           children = children,
           id = Some("departureTransportMeans")
+        )
+    }
+
+  def additionalInformationSection: Section =
+    userAnswers.get(AdditionalInformationListSection(houseConsignmentIndex)).mapWithIndex {
+      case (_, index) =>
+        val helper = new HouseConsignmentAdditionalInformationAnswersHelper(userAnswers, houseConsignmentIndex, index)
+        val rows = Seq(
+          helper.code,
+          helper.description
+        ).flatten
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.additionalInformation.label", index.display)),
+          rows = rows,
+          id = Some(s"additionalInformation$index")
+        )
+    } match {
+      case children =>
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.additionalInformation.heading")),
+          children = children,
+          id = Some("additionalInformation")
         )
     }
 

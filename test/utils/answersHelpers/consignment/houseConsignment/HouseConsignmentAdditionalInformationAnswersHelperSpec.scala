@@ -14,28 +14,24 @@
  * limitations under the License.
  */
 
-package utils.answersHelpers.consignment.houseConsignment.item
+package utils.answersHelpers.consignment.houseConsignment
 
 import models.reference.AdditionalInformationCode
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
-import pages.houseConsignment.index.items.additionalinformation.{
-  HouseConsignmentItemAdditionalInformationCodePage,
-  HouseConsignmentItemAdditionalInformationTextPage
-}
+import pages.houseConsignment.index.additionalinformation.{HouseConsignmentAdditionalInformationCodePage, HouseConsignmentAdditionalInformationTextPage}
 import utils.answersHelpers.AnswersHelperSpecBase
 
-class AdditionalInformationsAnswersHelperSpec extends AnswersHelperSpecBase {
+class HouseConsignmentAdditionalInformationAnswersHelperSpec extends AnswersHelperSpecBase {
 
-  "AdditionalInformationsHelper" - {
+  "AdditionalInformationHelper" - {
 
-    "additionalInformationCodeRow" - {
-      val page = HouseConsignmentItemAdditionalInformationCodePage(hcIndex, itemIndex, additionalInformationIndex)
+    "codeRow" - {
+      val page = HouseConsignmentAdditionalInformationCodePage(hcIndex, additionalInformationIndex)
 
       "must return None" - {
         s"when $page undefined" in {
-          val helper = new AdditionalInformationsAnswerHelper(emptyUserAnswers, hcIndex, itemIndex, additionalReferenceIndex)
-          helper.additionalInformationCodeRow mustBe None
+          val helper = new HouseConsignmentAdditionalInformationAnswersHelper(emptyUserAnswers, hcIndex, additionalInformationIndex)
+          helper.code mustBe None
         }
       }
 
@@ -45,8 +41,8 @@ class AdditionalInformationsAnswersHelperSpec extends AnswersHelperSpecBase {
             value =>
               val answers = emptyUserAnswers.setValue(page, value)
 
-              val helper = new AdditionalInformationsAnswerHelper(answers, hcIndex, itemIndex, additionalReferenceIndex)
-              val result = helper.additionalInformationCodeRow.value
+              val helper = new HouseConsignmentAdditionalInformationAnswersHelper(answers, hcIndex, additionalInformationIndex)
+              val result = helper.code.value
 
               result.key.value mustBe "Type"
               result.value.value mustBe value.toString
@@ -56,24 +52,24 @@ class AdditionalInformationsAnswersHelperSpec extends AnswersHelperSpecBase {
       }
     }
 
-    "additionalInformationTextRow" - {
-      val page = HouseConsignmentItemAdditionalInformationTextPage(hcIndex, itemIndex, additionalInformationIndex)
+    "descriptionRow" - {
+      val page = HouseConsignmentAdditionalInformationTextPage(hcIndex, additionalInformationIndex)
 
       "must return None" - {
         s"when $page undefined" in {
-          val helper = new AdditionalInformationsAnswerHelper(emptyUserAnswers, hcIndex, itemIndex, additionalReferenceIndex)
-          helper.additionalInformationTextRow mustBe None
+          val helper = new HouseConsignmentAdditionalInformationAnswersHelper(emptyUserAnswers, hcIndex, additionalInformationIndex)
+          helper.description mustBe None
         }
       }
 
       "must return Some(Row)" - {
         s"when $page defined" in {
-          forAll(Gen.alphaNumStr) {
+          forAll(nonEmptyString) {
             value =>
               val answers = emptyUserAnswers.setValue(page, value)
 
-              val helper = new AdditionalInformationsAnswerHelper(answers, hcIndex, itemIndex, additionalReferenceIndex)
-              val result = helper.additionalInformationTextRow.value
+              val helper = new HouseConsignmentAdditionalInformationAnswersHelper(answers, hcIndex, additionalInformationIndex)
+              val result = helper.description.value
 
               result.key.value mustBe "Description"
               result.value.value mustBe value
