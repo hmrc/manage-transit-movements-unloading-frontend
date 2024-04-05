@@ -75,6 +75,18 @@ object Document {
       complementOfInformation = document.complementOfInformation
     )
 
+  def apply(document: PreviousDocumentType07, documentType: DocumentType): PreviousDocument =
+    PreviousDocument(
+      sequenceNumber = document.sequenceNumber,
+      documentType = DocumentType(
+        `type` = Previous,
+        code = documentType.code,
+        description = documentType.description
+      ),
+      referenceNumber = document.referenceNumber,
+      complementOfInformation = document.complementOfInformation
+    )
+
   case class SupportingDocument(
     sequenceNumber: String,
     documentType: DocumentType,

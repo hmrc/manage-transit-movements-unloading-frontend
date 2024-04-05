@@ -106,6 +106,33 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks {
       }
     }
 
+    "must convert PreviousDocumentType07 to PreviousDocumentType" in {
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr, Gen.option(Gen.alphaNumStr), Gen.alphaNumStr) {
+        (sequenceNumber, typeValue, referenceNumber, complementOfInformation, description) =>
+          val ie043Document = PreviousDocumentType07(
+            sequenceNumber = sequenceNumber,
+            typeValue = typeValue,
+            referenceNumber = referenceNumber,
+            complementOfInformation = complementOfInformation
+          )
+
+          val documentType = DocumentType(
+            `type` = Previous,
+            code = typeValue,
+            description = description
+          )
+
+          val result = Document.apply(ie043Document, documentType)
+
+          result mustBe PreviousDocument(
+            sequenceNumber = sequenceNumber,
+            documentType = documentType,
+            referenceNumber = referenceNumber,
+            complementOfInformation = complementOfInformation
+          )
+      }
+    }
+
     "must convert PreviousDocumentType04 to PreviousDocumentType" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr, Gen.option(Gen.alphaNumStr), Gen.option(Gen.alphaNumStr), Gen.alphaNumStr) {
         (sequenceNumber, typeValue, referenceNumber, goodsItemNumber, complementOfInformation, description) =>

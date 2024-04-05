@@ -97,7 +97,7 @@ class DocumentsTransformer @Inject() (
     pipeline: (Document, Index) => UserAnswers => Future[UserAnswers]
   )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = userAnswers => {
 
-    lazy val supportingDocumentsWithDescription = supportingDocuments.map {
+    lazy val supportingDocumentsWithDescription: Seq[Future[Document.SupportingDocument]] = supportingDocuments.map {
       supportingDocument =>
         referenceDataConnector.getSupportingDocument(supportingDocument.typeValue).map {
           Document.apply(supportingDocument, _)

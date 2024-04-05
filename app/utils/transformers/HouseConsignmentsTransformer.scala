@@ -28,7 +28,8 @@ class HouseConsignmentsTransformer @Inject() (
   consigneeTransformer: ConsigneeTransformer,
   consignorTransformer: ConsignorTransformer,
   departureTransportMeansTransformer: DepartureTransportMeansTransformer,
-  consignmentItemTransformer: ConsignmentItemTransformer
+  consignmentItemTransformer: ConsignmentItemTransformer,
+  previousDocument: PreviousDocumentTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
