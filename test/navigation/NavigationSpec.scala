@@ -168,7 +168,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           navigator
             .nextPage(AddCommentsYesNoPage, mode, userAnswers)
-            .mustBe(routes.AddCommentsYesNoController.onPageLoad(arrivalId, NormalMode)) //Do you have any thing else to report page
+            .mustBe(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId))
         }
       }
 
@@ -176,32 +176,32 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         val userAnswers = emptyUserAnswers.setValue(UnloadingCommentsPage, "test")
         navigator
           .nextPage(UnloadingCommentsPage, mode, userAnswers)
-          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id)) //Do you have any thing else to report page
+          .mustBe(controllers.routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(userAnswers.id))
       }
 
-//      "must go from do you have anything else to report page" - {
-//        "when answer is true to other things to report controller" in {
-//          val userAnswers = emptyUserAnswers.setValue(AddCommentsYesNoPage, true) //Do you have any thing else to report page
-//
-//          navigator
-//            .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers) //Do you have any thing else to report page
-//            .mustBe(routes.OtherThingsToReportController.onPageLoad(arrivalId, NormalMode))
-//        }
-//
-//        "when answer is false to check your answers page" in {
-//          val userAnswers = emptyUserAnswers.setValue(AddCommentsYesNoPage, false) //Do you have any thing else to report page
-//
-//          navigator
-//            .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers) //Do you have any thing else to report page
-//            .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
-//        }
-//      }
+      "must go from do you have anything else to report page" - {
+        "when answer is true to other things to report controller" in {
+          val userAnswers = emptyUserAnswers.setValue(DoYouHaveAnythingElseToReportYesNoPage, true)
+
+          navigator
+            .nextPage(DoYouHaveAnythingElseToReportYesNoPage, mode, userAnswers)
+            .mustBe(routes.OtherThingsToReportController.onPageLoad(arrivalId, NormalMode))
+        }
+
+        "when answer is false to check your answers page" in {
+          val userAnswers = emptyUserAnswers.setValue(DoYouHaveAnythingElseToReportYesNoPage, false)
+
+          navigator
+            .nextPage(DoYouHaveAnythingElseToReportYesNoPage, mode, userAnswers)
+            .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
+        }
+      }
 
       "must go from can other things to report page to check your answers page" in {
         val userAnswers = emptyUserAnswers.setValue(OtherThingsToReportPage, "test")
         navigator
           .nextPage(OtherThingsToReportPage, mode, userAnswers)
-          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id)) //Do you have any thing else to report page
+          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
 
       }
 
