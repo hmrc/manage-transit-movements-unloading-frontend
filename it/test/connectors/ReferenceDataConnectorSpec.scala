@@ -641,9 +641,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
             .willReturn(okJson(responseJson))
         )
 
-        val expectedResult = NonEmptySet.of(
-          InlandMode("1", "Maritime Transport")
-        )
+        val expectedResult = InlandMode("1", "Maritime Transport")
 
         connector.getTransportModeCode(code).futureValue mustEqual expectedResult
       }
