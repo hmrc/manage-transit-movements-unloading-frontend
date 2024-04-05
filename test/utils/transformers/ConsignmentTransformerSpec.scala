@@ -17,14 +17,21 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import connectors.ReferenceDataConnector
 import generated.ConsignmentType05
 import generators.Generators
-import org.mockito.ArgumentMatchers.any
+import models.reference.Country
+import models.reference.TransportMode
+import models.reference.TransportMode.InlandMode
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalatest.matchers.must.Matchers.defined
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
+import pages.countryOfDestination.CountryOfDestinationPage
 import pages.grossMass.GrossMassPage
+import pages.inlandModeOfTransport.InlandModeOfTransportPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, JsPath, Json}
@@ -44,6 +51,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
   private lazy val mockAdditionalReferencesTransformer    = mock[AdditionalReferencesTransformer]
   private lazy val mockIncidentsTransformer               = mock[IncidentsTransformer]
   private lazy val mockAdditionalInformationTransformer   = mock[AdditionalInformationTransformer]
+  private lazy val mockReferenceDataConnector             = mock[ReferenceDataConnector]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -57,7 +65,8 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
         bind[HouseConsignmentsTransformer].toInstance(mockHouseConsignmentsTransformer),
         bind[AdditionalReferencesTransformer].toInstance(mockAdditionalReferencesTransformer),
         bind[IncidentsTransformer].toInstance(mockIncidentsTransformer),
-        bind[AdditionalInformationTransformer].toInstance(mockAdditionalInformationTransformer)
+        bind[AdditionalInformationTransformer].toInstance(mockAdditionalInformationTransformer),
+        bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
       )
 
   private case object FakeConsignorSection extends QuestionPage[JsObject] {
@@ -143,7 +152,17 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
               ua => Future.successful(ua.setValue(FakeIncidentSection, Json.obj("foo" -> "bar")))
             }
 
-          val result = transformer.transform(Some(consignment))(hc).apply(emptyUserAnswers).futureValue
+          val country = Country("GB", "country")
+          when(mockReferenceDataConnector.getCountry(any())(any(), any()))
+            .thenReturn(Future.successful(country))
+
+          val inlandMode = InlandMode("1", "mode")
+          when(mockReferenceDataConnector.getTransportModeCode(any())(any(), any()))
+            .thenReturn(Future.successful(inlandMode))
+
+          val updatedConsignment = consignment.copy(countryOfDestination = Some("country - GB"), inlandModeOfTransport = Some("mode"))
+
+          val result = transformer.transform(Some(updatedConsignment))(hc).apply(emptyUserAnswers).futureValue
 
           result.getValue(FakeConsignorSection) mustBe Json.obj("foo" -> "bar")
           result.getValue(FakeConsigneeSection) mustBe Json.obj("foo" -> "bar")
@@ -153,8 +172,10 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
           result.getValue(FakeHouseConsignmentSection) mustBe Json.obj("foo" -> "bar")
           result.getValue(FakeAdditionalReferenceSection) mustBe Json.obj("foo" -> "bar")
           result.getValue(FakeAdditionalInformationSection) mustBe Json.obj("foo" -> "bar")
-          result.get(GrossMassPage) mustBe consignment.grossMass
+          result.get(GrossMassPage) mustBe updatedConsignment.grossMass
           result.getValue(FakeIncidentSection) mustBe Json.obj("foo" -> "bar")
+          result.getValue(CountryOfDestinationPage) mustBe country
+          result.getValue(InlandModeOfTransportPage) mustBe inlandMode
       }
     }
 
@@ -171,6 +192,8 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
       result.get(FakeAdditionalInformationSection) must not be defined
       result.get(GrossMassPage) must not be defined
       result.get(FakeIncidentSection) must not be defined
+      result.get(CountryOfDestinationPage) must not be defined
+      result.get(InlandModeOfTransportPage) must not be defined
     }
   }
 }

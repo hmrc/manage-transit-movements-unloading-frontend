@@ -16,11 +16,15 @@
 
 package utils.answersHelpers
 
+import generated.{Number0, Number1}
 import models.DocType.Previous
-import models.reference.CustomsOffice
+import models.reference.TransportMode.InlandMode
+import models.reference.{Country, CustomsOffice}
 import models.{Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
+import pages.countryOfDestination.CountryOfDestinationPage
 import pages.documents.TypePage
 import pages.grossMass.GrossMassPage
+import pages.inlandModeOfTransport.InlandModeOfTransportPage
 import pages.sections._
 import pages.sections.additionalInformation.AdditionalInformationListSection
 import pages.sections.additionalReference.AdditionalReferencesSection
@@ -76,8 +80,15 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       Some(reducedDatasetIndicatorRow),
       customsOfficeOfDestinationActual,
       grossMassRow,
-      Some(traderAtDestinationRow)
+      Some(traderAtDestinationRow),
+      countryOfDestinationRow,
+      containerIndicatorRow
     ).flatten
+  )
+
+  def inlandModeOfTransportSection: Section = StaticSection(
+    sectionTitle = messages("unloadingFindings.inlandModeOfTransport"),
+    rows = Seq(inlandModeOfTransportRow).flatten
   )
 
   private def declarationTypeRow: Option[SummaryListRow] = userAnswers.ie043Data.TransitOperation.declarationType.map(
@@ -98,7 +109,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
   private def reducedDatasetIndicatorRow: SummaryListRow = buildRowWithNoChangeLink(
     prefix = "reducedDatasetIndicator",
-    answer = formatAsBoolean(userAnswers.ie043Data.TransitOperation.reducedDatasetIndicator.toString)
+    answer = formatAsYesOrNo(userAnswers.ie043Data.TransitOperation.reducedDatasetIndicator)
   )
 
   private def declarationAcceptanceDateRow: Option[SummaryListRow] = userAnswers.ie043Data.TransitOperation.declarationAcceptanceDate.map(
@@ -132,6 +143,35 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     id = Some(s"change-gross-mass"),
     call = Some(Call(GET, "#"))
   )
+
+  def inlandModeOfTransportRow: Option[SummaryListRow] = getAnswerAndBuildRow[InlandMode](
+    page = InlandModeOfTransportPage,
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.inlandModeOfTransport.label",
+    id = None,
+    call = None
+  )
+
+  def countryOfDestinationRow: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
+    page = CountryOfDestinationPage,
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.countryOfDestination",
+    id = None,
+    call = None
+  )
+
+  def containerIndicatorRow: Option[SummaryListRow] =
+    userAnswers.ie043Data.Consignment
+      .map(_.containerIndicator)
+      .map {
+        containerIndicator =>
+          buildRow(
+            prefix = "unloadingFindings.containerIndicator",
+            answer = formatAsYesOrNo(containerIndicator),
+            id = None,
+            call = None
+          )
+      }
 
   def consignorSection: Option[Section] =
     userAnswers.ie043Data.Consignment.flatMap(_.Consignor).map {
