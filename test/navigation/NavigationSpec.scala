@@ -168,7 +168,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           navigator
             .nextPage(AddCommentsYesNoPage, mode, userAnswers)
-            .mustBe(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId))
+            .mustBe(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId, NormalMode))
         }
       }
 
@@ -176,7 +176,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         val userAnswers = emptyUserAnswers.setValue(UnloadingCommentsPage, "test")
         navigator
           .nextPage(UnloadingCommentsPage, mode, userAnswers)
-          .mustBe(controllers.routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(userAnswers.id))
+          .mustBe(controllers.routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(userAnswers.id, NormalMode))
       }
 
       "must go from do you have anything else to report page" - {

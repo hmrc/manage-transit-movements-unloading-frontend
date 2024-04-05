@@ -632,11 +632,18 @@ checkYourAnswers.rowHeadings.anySealsBroken.change.hidden = if any of the seals 
 checkYourAnswers.subsections.additionalComments = Transit and declaration summary cross-check
 checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo = Were there any discrepancies between the transit and the declaration summary?
 checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo.change.hidden = if there were any discrepancies between the transit and the declaration summary
-checkYourAnswers.rowHeadings.additionalComments = Discrepancies
-checkYourAnswers.rowHeadings.additionalComments.change.hidden = discrepancies between the transit and declaration summary
+checkYourAnswers.rowHeadings.addCommentsYesNo = Do you want to add any comments?
+checkYourAnswers.rowHeadings.addCommentsYesNo.change.hidden = if you want to add any comments
+checkYourAnswers.rowHeadings.additionalComments = Comments
+checkYourAnswers.rowHeadings.additionalComments.change.hidden = comments
+checkYourAnswers.rowHeadings.addReportYesNo = Do you have anything else to report?
+checkYourAnswers.rowHeadings.addReportYesNo.change.hidden = if you have anything to report
+checkYourAnswers.rowHeadings.report = What do you want to report?
+checkYourAnswers.rowHeadings.report.change.hidden = what you want to report
 
 checkYourAnswers.sendRemarks = Send your unloading remarks
 checkYourAnswers.paragraph = By sending this, you are confirming that these details are correct to the best of your knowledge.
+checkYourAnswers.link = Back to discrepancies between the transit and unloading permission
 
 checkYourAnswers.departureMeansOfTransport.identification = Identification type
 checkYourAnswers.departureMeansOfTransport.identificationNumber = Identification number

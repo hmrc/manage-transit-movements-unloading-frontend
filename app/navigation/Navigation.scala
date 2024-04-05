@@ -48,10 +48,10 @@ class Navigation extends Navigator {
       ua =>
         ua.get(AddCommentsYesNoPage) map {
           case true  => controllers.routes.UnloadingCommentsController.onPageLoad(ua.id, NormalMode)
-          case false => controllers.routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id)
+          case false => controllers.routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id, NormalMode)
         }
     case UnloadingCommentsPage =>
-      ua => Some(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id))
+      ua => Some(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id, NormalMode))
     case DoYouHaveAnythingElseToReportYesNoPage =>
       ua =>
         ua.get(DoYouHaveAnythingElseToReportYesNoPage) map {
