@@ -18,6 +18,7 @@ package generators
 
 import generated._
 import models.Coordinates
+import models.reference.TransportMode.InlandMode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen.const
 import org.scalacheck.{Arbitrary, Gen}
@@ -632,5 +633,10 @@ trait MessagesModelGenerators {
   implicit lazy val arbitraryFlag: Arbitrary[Flag] =
     Arbitrary {
       Gen.oneOf(Number0, Number1)
+    }
+
+  implicit lazy val arbitraryInlandMode: Arbitrary[InlandMode] =
+    Arbitrary {
+      Gen.oneOf(InlandMode("1", "Maritime Transport"), InlandMode("2", "Rail Transport"))
     }
 }

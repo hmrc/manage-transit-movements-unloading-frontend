@@ -16,7 +16,7 @@
 
 package utils.answersHelpers.consignment
 
-import models.reference.{AdditionalInformationCode, AdditionalReferenceType, Country, PackageType, TransportMeansIdentification}
+import models.reference._
 import models.{DynamicAddress, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -197,6 +197,36 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               result.value.value mustBe value.toString
               result.actions must not be defined
           }
+        }
+      }
+    }
+
+    "documentSections" - {
+      import pages.houseConsignment.index.documents.{AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
+      "must generate accordion sections" in {
+        forAll(arbitrary[DocumentType], Gen.alphaNumStr, Gen.alphaNumStr) {
+          (docType, reference, additionalInfo) =>
+            val answers = emptyUserAnswers
+              .setValue(DocumentReferenceNumberPage(hcIndex, Index(0)), reference)
+              .setValue(AdditionalInformationPage(hcIndex, Index(0)), additionalInfo)
+              .setValue(TypePage(hcIndex, Index(0)), docType)
+
+            val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
+            val result = helper.documentSection
+
+            result mustBe a[AccordionSection]
+            result.sectionTitle.value mustBe "Documents"
+            result.children.size mustBe 1
+
+            val dtm1 = result.children.head
+            dtm1 mustBe a[AccordionSection]
+            dtm1.sectionTitle.value mustBe "Document 1"
+            dtm1.id.value mustBe "document-1"
+            dtm1.rows.size mustBe 3
+
+            dtm1.rows.head.value.value mustBe docType.toString
+            dtm1.rows(1).value.value mustBe reference
+            dtm1.rows(2).value.value mustBe additionalInfo
         }
       }
     }
