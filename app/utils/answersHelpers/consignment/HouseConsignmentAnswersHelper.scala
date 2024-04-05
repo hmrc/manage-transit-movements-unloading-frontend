@@ -195,7 +195,7 @@ class HouseConsignmentAnswersHelper(
 
   private[consignment] def documentAddRemoveLink: Link =
     Link(
-      id = s"add-remove-item-document",
+      id = s"add-remove-document",
       href = "#",
       text = messages("documentLink.addRemove"),
       visuallyHidden = messages("documentLink.visuallyHidden")
