@@ -27,5 +27,9 @@ case object AddCommentsYesNoPage extends QuestionPage[Boolean] {
 
   override def toString: String = "comments"
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = super.cleanup(value, userAnswers)
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(UnloadingCommentsPage)
+      case _           => super.cleanup(value, userAnswers)
+    }
 }

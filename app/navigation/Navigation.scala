@@ -21,7 +21,6 @@ import controllers.routes
 import models.{CheckMode, NormalMode, RichCC043CType, UserAnswers}
 import pages._
 import play.api.mvc.Call
-import uk.gov.hmrc.http.HttpVerbs.GET
 
 @Singleton
 class Navigation extends Navigator {
@@ -38,20 +37,28 @@ class Navigation extends Navigator {
         }
 
     case CanSealsBeReadPage    => ua => Some(routes.AreAnySealsBrokenController.onPageLoad(ua.id, NormalMode))
-    case AreAnySealsBrokenPage => ua => Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
-    case UnloadingCommentsPage => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
+    case AreAnySealsBrokenPage => ua => Some(routes.AddUnloadingCommentsYesNoController.onPageLoad(ua.id, NormalMode))
     case AddUnloadingCommentsYesNoPage =>
       ua =>
         ua.get(AddUnloadingCommentsYesNoPage) map {
-          case true  => controllers.routes.UnloadingCommentsController.onPageLoad(ua.id, NormalMode)
-          case false => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)
+          case true  => controllers.routes.UnloadingFindingsController.onPageLoad(ua.id)
+          case false => controllers.routes.AddCommentsYesNoController.onPageLoad(ua.id, NormalMode)
         }
+    case AddCommentsYesNoPage =>
+      ua =>
+        ua.get(AddCommentsYesNoPage) map {
+          case true  => controllers.routes.UnloadingCommentsController.onPageLoad(ua.id, NormalMode)
+          case false => controllers.routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id)
+        }
+    case UnloadingCommentsPage =>
+      ua => Some(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id))
     case DoYouHaveAnythingElseToReportYesNoPage =>
       ua =>
         ua.get(DoYouHaveAnythingElseToReportYesNoPage) map {
-          case _ => Call(GET, "#") //TODO: Update DoYouHaveAnythingElseToReport navigation
+          case true  => controllers.routes.OtherThingsToReportController.onPageLoad(ua.id, NormalMode)
+          case false => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)
         }
-
+    case OtherThingsToReportPage => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
     case _ =>
       _ => Some(routes.SessionExpiredController.onPageLoad())
 

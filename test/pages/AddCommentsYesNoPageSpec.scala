@@ -28,5 +28,26 @@ class AddCommentsYesNoPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](AddCommentsYesNoPage)
 
+    "cleanup" - {
+      "must remove unloading comments when no selected" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(AddCommentsYesNoPage, true)
+          .setValue(UnloadingCommentsPage, "comments")
+
+        val result = userAnswers.setValue(AddCommentsYesNoPage, false)
+
+        result.get(UnloadingCommentsPage) must not be defined
+      }
+
+      "must keep unloading comments when yes selected" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(AddCommentsYesNoPage, true)
+          .setValue(UnloadingCommentsPage, "comments")
+
+        val result = userAnswers.setValue(AddCommentsYesNoPage, true)
+
+        result.get(UnloadingCommentsPage) must be(defined)
+      }
+    }
   }
 }
