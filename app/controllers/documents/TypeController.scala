@@ -99,5 +99,5 @@ class TypeController @Inject() (
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(TypePage(documentIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(TypePage(documentIndex), mode, request.userAnswers))
+    } yield Redirect(navigator.nextPage(TypePage(documentIndex), mode, updatedAnswers))
 }
