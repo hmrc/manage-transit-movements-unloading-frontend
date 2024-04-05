@@ -38,7 +38,7 @@ object AdditionalReferenceNumberViewModel {
 
     override val prefix = "houseConsignment.index.items.additionalReference.additionalReferenceNumber"
 
-    def apply(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit
+    def apply(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index)(implicit
       message: Messages
     ): AdditionalReferenceNumberViewModel =
       new AdditionalReferenceNumberViewModel(
@@ -49,7 +49,7 @@ object AdditionalReferenceNumberViewModel {
         mode,
         houseConsignmentIndex,
         itemIndex,
-        houseConsignmentIndex
+        additionalReferenceIndex
       )
 
   }
