@@ -172,7 +172,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         }
       }
 
-      "must go from can unloading comment page to do you have anything else to report yes/no page" in {
+      "must go from can unloading comments page to do you have anything else to report yes/no page" in {
         val userAnswers = emptyUserAnswers.setValue(UnloadingCommentsPage, "test")
         navigator
           .nextPage(UnloadingCommentsPage, mode, userAnswers)
@@ -197,7 +197,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         }
       }
 
-      "must go from can other things to report page to check your answers page" in {
+      "must go from other things to report page to check your answers page" in {
         val userAnswers = emptyUserAnswers.setValue(OtherThingsToReportPage, "test")
         navigator
           .nextPage(OtherThingsToReportPage, mode, userAnswers)
