@@ -17,7 +17,7 @@
 package utils.transformers
 
 import generated.HouseConsignmentType04
-import models.{Index, UserAnswers}
+import models.{Index, RichPreviousDocuments07, UserAnswers}
 import pages.sections.HouseConsignmentSection
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -28,6 +28,7 @@ class HouseConsignmentsTransformer @Inject() (
   consigneeTransformer: ConsigneeTransformer,
   consignorTransformer: ConsignorTransformer,
   departureTransportMeansTransformer: DepartureTransportMeansTransformer,
+  documentsTransformer: DocumentsTransformer,
   consignmentItemTransformer: ConsignmentItemTransformer
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
@@ -44,6 +45,12 @@ class HouseConsignmentsTransformer @Inject() (
                   consigneeTransformer.transform(houseConsignment.Consignee, hcIndex) andThen
                   consignorTransformer.transform(houseConsignment.Consignor, hcIndex) andThen
                   departureTransportMeansTransformer.transform(houseConsignment.DepartureTransportMeans, hcIndex) andThen
+                  documentsTransformer.transform(
+                    houseConsignment.SupportingDocument,
+                    houseConsignment.TransportDocument,
+                    houseConsignment.PreviousDocument.toPreviousDocumentType06,
+                    hcIndex
+                  ) andThen
                   consignmentItemTransformer.transform(houseConsignment.ConsignmentItem, hcIndex)
 
               pipeline(userAnswers)
