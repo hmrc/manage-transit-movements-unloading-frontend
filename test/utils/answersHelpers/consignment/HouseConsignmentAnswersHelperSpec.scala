@@ -42,7 +42,7 @@ import viewModels.sections.Section.AccordionSection
 class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
   "grossMassRow" - {
-    import pages.houseConsignment.index.grossMass.GrossMassPage
+    import pages.houseConsignment.index.GrossWeightPage
 
     "must return None" - {
       s"when no transport equipments defined" in {
@@ -53,9 +53,9 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
     }
 
     "must return Some(Row)" - {
-      s"when $GrossMassPage is defined" in {
+      s"when $GrossWeightPage is defined" in {
         val answers = emptyUserAnswers
-          .setValue(GrossMassPage(hcIndex), BigDecimal(999.99))
+          .setValue(GrossWeightPage(hcIndex), BigDecimal(999.99))
 
         val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
         val result = helper.grossMassRow.value

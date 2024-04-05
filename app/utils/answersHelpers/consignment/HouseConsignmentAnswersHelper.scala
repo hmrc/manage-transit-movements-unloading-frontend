@@ -19,7 +19,7 @@ package utils.answersHelpers.consignment
 import models.reference.Country
 import models.{Index, Link, RichOptionalJsArray, UserAnswers}
 import pages._
-import pages.houseConsignment.index.grossMass.GrossMassPage
+import pages.houseConsignment.index.GrossWeightPage
 import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
 import play.api.i18n.Messages
@@ -44,7 +44,7 @@ class HouseConsignmentAnswersHelper(
   )
 
   def grossMassRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
-    page = GrossMassPage(houseConsignmentIndex),
+    page = GrossWeightPage(houseConsignmentIndex),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.grossMass",
     id = Some(s"change-gross-mass"),

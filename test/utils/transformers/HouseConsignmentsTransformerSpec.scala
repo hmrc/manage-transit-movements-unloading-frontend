@@ -25,7 +25,7 @@ import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
-import pages.houseConsignment.index.grossMass.GrossMassPage
+import pages.houseConsignment.index.GrossWeightPage
 import pages.sections.HouseConsignmentSection
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -103,7 +103,7 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
             val hcIndex = Index(i)
 
             result.getSequenceNumber(HouseConsignmentSection(hcIndex)) mustBe hc.sequenceNumber
-            result.getValue(GrossMassPage(hcIndex)) mustBe hc.grossMass
+            result.getValue(GrossWeightPage(hcIndex)) mustBe hc.grossMass
             result.getValue(FakeConsigneeSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
             result.getValue(FakeConsignorSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
             result.getValue(FakeDepartureTransportMeansSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
