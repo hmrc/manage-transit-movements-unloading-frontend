@@ -19,6 +19,7 @@ import generated._
 import play.api.libs.json._
 import scalaxb.`package`.toScope
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
+import utils.transformers.Removed
 
 import java.time.LocalDate
 import javax.xml.datatype.XMLGregorianCalendar
@@ -210,7 +211,7 @@ package object models {
           case (value, i) =>
             value match {
               case JsObject(underlying) =>
-                underlying.get("removed") match {
+                underlying.get(Removed) match {
                   case Some(JsBoolean(true)) => None
                   case _                     => Some((value, i))
                 }

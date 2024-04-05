@@ -23,6 +23,7 @@ import pages._
 import play.api.libs.json._
 import queries.Gettable
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+import utils.transformers.{Removed, SequenceNumber}
 
 import java.time.Instant
 import scala.util.{Failure, Success, Try}
@@ -81,10 +82,10 @@ final case class UserAnswers(
   }
 
   def removeExceptSequenceNumber[A](section: QuestionPage[A]): Try[UserAnswers] =
-    removeExceptFields(section, "sequenceNumber")
+    removeExceptFields(section, SequenceNumber)
 
   def removeExceptSequenceNumberAndDeclarationGoodsItemNumber[A](section: QuestionPage[A]): Try[UserAnswers] =
-    removeExceptFields(section, "sequenceNumber", "declarationGoodsItemNumber")
+    removeExceptFields(section, SequenceNumber, "declarationGoodsItemNumber")
 
   private def removeExceptFields[A](section: QuestionPage[A], fields: String*): Try[UserAnswers] =
     for {
@@ -98,7 +99,7 @@ final case class UserAnswers(
         field => fields.contains(field._1)
       } match {
         case Nil    => remove(section)
-        case values => set(section.path, JsObject(values :+ ("removed" -> JsBoolean(true))))
+        case values => set(section.path, JsObject(values :+ (Removed -> JsBoolean(true))))
       }
     } yield userAnswers
 }

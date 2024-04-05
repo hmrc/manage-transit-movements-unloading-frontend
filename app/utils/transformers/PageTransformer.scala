@@ -41,8 +41,8 @@ trait PageTransformer {
     *  - something with no information provided from the IE043
     */
   def setSequenceNumber(section: Section[JsObject], sequenceNumber: String)(implicit ec: ExecutionContext): UserAnswers => Future[UserAnswers] =
-    setValue(section, "sequenceNumber", sequenceNumber) andThen
-      setValue(section, "removed", false)
+    setValue(section, SequenceNumber, sequenceNumber) andThen
+      setValue(section, Removed, false)
 
   private def setValue[A](section: Section[JsObject], key: String, value: A)(implicit writes: Writes[A]): UserAnswers => Future[UserAnswers] = userAnswers =>
     Future.fromTry(userAnswers.set(section.path \ key, value))

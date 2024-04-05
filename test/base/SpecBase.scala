@@ -34,6 +34,7 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Content, Key, Value}
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.transformers.{Removed, SequenceNumber}
 
 import java.time.Instant
 
@@ -101,13 +102,16 @@ trait SpecBase
       userAnswers.remove(page).success.value
 
     def getSequenceNumber(section: Section[JsObject]): String =
-      getValue[JsString](section, "sequenceNumber").value
+      getValue[JsString](section, SequenceNumber).value
 
     def getValue[A <: JsValue](section: Section[JsObject], key: String)(implicit reads: Reads[A]): A =
       userAnswers.data.transform((section.path \ key).json.pick[A]).get
 
     def setRemoved(section: Section[JsObject]): UserAnswers =
-      setValue(section, "removed", true)
+      setValue(section, Removed, true)
+
+    def setSequenceNumber(section: Section[JsObject], sequenceNumber: String): UserAnswers =
+      setValue(section, SequenceNumber, sequenceNumber)
 
     def setValue[T](section: Section[JsObject], key: String, value: T)(implicit writes: Writes[T]): UserAnswers =
       userAnswers.set(section.path \ key, value).success.value

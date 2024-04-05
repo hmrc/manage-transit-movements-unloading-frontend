@@ -18,13 +18,13 @@ package services.submission
 
 import connectors.ApiConnector
 import generated._
-import models.{ArrivalId, EoriNumber, UnloadingType, UserAnswers}
-import pages._
+import models.{ArrivalId, EoriNumber, Index, UnloadingType, UserAnswers}
 import play.api.libs.json.{__, Reads}
 import scalaxb.DataRecord
 import scalaxb.`package`.toXML
 import services.DateTimeService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import utils.transformers.SequenceNumber
 
 import java.time.LocalDate
 import javax.inject.Inject
@@ -85,13 +85,21 @@ class SubmissionService @Inject() (
       )
     )
 
-  def transitOperationReads(userAnswers: UserAnswers): Reads[TransitOperationType15] =
-    TransitOperationType15(
-      MRN = userAnswers.mrn.value,
-      otherThingsToReport = None
-    )
+  def transitOperationReads(userAnswers: UserAnswers): Reads[TransitOperationType15] = {
+    import pages.OtherThingsToReportPage
+
+    OtherThingsToReportPage.path.readNullable[String].map {
+      otherThingsToReport =>
+        TransitOperationType15(
+          MRN = userAnswers.mrn.value,
+          otherThingsToReport = otherThingsToReport
+        )
+    }
+  }
 
   implicit val unloadingRemarkReads: Reads[UnloadingRemarkType] = {
+    import pages._
+
     for {
       conform             <- AddUnloadingCommentsYesNoPage.path.read[Boolean].map(!_).map(boolToFlag)
       unloadingCompletion <- UnloadingTypePage.path.read[UnloadingType].map(unloadingTypeToFlag)
@@ -112,14 +120,60 @@ class SubmissionService @Inject() (
     )
   }
 
-  // TODO
-  implicit val consignmentReads: Reads[ConsignmentType06] = ConsignmentType06(
-    grossMass = None,
-    TransportEquipment = Nil,
-    DepartureTransportMeans = Nil,
-    SupportingDocument = Nil,
-    TransportDocument = Nil,
-    AdditionalReference = Nil,
-    HouseConsignment = Nil
-  )
+  implicit val consignmentReads: Reads[ConsignmentType06] = {
+    import pages.grossMass.GrossMassPage
+    import pages.sections._
+
+    for {
+      grossMass          <- GrossMassPage.path.readNullable[BigDecimal]
+      transportEquipment <- TransportEquipmentListSection.path.readArray(consignmentTransportEquipmentReads)
+    } yield ConsignmentType06(
+      grossMass = grossMass,
+      TransportEquipment = transportEquipment,
+      DepartureTransportMeans = Nil,
+      SupportingDocument = Nil,
+      TransportDocument = Nil,
+      AdditionalReference = Nil,
+      HouseConsignment = Nil
+    )
+  }
+
+  private def consignmentTransportEquipmentReads(index: Index): Reads[TransportEquipmentType03] = {
+    import pages.ContainerIdentificationNumberPage
+    import pages.sections.SealsSection
+    import pages.sections.transport.equipment.ItemsSection
+    import pages.transportEquipment.index._
+    import pages.transportEquipment.index.seals._
+
+    def sealReads(sealIndex: Index): Reads[SealType02] =
+      for {
+        sequenceNumber <- (__ \ SequenceNumber).read[String]
+        identifier     <- (__ \ SealIdentificationNumberPage(index, sealIndex).toString).read[String]
+      } yield SealType02(
+        sequenceNumber = sequenceNumber,
+        identifier = identifier
+      )
+
+    def goodsReferenceReads(goodsReferenceIndex: Index): Reads[GoodsReferenceType01] =
+      for {
+        sequenceNumber             <- (__ \ SequenceNumber).read[String]
+        declarationGoodsItemNumber <- (__ \ ItemPage(index, goodsReferenceIndex).toString).read[BigInt]
+      } yield GoodsReferenceType01(
+        sequenceNumber = sequenceNumber,
+        declarationGoodsItemNumber = declarationGoodsItemNumber
+      )
+
+    for {
+      sequenceNumber                <- (__ \ SequenceNumber).read[String]
+      containerIdentificationNumber <- (__ \ ContainerIdentificationNumberPage(index).toString).readNullable[String]
+      seals                         <- (__ \ SealsSection(index).toString).readArray[SealType02](sealReads)
+      goodsReferences               <- (__ \ ItemsSection(index).toString).readArray[GoodsReferenceType01](goodsReferenceReads)
+    } yield TransportEquipmentType03(
+      sequenceNumber = sequenceNumber,
+      containerIdentificationNumber = containerIdentificationNumber,
+      numberOfSeals = Some(seals.length),
+      Seal = seals,
+      GoodsReference = goodsReferences
+    )
+  }
 }

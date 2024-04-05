@@ -21,9 +21,10 @@ import generated._
 import generators.Generators
 import models.UnloadingType
 import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages._
+import pages.transportEquipment.index.ItemPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import scalaxb.XMLCalendar
@@ -101,21 +102,43 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
   }
 
   "transitOperationReads" - {
-    "must create transit operation" in {
-      val userAnswers = emptyUserAnswers
+    "must create transit operation" - {
+      import pages.OtherThingsToReportPage
 
-      val reads  = service.transitOperationReads(userAnswers)
-      val result = userAnswers.data.as[TransitOperationType15](reads)
+      "when there are other things to report" in {
+        forAll(Gen.alphaNumStr) {
+          otherThingsToReport =>
+            val userAnswers = emptyUserAnswers
+              .setValue(OtherThingsToReportPage, otherThingsToReport)
 
-      result mustBe TransitOperationType15(
-        MRN = userAnswers.mrn.value,
-        otherThingsToReport = None
-      )
+            val reads  = service.transitOperationReads(userAnswers)
+            val result = userAnswers.data.as[TransitOperationType15](reads)
+
+            result mustBe TransitOperationType15(
+              MRN = userAnswers.mrn.value,
+              otherThingsToReport = Some(otherThingsToReport)
+            )
+        }
+      }
+
+      "when there are no other things to report" in {
+        val userAnswers = emptyUserAnswers
+
+        val reads  = service.transitOperationReads(userAnswers)
+        val result = userAnswers.data.as[TransitOperationType15](reads)
+
+        result mustBe TransitOperationType15(
+          MRN = userAnswers.mrn.value,
+          otherThingsToReport = None
+        )
+      }
     }
   }
 
   "unloadingRemarkReads" - {
     "must create unloading remarks" - {
+      import pages._
+
       "when there are seal numbers in the IE043 message" - {
         "when seals can be read and no seals broken" in {
           forAll(Gen.alphaNumStr) {
@@ -212,43 +235,76 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               )
           }
         }
+      }
 
-        "when there are no seal numbers in the IE043 message" - {
-          val userAnswers = emptyUserAnswers
-            .setValue(UnloadingTypePage, UnloadingType.Partially)
-            .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
-            .setValue(AddUnloadingCommentsYesNoPage, false)
+      "when there are no seal numbers in the IE043 message" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(UnloadingTypePage, UnloadingType.Partially)
+          .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
+          .setValue(AddUnloadingCommentsYesNoPage, false)
 
-          val reads  = service.unloadingRemarkReads
-          val result = userAnswers.data.as[UnloadingRemarkType](reads)
+        val reads  = service.unloadingRemarkReads
+        val result = userAnswers.data.as[UnloadingRemarkType](reads)
 
-          result mustBe UnloadingRemarkType(
-            conform = Number1,
-            unloadingCompletion = Number0,
-            unloadingDate = XMLCalendar("2020-01-01"),
-            stateOfSeals = None,
-            unloadingRemark = None
-          )
-        }
+        result mustBe UnloadingRemarkType(
+          conform = Number1,
+          unloadingCompletion = Number0,
+          unloadingDate = XMLCalendar("2020-01-01"),
+          stateOfSeals = None,
+          unloadingRemark = None
+        )
       }
     }
   }
 
   "consignmentReads" - {
     "must create consignment" in {
+      import pages.grossMass.GrossMassPage
+
+      val grossMass = Gen.option(arbitrary[BigDecimal]).sample.value
+
       val userAnswers = emptyUserAnswers
+        .setValue(GrossMassPage, grossMass)
 
       val reads  = service.consignmentReads
       val result = userAnswers.data.as[ConsignmentType06](reads)
 
-      result mustBe ConsignmentType06(
-        grossMass = None,
-        TransportEquipment = Nil,
-        DepartureTransportMeans = Nil,
-        SupportingDocument = Nil,
-        TransportDocument = Nil,
-        AdditionalReference = Nil,
-        HouseConsignment = Nil
+      result.grossMass mustBe grossMass
+    }
+
+    "must create transport equipment" in {
+      import pages.ContainerIdentificationNumberPage
+      import pages.sections.transport.equipment.ItemSection
+      import pages.sections.{SealSection, TransportEquipmentSection}
+      import pages.transportEquipment.index.seals.SealIdentificationNumberPage
+
+      val sequenceNumber                = Gen.alphaNumStr.sample.value
+      val containerIdentificationNumber = Gen.option(Gen.alphaNumStr).sample.value
+      val sealSequenceNumber            = Gen.alphaNumStr.sample.value
+      val sealIdentifier                = Gen.alphaNumStr.sample.value
+      val goodsReferenceSequenceNumber  = Gen.alphaNumStr.sample.value
+      val declarationGoodsItemNumber    = arbitrary[BigInt].sample.value
+
+      val userAnswers = emptyUserAnswers
+        .setSequenceNumber(TransportEquipmentSection(index), sequenceNumber)
+        .setValue(ContainerIdentificationNumberPage(index), containerIdentificationNumber)
+        .setSequenceNumber(SealSection(index, sealIndex), sealSequenceNumber)
+        .setValue(SealIdentificationNumberPage(index, sealIndex), sealIdentifier)
+        .setSequenceNumber(ItemSection(index, itemIndex), goodsReferenceSequenceNumber)
+        .setValue(ItemPage(index, sealIndex), declarationGoodsItemNumber)
+
+      val reads  = service.consignmentReads
+      val result = userAnswers.data.as[ConsignmentType06](reads).TransportEquipment
+
+      result.size mustBe 1
+      result.head.sequenceNumber mustBe sequenceNumber
+      result.head.containerIdentificationNumber mustBe containerIdentificationNumber
+      result.head.numberOfSeals.value mustBe 1
+      result.head.Seal mustBe Seq(
+        SealType02(sealSequenceNumber, sealIdentifier)
+      )
+      result.head.GoodsReference mustBe Seq(
+        GoodsReferenceType01(goodsReferenceSequenceNumber, declarationGoodsItemNumber)
       )
     }
   }
