@@ -32,7 +32,7 @@ case class AddAnotherItemViewModel(
 ) extends AddAnotherViewModel {
   override val prefix: String = "houseConsignment.index.items.addAnotherItem"
 
-  override def maxCount(implicit config: FrontendAppConfig): Int = config.maxTransportEquipment
+  override def maxCount(implicit config: FrontendAppConfig): Int = config.maxHouseConsignmentItem
 
   override def maxLimitLabel(implicit messages: Messages): String = messages(s"$prefix.maxLimit.label", houseConsignmentIndex.display)
 
