@@ -66,7 +66,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         section.children.head.sectionTitle.value mustBe "Departure means of transport 1"
         section.children.head.rows.size mustBe 3
 
-        section.viewLinks mustBe Nil
+        section.viewLinks.head.href mustBe "#"
       }
 
       "when there is multiple" in {
@@ -94,7 +94,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         section.children(1).sectionTitle.value mustBe "Departure means of transport 2"
         section.children(1).rows.size mustBe 3
 
-        section.viewLinks mustBe Nil
+        section.viewLinks.head.href mustBe "#"
       }
     }
 
@@ -167,7 +167,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         section.children.head.sectionTitle.value mustBe "Additional reference 1"
         section.children.head.rows.size mustBe 2
 
-        section.viewLinks mustBe Nil
+        section.viewLinks.head.href mustBe "#"
       }
 
       "when there is multiple" in {
@@ -193,7 +193,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         section.children(1).sectionTitle.value mustBe "Additional reference 2"
         section.children(1).rows.size mustBe 2
 
-        section.viewLinks mustBe Nil
+        section.viewLinks.head.href mustBe "#"
       }
     }
 

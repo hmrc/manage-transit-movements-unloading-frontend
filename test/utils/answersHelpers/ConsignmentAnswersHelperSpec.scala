@@ -18,8 +18,8 @@ package utils.answersHelpers
 
 import generated._
 import models.DocType.Previous
-import models.reference._
 import models.reference.TransportMode.InlandMode
+import models.reference._
 import models.{CheckMode, Coordinates, Index, NormalMode, SecurityType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -429,6 +429,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
             result mustBe a[AccordionSection]
             result.sectionTitle.value mustBe "House consignments"
+            result.viewLinks.head.href mustBe "#"
 
             result.children.head mustBe a[AccordionSection]
             result.children.head.sectionTitle.value mustBe "House consignment 1"
@@ -448,6 +449,19 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             link.href mustBe controllers.routes.HouseConsignmentController.onPageLoad(answers.id, hcIndex).url
             link.visuallyHidden mustBe "on house consignment 1"
             result.children.head.id.value mustBe "houseConsignment1"
+        }
+      }
+
+      "must generate add remove link even if there  is no house consignment" in {
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
+          (consignorName, consignorId, consigneeName, consigneeId) =>
+            val helper = new ConsignmentAnswersHelper(emptyUserAnswers)
+            val result = helper.houseConsignmentSection
+
+            result mustBe a[AccordionSection]
+            result.sectionTitle.value mustBe "House consignments"
+            result.children mustBe Nil
+            result.viewLinks.head.href mustBe "#" // TODO replace with actual add remove link when the controller is implemented
         }
       }
     }
