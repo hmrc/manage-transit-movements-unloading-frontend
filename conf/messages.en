@@ -637,9 +637,9 @@ checkYourAnswers.rowHeadings.canSealsBeRead.change.hidden = if all of the seal i
 checkYourAnswers.rowHeadings.anySealsBroken = Are any of the seals broken?
 checkYourAnswers.rowHeadings.anySealsBroken.change.hidden = if any of the seals are broken
 
-checkYourAnswers.subsections.additionalComments = Transit and declaration summary cross-check
-checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo = Were there any discrepancies between the transit and the declaration summary?
-checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo.change.hidden = if there were any discrepancies between the transit and the declaration summary
+checkYourAnswers.subsections.additionalComments = Transit and unloading permission discrepancies
+checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo = Were there any discrepancies between the transit and unloading permission?
+checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo.change.hidden = if there were any discrepancies between the transit and unloading permission
 checkYourAnswers.rowHeadings.addCommentsYesNo = Do you want to add any comments?
 checkYourAnswers.rowHeadings.addCommentsYesNo.change.hidden = if you want to add any comments
 checkYourAnswers.rowHeadings.additionalComments = Comments

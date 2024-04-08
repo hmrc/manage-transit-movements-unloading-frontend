@@ -185,7 +185,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
           result mustBe Some(
             SummaryListRow(
-              key = Key("Were there any discrepancies between the transit and the declaration summary?".toText),
+              key = Key("Were there any discrepancies between the transit and unloading permission?".toText),
               value = Value("Yes".toText),
               actions = Some(
                 Actions(
@@ -194,7 +194,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                       content = "Change".toText,
                       href = routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, CheckMode).url,
                       visuallyHiddenText = Some(
-                        "if there were any discrepancies between the transit and the declaration summary"
+                        "if there were any discrepancies between the transit and unloading permission"
                       ),
                       attributes = Map("id" -> "change-add-unloading-comments")
                     )
@@ -212,7 +212,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
           result mustBe Some(
             SummaryListRow(
-              key = Key("Were there any discrepancies between the transit and the declaration summary?".toText),
+              key = Key("Were there any discrepancies between the transit and unloading permission?".toText),
               value = Value("No".toText),
               actions = Some(
                 Actions(
@@ -220,7 +220,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                     ActionItem(
                       content = "Change".toText,
                       href = routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, CheckMode).url,
-                      visuallyHiddenText = Some("if there were any discrepancies between the transit and the declaration summary"),
+                      visuallyHiddenText = Some("if there were any discrepancies between the transit and unloading permission"),
                       attributes = Map("id" -> "change-add-unloading-comments")
                     )
                   )
