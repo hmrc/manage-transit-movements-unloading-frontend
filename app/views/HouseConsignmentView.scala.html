@@ -22,7 +22,8 @@
     heading: Heading,
     answerSections: AnswerSections,
     button: Button,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    govukSummaryList: GovukSummaryList,
 )
 
 @(mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentViewModel: HouseConsignmentViewModel, houseConsignmentIndex: Index)(implicit request: Request[_], messages: Messages)
@@ -38,6 +39,12 @@
     )
 
     <p class="govuk-body">@messages("houseConsignment.paragraph")</p>
+
+    @govukSummaryList(
+        SummaryList(
+            rows = Seq(houseConsignmentViewModel.safetyAndSecurityRow)
+        )
+    )
 
     @answerSections(houseConsignmentViewModel.sections)
 

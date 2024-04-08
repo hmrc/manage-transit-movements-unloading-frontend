@@ -19,7 +19,7 @@ package views.behaviours
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow}
 import viewModels.sections.Section
 import viewModels.sections.Section.AccordionSection
 
@@ -28,6 +28,8 @@ import scala.jdk.CollectionConverters._
 trait DetailsListViewBehaviours extends ViewBehaviours with Generators {
 
   lazy val sections: Seq[Section] = arbitrary[List[AccordionSection]].sample.value
+
+  lazy val securityRow: SummaryListRow = arbitrarySummaryListRow.arbitrary.sample.value
 
   def summaryLists: Seq[SummaryList] = sections.map(
     section => SummaryList(section.rows)

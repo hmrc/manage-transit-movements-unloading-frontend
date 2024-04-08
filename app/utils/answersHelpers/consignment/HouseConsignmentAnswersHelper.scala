@@ -42,6 +42,16 @@ class HouseConsignmentAnswersHelper(
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
+  def safetyAndSecurityDetails: SummaryListRow =
+    buildRowWithNoChangeLink(
+      prefix = "houseConsignment.securityIndicator",
+      answer = formatAsYesOrNo(
+        userAnswers.ie043Data.Consignment
+          .flatMap(_.HouseConsignment(houseConsignmentIndex.position).securityIndicatorFromExportDeclaration)
+          .contains("1")
+      )
+    )
+
   def consignorName: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = ConsignorNamePage(houseConsignmentIndex),
     formatAnswer = formatAsText,

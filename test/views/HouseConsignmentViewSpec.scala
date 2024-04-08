@@ -26,7 +26,7 @@ class HouseConsignmentViewSpec extends DetailsListViewBehaviours with Generators
 
   override val prefix: String = "houseConsignment"
 
-  val houseConsignmentViewModel: HouseConsignmentViewModel = new HouseConsignmentViewModel(sections)
+  val houseConsignmentViewModel: HouseConsignmentViewModel = new HouseConsignmentViewModel(sections, securityRow)
 
   override def view: HtmlFormat.Appendable =
     injector.instanceOf[HouseConsignmentView].apply(mrn, arrivalId, houseConsignmentViewModel, index)(fakeRequest, messages)
