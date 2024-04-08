@@ -30,7 +30,7 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours with Gener
   override def viewWithSections(sections: Seq[Section]): HtmlFormat.Appendable =
     injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, checkYourAnswersViewModel)(fakeRequest, messages)
 
-  val checkYourAnswersViewModel: CheckYourAnswersViewModel = new CheckYourAnswersViewModel(sections)
+  val checkYourAnswersViewModel: CheckYourAnswersViewModel = new CheckYourAnswersViewModel(sections, false)
 
   behave like pageWithTitle()
 
@@ -53,4 +53,20 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours with Gener
     })
   }
 
+  "must render link for discrepancies when AddCommentsYesNoPage is true" - {
+
+    val checkYourAnswersViewModel: CheckYourAnswersViewModel = new CheckYourAnswersViewModel(sections, true)
+
+    val view: HtmlFormat.Appendable =
+      injector.instanceOf[CheckYourAnswersView].apply(mrn, arrivalId, checkYourAnswersViewModel)(fakeRequest, messages)
+
+    val doc = parseView(view)
+
+    behave like pageWithLink(
+      doc,
+      "unloadingFindings",
+      "Back to discrepancies between the transit and unloading permission",
+      controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+    )
+  }
 }

@@ -85,4 +85,31 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
     }
 
   }
+
+  "showDiscrepanciesLink boolean must be" - {
+    "false when AddUnloadingCommentsYesNo page is false" in {
+      val userAnswers = emptyUserAnswers
+        .setValue(AddUnloadingCommentsYesNoPage, false)
+
+      setExistingUserAnswers(userAnswers)
+
+      val viewModelProvider = new CheckYourAnswersViewModelProvider()
+      val result            = viewModelProvider.apply(userAnswers)
+
+      result.showDiscrepanciesLink mustBe false
+    }
+
+    "true when AddUnloadingCommentsYesNo page is true" in {
+      val userAnswers = emptyUserAnswers
+        .setValue(AddUnloadingCommentsYesNoPage, true)
+
+      setExistingUserAnswers(userAnswers)
+
+      val viewModelProvider = new CheckYourAnswersViewModelProvider()
+      val result            = viewModelProvider.apply(userAnswers)
+
+      result.showDiscrepanciesLink mustBe true
+    }
+  }
+
 }

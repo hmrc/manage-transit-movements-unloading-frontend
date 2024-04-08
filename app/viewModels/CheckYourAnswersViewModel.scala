@@ -17,6 +17,7 @@
 package viewModels
 
 import models.UserAnswers
+import pages.AddUnloadingCommentsYesNoPage
 import play.api.i18n.Messages
 import utils.answersHelpers.CheckYourAnswersHelper
 import viewModels.sections.Section
@@ -24,7 +25,7 @@ import viewModels.sections.Section.StaticSection
 
 import javax.inject.Inject
 
-case class CheckYourAnswersViewModel(sections: Seq[Section])
+case class CheckYourAnswersViewModel(sections: Seq[Section], showDiscrepanciesLink: Boolean)
 
 object CheckYourAnswersViewModel {
 
@@ -56,7 +57,10 @@ object CheckYourAnswersViewModel {
         ).flatten
       )
 
-      new CheckYourAnswersViewModel(Seq(headerSection, commentsSection))
+      new CheckYourAnswersViewModel(
+        Seq(headerSection, commentsSection),
+        userAnswers.get(AddUnloadingCommentsYesNoPage).exists(identity)
+      )
     }
   }
 }
