@@ -154,7 +154,7 @@ class HouseConsignmentAnswersHelper(
         )
     }
 
-  def additionalReferenceSection: Section =
+  def additionalReferencesSection: Section =
     userAnswers.get(AdditionalReferenceListSection(houseConsignmentIndex)).mapWithIndex {
       case (_, index) =>
         val helper = new HouseConsignmentAdditionalReferencesAnswersHelper(userAnswers, houseConsignmentIndex, index)
@@ -172,7 +172,7 @@ class HouseConsignmentAnswersHelper(
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.houseConsignment.additionalReference.heading")),
           children = children,
-          id = Some("additionalReference")
+          id = Some("additionalReferences")
         )
     }
 

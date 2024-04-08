@@ -29,7 +29,7 @@ class HouseConsignmentsTransformer @Inject() (
   consignorTransformer: ConsignorTransformer,
   departureTransportMeansTransformer: DepartureTransportMeansTransformer,
   documentsTransformer: DocumentsTransformer,
-  additionalReferenceTransformer: AdditionalReferencesTransformer,
+  additionalReferencesTransformer: AdditionalReferencesTransformer,
   additionalInformationTransformer: AdditionalInformationTransformer,
   consignmentItemTransformer: ConsignmentItemTransformer
 )(implicit ec: ExecutionContext)
@@ -53,7 +53,7 @@ class HouseConsignmentsTransformer @Inject() (
                     houseConsignment.PreviousDocument.toPreviousDocumentType06,
                     hcIndex
                   ) andThen
-                  additionalReferenceTransformer.transform(houseConsignment.AdditionalReference, hcIndex) andThen
+                  additionalReferencesTransformer.transform(houseConsignment.AdditionalReference, hcIndex) andThen
                   additionalInformationTransformer.transform(houseConsignment.AdditionalInformation, hcIndex) andThen
                   consignmentItemTransformer.transform(houseConsignment.ConsignmentItem, hcIndex)
 
