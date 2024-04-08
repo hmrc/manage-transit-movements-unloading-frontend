@@ -18,7 +18,7 @@ package utils.answersHelpers.consignment
 
 import models.DocType.Previous
 import models.reference.Country
-import models.{Index, Link, RichOptionalJsArray, UserAnswers}
+import models.{Index, Link, NormalMode, RichOptionalJsArray, UserAnswers}
 import pages.{houseConsignment, _}
 import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
@@ -112,6 +112,20 @@ class HouseConsignmentAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.houseConsignment.consigneeAddress"
   )
 
+  private val departureTransportMeansAddRemoveLink: Link = Link(
+    id = s"add-remove-departure-transport-means",
+    href = "#", // TODO update when controller added
+    text = messages("houseConsignment.departureTransportMeans.addRemove"),
+    visuallyHidden = messages("houseConsignment.departureTransportMeans.visuallyHidden")
+  )
+
+  private val additionalReferenceAddRemoveLink: Link = Link(
+    id = "add-remove-additional-reference",
+    href = "#", // TODO update when controller added
+    text = messages("additionalReferenceLink.addRemove"),
+    visuallyHidden = messages("additionalReferenceLink.visuallyHidden")
+  )
+
   def departureTransportMeansSection: Section =
     userAnswers.get(DepartureTransportMeansListSection(houseConsignmentIndex)).mapWithIndex {
       case (_, index) =>
@@ -131,6 +145,7 @@ class HouseConsignmentAnswersHelper(
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans.parent.header")),
           children = children,
+          viewLinks = Seq(departureTransportMeansAddRemoveLink),
           id = Some("departureTransportMeans")
         )
     }
@@ -181,6 +196,7 @@ class HouseConsignmentAnswersHelper(
       case children =>
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.houseConsignment.additionalReference.heading")),
+          viewLinks = Seq(additionalReferenceAddRemoveLink),
           children = children,
           id = Some("additionalReferences")
         )

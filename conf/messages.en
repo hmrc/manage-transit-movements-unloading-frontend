@@ -912,6 +912,11 @@ document.type.error.required = Select the type of document you want to add
 document.type.check.error.required = Select the new document type
 document.type.maxLimitForType.label = You cannot add any more {0} documents to all items. To add another, you need to remove one first. You can, however, still add a {1} document to your items.
 
+houseConsignment.addRemove = Add or remove house consignment
+houseConsignment.visuallyHidden = Add or remove house consignment
+
+houseConsignment.departureTransportMeans.addRemove = Add or remove departure means of transport
+houseConsignment.departureTransportMeans.visuallyHidden = Add or remove departure means of transport
 
 houseConsignment.index.items.document.type.NormalMode.title = What type of document do you want to add?
 houseConsignment.index.items.document.type.CheckMode.title = What is the new document type for item {1} in house consignment {0}?

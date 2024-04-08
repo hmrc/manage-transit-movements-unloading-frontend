@@ -71,6 +71,13 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       visuallyHidden = messages("departureTransportMeans.visuallyHidden")
     )
 
+  private val houseConsignmentAddRemoveLink: Link = Link(
+    id = s"add-remove-house-consignment",
+    href = "#", // TODO update when controller added
+    text = messages("houseConsignment.addRemove"),
+    visuallyHidden = messages("houseConsignment.visuallyHidden")
+  )
+
   def headerSection: Section = StaticSection(
     rows = Seq(
       declarationAcceptanceDateRow,
@@ -418,6 +425,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.subsections.houseConsignment.parent.heading")),
           children = children,
+          viewLinks = Seq(houseConsignmentAddRemoveLink),
           id = Some("houseConsignments")
         )
     }
