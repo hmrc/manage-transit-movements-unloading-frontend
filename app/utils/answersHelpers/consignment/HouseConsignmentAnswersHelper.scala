@@ -16,20 +16,19 @@
 
 package utils.answersHelpers.consignment
 
+import models.DocType.Previous
 import models.reference.Country
 import models.{Index, Link, RichOptionalJsArray, UserAnswers}
-import pages._
+import pages.{houseConsignment, _}
 import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
+import pages.sections.houseConsignment.index
 import pages.sections.houseConsignment.index.additionalInformation.AdditionalInformationListSection
+import pages.sections.houseConsignment.index.additionalReference.AdditionalReferenceListSection
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
-import utils.answersHelpers.consignment.houseConsignment.{
-  ConsignmentItemAnswersHelper,
-  DepartureTransportMeansAnswersHelper,
-  HouseConsignmentAdditionalInformationAnswersHelper
-}
+import utils.answersHelpers.consignment.houseConsignment._
 import viewModels.sections.Section
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 
@@ -38,6 +37,16 @@ class HouseConsignmentAnswersHelper(
   houseConsignmentIndex: Index
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
+
+  def safetyAndSecurityDetails: SummaryListRow =
+    buildRowWithNoChangeLink(
+      prefix = "houseConsignment.securityIndicator",
+      answer = formatAsYesOrNo(
+        userAnswers.ie043Data.Consignment
+          .flatMap(_.HouseConsignment(houseConsignmentIndex.position).securityIndicatorFromExportDeclaration)
+          .contains("1")
+      )
+    )
 
   def consignorName: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = ConsignorNamePage(houseConsignmentIndex),
@@ -126,6 +135,57 @@ class HouseConsignmentAnswersHelper(
         )
     }
 
+  def documentSection: Section =
+    userAnswers
+      .get(index.documents.DocumentsSection(houseConsignmentIndex))
+      .mapWithIndex {
+        case (_, index) =>
+          val helper   = new DocumentAnswersHelper(userAnswers, houseConsignmentIndex, index)
+          val readOnly = userAnswers.get(houseConsignment.index.documents.TypePage(houseConsignmentIndex, index)).map(_.`type`).contains(Previous)
+
+          val rows = Seq(
+            helper.documentType(readOnly),
+            helper.referenceNumber(readOnly),
+            helper.additionalInformation(readOnly)
+          ).flatten
+
+          AccordionSection(
+            sectionTitle = Some(messages("unloadingFindings.document.heading", index.display)),
+            rows = rows,
+            id = Some(s"document-$index")
+          )
+      } match {
+      case children =>
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.document.heading.parent.heading")),
+          viewLinks = Seq(documentAddRemoveLink),
+          children = children,
+          id = Some(s"documents")
+        )
+    }
+
+  def additionalReferencesSection: Section =
+    userAnswers.get(AdditionalReferenceListSection(houseConsignmentIndex)).mapWithIndex {
+      case (_, index) =>
+        val helper = new HouseConsignmentAdditionalReferencesAnswersHelper(userAnswers, houseConsignmentIndex, index)
+        val rows = Seq(
+          helper.referenceType,
+          helper.referenceNumber
+        ).flatten
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.houseConsignment.additionalReference", index.display)),
+          rows = rows,
+          id = Some(s"additionalReference$index")
+        )
+    } match {
+      case children =>
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.houseConsignment.additionalReference.heading")),
+          children = children,
+          id = Some("additionalReferences")
+        )
+    }
+
   def additionalInformationSection: Section =
     userAnswers.get(AdditionalInformationListSection(houseConsignmentIndex)).mapWithIndex {
       case (_, index) =>
@@ -188,6 +248,14 @@ class HouseConsignmentAnswersHelper(
           id = Some("items")
         )
     }
+
+  private[consignment] def documentAddRemoveLink: Link =
+    Link(
+      id = s"add-remove-document",
+      href = "#",
+      text = messages("documentLink.addRemove"),
+      visuallyHidden = messages("documentLink.visuallyHidden")
+    )
 
   def itemsAddRemoveLink: Link =
     Link(

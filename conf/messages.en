@@ -588,6 +588,13 @@ unloadingFindings.additional.reference.type.change.hidden = type for additional 
 unloadingFindings.additional.reference.number = Reference number
 unloadingFindings.additional.reference.number.change.hidden = reference number for additional reference {0}
 
+unloadingFindings.houseConsignment.additionalReference.heading = Additional references
+unloadingFindings.houseConsignment.additionalReference = Additional reference {0}
+unloadingFindings.houseConsignment.additionalReference.type = Type
+unloadingFindings.houseConsignment.additionalReference.type.change.hidden = type for additional reference {0}
+unloadingFindings.houseConsignment.additionalReference.number = Reference number
+unloadingFindings.houseConsignment.additionalReference.number.change.hidden = reference number for additional reference {0}
+
 unloadingFindings.houseConsignment.item.additionalReference = Additional reference {0}
 unloadingFindings.houseConsignment.item.additionalReference.type = Type
 unloadingFindings.houseConsignment.item.additionalReference.type.change.hidden = type for additional reference {0} in item {1}
@@ -606,6 +613,7 @@ houseConsignment.title = Cross-check the transit with house consignment {0}
 houseConsignment.heading = Cross-check the transit with house consignment {0}
 houseConsignment.paragraph = Compare the transit that arrived with the following information to identify any discrepancies.
 houseConsignment.departureMeansSubHeading = Departure means of transport {0}
+houseConsignment.securityIndicator = Safety and security details
 
 unloadingRemarksSent.title = Unloading remarks sent
 unloadingRemarksSent.heading = Unloading remarks sent
@@ -893,6 +901,13 @@ additionalReference.index.additionalReferenceNumberYesNo.error.required = Select
 
 unloadingFindings.grossMass = Gross weight
 unloadingFindings.grossMass.change.hidden = gross weight
+
+unloadingFindings.inlandModeOfTransport = Inland mode Of transport
+unloadingFindings.inlandModeOfTransport.label = Mode
+
+unloadingFindings.countryOfDestination = Country Of Destination
+
+unloadingFindings.containerIndicator = Are you using any containers?
 
 document.type.NormalMode.title = What type of document do you want to add?
 document.type.CheckMode.title = What is the new document type?

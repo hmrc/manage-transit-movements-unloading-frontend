@@ -18,12 +18,13 @@ package viewModels
 
 import models.{Index, UserAnswers}
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.consignment.HouseConsignmentAnswersHelper
 import viewModels.sections.Section
 
 import javax.inject.Inject
 
-case class HouseConsignmentViewModel(sections: Seq[Section])
+case class HouseConsignmentViewModel(sections: Seq[Section], safetyAndSecurityRow: SummaryListRow)
 
 object HouseConsignmentViewModel {
 
@@ -39,13 +40,15 @@ object HouseConsignmentViewModel {
 
       val sections: Seq[Section] = Seq(
         helper.departureTransportMeansSection,
+        helper.documentSection,
+        helper.additionalReferencesSection,
         helper.additionalInformationSection,
         helper.itemSection,
         helper.houseConsignmentConsignorSection,
         helper.houseConsignmentConsigneeSection
       )
 
-      HouseConsignmentViewModel(sections)
+      HouseConsignmentViewModel(sections, helper.safetyAndSecurityDetails)
     }
   }
 }

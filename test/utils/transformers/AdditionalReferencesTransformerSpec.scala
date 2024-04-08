@@ -74,6 +74,29 @@ class AdditionalReferencesTransformerSpec extends SpecBase with AppWithDefaultMo
     }
   }
 
+  "must transform data at HC level" in {
+    import pages.sections.houseConsignment.index.additionalReference.AdditionalReferenceSection
+    import pages.houseConsignment.index.additionalReference._
+
+    val additionalReferenceType03: Seq[AdditionalReferenceType03] = arbitrary[Seq[AdditionalReferenceType03]].sample.value
+
+    additionalReferenceType03.map {
+      type0 =>
+        when(mockRefDataConnector.getAdditionalReferenceType(eqTo(type0.typeValue))(any(), any()))
+          .thenReturn(
+            Future.successful(AdditionalReferenceType(documentType = type0.typeValue, description = "describe me"))
+          )
+    }
+
+    val result = transformer.transform(additionalReferenceType03, hcIndex).apply(emptyUserAnswers).futureValue
+
+    additionalReferenceType03.zipWithIndex.map {
+      case (refType, i) =>
+        result.getSequenceNumber(AdditionalReferenceSection(hcIndex, Index(i))) mustBe refType.sequenceNumber
+        result.getValue(HouseConsignmentAdditionalReferenceTypePage(hcIndex, Index(i))).documentType mustBe refType.typeValue
+    }
+  }
+
   "must transform data at Item level" in {
     val additionalReferenceType02: Seq[AdditionalReferenceType02] = arbitrary[Seq[AdditionalReferenceType02]].sample.value
 

@@ -49,7 +49,7 @@ class AdditionalReferenceNumberController @Inject() (
     actions
       .requireData(arrivalId) {
         implicit request =>
-          val viewModel = viewModelProvider.apply(arrivalId, mode, houseConsignmentIndex, itemIndex)
+          val viewModel = viewModelProvider.apply(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
           val form      = formProvider(viewModel.requiredError)
           val preparedForm = request.userAnswers.get(AdditionalReferenceNumberPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) match {
             case None        => form
@@ -62,7 +62,7 @@ class AdditionalReferenceNumberController @Inject() (
     .requireData(arrivalId)
     .async {
       implicit request =>
-        val viewModel = viewModelProvider.apply(arrivalId, mode, houseConsignmentIndex, itemIndex)
+        val viewModel = viewModelProvider.apply(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
         val form      = formProvider(viewModel.requiredError)
         form
           .bindFromRequest()
