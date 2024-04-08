@@ -16,7 +16,6 @@
 
 package utils.answersHelpers
 
-import generated.{Number0, Number1}
 import models.DocType.Previous
 import models.reference.TransportMode.InlandMode
 import models.reference.{Country, CustomsOffice}
