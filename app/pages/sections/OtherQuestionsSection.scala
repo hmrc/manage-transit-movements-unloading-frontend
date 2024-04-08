@@ -18,9 +18,9 @@ package pages.sections
 
 import play.api.libs.json.{JsObject, JsPath}
 
-case object UnloadingRemarksSection extends Section[JsObject] {
+case object OtherQuestionsSection extends Section[JsObject] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "UnloadingRemark"
+  override def toString: String = "otherQuestions"
 }
