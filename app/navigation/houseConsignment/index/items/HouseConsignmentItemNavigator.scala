@@ -128,7 +128,7 @@ class HouseConsignmentItemNavigator extends Navigator {
     ua.get(AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex)).map {
       case true =>
         controllers.houseConsignment.index.items.routes.CommodityCodeController
-          .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, CheckMode)
+          .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
       case false =>
         controllers.houseConsignment.index.items.document.routes.AddDocumentYesNoController
           .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
@@ -138,7 +138,7 @@ class HouseConsignmentItemNavigator extends Navigator {
     ua.get(AddCombinedNomenclatureCodeYesNoPage(houseConsignmentIndex, itemIndex)).map {
       case true =>
         controllers.houseConsignment.index.items.routes.CombinedNomenclatureCodeController
-          .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, CheckMode)
+          .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
       case false =>
         controllers.houseConsignment.index.items.document.routes.AddDocumentYesNoController
           .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
