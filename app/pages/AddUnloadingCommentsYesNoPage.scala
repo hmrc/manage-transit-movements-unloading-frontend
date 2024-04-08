@@ -17,14 +17,14 @@
 package pages
 
 import models.UserAnswers
-import pages.sections.UnloadingRemarksSection
+import pages.sections.OtherQuestionsSection
 import play.api.libs.json.JsPath
 
 import scala.util.Try
 
 case object AddUnloadingCommentsYesNoPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = UnloadingRemarksSection.path \ toString
+  override def path: JsPath = OtherQuestionsSection.path \ toString
 
   override def toString: String = "addUnloadingCommentsYesNo"
 

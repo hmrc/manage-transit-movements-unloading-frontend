@@ -21,7 +21,7 @@ import forms.YesNoFormProvider
 import models.{ArrivalId, Mode, UserAnswers}
 import navigation.Navigation
 import pages.AddUnloadingCommentsYesNoPage
-import pages.sections.UnloadingRemarksSection
+import pages.sections.OtherQuestionsSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -71,10 +71,10 @@ class AddUnloadingCommentsYesNoController @Inject() (
                 Future.successful(request.userAnswers)
               } else {
                 for {
-                  unloadingRemarks <- Future.successful(request.userAnswers.get(UnloadingRemarksSection))
+                  unloadingRemarks <- Future.successful(request.userAnswers.get(OtherQuestionsSection))
                   wipedAnswers = request.userAnswers.copy(data = Json.obj())
                   transformedAnswers <- dataTransformer.transform(wipedAnswers)
-                  updatedAnswers     <- Future.fromTry(unloadingRemarks.fold(Try(transformedAnswers))(transformedAnswers.set(UnloadingRemarksSection, _)))
+                  updatedAnswers     <- Future.fromTry(unloadingRemarks.fold(Try(transformedAnswers))(transformedAnswers.set(OtherQuestionsSection, _)))
                 } yield updatedAnswers
               }
 
