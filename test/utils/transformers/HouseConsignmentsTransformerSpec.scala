@@ -40,6 +40,7 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
   private lazy val mockConsignorTransformer               = mock[ConsignorTransformer]
   private lazy val mockDepartureTransportMeansTransformer = mock[DepartureTransportMeansTransformer]
   private lazy val mockConsignmentItemTransformer         = mock[ConsignmentItemTransformer]
+  private lazy val mockPrevDocTransformer                 = mock[PreviousDocumentTransformer]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -48,7 +49,8 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
         bind[ConsigneeTransformer].toInstance(mockConsigneeTransformer),
         bind[ConsignorTransformer].toInstance(mockConsignorTransformer),
         bind[DepartureTransportMeansTransformer].toInstance(mockDepartureTransportMeansTransformer),
-        bind[ConsignmentItemTransformer].toInstance(mockConsignmentItemTransformer)
+        bind[ConsignmentItemTransformer].toInstance(mockConsignmentItemTransformer),
+        bind[PreviousDocumentTransformer].toInstance(mockPrevDocTransformer)
       )
 
   private case class FakeConsigneeSection(hcIndex: Index) extends QuestionPage[JsObject] {
@@ -65,6 +67,10 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
 
   private case class FakeConsignmentItemSection(hcIndex: Index) extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ hcIndex.position.toString \ "consignmentItems"
+  }
+
+  private case class FakePreviousDocumentSection(hcIndex: Index) extends QuestionPage[JsObject] {
+    override def path: JsPath = JsPath \ hcIndex.position.toString \ "previousDocuments"
   }
 
   "must transform data" in {
@@ -93,6 +99,11 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
               .thenReturn {
                 ua => Future.successful(ua.setValue(FakeConsignmentItemSection(hcIndex), Json.obj("foo" -> i.toString)))
               }
+
+            when(mockPrevDocTransformer.transform(any(), eqTo(hcIndex))(any()))
+              .thenReturn {
+                ua => Future.successful(ua.setValue(FakePreviousDocumentSection(hcIndex), Json.obj("foo" -> i.toString)))
+              }
         }
 
         val result = transformer.transform(houseConsignments).apply(emptyUserAnswers).futureValue
@@ -106,6 +117,7 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
             result.getValue(FakeConsignorSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
             result.getValue(FakeDepartureTransportMeansSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
             result.getValue(FakeConsignmentItemSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
+            result.getValue(FakePreviousDocumentSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
         }
     }
   }

@@ -45,7 +45,8 @@ class HouseConsignmentsTransformer @Inject() (
                   consigneeTransformer.transform(houseConsignment.Consignee, hcIndex) andThen
                   consignorTransformer.transform(houseConsignment.Consignor, hcIndex) andThen
                   departureTransportMeansTransformer.transform(houseConsignment.DepartureTransportMeans, hcIndex) andThen
-                  consignmentItemTransformer.transform(houseConsignment.ConsignmentItem, hcIndex)
+                  consignmentItemTransformer.transform(houseConsignment.ConsignmentItem, hcIndex) andThen
+                  previousDocument.transform(houseConsignment.PreviousDocument, hcIndex)
 
               pipeline(userAnswers)
           }
