@@ -275,7 +275,9 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
 
             navigator
               .nextPage(CommodityCodePage(houseConsignmentIndex, itemIndex), mode, userAnswers)
-              .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
+              .mustBe(
+                controllers.houseConsignment.index.items.routes.AddCombinedNomenclatureCodeYesNoController.onPageLoad(arrivalId, hcIndex, itemIndex, NormalMode)
+              )
         }
       }
     }

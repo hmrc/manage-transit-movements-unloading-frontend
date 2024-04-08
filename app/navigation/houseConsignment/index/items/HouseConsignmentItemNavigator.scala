@@ -73,7 +73,12 @@ class HouseConsignmentItemNavigator extends Navigator {
     case NetWeightPage(houseConsignmentIndex, _)           => ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
     case CombinedNomenclatureCodePage(houseConsignmentIndex, _) =>
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
-    case CommodityCodePage(houseConsignmentIndex, _) => ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
+    case CommodityCodePage(houseConsignmentIndex, itemIndex) =>
+      ua =>
+        Some(
+          controllers.houseConsignment.index.items.routes.AddCombinedNomenclatureCodeYesNoController
+            .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
+        )
     case CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, _) =>
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
   }
@@ -139,17 +144,13 @@ class HouseConsignmentItemNavigator extends Navigator {
           .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
     }
 
-  def addDocumentYesNoNav(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index): Option[Call] = {
-
-    val documentIndex = ua.get(DocumentsSection(houseConsignmentIndex, itemIndex)).map(_.value.length).getOrElse(0)
-
+  def addDocumentYesNoNav(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index): Option[Call] =
     ua.get(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex)).map {
       case true =>
         controllers.houseConsignment.index.items.document.routes.TypeController
-          .onPageLoad(ua.id, NormalMode, houseConsignmentIndex, itemIndex, Index(documentIndex))
+          .onPageLoad(ua.id, NormalMode, houseConsignmentIndex, itemIndex, Index(0))
       case false =>
         controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
           .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
     }
-  }
 }
