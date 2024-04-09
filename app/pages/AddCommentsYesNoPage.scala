@@ -17,15 +17,20 @@
 package pages
 
 import models.UserAnswers
+import pages.sections.OtherQuestionsSection
 import play.api.libs.json.JsPath
 
 import scala.util.Try
 
 case object AddCommentsYesNoPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ "UnloadingRemark" \ toString
+  override def path: JsPath = OtherQuestionsSection.path \ toString
 
   override def toString: String = "comments"
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = super.cleanup(value, userAnswers)
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(UnloadingCommentsPage)
+      case _           => super.cleanup(value, userAnswers)
+    }
 }

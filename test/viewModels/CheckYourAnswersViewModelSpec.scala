@@ -62,7 +62,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       result.sections.length mustBe 2
       result.sections(1).rows.size mustBe 1
 
-      result.sections(1).sectionTitle.value mustBe "Transit and declaration summary cross-check"
+      result.sections(1).sectionTitle.value mustBe "Transit and unloading permission discrepancies"
 
     }
 
@@ -80,9 +80,36 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       result.sections.length mustBe 2
       result.sections(1).rows.size mustBe 2
 
-      result.sections(1).sectionTitle.value mustBe "Transit and declaration summary cross-check"
+      result.sections(1).sectionTitle.value mustBe "Transit and unloading permission discrepancies"
 
     }
 
   }
+
+  "showDiscrepanciesLink boolean must be" - {
+    "false when AddUnloadingCommentsYesNo page is false" in {
+      val userAnswers = emptyUserAnswers
+        .setValue(AddUnloadingCommentsYesNoPage, false)
+
+      setExistingUserAnswers(userAnswers)
+
+      val viewModelProvider = new CheckYourAnswersViewModelProvider()
+      val result            = viewModelProvider.apply(userAnswers)
+
+      result.showDiscrepanciesLink mustBe false
+    }
+
+    "true when AddUnloadingCommentsYesNo page is true" in {
+      val userAnswers = emptyUserAnswers
+        .setValue(AddUnloadingCommentsYesNoPage, true)
+
+      setExistingUserAnswers(userAnswers)
+
+      val viewModelProvider = new CheckYourAnswersViewModelProvider()
+      val result            = viewModelProvider.apply(userAnswers)
+
+      result.showDiscrepanciesLink mustBe true
+    }
+  }
+
 }
