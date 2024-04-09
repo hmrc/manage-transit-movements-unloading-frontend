@@ -19,9 +19,9 @@ package views.behaviours
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewModels.sections.Section
-import viewModels.sections.Section.AccordionSection
+import viewModels.sections.Section.{AccordionSection, StaticSection}
 
 import scala.jdk.CollectionConverters._
 
@@ -29,14 +29,25 @@ trait DetailsListViewBehaviours extends ViewBehaviours with Generators {
 
   lazy val sections: Seq[Section] = arbitrary[List[AccordionSection]].sample.value
 
-  lazy val securityRow: SummaryListRow = arbitrarySummaryListRow.arbitrary.sample.value
+  lazy val section: Section = arbitrary[StaticSection].sample.value
 
   def summaryLists: Seq[SummaryList] = sections.map(
     section => SummaryList(section.rows)
   )
 
+  def childrenSummaryLists: Seq[SummaryList] = sections.map(
+    section => SummaryList(section.children.flatMap(_.rows))
+  )
+
   // scalastyle:off method.length
+
   def pageWithSections(): Unit =
+    pageWithSection(summaryLists)
+
+  def pageWithChildSections(): Unit =
+    pageWithSection(childrenSummaryLists)
+
+  def pageWithSection(summaryLists: Seq[SummaryList]): Unit =
     "page with summary lists" - {
 
       val renderedLists = doc.getElementsByClass("govuk-details__text").asScala
