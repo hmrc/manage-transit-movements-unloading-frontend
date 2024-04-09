@@ -43,6 +43,8 @@
                         )
                     }
 
+                    @section.children.map(this(_))
+
                     @section.viewLinks.map { link =>
                         @answerSectionLink(link)
                     }

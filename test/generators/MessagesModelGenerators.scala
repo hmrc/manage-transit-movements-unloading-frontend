@@ -191,10 +191,11 @@ trait MessagesModelGenerators {
         consignee               <- Gen.option(arbitrary[ConsigneeType04])
         departureTransportMeans <- arbitrary[Seq[DepartureTransportMeansType02]]
         consignmentItems        <- arbitrary[Seq[ConsignmentItemType04]]
+        securityIndicator       <- Gen.some(nonEmptyString)
       } yield HouseConsignmentType04(
         sequenceNumber = sequenceNumber,
         grossMass = grossMass,
-        securityIndicatorFromExportDeclaration = None,
+        securityIndicatorFromExportDeclaration = securityIndicator,
         Consignor = consignor,
         Consignee = consignee,
         DepartureTransportMeans = departureTransportMeans,

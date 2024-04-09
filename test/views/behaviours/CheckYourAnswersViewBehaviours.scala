@@ -17,15 +17,13 @@
 package views.behaviours
 
 import generators.Generators
-import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewModels.sections.Section
-import viewModels.sections.Section.StaticSection
 
 trait CheckYourAnswersViewBehaviours extends SummaryListViewBehaviours with Generators {
 
-  lazy val sections: Seq[Section] = arbitrary[List[StaticSection]].sample.value
+  lazy val sections: Seq[Section] = Seq(arbitraryStaticSectionNoChildren.arbitrary.sample.value)
 
   override def view: HtmlFormat.Appendable = viewWithSections(sections)
 
