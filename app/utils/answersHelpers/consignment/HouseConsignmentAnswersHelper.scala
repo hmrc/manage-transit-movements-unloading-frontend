@@ -18,13 +18,13 @@ package utils.answersHelpers.consignment
 
 import models.DocType.Previous
 import models.reference.Country
-import models.{Index, Link, NormalMode, RichOptionalJsArray, UserAnswers}
-import pages.{houseConsignment, _}
+import models.{Index, Link, RichOptionalJsArray, UserAnswers}
 import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
 import pages.sections.houseConsignment.index
 import pages.sections.houseConsignment.index.additionalInformation.AdditionalInformationListSection
 import pages.sections.houseConsignment.index.additionalReference.AdditionalReferenceListSection
+import pages.{houseConsignment, _}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
@@ -115,15 +115,13 @@ class HouseConsignmentAnswersHelper(
   private val departureTransportMeansAddRemoveLink: Link = Link(
     id = s"add-remove-departure-transport-means",
     href = "#", // TODO update when controller added
-    text = messages("houseConsignment.departureTransportMeans.addRemove"),
-    visuallyHidden = messages("houseConsignment.departureTransportMeans.visuallyHidden")
+    text = messages("houseConsignment.departureTransportMeans.addRemove")
   )
 
   private val additionalReferenceAddRemoveLink: Link = Link(
     id = "add-remove-additional-reference",
     href = "#", // TODO update when controller added
-    text = messages("additionalReferenceLink.addRemove"),
-    visuallyHidden = messages("additionalReferenceLink.visuallyHidden")
+    text = messages("additionalReferenceLink.addRemove")
   )
 
   def departureTransportMeansSection: Section =
@@ -269,15 +267,13 @@ class HouseConsignmentAnswersHelper(
     Link(
       id = s"add-remove-document",
       href = "#",
-      text = messages("documentLink.addRemove"),
-      visuallyHidden = messages("documentLink.visuallyHidden")
+      text = messages("documentLink.addRemove")
     )
 
   def itemsAddRemoveLink: Link =
     Link(
       id = "add-remove-items",
       href = "#",
-      text = messages("itemsLink.addRemove"),
-      visuallyHidden = messages("itemsLink.visuallyHidden")
+      text = messages("itemsLink.addRemove")
     )
 }

@@ -20,7 +20,8 @@
 
 @this(
     govukSummaryList: GovukSummaryList,
-    govukDetails: GovukDetails
+    govukDetails: GovukDetails,
+    answerSectionLink: AnswerSectionLink
 )
 
 @(section: Section)(implicit messages: Messages)
@@ -43,11 +44,7 @@
                     }
 
                     @section.viewLinks.map { link =>
-                        <p class="govuk-body">
-                            <a class="govuk-link" href=@link.href id="@link.id">
-                                @messages(link.text) <span class="govuk-visually-hidden">@link.visuallyHidden</span>
-                            </a>
-                        </p>
+                        @answerSectionLink(link)
                     }
                 </div>
             </div>
@@ -87,11 +84,7 @@
         @section.children.map(this(_))
 
         @section.viewLinks.map { link =>
-            <p class="govuk-body">
-                <a class="govuk-link" href=@link.href id="@link.id">
-                    @messages(link.text) <span class="govuk-visually-hidden">@link.visuallyHidden</span>
-                </a>
-            </p>
+            @answerSectionLink(link)
         }
     </div>
 }
