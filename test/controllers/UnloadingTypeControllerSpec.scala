@@ -38,7 +38,7 @@ class UnloadingTypeControllerSpec extends SpecBase with Generators with AppWithD
 
   lazy val unloadingTypeRoute: String = controllers.routes.UnloadingTypeController.onPageLoad(arrivalId, mode).url
 
-  "AddUnloadingCommentsYesNoController" - {
+  "UnloadingTypeController" - {
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()

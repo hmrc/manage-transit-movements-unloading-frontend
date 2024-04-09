@@ -30,20 +30,20 @@ button: Button
 @(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("addUnloadingCommentsYesNo.title"),
+    title = messages("addTransitUnloadingPermissionDiscrepanciesYesNo.title"),
     showBackLink = true
 ) {
 
         @errorSummary(form.errors)
 
-        @formHelper(action = controllers.routes.AddUnloadingCommentsYesNoController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
+        @formHelper(action = controllers.routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
 
         @inputYesNo(
             field = form("value"),
             yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("addUnloadingCommentsYesNo.heading"),
+                heading = messages("addTransitUnloadingPermissionDiscrepanciesYesNo.heading"),
                 caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = messages("addUnloadingCommentsYesNo.paragraph").toParagraph
+                additionalHtml = messages("addTransitUnloadingPermissionDiscrepanciesYesNo.paragraph").toParagraph
             )
         )
 

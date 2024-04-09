@@ -18,13 +18,13 @@ package utils.answersHelpers.consignment
 
 import models.DocType.Previous
 import models.reference.Country
-import models.{Index, Link, NormalMode, RichOptionalJsArray, UserAnswers}
-import pages.{houseConsignment, _}
+import models.{Index, Link, RichOptionalJsArray, UserAnswers}
 import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
 import pages.sections.houseConsignment.index
 import pages.sections.houseConsignment.index.additionalInformation.AdditionalInformationListSection
 import pages.sections.houseConsignment.index.additionalReference.AdditionalReferenceListSection
+import pages.{houseConsignment, _}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper

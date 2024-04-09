@@ -37,10 +37,10 @@ class Navigation extends Navigator {
         }
 
     case CanSealsBeReadPage    => ua => Some(routes.AreAnySealsBrokenController.onPageLoad(ua.id, NormalMode))
-    case AreAnySealsBrokenPage => ua => Some(routes.AddUnloadingCommentsYesNoController.onPageLoad(ua.id, NormalMode))
-    case AddUnloadingCommentsYesNoPage =>
+    case AreAnySealsBrokenPage => ua => Some(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(ua.id, NormalMode))
+    case AddTransitUnloadingPermissionDiscrepanciesYesNoPage =>
       ua =>
-        ua.get(AddUnloadingCommentsYesNoPage) map {
+        ua.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) map {
           case true  => controllers.routes.UnloadingFindingsController.onPageLoad(ua.id)
           case false => controllers.routes.AddCommentsYesNoController.onPageLoad(ua.id, NormalMode)
         }
@@ -65,9 +65,9 @@ class Navigation extends Navigator {
   }
 
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case AddUnloadingCommentsYesNoPage =>
+    case AddTransitUnloadingPermissionDiscrepanciesYesNoPage =>
       ua =>
-        ua.get(AddUnloadingCommentsYesNoPage) match {
+        ua.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) match {
           case Some(true) =>
             ua.get(UnloadingCommentsPage) match {
               case Some(_) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))

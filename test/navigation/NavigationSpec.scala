@@ -111,45 +111,45 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
       }
 
       "must go from are any seals broken page " - {
-        "to add unloading comments yes/no page when the answer is No" in {
+        "to add transit unloading permission discrepancies yes/no page when the answer is No" in {
 
           val userAnswers = emptyUserAnswers.setValue(AreAnySealsBrokenPage, false)
 
           navigator
             .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-            .mustBe(routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, NormalMode))
+            .mustBe(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, NormalMode))
         }
 
-        "to add unloading comments yes/no page when the answer is Yes" in {
+        "to add transit unloading permission discrepancies yes/no page when the answer is Yes" in {
 
           val userAnswers = emptyUserAnswers.setValue(AreAnySealsBrokenPage, true)
 
           navigator
             .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-            .mustBe(routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, NormalMode))
+            .mustBe(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, NormalMode))
         }
       }
 
-      "must go from add unloading comments yes/no page" - {
-        "when answer is true to unloading comments controller" in {
-          val userAnswers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, true)
+      "must go from add transit unloading permission discrepancies yes/no page" - {
+        "when answer is true to unloading findings controller" in {
+          val userAnswers = emptyUserAnswers.setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
 
           navigator
-            .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
+            .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
             .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
         }
 
         "when answer is false to add unloading remarks yes/no page" in {
-          val userAnswers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, false)
+          val userAnswers = emptyUserAnswers.setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
 
           navigator
-            .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
+            .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
             .mustBe(routes.AddCommentsYesNoController.onPageLoad(arrivalId, NormalMode))
         }
 
         "to session expired controller when no existing answers found" in {
           navigator
-            .nextPage(AddUnloadingCommentsYesNoPage, mode, emptyUserAnswers)
+            .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, emptyUserAnswers)
             .mustBe(routes.SessionExpiredController.onPageLoad())
         }
       }
@@ -234,38 +234,38 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         }
       }
 
-      "must go from unloading comments yes no page" - {
+      "must go from add transit unloading permission discrepancies yes no page" - {
         "to check your answers page if no selected" in {
 
           val userAnswers = emptyUserAnswers
-            .setValue(AddUnloadingCommentsYesNoPage, false)
+            .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
 
           navigator
-            .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
+            .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
             .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId))
         }
         "to additional comments page if yes is selected and no comments found" in {
 
           val userAnswers = emptyUserAnswers
-            .setValue(AddUnloadingCommentsYesNoPage, true)
+            .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
 
           navigator
-            .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
+            .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
             .mustBe(controllers.routes.UnloadingCommentsController.onPageLoad(arrivalId, mode))
         }
         "to additional comments page if yes is selected and comments found" in {
 
           val userAnswers = emptyUserAnswers
-            .setValue(AddUnloadingCommentsYesNoPage, true)
+            .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
             .setValue(UnloadingCommentsPage, "comment")
 
           navigator
-            .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
+            .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
             .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId))
         }
         "to session expired controller when no existing answers found" in {
           navigator
-            .nextPage(AddUnloadingCommentsYesNoPage, mode, emptyUserAnswers)
+            .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, emptyUserAnswers)
             .mustBe(routes.SessionExpiredController.onPageLoad())
         }
       }

@@ -52,7 +52,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
     "must render 1 rows if add comments false" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(AddUnloadingCommentsYesNoPage, false)
+        .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
 
       setExistingUserAnswers(userAnswers)
 
@@ -69,7 +69,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
     "must render 2 rows if add comments true" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(AddUnloadingCommentsYesNoPage, true)
+        .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
         .setValue(UnloadingCommentsPage, "Test")
 
       setExistingUserAnswers(userAnswers)
@@ -87,9 +87,9 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
   }
 
   "showDiscrepanciesLink boolean must be" - {
-    "false when AddUnloadingCommentsYesNo page is false" in {
+    "false when AddTransitUnloadingPermissionDiscrepanciesYesNoPage page is false" in {
       val userAnswers = emptyUserAnswers
-        .setValue(AddUnloadingCommentsYesNoPage, false)
+        .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
 
       setExistingUserAnswers(userAnswers)
 
@@ -99,9 +99,9 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       result.showDiscrepanciesLink mustBe false
     }
 
-    "true when AddUnloadingCommentsYesNo page is true" in {
+    "true when AddTransitUnloadingPermissionDiscrepanciesYesNoPage page is true" in {
       val userAnswers = emptyUserAnswers
-        .setValue(AddUnloadingCommentsYesNoPage, true)
+        .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
 
       setExistingUserAnswers(userAnswers)
 

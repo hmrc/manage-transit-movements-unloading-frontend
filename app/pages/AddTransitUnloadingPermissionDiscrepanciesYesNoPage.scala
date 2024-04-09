@@ -19,9 +19,9 @@ package pages
 import pages.sections.OtherQuestionsSection
 import play.api.libs.json.JsPath
 
-case object AddUnloadingCommentsYesNoPage extends QuestionPage[Boolean] {
+case object AddTransitUnloadingPermissionDiscrepanciesYesNoPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = OtherQuestionsSection.path \ toString
 
-  override def toString: String = "addUnloadingCommentsYesNo"
+  override def toString: String = "addTransitUnloadingPermissionDiscrepanciesYesNo"
 }

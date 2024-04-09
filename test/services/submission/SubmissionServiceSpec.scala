@@ -125,7 +125,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                 .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
                 .setValue(CanSealsBeReadPage, true)
                 .setValue(AreAnySealsBrokenPage, false)
-                .setValue(AddUnloadingCommentsYesNoPage, true)
+                .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
                 .setValue(UnloadingCommentsPage, unloadingRemark)
 
               val reads  = service.unloadingRemarkReads
@@ -149,7 +149,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                 .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
                 .setValue(CanSealsBeReadPage, true)
                 .setValue(AreAnySealsBrokenPage, true)
-                .setValue(AddUnloadingCommentsYesNoPage, true)
+                .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
                 .setValue(UnloadingCommentsPage, unloadingRemark)
 
               val reads  = service.unloadingRemarkReads
@@ -173,7 +173,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                 .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
                 .setValue(CanSealsBeReadPage, false)
                 .setValue(AreAnySealsBrokenPage, true)
-                .setValue(AddUnloadingCommentsYesNoPage, true)
+                .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
                 .setValue(UnloadingCommentsPage, unloadingRemark)
 
               val reads  = service.unloadingRemarkReads
@@ -197,7 +197,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                 .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
                 .setValue(CanSealsBeReadPage, false)
                 .setValue(AreAnySealsBrokenPage, false)
-                .setValue(AddUnloadingCommentsYesNoPage, true)
+                .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
                 .setValue(UnloadingCommentsPage, unloadingRemark)
 
               val reads  = service.unloadingRemarkReads
@@ -217,7 +217,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
           val userAnswers = emptyUserAnswers
             .setValue(UnloadingTypePage, UnloadingType.Partially)
             .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
-            .setValue(AddUnloadingCommentsYesNoPage, false)
+            .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
 
           val reads  = service.unloadingRemarkReads
           val result = userAnswers.data.as[UnloadingRemarkType](reads)

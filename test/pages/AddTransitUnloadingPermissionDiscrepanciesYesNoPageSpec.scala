@@ -18,14 +18,14 @@ package pages
 
 import pages.behaviours.PageBehaviours
 
-class AddUnloadingCommentsYesNoPageSpec extends PageBehaviours {
+class AddTransitUnloadingPermissionDiscrepanciesYesNoPageSpec extends PageBehaviours {
 
-  "AddUnloadingCommentsYesNoPage" - {
+  "AddTransitUnloadingPermissionDiscrepanciesYesNoPage" - {
 
-    beRetrievable[Boolean](AddUnloadingCommentsYesNoPage)
+    beRetrievable[Boolean](AddTransitUnloadingPermissionDiscrepanciesYesNoPage)
 
-    beSettable[Boolean](AddUnloadingCommentsYesNoPage)
+    beSettable[Boolean](AddTransitUnloadingPermissionDiscrepanciesYesNoPage)
 
-    beRemovable[Boolean](AddUnloadingCommentsYesNoPage)
+    beRemovable[Boolean](AddTransitUnloadingPermissionDiscrepanciesYesNoPage)
   }
 }

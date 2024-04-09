@@ -59,11 +59,11 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
   )
 
   def unloadingCommentsYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
-    page = AddUnloadingCommentsYesNoPage,
+    page = AddTransitUnloadingPermissionDiscrepanciesYesNoPage,
     formatAnswer = formatAsYesOrNo,
-    prefix = "checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo",
-    id = Some("change-add-unloading-comments"),
-    call = Some(controllers.routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, CheckMode))
+    prefix = "checkYourAnswers.rowHeadings.addTransitUnloadingPermissionDiscrepanciesYesNo",
+    id = Some("change-add-discrepancies"),
+    call = Some(controllers.routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, CheckMode))
   )
 
   def addCommentsYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](

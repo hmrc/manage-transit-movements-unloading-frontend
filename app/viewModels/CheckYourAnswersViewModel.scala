@@ -17,7 +17,7 @@
 package viewModels
 
 import models.UserAnswers
-import pages.AddUnloadingCommentsYesNoPage
+import pages.AddTransitUnloadingPermissionDiscrepanciesYesNoPage
 import play.api.i18n.Messages
 import utils.answersHelpers.CheckYourAnswersHelper
 import viewModels.sections.Section
@@ -59,7 +59,7 @@ object CheckYourAnswersViewModel {
 
       new CheckYourAnswersViewModel(
         Seq(headerSection, commentsSection),
-        userAnswers.get(AddUnloadingCommentsYesNoPage).exists(identity)
+        userAnswers.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage).exists(identity)
       )
     }
   }

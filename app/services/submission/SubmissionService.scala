@@ -93,7 +93,7 @@ class SubmissionService @Inject() (
 
   implicit val unloadingRemarkReads: Reads[UnloadingRemarkType] = {
     for {
-      conform             <- AddUnloadingCommentsYesNoPage.path.read[Boolean].map(!_).map(boolToFlag)
+      conform             <- AddTransitUnloadingPermissionDiscrepanciesYesNoPage.path.read[Boolean].map(!_).map(boolToFlag)
       unloadingCompletion <- UnloadingTypePage.path.read[UnloadingType].map(unloadingTypeToFlag)
       unloadingDate       <- DateGoodsUnloadedPage.path.read[LocalDate].map(localDateToXMLGregorianCalendar)
       canSealsBeRead      <- CanSealsBeReadPage.path.readNullable[Boolean]
