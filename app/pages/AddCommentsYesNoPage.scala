@@ -26,7 +26,7 @@ case object AddCommentsYesNoPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = OtherQuestionsSection.path \ toString
 
-  override def toString: String = "comments"
+  override def toString: String = "addCommentsYesNo"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
