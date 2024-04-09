@@ -24,7 +24,7 @@ import play.api.libs.json.JsPath
 
 case class DocumentReferenceNumberPage(houseConsignmentIndex: Index, previousDocumentIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = PreviousDocumentSection(houseConsignmentIndex, previousDocumentIndex).path
+  override def path: JsPath = PreviousDocumentSection(houseConsignmentIndex, previousDocumentIndex).path \ toString
 
   override def toString: String = "referenceNumber"
 

@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package pages.houseConsignment.previousDocument
+package pages.sections.houseConsignment.index.previousDocument
 
 import models.Index
-import models.reference.DocumentType
-import pages.QuestionPage
-import pages.sections.houseConsignment.index.items.documents.DocumentSection
-import pages.sections.houseConsignment.index.previousDocument.PreviousDocumentSection
-import play.api.libs.json.JsPath
+import pages.sections.{HouseConsignmentSection, Section}
+import play.api.libs.json.{JsArray, JsPath}
 
-case class TypePage(houseConsignmentIndex: Index, previousDocumentIndex: Index) extends QuestionPage[DocumentType] {
+case class PreviousDocumentsSection(houseConsignment: Index) extends Section[JsArray] {
 
-  override def path: JsPath = PreviousDocumentSection(houseConsignmentIndex, previousDocumentIndex).path \ toString
+  override def path: JsPath = HouseConsignmentSection(houseConsignment).path \ toString
 
-  override def toString: String = "type"
+  override def toString: String = "PreviousDocument"
 }

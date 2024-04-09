@@ -18,14 +18,12 @@ package pages.houseConsignment.previousDocument
 
 import models.Index
 import pages.QuestionPage
-import pages.sections.HouseConsignmentSection
-import pages.sections.houseConsignment.index.items.documents.DocumentSection
 import pages.sections.houseConsignment.index.previousDocument.PreviousDocumentSection
 import play.api.libs.json.JsPath
 
 case class AdditionalInformationPage(houseConsignmentIndex: Index, previousDocumentIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = PreviousDocumentSection(houseConsignmentIndex, previousDocumentIndex).path
+  override def path: JsPath = PreviousDocumentSection(houseConsignmentIndex, previousDocumentIndex).path \ toString
 
   override def toString: String = "additionalInformation"
 

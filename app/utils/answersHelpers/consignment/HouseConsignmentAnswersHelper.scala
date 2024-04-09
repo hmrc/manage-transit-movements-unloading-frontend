@@ -19,12 +19,14 @@ package utils.answersHelpers.consignment
 import models.reference.Country
 import models.{Index, Link, RichOptionalJsArray, UserAnswers}
 import pages._
+import pages.houseConsignment.previousDocument.TypePage
 import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
+import pages.sections.houseConsignment.index.previousDocument.{PreviousDocumentSection, PreviousDocumentsSection}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
-import utils.answersHelpers.consignment.houseConsignment.{ConsignmentItemAnswersHelper, DepartureTransportMeansAnswersHelper}
+import utils.answersHelpers.consignment.houseConsignment.{ConsignmentItemAnswersHelper, DepartureTransportMeansAnswersHelper, PreviousDocumentsAnswersHelper}
 import viewModels.sections.Section
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 
@@ -85,6 +87,32 @@ class HouseConsignmentAnswersHelper(
         consigneeAddress
       ).flatten
     )
+
+  def previousDocumentsSection: Section =
+    userAnswers.get(PreviousDocumentsSection(houseConsignmentIndex)).mapWithIndex {
+      case (_, index) =>
+        val helper = new PreviousDocumentsAnswersHelper(userAnswers, houseConsignmentIndex, index)
+
+        val rows = Seq(
+          helper.previousDocumentType,
+          helper.previousDocumentReferenceNumber,
+          helper.previousDocumentInformation
+        ).flatten
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.subsections.previous.document", index.display)),
+          rows = rows,
+          id = Some(s"previousDocument$index")
+        )
+
+    } match {
+      case children =>
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.subsections.previous.documents.parent.heading")),
+          viewLinks = Seq.empty,
+          children = children,
+          id = Some("Previous Documents")
+        )
+    }
 
   def consigneeCountry: Option[SummaryListRow] = buildRowWithNoChangeLink[Country](
     data = userAnswers.get(ConsigneeCountryPage(houseConsignmentIndex)),

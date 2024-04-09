@@ -371,7 +371,8 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
             id = s"houseConsignment$index",
             children = Seq(
               helper.houseConsignmentConsignorSection,
-              helper.houseConsignmentConsigneeSection
+              helper.houseConsignmentConsigneeSection,
+              helper.previousDocumentsSection
             )
           )
       } match {

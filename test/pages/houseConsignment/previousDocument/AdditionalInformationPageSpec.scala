@@ -16,16 +16,16 @@
 
 package pages.houseConsignment.previousDocument
 
-import models.Index
-import models.reference.DocumentType
-import pages.QuestionPage
-import pages.sections.houseConsignment.index.items.documents.DocumentSection
-import pages.sections.houseConsignment.index.previousDocument.PreviousDocumentSection
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case class TypePage(houseConsignmentIndex: Index, previousDocumentIndex: Index) extends QuestionPage[DocumentType] {
+class AdditionalInformationPageSpec extends PageBehaviours {
 
-  override def path: JsPath = PreviousDocumentSection(houseConsignmentIndex, previousDocumentIndex).path \ toString
+  "AdditionalInformationPage" - {
 
-  override def toString: String = "type"
+    beRetrievable[String](AdditionalInformationPage(houseConsignmentIndex, documentIndex))
+
+    beSettable[String](AdditionalInformationPage(houseConsignmentIndex, documentIndex))
+
+    beRemovable[String](AdditionalInformationPage(houseConsignmentIndex, documentIndex))
+  }
 }

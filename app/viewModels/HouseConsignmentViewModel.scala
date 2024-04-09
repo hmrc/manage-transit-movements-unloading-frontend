@@ -41,7 +41,8 @@ object HouseConsignmentViewModel {
         helper.departureTransportMeansSection,
         helper.itemSection,
         helper.houseConsignmentConsignorSection,
-        helper.houseConsignmentConsigneeSection
+        helper.houseConsignmentConsigneeSection,
+        helper.previousDocumentsSection
       )
 
       HouseConsignmentViewModel(sections)
