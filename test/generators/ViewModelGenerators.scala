@@ -114,7 +114,7 @@ trait ViewModelGenerators {
   implicit lazy val arbitraryStaticSection: Arbitrary[StaticSection] = Arbitrary {
     for {
       sectionTitle <- nonEmptyString
-      length       <- Gen.choose(1, maxSeqLength)
+      length       <- Gen.choose(0, maxSeqLength)
       rows         <- Gen.containerOfN[Seq, SummaryListRow](length, arbitrary[SummaryListRow])
       children     <- Gen.containerOf[Seq, AccordionSection](arbitrary[AccordionSection])
     } yield StaticSection(sectionTitle, rows, children)
