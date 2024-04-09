@@ -17,9 +17,10 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import connectors.ReferenceDataConnector
 import generated.HouseConsignmentType04
 import generators.Generators
-import models.Index
+import models.{Index, SecurityType}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -42,6 +43,7 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
   private lazy val mockAdditionalInformationTransformer   = mock[AdditionalInformationTransformer]
   private lazy val mockConsignmentItemTransformer         = mock[ConsignmentItemTransformer]
   private lazy val mockDocumentsTransformer               = mock[DocumentsTransformer]
+  private lazy val mockReferenceDataConnector             = mock[ReferenceDataConnector]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -52,7 +54,8 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
         bind[DepartureTransportMeansTransformer].toInstance(mockDepartureTransportMeansTransformer),
         bind[DocumentsTransformer].toInstance(mockDocumentsTransformer),
         bind[AdditionalInformationTransformer].toInstance(mockAdditionalInformationTransformer),
-        bind[ConsignmentItemTransformer].toInstance(mockConsignmentItemTransformer)
+        bind[ConsignmentItemTransformer].toInstance(mockConsignmentItemTransformer),
+        bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
       )
 
   private case class FakeConsigneeSection(hcIndex: Index) extends QuestionPage[JsObject] {
@@ -115,6 +118,11 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
               .thenReturn {
                 ua => Future.successful(ua.setValue(FakeConsignmentItemSection(hcIndex), Json.obj("foo" -> i.toString)))
               }
+
+            when(mockReferenceDataConnector.getSecurityType(any())(any(), any()))
+              .thenReturn {
+                Future.successful(SecurityType("code", "description"))
+              }
         }
 
         val result = transformer.transform(houseConsignments).apply(emptyUserAnswers).futureValue
@@ -124,6 +132,8 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
             val hcIndex = Index(i)
 
             result.getSequenceNumber(HouseConsignmentSection(hcIndex)) mustBe hc.sequenceNumber
+            result.getValue[JsObject](HouseConsignmentSection(hcIndex), "securityIndicatorFromExportDeclaration") mustBe
+              Json.obj("code" -> "code", "description" -> "description")
             result.getValue(FakeConsigneeSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
             result.getValue(FakeConsignorSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
             result.getValue(FakeDepartureTransportMeansSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)

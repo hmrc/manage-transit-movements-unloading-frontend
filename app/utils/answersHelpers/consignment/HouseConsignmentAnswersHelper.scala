@@ -18,7 +18,8 @@ package utils.answersHelpers.consignment
 
 import models.DocType.Previous
 import models.reference.Country
-import models.{Index, Link, RichOptionalJsArray, UserAnswers}
+import models.{Index, Link, RichOptionalJsArray, SecurityType, UserAnswers}
+import pages.houseConsignment.index.SecurityIndicatorFromExportDeclarationPage
 import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
 import pages.sections.houseConsignment.index
@@ -42,15 +43,13 @@ class HouseConsignmentAnswersHelper(
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
-  def safetyAndSecurityDetails: SummaryListRow =
-    buildRowWithNoChangeLink(
-      prefix = "houseConsignment.securityIndicator",
-      answer = formatAsYesOrNo(
-        userAnswers.ie043Data.Consignment
-          .flatMap(_.HouseConsignment(houseConsignmentIndex.position).securityIndicatorFromExportDeclaration)
-          .contains("1")
-      )
-    )
+  def safetyAndSecurityDetails: Option[SummaryListRow] = getAnswerAndBuildRow[SecurityType](
+    page = SecurityIndicatorFromExportDeclarationPage(houseConsignmentIndex),
+    formatAnswer = x => formatAsText(s"${x.code} - ${x.description}"),
+    prefix = "houseConsignment.securityIndicator",
+    id = None,
+    call = None
+  )
 
   def consignorName: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = ConsignorNamePage(houseConsignmentIndex),

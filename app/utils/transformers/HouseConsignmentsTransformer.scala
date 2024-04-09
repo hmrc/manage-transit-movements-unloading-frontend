@@ -16,8 +16,10 @@
 
 package utils.transformers
 
+import connectors.ReferenceDataConnector
 import generated.HouseConsignmentType04
 import models.{Index, RichPreviousDocuments07, UserAnswers}
+import pages.houseConsignment.index.SecurityIndicatorFromExportDeclarationPage
 import pages.sections.HouseConsignmentSection
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -30,7 +32,8 @@ class HouseConsignmentsTransformer @Inject() (
   departureTransportMeansTransformer: DepartureTransportMeansTransformer,
   documentsTransformer: DocumentsTransformer,
   additionalInformationTransformer: AdditionalInformationTransformer,
-  consignmentItemTransformer: ConsignmentItemTransformer
+  consignmentItemTransformer: ConsignmentItemTransformer,
+  referenceDataConnector: ReferenceDataConnector
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
@@ -53,9 +56,24 @@ class HouseConsignmentsTransformer @Inject() (
                     hcIndex
                   ) andThen
                   additionalInformationTransformer.transform(houseConsignment.AdditionalInformation, hcIndex) andThen
-                  consignmentItemTransformer.transform(houseConsignment.ConsignmentItem, hcIndex)
-
+                  consignmentItemTransformer.transform(houseConsignment.ConsignmentItem, hcIndex) andThen
+                  transformSecurityIndicatorFromExportDeclaration(houseConsignment.securityIndicatorFromExportDeclaration, hcIndex)
               pipeline(userAnswers)
           }
       })
+
+  private def transformSecurityIndicatorFromExportDeclaration(securityIndicatorFromExportDeclaration: Option[String], hcIndex: Index)(implicit
+    hc: HeaderCarrier
+  ): UserAnswers => Future[UserAnswers] = userAnswers =>
+    securityIndicatorFromExportDeclaration match {
+      case Some(securityIndicator) =>
+        referenceDataConnector.getSecurityType(securityIndicator).flatMap {
+          indicator =>
+            val pipeline: UserAnswers => Future[UserAnswers] =
+              set(SecurityIndicatorFromExportDeclarationPage(hcIndex), indicator)
+            pipeline(userAnswers)
+        }
+
+      case None => Future.successful(userAnswers)
+    }
 }

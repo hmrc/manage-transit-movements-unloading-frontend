@@ -21,12 +21,10 @@ import connectors.ReferenceDataConnector
 import generated.ConsignmentType05
 import generators.Generators
 import models.reference.Country
-import models.reference.TransportMode
 import models.reference.TransportMode.InlandMode
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.matchers.must.Matchers.defined
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
 import pages.countryOfDestination.CountryOfDestinationPage

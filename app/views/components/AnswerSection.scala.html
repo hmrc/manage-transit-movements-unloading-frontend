@@ -42,6 +42,8 @@
                         )
                     }
 
+                    @section.children.map(this(_))
+
                     @section.viewLinks.map { link =>
                         <p class="govuk-body">
                             <a class="govuk-link" href=@link.href id="@link.id">
