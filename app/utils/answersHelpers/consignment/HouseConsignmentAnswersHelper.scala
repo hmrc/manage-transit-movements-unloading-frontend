@@ -41,7 +41,7 @@ class HouseConsignmentAnswersHelper(
 
   def safetyAndSecurityDetails: Option[SummaryListRow] = getAnswerAndBuildRow[SecurityType](
     page = SecurityIndicatorFromExportDeclarationPage(houseConsignmentIndex),
-    formatAnswer = x => formatAsText(s"${x.code} - ${x.description}"),
+    formatAnswer = x => formatAsText(x.description),
     prefix = "houseConsignment.securityIndicator",
     id = None,
     call = None

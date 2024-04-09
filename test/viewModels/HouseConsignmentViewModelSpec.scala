@@ -269,7 +269,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         val result            = viewModelProvider.apply(userAnswers, index)
 
         result.section.rows.size mustBe 1
-        result.section.rows.head.value.value mustBe "Code - Description"
+        result.section.rows.head.value.value mustBe "Description"
 
         result.section.children(4) mustBe a[AccordionSection]
         result.section.children(4).sectionTitle.value mustBe "Items"
