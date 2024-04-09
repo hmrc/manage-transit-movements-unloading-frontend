@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package pages
+package pages.sections
 
-import pages.sections.OtherQuestionsSection
-import play.api.libs.json.JsPath
+import play.api.libs.json.{JsObject, JsPath}
 
-case object OtherThingsToReportPage extends QuestionPage[String] {
+case object OtherQuestionsSection extends Section[JsObject] {
 
-  override def path: JsPath = OtherQuestionsSection.path \ toString
+  override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "otherThingsToReport"
+  override def toString: String = "otherQuestions"
 }

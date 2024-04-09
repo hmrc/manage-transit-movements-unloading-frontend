@@ -24,16 +24,12 @@ import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
 import pages.sections.houseConsignment.index
 import pages.sections.houseConsignment.index.additionalInformation.AdditionalInformationListSection
+import pages.sections.houseConsignment.index.additionalReference.AdditionalReferenceListSection
 import pages.{houseConsignment, _}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
-import utils.answersHelpers.consignment.houseConsignment.{
-  ConsignmentItemAnswersHelper,
-  DepartureTransportMeansAnswersHelper,
-  DocumentAnswersHelper,
-  HouseConsignmentAdditionalInformationAnswersHelper
-}
+import utils.answersHelpers.consignment.houseConsignment._
 import viewModels.sections.Section
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 
@@ -115,6 +111,20 @@ class HouseConsignmentAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.houseConsignment.consigneeAddress"
   )
 
+  private val departureTransportMeansAddRemoveLink: Link = Link(
+    id = s"add-remove-departure-transport-means",
+    href = "#", // TODO update when controller added
+    text = messages("houseConsignment.departureTransportMeans.addRemove"),
+    visuallyHidden = messages("houseConsignment.departureTransportMeans.visuallyHidden")
+  )
+
+  private val additionalReferenceAddRemoveLink: Link = Link(
+    id = "add-remove-additional-reference",
+    href = "#", // TODO update when controller added
+    text = messages("additionalReferenceLink.addRemove"),
+    visuallyHidden = messages("additionalReferenceLink.visuallyHidden")
+  )
+
   def departureTransportMeansSection: Section =
     userAnswers.get(DepartureTransportMeansListSection(houseConsignmentIndex)).mapWithIndex {
       case (_, index) =>
@@ -134,6 +144,7 @@ class HouseConsignmentAnswersHelper(
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans.parent.header")),
           children = children,
+          viewLinks = Seq(departureTransportMeansAddRemoveLink),
           id = Some("departureTransportMeans")
         )
     }
@@ -164,6 +175,29 @@ class HouseConsignmentAnswersHelper(
           viewLinks = Seq(documentAddRemoveLink),
           children = children,
           id = Some(s"documents")
+        )
+    }
+
+  def additionalReferencesSection: Section =
+    userAnswers.get(AdditionalReferenceListSection(houseConsignmentIndex)).mapWithIndex {
+      case (_, index) =>
+        val helper = new HouseConsignmentAdditionalReferencesAnswersHelper(userAnswers, houseConsignmentIndex, index)
+        val rows = Seq(
+          helper.referenceType,
+          helper.referenceNumber
+        ).flatten
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.houseConsignment.additionalReference", index.display)),
+          rows = rows,
+          id = Some(s"additionalReference$index")
+        )
+    } match {
+      case children =>
+        AccordionSection(
+          sectionTitle = Some(messages("unloadingFindings.houseConsignment.additionalReference.heading")),
+          viewLinks = Seq(additionalReferenceAddRemoveLink),
+          children = children,
+          id = Some("additionalReferences")
         )
     }
 

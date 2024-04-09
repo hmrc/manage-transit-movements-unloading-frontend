@@ -31,6 +31,7 @@ class HouseConsignmentsTransformer @Inject() (
   consignorTransformer: ConsignorTransformer,
   departureTransportMeansTransformer: DepartureTransportMeansTransformer,
   documentsTransformer: DocumentsTransformer,
+  additionalReferencesTransformer: AdditionalReferencesTransformer,
   additionalInformationTransformer: AdditionalInformationTransformer,
   consignmentItemTransformer: ConsignmentItemTransformer,
   referenceDataConnector: ReferenceDataConnector
@@ -55,6 +56,7 @@ class HouseConsignmentsTransformer @Inject() (
                     houseConsignment.PreviousDocument.toPreviousDocumentType06,
                     hcIndex
                   ) andThen
+                  additionalReferencesTransformer.transform(houseConsignment.AdditionalReference, hcIndex) andThen
                   additionalInformationTransformer.transform(houseConsignment.AdditionalInformation, hcIndex) andThen
                   consignmentItemTransformer.transform(houseConsignment.ConsignmentItem, hcIndex) andThen
                   transformSecurityIndicatorFromExportDeclaration(houseConsignment.securityIndicatorFromExportDeclaration, hcIndex)

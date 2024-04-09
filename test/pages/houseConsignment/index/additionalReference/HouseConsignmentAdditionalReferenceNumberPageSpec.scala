@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package pages.sections
+package pages.houseConsignment.index.additionalReference
 
-import play.api.libs.json.{JsObject, JsPath}
+import pages.behaviours.PageBehaviours
 
-case object UnloadingRemarksSection extends Section[JsObject] {
+class HouseConsignmentAdditionalReferenceNumberPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "HouseConsignmentAdditionalReferenceNumberPage" - {
 
-  override def toString: String = "UnloadingRemark"
+    beRetrievable[String](HouseConsignmentAdditionalReferenceNumberPage(houseConsignmentIndex, additionalReferenceIndex))
+
+    beSettable[String](HouseConsignmentAdditionalReferenceNumberPage(houseConsignmentIndex, additionalReferenceIndex))
+
+    beRemovable[String](HouseConsignmentAdditionalReferenceNumberPage(houseConsignmentIndex, additionalReferenceIndex))
+  }
 }
