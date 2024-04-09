@@ -406,7 +406,7 @@ unloadingFindings.title = Cross-check the transit with this declaration summary
 unloadingFindings.heading = Cross-check the transit with this declaration summary
 unloadingFindings.paragraph = Compare the transit that arrived with the following information to identify any discrepancies.
 
-unloadingFindings.subsections.previous.document = Previous Document {0}
+unloadingFindings.subsections.previous.document = Document {0}
 unloadingFindings.subsections.transportMeans = Departure means of transport {0}
 unloadingFindings.subsections.transportMeans.parent.header = Departure means of transport
 unloadingFindings.subsections.packages.parent.heading = Packages
@@ -506,7 +506,7 @@ unloadingFindings.rowHeadings.totalNetWeight = Total net weight of all items
 unloadingFindings.rowHeadings.houseConsignment.previous.document.type = Type
 unloadingFindings.rowHeadings.houseConsignment.previous.document.reference.number = Reference Number
 unloadingFindings.rowHeadings.houseConsignment.previous.document.additional.information = Additional Information
-unloadingFindings.subsections.previous.documents.parent.heading = Previous Documents
+unloadingFindings.subsections.previous.documents.parent.heading = Documents
 unloadingFindings.subsections.item.parent.heading = Items
 unloadingFindings.subsections.item = Item {0}
 unloadingFindings.rowHeadings.item.description = Description

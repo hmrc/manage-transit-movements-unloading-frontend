@@ -108,7 +108,7 @@ class HouseConsignmentAnswersHelper(
       case children =>
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.subsections.previous.documents.parent.heading")),
-          viewLinks = Seq.empty,
+          viewLinks = Seq(documentsAddRemoveLink),
           children = children,
           id = Some("Previous Documents")
         )
@@ -196,5 +196,13 @@ class HouseConsignmentAnswersHelper(
       href = "#",
       text = messages("itemsLink.addRemove"),
       visuallyHidden = messages("itemsLink.visuallyHidden")
+    )
+
+  def documentsAddRemoveLink: Link =
+    Link(
+      id = "add-remove-documents",
+      href = "#",
+      text = messages("documentsLink.addRemove"),
+      visuallyHidden = messages("documentsLink.visuallyHidden")
     )
 }
