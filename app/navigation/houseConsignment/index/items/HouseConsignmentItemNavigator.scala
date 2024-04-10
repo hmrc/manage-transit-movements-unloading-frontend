@@ -81,6 +81,7 @@ class HouseConsignmentItemNavigator extends Navigator {
         )
     case CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, _) =>
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
+    case AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex) => ua => addAdditionalReferenceYesNoRoute(ua, houseConsignmentIndex, itemIndex)
   }
 
   def addGrossWeightYesNoRoute(ua: UserAnswers, arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Option[Call] =
@@ -110,9 +111,9 @@ class HouseConsignmentItemNavigator extends Navigator {
     ua.get(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex)) map {
       case true =>
         controllers.houseConsignment.index.items.additionalReference.routes.AdditionalReferenceTypeController
-          .onPageLoad(ua.id, NormalMode, houseConsignmentIndex, itemIndex, Index(0))
+          .onPageLoad(ua.id, CheckMode, houseConsignmentIndex, itemIndex, Index(0))
       case false =>
-        controllers.houseConsignment.index.items.routes.AddPackagesYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
+        controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex)
     }
 
   private def addPackagesYesNoRoute(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index): Option[Call] =
