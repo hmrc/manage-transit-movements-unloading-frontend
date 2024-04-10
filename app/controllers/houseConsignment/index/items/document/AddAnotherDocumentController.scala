@@ -68,13 +68,13 @@ class AddAnotherDocumentController @Inject() (
                   .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemsIndex, viewModel.nextIndex)
               )
             case false =>
-              val changeModeIfAlreadyAnswered = request.userAnswers.get(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemsIndex)) match {
+              val checkModeIfAlreadyAnswered = request.userAnswers.get(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemsIndex)) match {
                 case Some(_) => CheckMode
                 case None    => mode
               }
               Redirect(
                 controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
-                  .onPageLoad(arrivalId, houseConsignmentIndex, itemsIndex, changeModeIfAlreadyAnswered)
+                  .onPageLoad(arrivalId, houseConsignmentIndex, itemsIndex, checkModeIfAlreadyAnswered)
               )
           }
         )

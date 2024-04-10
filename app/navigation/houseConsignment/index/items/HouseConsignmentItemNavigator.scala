@@ -17,15 +17,13 @@
 package navigation.houseConsignment.index.items
 
 import com.google.inject.Singleton
-import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
 import controllers.houseConsignment.index.items.routes
-import models.{ArrivalId, Index, Mode, NormalMode, UserAnswers}
+import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, UserAnswers}
 import navigation.Navigator
 import pages._
 import pages.houseConsignment.index.items._
 import pages.houseConsignment.index.items.document.AddDocumentYesNoPage
 import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
-import pages.sections.houseConsignment.index.items.documents.DocumentsSection
 import play.api.mvc.Call
 
 @Singleton
@@ -81,7 +79,7 @@ class HouseConsignmentItemNavigator extends Navigator {
         )
     case CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, _) =>
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
-    case AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex) => ua => addAdditionalReferenceYesNoRoute(ua, houseConsignmentIndex, itemIndex)
+    case AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex) => ua => addAdditionalReferenceYesNoCheckRoute(ua, houseConsignmentIndex, itemIndex)
   }
 
   def addGrossWeightYesNoRoute(ua: UserAnswers, arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Option[Call] =
@@ -108,6 +106,14 @@ class HouseConsignmentItemNavigator extends Navigator {
     }
 
   private def addAdditionalReferenceYesNoRoute(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index): Option[Call] =
+    ua.get(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex)) map {
+      case true =>
+        controllers.houseConsignment.index.items.additionalReference.routes.AdditionalReferenceTypeController
+          .onPageLoad(ua.id, NormalMode, houseConsignmentIndex, itemIndex, Index(0))
+      case false =>
+        controllers.houseConsignment.index.items.routes.AddPackagesYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
+    }
+  private def addAdditionalReferenceYesNoCheckRoute(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index): Option[Call] =
     ua.get(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex)) map {
       case true =>
         controllers.houseConsignment.index.items.additionalReference.routes.AdditionalReferenceTypeController
