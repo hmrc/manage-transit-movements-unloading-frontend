@@ -72,17 +72,11 @@ class SubmissionService @Inject() (
   def messageSequence(eoriNumber: EoriNumber, officeOfDestination: String): MESSAGESequence =
     MESSAGESequence(
       messageSender = eoriNumber.value,
-      messagE_1Sequence2 = MESSAGE_1Sequence(
-        messageRecipient = s"NTA.${officeOfDestination.take(2)}",
-        preparationDateAndTime = dateTimeService.currentDateTime,
-        messageIdentification = messageIdentificationService.randomIdentifier
-      ),
-      messagE_TYPESequence3 = MESSAGE_TYPESequence(
-        messageType = CC044C
-      ),
-      correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence(
-        correlationIdentifier = None
-      )
+      messageRecipient = s"NTA.${officeOfDestination.take(2)}",
+      preparationDateAndTime = dateTimeService.currentDateTime,
+      messageIdentification = messageIdentificationService.randomIdentifier,
+      messageType = CC044C,
+      correlationIdentifier = None
     )
 
   def transitOperationReads(userAnswers: UserAnswers): Reads[TransitOperationType15] =

@@ -15,12 +15,12 @@
  *@
 
 @import viewModels.HouseConsignmentViewModel
-@import views.html.components.{AnswerSections, Button, Heading}
+@import views.html.components.{AnswerSection, Button, Heading}
 
 @this(
     mainTemplate: MainTemplate,
     heading: Heading,
-    answerSections: AnswerSections,
+    answerSection: AnswerSection,
     button: Button,
     formHelper: FormWithCSRF,
     govukSummaryList: GovukSummaryList,
@@ -40,13 +40,8 @@
 
     <p class="govuk-body">@messages("houseConsignment.paragraph")</p>
 
-    @govukSummaryList(
-        SummaryList(
-            rows = Seq(houseConsignmentViewModel.safetyAndSecurityRow)
-        )
-    )
 
-    @answerSections(houseConsignmentViewModel.sections)
+    @answerSection(houseConsignmentViewModel.section)
 
     <div>
         <a class="govuk-button" id="submit" href=@controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId, NormalMode).url>

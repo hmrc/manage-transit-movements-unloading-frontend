@@ -21,22 +21,6 @@ import models.{DynamicAddress, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
-import pages.houseConsignment.index.additionalinformation.{HouseConsignmentAdditionalInformationCodePage, HouseConsignmentAdditionalInformationTextPage}
-import pages.houseConsignment.index.items.additionalReference.AdditionalReferenceTypePage
-import pages.houseConsignment.index.items.additionalinformation.HouseConsignmentItemAdditionalInformationCodePage
-import pages.houseConsignment.index.items.document.DocumentReferenceNumberPage
-import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
-import pages.houseConsignment.index.items.{
-  CombinedNomenclatureCodePage,
-  CommodityCodePage,
-  CustomsUnionAndStatisticsCodePage,
-  DangerousGoodsPage,
-  GrossWeightPage,
-  ItemDescriptionPage,
-  NetWeightPage,
-  ConsigneeIdentifierPage => ItemConsigneeIdentifierPage,
-  ConsigneeNamePage => ItemConsigneeNamePage
-}
 import utils.answersHelpers.AnswersHelperSpecBase
 import viewModels.sections.Section.AccordionSection
 
@@ -218,15 +202,22 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.sectionTitle.value mustBe "Documents"
             result.children.size mustBe 1
 
-            val dtm1 = result.children.head
-            dtm1 mustBe a[AccordionSection]
-            dtm1.sectionTitle.value mustBe "Document 1"
-            dtm1.id.value mustBe "document-1"
-            dtm1.rows.size mustBe 3
+            result.viewLinks.size mustBe 1
+            val addOrRemoveLink = result.viewLinks.head
+            addOrRemoveLink.id mustBe "add-remove-document"
+            addOrRemoveLink.text mustBe "Add or remove document"
+            addOrRemoveLink.visuallyHidden must not be defined
+            addOrRemoveLink.href mustBe "#"
 
-            dtm1.rows.head.value.value mustBe docType.toString
-            dtm1.rows(1).value.value mustBe reference
-            dtm1.rows(2).value.value mustBe additionalInfo
+            val doc1 = result.children.head
+            doc1 mustBe a[AccordionSection]
+            doc1.sectionTitle.value mustBe "Document 1"
+            doc1.id.value mustBe "document-1"
+            doc1.rows.size mustBe 3
+
+            doc1.rows.head.value.value mustBe docType.toString
+            doc1.rows(1).value.value mustBe reference
+            doc1.rows(2).value.value mustBe additionalInfo
         }
       }
     }
@@ -247,6 +238,13 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.sectionTitle.value mustBe "Departure means of transport"
             result.children.size mustBe 1
 
+            result.viewLinks.size mustBe 1
+            val addOrRemoveLink = result.viewLinks.head
+            addOrRemoveLink.id mustBe "add-remove-departure-transport-means"
+            addOrRemoveLink.text mustBe "Add or remove departure means of transport"
+            addOrRemoveLink.visuallyHidden must not be defined
+            addOrRemoveLink.href mustBe "#"
+
             val dtm1 = result.children.head
             dtm1 mustBe a[AccordionSection]
             dtm1.sectionTitle.value mustBe "Departure means of transport 1"
@@ -261,6 +259,8 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
     }
 
     "additionalInformationSections" - {
+      import pages.houseConsignment.index.additionalinformation._
+
       "must generate accordion sections" in {
         forAll(arbitrary[AdditionalInformationCode], nonEmptyString) {
           (code, description) =>
@@ -287,7 +287,49 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       }
     }
 
+    "additionalReferencesSections" - {
+      import pages.houseConsignment.index.additionalReference._
+
+      "must generate accordion sections" in {
+        forAll(arbitrary[AdditionalReferenceType], nonEmptyString) {
+          (code, description) =>
+            val answers = emptyUserAnswers
+              .setValue(HouseConsignmentAdditionalReferenceTypePage(hcIndex, additionalInformationIndex), code)
+              .setValue(HouseConsignmentAdditionalReferenceNumberPage(hcIndex, additionalInformationIndex), description)
+
+            val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
+            val result = helper.additionalReferencesSection
+
+            result mustBe a[AccordionSection]
+            result.sectionTitle.value mustBe "Additional references"
+            result.children.size mustBe 1
+
+            result.viewLinks.size mustBe 1
+            val addOrRemoveLink = result.viewLinks.head
+            addOrRemoveLink.id mustBe "add-remove-additional-reference"
+            addOrRemoveLink.text mustBe "Add or remove additional reference"
+            addOrRemoveLink.visuallyHidden must not be defined
+            addOrRemoveLink.href mustBe "#"
+
+            val additionalInfo1 = result.children.head
+            additionalInfo1 mustBe a[AccordionSection]
+            additionalInfo1.sectionTitle.value mustBe "Additional reference 1"
+            additionalInfo1.id.value mustBe "additionalReference1"
+            additionalInfo1.rows.size mustBe 2
+
+            additionalInfo1.rows.head.value.value mustBe code.toString
+            additionalInfo1.rows(1).value.value mustBe description
+        }
+      }
+    }
+
     "itemSections" - {
+      import pages.houseConsignment.index.items.additionalReference._
+      import pages.houseConsignment.index.items.additionalinformation._
+      import pages.houseConsignment.index.items.document._
+      import pages.houseConsignment.index.items.packages._
+      import pages.houseConsignment.index.items.{ConsigneeIdentifierPage => ItemConsigneeIdentifierPage, ConsigneeNamePage => ItemConsigneeNamePage, _}
+
       "must generate accordion sections" in {
         val description           = Gen.alphaNumStr.sample.value
         val grossWeight           = arbitrary[BigDecimal].sample.value
@@ -322,11 +364,12 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
         val result = helper.itemSection
 
-        result.viewLinks.length mustBe 1
-
-        result.viewLinks.head.href mustBe "#"
-        result.viewLinks.head.id mustBe "add-remove-items"
-        result.viewLinks.head.text mustBe "Add or remove item"
+        result.viewLinks.size mustBe 1
+        val addOrRemoveLink = result.viewLinks.head
+        addOrRemoveLink.id mustBe "add-remove-items"
+        addOrRemoveLink.text mustBe "Add or remove item"
+        addOrRemoveLink.visuallyHidden must not be defined
+        addOrRemoveLink.href mustBe "#"
 
         result mustBe a[AccordionSection]
         result.sectionTitle.value mustBe "Items"

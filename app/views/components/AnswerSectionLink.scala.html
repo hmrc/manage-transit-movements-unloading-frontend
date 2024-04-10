@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import models.Link
 
-case class Link(id: String, text: String, href: String, visuallyHidden: Option[String] = None)
+@this()
+
+@(link: Link)
+
+<p class="govuk-body">
+    <a class="govuk-link" href=@link.href id="@link.id">
+        @link.text @link.visuallyHidden.map { value =>
+            <span class="govuk-visually-hidden">@value</span>
+        }
+    </a>
+</p>

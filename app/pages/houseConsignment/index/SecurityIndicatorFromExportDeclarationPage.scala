@@ -14,6 +14,16 @@
  * limitations under the License.
  */
 
-package models
+package pages.houseConsignment.index
 
-case class Link(id: String, text: String, href: String, visuallyHidden: Option[String] = None)
+import models.{Index, SecurityType}
+import pages.QuestionPage
+import pages.sections.HouseConsignmentSection
+import play.api.libs.json.JsPath
+
+case class SecurityIndicatorFromExportDeclarationPage(houseConsignmentIndex: Index) extends QuestionPage[SecurityType] {
+
+  override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ toString
+
+  override def toString: String = "securityIndicatorFromExportDeclaration"
+}

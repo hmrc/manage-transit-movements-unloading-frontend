@@ -40,7 +40,7 @@ trait PageTransformer {
     *  - something that has been removed in session and;
     *  - something with no information provided from the IE043
     */
-  def setSequenceNumber(section: Section[JsObject], sequenceNumber: String)(implicit ec: ExecutionContext): UserAnswers => Future[UserAnswers] =
+  def setSequenceNumber(section: Section[JsObject], sequenceNumber: BigInt)(implicit ec: ExecutionContext): UserAnswers => Future[UserAnswers] =
     setValue(section, "sequenceNumber", sequenceNumber) andThen
       setValue(section, "removed", false)
 

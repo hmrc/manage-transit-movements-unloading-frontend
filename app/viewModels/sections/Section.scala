@@ -65,15 +65,17 @@ object Section {
     sectionTitle: Option[String] = None,
     rows: Seq[SummaryListRow] = Nil,
     viewLinks: Seq[Link] = Nil,
-    id: Option[String] = None
+    id: Option[String] = None,
+    children: Seq[Section] = Nil
   ) extends Section {
 
-    override def isEmpty: Boolean = rows.isEmpty
-
-    override val children: Seq[Section] = Seq.empty
+    override def isEmpty: Boolean = rows.isEmpty && children.isEmpty
   }
 
   object StaticSection {
+
+    def apply(sectionTitle: String, rows: Seq[SummaryListRow], children: Seq[Section]): StaticSection =
+      new StaticSection(sectionTitle = Some(sectionTitle), rows = rows, children = children)
 
     def apply(sectionTitle: String, rows: Seq[SummaryListRow]): StaticSection =
       new StaticSection(sectionTitle = Some(sectionTitle), rows = rows)
