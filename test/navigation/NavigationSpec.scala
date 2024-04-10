@@ -24,8 +24,6 @@ import models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
-import pages.houseConsignment.index.items.GrossWeightPage
-import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 
 class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -222,6 +220,102 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
       val mode = CheckMode
 
+      "must go from unloading type page to check your answers" in {
+        val userAnswers = emptyUserAnswers.setValue(UnloadingTypePage, UnloadingType.Fully)
+
+        navigator
+          .nextPage(UnloadingTypePage, mode, userAnswers)
+          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+      }
+
+      "must go from date goods unloaded page to check your answers" in {
+        val userAnswers = emptyUserAnswers.setValue(DateGoodsUnloadedPage, arbitraryLocalDate.arbitrary.sample.value)
+
+        navigator
+          .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
+          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+      }
+
+      "must go from can seals be read page to check your answers" in {
+        val userAnswers = emptyUserAnswers.setValue(CanSealsBeReadPage, true)
+
+        navigator
+          .nextPage(CanSealsBeReadPage, mode, userAnswers)
+          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+      }
+
+      "must go from are any seals broken page to check your answers" in {
+        val userAnswers = emptyUserAnswers.setValue(AreAnySealsBrokenPage, false)
+
+        navigator
+          .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
+          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+      }
+
+      "must go from add transit unloading permission discrepancies yes/no page to unloading findings page when true" in {
+        val userAnswers = emptyUserAnswers.setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+
+        navigator
+          .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
+          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(userAnswers.id))
+      }
+
+      "must go from add transit unloading permission discrepancies yes/no page to check your answers page when false" in {
+        val userAnswers = emptyUserAnswers.setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
+
+        navigator
+          .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
+          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+      }
+
+      "must go from add comments yes/no page to unloading comments page when true" in {
+        val userAnswers = emptyUserAnswers.setValue(AddCommentsYesNoPage, true)
+
+        navigator
+          .nextPage(AddCommentsYesNoPage, mode, userAnswers)
+          .mustBe(controllers.routes.UnloadingCommentsController.onPageLoad(userAnswers.id, mode))
+      }
+
+      "must go from add comments yes/no page to check your answers page when false" in {
+        val userAnswers = emptyUserAnswers.setValue(AddCommentsYesNoPage, false)
+
+        navigator
+          .nextPage(AddCommentsYesNoPage, mode, userAnswers)
+          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+      }
+
+      "must go from unloading comments page to check your answers" in {
+        val userAnswers = emptyUserAnswers.setValue(UnloadingCommentsPage, "comments")
+
+        navigator
+          .nextPage(UnloadingCommentsPage, mode, userAnswers)
+          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+      }
+
+      "must go from do you have anything else to report yes/no page to other things to report page when true" in {
+        val userAnswers = emptyUserAnswers.setValue(DoYouHaveAnythingElseToReportYesNoPage, true)
+
+        navigator
+          .nextPage(DoYouHaveAnythingElseToReportYesNoPage, mode, userAnswers)
+          .mustBe(controllers.routes.OtherThingsToReportController.onPageLoad(userAnswers.id, mode))
+      }
+
+      "must go from do you have anything else to report yes/no page to check your answers page when false" in {
+        val userAnswers = emptyUserAnswers.setValue(DoYouHaveAnythingElseToReportYesNoPage, false)
+
+        navigator
+          .nextPage(DoYouHaveAnythingElseToReportYesNoPage, mode, userAnswers)
+          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+      }
+
+      "must go from other things to report page to check your answers" in {
+        val userAnswers = emptyUserAnswers.setValue(OtherThingsToReportPage, "report")
+
+        navigator
+          .nextPage(OtherThingsToReportPage, mode, userAnswers)
+          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+      }
+
       "must go from a page that doesn't exist in the edit route map  to Check Your Answers" in {
 
         case object UnknownPage extends Page
@@ -231,84 +325,6 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             navigator
               .nextPage(UnknownPage, mode, answers)
               .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId))
-        }
-      }
-
-      "must go from add transit unloading permission discrepancies yes no page" - {
-        "to check your answers page if no selected" in {
-
-          val userAnswers = emptyUserAnswers
-            .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
-
-          navigator
-            .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId))
-        }
-        "to additional comments page if yes is selected and no comments found" in {
-
-          val userAnswers = emptyUserAnswers
-            .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
-
-          navigator
-            .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
-            .mustBe(controllers.routes.UnloadingCommentsController.onPageLoad(arrivalId, mode))
-        }
-        "to additional comments page if yes is selected and comments found" in {
-
-          val userAnswers = emptyUserAnswers
-            .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
-            .setValue(UnloadingCommentsPage, "comment")
-
-          navigator
-            .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
-            .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId))
-        }
-        "to session expired controller when no existing answers found" in {
-          navigator
-            .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, emptyUserAnswers)
-            .mustBe(routes.SessionExpiredController.onPageLoad())
-        }
-      }
-
-      "must go from date goods unloaded page to check your answers page" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(DateGoodsUnloadedPage, mode, answers)
-              .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
-        }
-      }
-
-      "must go from Gross mass amount page to check your answers page" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(GrossWeightPage(index, itemIndex), mode, answers)
-              .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
-        }
-      }
-
-      "must go from New Seal Number page to check your answers page" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(SealIdentificationNumberPage(equipmentIndex, sealIndex), mode, answers)
-              .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
-        }
-      }
-
-      "must go from Remove comments page " - {
-        "to check your answers page when the form is submitted" in {
-
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              navigator
-                .nextPage(ConfirmRemoveCommentsPage, mode, answers)
-                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
-          }
         }
       }
     }

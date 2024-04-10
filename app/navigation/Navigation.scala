@@ -65,17 +65,30 @@ class Navigation extends Navigator {
   }
 
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case UnloadingTypePage     => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
+    case DateGoodsUnloadedPage => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
+    case CanSealsBeReadPage    => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
+    case AreAnySealsBrokenPage => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
     case AddTransitUnloadingPermissionDiscrepanciesYesNoPage =>
       ua =>
-        ua.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) match {
-          case Some(true) =>
-            ua.get(UnloadingCommentsPage) match {
-              case Some(_) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
-              case _       => Some(controllers.routes.UnloadingCommentsController.onPageLoad(ua.id, CheckMode))
-            }
-          case Some(false) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
-          case _           => Some(routes.SessionExpiredController.onPageLoad())
+        ua.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) map {
+          case true  => controllers.routes.UnloadingFindingsController.onPageLoad(ua.id)
+          case false => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)
         }
-    case _ => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
+    case AddCommentsYesNoPage =>
+      ua =>
+        ua.get(AddCommentsYesNoPage) map {
+          case true  => controllers.routes.UnloadingCommentsController.onPageLoad(ua.id, CheckMode)
+          case false => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)
+        }
+    case UnloadingCommentsPage => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
+    case DoYouHaveAnythingElseToReportYesNoPage =>
+      ua =>
+        ua.get(DoYouHaveAnythingElseToReportYesNoPage) map {
+          case true  => controllers.routes.OtherThingsToReportController.onPageLoad(ua.id, CheckMode)
+          case false => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)
+        }
+    case OtherThingsToReportPage => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
+    case _                       => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
   }
 }
