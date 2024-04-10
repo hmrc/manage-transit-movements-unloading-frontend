@@ -31,7 +31,7 @@ class GoodsMeasureTransformerSpec extends SpecBase with AppWithDefaultMockFixtur
     "when goods measure defined" in {
       forAll(arbitrary[GoodsMeasureType03]) {
         goodsMeasure =>
-          val result = transformer.transform(Some(goodsMeasure), hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
+          val result = transformer.transform(goodsMeasure, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
 
           result.getValue(GrossWeightPage(hcIndex, itemIndex)) mustBe goodsMeasure.grossMass
           result.get(NetWeightPage(hcIndex, itemIndex)) mustBe goodsMeasure.netMass.map(_.toDouble)
@@ -39,7 +39,7 @@ class GoodsMeasureTransformerSpec extends SpecBase with AppWithDefaultMockFixtur
     }
 
     "when goods measure undefined" in {
-      val result = transformer.transform(None, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
+      val result = transformer.transform(null, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
 
       result.get(GrossWeightPage(hcIndex, itemIndex)) must not be defined
       result.get(NetWeightPage(hcIndex, itemIndex)) must not be defined
