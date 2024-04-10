@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package pages
+package pages.houseConsignment.index
 
-import generated.CC043CType
-import play.api.libs.json.{__, Reads}
-import queries.{Gettable, Settable}
+import models.Index
+import models.reference.Country
+import pages.QuestionPage
+import pages.sections.ItemsSection
+import play.api.libs.json.JsPath
 
-trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] {
+case class CountryOfDestinationPage(houseConsignment: Index) extends QuestionPage[Country] {
 
-  def valueInIE043(ie043: CC043CType): Option[A] = None
+  override def path: JsPath = ItemsSection(houseConsignment).path \ toString
 
-  def readNullable(implicit reads: Reads[A]): CC043CType => Reads[Option[A]] = ie043 => {
-    (__ \ this.toString).readNullable[A].map {
-      case Some(value) if !valueInIE043(ie043).contains(value) => Some(value)
-      case _                                                   => None
-    }
-  }
+  override def toString: String = "countryOfDestination"
 }

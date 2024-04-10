@@ -66,17 +66,11 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
         result mustBe MESSAGESequence(
           messageSender = eoriNumber.value,
-          messagE_1Sequence2 = MESSAGE_1Sequence(
-            messageRecipient = "NTA.GB",
-            preparationDateAndTime = XMLCalendar("2020-01-01T09:30:00"),
-            messageIdentification = "foo"
-          ),
-          messagE_TYPESequence3 = MESSAGE_TYPESequence(
-            messageType = CC044C
-          ),
-          correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence(
-            correlationIdentifier = None
-          )
+          messageRecipient = "NTA.GB",
+          preparationDateAndTime = XMLCalendar("2020-01-01T09:30:00"),
+          messageIdentification = "foo",
+          messageType = CC044C,
+          correlationIdentifier = None
         )
       }
 
@@ -85,17 +79,11 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
         result mustBe MESSAGESequence(
           messageSender = eoriNumber.value,
-          messagE_1Sequence2 = MESSAGE_1Sequence(
-            messageRecipient = "NTA.XI",
-            preparationDateAndTime = XMLCalendar("2020-01-01T09:30:00"),
-            messageIdentification = "foo"
-          ),
-          messagE_TYPESequence3 = MESSAGE_TYPESequence(
-            messageType = CC044C
-          ),
-          correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence(
-            correlationIdentifier = None
-          )
+          messageRecipient = "NTA.XI",
+          preparationDateAndTime = XMLCalendar("2020-01-01T09:30:00"),
+          messageIdentification = "foo",
+          messageType = CC044C,
+          correlationIdentifier = None
         )
       }
     }
@@ -278,11 +266,11 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       import pages.sections.{SealSection, TransportEquipmentSection}
       import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 
-      val sequenceNumber                = Gen.alphaNumStr.sample.value
+      val sequenceNumber                = arbitrary[BigInt].sample.value
       val containerIdentificationNumber = Gen.option(Gen.alphaNumStr).sample.value
-      val sealSequenceNumber            = Gen.alphaNumStr.sample.value
+      val sealSequenceNumber            = arbitrary[BigInt].sample.value
       val sealIdentifier                = Gen.alphaNumStr.sample.value
-      val goodsReferenceSequenceNumber  = Gen.alphaNumStr.sample.value
+      val goodsReferenceSequenceNumber  = arbitrary[BigInt].sample.value
       val declarationGoodsItemNumber    = arbitrary[BigInt].sample.value
 
       val userAnswers = emptyUserAnswers

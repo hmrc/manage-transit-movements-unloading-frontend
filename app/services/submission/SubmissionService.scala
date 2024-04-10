@@ -72,17 +72,11 @@ class SubmissionService @Inject() (
   def messageSequence(eoriNumber: EoriNumber, officeOfDestination: String): MESSAGESequence =
     MESSAGESequence(
       messageSender = eoriNumber.value,
-      messagE_1Sequence2 = MESSAGE_1Sequence(
-        messageRecipient = s"NTA.${officeOfDestination.take(2)}",
-        preparationDateAndTime = dateTimeService.currentDateTime,
-        messageIdentification = messageIdentificationService.randomIdentifier
-      ),
-      messagE_TYPESequence3 = MESSAGE_TYPESequence(
-        messageType = CC044C
-      ),
-      correlatioN_IDENTIFIERSequence4 = CORRELATION_IDENTIFIERSequence(
-        correlationIdentifier = None
-      )
+      messageRecipient = s"NTA.${officeOfDestination.take(2)}",
+      preparationDateAndTime = dateTimeService.currentDateTime,
+      messageIdentification = messageIdentificationService.randomIdentifier,
+      messageType = CC044C,
+      correlationIdentifier = None
     )
 
   def transitOperationReads(userAnswers: UserAnswers): Reads[TransitOperationType15] = {
@@ -147,7 +141,7 @@ class SubmissionService @Inject() (
 
     def sealReads(sealIndex: Index): Reads[SealType02] =
       for {
-        sequenceNumber <- (__ \ SequenceNumber).read[String]
+        sequenceNumber <- (__ \ SequenceNumber).read[BigInt]
         identifier     <- (__ \ SealIdentificationNumberPage(index, sealIndex).toString).read[String]
       } yield SealType02(
         sequenceNumber = sequenceNumber,
@@ -156,7 +150,7 @@ class SubmissionService @Inject() (
 
     def goodsReferenceReads(goodsReferenceIndex: Index): Reads[GoodsReferenceType01] =
       for {
-        sequenceNumber             <- (__ \ SequenceNumber).read[String]
+        sequenceNumber             <- (__ \ SequenceNumber).read[BigInt]
         declarationGoodsItemNumber <- (__ \ ItemPage(index, goodsReferenceIndex).toString).read[BigInt]
       } yield GoodsReferenceType01(
         sequenceNumber = sequenceNumber,
@@ -164,7 +158,7 @@ class SubmissionService @Inject() (
       )
 
     for {
-      sequenceNumber                <- (__ \ SequenceNumber).read[String]
+      sequenceNumber                <- (__ \ SequenceNumber).read[BigInt]
       containerIdentificationNumber <- (__ \ ContainerIdentificationNumberPage(index).toString).readNullable[String]
       seals                         <- (__ \ SealsSection(index).toString).readArray[SealType02](sealReads)
       goodsReferences               <- (__ \ ItemsSection(index).toString).readArray[GoodsReferenceType01](goodsReferenceReads)

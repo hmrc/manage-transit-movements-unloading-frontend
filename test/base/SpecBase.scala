@@ -101,8 +101,8 @@ trait SpecBase
     def removeValue(page: QuestionPage[_]): UserAnswers =
       userAnswers.remove(page).success.value
 
-    def getSequenceNumber(section: Section[JsObject]): String =
-      getValue[JsString](section, SequenceNumber).value
+    def getSequenceNumber(section: Section[JsObject]): BigInt =
+      getValue[JsNumber](section, SequenceNumber).value.toBigInt
 
     def getValue[A <: JsValue](section: Section[JsObject], key: String)(implicit reads: Reads[A]): A =
       userAnswers.data.transform((section.path \ key).json.pick[A]).get
@@ -110,7 +110,7 @@ trait SpecBase
     def setRemoved(section: Section[JsObject]): UserAnswers =
       setValue(section, Removed, true)
 
-    def setSequenceNumber(section: Section[JsObject], sequenceNumber: String): UserAnswers =
+    def setSequenceNumber(section: Section[JsObject], sequenceNumber: BigInt): UserAnswers =
       setValue(section, SequenceNumber, sequenceNumber)
 
     def setValue[T](section: Section[JsObject], key: String, value: T)(implicit writes: Writes[T]): UserAnswers =
