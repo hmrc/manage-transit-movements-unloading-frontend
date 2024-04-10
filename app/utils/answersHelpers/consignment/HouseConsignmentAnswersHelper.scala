@@ -114,15 +114,13 @@ class HouseConsignmentAnswersHelper(
   private val departureTransportMeansAddRemoveLink: Link = Link(
     id = s"add-remove-departure-transport-means",
     href = "#", // TODO update when controller added
-    text = messages("houseConsignment.departureTransportMeans.addRemove"),
-    visuallyHidden = messages("houseConsignment.departureTransportMeans.visuallyHidden")
+    text = messages("houseConsignment.departureTransportMeans.addRemove")
   )
 
   private val additionalReferenceAddRemoveLink: Link = Link(
     id = "add-remove-additional-reference",
     href = "#", // TODO update when controller added
-    text = messages("additionalReferenceLink.addRemove"),
-    visuallyHidden = messages("additionalReferenceLink.visuallyHidden")
+    text = messages("additionalReferenceLink.addRemove")
   )
 
   def departureTransportMeansSection: Section =
@@ -268,15 +266,13 @@ class HouseConsignmentAnswersHelper(
     Link(
       id = s"add-remove-document",
       href = "#",
-      text = messages("documentLink.addRemove"),
-      visuallyHidden = messages("documentLink.visuallyHidden")
+      text = messages("documentLink.addRemove")
     )
 
   def itemsAddRemoveLink: Link =
     Link(
       id = "add-remove-items",
       href = "#",
-      text = messages("itemsLink.addRemove"),
-      visuallyHidden = messages("itemsLink.visuallyHidden")
+      text = messages("itemsLink.addRemove")
     )
 }
