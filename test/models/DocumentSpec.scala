@@ -21,6 +21,7 @@ import generated._
 import models.DocType.{Previous, Support, Transport}
 import models.Document._
 import models.reference.DocumentType
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
@@ -28,7 +29,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks {
 
   "apply" - {
     "must convert SupportingDocumentType02 to SupportingDocument" in {
-      forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr, Gen.option(Gen.alphaNumStr), Gen.alphaNumStr) {
+      forAll(arbitrary[BigInt], Gen.alphaNumStr, Gen.alphaNumStr, Gen.option(Gen.alphaNumStr), Gen.alphaNumStr) {
         (sequenceNumber, typeValue, referenceNumber, complementOfInformation, description) =>
           val ie043Document = SupportingDocumentType02(
             sequenceNumber = sequenceNumber,
@@ -55,7 +56,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks {
     }
 
     "must convert TransportDocumentType02 to TransportDocument" in {
-      forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
+      forAll(arbitrary[BigInt], Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
         (sequenceNumber, typeValue, referenceNumber, description) =>
           val ie043Document = TransportDocumentType02(
             sequenceNumber = sequenceNumber,
@@ -80,7 +81,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks {
     }
 
     "must convert PreviousDocumentType06 to PreviousDocumentType" in {
-      forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr, Gen.option(Gen.alphaNumStr), Gen.alphaNumStr) {
+      forAll(arbitrary[BigInt], Gen.alphaNumStr, Gen.alphaNumStr, Gen.option(Gen.alphaNumStr), Gen.alphaNumStr) {
         (sequenceNumber, typeValue, referenceNumber, complementOfInformation, description) =>
           val ie043Document = PreviousDocumentType06(
             sequenceNumber = sequenceNumber,
@@ -107,7 +108,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks {
     }
 
     "must convert PreviousDocumentType04 to PreviousDocumentType" in {
-      forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr, Gen.option(Gen.alphaNumStr), Gen.option(Gen.alphaNumStr), Gen.alphaNumStr) {
+      forAll(arbitrary[BigInt], Gen.alphaNumStr, Gen.alphaNumStr, Gen.option(arbitrary[BigInt]), Gen.option(Gen.alphaNumStr), Gen.alphaNumStr) {
         (sequenceNumber, typeValue, referenceNumber, goodsItemNumber, complementOfInformation, description) =>
           val ie043Document = PreviousDocumentType04(
             sequenceNumber = sequenceNumber,
