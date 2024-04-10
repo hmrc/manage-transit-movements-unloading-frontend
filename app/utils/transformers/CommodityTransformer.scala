@@ -39,7 +39,7 @@ class CommodityTransformer @Inject() (
               set(CommodityCodePage(hcIndex, itemIndex), commodityCode.map(_.harmonizedSystemSubHeadingCode)) andThen
               set(CombinedNomenclatureCodePage(hcIndex, itemIndex), commodityCode.flatMap(_.combinedNomenclatureCode)) andThen
               dangerousGoodsTransformer.transform(dangerousGoods, hcIndex, itemIndex) andThen
-              goodsMeasureTransformer.transform(goodsMeasure, hcIndex, itemIndex)
+              goodsMeasureTransformer.transform(Some(goodsMeasure), hcIndex, itemIndex)
 
           pipeline(userAnswers)
       }
