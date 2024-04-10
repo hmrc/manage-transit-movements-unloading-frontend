@@ -473,9 +473,6 @@ unloadingFindings.rowHeadings.sealIdentifier.change.hidden = seal {0} for transp
 unloadingFindings.rowHeadings.containerIdentificationNumber.change.hidden = container identification number for transport equipment {0}
 unloadingFindings.rowHeadings.consignment.item.change.hidden = item {0} for transport equipment {1}
 
-unloadingFindings.rowHeadings.vehicleNationality = Registered country
-unloadingFindings.rowHeadings.vehicleNationality.change.hidden = registered country
-
 unloadingFindings.subsections.transportEquipment = Transport equipment {0}
 unloadingFindings.subsections.transportEquipment.parent.heading = Transport equipment
 unloadingFindings.subsections.seals = Seals

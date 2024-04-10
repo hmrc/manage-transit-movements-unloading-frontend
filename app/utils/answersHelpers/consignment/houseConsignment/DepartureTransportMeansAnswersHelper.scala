@@ -37,7 +37,8 @@ class DepartureTransportMeansAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "checkYourAnswers.departureMeansOfTransport.identification",
     id = None,
-    call = Some(Call("GET", "#")) // TODO add link after controller created
+    call = Some(Call("GET", "#")), // TODO add link after controller created
+    args = transportMeansIndex.display
   )
 
   def transportMeansIDNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
@@ -45,15 +46,16 @@ class DepartureTransportMeansAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "checkYourAnswers.departureMeansOfTransport.identificationNumber",
     id = None,
-    call = Some(Call("GET", "#")) // TODO add link after controller created
+    call = Some(Call("GET", "#")), // TODO add link after controller created
+    args = transportMeansIndex.display
   )
 
   def buildVehicleNationalityRow: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
     page = DepartureTransportMeansCountryPage(houseConsignmentIndex, transportMeansIndex),
     formatAnswer = x => Text(x.description),
-    prefix = "unloadingFindings.rowHeadings.vehicleNationality",
+    prefix = "checkYourAnswers.departureMeansOfTransport.country",
     id = None,
     call = Some(Call("GET", "#")), // TODO add link after controller created
-    args = Seq.empty
+    args = transportMeansIndex.display
   )
 }

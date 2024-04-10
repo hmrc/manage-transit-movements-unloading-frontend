@@ -48,6 +48,7 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
               result.value.value mustBe value.description
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
+              action.visuallyHiddenText.value mustBe "identification type for departure means of transport 1"
               action.href mustBe "#"
           }
         }
@@ -76,6 +77,7 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
               result.value.value mustBe value
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
+              action.visuallyHiddenText.value mustBe "identification number for departure means of transport 1"
               action.href mustBe "#"
           }
         }
@@ -104,6 +106,7 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
               result.value.value mustBe value.description
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
+              action.visuallyHiddenText.value mustBe "registered country for departure means of transport 1"
               action.href mustBe "#"
           }
         }
