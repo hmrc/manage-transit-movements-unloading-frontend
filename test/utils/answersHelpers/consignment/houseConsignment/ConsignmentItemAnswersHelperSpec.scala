@@ -17,7 +17,7 @@
 package utils.answersHelpers.consignment.houseConsignment
 
 import models.DocType.Previous
-import models.reference.{AdditionalReferenceType, Country, DocumentType}
+import models.reference.{AdditionalReferenceType, Country, DocumentType, PackageType}
 import models.{CheckMode, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -371,6 +371,54 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
             result.rows.size mustBe 2
             result.rows.head.value.value mustBe value1
             result.rows(1).value.value mustBe value2
+        }
+      }
+    }
+
+    "packagingSection" - {
+      import pages.houseConsignment.index.items.packages._
+      "must generate accordion sections" in {
+        forAll(arbitrary[PackageType], arbitrary[BigInt], nonEmptyString) {
+          (packageType, quantity, shippingMark) =>
+            val answers = emptyUserAnswers
+              .setValue(PackageTypePage(hcIndex, itemIndex, Index(0)), packageType)
+              .setValue(NumberOfPackagesPage(hcIndex, itemIndex, Index(0)), quantity)
+              .setValue(PackageShippingMarkPage(hcIndex, itemIndex, Index(0)), shippingMark)
+              .setValue(PackageTypePage(hcIndex, itemIndex, Index(1)), packageType)
+              .setValue(NumberOfPackagesPage(hcIndex, itemIndex, Index(1)), quantity)
+              .setValue(PackageShippingMarkPage(hcIndex, itemIndex, Index(1)), shippingMark)
+              .setValue(PackageTypePage(hcIndex, itemIndex, Index(2)), packageType)
+              .setValue(NumberOfPackagesPage(hcIndex, itemIndex, Index(2)), quantity)
+              .setValue(PackageShippingMarkPage(hcIndex, itemIndex, Index(2)), shippingMark)
+
+            val helper = new ConsignmentItemAnswersHelper(answers, hcIndex, itemIndex)
+            val result = helper.packageSection
+
+            result mustBe a[AccordionSection]
+            result.sectionTitle.value mustBe "Packages"
+            result.id.value mustBe "item-1-packages"
+
+            val addOrRemove = result.viewLinks.head
+            addOrRemove.id mustBe "add-remove-item-1-packaging"
+            addOrRemove.text mustBe "Add or remove package"
+            addOrRemove.href mustBe controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
+              .url
+
+            result.children.head mustBe a[AccordionSection]
+            result.children.head.sectionTitle.value mustBe "Package 1"
+            result.children.head.id.value mustBe "item-1-package-1"
+            result.children.head.rows.size mustBe 3
+
+            result.children(1) mustBe a[AccordionSection]
+            result.children(1).sectionTitle.value mustBe "Package 2"
+            result.children(1).id.value mustBe "item-1-package-2"
+            result.children(1).rows.size mustBe 3
+
+            result.children(2) mustBe a[AccordionSection]
+            result.children(2).sectionTitle.value mustBe "Package 3"
+            result.children(2).id.value mustBe "item-1-package-3"
+            result.children(2).rows.size mustBe 3
         }
       }
     }

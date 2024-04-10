@@ -16,14 +16,14 @@
 
 package pages
 
-import pages.sections.UnloadingRemarksSection
+import pages.sections.OtherQuestionsSection
 import play.api.libs.json.JsPath
 
 import java.time.LocalDate
 
 case object DateGoodsUnloadedPage extends QuestionPage[LocalDate] {
 
-  override def path: JsPath = UnloadingRemarksSection.path \ toString
+  override def path: JsPath = OtherQuestionsSection.path \ toString
 
   override def toString: String = "unloadingDate"
 }

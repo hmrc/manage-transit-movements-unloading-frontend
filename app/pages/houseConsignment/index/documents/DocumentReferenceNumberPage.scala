@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package pages.sections
+package pages.houseConsignment.index.documents
 
-import play.api.libs.json.{JsObject, JsPath}
+import models.Index
+import pages.QuestionPage
+import pages.sections.houseConsignment.index.documents.DocumentSection
+import play.api.libs.json.JsPath
 
-case object UnloadingRemarksSection extends Section[JsObject] {
+case class DocumentReferenceNumberPage(houseConsignmentIndex: Index, documentIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = DocumentSection(houseConsignmentIndex, documentIndex).path \ toString
 
-  override def toString: String = "UnloadingRemark"
+  override def toString: String = "referenceNumber"
+
 }

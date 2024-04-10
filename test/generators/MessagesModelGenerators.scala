@@ -18,6 +18,7 @@ package generators
 
 import generated._
 import models.Coordinates
+import models.reference.TransportMode.InlandMode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen.const
 import org.scalacheck.{Arbitrary, Gen}
@@ -190,10 +191,11 @@ trait MessagesModelGenerators {
         consignee               <- Gen.option(arbitrary[ConsigneeType04])
         departureTransportMeans <- arbitrary[Seq[DepartureTransportMeansType02]]
         consignmentItems        <- arbitrary[Seq[ConsignmentItemType04]]
+        securityIndicator       <- Gen.some(nonEmptyString)
       } yield HouseConsignmentType04(
         sequenceNumber = sequenceNumber,
         grossMass = grossMass,
-        securityIndicatorFromExportDeclaration = None,
+        securityIndicatorFromExportDeclaration = securityIndicator,
         Consignor = consignor,
         Consignee = consignee,
         DepartureTransportMeans = departureTransportMeans,
@@ -632,5 +634,10 @@ trait MessagesModelGenerators {
   implicit lazy val arbitraryFlag: Arbitrary[Flag] =
     Arbitrary {
       Gen.oneOf(Number0, Number1)
+    }
+
+  implicit lazy val arbitraryInlandMode: Arbitrary[InlandMode] =
+    Arbitrary {
+      Gen.oneOf(InlandMode("1", "Maritime Transport"), InlandMode("2", "Rail Transport"))
     }
 }

@@ -117,7 +117,7 @@ class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefau
       val jsonBeforeEverything = Json
         .parse(s"""
            |{
-           |  "UnloadingRemark" : {
+           |  "otherQuestions" : {
            |    "foo" : "bar"
            |  },
            |  "someDummyTransformedData" : {
@@ -152,7 +152,7 @@ class AddUnloadingCommentsYesNoControllerSpec extends SpecBase with AppWithDefau
            |  "someDummyTransformedData" : {
            |    "foo" : "bar"
            |  },
-           |  "UnloadingRemark" : {
+           |  "otherQuestions" : {
            |    "foo" : "bar",
            |    "addUnloadingCommentsYesNo" : false
            |  }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-package pages.houseConsignment.index.items.additionalinformation
+package pages.sections.houseConsignment.index.documents
 
-import pages.behaviours.PageBehaviours
+import models.Index
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-class HouseConsignmentAdditionalInformationTextPageSpec extends PageBehaviours {
+case class DocumentSection(houseConsignmentIndex: Index, documentIndex: Index) extends Section[JsObject] {
 
-  "HouseConsignmentAdditionalInformationTextPage" - {
-
-    beRetrievable[String](HouseConsignmentAdditionalInformationTextPage(index, index, index))
-
-    beSettable[String](HouseConsignmentAdditionalInformationTextPage(index, index, index))
-
-    beRemovable[String](HouseConsignmentAdditionalInformationTextPage(index, index, index))
-  }
+  override def path: JsPath = DocumentsSection(houseConsignmentIndex).path \ documentIndex.position
 }

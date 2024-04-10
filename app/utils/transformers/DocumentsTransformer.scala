@@ -89,6 +89,36 @@ class DocumentsTransformer @Inject() (
     }
   }
 
+  def transform(
+    supportingDocuments: Seq[SupportingDocumentType02],
+    transportDocuments: Seq[TransportDocumentType02],
+    previousDocuments: Seq[PreviousDocumentType06],
+    hcIndex: Index
+  )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
+    import pages.houseConsignment.index.documents._
+    import pages.sections.houseConsignment.index.documents.DocumentSection
+
+    genericTransform(supportingDocuments, transportDocuments, previousDocuments) {
+      case (document, documentIndex) =>
+        document match {
+          case Document.SupportingDocument(sequenceNumber, documentType, referenceNumber, complementOfInformation) =>
+            setSequenceNumber(DocumentSection(hcIndex, documentIndex), sequenceNumber) andThen
+              set(DocumentReferenceNumberPage(hcIndex, documentIndex), referenceNumber) andThen
+              set(AdditionalInformationPage(hcIndex, documentIndex), complementOfInformation) andThen
+              set(TypePage(hcIndex, documentIndex), documentType)
+          case Document.TransportDocument(sequenceNumber, documentType, referenceNumber) =>
+            setSequenceNumber(DocumentSection(hcIndex, documentIndex), sequenceNumber) andThen
+              set(DocumentReferenceNumberPage(hcIndex, documentIndex), referenceNumber) andThen
+              set(TypePage(hcIndex, documentIndex), documentType)
+          case Document.PreviousDocument(sequenceNumber, documentType, referenceNumber, complementOfInformation) =>
+            setSequenceNumber(DocumentSection(hcIndex, documentIndex), sequenceNumber) andThen
+              set(DocumentReferenceNumberPage(hcIndex, documentIndex), referenceNumber) andThen
+              set(AdditionalInformationPage(hcIndex, documentIndex), complementOfInformation) andThen
+              set(TypePage(hcIndex, documentIndex), documentType)
+        }
+    }
+  }
+
   private def genericTransform(
     supportingDocuments: Seq[SupportingDocumentType02],
     transportDocuments: Seq[TransportDocumentType02],

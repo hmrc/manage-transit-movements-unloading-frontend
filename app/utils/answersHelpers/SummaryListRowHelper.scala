@@ -16,6 +16,7 @@
 
 package utils.answersHelpers
 
+import generated.{Flag, Number1}
 import models.Identification
 import models.reference.{Country, PackageType}
 import play.api.i18n.Messages
@@ -39,13 +40,10 @@ class SummaryListRowHelper(implicit messages: Messages) {
       }
     }.toText
 
-  def formatAsBoolean(answer: String): Content =
-    messages {
-      answer match {
-        case "1" => messages("site.yes")
-        case "0" => messages("site.no")
-      }
-    }.toText
+  def formatAsYesOrNo(answer: Flag): Content =
+    formatAsYesOrNo {
+      answer == Number1
+    }
 
   protected def formatAsText[T](answer: T): Content           = s"$answer".toText
   protected def formatAsPackage(answer: PackageType): Content = s"${answer.asDescription}".toText
