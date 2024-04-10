@@ -169,7 +169,7 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
                 status(result) mustEqual SEE_OTHER
 
                 redirectLocation(result).value mustEqual
-                  controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+                  controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId, NormalMode).url
             }
           }
 

@@ -17,6 +17,7 @@
 package views
 
 import generators.Generators
+import models.NormalMode
 import play.twirl.api.HtmlFormat
 import viewModels.HouseConsignmentViewModel
 import views.behaviours.DetailsListViewBehaviours
@@ -43,7 +44,7 @@ class HouseConsignmentViewSpec extends DetailsListViewBehaviours with Generators
 
   behave like pageWithSections()
 
-  behave like pageWithLinkAsButton("Back to summary", controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url)
+  behave like pageWithLinkAsButton("Back to summary", controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId, NormalMode).url)
 
   "must render section titles when rows are non-empty" - {
     sections.foreach(_.sectionTitle.map {

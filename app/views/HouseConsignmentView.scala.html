@@ -49,7 +49,7 @@
     @answerSections(houseConsignmentViewModel.sections)
 
     <div>
-        <a class="govuk-button" id="submit" href=@controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url>
+        <a class="govuk-button" id="submit" href=@controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId, NormalMode).url>
         @messages("site.backToSummary")
         </a>
     </div>

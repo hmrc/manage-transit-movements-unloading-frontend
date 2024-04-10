@@ -69,7 +69,7 @@ class AddAnotherSealController @Inject() (
                 case NormalMode =>
                   Redirect(routes.ApplyAnItemYesNoController.onSubmit(arrivalId, equipmentIndex, equipmentMode))
                 case CheckMode =>
-                  Redirect(UnloadingFindingsController.onPageLoad(arrivalId))
+                  Redirect(UnloadingFindingsController.onPageLoad(arrivalId, NormalMode))
               }
           }
         )

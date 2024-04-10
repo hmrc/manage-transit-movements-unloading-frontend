@@ -35,7 +35,7 @@ class TransportEquipmentNavigator extends Navigator {
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case ContainerIdentificationNumberPage(_) => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
+    case ContainerIdentificationNumberPage(_) => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id, NormalMode))
     case ApplyAnItemYesNoPage(equipmentIndex) => ua => applyAnItemYesNoRoute(ua, ua.id, CheckMode, equipmentIndex)
 
   }

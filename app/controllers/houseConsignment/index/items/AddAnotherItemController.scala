@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.{ArrivalId, Index, Mode}
+import models.{ArrivalId, Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -65,7 +65,7 @@ class AddAnotherItemController @Inject() (
                 controllers.houseConsignment.index.items.routes.DescriptionController.onPageLoad(arrivalId, mode, houseConsignmentIndex, viewModel.nextIndex)
               )
             case false =>
-              Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+              Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId, NormalMode))
           }
         )
   }

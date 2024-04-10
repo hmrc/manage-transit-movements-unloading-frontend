@@ -141,7 +141,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+          redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId, NormalMode).url
         }
       }
     }
@@ -160,7 +160,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+        redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId, NormalMode).url
       }
     }
 

@@ -71,7 +71,7 @@ class ApplyAnotherItemController @Inject() (
                   case NormalMode =>
                     Redirect(controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, equipmentMode))
                   case CheckMode =>
-                    Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+                    Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId, NormalMode))
                 }
             }
           )

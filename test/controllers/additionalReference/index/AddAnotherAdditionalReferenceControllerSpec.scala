@@ -142,7 +142,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+          redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId, NormalMode).url
         }
       }
     }
@@ -161,7 +161,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+        redirectLocation(result).value mustEqual controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId, NormalMode).url
       }
     }
 

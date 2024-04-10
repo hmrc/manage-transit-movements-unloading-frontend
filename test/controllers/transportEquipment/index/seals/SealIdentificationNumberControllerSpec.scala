@@ -142,7 +142,7 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
             status(result) mustEqual SEE_OTHER
 
             redirectLocation(result).value mustEqual
-              controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+              controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId, NormalMode).url
         }
       }
     }

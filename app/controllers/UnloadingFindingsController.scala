@@ -18,7 +18,7 @@ package controllers
 
 import com.google.inject.Inject
 import controllers.actions.Actions
-import models.ArrivalId
+import models.{ArrivalId, Mode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -37,7 +37,7 @@ class UnloadingFindingsController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
+  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId) {
       implicit request =>
         val viewModel = viewModelProvider.apply(request.userAnswers)

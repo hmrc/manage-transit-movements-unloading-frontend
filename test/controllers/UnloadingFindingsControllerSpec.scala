@@ -18,6 +18,7 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
+import models.NormalMode
 import models.P5.ArrivalMessageType.UnloadingPermission
 import models.P5.MessageMetaData
 import org.mockito.ArgumentMatchers.any
@@ -38,7 +39,7 @@ class UnloadingFindingsControllerSpec extends SpecBase with AppWithDefaultMockFi
 
   private val mockUnloadingFindingsViewModelProvider = mock[UnloadingFindingsViewModelProvider]
 
-  lazy val unloadingFindingsRoute: String = controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
+  lazy val unloadingFindingsRoute: String = controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId, NormalMode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

@@ -19,7 +19,7 @@ package controllers.transportEquipment
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.{ArrivalId, Mode}
+import models.{ArrivalId, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -65,7 +65,7 @@ class AddAnotherEquipmentController @Inject() (
                 controllers.transportEquipment.index.routes.AddContainerIdentificationNumberYesNoController.onPageLoad(arrivalId, mode, viewModel.nextIndex)
               )
             case false =>
-              Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+              Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId, NormalMode))
           }
         )
   }

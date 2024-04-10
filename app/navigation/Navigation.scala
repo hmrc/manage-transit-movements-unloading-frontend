@@ -33,7 +33,7 @@ class Navigation extends Navigator {
         if (ua.ie043Data.sealsExist) {
           Some(controllers.routes.CanSealsBeReadController.onPageLoad(ua.id, NormalMode))
         } else {
-          Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
+          Some(routes.UnloadingFindingsController.onPageLoad(ua.id, NormalMode))
         }
 
     case CanSealsBeReadPage    => ua => Some(routes.AreAnySealsBrokenController.onPageLoad(ua.id, NormalMode))
@@ -41,7 +41,7 @@ class Navigation extends Navigator {
     case AddTransitUnloadingPermissionDiscrepanciesYesNoPage =>
       ua =>
         ua.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) map {
-          case true  => controllers.routes.UnloadingFindingsController.onPageLoad(ua.id)
+          case true  => controllers.routes.UnloadingFindingsController.onPageLoad(ua.id, NormalMode)
           case false => controllers.routes.AddCommentsYesNoController.onPageLoad(ua.id, NormalMode)
         }
     case AddCommentsYesNoPage =>
@@ -72,7 +72,7 @@ class Navigation extends Navigator {
     case AddTransitUnloadingPermissionDiscrepanciesYesNoPage =>
       ua =>
         ua.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) map {
-          case true  => controllers.routes.UnloadingFindingsController.onPageLoad(ua.id)
+          case true  => controllers.routes.UnloadingFindingsController.onPageLoad(ua.id, CheckMode)
           case false => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)
         }
     case AddCommentsYesNoPage =>

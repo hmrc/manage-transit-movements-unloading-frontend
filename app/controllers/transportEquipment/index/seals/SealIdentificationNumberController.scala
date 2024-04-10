@@ -104,6 +104,6 @@ class SealIdentificationNumberController @Inject() (
       case NormalMode =>
         Redirect(AddAnotherSealController.onPageLoad(request.userAnswers.id, equipmentMode, sealMode, equipmentIndex))
       case CheckMode =>
-        Redirect(UnloadingFindingsController.onPageLoad(request.userAnswers.id))
+        Redirect(UnloadingFindingsController.onPageLoad(request.userAnswers.id, NormalMode))
     }
 }

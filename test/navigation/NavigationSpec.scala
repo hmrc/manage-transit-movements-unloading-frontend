@@ -86,7 +86,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           navigator
             .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
-            .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
+            .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId, NormalMode))
         }
       }
 
@@ -134,7 +134,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           navigator
             .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
-            .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
+            .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId, NormalMode))
         }
 
         "when answer is false to add unloading remarks yes/no page" in {
@@ -257,7 +257,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
         navigator
           .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
-          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(userAnswers.id))
+          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(userAnswers.id, CheckMode))
       }
 
       "must go from add transit unloading permission discrepancies yes/no page to check your answers page when false" in {
