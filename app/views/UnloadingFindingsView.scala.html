@@ -25,7 +25,7 @@
     formHelper: FormWithCSRF
 )
 
-@(mrn: MovementReferenceNumber, arrivalId: ArrivalId, unloadingFindingsViewModel: UnloadingFindingsViewModel)(implicit request: Request[_], messages: Messages)
+@(mrn: MovementReferenceNumber, arrivalId: ArrivalId, unloadingFindingsViewModel: UnloadingFindingsViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
     @mainTemplate(
         title = messages("unloadingFindings.title"),
@@ -41,10 +41,7 @@
 
         @answerSections(unloadingFindingsViewModel.sections)
 
-        <div>
-            <a class="govuk-button" id="submit" href=@controllers.routes.AddCommentsYesNoController.onPageLoad(arrivalId, NormalMode).url>
-            @messages("site.continue")
-            </a>
-        </div>
-
-    }
+        @formHelper(action = routes.UnloadingFindingsController.onSubmit(arrivalId, mode), Symbol("autoComplete") -> "off") {
+            @button(attributes = Map("id" -> "submit"), messageKey = messages("site.continue"))
+        }
+}

@@ -17,7 +17,8 @@
 package views
 
 import generators.Generators
-import models.NormalMode
+import models.Mode
+import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
 import viewModels.UnloadingFindingsViewModel
 import viewModels.sections.Section.AccordionSection
@@ -28,7 +29,10 @@ class UnloadingFindingsViewSpec extends DetailsListViewBehaviours with Generator
 
   override val prefix: String = "unloadingFindings"
 
-  override def view: HtmlFormat.Appendable = injector.instanceOf[UnloadingFindingsView].apply(mrn, arrivalId, unloadingFindingsViewModel)(fakeRequest, messages)
+  private val mode = arbitrary[Mode].sample.value
+
+  override def view: HtmlFormat.Appendable =
+    injector.instanceOf[UnloadingFindingsView].apply(mrn, arrivalId, unloadingFindingsViewModel, mode)(fakeRequest, messages)
 
   private val unloadingFindingsViewModel: UnloadingFindingsViewModel = new UnloadingFindingsViewModel(sections)
 
@@ -42,7 +46,9 @@ class UnloadingFindingsViewSpec extends DetailsListViewBehaviours with Generator
 
   behave like pageWithSections()
 
-  behave like pageWithLinkAsButton("Continue", controllers.routes.AddCommentsYesNoController.onPageLoad(arrivalId, NormalMode).url)
+  behave like pageWithFormAction(controllers.routes.UnloadingFindingsController.onSubmit(arrivalId, mode).url)
+
+  behave like pageWithSubmitButton("Continue")
 
   "must render section titles when rows are non-empty" - {
     sections.foreach(_.sectionTitle.map {
@@ -56,7 +62,7 @@ class UnloadingFindingsViewSpec extends DetailsListViewBehaviours with Generator
     val sections                   = Seq(AccordionSection(rows = Nil, children = Nil, id = Some(accordionId)))
     val unloadingFindingsViewModel = new UnloadingFindingsViewModel(sections)
 
-    val view = injector.instanceOf[UnloadingFindingsView].apply(mrn, arrivalId, unloadingFindingsViewModel)(fakeRequest, messages)
+    val view = injector.instanceOf[UnloadingFindingsView].apply(mrn, arrivalId, unloadingFindingsViewModel, mode)(fakeRequest, messages)
 
     val doc       = parseView(view)
     val accordion = doc.getElementById(accordionId)
