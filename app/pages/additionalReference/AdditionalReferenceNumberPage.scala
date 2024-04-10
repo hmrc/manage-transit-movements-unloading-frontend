@@ -16,6 +16,7 @@
 
 package pages.additionalReference
 
+import generated.CC043CType
 import models.Index
 import pages.QuestionPage
 import pages.sections.additionalReference.AdditionalReferenceSection
@@ -26,4 +27,10 @@ case class AdditionalReferenceNumberPage(referenceIndex: Index) extends Question
   override def path: JsPath = AdditionalReferenceSection(referenceIndex).path \ toString
 
   override def toString: String = "referenceNumber"
+
+  override def valueInIE043(ie043: CC043CType): Option[String] = {
+    val additionalReferences = ie043.Consignment.flatMap(_.AdditionalReference)
+    val additionalReference = additionalReferences.toList.lift(referenceIndex.position)
+    additionalReference.flatMap(_.referenceNumber)
+  }
 }

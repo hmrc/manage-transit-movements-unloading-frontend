@@ -102,67 +102,6 @@ final case class UserAnswers(
         case values => set(section.path, JsObject(values :+ (Removed -> JsBoolean(true))))
       }
     } yield userAnswers
-
-  def addMissingSequenceNumbers(): UserAnswers = {
-    // need to recurse
-    // if it's a JsArray then recurse
-    // if it's a JsObject then check the sequence number, starting with 1
-
-    def rec(arr: JsArray, acc: JsArray, sequenceNumber: Int = 1): JsArray = {
-      arr.value.toList match {
-        case Nil =>
-          acc
-        case head :: tail =>
-          // if the sequence number doesn't exist, add it
-
-
-
-          val reads = (__ \ SequenceNumber).readNullable[String]
-          head.validate(reads).asOpt.flatten match {
-            case Some(sequenceNumber) => ???
-            case None => ???
-          }
-          for {
-            sequenceNumber <- head.validate((__ \ SequenceNumber).readWithDefault[String](sequenceNumber.toString))
-            foo <- __.json.update()
-          }
-      }
-    }
-
-    type JsPathNodes = Seq[Either[Int, String]]
-    type JsEntry = (JsPathNodes, JsValue)
-    type JsTraverse = PartialFunction[JsEntry, JsValue]
-
-    implicit class JsPathOps(path: JsPathNodes) {
-      def /(field: String): JsPathNodes = path :+ Right(field)
-      def /(index: Int): JsPathNodes = path :+ Left(index)
-    }
-
-    def traverse(f: JsTraverse): JsValue = {
-
-      def traverseRec(path: JsPathNodes, value: JsValue): JsValue = {
-        value match {
-          case array: JsArray =>
-            val updatedArray = array.value.zipWithIndex.map {
-              case (arrayValue, index) => traverseRec(path / index, arrayValue)
-            }
-            JsArray(updatedArray)
-
-          case obj: JsObject =>
-            val updatedFields = obj.fieldSet.toSeq.map {
-              case (field, fieldValue) => field -> traverseRec(path / field, fieldValue)
-            }
-            JsObject(updatedFields)
-          case _ => f.lift(path -> value).getOrElse(value)
-        }
-      }
-
-      traverseRec(Nil, underlying)
-    }
-
-
-    this
-  }
 }
 
 object UserAnswers {

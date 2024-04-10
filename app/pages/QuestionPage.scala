@@ -16,6 +16,10 @@
 
 package pages
 
+import generated.CC043CType
 import queries.{Gettable, Settable}
 
-trait QuestionPage[A] extends Page with Gettable[A] with Settable[A]
+trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] {
+
+  def valueInIE043(ie043: CC043CType): Option[A] = None
+}
