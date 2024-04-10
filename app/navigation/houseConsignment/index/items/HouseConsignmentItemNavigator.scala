@@ -113,6 +113,7 @@ class HouseConsignmentItemNavigator extends Navigator {
       case false =>
         controllers.houseConsignment.index.items.routes.AddPackagesYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
     }
+
   private def addAdditionalReferenceYesNoCheckRoute(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index): Option[Call] =
     ua.get(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex)) map {
       case true =>
