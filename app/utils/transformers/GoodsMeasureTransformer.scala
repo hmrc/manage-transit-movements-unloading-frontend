@@ -33,7 +33,5 @@ class GoodsMeasureTransformer @Inject() (implicit ec: ExecutionContext) extends 
             set(NetWeightPage(hcIndex, itemIndex), netMass.map(_.toDouble))
 
         pipeline(userAnswers)
-      case _ =>
-        Future.successful(userAnswers)
     }
 }

@@ -37,12 +37,5 @@ class GoodsMeasureTransformerSpec extends SpecBase with AppWithDefaultMockFixtur
           result.get(NetWeightPage(hcIndex, itemIndex)) mustBe goodsMeasure.netMass.map(_.toDouble)
       }
     }
-
-    "when goods measure undefined" in {
-      val result = transformer.transform(null, hcIndex, itemIndex).apply(emptyUserAnswers).futureValue
-
-      result.get(GrossWeightPage(hcIndex, itemIndex)) must not be defined
-      result.get(NetWeightPage(hcIndex, itemIndex)) must not be defined
-    }
   }
 }
