@@ -42,6 +42,19 @@ class TransportEquipmentAnswersHelper(
     call = Some(controllers.transportEquipment.index.routes.ContainerIdentificationNumberController.onPageLoad(arrivalId, equipmentIndex, CheckMode))
   )
 
+  def containerIndicatorRow: Option[SummaryListRow] =
+    userAnswers.ie043Data.Consignment
+      .map(_.containerIndicator)
+      .map {
+        containerIndicator =>
+          buildRow(
+            prefix = "unloadingFindings.containerIndicator",
+            answer = formatAsYesOrNo(containerIndicator),
+            id = None,
+            call = None
+          )
+      }
+
   def transportEquipmentSeals: Section =
     userAnswers
       .get(SealsSection(equipmentIndex))

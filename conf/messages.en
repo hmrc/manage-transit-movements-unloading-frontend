@@ -886,7 +886,7 @@ additionalReference.index.additionalReferenceNumberYesNo.error.required = Select
 unloadingFindings.grossMass = Gross weight
 unloadingFindings.grossMass.change.hidden = gross weight
 
-unloadingFindings.inlandModeOfTransport = Inland mode Of transport
+unloadingFindings.inlandModeOfTransport = Inland mode of transport
 unloadingFindings.inlandModeOfTransport.label = Mode
 
 unloadingFindings.countryOfDestination = Country Of Destination
