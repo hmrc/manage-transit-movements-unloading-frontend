@@ -606,7 +606,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     }
 
     "getTransportModeCode" - {
-      val code = "1"
+      val code        = "1"
       val url: String = s"/$baseUrl/lists/TransportModeCode?data.code=$code"
 
       "must return transport mode code when successful" in {

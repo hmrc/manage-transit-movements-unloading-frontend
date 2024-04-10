@@ -181,7 +181,7 @@ package object models {
     def toXML: NodeSeq = scalaxb.toXML(value, CC043C.toString, toScope())
 
     def preparationDateAndTime: LocalDate =
-      value.messageSequence1.messagE_1Sequence2.preparationDateAndTime.toLocalDate
+      value.messageSequence1.preparationDateAndTime.toLocalDate
 
     def sealsExist: Boolean =
       value.Consignment.exists {

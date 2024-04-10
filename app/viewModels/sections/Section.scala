@@ -69,7 +69,7 @@ object Section {
     children: Seq[Section] = Nil
   ) extends Section {
 
-    override def isEmpty: Boolean = rows.isEmpty
+    override def isEmpty: Boolean = rows.isEmpty && children.isEmpty
   }
 
   object StaticSection {
