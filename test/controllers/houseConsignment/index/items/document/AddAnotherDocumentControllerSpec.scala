@@ -148,7 +148,10 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
+          redirectLocation(result).value mustEqual
+            controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+              .url
         }
       }
     }
@@ -167,7 +170,10 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
+        redirectLocation(result).value mustEqual
+          controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
+            .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+            .url
       }
     }
 

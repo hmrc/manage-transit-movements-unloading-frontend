@@ -67,7 +67,10 @@ class AddAnotherDocumentController @Inject() (
                   .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemsIndex, viewModel.nextIndex)
               )
             case false =>
-              Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+              Redirect(
+                controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
+                  .onPageLoad(arrivalId, houseConsignmentIndex, itemsIndex, mode)
+              )
           }
         )
   }
