@@ -28,7 +28,7 @@ class SealNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
   private val navigatorProvider = new SealNavigatorProvider
 
-  "TransportNavigator" - {
+  "SealNavigator" - {
 
     "in NormalMode" - {
 
