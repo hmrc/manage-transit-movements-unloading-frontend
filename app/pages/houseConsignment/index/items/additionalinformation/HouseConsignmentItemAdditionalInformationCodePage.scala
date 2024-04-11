@@ -16,17 +16,17 @@
 
 package pages.houseConsignment.index.items.additionalinformation
 
+import models.Index
 import models.reference.AdditionalInformationCode
-import pages.behaviours.PageBehaviours
+import pages.QuestionPage
+import pages.sections.houseConsignment.index.items.additionalInformation.AdditionalInformationSection
+import play.api.libs.json.JsPath
 
-class HouseConsignmentAdditionalInformationCodePageSpec extends PageBehaviours {
+case class HouseConsignmentItemAdditionalInformationCodePage(houseConsignmentIndex: Index, itemIndex: Index, additionalInformationIndex: Index)
+    extends QuestionPage[AdditionalInformationCode] {
 
-  "HouseConsignmentAdditionalInformationCodePage" - {
+  override def path: JsPath =
+    AdditionalInformationSection(houseConsignmentIndex, itemIndex, additionalInformationIndex).path \ toString
 
-    beRetrievable[AdditionalInformationCode](HouseConsignmentAdditionalInformationCodePage(index, index, index))
-
-    beSettable[AdditionalInformationCode](HouseConsignmentAdditionalInformationCodePage(index, index, index))
-
-    beRemovable[AdditionalInformationCode](HouseConsignmentAdditionalInformationCodePage(index, index, index))
-  }
+  override def toString: String = "code"
 }

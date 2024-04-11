@@ -22,6 +22,7 @@ import config.FrontendAppConfig
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import logging.Logging
 import models.DocType.{Previous, Support, Transport}
+import models.reference.TransportMode.InlandMode
 import models.reference._
 import models.{DocType, SecurityType}
 import play.api.http.Status._
@@ -53,6 +54,12 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   ): Future[NonEmptySet[T]] = {
     val url = s"${config.referenceDataUrl}/lists/TransportModeCode"
     http.GET[NonEmptySet[T]](url, headers = version2Header)
+  }
+
+  def getTransportModeCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[InlandMode] = {
+    val queryParams: Seq[(String, String)] = Seq("data.code" -> code)
+    val url                                = s"${config.referenceDataUrl}/lists/TransportModeCode"
+    http.GET[NonEmptySet[InlandMode]](url, headers = version2Header, queryParams = queryParams).map(_.head)
   }
 
   def getMeansOfTransportIdentificationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[TransportMeansIdentification]] = {

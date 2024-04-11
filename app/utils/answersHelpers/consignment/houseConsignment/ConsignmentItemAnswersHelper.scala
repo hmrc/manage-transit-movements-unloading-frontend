@@ -209,10 +209,7 @@ class ConsignmentItemAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.item.cusCode",
     args = itemIndex.display,
     id = Some(s"change-cus-code-${itemIndex.display}"),
-    call = Some(
-      controllers.houseConsignment.index.items.routes.CustomsUnionAndStatisticsCodeController
-        .onPageLoad(arrivalId, CheckMode, houseConsignmentIndex, itemIndex)
-    )
+    call = Some(routes.CustomsUnionAndStatisticsCodeController.onPageLoad(arrivalId, CheckMode, houseConsignmentIndex, itemIndex))
   )
 
   def commodityCodeRow: SummaryListRow = getAnswerAndBuildRowWithRemove[String](
@@ -232,8 +229,7 @@ class ConsignmentItemAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.item.nomenclatureCode",
     args = itemIndex.display,
     id = s"nomenclature-code-${itemIndex.display}",
-    change = routes.CombinedNomenclatureCodeController
-      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode),
+    change = routes.CombinedNomenclatureCodeController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode),
     remove = routes.RemoveCombinedNomenclatureCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode),
     hiddenLink = "nomenclatureCodeLink"
   )
@@ -277,31 +273,33 @@ class ConsignmentItemAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.houseConsignment.consigneeAddress"
   )
 
-  private[consignment] def packagingAddRemoveLink: Link =
+  private[consignment] def packagingAddRemoveLink: Link = {
+    import controllers.houseConsignment.index.items.packages.routes
     Link(
       id = s"add-remove-item-$itemIndex-packaging",
-      href = "#",
+      href = routes.AddAnotherPackageController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode).url,
       text = messages("packagingLink.addRemove"),
-      visuallyHidden = messages("packagingLink.visuallyHidden")
+      visuallyHidden = Some(messages("packagingLink.visuallyHidden", itemIndex.display))
     )
+  }
 
-  private[consignment] def documentAddRemoveLink: Link =
+  private[consignment] def documentAddRemoveLink: Link = {
+    import controllers.houseConsignment.index.items.document.routes
     Link(
       id = s"add-remove-item-$itemIndex-document",
-      href = controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
-        .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
-        .url,
+      href = routes.AddAnotherDocumentController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode).url,
       text = messages("documentLink.addRemove"),
-      visuallyHidden = messages("documentLink.visuallyHidden")
+      visuallyHidden = Some(messages("documentLink.visuallyHidden", itemIndex.display))
     )
+  }
 
-  private[consignment] def additionalReferenceAddRemoveLink: Link =
+  private[consignment] def additionalReferenceAddRemoveLink: Link = {
+    import controllers.houseConsignment.index.items.additionalReference.routes
     Link(
       id = s"add-remove-item-$itemIndex-additional-reference",
-      href = controllers.houseConsignment.index.items.additionalReference.routes.AddAnotherAdditionalReferenceController
-        .onPageLoad(arrivalId, NormalMode, houseConsignmentIndex, itemIndex)
-        .url,
+      href = routes.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId, NormalMode, houseConsignmentIndex, itemIndex).url,
       text = messages("additionalReferenceLink.addRemove"),
-      visuallyHidden = messages("additionalReferenceLink.visuallyHidden")
+      visuallyHidden = Some(messages("additionalReferenceLink.visuallyHidden", itemIndex.display))
     )
+  }
 }

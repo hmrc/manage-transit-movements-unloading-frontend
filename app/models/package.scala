@@ -181,7 +181,7 @@ package object models {
     def toXML: NodeSeq = scalaxb.toXML(value, CC043C.toString, toScope())
 
     def preparationDateAndTime: LocalDate =
-      value.messageSequence1.messagE_1Sequence2.preparationDateAndTime.toLocalDate
+      value.messageSequence1.preparationDateAndTime.toLocalDate
 
     def sealsExist: Boolean =
       value.Consignment.exists {
@@ -246,7 +246,7 @@ package object models {
     def nextIndex: Index = Index(length)
   }
 
-  implicit class RichPreviousDocument(previousDocument: PreviousDocumentType04) {
+  implicit class RichPreviousDocument04(previousDocument: PreviousDocumentType04) {
 
     def toPreviousDocumentType06: PreviousDocumentType06 = {
       import previousDocument._
@@ -254,7 +254,21 @@ package object models {
     }
   }
 
-  implicit class RichPreviousDocuments(previousDocuments: Seq[PreviousDocumentType04]) {
+  implicit class RichPreviousDocument07(previousDocument: PreviousDocumentType07) {
+
+    def toPreviousDocumentType06: PreviousDocumentType06 = {
+      import previousDocument._
+      PreviousDocumentType06(sequenceNumber, typeValue, referenceNumber, complementOfInformation)
+    }
+  }
+
+  implicit class RichPreviousDocuments04(previousDocuments: Seq[PreviousDocumentType04]) {
+
+    def toPreviousDocumentType06: Seq[PreviousDocumentType06] =
+      previousDocuments.map(_.toPreviousDocumentType06)
+  }
+
+  implicit class RichPreviousDocuments07(previousDocuments: Seq[PreviousDocumentType07]) {
 
     def toPreviousDocumentType06: Seq[PreviousDocumentType06] =
       previousDocuments.map(_.toPreviousDocumentType06)

@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package pages.houseConsignment.index.items.additionalinformation
+package pages.sections.houseConsignment.index.additionalInformation
 
 import models.Index
-import pages.QuestionPage
-import pages.sections.houseConsignment.index.items.additionalInformation.AdditionalInformationSection
-import play.api.libs.json.JsPath
+import pages.sections.{HouseConsignmentSection, Section}
+import play.api.libs.json.{JsArray, JsPath}
 
-case class HouseConsignmentAdditionalInformationTextPage(houseConsignmentIndex: Index, itemIndex: Index, additionalInformationIndex: Index)
-    extends QuestionPage[String] {
+case class AdditionalInformationListSection(houseConsignmentIndex: Index) extends Section[JsArray] {
 
-  override def path: JsPath =
-    AdditionalInformationSection(houseConsignmentIndex, itemIndex, additionalInformationIndex).path \ toString
+  override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ toString
 
-  override def toString: String = "text"
+  override def toString: String = "AdditionalInformation"
 }

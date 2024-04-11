@@ -20,6 +20,7 @@ import models.reference.{Country, TransportMeansIdentification}
 import models.{Index, UserAnswers}
 import pages._
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
@@ -36,7 +37,8 @@ class DepartureTransportMeansAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "checkYourAnswers.departureMeansOfTransport.identification",
     id = None,
-    call = None
+    call = Some(Call("GET", "#")), // TODO add link after controller created
+    args = transportMeansIndex.display
   )
 
   def transportMeansIDNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
@@ -44,15 +46,16 @@ class DepartureTransportMeansAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "checkYourAnswers.departureMeansOfTransport.identificationNumber",
     id = None,
-    call = None
+    call = Some(Call("GET", "#")), // TODO add link after controller created
+    args = transportMeansIndex.display
   )
 
   def buildVehicleNationalityRow: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
     page = DepartureTransportMeansCountryPage(houseConsignmentIndex, transportMeansIndex),
     formatAnswer = x => Text(x.description),
-    prefix = "unloadingFindings.rowHeadings.vehicleNationality",
+    prefix = "checkYourAnswers.departureMeansOfTransport.country",
     id = None,
-    call = None,
-    args = Seq.empty
+    call = Some(Call("GET", "#")), // TODO add link after controller created
+    args = transportMeansIndex.display
   )
 }

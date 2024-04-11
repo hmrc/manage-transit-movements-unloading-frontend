@@ -27,7 +27,6 @@ import org.mockito.Mockito.{verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageTypePage}
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.houseConsignment.index.items.packages.RemovePackageTypeYesNoView
@@ -95,7 +94,9 @@ class RemovePackageTypeYesNoControllerSpec extends SpecBase with AppWithDefaultM
 
             status(result) mustEqual SEE_OTHER
 
-            redirectLocation(result).value mustEqual Call("GET", "#").url // TODO should go to addAnother route
+            redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+              .url
 
             val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
             verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -124,7 +125,9 @@ class RemovePackageTypeYesNoControllerSpec extends SpecBase with AppWithDefaultM
 
             status(result) mustEqual SEE_OTHER
 
-            redirectLocation(result).value mustEqual Call("GET", "#").url // TODO should go to addAnother route
+            redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+              .url
 
             val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
             verify(mockSessionRepository).set(userAnswersCaptor.capture())

@@ -19,7 +19,10 @@ package utils.answersHelpers.consignment.houseConsignment.item
 import models.reference.AdditionalInformationCode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.houseConsignment.index.items.additionalinformation.{HouseConsignmentAdditionalInformationCodePage, HouseConsignmentAdditionalInformationTextPage}
+import pages.houseConsignment.index.items.additionalinformation.{
+  HouseConsignmentItemAdditionalInformationCodePage,
+  HouseConsignmentItemAdditionalInformationTextPage
+}
 import utils.answersHelpers.AnswersHelperSpecBase
 
 class AdditionalInformationsAnswersHelperSpec extends AnswersHelperSpecBase {
@@ -27,7 +30,7 @@ class AdditionalInformationsAnswersHelperSpec extends AnswersHelperSpecBase {
   "AdditionalInformationsHelper" - {
 
     "additionalInformationCodeRow" - {
-      val page = HouseConsignmentAdditionalInformationCodePage(hcIndex, itemIndex, additionalInformationIndex)
+      val page = HouseConsignmentItemAdditionalInformationCodePage(hcIndex, itemIndex, additionalInformationIndex)
 
       "must return None" - {
         s"when $page undefined" in {
@@ -54,7 +57,7 @@ class AdditionalInformationsAnswersHelperSpec extends AnswersHelperSpecBase {
     }
 
     "additionalInformationTextRow" - {
-      val page = HouseConsignmentAdditionalInformationTextPage(hcIndex, itemIndex, additionalInformationIndex)
+      val page = HouseConsignmentItemAdditionalInformationTextPage(hcIndex, itemIndex, additionalInformationIndex)
 
       "must return None" - {
         s"when $page undefined" in {

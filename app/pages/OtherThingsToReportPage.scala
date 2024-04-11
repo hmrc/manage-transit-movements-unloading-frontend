@@ -16,11 +16,12 @@
 
 package pages
 
+import pages.sections.OtherQuestionsSection
 import play.api.libs.json.JsPath
 
 case object OtherThingsToReportPage extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ "TransitOperation" \ toString
+  override def path: JsPath = OtherQuestionsSection.path \ toString
 
   override def toString: String = "otherThingsToReport"
 }

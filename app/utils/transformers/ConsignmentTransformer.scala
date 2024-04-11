@@ -16,9 +16,12 @@
 
 package utils.transformers
 
+import connectors.ReferenceDataConnector
 import generated.ConsignmentType05
 import models.UserAnswers
+import pages.countryOfDestination.CountryOfDestinationPage
 import pages.grossMass.GrossMassPage
+import pages.inlandModeOfTransport.InlandModeOfTransportPage
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -33,7 +36,8 @@ class ConsignmentTransformer @Inject() (
   houseConsignmentsTransformer: HouseConsignmentsTransformer,
   additionalReferencesTransformer: AdditionalReferencesTransformer,
   additionalInformationTransformer: AdditionalInformationTransformer,
-  incidentsTransformer: IncidentsTransformer
+  incidentsTransformer: IncidentsTransformer,
+  referenceDataConnector: ReferenceDataConnector
 )(implicit ec: ExecutionContext)
     extends PageTransformer {
 
@@ -51,9 +55,42 @@ class ConsignmentTransformer @Inject() (
             additionalInformationTransformer.transform(consignment05.AdditionalInformation) andThen
             set(GrossMassPage, consignment05.grossMass) andThen
             additionalReferencesTransformer.transform(consignment05.AdditionalReference) andThen
-            incidentsTransformer.transform(consignment05.Incident)
+            incidentsTransformer.transform(consignment05.Incident) andThen
+            transformCountryOfDestination(consignment05.countryOfDestination) andThen
+            transformInlandModeOfTransport(consignment05.inlandModeOfTransport)
         pipeline(userAnswers)
       case None =>
         Future.successful(userAnswers)
+    }
+
+  private def transformCountryOfDestination(countryOfDestination: Option[String])(implicit
+    hc: HeaderCarrier
+  ): UserAnswers => Future[UserAnswers] = userAnswers =>
+    countryOfDestination match {
+
+      case Some(country) =>
+        referenceDataConnector.getCountry(country).flatMap {
+          countryVal =>
+            val pipeline: UserAnswers => Future[UserAnswers] =
+              set(CountryOfDestinationPage, countryVal)
+            pipeline(userAnswers)
+        }
+
+      case None => Future.successful(userAnswers)
+    }
+
+  private def transformInlandModeOfTransport(inlandModeOfTransport: Option[String])(implicit
+    hc: HeaderCarrier
+  ): UserAnswers => Future[UserAnswers] = userAnswers =>
+    inlandModeOfTransport match {
+      case Some(inlandMode) =>
+        referenceDataConnector.getTransportModeCode(inlandMode).flatMap {
+          inlandModeVal =>
+            val pipeline: UserAnswers => Future[UserAnswers] =
+              set(InlandModeOfTransportPage, inlandModeVal)
+            pipeline(userAnswers)
+        }
+
+      case None => Future.successful(userAnswers)
     }
 }
