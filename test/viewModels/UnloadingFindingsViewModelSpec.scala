@@ -188,7 +188,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         val result            = viewModelProvider.apply(userAnswers)
         val section           = result.sections(1)
 
-        section.sectionTitle.value mustBe "Inland mode Of transport"
+        section.sectionTitle.value mustBe "Inland mode of transport"
         section.viewLinks mustBe Nil
 
       }
