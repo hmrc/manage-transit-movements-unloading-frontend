@@ -19,7 +19,6 @@ package controllers
 import com.google.inject.Inject
 import controllers.actions.Actions
 import models.{ArrivalId, NormalMode}
-import pages.DoYouHaveAnythingElseToReportYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -47,13 +46,8 @@ class UnloadingFindingsController @Inject() (
 
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =
     actions.getStatus(arrivalId) {
-      implicit request =>
-        if (request.userAnswers.get(DoYouHaveAnythingElseToReportYesNoPage).isDefined) {
-          Redirect(controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId))
-        } else {
-          Redirect(
-            controllers.routes.AddCommentsYesNoController.onPageLoad(arrivalId, NormalMode)
-          )
-        }
+      Redirect(
+        controllers.routes.AddCommentsYesNoController.onPageLoad(arrivalId, NormalMode)
+      )
     }
 }

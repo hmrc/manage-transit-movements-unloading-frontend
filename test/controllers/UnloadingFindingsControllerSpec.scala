@@ -24,7 +24,6 @@ import models.P5.MessageMetaData
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.DoYouHaveAnythingElseToReportYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -91,34 +90,17 @@ class UnloadingFindingsControllerSpec extends SpecBase with AppWithDefaultMockFi
       redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
     }
 
-    "must redirect to" - {
-      "CheckYourAnswers page when DoYouHaveAnythingElseToReportPage is defined" in {
-        checkArrivalStatus()
+    "must redirect to AddCommentsYesNo page" in {
+      checkArrivalStatus()
 
-        val userAnswers = emptyUserAnswers.setValue(DoYouHaveAnythingElseToReportYesNoPage, true)
+      setExistingUserAnswers(emptyUserAnswers)
 
-        setExistingUserAnswers(userAnswers)
+      val request = FakeRequest(POST, unloadingFindingsRoute)
 
-        val request = FakeRequest(POST, unloadingFindingsRoute)
+      val result = route(app, request).value
 
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId).url
-      }
-
-      "AddCommentsYesNo page when DoYouHaveAnythingElseToReportPage is not defined" in {
-        checkArrivalStatus()
-
-        setExistingUserAnswers(emptyUserAnswers)
-
-        val request = FakeRequest(POST, unloadingFindingsRoute)
-
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.AddCommentsYesNoController.onPageLoad(arrivalId, NormalMode).url
-      }
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual controllers.routes.AddCommentsYesNoController.onPageLoad(arrivalId, NormalMode).url
     }
 
   }
