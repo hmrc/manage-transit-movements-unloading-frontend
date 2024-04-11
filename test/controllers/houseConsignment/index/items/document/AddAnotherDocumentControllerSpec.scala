@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.{CheckMode, Index, NormalMode}
+import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -155,7 +155,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
               .url
         }
 
-        "must redirect to next page with CheckMode if AddAdditionalReferenceYesNoPage answered" in {
+        "must redirect to cross check page if AddAdditionalReferenceYesNoPage answered" in {
           when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
             .thenReturn(notMaxedOutViewModel)
 
@@ -171,8 +171,8 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual
-            controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
-              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode)
+            controllers.routes.HouseConsignmentController
+              .onPageLoad(arrivalId, itemIndex)
               .url
         }
       }

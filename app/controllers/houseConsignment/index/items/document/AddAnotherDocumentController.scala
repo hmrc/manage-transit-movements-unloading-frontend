@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items.document
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.{ArrivalId, CheckMode, Index, Mode}
+import models.{ArrivalId, Index, Mode}
 import pages.houseConsignment.index.items.AddAdditionalReferenceYesNoPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -68,14 +68,14 @@ class AddAnotherDocumentController @Inject() (
                   .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemsIndex, viewModel.nextIndex)
               )
             case false =>
-              val checkModeIfAlreadyAnswered = request.userAnswers.get(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemsIndex)) match {
-                case Some(_) => CheckMode
-                case None    => mode
+              request.userAnswers.get(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemsIndex)) match {
+                case Some(_) => Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+                case None =>
+                  Redirect(
+                    controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
+                      .onPageLoad(arrivalId, houseConsignmentIndex, itemsIndex, mode)
+                  )
               }
-              Redirect(
-                controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
-                  .onPageLoad(arrivalId, houseConsignmentIndex, itemsIndex, checkModeIfAlreadyAnswered)
-              )
           }
         )
   }
