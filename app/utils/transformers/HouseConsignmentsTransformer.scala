@@ -19,7 +19,7 @@ package utils.transformers
 import connectors.ReferenceDataConnector
 import generated.HouseConsignmentType04
 import models.{Index, RichPreviousDocuments07, UserAnswers}
-import pages.houseConsignment.index.SecurityIndicatorFromExportDeclarationPage
+import pages.houseConsignment.index.{CountryOfDestinationPage, SecurityIndicatorFromExportDeclarationPage}
 import pages.sections.HouseConsignmentSection
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -59,7 +59,8 @@ class HouseConsignmentsTransformer @Inject() (
                   additionalReferencesTransformer.transform(houseConsignment.AdditionalReference, hcIndex) andThen
                   additionalInformationTransformer.transform(houseConsignment.AdditionalInformation, hcIndex) andThen
                   consignmentItemTransformer.transform(houseConsignment.ConsignmentItem, hcIndex) andThen
-                  transformSecurityIndicatorFromExportDeclaration(houseConsignment.securityIndicatorFromExportDeclaration, hcIndex)
+                  transformSecurityIndicatorFromExportDeclaration(houseConsignment.securityIndicatorFromExportDeclaration, hcIndex) andThen
+                  transformCountryOfDestination(houseConsignment.countryOfDestination, hcIndex)
               pipeline(userAnswers)
           }
       })
@@ -77,5 +78,22 @@ class HouseConsignmentsTransformer @Inject() (
         }
 
       case None => Future.successful(userAnswers)
+    }
+
+  private def transformCountryOfDestination(countryOfDestination: Option[String], hcIndex: Index)(implicit
+    hc: HeaderCarrier
+  ): UserAnswers => Future[UserAnswers] = userAnswers =>
+    countryOfDestination match {
+
+      case Some(country) =>
+        referenceDataConnector.getCountry(country).flatMap {
+          countryVal =>
+            val pipeline: UserAnswers => Future[UserAnswers] =
+              set(CountryOfDestinationPage(hcIndex), countryVal)
+            pipeline(userAnswers)
+        }
+
+      case None =>
+        Future.successful(userAnswers)
     }
 }

@@ -24,7 +24,7 @@ import models.{Index, SecurityType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
-import pages.houseConsignment.index.SecurityIndicatorFromExportDeclarationPage
+import pages.houseConsignment.index.{CountryOfDestinationPage, SecurityIndicatorFromExportDeclarationPage}
 import pages.houseConsignment.index.additionalReference.{HouseConsignmentAdditionalReferenceNumberPage, HouseConsignmentAdditionalReferenceTypePage}
 import pages.houseConsignment.index.additionalinformation.{HouseConsignmentAdditionalInformationCodePage, HouseConsignmentAdditionalInformationTextPage}
 import pages.houseConsignment.index.documents.{AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
@@ -262,14 +262,16 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
           .setValue(ItemConsigneeNamePage(hcIndex, itemIndex), "John Smith")
           .setValue(ItemConsigneeIdentifierPage(hcIndex, itemIndex), "csgee2")
           .setValue(SecurityIndicatorFromExportDeclarationPage(hcIndex), SecurityType("Code", "Description"))
+          .setValue(CountryOfDestinationPage(hcIndex), Country("FR", "France"))
 
         setExistingUserAnswers(userAnswers)
 
         val viewModelProvider = new HouseConsignmentViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers, index)
 
-        result.section.rows.size mustBe 1
-        result.section.rows.head.value.value mustBe "Description"
+        result.section.rows.size mustBe 2
+        result.section.rows(0).value.value mustBe "France"
+        result.section.rows(1).value.value mustBe "Description"
 
         result.section.children(4) mustBe a[AccordionSection]
         result.section.children(4).sectionTitle.value mustBe "Items"

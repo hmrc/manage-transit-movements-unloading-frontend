@@ -1092,3 +1092,5 @@ houseConsignment.index.grossWeight.error.required = Enter the new gross weight o
 houseConsignment.index.grossWeight.error.invalidValue = The new gross weight must be 16 characters or less
 houseConsignment.index.grossWeight.error.invalidCharacters = The new gross weight must only include numbers 0 to 9 and a decimal point
 houseConsignment.index.grossWeight.error.invalidFormat = The new gross weight must only include 6 decimal places or less
+
+unloadingFindings.rowHeadings.houseConsignment.countryOfDestination = Country of destination

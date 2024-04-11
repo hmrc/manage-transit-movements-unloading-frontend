@@ -21,6 +21,7 @@ import models.{DynamicAddress, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
+import pages.houseConsignment.index.CountryOfDestinationPage
 import utils.answersHelpers.AnswersHelperSpecBase
 import viewModels.sections.Section.AccordionSection
 
@@ -451,6 +452,28 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         result.children.head.children(5).children.head.rows(0).value.value mustBe s"${packageType.asDescription}"
         result.children.head.children(5).children.head.rows(1).value.value mustBe s"$count"
         result.children.head.children(5).children.head.rows(2).value.value mustBe s"$description"
+      }
+    }
+
+    "countryOfDestination" - {
+      val page = CountryOfDestinationPage(hcIndex)
+      "must return None" - {
+        s"when $page undefined" in {
+          val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, hcIndex)
+          helper.countryOfDestination mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $page defined" in {
+          val answers = emptyUserAnswers.setValue(page, Country("FR", "France"))
+          val helper  = new HouseConsignmentAnswersHelper(answers, hcIndex)
+          val result  = helper.countryOfDestination.value
+
+          result.key.value mustBe "Country of destination"
+          result.value.value mustBe "France"
+          result.actions must not be defined
+        }
       }
     }
   }

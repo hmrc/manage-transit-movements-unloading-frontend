@@ -16,15 +16,17 @@
 
 package pages.houseConsignment.index
 
-import models.Index
 import models.reference.Country
-import pages.QuestionPage
-import pages.sections.HouseConsignmentSection
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case class CountryOfDestinationPage(houseConsignment: Index) extends QuestionPage[Country] {
+class CountryOfDestinationPageSpec extends PageBehaviours {
 
-  override def path: JsPath = HouseConsignmentSection(houseConsignment).path \ toString
+  "CountryOfDestination" - {
 
-  override def toString: String = "countryOfDestination"
+    beRetrievable[Country](CountryOfDestinationPage(houseConsignmentIndex))
+
+    beSettable[Country](CountryOfDestinationPage(houseConsignmentIndex))
+
+    beRemovable[Country](CountryOfDestinationPage(houseConsignmentIndex))
+  }
 }
