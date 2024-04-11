@@ -130,21 +130,32 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to goods reference page at next index" in {
-          when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
-            .thenReturn(notMaxedOutViewModel)
+          val modeCombinations = Gen.oneOf[(Mode, Mode)](
+            (NormalMode, NormalMode),
+            (CheckMode, NormalMode),
+            (CheckMode, CheckMode)
+          )
+          forAll(modeCombinations) {
+            case (equipmentMode, goodsReferenceMode) =>
+              lazy val applyAnotherItemRoute =
+                routes.ApplyAnotherItemController.onPageLoad(arrivalId, equipmentMode, goodsReferenceMode, equipmentIndex).url
 
-          setExistingUserAnswers(emptyUserAnswers)
+              when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
+                .thenReturn(notMaxedOutViewModel)
 
-          val request = FakeRequest(POST, applyAnotherItemRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+              setExistingUserAnswers(emptyUserAnswers)
 
-          val result = route(app, request).value
+              val request = FakeRequest(POST, applyAnotherItemRoute)
+                .withFormUrlEncodedBody(("value", "true"))
 
-          status(result) mustEqual SEE_OTHER
+              val result = route(app, request).value
 
-          redirectLocation(result).value mustEqual controllers.transportEquipment.index.routes.GoodsReferenceController
-            .onPageLoad(arrivalId, equipmentIndex, notMaxedOutViewModel.nextIndex, equipmentMode, goodsReferenceMode)
-            .url
+              status(result) mustEqual SEE_OTHER
+
+              redirectLocation(result).value mustEqual controllers.transportEquipment.index.routes.GoodsReferenceController
+                .onPageLoad(arrivalId, equipmentIndex, notMaxedOutViewModel.nextIndex, equipmentMode, goodsReferenceMode)
+                .url
+          }
         }
       }
 
@@ -174,26 +185,25 @@ class ApplyAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFix
           }
 
           "when equipment mode is NormalMode" in {
-            forAll(arbitrary[Mode]) {
-              goodsReferenceMode =>
-                lazy val applyAnotherItemRoute =
-                  routes.ApplyAnotherItemController.onPageLoad(arrivalId, NormalMode, goodsReferenceMode, equipmentIndex).url
+            val goodsReferenceMode = NormalMode
 
-                when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
-                  .thenReturn(notMaxedOutViewModel)
+            lazy val applyAnotherItemRoute =
+              routes.ApplyAnotherItemController.onPageLoad(arrivalId, NormalMode, goodsReferenceMode, equipmentIndex).url
 
-                setExistingUserAnswers(emptyUserAnswers)
+            when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
+              .thenReturn(notMaxedOutViewModel)
 
-                val request = FakeRequest(POST, applyAnotherItemRoute)
-                  .withFormUrlEncodedBody(("value", "false"))
+            setExistingUserAnswers(emptyUserAnswers)
 
-                val result = route(app, request).value
+            val request = FakeRequest(POST, applyAnotherItemRoute)
+              .withFormUrlEncodedBody(("value", "false"))
 
-                status(result) mustEqual SEE_OTHER
+            val result = route(app, request).value
 
-                redirectLocation(result).value mustEqual
-                  controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, equipmentMode).url
-            }
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual
+              controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, equipmentMode).url
           }
         }
       }
