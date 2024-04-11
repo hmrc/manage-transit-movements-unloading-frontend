@@ -19,7 +19,7 @@ package controllers.additionalReference.index
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.{ArrivalId, Mode, NormalMode}
+import models.{ArrivalId, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -66,7 +66,7 @@ class AddAnotherAdditionalReferenceController @Inject() (
                   .onPageLoad(arrivalId, mode, viewModel.nextIndex)
               )
             case false =>
-              Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId, NormalMode))
+              Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
           }
         )
   }

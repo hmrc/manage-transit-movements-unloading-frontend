@@ -17,7 +17,6 @@
 package views
 
 import generators.Generators
-import models.CheckMode
 import play.twirl.api.HtmlFormat
 import viewModels.CheckYourAnswersViewModel
 import viewModels.sections.Section
@@ -67,7 +66,7 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours with Gener
       doc,
       "unloadingFindings",
       "Back to discrepancies between the transit and unloading permission",
-      controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId, CheckMode).url
+      controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
     )
   }
 }

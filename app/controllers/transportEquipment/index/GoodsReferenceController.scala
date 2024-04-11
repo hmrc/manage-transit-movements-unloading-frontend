@@ -100,7 +100,7 @@ class GoodsReferenceController @Inject() (
                 case NormalMode =>
                   Redirect(ApplyAnotherItemController.onPageLoad(request.userAnswers.id, equipmentMode, goodsReferenceMode, transportEquipmentIndex))
                 case CheckMode =>
-                  Redirect(UnloadingFindingsController.onPageLoad(request.userAnswers.id, NormalMode))
+                  Redirect(UnloadingFindingsController.onPageLoad(request.userAnswers.id))
               }
           )
     }

@@ -119,7 +119,7 @@ class TransportEquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyCh
 
         navigator
           .nextPage(ContainerIdentificationNumberPage(equipmentIndex), mode, userAnswers)
-          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId, NormalMode))
+          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
       }
 
       "must go from ApplyAnItemYesNoPage" - {

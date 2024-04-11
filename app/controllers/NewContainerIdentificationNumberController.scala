@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions._
 import forms.NewContainerIdentificationNumberFormProvider
-import models.{ArrivalId, Index, Mode, NormalMode}
+import models.{ArrivalId, Index, Mode}
 import pages.ContainerIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -66,7 +66,7 @@ class NewContainerIdentificationNumberController @Inject() (
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(ContainerIdentificationNumberPage(index), value))
                   _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId, NormalMode)) // TODO: Implement once navigation is in
+                } yield Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId)) // TODO: Implement once navigation is in
             )
 
       }

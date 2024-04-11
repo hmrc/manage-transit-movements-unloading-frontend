@@ -71,10 +71,8 @@ POST       /:arrivalId/comments                                                 
 GET        /:arrivalId/change-comments                                                                               controllers.UnloadingCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-tcomments                                                                              controllers.UnloadingCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/transit-unloading-permission-discrepancies                                                    controllers.UnloadingFindingsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/transit-unloading-permission-discrepancies                                                    controllers.UnloadingFindingsController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-transit-unloading-permission-discrepancies                                             controllers.UnloadingFindingsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-transit-unloading-permission-discrepancies                                             controllers.UnloadingFindingsController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+GET        /:arrivalId/transit-unloading-permission-discrepancies                                                    controllers.UnloadingFindingsController.onPageLoad(arrivalId: ArrivalId)
+POST       /:arrivalId/transit-unloading-permission-discrepancies                                                    controllers.UnloadingFindingsController.onSubmit(arrivalId: ArrivalId)
 
 GET        /:arrivalId/transit-unloading-permission-discrepancies/house-consignment/:index                           controllers.HouseConsignmentController.onPageLoad(arrivalId: ArrivalId, index:Index)
 

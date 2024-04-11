@@ -17,7 +17,6 @@
 package views
 
 import generators.Generators
-import models.NormalMode
 import play.twirl.api.HtmlFormat
 import viewModels.HouseConsignmentViewModel
 import views.behaviours.DetailsListViewBehaviours
@@ -44,7 +43,7 @@ class HouseConsignmentViewSpec extends DetailsListViewBehaviours with Generators
 
   behave like pageWithChildSections()
 
-  behave like pageWithLinkAsButton("Back to summary", controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId, NormalMode).url)
+  behave like pageWithLinkAsButton("Back to summary", controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url)
 
   "must render child section titles" - {
     section.children.foreach(_.sectionTitle.map {

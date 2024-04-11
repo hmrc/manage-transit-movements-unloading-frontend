@@ -125,7 +125,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
           navigator
             .nextPage(TransportMeansIdentificationPage(transportMeansIndex), mode, userAnswers)
-            .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId, NormalMode))
+            .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
 
         }
 
@@ -136,7 +136,7 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
           navigator
             .nextPage(VehicleIdentificationNumberPage(transportMeansIndex), mode, userAnswers)
-            .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId, NormalMode))
+            .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
 
         }
       }

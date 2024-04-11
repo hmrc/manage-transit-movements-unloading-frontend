@@ -17,8 +17,6 @@
 package views
 
 import generators.Generators
-import models.Mode
-import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
 import viewModels.UnloadingFindingsViewModel
 import viewModels.sections.Section.AccordionSection
@@ -29,10 +27,8 @@ class UnloadingFindingsViewSpec extends DetailsListViewBehaviours with Generator
 
   override val prefix: String = "unloadingFindings"
 
-  private val mode = arbitrary[Mode].sample.value
-
   override def view: HtmlFormat.Appendable =
-    injector.instanceOf[UnloadingFindingsView].apply(mrn, arrivalId, unloadingFindingsViewModel, mode)(fakeRequest, messages)
+    injector.instanceOf[UnloadingFindingsView].apply(mrn, arrivalId, unloadingFindingsViewModel)(fakeRequest, messages)
 
   private val unloadingFindingsViewModel: UnloadingFindingsViewModel = new UnloadingFindingsViewModel(sections)
 
@@ -46,7 +42,7 @@ class UnloadingFindingsViewSpec extends DetailsListViewBehaviours with Generator
 
   behave like pageWithSections()
 
-  behave like pageWithFormAction(controllers.routes.UnloadingFindingsController.onSubmit(arrivalId, mode).url)
+  behave like pageWithFormAction(controllers.routes.UnloadingFindingsController.onSubmit(arrivalId).url)
 
   behave like pageWithSubmitButton("Continue")
 
@@ -62,7 +58,7 @@ class UnloadingFindingsViewSpec extends DetailsListViewBehaviours with Generator
     val sections                   = Seq(AccordionSection(rows = Nil, children = Nil, id = Some(accordionId)))
     val unloadingFindingsViewModel = new UnloadingFindingsViewModel(sections)
 
-    val view = injector.instanceOf[UnloadingFindingsView].apply(mrn, arrivalId, unloadingFindingsViewModel, mode)(fakeRequest, messages)
+    val view = injector.instanceOf[UnloadingFindingsView].apply(mrn, arrivalId, unloadingFindingsViewModel)(fakeRequest, messages)
 
     val doc       = parseView(view)
     val accordion = doc.getElementById(accordionId)

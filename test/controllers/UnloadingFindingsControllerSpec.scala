@@ -18,12 +18,13 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
-import models.{CheckMode, Mode, NormalMode}
+import models.NormalMode
 import models.P5.ArrivalMessageType.UnloadingPermission
 import models.P5.MessageMetaData
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.DoYouHaveAnythingElseToReportYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -39,7 +40,7 @@ class UnloadingFindingsControllerSpec extends SpecBase with AppWithDefaultMockFi
 
   private val mockUnloadingFindingsViewModelProvider = mock[UnloadingFindingsViewModelProvider]
 
-  private def unloadingFindingsRoute(mode: Mode): String = controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId, mode).url
+  lazy val unloadingFindingsRoute: String = controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -64,7 +65,7 @@ class UnloadingFindingsControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       when(mockUnloadingFindingsViewModelProvider.apply(any())(any())).thenReturn(unloadingFindingsViewModel)
 
-      val request = FakeRequest(GET, unloadingFindingsRoute(NormalMode))
+      val request = FakeRequest(GET, unloadingFindingsRoute)
 
       val result = route(app, request).value
 
@@ -73,7 +74,7 @@ class UnloadingFindingsControllerSpec extends SpecBase with AppWithDefaultMockFi
       val view = injector.instanceOf[UnloadingFindingsView]
 
       contentAsString(result) mustEqual
-        view(mrn, arrivalId, unloadingFindingsViewModel, NormalMode)(request, messages).toString
+        view(mrn, arrivalId, unloadingFindingsViewModel)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -81,7 +82,7 @@ class UnloadingFindingsControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, unloadingFindingsRoute(NormalMode))
+      val request = FakeRequest(GET, unloadingFindingsRoute)
 
       val result = route(app, request).value
 
@@ -91,30 +92,32 @@ class UnloadingFindingsControllerSpec extends SpecBase with AppWithDefaultMockFi
     }
 
     "must redirect to" - {
-      "AddCommentsYesNo page when in NormalMode" in {
+      "CheckYourAnswers page when DoYouHaveAnythingElseToReportPage is defined" in {
         checkArrivalStatus()
 
-        setExistingUserAnswers(emptyUserAnswers)
+        val userAnswers = emptyUserAnswers.setValue(DoYouHaveAnythingElseToReportYesNoPage, true)
 
-        val request = FakeRequest(POST, unloadingFindingsRoute(NormalMode))
+        setExistingUserAnswers(userAnswers)
 
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.AddCommentsYesNoController.onPageLoad(arrivalId, NormalMode).url
-      }
-
-      "CheckYourAnswers page when in CheckMode" in {
-        checkArrivalStatus()
-
-        setExistingUserAnswers(emptyUserAnswers)
-
-        val request = FakeRequest(POST, unloadingFindingsRoute(CheckMode))
+        val request = FakeRequest(POST, unloadingFindingsRoute)
 
         val result = route(app, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId).url
+      }
+
+      "AddCommentsYesNo page when DoYouHaveAnythingElseToReportPage is not defined" in {
+        checkArrivalStatus()
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(POST, unloadingFindingsRoute)
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.AddCommentsYesNoController.onPageLoad(arrivalId, NormalMode).url
       }
     }
 

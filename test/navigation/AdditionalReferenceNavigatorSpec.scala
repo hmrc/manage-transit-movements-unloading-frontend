@@ -39,7 +39,7 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
         navigator
           .nextPage(AdditionalReferenceTypePage(additionalReferenceIndex), mode, userAnswers)
-          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId, NormalMode))
+          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
       }
 
       "must go from AdditionalReferenceNumberPage to UnloadingFindingsPage page" in {
@@ -48,7 +48,7 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
         navigator
           .nextPage(AdditionalReferenceNumberPage(additionalReferenceIndex), mode, userAnswers)
-          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId, NormalMode))
+          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
       }
 
     }

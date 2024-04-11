@@ -40,9 +40,9 @@ class DepartureTransportMeansNavigator extends Navigator {
 
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
 
-    case TransportMeansIdentificationPage(_) => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id, NormalMode))
-    case CountryPage(_)                      => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id, NormalMode))
-    case VehicleIdentificationNumberPage(_)  => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id, NormalMode))
+    case TransportMeansIdentificationPage(_) => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
+    case CountryPage(_)                      => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
+    case VehicleIdentificationNumberPage(_)  => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
 
   }
 
