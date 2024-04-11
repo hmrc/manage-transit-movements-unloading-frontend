@@ -19,7 +19,9 @@ package base
 import controllers.actions._
 import models.P5.ArrivalMessageType.UnloadingPermission
 import models.P5._
-import models.UserAnswers
+import models.{Mode, UserAnswers}
+import navigation.GoodsReferenceNavigator.GoodsReferenceNavigatorProvider
+import navigation.SealNavigator.SealNavigatorProvider
 import navigation._
 import navigation.houseConsignment.index.items.{HouseConsignmentItemNavigator, PackagesNavigator, DocumentNavigator => ItemDocumentNavigator}
 import org.mockito.ArgumentMatchers.any
@@ -74,11 +76,20 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   protected val onwardRoute: Call = Call("GET", "/foo")
 
-  protected val fakeNavigator: Navigator                                               = new FakeNavigator(onwardRoute)
-  protected val fakeNavigation: Navigation                                             = new FakeNavigation(onwardRoute)
-  protected val fakeDocumentNavigator: DocumentNavigator                               = new FakeDocumentNavigator(onwardRoute)
-  protected val fakeItemDocumentNavigator: ItemDocumentNavigator                       = new FakeItemDocumentNavigator(onwardRoute)
-  protected val fakeTransportEquipmentNavigator: TransportEquipmentNavigator           = new FakeTransportEquipmentNavigator(onwardRoute)
+  protected val fakeNavigator: Navigator                                     = new FakeNavigator(onwardRoute)
+  protected val fakeNavigation: Navigation                                   = new FakeNavigation(onwardRoute)
+  protected val fakeDocumentNavigator: DocumentNavigator                     = new FakeDocumentNavigator(onwardRoute)
+  protected val fakeItemDocumentNavigator: ItemDocumentNavigator             = new FakeItemDocumentNavigator(onwardRoute)
+  protected val fakeTransportEquipmentNavigator: TransportEquipmentNavigator = new FakeTransportEquipmentNavigator(onwardRoute)
+
+  protected val fakeSealNavigatorProvider: SealNavigatorProvider = new SealNavigatorProvider {
+    override def apply(equipmentMode: Mode): SealNavigator = new FakeSealNavigator(onwardRoute, equipmentMode)
+  }
+
+  protected val fakeGoodsReferenceNavigatorProvider: GoodsReferenceNavigatorProvider = new GoodsReferenceNavigatorProvider {
+    override def apply(equipmentMode: Mode): GoodsReferenceNavigator = new FakeGoodsReferenceNavigator(onwardRoute, equipmentMode)
+  }
+
   protected val fakeDepartureTransportMeansNavigator: DepartureTransportMeansNavigator = new FakeDepartureTransportMeansNavigator(onwardRoute)
   protected val fakeAdditionalReferenceNavigator: AdditionalReferenceNavigator         = new FakeAdditionalReferenceNavigator(onwardRoute)
   protected val fakeHouseConsignmentIteNavigator: HouseConsignmentItemNavigator        = new FakeHouseConsignmentItemNavigator(onwardRoute)

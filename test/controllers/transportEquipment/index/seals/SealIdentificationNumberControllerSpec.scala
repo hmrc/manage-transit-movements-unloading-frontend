@@ -19,7 +19,8 @@ package controllers.transportEquipment.index.seals
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SealIdentificationNumberFormProvider
 import generators.Generators
-import models.{CheckMode, Mode, NormalMode}
+import models.NormalMode
+import navigation.SealNavigator.SealNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -47,7 +48,10 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[SealIdentificationNumberViewModelProvider].toInstance(mockViewModelProvider))
+      .overrides(
+        bind[SealNavigatorProvider].toInstance(fakeSealNavigatorProvider),
+        bind[SealIdentificationNumberViewModelProvider].toInstance(mockViewModelProvider)
+      )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -97,54 +101,20 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
         view(filledForm, mrn, arrivalId, equipmentMode, sealMode, viewModel, equipmentIndex, sealIndex)(request, messages).toString
     }
 
-    "must redirect to the next page when valid data is submitted" - {
-      "when seal mode is NormalMode" in {
-        forAll(arbitrary[Mode]) {
-          equipmentMode =>
-            val sealMode = NormalMode
+    "must redirect to the next page when valid data is submitted" in {
 
-            lazy val sealIdentificationNumberRoute =
-              routes.SealIdentificationNumberController.onPageLoad(arrivalId, equipmentMode, sealMode, equipmentIndex, sealIndex).url
+      setExistingUserAnswers(emptyUserAnswers)
 
-            setExistingUserAnswers(emptyUserAnswers)
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-            when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      val request = FakeRequest(POST, sealIdentificationNumberRoute)
+        .withFormUrlEncodedBody(("value", "testString"))
 
-            val request = FakeRequest(POST, sealIdentificationNumberRoute)
-              .withFormUrlEncodedBody(("value", "testString"))
+      val result = route(app, request).value
 
-            val result = route(app, request).value
+      status(result) mustEqual SEE_OTHER
 
-            status(result) mustEqual SEE_OTHER
-
-            redirectLocation(result).value mustEqual
-              controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, equipmentMode, sealMode, equipmentIndex).url
-        }
-      }
-
-      "when seal mode is CheckMode" in {
-        forAll(arbitrary[Mode]) {
-          equipmentMode =>
-            val sealMode = CheckMode
-
-            lazy val sealIdentificationNumberRoute =
-              routes.SealIdentificationNumberController.onPageLoad(arrivalId, equipmentMode, sealMode, equipmentIndex, sealIndex).url
-
-            setExistingUserAnswers(emptyUserAnswers)
-
-            when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-            val request = FakeRequest(POST, sealIdentificationNumberRoute)
-              .withFormUrlEncodedBody(("value", "testString"))
-
-            val result = route(app, request).value
-
-            status(result) mustEqual SEE_OTHER
-
-            redirectLocation(result).value mustEqual
-              controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
-        }
-      }
+      redirectLocation(result).value mustEqual onwardRoute.url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
