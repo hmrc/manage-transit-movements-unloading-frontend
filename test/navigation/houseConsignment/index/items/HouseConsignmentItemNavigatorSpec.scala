@@ -280,6 +280,27 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
               )
         }
       }
+
+      "must go from AddAdditionalReferenceYesNoPage to HouseConsignmentController page when No selected" in {
+        val userAnswers = emptyUserAnswers.setValue(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex), false)
+
+        navigator
+          .nextPage(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .mustBe(
+            controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex)
+          )
+      }
+
+      "must go from AddAdditionalReferenceYesNoPage to AdditionalReferenceTypeController page when Yes selected" in {
+        val userAnswers = emptyUserAnswers.setValue(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex), true)
+
+        navigator
+          .nextPage(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.additionalReference.routes.AdditionalReferenceTypeController
+              .onPageLoad(arrivalId, mode, hcIndex, itemIndex, additionalReferenceIndex)
+          )
+      }
     }
 
     "in Normal mode" - {

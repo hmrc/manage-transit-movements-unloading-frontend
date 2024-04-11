@@ -20,12 +20,13 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.{Index, NormalMode}
+import models.{CheckMode, Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
+import pages.houseConsignment.index.items.AddAdditionalReferenceYesNoPage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -151,6 +152,27 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
           redirectLocation(result).value mustEqual
             controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
               .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+              .url
+        }
+
+        "must redirect to next page with CheckMode if AddAdditionalReferenceYesNoPage answered" in {
+          when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
+            .thenReturn(notMaxedOutViewModel)
+
+          val userAnswers = emptyUserAnswers.setValue(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex), false)
+
+          setExistingUserAnswers(userAnswers)
+
+          val request = FakeRequest(POST, addAnotherDocumentRoute)
+            .withFormUrlEncodedBody(("value", "false"))
+
+          val result = route(app, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual
+            controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode)
               .url
         }
       }
