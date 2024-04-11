@@ -45,6 +45,8 @@ class DocumentNavigator extends Navigator {
         )
     case TypePage(houseConsignmentIndex, index, documentIndex) =>
       ua => typePageNavigation(ua, houseConsignmentIndex, index, documentIndex, NormalMode)
+    case DocumentReferenceNumberPage(houseConsignmentIndex, index, documentIndex) =>
+      ua => documentReferenceNumberNavigation(ua, houseConsignmentIndex, index, documentIndex, NormalMode)
     case _ => _ => Some(Call("GET", "#")) //TODO: Update document navigation
   }
 
@@ -62,15 +64,33 @@ class DocumentNavigator extends Navigator {
     ua.get(TypePage(houseConsignmentIndex, itemIndex, documentIndex)).map {
       _.`type` match {
         case DocType.Support =>
+          controllers.houseConsignment.index.items.document.routes.DocumentReferenceNumberController
+            .onPageLoad(ua.id, mode, houseConsignmentIndex, itemIndex, documentIndex)
+        case DocType.Transport =>
+          controllers.houseConsignment.index.items.document.routes.DocumentReferenceNumberController
+            .onPageLoad(ua.id, mode, houseConsignmentIndex, itemIndex, documentIndex)
+        case DocType.Previous =>
+          logger.logger.error(s"Previous document unexpectedly selected for consignment level document type")
+          controllers.houseConsignment.index.items.document.routes.TypeController
+            .onPageLoad(ua.id, mode, houseConsignmentIndex, itemIndex, documentIndex)
+      }
+    }
+
+  private def documentReferenceNumberNavigation(ua: UserAnswers,
+                                                houseConsignmentIndex: Index,
+                                                itemIndex: Index,
+                                                documentIndex: Index,
+                                                mode: Mode
+  ): Option[Call] =
+    ua.get(TypePage(houseConsignmentIndex, itemIndex, documentIndex)).map {
+      _.`type` match {
+        case DocType.Support =>
           controllers.houseConsignment.index.items.document.routes.AddAdditionalInformationYesNoController
             .onPageLoad(ua.id, mode, houseConsignmentIndex, itemIndex, documentIndex)
         case DocType.Transport =>
           controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
             .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, mode)
-        case DocType.Previous =>
-          logger.logger.error(s"Previous document unexpectedly selected for consignment level document type")
-          controllers.houseConsignment.index.items.document.routes.TypeController
-            .onPageLoad(ua.id, mode, houseConsignmentIndex, itemIndex, documentIndex)
+        case _ => Call("GET", "#") //TODO: Update document navigation
       }
     }
 

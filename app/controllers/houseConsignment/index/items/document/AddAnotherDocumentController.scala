@@ -20,6 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
 import models.{ArrivalId, Index, Mode}
+import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -67,7 +68,14 @@ class AddAnotherDocumentController @Inject() (
                   .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemsIndex, viewModel.nextIndex)
               )
             case false =>
-              Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+              request.userAnswers.get(AdditionalReferenceSection(houseConsignmentIndex, itemsIndex, viewModel.nextIndex)) match {
+                case Some(_) => Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+                case None =>
+                  Redirect(
+                    controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
+                      .onPageLoad(arrivalId, houseConsignmentIndex, itemsIndex, mode)
+                  )
+              }
           }
         )
   }

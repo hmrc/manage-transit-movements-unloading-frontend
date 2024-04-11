@@ -308,10 +308,9 @@ trait ViewModelGenerators {
     for {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
-      nextIndex    <- arbitrary[Index]
       docTypes     <- arbitrary[Seq[DocType]]
       allowMore    <- arbitrary[Boolean]
-    } yield AddAnotherHouseConsignmentDocumentViewModel(listItems, onSubmitCall, nextIndex, docTypes.filter(_ != Previous), allowMore)
+    } yield AddAnotherHouseConsignmentDocumentViewModel(listItems, onSubmitCall, Index(0), docTypes.filter(_ != Previous), allowMore)
   }
 
   implicit lazy val arbitraryContainerIdentificationNumberViewModel: Arbitrary[ContainerIdentificationNumberViewModel] = Arbitrary {
