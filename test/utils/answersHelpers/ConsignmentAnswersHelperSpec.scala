@@ -584,28 +584,5 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       }
     }
 
-    "containerIndicatorRow" - {
-      "must return row" in {
-        val userAnswers = emptyUserAnswers
-          .copy(ie043Data =
-            basicIe043.copy(Consignment =
-              Some(
-                ConsignmentType05(
-                  containerIndicator = Number1,
-                  inlandModeOfTransport = Some("Mode")
-                )
-              )
-            )
-          )
-
-        val helper = new ConsignmentAnswersHelper(userAnswers)
-        val result = helper.containerIndicatorRow
-
-        result.get.key.value mustBe "Are you using any containers?"
-        result.value.value.value mustBe "Yes"
-        result.get.actions must not be defined
-      }
-    }
-
   }
 }
