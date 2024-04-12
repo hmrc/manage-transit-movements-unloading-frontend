@@ -19,7 +19,7 @@ package utils.answersHelpers.consignment
 import models.DocType.Previous
 import models.reference.Country
 import models.{Index, Link, RichOptionalJsArray, SecurityType, UserAnswers}
-import pages.houseConsignment.index.SecurityIndicatorFromExportDeclarationPage
+import pages.houseConsignment.index.{CountryOfDestinationPage, SecurityIndicatorFromExportDeclarationPage}
 import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
 import pages.sections.houseConsignment.index
@@ -43,6 +43,14 @@ class HouseConsignmentAnswersHelper(
     page = SecurityIndicatorFromExportDeclarationPage(houseConsignmentIndex),
     formatAnswer = x => formatAsText(x.toString),
     prefix = "houseConsignment.securityIndicator",
+    id = None,
+    call = None
+  )
+
+  def countryOfDestination: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
+    page = CountryOfDestinationPage(houseConsignmentIndex),
+    formatAnswer = formatAsCountry,
+    prefix = "unloadingFindings.rowHeadings.houseConsignment.countryOfDestination",
     id = None,
     call = None
   )
