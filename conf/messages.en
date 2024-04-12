@@ -889,7 +889,7 @@ unloadingFindings.grossMass.change.hidden = gross weight
 unloadingFindings.inlandModeOfTransport = Inland mode of transport
 unloadingFindings.inlandModeOfTransport.label = Mode
 
-unloadingFindings.countryOfDestination = Country Of Destination
+unloadingFindings.countryOfDestination = Country of destination
 
 unloadingFindings.containerIndicator = Are you using any containers?
 
