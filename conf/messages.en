@@ -790,7 +790,7 @@ houseConsignment.index.items.document.addAdditionalInformationYesNo.heading = Do
 houseConsignment.index.items.document.addAdditionalInformationYesNo.paragraph = This can be any other information you want to declare, such as a contact, any safety risks or further descriptions.
 houseConsignment.index.items.document.addAdditionalInformationYesNo.error.required = Select yes if you want to add any additional information for this document
 
-houseConsignment.index.items.document.addAnotherDocument.singular.title = You have added 1 document to item {0} in house consignment {1}
+houseConsignment.index.items.document.addAnotherDocument.singular.title = You have added 1 document to item {1} in house consignment {2}
 houseConsignment.index.items.document.addAnotherDocument.plural.title = You have added {0} documents to item {1} in house consignment {2}
 houseConsignment.index.items.document.addAnotherDocument.empty.title = You have added {0} documents to item {1} in house consignment {2}
 houseConsignment.index.items.document.addAnotherDocument.singular.heading = You have added 1 document to item {1} in house consignment {2}
