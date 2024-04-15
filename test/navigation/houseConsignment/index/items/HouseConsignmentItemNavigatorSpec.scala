@@ -25,7 +25,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.houseConsignment.index.items._
 import pages.houseConsignment.index.items.document.AddDocumentYesNoPage
-import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
+import pages.houseConsignment.index.items.packages.{AddPackageShippingMarkYesNoPage, NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
 
 class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -75,6 +75,68 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
         navigator
           .nextPage(GrossWeightPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
           .mustBe(routes.AddNetWeightYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode))
+      }
+
+      "must go from PackageTypePage to AddNumberOfPackagesYesNoPage" in {
+        val packageType = PackageType("1A", "Drum, steel")
+
+        val userAnswers = emptyUserAnswers
+          .setValue(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex), packageType)
+
+        navigator
+          .nextPage(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.packages.routes.AddNumberOfPackagesYesNoController
+              .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, packageIndex)
+          )
+      }
+
+      "must go from NumberOfPackagesPage to AddPackageShippingMarkYesNo" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex), BigInt(123))
+
+        navigator
+          .nextPage(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.packages.routes.AddPackageShippingMarkYesNoController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)
+          )
+      }
+
+      "must go from AddPackageShippingMarkYesNoPage to Add PackageShippingMark when user answer is yes" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), true)
+
+        navigator
+          .nextPage(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.packages.routes.PackageShippingMarkController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)
+          )
+      }
+
+      "must go from AddPackageShippingMarkYesNoPage to Add PackageShippingMark when user answer is no" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), false)
+
+        navigator
+          .nextPage(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+          )
+      }
+
+      "must go from PackageShippingMarkPage to Add AddAnotherPackage Page" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex), "Shipping Mark")
+
+        navigator
+          .nextPage(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+          )
       }
 
       "must go from AddNetWeightYesNoPage to NetWeightPage when answer is true" in {

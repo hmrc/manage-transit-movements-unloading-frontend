@@ -72,7 +72,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   // TODO - delete?
   protected def checkArrivalStatus(): Unit = ()
 
-  protected val onwardRoute: Call = Call("GET", "/foo")
+  protected val onwardRoute: Call = Call("GET", "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/packages/1/type-quantity")
 
   protected val fakeNavigator: Navigator                                               = new FakeNavigator(onwardRoute)
   protected val fakeNavigation: Navigation                                             = new FakeNavigation(onwardRoute)
