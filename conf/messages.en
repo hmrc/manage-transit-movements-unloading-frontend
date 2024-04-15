@@ -793,7 +793,7 @@ houseConsignment.index.items.document.addAdditionalInformationYesNo.error.requir
 houseConsignment.index.items.document.addAnotherDocument.singular.title = You have added 1 document to item {0} in house consignment {1}
 houseConsignment.index.items.document.addAnotherDocument.plural.title = You have added {0} documents to item {1} in house consignment {2}
 houseConsignment.index.items.document.addAnotherDocument.empty.title = You have added {0} documents to item {1} in house consignment {2}
-houseConsignment.index.items.document.addAnotherDocument.singular.heading = You have added 1 document to item {0} in house consignment {1}
+houseConsignment.index.items.document.addAnotherDocument.singular.heading = You have added 1 document to item {1} in house consignment {2}
 houseConsignment.index.items.document.addAnotherDocument.empty.heading = You have added {0} documents to item {1} in house consignment {2}
 houseConsignment.index.items.document.addAnotherDocument.plural.heading = You have added {0} documents to item {1} in house consignment {2}
 houseConsignment.index.items.document.addAnotherDocument.singular.label = Do you want to add a document to item {0} in house consignment {1}?
