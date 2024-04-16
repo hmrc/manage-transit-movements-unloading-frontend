@@ -25,7 +25,7 @@ import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, Packag
 import pages.sections.PackagingSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.houseConsignment.index.items.packages.RemovePackageTypeYesNoView
@@ -44,9 +44,6 @@ class RemovePackageTypeYesNoController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
-
-  private def addAnother(arrivalId: ArrivalId, mode: Mode): Call =
-    Call("GET", "#") //TODO should go to addAnother package page
 
   private type Request = SpecificDataRequestProvider1[PackageType]#SpecificDataRequest[_]
 
@@ -106,7 +103,10 @@ class RemovePackageTypeYesNoController @Inject() (
                       Future.fromTry(request.userAnswers.removeExceptSequenceNumber(PackagingSection(houseConsignmentIndex, itemIndex, packageIndex)))
                     } else { Future.successful(request.userAnswers) }
                   _ <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(addAnother(arrivalId, mode))
+                } yield Redirect(
+                  controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController
+                    .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+                )
             )
       }
 
