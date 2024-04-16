@@ -17,9 +17,8 @@
 package generators
 
 import models.P5.ArrivalMessageType
-import models.departureTransportMeans.TransportMeansIdentification
 import models.reference._
-import models.{SecurityType, _}
+import models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call

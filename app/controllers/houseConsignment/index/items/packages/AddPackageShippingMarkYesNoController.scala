@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items.packages
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator
+import navigation.houseConsignment.index.items.PackagesNavigator
 import pages.houseConsignment.index.items.packages.AddPackageShippingMarkYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddPackageShippingMarkYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: HouseConsignmentItemNavigator,
+  navigator: PackagesNavigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,

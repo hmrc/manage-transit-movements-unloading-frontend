@@ -20,10 +20,11 @@ import models.{Index, UserAnswers}
 import play.api.i18n.Messages
 import utils.answersHelpers.consignment.HouseConsignmentAnswersHelper
 import viewModels.sections.Section
+import viewModels.sections.Section.StaticSection
 
 import javax.inject.Inject
 
-case class HouseConsignmentViewModel(sections: Seq[Section])
+case class HouseConsignmentViewModel(section: Section)
 
 object HouseConsignmentViewModel {
 
@@ -39,12 +40,17 @@ object HouseConsignmentViewModel {
 
       val sections: Seq[Section] = Seq(
         helper.departureTransportMeansSection,
+        helper.documentSection,
+        helper.additionalReferencesSection,
+        helper.additionalInformationSection,
         helper.itemSection,
         helper.houseConsignmentConsignorSection,
         helper.houseConsignmentConsigneeSection
       )
+      val houseConsignmentSection: Section =
+        StaticSection(rows = Seq(helper.countryOfDestination, helper.safetyAndSecurityDetails).flatten, children = sections)
 
-      HouseConsignmentViewModel(sections)
+      HouseConsignmentViewModel(houseConsignmentSection)
     }
   }
 }

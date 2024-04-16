@@ -17,11 +17,12 @@
 package pages
 
 import models.UnloadingType
+import pages.sections.OtherQuestionsSection
 import play.api.libs.json.JsPath
 
 case object UnloadingTypePage extends QuestionPage[UnloadingType] {
 
-  override def path: JsPath = JsPath \ "n1:CC044C" \ "UnloadingRemark" \ toString
+  override def path: JsPath = OtherQuestionsSection.path \ toString
 
   override def toString: String = "unloadingCompletion"
 }

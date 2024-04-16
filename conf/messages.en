@@ -34,26 +34,20 @@ error.summary.title = There is a problem
 summaryDetails.link = More details
 summaryDetails.visuallyHidden = on house consignment {0}
 transportEquipmentLink.addRemove = Add or remove transport equipment
-transportEquipmentLink.visuallyHidden = Add or remove transport equipment
 sealsLink.addRemove = Add or remove seal
-sealsLink.visuallyHidden = Add or remove seal
+sealsLink.visuallyHidden = from transport equipment {0}
 consignmentItemLink.addRemove = Add or remove items from transport equipment {0}
-consignmentItemLink.visuallyHidden = Add or remove items from transport equipment {0}
 itemsLink.addRemove = Add or remove item
-itemsLink.visuallyHidden = Add or remove item
 packagingLink.addRemove = Add or remove package
-packagingLink.visuallyHidden = Add or remove package
+packagingLink.visuallyHidden = from item {0}
 documentLink.addRemove = Add or remove document
-documentLink.visuallyHidden = Add or remove document
+documentLink.visuallyHidden = from item {0}
 additionalReferenceLink.addRemove = Add or remove additional reference
-additionalReferenceLink.visuallyHidden = Add or remove additional reference
+additionalReferenceLink.visuallyHidden = from item {0}
 
 departureTransportMeans.addRemove = Add or remove departure means of transport
-departureTransportMeans.visuallyHidden = Add or remove departure means of transport
 documentsLink.addRemove = Add or remove document
-documentsLink.visuallyHidden = Add or remove document
 additionalReferenceLink.addRemove = Add or remove additional reference
-additionalReferenceLink.visuallyHidden = Add or remove additional reference
 commodityCodeLink.add = Enter commodity code
 commodityCodeLink.add.visuallyHidden = Enter commodity code
 commodityCodeLink.remove = Remove commodity code
@@ -324,12 +318,29 @@ addUnloadingCommentsYesNo.heading = Were there any discrepancies between the tra
 addUnloadingCommentsYesNo.paragraph = This includes any changes to the means of transport, items or transport equipment.
 addUnloadingCommentsYesNo.error.required = Select yes if there were any discrepancies between the transit and the declaration summary
 
+addCommentsYesNo.title = Do you want to add any comments?
+addCommentsYesNo.heading = Do you want to add any comments?
+addCommentsYesNo.paragraph = This can be anything else you want to tell us about the discrepancies you spotted when unloading.
+addCommentsYesNo.error.required = Select yes if you want to add any comments
+
+doYouHaveAnythingElseToReportYesNo.title = Do you have anything else to report?
+doYouHaveAnythingElseToReportYesNo.heading = Do you have anything else to report?
+doYouHaveAnythingElseToReportYesNo.paragraph = This can be anything else you want to tell us about the transit movement.
+doYouHaveAnythingElseToReportYesNo.error.required = Select yes if you have anything to report
+
 changesToReport.title = Describe the discrepancies between the transit and the declaration summary
 changesToReport.heading = Describe the discrepancies between the transit and the declaration summary
 changesToReport.checkYourAnswersLabel = What comments do you want to add?
 changesToReport.error.required = Describe the discrepancies between the transit and the declaration summary
 changesToReport.error.length = Your description must be 512 characters or less
 changesToReport.error.invalid = Your description must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+
+otherThingsToReport.title = What do you want to report?
+otherThingsToReport.heading = What do you want to report?
+otherThingsToReport.checkYourAnswersLabel = What do you want to report?
+otherThingsToReport.error.required = Enter what you want to report
+otherThingsToReport.error.length = Your report must be 512 characters or less
+otherThingsToReport.error.invalid = Your report must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 
 confirmRemoveComments.title = Are you sure you want to remove your comments?
 confirmRemoveComments.heading = Are you sure you want to remove your comments?
@@ -462,9 +473,6 @@ unloadingFindings.rowHeadings.sealIdentifier.change.hidden = seal {0} for transp
 unloadingFindings.rowHeadings.containerIdentificationNumber.change.hidden = container identification number for transport equipment {0}
 unloadingFindings.rowHeadings.consignment.item.change.hidden = item {0} for transport equipment {1}
 
-unloadingFindings.rowHeadings.vehicleNationality = Registered country
-unloadingFindings.rowHeadings.vehicleNationality.change.hidden = registered country
-
 unloadingFindings.subsections.transportEquipment = Transport equipment {0}
 unloadingFindings.subsections.transportEquipment.parent.heading = Transport equipment
 unloadingFindings.subsections.seals = Seals
@@ -571,6 +579,13 @@ unloadingFindings.additional.reference.type.change.hidden = type for additional 
 unloadingFindings.additional.reference.number = Reference number
 unloadingFindings.additional.reference.number.change.hidden = reference number for additional reference {0}
 
+unloadingFindings.houseConsignment.additionalReference.heading = Additional references
+unloadingFindings.houseConsignment.additionalReference = Additional reference {0}
+unloadingFindings.houseConsignment.additionalReference.type = Type
+unloadingFindings.houseConsignment.additionalReference.type.change.hidden = type for additional reference {0}
+unloadingFindings.houseConsignment.additionalReference.number = Reference number
+unloadingFindings.houseConsignment.additionalReference.number.change.hidden = reference number for additional reference {0}
+
 unloadingFindings.houseConsignment.item.additionalReference = Additional reference {0}
 unloadingFindings.houseConsignment.item.additionalReference.type = Type
 unloadingFindings.houseConsignment.item.additionalReference.type.change.hidden = type for additional reference {0} in item {1}
@@ -589,6 +604,7 @@ houseConsignment.title = Cross-check the transit with house consignment {0}
 houseConsignment.heading = Cross-check the transit with house consignment {0}
 houseConsignment.paragraph = Compare the transit that arrived with the following information to identify any discrepancies.
 houseConsignment.departureMeansSubHeading = Departure means of transport {0}
+houseConsignment.securityIndicator = Safety and security details
 
 unloadingRemarksSent.title = Unloading remarks sent
 unloadingRemarksSent.heading = Unloading remarks sent
@@ -654,6 +670,7 @@ houseConsignment.index.item.packageType.CheckMode.heading = What is the new pack
 houseConsignment.index.item.packageType.hint = Enter the package or code, like cylinder or CY.
 houseConsignment.index.item.packageType.paragraph = This means the packaging used to store and protect the item during transit.
 houseConsignment.index.item.packageType.error.required = Enter the type of package you are using for the item
+houseConsignment.index.item.packageType.error.nonNumeric = The quantity of the package type must only include numbers 0 to 9
 houseConsignment.index.item.packageType.check.error.required = Enter the new package type for item {0} in house consignment {1}
 houseConsignment.index.item.packageType.placeholder = Select a package type
 
@@ -801,7 +818,7 @@ houseConsignment.index.items.document.addAnotherDocument.plural.label = Do you w
 houseConsignment.index.items.document.addAnotherDocument.maxLimit.label = You cannot add any more documents to item {0} in house consignment {1}. To add another, you need to remove one first.
 houseConsignment.index.items.document.addAnotherDocument.error.required = Select yes if you want to add another document to item {0} in house consignment {1}
 houseConsignment.index.items.document.addAnotherDocument.label = Do you want to add another document to item {0} in house consignment {1}?
-houseConsignment.index.items.document.addAnotherDocument.maxLimitForType.label = You cannot add any more {0} documents to all items. To add another, you need to remove one first. You can, however, still add a {1} document to your items.
+houseConsignment.index.items.document.addAnotherDocument.maxLimitForType.label = You cannot add any more {0} documents to item {3} in house consignment {2}. To add another, you need to remove one first. You can, however, still add a {1} document to your item.
 
 
 additionalReferenceNumber.index.NormalMode.title = What is the additional reference number?
@@ -869,6 +886,13 @@ additionalReference.index.additionalReferenceNumberYesNo.error.required = Select
 unloadingFindings.grossMass = Gross weight
 unloadingFindings.grossMass.change.hidden = gross weight
 
+unloadingFindings.inlandModeOfTransport = Inland mode of transport
+unloadingFindings.inlandModeOfTransport.label = Mode
+
+unloadingFindings.countryOfDestination = Country of destination
+
+unloadingFindings.containerIndicator = Are you using any containers?
+
 document.type.NormalMode.title = What type of document do you want to add?
 document.type.CheckMode.title = What is the new document type?
 document.type.NormalMode.heading = What type of document do you want to add?
@@ -879,6 +903,9 @@ document.type.error.required = Select the type of document you want to add
 document.type.check.error.required = Select the new document type
 document.type.maxLimitForType.label = You cannot add any more {0} documents to all items. To add another, you need to remove one first. You can, however, still add a {1} document to your items.
 
+houseConsignment.addRemove = Add or remove house consignment
+
+houseConsignment.departureTransportMeans.addRemove = Add or remove departure means of transport
 
 houseConsignment.index.items.document.type.NormalMode.title = What type of document do you want to add?
 houseConsignment.index.items.document.type.CheckMode.title = What is the new document type for item {1} in house consignment {0}?
@@ -1056,3 +1083,14 @@ houseConsignment.item.addCombinedNomenclatureCodeYesNo.title = Do you want to ad
 houseConsignment.item.addCombinedNomenclatureCodeYesNo.heading = Do you want to add a combined nomenclature for the item?
 houseConsignment.item.addCombinedNomenclatureCodeYesNo.error.required = Select yes if you want to add a combined nomenclature code for the item
 houseConsignment.item.addCombinedNomenclatureCodeYesNo.paragraph = This is used to classify goods when they’re declared to Customs in the EU.
+
+houseConsignment.index.grossWeight.title = What is the new gross weight of house consignment {0}?
+houseConsignment.index.grossWeight.heading = What is the new gross weight of house consignment {0}?
+houseConsignment.index.grossWeight.paragraph = This is the combined weight of the house consignment’s goods and packaging.
+houseConsignment.index.grossWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
+houseConsignment.index.grossWeight.error.required = Enter the new gross weight of house consignment {0}
+houseConsignment.index.grossWeight.error.invalidValue = The new gross weight must be 16 characters or less
+houseConsignment.index.grossWeight.error.invalidCharacters = The new gross weight must only include numbers 0 to 9 and a decimal point
+houseConsignment.index.grossWeight.error.invalidFormat = The new gross weight must only include 6 decimal places or less
+
+unloadingFindings.rowHeadings.houseConsignment.countryOfDestination = Country of destination

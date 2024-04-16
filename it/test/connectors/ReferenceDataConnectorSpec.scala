@@ -24,7 +24,7 @@ import itbase.{ItSpecBase, WireMockServerHandler}
 import models.DocType.{Previous, Support, Transport}
 import models.SecurityType
 import models.reference._
-import models.reference.transport.TransportMode.{BorderMode, InlandMode}
+import TransportMode.{BorderMode, InlandMode}
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -603,6 +603,57 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
           checkErrorResponse(url, connector.getTransportModeCodes[BorderMode])
         }
       }
+    }
+
+    "getTransportModeCode" - {
+      val code        = "1"
+      val url: String = s"/$baseUrl/lists/TransportModeCode?data.code=$code"
+
+      "must return transport mode code when successful" in {
+        val responseJson: String =
+          """
+            |{
+            |  "_links": {
+            |    "self": {
+            |      "href": "/customs-reference-data/lists/TransportModeCode"
+            |    }
+            |  },
+            |  "meta": {
+            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+            |    "snapshotDate": "2023-01-01"
+            |  },
+            |  "id": "TransportModeCode",
+            |  "data": [
+            |    {
+            |      "code": "1",
+            |      "description": "Maritime Transport"
+            |    },
+            |    {
+            |      "code": "2",
+            |      "description": "Rail Transport"
+            |    }
+            |  ]
+            |}
+            |""".stripMargin
+
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(responseJson))
+        )
+
+        val expectedResult = InlandMode("1", "Maritime Transport")
+
+        connector.getTransportModeCode(code).futureValue mustEqual expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getTransportModeCode(code))
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getTransportModeCode(code))
+      }
+
     }
 
     "getPreviousDocuments" - {

@@ -16,11 +16,12 @@
 
 package pages
 
+import pages.sections.OtherQuestionsSection
 import play.api.libs.json.JsPath
 
 case object AreAnySealsBrokenPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ "navigationData" \ toString
+  override def path: JsPath = OtherQuestionsSection.path \ toString
 
   override def toString: String = "areAnySealsBroken"
 }

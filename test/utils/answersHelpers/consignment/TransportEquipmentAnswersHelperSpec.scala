@@ -16,6 +16,7 @@
 
 package utils.answersHelpers.consignment
 
+import generated.{ConsignmentType05, Number1}
 import models.{CheckMode, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -60,6 +61,29 @@ class TransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase {
       }
     }
 
+    "containerIndicatorRow" - {
+      "must return row" in {
+        val userAnswers = emptyUserAnswers
+          .copy(ie043Data =
+            basicIe043.copy(Consignment =
+              Some(
+                ConsignmentType05(
+                  containerIndicator = Number1,
+                  inlandModeOfTransport = Some("Mode")
+                )
+              )
+            )
+          )
+
+        val helper = new TransportEquipmentAnswersHelper(userAnswers, equipmentIndex)
+        val result = helper.containerIndicatorRow
+
+        result.get.key.value mustBe "Are you using any containers?"
+        result.value.value.value mustBe "Yes"
+        result.get.actions must not be defined
+      }
+    }
+
     "transportEquipmentSeals" - {
       "must generate accordion section" in {
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
@@ -75,9 +99,10 @@ class TransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.sectionTitle.value mustBe "Seals"
             result.id.value mustBe "transport-equipment-1-seals"
 
-            val addOrRemove = result.viewLinks.head
-            addOrRemove.id mustBe "add-remove-transport-equipment-1-seal"
-            addOrRemove.text mustBe "Add or remove seal"
+            val addOrRemoveLink = result.viewLinks.head
+            addOrRemoveLink.id mustBe "add-remove-transport-equipment-1-seal"
+            addOrRemoveLink.text mustBe "Add or remove seal"
+            addOrRemoveLink.visuallyHidden.value mustBe "from transport equipment 1"
 
             result.rows.size mustBe 2
             result.rows.head.value.value mustBe value1
@@ -101,9 +126,10 @@ class TransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.sectionTitle.value mustBe "Items applied to this transport equipment"
             result.id.value mustBe "transport-equipment-1-items"
 
-            val addOrRemove = result.viewLinks.head
-            addOrRemove.id mustBe "add-remove-transport-equipment-1-item"
-            addOrRemove.text mustBe "Add or remove items from transport equipment 1"
+            val addOrRemoveLink = result.viewLinks.head
+            addOrRemoveLink.id mustBe "add-remove-transport-equipment-1-item"
+            addOrRemoveLink.text mustBe "Add or remove items from transport equipment 1"
+            addOrRemoveLink.visuallyHidden must not be defined
 
             result.rows.size mustBe 2
             result.rows.head.value.value mustBe item1.toString

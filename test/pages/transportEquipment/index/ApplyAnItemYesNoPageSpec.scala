@@ -17,7 +17,7 @@
 package pages.transportEquipment.index
 
 import pages.behaviours.PageBehaviours
-import pages.sections.ItemsSection
+import pages.sections.transport.equipment.ItemsSection
 import play.api.libs.json.{JsArray, Json}
 
 class ApplyAnItemYesNoPageSpec extends PageBehaviours {

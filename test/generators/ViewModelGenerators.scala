@@ -16,8 +16,7 @@
 
 package generators
 
-import models.DocType.Previous
-import models.{ArrivalId, ConsignmentLevelDocuments, DocType, HouseConsignmentLevelDocuments, Index, NormalMode}
+import models.{ArrivalId, ConsignmentLevelDocuments, HouseConsignmentLevelDocuments, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.FormError
@@ -115,9 +114,18 @@ trait ViewModelGenerators {
   implicit lazy val arbitraryStaticSection: Arbitrary[StaticSection] = Arbitrary {
     for {
       sectionTitle <- nonEmptyString
+      length       <- Gen.choose(0, maxSeqLength)
+      rows         <- Gen.containerOfN[Seq, SummaryListRow](length, arbitrary[SummaryListRow])
+      children     <- Gen.containerOf[Seq, AccordionSection](arbitrary[AccordionSection])
+    } yield StaticSection(sectionTitle, rows, children)
+  }
+
+  lazy val arbitraryStaticSectionNoChildren: Arbitrary[StaticSection] = Arbitrary {
+    for {
+      sectionTitle <- nonEmptyString
       length       <- Gen.choose(1, maxSeqLength)
       rows         <- Gen.containerOfN[Seq, SummaryListRow](length, arbitrary[SummaryListRow])
-    } yield StaticSection(sectionTitle, rows)
+    } yield StaticSection(sectionTitle, rows, Nil)
   }
 
   implicit lazy val arbitraryAccordionSection: Arbitrary[AccordionSection] = Arbitrary {
@@ -309,9 +317,9 @@ trait ViewModelGenerators {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
       nextIndex    <- arbitrary[Index]
-      docTypes     <- arbitrary[Seq[DocType]]
+      documents    <- arbitrary[HouseConsignmentLevelDocuments](arbitraryHouseConsignmentLevelDocuments)
       allowMore    <- arbitrary[Boolean]
-    } yield AddAnotherHouseConsignmentDocumentViewModel(listItems, onSubmitCall, nextIndex, docTypes.filter(_ != Previous), allowMore)
+    } yield AddAnotherHouseConsignmentDocumentViewModel(listItems, onSubmitCall, nextIndex, documents, allowMore)
   }
 
   implicit lazy val arbitraryContainerIdentificationNumberViewModel: Arbitrary[ContainerIdentificationNumberViewModel] = Arbitrary {

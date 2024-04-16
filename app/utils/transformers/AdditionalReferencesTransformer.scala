@@ -20,7 +20,6 @@ import connectors.ReferenceDataConnector
 import generated.{AdditionalReferenceType02, AdditionalReferenceType03}
 import models.reference.AdditionalReferenceType
 import models.{Index, UserAnswers}
-
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -44,6 +43,21 @@ class AdditionalReferencesTransformer @Inject() (referenceDataConnector: Referen
         setSequenceNumber(AdditionalReferenceSection(index), underlying.sequenceNumber) andThen
           set(AdditionalReferenceTypePage(index), typeValue) andThen
           set(AdditionalReferenceNumberPage(index), underlying.referenceNumber)
+    }
+  }
+
+  def transform(
+    additionalReferences: Seq[AdditionalReferenceType03],
+    hcIndex: Index
+  )(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
+    import pages.sections.houseConsignment.index.additionalReference.AdditionalReferenceSection
+    import pages.houseConsignment.index.additionalReference._
+
+    genericTransform(additionalReferences)(_.typeValue) {
+      case (TempAdditionalReference(underlying, typeValue), index) =>
+        setSequenceNumber(AdditionalReferenceSection(hcIndex, index), underlying.sequenceNumber) andThen
+          set(HouseConsignmentAdditionalReferenceTypePage(hcIndex, index), typeValue) andThen
+          set(HouseConsignmentAdditionalReferenceNumberPage(hcIndex, index), underlying.referenceNumber)
     }
   }
 

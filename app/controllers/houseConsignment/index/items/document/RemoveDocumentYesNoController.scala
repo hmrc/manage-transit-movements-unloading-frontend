@@ -18,9 +18,8 @@ package controllers.houseConsignment.index.items.document
 
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.reference.DocumentType
+import models.removable.Document
 import models.{ArrivalId, Index, Mode, UserAnswers}
-import pages.houseConsignment.index.items.document.{DocumentReferenceNumberPage, TypePage}
 import pages.sections.houseConsignment.index.items.documents.DocumentSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -38,31 +37,13 @@ class RemoveDocumentYesNoController @Inject() (
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: RemoveDocumentYesNoView,
-  getMandatoryPage: SpecificDataRequiredActionProvider
+  view: RemoveDocumentYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def form(houseConsignmentIndex: Index, itemIndex: Index): Form[Boolean] =
-    formProvider("houseConsignment.index.items.document.removeDocumentYesNo", houseConsignmentIndex.display, itemIndex.display)
-
-  private def addAnother(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Call = Call(
-    "GET",
-    controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode).url
-  )
-
-  private def formatInsetText(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index): String = {
-    val documentType: DocumentType      = userAnswers.get(TypePage(houseConsignmentIndex, itemIndex, documentIndex)).get
-    val documentReferenceNumber: String = userAnswers.get(DocumentReferenceNumberPage(houseConsignmentIndex, itemIndex, documentIndex)).get
-
-    s"${documentType.`type`} - $documentReferenceNumber"
-  }
-
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions
-    .requireIndex(arrivalId, DocumentSection(houseConsignmentIndex, itemIndex, documentIndex), addAnother(arrivalId, mode, houseConsignmentIndex, itemIndex))
-    .andThen(getMandatoryPage.getFirst(TypePage(houseConsignmentIndex, itemIndex, documentIndex)))
-    .andThen(getMandatoryPage.getSecond(DocumentReferenceNumberPage(houseConsignmentIndex, itemIndex, documentIndex))) {
+    .requireIndex(arrivalId, DocumentSection(houseConsignmentIndex, itemIndex, documentIndex), addAnother(arrivalId, mode, houseConsignmentIndex, itemIndex)) {
       implicit request =>
         val insetText = formatInsetText(request.userAnswers, houseConsignmentIndex, itemIndex, documentIndex)
         Ok(view(form(houseConsignmentIndex, itemIndex), request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, documentIndex, mode, insetText))
@@ -70,8 +51,6 @@ class RemoveDocumentYesNoController @Inject() (
 
   def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions
     .requireIndex(arrivalId, DocumentSection(houseConsignmentIndex, itemIndex, documentIndex), addAnother(arrivalId, mode, houseConsignmentIndex, itemIndex))
-    .andThen(getMandatoryPage.getFirst(TypePage(houseConsignmentIndex, itemIndex, documentIndex)))
-    .andThen(getMandatoryPage.getSecond(DocumentReferenceNumberPage(houseConsignmentIndex, itemIndex, documentIndex)))
     .async {
       implicit request =>
         val insetText = formatInsetText(request.userAnswers, houseConsignmentIndex, itemIndex, documentIndex)
@@ -97,4 +76,13 @@ class RemoveDocumentYesNoController @Inject() (
               } yield Redirect(addAnother(arrivalId, mode, houseConsignmentIndex, itemIndex))
           )
     }
+
+  def form(houseConsignmentIndex: Index, itemIndex: Index): Form[Boolean] =
+    formProvider("houseConsignment.index.items.document.removeDocumentYesNo", houseConsignmentIndex.display, itemIndex.display)
+
+  private def addAnother(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Call =
+    controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+
+  private def formatInsetText(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index): Option[String] =
+    Document(userAnswers, houseConsignmentIndex, itemIndex, documentIndex).map(_.forRemoveDisplay)
 }

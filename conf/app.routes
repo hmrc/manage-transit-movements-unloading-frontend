@@ -1,7 +1,7 @@
 # microservice specific routes
 
 ->         /                                            app.departureMeansOfTransport.Routes
-->         /                                            app.houseConsignment.index.items.Routes
+->         /                                            app.houseConsignment.index.Routes
 ->         /                                            app.transportEquipment.Routes
 ->         /                                            app.transportEquipment.index.Routes
 ->         /                                            app.documents.Routes
@@ -71,11 +71,24 @@ POST       /:arrivalId/transit-declaration-discrepancies                        
 GET        /:arrivalId/change-transit-declaration-discrepancies                                                      controllers.UnloadingCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-transit-declaration-discrepancies                                                      controllers.UnloadingCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/declaration-summary                                                                           controllers.UnloadingFindingsController.onPageLoad(arrivalId: ArrivalId)
+GET        /:arrivalId/transit-unloading-permission-discrepancies                                                    controllers.UnloadingFindingsController.onPageLoad(arrivalId: ArrivalId)
 
-GET        /:arrivalId/declaration-summary-house-consignment/:index                                                  controllers.HouseConsignmentController.onPageLoad(arrivalId: ArrivalId, index:Index)
+GET        /:arrivalId/transit-unloading-permission-discrepancies/house-consignment/:index                           controllers.HouseConsignmentController.onPageLoad(arrivalId: ArrivalId, index:Index)
 
 GET        /:arrivalId/unloading-remarks-sent                                                                        controllers.UnloadingRemarksSentController.onPageLoad(arrivalId: ArrivalId)
 
 GET        /:arrivalId/check-answers                                                                                 controllers.CheckYourAnswersController.onPageLoad(arrivalId: ArrivalId)
 POST       /:arrivalId/check-answers                                                                                 controllers.CheckYourAnswersController.onSubmit(arrivalId: ArrivalId)
+
+GET        /:arrivalId/add-comments                                                         controllers.AddCommentsYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/add-comments                                                         controllers.AddCommentsYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-add-comments                                                  controllers.AddCommentsYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-add-comments                                                  controllers.AddCommentsYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+
+GET        /:arrivalId/report                                                                                        controllers.OtherThingsToReportController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/report                                                                                        controllers.OtherThingsToReportController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-report                                                                                 controllers.OtherThingsToReportController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-report                                                                                 controllers.OtherThingsToReportController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+
+GET        /:arrivalId/add-report                                                           controllers.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/add-report                                                           controllers.DoYouHaveAnythingElseToReportYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)

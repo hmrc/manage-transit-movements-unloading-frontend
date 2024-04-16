@@ -17,7 +17,7 @@
 package navigation
 
 import models.{Mode, UserAnswers}
-import navigation.houseConsignment.index.items.{HouseConsignmentItemNavigator, DocumentNavigator => ItemDocumentNavigator}
+import navigation.houseConsignment.index.items.{HouseConsignmentItemNavigator, PackagesNavigator, DocumentNavigator => ItemDocumentNavigator}
 import pages._
 import play.api.mvc.Call
 
@@ -53,6 +53,14 @@ class FakeTransportEquipmentNavigator(desiredRoute: Call) extends TransportEquip
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
+class FakeSealNavigator(desiredRoute: Call, mode: Mode) extends SealNavigator(mode) {
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
+}
+
+class FakeGoodsReferenceNavigator(desiredRoute: Call, mode: Mode) extends GoodsReferenceNavigator(mode) {
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
+}
+
 class FakeDepartureTransportMeansNavigator(desiredRoute: Call) extends DepartureTransportMeansNavigator {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
@@ -66,5 +74,9 @@ class FakeAdditionalReferenceNavigator(desiredRoute: Call) extends AdditionalRef
 }
 
 class FakeAdditionalReferenceHouseConsignmentNavigator(desiredRoute: Call) extends navigation.houseConsignment.index.items.AdditionalReferenceNavigator {
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
+}
+
+class FakePackagesNavigator(desiredRoute: Call) extends PackagesNavigator {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }

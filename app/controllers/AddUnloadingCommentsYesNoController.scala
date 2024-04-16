@@ -18,17 +18,21 @@ package controllers
 
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.{ArrivalId, Mode}
+import models.{ArrivalId, Mode, UserAnswers}
 import navigation.Navigation
 import pages.AddUnloadingCommentsYesNoPage
+import pages.sections.OtherQuestionsSection
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.transformers.IE043Transformer
 import views.html.AddUnloadingCommentsYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class AddUnloadingCommentsYesNoController @Inject() (
   override val messagesApi: MessagesApi,
@@ -37,7 +41,8 @@ class AddUnloadingCommentsYesNoController @Inject() (
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddUnloadingCommentsYesNoView
+  view: AddUnloadingCommentsYesNoView,
+  dataTransformer: IE043Transformer
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -60,13 +65,25 @@ class AddUnloadingCommentsYesNoController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
-          value =>
-            // TODO - if user selects No we need to wipe their user answers and re-transform the IE043
-            //  we need to persist the answers to the pre-cross-check questions
+          value => {
+            def updateUserAnswers(): Future[UserAnswers] =
+              if (value) {
+                Future.successful(request.userAnswers)
+              } else {
+                for {
+                  unloadingRemarks <- Future.successful(request.userAnswers.get(OtherQuestionsSection))
+                  wipedAnswers = request.userAnswers.copy(data = Json.obj())
+                  transformedAnswers <- dataTransformer.transform(wipedAnswers)
+                  updatedAnswers     <- Future.fromTry(unloadingRemarks.fold(Try(transformedAnswers))(transformedAnswers.set(OtherQuestionsSection, _)))
+                } yield updatedAnswers
+              }
+
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddUnloadingCommentsYesNoPage, value))
+              userAnswers    <- updateUserAnswers()
+              updatedAnswers <- Future.fromTry(userAnswers.set(AddUnloadingCommentsYesNoPage, value))
               _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(AddUnloadingCommentsYesNoPage, mode, updatedAnswers))
+          }
         )
   }
 }

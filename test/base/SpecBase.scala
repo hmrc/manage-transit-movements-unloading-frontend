@@ -100,8 +100,8 @@ trait SpecBase
     def removeValue(page: QuestionPage[_]): UserAnswers =
       userAnswers.remove(page).success.value
 
-    def getSequenceNumber(section: Section[JsObject]): String =
-      getValue[JsString](section, "sequenceNumber").value
+    def getSequenceNumber(section: Section[JsObject]): BigInt =
+      getValue[JsNumber](section, "sequenceNumber").value.toBigInt
 
     def getValue[A <: JsValue](section: Section[JsObject], key: String)(implicit reads: Reads[A]): A =
       userAnswers.data.transform((section.path \ key).json.pick[A]).get

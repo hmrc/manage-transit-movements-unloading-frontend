@@ -16,7 +16,7 @@
 
 package utils.answersHelpers.consignment.incident
 
-import generated.TranshipmentType02
+import generated.{Flag, TranshipmentType02}
 import models.reference.{Country, Incident, QualifierOfIdentification}
 import models.{Coordinates, DynamicAddress, Index, UserAnswers}
 import pages.incident.endorsement.EndorsementCountryPage
@@ -154,9 +154,9 @@ class IncidentAnswersHelper(userAnswers: UserAnswers, incidentIndex: Index)(impl
         )
     }
 
-  def containerIndicator: Option[SummaryListRow] = buildRowWithNoChangeLink[String](
-    data = userAnswers.ie043Data.Consignment.map(_.containerIndicator.toString),
-    formatAnswer = formatAsBoolean,
+  def containerIndicator: Option[SummaryListRow] = buildRowWithNoChangeLink[Flag](
+    data = userAnswers.ie043Data.Consignment.map(_.containerIndicator),
+    formatAnswer = formatAsYesOrNo,
     prefix = "unloadingFindings.rowHeadings.containerIndicator"
   )
 

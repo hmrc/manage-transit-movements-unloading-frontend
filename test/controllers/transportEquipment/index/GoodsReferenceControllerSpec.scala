@@ -20,10 +20,10 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SelectableFormProvider
 import generators.Generators
 import models.reference.GoodsReference
-import models.{CheckMode, Index, Mode, NormalMode, SelectableList}
+import models.{Index, NormalMode, SelectableList}
+import navigation.GoodsReferenceNavigator.GoodsReferenceNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import org.scalacheck.Arbitrary.arbitrary
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -55,7 +55,10 @@ class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[GoodsReferenceService].toInstance(mockGoodsReferenceService))
+      .overrides(
+        bind[GoodsReferenceNavigatorProvider].toInstance(fakeGoodsReferenceNavigatorProvider),
+        bind[GoodsReferenceService].toInstance(mockGoodsReferenceService)
+      )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -107,54 +110,20 @@ class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         view(filledForm, arrivalId, Index(0), itemIndex, mrn, goodsReferences, equipmentMode, goodsReferenceMode)(request, messages).toString
     }
 
-    "must redirect to the next page when valid data is submitted" - {
-      "when goods reference mode is NormalMode" in {
-        forAll(arbitrary[Mode]) {
-          equipmentMode =>
-            val goodsReferenceMode = NormalMode
+    "must redirect to the next page when valid data is submitted" in {
 
-            lazy val controllerRoute =
-              routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), itemIndex, equipmentMode, goodsReferenceMode).url
+      setExistingUserAnswers(emptyUserAnswers)
 
-            setExistingUserAnswers(emptyUserAnswers)
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-            when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      val request = FakeRequest(POST, controllerRoute)
+        .withFormUrlEncodedBody(("value", goodsReference.declarationGoodsItemNumber.toString()))
 
-            val request = FakeRequest(POST, controllerRoute)
-              .withFormUrlEncodedBody(("value", goodsReference.declarationGoodsItemNumber.toString()))
+      val result = route(app, request).value
 
-            val result = route(app, request).value
+      status(result) mustEqual SEE_OTHER
 
-            status(result) mustEqual SEE_OTHER
-
-            redirectLocation(result).value mustEqual
-              routes.ApplyAnotherItemController.onPageLoad(arrivalId, equipmentMode, goodsReferenceMode, equipmentIndex).url
-        }
-      }
-
-      "when goods reference mode is CheckMode" in {
-        forAll(arbitrary[Mode]) {
-          equipmentMode =>
-            val goodsReferenceMode = CheckMode
-
-            lazy val controllerRoute =
-              routes.GoodsReferenceController.onPageLoad(arrivalId, Index(0), itemIndex, equipmentMode, goodsReferenceMode).url
-
-            setExistingUserAnswers(emptyUserAnswers)
-
-            when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-            val request = FakeRequest(POST, controllerRoute)
-              .withFormUrlEncodedBody(("value", goodsReference.declarationGoodsItemNumber.toString()))
-
-            val result = route(app, request).value
-
-            status(result) mustEqual SEE_OTHER
-
-            redirectLocation(result).value mustEqual
-              controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url
-        }
-      }
+      redirectLocation(result).value mustEqual onwardRoute.url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

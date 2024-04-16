@@ -18,8 +18,7 @@ package utils.answersHelpers.consignment
 
 import generated._
 import models.Coordinates
-import models.departureTransportMeans.TransportMeansIdentification
-import models.reference.{Country, Incident, QualifierOfIdentification}
+import models.reference.{Country, Incident, QualifierOfIdentification, TransportMeansIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.incident.endorsement.EndorsementCountryPage
@@ -400,26 +399,26 @@ class IncidentAnswersHelperSpec extends AnswersHelperSpecBase {
       "when there are transport equipment" - {
         "must return children" in {
           val transportEquipment = TransportEquipmentType07(
-            sequenceNumber = "1",
+            sequenceNumber = 1,
             containerIdentificationNumber = Some("cin"),
             numberOfSeals = Some(2),
             Seal = Seq(
               SealType04(
-                sequenceNumber = "1",
+                sequenceNumber = 1,
                 identifier = "seal1"
               ),
               SealType04(
-                sequenceNumber = "2",
+                sequenceNumber = 2,
                 identifier = "seal2"
               )
             ),
             GoodsReference = Seq(
               GoodsReferenceType01(
-                sequenceNumber = "1",
+                sequenceNumber = 1,
                 declarationGoodsItemNumber = 1
               ),
               GoodsReferenceType01(
-                sequenceNumber = "2",
+                sequenceNumber = 2,
                 declarationGoodsItemNumber = 2
               )
             )

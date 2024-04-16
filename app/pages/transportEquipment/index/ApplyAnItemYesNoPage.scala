@@ -17,8 +17,9 @@
 package pages.transportEquipment.index
 
 import models.{Index, UserAnswers}
-import pages.sections.{ItemsSection, TransportEquipmentSection}
 import pages.QuestionPage
+import pages.sections.TransportEquipmentSection
+import pages.sections.transport.equipment.ItemsSection
 import play.api.libs.json.JsPath
 
 import scala.util.Try
