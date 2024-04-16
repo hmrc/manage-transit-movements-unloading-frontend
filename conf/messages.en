@@ -548,6 +548,9 @@ unloadingFindings.consignor.identificationNumber = EORI number or Trader Identif
 unloadingFindings.consignor.name = Name
 unloadingFindings.consignor.country = Country
 unloadingFindings.consignor.address = Address
+unloadingFindings.consignor.streetNumber =
+unloadingFindings.consignor.postcode = Postcode
+unloadingFindings.consignor.city = City
 
 unloadingFindings.consignee.heading = Consignee
 unloadingFindings.consignee.identificationNumber = EORI number or Trader Identification Number (TIN)

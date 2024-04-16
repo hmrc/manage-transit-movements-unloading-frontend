@@ -18,7 +18,8 @@ package utils.answersHelpers.consignment
 
 import models.DocType.Previous
 import models.reference.Country
-import models.{Index, Link, RichOptionalJsArray, SecurityType, UserAnswers}
+import models.{DynamicAddress, Index, Link, RichOptionalJsArray, SecurityType, UserAnswers}
+import pages.consignor.CountryPage
 import pages.houseConsignment.index.{CountryOfDestinationPage, SecurityIndicatorFromExportDeclarationPage}
 import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
@@ -32,6 +33,7 @@ import utils.answersHelpers.AnswersHelper
 import utils.answersHelpers.consignment.houseConsignment._
 import viewModels.sections.Section
 import viewModels.sections.Section.{AccordionSection, StaticSection}
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
 class HouseConsignmentAnswersHelper(
   userAnswers: UserAnswers,
@@ -71,6 +73,24 @@ class HouseConsignmentAnswersHelper(
     call = None
   )
 
+  def consignorAddress: Option[SummaryListRow] =
+    buildRowWithNoChangeLink[DynamicAddress](
+      data = userAnswers.ie043Data.Consignment
+        .flatMap(_.HouseConsignment.lift(houseConsignmentIndex.position))
+        .flatMap(_.Consignor.flatMap(_.Address))
+        .map(
+          address07 => DynamicAddress(address07)
+        ),
+      formatAnswer = formatAsHtmlContent,
+      prefix = "unloadingFindings.consignor.address"
+    )
+
+  def consignorCountry: Option[SummaryListRow] = buildRowWithNoChangeLink[Country](
+    data = userAnswers.get(CountryPage),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.consignor.country"
+  )
+
   def consigneeName: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = ConsigneeNamePage(houseConsignmentIndex),
     formatAnswer = formatAsText,
@@ -92,7 +112,9 @@ class HouseConsignmentAnswersHelper(
       sectionTitle = messages("unloadingFindings.consignor.heading"),
       rows = Seq(
         consignorIdentification,
-        consignorName
+        consignorName,
+        consignorAddress,
+        consignorCountry
       ).flatten
     )
 
