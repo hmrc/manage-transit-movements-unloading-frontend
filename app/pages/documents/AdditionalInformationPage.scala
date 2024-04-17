@@ -21,7 +21,7 @@ import pages.QuestionPage
 import pages.sections.documents.DocumentDetailsSection
 import play.api.libs.json.JsPath
 
-case class AdditionalInformationPage(documentIndex: Index) extends QuestionPage[String, String] {
+case class AdditionalInformationPage(documentIndex: Index) extends QuestionPage[String] {
 
   override def path: JsPath = DocumentDetailsSection(documentIndex).path \ toString
 

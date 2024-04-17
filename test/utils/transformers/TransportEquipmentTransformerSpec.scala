@@ -47,11 +47,11 @@ class TransportEquipmentTransformerSpec extends SpecBase with AppWithDefaultMock
         bind[GoodsReferencesTransformer].toInstance(mockGoodsReferencesTransformer)
       )
 
-  private case class FakeSealsSection(equipmentIndex: Index) extends QuestionPage[JsObject, JsObject] {
+  private case class FakeSealsSection(equipmentIndex: Index) extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ equipmentIndex.position.toString \ "seals"
   }
 
-  private case class FakeGoodsReferencesSection(equipmentIndex: Index) extends QuestionPage[JsObject, JsObject] {
+  private case class FakeGoodsReferencesSection(equipmentIndex: Index) extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ equipmentIndex.position.toString \ "goodsReferences"
   }
 

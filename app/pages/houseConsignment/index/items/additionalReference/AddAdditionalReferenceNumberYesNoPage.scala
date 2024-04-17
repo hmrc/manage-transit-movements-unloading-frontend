@@ -24,7 +24,7 @@ import play.api.libs.json.JsPath
 import scala.util.Try
 
 case class AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index)
-    extends QuestionPage[Boolean, Boolean] {
+    extends QuestionPage[Boolean] {
 
   override def path: JsPath = AdditionalReferenceSection(houseConsignmentIndex, itemIndex, additionalReferenceIndex).path \ toString
 

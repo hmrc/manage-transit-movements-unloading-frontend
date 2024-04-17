@@ -16,20 +16,21 @@
 
 package pages
 
-import generated.CC043CType
 import play.api.libs.json.{__, Reads}
 import queries.{Gettable, Settable}
 import utils.transformers.SequenceNumber
 
-trait QuestionPage[A, B] extends Page with Gettable[A] with Settable[A] {
+trait QuestionPage[A] extends Page with Gettable[A] with Settable[A]
 
-  def valueInIE043(ie043: CC043CType, sequenceNumber: BigInt): Option[B] = None
+trait DiscrepancyQuestionPage[A, B, C] extends QuestionPage[A] {
+
+  def valueInIE043(ie043: B, sequenceNumber: BigInt): Option[C] = None
 
   /** @param f converts from A (type in user answers) to B (type in IE043)
     * @param reads reads the value from user answers
     * @return a reads of a defined `Option` if there is a discrepancy and an undefined `Option` if there is not
     */
-  def readNullable(f: A => B)(implicit reads: Reads[A]): CC043CType => Reads[Option[B]] = ie043 => {
+  def readNullable(f: A => C)(implicit reads: Reads[A]): B => Reads[Option[C]] = ie043 => {
     for {
       sequenceNumber   <- (__ \ SequenceNumber).readNullable[BigInt]
       userAnswersValue <- (__ \ this.toString).readNullable[A].map(_.map(f))

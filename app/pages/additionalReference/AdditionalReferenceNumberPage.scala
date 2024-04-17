@@ -16,20 +16,20 @@
 
 package pages.additionalReference
 
-import generated.CC043CType
+import generated.ConsignmentType05
 import models.Index
-import pages.QuestionPage
+import pages.DiscrepancyQuestionPage
 import pages.sections.additionalReference.AdditionalReferenceSection
 import play.api.libs.json.JsPath
 
-case class AdditionalReferenceNumberPage(referenceIndex: Index) extends QuestionPage[String, String] {
+case class AdditionalReferenceNumberPage(referenceIndex: Index) extends DiscrepancyQuestionPage[String, Option[ConsignmentType05], String] {
 
   override def path: JsPath = AdditionalReferenceSection(referenceIndex).path \ toString
 
   override def toString: String = "referenceNumber"
 
-  override def valueInIE043(ie043: CC043CType, sequenceNumber: BigInt): Option[String] =
-    ie043.Consignment
+  override def valueInIE043(ie043: Option[ConsignmentType05], sequenceNumber: BigInt): Option[String] =
+    ie043
       .map(_.AdditionalReference)
       .getOrElse(Seq.empty)
       .find(_.sequenceNumber == sequenceNumber)

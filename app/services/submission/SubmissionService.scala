@@ -162,7 +162,7 @@ class SubmissionService @Inject() (
       )
 
     for {
-      containerIdentificationNumber <- ContainerIdentificationNumberPage(index).readNullable(identity).apply(ie043)
+      containerIdentificationNumber <- ContainerIdentificationNumberPage(index).readNullable(identity).apply(ie043.Consignment)
       seals                         <- (__ \ SealsSection(index).toString).readArray[SealType02](sealReads)
       goodsReferences               <- (__ \ ItemsSection(index).toString).readArray[GoodsReferenceType01](goodsReferenceReads)
     } yield Some(
@@ -180,8 +180,8 @@ class SubmissionService @Inject() (
     import pages.additionalReference._
     for {
       removed         <- (__ \ Removed).readNullable[Boolean]
-      typeValue       <- AdditionalReferenceTypePage(index).readNullable(_.documentType).apply(ie043)
-      referenceNumber <- AdditionalReferenceNumberPage(index).readNullable(identity).apply(ie043)
+      typeValue       <- AdditionalReferenceTypePage(index).readNullable(_.documentType).apply(ie043.Consignment)
+      referenceNumber <- AdditionalReferenceNumberPage(index).readNullable(identity).apply(ie043.Consignment)
     } yield removed match {
       case Some(true) =>
         Some(

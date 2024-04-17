@@ -42,10 +42,10 @@ final case class UserAnswers(
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     get(page.path)
 
-  def get[A](page: QuestionPage[A, _])(implicit rds: Reads[A]): Option[A] =
+  def get[A](page: QuestionPage[A])(implicit rds: Reads[A]): Option[A] =
     get(page: Gettable[A])
 
-  def set[A](page: QuestionPage[A, _], value: A)(implicit writes: Writes[A]): Try[UserAnswers] =
+  def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] =
     set(page.path, value).flatMap {
       userAnswers => page.cleanup(Some(value), userAnswers)
     }
@@ -64,7 +64,7 @@ final case class UserAnswers(
     }
   }
 
-  def remove[A](page: QuestionPage[A, _]): Try[UserAnswers] = {
+  def remove[A](page: QuestionPage[A]): Try[UserAnswers] = {
 
     val updatedData = data.removeObject(page.path) match {
       case JsSuccess(jsValue, _) =>
@@ -80,13 +80,13 @@ final case class UserAnswers(
     }
   }
 
-  def removeExceptSequenceNumber[A](section: QuestionPage[A, _]): Try[UserAnswers] =
+  def removeExceptSequenceNumber[A](section: QuestionPage[A]): Try[UserAnswers] =
     removeExceptFields(section, SequenceNumber)
 
-  def removeExceptSequenceNumberAndDeclarationGoodsItemNumber[A](section: QuestionPage[A, _]): Try[UserAnswers] =
+  def removeExceptSequenceNumberAndDeclarationGoodsItemNumber[A](section: QuestionPage[A]): Try[UserAnswers] =
     removeExceptFields(section, SequenceNumber, "declarationGoodsItemNumber")
 
-  private def removeExceptFields[A](section: QuestionPage[A, _], fields: String*): Try[UserAnswers] =
+  private def removeExceptFields[A](section: QuestionPage[A], fields: String*): Try[UserAnswers] =
     for {
       obj <- data
         .transform(section.path.json.pick[JsObject])

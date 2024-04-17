@@ -67,39 +67,39 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
         bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
       )
 
-  private case object FakeConsignorSection extends QuestionPage[JsObject, JsObject] {
+  private case object FakeConsignorSection extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ "consignor"
   }
 
-  private case object FakeConsigneeSection extends QuestionPage[JsObject, JsObject] {
+  private case object FakeConsigneeSection extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ "consignee"
   }
 
-  private case object FakeTransportEquipmentSection extends QuestionPage[JsObject, JsObject] {
+  private case object FakeTransportEquipmentSection extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ "transportEquipment"
   }
 
-  private case object FakeDepartureTransportMeansSection extends QuestionPage[JsObject, JsObject] {
+  private case object FakeDepartureTransportMeansSection extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ "departureTransportMeans"
   }
 
-  private case object FakeDocumentsSection extends QuestionPage[JsObject, JsObject] {
+  private case object FakeDocumentsSection extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ "documents"
   }
 
-  private case object FakeHouseConsignmentSection extends QuestionPage[JsObject, JsObject] {
+  private case object FakeHouseConsignmentSection extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ "houseConsignment"
   }
 
-  private case object FakeAdditionalReferenceSection extends QuestionPage[JsObject, JsObject] {
+  private case object FakeAdditionalReferenceSection extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ "additionalReferenceSection"
   }
 
-  private case object FakeAdditionalInformationSection extends QuestionPage[JsObject, JsObject] {
+  private case object FakeAdditionalInformationSection extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ "additionalInformationSection"
   }
 
-  private case object FakeIncidentSection extends QuestionPage[JsObject, JsObject] {
+  private case object FakeIncidentSection extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ "incidentSection"
   }
 

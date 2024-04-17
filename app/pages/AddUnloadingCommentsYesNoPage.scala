@@ -22,7 +22,7 @@ import play.api.libs.json.JsPath
 
 import scala.util.Try
 
-case object AddUnloadingCommentsYesNoPage extends QuestionPage[Boolean, Boolean] {
+case object AddUnloadingCommentsYesNoPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = OtherQuestionsSection.path \ toString
 

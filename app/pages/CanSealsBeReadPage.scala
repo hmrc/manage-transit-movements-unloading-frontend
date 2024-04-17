@@ -19,7 +19,7 @@ package pages
 import pages.sections.OtherQuestionsSection
 import play.api.libs.json.JsPath
 
-case object CanSealsBeReadPage extends QuestionPage[Boolean, Boolean] {
+case object CanSealsBeReadPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = OtherQuestionsSection.path \ toString
 

@@ -22,7 +22,7 @@ import pages.QuestionPage
 import pages.sections.ItemsSection
 import play.api.libs.json.JsPath
 
-case class CountryOfDestinationPage(houseConsignment: Index, itemIndex: Index) extends QuestionPage[Country, Country] {
+case class CountryOfDestinationPage(houseConsignment: Index, itemIndex: Index) extends QuestionPage[Country] {
 
   override def path: JsPath = ItemsSection(houseConsignment).path \ itemIndex.position \ toString
 

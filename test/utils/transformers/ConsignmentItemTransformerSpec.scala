@@ -54,23 +54,23 @@ class ConsignmentItemTransformerSpec extends SpecBase with AppWithDefaultMockFix
         bind[AdditionalInformationTransformer].toInstance(mockAdditionalInformationTransformer)
       )
 
-  private case class FakeCommoditySection(itemIndex: Index) extends QuestionPage[JsObject, JsObject] {
+  private case class FakeCommoditySection(itemIndex: Index) extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ itemIndex.position.toString \ "commodity"
   }
 
-  private case class FakePackagingSection(itemIndex: Index) extends QuestionPage[JsObject, JsObject] {
+  private case class FakePackagingSection(itemIndex: Index) extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ itemIndex.position.toString \ "packaging"
   }
 
-  private case class FakeDocumentsSection(itemIndex: Index) extends QuestionPage[JsObject, JsObject] {
+  private case class FakeDocumentsSection(itemIndex: Index) extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ itemIndex.position.toString \ "documents"
   }
 
-  private case class FakeAdditionalReferencesSection(itemIndex: Index) extends QuestionPage[JsObject, JsObject] {
+  private case class FakeAdditionalReferencesSection(itemIndex: Index) extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ itemIndex.position.toString \ "additionalReferences"
   }
 
-  private case class FakeAdditionalInformationSection(itemIndex: Index) extends QuestionPage[JsObject, JsObject] {
+  private case class FakeAdditionalInformationSection(itemIndex: Index) extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ itemIndex.position.toString \ "additionalInformation"
   }
 

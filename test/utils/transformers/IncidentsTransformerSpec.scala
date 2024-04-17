@@ -65,15 +65,15 @@ class IncidentsTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
     reset(mockTranshipmentTransformer)
   }
 
-  private case object FakeIncidentEndorsementSection extends QuestionPage[JsObject, JsObject] {
+  private case object FakeIncidentEndorsementSection extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ "incidentEndorsement"
   }
 
-  private case object FakeIncidentLocationSection extends QuestionPage[JsObject, JsObject] {
+  private case object FakeIncidentLocationSection extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ "incidentLocation"
   }
 
-  private case object FakeTranshipmentSection extends QuestionPage[JsObject, JsObject] {
+  private case object FakeTranshipmentSection extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ "replacementMeansOfTransport"
   }
 

@@ -24,7 +24,7 @@ import play.api.libs.json.JsPath
 
 import scala.util.Try
 
-case class AddDocumentYesNoPage(houseConsignmentIndex: Index) extends QuestionPage[Boolean, Boolean] {
+case class AddDocumentYesNoPage(houseConsignmentIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ toString
 

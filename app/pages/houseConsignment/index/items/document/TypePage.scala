@@ -22,7 +22,7 @@ import pages.QuestionPage
 import pages.sections.houseConsignment.index.items.documents.DocumentSection
 import play.api.libs.json.JsPath
 
-case class TypePage(houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index) extends QuestionPage[DocumentType, DocumentType] {
+case class TypePage(houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index) extends QuestionPage[DocumentType] {
 
   override def path: JsPath = DocumentSection(houseConsignmentIndex, itemIndex, documentIndex).path \ toString
 

@@ -28,7 +28,7 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
   def arrivalId: ArrivalId = userAnswers.id
 
   def getAnswerAndBuildRow[T](
-    page: QuestionPage[T, _],
+    page: QuestionPage[T],
     formatAnswer: T => Content,
     prefix: String,
     id: Option[String],
@@ -47,7 +47,7 @@ class AnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) exten
     }
 
   def getAnswerAndBuildRowWithRemove[T](
-    page: QuestionPage[T, _],
+    page: QuestionPage[T],
     formatAnswer: T => Content,
     prefix: String,
     id: String,

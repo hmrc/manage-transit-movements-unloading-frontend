@@ -19,7 +19,7 @@ package pages
 import models.reference.CustomsOffice
 import play.api.libs.json.JsPath
 
-case object CustomsOfficeOfDestinationActualPage extends QuestionPage[CustomsOffice, CustomsOffice] {
+case object CustomsOfficeOfDestinationActualPage extends QuestionPage[CustomsOffice] {
 
   override def path: JsPath = JsPath \ toString
 

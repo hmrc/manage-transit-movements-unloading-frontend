@@ -22,7 +22,7 @@ import pages.QuestionPage
 import pages.sections.incidents.IncidentEndorsementSection
 import play.api.libs.json.JsPath
 
-case class EndorsementCountryPage(incidentIndex: Index) extends QuestionPage[Country, Country] {
+case class EndorsementCountryPage(incidentIndex: Index) extends QuestionPage[Country] {
 
   override def path: JsPath = IncidentEndorsementSection(incidentIndex).path \ toString
 

@@ -22,7 +22,7 @@ import pages.QuestionPage
 import pages.sections.additionalInformation.AdditionalInformationSection
 import play.api.libs.json.JsPath
 
-case class AdditionalInformationCodePage(informationIndex: Index) extends QuestionPage[AdditionalInformationCode, AdditionalInformationCode] {
+case class AdditionalInformationCodePage(informationIndex: Index) extends QuestionPage[AdditionalInformationCode] {
 
   override def path: JsPath = AdditionalInformationSection(informationIndex).path \ toString
 

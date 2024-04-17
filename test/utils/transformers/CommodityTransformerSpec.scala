@@ -46,11 +46,11 @@ class CommodityTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
         bind[DangerousGoodsTransformer].toInstance(mockDangerousGoodsTransformer)
       )
 
-  private case object FakeGoodsMeasureSection extends QuestionPage[JsObject, JsObject] {
+  private case object FakeGoodsMeasureSection extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ "goodsMeasure"
   }
 
-  private case object FakeDangerousGoodsSection extends QuestionPage[JsObject, JsObject] {
+  private case object FakeDangerousGoodsSection extends QuestionPage[JsObject] {
     override def path: JsPath = JsPath \ "UNNumber"
   }
 

@@ -21,7 +21,7 @@ import pages.QuestionPage
 import pages.sections.TransportMeansSection
 import play.api.libs.json.JsPath
 
-case class VehicleIdentificationNumberPage(transportMeansIndex: Index) extends QuestionPage[String, String] {
+case class VehicleIdentificationNumberPage(transportMeansIndex: Index) extends QuestionPage[String] {
 
   override def path: JsPath     = TransportMeansSection(transportMeansIndex).path \ toString
   override def toString: String = "identificationNumber"

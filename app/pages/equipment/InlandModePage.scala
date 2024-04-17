@@ -21,7 +21,7 @@ import pages.QuestionPage
 import pages.sections.equipment.TransportSection
 import play.api.libs.json.JsPath
 
-case object InlandModePage extends QuestionPage[InlandMode, InlandMode] {
+case object InlandModePage extends QuestionPage[InlandMode] {
 
   override def path: JsPath = TransportSection.path \ toString
 

@@ -22,7 +22,7 @@ import pages.QuestionPage
 import pages.sections.TransportMeansSection
 import play.api.libs.json.JsPath
 
-case class CountryPage(transportMeansIndex: Index) extends QuestionPage[Country, Country] {
+case class CountryPage(transportMeansIndex: Index) extends QuestionPage[Country] {
 
   override def path: JsPath = TransportMeansSection(transportMeansIndex).path \ toString
 

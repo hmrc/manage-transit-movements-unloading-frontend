@@ -89,16 +89,16 @@ trait SpecBase
 
   implicit class RichUserAnswers(userAnswers: UserAnswers) {
 
-    def getValue[T](page: QuestionPage[T, _])(implicit rds: Reads[T]): T =
+    def getValue[T](page: QuestionPage[T])(implicit rds: Reads[T]): T =
       userAnswers.get(page).value
 
-    def setValue[T](page: QuestionPage[T, _], value: T)(implicit wts: Writes[T]): UserAnswers =
+    def setValue[T](page: QuestionPage[T], value: T)(implicit wts: Writes[T]): UserAnswers =
       userAnswers.set(page, value).success.value
 
-    def setValue[T](page: QuestionPage[T, _], value: Option[T])(implicit wts: Writes[T]): UserAnswers =
+    def setValue[T](page: QuestionPage[T], value: Option[T])(implicit wts: Writes[T]): UserAnswers =
       value.map(setValue(page, _)).getOrElse(userAnswers)
 
-    def removeValue(page: QuestionPage[_, _]): UserAnswers =
+    def removeValue(page: QuestionPage[_]): UserAnswers =
       userAnswers.remove(page).success.value
 
     def getSequenceNumber(section: Section[JsObject]): BigInt =

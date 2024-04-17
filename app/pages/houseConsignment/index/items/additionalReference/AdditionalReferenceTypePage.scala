@@ -23,7 +23,7 @@ import pages.sections.houseConsignment.index.items.additionalReference.Additiona
 import play.api.libs.json.JsPath
 
 case class AdditionalReferenceTypePage(houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index)
-    extends QuestionPage[AdditionalReferenceType, AdditionalReferenceType] {
+    extends QuestionPage[AdditionalReferenceType] {
 
   override def path: JsPath =
     AdditionalReferenceSection(houseConsignmentIndex, itemIndex, additionalReferenceIndex).path \ toString

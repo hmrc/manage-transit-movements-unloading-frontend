@@ -19,7 +19,7 @@ package pages
 import pages.sections.OtherQuestionsSection
 import play.api.libs.json.JsPath
 
-case object UnloadingCommentsPage extends QuestionPage[String, String] {
+case object UnloadingCommentsPage extends QuestionPage[String] {
 
   override def path: JsPath = OtherQuestionsSection.path \ toString
 

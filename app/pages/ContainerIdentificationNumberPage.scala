@@ -16,13 +16,21 @@
 
 package pages
 
+import generated.ConsignmentType05
 import models.Index
 import pages.sections.TransportEquipmentSection
 import play.api.libs.json.JsPath
 
-final case class ContainerIdentificationNumberPage(equipmentIndex: Index) extends QuestionPage[String, String] {
+final case class ContainerIdentificationNumberPage(equipmentIndex: Index) extends DiscrepancyQuestionPage[String, Option[ConsignmentType05], String] {
 
   override def path: JsPath = TransportEquipmentSection(equipmentIndex).path \ toString
 
   override def toString: String = "containerIdentificationNumber"
+
+  override def valueInIE043(ie043: Option[ConsignmentType05], sequenceNumber: BigInt): Option[String] =
+    ie043
+      .map(_.TransportEquipment)
+      .getOrElse(Seq.empty)
+      .find(_.sequenceNumber == sequenceNumber)
+      .flatMap(_.containerIdentificationNumber)
 }

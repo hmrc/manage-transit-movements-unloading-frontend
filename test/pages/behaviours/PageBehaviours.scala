@@ -31,7 +31,7 @@ trait PageBehaviours extends SpecBase with Matchers with ScalaCheckPropertyCheck
 
   class BeRetrievable[A] {
 
-    def apply[P <: QuestionPage[A, _]](genP: Gen[P])(implicit ev1: Arbitrary[A], ev2: Format[A]): Unit = {
+    def apply[P <: QuestionPage[A]](genP: Gen[P])(implicit ev1: Arbitrary[A], ev2: Format[A]): Unit = {
 
       import models.RichJsObject
 
@@ -80,7 +80,7 @@ trait PageBehaviours extends SpecBase with Matchers with ScalaCheckPropertyCheck
 
   class BeSettable[A] {
 
-    def apply[P <: QuestionPage[A, _]](genP: Gen[P])(implicit ev1: Arbitrary[A], ev2: Format[A]): Unit =
+    def apply[P <: QuestionPage[A]](genP: Gen[P])(implicit ev1: Arbitrary[A], ev2: Format[A]): Unit =
       "must be able to be set on UserAnswers" in {
 
         val gen = for {
@@ -99,7 +99,7 @@ trait PageBehaviours extends SpecBase with Matchers with ScalaCheckPropertyCheck
 
   class BeRemovable[A] {
 
-    def apply[P <: QuestionPage[A, _]](genP: Gen[P])(implicit ev1: Arbitrary[A], ev2: Format[A]): Unit =
+    def apply[P <: QuestionPage[A]](genP: Gen[P])(implicit ev1: Arbitrary[A], ev2: Format[A]): Unit =
       "must be able to be removed from UserAnswers" in {
 
         val gen = for {

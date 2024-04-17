@@ -23,7 +23,7 @@ import pages.sections.houseConsignment.index.items.documents.DocumentSection
 
 import scala.util.Try
 
-case class AddAdditionalInformationYesNoPage(houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index) extends QuestionPage[Boolean, Boolean] {
+case class AddAdditionalInformationYesNoPage(houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = DocumentSection(houseConsignmentIndex, itemIndex, documentIndex).path \ toString
 
