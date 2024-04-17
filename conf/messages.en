@@ -704,8 +704,8 @@ houseConsignment.removeCombinedNomenclatureCodeYesNo.title = Are you sure you wa
 houseConsignment.removeCombinedNomenclatureCodeYesNo.heading = Are you sure you want to remove the combined nomenclature code from item {0} in house consignment {1}?
 houseConsignment.removeCombinedNomenclatureCodeYesNo.error.required = Select yes if you want to remove the combined nomenclature code from item {0} in house consignment {1}
 
-houseConsignment.combinedNomenclatureCode.title = What is the new combined nomenclature code for item {0} in house consignment {0}?
-houseConsignment.combinedNomenclatureCode.heading = What is the new combined nomenclature code for item {0} in house consignment {0}?
+houseConsignment.combinedNomenclatureCode.title = What is the new combined nomenclature code for item {1} in house consignment {0}?
+houseConsignment.combinedNomenclatureCode.heading = What is the new combined nomenclature code for item {1} in house consignment {0}?
 houseConsignment.combinedNomenclatureCode.xi.paragraph = The combination of your combined nomenclature code and commodity code must be a valid code in TARIC. This is the European Union’s database for classifying goods and determining the amount of duties required.
 houseConsignment.combinedNomenclatureCode.hint = This will be 2 characters long and include both letters and numbers.
 houseConsignment.combinedNomenclatureCode.error.required = Enter the new combined nomenclature code for item {0} in house consignment {1}
@@ -808,10 +808,10 @@ houseConsignment.index.items.document.addAdditionalInformationYesNo.heading = Do
 houseConsignment.index.items.document.addAdditionalInformationYesNo.paragraph = This can be any other information you want to declare, such as a contact, any safety risks or further descriptions.
 houseConsignment.index.items.document.addAdditionalInformationYesNo.error.required = Select yes if you want to add any additional information for this document
 
-houseConsignment.index.items.document.addAnotherDocument.singular.title = You have added 1 document to item {0} in house consignment {1}
+houseConsignment.index.items.document.addAnotherDocument.singular.title = You have added 1 document to item {1} in house consignment {2}
 houseConsignment.index.items.document.addAnotherDocument.plural.title = You have added {0} documents to item {1} in house consignment {2}
 houseConsignment.index.items.document.addAnotherDocument.empty.title = You have added {0} documents to item {1} in house consignment {2}
-houseConsignment.index.items.document.addAnotherDocument.singular.heading = You have added 1 document to item {0} in house consignment {1}
+houseConsignment.index.items.document.addAnotherDocument.singular.heading = You have added 1 document to item {1} in house consignment {2}
 houseConsignment.index.items.document.addAnotherDocument.empty.heading = You have added {0} documents to item {1} in house consignment {2}
 houseConsignment.index.items.document.addAnotherDocument.plural.heading = You have added {0} documents to item {1} in house consignment {2}
 houseConsignment.index.items.document.addAnotherDocument.singular.label = Do you want to add a document to item {0} in house consignment {1}?
