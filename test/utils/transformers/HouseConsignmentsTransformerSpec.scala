@@ -62,31 +62,31 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
         bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
       )
 
-  private case class FakeConsigneeSection(hcIndex: Index) extends QuestionPage[JsObject] {
+  private case class FakeConsigneeSection(hcIndex: Index) extends QuestionPage[JsObject, JsObject] {
     override def path: JsPath = JsPath \ hcIndex.position.toString \ "consignee"
   }
 
-  private case class FakeConsignorSection(hcIndex: Index) extends QuestionPage[JsObject] {
+  private case class FakeConsignorSection(hcIndex: Index) extends QuestionPage[JsObject, JsObject] {
     override def path: JsPath = JsPath \ hcIndex.position.toString \ "consignor"
   }
 
-  private case class FakeDepartureTransportMeansSection(hcIndex: Index) extends QuestionPage[JsObject] {
+  private case class FakeDepartureTransportMeansSection(hcIndex: Index) extends QuestionPage[JsObject, JsObject] {
     override def path: JsPath = JsPath \ hcIndex.position.toString \ "departureTransportMeans"
   }
 
-  private case class FakeDocumentsSection(hcIndex: Index) extends QuestionPage[JsObject] {
+  private case class FakeDocumentsSection(hcIndex: Index) extends QuestionPage[JsObject, JsObject] {
     override def path: JsPath = JsPath \ hcIndex.position.toString \ "documents"
   }
 
-  private case class FakeAdditionalReferenceSection(hcIndex: Index) extends QuestionPage[JsObject] {
+  private case class FakeAdditionalReferenceSection(hcIndex: Index) extends QuestionPage[JsObject, JsObject] {
     override def path: JsPath = JsPath \ hcIndex.position.toString \ "additionalReference"
   }
 
-  private case class FakeAdditionalInformationSection(hcIndex: Index) extends QuestionPage[JsObject] {
+  private case class FakeAdditionalInformationSection(hcIndex: Index) extends QuestionPage[JsObject, JsObject] {
     override def path: JsPath = JsPath \ hcIndex.position.toString \ "additionalInformation"
   }
 
-  private case class FakeConsignmentItemSection(hcIndex: Index) extends QuestionPage[JsObject] {
+  private case class FakeConsignmentItemSection(hcIndex: Index) extends QuestionPage[JsObject, JsObject] {
     override def path: JsPath = JsPath \ hcIndex.position.toString \ "consignmentItems"
   }
 

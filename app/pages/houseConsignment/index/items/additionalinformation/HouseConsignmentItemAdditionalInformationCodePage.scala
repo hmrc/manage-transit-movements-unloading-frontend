@@ -23,7 +23,7 @@ import pages.sections.houseConsignment.index.items.additionalInformation.Additio
 import play.api.libs.json.JsPath
 
 case class HouseConsignmentItemAdditionalInformationCodePage(houseConsignmentIndex: Index, itemIndex: Index, additionalInformationIndex: Index)
-    extends QuestionPage[AdditionalInformationCode] {
+    extends QuestionPage[AdditionalInformationCode, AdditionalInformationCode] {
 
   override def path: JsPath =
     AdditionalInformationSection(houseConsignmentIndex, itemIndex, additionalInformationIndex).path \ toString

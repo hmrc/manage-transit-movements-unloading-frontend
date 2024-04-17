@@ -22,7 +22,7 @@ import pages.sections.houseConsignment.index.departureTransportMeans.TransportMe
 import play.api.libs.json.JsPath
 
 case class DepartureTransportMeansIdentificationTypePage(houseConsignmentIndex: Index, transportMeansIndex: Index)
-    extends QuestionPage[TransportMeansIdentification] {
+    extends QuestionPage[TransportMeansIdentification, TransportMeansIdentification] {
 
   override def path: JsPath = TransportMeansSection(houseConsignmentIndex, transportMeansIndex).path \ toString
 

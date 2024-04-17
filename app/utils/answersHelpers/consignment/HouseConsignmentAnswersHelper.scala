@@ -33,7 +33,6 @@ import utils.answersHelpers.AnswersHelper
 import utils.answersHelpers.consignment.houseConsignment._
 import viewModels.sections.Section
 import viewModels.sections.Section.{AccordionSection, StaticSection}
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
 class HouseConsignmentAnswersHelper(
   userAnswers: UserAnswers,

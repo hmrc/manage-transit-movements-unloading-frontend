@@ -32,7 +32,7 @@ import java.time.Instant
 trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
-  val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
+  val generators: Seq[Gen[(QuestionPage[_, _], JsValue)]] =
     arbitrary[(UnloadingCommentsPage.type, JsValue)] ::
       arbitrary[(AreAnySealsBrokenPage.type, JsValue)] ::
       arbitrary[(CanSealsBeReadPage.type, JsValue)] ::
@@ -53,7 +53,7 @@ trait UserAnswersGenerator extends TryValues {
         eoriNumber <- arbitrary[EoriNumber]
         ie043Data  <- arbitrary[CC043CType]
         data <- generators match {
-          case Nil => Gen.const(Map[QuestionPage[_], JsValue]())
+          case Nil => Gen.const(Map[QuestionPage[_, _], JsValue]())
           case _   => Gen.mapOf(oneOf(generators))
         }
       } yield UserAnswers(

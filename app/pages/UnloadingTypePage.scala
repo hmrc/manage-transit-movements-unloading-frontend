@@ -20,7 +20,7 @@ import models.UnloadingType
 import pages.sections.OtherQuestionsSection
 import play.api.libs.json.JsPath
 
-case object UnloadingTypePage extends QuestionPage[UnloadingType] {
+case object UnloadingTypePage extends QuestionPage[UnloadingType, UnloadingType] {
 
   override def path: JsPath = OtherQuestionsSection.path \ toString
 

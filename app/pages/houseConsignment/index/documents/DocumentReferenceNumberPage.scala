@@ -21,7 +21,7 @@ import pages.QuestionPage
 import pages.sections.houseConsignment.index.documents.DocumentSection
 import play.api.libs.json.JsPath
 
-case class DocumentReferenceNumberPage(houseConsignmentIndex: Index, documentIndex: Index) extends QuestionPage[String] {
+case class DocumentReferenceNumberPage(houseConsignmentIndex: Index, documentIndex: Index) extends QuestionPage[String, String] {
 
   override def path: JsPath = DocumentSection(houseConsignmentIndex, documentIndex).path \ toString
 

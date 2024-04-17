@@ -21,7 +21,7 @@ import pages.QuestionPage
 import pages.sections.ConsignorSection
 import play.api.libs.json.JsPath
 
-case object CountryPage extends QuestionPage[Country] {
+case object CountryPage extends QuestionPage[Country, Country] {
 
   override def path: JsPath = ConsignorSection.path \ toString
 

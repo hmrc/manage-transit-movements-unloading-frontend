@@ -50,19 +50,19 @@ class IE043TransformerSpec extends SpecBase with AppWithDefaultMockFixtures with
         bind[HolderOfTheTransitProcedureTransformer].toInstance(mockHotPTransformer)
       )
 
-  private case object FakeConsignmentSection extends QuestionPage[JsObject] {
+  private case object FakeConsignmentSection extends QuestionPage[JsObject, JsObject] {
     override def path: JsPath = JsPath \ "consignment"
   }
 
-  private case object FakeTransitOperationSection extends QuestionPage[JsObject] {
+  private case object FakeTransitOperationSection extends QuestionPage[JsObject, JsObject] {
     override def path: JsPath = JsPath \ "transitOperation"
   }
 
-  private case object FakeCustomsOfficeOfDestinationActualSection extends QuestionPage[JsObject] {
+  private case object FakeCustomsOfficeOfDestinationActualSection extends QuestionPage[JsObject, JsObject] {
     override def path: JsPath = JsPath \ "CustomsOfficeOfDestinationActual"
   }
 
-  private case object HotPSection extends QuestionPage[JsObject] {
+  private case object HotPSection extends QuestionPage[JsObject, JsObject] {
     override def path: JsPath = JsPath \ "HolderOfTheTransitProcedure" \ "Address"
   }
 

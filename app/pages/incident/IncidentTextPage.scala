@@ -21,7 +21,7 @@ import pages.QuestionPage
 import pages.sections.incidents.IncidentSection
 import play.api.libs.json.JsPath
 
-case class IncidentTextPage(incidentIndex: Index) extends QuestionPage[String] {
+case class IncidentTextPage(incidentIndex: Index) extends QuestionPage[String, String] {
 
   override def path: JsPath = IncidentSection(incidentIndex).path \ toString
 

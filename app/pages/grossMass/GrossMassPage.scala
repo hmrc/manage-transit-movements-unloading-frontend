@@ -19,7 +19,7 @@ package pages.grossMass
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object GrossMassPage extends QuestionPage[BigDecimal] {
+case object GrossMassPage extends QuestionPage[BigDecimal, BigDecimal] {
 
   override def path: JsPath = JsPath \ "Consignment" \ toString
 

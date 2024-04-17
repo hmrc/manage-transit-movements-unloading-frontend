@@ -22,7 +22,7 @@ import pages.QuestionPage
 import pages.sections.incidents.IncidentSection
 import play.api.libs.json.JsPath
 
-case class IdentificationPage(incidentIndex: Index) extends QuestionPage[TransportMeansIdentification] {
+case class IdentificationPage(incidentIndex: Index) extends QuestionPage[TransportMeansIdentification, TransportMeansIdentification] {
 
   override def path: JsPath = IncidentSection(incidentIndex).path \ "Transhipment" \ toString
 

@@ -20,7 +20,7 @@ import models.{DynamicAddress, Index}
 import pages.sections.HouseConsignmentSection
 import play.api.libs.json.JsPath
 
-case class ConsigneeAddressPage(houseConsignmentIndex: Index) extends QuestionPage[DynamicAddress] {
+case class ConsigneeAddressPage(houseConsignmentIndex: Index) extends QuestionPage[DynamicAddress, DynamicAddress] {
 
   override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ "Consignee" \ toString
 

@@ -21,7 +21,7 @@ import pages.QuestionPage
 import pages.sections.HouseConsignmentSection
 import play.api.libs.json.JsPath
 
-case class SecurityIndicatorFromExportDeclarationPage(houseConsignmentIndex: Index) extends QuestionPage[SecurityType] {
+case class SecurityIndicatorFromExportDeclarationPage(houseConsignmentIndex: Index) extends QuestionPage[SecurityType, SecurityType] {
 
   override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ toString
 

@@ -21,7 +21,7 @@ import play.api.libs.json.JsPath
 
 import java.time.LocalDate
 
-case object DateGoodsUnloadedPage extends QuestionPage[LocalDate] {
+case object DateGoodsUnloadedPage extends QuestionPage[LocalDate, LocalDate] {
 
   override def path: JsPath = OtherQuestionsSection.path \ toString
 

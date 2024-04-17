@@ -19,12 +19,13 @@ package services.submission
 import connectors.ApiConnector
 import generated._
 import models.{ArrivalId, EoriNumber, Index, UnloadingType, UserAnswers}
+import pages.sections.additionalReference.AdditionalReferencesSection
 import play.api.libs.json.{__, Reads}
 import scalaxb.DataRecord
 import scalaxb.`package`.toXML
 import services.DateTimeService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import utils.transformers.SequenceNumber
+import utils.transformers.Removed
 
 import java.time.LocalDate
 import javax.inject.Inject
@@ -51,7 +52,7 @@ class SubmissionService @Inject() (
       for {
         transitOperation <- __.read[TransitOperationType15](transitOperationReads(userAnswers))
         unloadingRemark  <- __.read[UnloadingRemarkType]
-        consignment      <- __.readNullableSafe[ConsignmentType06]
+        consignment      <- __.readNullableSafe[ConsignmentType06](consignmentReads(userAnswers.ie043Data))
       } yield CC044CType(
         messageSequence1 = messageSequence(userAnswers.eoriNumber, officeOfDestination),
         TransitOperation = transitOperation,
@@ -114,60 +115,91 @@ class SubmissionService @Inject() (
     )
   }
 
-  implicit val consignmentReads: Reads[ConsignmentType06] = {
+  def consignmentReads(ie043: CC043CType): Reads[ConsignmentType06] = {
     import pages.grossMass.GrossMassPage
     import pages.sections._
 
     for {
-      grossMass          <- GrossMassPage.path.readNullable[BigDecimal]
-      transportEquipment <- TransportEquipmentListSection.path.readArray(consignmentTransportEquipmentReads)
+      grossMass            <- GrossMassPage.path.readNullable[BigDecimal]
+      transportEquipment   <- TransportEquipmentListSection.path.readArray(consignmentTransportEquipmentReads(ie043))
+      additionalReferences <- AdditionalReferencesSection.path.readArray(consignmentAdditionalReferenceReads(ie043))
     } yield ConsignmentType06(
       grossMass = grossMass,
       TransportEquipment = transportEquipment,
       DepartureTransportMeans = Nil,
       SupportingDocument = Nil,
       TransportDocument = Nil,
-      AdditionalReference = Nil,
+      AdditionalReference = additionalReferences,
       HouseConsignment = Nil
     )
   }
 
-  private def consignmentTransportEquipmentReads(index: Index): Reads[TransportEquipmentType03] = {
+  private def consignmentTransportEquipmentReads(ie043: CC043CType)(index: Index, sequenceNumber: BigInt): Reads[Option[TransportEquipmentType03]] = {
     import pages.ContainerIdentificationNumberPage
     import pages.sections.SealsSection
     import pages.sections.transport.equipment.ItemsSection
     import pages.transportEquipment.index._
     import pages.transportEquipment.index.seals._
 
-    def sealReads(sealIndex: Index): Reads[SealType02] =
+    def sealReads(sealIndex: Index, sequenceNumber: BigInt): Reads[Option[SealType02]] =
       for {
-        sequenceNumber <- (__ \ SequenceNumber).read[BigInt]
-        identifier     <- (__ \ SealIdentificationNumberPage(index, sealIndex).toString).read[String]
-      } yield SealType02(
-        sequenceNumber = sequenceNumber,
-        identifier = identifier
+        identifier <- (__ \ SealIdentificationNumberPage(index, sealIndex).toString).read[String]
+      } yield Some(
+        SealType02(
+          sequenceNumber = sequenceNumber,
+          identifier = identifier
+        )
       )
 
-    def goodsReferenceReads(goodsReferenceIndex: Index): Reads[GoodsReferenceType01] =
+    def goodsReferenceReads(goodsReferenceIndex: Index, sequenceNumber: BigInt): Reads[Option[GoodsReferenceType01]] =
       for {
-        sequenceNumber             <- (__ \ SequenceNumber).read[BigInt]
         declarationGoodsItemNumber <- (__ \ ItemPage(index, goodsReferenceIndex).toString).read[BigInt]
-      } yield GoodsReferenceType01(
-        sequenceNumber = sequenceNumber,
-        declarationGoodsItemNumber = declarationGoodsItemNumber
+      } yield Some(
+        GoodsReferenceType01(
+          sequenceNumber = sequenceNumber,
+          declarationGoodsItemNumber = declarationGoodsItemNumber
+        )
       )
 
     for {
-      sequenceNumber                <- (__ \ SequenceNumber).read[BigInt]
-      containerIdentificationNumber <- (__ \ ContainerIdentificationNumberPage(index).toString).readNullable[String]
+      containerIdentificationNumber <- ContainerIdentificationNumberPage(index).readNullable(identity).apply(ie043)
       seals                         <- (__ \ SealsSection(index).toString).readArray[SealType02](sealReads)
       goodsReferences               <- (__ \ ItemsSection(index).toString).readArray[GoodsReferenceType01](goodsReferenceReads)
-    } yield TransportEquipmentType03(
-      sequenceNumber = sequenceNumber,
-      containerIdentificationNumber = containerIdentificationNumber,
-      numberOfSeals = Some(seals.length),
-      Seal = seals,
-      GoodsReference = goodsReferences
+    } yield Some(
+      TransportEquipmentType03(
+        sequenceNumber = sequenceNumber,
+        containerIdentificationNumber = containerIdentificationNumber,
+        numberOfSeals = Some(seals.length),
+        Seal = seals,
+        GoodsReference = goodsReferences
+      )
     )
+  }
+
+  private def consignmentAdditionalReferenceReads(ie043: CC043CType)(index: Index, sequenceNumber: BigInt): Reads[Option[AdditionalReferenceType06]] = {
+    import pages.additionalReference._
+    for {
+      removed         <- (__ \ Removed).readNullable[Boolean]
+      typeValue       <- AdditionalReferenceTypePage(index).readNullable(_.documentType).apply(ie043)
+      referenceNumber <- AdditionalReferenceNumberPage(index).readNullable(identity).apply(ie043)
+    } yield removed match {
+      case Some(true) =>
+        Some(
+          AdditionalReferenceType06(
+            sequenceNumber = sequenceNumber,
+            typeValue = None,
+            referenceNumber = None
+          )
+        )
+      case _ =>
+        (typeValue, referenceNumber).map {
+          x =>
+            AdditionalReferenceType06(
+              sequenceNumber = sequenceNumber,
+              typeValue = x._1,
+              referenceNumber = x._2
+            )
+        }
+    }
   }
 }

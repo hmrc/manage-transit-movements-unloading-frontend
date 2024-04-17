@@ -19,4 +19,4 @@ package pages.sections
 import pages.QuestionPage
 import play.api.libs.json.JsValue
 
-trait Section[T <: JsValue] extends QuestionPage[T]
+trait Section[T <: JsValue] extends QuestionPage[T, T]

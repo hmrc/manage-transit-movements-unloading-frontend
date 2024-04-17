@@ -28,7 +28,7 @@ class UserAnswersSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   "UserAnswers" - {
 
-    case object TestPage extends QuestionPage[String] {
+    case object TestPage extends QuestionPage[String, String] {
       override def path: JsPath = JsPath \ "foo"
     }
 

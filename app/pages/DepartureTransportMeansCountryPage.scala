@@ -21,7 +21,7 @@ import models.reference.Country
 import pages.sections.houseConsignment.index.departureTransportMeans.TransportMeansSection
 import play.api.libs.json.JsPath
 
-case class DepartureTransportMeansCountryPage(houseConsignmentIndex: Index, transportMeansIndex: Index) extends QuestionPage[Country] {
+case class DepartureTransportMeansCountryPage(houseConsignmentIndex: Index, transportMeansIndex: Index) extends QuestionPage[Country, Country] {
 
   override def path: JsPath = TransportMeansSection(houseConsignmentIndex, transportMeansIndex).path \ toString
 

@@ -16,7 +16,6 @@
 
 package models
 
-import derivable.Derivable
 import generated.CC043CType
 import models.SensitiveFormats.SensitiveWrites
 import pages._
@@ -37,16 +36,16 @@ final case class UserAnswers(
   lastUpdated: Instant
 ) {
 
+  def get[A](path: JsPath)(implicit rds: Reads[A]): Option[A] =
+    Reads.optionNoError(Reads.at(path)).reads(data).getOrElse(None)
+
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
-    Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
+    get(page.path)
 
-  def get[A, B](derivable: Derivable[A, B])(implicit rds: Reads[A]): Option[B] =
-    get(derivable: Gettable[A]).map(derivable.derive)
-
-  def get[A](page: QuestionPage[A])(implicit rds: Reads[A]): Option[A] =
+  def get[A](page: QuestionPage[A, _])(implicit rds: Reads[A]): Option[A] =
     get(page: Gettable[A])
 
-  def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] =
+  def set[A](page: QuestionPage[A, _], value: A)(implicit writes: Writes[A]): Try[UserAnswers] =
     set(page.path, value).flatMap {
       userAnswers => page.cleanup(Some(value), userAnswers)
     }
@@ -65,7 +64,7 @@ final case class UserAnswers(
     }
   }
 
-  def remove[A](page: QuestionPage[A]): Try[UserAnswers] = {
+  def remove[A](page: QuestionPage[A, _]): Try[UserAnswers] = {
 
     val updatedData = data.removeObject(page.path) match {
       case JsSuccess(jsValue, _) =>
@@ -81,13 +80,13 @@ final case class UserAnswers(
     }
   }
 
-  def removeExceptSequenceNumber[A](section: QuestionPage[A]): Try[UserAnswers] =
+  def removeExceptSequenceNumber[A](section: QuestionPage[A, _]): Try[UserAnswers] =
     removeExceptFields(section, SequenceNumber)
 
-  def removeExceptSequenceNumberAndDeclarationGoodsItemNumber[A](section: QuestionPage[A]): Try[UserAnswers] =
+  def removeExceptSequenceNumberAndDeclarationGoodsItemNumber[A](section: QuestionPage[A, _]): Try[UserAnswers] =
     removeExceptFields(section, SequenceNumber, "declarationGoodsItemNumber")
 
-  private def removeExceptFields[A](section: QuestionPage[A], fields: String*): Try[UserAnswers] =
+  private def removeExceptFields[A](section: QuestionPage[A, _], fields: String*): Try[UserAnswers] =
     for {
       obj <- data
         .transform(section.path.json.pick[JsObject])

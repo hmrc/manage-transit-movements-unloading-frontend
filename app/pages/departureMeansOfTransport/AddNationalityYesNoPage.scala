@@ -23,7 +23,7 @@ import play.api.libs.json.JsPath
 
 import scala.util.Try
 
-case class AddNationalityYesNoPage(transportMeansIndex: Index) extends QuestionPage[Boolean] {
+case class AddNationalityYesNoPage(transportMeansIndex: Index) extends QuestionPage[Boolean, Boolean] {
 
   override def path: JsPath = TransportMeansSection(transportMeansIndex).path \ toString
 

@@ -24,7 +24,7 @@ import play.api.libs.json.JsPath
 import scala.util.Try
 
 case class RemoveAdditionalReferenceNumberYesNoPage(houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index)
-    extends QuestionPage[Boolean] {
+    extends QuestionPage[Boolean, Boolean] {
 
   override def path: JsPath = AdditionalReferenceSection(houseConsignmentIndex, itemIndex, additionalReferenceIndex).path \ toString
 

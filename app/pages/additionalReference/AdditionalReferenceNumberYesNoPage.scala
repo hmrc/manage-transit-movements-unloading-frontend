@@ -23,7 +23,7 @@ import play.api.libs.json.JsPath
 
 import scala.util.Try
 
-case class AdditionalReferenceNumberYesNoPage(referenceIndex: Index) extends QuestionPage[Boolean] {
+case class AdditionalReferenceNumberYesNoPage(referenceIndex: Index) extends QuestionPage[Boolean, Boolean] {
 
   override def path: JsPath = AdditionalReferenceSection(referenceIndex).path \ toString
 

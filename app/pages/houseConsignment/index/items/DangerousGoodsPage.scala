@@ -21,7 +21,7 @@ import pages.QuestionPage
 import pages.sections.houseConsignment.index.items.dangerousGoods.DangerousGoodsSection
 import play.api.libs.json.JsPath
 
-case class DangerousGoodsPage(houseConsignmentIndex: Index, itemIndex: Index, dangerousGoodsIndex: Index) extends QuestionPage[String] {
+case class DangerousGoodsPage(houseConsignmentIndex: Index, itemIndex: Index, dangerousGoodsIndex: Index) extends QuestionPage[String, String] {
 
   override def path: JsPath     = DangerousGoodsSection(houseConsignmentIndex, itemIndex, dangerousGoodsIndex).path \ toString
   override def toString: String = "UNNumber"

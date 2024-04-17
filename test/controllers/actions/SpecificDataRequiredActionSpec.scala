@@ -48,7 +48,7 @@ class SpecificDataRequiredActionSpec extends SpecBase {
       refine(request)
   }
 
-  private case object FakePage extends QuestionPage[String] {
+  private case object FakePage extends QuestionPage[String, String] {
     override def path: JsPath = JsPath \ "foo"
   }
 

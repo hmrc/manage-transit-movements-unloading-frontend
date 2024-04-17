@@ -21,7 +21,7 @@ import models.reference.Country
 import pages.sections.HouseConsignmentSection
 import play.api.libs.json.JsPath
 
-case class ConsigneeCountryPage(houseConsignmentIndex: Index) extends QuestionPage[Country] {
+case class ConsigneeCountryPage(houseConsignmentIndex: Index) extends QuestionPage[Country, Country] {
 
   override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ "Consignee" \ toString
 

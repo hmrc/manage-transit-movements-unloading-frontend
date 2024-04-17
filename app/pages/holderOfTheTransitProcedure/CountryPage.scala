@@ -20,7 +20,7 @@ import models.reference.Country
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object CountryPage extends QuestionPage[Country] {
+case object CountryPage extends QuestionPage[Country, Country] {
 
   override def path: JsPath = JsPath \ "HolderOfTheTransitProcedure" \ "Address" \ toString
 

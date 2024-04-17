@@ -16,15 +16,23 @@
 
 package pages.additionalReference
 
+import generated.CC043CType
 import models.Index
 import models.reference.AdditionalReferenceType
 import pages.QuestionPage
 import pages.sections.additionalReference.AdditionalReferenceSection
 import play.api.libs.json.JsPath
 
-case class AdditionalReferenceTypePage(referenceIndex: Index) extends QuestionPage[AdditionalReferenceType] {
+case class AdditionalReferenceTypePage(referenceIndex: Index) extends QuestionPage[AdditionalReferenceType, String] {
 
   override def path: JsPath = AdditionalReferenceSection(referenceIndex).path \ toString
 
   override def toString: String = "type"
+
+  override def valueInIE043(ie043: CC043CType, sequenceNumber: BigInt): Option[String] =
+    ie043.Consignment
+      .map(_.AdditionalReference)
+      .getOrElse(Seq.empty)
+      .find(_.sequenceNumber == sequenceNumber)
+      .map(_.typeValue)
 }

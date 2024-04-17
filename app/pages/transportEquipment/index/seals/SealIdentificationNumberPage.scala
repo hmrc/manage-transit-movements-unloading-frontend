@@ -21,7 +21,7 @@ import pages.QuestionPage
 import pages.sections.SealSection
 import play.api.libs.json.JsPath
 
-case class SealIdentificationNumberPage(equipmentIndex: Index, sealIndex: Index) extends QuestionPage[String] {
+case class SealIdentificationNumberPage(equipmentIndex: Index, sealIndex: Index) extends QuestionPage[String, String] {
 
   override def path: JsPath = SealSection(equipmentIndex, sealIndex).path \ toString
 

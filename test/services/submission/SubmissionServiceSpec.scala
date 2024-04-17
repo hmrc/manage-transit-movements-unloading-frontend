@@ -19,7 +19,8 @@ package services.submission
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated._
 import generators.Generators
-import models.UnloadingType
+import models.{Index, UnloadingType}
+import models.reference.AdditionalReferenceType
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -249,15 +250,18 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
     "must create consignment" in {
       import pages.grossMass.GrossMassPage
 
-      val grossMass = Gen.option(arbitrary[BigDecimal]).sample.value
+      forAll(arbitrary[CC043CType]) {
+        ie043 =>
+          val grossMass = Gen.option(arbitrary[BigDecimal]).sample.value
 
-      val userAnswers = emptyUserAnswers
-        .setValue(GrossMassPage, grossMass)
+          val userAnswers = emptyUserAnswers
+            .setValue(GrossMassPage, grossMass)
 
-      val reads  = service.consignmentReads
-      val result = userAnswers.data.as[ConsignmentType06](reads)
+          val reads  = service.consignmentReads(ie043)
+          val result = userAnswers.data.as[ConsignmentType06](reads)
 
-      result.grossMass mustBe grossMass
+          result.grossMass mustBe grossMass
+      }
     }
 
     "must create transport equipment" in {
@@ -266,34 +270,153 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       import pages.sections.{SealSection, TransportEquipmentSection}
       import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 
-      val sequenceNumber                = arbitrary[BigInt].sample.value
-      val containerIdentificationNumber = Gen.option(Gen.alphaNumStr).sample.value
-      val sealSequenceNumber            = arbitrary[BigInt].sample.value
-      val sealIdentifier                = Gen.alphaNumStr.sample.value
-      val goodsReferenceSequenceNumber  = arbitrary[BigInt].sample.value
-      val declarationGoodsItemNumber    = arbitrary[BigInt].sample.value
+      forAll(arbitrary[CC043CType]) {
+        ie043 =>
+          val sequenceNumber                = arbitrary[BigInt].sample.value
+          val containerIdentificationNumber = Gen.option(Gen.alphaNumStr).sample.value
+          val sealSequenceNumber            = arbitrary[BigInt].sample.value
+          val sealIdentifier                = Gen.alphaNumStr.sample.value
+          val goodsReferenceSequenceNumber  = arbitrary[BigInt].sample.value
+          val declarationGoodsItemNumber    = arbitrary[BigInt].sample.value
 
-      val userAnswers = emptyUserAnswers
-        .setSequenceNumber(TransportEquipmentSection(index), sequenceNumber)
-        .setValue(ContainerIdentificationNumberPage(index), containerIdentificationNumber)
-        .setSequenceNumber(SealSection(index, sealIndex), sealSequenceNumber)
-        .setValue(SealIdentificationNumberPage(index, sealIndex), sealIdentifier)
-        .setSequenceNumber(ItemSection(index, itemIndex), goodsReferenceSequenceNumber)
-        .setValue(ItemPage(index, sealIndex), declarationGoodsItemNumber)
+          val userAnswers = emptyUserAnswers
+            .setSequenceNumber(TransportEquipmentSection(index), sequenceNumber)
+            .setValue(ContainerIdentificationNumberPage(index), containerIdentificationNumber)
+            .setSequenceNumber(SealSection(index, sealIndex), sealSequenceNumber)
+            .setValue(SealIdentificationNumberPage(index, sealIndex), sealIdentifier)
+            .setSequenceNumber(ItemSection(index, itemIndex), goodsReferenceSequenceNumber)
+            .setValue(ItemPage(index, sealIndex), declarationGoodsItemNumber)
 
-      val reads  = service.consignmentReads
-      val result = userAnswers.data.as[ConsignmentType06](reads).TransportEquipment
+          val reads  = service.consignmentReads(ie043)
+          val result = userAnswers.data.as[ConsignmentType06](reads).TransportEquipment
 
-      result.size mustBe 1
-      result.head.sequenceNumber mustBe sequenceNumber
-      result.head.containerIdentificationNumber mustBe containerIdentificationNumber
-      result.head.numberOfSeals.value mustBe 1
-      result.head.Seal mustBe Seq(
-        SealType02(sealSequenceNumber, sealIdentifier)
-      )
-      result.head.GoodsReference mustBe Seq(
-        GoodsReferenceType01(goodsReferenceSequenceNumber, declarationGoodsItemNumber)
-      )
+          result.size mustBe 1
+          result.head.sequenceNumber mustBe sequenceNumber
+          result.head.containerIdentificationNumber mustBe containerIdentificationNumber
+          result.head.numberOfSeals.value mustBe 1
+          result.head.Seal mustBe Seq(
+            SealType02(sealSequenceNumber, sealIdentifier)
+          )
+          result.head.GoodsReference mustBe Seq(
+            GoodsReferenceType01(goodsReferenceSequenceNumber, declarationGoodsItemNumber)
+          )
+      }
+    }
+
+    "must create additional references" - {
+      import pages.additionalReference._
+      import pages.sections.additionalReference.AdditionalReferenceSection
+
+      "when there are discrepancies" in {
+        forAll(arbitrary[CC043CType], arbitrary[ConsignmentType05]) {
+          (a, b) =>
+            val additionalReferences = Seq(
+              AdditionalReferenceType03(
+                sequenceNumber = 1,
+                typeValue = "originalTypeValue1",
+                referenceNumber = Some("originalReferenceNumber1")
+              ),
+              AdditionalReferenceType03(
+                sequenceNumber = 2,
+                typeValue = "originalTypeValue2",
+                referenceNumber = Some("originalReferenceNumber2")
+              ),
+              AdditionalReferenceType03(
+                sequenceNumber = 3,
+                typeValue = "originalTypeValue3",
+                referenceNumber = Some("originalReferenceNumber3")
+              ),
+              AdditionalReferenceType03(
+                sequenceNumber = 4,
+                typeValue = "originalTypeValue4",
+                referenceNumber = Some("originalReferenceNumber4")
+              )
+            )
+            val consignment = b.copy(AdditionalReference = additionalReferences)
+            val ie043       = a.copy(Consignment = Some(consignment))
+
+            // First one changed. Second one changed. Third one removed. Fourth one unchanged. Fifth one added.
+            val userAnswers = emptyUserAnswers
+              .setSequenceNumber(AdditionalReferenceSection(Index(0)), 1)
+              .setNotRemoved(AdditionalReferenceSection(Index(0)))
+              .setValue(AdditionalReferenceTypePage(Index(0)), AdditionalReferenceType("newTypeValue1", "newTypeValue1Description"))
+              .setValue(AdditionalReferenceNumberPage(Index(0)), "originalReferenceNumber1")
+              .setSequenceNumber(AdditionalReferenceSection(Index(1)), 2)
+              .setNotRemoved(AdditionalReferenceSection(Index(1)))
+              .setValue(AdditionalReferenceTypePage(Index(1)), AdditionalReferenceType("originalTypeValue2", "originalTypeValue2Description"))
+              .setValue(AdditionalReferenceNumberPage(Index(1)), "newReferenceNumber2")
+              .setSequenceNumber(AdditionalReferenceSection(Index(2)), 3)
+              .setRemoved(AdditionalReferenceSection(Index(2)))
+              .setSequenceNumber(AdditionalReferenceSection(Index(3)), 4)
+              .setNotRemoved(AdditionalReferenceSection(Index(3)))
+              .setValue(AdditionalReferenceTypePage(Index(3)), AdditionalReferenceType("originalTypeValue4", "originalTypeValue4Description"))
+              .setValue(AdditionalReferenceNumberPage(Index(3)), "originalReferenceNumber4")
+              .setValue(AdditionalReferenceTypePage(Index(4)), AdditionalReferenceType("newTypeValue5", "newTypeValue5Description"))
+              .setValue(AdditionalReferenceNumberPage(Index(4)), "newReferenceNumber5")
+
+            val reads  = service.consignmentReads(ie043)
+            val result = userAnswers.data.as[ConsignmentType06](reads).AdditionalReference
+
+            result mustBe Seq(
+              AdditionalReferenceType06(
+                sequenceNumber = 1,
+                typeValue = Some("newTypeValue1"),
+                referenceNumber = None
+              ),
+              AdditionalReferenceType06(
+                sequenceNumber = 2,
+                typeValue = None,
+                referenceNumber = Some("newReferenceNumber2")
+              ),
+              AdditionalReferenceType06(
+                sequenceNumber = 3,
+                typeValue = None,
+                referenceNumber = None
+              ),
+              AdditionalReferenceType06(
+                sequenceNumber = 5,
+                typeValue = Some("newTypeValue5"),
+                referenceNumber = Some("newReferenceNumber5")
+              )
+            )
+        }
+      }
+
+      "when there are no discrepancies" in {
+        forAll(arbitrary[CC043CType], arbitrary[ConsignmentType05]) {
+          (a, b) =>
+            val additionalReferences = Seq(
+              AdditionalReferenceType03(
+                sequenceNumber = 1,
+                typeValue = "originalTypeValue1",
+                referenceNumber = Some("originalReferenceNumber1")
+              ),
+              AdditionalReferenceType03(
+                sequenceNumber = 2,
+                typeValue = "originalTypeValue2",
+                referenceNumber = Some("originalReferenceNumber2")
+              )
+            )
+            val consignment = b.copy(AdditionalReference = additionalReferences)
+            val ie043       = a.copy(Consignment = Some(consignment))
+
+            // First one unchanged. Second one unchanged.
+            val userAnswers = emptyUserAnswers
+              .setSequenceNumber(AdditionalReferenceSection(Index(0)), 1)
+              .setNotRemoved(AdditionalReferenceSection(Index(0)))
+              .setValue(AdditionalReferenceTypePage(Index(0)), AdditionalReferenceType("originalTypeValue1", "originalTypeValue1Description"))
+              .setValue(AdditionalReferenceNumberPage(Index(0)), "originalReferenceNumber1")
+              .setSequenceNumber(AdditionalReferenceSection(Index(1)), 2)
+              .setNotRemoved(AdditionalReferenceSection(Index(1)))
+              .setValue(AdditionalReferenceTypePage(Index(1)), AdditionalReferenceType("originalTypeValue2", "originalTypeValue2Description"))
+              .setValue(AdditionalReferenceNumberPage(Index(1)), "originalReferenceNumber2")
+
+            val reads  = service.consignmentReads(ie043)
+            val result = userAnswers.data.as[ConsignmentType06](reads).AdditionalReference
+
+            result mustBe Nil
+        }
+      }
     }
   }
 }

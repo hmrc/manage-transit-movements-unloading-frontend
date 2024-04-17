@@ -22,15 +22,16 @@ import pages.QuestionPage
 import pages.sections.additionalReference.AdditionalReferenceSection
 import play.api.libs.json.JsPath
 
-case class AdditionalReferenceNumberPage(referenceIndex: Index) extends QuestionPage[String] {
+case class AdditionalReferenceNumberPage(referenceIndex: Index) extends QuestionPage[String, String] {
 
   override def path: JsPath = AdditionalReferenceSection(referenceIndex).path \ toString
 
   override def toString: String = "referenceNumber"
 
-  override def valueInIE043(ie043: CC043CType): Option[String] = {
-    val additionalReferences = ie043.Consignment.map(_.AdditionalReference).getOrElse(Seq.empty)
-    val additionalReference  = additionalReferences.toList.lift(referenceIndex.position)
-    additionalReference.flatMap(_.referenceNumber)
-  }
+  override def valueInIE043(ie043: CC043CType, sequenceNumber: BigInt): Option[String] =
+    ie043.Consignment
+      .map(_.AdditionalReference)
+      .getOrElse(Seq.empty)
+      .find(_.sequenceNumber == sequenceNumber)
+      .flatMap(_.referenceNumber)
 }

@@ -22,7 +22,7 @@ import pages.QuestionPage
 import pages.sections.incidents.IncidentLocationSection
 import play.api.libs.json.JsPath
 
-case class QualifierOfIdentificationPage(incidentIndex: Index) extends QuestionPage[QualifierOfIdentification] {
+case class QualifierOfIdentificationPage(incidentIndex: Index) extends QuestionPage[QualifierOfIdentification, QualifierOfIdentification] {
 
   override def path: JsPath = IncidentLocationSection(incidentIndex).path \ toString
 

@@ -20,7 +20,7 @@ import models.Index
 import pages.sections.TransportEquipmentSection
 import play.api.libs.json.JsPath
 
-final case class ContainerIdentificationNumberPage(equipmentIndex: Index) extends QuestionPage[String] {
+final case class ContainerIdentificationNumberPage(equipmentIndex: Index) extends QuestionPage[String, String] {
 
   override def path: JsPath = TransportEquipmentSection(equipmentIndex).path \ toString
 
