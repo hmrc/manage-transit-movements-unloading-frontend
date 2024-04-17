@@ -29,7 +29,6 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 
 import scala.concurrent.Future
-import pages.houseConsignment.consignor.{CountryPage => HouseCountryPage}
 
 class ConsignorTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
