@@ -19,7 +19,7 @@ package utils.answersHelpers.consignment
 import models.DocType.Previous
 import models.reference.Country
 import models.{DynamicAddress, Index, Link, RichOptionalJsArray, SecurityType, UserAnswers}
-import pages.consignor.CountryPage
+import pages.houseConsignment.consignor.CountryPage
 import pages.houseConsignment.index.{CountryOfDestinationPage, SecurityIndicatorFromExportDeclarationPage}
 import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
@@ -34,6 +34,25 @@ import utils.answersHelpers.consignment.houseConsignment._
 import viewModels.sections.Section
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+
+object Joe extends App {
+
+  case class Identification(`type`: String, description: String) {
+    override def toString: String = "we overid it"
+  }
+
+  val identificationType: Option[Identification] = Some(Identification("gg", "bb"))
+
+  val identificationNumber: Option[String] = Some("vv")
+
+  def forRemoveDisplay: String = (identificationType, identificationNumber) match {
+    case (Some(a), Some(b)) => s"${a.toString} - $b - inhere"
+    case (Some(a), None)    => a.toString
+    case (None, Some(b))    => b
+    case (None, None)       => ""
+  }
+  println(forRemoveDisplay)
+}
 
 class HouseConsignmentAnswersHelper(
   userAnswers: UserAnswers,
@@ -86,7 +105,7 @@ class HouseConsignmentAnswersHelper(
     )
 
   def consignorCountry: Option[SummaryListRow] = buildRowWithNoChangeLink[Country](
-    data = userAnswers.get(CountryPage),
+    data = userAnswers.get(CountryPage(houseConsignmentIndex)),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.consignor.country"
   )

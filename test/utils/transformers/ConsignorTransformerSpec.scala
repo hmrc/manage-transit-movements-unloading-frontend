@@ -29,6 +29,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 
 import scala.concurrent.Future
+import pages.houseConsignment.consignor.{CountryPage => HouseCountryPage}
 
 class ConsignorTransformerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
@@ -98,9 +99,16 @@ class ConsignorTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
       import pages.{ConsignorIdentifierPage, ConsignorNamePage}
 
       "when consignee defined" in {
-        forAll(arbitrary[ConsignorType06]) {
-          consignor =>
-            val result = transformer.transform(Some(consignor), hcIndex).apply(emptyUserAnswers).futureValue
+        forAll(arbitrary[ConsignorType06], arbitrary[AddressType07], arbitrary[Country]) {
+          (consignor, address, country) =>
+            beforeEach()
+
+            val input = consignor.copy(Address = Some(address))
+
+            when(mockReferenceDataConnector.getCountry(eqTo(address.country))(any(), any()))
+              .thenReturn(Future.successful(country))
+
+            val result = transformer.transform(Some(input), hcIndex).apply(emptyUserAnswers).futureValue
 
             result.get(ConsignorIdentifierPage(hcIndex)) mustBe consignor.identificationNumber
             result.get(ConsignorNamePage(hcIndex)) mustBe consignor.name
