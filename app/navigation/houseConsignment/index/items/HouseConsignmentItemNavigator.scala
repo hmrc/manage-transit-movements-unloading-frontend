@@ -23,7 +23,7 @@ import navigation.Navigator
 import pages._
 import pages.houseConsignment.index.items._
 import pages.houseConsignment.index.items.document.AddDocumentYesNoPage
-import pages.houseConsignment.index.items.packages.{AddPackageShippingMarkYesNoPage, NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
+import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
 import play.api.mvc.Call
 
 @Singleton
@@ -71,12 +71,7 @@ class HouseConsignmentItemNavigator extends Navigator {
     case NetWeightPage(houseConsignmentIndex, _)           => ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
     case CombinedNomenclatureCodePage(houseConsignmentIndex, _) =>
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
-    case CommodityCodePage(houseConsignmentIndex, itemIndex) =>
-      ua =>
-        Some(
-          controllers.houseConsignment.index.items.routes.AddCombinedNomenclatureCodeYesNoController
-            .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
-        )
+    case CommodityCodePage(houseConsignmentIndex, _) => ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
     case CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, _) =>
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
     case AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex) => ua => addAdditionalReferenceYesNoCheckRoute(ua, houseConsignmentIndex, itemIndex)
