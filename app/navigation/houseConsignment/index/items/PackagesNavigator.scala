@@ -17,7 +17,7 @@
 package navigation.houseConsignment.index.items
 
 import com.google.inject.Singleton
-import models.{ArrivalId, Index, NormalMode, UserAnswers}
+import models.{ArrivalId, Index, Mode, NormalMode, UserAnswers}
 import navigation.Navigator
 import controllers.houseConsignment.index.items.packages.routes
 import pages._
@@ -50,6 +50,30 @@ class PackagesNavigator extends Navigator {
         Some(
           routes.AddAnotherPackageController
             .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
+        )
+    case AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex) =>
+      ua => addNumberOfPackagesYesNoRoute(ua, ua.id, houseConsignmentIndex, itemIndex, packageIndex, NormalMode)
+    case PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex) =>
+      ua =>
+        Some(
+          controllers.houseConsignment.index.items.packages.routes.AddNumberOfPackagesYesNoController
+            .onPageLoad(ua.id, NormalMode, houseConsignmentIndex, itemIndex, packageIndex)
+        )
+
+    case NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex) =>
+      ua =>
+        Some(
+          controllers.houseConsignment.index.items.packages.routes.AddPackageShippingMarkYesNoController
+            .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, packageIndex, NormalMode)
+        )
+
+    case AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex) =>
+      ua => addPackageShippingMarkYesNoRoute(ua, ua.id, houseConsignmentIndex, itemIndex, packageIndex, NormalMode)
+
+    case PackageShippingMarkPage(houseConsignmentIndex, itemIndex, _) =>
+      ua =>
+        Some(
+          controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
         )
   }
 
@@ -85,5 +109,38 @@ class PackagesNavigator extends Navigator {
       case false =>
         routes.AddAnotherPackageController
           .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
+    }
+
+  def addNumberOfPackagesYesNoRoute(ua: UserAnswers,
+                                    arrivalId: ArrivalId,
+                                    houseConsignmentIndex: Index,
+                                    itemIndex: Index,
+                                    packageIndex: Index,
+                                    mode: Mode
+  ): Option[Call] =
+    ua.get(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex)).map {
+      case true =>
+        controllers.houseConsignment.index.items.packages.routes.NumberOfPackagesController
+          .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)
+
+      case false =>
+        controllers.houseConsignment.index.items.packages.routes.AddPackageShippingMarkYesNoController
+          .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)
+
+    }
+
+  def addPackageShippingMarkYesNoRoute(ua: UserAnswers,
+                                       arrivalId: ArrivalId,
+                                       houseConsignmentIndex: Index,
+                                       itemIndex: Index,
+                                       packageIndex: Index,
+                                       mode: Mode
+  ): Option[Call] =
+    ua.get(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex)).map {
+      case true =>
+        controllers.houseConsignment.index.items.packages.routes.PackageShippingMarkController
+          .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)
+      case false =>
+        controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
     }
 }

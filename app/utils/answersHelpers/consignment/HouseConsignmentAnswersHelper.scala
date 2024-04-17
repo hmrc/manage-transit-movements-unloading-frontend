@@ -18,7 +18,7 @@ package utils.answersHelpers.consignment
 
 import models.DocType.Previous
 import models.reference.Country
-import models.{DynamicAddress, Index, Link, RichOptionalJsArray, SecurityType, UserAnswers}
+import models.{DynamicAddress, Index, Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
 import pages.houseConsignment.consignor.CountryPage
 import pages.houseConsignment.index.{CountryOfDestinationPage, SecurityIndicatorFromExportDeclarationPage}
 import pages.sections.ItemsSection
@@ -33,7 +33,6 @@ import utils.answersHelpers.AnswersHelper
 import utils.answersHelpers.consignment.houseConsignment._
 import viewModels.sections.Section
 import viewModels.sections.Section.{AccordionSection, StaticSection}
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
 object Joe extends App {
 
@@ -321,7 +320,7 @@ class HouseConsignmentAnswersHelper(
   def itemsAddRemoveLink: Link =
     Link(
       id = "add-remove-items",
-      href = "#",
+      href = controllers.houseConsignment.index.items.routes.AddAnotherItemController.onPageLoad(arrivalId, houseConsignmentIndex, NormalMode).url,
       text = messages("itemsLink.addRemove")
     )
 }

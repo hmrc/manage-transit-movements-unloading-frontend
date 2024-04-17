@@ -20,7 +20,6 @@ import generated._
 import models.Coordinates
 import models.reference.TransportMode.InlandMode
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen.const
 import org.scalacheck.{Arbitrary, Gen}
 import scalaxb.XMLCalendar
 
