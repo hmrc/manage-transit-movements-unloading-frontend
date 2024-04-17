@@ -17,11 +17,10 @@
 package controllers.transportEquipment.index.seals
 
 import controllers.actions._
-import controllers.routes._
-import controllers.transportEquipment.index.routes._
 import forms.SealIdentificationNumberFormProvider
 import models.requests.{DataRequest, MandatoryDataRequest}
-import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, RichOptionalJsArray}
+import models.{ArrivalId, Index, Mode, RichOptionalJsArray}
+import navigation.SealNavigator.SealNavigatorProvider
 import pages.sections.SealsSection
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.data.Form
@@ -38,6 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class SealIdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
+  navigatorProvider: SealNavigatorProvider,
   actions: Actions,
   formProvider: SealIdentificationNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -100,10 +100,8 @@ class SealIdentificationNumberController @Inject() (
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(SealIdentificationNumberPage(equipmentIndex, sealIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield sealMode match {
-      case NormalMode =>
-        Redirect(AddAnotherSealController.onPageLoad(request.userAnswers.id, equipmentMode, sealMode, equipmentIndex))
-      case CheckMode =>
-        Redirect(UnloadingFindingsController.onPageLoad(request.userAnswers.id))
+    } yield {
+      val navigator = navigatorProvider.apply(equipmentMode)
+      Redirect(navigator.nextPage(SealIdentificationNumberPage(equipmentIndex, sealIndex), sealMode, updatedAnswers))
     }
 }

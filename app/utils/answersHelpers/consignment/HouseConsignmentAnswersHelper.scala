@@ -18,8 +18,9 @@ package utils.answersHelpers.consignment
 
 import models.DocType.Previous
 import models.reference.Country
-import models.{Index, Link, RichOptionalJsArray, SecurityType, UserAnswers}
-import pages.houseConsignment.index.SecurityIndicatorFromExportDeclarationPage
+import models.{DynamicAddress, Index, Link, RichOptionalJsArray, SecurityType, UserAnswers}
+import pages.consignor.CountryPage
+import pages.houseConsignment.index.{CountryOfDestinationPage, SecurityIndicatorFromExportDeclarationPage}
 import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
 import pages.sections.houseConsignment.index
@@ -32,6 +33,7 @@ import utils.answersHelpers.AnswersHelper
 import utils.answersHelpers.consignment.houseConsignment._
 import viewModels.sections.Section
 import viewModels.sections.Section.{AccordionSection, StaticSection}
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
 class HouseConsignmentAnswersHelper(
   userAnswers: UserAnswers,
@@ -43,6 +45,14 @@ class HouseConsignmentAnswersHelper(
     page = SecurityIndicatorFromExportDeclarationPage(houseConsignmentIndex),
     formatAnswer = x => formatAsText(x.toString),
     prefix = "houseConsignment.securityIndicator",
+    id = None,
+    call = None
+  )
+
+  def countryOfDestination: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
+    page = CountryOfDestinationPage(houseConsignmentIndex),
+    formatAnswer = formatAsCountry,
+    prefix = "unloadingFindings.rowHeadings.houseConsignment.countryOfDestination",
     id = None,
     call = None
   )
@@ -61,6 +71,24 @@ class HouseConsignmentAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier",
     id = None,
     call = None
+  )
+
+  def consignorAddress: Option[SummaryListRow] =
+    buildRowWithNoChangeLink[DynamicAddress](
+      data = userAnswers.ie043Data.Consignment
+        .flatMap(_.HouseConsignment.lift(houseConsignmentIndex.position))
+        .flatMap(_.Consignor.flatMap(_.Address))
+        .map(
+          address07 => DynamicAddress(address07)
+        ),
+      formatAnswer = formatAsHtmlContent,
+      prefix = "unloadingFindings.consignor.address"
+    )
+
+  def consignorCountry: Option[SummaryListRow] = buildRowWithNoChangeLink[Country](
+    data = userAnswers.get(CountryPage),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.consignor.country"
   )
 
   def consigneeName: Option[SummaryListRow] = getAnswerAndBuildRow[String](
@@ -84,7 +112,9 @@ class HouseConsignmentAnswersHelper(
       sectionTitle = messages("unloadingFindings.consignor.heading"),
       rows = Seq(
         consignorIdentification,
-        consignorName
+        consignorName,
+        consignorAddress,
+        consignorCountry
       ).flatten
     )
 
@@ -114,15 +144,13 @@ class HouseConsignmentAnswersHelper(
   private val departureTransportMeansAddRemoveLink: Link = Link(
     id = s"add-remove-departure-transport-means",
     href = "#", // TODO update when controller added
-    text = messages("houseConsignment.departureTransportMeans.addRemove"),
-    visuallyHidden = messages("houseConsignment.departureTransportMeans.visuallyHidden")
+    text = messages("houseConsignment.departureTransportMeans.addRemove")
   )
 
   private val additionalReferenceAddRemoveLink: Link = Link(
     id = "add-remove-additional-reference",
     href = "#", // TODO update when controller added
-    text = messages("additionalReferenceLink.addRemove"),
-    visuallyHidden = messages("additionalReferenceLink.visuallyHidden")
+    text = messages("additionalReferenceLink.addRemove")
   )
 
   def departureTransportMeansSection: Section =
@@ -268,15 +296,13 @@ class HouseConsignmentAnswersHelper(
     Link(
       id = s"add-remove-document",
       href = "#",
-      text = messages("documentLink.addRemove"),
-      visuallyHidden = messages("documentLink.visuallyHidden")
+      text = messages("documentLink.addRemove")
     )
 
   def itemsAddRemoveLink: Link =
     Link(
       id = "add-remove-items",
       href = "#",
-      text = messages("itemsLink.addRemove"),
-      visuallyHidden = messages("itemsLink.visuallyHidden")
+      text = messages("itemsLink.addRemove")
     )
 }

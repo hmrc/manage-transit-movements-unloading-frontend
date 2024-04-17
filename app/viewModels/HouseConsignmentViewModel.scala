@@ -47,8 +47,8 @@ object HouseConsignmentViewModel {
         helper.houseConsignmentConsignorSection,
         helper.houseConsignmentConsigneeSection
       )
-
-      val houseConsignmentSection: Section = StaticSection(rows = Seq(helper.safetyAndSecurityDetails).flatten, children = sections)
+      val houseConsignmentSection: Section =
+        StaticSection(rows = Seq(helper.countryOfDestination, helper.safetyAndSecurityDetails).flatten, children = sections)
 
       HouseConsignmentViewModel(houseConsignmentSection)
     }

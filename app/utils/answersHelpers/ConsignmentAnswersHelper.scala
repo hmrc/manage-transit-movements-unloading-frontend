@@ -45,37 +45,32 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
   private val documentAddRemoveLink: Link = Link(
     id = s"add-remove-documents",
     href = controllers.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, NormalMode).url,
-    text = messages("documentsLink.addRemove"),
-    visuallyHidden = messages("documentsLink.visuallyHidden")
+    text = messages("documentsLink.addRemove")
   )
 
   private val additionalReferenceAddRemoveLink: Link = Link(
     id = "add-remove-additional-reference",
     href = controllers.additionalReference.index.routes.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId, NormalMode).url,
-    text = messages("additionalReferenceLink.addRemove"),
-    visuallyHidden = messages("additionalReferenceLink.visuallyHidden")
+    text = messages("additionalReferenceLink.addRemove")
   )
 
   private val transportEquipmentAddRemoveLink: Link = Link(
     id = s"add-remove-transport-equipment",
     href = controllers.transportEquipment.routes.AddAnotherEquipmentController.onPageLoad(arrivalId, NormalMode).url,
-    text = messages("transportEquipmentLink.addRemove"),
-    visuallyHidden = messages("transportEquipmentLink.visuallyHidden")
+    text = messages("transportEquipmentLink.addRemove")
   )
 
   private val departureTransportMeansAddRemoveLink: Link =
     Link(
       id = s"add-remove-departure-transport-means",
       href = controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, NormalMode).url,
-      text = messages("departureTransportMeans.addRemove"),
-      visuallyHidden = messages("departureTransportMeans.visuallyHidden")
+      text = messages("departureTransportMeans.addRemove")
     )
 
   private val houseConsignmentAddRemoveLink: Link = Link(
     id = s"add-remove-house-consignment",
     href = "#", // TODO update when controller added
-    text = messages("houseConsignment.addRemove"),
-    visuallyHidden = messages("houseConsignment.visuallyHidden")
+    text = messages("houseConsignment.addRemove")
   )
 
   def headerSection: Section = StaticSection(
@@ -84,11 +79,10 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       declarationTypeRow,
       securityTypeRow,
       Some(reducedDatasetIndicatorRow),
+      countryOfDestinationRow,
       customsOfficeOfDestinationActual,
       grossMassRow,
-      Some(traderAtDestinationRow),
-      countryOfDestinationRow,
-      containerIndicatorRow
+      Some(traderAtDestinationRow)
     ).flatten
   )
 
@@ -166,19 +160,6 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     call = None
   )
 
-  def containerIndicatorRow: Option[SummaryListRow] =
-    userAnswers.ie043Data.Consignment
-      .map(_.containerIndicator)
-      .map {
-        containerIndicator =>
-          buildRow(
-            prefix = "unloadingFindings.containerIndicator",
-            answer = formatAsYesOrNo(containerIndicator),
-            id = None,
-            call = None
-          )
-      }
-
   def consignorSection: Option[Section] =
     userAnswers.ie043Data.Consignment.flatMap(_.Consignor).map {
       consignor =>
@@ -255,7 +236,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     userAnswers.get(TransportEquipmentListSection).mapWithIndex {
       case (_, index) =>
         val helper = new TransportEquipmentAnswersHelper(userAnswers, index)
-        val rows   = Seq(helper.containerIdentificationNumber).flatten
+        val rows   = Seq(helper.containerIndicatorRow, helper.containerIdentificationNumber).flatten
         val children = Seq(
           helper.transportEquipmentSeals,
           helper.transportEquipmentItems
@@ -410,8 +391,9 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
             viewLinks = Seq(
               Link(
                 id = s"view-house-consignment-${index.display}",
+                text = messages("summaryDetails.link"),
                 href = controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, index).url,
-                visuallyHidden = messages("summaryDetails.visuallyHidden", index.display)
+                visuallyHidden = Some(messages("summaryDetails.visuallyHidden", index.display))
               )
             ),
             id = s"houseConsignment$index",

@@ -445,9 +445,9 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
             val link = result.children.head.viewLinks.head
             link.id mustBe "view-house-consignment-1"
-            link.text mustBe "summaryDetails.link"
+            link.text mustBe "More details"
             link.href mustBe controllers.routes.HouseConsignmentController.onPageLoad(answers.id, hcIndex).url
-            link.visuallyHidden mustBe "on house consignment 1"
+            link.visuallyHidden.value mustBe "on house consignment 1"
             result.children.head.id.value mustBe "houseConsignment1"
         }
       }
@@ -578,32 +578,9 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
           val helper = new ConsignmentAnswersHelper(answers)
           val result = helper.countryOfDestinationRow.value
 
-          result.key.value mustBe "Country Of Destination"
+          result.key.value mustBe "Country of destination"
           result.value.value mustBe "France - FR"
         }
-      }
-    }
-
-    "containerIndicatorRow" - {
-      "must return row" in {
-        val userAnswers = emptyUserAnswers
-          .copy(ie043Data =
-            basicIe043.copy(Consignment =
-              Some(
-                ConsignmentType05(
-                  containerIndicator = Number1,
-                  inlandModeOfTransport = Some("Mode")
-                )
-              )
-            )
-          )
-
-        val helper = new ConsignmentAnswersHelper(userAnswers)
-        val result = helper.containerIndicatorRow
-
-        result.get.key.value mustBe "Are you using any containers?"
-        result.value.value.value mustBe "Yes"
-        result.get.actions must not be defined
       }
     }
 

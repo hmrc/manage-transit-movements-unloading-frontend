@@ -14,6 +14,19 @@
  * limitations under the License.
  */
 
-package models
+package pages.houseConsignment.index
 
-case class Link(id: String, text: String, href: String, visuallyHidden: Option[String] = None)
+import models.reference.Country
+import pages.behaviours.PageBehaviours
+
+class CountryOfDestinationPageSpec extends PageBehaviours {
+
+  "CountryOfDestination" - {
+
+    beRetrievable[Country](CountryOfDestinationPage(houseConsignmentIndex))
+
+    beSettable[Country](CountryOfDestinationPage(houseConsignmentIndex))
+
+    beRemovable[Country](CountryOfDestinationPage(houseConsignmentIndex))
+  }
+}

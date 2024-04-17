@@ -34,26 +34,20 @@ error.summary.title = There is a problem
 summaryDetails.link = More details
 summaryDetails.visuallyHidden = on house consignment {0}
 transportEquipmentLink.addRemove = Add or remove transport equipment
-transportEquipmentLink.visuallyHidden = Add or remove transport equipment
 sealsLink.addRemove = Add or remove seal
-sealsLink.visuallyHidden = Add or remove seal
+sealsLink.visuallyHidden = from transport equipment {0}
 consignmentItemLink.addRemove = Add or remove items from transport equipment {0}
-consignmentItemLink.visuallyHidden = Add or remove items from transport equipment {0}
 itemsLink.addRemove = Add or remove item
-itemsLink.visuallyHidden = Add or remove item
 packagingLink.addRemove = Add or remove package
-packagingLink.visuallyHidden = Add or remove package
+packagingLink.visuallyHidden = from item {0}
 documentLink.addRemove = Add or remove document
-documentLink.visuallyHidden = Add or remove document
+documentLink.visuallyHidden = from item {0}
 additionalReferenceLink.addRemove = Add or remove additional reference
-additionalReferenceLink.visuallyHidden = Add or remove additional reference
+additionalReferenceLink.visuallyHidden = from item {0}
 
 departureTransportMeans.addRemove = Add or remove departure means of transport
-departureTransportMeans.visuallyHidden = Add or remove departure means of transport
 documentsLink.addRemove = Add or remove document
-documentsLink.visuallyHidden = Add or remove document
 additionalReferenceLink.addRemove = Add or remove additional reference
-additionalReferenceLink.visuallyHidden = Add or remove additional reference
 commodityCodeLink.add = Enter commodity code
 commodityCodeLink.add.visuallyHidden = Enter commodity code
 commodityCodeLink.remove = Remove commodity code
@@ -479,9 +473,6 @@ unloadingFindings.rowHeadings.sealIdentifier.change.hidden = seal {0} for transp
 unloadingFindings.rowHeadings.containerIdentificationNumber.change.hidden = container identification number for transport equipment {0}
 unloadingFindings.rowHeadings.consignment.item.change.hidden = item {0} for transport equipment {1}
 
-unloadingFindings.rowHeadings.vehicleNationality = Registered country
-unloadingFindings.rowHeadings.vehicleNationality.change.hidden = registered country
-
 unloadingFindings.subsections.transportEquipment = Transport equipment {0}
 unloadingFindings.subsections.transportEquipment.parent.heading = Transport equipment
 unloadingFindings.subsections.seals = Seals
@@ -557,6 +548,7 @@ unloadingFindings.consignor.identificationNumber = EORI number or Trader Identif
 unloadingFindings.consignor.name = Name
 unloadingFindings.consignor.country = Country
 unloadingFindings.consignor.address = Address
+unloadingFindings.consignor.postcode = Postcode
 
 unloadingFindings.consignee.heading = Consignee
 unloadingFindings.consignee.identificationNumber = EORI number or Trader Identification Number (TIN)
@@ -895,10 +887,10 @@ additionalReference.index.additionalReferenceNumberYesNo.error.required = Select
 unloadingFindings.grossMass = Gross weight
 unloadingFindings.grossMass.change.hidden = gross weight
 
-unloadingFindings.inlandModeOfTransport = Inland mode Of transport
+unloadingFindings.inlandModeOfTransport = Inland mode of transport
 unloadingFindings.inlandModeOfTransport.label = Mode
 
-unloadingFindings.countryOfDestination = Country Of Destination
+unloadingFindings.countryOfDestination = Country of destination
 
 unloadingFindings.containerIndicator = Are you using any containers?
 
@@ -913,10 +905,8 @@ document.type.check.error.required = Select the new document type
 document.type.maxLimitForType.label = You cannot add any more {0} documents to all items. To add another, you need to remove one first. You can, however, still add a {1} document to your items.
 
 houseConsignment.addRemove = Add or remove house consignment
-houseConsignment.visuallyHidden = Add or remove house consignment
 
 houseConsignment.departureTransportMeans.addRemove = Add or remove departure means of transport
-houseConsignment.departureTransportMeans.visuallyHidden = Add or remove departure means of transport
 
 houseConsignment.index.items.document.type.NormalMode.title = What type of document do you want to add?
 houseConsignment.index.items.document.type.CheckMode.title = What is the new document type for item {1} in house consignment {0}?
@@ -1103,3 +1093,5 @@ houseConsignment.index.grossWeight.error.required = Enter the new gross weight o
 houseConsignment.index.grossWeight.error.invalidValue = The new gross weight must be 16 characters or less
 houseConsignment.index.grossWeight.error.invalidCharacters = The new gross weight must only include numbers 0 to 9 and a decimal point
 houseConsignment.index.grossWeight.error.invalidFormat = The new gross weight must only include 6 decimal places or less
+
+unloadingFindings.rowHeadings.houseConsignment.countryOfDestination = Country of destination
