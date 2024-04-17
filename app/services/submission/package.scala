@@ -96,12 +96,4 @@ package object submission {
   implicit def successfulReads[T](value: T): Reads[T] = Reads {
     _ => JsSuccess(value)
   }
-
-  implicit class RichTuple2[A, B](value: (Option[A], Option[B])) {
-
-    def map[C](f: ((Option[A], Option[B])) => C): Option[C] = value match {
-      case (None, None) => None
-      case _            => Some(f(value))
-    }
-  }
 }

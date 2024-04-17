@@ -121,7 +121,7 @@ class SubmissionService @Inject() (
 
     for {
       grossMass            <- GrossMassPage.path.readNullable[BigDecimal]
-      transportEquipment   <- TransportEquipmentListSection.path.readArray(consignmentTransportEquipmentReads(ie043))
+      transportEquipment   <- TransportEquipmentListSection.path.readArray(consignmentTransportEquipmentReads(ie043.Consignment))
       additionalReferences <- AdditionalReferencesSection.path.readArray(consignmentAdditionalReferenceReads(ie043))
     } yield ConsignmentType06(
       grossMass = grossMass,
@@ -134,47 +134,74 @@ class SubmissionService @Inject() (
     )
   }
 
-  private def consignmentTransportEquipmentReads(ie043: CC043CType)(index: Index, sequenceNumber: BigInt): Reads[Option[TransportEquipmentType03]] = {
+  // scalastyle:off method.length
+  private def consignmentTransportEquipmentReads(
+    ie043: Option[ConsignmentType05]
+  )(index: Index, sequenceNumber: BigInt): Reads[Option[TransportEquipmentType03]] = {
     import pages.ContainerIdentificationNumberPage
     import pages.sections.SealsSection
     import pages.sections.transport.equipment.ItemsSection
     import pages.transportEquipment.index._
     import pages.transportEquipment.index.seals._
 
-    def sealReads(sealIndex: Index, sequenceNumber: BigInt): Reads[Option[SealType02]] =
-      for {
-        identifier <- (__ \ SealIdentificationNumberPage(index, sealIndex).toString).read[String]
-      } yield Some(
-        SealType02(
-          sequenceNumber = sequenceNumber,
-          identifier = identifier
-        )
-      )
+    def sealReads(
+      ie043: Option[TransportEquipmentType05]
+    )(sealIndex: Index, sequenceNumber: BigInt): Reads[Option[SealType02]] =
+      SealIdentificationNumberPage(index, sealIndex).readNullable(identity).apply(ie043).map {
+        _.map {
+          identifier =>
+            SealType02(
+              sequenceNumber = sequenceNumber,
+              identifier = identifier
+            )
+        }
+      }
 
-    def goodsReferenceReads(goodsReferenceIndex: Index, sequenceNumber: BigInt): Reads[Option[GoodsReferenceType01]] =
-      for {
-        declarationGoodsItemNumber <- (__ \ ItemPage(index, goodsReferenceIndex).toString).read[BigInt]
-      } yield Some(
-        GoodsReferenceType01(
-          sequenceNumber = sequenceNumber,
-          declarationGoodsItemNumber = declarationGoodsItemNumber
-        )
-      )
+    def goodsReferenceReads(
+      ie043: Option[TransportEquipmentType05]
+    )(goodsReferenceIndex: Index, sequenceNumber: BigInt): Reads[Option[GoodsReferenceType01]] =
+      ItemPage(index, goodsReferenceIndex).readNullable(identity).apply(ie043).map {
+        _.map {
+          declarationGoodsItemNumber =>
+            GoodsReferenceType01(
+              sequenceNumber = sequenceNumber,
+              declarationGoodsItemNumber = declarationGoodsItemNumber
+            )
+        }
+      }
+
+    val transportEquipment = ie043.map(_.TransportEquipment).getOrElse(Seq.empty).find(_.sequenceNumber == sequenceNumber)
 
     for {
-      containerIdentificationNumber <- ContainerIdentificationNumberPage(index).readNullable(identity).apply(ie043.Consignment)
-      seals                         <- (__ \ SealsSection(index).toString).readArray[SealType02](sealReads)
-      goodsReferences               <- (__ \ ItemsSection(index).toString).readArray[GoodsReferenceType01](goodsReferenceReads)
-    } yield Some(
-      TransportEquipmentType03(
-        sequenceNumber = sequenceNumber,
-        containerIdentificationNumber = containerIdentificationNumber,
-        numberOfSeals = Some(seals.length),
-        Seal = seals,
-        GoodsReference = goodsReferences
-      )
-    )
+      removed                       <- (__ \ Removed).readNullable[Boolean]
+      containerIdentificationNumber <- ContainerIdentificationNumberPage(index).readNullable(identity).apply(transportEquipment)
+      seals                         <- (__ \ SealsSection(index).toString).readArray[SealType02](sealReads(transportEquipment))
+      goodsReferences               <- (__ \ ItemsSection(index).toString).readArray[GoodsReferenceType01](goodsReferenceReads(transportEquipment))
+    } yield removed match {
+      case Some(true) =>
+        Some(
+          TransportEquipmentType03(
+            sequenceNumber = sequenceNumber
+          )
+        )
+      case _ =>
+        (containerIdentificationNumber, seals, goodsReferences) match {
+          case (None, Nil, Nil) =>
+            None
+          case _ =>
+            Some(
+              TransportEquipmentType03(
+                sequenceNumber = sequenceNumber,
+                containerIdentificationNumber = containerIdentificationNumber,
+                numberOfSeals = Some(seals.length),
+                Seal = seals,
+                GoodsReference = goodsReferences
+              )
+            )
+        }
+    }
   }
+  // scalastyle:on method.length
 
   private def consignmentAdditionalReferenceReads(ie043: CC043CType)(index: Index, sequenceNumber: BigInt): Reads[Option[AdditionalReferenceType06]] = {
     import pages.additionalReference._
@@ -186,18 +213,20 @@ class SubmissionService @Inject() (
       case Some(true) =>
         Some(
           AdditionalReferenceType06(
-            sequenceNumber = sequenceNumber,
-            typeValue = None,
-            referenceNumber = None
+            sequenceNumber = sequenceNumber
           )
         )
       case _ =>
-        (typeValue, referenceNumber).map {
-          x =>
-            AdditionalReferenceType06(
-              sequenceNumber = sequenceNumber,
-              typeValue = x._1,
-              referenceNumber = x._2
+        (typeValue, referenceNumber) match {
+          case (None, None) =>
+            None
+          case _ =>
+            Some(
+              AdditionalReferenceType06(
+                sequenceNumber = sequenceNumber,
+                typeValue = typeValue,
+                referenceNumber = referenceNumber
+              )
             )
         }
     }

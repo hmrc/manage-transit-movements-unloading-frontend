@@ -264,42 +264,320 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       }
     }
 
-    "must create transport equipment" in {
+    "must create transport equipment" - {
       import pages.ContainerIdentificationNumberPage
       import pages.sections.transport.equipment.ItemSection
       import pages.sections.{SealSection, TransportEquipmentSection}
       import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 
-      forAll(arbitrary[CC043CType]) {
-        ie043 =>
-          val sequenceNumber                = arbitrary[BigInt].sample.value
-          val containerIdentificationNumber = Gen.option(Gen.alphaNumStr).sample.value
-          val sealSequenceNumber            = arbitrary[BigInt].sample.value
-          val sealIdentifier                = Gen.alphaNumStr.sample.value
-          val goodsReferenceSequenceNumber  = arbitrary[BigInt].sample.value
-          val declarationGoodsItemNumber    = arbitrary[BigInt].sample.value
+      "when there are discrepancies" in {
+        forAll(arbitrary[CC043CType], arbitrary[ConsignmentType05]) {
+          (a, b) =>
+            val transportEquipment = Seq(
+              TransportEquipmentType05(
+                sequenceNumber = 1,
+                containerIdentificationNumber = Some("originalTransportEquipment1ContainerIdentificationNumber"),
+                numberOfSeals = 2,
+                Seal = Seq(
+                  SealType04(
+                    sequenceNumber = 1,
+                    identifier = "originalTransportEquipment1SealIdentifier1"
+                  ),
+                  SealType04(
+                    sequenceNumber = 2,
+                    identifier = "originalTransportEquipment1SealIdentifier2"
+                  )
+                ),
+                GoodsReference = Seq(
+                  GoodsReferenceType02(
+                    sequenceNumber = 1,
+                    declarationGoodsItemNumber = 1
+                  ),
+                  GoodsReferenceType02(
+                    sequenceNumber = 2,
+                    declarationGoodsItemNumber = 2
+                  )
+                )
+              ),
+              TransportEquipmentType05(
+                sequenceNumber = 2,
+                containerIdentificationNumber = Some("originalTransportEquipment2ContainerIdentificationNumber"),
+                numberOfSeals = 2,
+                Seal = Seq(
+                  SealType04(
+                    sequenceNumber = 1,
+                    identifier = "originalTransportEquipment2SealIdentifier1"
+                  ),
+                  SealType04(
+                    sequenceNumber = 2,
+                    identifier = "originalTransportEquipment2SealIdentifier2"
+                  )
+                ),
+                GoodsReference = Seq(
+                  GoodsReferenceType02(
+                    sequenceNumber = 1,
+                    declarationGoodsItemNumber = 3
+                  ),
+                  GoodsReferenceType02(
+                    sequenceNumber = 2,
+                    declarationGoodsItemNumber = 4
+                  )
+                )
+              )
+            )
+            val consignment = b.copy(TransportEquipment = transportEquipment)
+            val ie043       = a.copy(Consignment = Some(consignment))
 
-          val userAnswers = emptyUserAnswers
-            .setSequenceNumber(TransportEquipmentSection(index), sequenceNumber)
-            .setValue(ContainerIdentificationNumberPage(index), containerIdentificationNumber)
-            .setSequenceNumber(SealSection(index, sealIndex), sealSequenceNumber)
-            .setValue(SealIdentificationNumberPage(index, sealIndex), sealIdentifier)
-            .setSequenceNumber(ItemSection(index, itemIndex), goodsReferenceSequenceNumber)
-            .setValue(ItemPage(index, sealIndex), declarationGoodsItemNumber)
+            val userAnswers = emptyUserAnswers
+              // Transport equipment 1 - Changed
+              .setSequenceNumber(TransportEquipmentSection(Index(0)), 1)
+              .setNotRemoved(TransportEquipmentSection(Index(0)))
+              .setValue(ContainerIdentificationNumberPage(Index(0)), "originalTransportEquipment1ContainerIdentificationNumber")
+              /// Transport equipment 1 - Seal 1 - Unchanged
+              .setSequenceNumber(SealSection(Index(0), Index(0)), 1)
+              .setNotRemoved(SealSection(Index(0), Index(0)))
+              .setValue(SealIdentificationNumberPage(Index(0), Index(0)), "originalTransportEquipment1SealIdentifier1")
+              /// Transport equipment 1 - Seal 2 - Changed
+              .setSequenceNumber(SealSection(Index(0), Index(1)), 2)
+              .setNotRemoved(SealSection(Index(0), Index(1)))
+              .setValue(SealIdentificationNumberPage(Index(0), Index(1)), "newTransportEquipment1SealIdentifier2")
+              /// Transport equipment 1 - Seal 3 - Added
+              .setValue(SealIdentificationNumberPage(Index(0), Index(2)), "newTransportEquipment1SealIdentifier3")
+              /// Transport equipment 1 - Goods reference 1 - Unchanged
+              .setSequenceNumber(ItemSection(Index(0), Index(0)), 1)
+              .setNotRemoved(ItemSection(Index(0), Index(0)))
+              .setValue(ItemPage(Index(0), Index(0)), BigInt(1))
+              /// Transport equipment 1 - Goods reference 2 - Changed
+              .setSequenceNumber(ItemSection(Index(0), Index(1)), 2)
+              .setNotRemoved(ItemSection(Index(0), Index(1)))
+              .setValue(ItemPage(Index(0), Index(1)), BigInt(5))
+              /// Transport equipment 1 - Goods reference 3 - Added
+              .setValue(ItemPage(Index(0), Index(2)), BigInt(6))
 
-          val reads  = service.consignmentReads(ie043)
-          val result = userAnswers.data.as[ConsignmentType06](reads).TransportEquipment
+              // Transport equipment 2 - Changed
+              .setSequenceNumber(TransportEquipmentSection(Index(1)), 2)
+              .setNotRemoved(TransportEquipmentSection(Index(1)))
+              .setValue(ContainerIdentificationNumberPage(Index(1)), "newTransportEquipment2ContainerIdentificationNumber")
+              /// Transport equipment 2 - Seal 1 - Changed
+              .setSequenceNumber(SealSection(Index(1), Index(0)), 1)
+              .setNotRemoved(SealSection(Index(1), Index(0)))
+              .setValue(SealIdentificationNumberPage(Index(1), Index(0)), "newTransportEquipment2SealIdentifier1")
+              /// Transport equipment 2 - Seal 2 - Unchanged
+              .setSequenceNumber(SealSection(Index(1), Index(1)), 2)
+              .setNotRemoved(SealSection(Index(1), Index(1)))
+              .setValue(SealIdentificationNumberPage(Index(1), Index(1)), "originalTransportEquipment2SealIdentifier2")
+              /// Transport equipment 2 - Seal 3 - Added
+              .setValue(SealIdentificationNumberPage(Index(1), Index(2)), "newTransportEquipment2SealIdentifier3")
+              /// Transport equipment 2 - Goods reference 1 - Unchanged
+              .setSequenceNumber(ItemSection(Index(1), Index(0)), 1)
+              .setNotRemoved(ItemSection(Index(1), Index(0)))
+              .setValue(ItemPage(Index(1), Index(0)), BigInt(3))
+              /// Transport equipment 2 - Goods reference 2 - Changed
+              .setSequenceNumber(ItemSection(Index(1), Index(1)), 2)
+              .setNotRemoved(ItemSection(Index(1), Index(1)))
+              .setValue(ItemPage(Index(1), Index(1)), BigInt(7))
+              /// Transport equipment 2 - Goods reference 3 - Added
+              .setValue(ItemPage(Index(1), Index(2)), BigInt(8))
 
-          result.size mustBe 1
-          result.head.sequenceNumber mustBe sequenceNumber
-          result.head.containerIdentificationNumber mustBe containerIdentificationNumber
-          result.head.numberOfSeals.value mustBe 1
-          result.head.Seal mustBe Seq(
-            SealType02(sealSequenceNumber, sealIdentifier)
-          )
-          result.head.GoodsReference mustBe Seq(
-            GoodsReferenceType01(goodsReferenceSequenceNumber, declarationGoodsItemNumber)
-          )
+              // Transport equipment 3 - Removed
+              .setSequenceNumber(TransportEquipmentSection(Index(2)), 3)
+              .setRemoved(TransportEquipmentSection(Index(2)))
+
+              // Transport equipment 4 - Added
+              .setValue(ContainerIdentificationNumberPage(Index(3)), "newTransportEquipment4ContainerIdentificationNumber")
+              /// Transport equipment 4 - Seal 1 - Added
+              .setValue(SealIdentificationNumberPage(Index(3), Index(0)), "newTransportEquipment4SealIdentifier1")
+              /// Transport equipment 4 - Goods reference 1 - Added
+              .setValue(ItemPage(Index(3), Index(0)), BigInt(9))
+
+            val reads  = service.consignmentReads(ie043)
+            val result = userAnswers.data.as[ConsignmentType06](reads).TransportEquipment
+
+            result mustBe Seq(
+              TransportEquipmentType03(
+                sequenceNumber = 1,
+                containerIdentificationNumber = None,
+                numberOfSeals = Some(2),
+                Seal = Seq(
+                  SealType02(
+                    sequenceNumber = 2,
+                    identifier = "newTransportEquipment1SealIdentifier2"
+                  ),
+                  SealType02(
+                    sequenceNumber = 3,
+                    identifier = "newTransportEquipment1SealIdentifier3"
+                  )
+                ),
+                GoodsReference = Seq(
+                  GoodsReferenceType01(
+                    sequenceNumber = 2,
+                    declarationGoodsItemNumber = 5
+                  ),
+                  GoodsReferenceType01(
+                    sequenceNumber = 3,
+                    declarationGoodsItemNumber = 6
+                  )
+                )
+              ),
+              TransportEquipmentType03(
+                sequenceNumber = 2,
+                containerIdentificationNumber = Some("newTransportEquipment2ContainerIdentificationNumber"),
+                numberOfSeals = Some(2),
+                Seal = Seq(
+                  SealType02(
+                    sequenceNumber = 1,
+                    identifier = "newTransportEquipment2SealIdentifier1"
+                  ),
+                  SealType02(
+                    sequenceNumber = 3,
+                    identifier = "newTransportEquipment2SealIdentifier3"
+                  )
+                ),
+                GoodsReference = Seq(
+                  GoodsReferenceType01(
+                    sequenceNumber = 2,
+                    declarationGoodsItemNumber = 7
+                  ),
+                  GoodsReferenceType01(
+                    sequenceNumber = 3,
+                    declarationGoodsItemNumber = 8
+                  )
+                )
+              ),
+              TransportEquipmentType03(
+                sequenceNumber = 3,
+                containerIdentificationNumber = None,
+                numberOfSeals = None,
+                Seal = Nil,
+                GoodsReference = Nil
+              ),
+              TransportEquipmentType03(
+                sequenceNumber = 4,
+                containerIdentificationNumber = Some("newTransportEquipment4ContainerIdentificationNumber"),
+                numberOfSeals = Some(1),
+                Seal = Seq(
+                  SealType02(
+                    sequenceNumber = 1,
+                    identifier = "newTransportEquipment4SealIdentifier1"
+                  )
+                ),
+                GoodsReference = Seq(
+                  GoodsReferenceType01(
+                    sequenceNumber = 1,
+                    declarationGoodsItemNumber = 9
+                  )
+                )
+              )
+            )
+        }
+      }
+
+      "when there are no discrepancies" in {
+        forAll(arbitrary[CC043CType], arbitrary[ConsignmentType05]) {
+          (a, b) =>
+            val transportEquipment = Seq(
+              TransportEquipmentType05(
+                sequenceNumber = 1,
+                containerIdentificationNumber = Some("originalTransportEquipment1ContainerIdentificationNumber"),
+                numberOfSeals = 2,
+                Seal = Seq(
+                  SealType04(
+                    sequenceNumber = 1,
+                    identifier = "originalTransportEquipment1SealIdentifier1"
+                  ),
+                  SealType04(
+                    sequenceNumber = 2,
+                    identifier = "originalTransportEquipment1SealIdentifier2"
+                  )
+                ),
+                GoodsReference = Seq(
+                  GoodsReferenceType02(
+                    sequenceNumber = 1,
+                    declarationGoodsItemNumber = 1
+                  ),
+                  GoodsReferenceType02(
+                    sequenceNumber = 2,
+                    declarationGoodsItemNumber = 2
+                  )
+                )
+              ),
+              TransportEquipmentType05(
+                sequenceNumber = 2,
+                containerIdentificationNumber = Some("originalTransportEquipment2ContainerIdentificationNumber"),
+                numberOfSeals = 2,
+                Seal = Seq(
+                  SealType04(
+                    sequenceNumber = 1,
+                    identifier = "originalTransportEquipment2SealIdentifier1"
+                  ),
+                  SealType04(
+                    sequenceNumber = 2,
+                    identifier = "originalTransportEquipment2SealIdentifier2"
+                  )
+                ),
+                GoodsReference = Seq(
+                  GoodsReferenceType02(
+                    sequenceNumber = 1,
+                    declarationGoodsItemNumber = 3
+                  ),
+                  GoodsReferenceType02(
+                    sequenceNumber = 2,
+                    declarationGoodsItemNumber = 4
+                  )
+                )
+              )
+            )
+            val consignment = b.copy(TransportEquipment = transportEquipment)
+            val ie043       = a.copy(Consignment = Some(consignment))
+
+            val userAnswers = emptyUserAnswers
+              // Transport equipment 1 - Unchanged
+              .setSequenceNumber(TransportEquipmentSection(Index(0)), 1)
+              .setNotRemoved(TransportEquipmentSection(Index(0)))
+              .setValue(ContainerIdentificationNumberPage(Index(0)), "originalTransportEquipment1ContainerIdentificationNumber")
+              /// Transport equipment 1 - Seal 1 - Unchanged
+              .setSequenceNumber(SealSection(Index(0), Index(0)), 1)
+              .setNotRemoved(SealSection(Index(0), Index(0)))
+              .setValue(SealIdentificationNumberPage(Index(0), Index(0)), "originalTransportEquipment1SealIdentifier1")
+              /// Transport equipment 1 - Seal 2 - Unchanged
+              .setSequenceNumber(SealSection(Index(0), Index(1)), 2)
+              .setNotRemoved(SealSection(Index(0), Index(1)))
+              .setValue(SealIdentificationNumberPage(Index(0), Index(1)), "originalTransportEquipment1SealIdentifier2")
+              /// Transport equipment 1 - Goods reference 1 - Unchanged
+              .setSequenceNumber(ItemSection(Index(0), Index(0)), 1)
+              .setNotRemoved(ItemSection(Index(0), Index(0)))
+              .setValue(ItemPage(Index(0), Index(0)), BigInt(1))
+              /// Transport equipment 1 - Goods reference 2 - Unchanged
+              .setSequenceNumber(ItemSection(Index(0), Index(1)), 2)
+              .setNotRemoved(ItemSection(Index(0), Index(1)))
+              .setValue(ItemPage(Index(0), Index(1)), BigInt(2))
+
+              // Transport equipment 2 - Unchanged
+              .setSequenceNumber(TransportEquipmentSection(Index(1)), 2)
+              .setNotRemoved(TransportEquipmentSection(Index(1)))
+              .setValue(ContainerIdentificationNumberPage(Index(1)), "originalTransportEquipment2ContainerIdentificationNumber")
+              /// Transport equipment 2 - Seal 1 - Unchanged
+              .setSequenceNumber(SealSection(Index(1), Index(0)), 1)
+              .setNotRemoved(SealSection(Index(1), Index(0)))
+              .setValue(SealIdentificationNumberPage(Index(1), Index(0)), "originalTransportEquipment2SealIdentifier1")
+              /// Transport equipment 2 - Seal 2 - Unchanged
+              .setSequenceNumber(SealSection(Index(1), Index(1)), 2)
+              .setNotRemoved(SealSection(Index(1), Index(1)))
+              .setValue(SealIdentificationNumberPage(Index(1), Index(1)), "originalTransportEquipment2SealIdentifier2")
+              /// Transport equipment 2 - Goods reference 1 - Unchanged
+              .setSequenceNumber(ItemSection(Index(1), Index(0)), 1)
+              .setNotRemoved(ItemSection(Index(1), Index(0)))
+              .setValue(ItemPage(Index(1), Index(0)), BigInt(3))
+              /// Transport equipment 2 - Goods reference 2 - Unchanged
+              .setSequenceNumber(ItemSection(Index(1), Index(1)), 2)
+              .setNotRemoved(ItemSection(Index(1), Index(1)))
+              .setValue(ItemPage(Index(1), Index(1)), BigInt(4))
+
+            val reads  = service.consignmentReads(ie043)
+            val result = userAnswers.data.as[ConsignmentType06](reads).TransportEquipment
+
+            result mustBe Nil
+        }
       }
     }
 
@@ -335,22 +613,26 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val consignment = b.copy(AdditionalReference = additionalReferences)
             val ie043       = a.copy(Consignment = Some(consignment))
 
-            // First one changed. Second one changed. Third one removed. Fourth one unchanged. Fifth one added.
             val userAnswers = emptyUserAnswers
+              // Additional reference 1 - Changed type value
               .setSequenceNumber(AdditionalReferenceSection(Index(0)), 1)
               .setNotRemoved(AdditionalReferenceSection(Index(0)))
               .setValue(AdditionalReferenceTypePage(Index(0)), AdditionalReferenceType("newTypeValue1", "newTypeValue1Description"))
               .setValue(AdditionalReferenceNumberPage(Index(0)), "originalReferenceNumber1")
+              // Additional reference 2 - Changed reference number
               .setSequenceNumber(AdditionalReferenceSection(Index(1)), 2)
               .setNotRemoved(AdditionalReferenceSection(Index(1)))
               .setValue(AdditionalReferenceTypePage(Index(1)), AdditionalReferenceType("originalTypeValue2", "originalTypeValue2Description"))
               .setValue(AdditionalReferenceNumberPage(Index(1)), "newReferenceNumber2")
+              // Additional reference 3 - Removed
               .setSequenceNumber(AdditionalReferenceSection(Index(2)), 3)
               .setRemoved(AdditionalReferenceSection(Index(2)))
+              // Additional reference 4 - Unchanged
               .setSequenceNumber(AdditionalReferenceSection(Index(3)), 4)
               .setNotRemoved(AdditionalReferenceSection(Index(3)))
               .setValue(AdditionalReferenceTypePage(Index(3)), AdditionalReferenceType("originalTypeValue4", "originalTypeValue4Description"))
               .setValue(AdditionalReferenceNumberPage(Index(3)), "originalReferenceNumber4")
+              // Additional reference 5 - Added
               .setValue(AdditionalReferenceTypePage(Index(4)), AdditionalReferenceType("newTypeValue5", "newTypeValue5Description"))
               .setValue(AdditionalReferenceNumberPage(Index(4)), "newReferenceNumber5")
 
@@ -400,12 +682,13 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val consignment = b.copy(AdditionalReference = additionalReferences)
             val ie043       = a.copy(Consignment = Some(consignment))
 
-            // First one unchanged. Second one unchanged.
             val userAnswers = emptyUserAnswers
+              // Additional reference 1 - Unchanged
               .setSequenceNumber(AdditionalReferenceSection(Index(0)), 1)
               .setNotRemoved(AdditionalReferenceSection(Index(0)))
               .setValue(AdditionalReferenceTypePage(Index(0)), AdditionalReferenceType("originalTypeValue1", "originalTypeValue1Description"))
               .setValue(AdditionalReferenceNumberPage(Index(0)), "originalReferenceNumber1")
+              // Additional reference 2 - Unchanged
               .setSequenceNumber(AdditionalReferenceSection(Index(1)), 2)
               .setNotRemoved(AdditionalReferenceSection(Index(1)))
               .setValue(AdditionalReferenceTypePage(Index(1)), AdditionalReferenceType("originalTypeValue2", "originalTypeValue2Description"))
