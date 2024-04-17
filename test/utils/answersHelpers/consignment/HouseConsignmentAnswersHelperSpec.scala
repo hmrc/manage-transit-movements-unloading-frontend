@@ -16,11 +16,13 @@
 
 package utils.answersHelpers.consignment
 
+import generated.{AddressType07, ConsignmentType05, ConsignorType06, HouseConsignmentType04}
 import models.reference._
 import models.{DynamicAddress, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
+import pages.consignor.CountryPage
 import pages.houseConsignment.index.CountryOfDestinationPage
 import utils.answersHelpers.AnswersHelperSpecBase
 import viewModels.sections.Section.AccordionSection
@@ -101,6 +103,59 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
               result.key.value mustBe "Consignee name"
               result.value.value mustBe value
+              result.actions must not be defined
+          }
+        }
+      }
+    }
+
+    "consignorAddress" - {
+      "must return None" - {
+        "when address undefined" in {
+          val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, houseConsignmentIndex)
+          helper.consignorAddress mustBe None
+        }
+      }
+
+      "must return Some(row)" - {
+        "when address defined" in {
+          forAll(arbitrary[AddressType07], arbitrary[HouseConsignmentType04], arbitrary[ConsignmentType05]) {
+            (address, house, consignment) =>
+              val updatedHouse: HouseConsignmentType04 = house.copy(Consignor = Some(ConsignorType06(None, None, Some(address))))
+
+              val updConsignment = emptyUserAnswers.ie043Data.copy(Consignment = Some(consignment.copy(HouseConsignment = Seq(updatedHouse))))
+              val ua             = emptyUserAnswers.copy(ie043Data = updConsignment)
+              val helper         = new HouseConsignmentAnswersHelper(ua, houseConsignmentIndex)
+              val result         = helper.consignorAddress.value
+
+              result.key.value mustBe "Address"
+              result.value.value mustBe DynamicAddress(address).toString
+              result.actions must not be defined
+          }
+        }
+      }
+    }
+
+    "country" - {
+      val page = CountryPage
+      "must return None" - {
+        s"when $page undefined" in {
+          val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, houseConsignmentIndex)
+          helper.consignorCountry mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $page defined" in {
+          forAll(arbitrary[Country]) {
+            value =>
+              val answers = emptyUserAnswers.setValue(page, value)
+
+              val helper = new HouseConsignmentAnswersHelper(answers, houseConsignmentIndex)
+              val result = helper.consignorCountry.value
+
+              result.key.value mustBe "Country"
+              result.value.value mustBe value.toString
               result.actions must not be defined
           }
         }
