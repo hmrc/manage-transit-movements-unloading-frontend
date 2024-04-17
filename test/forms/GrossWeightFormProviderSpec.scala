@@ -31,7 +31,7 @@ class GrossWeightFormProviderSpec extends BigDecimalFieldBehaviours {
 
   val generatedBigDecimal: Gen[BigDecimal] = Gen.choose(BigDecimal(1), maxValue)
 
-  private val form      = new GrossWeightFormProvider()(prefix, grossWeightDecimalPlaces, grossWeightCharacterCount)
+  private val form      = new GrossWeightFormProvider()(prefix, grossWeightDecimalPlaces, grossWeightIntegerLength)
   private val fieldName = "value"
 
   ".value" - {

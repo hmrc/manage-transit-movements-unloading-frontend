@@ -111,18 +111,19 @@ trait Formatters {
 
   private[mappings] def bigDecimalFormatter(
     decimalPlaces: Int,
-    characterCount: Int,
+    integerLength: Int,
     requiredKey: String = "error.required",
     invalidCharactersKey: String = "error.invalidCharacters",
-    invalidFormatKey: String = "error.invalidFormat",
-    invalidValueKey: String = "error.invalidValue",
+    invalidFractionKey: String = "error.invalidFormat",
+    invalidLengthKey: String = "error.invalidValue",
     args: Seq[String] = Seq.empty
   ): Formatter[BigDecimal] =
     new Formatter[BigDecimal] {
 
-      private val invalidCharactersRegex = """^[0-9.]*$"""
-      private val invalidFormatRegex     = s"""^[0-9]*(\\.[0-9]{1,$decimalPlaces})?$$"""
-      private val invalidValueRegex      = s"""^[0-9.]{1,$characterCount}$$"""
+      private val validCharactersRegex = """^[0-9.]*$"""
+      private val validFractionRegex   = s"""^[0-9]*(\\.[0-9]{1,$decimalPlaces})?$$"""
+      private val validIntegerRegex    = s"""^([0-9]{1,$integerLength})(\\.[0-9]*)?$$"""
+      private val validLengthRegex     = s"""^[0-9.]{1,${integerLength + decimalPlaces + 1}}$$""" // +1 for the separator '.'
 
       private val baseFormatter = stringFormatter(requiredKey, args)(_.replace(",", "").removeSpaces())
 
@@ -130,10 +131,11 @@ trait Formatters {
         baseFormatter
           .bind(key, data)
           .flatMap {
-            case s if !s.matches(invalidCharactersRegex) => Left(Seq(FormError(key, invalidCharactersKey)))
-            case s if !s.matches(invalidFormatRegex)     => Left(Seq(FormError(key, invalidFormatKey)))
-            case s if !s.matches(invalidValueRegex)      => Left(Seq(FormError(key, invalidValueKey)))
-            case s                                       => Right(BigDecimal(s))
+            case s if !s.matches(validCharactersRegex) => Left(Seq(FormError(key, invalidCharactersKey)))
+            case s if !s.matches(validFractionRegex)   => Left(Seq(FormError(key, invalidFractionKey)))
+            case s if !s.matches(validIntegerRegex)    => Left(Seq(FormError(key, invalidLengthKey)))
+            case s if !s.matches(validLengthRegex)     => Left(Seq(FormError(key, invalidLengthKey)))
+            case s                                     => Right(BigDecimal(s))
           }
 
       override def unbind(key: String, value: BigDecimal): Map[String, String] =
