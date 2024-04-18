@@ -31,34 +31,38 @@ class Navigation extends Navigator {
     case DateGoodsUnloadedPage =>
       ua =>
         if (ua.ie043Data.sealsExist) {
-          Some(controllers.routes.CanSealsBeReadController.onPageLoad(ua.id, NormalMode))
+          Some(routes.CanSealsBeReadController.onPageLoad(ua.id, NormalMode))
         } else {
-          Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
+          Some(routes.AddUnloadingCommentsYesNoController.onPageLoad(ua.id, NormalMode))
         }
-
-    case CanSealsBeReadPage    => ua => Some(routes.AreAnySealsBrokenController.onPageLoad(ua.id, NormalMode))
-    case AreAnySealsBrokenPage => ua => Some(routes.AddUnloadingCommentsYesNoController.onPageLoad(ua.id, NormalMode))
+    case CanSealsBeReadPage => ua => Some(routes.AreAnySealsBrokenController.onPageLoad(ua.id, NormalMode))
+    case AreAnySealsBrokenPage =>
+      ua =>
+        (ua.get(CanSealsBeReadPage), ua.get(AreAnySealsBrokenPage)) match {
+          case (Some(true), Some(false)) => Some(routes.AddUnloadingCommentsYesNoController.onPageLoad(ua.id, NormalMode))
+          case _                         => Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
+        }
     case AddUnloadingCommentsYesNoPage =>
       ua =>
         ua.get(AddUnloadingCommentsYesNoPage) map {
-          case true  => controllers.routes.UnloadingFindingsController.onPageLoad(ua.id)
-          case false => controllers.routes.AddCommentsYesNoController.onPageLoad(ua.id, NormalMode)
+          case true  => routes.UnloadingFindingsController.onPageLoad(ua.id)
+          case false => routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id)
         }
     case AddCommentsYesNoPage =>
       ua =>
         ua.get(AddCommentsYesNoPage) map {
-          case true  => controllers.routes.UnloadingCommentsController.onPageLoad(ua.id, NormalMode)
-          case false => controllers.routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id)
+          case true  => routes.UnloadingCommentsController.onPageLoad(ua.id, NormalMode)
+          case false => routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id)
         }
     case UnloadingCommentsPage =>
       ua => Some(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id))
     case DoYouHaveAnythingElseToReportYesNoPage =>
       ua =>
         ua.get(DoYouHaveAnythingElseToReportYesNoPage) map {
-          case true  => controllers.routes.OtherThingsToReportController.onPageLoad(ua.id, NormalMode)
-          case false => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)
+          case true  => routes.OtherThingsToReportController.onPageLoad(ua.id, NormalMode)
+          case false => routes.CheckYourAnswersController.onPageLoad(ua.id)
         }
-    case OtherThingsToReportPage => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
+    case OtherThingsToReportPage => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
     case _ =>
       _ => Some(routes.SessionExpiredController.onPageLoad())
 
@@ -70,10 +74,10 @@ class Navigation extends Navigator {
         ua.get(AddUnloadingCommentsYesNoPage) match {
           case Some(true) =>
             ua.get(UnloadingCommentsPage) match {
-              case Some(_) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
-              case _       => Some(controllers.routes.UnloadingCommentsController.onPageLoad(ua.id, CheckMode))
+              case Some(_) => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
+              case _       => Some(routes.UnloadingCommentsController.onPageLoad(ua.id, CheckMode))
             }
-          case Some(false) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
+          case Some(false) => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
           case _           => Some(routes.SessionExpiredController.onPageLoad())
         }
     case _ => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
