@@ -20,7 +20,7 @@ object Constants {
   lazy val maxItemDescriptionLength: Int        = 512
   lazy val exactCUSCodeLength: Int              = 9
   lazy val grossWeightDecimalPlaces: Int        = 6
-  lazy val grossWeightCharacterCount: Int       = 16
+  lazy val grossWeightIntegerLength: Int        = 16
   lazy val maxPackageShippingMarkLength: Int    = 512
   lazy val maxSealIdentificationLength: Int     = 20
   lazy val maxDocumentRefNumberLength: Int      = 70
