@@ -17,7 +17,7 @@
 package controllers.houseConsignment.index.departureMeansOfTransport
 
 import controllers.actions._
-import forms.{DepartureMeansOfTransportCountryFormProvider, HouseConsignmentDepartureMeansOfTransportCountryFormProvider}
+import forms.HouseConsignmentDMTCountryFormProvider
 import models.{ArrivalId, Index, Mode}
 import navigation.DepartureTransportMeansNavigator
 import pages.houseConsignment.index.departureMeansOfTransport.CountryPage
@@ -36,7 +36,7 @@ class CountryController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
-  formProvider: HouseConsignmentDepartureMeansOfTransportCountryFormProvider,
+  formProvider: HouseConsignmentDMTCountryFormProvider,
   referenceDataService: ReferenceDataService,
   val controllerComponents: MessagesControllerComponents,
   view: CountryView,
@@ -52,7 +52,7 @@ class CountryController @Inject() (
         referenceDataService.getCountries() map {
           countries =>
             val viewModel = countryViewModelProvider.apply(mode)
-            val form      = formProvider(mode, countries)
+            val form      = formProvider(countries)
             val preparedForm = request.userAnswers.get(CountryPage(houseConsignmentIndex, transportMeansIndex)) match {
               case None        => form
               case Some(value) => form.fill(value)
@@ -67,7 +67,7 @@ class CountryController @Inject() (
         referenceDataService.getCountries() flatMap {
           countries =>
             val viewModel = countryViewModelProvider.apply(mode)
-            val form      = formProvider(mode, countries)
+            val form      = formProvider(countries)
             form
               .bindFromRequest()
               .fold(

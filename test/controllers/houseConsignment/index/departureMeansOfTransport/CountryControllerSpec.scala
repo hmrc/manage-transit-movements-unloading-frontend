@@ -17,7 +17,7 @@
 package controllers.houseConsignment.index.departureMeansOfTransport
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.HouseConsignmentDepartureMeansOfTransportCountryFormProvider
+import forms.HouseConsignmentDMTCountryFormProvider
 import generators.Generators
 import models.CheckMode
 import models.reference.Country
@@ -39,13 +39,13 @@ import scala.concurrent.Future
 
 class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  val formProvider                                        = new HouseConsignmentDepartureMeansOfTransportCountryFormProvider()
+  val formProvider                                        = new HouseConsignmentDMTCountryFormProvider()
   private val country: Country                            = Country("GB", "United Kingdom")
   val countries: Seq[Country]                             = Seq(Country("GB", "United Kingdom"))
   private val mockViewModelProvider                       = mock[HouseConsignmentCountryViewModelProvider]
   private val viewModel: HouseConsignmentCountryViewModel = arbitrary[HouseConsignmentCountryViewModel].sample.value
   private val mode                                        = CheckMode
-  val form: Form[Country]                                 = formProvider(mode, countries)
+  val form: Form[Country]                                 = formProvider(countries)
   val mockReferenceDataService: ReferenceDataService      = mock[ReferenceDataService]
 
   lazy val DepartureMeansOfTransportCountryRoute: String =

@@ -17,15 +17,14 @@
 package forms
 
 import forms.mappings.Mappings
-import models.Mode
 import models.reference.Country
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class HouseConsignmentDepartureMeansOfTransportCountryFormProvider @Inject() extends Mappings {
+class HouseConsignmentDMTCountryFormProvider @Inject() extends Mappings {
 
-  def apply(mode: Mode, countries: Seq[Country]): Form[Country] =
+  def apply(countries: Seq[Country]): Form[Country] =
     Form(
       "value" -> text(s"houseConsignment.index.departureMeansOfTransport.country.error.required")
         .verifying("houseConsignment.index.departureMeansOfTransport.country.error.required", value => countries.exists(_.code == value))
