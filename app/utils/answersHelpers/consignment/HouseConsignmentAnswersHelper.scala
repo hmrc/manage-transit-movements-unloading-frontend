@@ -42,12 +42,6 @@ class HouseConsignmentAnswersHelper(
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
-  def headerSection: Section = StaticSection(
-    rows = Seq(
-      grossMassRow
-    ).flatten
-  )
-
   def grossMassRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
     page = GrossWeightPage(houseConsignmentIndex),
     formatAnswer = formatAsText,
