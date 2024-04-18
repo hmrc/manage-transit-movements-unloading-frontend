@@ -130,8 +130,13 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to seal id number page at next index" in {
-          forAll(arbitrary[Mode], arbitrary[Mode]) {
-            (equipmentMode, sealMode) =>
+          val modeCombinations = Gen.oneOf[(Mode, Mode)](
+            (NormalMode, NormalMode),
+            (CheckMode, NormalMode),
+            (CheckMode, CheckMode)
+          )
+          forAll(modeCombinations) {
+            case (equipmentMode, sealMode) =>
               lazy val addAnotherSealRoute = routes.AddAnotherSealController.onPageLoad(arrivalId, equipmentMode, sealMode, equipmentIndex).url
 
               when(mockViewModelProvider.apply(any(), any(), any(), any(), any()))
@@ -178,25 +183,24 @@ class AddAnotherSealControllerSpec extends SpecBase with AppWithDefaultMockFixtu
           }
 
           "when equipment mode is NormalMode" in {
-            forAll(arbitrary[Mode]) {
-              sealMode =>
-                lazy val addAnotherSealRoute = routes.AddAnotherSealController.onPageLoad(arrivalId, NormalMode, sealMode, equipmentIndex).url
+            val sealMode = NormalMode
 
-                when(mockViewModelProvider.apply(any(), any(), any(), any(), any()))
-                  .thenReturn(notMaxedOutViewModel)
+            lazy val addAnotherSealRoute = routes.AddAnotherSealController.onPageLoad(arrivalId, NormalMode, sealMode, equipmentIndex).url
 
-                setExistingUserAnswers(emptyUserAnswers)
+            when(mockViewModelProvider.apply(any(), any(), any(), any(), any()))
+              .thenReturn(notMaxedOutViewModel)
 
-                val request = FakeRequest(POST, addAnotherSealRoute)
-                  .withFormUrlEncodedBody(("value", "false"))
+            setExistingUserAnswers(emptyUserAnswers)
 
-                val result = route(app, request).value
+            val request = FakeRequest(POST, addAnotherSealRoute)
+              .withFormUrlEncodedBody(("value", "false"))
 
-                status(result) mustEqual SEE_OTHER
+            val result = route(app, request).value
 
-                redirectLocation(result).value mustEqual
-                  controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, equipmentIndex, NormalMode).url
-            }
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual
+              controllers.transportEquipment.index.routes.ApplyAnItemYesNoController.onPageLoad(arrivalId, equipmentIndex, NormalMode).url
           }
         }
       }

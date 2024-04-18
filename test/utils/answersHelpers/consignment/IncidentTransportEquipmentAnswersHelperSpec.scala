@@ -44,7 +44,7 @@ class IncidentTransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase 
 
         val helper =
           new IncidentTransportEquipmentAnswersHelper(emptyUserAnswers,
-                                                      TransportEquipmentType07("1", None, None, Seq(SealType04("1", "1")), Seq(GoodsReferenceType01("1", 123)))
+                                                      TransportEquipmentType07(1, None, None, Seq(SealType04(1, "1")), Seq(GoodsReferenceType01(1, 123)))
           )
         helper.containerIdentificationNumber mustBe None
       }
@@ -66,7 +66,7 @@ class IncidentTransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase 
       "must generate row for each seal" in {
 
         val helper: IncidentTransportEquipmentAnswersHelper = new IncidentTransportEquipmentAnswersHelper(mockUserAnswers, mockTransportEquipmentType)
-        when(mockTransportEquipmentType.Seal).thenReturn(Seq(SealType04("1", "Seal1"), SealType04("2", "Seal2")))
+        when(mockTransportEquipmentType.Seal).thenReturn(Seq(SealType04(1, "Seal1"), SealType04(2, "Seal2")))
 
         val result = helper.transportEquipmentSeals
 
@@ -88,7 +88,7 @@ class IncidentTransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase 
       "must generate row for item" in {
 
         val helper: IncidentTransportEquipmentAnswersHelper = new IncidentTransportEquipmentAnswersHelper(mockUserAnswers, mockTransportEquipmentType)
-        when(mockTransportEquipmentType.GoodsReference).thenReturn(Seq(GoodsReferenceType01("1", 123), GoodsReferenceType01("2", 234)))
+        when(mockTransportEquipmentType.GoodsReference).thenReturn(Seq(GoodsReferenceType01(1, 123), GoodsReferenceType01(2, 234)))
 
         val result = helper.itemNumbers
 

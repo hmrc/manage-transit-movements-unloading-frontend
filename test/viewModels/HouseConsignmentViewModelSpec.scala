@@ -18,12 +18,16 @@ package viewModels
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
-import models.Index
-import models.reference.{AdditionalInformationCode, Country, TransportMeansIdentification}
+import models.DocType.{Support, Transport}
+import models.reference._
+import models.{Index, SecurityType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
+import pages.houseConsignment.index.{CountryOfDestinationPage, SecurityIndicatorFromExportDeclarationPage}
+import pages.houseConsignment.index.additionalReference.{HouseConsignmentAdditionalReferenceNumberPage, HouseConsignmentAdditionalReferenceTypePage}
 import pages.houseConsignment.index.additionalinformation.{HouseConsignmentAdditionalInformationCodePage, HouseConsignmentAdditionalInformationTextPage}
+import pages.houseConsignment.index.documents.{AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
 import pages.houseConsignment.index.items.{
   GrossWeightPage,
   ItemDescriptionPage,
@@ -55,7 +59,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
 
         val viewModelProvider = new HouseConsignmentViewModelProvider()
         val result            = viewModelProvider.apply(answers, index)
-        val section           = result.sections(1)
+        val section           = result.section.children(1)
 
         section.sectionTitle.value mustBe "Departure means of transport"
         section.children.size mustBe 1
@@ -63,7 +67,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         section.children.head.sectionTitle.value mustBe "Departure means of transport 1"
         section.children.head.rows.size mustBe 3
 
-        section.viewLinks mustBe Nil
+        section.viewLinks.head.href mustBe "#"
       }
 
       "when there is multiple" in {
@@ -80,7 +84,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
 
         val viewModelProvider = new HouseConsignmentViewModelProvider()
         val result            = viewModelProvider.apply(answers, index)
-        val section           = result.sections(1)
+        val section           = result.section.children(1)
 
         section.sectionTitle.value mustBe "Departure means of transport"
         section.children.size mustBe 2
@@ -91,7 +95,106 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         section.children(1).sectionTitle.value mustBe "Departure means of transport 2"
         section.children(1).rows.size mustBe 3
 
-        section.viewLinks mustBe Nil
+        section.viewLinks.head.href mustBe "#"
+      }
+    }
+
+    "must render Documents section" - {
+      "when there is one" in {
+
+        val answers = emptyUserAnswers
+          .setValue(DocumentReferenceNumberPage(houseConsignmentIndex, documentIndex), "ref1")
+          .setValue(AdditionalInformationPage(houseConsignmentIndex, documentIndex), "additional info")
+          .setValue(TypePage(houseConsignmentIndex, documentIndex), DocumentType(Transport, "code", "description"))
+
+        setExistingUserAnswers(answers)
+
+        val viewModelProvider = new HouseConsignmentViewModelProvider()
+        val result            = viewModelProvider.apply(answers, index)
+        val section           = result.section.children(2)
+
+        section.sectionTitle.value mustBe "Documents"
+        section.children.head.sectionTitle.value mustBe "Document 1"
+        section.children.head.rows.size mustBe 3
+
+        section.viewLinks must not be empty
+      }
+
+      "when there is multiple" in {
+
+        val answers = emptyUserAnswers
+          .setValue(DocumentReferenceNumberPage(hcIndex, Index(0)), "ref1")
+          .setValue(AdditionalInformationPage(hcIndex, Index(0)), "additional info")
+          .setValue(TypePage(hcIndex, Index(0)), DocumentType(Transport, "code", "description"))
+          .setValue(DocumentReferenceNumberPage(hcIndex, Index(1)), "ref2")
+          .setValue(AdditionalInformationPage(hcIndex, Index(1)), "additional info2")
+          .setValue(TypePage(hcIndex, Index(1)), DocumentType(Support, "code", "description"))
+
+        setExistingUserAnswers(answers)
+
+        val viewModelProvider = new HouseConsignmentViewModelProvider()
+        val result            = viewModelProvider.apply(answers, index)
+        val section           = result.section.children(2)
+
+        section.sectionTitle.value mustBe "Documents"
+        section.children.head.sectionTitle.value mustBe "Document 1"
+        section.children.head.rows.size mustBe 3
+
+        section.children(1).sectionTitle.value mustBe "Document 2"
+        section.children(1).rows.size mustBe 3
+
+        section.viewLinks must not be empty
+      }
+    }
+
+    "must render Additional Reference section" - {
+      val referenceType = arbitrary[AdditionalReferenceType].sample.value
+      val number        = nonEmptyString.sample.value
+      "when there is one" in {
+
+        val answers = emptyUserAnswers
+          .setValue(HouseConsignmentAdditionalReferenceTypePage(hcIndex, Index(0)), referenceType)
+          .setValue(HouseConsignmentAdditionalReferenceNumberPage(hcIndex, Index(0)), number)
+
+        setExistingUserAnswers(answers)
+
+        val viewModelProvider = new HouseConsignmentViewModelProvider()
+        val result            = viewModelProvider.apply(answers, index)
+        val section           = result.section.children(3)
+
+        section.sectionTitle.value mustBe "Additional references"
+        section.children.size mustBe 1
+
+        section.children.head.sectionTitle.value mustBe "Additional reference 1"
+        section.children.head.rows.size mustBe 2
+
+        section.viewLinks.head.href mustBe "#"
+      }
+
+      "when there is multiple" in {
+
+        val answers = emptyUserAnswers
+          .setValue(HouseConsignmentAdditionalReferenceTypePage(hcIndex, Index(0)), referenceType)
+          .setValue(HouseConsignmentAdditionalReferenceNumberPage(hcIndex, Index(0)), number)
+          .setValue(HouseConsignmentAdditionalReferenceTypePage(hcIndex, Index(1)), referenceType)
+          .setValue(HouseConsignmentAdditionalReferenceNumberPage(hcIndex, Index(1)), number)
+
+        setExistingUserAnswers(answers)
+
+        val viewModelProvider = new HouseConsignmentViewModelProvider()
+        val result            = viewModelProvider.apply(answers, index)
+        val section           = result.section.children(3)
+
+        section.sectionTitle.value mustBe "Additional references"
+        section.children.size mustBe 2
+
+        section.children.head.sectionTitle.value mustBe "Additional reference 1"
+        section.children.head.rows.size mustBe 2
+
+        section.children(1).sectionTitle.value mustBe "Additional reference 2"
+        section.children(1).rows.size mustBe 2
+
+        section.viewLinks.head.href mustBe "#"
       }
     }
 
@@ -108,7 +211,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
 
         val viewModelProvider = new HouseConsignmentViewModelProvider()
         val result            = viewModelProvider.apply(answers, index)
-        val section           = result.sections(2)
+        val section           = result.section.children(4)
 
         section.sectionTitle.value mustBe "Additional information"
         section.children.size mustBe 1
@@ -131,7 +234,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
 
         val viewModelProvider = new HouseConsignmentViewModelProvider()
         val result            = viewModelProvider.apply(answers, index)
-        val section           = result.sections(2)
+        val section           = result.section.children(4)
 
         section.sectionTitle.value mustBe "Additional information"
         section.children.size mustBe 2
@@ -158,34 +261,38 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
           .setValue(NetWeightPage(hcIndex, itemIndex), 123.45)
           .setValue(ItemConsigneeNamePage(hcIndex, itemIndex), "John Smith")
           .setValue(ItemConsigneeIdentifierPage(hcIndex, itemIndex), "csgee2")
+          .setValue(SecurityIndicatorFromExportDeclarationPage(hcIndex), SecurityType("Code", "Description"))
+          .setValue(CountryOfDestinationPage(hcIndex), Country("FR", "France"))
 
         setExistingUserAnswers(userAnswers)
 
         val viewModelProvider = new HouseConsignmentViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers, index)
 
-        result.sections(1) mustBe a[AccordionSection]
-        result.sections(1).sectionTitle.value mustBe "Departure means of transport"
+        result.section.rows.size mustBe 2
+        result.section.rows(0).value.value mustBe "France"
+        result.section.rows(1).value.value mustBe "Description"
 
-        result.sections(3) mustBe a[AccordionSection]
-        result.sections(3).sectionTitle.value mustBe "Items"
-        result.sections(3).viewLinks must not be empty
+        result.section.children(5) mustBe a[AccordionSection]
+        result.section.children(5).sectionTitle.value mustBe "Items"
+        result.section.children(5).viewLinks must not be empty
 
-        result.sections(3).children.head mustBe a[AccordionSection]
-        result.sections(3).children.head.sectionTitle.value mustBe "Item 1"
-        result.sections(3).children.head.rows.size mustBe 5
+        result.section.children(5).children.head mustBe a[AccordionSection]
+        result.section.children(5).children.head.sectionTitle.value mustBe "Item 1"
+        result.section.children(5).children.head.rows.size mustBe 5
 
-        result.sections(3).children.head.children.head mustBe a[AccordionSection]
-        result.sections(3).children.head.children.head.sectionTitle.value mustBe "UN numbers"
-        result.sections(3).children.head.children.head.rows.size mustBe 0
+        result.section.children(5).children.head.children.head mustBe a[AccordionSection]
+        result.section.children(5).children.head.children.head.sectionTitle.value mustBe "UN numbers"
+        result.section.children(5).children.head.children.head.rows.size mustBe 0
 
-        result.sections(3).children.head.children(1) mustBe a[StaticSection]
-        result.sections(3).children.head.children(1).sectionTitle.value mustBe "Consignee"
-        result.sections(3).children.head.children(1).rows.size mustBe 2
+        result.section.children(5).children.head.children(1) mustBe a[StaticSection]
+        result.section.children(5).children.head.children(1).sectionTitle.value mustBe "Consignee"
+        result.section.children(5).children.head.children(1).rows.size mustBe 2
 
-        result.sections(3).children.head.children(2) mustBe a[AccordionSection]
-        result.sections(3).children.head.children(2).sectionTitle.value mustBe "Documents"
-        result.sections(3).children.head.children(2).viewLinks.head.id mustBe "add-remove-item-1-document"
+        result.section.children(5).children.head.children(2) mustBe a[AccordionSection]
+        result.section.children(5).children.head.children(2).sectionTitle.value mustBe "Documents"
+        result.section.children(5).children.head.children(2).viewLinks.head.id mustBe "add-remove-item-1-document"
+
       }
     }
 
@@ -200,7 +307,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
 
         val viewModelProvider = new HouseConsignmentViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers, index)
-        val section           = result.sections(3)
+        val section           = result.section.children(5)
 
         section.sectionTitle.value mustBe "Items"
         section.children.head.sectionTitle.value mustBe "Item 1"
@@ -229,25 +336,26 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         val viewModelProvider = new HouseConsignmentViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers, index)
 
-        result.sections(3) mustBe a[AccordionSection]
-        result.sections(3).sectionTitle.value mustBe "Items"
-        result.sections(3).viewLinks must not be empty
+        result.section.children(5) mustBe a[AccordionSection]
+        result.section.children(5).sectionTitle.value mustBe "Items"
+        result.section.children(5).viewLinks must not be empty
 
-        result.sections(3).children.head mustBe a[AccordionSection]
-        result.sections(3).children.head.sectionTitle.value mustBe "Item 1"
-        result.sections(3).children.head.rows.size mustBe 5
+        result.section.children(5).children.head mustBe a[AccordionSection]
+        result.section.children(5).children.head.sectionTitle.value mustBe "Item 1"
+        result.section.children(5).children.head.rows.size mustBe 5
 
-        result.sections(3).children(1) mustBe a[AccordionSection]
-        result.sections(3).children(1).sectionTitle.value mustBe "Item 2"
-        result.sections(3).children(1).rows.size mustBe 5
+        result.section.children(5).children(1) mustBe a[AccordionSection]
+        result.section.children(5).children(1).sectionTitle.value mustBe "Item 2"
+        result.section.children(5).children(1).rows.size mustBe 5
 
-        result.sections(3).children.head.children.head mustBe a[AccordionSection]
-        result.sections(3).children.head.children.head.sectionTitle.value mustBe "UN numbers"
-        result.sections(3).children.head.children.head.rows.size mustBe 0
+        result.section.children(5).children.head.children.head mustBe a[AccordionSection]
+        result.section.children(5).children.head.children.head.sectionTitle.value mustBe "UN numbers"
+        result.section.children(5).children.head.children.head.rows.size mustBe 0
 
-        result.sections(3).children.head.children(1) mustBe a[StaticSection]
-        result.sections(3).children.head.children(1).sectionTitle.value mustBe "Consignee"
-        result.sections(3).children.head.children(1).rows.size mustBe 2
+        result.section.children(5).children.head.children(1) mustBe a[StaticSection]
+        result.section.children(5).children.head.children(1).sectionTitle.value mustBe "Consignee"
+        result.section.children(5).children.head.children(1).rows.size mustBe 2
+
       }
     }
   }

@@ -61,7 +61,7 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockViewModelProvider)
-    when(mockViewModelProvider.apply(any(), any(), any(), any())(any())).thenReturn(viewModel)
+    when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any())).thenReturn(viewModel)
   }
 
   "AdditionalReferenceNumber Controller" - {

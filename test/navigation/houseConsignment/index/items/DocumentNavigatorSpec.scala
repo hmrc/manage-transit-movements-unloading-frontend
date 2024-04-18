@@ -103,7 +103,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           )
       }
 
-      "must go from TypePage to AddAdditionalInformationYesNoPage when DocType is supporting" - {
+      "must go from TypePage to DocumentReferenceNumberController when DocType is supporting" - {
 
         val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex),
                                                     DocumentType(`type` = Support, code = "codeValue", description = "descriptionValue")
@@ -112,12 +112,12 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
         navigator
           .nextPage(TypePage(houseConsignmentIndex, itemIndex, documentIndex), mode, userAnswers)
           .mustBe(
-            controllers.houseConsignment.index.items.document.routes.AddAdditionalInformationYesNoController
+            controllers.houseConsignment.index.items.document.routes.DocumentReferenceNumberController
               .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, documentIndex)
           )
       }
 
-      "must go from TypePage to AddAnotherDocumentPage when DocType is not supporting" - {
+      "must go from TypePage to DocumentReferenceNumberController when DocType is not supporting" - {
 
         val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex),
                                                     DocumentType(`type` = Transport, code = "codeValue", description = "descriptionValue")
@@ -125,13 +125,13 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
         navigator
           .nextPage(TypePage(houseConsignmentIndex, itemIndex, documentIndex), mode, userAnswers)
           .mustBe(
-            controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
-              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+            controllers.houseConsignment.index.items.document.routes.DocumentReferenceNumberController
+              .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, documentIndex)
           )
 
       }
 
-      "must redirect to the  TypePage when Previous DocType is selected" - {
+      "must redirect to the TypePage when Previous DocType is selected" - {
 
         val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex),
                                                     DocumentType(`type` = Previous, code = "codeValue", description = "descriptionValue")

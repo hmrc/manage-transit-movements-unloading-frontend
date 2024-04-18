@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package pages.sections
+package pages.sections.houseConsignment.index.documents
 
+import models.Index
+import pages.sections.Section
 import play.api.libs.json.{JsObject, JsPath}
 
-case object UnloadingRemarksSection extends Section[JsObject] {
+case class DocumentSection(houseConsignmentIndex: Index, documentIndex: Index) extends Section[JsObject] {
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "UnloadingRemark"
+  override def path: JsPath = DocumentsSection(houseConsignmentIndex).path \ documentIndex.position
 }

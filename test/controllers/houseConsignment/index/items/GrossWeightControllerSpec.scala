@@ -31,8 +31,8 @@ import views.html.houseConsignment.index.items.GrossWeightView
 import scala.concurrent.Future
 
 class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
-  private val decimalPlace   = positiveInts.sample.value
-  private val characterCount = positiveInts.sample.value
+  private val decimalPlace   = notTooBigPositiveNumbers.sample.value
+  private val characterCount = notTooBigPositiveNumbers.sample.value
   private val formProvider   = new GrossWeightFormProvider()
   private val form           = formProvider("houseConsignment.item.grossWeight", decimalPlace, characterCount, itemIndex.display, houseConsignmentIndex.display)
   private val mode           = NormalMode

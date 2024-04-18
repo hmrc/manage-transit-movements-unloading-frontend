@@ -20,6 +20,8 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
 import models.{ArrivalId, Index, Mode}
+import pages.houseConsignment.index.items.AddAdditionalReferenceYesNoPage
+import pages.transportEquipment.index.ItemPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -47,6 +49,7 @@ class AddAnotherDocumentController @Inject() (
     implicit request =>
       def form(viewModel: AddAnotherHouseConsignmentDocumentViewModel): Form[Boolean] =
         formProvider(viewModel.prefix, viewModel.allowMore, itemsIndex.display, houseConsignmentIndex.display)
+
       val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentIndex, itemsIndex, mode)
       Ok(view(form(viewModel), request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemsIndex, viewModel))
   }
@@ -54,8 +57,10 @@ class AddAnotherDocumentController @Inject() (
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemsIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentIndex, itemsIndex, mode)
+
       def form(viewModel: AddAnotherHouseConsignmentDocumentViewModel): Form[Boolean] =
         formProvider(viewModel.prefix, viewModel.allowMore, itemsIndex, houseConsignmentIndex)
+
       form(viewModel)
         .bindFromRequest()
         .fold(
@@ -67,9 +72,17 @@ class AddAnotherDocumentController @Inject() (
                   .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemsIndex, viewModel.nextIndex)
               )
             case false =>
-              Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+              val redirectUrl = (request.userAnswers.get(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemsIndex)),
+                                 request.userAnswers.get(ItemPage(houseConsignmentIndex, itemsIndex))
+              ) match {
+                case (Some(_), _) => controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex)
+                case (_, Some(_)) => controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex)
+                case _ =>
+                  controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
+                    .onPageLoad(arrivalId, houseConsignmentIndex, itemsIndex, mode)
+              }
+              Redirect(redirectUrl)
           }
         )
   }
-
 }

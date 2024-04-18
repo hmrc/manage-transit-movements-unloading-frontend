@@ -53,6 +53,9 @@ trait Generators
 
   def positiveInts: Gen[Int] = Gen.choose(0, Int.MaxValue)
 
+  def notTooBigPositiveNumbers: Gen[Int] =
+    Gen.choose(0, Int.MaxValue / 2) // in some tests we add 2 random values to calculate the total, which shouldn't exceed Int.Max
+
   def positiveBigInts: Gen[BigInt] = Gen.choose(0, 1000)
 
   def positiveBigDecimals: Gen[BigDecimal] = Gen.choose(0, 1000)
