@@ -49,7 +49,7 @@ class NetWeightController @Inject() (
       implicit request =>
         val preparedForm = request.userAnswers.get(NetWeightPage(houseConsignmentIndex, itemIndex)) match {
           case None        => form(houseConsignmentIndex, itemIndex)
-          case Some(value) => form(houseConsignmentIndex, itemIndex).fill(value.toString)
+          case Some(value) => form(houseConsignmentIndex, itemIndex).fill(value)
         }
 
         Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))
