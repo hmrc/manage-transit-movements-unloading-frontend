@@ -30,7 +30,7 @@ class GoodsMeasureTransformer @Inject() (implicit ec: ExecutionContext) extends 
       case GoodsMeasureType03(grossMass, netMass) =>
         val pipeline: UserAnswers => Future[UserAnswers] =
           set(GrossWeightPage(hcIndex, itemIndex), grossMass) andThen
-            set(NetWeightPage(hcIndex, itemIndex), netMass.map(_.toDouble))
+            set(NetWeightPage(hcIndex, itemIndex), netMass)
 
         pipeline(userAnswers)
     }

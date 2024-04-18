@@ -35,7 +35,7 @@ import scala.concurrent.Future
 class RemoveNetWeightYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider = new YesNoFormProvider()
-  private val netWeight    = arbitrary[Double].sample.value
+  private val netWeight    = arbitrary[BigDecimal].sample.value
   private val form         = formProvider("houseConsignment.index.item.removeNetWeightYesNo", houseConsignmentIndex.display, itemIndex.display)
   private val mode         = NormalMode
 
@@ -50,7 +50,7 @@ class RemoveNetWeightYesNoControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must return OK and the correct view for a GET" in {
 
-      forAll(arbitrary[Double]) {
+      forAll(arbitrary[BigDecimal]) {
         netWeight =>
           val userAnswers = emptyUserAnswers
             .setValue(NetWeightPage(houseConsignmentIndex, itemIndex), netWeight)
@@ -66,7 +66,7 @@ class RemoveNetWeightYesNoControllerSpec extends SpecBase with AppWithDefaultMoc
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, Some(netWeight))(request, messages).toString
+            view(form, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, Some(netWeight.toString))(request, messages).toString
       }
     }
 
@@ -117,7 +117,7 @@ class RemoveNetWeightYesNoControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      forAll(arbitrary[Double]) {
+      forAll(arbitrary[BigDecimal]) {
         netWeight =>
           val userAnswers = emptyUserAnswers
             .setValue(NetWeightPage(houseConsignmentIndex, itemIndex), netWeight)
@@ -136,7 +136,7 @@ class RemoveNetWeightYesNoControllerSpec extends SpecBase with AppWithDefaultMoc
           val view = injector.instanceOf[RemoveNetWeightYesNoView]
 
           contentAsString(result) mustEqual
-            view(filledForm, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, Some(netWeight))(request, messages).toString
+            view(filledForm, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, Some(netWeight.toString()))(request, messages).toString
       }
     }
 
