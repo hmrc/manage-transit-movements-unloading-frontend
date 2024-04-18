@@ -34,25 +34,6 @@ import utils.answersHelpers.consignment.houseConsignment._
 import viewModels.sections.Section
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 
-object Joe extends App {
-
-  case class Identification(`type`: String, description: String) {
-    override def toString: String = "we overid it"
-  }
-
-  val identificationType: Option[Identification] = Some(Identification("gg", "bb"))
-
-  val identificationNumber: Option[String] = Some("vv")
-
-  def forRemoveDisplay: String = (identificationType, identificationNumber) match {
-    case (Some(a), Some(b)) => s"${a.toString} - $b - inhere"
-    case (Some(a), None)    => a.toString
-    case (None, Some(b))    => b
-    case (None, None)       => ""
-  }
-  println(forRemoveDisplay)
-}
-
 class HouseConsignmentAnswersHelper(
   userAnswers: UserAnswers,
   houseConsignmentIndex: Index
