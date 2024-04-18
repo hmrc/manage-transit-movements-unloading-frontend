@@ -62,9 +62,6 @@ package object submission {
 
     def readNullableSafe[T](implicit reads: Reads[T]): Reads[Option[T]] =
       value.readNullable[T] orElse None
-
-    def parent: JsPath =
-      JsPath(value.path.dropRight(1))
   }
 
   implicit def boolToFlag(x: Boolean): Flag =

@@ -56,7 +56,6 @@ class CheckYourAnswersController @Inject() (
   def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
-        // TODO - we need to add all the missing sequence numbers here
         submissionService.submit(request.userAnswers, arrivalId).map {
           response =>
             response.status match {

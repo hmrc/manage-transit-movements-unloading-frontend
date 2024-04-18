@@ -24,9 +24,9 @@ trait QuestionPage[A] extends Page with Gettable[A] with Settable[A]
 
 trait DiscrepancyQuestionPage[A, B, C] extends QuestionPage[A] {
 
-  def valueInIE043(ie043: B, sequenceNumber: BigInt): Option[C] = None
+  def valueInIE043(ie043: B, sequenceNumber: BigInt): Option[C]
 
-  /** @param f converts from A (type in user answers) to B (type in IE043)
+  /** @param f converts from A (type in user answers) to C (type in IE043)
     * @param reads reads the value from user answers
     * @return a reads of a defined `Option` if there is a discrepancy and an undefined `Option` if there is not
     */
