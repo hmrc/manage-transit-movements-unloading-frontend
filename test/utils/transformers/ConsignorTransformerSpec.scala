@@ -97,7 +97,7 @@ class ConsignorTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
     "at house consignment level" - {
       import pages.{ConsignorIdentifierPage, ConsignorNamePage}
 
-      "when consignee defined" in {
+      "when consignor defined" in {
         forAll(arbitrary[ConsignorType06], arbitrary[AddressType07], arbitrary[Country]) {
           (consignor, address, country) =>
             beforeEach()
