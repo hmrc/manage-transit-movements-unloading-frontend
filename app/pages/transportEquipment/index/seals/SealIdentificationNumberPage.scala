@@ -16,14 +16,23 @@
 
 package pages.transportEquipment.index.seals
 
+import generated.TransportEquipmentType05
 import models.Index
-import pages.QuestionPage
+import pages.DiscrepancyQuestionPage
 import pages.sections.SealSection
 import play.api.libs.json.JsPath
 
-case class SealIdentificationNumberPage(equipmentIndex: Index, sealIndex: Index) extends QuestionPage[String] {
+case class SealIdentificationNumberPage(equipmentIndex: Index, sealIndex: Index)
+    extends DiscrepancyQuestionPage[String, Option[TransportEquipmentType05], String] {
 
   override def path: JsPath = SealSection(equipmentIndex, sealIndex).path \ toString
 
   override def toString: String = "identifier"
+
+  override def valueInIE043(transportEquipment: Option[TransportEquipmentType05], sequenceNumber: BigInt): Option[String] =
+    transportEquipment
+      .map(_.Seal)
+      .getOrElse(Seq.empty)
+      .find(_.sequenceNumber == sequenceNumber)
+      .map(_.identifier)
 }

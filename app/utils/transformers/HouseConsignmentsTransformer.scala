@@ -19,10 +19,9 @@ package utils.transformers
 import connectors.ReferenceDataConnector
 import generated.HouseConsignmentType04
 import models.{Index, RichPreviousDocuments07, UserAnswers}
-import pages.houseConsignment.index.{CountryOfDestinationPage, SecurityIndicatorFromExportDeclarationPage}
+import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage, SecurityIndicatorFromExportDeclarationPage}
 import pages.sections.HouseConsignmentSection
 import uk.gov.hmrc.http.HeaderCarrier
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -47,6 +46,7 @@ class HouseConsignmentsTransformer @Inject() (
               val hcIndex = Index(i)
               val pipeline =
                 setSequenceNumber(HouseConsignmentSection(hcIndex), houseConsignment.sequenceNumber) andThen
+                  set(GrossWeightPage(hcIndex), houseConsignment.grossMass) andThen
                   consigneeTransformer.transform(houseConsignment.Consignee, hcIndex) andThen
                   consignorTransformer.transform(houseConsignment.Consignor, hcIndex) andThen
                   departureTransportMeansTransformer.transform(houseConsignment.DepartureTransportMeans, hcIndex) andThen

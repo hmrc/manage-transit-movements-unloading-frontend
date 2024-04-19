@@ -27,12 +27,12 @@ import views.html.houseConsignment.index.items.RemoveNetWeightYesNoView
 class RemoveNetWeightYesNoViewSpec extends YesNoViewBehaviours with Generators {
 
   private val mode      = NormalMode
-  private val insetText = arbitrary[Double].sample.value
+  private val insetText = arbitrary[BigDecimal].sample.value
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[RemoveNetWeightYesNoView]
-      .apply(form, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, Some(insetText))(fakeRequest, messages)
+      .apply(form, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, Some(insetText.toString))(fakeRequest, messages)
 
   override val prefix: String = "houseConsignment.index.item.removeNetWeightYesNo"
 
