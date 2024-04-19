@@ -19,6 +19,7 @@ package utils.transformers
 import connectors.ReferenceDataConnector
 import generated._
 import models.{Index, UserAnswers}
+import pages.houseConsignment.consignor.{CountryPage => HouseCountryPage}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -49,17 +50,24 @@ class ConsignorTransformer @Inject() (
       }
   }
 
-  def transform(consignor: Option[ConsignorType06], hcIndex: Index): UserAnswers => Future[UserAnswers] = {
+  def transform(consignor: Option[ConsignorType06], hcIndex: Index)(implicit hc: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
     import pages.{ConsignorIdentifierPage, ConsignorNamePage}
 
     userAnswers =>
       consignor match {
-        case Some(ConsignorType06(identificationNumber, name, _)) =>
-          val pipeline: UserAnswers => Future[UserAnswers] =
-            set(ConsignorIdentifierPage(hcIndex), identificationNumber) andThen
-              set(ConsignorNamePage(hcIndex), name)
+        case Some(ConsignorType06(identificationNumber, name, address)) =>
+          for {
+            country <- address.map(_.country).lookup(referenceDataConnector.getCountry)
+            userAnswers <- {
+              val pipeline: UserAnswers => Future[UserAnswers] =
+                set(HouseCountryPage(hcIndex), country) andThen
+                  set(ConsignorIdentifierPage(hcIndex), identificationNumber) andThen
+                  set(ConsignorNamePage(hcIndex), name)
 
-          pipeline(userAnswers)
+              pipeline(userAnswers)
+            }
+          } yield userAnswers
+
         case None =>
           Future.successful(userAnswers)
       }

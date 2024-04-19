@@ -45,13 +45,13 @@ object HouseConsignmentViewModel {
       ).flatten
 
       val children: Seq[Section] = Seq(
+        helper.houseConsignmentConsignorSection,
+        helper.houseConsignmentConsigneeSection,
         helper.departureTransportMeansSection,
         helper.documentSection,
         helper.additionalReferencesSection,
         helper.additionalInformationSection,
-        helper.itemSection,
-        helper.houseConsignmentConsignorSection,
-        helper.houseConsignmentConsigneeSection
+        helper.itemSection
       )
       val houseConsignmentSection: Section =
         StaticSection(rows = rows, children = children)

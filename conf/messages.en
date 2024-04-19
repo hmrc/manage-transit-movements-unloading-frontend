@@ -486,7 +486,7 @@ unloadingFindings.subsections.houseConsignment = House consignment {0}
 unloadingFindings.subsections.houseConsignment.parent.heading = House consignments
 unloadingFindings.rowHeadings.houseConsignment.grossWeight = Gross weight
 unloadingFindings.rowHeadings.houseConsignment.netWeight = Net weight
-unloadingFindings.rowHeadings.houseConsignment.consignorName = Consignor name
+unloadingFindings.rowHeadings.houseConsignment.consignorName = Name
 unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier = Consignor EORI number or Trader Identification Number (TIN)
 unloadingFindings.rowHeadings.houseConsignment.consigneeName = Consignee name
 unloadingFindings.rowHeadings.houseConsignment.grossWeight.change.hidden = Change Gross weight
@@ -1109,5 +1109,8 @@ houseConsignment.index.additionalReference.additionalReferenceType.check.error.r
 houseConsignment.index.additionalReference.additionalReferenceType.hint = Enter the reference name or code, like Carrier (AEO certificate number) or Y028.
 houseConsignment.index.additionalReference.additionalReferenceType.placeholder = Select an additional reference
 
+houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
+houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
+houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.error.required = Select yes if you want to add an additional reference number
 
 unloadingFindings.rowHeadings.houseConsignment.countryOfDestination = Country of destination
