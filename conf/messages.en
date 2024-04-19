@@ -1100,6 +1100,15 @@ houseConsignment.index.additionalReference.additionalReferenceNumber.error.requi
 houseConsignment.index.additionalReference.additionalReferenceNumber.error.length = The additional reference number must be 70 characters or less
 houseConsignment.index.additionalReference.additionalReferenceNumber.error.invalidCharacters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 
+houseConsignment.index.additionalReference.additionalReferenceType.NormalMode.title = What type of additional reference do you want to add?
+houseConsignment.index.additionalReference.additionalReferenceType.NormalMode.heading = What type of additional reference do you want to add?
+houseConsignment.index.additionalReference.additionalReferenceType.CheckMode.title = What is the new additional reference type in house consignment {0}?
+houseConsignment.index.additionalReference.additionalReferenceType.CheckMode.heading = What is the new additional reference type in house consignment {0}?
+houseConsignment.index.additionalReference.additionalReferenceType.error.required = Select the type of additional reference
+houseConsignment.index.additionalReference.additionalReferenceType.check.error.required = Select the type of additional reference in house consignment {0}
+houseConsignment.index.additionalReference.additionalReferenceType.hint = Enter the reference name or code, like Carrier (AEO certificate number) or Y028.
+houseConsignment.index.additionalReference.additionalReferenceType.placeholder = Select an additional reference
+
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.error.required = Select yes if you want to add an additional reference number

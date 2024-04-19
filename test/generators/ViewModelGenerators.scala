@@ -44,6 +44,7 @@ import viewModels.houseConsignment.index.items.packages.{
   PackageShippingMarksViewModel,
   PackageTypeViewModel
 }
+import viewModels.houseConsignment.index.additionalReference.{AdditionalReferenceTypeViewModel => HCAdditionalReferenceTypeViewModel}
 import viewModels.houseConsignment.index.items.{AddAnotherItemViewModel, document => hcViewModel}
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 import viewModels.transportEquipment.AddAnotherEquipmentViewModel
@@ -482,6 +483,15 @@ trait ViewModelGenerators {
       onSubmitCall <- arbitrary[Call]
       nextIndex    <- arbitrary[Index]
     } yield AddAnotherPackageViewModel(listItems, onSubmitCall, nextIndex)
+  }
+
+  implicit lazy val arbitraryHCAdditionalReferenceViewModel: Arbitrary[HCAdditionalReferenceTypeViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+      arrivalId     <- nonEmptyString
+    } yield HCAdditionalReferenceTypeViewModel(heading, title, requiredError, ArrivalId(arrivalId), NormalMode, Index(0), Index(0))
   }
 
 }
