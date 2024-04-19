@@ -40,7 +40,7 @@ import scala.concurrent.Future
 
 class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  val formProvider                         = new SelectableFormProvider()
+  def form: Form[Country]                  = new SelectableFormProvider()(mode, prefix, SelectableList(countries))
   private val country: Country             = Country("GB", "United Kingdom")
   val countries: Seq[Country]              = Seq(Country("GB", "United Kingdom"))
   val countryList: SelectableList[Country] = SelectableList(countries)
@@ -49,7 +49,6 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
   private val mode                         = CheckMode
   private val prefix                       = "departureMeansOfTransport.country"
 
-  val form: Form[Country]                                = formProvider(mode, prefix, SelectableList(countries))
   val mockReferenceDataService: ReferenceDataService     = mock[ReferenceDataService]
   lazy val DepartureMeansOfTransportCountryRoute: String = controllers.departureMeansOfTransport.routes.CountryController.onPageLoad(arrivalId, index, mode).url
 
