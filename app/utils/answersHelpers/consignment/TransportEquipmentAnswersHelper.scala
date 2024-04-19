@@ -42,6 +42,19 @@ class TransportEquipmentAnswersHelper(
     call = Some(controllers.transportEquipment.index.routes.ContainerIdentificationNumberController.onPageLoad(arrivalId, equipmentIndex, CheckMode))
   )
 
+  def containerIndicatorRow: Option[SummaryListRow] =
+    userAnswers.ie043Data.Consignment
+      .map(_.containerIndicator)
+      .map {
+        containerIndicator =>
+          buildRow(
+            prefix = "unloadingFindings.containerIndicator",
+            answer = formatAsYesOrNo(containerIndicator),
+            id = None,
+            call = None
+          )
+      }
+
   def transportEquipmentSeals: Section =
     userAnswers
       .get(SealsSection(equipmentIndex))
@@ -81,14 +94,13 @@ class TransportEquipmentAnswersHelper(
       id = s"add-remove-transport-equipment-${equipmentIndex.display}-seal",
       href = controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, CheckMode, NormalMode, equipmentIndex).url,
       text = messages("sealsLink.addRemove"),
-      visuallyHidden = messages("sealsLink.visuallyHidden")
+      visuallyHidden = Some(messages("sealsLink.visuallyHidden", equipmentIndex.display))
     )
 
   private def itemsAddRemoveLink: Link =
     Link(
       id = s"add-remove-transport-equipment-${equipmentIndex.display}-item",
       href = controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, CheckMode, NormalMode, equipmentIndex).url,
-      text = messages("consignmentItemLink.addRemove", equipmentIndex.display),
-      visuallyHidden = messages("consignmentItemLink.visuallyHidden", equipmentIndex.display)
+      text = messages("consignmentItemLink.addRemove", equipmentIndex.display)
     )
 }

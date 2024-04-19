@@ -21,7 +21,7 @@ import models.DocType.{Previous, Support, Transport}
 import models.reference.DocumentType
 
 sealed trait Document {
-  val sequenceNumber: String
+  val sequenceNumber: BigInt
   val documentType: DocumentType
   val referenceNumber: String
 }
@@ -76,20 +76,20 @@ object Document {
     )
 
   case class SupportingDocument(
-    sequenceNumber: String,
+    sequenceNumber: BigInt,
     documentType: DocumentType,
     referenceNumber: String,
     complementOfInformation: Option[String]
   ) extends Document
 
   case class TransportDocument(
-    sequenceNumber: String,
+    sequenceNumber: BigInt,
     documentType: DocumentType,
     referenceNumber: String
   ) extends Document
 
   case class PreviousDocument(
-    sequenceNumber: String,
+    sequenceNumber: BigInt,
     documentType: DocumentType,
     referenceNumber: String,
     complementOfInformation: Option[String]

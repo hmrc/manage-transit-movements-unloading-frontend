@@ -17,14 +17,17 @@
 package utils.transformers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import connectors.ReferenceDataConnector
 import generated.HouseConsignmentType04
 import generators.Generators
-import models.Index
+import models.reference.Country
+import models.{Index, SecurityType}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
+import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage}
 import pages.sections.HouseConsignmentSection
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -43,6 +46,7 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
   private lazy val mockAdditionalReferenceTransformer     = mock[AdditionalReferencesTransformer]
   private lazy val mockAdditionalInformationTransformer   = mock[AdditionalInformationTransformer]
   private lazy val mockConsignmentItemTransformer         = mock[ConsignmentItemTransformer]
+  private lazy val mockReferenceDataConnector             = mock[ReferenceDataConnector]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -54,7 +58,8 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
         bind[DocumentsTransformer].toInstance(mockDocumentsTransformer),
         bind[AdditionalReferencesTransformer].toInstance(mockAdditionalReferenceTransformer),
         bind[AdditionalInformationTransformer].toInstance(mockAdditionalInformationTransformer),
-        bind[ConsignmentItemTransformer].toInstance(mockConsignmentItemTransformer)
+        bind[ConsignmentItemTransformer].toInstance(mockConsignmentItemTransformer),
+        bind[ReferenceDataConnector].toInstance(mockReferenceDataConnector)
       )
 
   private case class FakeConsigneeSection(hcIndex: Index) extends QuestionPage[JsObject] {
@@ -86,6 +91,7 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
   }
 
   "must transform data" in {
+    val country = Country("GB", "country")
     forAll(arbitrary[Seq[HouseConsignmentType04]]) {
       houseConsignments =>
         houseConsignments.zipWithIndex.map {
@@ -126,6 +132,14 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
               .thenReturn {
                 ua => Future.successful(ua.setValue(FakeConsignmentItemSection(hcIndex), Json.obj("foo" -> i.toString)))
               }
+
+            when(mockReferenceDataConnector.getSecurityType(any())(any(), any()))
+              .thenReturn {
+                Future.successful(SecurityType("code", "description"))
+              }
+
+            when(mockReferenceDataConnector.getCountry(any())(any(), any()))
+              .thenReturn(Future.successful(country))
         }
 
         val result = transformer.transform(houseConsignments).apply(emptyUserAnswers).futureValue
@@ -135,6 +149,9 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
             val hcIndex = Index(i)
 
             result.getSequenceNumber(HouseConsignmentSection(hcIndex)) mustBe hc.sequenceNumber
+            result.getValue(GrossWeightPage(hcIndex)) mustBe hc.grossMass
+            result.getValue[JsObject](HouseConsignmentSection(hcIndex), "securityIndicatorFromExportDeclaration") mustBe
+              Json.obj("code" -> "code", "description" -> "description")
             result.getValue(FakeConsigneeSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
             result.getValue(FakeConsignorSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
             result.getValue(FakeDepartureTransportMeansSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
@@ -142,6 +159,7 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
             result.getValue(FakeAdditionalReferenceSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
             result.getValue(FakeAdditionalInformationSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
             result.getValue(FakeConsignmentItemSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)
+            result.getValue(CountryOfDestinationPage(hcIndex)) mustBe country
         }
     }
   }

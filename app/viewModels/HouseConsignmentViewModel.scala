@@ -18,13 +18,13 @@ package viewModels
 
 import models.{Index, UserAnswers}
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.consignment.HouseConsignmentAnswersHelper
 import viewModels.sections.Section
+import viewModels.sections.Section.StaticSection
 
 import javax.inject.Inject
 
-case class HouseConsignmentViewModel(sections: Seq[Section], safetyAndSecurityRow: SummaryListRow)
+case class HouseConsignmentViewModel(section: Section)
 
 object HouseConsignmentViewModel {
 
@@ -33,12 +33,18 @@ object HouseConsignmentViewModel {
     houseConsignmentIndex: Index
   )(implicit messages: Messages): HouseConsignmentViewModel = new HouseConsignmentViewModelProvider()(userAnswers, houseConsignmentIndex)
 
-  class HouseConsignmentViewModelProvider @Inject() () {
+  class HouseConsignmentViewModelProvider @Inject() {
 
     def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index)(implicit messages: Messages): HouseConsignmentViewModel = {
       val helper = new HouseConsignmentAnswersHelper(userAnswers, houseConsignmentIndex)
 
-      val sections: Seq[Section] = Seq(
+      val rows = Seq(
+        helper.grossMassRow,
+        helper.countryOfDestination,
+        helper.safetyAndSecurityDetails
+      ).flatten
+
+      val children: Seq[Section] = Seq(
         helper.departureTransportMeansSection,
         helper.documentSection,
         helper.additionalReferencesSection,
@@ -47,8 +53,10 @@ object HouseConsignmentViewModel {
         helper.houseConsignmentConsignorSection,
         helper.houseConsignmentConsigneeSection
       )
+      val houseConsignmentSection: Section =
+        StaticSection(rows = rows, children = children)
 
-      HouseConsignmentViewModel(sections, helper.safetyAndSecurityDetails)
+      HouseConsignmentViewModel(houseConsignmentSection)
     }
   }
 }

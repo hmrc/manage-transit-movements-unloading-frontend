@@ -156,7 +156,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return Some(Row)" - {
         s"when $page defined" in {
-          forAll(arbitrary[Double]) {
+          forAll(arbitrary[BigDecimal]) {
             value =>
               val answers = emptyUserAnswers.setValue(page, value)
 
@@ -299,10 +299,11 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
             result.sectionTitle.value mustBe "Documents"
             result.id.value mustBe "item-1-documents"
 
-            val addOrRemove = result.viewLinks.head
-            addOrRemove.id mustBe "add-remove-item-1-document"
-            addOrRemove.text mustBe "Add or remove document"
-            addOrRemove.href mustBe controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
+            val addOrRemoveLink = result.viewLinks.head
+            addOrRemoveLink.id mustBe "add-remove-item-1-document"
+            addOrRemoveLink.text mustBe "Add or remove document"
+            addOrRemoveLink.visuallyHidden.value mustBe "from item 1"
+            addOrRemoveLink.href mustBe controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
               .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
               .url
 
@@ -344,8 +345,13 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
             result.children.head.rows.size mustBe 2
             result.children.head.rows.head.value.value mustBe `type`.toString
             result.children.head.rows(1).value.value mustBe number
-            result.viewLinks.head.href mustBe "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/additional-reference/add-another"
             result.id.value mustBe "item-1-additional-references"
+
+            val addOrRemoveLink = result.viewLinks.head
+            addOrRemoveLink.id mustBe "add-remove-item-1-additional-reference"
+            addOrRemoveLink.text mustBe "Add or remove additional reference"
+            addOrRemoveLink.visuallyHidden.value mustBe "from item 1"
+            addOrRemoveLink.href mustBe "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/additional-reference/add-another"
 
         }
       }
@@ -401,6 +407,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
             val addOrRemove = result.viewLinks.head
             addOrRemove.id mustBe "add-remove-item-1-packaging"
             addOrRemove.text mustBe "Add or remove package"
+            addOrRemove.visuallyHidden.value mustBe "from item 1"
             addOrRemove.href mustBe controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController
               .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
               .url

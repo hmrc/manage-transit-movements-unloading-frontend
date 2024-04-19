@@ -22,6 +22,9 @@ import scala.util.Try
 
 package object transformers {
 
+  final val SequenceNumber = "sequenceNumber"
+  final val Removed        = "removed"
+
   implicit class TryOps[A](tryValue: Try[A]) {
     def asFuture: Future[A] = Future.fromTry(tryValue)
   }

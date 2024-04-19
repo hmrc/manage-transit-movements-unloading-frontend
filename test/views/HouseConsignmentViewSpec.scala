@@ -26,7 +26,7 @@ class HouseConsignmentViewSpec extends DetailsListViewBehaviours with Generators
 
   override val prefix: String = "houseConsignment"
 
-  val houseConsignmentViewModel: HouseConsignmentViewModel = new HouseConsignmentViewModel(sections, securityRow)
+  val houseConsignmentViewModel: HouseConsignmentViewModel = new HouseConsignmentViewModel(section)
 
   override def view: HtmlFormat.Appendable =
     injector.instanceOf[HouseConsignmentView].apply(mrn, arrivalId, houseConsignmentViewModel, index)(fakeRequest, messages)
@@ -41,15 +41,14 @@ class HouseConsignmentViewSpec extends DetailsListViewBehaviours with Generators
 
   behave like pageWithContent("p", "Compare the transit that arrived with the following information to identify any discrepancies.")
 
-  behave like pageWithSections()
+  behave like pageWithChildSections()
 
   behave like pageWithLinkAsButton("Back to summary", controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId).url)
 
-  "must render section titles when rows are non-empty" - {
-    sections.foreach(_.sectionTitle.map {
+  "must render child section titles" - {
+    section.children.foreach(_.sectionTitle.map {
       sectionTitle =>
         behave like pageWithContent("span", sectionTitle)
     })
   }
-
 }

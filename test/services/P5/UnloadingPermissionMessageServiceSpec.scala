@@ -153,7 +153,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
                 </Address>
               </Consignee>
               <TransportEquipment>
-                <sequenceNumber>te1</sequenceNumber>
+                <sequenceNumber>1</sequenceNumber>
                 <containerIdentificationNumber>cin-1</containerIdentificationNumber>
                 <numberOfSeals>103</numberOfSeals>
                 <Seal>
@@ -161,30 +161,30 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
                   <identifier>1002</identifier>
                 </Seal>
                 <GoodsReference>
-                  <sequenceNumber>gref-1</sequenceNumber>
+                  <sequenceNumber>1</sequenceNumber>
                   <declarationGoodsItemNumber>108</declarationGoodsItemNumber>
                 </GoodsReference>
               </TransportEquipment>
               <DepartureTransportMeans>
-                <sequenceNumber>dtm-1</sequenceNumber>
+                <sequenceNumber>1</sequenceNumber>
                 <typeOfIdentification>4</typeOfIdentification>
                 <identificationNumber>28</identificationNumber>
                 <nationality>DE</nationality>
               </DepartureTransportMeans>
               <PreviousDocument>
-                <sequenceNumber>pr-1</sequenceNumber>
+                <sequenceNumber>1</sequenceNumber>
                 <type>9811</type>
                 <referenceNumber>info1</referenceNumber>
                 <complementOfInformation>8</complementOfInformation>
               </PreviousDocument>
               <SupportingDocument>
-                <sequenceNumber>sd-1</sequenceNumber>
+                <sequenceNumber>1</sequenceNumber>
                 <type>4567</type>
                 <referenceNumber>1234</referenceNumber>
                 <complementOfInformation>2</complementOfInformation>
               </SupportingDocument>
               <TransportDocument>
-                <sequenceNumber>td-1</sequenceNumber>
+                <sequenceNumber>1</sequenceNumber>
                 <type>4</type>
                 <referenceNumber>refn-1</referenceNumber>
               </TransportDocument>
@@ -194,7 +194,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
                 <referenceNumber>addref-1</referenceNumber>
               </AdditionalReference>
               <AdditionalInformation>
-                <sequenceNumber>adref-2</sequenceNumber>
+                <sequenceNumber>2</sequenceNumber>
                 <code>6</code>
                 <text>additional ref text</text>
               </AdditionalInformation>
@@ -223,7 +223,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
                   </Address>
                 </Location>
                 <TransportEquipment>
-                  <sequenceNumber>te1</sequenceNumber>
+                  <sequenceNumber>1</sequenceNumber>
                   <containerIdentificationNumber>tn1</containerIdentificationNumber>
                   <numberOfSeals>34</numberOfSeals>
                   <Seal>
@@ -231,7 +231,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
                     <identifier>sl7</identifier>
                   </Seal>
                   <GoodsReference>
-                    <sequenceNumber>gref-5</sequenceNumber>
+                    <sequenceNumber>5</sequenceNumber>
                     <declarationGoodsItemNumber>78</declarationGoodsItemNumber>
                   </GoodsReference>
                 </TransportEquipment>
@@ -245,7 +245,7 @@ class UnloadingPermissionMessageServiceSpec extends SpecBase with BeforeAndAfter
                 </Transhipment>
               </Incident>
               <HouseConsignment>
-                <sequenceNumber>hc1</sequenceNumber>
+                <sequenceNumber>1</sequenceNumber>
                 <grossMass>1234.567</grossMass>
                 <securityIndicatorFromExportDeclaration>si1</securityIndicatorFromExportDeclaration>
                 <Consignor>

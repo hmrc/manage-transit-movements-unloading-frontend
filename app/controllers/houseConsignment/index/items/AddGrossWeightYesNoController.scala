@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.DocumentNavigator
+import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator
 import pages.houseConsignment.index.items.AddGrossWeightYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddGrossWeightYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: DocumentNavigator,
+  navigator: HouseConsignmentItemNavigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,

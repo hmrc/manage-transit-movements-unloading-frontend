@@ -168,6 +168,74 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
     }
   }
 
+  "BigDecimal" - {
+
+    val testForm: Form[BigDecimal] =
+      Form(
+        "value" -> bigDecimal(6, 16)
+      )
+
+    "must bind a valid BigDecimal" in {
+      val result = testForm.bind(Map("value" -> "1"))
+      result.get mustEqual 1
+    }
+
+    "must bind a valid BigDecimal with comma separators" in {
+      val result = testForm.bind(Map("value" -> "1,000"))
+      result.get mustEqual 1000
+    }
+
+    "must bind a valid BigDecimal with spaces" in {
+      val result = testForm.bind(Map("value" -> "1 000 000"))
+      result.get mustEqual 1000000
+    }
+
+    "must bind a valid BigDecimal with fraction" in {
+      val result = testForm.bind(Map("value" -> "1.2"))
+      result.get mustEqual BigDecimal("1.2")
+    }
+
+    "must bind a valid BigDecimal with max integer length" in {
+      val result = testForm.bind(Map("value" -> "1234567890123456"))
+      result.get mustEqual BigDecimal("1234567890123456")
+    }
+
+    "must bind a valid BigDecimal with max fraction length" in {
+      val result = testForm.bind(Map("value" -> "1.123456"))
+      result.get mustEqual BigDecimal("1.123456")
+    }
+
+    "must bind a valid BigDecimal with max integer and fraction length" in {
+      val result = testForm.bind(Map("value" -> "1234567890123456.123456"))
+      result.get mustEqual BigDecimal("1234567890123456.123456")
+    }
+
+    "must not bind BigDecimal with more than max integer length" in {
+      val result = testForm.bind(Map("value" -> "12345678901234567"))
+      result.errors must contain(FormError("value", "error.invalidValue"))
+    }
+
+    "must not bind BigDecimal with more than max fraction length" in {
+      val result = testForm.bind(Map("value" -> "0.1234567"))
+      result.errors must contain(FormError("value", "error.invalidFormat"))
+    }
+
+    "must not bind an empty value" in {
+      val result = testForm.bind(Map("value" -> ""))
+      result.errors must contain(FormError("value", "error.required"))
+    }
+
+    "must not bind an empty map" in {
+      val result = testForm.bind(Map.empty[String, String])
+      result.errors must contain(FormError("value", "error.required"))
+    }
+
+    "must unbind a valid value" in {
+      val result = testForm.fill(123)
+      result.apply("value").value.value mustEqual "123"
+    }
+  }
+
   "enumerable" - {
 
     val testForm = Form(

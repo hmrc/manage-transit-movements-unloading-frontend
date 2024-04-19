@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-package derivable
+package pages.houseConsignment.index
 
-import queries.Gettable
+import models.{Index, SecurityType}
+import pages.QuestionPage
+import pages.sections.HouseConsignmentSection
+import play.api.libs.json.JsPath
 
-trait Derivable[A, B] extends Gettable[A] {
+case class SecurityIndicatorFromExportDeclarationPage(houseConsignmentIndex: Index) extends QuestionPage[SecurityType] {
 
-  val derive: A => B
+  override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ toString
 
+  override def toString: String = "securityIndicatorFromExportDeclaration"
 }
