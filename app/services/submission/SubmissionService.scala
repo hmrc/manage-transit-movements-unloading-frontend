@@ -86,8 +86,8 @@ class SubmissionService @Inject() (
     )
 
   implicit val unloadingRemarkReads: Reads[UnloadingRemarkType] = {
+
     for {
-      conform             <- AddUnloadingCommentsYesNoPage.path.readNullable[Boolean].map(_.map(!_)).map(boolToFlag)
       unloadingCompletion <- UnloadingTypePage.path.read[UnloadingType].map(unloadingTypeToFlag)
       unloadingDate       <- DateGoodsUnloadedPage.path.read[LocalDate].map(localDateToXMLGregorianCalendar)
       canSealsBeRead      <- CanSealsBeReadPage.path.readNullable[Boolean]
@@ -98,8 +98,12 @@ class SubmissionService @Inject() (
         case (Some(_), Some(_))        => Some(Number0)
         case _                         => None
       }
+      conform <- stateOfSeals match {
+        case Some(Number0) => Number0: Reads[Flag]
+        case _             => AddUnloadingCommentsYesNoPage.path.read[Boolean].map(!_).map(boolToFlag)
+      }
     } yield UnloadingRemarkType(
-      conform = if (stateOfSeals.contains(Number0)) Number0 else conform,
+      conform = conform,
       unloadingCompletion = unloadingCompletion,
       unloadingDate = unloadingDate,
       stateOfSeals = stateOfSeals,

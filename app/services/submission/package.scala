@@ -43,8 +43,8 @@ package object submission {
       value.readNullable[T] orElse None
   }
 
-  implicit def boolToFlag(x: Option[Boolean]): Flag =
-    if (x.contains(true)) Number1 else Number0
+  implicit def boolToFlag(x: Boolean): Flag =
+    if (x) Number1 else Number0
 
   implicit def unloadingTypeToFlag(x: UnloadingType): Flag =
     x match {
