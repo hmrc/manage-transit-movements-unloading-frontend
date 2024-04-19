@@ -22,7 +22,7 @@ import models.{DynamicAddress, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
-import pages.consignor.CountryPage
+import pages.houseConsignment.consignor.CountryPage
 import pages.houseConsignment.index.CountryOfDestinationPage
 import utils.answersHelpers.AnswersHelperSpecBase
 import viewModels.sections.Section.AccordionSection
@@ -79,7 +79,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
               val result = helper.consignorName.value
 
-              result.key.value mustBe "Consignor name"
+              result.key.value mustBe "Name"
               result.value.value mustBe value
               result.actions must not be defined
           }
@@ -167,7 +167,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
     }
 
     "country" - {
-      val page = CountryPage
+      val page = CountryPage(houseConsignmentIndex)
       "must return None" - {
         s"when $page undefined" in {
           val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, houseConsignmentIndex)
