@@ -17,48 +17,18 @@
 package services
 
 import generated.{Flag, Number0, Number1}
-import models.{Index, UnloadingType}
+import models.UnloadingType
 import play.api.libs.json._
 import scalaxb.XMLCalendar
-import utils.transformers.SequenceNumber
 
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, LocalDateTime}
 import javax.xml.datatype.XMLGregorianCalendar
-import scala.annotation.tailrec
 import scala.language.implicitConversions
 
 package object submission {
 
   implicit class RichJsPath(value: JsPath) {
-
-    def readArray[T](implicit reads: (Index, BigInt) => Reads[Option[T]]): Reads[Seq[T]] =
-      value
-        .readWithDefault(JsArray())
-        .map {
-          jsArray =>
-            @tailrec
-            def rec(values: List[(JsValue, Int)], acc: Seq[T] = Nil, sequenceNumber: BigInt = 1): Seq[T] =
-              values match {
-                case Nil =>
-                  acc
-                case (jsValue, index) :: tail =>
-                  val updatedSequenceNumber = jsValue
-                    .validate[Option[BigInt]]((__ \ SequenceNumber).readNullable[BigInt])
-                    .asOpt
-                    .flatten
-                    .getOrElse(sequenceNumber)
-
-                  val updatedAcc = jsValue
-                    .validate[Option[T]](reads(Index(index), updatedSequenceNumber))
-                    .asOpt
-                    .flatten
-                    .fold(acc)(acc :+ _)
-
-                  rec(tail, updatedAcc, updatedSequenceNumber + 1)
-              }
-            rec(jsArray.value.zipWithIndex.toList)
-        }
 
     def readNullableSafe[T](implicit reads: Reads[T]): Reads[Option[T]] =
       value.readNullable[T] orElse None
@@ -92,5 +62,10 @@ package object submission {
 
   implicit def successfulReads[T](value: T): Reads[T] = Reads {
     _ => JsSuccess(value)
+  }
+
+  implicit class RichOption[A](value: Option[A]) {
+
+    def getList[B](f: A => Seq[B]): Seq[B] = value.map(f).getOrElse(Seq.empty)
   }
 }
