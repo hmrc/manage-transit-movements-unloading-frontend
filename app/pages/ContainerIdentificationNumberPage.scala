@@ -27,6 +27,6 @@ final case class ContainerIdentificationNumberPage(equipmentIndex: Index) extend
 
   override def toString: String = "containerIdentificationNumber"
 
-  override def valueInIE043(ie043: Option[TransportEquipmentType05], sequenceNumber: BigInt): Option[String] =
+  override def valueInIE043(ie043: Option[TransportEquipmentType05], sequenceNumber: Option[BigInt]): Option[String] =
     ie043.flatMap(_.containerIdentificationNumber)
 }

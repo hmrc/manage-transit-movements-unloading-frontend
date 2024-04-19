@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package pages.sections.incidents
+package pages.sections
 
-import pages.sections.{ConsignmentSection, Section}
 import play.api.libs.json.{JsArray, JsPath}
 
-case object IncidentsSection extends Section[JsArray] {
+case object ConsignmentSection extends Section[JsArray] {
 
-  override def path: JsPath = ConsignmentSection.path \ toString
+  override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "Incident"
+  override def toString: String = "Consignment"
 }
