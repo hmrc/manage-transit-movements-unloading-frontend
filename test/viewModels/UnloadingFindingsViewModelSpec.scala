@@ -522,7 +522,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(DepartureTransportMeansCountryPage(hcIndex, dtmIndex), Country("IT", ""))
           .setValue(ItemDescriptionPage(hcIndex, itemIndex), "shirts")
           .setValue(GrossWeightPage(hcIndex, itemIndex), BigDecimal(123.45))
-          .setValue(NetWeightPage(hcIndex, itemIndex), 123.45)
+          .setValue(NetWeightPage(hcIndex, itemIndex), BigDecimal(123.45))
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)
@@ -552,7 +552,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(DepartureTransportMeansCountryPage(Index(0), dtmIndex), Country("IT", ""))
           .setValue(ItemDescriptionPage(Index(0), itemIndex), "shirts")
           .setValue(GrossWeightPage(Index(0), itemIndex), BigDecimal(123.45))
-          .setValue(NetWeightPage(Index(0), itemIndex), 123.45)
+          .setValue(NetWeightPage(Index(0), itemIndex), BigDecimal(123.45))
           .setValue(ConsignorNamePage(Index(1)), "michael doe")
           .setValue(ConsignorIdentifierPage(Index(1)), "csgr1")
           .setValue(ConsigneeNamePage(Index(1)), "John Smith")
@@ -562,7 +562,7 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(DepartureTransportMeansCountryPage(Index(1), dtmIndex), Country("IT", ""))
           .setValue(ItemDescriptionPage(Index(1), itemIndex), "shirts")
           .setValue(GrossWeightPage(Index(1), itemIndex), BigDecimal(123.45))
-          .setValue(NetWeightPage(Index(1), itemIndex), 123.45)
+          .setValue(NetWeightPage(Index(1), itemIndex), BigDecimal(123.45))
 
         val viewModelProvider = new UnloadingFindingsViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers)

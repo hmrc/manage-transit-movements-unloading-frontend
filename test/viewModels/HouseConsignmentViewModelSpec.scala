@@ -258,7 +258,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
           .setValue(ConsigneeIdentifierPage(hcIndex), "csgee1")
           .setValue(ItemDescriptionPage(hcIndex, itemIndex), "shirts")
           .setValue(GrossWeightPage(hcIndex, itemIndex), BigDecimal(123.45))
-          .setValue(NetWeightPage(hcIndex, itemIndex), 123.45)
+          .setValue(NetWeightPage(hcIndex, itemIndex), BigDecimal(123.45))
           .setValue(ItemConsigneeNamePage(hcIndex, itemIndex), "John Smith")
           .setValue(ItemConsigneeIdentifierPage(hcIndex, itemIndex), "csgee2")
           .setValue(SecurityIndicatorFromExportDeclarationPage(hcIndex), SecurityType("Code", "Description"))
@@ -301,7 +301,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         val userAnswers = emptyUserAnswers
           .setValue(ItemDescriptionPage(hcIndex, itemIndex), "shirts")
           .setValue(GrossWeightPage(hcIndex, itemIndex), BigDecimal(123.45))
-          .setValue(NetWeightPage(hcIndex, itemIndex), 123.45)
+          .setValue(NetWeightPage(hcIndex, itemIndex), BigDecimal(123.45))
 
         setExistingUserAnswers(userAnswers)
 
@@ -322,10 +322,10 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
           .setValue(ConsigneeIdentifierPage(hcIndex), "csgee1")
           .setValue(ItemDescriptionPage(hcIndex, Index(0)), "shirts")
           .setValue(GrossWeightPage(hcIndex, Index(0)), BigDecimal(123.45))
-          .setValue(NetWeightPage(hcIndex, Index(0)), 123.45)
+          .setValue(NetWeightPage(hcIndex, Index(0)), BigDecimal(123.45))
           .setValue(ItemDescriptionPage(hcIndex, Index(1)), "shirts")
           .setValue(GrossWeightPage(hcIndex, Index(1)), BigDecimal(123.45))
-          .setValue(NetWeightPage(hcIndex, Index(1)), 123.45)
+          .setValue(NetWeightPage(hcIndex, Index(1)), BigDecimal(123.45))
           .setValue(ItemConsigneeNamePage(hcIndex, Index(0)), "John Smith")
           .setValue(ItemConsigneeIdentifierPage(hcIndex, Index(0)), "csgee2")
           .setValue(ItemConsigneeNamePage(hcIndex, Index(1)), "John Smith")

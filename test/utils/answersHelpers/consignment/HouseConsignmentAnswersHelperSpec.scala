@@ -419,7 +419,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must generate accordion sections" in {
         val description           = Gen.alphaNumStr.sample.value
         val grossWeight           = arbitrary[BigDecimal].sample.value
-        val netWeight             = arbitrary[Double].sample.value
+        val netWeight             = arbitrary[BigDecimal].sample.value
         val packageType           = arbitrary[PackageType].sample.value
         val count                 = arbitrary[BigInt].sample.value
         val additionalReference   = arbitrary[AdditionalReferenceType].sample.value
