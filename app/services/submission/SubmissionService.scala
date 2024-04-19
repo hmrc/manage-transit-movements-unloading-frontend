@@ -19,8 +19,6 @@ package services.submission
 import connectors.ApiConnector
 import generated._
 import models.{ArrivalId, EoriNumber, Index, UnloadingType, UserAnswers}
-import pages.sections.ConsignmentSection
-import pages.sections.additionalReference.AdditionalReferencesSection
 import play.api.libs.json.{__, Reads}
 import scalaxb.DataRecord
 import scalaxb.`package`.toXML
@@ -48,6 +46,8 @@ class SubmissionService @Inject() (
     toXML(transform(userAnswers), s"ncts:${CC044C.toString}", scope)
 
   private def transform(userAnswers: UserAnswers): CC044CType = {
+    import pages.sections.ConsignmentSection
+
     val officeOfDestination = userAnswers.ie043Data.CustomsOfficeOfDestinationActual.referenceNumber
     implicit val reads: Reads[CC044CType] =
       for {
@@ -119,6 +119,7 @@ class SubmissionService @Inject() (
   def consignmentReads(ie043: Option[ConsignmentType05]): Reads[ConsignmentType06] = {
     import pages.grossMass.GrossMassPage
     import pages.sections._
+    import pages.sections.additionalReference.AdditionalReferencesSection
 
     lazy val transportEquipment      = ie043.getList(_.TransportEquipment)
     lazy val departureTransportMeans = ie043.getList(_.DepartureTransportMeans)
