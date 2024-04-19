@@ -93,7 +93,7 @@ class RemovePackageTypeYesNoController @Inject() (
                 for {
                   updatedAnswers <-
                     if (value) {
-                      Future.fromTry(request.userAnswers.removeExceptSequenceNumber(PackagingSection(houseConsignmentIndex, itemIndex, packageIndex)))
+                      Future.fromTry(request.userAnswers.removeDataGroup(PackagingSection(houseConsignmentIndex, itemIndex, packageIndex)))
                     } else { Future.successful(request.userAnswers) }
                   _ <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(

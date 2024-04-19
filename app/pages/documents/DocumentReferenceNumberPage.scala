@@ -16,9 +16,10 @@
 
 package pages.documents
 
+import generated.SupportingDocumentType02
 import models.Index
-import pages.QuestionPage
 import pages.sections.documents.DocumentDetailsSection
+import pages.{DiscrepancyQuestionPage, QuestionPage}
 import play.api.libs.json.JsPath
 
 case class DocumentReferenceNumberPage(documentIndex: Index) extends QuestionPage[String] {
@@ -26,4 +27,18 @@ case class DocumentReferenceNumberPage(documentIndex: Index) extends QuestionPag
   override def path: JsPath = DocumentDetailsSection(documentIndex).path \ toString
 
   override def toString: String = "referenceNumber"
+}
+
+case class SupportingDocumentReferenceNumberPage(documentIndex: Index) extends DiscrepancyQuestionPage[String, Seq[SupportingDocumentType02], String] {
+
+  override def path: JsPath = DocumentReferenceNumberPage(documentIndex).path
+
+  override def toString: String = DocumentReferenceNumberPage(documentIndex).toString
+
+  override def valueInIE043(ie043: Seq[SupportingDocumentType02], sequenceNumber: Option[BigInt]): Option[String] =
+    ie043
+      .find {
+        x => sequenceNumber.contains(x.sequenceNumber)
+      }
+      .map(_.referenceNumber)
 }

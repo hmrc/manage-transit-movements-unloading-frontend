@@ -91,7 +91,7 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
               for {
                 updatedAnswers <-
                   if (value) {
-                    Future.fromTry(request.userAnswers.removeExceptSequenceNumber(AdditionalReferenceSection(additionalReferenceIndex)))
+                    Future.fromTry(request.userAnswers.removeDataGroup(AdditionalReferenceSection(additionalReferenceIndex)))
                   } else {
                     Future.successful(request.userAnswers)
                   }

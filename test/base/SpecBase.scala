@@ -108,16 +108,16 @@ trait SpecBase
       userAnswers.data.transform((section.path \ key).json.pick[A]).get
 
     def setRemoved(section: Section[JsObject]): UserAnswers =
-      setValue(section, Removed, true)
+      setValue(section, __ \ Removed, true)
 
     def setNotRemoved(section: Section[JsObject]): UserAnswers =
-      setValue(section, Removed, false)
+      setValue(section, __ \ Removed, false)
 
     def setSequenceNumber(section: Section[JsObject], sequenceNumber: BigInt): UserAnswers =
-      setValue(section, SequenceNumber, sequenceNumber)
+      setValue(section, __ \ SequenceNumber, sequenceNumber)
 
-    def setValue[T](section: Section[JsObject], key: String, value: T)(implicit writes: Writes[T]): UserAnswers =
-      userAnswers.set(section.path \ key, value).success.value
+    def setValue[T](section: Section[JsObject], path: JsPath, value: T)(implicit writes: Writes[T]): UserAnswers =
+      userAnswers.set(JsPath(section.path.path ++ path.path), value).success.value
   }
 
   implicit class RichContent(c: Content) {

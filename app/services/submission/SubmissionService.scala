@@ -18,7 +18,7 @@ package services.submission
 
 import connectors.ApiConnector
 import generated._
-import models.{ArrivalId, EoriNumber, Index, UnloadingType, UserAnswers}
+import models.{ArrivalId, DocType, EoriNumber, Index, UnloadingType, UserAnswers}
 import play.api.libs.json.{__, Reads}
 import scalaxb.DataRecord
 import scalaxb.`package`.toXML
@@ -120,21 +120,24 @@ class SubmissionService @Inject() (
     import pages.grossMass.GrossMassPage
     import pages.sections._
     import pages.sections.additionalReference.AdditionalReferencesSection
+    import pages.sections.documents.DocumentsSection
 
     lazy val transportEquipment      = ie043.getList(_.TransportEquipment)
     lazy val departureTransportMeans = ie043.getList(_.DepartureTransportMeans)
+    lazy val supportingDocuments     = ie043.getList(_.SupportingDocument)
     lazy val additionalReferences    = ie043.getList(_.AdditionalReference)
 
     for {
       grossMass               <- GrossMassPage.readNullable(identity).apply(ie043)
       transportEquipment      <- TransportEquipmentListSection.readArray(consignmentTransportEquipmentReads(transportEquipment))
       departureTransportMeans <- TransportMeansListSection.readArray(consignmentDepartureTransportMeansReads(departureTransportMeans))
+      supportingDocuments     <- DocumentsSection.readArray(consignmentSupportingDocumentReads(supportingDocuments))
       additionalReferences    <- AdditionalReferencesSection.readArray(consignmentAdditionalReferenceReads(additionalReferences))
     } yield ConsignmentType06(
       grossMass = grossMass,
       TransportEquipment = transportEquipment,
       DepartureTransportMeans = departureTransportMeans,
-      SupportingDocument = Nil,
+      SupportingDocument = supportingDocuments,
       TransportDocument = Nil,
       AdditionalReference = additionalReferences,
       HouseConsignment = Nil
@@ -243,6 +246,45 @@ class SubmissionService @Inject() (
               )
             )
         }
+    }
+  }
+
+  private def consignmentSupportingDocumentReads(
+    ie043: Seq[SupportingDocumentType02]
+  )(index: Index, sequenceNumber: BigInt): Reads[Option[SupportingDocumentType03]] = {
+    import pages.documents._
+
+    (__ \ TypePage(index).toString \ "type").read[DocType].flatMap {
+      case DocType.Support =>
+        for {
+          removed                 <- (__ \ Removed).readNullable[Boolean]
+          typeValue               <- SupportingTypePage(index).readNullable(_.code).apply(ie043)
+          referenceNumber         <- SupportingDocumentReferenceNumberPage(index).readNullable(identity, 2).apply(ie043)
+          complementOfInformation <- AdditionalInformationPage(index).readNullable(identity, 2).apply(ie043)
+        } yield removed match {
+          case Some(true) =>
+            Some(
+              SupportingDocumentType03(
+                sequenceNumber = sequenceNumber
+              )
+            )
+          case _ =>
+            (typeValue, referenceNumber, complementOfInformation) match {
+              case (None, None, None) =>
+                None
+              case _ =>
+                Some(
+                  SupportingDocumentType03(
+                    sequenceNumber = sequenceNumber,
+                    typeValue = typeValue,
+                    referenceNumber = referenceNumber,
+                    complementOfInformation = complementOfInformation
+                  )
+                )
+            }
+        }
+      case _ =>
+        None
     }
   }
 

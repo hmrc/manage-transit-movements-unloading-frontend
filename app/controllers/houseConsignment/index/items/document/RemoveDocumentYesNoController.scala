@@ -68,7 +68,7 @@ class RemoveDocumentYesNoController @Inject() (
               for {
                 updatedAnswers <-
                   if (value) {
-                    Future.fromTry(request.userAnswers.removeExceptSequenceNumber(DocumentSection(houseConsignmentIndex, itemIndex, documentIndex)))
+                    Future.fromTry(request.userAnswers.removeDocument(DocumentSection(houseConsignmentIndex, itemIndex, documentIndex)))
                   } else {
                     Future.successful(request.userAnswers)
                   }

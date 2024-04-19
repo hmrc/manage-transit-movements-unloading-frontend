@@ -73,7 +73,7 @@ class RemoveTransportEquipmentYesNoController @Inject() (
               for {
                 updatedAnswers <-
                   if (value) {
-                    Future.fromTry(request.userAnswers.removeExceptSequenceNumber(TransportEquipmentSection(transportEquipmentIndex)))
+                    Future.fromTry(request.userAnswers.removeDataGroup(TransportEquipmentSection(transportEquipmentIndex)))
                   } else {
                     Future.successful(request.userAnswers)
                   }
