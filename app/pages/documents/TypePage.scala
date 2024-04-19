@@ -16,7 +16,7 @@
 
 package pages.documents
 
-import generated.SupportingDocumentType02
+import generated.{SupportingDocumentType02, TransportDocumentType02}
 import models.Index
 import models.reference.DocumentType
 import pages.sections.documents.DocumentSection
@@ -37,6 +37,20 @@ case class SupportingTypePage(documentIndex: Index) extends DiscrepancyQuestionP
   override def toString: String = TypePage(documentIndex).toString
 
   override def valueInIE043(ie043: Seq[SupportingDocumentType02], sequenceNumber: Option[BigInt]): Option[String] =
+    ie043
+      .find {
+        x => sequenceNumber.contains(x.sequenceNumber)
+      }
+      .map(_.typeValue)
+}
+
+case class TransportTypePage(documentIndex: Index) extends DiscrepancyQuestionPage[DocumentType, Seq[TransportDocumentType02], String] {
+
+  override def path: JsPath = TypePage(documentIndex).path
+
+  override def toString: String = TypePage(documentIndex).toString
+
+  override def valueInIE043(ie043: Seq[TransportDocumentType02], sequenceNumber: Option[BigInt]): Option[String] =
     ie043
       .find {
         x => sequenceNumber.contains(x.sequenceNumber)

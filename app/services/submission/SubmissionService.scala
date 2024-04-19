@@ -125,6 +125,7 @@ class SubmissionService @Inject() (
     lazy val transportEquipment      = ie043.getList(_.TransportEquipment)
     lazy val departureTransportMeans = ie043.getList(_.DepartureTransportMeans)
     lazy val supportingDocuments     = ie043.getList(_.SupportingDocument)
+    lazy val transportDocuments      = ie043.getList(_.TransportDocument)
     lazy val additionalReferences    = ie043.getList(_.AdditionalReference)
 
     for {
@@ -132,13 +133,14 @@ class SubmissionService @Inject() (
       transportEquipment      <- TransportEquipmentListSection.readArray(consignmentTransportEquipmentReads(transportEquipment))
       departureTransportMeans <- TransportMeansListSection.readArray(consignmentDepartureTransportMeansReads(departureTransportMeans))
       supportingDocuments     <- DocumentsSection.readArray(consignmentSupportingDocumentReads(supportingDocuments))
+      transportDocuments      <- DocumentsSection.readArray(consignmentTransportDocumentReads(transportDocuments))
       additionalReferences    <- AdditionalReferencesSection.readArray(consignmentAdditionalReferenceReads(additionalReferences))
     } yield ConsignmentType06(
       grossMass = grossMass,
       TransportEquipment = transportEquipment,
       DepartureTransportMeans = departureTransportMeans,
       SupportingDocument = supportingDocuments,
-      TransportDocument = Nil,
+      TransportDocument = transportDocuments,
       AdditionalReference = additionalReferences,
       HouseConsignment = Nil
     )
@@ -254,7 +256,7 @@ class SubmissionService @Inject() (
   )(index: Index, sequenceNumber: BigInt): Reads[Option[SupportingDocumentType03]] = {
     import pages.documents._
 
-    (__ \ TypePage(index).toString \ "type").read[DocType].flatMap {
+    (TypePage(index).path.take(1) \ "type").read[DocType].flatMap {
       case DocType.Support =>
         for {
           removed                 <- (__ \ Removed).readNullable[Boolean]
@@ -279,6 +281,43 @@ class SubmissionService @Inject() (
                     typeValue = typeValue,
                     referenceNumber = referenceNumber,
                     complementOfInformation = complementOfInformation
+                  )
+                )
+            }
+        }
+      case _ =>
+        None
+    }
+  }
+
+  private def consignmentTransportDocumentReads(
+    ie043: Seq[TransportDocumentType02]
+  )(index: Index, sequenceNumber: BigInt): Reads[Option[TransportDocumentType03]] = {
+    import pages.documents._
+
+    (TypePage(index).path.take(1) \ "type").read[DocType].flatMap {
+      case DocType.Transport =>
+        for {
+          removed         <- (__ \ Removed).readNullable[Boolean]
+          typeValue       <- TransportTypePage(index).readNullable(_.code).apply(ie043)
+          referenceNumber <- TransportDocumentReferenceNumberPage(index).readNullable(identity, 2).apply(ie043)
+        } yield removed match {
+          case Some(true) =>
+            Some(
+              TransportDocumentType03(
+                sequenceNumber = sequenceNumber
+              )
+            )
+          case _ =>
+            (typeValue, referenceNumber) match {
+              case (None, None) =>
+                None
+              case _ =>
+                Some(
+                  TransportDocumentType03(
+                    sequenceNumber = sequenceNumber,
+                    typeValue = typeValue,
+                    referenceNumber = referenceNumber
                   )
                 )
             }
