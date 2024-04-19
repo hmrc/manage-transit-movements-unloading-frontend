@@ -27,7 +27,7 @@ import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
-import pages.houseConsignment.index.CountryOfDestinationPage
+import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage}
 import pages.sections.HouseConsignmentSection
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -103,7 +103,7 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
                 ua => Future.successful(ua.setValue(FakeConsigneeSection(hcIndex), Json.obj("foo" -> i.toString)))
               }
 
-            when(mockConsignorTransformer.transform(any(), eqTo(hcIndex)))
+            when(mockConsignorTransformer.transform(any(), eqTo(hcIndex))(any()))
               .thenReturn {
                 ua => Future.successful(ua.setValue(FakeConsignorSection(hcIndex), Json.obj("foo" -> i.toString)))
               }
@@ -149,6 +149,7 @@ class HouseConsignmentsTransformerSpec extends SpecBase with AppWithDefaultMockF
             val hcIndex = Index(i)
 
             result.getSequenceNumber(HouseConsignmentSection(hcIndex)) mustBe hc.sequenceNumber
+            result.getValue(GrossWeightPage(hcIndex)) mustBe hc.grossMass
             result.getValue[JsObject](HouseConsignmentSection(hcIndex), "securityIndicatorFromExportDeclaration") mustBe
               Json.obj("code" -> "code", "description" -> "description")
             result.getValue(FakeConsigneeSection(hcIndex)) mustBe Json.obj("foo" -> i.toString)

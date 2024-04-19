@@ -25,15 +25,16 @@ import javax.inject.Inject
 
 class NetWeightFormProvider @Inject() extends Mappings {
 
-  def apply(houseConsignmentIndex: Index = Index(0), index: Index = Index(0)): Form[String] =
+  def apply(houseConsignmentIndex: Index = Index(0), index: Index = Index(0)): Form[BigDecimal] =
     Form(
-      "value" -> text(s"netWeight.error.required", args = Seq(s"${index.display}", s"${houseConsignmentIndex.display}"))
-        .verifying(
-          StopOnFirstFail[String](
-            maxLength(UnloadingRemarksRequest.weightLength, "netWeight.error.length"),
-            regexp(UnloadingRemarksRequest.weightCharsRegex, "netWeight.error.characters"),
-            regexp(UnloadingRemarksRequest.weightRegex, "netWeight.error.decimal")
-          )
-        )
+      "value" -> bigDecimal(
+        UnloadingRemarksRequest.weightDecimalLength,
+        UnloadingRemarksRequest.weightIntegerLength,
+        "netWeight.error.required",
+        "netWeight.error.characters",
+        "netWeight.error.decimal",
+        "netWeight.error.length",
+        args = Seq(s"${index.display}", s"${houseConsignmentIndex.display}")
+      )
     )
 }

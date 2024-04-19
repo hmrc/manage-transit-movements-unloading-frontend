@@ -22,12 +22,42 @@ import models.{DynamicAddress, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
-import pages.consignor.CountryPage
+import pages.houseConsignment.consignor.CountryPage
 import pages.houseConsignment.index.CountryOfDestinationPage
 import utils.answersHelpers.AnswersHelperSpecBase
 import viewModels.sections.Section.AccordionSection
 
 class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
+
+  "grossMassRow" - {
+    import pages.houseConsignment.index.GrossWeightPage
+
+    "must return None" - {
+      s"when no transport equipments defined" in {
+        val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, hcIndex)
+        val result = helper.grossMassRow
+        result.isEmpty mustBe true
+      }
+    }
+
+    "must return Some(Row)" - {
+      s"when $GrossWeightPage is defined" in {
+        val answers = emptyUserAnswers
+          .setValue(GrossWeightPage(hcIndex), BigDecimal(999.99))
+
+        val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
+        val result = helper.grossMassRow.value
+
+        result.key.value mustBe "Gross weight"
+        result.value.value mustBe "999.99"
+        val action = result.actions.value.items.head
+        action.content.value mustBe "Change"
+        action.href mustBe "#"
+        action.visuallyHiddenText.value mustBe "gross weight"
+        action.id mustBe "change-gross-mass"
+      }
+    }
+  }
 
   "HouseConsignmentAnswersHelper" - {
 
@@ -49,7 +79,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
               val result = helper.consignorName.value
 
-              result.key.value mustBe "Consignor name"
+              result.key.value mustBe "Name"
               result.value.value mustBe value
               result.actions must not be defined
           }
@@ -137,7 +167,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
     }
 
     "country" - {
-      val page = CountryPage
+      val page = CountryPage(houseConsignmentIndex)
       "must return None" - {
         s"when $page undefined" in {
           val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, houseConsignmentIndex)
@@ -389,7 +419,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must generate accordion sections" in {
         val description           = Gen.alphaNumStr.sample.value
         val grossWeight           = arbitrary[BigDecimal].sample.value
-        val netWeight             = arbitrary[Double].sample.value
+        val netWeight             = arbitrary[BigDecimal].sample.value
         val packageType           = arbitrary[PackageType].sample.value
         val count                 = arbitrary[BigInt].sample.value
         val additionalReference   = arbitrary[AdditionalReferenceType].sample.value

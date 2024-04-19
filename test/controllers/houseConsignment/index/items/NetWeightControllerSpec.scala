@@ -63,7 +63,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
     "must populate the view correctly on a GET when the question has previously been answered" in {
       checkArrivalStatus()
 
-      val userAnswers = emptyUserAnswers.setValue(NetWeightPage(hcIndex, itemIndex), "123456.123".toDouble)
+      val userAnswers = emptyUserAnswers.setValue(NetWeightPage(hcIndex, itemIndex), BigDecimal("123456.123"))
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, NetWeightRoute)

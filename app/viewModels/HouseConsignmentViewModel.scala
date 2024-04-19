@@ -33,22 +33,28 @@ object HouseConsignmentViewModel {
     houseConsignmentIndex: Index
   )(implicit messages: Messages): HouseConsignmentViewModel = new HouseConsignmentViewModelProvider()(userAnswers, houseConsignmentIndex)
 
-  class HouseConsignmentViewModelProvider @Inject() () {
+  class HouseConsignmentViewModelProvider @Inject() {
 
     def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index)(implicit messages: Messages): HouseConsignmentViewModel = {
       val helper = new HouseConsignmentAnswersHelper(userAnswers, houseConsignmentIndex)
 
-      val sections: Seq[Section] = Seq(
+      val rows = Seq(
+        helper.grossMassRow,
+        helper.countryOfDestination,
+        helper.safetyAndSecurityDetails
+      ).flatten
+
+      val children: Seq[Section] = Seq(
+        helper.houseConsignmentConsignorSection,
+        helper.houseConsignmentConsigneeSection,
         helper.departureTransportMeansSection,
         helper.documentSection,
         helper.additionalReferencesSection,
         helper.additionalInformationSection,
-        helper.itemSection,
-        helper.houseConsignmentConsignorSection,
-        helper.houseConsignmentConsigneeSection
+        helper.itemSection
       )
       val houseConsignmentSection: Section =
-        StaticSection(rows = Seq(helper.countryOfDestination, helper.safetyAndSecurityDetails).flatten, children = sections)
+        StaticSection(rows = rows, children = children)
 
       HouseConsignmentViewModel(houseConsignmentSection)
     }
