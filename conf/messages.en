@@ -1094,9 +1094,12 @@ houseConsignment.index.grossWeight.error.invalidValue = The new gross weight mus
 houseConsignment.index.grossWeight.error.invalidCharacters = The new gross weight must only include numbers 0 to 9 and a decimal point
 houseConsignment.index.grossWeight.error.invalidFormat = The new gross weight must only include 6 decimal places or less
 
-houseConsignment.index.departmentMeansOfTransport.nationality.title = What country is this vehicle registered to?
-houseConsignment.index.departmentMeansOfTransport.country.heading = What country is this vehicle registered to?
-houseConsignment.index.departmentMeansOfTransport.nationality.hintText = Enter the country or code, like Austria or AT.
-houseConsignment.index.departmentMeansOfTransport.nationality.error.required = Select the country the vehicle is registered to
+houseConsignment.index.departureMeansOfTransport.country.NormalMode.title = What country is this vehicle registered to?
+houseConsignment.index.departureMeansOfTransport.country.CheckMode.title = What country is the new vehicle registered to in house consignment {0}?
+houseConsignment.index.departureMeansOfTransport.country.NormalMode.heading = What country is this vehicle registered to?
+houseConsignment.index.departureMeansOfTransport.country.CheckMode.heading = What country is the new vehicle registered to in house consignment {0}?
+houseConsignment.index.departureMeansOfTransport.nationality.hintText = Enter the country or code, like Austria or AT.
+houseConsignment.index.departureMeansOfTransport.country.error.required.NormalMode = Select the country the vehicle is registered to
+houseConsignment.index.departureMeansOfTransport.country.error.required.CheckMode = Select the country the new vehicle is registered to in house consignment {0}}
 
 unloadingFindings.rowHeadings.houseConsignment.countryOfDestination = Country of destination

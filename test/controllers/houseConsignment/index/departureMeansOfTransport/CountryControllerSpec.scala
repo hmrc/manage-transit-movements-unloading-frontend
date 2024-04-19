@@ -45,7 +45,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
   private val mockViewModelProvider                       = mock[HouseConsignmentCountryViewModelProvider]
   private val viewModel: HouseConsignmentCountryViewModel = arbitrary[HouseConsignmentCountryViewModel].sample.value
   private val mode                                        = CheckMode
-  val form: Form[Country]                                 = formProvider(countries)
+  val form: Form[Country]                                 = formProvider(mode, countries)
   val mockReferenceDataService: ReferenceDataService      = mock[ReferenceDataService]
 
   lazy val DepartureMeansOfTransportCountryRoute: String =
@@ -55,7 +55,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
     super.beforeEach()
     reset(mockReferenceDataService)
     reset(mockViewModelProvider)
-    when(mockViewModelProvider.apply(any())(any())).thenReturn(viewModel)
+    when(mockViewModelProvider.apply(any(), any())(any())).thenReturn(viewModel)
   }
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =

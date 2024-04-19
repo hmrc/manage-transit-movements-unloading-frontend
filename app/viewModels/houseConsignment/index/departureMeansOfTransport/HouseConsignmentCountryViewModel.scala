@@ -16,7 +16,7 @@
 
 package viewModels.houseConsignment.index.departureMeansOfTransport
 
-import models.Mode
+import models.{Index, Mode}
 import play.api.i18n.Messages
 import viewModels.ModeViewModelProvider
 
@@ -30,11 +30,11 @@ object HouseConsignmentCountryViewModel {
 
     override val prefix = "houseConsignment.index.departureMeansOfTransport.country"
 
-    def apply(mode: Mode)(implicit message: Messages): HouseConsignmentCountryViewModel =
+    def apply(mode: Mode, houseConsignmentIndex: Index)(implicit message: Messages): HouseConsignmentCountryViewModel =
       new HouseConsignmentCountryViewModel(
-        heading(mode),
-        title(mode),
-        requiredError(mode)
+        heading(mode, houseConsignmentIndex),
+        title(mode, houseConsignmentIndex),
+        requiredError(mode, houseConsignmentIndex)
       )
   }
 }

@@ -51,8 +51,8 @@ class CountryController @Inject() (
       implicit request =>
         referenceDataService.getCountries() map {
           countries =>
-            val viewModel = countryViewModelProvider.apply(mode)
-            val form      = formProvider(countries)
+            val viewModel = countryViewModelProvider.apply(mode, houseConsignmentIndex)
+            val form      = formProvider(mode, countries)
             val preparedForm = request.userAnswers.get(CountryPage(houseConsignmentIndex, transportMeansIndex)) match {
               case None        => form
               case Some(value) => form.fill(value)
@@ -66,8 +66,8 @@ class CountryController @Inject() (
       implicit request =>
         referenceDataService.getCountries() flatMap {
           countries =>
-            val viewModel = countryViewModelProvider.apply(mode)
-            val form      = formProvider(countries)
+            val viewModel = countryViewModelProvider.apply(mode, houseConsignmentIndex)
+            val form      = formProvider(mode, countries)
             form
               .bindFromRequest()
               .fold(

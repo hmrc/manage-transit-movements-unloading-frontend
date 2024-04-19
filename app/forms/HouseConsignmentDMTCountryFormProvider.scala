@@ -17,6 +17,7 @@
 package forms
 
 import forms.mappings.Mappings
+import models.Mode
 import models.reference.Country
 import play.api.data.Form
 
@@ -24,9 +25,9 @@ import javax.inject.Inject
 
 class HouseConsignmentDMTCountryFormProvider @Inject() extends Mappings {
 
-  def apply(countries: Seq[Country]): Form[Country] =
+  def apply(mode: Mode, countries: Seq[Country]): Form[Country] =
     Form(
-      "value" -> text(s"houseConsignment.index.departureMeansOfTransport.country.error.required")
+      "value" -> text(s"houseConsignment.index.departureMeansOfTransport.country.${mode.toString}.error.required")
         .verifying("houseConsignment.index.departureMeansOfTransport.country.error.required", value => countries.exists(_.code == value))
         .transform[Country](value => countries.find(_.code == value).get, _.code)
     )
