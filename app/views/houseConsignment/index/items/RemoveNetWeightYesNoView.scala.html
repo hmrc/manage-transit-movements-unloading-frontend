@@ -29,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, insetText: Option[Double])(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, insetText: Option[String])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("houseConsignment.index.item.removeNetWeightYesNo.title", houseConsignmentIndex.display, itemIndex.display),

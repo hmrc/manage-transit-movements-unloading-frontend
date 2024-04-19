@@ -124,6 +124,80 @@ class PackagesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
               )
         }
       }
+
+      "must go from AddNumberOfPackagesYesNoPage to NumberOfPackages page when answer is true" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), true)
+
+        navigator
+          .nextPage(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.packages.routes.NumberOfPackagesController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)
+          )
+      }
+
+      "must go from AddNumberOfPackagesYesNoPage to AddPackageShippingMarkYesNo page when answer is false" in {
+
+        val userAnswers = emptyUserAnswers
+          .setValue(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), false)
+
+        navigator
+          .nextPage(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.packages.routes.AddPackageShippingMarkYesNoController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)
+          )
+      }
+
+      "must go from NumberOfPackagesPage to AddPackageShippingMarkYesNo" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex), BigInt(123))
+
+        navigator
+          .nextPage(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.packages.routes.AddPackageShippingMarkYesNoController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)
+          )
+      }
+
+      "must go from AddPackageShippingMarkYesNoPage to Add PackageShippingMark when user answer is yes" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), true)
+
+        navigator
+          .nextPage(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.packages.routes.PackageShippingMarkController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)
+          )
+      }
+
+      "must go from AddPackageShippingMarkYesNoPage to Add PackageShippingMark when user answer is no" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), false)
+
+        navigator
+          .nextPage(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+          )
+      }
+
+      "must go from PackageShippingMarkPage to Add AddAnotherPackage Page" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex), "Shipping Mark")
+
+        navigator
+          .nextPage(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex), mode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+          )
+      }
     }
   }
 }

@@ -16,15 +16,48 @@
 
 package utils.answersHelpers.consignment
 
+import generated.{AddressType07, ConsignmentType05, ConsignorType06, HouseConsignmentType04}
 import models.reference._
 import models.{DynamicAddress, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
+import pages.consignor.CountryPage
+import pages.houseConsignment.index.CountryOfDestinationPage
 import utils.answersHelpers.AnswersHelperSpecBase
 import viewModels.sections.Section.AccordionSection
 
 class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
+
+  "grossMassRow" - {
+    import pages.houseConsignment.index.GrossWeightPage
+
+    "must return None" - {
+      s"when no transport equipments defined" in {
+        val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, hcIndex)
+        val result = helper.grossMassRow
+        result.isEmpty mustBe true
+      }
+    }
+
+    "must return Some(Row)" - {
+      s"when $GrossWeightPage is defined" in {
+        val answers = emptyUserAnswers
+          .setValue(GrossWeightPage(hcIndex), BigDecimal(999.99))
+
+        val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
+        val result = helper.grossMassRow.value
+
+        result.key.value mustBe "Gross weight"
+        result.value.value mustBe "999.99"
+        val action = result.actions.value.items.head
+        action.content.value mustBe "Change"
+        action.href mustBe "#"
+        action.visuallyHiddenText.value mustBe "gross weight"
+        action.id mustBe "change-gross-mass"
+      }
+    }
+  }
 
   "HouseConsignmentAnswersHelper" - {
 
@@ -100,6 +133,59 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
               result.key.value mustBe "Consignee name"
               result.value.value mustBe value
+              result.actions must not be defined
+          }
+        }
+      }
+    }
+
+    "consignorAddress" - {
+      "must return None" - {
+        "when address undefined" in {
+          val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, houseConsignmentIndex)
+          helper.consignorAddress mustBe None
+        }
+      }
+
+      "must return Some(row)" - {
+        "when address defined" in {
+          forAll(arbitrary[AddressType07], arbitrary[HouseConsignmentType04], arbitrary[ConsignmentType05]) {
+            (address, house, consignment) =>
+              val updatedHouse: HouseConsignmentType04 = house.copy(Consignor = Some(ConsignorType06(None, None, Some(address))))
+
+              val updConsignment = emptyUserAnswers.ie043Data.copy(Consignment = Some(consignment.copy(HouseConsignment = Seq(updatedHouse))))
+              val ua             = emptyUserAnswers.copy(ie043Data = updConsignment)
+              val helper         = new HouseConsignmentAnswersHelper(ua, houseConsignmentIndex)
+              val result         = helper.consignorAddress.value
+
+              result.key.value mustBe "Address"
+              result.value.value mustBe DynamicAddress(address).toString
+              result.actions must not be defined
+          }
+        }
+      }
+    }
+
+    "country" - {
+      val page = CountryPage
+      "must return None" - {
+        s"when $page undefined" in {
+          val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, houseConsignmentIndex)
+          helper.consignorCountry mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $page defined" in {
+          forAll(arbitrary[Country]) {
+            value =>
+              val answers = emptyUserAnswers.setValue(page, value)
+
+              val helper = new HouseConsignmentAnswersHelper(answers, houseConsignmentIndex)
+              val result = helper.consignorCountry.value
+
+              result.key.value mustBe "Country"
+              result.value.value mustBe value.toString
               result.actions must not be defined
           }
         }
@@ -333,7 +419,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must generate accordion sections" in {
         val description           = Gen.alphaNumStr.sample.value
         val grossWeight           = arbitrary[BigDecimal].sample.value
-        val netWeight             = arbitrary[Double].sample.value
+        val netWeight             = arbitrary[BigDecimal].sample.value
         val packageType           = arbitrary[PackageType].sample.value
         val count                 = arbitrary[BigInt].sample.value
         val additionalReference   = arbitrary[AdditionalReferenceType].sample.value
@@ -369,7 +455,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         addOrRemoveLink.id mustBe "add-remove-items"
         addOrRemoveLink.text mustBe "Add or remove item"
         addOrRemoveLink.visuallyHidden must not be defined
-        addOrRemoveLink.href mustBe "#"
+        addOrRemoveLink.href mustBe "/manage-transit-movements/unloading/AB123/house-consignment/1/items/add-another"
 
         result mustBe a[AccordionSection]
         result.sectionTitle.value mustBe "Items"
@@ -451,6 +537,28 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         result.children.head.children(5).children.head.rows(0).value.value mustBe s"${packageType.asDescription}"
         result.children.head.children(5).children.head.rows(1).value.value mustBe s"$count"
         result.children.head.children(5).children.head.rows(2).value.value mustBe s"$description"
+      }
+    }
+
+    "countryOfDestination" - {
+      val page = CountryOfDestinationPage(hcIndex)
+      "must return None" - {
+        s"when $page undefined" in {
+          val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, hcIndex)
+          helper.countryOfDestination mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $page defined" in {
+          val answers = emptyUserAnswers.setValue(page, Country("FR", "France"))
+          val helper  = new HouseConsignmentAnswersHelper(answers, hcIndex)
+          val result  = helper.countryOfDestination.value
+
+          result.key.value mustBe "Country of destination"
+          result.value.value mustBe "France"
+          result.actions must not be defined
+        }
       }
     }
   }

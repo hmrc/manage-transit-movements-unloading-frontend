@@ -578,7 +578,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
           val helper = new ConsignmentAnswersHelper(answers)
           val result = helper.countryOfDestinationRow.value
 
-          result.key.value mustBe "Country Of Destination"
+          result.key.value mustBe "Country of destination"
           result.value.value mustBe "France - FR"
         }
       }

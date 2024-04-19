@@ -147,7 +147,9 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
+          redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.routes.AddAnotherItemController
+            .onPageLoad(arrivalId, houseConsignmentIndex, mode)
+            .url
         }
       }
     }
@@ -166,7 +168,9 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
+        redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.routes.AddAnotherItemController
+          .onPageLoad(arrivalId, houseConsignmentIndex, mode)
+          .url
       }
     }
 

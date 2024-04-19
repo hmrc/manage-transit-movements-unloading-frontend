@@ -24,7 +24,7 @@ import models.{Index, SecurityType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
-import pages.houseConsignment.index.SecurityIndicatorFromExportDeclarationPage
+import pages.houseConsignment.index.{CountryOfDestinationPage, SecurityIndicatorFromExportDeclarationPage}
 import pages.houseConsignment.index.additionalReference.{HouseConsignmentAdditionalReferenceNumberPage, HouseConsignmentAdditionalReferenceTypePage}
 import pages.houseConsignment.index.additionalinformation.{HouseConsignmentAdditionalInformationCodePage, HouseConsignmentAdditionalInformationTextPage}
 import pages.houseConsignment.index.documents.{AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
@@ -258,18 +258,20 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
           .setValue(ConsigneeIdentifierPage(hcIndex), "csgee1")
           .setValue(ItemDescriptionPage(hcIndex, itemIndex), "shirts")
           .setValue(GrossWeightPage(hcIndex, itemIndex), BigDecimal(123.45))
-          .setValue(NetWeightPage(hcIndex, itemIndex), 123.45)
+          .setValue(NetWeightPage(hcIndex, itemIndex), BigDecimal(123.45))
           .setValue(ItemConsigneeNamePage(hcIndex, itemIndex), "John Smith")
           .setValue(ItemConsigneeIdentifierPage(hcIndex, itemIndex), "csgee2")
           .setValue(SecurityIndicatorFromExportDeclarationPage(hcIndex), SecurityType("Code", "Description"))
+          .setValue(CountryOfDestinationPage(hcIndex), Country("FR", "France"))
 
         setExistingUserAnswers(userAnswers)
 
         val viewModelProvider = new HouseConsignmentViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers, index)
 
-        result.section.rows.size mustBe 1
-        result.section.rows.head.value.value mustBe "Description"
+        result.section.rows.size mustBe 2
+        result.section.rows(0).value.value mustBe "France"
+        result.section.rows(1).value.value mustBe "Description"
 
         result.section.children(4) mustBe a[AccordionSection]
         result.section.children(4).sectionTitle.value mustBe "Items"
@@ -290,6 +292,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         result.section.children(4).children.head.children(2) mustBe a[AccordionSection]
         result.section.children(4).children.head.children(2).sectionTitle.value mustBe "Documents"
         result.section.children(4).children.head.children(2).viewLinks.head.id mustBe "add-remove-item-1-document"
+
       }
     }
 
@@ -298,7 +301,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         val userAnswers = emptyUserAnswers
           .setValue(ItemDescriptionPage(hcIndex, itemIndex), "shirts")
           .setValue(GrossWeightPage(hcIndex, itemIndex), BigDecimal(123.45))
-          .setValue(NetWeightPage(hcIndex, itemIndex), 123.45)
+          .setValue(NetWeightPage(hcIndex, itemIndex), BigDecimal(123.45))
 
         setExistingUserAnswers(userAnswers)
 
@@ -319,10 +322,10 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
           .setValue(ConsigneeIdentifierPage(hcIndex), "csgee1")
           .setValue(ItemDescriptionPage(hcIndex, Index(0)), "shirts")
           .setValue(GrossWeightPage(hcIndex, Index(0)), BigDecimal(123.45))
-          .setValue(NetWeightPage(hcIndex, Index(0)), 123.45)
+          .setValue(NetWeightPage(hcIndex, Index(0)), BigDecimal(123.45))
           .setValue(ItemDescriptionPage(hcIndex, Index(1)), "shirts")
           .setValue(GrossWeightPage(hcIndex, Index(1)), BigDecimal(123.45))
-          .setValue(NetWeightPage(hcIndex, Index(1)), 123.45)
+          .setValue(NetWeightPage(hcIndex, Index(1)), BigDecimal(123.45))
           .setValue(ItemConsigneeNamePage(hcIndex, Index(0)), "John Smith")
           .setValue(ItemConsigneeIdentifierPage(hcIndex, Index(0)), "csgee2")
           .setValue(ItemConsigneeNamePage(hcIndex, Index(1)), "John Smith")
@@ -352,6 +355,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         result.section.children(4).children.head.children(1) mustBe a[StaticSection]
         result.section.children(4).children.head.children(1).sectionTitle.value mustBe "Consignee"
         result.section.children(4).children.head.children(1).rows.size mustBe 2
+
       }
     }
   }
