@@ -1094,4 +1094,10 @@ houseConsignment.index.grossWeight.error.invalidValue = The new gross weight mus
 houseConsignment.index.grossWeight.error.invalidCharacters = The new gross weight must only include numbers 0 to 9 and a decimal point
 houseConsignment.index.grossWeight.error.invalidFormat = The new gross weight must only include 6 decimal places or less
 
+houseConsignment.index.additionalReference.additionalReferenceNumber.title = What is the additional reference number?
+houseConsignment.index.additionalReference.additionalReferenceNumber.heading = What is the additional reference number?
+houseConsignment.index.additionalReference.additionalReferenceNumber.error.required = Enter the additional reference number
+houseConsignment.index.additionalReference.additionalReferenceNumber.error.length = The additional reference number must be 70 characters or less
+houseConsignment.index.additionalReference.additionalReferenceNumber.error.invalidCharacters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+
 unloadingFindings.rowHeadings.houseConsignment.countryOfDestination = Country of destination
