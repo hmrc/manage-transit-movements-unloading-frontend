@@ -16,25 +16,23 @@
 
 package forms
 
+import forms.Constants.maxAdditionalReferenceNumLength
 import forms.mappings.Mappings
-import models.Index
 import models.messages.UnloadingRemarksRequest
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class NetWeightFormProvider @Inject() extends Mappings {
+class HouseConsignmentAdditionalReferenceNumberFormProvider @Inject() extends Mappings {
 
-  def apply(houseConsignmentIndex: Index = Index(0), index: Index = Index(0)): Form[BigDecimal] =
+  def apply(prefix: String): Form[String] =
     Form(
-      "value" -> bigDecimal(
-        UnloadingRemarksRequest.weightDecimalLength,
-        UnloadingRemarksRequest.weightIntegerLength,
-        "netWeight.error.required",
-        "netWeight.error.characters",
-        "netWeight.error.decimal",
-        "netWeight.error.length",
-        args = Seq(s"${index.display}", s"${houseConsignmentIndex.display}")
-      )
+      "value" -> text(s"$prefix.error.required")
+        .verifying(
+          forms.StopOnFirstFail[String](
+            regexp(UnloadingRemarksRequest.stringFieldRegexComma, s"$prefix.error.invalidCharacters"),
+            maxLength(maxAdditionalReferenceNumLength, s"$prefix.error.length")
+          )
+        )
     )
 }

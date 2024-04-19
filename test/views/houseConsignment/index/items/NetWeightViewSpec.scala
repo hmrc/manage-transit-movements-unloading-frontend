@@ -18,23 +18,23 @@ package views.houseConsignment.index.items
 
 import forms.NetWeightFormProvider
 import models.NormalMode
-import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
 import views.html.houseConsignment.index.items.NetWeightView
 
-class NetWeightViewSpec extends InputTextViewBehaviours[String] {
+class NetWeightViewSpec extends InputTextViewBehaviours[BigDecimal] {
 
-  override def form: Form[String] = new NetWeightFormProvider()(index, hcIndex)
+  override def form: Form[BigDecimal] = new NetWeightFormProvider()(index, hcIndex)
 
-  override def applyView(form: Form[String]): HtmlFormat.Appendable =
+  override def applyView(form: Form[BigDecimal]): HtmlFormat.Appendable =
     injector.instanceOf[NetWeightView].apply(form, mrn, arrivalId, index, index, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "netWeight"
 
-  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
+  implicit override val arbitraryT: Arbitrary[BigDecimal] = Arbitrary(positiveBigDecimals)
 
   behave like pageWithTitle(index.display.toString, hcIndex.display.toString)
 

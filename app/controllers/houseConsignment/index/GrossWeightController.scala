@@ -17,7 +17,7 @@
 package controllers.houseConsignment.index
 
 import controllers.actions._
-import forms.Constants.{grossWeightCharacterCount, grossWeightDecimalPlaces}
+import forms.Constants.{grossWeightDecimalPlaces, grossWeightIntegerLength}
 import forms.GrossWeightFormProvider
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
@@ -45,7 +45,7 @@ class GrossWeightController @Inject() (
     with I18nSupport {
 
   private def form(houseConsignmentIndex: Index) =
-    formProvider("houseConsignment.index.grossWeight", grossWeightDecimalPlaces, grossWeightCharacterCount, houseConsignmentIndex.display)
+    formProvider("houseConsignment.index.grossWeight", grossWeightDecimalPlaces, grossWeightIntegerLength, houseConsignmentIndex.display)
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId) {

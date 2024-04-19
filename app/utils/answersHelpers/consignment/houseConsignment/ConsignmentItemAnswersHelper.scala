@@ -78,7 +78,7 @@ class ConsignmentItemAnswersHelper(
     hiddenLink = "grossWeightLink"
   )
 
-  def netWeightRow: SummaryListRow = getAnswerAndBuildRowWithRemove[Double](
+  def netWeightRow: SummaryListRow = getAnswerAndBuildRowWithRemove[BigDecimal](
     page = NetWeightPage(houseConsignmentIndex, itemIndex),
     formatAnswer = formatAsWeight,
     prefix = "unloadingFindings.rowHeadings.item.netWeight",
