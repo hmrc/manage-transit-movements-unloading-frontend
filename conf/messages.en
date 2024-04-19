@@ -487,7 +487,7 @@ unloadingFindings.subsections.houseConsignment.parent.heading = House consignmen
 unloadingFindings.rowHeadings.houseConsignment.grossWeight = Gross weight
 unloadingFindings.rowHeadings.houseConsignment.netWeight = Net weight
 unloadingFindings.rowHeadings.houseConsignment.consignorName = Name
-unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier = Consignor EORI number or Trader Identification Number (TIN)
+unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier = EORI number or Trader Identification Number (TIN)
 unloadingFindings.rowHeadings.houseConsignment.consigneeName = Consignee name
 unloadingFindings.rowHeadings.houseConsignment.grossWeight.change.hidden = Change Gross weight
 unloadingFindings.rowHeadings.houseConsignment.netWeight.change.hidden = Change Net weight
@@ -496,7 +496,7 @@ unloadingFindings.rowHeadings.houseConsignment.consigneeAddress = Address
 
 
 
-unloadingFindings.rowHeadings.houseConsignment.consigneeIdentifier = Consignee EORI number or Trader Identification Number (TIN)
+unloadingFindings.rowHeadings.houseConsignment.consigneeIdentifier = EORI number or Trader Identification Number (TIN)
 unloadingFindings.subsections.itemSummary = Items summary
 unloadingFindings.rowHeadings.numberOfItems = Total number of items
 unloadingFindings.rowHeadings.totalGrossWeight = Total gross weight of all items
