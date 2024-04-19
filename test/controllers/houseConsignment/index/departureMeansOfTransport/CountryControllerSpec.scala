@@ -17,10 +17,10 @@
 package controllers.houseConsignment.index.departureMeansOfTransport
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.HouseConsignmentDMTCountryFormProvider
+import forms.SelectableFormProvider
 import generators.Generators
-import models.CheckMode
 import models.reference.Country
+import models.{CheckMode, SelectableList}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -39,14 +39,17 @@ import scala.concurrent.Future
 
 class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  val formProvider                                        = new HouseConsignmentDMTCountryFormProvider()
+  val formProvider                                        = new SelectableFormProvider()
   private val country: Country                            = Country("GB", "United Kingdom")
   val countries: Seq[Country]                             = Seq(Country("GB", "United Kingdom"))
+  val countryList: SelectableList[Country]                = SelectableList(countries)
   private val mockViewModelProvider                       = mock[HouseConsignmentCountryViewModelProvider]
   private val viewModel: HouseConsignmentCountryViewModel = arbitrary[HouseConsignmentCountryViewModel].sample.value
   private val mode                                        = CheckMode
-  val form: Form[Country]                                 = formProvider(mode, countries)
-  val mockReferenceDataService: ReferenceDataService      = mock[ReferenceDataService]
+  private val prefix                                      = "houseConsignment.index.departureMeansOfTransport.country"
+
+  val form: Form[Country]                            = formProvider(mode, prefix, countryList, departureIndex)
+  val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   lazy val DepartureMeansOfTransportCountryRoute: String =
     controllers.houseConsignment.index.departureMeansOfTransport.routes.CountryController.onPageLoad(arrivalId, houseConsignmentIndex, departureIndex, mode).url
@@ -83,7 +86,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
       status(result) mustEqual OK
       contentAsString(result) mustEqual
-        view(form, countries, mrn, arrivalId, houseConsignmentIndex, departureIndex, mode, viewModel)(request, messages).toString
+        view(form, countryList.values, mrn, arrivalId, houseConsignmentIndex, departureIndex, mode, viewModel)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {

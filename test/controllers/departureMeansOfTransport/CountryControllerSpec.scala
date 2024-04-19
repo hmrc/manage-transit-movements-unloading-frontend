@@ -18,10 +18,10 @@ package controllers.departureMeansOfTransport
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
-import forms.DepartureMeansOfTransportCountryFormProvider
+import forms.SelectableFormProvider
 import generators.Generators
-import models.CheckMode
 import models.reference.Country
+import models.{CheckMode, SelectableList}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -40,13 +40,16 @@ import scala.concurrent.Future
 
 class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  val formProvider                                       = new DepartureMeansOfTransportCountryFormProvider()
-  private val country: Country                           = Country("GB", "United Kingdom")
-  val countries: Seq[Country]                            = Seq(Country("GB", "United Kingdom"))
-  private val mockViewModelProvider                      = mock[CountryViewModelProvider]
-  private val viewModel: CountryViewModel                = arbitrary[CountryViewModel].sample.value
-  private val mode                                       = CheckMode
-  val form: Form[Country]                                = formProvider(mode, countries)
+  val formProvider                         = new SelectableFormProvider()
+  private val country: Country             = Country("GB", "United Kingdom")
+  val countries: Seq[Country]              = Seq(Country("GB", "United Kingdom"))
+  val countryList: SelectableList[Country] = SelectableList(countries)
+  private val mockViewModelProvider        = mock[CountryViewModelProvider]
+  private val viewModel: CountryViewModel  = arbitrary[CountryViewModel].sample.value
+  private val mode                         = CheckMode
+  private val prefix                       = "departureMeansOfTransport.country"
+
+  val form: Form[Country]                                = formProvider(mode, prefix, SelectableList(countries))
   val mockReferenceDataService: ReferenceDataService     = mock[ReferenceDataService]
   lazy val DepartureMeansOfTransportCountryRoute: String = controllers.departureMeansOfTransport.routes.CountryController.onPageLoad(arrivalId, index, mode).url
 
@@ -82,7 +85,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
       status(result) mustEqual OK
       contentAsString(result) mustEqual
-        view(form, countries, mrn, arrivalId, index, mode, viewModel)(request, messages).toString
+        view(form, countryList.values, mrn, arrivalId, index, mode, viewModel)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {

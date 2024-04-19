@@ -17,8 +17,7 @@
 package controllers.departureMeansOfTransport
 
 import controllers.actions._
-import forms.{DepartureMeansOfTransportCountryFormProvider, SelectableFormProvider}
-import models.reference.Country
+import forms.SelectableFormProvider
 import models.{ArrivalId, Index, Mode, SelectableList}
 import navigation.DepartureTransportMeansNavigator
 import pages.departureMeansOfTransport.CountryPage
@@ -37,7 +36,7 @@ class CountryController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
-  formProvider: DepartureMeansOfTransportCountryFormProvider,
+  formProvider: SelectableFormProvider,
   referenceDataService: ReferenceDataService,
   val controllerComponents: MessagesControllerComponents,
   view: CountryView,
@@ -47,33 +46,44 @@ class CountryController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
+  private val prefix = "departureMeansOfTransport.country"
+
   def onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
-        referenceDataService.getCountries() map {
+        referenceDataService
+          .getCountries()
+          .map(
+            country => SelectableList(country.toSeq)
+          ) map {
           countries =>
             val viewModel = countryViewModelProvider.apply(mode)
-            val form      = formProvider(mode, countries)
+            val form      = formProvider(mode, prefix, countries, transportMeansIndex)
             val preparedForm = request.userAnswers.get(CountryPage(transportMeansIndex)) match {
               case None        => form
               case Some(value) => form.fill(value)
             }
-            Ok(view(preparedForm, countries, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode, viewModel))
+            Ok(view(preparedForm, countries.values, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode, viewModel))
         }
     }
 
   def onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
-        referenceDataService.getCountries() flatMap {
+        referenceDataService
+          .getCountries()
+          .map(
+            country => SelectableList(country.toSeq)
+          ) flatMap {
           countries =>
             val viewModel = countryViewModelProvider.apply(mode)
-            val form      = formProvider(mode, countries)
+            val form      = formProvider(mode, prefix, countries, transportMeansIndex)
             form
               .bindFromRequest()
               .fold(
                 formWithErrors =>
-                  Future.successful(BadRequest(view(formWithErrors, countries, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode, viewModel))),
+                  Future
+                    .successful(BadRequest(view(formWithErrors, countries.values, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode, viewModel))),
                 value =>
                   for {
                     updatedAnswers <- Future
