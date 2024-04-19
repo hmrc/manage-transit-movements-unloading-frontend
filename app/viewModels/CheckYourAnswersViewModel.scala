@@ -17,7 +17,7 @@
 package viewModels
 
 import models.UserAnswers
-import pages.AddUnloadingCommentsYesNoPage
+import pages.{AddUnloadingCommentsYesNoPage, AreAnySealsBrokenPage, CanSealsBeReadPage}
 import play.api.i18n.Messages
 import utils.answersHelpers.CheckYourAnswersHelper
 import viewModels.sections.Section
@@ -57,9 +57,14 @@ object CheckYourAnswersViewModel {
         ).flatten
       )
 
+      val discrepanciesPresent = (userAnswers.get(CanSealsBeReadPage), userAnswers.get(AreAnySealsBrokenPage)) match {
+        case (Some(true), Some(false)) | (None, None) => userAnswers.get(AddUnloadingCommentsYesNoPage).exists(identity)
+        case _                                        => true
+      }
+
       new CheckYourAnswersViewModel(
         Seq(headerSection, commentsSection),
-        userAnswers.get(AddUnloadingCommentsYesNoPage).exists(identity)
+        discrepanciesPresent
       )
     }
   }
