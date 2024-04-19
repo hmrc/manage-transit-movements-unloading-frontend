@@ -112,8 +112,8 @@ class HouseConsignmentAnswersHelper(
       rows = Seq(
         consignorIdentification,
         consignorName,
-        consignorAddress,
-        consignorCountry
+        consignorCountry,
+        consignorAddress
       ).flatten
     )
 
