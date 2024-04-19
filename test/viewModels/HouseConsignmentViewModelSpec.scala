@@ -292,6 +292,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         result.section.children(4).children.head.children(2) mustBe a[AccordionSection]
         result.section.children(4).children.head.children(2).sectionTitle.value mustBe "Documents"
         result.section.children(4).children.head.children(2).viewLinks.head.id mustBe "add-remove-item-1-document"
+
       }
     }
 
@@ -354,6 +355,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         result.section.children(4).children.head.children(1) mustBe a[StaticSection]
         result.section.children(4).children.head.children(1).sectionTitle.value mustBe "Consignee"
         result.section.children(4).children.head.children(1).rows.size mustBe 2
+
       }
     }
   }

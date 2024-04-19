@@ -29,6 +29,36 @@ import viewModels.sections.Section.AccordionSection
 
 class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
+  "grossMassRow" - {
+    import pages.houseConsignment.index.GrossWeightPage
+
+    "must return None" - {
+      s"when no transport equipments defined" in {
+        val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, hcIndex)
+        val result = helper.grossMassRow
+        result.isEmpty mustBe true
+      }
+    }
+
+    "must return Some(Row)" - {
+      s"when $GrossWeightPage is defined" in {
+        val answers = emptyUserAnswers
+          .setValue(GrossWeightPage(hcIndex), BigDecimal(999.99))
+
+        val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
+        val result = helper.grossMassRow.value
+
+        result.key.value mustBe "Gross weight"
+        result.value.value mustBe "999.99"
+        val action = result.actions.value.items.head
+        action.content.value mustBe "Change"
+        action.href mustBe "#"
+        action.visuallyHiddenText.value mustBe "gross weight"
+        action.id mustBe "change-gross-mass"
+      }
+    }
+  }
+
   "HouseConsignmentAnswersHelper" - {
 
     "consignorName" - {
