@@ -53,7 +53,7 @@ class SubmissionService @Inject() (
       for {
         transitOperation <- __.read[TransitOperationType15](transitOperationReads(userAnswers))
         unloadingRemark  <- __.read[UnloadingRemarkType]
-        consignment      <- ConsignmentSection.path.readNullableSafe[ConsignmentType06](consignmentReads(userAnswers.ie043Data.Consignment))
+        consignment      <- ConsignmentSection.path.read[Option[ConsignmentType06]](consignmentReads(userAnswers.ie043Data.Consignment))
       } yield CC044CType(
         messageSequence1 = messageSequence(userAnswers.eoriNumber, officeOfDestination),
         TransitOperation = transitOperation,
@@ -116,7 +116,7 @@ class SubmissionService @Inject() (
     )
   }
 
-  def consignmentReads(ie043: Option[ConsignmentType05]): Reads[ConsignmentType06] = {
+  def consignmentReads(ie043: Option[ConsignmentType05]): Reads[Option[ConsignmentType06]] = {
     import pages.grossMass.GrossMassPage
     import pages.sections._
     import pages.sections.additionalReference.AdditionalReferencesSection
@@ -135,15 +135,23 @@ class SubmissionService @Inject() (
       supportingDocuments     <- DocumentsSection.readArray(consignmentSupportingDocumentReads(supportingDocuments))
       transportDocuments      <- DocumentsSection.readArray(consignmentTransportDocumentReads(transportDocuments))
       additionalReferences    <- AdditionalReferencesSection.readArray(consignmentAdditionalReferenceReads(additionalReferences))
-    } yield ConsignmentType06(
-      grossMass = grossMass,
-      TransportEquipment = transportEquipment,
-      DepartureTransportMeans = departureTransportMeans,
-      SupportingDocument = supportingDocuments,
-      TransportDocument = transportDocuments,
-      AdditionalReference = additionalReferences,
-      HouseConsignment = Nil
-    )
+      houseConsignments = Seq.empty[HouseConsignmentType05]
+    } yield (grossMass, transportEquipment, departureTransportMeans, supportingDocuments, transportDocuments, additionalReferences, houseConsignments) match {
+      case (None, Nil, Nil, Nil, Nil, Nil, Nil) =>
+        None
+      case _ =>
+        Some(
+          ConsignmentType06(
+            grossMass = grossMass,
+            TransportEquipment = transportEquipment,
+            DepartureTransportMeans = departureTransportMeans,
+            SupportingDocument = supportingDocuments,
+            TransportDocument = transportDocuments,
+            AdditionalReference = additionalReferences,
+            HouseConsignment = houseConsignments
+          )
+        )
+    }
   }
 
   // scalastyle:off method.length

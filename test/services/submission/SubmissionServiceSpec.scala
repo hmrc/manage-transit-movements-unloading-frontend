@@ -249,8 +249,8 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
   "consignmentReads" - {
 
-    def getResult(userAnswers: UserAnswers, reads: Reads[ConsignmentType06]): ConsignmentType06 =
-      (userAnswers.data \ "Consignment").get.as[ConsignmentType06](reads)
+    def getResult(userAnswers: UserAnswers, reads: Reads[Option[ConsignmentType06]]): Option[ConsignmentType06] =
+      (userAnswers.data \ "Consignment").get.as[Option[ConsignmentType06]](reads)
 
     "must create consignment" - {
       import pages.grossMass.GrossMassPage
@@ -271,7 +271,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               val reads  = service.consignmentReads(Some(ie043))
               val result = getResult(userAnswers, reads)
 
-              result.grossMass mustBe Some(grossMass)
+              result.value.grossMass mustBe Some(grossMass)
           }
         }
 
@@ -288,7 +288,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               val reads  = service.consignmentReads(Some(ie043))
               val result = getResult(userAnswers, reads)
 
-              result.grossMass mustBe Some(grossMass)
+              result.value.grossMass mustBe Some(grossMass)
           }
         }
       }
@@ -304,7 +304,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val reads  = service.consignmentReads(Some(ie043))
             val result = getResult(userAnswers, reads)
 
-            result.grossMass mustBe None
+            result mustBe None
         }
       }
     }
@@ -435,7 +435,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               .setValue(ItemPage(Index(3), Index(0)), BigInt(9))
 
             val reads  = service.consignmentReads(Some(ie043))
-            val result = getResult(userAnswers, reads).TransportEquipment
+            val result = getResult(userAnswers, reads).value.TransportEquipment
 
             result mustBe Seq(
               TransportEquipmentType03(
@@ -617,9 +617,9 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               .setValue(ItemPage(Index(1), Index(1)), BigInt(4))
 
             val reads  = service.consignmentReads(Some(ie043))
-            val result = getResult(userAnswers, reads).TransportEquipment
+            val result = getResult(userAnswers, reads)
 
-            result mustBe Nil
+            result mustBe None
         }
       }
     }
@@ -695,7 +695,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               .setValue(CountryPage(Index(4)), Country("newNationality5", "newNationalityDescription5"))
 
             val reads  = service.consignmentReads(Some(ie043))
-            val result = getResult(userAnswers, reads).DepartureTransportMeans
+            val result = getResult(userAnswers, reads).value.DepartureTransportMeans
 
             result mustBe Seq(
               DepartureTransportMeansType04(
@@ -762,9 +762,9 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               .setValue(VehicleIdentificationNumberPage(Index(1)), "originalIdentificationNumber2")
 
             val reads  = service.consignmentReads(Some(ie043))
-            val result = getResult(userAnswers, reads).DepartureTransportMeans
+            val result = getResult(userAnswers, reads)
 
-            result mustBe Nil
+            result mustBe None
         }
       }
     }
@@ -833,7 +833,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               .setValue(AdditionalInformationPage(Index(4)), "newComplementOfInformation5")
 
             val reads  = service.consignmentReads(Some(ie043))
-            val result = getResult(userAnswers, reads).SupportingDocument
+            val result = getResult(userAnswers, reads).value.SupportingDocument
 
             result mustBe Seq(
               SupportingDocumentType03(
@@ -898,9 +898,9 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               .setValue(AdditionalInformationPage(Index(1)), "originalComplementOfInformation2")
 
             val reads  = service.consignmentReads(Some(ie043))
-            val result = getResult(userAnswers, reads).SupportingDocument
+            val result = getResult(userAnswers, reads)
 
-            result mustBe Nil
+            result mustBe None
         }
       }
     }
@@ -961,7 +961,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               .setValue(DocumentReferenceNumberPage(Index(4)), "newReferenceNumber5")
 
             val reads  = service.consignmentReads(Some(ie043))
-            val result = getResult(userAnswers, reads).TransportDocument
+            val result = getResult(userAnswers, reads).value.TransportDocument
 
             result mustBe Seq(
               TransportDocumentType03(
@@ -1018,9 +1018,9 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               .setValue(DocumentReferenceNumberPage(Index(1)), "originalReferenceNumber2")
 
             val reads  = service.consignmentReads(Some(ie043))
-            val result = getResult(userAnswers, reads).TransportDocument
+            val result = getResult(userAnswers, reads)
 
-            result mustBe Nil
+            result mustBe None
         }
       }
     }
@@ -1080,7 +1080,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               .setValue(AdditionalReferenceNumberPage(Index(4)), "newReferenceNumber5")
 
             val reads  = service.consignmentReads(Some(ie043))
-            val result = getResult(userAnswers, reads).AdditionalReference
+            val result = getResult(userAnswers, reads).value.AdditionalReference
 
             result mustBe Seq(
               AdditionalReferenceType06(
@@ -1137,9 +1137,9 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               .setValue(AdditionalReferenceNumberPage(Index(1)), "originalReferenceNumber2")
 
             val reads  = service.consignmentReads(Some(ie043))
-            val result = getResult(userAnswers, reads).AdditionalReference
+            val result = getResult(userAnswers, reads)
 
-            result mustBe Nil
+            result mustBe None
         }
       }
     }
