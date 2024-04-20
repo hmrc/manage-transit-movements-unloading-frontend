@@ -39,8 +39,9 @@ package object submission {
       * Examples:
       * <blockquote>
       * <pre>
-      * (JsPath \ "foo" \ "bar").take(1) returns JsPath \ "bar"
+      * (JsPath \ "foo" \ "bar" \ "baz").take(1) returns JsPath \ "baz"
       * (JsPath \ "foo" \ "bar" \ "baz").take(2) returns JsPath \ "bar" \ "baz"
+      * (JsPath \ "foo" \ "bar" \ "baz").take(3) returns JsPath \ "foo" \ "bar" \ "baz"
       * </pre>
       * </blockquote>
       */
