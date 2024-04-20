@@ -30,11 +30,16 @@ case class TypePage(documentIndex: Index) extends QuestionPage[DocumentType] {
   override def toString: String = "type"
 }
 
-case class SupportingTypePage(documentIndex: Index) extends DiscrepancyQuestionPage[DocumentType, Seq[SupportingDocumentType02], String] {
+trait BaseTypePage[T] extends DiscrepancyQuestionPage[DocumentType, Seq[T], String] {
+
+  val documentIndex: Index
 
   override def path: JsPath = TypePage(documentIndex).path
 
   override def toString: String = TypePage(documentIndex).toString
+}
+
+case class SupportingTypePage(documentIndex: Index) extends BaseTypePage[SupportingDocumentType02] {
 
   override def valueInIE043(ie043: Seq[SupportingDocumentType02], sequenceNumber: Option[BigInt]): Option[String] =
     ie043
@@ -44,11 +49,7 @@ case class SupportingTypePage(documentIndex: Index) extends DiscrepancyQuestionP
       .map(_.typeValue)
 }
 
-case class TransportTypePage(documentIndex: Index) extends DiscrepancyQuestionPage[DocumentType, Seq[TransportDocumentType02], String] {
-
-  override def path: JsPath = TypePage(documentIndex).path
-
-  override def toString: String = TypePage(documentIndex).toString
+case class TransportTypePage(documentIndex: Index) extends BaseTypePage[TransportDocumentType02] {
 
   override def valueInIE043(ie043: Seq[TransportDocumentType02], sequenceNumber: Option[BigInt]): Option[String] =
     ie043

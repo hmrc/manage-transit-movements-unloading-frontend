@@ -29,11 +29,16 @@ case class DocumentReferenceNumberPage(documentIndex: Index) extends QuestionPag
   override def toString: String = "referenceNumber"
 }
 
-case class SupportingDocumentReferenceNumberPage(documentIndex: Index) extends DiscrepancyQuestionPage[String, Seq[SupportingDocumentType02], String] {
+trait BaseDocumentReferenceNumberPage[T] extends DiscrepancyQuestionPage[String, Seq[T], String] {
+
+  val documentIndex: Index
 
   override def path: JsPath = DocumentReferenceNumberPage(documentIndex).path
 
   override def toString: String = DocumentReferenceNumberPage(documentIndex).toString
+}
+
+case class SupportingDocumentReferenceNumberPage(documentIndex: Index) extends BaseDocumentReferenceNumberPage[SupportingDocumentType02] {
 
   override def valueInIE043(ie043: Seq[SupportingDocumentType02], sequenceNumber: Option[BigInt]): Option[String] =
     ie043
@@ -43,11 +48,7 @@ case class SupportingDocumentReferenceNumberPage(documentIndex: Index) extends D
       .map(_.referenceNumber)
 }
 
-case class TransportDocumentReferenceNumberPage(documentIndex: Index) extends DiscrepancyQuestionPage[String, Seq[TransportDocumentType02], String] {
-
-  override def path: JsPath = DocumentReferenceNumberPage(documentIndex).path
-
-  override def toString: String = DocumentReferenceNumberPage(documentIndex).toString
+case class TransportDocumentReferenceNumberPage(documentIndex: Index) extends BaseDocumentReferenceNumberPage[TransportDocumentType02] {
 
   override def valueInIE043(ie043: Seq[TransportDocumentType02], sequenceNumber: Option[BigInt]): Option[String] =
     ie043
