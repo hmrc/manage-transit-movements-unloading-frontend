@@ -19,7 +19,7 @@ package utils.answersHelpers.consignment
 import models.DocType.Previous
 import models.reference.Country
 import models.{DynamicAddress, Index, Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
-import pages.consignor.CountryPage
+import pages.houseConsignment.consignor.CountryPage
 import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage, SecurityIndicatorFromExportDeclarationPage}
 import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
@@ -95,7 +95,7 @@ class HouseConsignmentAnswersHelper(
     )
 
   def consignorCountry: Option[SummaryListRow] = buildRowWithNoChangeLink[Country](
-    data = userAnswers.get(CountryPage),
+    data = userAnswers.get(CountryPage(houseConsignmentIndex)),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.consignor.country"
   )
@@ -122,8 +122,8 @@ class HouseConsignmentAnswersHelper(
       rows = Seq(
         consignorIdentification,
         consignorName,
-        consignorAddress,
-        consignorCountry
+        consignorCountry,
+        consignorAddress
       ).flatten
     )
 
