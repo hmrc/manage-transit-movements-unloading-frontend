@@ -484,4 +484,14 @@ trait ViewModelGenerators {
     } yield AddAnotherPackageViewModel(listItems, onSubmitCall, nextIndex)
   }
 
+  implicit lazy val arbitraryHouseConsignmentIdentificationViewModel
+    : Arbitrary[viewModels.houseConsignment.index.departureTransportMeans.IdentificationViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+      paragraph     <- nonEmptyString
+    } yield viewModels.houseConsignment.index.departureTransportMeans.IdentificationViewModel(heading, title, requiredError, Some(paragraph))
+  }
+
 }

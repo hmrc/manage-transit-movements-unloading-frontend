@@ -22,6 +22,7 @@ import models.reference.TransportMode.InlandMode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import scalaxb.XMLCalendar
+import viewModels.houseConsignment.index.departureTransportMeans.IdentificationViewModel
 
 import javax.xml.datatype.XMLGregorianCalendar
 
