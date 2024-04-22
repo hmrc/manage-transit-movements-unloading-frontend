@@ -18,6 +18,8 @@ package controllers.houseConsignment.index.departureMeansOfTransport
 
 import controllers.actions._
 import forms.SelectableFormProvider
+import models.reference.Country
+import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode, SelectableList}
 import navigation.DepartureTransportMeansNavigator
 import pages.houseConsignment.index.departureMeansOfTransport.CountryPage
@@ -26,6 +28,7 @@ import play.api.mvc._
 import repositories.SessionRepository
 import services.ReferenceDataService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewModels.houseConsignment.index.departureMeansOfTransport.HouseConsignmentCountryViewModel
 import viewModels.houseConsignment.index.departureMeansOfTransport.HouseConsignmentCountryViewModel.HouseConsignmentCountryViewModelProvider
 import views.html.houseConsignment.index.departureMeansOfTransport.CountryView
 
@@ -46,7 +49,7 @@ class CountryController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  val index = "houseConsignment.index.departureMeansOfTransport.country"
+  val prefix = "houseConsignment.index.departureMeansOfTransport.country"
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
@@ -58,7 +61,7 @@ class CountryController @Inject() (
           ) map {
           countries =>
             val viewModel = countryViewModelProvider.apply(mode, houseConsignmentIndex)
-            val form      = formProvider(mode, index, countries, houseConsignmentIndex, transportMeansIndex)
+            val form      = formProvider(mode, prefix, countries, houseConsignmentIndex, transportMeansIndex)
             val preparedForm = request.userAnswers.get(CountryPage(houseConsignmentIndex, transportMeansIndex)) match {
               case None        => form
               case Some(value) => form.fill(value)
@@ -77,7 +80,7 @@ class CountryController @Inject() (
           ) flatMap {
           countries =>
             val viewModel = countryViewModelProvider.apply(mode, houseConsignmentIndex)
-            val form      = formProvider(mode, index, countries, houseConsignmentIndex, transportMeansIndex)
+            val form      = formProvider(mode, prefix, countries, houseConsignmentIndex, transportMeansIndex)
             form
               .bindFromRequest()
               .fold(
