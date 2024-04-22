@@ -1100,6 +1100,6 @@ houseConsignment.index.departureMeansOfTransport.country.NormalMode.heading = Wh
 houseConsignment.index.departureMeansOfTransport.country.CheckMode.heading = What country is the new vehicle registered to in house consignment {0}?
 houseConsignment.index.departureMeansOfTransport.nationality.hintText = Enter the country or code, like Austria or AT.
 houseConsignment.index.departureMeansOfTransport.country.error.required = Select the country the vehicle is registered to
-houseConsignment.index.departureMeansOfTransport.country.check.error.required = Select the country the new vehicle is registered to in house consignment {0}}
+houseConsignment.index.departureMeansOfTransport.country.check.error.required = Select the country the new vehicle is registered to in house consignment {0}
 
 unloadingFindings.rowHeadings.houseConsignment.countryOfDestination = Country of destination
