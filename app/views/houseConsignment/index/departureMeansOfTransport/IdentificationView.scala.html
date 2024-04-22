@@ -1,0 +1,59 @@
+@*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.MovementReferenceNumber
+@import models.reference.TransportMeansIdentification
+@import viewModels.components.InputRadioViewModel._
+@import views.html.components.{Button, ErrorSummary, InputRadio}
+@import viewModels.houseConsignment.index.departureTransportMeans.IdentificationViewModel
+
+@this(
+   mainTemplate: MainTemplate,
+   formHelper: FormWithCSRF,
+   inputRadio: InputRadio,
+   errorSummary: ErrorSummary,
+   button: Button
+)
+
+@(form: Form[TransportMeansIdentification], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index, transportMeansIndex: Index, identifiers: Seq[TransportMeansIdentification], mode: Mode, viewModel: IdentificationViewModel)(implicit request: Request[_], messages: Messages)
+
+@mainTemplate(
+   title = viewModel.title,
+   showBackLink = true
+) {
+
+   @formHelper(action = controllers.houseConsignment.index.departureMeansOfTransport.routes.IdentificationController.onSubmit(arrivalId, houseConsignmentIndex, transportMeansIndex, mode), Symbol("autoComplete") -> "off") {
+
+      @errorSummary(form.errors)
+
+
+      @inputRadio(
+         field = form("value"),
+         radioType =
+      if (viewModel.paragraph.isDefined)
+           RadioWithAdditionalHtml(
+               caption = Some(s"MRN: $mrn"),
+               heading = viewModel.heading,
+               additionalHtml = viewModel.paragraph.map(_.toParagraph).get)
+      else
+          Radio(caption = Some(s"MRN: $mrn"), heading = viewModel.heading),
+
+         radioItems = fieldId => identifiers.toRadioItems(fieldId, form.value)
+      )
+
+   @button(attributes = Map("id" -> "submit"))
+   }
+}

@@ -1122,3 +1122,12 @@ houseConsignment.index.departureMeansOfTransport.country.error.required = Select
 houseConsignment.index.departureMeansOfTransport.country.check.error.required = Select the country the new vehicle is registered to in house consignment {0}
 
 unloadingFindings.rowHeadings.houseConsignment.countryOfDestination = Country of destination
+
+houseConsignment.index.departureMeansOfTransport.identification.NormalMode.title = Which identification do you want to use for the departure means of transport?
+houseConsignment.index.departureMeansOfTransport.identification.CheckMode.title = Which identification do you want to use for the new departure means of transport in house consignment {0}?
+houseConsignment.index.departureMeansOfTransport.identification.NormalMode.heading = Which identification do you want to use for the departure means of transport?
+houseConsignment.index.departureMeansOfTransport.identification.CheckMode.heading = Which identification do you want to use for the new departure means of transport in house consignment {0}?
+houseConsignment.index.departureMeansOfTransport.identification.title = Which identification do you want to use for the new departure means of transport?
+houseConsignment.index.departureMeansOfTransport.identification.check.error.required = Select which identification you want to use for the new departure means of transport in house consignment {0}
+houseConsignment.index.departureMeansOfTransport.identification.error.required = Select which identification you want to use for the departure means of transport
+houseConsignment.index.departureMeansOfTransport.identification.CheckMode.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
