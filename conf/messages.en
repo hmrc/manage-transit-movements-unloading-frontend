@@ -193,7 +193,7 @@ netWeight.checkYourAnswersLabel = What is the net net weight of item {0} in hous
 netWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
 netWeight.paragraph = This is the weight of the item’s goods, excluding all packaging.
 netWeight.error.required = Enter the new net weight of item {0} in house consignment {1}
-netWeight.error.length = The new net weight must be 16 characters or less
+netWeight.error.length = The new net weight must be 23 characters or less. This includes up to 6 decimal places and a decimal point
 netWeight.error.characters = The new net weight must only include numbers 0 to 9 and a decimal point
 netWeight.error.decimal = The new net weight must only include 6 decimal places or less
 netWeight.change.hidden = the new net weight
@@ -486,8 +486,8 @@ unloadingFindings.subsections.houseConsignment = House consignment {0}
 unloadingFindings.subsections.houseConsignment.parent.heading = House consignments
 unloadingFindings.rowHeadings.houseConsignment.grossWeight = Gross weight
 unloadingFindings.rowHeadings.houseConsignment.netWeight = Net weight
-unloadingFindings.rowHeadings.houseConsignment.consignorName = Consignor name
-unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier = Consignor EORI number or Trader Identification Number (TIN)
+unloadingFindings.rowHeadings.houseConsignment.consignorName = Name
+unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier = EORI number or Trader Identification Number (TIN)
 unloadingFindings.rowHeadings.houseConsignment.consigneeName = Consignee name
 unloadingFindings.rowHeadings.houseConsignment.grossWeight.change.hidden = Change Gross weight
 unloadingFindings.rowHeadings.houseConsignment.netWeight.change.hidden = Change Net weight
@@ -496,7 +496,7 @@ unloadingFindings.rowHeadings.houseConsignment.consigneeAddress = Address
 
 
 
-unloadingFindings.rowHeadings.houseConsignment.consigneeIdentifier = Consignee EORI number or Trader Identification Number (TIN)
+unloadingFindings.rowHeadings.houseConsignment.consigneeIdentifier = EORI number or Trader Identification Number (TIN)
 unloadingFindings.subsections.itemSummary = Items summary
 unloadingFindings.rowHeadings.numberOfItems = Total number of items
 unloadingFindings.rowHeadings.totalGrossWeight = Total gross weight of all items
@@ -1093,6 +1093,25 @@ houseConsignment.index.grossWeight.error.required = Enter the new gross weight o
 houseConsignment.index.grossWeight.error.invalidValue = The new gross weight must be 23 characters or less. This includes up to 6 decimal places and a decimal point
 houseConsignment.index.grossWeight.error.invalidCharacters = The new gross weight must only include numbers 0 to 9 and a decimal point
 houseConsignment.index.grossWeight.error.invalidFormat = The new gross weight must only include 6 decimal places or less
+
+houseConsignment.index.additionalReference.additionalReferenceNumber.title = What is the additional reference number?
+houseConsignment.index.additionalReference.additionalReferenceNumber.heading = What is the additional reference number?
+houseConsignment.index.additionalReference.additionalReferenceNumber.error.required = Enter the additional reference number
+houseConsignment.index.additionalReference.additionalReferenceNumber.error.length = The additional reference number must be 70 characters or less
+houseConsignment.index.additionalReference.additionalReferenceNumber.error.invalidCharacters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+
+houseConsignment.index.additionalReference.additionalReferenceType.NormalMode.title = What type of additional reference do you want to add?
+houseConsignment.index.additionalReference.additionalReferenceType.NormalMode.heading = What type of additional reference do you want to add?
+houseConsignment.index.additionalReference.additionalReferenceType.CheckMode.title = What is the new additional reference type in house consignment {0}?
+houseConsignment.index.additionalReference.additionalReferenceType.CheckMode.heading = What is the new additional reference type in house consignment {0}?
+houseConsignment.index.additionalReference.additionalReferenceType.error.required = Select the type of additional reference
+houseConsignment.index.additionalReference.additionalReferenceType.check.error.required = Select the type of additional reference in house consignment {0}
+houseConsignment.index.additionalReference.additionalReferenceType.hint = Enter the reference name or code, like Carrier (AEO certificate number) or Y028.
+houseConsignment.index.additionalReference.additionalReferenceType.placeholder = Select an additional reference
+
+houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
+houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
+houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.error.required = Select yes if you want to add an additional reference number
 
 unloadingFindings.rowHeadings.houseConsignment.countryOfDestination = Country of destination
 

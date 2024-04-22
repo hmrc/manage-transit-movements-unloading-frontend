@@ -156,7 +156,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return Some(Row)" - {
         s"when $page defined" in {
-          forAll(arbitrary[Double]) {
+          forAll(arbitrary[BigDecimal]) {
             value =>
               val answers = emptyUserAnswers.setValue(page, value)
 

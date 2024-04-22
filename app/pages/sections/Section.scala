@@ -16,7 +16,41 @@
 
 package pages.sections
 
+import models.Index
 import pages.QuestionPage
-import play.api.libs.json.JsValue
+import play.api.libs.json.{__, JsArray, JsValue, Reads}
+import utils.transformers.SequenceNumber
 
-trait Section[T <: JsValue] extends QuestionPage[T]
+import scala.annotation.tailrec
+
+trait Section[T <: JsValue] extends QuestionPage[T] {
+
+  def readArray[A](implicit reads: (Index, BigInt) => Reads[Option[A]]): Reads[Seq[A]] =
+    (__ \ this.toString)
+      .readWithDefault(JsArray())
+      .map {
+        jsArray =>
+          @tailrec
+          def rec(values: List[(JsValue, Int)], acc: Seq[A] = Nil, sequenceNumber: BigInt = 1): Seq[A] =
+            values match {
+              case Nil =>
+                acc
+              case (jsValue, index) :: tail =>
+                val updatedSequenceNumber = jsValue
+                  .validate[Option[BigInt]]((__ \ SequenceNumber).readNullable[BigInt])
+                  .asOpt
+                  .flatten
+                  .getOrElse(sequenceNumber)
+
+                val updatedAcc = jsValue
+                  .validate[Option[A]](reads(Index(index), updatedSequenceNumber))
+                  .asOpt
+                  .flatten
+                  .fold(acc)(acc :+ _)
+
+                rec(tail, updatedAcc, updatedSequenceNumber + 1)
+            }
+
+          rec(jsArray.value.zipWithIndex.toList)
+      }
+}

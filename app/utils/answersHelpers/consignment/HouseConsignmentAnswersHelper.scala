@@ -19,8 +19,8 @@ package utils.answersHelpers.consignment
 import models.DocType.Previous
 import models.reference.Country
 import models.{DynamicAddress, Index, Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
-import pages.consignor.CountryPage
-import pages.houseConsignment.index.{CountryOfDestinationPage, SecurityIndicatorFromExportDeclarationPage}
+import pages.houseConsignment.consignor.CountryPage
+import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage, SecurityIndicatorFromExportDeclarationPage}
 import pages.sections.ItemsSection
 import pages.sections.departureTransportMeans.DepartureTransportMeansListSection
 import pages.sections.houseConsignment.index
@@ -28,7 +28,9 @@ import pages.sections.houseConsignment.index.additionalInformation.AdditionalInf
 import pages.sections.houseConsignment.index.additionalReference.AdditionalReferenceListSection
 import pages.{houseConsignment, _}
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
 import utils.answersHelpers.consignment.houseConsignment._
 import viewModels.sections.Section
@@ -39,6 +41,14 @@ class HouseConsignmentAnswersHelper(
   houseConsignmentIndex: Index
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
+
+  def grossMassRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
+    page = GrossWeightPage(houseConsignmentIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.grossMass",
+    id = Some(s"change-gross-mass"),
+    call = Some(Call(GET, "#"))
+  )
 
   def safetyAndSecurityDetails: Option[SummaryListRow] = getAnswerAndBuildRow[SecurityType](
     page = SecurityIndicatorFromExportDeclarationPage(houseConsignmentIndex),
@@ -85,7 +95,7 @@ class HouseConsignmentAnswersHelper(
     )
 
   def consignorCountry: Option[SummaryListRow] = buildRowWithNoChangeLink[Country](
-    data = userAnswers.get(CountryPage),
+    data = userAnswers.get(CountryPage(houseConsignmentIndex)),
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.consignor.country"
   )
@@ -112,8 +122,8 @@ class HouseConsignmentAnswersHelper(
       rows = Seq(
         consignorIdentification,
         consignorName,
-        consignorAddress,
-        consignorCountry
+        consignorCountry,
+        consignorAddress
       ).flatten
     )
 

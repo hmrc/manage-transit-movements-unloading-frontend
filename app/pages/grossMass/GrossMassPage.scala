@@ -18,14 +18,15 @@ package pages.grossMass
 
 import generated.ConsignmentType05
 import pages.DiscrepancyQuestionPage
+import pages.sections.ConsignmentSection
 import play.api.libs.json.JsPath
 
-case object GrossMassPage extends DiscrepancyQuestionPage[BigDecimal, ConsignmentType05, BigDecimal] {
+case object GrossMassPage extends DiscrepancyQuestionPage[BigDecimal, Option[ConsignmentType05], BigDecimal] {
 
-  override def path: JsPath = JsPath \ "Consignment" \ toString
+  override def path: JsPath = ConsignmentSection.path \ toString
 
   override def toString: String = "grossMass"
 
-  override def valueInIE043(ie043: ConsignmentType05, sequenceNumber: BigInt): Option[BigDecimal] =
-    ie043.grossMass
+  override def valueInIE043(ie043: Option[ConsignmentType05], sequenceNumber: Option[BigInt]): Option[BigDecimal] =
+    ie043.flatMap(_.grossMass)
 }

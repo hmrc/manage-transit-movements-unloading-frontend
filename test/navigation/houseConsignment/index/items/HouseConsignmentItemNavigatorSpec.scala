@@ -100,7 +100,7 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
       "must go from NetWeightPage to AddCustomsUnionAndStatisticsCodeYesNoPage" in {
 
         val userAnswers = emptyUserAnswers
-          .setValue(NetWeightPage(houseConsignmentIndex, itemIndex), 20.351)
+          .setValue(NetWeightPage(houseConsignmentIndex, itemIndex), BigDecimal(20.351))
 
         navigator
           .nextPage(NetWeightPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
@@ -240,7 +240,7 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
       }
 
       "must go from NetWeight page to CrossCheck page" in {
-        forAll(arbitrary[Double]) {
+        forAll(arbitrary[BigDecimal]) {
           netWeight =>
             val userAnswers = emptyUserAnswers.setValue(NetWeightPage(houseConsignmentIndex, itemIndex), netWeight)
 

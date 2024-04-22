@@ -19,8 +19,8 @@ package services.submission
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated._
 import generators.Generators
-import models.{Index, UnloadingType}
-import models.reference.AdditionalReferenceType
+import models.reference.{AdditionalReferenceType, Country, TransportMeansIdentification}
+import models.{Index, UnloadingType, UserAnswers}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -28,6 +28,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transportEquipment.index.ItemPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.Reads
 import scalaxb.XMLCalendar
 import services.DateTimeService
 
@@ -247,20 +248,64 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
   }
 
   "consignmentReads" - {
-    "must create consignment" in {
+
+    def getResult(userAnswers: UserAnswers, reads: Reads[ConsignmentType06]): ConsignmentType06 =
+      (userAnswers.data \ "Consignment").get.as[ConsignmentType06](reads)
+
+    "must create consignment" - {
       import pages.grossMass.GrossMassPage
 
-      forAll(arbitrary[CC043CType]) {
-        ie043 =>
-          val grossMass = Gen.option(arbitrary[BigDecimal]).sample.value
+      val grossMass = BigDecimal(100)
 
-          val userAnswers = emptyUserAnswers
-            .setValue(GrossMassPage, grossMass)
+      "when there are discrepancies" - {
+        "when values defined in IE043" in {
+          forAll(arbitrary[ConsignmentType05]) {
+            consignment =>
+              val ie043 = consignment.copy(
+                grossMass = Some(50)
+              )
 
-          val reads  = service.consignmentReads(ie043)
-          val result = userAnswers.data.as[ConsignmentType06](reads)
+              val userAnswers = emptyUserAnswers
+                .setValue(GrossMassPage, grossMass)
 
-          result.grossMass mustBe grossMass
+              val reads  = service.consignmentReads(Some(ie043))
+              val result = getResult(userAnswers, reads)
+
+              result.grossMass mustBe Some(grossMass)
+          }
+        }
+
+        "when values undefined in IE043" in {
+          forAll(arbitrary[ConsignmentType05]) {
+            consignment =>
+              val ie043 = consignment.copy(
+                grossMass = None
+              )
+
+              val userAnswers = emptyUserAnswers
+                .setValue(GrossMassPage, grossMass)
+
+              val reads  = service.consignmentReads(Some(ie043))
+              val result = getResult(userAnswers, reads)
+
+              result.grossMass mustBe Some(grossMass)
+          }
+        }
+      }
+
+      "when there are no discrepancies" in {
+        forAll(arbitrary[ConsignmentType05]) {
+          consignment =>
+            val ie043 = consignment.copy(grossMass = Some(grossMass))
+
+            val userAnswers = emptyUserAnswers
+              .setValue(GrossMassPage, grossMass)
+
+            val reads  = service.consignmentReads(Some(ie043))
+            val result = getResult(userAnswers, reads)
+
+            result.grossMass mustBe None
+        }
       }
     }
 
@@ -271,8 +316,8 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 
       "when there are discrepancies" in {
-        forAll(arbitrary[CC043CType], arbitrary[ConsignmentType05]) {
-          (a, b) =>
+        forAll(arbitrary[ConsignmentType05]) {
+          consignment =>
             val transportEquipment = Seq(
               TransportEquipmentType05(
                 sequenceNumber = 1,
@@ -325,8 +370,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                 )
               )
             )
-            val consignment = b.copy(TransportEquipment = transportEquipment)
-            val ie043       = a.copy(Consignment = Some(consignment))
+            val ie043 = consignment.copy(TransportEquipment = transportEquipment)
 
             val userAnswers = emptyUserAnswers
               // Transport equipment 1 - Changed
@@ -390,8 +434,8 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               /// Transport equipment 4 - Goods reference 1 - Added
               .setValue(ItemPage(Index(3), Index(0)), BigInt(9))
 
-            val reads  = service.consignmentReads(ie043)
-            val result = userAnswers.data.as[ConsignmentType06](reads).TransportEquipment
+            val reads  = service.consignmentReads(Some(ie043))
+            val result = getResult(userAnswers, reads).TransportEquipment
 
             result mustBe Seq(
               TransportEquipmentType03(
@@ -473,8 +517,8 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       }
 
       "when there are no discrepancies" in {
-        forAll(arbitrary[CC043CType], arbitrary[ConsignmentType05]) {
-          (a, b) =>
+        forAll(arbitrary[ConsignmentType05]) {
+          consignment =>
             val transportEquipment = Seq(
               TransportEquipmentType05(
                 sequenceNumber = 1,
@@ -527,8 +571,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                 )
               )
             )
-            val consignment = b.copy(TransportEquipment = transportEquipment)
-            val ie043       = a.copy(Consignment = Some(consignment))
+            val ie043 = consignment.copy(TransportEquipment = transportEquipment)
 
             val userAnswers = emptyUserAnswers
               // Transport equipment 1 - Unchanged
@@ -573,8 +616,153 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               .setNotRemoved(ItemSection(Index(1), Index(1)))
               .setValue(ItemPage(Index(1), Index(1)), BigInt(4))
 
-            val reads  = service.consignmentReads(ie043)
-            val result = userAnswers.data.as[ConsignmentType06](reads).TransportEquipment
+            val reads  = service.consignmentReads(Some(ie043))
+            val result = getResult(userAnswers, reads).TransportEquipment
+
+            result mustBe Nil
+        }
+      }
+    }
+
+    "must create departure transport means" - {
+      import pages.departureMeansOfTransport._
+      import pages.sections.TransportMeansSection
+
+      "when there are discrepancies" in {
+        forAll(arbitrary[ConsignmentType05]) {
+          consignment =>
+            val departureTransportMeans = Seq(
+              DepartureTransportMeansType02(
+                sequenceNumber = 1,
+                typeOfIdentification = "originalTypeOfIdentification1",
+                identificationNumber = "originalIdentificationNumber1",
+                nationality = "originalNationality1"
+              ),
+              DepartureTransportMeansType02(
+                sequenceNumber = 2,
+                typeOfIdentification = "originalTypeOfIdentification2",
+                identificationNumber = "originalIdentificationNumber2",
+                nationality = "originalNationality2"
+              ),
+              DepartureTransportMeansType02(
+                sequenceNumber = 3,
+                typeOfIdentification = "originalTypeOfIdentification3",
+                identificationNumber = "originalIdentificationNumber3",
+                nationality = "originalNationality3"
+              ),
+              DepartureTransportMeansType02(
+                sequenceNumber = 4,
+                typeOfIdentification = "originalTypeOfIdentification4",
+                identificationNumber = "originalIdentificationNumber4",
+                nationality = "originalNationality4"
+              )
+            )
+            val ie043 = consignment.copy(DepartureTransportMeans = departureTransportMeans)
+
+            val userAnswers = emptyUserAnswers
+              // Departure transport means 1 - Changed type value
+              .setSequenceNumber(TransportMeansSection(Index(0)), 1)
+              .setNotRemoved(TransportMeansSection(Index(0)))
+              .setValue(TransportMeansIdentificationPage(Index(0)),
+                        TransportMeansIdentification("newTypeOfIdentification1", "newTypeOfIdentification1Description")
+              )
+              .setValue(VehicleIdentificationNumberPage(Index(0)), "originalIdentificationNumber1")
+              .setValue(CountryPage(Index(0)), Country("originalNationality1", "originalNationalityDescription1"))
+              // Departure transport means 2 - Changed identification number and nationality
+              .setSequenceNumber(TransportMeansSection(Index(1)), 2)
+              .setNotRemoved(TransportMeansSection(Index(1)))
+              .setValue(TransportMeansIdentificationPage(Index(1)),
+                        TransportMeansIdentification("originalTypeOfIdentification2", "originalTypeOfIdentification2Description")
+              )
+              .setValue(VehicleIdentificationNumberPage(Index(1)), "newIdentificationNumber2")
+              .setValue(CountryPage(Index(1)), Country("newNationality2", "newNationalityDescription2"))
+              // Departure transport means 3 - Removed
+              .setSequenceNumber(TransportMeansSection(Index(2)), 3)
+              .setRemoved(TransportMeansSection(Index(2)))
+              // Departure transport means 4 - Unchanged
+              .setSequenceNumber(TransportMeansSection(Index(3)), 4)
+              .setNotRemoved(TransportMeansSection(Index(3)))
+              .setValue(TransportMeansIdentificationPage(Index(3)),
+                        TransportMeansIdentification("originalTypeOfIdentification4", "originalTypeOfIdentification4Description")
+              )
+              .setValue(VehicleIdentificationNumberPage(Index(3)), "originalIdentificationNumber4")
+              .setValue(CountryPage(Index(3)), Country("originalNationality4", "originalNationalityDescription4"))
+              // Departure transport means 5 - Added
+              .setValue(TransportMeansIdentificationPage(Index(4)),
+                        TransportMeansIdentification("newTypeOfIdentification5", "newTypeOfIdentification5Description")
+              )
+              .setValue(VehicleIdentificationNumberPage(Index(4)), "newIdentificationNumber5")
+              .setValue(CountryPage(Index(4)), Country("newNationality5", "newNationalityDescription5"))
+
+            val reads  = service.consignmentReads(Some(ie043))
+            val result = getResult(userAnswers, reads).DepartureTransportMeans
+
+            result mustBe Seq(
+              DepartureTransportMeansType04(
+                sequenceNumber = 1,
+                typeOfIdentification = Some("newTypeOfIdentification1"),
+                identificationNumber = None,
+                nationality = None
+              ),
+              DepartureTransportMeansType04(
+                sequenceNumber = 2,
+                typeOfIdentification = None,
+                identificationNumber = Some("newIdentificationNumber2"),
+                nationality = Some("newNationality2")
+              ),
+              DepartureTransportMeansType04(
+                sequenceNumber = 3,
+                typeOfIdentification = None,
+                identificationNumber = None,
+                nationality = None
+              ),
+              DepartureTransportMeansType04(
+                sequenceNumber = 5,
+                typeOfIdentification = Some("newTypeOfIdentification5"),
+                identificationNumber = Some("newIdentificationNumber5"),
+                nationality = Some("newNationality5")
+              )
+            )
+        }
+      }
+
+      "when there are no discrepancies" in {
+        forAll(arbitrary[ConsignmentType05]) {
+          consignment =>
+            val departureTransportMeans = Seq(
+              DepartureTransportMeansType02(
+                sequenceNumber = 1,
+                typeOfIdentification = "originalTypeOfIdentification1",
+                identificationNumber = "originalIdentificationNumber1",
+                nationality = "originalNationality1"
+              ),
+              DepartureTransportMeansType02(
+                sequenceNumber = 2,
+                typeOfIdentification = "originalTypeOfIdentification2",
+                identificationNumber = "originalIdentificationNumber2",
+                nationality = "originalNationality2"
+              )
+            )
+            val ie043 = consignment.copy(DepartureTransportMeans = departureTransportMeans)
+
+            val userAnswers = emptyUserAnswers
+              // Departure transport means 1 - Unchanged
+              .setSequenceNumber(TransportMeansSection(Index(0)), 1)
+              .setNotRemoved(TransportMeansSection(Index(0)))
+              .setValue(TransportMeansIdentificationPage(Index(0)),
+                        TransportMeansIdentification("originalTypeOfIdentification1", "originalTypeOfIdentification1Description")
+              )
+              .setValue(VehicleIdentificationNumberPage(Index(0)), "originalIdentificationNumber1")
+              // Departure transport means 2 - Unchanged
+              .setSequenceNumber(TransportMeansSection(Index(1)), 2)
+              .setNotRemoved(TransportMeansSection(Index(1)))
+              .setValue(TransportMeansIdentificationPage(Index(1)),
+                        TransportMeansIdentification("originalTypeOfIdentification2", "originalTypeOfIdentification2Description")
+              )
+              .setValue(VehicleIdentificationNumberPage(Index(1)), "originalIdentificationNumber2")
+
+            val reads  = service.consignmentReads(Some(ie043))
+            val result = getResult(userAnswers, reads).DepartureTransportMeans
 
             result mustBe Nil
         }
@@ -586,8 +774,8 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       import pages.sections.additionalReference.AdditionalReferenceSection
 
       "when there are discrepancies" in {
-        forAll(arbitrary[CC043CType], arbitrary[ConsignmentType05]) {
-          (a, b) =>
+        forAll(arbitrary[ConsignmentType05]) {
+          consignment =>
             val additionalReferences = Seq(
               AdditionalReferenceType03(
                 sequenceNumber = 1,
@@ -610,8 +798,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                 referenceNumber = Some("originalReferenceNumber4")
               )
             )
-            val consignment = b.copy(AdditionalReference = additionalReferences)
-            val ie043       = a.copy(Consignment = Some(consignment))
+            val ie043 = consignment.copy(AdditionalReference = additionalReferences)
 
             val userAnswers = emptyUserAnswers
               // Additional reference 1 - Changed type value
@@ -636,8 +823,8 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               .setValue(AdditionalReferenceTypePage(Index(4)), AdditionalReferenceType("newTypeValue5", "newTypeValue5Description"))
               .setValue(AdditionalReferenceNumberPage(Index(4)), "newReferenceNumber5")
 
-            val reads  = service.consignmentReads(ie043)
-            val result = userAnswers.data.as[ConsignmentType06](reads).AdditionalReference
+            val reads  = service.consignmentReads(Some(ie043))
+            val result = getResult(userAnswers, reads).AdditionalReference
 
             result mustBe Seq(
               AdditionalReferenceType06(
@@ -665,8 +852,8 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       }
 
       "when there are no discrepancies" in {
-        forAll(arbitrary[CC043CType], arbitrary[ConsignmentType05]) {
-          (a, b) =>
+        forAll(arbitrary[ConsignmentType05]) {
+          consignment =>
             val additionalReferences = Seq(
               AdditionalReferenceType03(
                 sequenceNumber = 1,
@@ -679,8 +866,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                 referenceNumber = Some("originalReferenceNumber2")
               )
             )
-            val consignment = b.copy(AdditionalReference = additionalReferences)
-            val ie043       = a.copy(Consignment = Some(consignment))
+            val ie043 = consignment.copy(AdditionalReference = additionalReferences)
 
             val userAnswers = emptyUserAnswers
               // Additional reference 1 - Unchanged
@@ -694,8 +880,8 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               .setValue(AdditionalReferenceTypePage(Index(1)), AdditionalReferenceType("originalTypeValue2", "originalTypeValue2Description"))
               .setValue(AdditionalReferenceNumberPage(Index(1)), "originalReferenceNumber2")
 
-            val reads  = service.consignmentReads(ie043)
-            val result = userAnswers.data.as[ConsignmentType06](reads).AdditionalReference
+            val reads  = service.consignmentReads(Some(ie043))
+            val result = getResult(userAnswers, reads).AdditionalReference
 
             result mustBe Nil
         }
