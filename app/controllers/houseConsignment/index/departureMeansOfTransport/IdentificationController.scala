@@ -49,8 +49,12 @@ class IdentificationController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(mode: Mode, identificationTypes: Seq[TransportMeansIdentification]): Form[TransportMeansIdentification] =
-    formProvider[TransportMeansIdentification](mode, "houseConsignment.index.departureMeansOfTransport.identification", identificationTypes)
+  private def form(mode: Mode, identificationTypes: Seq[TransportMeansIdentification], houseConsignmentIndex: Index): Form[TransportMeansIdentification] =
+    formProvider[TransportMeansIdentification](mode,
+                                               "houseConsignment.index.departureMeansOfTransport.identification",
+                                               identificationTypes,
+                                               houseConsignmentIndex
+    )
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId).async {
@@ -59,8 +63,8 @@ class IdentificationController @Inject() (
           identifiers =>
             val viewModel = identificationViewModelProvider.apply(mode)
             val preparedForm = request.userAnswers.get(TransportMeansIdentificationPage(houseConsignmentIndex, transportMeansIndex)) match {
-              case None        => form(mode, identifiers)
-              case Some(value) => form(mode, identifiers).fill(value)
+              case None        => form(mode, identifiers, houseConsignmentIndex)
+              case Some(value) => form(mode, identifiers, houseConsignmentIndex).fill(value)
             }
             Future.successful(
               Ok(
@@ -76,7 +80,7 @@ class IdentificationController @Inject() (
         service.getMeansOfTransportIdentificationTypes(request.userAnswers).flatMap {
           identifiers =>
             val viewModel = identificationViewModelProvider.apply(mode)
-            form(mode, identifiers)
+            form(mode, identifiers, houseConsignmentIndex)
               .bindFromRequest()
               .fold(
                 formWithErrors =>
