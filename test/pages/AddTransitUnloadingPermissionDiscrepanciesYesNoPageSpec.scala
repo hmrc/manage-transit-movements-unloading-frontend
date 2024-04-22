@@ -27,5 +27,38 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoPageSpec extends PageBehavi
     beSettable[Boolean](AddTransitUnloadingPermissionDiscrepanciesYesNoPage)
 
     beRemovable[Boolean](AddTransitUnloadingPermissionDiscrepanciesYesNoPage)
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove answers for AddCommentsYesNoPage and UnloadingCommentsPage" in {
+          forAll(nonEmptyString) {
+            comments =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddCommentsYesNoPage, true)
+                .setValue(UnloadingCommentsPage, comments)
+
+              val result = userAnswers.setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
+
+              result.get(AddCommentsYesNoPage) must not be defined
+              result.get(UnloadingCommentsPage) must not be defined
+          }
+        }
+      }
+      "when yes selected" - {
+        "must keep answers for AddCommentsYesNoPage and UnloadingCommentsPage" in {
+          forAll(nonEmptyString) {
+            comments =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddCommentsYesNoPage, true)
+                .setValue(UnloadingCommentsPage, comments)
+
+              val result = userAnswers.setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
+
+              result.get(AddCommentsYesNoPage) mustBe defined
+              result.get(UnloadingCommentsPage) mustBe defined
+          }
+        }
+      }
+    }
   }
 }
