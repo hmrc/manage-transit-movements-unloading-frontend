@@ -79,11 +79,10 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
       declarationTypeRow,
       securityTypeRow,
       Some(reducedDatasetIndicatorRow),
+      countryOfDestinationRow,
       customsOfficeOfDestinationActual,
       grossMassRow,
-      Some(traderAtDestinationRow),
-      countryOfDestinationRow,
-      containerIndicatorRow
+      Some(traderAtDestinationRow)
     ).flatten
   )
 
@@ -161,19 +160,6 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     call = None
   )
 
-  def containerIndicatorRow: Option[SummaryListRow] =
-    userAnswers.ie043Data.Consignment
-      .map(_.containerIndicator)
-      .map {
-        containerIndicator =>
-          buildRow(
-            prefix = "unloadingFindings.containerIndicator",
-            answer = formatAsYesOrNo(containerIndicator),
-            id = None,
-            call = None
-          )
-      }
-
   def consignorSection: Option[Section] =
     userAnswers.ie043Data.Consignment.flatMap(_.Consignor).map {
       consignor =>
@@ -250,7 +236,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     userAnswers.get(TransportEquipmentListSection).mapWithIndex {
       case (_, index) =>
         val helper = new TransportEquipmentAnswersHelper(userAnswers, index)
-        val rows   = Seq(helper.containerIdentificationNumber).flatten
+        val rows   = Seq(helper.containerIndicatorRow, helper.containerIdentificationNumber).flatten
         val children = Seq(
           helper.transportEquipmentSeals,
           helper.transportEquipmentItems

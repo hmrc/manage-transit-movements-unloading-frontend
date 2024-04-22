@@ -49,7 +49,7 @@ class NetWeightController @Inject() (
       implicit request =>
         val preparedForm = request.userAnswers.get(NetWeightPage(houseConsignmentIndex, itemIndex)) match {
           case None        => form(houseConsignmentIndex, itemIndex)
-          case Some(value) => form(houseConsignmentIndex, itemIndex).fill(value.toString)
+          case Some(value) => form(houseConsignmentIndex, itemIndex).fill(value)
         }
 
         Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))
@@ -64,7 +64,7 @@ class NetWeightController @Inject() (
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))),
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(NetWeightPage(houseConsignmentIndex, itemIndex), value.toDouble))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(NetWeightPage(houseConsignmentIndex, itemIndex), value))
                 _              <- sessionRepository.set(updatedAnswers)
               } yield Redirect(navigator.nextPage(NetWeightPage(houseConsignmentIndex, itemIndex), mode, request.userAnswers))
           )

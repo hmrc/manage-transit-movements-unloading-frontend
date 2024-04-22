@@ -17,10 +17,9 @@
 package controllers.transportEquipment.index
 
 import controllers.actions._
-import controllers.routes._
-import controllers.transportEquipment.index.routes._
 import forms.SelectableFormProvider
-import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, SelectableList}
+import models.{ArrivalId, Index, Mode, SelectableList}
+import navigation.GoodsReferenceNavigator.GoodsReferenceNavigatorProvider
 import pages.transportEquipment.index.ItemPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,7 +33,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class GoodsReferenceController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
+  navigatorProvider: GoodsReferenceNavigatorProvider,
   actions: Actions,
   formProvider: SelectableFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -96,11 +96,9 @@ class GoodsReferenceController @Inject() (
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(ItemPage(transportEquipmentIndex, itemIndex), value.declarationGoodsItemNumber))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield goodsReferenceMode match {
-                case NormalMode =>
-                  Redirect(ApplyAnotherItemController.onPageLoad(request.userAnswers.id, equipmentMode, goodsReferenceMode, transportEquipmentIndex))
-                case CheckMode =>
-                  Redirect(UnloadingFindingsController.onPageLoad(request.userAnswers.id))
+              } yield {
+                val navigator = navigatorProvider.apply(equipmentMode)
+                Redirect(navigator.nextPage(ItemPage(transportEquipmentIndex, itemIndex), goodsReferenceMode, updatedAnswers))
               }
           )
     }

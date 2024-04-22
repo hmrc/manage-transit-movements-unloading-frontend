@@ -57,14 +57,14 @@ trait Mappings extends Formatters with Constraints {
 
   protected def bigDecimal(
     decimalPlaces: Int,
-    characterCount: Int,
+    integerLength: Int,
     requiredKey: String = "error.required",
     invalidCharactersKey: String = "error.invalidCharacters",
-    invalidFormatKey: String = "error.invalidFormat",
-    invalidValueKey: String = "error.invalidValue",
+    invalidFractionKey: String = "error.invalidFormat",
+    invalidLengthKey: String = "error.invalidValue",
     args: Seq[String] = Seq.empty
   ): FieldMapping[BigDecimal] =
-    of(bigDecimalFormatter(decimalPlaces, characterCount, requiredKey, invalidCharactersKey, invalidFormatKey, invalidValueKey, args))
+    of(bigDecimalFormatter(decimalPlaces, integerLength, requiredKey, invalidCharactersKey, invalidFractionKey, invalidLengthKey, args))
 
   protected def localDate(
     invalidKey: String,

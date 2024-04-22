@@ -16,6 +16,7 @@
 
 package utils.answersHelpers.consignment
 
+import generated.{ConsignmentType05, Number1}
 import models.{CheckMode, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -57,6 +58,29 @@ class TransportEquipmentAnswersHelperSpec extends AnswersHelperSpecBase {
               action.id mustBe "change-container-identification-number-1"
           }
         }
+      }
+    }
+
+    "containerIndicatorRow" - {
+      "must return row" in {
+        val userAnswers = emptyUserAnswers
+          .copy(ie043Data =
+            basicIe043.copy(Consignment =
+              Some(
+                ConsignmentType05(
+                  containerIndicator = Number1,
+                  inlandModeOfTransport = Some("Mode")
+                )
+              )
+            )
+          )
+
+        val helper = new TransportEquipmentAnswersHelper(userAnswers, equipmentIndex)
+        val result = helper.containerIndicatorRow
+
+        result.get.key.value mustBe "Are you using any containers?"
+        result.value.value.value mustBe "Yes"
+        result.get.actions must not be defined
       }
     }
 

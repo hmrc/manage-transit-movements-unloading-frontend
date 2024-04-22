@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 
-package derivable
+package pages.houseConsignment.index
 
-import queries.Gettable
+import models.reference.Country
+import pages.behaviours.PageBehaviours
 
-trait Derivable[A, B] extends Gettable[A] {
+class CountryOfDestinationPageSpec extends PageBehaviours {
 
-  val derive: A => B
+  "CountryOfDestination" - {
 
+    beRetrievable[Country](CountryOfDestinationPage(houseConsignmentIndex))
+
+    beSettable[Country](CountryOfDestinationPage(houseConsignmentIndex))
+
+    beRemovable[Country](CountryOfDestinationPage(houseConsignmentIndex))
+  }
 }

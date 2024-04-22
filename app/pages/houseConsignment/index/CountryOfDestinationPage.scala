@@ -19,12 +19,12 @@ package pages.houseConsignment.index
 import models.Index
 import models.reference.Country
 import pages.QuestionPage
-import pages.sections.ItemsSection
+import pages.sections.HouseConsignmentSection
 import play.api.libs.json.JsPath
 
 case class CountryOfDestinationPage(houseConsignment: Index) extends QuestionPage[Country] {
 
-  override def path: JsPath = ItemsSection(houseConsignment).path \ toString
+  override def path: JsPath = HouseConsignmentSection(houseConsignment).path \ toString
 
   override def toString: String = "countryOfDestination"
 }

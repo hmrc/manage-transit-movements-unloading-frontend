@@ -39,7 +39,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         val userAnswers = emptyUserAnswers.setValue(UnloadingTypePage, UnloadingType.Fully)
         navigator
           .nextPage(UnloadingTypePage, mode, userAnswers)
-          .mustBe(controllers.routes.DateGoodsUnloadedController.onPageLoad(userAnswers.id, NormalMode))
+          .mustBe(routes.DateGoodsUnloadedController.onPageLoad(userAnswers.id, NormalMode))
       }
 
       "must go from date goods unloaded page" - {
@@ -57,7 +57,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           navigator
             .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
-            .mustBe(controllers.routes.CanSealsBeReadController.onPageLoad(userAnswers.id, mode))
+            .mustBe(routes.CanSealsBeReadController.onPageLoad(userAnswers.id, mode))
         }
 
         "to can seals be read page when seals exist in incident transport equipment" in {
@@ -76,17 +76,17 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           navigator
             .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
-            .mustBe(controllers.routes.CanSealsBeReadController.onPageLoad(userAnswers.id, mode))
+            .mustBe(routes.CanSealsBeReadController.onPageLoad(userAnswers.id, mode))
         }
 
-        "to cross-check page when no seals exist" in {
+        "to add transit unloading permission discrepancies yes/no page when no seals exist" in {
           val ie043 = arbitrary[CC043CType].map(_.copy(Consignment = None)).sample.value
 
           val userAnswers = emptyUserAnswers.copy(ie043Data = ie043)
 
           navigator
             .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
-            .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
+            .mustBe(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, mode))
         }
       }
 
@@ -96,40 +96,62 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           val userAnswers = emptyUserAnswers.setValue(CanSealsBeReadPage, true)
           navigator
             .nextPage(CanSealsBeReadPage, mode, userAnswers)
-            .mustBe(controllers.routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, mode))
+            .mustBe(routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, mode))
         }
 
-        "to Are any seals broken page  when the answer is No" in {
+        "to Are any seals broken page when the answer is No" in {
 
           val userAnswers = emptyUserAnswers.setValue(CanSealsBeReadPage, false)
           navigator
             .nextPage(CanSealsBeReadPage, mode, userAnswers)
-            .mustBe(controllers.routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, mode))
+            .mustBe(routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, mode))
         }
       }
 
       "must go from are any seals broken page " - {
-        "to add transit unloading permission discrepancies yes/no page when the answer is No" in {
+        "to add transit unloading permission discrepancies yes/no page when seals are present and not damaged" in {
 
-          val userAnswers = emptyUserAnswers.setValue(AreAnySealsBrokenPage, false)
+          val userAnswers = emptyUserAnswers
+            .setValue(CanSealsBeReadPage, true)
+            .setValue(AreAnySealsBrokenPage, false)
 
           navigator
             .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-            .mustBe(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, NormalMode))
+            .mustBe(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, mode))
         }
 
-        "to add transit unloading permission discrepancies yes/no page when the answer is Yes" in {
+        "to unloading findings page when seals are not present" in {
 
-          val userAnswers = emptyUserAnswers.setValue(AreAnySealsBrokenPage, true)
+          navigator
+            .nextPage(AreAnySealsBrokenPage, mode, emptyUserAnswers)
+            .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
+        }
+
+        "to unloading findings page when seals are present but not readable" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(CanSealsBeReadPage, false)
+            .setValue(AreAnySealsBrokenPage, false)
 
           navigator
             .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
-            .mustBe(routes.AddTransitUnloadingPermissionDiscrepanciesYesNoController.onPageLoad(arrivalId, NormalMode))
+            .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
+        }
+
+        "to unloading findings page when seals are present but broken" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(CanSealsBeReadPage, true)
+            .setValue(AreAnySealsBrokenPage, true)
+
+          navigator
+            .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
+            .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
         }
       }
 
-      "must go from add transit unloading permission discrepancies yes/no page" - {
-        "when answer is true to unloading findings controller" in {
+      "must go from add transit unloading permission discrepancies yes/no page page" - {
+        "when answer is true to unloading comments controller" in {
           val userAnswers = emptyUserAnswers.setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
 
           navigator
@@ -137,12 +159,12 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
         }
 
-        "when answer is false to add unloading remarks yes/no page" in {
+        "when answer is false to do you have anything else to report yes/no page" in {
           val userAnswers = emptyUserAnswers.setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
 
           navigator
             .nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, userAnswers)
-            .mustBe(routes.AddCommentsYesNoController.onPageLoad(arrivalId, NormalMode))
+            .mustBe(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId, mode))
         }
 
         "to session expired controller when no existing answers found" in {
@@ -158,7 +180,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           navigator
             .nextPage(AddCommentsYesNoPage, mode, userAnswers)
-            .mustBe(routes.UnloadingCommentsController.onPageLoad(arrivalId, NormalMode))
+            .mustBe(routes.UnloadingCommentsController.onPageLoad(arrivalId, mode))
         }
 
         "when answer is false to do you have anything else to report yes/no page" in {
@@ -166,7 +188,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           navigator
             .nextPage(AddCommentsYesNoPage, mode, userAnswers)
-            .mustBe(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId, NormalMode))
+            .mustBe(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId, mode))
         }
       }
 
@@ -174,7 +196,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         val userAnswers = emptyUserAnswers.setValue(UnloadingCommentsPage, "test")
         navigator
           .nextPage(UnloadingCommentsPage, mode, userAnswers)
-          .mustBe(controllers.routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(userAnswers.id, NormalMode))
+          .mustBe(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId, mode))
       }
 
       "must go from do you have anything else to report page" - {
@@ -183,7 +205,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           navigator
             .nextPage(DoYouHaveAnythingElseToReportYesNoPage, mode, userAnswers)
-            .mustBe(routes.OtherThingsToReportController.onPageLoad(arrivalId, NormalMode))
+            .mustBe(routes.OtherThingsToReportController.onPageLoad(arrivalId, mode))
         }
 
         "when answer is false to check your answers page" in {
@@ -199,7 +221,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         val userAnswers = emptyUserAnswers.setValue(OtherThingsToReportPage, "test")
         navigator
           .nextPage(OtherThingsToReportPage, mode, userAnswers)
-          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+          .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
 
       }
 
