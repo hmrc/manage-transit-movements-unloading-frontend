@@ -18,7 +18,7 @@
 @import viewModels.components.InputTextViewModel._
 @import views.html.components.{Button, ErrorSummary, InputText}
 @import controllers.houseConsignment.index.departureMeansOfTransport.routes
-@import viewModels.departureTransportMeans.IdentificationNumberViewModel
+@import viewModels.houseConsignment.index.departureTransportMeans.IdentificationNumberViewModel
 
 @this(
     mainTemplate: MainTemplate,
@@ -46,7 +46,7 @@
                 heading =  viewModel.heading,
                 caption = Some(messages("site.caption", mrn.toString))
             ),
-            hint = Some(messages("departureMeansOfTransport.identificationNumber.hint"))
+            hint = Some(messages("houseConsignment.index.departureMeansOfTransport.identificationNumber.hint"))
         )
 
         @button(attributes = Map("id" -> "submit"))

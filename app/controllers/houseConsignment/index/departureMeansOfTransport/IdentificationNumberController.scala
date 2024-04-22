@@ -18,14 +18,15 @@ package controllers.houseConsignment.index.departureMeansOfTransport
 
 import controllers.actions._
 import forms.VehicleIdentificationNumberFormProvider
+import models.requests.DataRequest
 import models.{ArrivalId, Index, Mode}
 import navigation.Navigator
 import pages.houseConsignment.index.departureMeansOfTransport.VehicleIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.departureTransportMeans.IdentificationNumberViewModel.IdentificationNumberViewModelProvider
+import viewModels.houseConsignment.index.departureTransportMeans.IdentificationNumberViewModel.IdentificationNumberViewModelProvider
 import views.html.houseConsignment.index.departureMeansOfTransport.IdentificationNumberView
 
 import javax.inject.Inject
@@ -44,11 +45,13 @@ class IdentificationNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
+  val prefix = "houseConsignment.index.departureMeansOfTransport.identificationNumber"
+
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId) {
       implicit request =>
-        val viewModel = identificationNumberViewModelProvider.apply(mode)
-        val form      = formProvider(mode)
+        val viewModel = identificationNumberViewModelProvider.apply(mode, houseConsignmentIndex)
+        val form      = formProvider(prefix, mode, houseConsignmentIndex.display)
 
         val preparedForm = request.userAnswers.get(VehicleIdentificationNumberPage(houseConsignmentIndex, transportMeansIndex)) match {
           case None        => form
@@ -61,19 +64,21 @@ class IdentificationNumberController @Inject() (
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
-        val viewModel = identificationNumberViewModelProvider.apply(mode)
-        val form      = formProvider(mode)
+        val viewModel = identificationNumberViewModelProvider.apply(mode, houseConsignmentIndex)
+        val form      = formProvider(prefix, mode, houseConsignmentIndex.display)
         form
           .bindFromRequest()
           .fold(
             formWithErrors =>
               Future
                 .successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, transportMeansIndex, mode, viewModel))),
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleIdentificationNumberPage(houseConsignmentIndex, transportMeansIndex), value))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(VehicleIdentificationNumberPage(houseConsignmentIndex, transportMeansIndex), mode, request.userAnswers))
+            value => redirect(houseConsignmentIndex, transportMeansIndex, mode, request, value)
           )
     }
+
+  private def redirect(houseConsignmentIndex: Index, transportMeansIndex: Index, mode: Mode, request: DataRequest[AnyContent], value: String): Future[Result] =
+    for {
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleIdentificationNumberPage(houseConsignmentIndex, transportMeansIndex), value))
+      _              <- sessionRepository.set(updatedAnswers)
+    } yield Redirect(navigator.nextPage(VehicleIdentificationNumberPage(houseConsignmentIndex, transportMeansIndex), mode, request.userAnswers))
 }

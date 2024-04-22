@@ -27,19 +27,21 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewModels.departureTransportMeans.IdentificationNumberViewModel
-import viewModels.departureTransportMeans.IdentificationNumberViewModel.IdentificationNumberViewModelProvider
 import controllers.houseConsignment.index.departureMeansOfTransport.routes
+import org.mockito.ArgumentMatchers
 import pages.houseConsignment.index.departureMeansOfTransport.VehicleIdentificationNumberPage
+import viewModels.houseConsignment.index.departureTransportMeans.IdentificationNumberViewModel
+import viewModels.houseConsignment.index.departureTransportMeans.IdentificationNumberViewModel.IdentificationNumberViewModelProvider
 import views.html.houseConsignment.index.departureMeansOfTransport.IdentificationNumberView
 
 import scala.concurrent.Future
 
 class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
+  private val prefix                = "houseConsignment.index.departureMeansOfTransport.identificationNumber"
   private val formProvider          = new VehicleIdentificationNumberFormProvider()
   private val mode                  = CheckMode
-  private val form                  = formProvider(mode)
+  private val form                  = formProvider(prefix, mode, houseConsignmentIndex)
   private val viewModel             = arbitrary[IdentificationNumberViewModel].sample.value
   private val mockViewModelProvider = mock[IdentificationNumberViewModelProvider]
 
@@ -52,7 +54,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
     super.beforeEach()
     reset(mockViewModelProvider)
 
-    when(mockViewModelProvider.apply(any())(any()))
+    when(mockViewModelProvider.apply(any(), ArgumentMatchers.eq(houseConsignmentIndex))(any()))
       .thenReturn(viewModel)
   }
 
