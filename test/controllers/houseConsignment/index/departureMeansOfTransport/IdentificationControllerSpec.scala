@@ -63,7 +63,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     reset(mockMeansOfTransportIdentificationTypesService)
     reset(mockViewModelProvider)
 
-    when(mockViewModelProvider.apply(any())(any()))
+    when(mockViewModelProvider.apply(any(), any())(any()))
       .thenReturn(viewModel)
   }
 

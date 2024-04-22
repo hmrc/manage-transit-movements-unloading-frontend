@@ -61,7 +61,7 @@ class IdentificationController @Inject() (
       implicit request =>
         service.getMeansOfTransportIdentificationTypes(request.userAnswers).flatMap {
           identifiers =>
-            val viewModel = identificationViewModelProvider.apply(mode)
+            val viewModel = identificationViewModelProvider.apply(mode, houseConsignmentIndex)
             val preparedForm = request.userAnswers.get(TransportMeansIdentificationPage(houseConsignmentIndex, transportMeansIndex)) match {
               case None        => form(mode, identifiers, houseConsignmentIndex)
               case Some(value) => form(mode, identifiers, houseConsignmentIndex).fill(value)
@@ -79,7 +79,7 @@ class IdentificationController @Inject() (
       implicit request =>
         service.getMeansOfTransportIdentificationTypes(request.userAnswers).flatMap {
           identifiers =>
-            val viewModel = identificationViewModelProvider.apply(mode)
+            val viewModel = identificationViewModelProvider.apply(mode, houseConsignmentIndex)
             form(mode, identifiers, houseConsignmentIndex)
               .bindFromRequest()
               .fold(

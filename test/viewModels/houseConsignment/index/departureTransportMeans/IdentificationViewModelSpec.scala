@@ -27,7 +27,7 @@ class IdentificationViewModelSpec extends SpecBase with ScalaCheckPropertyChecks
   "must create view model" - {
     "when NormalMode" in {
       val viewModelProvider = new IdentificationViewModelProvider()
-      val result            = viewModelProvider.apply(NormalMode)(messages)
+      val result            = viewModelProvider.apply(NormalMode, houseConsignmentIndex)(messages)
 
       result.title mustBe "Which identification do you want to use for the departure means of transport?"
       result.heading mustBe "Which identification do you want to use for the departure means of transport?"
@@ -37,10 +37,10 @@ class IdentificationViewModelSpec extends SpecBase with ScalaCheckPropertyChecks
     "when CheckMode" in {
       val viewModelProvider = new IdentificationViewModelProvider()
 
-      val result = viewModelProvider.apply(CheckMode)(messages)
+      val result = viewModelProvider.apply(CheckMode, houseConsignmentIndex)(messages)
 
-      result.title mustBe "Which identification do you want to use for the new departure means of transport?"
-      result.heading mustBe "Which identification do you want to use for the new departure means of transport?"
+      result.title mustBe "Which identification do you want to use for the new departure means of transport in house consignment 1?"
+      result.heading mustBe "Which identification do you want to use for the new departure means of transport in house consignment 1?"
       result.paragraph mustBe Some("This is the means of transport used from the UK office of departure to a UK port or airport.")
     }
   }

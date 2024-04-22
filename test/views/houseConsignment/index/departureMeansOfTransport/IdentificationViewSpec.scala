@@ -56,4 +56,8 @@ class IdentificationViewSpec extends EnumerableViewBehaviours[TransportMeansIden
   behave like pageWithRadioItems(args = Seq(index.display), mode = Some(mode))
 
   behave like pageWithSubmitButton("Continue")
+
+  if (viewModel.paragraph.isDefined) {
+    behave like pageWithContent("p", viewModel.paragraph.get)
+  }
 }

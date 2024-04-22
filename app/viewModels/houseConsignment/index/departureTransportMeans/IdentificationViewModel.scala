@@ -16,7 +16,7 @@
 
 package viewModels.houseConsignment.index.departureTransportMeans
 
-import models.Mode
+import models.{Index, Mode}
 import play.api.i18n.Messages
 import viewModels.ModeViewModelProvider
 
@@ -30,10 +30,10 @@ object IdentificationViewModel {
 
     override val prefix = "houseConsignment.index.departureMeansOfTransport.identification"
 
-    def apply(mode: Mode)(implicit message: Messages): IdentificationViewModel =
+    def apply(mode: Mode, houseConsignmentIndex: Index)(implicit message: Messages): IdentificationViewModel =
       new IdentificationViewModel(
-        heading(mode),
-        title(mode),
+        heading(mode, houseConsignmentIndex),
+        title(mode, houseConsignmentIndex),
         requiredError(mode),
         paragraph(mode)
       )
