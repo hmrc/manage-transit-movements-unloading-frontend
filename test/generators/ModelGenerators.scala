@@ -17,8 +17,8 @@
 package generators
 
 import models.P5.ArrivalMessageType
-import models.reference._
 import models._
+import models.reference._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
@@ -27,6 +27,12 @@ import play.api.test.Helpers.{GET, POST}
 trait ModelGenerators {
 
   self: Generators =>
+
+  implicit def arbitrarySelectableList[T <: Selectable](implicit arbitrary: Arbitrary[T]): Arbitrary[SelectableList[T]] = Arbitrary {
+    for {
+      values <- listWithMaxLength[T]()
+    } yield SelectableList(values.distinctBy(_.value))
+  }
 
   implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice] =
     Arbitrary {

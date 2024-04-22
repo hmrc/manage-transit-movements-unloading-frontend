@@ -6,3 +6,4 @@ GET        /:arrivalId/house-consignment/:houseConsignmentIndex/gross-weight    
 POST       /:arrivalId/house-consignment/:houseConsignmentIndex/gross-weight                                       controllers.houseConsignment.index.GrossWeightController.onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode = NormalMode)
 GET        /:arrivalId/house-consignment/:houseConsignmentIndex/change-gross-weight                                controllers.houseConsignment.index.GrossWeightController.onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode = CheckMode)
 POST       /:arrivalId/house-consignment/:houseConsignmentIndex/change-gross-weight                                controllers.houseConsignment.index.GrossWeightController.onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode = CheckMode)
+
