@@ -32,7 +32,7 @@ class AddNetWeightYesNoPageSpec extends PageBehaviours {
 
   "cleanup" - {
     "must remove Net weight when no selected" in {
-      forAll(arbitrary[Double]) {
+      forAll(arbitrary[BigDecimal]) {
         value =>
           val userAnswers = emptyUserAnswers
             .setValue(AddNetWeightYesNoPage(houseConsignmentIndex, itemIndex), true)
@@ -45,7 +45,7 @@ class AddNetWeightYesNoPageSpec extends PageBehaviours {
     }
 
     "must keep Net weight when yes selected" in {
-      forAll(arbitrary[Double]) {
+      forAll(arbitrary[BigDecimal]) {
         value =>
           val userAnswers = emptyUserAnswers
             .setValue(AddNetWeightYesNoPage(houseConsignmentIndex, itemIndex), true)

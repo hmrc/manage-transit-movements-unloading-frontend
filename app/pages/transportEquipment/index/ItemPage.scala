@@ -16,15 +16,22 @@
 
 package pages.transportEquipment.index
 
+import generated.GoodsReferenceType02
 import models.Index
-import pages.QuestionPage
+import pages.DiscrepancyQuestionPage
 import pages.sections.transport.equipment.ItemSection
 import play.api.libs.json.JsPath
 
-case class ItemPage(equipmentIndex: Index, itemIndex: Index) extends QuestionPage[BigInt] {
+case class ItemPage(equipmentIndex: Index, itemIndex: Index) extends DiscrepancyQuestionPage[BigInt, Seq[GoodsReferenceType02], BigInt] {
 
   override def path: JsPath = ItemSection(equipmentIndex, itemIndex).path \ toString
 
   override def toString: String = "declarationGoodsItemNumber"
 
+  override def valueInIE043(ie043: Seq[GoodsReferenceType02], sequenceNumber: Option[BigInt]): Option[BigInt] =
+    ie043
+      .find {
+        x => sequenceNumber.contains(x.sequenceNumber)
+      }
+      .map(_.declarationGoodsItemNumber)
 }

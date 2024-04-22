@@ -16,15 +16,23 @@
 
 package pages.additionalReference
 
+import generated.AdditionalReferenceType03
 import models.Index
 import models.reference.AdditionalReferenceType
-import pages.QuestionPage
+import pages.DiscrepancyQuestionPage
 import pages.sections.additionalReference.AdditionalReferenceSection
 import play.api.libs.json.JsPath
 
-case class AdditionalReferenceTypePage(referenceIndex: Index) extends QuestionPage[AdditionalReferenceType] {
+case class AdditionalReferenceTypePage(referenceIndex: Index) extends DiscrepancyQuestionPage[AdditionalReferenceType, Seq[AdditionalReferenceType03], String] {
 
   override def path: JsPath = AdditionalReferenceSection(referenceIndex).path \ toString
 
   override def toString: String = "type"
+
+  override def valueInIE043(ie043: Seq[AdditionalReferenceType03], sequenceNumber: Option[BigInt]): Option[String] =
+    ie043
+      .find {
+        x => sequenceNumber.contains(x.sequenceNumber)
+      }
+      .map(_.typeValue)
 }

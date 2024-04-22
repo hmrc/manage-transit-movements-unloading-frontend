@@ -17,8 +17,8 @@
 package services
 
 import generated.{Flag, Number0, Number1}
-import models.{Index, UnloadingType}
-import play.api.libs.json.{JsArray, JsPath, JsSuccess, Reads}
+import models.UnloadingType
+import play.api.libs.json._
 import scalaxb.XMLCalendar
 
 import java.time.format.DateTimeFormatter
@@ -29,15 +29,6 @@ import scala.language.implicitConversions
 package object submission {
 
   implicit class RichJsPath(value: JsPath) {
-
-    def readArray[T](implicit reads: Index => Reads[T]): Reads[Seq[T]] =
-      value
-        .readWithDefault(JsArray())
-        .map {
-          _.value.zipWithIndex.flatMap {
-            case (jsValue, index) => jsValue.validate[T](reads(Index(index))).asOpt
-          }.toSeq
-        }
 
     def readNullableSafe[T](implicit reads: Reads[T]): Reads[Option[T]] =
       value.readNullable[T] orElse None
@@ -71,5 +62,10 @@ package object submission {
 
   implicit def successfulReads[T](value: T): Reads[T] = Reads {
     _ => JsSuccess(value)
+  }
+
+  implicit class RichOption[A](value: Option[A]) {
+
+    def getList[B](f: A => Seq[B]): Seq[B] = value.map(f).getOrElse(Seq.empty)
   }
 }

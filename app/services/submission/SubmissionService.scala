@@ -18,13 +18,15 @@ package services.submission
 
 import connectors.ApiConnector
 import generated._
-import models.{ArrivalId, EoriNumber, UnloadingType, UserAnswers}
-import pages._
+import models.{ArrivalId, EoriNumber, Index, UnloadingType, UserAnswers}
+import pages.sections.ConsignmentSection
+import pages.sections.additionalReference.AdditionalReferencesSection
 import play.api.libs.json.{__, Reads}
 import scalaxb.DataRecord
 import scalaxb.`package`.toXML
 import services.DateTimeService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import utils.transformers.Removed
 
 import java.time.LocalDate
 import javax.inject.Inject
@@ -51,7 +53,7 @@ class SubmissionService @Inject() (
       for {
         transitOperation <- __.read[TransitOperationType15](transitOperationReads(userAnswers))
         unloadingRemark  <- __.read[UnloadingRemarkType]
-        consignment      <- __.readNullableSafe[ConsignmentType06]
+        consignment      <- ConsignmentSection.path.readNullableSafe[ConsignmentType06](consignmentReads(userAnswers.ie043Data.Consignment))
       } yield CC044CType(
         messageSequence1 = messageSequence(userAnswers.eoriNumber, officeOfDestination),
         TransitOperation = transitOperation,
@@ -79,13 +81,21 @@ class SubmissionService @Inject() (
       correlationIdentifier = None
     )
 
-  def transitOperationReads(userAnswers: UserAnswers): Reads[TransitOperationType15] =
-    TransitOperationType15(
-      MRN = userAnswers.mrn.value,
-      otherThingsToReport = None
-    )
+  def transitOperationReads(userAnswers: UserAnswers): Reads[TransitOperationType15] = {
+    import pages.OtherThingsToReportPage
+
+    OtherThingsToReportPage.path.readNullable[String].map {
+      otherThingsToReport =>
+        TransitOperationType15(
+          MRN = userAnswers.mrn.value,
+          otherThingsToReport = otherThingsToReport
+        )
+    }
+  }
 
   implicit val unloadingRemarkReads: Reads[UnloadingRemarkType] = {
+    import pages._
+
     for {
       conform             <- AddUnloadingCommentsYesNoPage.path.read[Boolean].map(!_).map(boolToFlag)
       unloadingCompletion <- UnloadingTypePage.path.read[UnloadingType].map(unloadingTypeToFlag)
@@ -106,14 +116,164 @@ class SubmissionService @Inject() (
     )
   }
 
-  // TODO
-  implicit val consignmentReads: Reads[ConsignmentType06] = ConsignmentType06(
-    grossMass = None,
-    TransportEquipment = Nil,
-    DepartureTransportMeans = Nil,
-    SupportingDocument = Nil,
-    TransportDocument = Nil,
-    AdditionalReference = Nil,
-    HouseConsignment = Nil
-  )
+  def consignmentReads(ie043: Option[ConsignmentType05]): Reads[ConsignmentType06] = {
+    import pages.grossMass.GrossMassPage
+    import pages.sections._
+
+    lazy val transportEquipment      = ie043.getList(_.TransportEquipment)
+    lazy val departureTransportMeans = ie043.getList(_.DepartureTransportMeans)
+    lazy val additionalReferences    = ie043.getList(_.AdditionalReference)
+
+    for {
+      grossMass               <- GrossMassPage.readNullable(identity).apply(ie043)
+      transportEquipment      <- TransportEquipmentListSection.readArray(consignmentTransportEquipmentReads(transportEquipment))
+      departureTransportMeans <- TransportMeansListSection.readArray(consignmentDepartureTransportMeansReads(departureTransportMeans))
+      additionalReferences    <- AdditionalReferencesSection.readArray(consignmentAdditionalReferenceReads(additionalReferences))
+    } yield ConsignmentType06(
+      grossMass = grossMass,
+      TransportEquipment = transportEquipment,
+      DepartureTransportMeans = departureTransportMeans,
+      SupportingDocument = Nil,
+      TransportDocument = Nil,
+      AdditionalReference = additionalReferences,
+      HouseConsignment = Nil
+    )
+  }
+
+  // scalastyle:off method.length
+  private def consignmentTransportEquipmentReads(
+    ie043: Seq[TransportEquipmentType05]
+  )(index: Index, sequenceNumber: BigInt): Reads[Option[TransportEquipmentType03]] = {
+    import pages.ContainerIdentificationNumberPage
+    import pages.sections.SealsSection
+    import pages.sections.transport.equipment.ItemsSection
+    import pages.transportEquipment.index._
+    import pages.transportEquipment.index.seals._
+
+    def sealReads(
+      ie043: Seq[SealType04]
+    )(sealIndex: Index, sequenceNumber: BigInt): Reads[Option[SealType02]] =
+      SealIdentificationNumberPage(index, sealIndex).readNullable(identity).apply(ie043).map {
+        _.map {
+          identifier =>
+            SealType02(
+              sequenceNumber = sequenceNumber,
+              identifier = identifier
+            )
+        }
+      }
+
+    def goodsReferenceReads(
+      ie043: Seq[GoodsReferenceType02]
+    )(goodsReferenceIndex: Index, sequenceNumber: BigInt): Reads[Option[GoodsReferenceType01]] =
+      ItemPage(index, goodsReferenceIndex).readNullable(identity).apply(ie043).map {
+        _.map {
+          declarationGoodsItemNumber =>
+            GoodsReferenceType01(
+              sequenceNumber = sequenceNumber,
+              declarationGoodsItemNumber = declarationGoodsItemNumber
+            )
+        }
+      }
+
+    val transportEquipment = ie043.find(_.sequenceNumber == sequenceNumber)
+    val seals              = transportEquipment.getList(_.Seal)
+    val goodsReferences    = transportEquipment.getList(_.GoodsReference)
+
+    for {
+      removed                       <- (__ \ Removed).readNullable[Boolean]
+      containerIdentificationNumber <- ContainerIdentificationNumberPage(index).readNullable(identity).apply(transportEquipment)
+      seals                         <- SealsSection(index).readArray[SealType02](sealReads(seals))
+      goodsReferences               <- ItemsSection(index).readArray[GoodsReferenceType01](goodsReferenceReads(goodsReferences))
+    } yield removed match {
+      case Some(true) =>
+        Some(
+          TransportEquipmentType03(
+            sequenceNumber = sequenceNumber
+          )
+        )
+      case _ =>
+        (containerIdentificationNumber, seals, goodsReferences) match {
+          case (None, Nil, Nil) =>
+            None
+          case _ =>
+            Some(
+              TransportEquipmentType03(
+                sequenceNumber = sequenceNumber,
+                containerIdentificationNumber = containerIdentificationNumber,
+                numberOfSeals = Some(seals.length),
+                Seal = seals,
+                GoodsReference = goodsReferences
+              )
+            )
+        }
+    }
+  }
+  // scalastyle:on method.length
+
+  private def consignmentDepartureTransportMeansReads(
+    ie043: Seq[DepartureTransportMeansType02]
+  )(index: Index, sequenceNumber: BigInt): Reads[Option[DepartureTransportMeansType04]] = {
+    import pages.departureMeansOfTransport._
+
+    for {
+      removed              <- (__ \ Removed).readNullable[Boolean]
+      typeOfIdentification <- TransportMeansIdentificationPage(index).readNullable(_.`type`).apply(ie043)
+      identificationNumber <- VehicleIdentificationNumberPage(index).readNullable(identity).apply(ie043)
+      nationality          <- CountryPage(index).readNullable(_.code).apply(ie043)
+    } yield removed match {
+      case Some(true) =>
+        Some(
+          DepartureTransportMeansType04(
+            sequenceNumber = sequenceNumber
+          )
+        )
+      case _ =>
+        (typeOfIdentification, identificationNumber, nationality) match {
+          case (None, None, None) =>
+            None
+          case _ =>
+            Some(
+              DepartureTransportMeansType04(
+                sequenceNumber = sequenceNumber,
+                typeOfIdentification = typeOfIdentification,
+                identificationNumber = identificationNumber,
+                nationality = nationality
+              )
+            )
+        }
+    }
+  }
+
+  private def consignmentAdditionalReferenceReads(
+    ie043: Seq[AdditionalReferenceType03]
+  )(index: Index, sequenceNumber: BigInt): Reads[Option[AdditionalReferenceType06]] = {
+    import pages.additionalReference._
+
+    for {
+      removed         <- (__ \ Removed).readNullable[Boolean]
+      typeValue       <- AdditionalReferenceTypePage(index).readNullable(_.documentType).apply(ie043)
+      referenceNumber <- AdditionalReferenceNumberPage(index).readNullable(identity).apply(ie043)
+    } yield removed match {
+      case Some(true) =>
+        Some(
+          AdditionalReferenceType06(
+            sequenceNumber = sequenceNumber
+          )
+        )
+      case _ =>
+        (typeValue, referenceNumber) match {
+          case (None, None) =>
+            None
+          case _ =>
+            Some(
+              AdditionalReferenceType06(
+                sequenceNumber = sequenceNumber,
+                typeValue = typeValue,
+                referenceNumber = referenceNumber
+              )
+            )
+        }
+    }
+  }
 }

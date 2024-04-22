@@ -16,13 +16,13 @@
 
 package models
 
-import derivable.Derivable
 import generated.CC043CType
 import models.SensitiveFormats.SensitiveWrites
 import pages._
 import play.api.libs.json._
 import queries.Gettable
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+import utils.transformers.{Removed, SequenceNumber}
 
 import java.time.Instant
 import scala.util.{Failure, Success, Try}
@@ -36,11 +36,11 @@ final case class UserAnswers(
   lastUpdated: Instant
 ) {
 
-  def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
-    Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
+  def get[A](path: JsPath)(implicit rds: Reads[A]): Option[A] =
+    Reads.optionNoError(Reads.at(path)).reads(data).getOrElse(None)
 
-  def get[A, B](derivable: Derivable[A, B])(implicit rds: Reads[A]): Option[B] =
-    get(derivable: Gettable[A]).map(derivable.derive)
+  def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
+    get(page.path)
 
   def get[A](page: QuestionPage[A])(implicit rds: Reads[A]): Option[A] =
     get(page: Gettable[A])
@@ -81,10 +81,10 @@ final case class UserAnswers(
   }
 
   def removeExceptSequenceNumber[A](section: QuestionPage[A]): Try[UserAnswers] =
-    removeExceptFields(section, "sequenceNumber")
+    removeExceptFields(section, SequenceNumber)
 
   def removeExceptSequenceNumberAndDeclarationGoodsItemNumber[A](section: QuestionPage[A]): Try[UserAnswers] =
-    removeExceptFields(section, "sequenceNumber", "declarationGoodsItemNumber")
+    removeExceptFields(section, SequenceNumber, "declarationGoodsItemNumber")
 
   private def removeExceptFields[A](section: QuestionPage[A], fields: String*): Try[UserAnswers] =
     for {
@@ -98,7 +98,7 @@ final case class UserAnswers(
         field => fields.contains(field._1)
       } match {
         case Nil    => remove(section)
-        case values => set(section.path, JsObject(values :+ ("removed" -> JsBoolean(true))))
+        case values => set(section.path, JsObject(values :+ (Removed -> JsBoolean(true))))
       }
     } yield userAnswers
 }
