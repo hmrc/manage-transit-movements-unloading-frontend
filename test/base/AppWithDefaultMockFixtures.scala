@@ -24,6 +24,7 @@ import navigation.GoodsReferenceNavigator.GoodsReferenceNavigatorProvider
 import navigation.SealNavigator.SealNavigatorProvider
 import navigation._
 import navigation.houseConsignment.index.items.{HouseConsignmentItemNavigator, PackagesNavigator, DocumentNavigator => ItemDocumentNavigator}
+import navigation.houseConsignment.index.{AdditionalReferenceNavigator => HCAdditionalReferenceNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
@@ -92,8 +93,12 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   protected val fakeDepartureTransportMeansNavigator: DepartureTransportMeansNavigator = new FakeDepartureTransportMeansNavigator(onwardRoute)
   protected val fakeAdditionalReferenceNavigator: AdditionalReferenceNavigator         = new FakeAdditionalReferenceNavigator(onwardRoute)
-  protected val fakeHouseConsignmentIteNavigator: HouseConsignmentItemNavigator        = new FakeHouseConsignmentItemNavigator(onwardRoute)
+  protected val fakeHouseConsignmentItemNavigator: HouseConsignmentItemNavigator       = new FakeHouseConsignmentItemNavigator(onwardRoute)
   protected val fakePackagesNavigator: PackagesNavigator                               = new FakePackagesNavigator(onwardRoute)
+
+  protected val fakeHCAdditionalReferenceHouseConsignmentNavigator: HCAdditionalReferenceNavigator = new FakeHCAdditionalReferenceHouseConsignmentNavigator(
+    onwardRoute
+  )
 
   def guiceApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
@@ -109,9 +114,10 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[DocumentNavigator].toInstance(fakeDocumentNavigator),
         bind[ItemDocumentNavigator].toInstance(fakeItemDocumentNavigator),
         bind[TransportEquipmentNavigator].toInstance(fakeTransportEquipmentNavigator),
-        bind[HouseConsignmentItemNavigator].toInstance(fakeHouseConsignmentIteNavigator),
+        bind[HouseConsignmentItemNavigator].toInstance(fakeHouseConsignmentItemNavigator),
         bind[DepartureTransportMeansNavigator].toInstance(fakeDepartureTransportMeansNavigator),
         bind[AdditionalReferenceNavigator].toInstance(fakeAdditionalReferenceNavigator),
-        bind[PackagesNavigator].toInstance(fakePackagesNavigator)
+        bind[PackagesNavigator].toInstance(fakePackagesNavigator),
+        bind[HCAdditionalReferenceNavigator].toInstance(fakeHCAdditionalReferenceHouseConsignmentNavigator)
       )
 }
