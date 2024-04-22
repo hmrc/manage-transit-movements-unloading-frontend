@@ -487,7 +487,7 @@ unloadingFindings.subsections.houseConsignment.parent.heading = House consignmen
 unloadingFindings.rowHeadings.houseConsignment.grossWeight = Gross weight
 unloadingFindings.rowHeadings.houseConsignment.netWeight = Net weight
 unloadingFindings.rowHeadings.houseConsignment.consignorName = Name
-unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier = Consignor EORI number or Trader Identification Number (TIN)
+unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier = EORI number or Trader Identification Number (TIN)
 unloadingFindings.rowHeadings.houseConsignment.consigneeName = Consignee name
 unloadingFindings.rowHeadings.houseConsignment.grossWeight.change.hidden = Change Gross weight
 unloadingFindings.rowHeadings.houseConsignment.netWeight.change.hidden = Change Net weight
@@ -496,7 +496,7 @@ unloadingFindings.rowHeadings.houseConsignment.consigneeAddress = Address
 
 
 
-unloadingFindings.rowHeadings.houseConsignment.consigneeIdentifier = Consignee EORI number or Trader Identification Number (TIN)
+unloadingFindings.rowHeadings.houseConsignment.consigneeIdentifier = EORI number or Trader Identification Number (TIN)
 unloadingFindings.subsections.itemSummary = Items summary
 unloadingFindings.rowHeadings.numberOfItems = Total number of items
 unloadingFindings.rowHeadings.totalGrossWeight = Total gross weight of all items
@@ -1124,5 +1124,13 @@ houseConsignment.index.departureMeansOfTransport.identificationNumber.CheckMode.
 houseConsignment.index.departureMeansOfTransport.identificationNumber.error.length = The identification must be 35 characters or less
 houseConsignment.index.departureMeansOfTransport.identificationNumber.error.invalid = The identification must only include letters a to z and numbers 0 to 9
 houseConsignment.index.departureMeansOfTransport.identificationNumber.change.hidden = the identification for the new vehicle
+
+houseConsignment.index.departureMeansOfTransport.country.NormalMode.title = What country is this vehicle registered to?
+houseConsignment.index.departureMeansOfTransport.country.CheckMode.title = What country is the new vehicle registered to in house consignment {0}?
+houseConsignment.index.departureMeansOfTransport.country.NormalMode.heading = What country is this vehicle registered to?
+houseConsignment.index.departureMeansOfTransport.country.CheckMode.heading = What country is the new vehicle registered to in house consignment {0}?
+houseConsignment.index.departureMeansOfTransport.nationality.hintText = Enter the country or code, like Austria or AT.
+houseConsignment.index.departureMeansOfTransport.country.error.required = Select the country the vehicle is registered to
+houseConsignment.index.departureMeansOfTransport.country.check.error.required = Select the country the new vehicle is registered to in house consignment {0}
 
 unloadingFindings.rowHeadings.houseConsignment.countryOfDestination = Country of destination

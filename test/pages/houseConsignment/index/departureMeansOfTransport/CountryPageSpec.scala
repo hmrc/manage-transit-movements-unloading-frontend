@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package forms
+package pages.houseConsignment.index.departureMeansOfTransport
 
-import forms.mappings.Mappings
-import models.Mode
 import models.reference.Country
-import play.api.data.Form
+import pages.behaviours.PageBehaviours
 
-import javax.inject.Inject
+class CountryPageSpec extends PageBehaviours {
 
-class DepartureMeansOfTransportCountryFormProvider @Inject() extends Mappings {
+  "CountryPage" - {
 
-  def apply(mode: Mode, countries: Seq[Country]): Form[Country] =
-    Form(
-      "value" -> text(s"departureMeansOfTransport.country.${mode.toString}.error.required")
-        .verifying("departureMeansOfTransport.country.error..required", value => countries.exists(_.code == value))
-        .transform[Country](value => countries.find(_.code == value).get, _.code)
-    )
+    beRetrievable[Country](CountryPage(houseConsignmentIndex, dtmIndex))
+
+    beSettable[Country](CountryPage(houseConsignmentIndex, dtmIndex))
+
+    beRemovable[Country](CountryPage(houseConsignmentIndex, dtmIndex))
+  }
 }

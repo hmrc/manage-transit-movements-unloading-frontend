@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.departureMeansOfTransport
+package views.houseConsignment.index.departureMeansOfTransport
 
 import forms.SelectableFormProvider
 import generators.Generators
@@ -24,19 +24,21 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.departureTransportMeans.CountryViewModel
+import viewModels.houseConsignment.index.departureMeansOfTransport.HouseConsignmentCountryViewModel
 import views.behaviours.InputSelectViewBehaviours
-import views.html.departureMeansOfTransport.CountryView
+import views.html.houseConsignment.index.departureMeansOfTransport.CountryView
 
 class CountryViewSpec extends InputSelectViewBehaviours[Country] with Generators {
-  private val mode                        = Gen.oneOf(NormalMode, CheckMode).sample.value
-  override def form: Form[Country]        = new SelectableFormProvider()(mode, prefix, SelectableList(values))
-  private val viewModel: CountryViewModel = arbitrary[CountryViewModel].sample.value
+  private val mode                                        = Gen.oneOf(NormalMode, CheckMode).sample.value
+  override def form: Form[Country]                        = new SelectableFormProvider()(mode, prefix, SelectableList(values), houseConsignmentIndex, dtmIndex)
+  private val viewModel: HouseConsignmentCountryViewModel = arbitrary[HouseConsignmentCountryViewModel].sample.value
 
   override def applyView(form: Form[Country]): HtmlFormat.Appendable =
-    injector.instanceOf[CountryView].apply(form, values, mrn, arrivalId, index, NormalMode, viewModel)(fakeRequest, messages)
+    injector
+      .instanceOf[CountryView]
+      .apply(form, values, mrn, arrivalId, houseConsignmentIndex, dtmIndex, NormalMode, viewModel)(fakeRequest, messages)
 
-  override val prefix: String = "departureMeansOfTransport.country"
+  override val prefix: String = "houseConsignment.index.departureMeansOfTransport.country"
 
   implicit override val arbitraryT: Arbitrary[Country] = arbitraryCountry
 
