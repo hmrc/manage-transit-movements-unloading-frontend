@@ -105,7 +105,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
               val result = helper.consignorIdentification.value
 
-              result.key.value mustBe "Consignor EORI number or Trader Identification Number (TIN)"
+              result.key.value mustBe "EORI number or Trader Identification Number (TIN)"
               result.value.value mustBe value
               result.actions must not be defined
           }
@@ -210,7 +210,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
               val result = helper.consigneeIdentification.value
 
-              result.key.value mustBe "Consignee EORI number or Trader Identification Number (TIN)"
+              result.key.value mustBe "EORI number or Trader Identification Number (TIN)"
               result.value.value mustBe value
               result.actions must not be defined
           }
