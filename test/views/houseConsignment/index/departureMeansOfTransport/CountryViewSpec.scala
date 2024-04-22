@@ -30,13 +30,13 @@ import views.html.houseConsignment.index.departureMeansOfTransport.CountryView
 
 class CountryViewSpec extends InputSelectViewBehaviours[Country] with Generators {
   private val mode                                        = Gen.oneOf(NormalMode, CheckMode).sample.value
-  override def form: Form[Country]                        = new SelectableFormProvider()(mode, prefix, SelectableList(values), houseConsignmentIndex, departureIndex)
+  override def form: Form[Country]                        = new SelectableFormProvider()(mode, prefix, SelectableList(values), houseConsignmentIndex, dtmIndex)
   private val viewModel: HouseConsignmentCountryViewModel = arbitrary[HouseConsignmentCountryViewModel].sample.value
 
   override def applyView(form: Form[Country]): HtmlFormat.Appendable =
     injector
       .instanceOf[CountryView]
-      .apply(form, values, mrn, arrivalId, houseConsignmentIndex, departureIndex, NormalMode, viewModel)(fakeRequest, messages)
+      .apply(form, values, mrn, arrivalId, houseConsignmentIndex, dtmIndex, NormalMode, viewModel)(fakeRequest, messages)
 
   override val prefix: String = "houseConsignment.index.departureMeansOfTransport.country"
 

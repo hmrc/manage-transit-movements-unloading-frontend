@@ -23,10 +23,10 @@ class CountryPageSpec extends PageBehaviours {
 
   "CountryPage" - {
 
-    beRetrievable[Country](CountryPage(houseConsignmentIndex, departureIndex))
+    beRetrievable[Country](CountryPage(houseConsignmentIndex, dtmIndex))
 
-    beSettable[Country](CountryPage(houseConsignmentIndex, departureIndex))
+    beSettable[Country](CountryPage(houseConsignmentIndex, dtmIndex))
 
-    beRemovable[Country](CountryPage(houseConsignmentIndex, departureIndex))
+    beRemovable[Country](CountryPage(houseConsignmentIndex, dtmIndex))
   }
 }

@@ -58,11 +58,11 @@ class CountryController @Inject() (
           ) map {
           countries =>
             val viewModel = countryViewModelProvider.apply(mode, houseConsignmentIndex)
-            def form(houseConsignmentIndex: Index, transportMeansIndex: Index) =
-              formProvider(mode, prefix, countries, houseConsignmentIndex.display, transportMeansIndex.display)
+            val form      = formProvider(mode, prefix, countries, transportMeansIndex)
+
             val preparedForm = request.userAnswers.get(CountryPage(houseConsignmentIndex, transportMeansIndex)) match {
-              case None        => form(houseConsignmentIndex, transportMeansIndex)
-              case Some(value) => form(houseConsignmentIndex, transportMeansIndex).fill(value)
+              case None        => form
+              case Some(value) => form.fill(value)
             }
             Ok(view(preparedForm, countries.values, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, transportMeansIndex, mode, viewModel))
         }
@@ -78,7 +78,7 @@ class CountryController @Inject() (
           ) flatMap {
           countries =>
             val viewModel = countryViewModelProvider.apply(mode, houseConsignmentIndex)
-            def form      = formProvider(mode, prefix, countries, houseConsignmentIndex.display)
+            val form      = formProvider(mode, prefix, countries, transportMeansIndex)
             form
               .bindFromRequest()
               .fold(

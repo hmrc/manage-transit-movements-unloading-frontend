@@ -67,7 +67,6 @@ trait SpecBase
   val incidentIndex: Index              = Index(0)
   val sealIndex: Index                  = Index(0)
   val houseConsignmentIndex: Index      = Index(0)
-  val departureIndex: Index             = Index(0)
   val itemIndex: Index                  = Index(0)
   val packageIndex: Index               = Index(0)
   val documentIndex: Index              = Index(0)

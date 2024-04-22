@@ -51,7 +51,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
   val mockReferenceDataService: ReferenceDataService = mock[ReferenceDataService]
 
   lazy val DepartureMeansOfTransportCountryRoute: String =
-    controllers.houseConsignment.index.departureMeansOfTransport.routes.CountryController.onPageLoad(arrivalId, houseConsignmentIndex, departureIndex, mode).url
+    controllers.houseConsignment.index.departureMeansOfTransport.routes.CountryController.onPageLoad(arrivalId, houseConsignmentIndex, dtmIndex, mode).url
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -85,7 +85,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
       status(result) mustEqual OK
       contentAsString(result) mustEqual
-        view(form, countryList.values, mrn, arrivalId, houseConsignmentIndex, departureIndex, mode, viewModel)(request, messages).toString
+        view(form, countryList.values, mrn, arrivalId, houseConsignmentIndex, dtmIndex, mode, viewModel)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -95,7 +95,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
         Future.successful(countries)
       )
 
-      val userAnswers = emptyUserAnswers.setValue(CountryPage(houseConsignmentIndex, departureIndex), country)
+      val userAnswers = emptyUserAnswers.setValue(CountryPage(houseConsignmentIndex, dtmIndex), country)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, DepartureMeansOfTransportCountryRoute)
@@ -108,7 +108,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, countries, mrn, arrivalId, houseConsignmentIndex, departureIndex, mode, viewModel)(request, messages).toString
+        view(filledForm, countries, mrn, arrivalId, houseConsignmentIndex, dtmIndex, mode, viewModel)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -145,7 +145,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       val view = injector.instanceOf[CountryView]
 
       contentAsString(result) mustEqual
-        view(boundForm, countries, mrn, arrivalId, houseConsignmentIndex, departureIndex, mode, viewModel)(request, messages).toString
+        view(boundForm, countries, mrn, arrivalId, houseConsignmentIndex, dtmIndex, mode, viewModel)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
