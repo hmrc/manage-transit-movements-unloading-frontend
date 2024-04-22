@@ -1116,7 +1116,6 @@ houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.err
 unloadingFindings.rowHeadings.houseConsignment.countryOfDestination = Country of destination
 
 houseConsignment.index.departureMeansOfTransport.identification.NormalMode.title = Which identification do you want to use for the departure means of transport?
-houseConsignment.index.departureMeansOfTransport.identification.CheckMode.title = Which identification do you want to use for the new departure means of transport?
 houseConsignment.index.departureMeansOfTransport.identification.CheckMode.title = Which identification do you want to use for the new departure means of transport in house consignment {0}?
 houseConsignment.index.departureMeansOfTransport.identification.NormalMode.heading = Which identification do you want to use for the departure means of transport?
 houseConsignment.index.departureMeansOfTransport.identification.CheckMode.heading = Which identification do you want to use for the new departure means of transport in house consignment {0}?
