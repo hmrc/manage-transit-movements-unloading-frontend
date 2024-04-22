@@ -78,8 +78,7 @@ class CountryController @Inject() (
           ) flatMap {
           countries =>
             val viewModel = countryViewModelProvider.apply(mode, houseConsignmentIndex)
-            def form =
-              formProvider(mode, prefix, countries, houseConsignmentIndex.display)
+            def form      = formProvider(mode, prefix, countries, houseConsignmentIndex.display)
             form
               .bindFromRequest()
               .fold(
