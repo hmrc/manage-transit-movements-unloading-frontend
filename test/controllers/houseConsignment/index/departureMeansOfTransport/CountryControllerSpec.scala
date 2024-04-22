@@ -39,7 +39,7 @@ import scala.concurrent.Future
 
 class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  def form: Form[Country]                                 = new SelectableFormProvider()(mode, prefix, SelectableList(countries))
+  def form: Form[Country]                                 = new SelectableFormProvider()(mode, prefix, SelectableList(countries), 1)
   private val country: Country                            = Country("GB", "United Kingdom")
   val countries: Seq[Country]                             = Seq(Country("GB", "United Kingdom"))
   val countryList: SelectableList[Country]                = SelectableList(countries)

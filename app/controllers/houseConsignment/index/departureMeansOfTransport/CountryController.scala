@@ -79,7 +79,7 @@ class CountryController @Inject() (
           countries =>
             val viewModel = countryViewModelProvider.apply(mode, houseConsignmentIndex)
             def form =
-              formProvider(mode, prefix, countries, houseConsignmentIndex.display, transportMeansIndex.display)
+              formProvider(mode, prefix, countries, houseConsignmentIndex.display)
             form
               .bindFromRequest()
               .fold(
