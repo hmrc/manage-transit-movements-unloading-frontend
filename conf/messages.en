@@ -1113,4 +1113,9 @@ houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.tit
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.error.required = Select yes if you want to add an additional reference number
 
+houseConsignment.index.additionalReference.removeAdditionalReferenceYesNo.title = Are you sure you want to remove this additional reference?
+houseConsignment.index.additionalReference.removeAdditionalReferenceYesNo.heading = Are you sure you want to remove this additional reference?
+houseConsignment.index.additionalReference.removeAdditionalReferenceYesNo.error.required = Select yes if you want to remove this additional reference
+
+
 unloadingFindings.rowHeadings.houseConsignment.countryOfDestination = Country of destination
