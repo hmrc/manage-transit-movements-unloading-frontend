@@ -472,7 +472,7 @@ trait ViewModelGenerators {
     } yield AddAnotherAdditionalReferenceViewModel(listItems, onSubmitCall, nextIndex)
   }
 
-  implicit lazy val addAnotherAdditionalReferenceViewModelViewModelHouseConsignmentLevel
+  implicit lazy val addAnotherAdditionalReferenceViewModelViewModelHouseConsignmentItemLevel
     : Arbitrary[viewModels.houseConsignment.index.items.additionalReference.AddAnotherAdditionalReferenceViewModel] = Arbitrary {
     for {
       listItems    <- arbitrary[Seq[ListItem]]
@@ -484,6 +484,15 @@ trait ViewModelGenerators {
                                                                                                                Index(0),
                                                                                                                Index(0)
     )
+  }
+
+  implicit lazy val addAnotherAdditionalReferenceViewModelViewModelHouseConsignmentLevel
+    : Arbitrary[viewModels.houseConsignment.index.additionalReference.AddAnotherAdditionalReferenceViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+      nextIndex    <- arbitrary[Index]
+    } yield viewModels.houseConsignment.index.additionalReference.AddAnotherAdditionalReferenceViewModel(listItems, onSubmitCall, nextIndex, Index(0))
   }
 
   implicit lazy val arbitraryAddAnotherPackageViewModel: Arbitrary[AddAnotherPackageViewModel] = Arbitrary {
