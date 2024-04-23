@@ -1113,6 +1113,18 @@ houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.tit
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.error.required = Select yes if you want to add an additional reference number
 
+houseConsignment.index.additionalReference.addAnotherAdditionalReference.empty.title = You have added 0 additional references for house consignment {1}
+houseConsignment.index.additionalReference.addAnotherAdditionalReference.singular.title = You have added 1 additional reference for house consignment {1}
+houseConsignment.index.additionalReference.addAnotherAdditionalReference.plural.title = You have added {0} additional references for house consignment {1}
+houseConsignment.index.additionalReference.addAnotherAdditionalReference.empty.heading = You have added 0 additional references for house consignment {1}
+houseConsignment.index.additionalReference.addAnotherAdditionalReference.singular.heading = You have added 1 additional reference for house consignment {1}
+houseConsignment.index.additionalReference.addAnotherAdditionalReference.plural.heading = You have added {0} additional references for house consignment {1}
+houseConsignment.index.additionalReference.addAnotherAdditionalReference.empty.label = Do you want to add a additional reference for house consignment {1}?
+houseConsignment.index.additionalReference.addAnotherAdditionalReference.label = Do you want to add another additional reference for house consignment {1}?
+houseConsignment.index.additionalReference.addAnotherAdditionalReference.maxLimit.label = You cannot add any more additional references for house consignment {1}. To add another, you need to remove one first.
+houseConsignment.index.additionalReference.addAnotherAdditionalReference.error.required = Select yes if you want to add another additional reference for house consignment {0}
+houseConsignment.index.additionalReference.addAnotherAdditionalReference.paragraph = This can be any other reference you want to declare, such as a certificate number, import licence or accompanying document.
+
 houseConsignment.index.departureMeansOfTransport.country.NormalMode.title = What country is this vehicle registered to?
 houseConsignment.index.departureMeansOfTransport.country.CheckMode.title = What country is the new vehicle registered to in house consignment {0}?
 houseConsignment.index.departureMeansOfTransport.country.NormalMode.heading = What country is this vehicle registered to?
