@@ -1142,9 +1142,10 @@ houseConsignment.index.documents.referenceNumber.CheckMode.heading = What is the
 houseConsignment.index.documents.referenceNumber.hint = This can be up to 70 characters long and include both letters and numbers.
 houseConsignment.index.documents.referenceNumber.NormalMode.error.required = Enter the document’s reference number
 houseConsignment.index.documents.referenceNumber.CheckMode.error.required = Enter the new document’s reference number in house consignment {0}
-houseConsignment.index.documents.referenceNumber.CheckMode.error.invalid = The reference number must only include letters a to z and numbers 0 to 9
-houseConsignment.index.documents.referenceNumber.CheckMode.error.length = The reference number must be 70 characters or less
-houseConsignment.index.documents.referenceNumber.CheckMode.error.duplicate = The reference number must be unique
+houseConsignment.index.documents.referenceNumber.error.invalid = The reference number must only include letters a to z and numbers 0 to 9
+houseConsignment.index.documents.referenceNumber.error.length = The reference number must be 70 characters or less
+houseConsignment.index.documents.referenceNumber.error.duplicate = The reference number must be unique
+
 houseConsignment.index.departureMeansOfTransport.identification.NormalMode.title = Which identification do you want to use for the departure means of transport?
 houseConsignment.index.departureMeansOfTransport.identification.CheckMode.title = Which identification do you want to use for the new departure means of transport in house consignment {0}?
 houseConsignment.index.departureMeansOfTransport.identification.NormalMode.heading = Which identification do you want to use for the departure means of transport?

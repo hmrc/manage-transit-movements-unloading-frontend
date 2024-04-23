@@ -31,9 +31,9 @@ class ReferenceNumberFormProvider @Inject() extends Mappings {
       "value" -> adaptedText(s"$requiredError", args = Seq(houseConsignmentIndex.display))(_.removeSpaces())
         .verifying(
           forms.StopOnFirstFail[String](
-            regexp(alphaNumericWithSpacesRegex, "document.referenceNumber.error.invalidCharacters"),
-            maxLength(maxDocumentRefNumberLength, "document.referenceNumber.error.length"),
-            valueIsNotInList(otherDocumentReferenceNumbers, "houseConsignment.index.documents.referenceNumber.CheckMode.error.duplicate")
+            regexp(alphaNumericWithSpacesRegex, "houseConsignment.index.documents.referenceNumber.error.invalidCharacters"),
+            maxLength(maxDocumentRefNumberLength, "houseConsignment.index.documents.referenceNumber.error.length"),
+            valueIsNotInList(otherDocumentReferenceNumbers, "houseConsignment.index.documents.referenceNumber.error.duplicate")
           )
         )
     )

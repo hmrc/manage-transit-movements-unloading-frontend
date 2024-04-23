@@ -23,11 +23,11 @@ import play.api.data.FormError
 
 class ReferenceNumberFormProviderSpec extends StringFieldBehaviours {
 
-  private val prefix               = "document.referenceNumber"
+  private val prefix               = "houseConsignment.index.documents.referenceNumber"
   private val invalidCharactersKey = s"$prefix.error.invalidCharacters"
   private val requiredKey          = s"$prefix.error.required"
   private val maxLengthKey         = s"$prefix.error.length"
-  val duplicateKey                 = s"houseConsignment.index.documents.referenceNumber.CheckMode.error.duplicate"
+  private val duplicateKey         = s"$prefix.error.duplicate"
   private val maxLength            = 70
 
   val form = new ReferenceNumberFormProvider()(requiredKey, hcIndex, Seq.empty)
