@@ -70,7 +70,8 @@ object AddAnotherAdditionalReferenceViewModel {
               ListItem(
                 name = additionalReference.forAddAnotherDisplay,
                 changeUrl = None,
-                removeUrl = None // TODO: Update once remove controller done
+                removeUrl =
+                  Some(routes.RemoveAdditionalReferenceYesNoController.onPageLoad(arrivalId, mode, houseConsignmentIndex, additionalReferenceIndex).url)
               )
           }
       }
