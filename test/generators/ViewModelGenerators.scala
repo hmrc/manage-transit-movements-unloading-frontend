@@ -29,6 +29,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import viewModels.additionalReference.index.{AddAnotherAdditionalReferenceViewModel, AdditionalReferenceTypeViewModel}
 import viewModels.departureTransportMeans._
 import viewModels.documents.{AddAnotherDocumentViewModel, AdditionalInformationViewModel, DocumentReferenceNumberViewModel, TypeViewModel}
+import viewModels.houseConsignment.index.departureMeansOfTransport.HouseConsignmentCountryViewModel
 import viewModels.houseConsignment.index.items.additionalReference.{
   AdditionalReferenceNumberViewModel,
   AdditionalReferenceTypeViewModel => AdditionalReferenceTypeItemViewModel
@@ -253,6 +254,14 @@ trait ViewModelGenerators {
       title         <- nonEmptyString
       requiredError <- nonEmptyString
     } yield CountryViewModel(heading, title, requiredError)
+  }
+
+  implicit lazy val arbitraryHouseConsignmentCountryViewModel: Arbitrary[HouseConsignmentCountryViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+    } yield HouseConsignmentCountryViewModel(heading, title, requiredError)
   }
 
   implicit lazy val arbitraryIdentificationViewModel: Arbitrary[IdentificationViewModel] = Arbitrary {
@@ -492,6 +501,16 @@ trait ViewModelGenerators {
       requiredError <- nonEmptyString
       arrivalId     <- nonEmptyString
     } yield HCAdditionalReferenceTypeViewModel(heading, title, requiredError, ArrivalId(arrivalId), NormalMode, Index(0), Index(0))
+  }
+
+  implicit lazy val arbitraryHouseConsignmentIdentificationViewModel
+    : Arbitrary[viewModels.houseConsignment.index.departureTransportMeans.IdentificationViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+      paragraph     <- nonEmptyString
+    } yield viewModels.houseConsignment.index.departureTransportMeans.IdentificationViewModel(heading, title, requiredError, Some(paragraph))
   }
 
 }
