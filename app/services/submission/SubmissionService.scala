@@ -19,7 +19,6 @@ package services.submission
 import connectors.ApiConnector
 import generated._
 import models.{ArrivalId, DocType, EoriNumber, Index, UnloadingType, UserAnswers}
-import pages.sections.PackagingListSection
 import play.api.libs.json.{__, Reads}
 import scalaxb.DataRecord
 import scalaxb.`package`.toXML
@@ -579,6 +578,7 @@ class SubmissionService @Inject() (
     houseConsignmentIndex: Index
   )(itemIndex: Index, sequenceNumber: BigInt): Reads[Option[ConsignmentItemType05]] = {
     import pages.houseConsignment.index.items._
+    import pages.sections.PackagingListSection
     import pages.sections.houseConsignment.index.items.additionalReference._
     import pages.sections.houseConsignment.index.items.documents.DocumentsSection
 
