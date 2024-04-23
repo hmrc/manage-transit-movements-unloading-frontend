@@ -1,6 +1,8 @@
 ->         /                                            app.houseConsignment.index.items.Routes
+->         /                                            app.houseConsignment.index.departureMeansOfTransport.Routes
 ->         /                                            app.houseConsignment.index.additionalReference.Routes
 ->         /                                            app.houseConsignment.index.departureMeansOfTransport.Routes
+->         /                                            app.houseConsignment.index.documents.Routes
 
 GET        /:arrivalId/house-consignment/:houseConsignmentIndex/gross-weight                                       controllers.houseConsignment.index.GrossWeightController.onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode = NormalMode)
 POST       /:arrivalId/house-consignment/:houseConsignmentIndex/gross-weight                                       controllers.houseConsignment.index.GrossWeightController.onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode = NormalMode)
