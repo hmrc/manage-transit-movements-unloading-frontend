@@ -66,7 +66,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, hcIndex)
-          helper.consignorName mustBe None
+          helper.consignorName() mustBe None
         }
       }
 
@@ -77,7 +77,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               val answers = emptyUserAnswers.setValue(page, value)
 
               val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
-              val result = helper.consignorName.value
+              val result = helper.consignorName().value
 
               result.key.value mustBe "Name"
               result.value.value mustBe value
@@ -92,7 +92,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, hcIndex)
-          helper.consignorIdentification mustBe None
+          helper.consignorIdentification() mustBe None
         }
       }
 
@@ -103,7 +103,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               val answers = emptyUserAnswers.setValue(page, value)
 
               val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
-              val result = helper.consignorIdentification.value
+              val result = helper.consignorIdentification().value
 
               result.key.value mustBe "EORI number or Trader Identification Number (TIN)"
               result.value.value mustBe value
@@ -131,7 +131,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
               val result = helper.consigneeName.value
 
-              result.key.value mustBe "Consignee name"
+              result.key.value mustBe "Name"
               result.value.value mustBe value
               result.actions must not be defined
           }

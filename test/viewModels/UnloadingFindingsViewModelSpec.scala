@@ -532,14 +532,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         section.children.length mustBe 1
 
         section.children.head.sectionTitle.value mustBe "House consignment 1"
-        section.children.head.rows.size mustBe 0
+        section.children.head.rows.size mustBe 2
         section.children.head.viewLinks.size mustBe 1
-
-        section.children.head.children.head.sectionTitle.value mustBe "Consignor"
-        section.children.head.children.head.rows.size mustBe 2
-
-        section.children.head.children(1).sectionTitle.value mustBe "Consignee"
-        section.children.head.children(1).rows.size mustBe 2
       }
       "when there is multiple" in {
         val userAnswers = emptyUserAnswers
@@ -572,14 +566,9 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         section.children.length mustBe 2
 
         section.children.head.sectionTitle.value mustBe "House consignment 1"
-        section.children.head.rows.size mustBe 0
+        section.children.head.rows.size mustBe 2
         section.children.head.viewLinks.size mustBe 1
 
-        section.children.head.children.head.sectionTitle.value mustBe "Consignor"
-        section.children.head.children.head.rows.size mustBe 2
-
-        section.children.head.children(1).sectionTitle.value mustBe "Consignee"
-        section.children.head.children(1).rows.size mustBe 2
       }
     }
 
