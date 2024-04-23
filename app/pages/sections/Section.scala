@@ -27,8 +27,7 @@ import scala.annotation.tailrec
 trait Section[T <: JsValue] extends QuestionPage[T] {
 
   def readArray[A](implicit reads: (Index, BigInt) => Reads[Option[A]]): Reads[Seq[A]] =
-    path
-      .take(1)
+    path.last
       .readWithDefault(JsArray())
       .map {
         jsArray =>

@@ -25,7 +25,6 @@ import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.transportEquipment.index.ItemPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{__, Reads}
@@ -313,6 +312,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       import pages.ContainerIdentificationNumberPage
       import pages.sections.transport.equipment.ItemSection
       import pages.sections.{SealSection, TransportEquipmentSection}
+      import pages.transportEquipment.index.ItemPage
       import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 
       "when there are discrepancies" in {
@@ -1137,6 +1137,429 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               .setValue(AdditionalReferenceNumberPage(Index(1)), "originalReferenceNumber2")
 
             val reads  = service.consignmentReads(Some(ie043))
+            val result = getResult(userAnswers, reads)
+
+            result mustBe None
+        }
+      }
+    }
+  }
+
+  "consignmentItemReads" - {
+    import pages.houseConsignment.index.items.DeclarationGoodsItemNumberPage
+    import pages.sections.ItemSection
+
+    val sequenceNumber = 1
+
+    def getResult(userAnswers: UserAnswers, reads: Reads[Option[ConsignmentItemType05]]): Option[ConsignmentItemType05] =
+      (userAnswers.data \ "Consignment" \ "HouseConsignment" \ 0 \ "ConsignmentItem" \ 0).get.as[Option[ConsignmentItemType05]](reads)
+
+    "must create supporting documents" - {
+      import pages.houseConsignment.index.items.document._
+      import pages.sections.houseConsignment.index.items.documents._
+
+      "when there are discrepancies" in {
+        forAll(arbitrary[ConsignmentItemType04]) {
+          consignmentItem =>
+            val supportingDocuments = Seq(
+              SupportingDocumentType02(
+                sequenceNumber = 1,
+                typeValue = "originalTypeValue1",
+                referenceNumber = "originalReferenceNumber1",
+                complementOfInformation = Some("originalComplementOfInformation1")
+              ),
+              SupportingDocumentType02(
+                sequenceNumber = 2,
+                typeValue = "originalTypeValue2",
+                referenceNumber = "originalReferenceNumber2",
+                complementOfInformation = Some("originalComplementOfInformation2")
+              ),
+              SupportingDocumentType02(
+                sequenceNumber = 3,
+                typeValue = "originalTypeValue3",
+                referenceNumber = "originalReferenceNumber3",
+                complementOfInformation = Some("originalComplementOfInformation3")
+              ),
+              SupportingDocumentType02(
+                sequenceNumber = 4,
+                typeValue = "originalTypeValue4",
+                referenceNumber = "originalReferenceNumber4",
+                complementOfInformation = Some("originalComplementOfInformation4")
+              )
+            )
+            val ie043 = consignmentItem.copy(
+              goodsItemNumber = sequenceNumber,
+              SupportingDocument = supportingDocuments
+            )
+
+            val userAnswers = emptyUserAnswers
+              .setNotRemoved(ItemSection(Index(0), Index(0)))
+              .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
+              // Supporting document 1 - Changed type value
+              .setSequenceNumber(DocumentSection(Index(0), Index(0), Index(0)), 1)
+              .setNotRemoved(DocumentSection(Index(0), Index(0), Index(0)))
+              .setValue(TypePage(Index(0), Index(0), Index(0)), DocumentType(DocType.Support, "newTypeValue1", "newTypeValue1Description"))
+              .setValue(DocumentReferenceNumberPage(Index(0), Index(0), Index(0)), "originalReferenceNumber1")
+              .setValue(AdditionalInformationPage(Index(0), Index(0), Index(0)), "originalComplementOfInformation1")
+              // Supporting document 2 - Changed reference number
+              .setSequenceNumber(DocumentSection(Index(0), Index(0), Index(1)), 2)
+              .setNotRemoved(DocumentSection(Index(0), Index(0), Index(1)))
+              .setValue(TypePage(Index(0), Index(0), Index(1)), DocumentType(DocType.Support, "originalTypeValue2", "originalTypeValue2Description"))
+              .setValue(DocumentReferenceNumberPage(Index(0), Index(0), Index(1)), "newReferenceNumber2")
+              .setValue(AdditionalInformationPage(Index(0), Index(0), Index(1)), "newComplementOfInformation2")
+              // Supporting document 3 - Removed
+              .setSequenceNumber(DocumentSection(Index(0), Index(0), Index(2)), 3)
+              .setRemoved(DocumentSection(Index(0), Index(0), Index(2)))
+              .setValue(DocumentSection(Index(0), Index(0), Index(2)), __ \ "type" \ "type", DocType.Support.display)
+              // Supporting document 4 - Unchanged
+              .setSequenceNumber(DocumentSection(Index(0), Index(0), Index(3)), 4)
+              .setNotRemoved(DocumentSection(Index(0), Index(0), Index(3)))
+              .setValue(TypePage(Index(0), Index(0), Index(3)), DocumentType(DocType.Support, "originalTypeValue4", "originalTypeValue4Description"))
+              .setValue(DocumentReferenceNumberPage(Index(0), Index(0), Index(3)), "originalReferenceNumber4")
+              .setValue(AdditionalInformationPage(Index(0), Index(0), Index(3)), "originalComplementOfInformation4")
+              // Supporting document 5 - Added
+              .setValue(TypePage(Index(0), Index(0), Index(4)), DocumentType(DocType.Support, "newTypeValue5", "newTypeValue5Description"))
+              .setValue(DocumentReferenceNumberPage(Index(0), Index(0), Index(4)), "newReferenceNumber5")
+              .setValue(AdditionalInformationPage(Index(0), Index(0), Index(4)), "newComplementOfInformation5")
+
+            val reads  = service.consignmentItemReads(Seq(ie043))(Index(0))(Index(0), sequenceNumber)
+            val result = getResult(userAnswers, reads).value.SupportingDocument
+
+            result mustBe Seq(
+              SupportingDocumentType03(
+                sequenceNumber = 1,
+                typeValue = Some("newTypeValue1"),
+                referenceNumber = None,
+                complementOfInformation = None
+              ),
+              SupportingDocumentType03(
+                sequenceNumber = 2,
+                typeValue = None,
+                referenceNumber = Some("newReferenceNumber2"),
+                complementOfInformation = Some("newComplementOfInformation2")
+              ),
+              SupportingDocumentType03(
+                sequenceNumber = 3,
+                typeValue = None,
+                referenceNumber = None,
+                complementOfInformation = None
+              ),
+              SupportingDocumentType03(
+                sequenceNumber = 5,
+                typeValue = Some("newTypeValue5"),
+                referenceNumber = Some("newReferenceNumber5"),
+                complementOfInformation = Some("newComplementOfInformation5")
+              )
+            )
+        }
+      }
+
+      "when there are no discrepancies" in {
+        forAll(arbitrary[ConsignmentItemType04]) {
+          consignmentItem =>
+            val supportingDocuments = Seq(
+              SupportingDocumentType02(
+                sequenceNumber = 1,
+                typeValue = "originalTypeValue1",
+                referenceNumber = "originalReferenceNumber1",
+                complementOfInformation = Some("originalComplementOfInformation1")
+              ),
+              SupportingDocumentType02(
+                sequenceNumber = 2,
+                typeValue = "originalTypeValue2",
+                referenceNumber = "originalReferenceNumber2",
+                complementOfInformation = Some("originalComplementOfInformation2")
+              )
+            )
+            val ie043 = consignmentItem.copy(
+              goodsItemNumber = sequenceNumber,
+              SupportingDocument = supportingDocuments
+            )
+
+            val userAnswers = emptyUserAnswers
+              .setNotRemoved(ItemSection(Index(0), Index(0)))
+              .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
+              // Supporting document 1 - Unchanged
+              .setSequenceNumber(DocumentSection(Index(0), Index(0), Index(0)), 1)
+              .setNotRemoved(DocumentSection(Index(0), Index(0), Index(0)))
+              .setValue(TypePage(Index(0), Index(0), Index(0)), DocumentType(DocType.Support, "originalTypeValue1", "originalTypeValue1Description"))
+              .setValue(DocumentReferenceNumberPage(Index(0), Index(0), Index(0)), "originalReferenceNumber1")
+              .setValue(AdditionalInformationPage(Index(0), Index(0), Index(0)), "originalComplementOfInformation1")
+              // Supporting document 2 - Unchanged
+              .setSequenceNumber(DocumentSection(Index(0), Index(0), Index(1)), 2)
+              .setNotRemoved(DocumentSection(Index(0), Index(0), Index(1)))
+              .setValue(TypePage(Index(0), Index(0), Index(1)), DocumentType(DocType.Support, "originalTypeValue2", "originalTypeValue2Description"))
+              .setValue(DocumentReferenceNumberPage(Index(0), Index(0), Index(1)), "originalReferenceNumber2")
+              .setValue(AdditionalInformationPage(Index(0), Index(0), Index(1)), "originalComplementOfInformation2")
+
+            val reads  = service.consignmentItemReads(Seq(ie043))(Index(0))(Index(0), sequenceNumber)
+            val result = getResult(userAnswers, reads)
+
+            result mustBe None
+        }
+      }
+    }
+
+    "must create transport documents" - {
+      import pages.houseConsignment.index.items.document._
+      import pages.sections.houseConsignment.index.items.documents._
+
+      "when there are discrepancies" in {
+        forAll(arbitrary[ConsignmentItemType04]) {
+          consignmentItem =>
+            val transportDocuments = Seq(
+              TransportDocumentType02(
+                sequenceNumber = 1,
+                typeValue = "originalTypeValue1",
+                referenceNumber = "originalReferenceNumber1"
+              ),
+              TransportDocumentType02(
+                sequenceNumber = 2,
+                typeValue = "originalTypeValue2",
+                referenceNumber = "originalReferenceNumber2"
+              ),
+              TransportDocumentType02(
+                sequenceNumber = 3,
+                typeValue = "originalTypeValue3",
+                referenceNumber = "originalReferenceNumber3"
+              ),
+              TransportDocumentType02(
+                sequenceNumber = 4,
+                typeValue = "originalTypeValue4",
+                referenceNumber = "originalReferenceNumber4"
+              )
+            )
+            val ie043 = consignmentItem.copy(
+              goodsItemNumber = sequenceNumber,
+              TransportDocument = transportDocuments
+            )
+
+            val userAnswers = emptyUserAnswers
+              .setNotRemoved(ItemSection(Index(0), Index(0)))
+              .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
+              // Transport document 1 - Changed type value
+              .setSequenceNumber(DocumentSection(Index(0), Index(0), Index(0)), 1)
+              .setNotRemoved(DocumentSection(Index(0), Index(0), Index(0)))
+              .setValue(TypePage(Index(0), Index(0), Index(0)), DocumentType(DocType.Transport, "newTypeValue1", "newTypeValue1Description"))
+              .setValue(DocumentReferenceNumberPage(Index(0), Index(0), Index(0)), "originalReferenceNumber1")
+              // Transport document 2 - Changed reference number
+              .setSequenceNumber(DocumentSection(Index(0), Index(0), Index(1)), 2)
+              .setNotRemoved(DocumentSection(Index(0), Index(0), Index(1)))
+              .setValue(TypePage(Index(0), Index(0), Index(1)), DocumentType(DocType.Transport, "originalTypeValue2", "originalTypeValue2Description"))
+              .setValue(DocumentReferenceNumberPage(Index(0), Index(0), Index(1)), "newReferenceNumber2")
+              // Transport document 3 - Removed
+              .setSequenceNumber(DocumentSection(Index(0), Index(0), Index(2)), 3)
+              .setRemoved(DocumentSection(Index(0), Index(0), Index(2)))
+              .setValue(DocumentSection(Index(0), Index(0), Index(2)), __ \ "type" \ "type", DocType.Transport.display)
+              // Transport document 4 - Unchanged
+              .setSequenceNumber(DocumentSection(Index(0), Index(0), Index(3)), 4)
+              .setNotRemoved(DocumentSection(Index(0), Index(0), Index(3)))
+              .setValue(TypePage(Index(0), Index(0), Index(3)), DocumentType(DocType.Transport, "originalTypeValue4", "originalTypeValue4Description"))
+              .setValue(DocumentReferenceNumberPage(Index(0), Index(0), Index(3)), "originalReferenceNumber4")
+              // Transport document 5 - Added
+              .setValue(TypePage(Index(0), Index(0), Index(4)), DocumentType(DocType.Transport, "newTypeValue5", "newTypeValue5Description"))
+              .setValue(DocumentReferenceNumberPage(Index(0), Index(0), Index(4)), "newReferenceNumber5")
+
+            val reads  = service.consignmentItemReads(Seq(ie043))(Index(0))(Index(0), sequenceNumber)
+            val result = getResult(userAnswers, reads).value.TransportDocument
+
+            result mustBe Seq(
+              TransportDocumentType03(
+                sequenceNumber = 1,
+                typeValue = Some("newTypeValue1"),
+                referenceNumber = None
+              ),
+              TransportDocumentType03(
+                sequenceNumber = 2,
+                typeValue = None,
+                referenceNumber = Some("newReferenceNumber2")
+              ),
+              TransportDocumentType03(
+                sequenceNumber = 3,
+                typeValue = None,
+                referenceNumber = None
+              ),
+              TransportDocumentType03(
+                sequenceNumber = 5,
+                typeValue = Some("newTypeValue5"),
+                referenceNumber = Some("newReferenceNumber5")
+              )
+            )
+        }
+      }
+
+      "when there are no discrepancies" in {
+        forAll(arbitrary[ConsignmentItemType04]) {
+          consignmentItem =>
+            val transportDocuments = Seq(
+              TransportDocumentType02(
+                sequenceNumber = 1,
+                typeValue = "originalTypeValue1",
+                referenceNumber = "originalReferenceNumber1"
+              ),
+              TransportDocumentType02(
+                sequenceNumber = 2,
+                typeValue = "originalTypeValue2",
+                referenceNumber = "originalReferenceNumber2"
+              )
+            )
+            val ie043 = consignmentItem.copy(
+              goodsItemNumber = sequenceNumber,
+              TransportDocument = transportDocuments
+            )
+
+            val userAnswers = emptyUserAnswers
+              .setNotRemoved(ItemSection(Index(0), Index(0)))
+              .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
+              // Transport document 1 - Unchanged
+              .setSequenceNumber(DocumentSection(Index(0), Index(0), Index(0)), 1)
+              .setNotRemoved(DocumentSection(Index(0), Index(0), Index(0)))
+              .setValue(TypePage(Index(0), Index(0), Index(0)), DocumentType(DocType.Transport, "originalTypeValue1", "originalTypeValue1Description"))
+              .setValue(DocumentReferenceNumberPage(Index(0), Index(0), Index(0)), "originalReferenceNumber1")
+              // Transport document 2 - Unchanged
+              .setSequenceNumber(DocumentSection(Index(0), Index(0), Index(1)), 2)
+              .setNotRemoved(DocumentSection(Index(0), Index(0), Index(1)))
+              .setValue(TypePage(Index(0), Index(0), Index(1)), DocumentType(DocType.Transport, "originalTypeValue2", "originalTypeValue2Description"))
+              .setValue(DocumentReferenceNumberPage(Index(0), Index(0), Index(1)), "originalReferenceNumber2")
+
+            val reads  = service.consignmentItemReads(Seq(ie043))(Index(0))(Index(0), sequenceNumber)
+            val result = getResult(userAnswers, reads)
+
+            result mustBe None
+        }
+      }
+    }
+
+    "must create additional references" - {
+      import pages.houseConsignment.index.items.additionalReference._
+      import pages.sections.houseConsignment.index.items.additionalReference.AdditionalReferenceSection
+
+      "when there are discrepancies" in {
+        forAll(arbitrary[ConsignmentItemType04]) {
+          consignmentItem =>
+            val additionalReferences = Seq(
+              AdditionalReferenceType02(
+                sequenceNumber = 1,
+                typeValue = "originalTypeValue1",
+                referenceNumber = Some("originalReferenceNumber1")
+              ),
+              AdditionalReferenceType02(
+                sequenceNumber = 2,
+                typeValue = "originalTypeValue2",
+                referenceNumber = Some("originalReferenceNumber2")
+              ),
+              AdditionalReferenceType02(
+                sequenceNumber = 3,
+                typeValue = "originalTypeValue3",
+                referenceNumber = Some("originalReferenceNumber3")
+              ),
+              AdditionalReferenceType02(
+                sequenceNumber = 4,
+                typeValue = "originalTypeValue4",
+                referenceNumber = Some("originalReferenceNumber4")
+              )
+            )
+            val ie043 = consignmentItem.copy(
+              goodsItemNumber = sequenceNumber,
+              AdditionalReference = additionalReferences
+            )
+
+            val userAnswers = emptyUserAnswers
+              .setNotRemoved(ItemSection(Index(0), Index(0)))
+              .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
+              // Additional reference 1 - Changed type value
+              .setSequenceNumber(AdditionalReferenceSection(Index(0), Index(0), Index(0)), 1)
+              .setNotRemoved(AdditionalReferenceSection(Index(0), Index(0), Index(0)))
+              .setValue(AdditionalReferenceTypePage(Index(0), Index(0), Index(0)), AdditionalReferenceType("newTypeValue1", "newTypeValue1Description"))
+              .setValue(AdditionalReferenceNumberPage(Index(0), Index(0), Index(0)), "originalReferenceNumber1")
+              // Additional reference 2 - Changed reference number
+              .setSequenceNumber(AdditionalReferenceSection(Index(0), Index(0), Index(1)), 2)
+              .setNotRemoved(AdditionalReferenceSection(Index(0), Index(0), Index(1)))
+              .setValue(AdditionalReferenceTypePage(Index(0), Index(0), Index(1)),
+                        AdditionalReferenceType("originalTypeValue2", "originalTypeValue2Description")
+              )
+              .setValue(AdditionalReferenceNumberPage(Index(0), Index(0), Index(1)), "newReferenceNumber2")
+              // Additional reference 3 - Removed
+              .setSequenceNumber(AdditionalReferenceSection(Index(0), Index(0), Index(2)), 3)
+              .setRemoved(AdditionalReferenceSection(Index(0), Index(0), Index(2)))
+              // Additional reference 4 - Unchanged
+              .setSequenceNumber(AdditionalReferenceSection(Index(0), Index(0), Index(3)), 4)
+              .setNotRemoved(AdditionalReferenceSection(Index(0), Index(0), Index(3)))
+              .setValue(AdditionalReferenceTypePage(Index(0), Index(0), Index(3)),
+                        AdditionalReferenceType("originalTypeValue4", "originalTypeValue4Description")
+              )
+              .setValue(AdditionalReferenceNumberPage(Index(0), Index(0), Index(3)), "originalReferenceNumber4")
+              // Additional reference 5 - Added
+              .setValue(AdditionalReferenceTypePage(Index(0), Index(0), Index(4)), AdditionalReferenceType("newTypeValue5", "newTypeValue5Description"))
+              .setValue(AdditionalReferenceNumberPage(Index(0), Index(0), Index(4)), "newReferenceNumber5")
+
+            val reads  = service.consignmentItemReads(Seq(ie043))(Index(0))(Index(0), sequenceNumber)
+            val result = getResult(userAnswers, reads).value.AdditionalReference
+
+            result mustBe Seq(
+              AdditionalReferenceType06(
+                sequenceNumber = 1,
+                typeValue = Some("newTypeValue1"),
+                referenceNumber = None
+              ),
+              AdditionalReferenceType06(
+                sequenceNumber = 2,
+                typeValue = None,
+                referenceNumber = Some("newReferenceNumber2")
+              ),
+              AdditionalReferenceType06(
+                sequenceNumber = 3,
+                typeValue = None,
+                referenceNumber = None
+              ),
+              AdditionalReferenceType06(
+                sequenceNumber = 5,
+                typeValue = Some("newTypeValue5"),
+                referenceNumber = Some("newReferenceNumber5")
+              )
+            )
+        }
+      }
+
+      "when there are no discrepancies" in {
+        forAll(arbitrary[ConsignmentItemType04]) {
+          consignmentItem =>
+            val additionalReferences = Seq(
+              AdditionalReferenceType02(
+                sequenceNumber = 1,
+                typeValue = "originalTypeValue1",
+                referenceNumber = Some("originalReferenceNumber1")
+              ),
+              AdditionalReferenceType02(
+                sequenceNumber = 2,
+                typeValue = "originalTypeValue2",
+                referenceNumber = Some("originalReferenceNumber2")
+              )
+            )
+            val ie043 = consignmentItem.copy(
+              goodsItemNumber = sequenceNumber,
+              AdditionalReference = additionalReferences
+            )
+
+            val userAnswers = emptyUserAnswers
+              .setNotRemoved(ItemSection(Index(0), Index(0)))
+              .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
+              // Additional reference 1 - Unchanged
+              .setSequenceNumber(AdditionalReferenceSection(Index(0), Index(0), Index(0)), 1)
+              .setNotRemoved(AdditionalReferenceSection(Index(0), Index(0), Index(0)))
+              .setValue(AdditionalReferenceTypePage(Index(0), Index(0), Index(0)),
+                        AdditionalReferenceType("originalTypeValue1", "originalTypeValue1Description")
+              )
+              .setValue(AdditionalReferenceNumberPage(Index(0), Index(0), Index(0)), "originalReferenceNumber1")
+              // Additional reference 2 - Unchanged
+              .setSequenceNumber(AdditionalReferenceSection(Index(0), Index(0), Index(1)), 2)
+              .setNotRemoved(AdditionalReferenceSection(Index(0), Index(0), Index(1)))
+              .setValue(AdditionalReferenceTypePage(Index(0), Index(0), Index(1)),
+                        AdditionalReferenceType("originalTypeValue2", "originalTypeValue2Description")
+              )
+              .setValue(AdditionalReferenceNumberPage(Index(0), Index(0), Index(1)), "originalReferenceNumber2")
+
+            val reads  = service.consignmentItemReads(Seq(ie043))(Index(0))(Index(0), sequenceNumber)
             val result = getResult(userAnswers, reads)
 
             result mustBe None
