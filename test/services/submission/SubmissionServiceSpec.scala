@@ -1199,6 +1199,165 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       }
     }
 
+    "must create departure transport means" - {
+      import pages.houseConsignment.index.departureMeansOfTransport._
+      import pages.sections.houseConsignment.index.departureTransportMeans._
+
+      "when there are discrepancies" in {
+        forAll(arbitrary[HouseConsignmentType04]) {
+          houseConsignment =>
+            val departureTransportMeans = Seq(
+              DepartureTransportMeansType02(
+                sequenceNumber = 1,
+                typeOfIdentification = "originalTypeOfIdentification1",
+                identificationNumber = "originalIdentificationNumber1",
+                nationality = "originalNationality1"
+              ),
+              DepartureTransportMeansType02(
+                sequenceNumber = 2,
+                typeOfIdentification = "originalTypeOfIdentification2",
+                identificationNumber = "originalIdentificationNumber2",
+                nationality = "originalNationality2"
+              ),
+              DepartureTransportMeansType02(
+                sequenceNumber = 3,
+                typeOfIdentification = "originalTypeOfIdentification3",
+                identificationNumber = "originalIdentificationNumber3",
+                nationality = "originalNationality3"
+              ),
+              DepartureTransportMeansType02(
+                sequenceNumber = 4,
+                typeOfIdentification = "originalTypeOfIdentification4",
+                identificationNumber = "originalIdentificationNumber4",
+                nationality = "originalNationality4"
+              )
+            )
+            val ie043 = houseConsignment.copy(
+              sequenceNumber = sequenceNumber,
+              DepartureTransportMeans = departureTransportMeans
+            )
+
+            val userAnswers = emptyUserAnswers
+              .setNotRemoved(HouseConsignmentSection(Index(0)))
+              .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
+              // Departure transport means 1 - Changed type value
+              .setSequenceNumber(TransportMeansSection(Index(0), Index(0)), 1)
+              .setNotRemoved(TransportMeansSection(Index(0), Index(0)))
+              .setValue(TransportMeansIdentificationPage(Index(0), Index(0)),
+                        TransportMeansIdentification("newTypeOfIdentification1", "newTypeOfIdentification1Description")
+              )
+              .setValue(VehicleIdentificationNumberPage(Index(0), Index(0)), "originalIdentificationNumber1")
+              .setValue(CountryPage(Index(0), Index(0)), Country("originalNationality1", "originalNationalityDescription1"))
+              // Departure transport means 2 - Changed identification number and nationality
+              .setSequenceNumber(TransportMeansSection(Index(0), Index(1)), 2)
+              .setNotRemoved(TransportMeansSection(Index(0), Index(1)))
+              .setValue(
+                TransportMeansIdentificationPage(Index(0), Index(1)),
+                TransportMeansIdentification("originalTypeOfIdentification2", "originalTypeOfIdentification2Description")
+              )
+              .setValue(VehicleIdentificationNumberPage(Index(0), Index(1)), "newIdentificationNumber2")
+              .setValue(CountryPage(Index(0), Index(1)), Country("newNationality2", "newNationalityDescription2"))
+              // Departure transport means 3 - Removed
+              .setSequenceNumber(TransportMeansSection(Index(0), Index(2)), 3)
+              .setRemoved(TransportMeansSection(Index(0), Index(2)))
+              // Departure transport means 4 - Unchanged
+              .setSequenceNumber(TransportMeansSection(Index(0), Index(3)), 4)
+              .setNotRemoved(TransportMeansSection(Index(0), Index(3)))
+              .setValue(
+                TransportMeansIdentificationPage(Index(0), Index(3)),
+                TransportMeansIdentification("originalTypeOfIdentification4", "originalTypeOfIdentification4Description")
+              )
+              .setValue(VehicleIdentificationNumberPage(Index(0), Index(3)), "originalIdentificationNumber4")
+              .setValue(CountryPage(Index(0), Index(3)), Country("originalNationality4", "originalNationalityDescription4"))
+              // Departure transport means 5 - Added
+              .setValue(TransportMeansIdentificationPage(Index(0), Index(4)),
+                        TransportMeansIdentification("newTypeOfIdentification5", "newTypeOfIdentification5Description")
+              )
+              .setValue(VehicleIdentificationNumberPage(Index(0), Index(4)), "newIdentificationNumber5")
+              .setValue(CountryPage(Index(0), Index(4)), Country("newNationality5", "newNationalityDescription5"))
+
+            val reads  = service.houseConsignmentReads(Seq(ie043))(Index(0), sequenceNumber)
+            val result = getResult(userAnswers, reads).value.DepartureTransportMeans
+
+            result mustBe Seq(
+              DepartureTransportMeansType04(
+                sequenceNumber = 1,
+                typeOfIdentification = Some("newTypeOfIdentification1"),
+                identificationNumber = None,
+                nationality = None
+              ),
+              DepartureTransportMeansType04(
+                sequenceNumber = 2,
+                typeOfIdentification = None,
+                identificationNumber = Some("newIdentificationNumber2"),
+                nationality = Some("newNationality2")
+              ),
+              DepartureTransportMeansType04(
+                sequenceNumber = 3,
+                typeOfIdentification = None,
+                identificationNumber = None,
+                nationality = None
+              ),
+              DepartureTransportMeansType04(
+                sequenceNumber = 5,
+                typeOfIdentification = Some("newTypeOfIdentification5"),
+                identificationNumber = Some("newIdentificationNumber5"),
+                nationality = Some("newNationality5")
+              )
+            )
+        }
+      }
+
+      "when there are no discrepancies" in {
+        forAll(arbitrary[HouseConsignmentType04]) {
+          houseConsignment =>
+            val departureTransportMeans = Seq(
+              DepartureTransportMeansType02(
+                sequenceNumber = 1,
+                typeOfIdentification = "originalTypeOfIdentification1",
+                identificationNumber = "originalIdentificationNumber1",
+                nationality = "originalNationality1"
+              ),
+              DepartureTransportMeansType02(
+                sequenceNumber = 2,
+                typeOfIdentification = "originalTypeOfIdentification2",
+                identificationNumber = "originalIdentificationNumber2",
+                nationality = "originalNationality2"
+              )
+            )
+            val ie043 = houseConsignment.copy(
+              sequenceNumber = sequenceNumber,
+              DepartureTransportMeans = departureTransportMeans
+            )
+
+            val userAnswers = emptyUserAnswers
+              .setNotRemoved(HouseConsignmentSection(Index(0)))
+              .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
+              // Departure transport means 1 - Unchanged
+              .setSequenceNumber(TransportMeansSection(Index(0), Index(0)), 1)
+              .setNotRemoved(TransportMeansSection(Index(0), Index(0)))
+              .setValue(
+                TransportMeansIdentificationPage(Index(0), Index(0)),
+                TransportMeansIdentification("originalTypeOfIdentification1", "originalTypeOfIdentification1Description")
+              )
+              .setValue(VehicleIdentificationNumberPage(Index(0), Index(0)), "originalIdentificationNumber1")
+              // Departure transport means 2 - Unchanged
+              .setSequenceNumber(TransportMeansSection(Index(0), Index(1)), 2)
+              .setNotRemoved(TransportMeansSection(Index(0), Index(1)))
+              .setValue(
+                TransportMeansIdentificationPage(Index(0), Index(1)),
+                TransportMeansIdentification("originalTypeOfIdentification2", "originalTypeOfIdentification2Description")
+              )
+              .setValue(VehicleIdentificationNumberPage(Index(0), Index(1)), "originalIdentificationNumber2")
+
+            val reads  = service.houseConsignmentReads(Seq(ie043))(Index(0), sequenceNumber)
+            val result = getResult(userAnswers, reads)
+
+            result mustBe None
+        }
+      }
+    }
+
     "must create supporting documents" - {
       import pages.houseConsignment.index.documents._
       import pages.sections.houseConsignment.index.documents._
@@ -1466,6 +1625,143 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               .setNotRemoved(DocumentSection(Index(0), Index(1)))
               .setValue(TypePage(Index(0), Index(1)), DocumentType(DocType.Transport, "originalTypeValue2", "originalTypeValue2Description"))
               .setValue(DocumentReferenceNumberPage(Index(0), Index(1)), "originalReferenceNumber2")
+
+            val reads  = service.houseConsignmentReads(Seq(ie043))(Index(0), sequenceNumber)
+            val result = getResult(userAnswers, reads)
+
+            result mustBe None
+        }
+      }
+    }
+
+    "must create additional references" - {
+      import pages.houseConsignment.index.additionalReference._
+      import pages.sections.houseConsignment.index.additionalReference.AdditionalReferenceSection
+
+      "when there are discrepancies" in {
+        forAll(arbitrary[HouseConsignmentType04]) {
+          houseConsignment =>
+            val additionalReferences = Seq(
+              AdditionalReferenceType03(
+                sequenceNumber = 1,
+                typeValue = "originalTypeValue1",
+                referenceNumber = Some("originalReferenceNumber1")
+              ),
+              AdditionalReferenceType03(
+                sequenceNumber = 2,
+                typeValue = "originalTypeValue2",
+                referenceNumber = Some("originalReferenceNumber2")
+              ),
+              AdditionalReferenceType03(
+                sequenceNumber = 3,
+                typeValue = "originalTypeValue3",
+                referenceNumber = Some("originalReferenceNumber3")
+              ),
+              AdditionalReferenceType03(
+                sequenceNumber = 4,
+                typeValue = "originalTypeValue4",
+                referenceNumber = Some("originalReferenceNumber4")
+              )
+            )
+            val ie043 = houseConsignment.copy(
+              sequenceNumber = sequenceNumber,
+              AdditionalReference = additionalReferences
+            )
+
+            val userAnswers = emptyUserAnswers
+              .setNotRemoved(HouseConsignmentSection(Index(0)))
+              .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
+              // Additional reference 1 - Changed type value
+              .setSequenceNumber(AdditionalReferenceSection(Index(0), Index(0)), 1)
+              .setNotRemoved(AdditionalReferenceSection(Index(0), Index(0)))
+              .setValue(HouseConsignmentAdditionalReferenceTypePage(Index(0), Index(0)), AdditionalReferenceType("newTypeValue1", "newTypeValue1Description"))
+              .setValue(HouseConsignmentAdditionalReferenceNumberPage(Index(0), Index(0)), "originalReferenceNumber1")
+              // Additional reference 2 - Changed reference number
+              .setSequenceNumber(AdditionalReferenceSection(Index(0), Index(1)), 2)
+              .setNotRemoved(AdditionalReferenceSection(Index(0), Index(1)))
+              .setValue(HouseConsignmentAdditionalReferenceTypePage(Index(0), Index(1)),
+                        AdditionalReferenceType("originalTypeValue2", "originalTypeValue2Description")
+              )
+              .setValue(HouseConsignmentAdditionalReferenceNumberPage(Index(0), Index(1)), "newReferenceNumber2")
+              // Additional reference 3 - Removed
+              .setSequenceNumber(AdditionalReferenceSection(Index(0), Index(2)), 3)
+              .setRemoved(AdditionalReferenceSection(Index(0), Index(2)))
+              // Additional reference 4 - Unchanged
+              .setSequenceNumber(AdditionalReferenceSection(Index(0), Index(3)), 4)
+              .setNotRemoved(AdditionalReferenceSection(Index(0), Index(3)))
+              .setValue(HouseConsignmentAdditionalReferenceTypePage(Index(0), Index(3)),
+                        AdditionalReferenceType("originalTypeValue4", "originalTypeValue4Description")
+              )
+              .setValue(HouseConsignmentAdditionalReferenceNumberPage(Index(0), Index(3)), "originalReferenceNumber4")
+              // Additional reference 5 - Added
+              .setValue(HouseConsignmentAdditionalReferenceTypePage(Index(0), Index(4)), AdditionalReferenceType("newTypeValue5", "newTypeValue5Description"))
+              .setValue(HouseConsignmentAdditionalReferenceNumberPage(Index(0), Index(4)), "newReferenceNumber5")
+
+            val reads  = service.houseConsignmentReads(Seq(ie043))(Index(0), sequenceNumber)
+            val result = getResult(userAnswers, reads).value.AdditionalReference
+
+            result mustBe Seq(
+              AdditionalReferenceType06(
+                sequenceNumber = 1,
+                typeValue = Some("newTypeValue1"),
+                referenceNumber = None
+              ),
+              AdditionalReferenceType06(
+                sequenceNumber = 2,
+                typeValue = None,
+                referenceNumber = Some("newReferenceNumber2")
+              ),
+              AdditionalReferenceType06(
+                sequenceNumber = 3,
+                typeValue = None,
+                referenceNumber = None
+              ),
+              AdditionalReferenceType06(
+                sequenceNumber = 5,
+                typeValue = Some("newTypeValue5"),
+                referenceNumber = Some("newReferenceNumber5")
+              )
+            )
+        }
+      }
+
+      "when there are no discrepancies" in {
+        forAll(arbitrary[HouseConsignmentType04]) {
+          houseConsignment =>
+            val additionalReferences = Seq(
+              AdditionalReferenceType03(
+                sequenceNumber = 1,
+                typeValue = "originalTypeValue1",
+                referenceNumber = Some("originalReferenceNumber1")
+              ),
+              AdditionalReferenceType03(
+                sequenceNumber = 2,
+                typeValue = "originalTypeValue2",
+                referenceNumber = Some("originalReferenceNumber2")
+              )
+            )
+            val ie043 = houseConsignment.copy(
+              sequenceNumber = sequenceNumber,
+              AdditionalReference = additionalReferences
+            )
+
+            val userAnswers = emptyUserAnswers
+              .setNotRemoved(HouseConsignmentSection(Index(0)))
+              .setSequenceNumber(HouseConsignmentSection(Index(0)), BigInt(1))
+              // Additional reference 1 - Unchanged
+              .setSequenceNumber(AdditionalReferenceSection(Index(0), Index(0)), 1)
+              .setNotRemoved(AdditionalReferenceSection(Index(0), Index(0)))
+              .setValue(HouseConsignmentAdditionalReferenceTypePage(Index(0), Index(0)),
+                        AdditionalReferenceType("originalTypeValue1", "originalTypeValue1Description")
+              )
+              .setValue(HouseConsignmentAdditionalReferenceNumberPage(Index(0), Index(0)), "originalReferenceNumber1")
+              // Additional reference 2 - Unchanged
+              .setSequenceNumber(AdditionalReferenceSection(Index(0), Index(1)), 2)
+              .setNotRemoved(AdditionalReferenceSection(Index(0), Index(1)))
+              .setValue(HouseConsignmentAdditionalReferenceTypePage(Index(0), Index(1)),
+                        AdditionalReferenceType("originalTypeValue2", "originalTypeValue2Description")
+              )
+              .setValue(HouseConsignmentAdditionalReferenceNumberPage(Index(0), Index(1)), "originalReferenceNumber2")
 
             val reads  = service.houseConsignmentReads(Seq(ie043))(Index(0), sequenceNumber)
             val result = getResult(userAnswers, reads)

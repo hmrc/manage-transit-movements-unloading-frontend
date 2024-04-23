@@ -376,6 +376,8 @@ class SubmissionService @Inject() (
   )(index: Index, sequenceNumber: BigInt): Reads[Option[HouseConsignmentType05]] = {
     import pages.houseConsignment.index._
     import pages.sections.ItemsSection
+    import pages.sections.houseConsignment.index.additionalReference._
+    import pages.sections.houseConsignment.index.departureTransportMeans._
     import pages.sections.houseConsignment.index.documents._
 
     lazy val houseConsignment        = ie043.find(_.sequenceNumber == sequenceNumber)
@@ -386,13 +388,13 @@ class SubmissionService @Inject() (
     lazy val consignmentItems        = houseConsignment.getList(_.ConsignmentItem)
 
     for {
-      removed   <- (__ \ Removed).readNullable[Boolean]
-      grossMass <- GrossWeightPage(index).readNullable(identity).apply(ie043)
-      departureTransportMeans = Nil
-      supportingDocuments <- DocumentsSection(index).readArray(houseConsignmentSupportingDocumentReads(supportingDocuments)(index))
-      transportDocuments  <- DocumentsSection(index).readArray(houseConsignmentTransportDocumentReads(transportDocuments)(index))
-      additionalReferences = Nil
-      consignmentItems <- ItemsSection(index).readArray(consignmentItemReads(consignmentItems)(index))
+      removed                 <- (__ \ Removed).readNullable[Boolean]
+      grossMass               <- GrossWeightPage(index).readNullable(identity).apply(ie043)
+      departureTransportMeans <- TransportMeansListSection(index).readArray(houseConsignmentDepartureTransportMeansReads(departureTransportMeans)(index))
+      supportingDocuments     <- DocumentsSection(index).readArray(houseConsignmentSupportingDocumentReads(supportingDocuments)(index))
+      transportDocuments      <- DocumentsSection(index).readArray(houseConsignmentTransportDocumentReads(transportDocuments)(index))
+      additionalReferences    <- AdditionalReferenceListSection(index).readArray(houseConsignmentAdditionalReferenceReads(additionalReferences)(index))
+      consignmentItems        <- ItemsSection(index).readArray(consignmentItemReads(consignmentItems)(index))
     } yield removed match {
       case Some(true) =>
         Some(
@@ -414,6 +416,42 @@ class SubmissionService @Inject() (
                 TransportDocument = transportDocuments,
                 AdditionalReference = additionalReferences,
                 ConsignmentItem = consignmentItems
+              )
+            )
+        }
+    }
+  }
+
+  private def houseConsignmentDepartureTransportMeansReads(
+    ie043: Seq[DepartureTransportMeansType02]
+  )(
+    houseConsignmentIndex: Index
+  )(index: Index, sequenceNumber: BigInt): Reads[Option[DepartureTransportMeansType04]] = {
+    import pages.houseConsignment.index.departureMeansOfTransport._
+
+    for {
+      removed              <- (__ \ Removed).readNullable[Boolean]
+      typeOfIdentification <- TransportMeansIdentificationPage(houseConsignmentIndex, index).readNullable(_.`type`).apply(ie043)
+      identificationNumber <- VehicleIdentificationNumberPage(houseConsignmentIndex, index).readNullable(identity).apply(ie043)
+      nationality          <- CountryPage(houseConsignmentIndex, index).readNullable(_.code).apply(ie043)
+    } yield removed match {
+      case Some(true) =>
+        Some(
+          DepartureTransportMeansType04(
+            sequenceNumber = sequenceNumber
+          )
+        )
+      case _ =>
+        (typeOfIdentification, identificationNumber, nationality) match {
+          case (None, None, None) =>
+            None
+          case _ =>
+            Some(
+              DepartureTransportMeansType04(
+                sequenceNumber = sequenceNumber,
+                typeOfIdentification = typeOfIdentification,
+                identificationNumber = identificationNumber,
+                nationality = nationality
               )
             )
         }
@@ -497,6 +535,40 @@ class SubmissionService @Inject() (
         }
       case _ =>
         None
+    }
+  }
+
+  private def houseConsignmentAdditionalReferenceReads(
+    ie043: Seq[AdditionalReferenceType03]
+  )(
+    houseConsignmentIndex: Index
+  )(index: Index, sequenceNumber: BigInt): Reads[Option[AdditionalReferenceType06]] = {
+    import pages.houseConsignment.index.additionalReference._
+
+    for {
+      removed         <- (__ \ Removed).readNullable[Boolean]
+      typeValue       <- HouseConsignmentAdditionalReferenceTypePage(houseConsignmentIndex, index).readNullable(_.documentType).apply(ie043)
+      referenceNumber <- HouseConsignmentAdditionalReferenceNumberPage(houseConsignmentIndex, index).readNullable(identity).apply(ie043)
+    } yield removed match {
+      case Some(true) =>
+        Some(
+          AdditionalReferenceType06(
+            sequenceNumber = sequenceNumber
+          )
+        )
+      case _ =>
+        (typeValue, referenceNumber) match {
+          case (None, None) =>
+            None
+          case _ =>
+            Some(
+              AdditionalReferenceType06(
+                sequenceNumber = sequenceNumber,
+                typeValue = typeValue,
+                referenceNumber = referenceNumber
+              )
+            )
+        }
     }
   }
 
