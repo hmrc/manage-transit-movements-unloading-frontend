@@ -22,16 +22,16 @@ import viewModels.ModeViewModelProvider
 
 import javax.inject.Inject
 
-case class DocumentReferenceNumberViewModel(heading: String, title: String, requiredError: String)
+case class ReferenceNumberViewModel(heading: String, title: String, requiredError: String)
 
-object DocumentReferenceNumberViewModel {
+object ReferenceNumberViewModel {
 
-  class DocumentReferenceNumberViewModelProvider @Inject() extends ModeViewModelProvider {
+  class ReferenceNumberViewModelProvider @Inject() extends ModeViewModelProvider {
 
     override val prefix = "houseConsignment.index.documents.referenceNumber"
 
-    def apply(mode: Mode, houseConsignmentIndex: Index)(implicit messages: Messages): DocumentReferenceNumberViewModel =
-      new DocumentReferenceNumberViewModel(
+    def apply(mode: Mode, houseConsignmentIndex: Index)(implicit messages: Messages): ReferenceNumberViewModel =
+      new ReferenceNumberViewModel(
         heading(mode, houseConsignmentIndex),
         title(mode, houseConsignmentIndex),
         requiredError(mode, houseConsignmentIndex)

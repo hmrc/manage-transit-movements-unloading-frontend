@@ -17,16 +17,18 @@
 package controllers.houseConsignment.index.documents
 
 import controllers.actions._
-import forms.{DocumentReferenceNumberFormProvider, ReferenceNumberFormProvider}
-import models.requests.MandatoryDataRequest
-import models.{ArrivalId, Index, Mode}
+import forms.ReferenceNumberFormProvider
+import models.requests.{DataRequest, MandatoryDataRequest}
+import models.{ArrivalId, Index, Mode, RichOptionalJsArray}
 import navigation.Navigator
 import pages.houseConsignment.index.documents.DocumentReferenceNumberPage
+import pages.sections.houseConsignment.index.documents.DocumentsSection
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.houseConsignment.index.documents.DocumentReferenceNumberViewModel.DocumentReferenceNumberViewModelProvider
+import viewModels.houseConsignment.index.documents.ReferenceNumberViewModel.ReferenceNumberViewModelProvider
 import views.html.houseConsignment.index.documents.ReferenceNumberView
 
 import javax.inject.Inject
@@ -40,19 +42,30 @@ class ReferenceNumberController @Inject() (
   formProvider: ReferenceNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: ReferenceNumberView,
-  viewModelProvider: DocumentReferenceNumberViewModelProvider
+  viewModelProvider: ReferenceNumberViewModelProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
+
+  private def form(requiredError: String, houseConsignmentIndex: Index, documentIndex: Index)(implicit request: DataRequest[_]): Form[String] =
+    formProvider(requiredError, houseConsignmentIndex, otherDocumentReferenceNumbers(houseConsignmentIndex, documentIndex))
+
+  private def otherDocumentReferenceNumbers(houseConsignmentIndex: Index, documentIndex: Index)(implicit request: DataRequest[_]): Seq[String] = {
+    val numberDocuments = request.userAnswers.get(DocumentsSection(houseConsignmentIndex)).length
+    (0 until numberDocuments)
+      .filterNot(_ == documentIndex.position)
+      .map(Index(_))
+      .map(DocumentReferenceNumberPage(houseConsignmentIndex, _))
+      .flatMap(request.userAnswers.get(_))
+  }
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, documentIndex: Index): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
         val viewModel = viewModelProvider.apply(mode, houseConsignmentIndex)
-        val form      = formProvider(viewModel.requiredError, mode, houseConsignmentIndex)
         val preparedForm = request.userAnswers.get(DocumentReferenceNumberPage(houseConsignmentIndex, documentIndex)) match {
-          case None        => form
-          case Some(value) => form.fill(value)
+          case None        => form(viewModel.requiredError, houseConsignmentIndex, documentIndex)
+          case Some(value) => form(viewModel.requiredError, houseConsignmentIndex, documentIndex).fill(value)
         }
 
         Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode, viewModel, houseConsignmentIndex, documentIndex))
@@ -64,7 +77,7 @@ class ReferenceNumberController @Inject() (
       .async {
         implicit request =>
           val viewModel = viewModelProvider.apply(mode, houseConsignmentIndex)
-          formProvider(viewModel.requiredError, mode, houseConsignmentIndex)
+          form(viewModel.requiredError, houseConsignmentIndex, documentIndex)
             .bindFromRequest()
             .fold(
               formWithErrors =>

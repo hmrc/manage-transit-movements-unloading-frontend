@@ -26,13 +26,14 @@ import javax.inject.Inject
 
 class ReferenceNumberFormProvider @Inject() extends Mappings {
 
-  def apply(requiredError: String, mode: Mode, houseConsignmentIndex: Index): Form[String] =
+  def apply(requiredError: String, houseConsignmentIndex: Index, otherDocumentReferenceNumbers: Seq[String]): Form[String] =
     Form(
       "value" -> adaptedText(s"$requiredError", args = Seq(houseConsignmentIndex.display))(_.removeSpaces())
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(alphaNumericWithSpacesRegex, "document.referenceNumber.error.invalidCharacters"),
-            maxLength(maxDocumentRefNumberLength, "document.referenceNumber.error.length")
+            maxLength(maxDocumentRefNumberLength, "document.referenceNumber.error.length"),
+            valueIsNotInList(otherDocumentReferenceNumbers, "houseConsignment.index.documents.referenceNumber.CheckMode.error.duplicate")
           )
         )
     )

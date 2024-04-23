@@ -18,7 +18,7 @@
 @import models.MovementReferenceNumber
 @import viewModels.components.InputTextViewModel._
 @import views.html.components.{Button, ErrorSummary, InputText}
-@import viewModels.houseConsignment.index.documents.DocumentReferenceNumberViewModel
+@import viewModels.houseConsignment.index.documents.ReferenceNumberViewModel
 
 @this(
     mainTemplate: MainTemplate,
@@ -28,7 +28,7 @@
     errorSummary: ErrorSummary
 )
 
-@(form: Form[_], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode, viewModel: DocumentReferenceNumberViewModel, houseConsignmentIndex: Index, documentIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode, viewModel: ReferenceNumberViewModel, houseConsignmentIndex: Index, documentIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = viewModel.title,
