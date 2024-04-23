@@ -33,6 +33,9 @@ package object submission {
     def readNullableSafe[T](implicit reads: Reads[T]): Reads[Option[T]] =
       value.readNullable[T] orElse None
 
+    def readSafe[T](implicit reads: Reads[Option[T]]): Reads[Option[T]] =
+      value.read[Option[T]] orElse None
+
     /** @param pathNodes number of path nodes to take from the right
       * @return the rightmost path nodes
       *

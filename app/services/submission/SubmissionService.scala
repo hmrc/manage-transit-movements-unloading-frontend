@@ -52,7 +52,7 @@ class SubmissionService @Inject() (
       for {
         transitOperation <- __.read[TransitOperationType15](transitOperationReads(userAnswers))
         unloadingRemark  <- __.read[UnloadingRemarkType]
-        consignment      <- ConsignmentSection.path.read[Option[ConsignmentType06]](consignmentReads(userAnswers.ie043Data.Consignment))
+        consignment      <- ConsignmentSection.path.readSafe(consignmentReads(userAnswers.ie043Data.Consignment))
       } yield {
         val officeOfDestination = userAnswers.ie043Data.CustomsOfficeOfDestinationActual.referenceNumber
         CC044CType(
@@ -419,6 +419,7 @@ class SubmissionService @Inject() (
     import pages.sections.houseConsignment.index.items.documents.DocumentsSection
 
     lazy val consignmentItem      = ie043.find(_.goodsItemNumber == sequenceNumber)
+    lazy val commodity            = consignmentItem.map(_.Commodity)
     lazy val supportingDocuments  = consignmentItem.getList(_.SupportingDocument)
     lazy val transportDocuments   = consignmentItem.getList(_.TransportDocument)
     lazy val additionalReferences = consignmentItem.getList(_.AdditionalReference)
@@ -426,6 +427,7 @@ class SubmissionService @Inject() (
     for {
       removed                    <- (__ \ Removed).readNullable[Boolean]
       declarationGoodsItemNumber <- DeclarationGoodsItemNumberPage(houseConsignmentIndex, itemIndex).path.last.read[BigInt]
+      commodity                  <- (__ \ "Commodity").readSafe(consignmentItemCommodityReads(commodity)(houseConsignmentIndex, itemIndex))
       supportingDocuments <- DocumentsSection(houseConsignmentIndex, itemIndex).readArray(
         consignmentItemSupportingDocumentReads(supportingDocuments)(houseConsignmentIndex, itemIndex)
       )
@@ -444,15 +446,15 @@ class SubmissionService @Inject() (
           )
         )
       case _ =>
-        (supportingDocuments, transportDocuments, additionalReferences) match {
-          case (Nil, Nil, Nil) =>
+        (commodity, supportingDocuments, transportDocuments, additionalReferences) match {
+          case (None, Nil, Nil, Nil) =>
             None
           case _ =>
             Some(
               ConsignmentItemType05(
                 goodsItemNumber = sequenceNumber,
                 declarationGoodsItemNumber = declarationGoodsItemNumber,
-                Commodity = None,
+                Commodity = commodity,
                 Packaging = Nil,
                 SupportingDocument = supportingDocuments,
                 TransportDocument = transportDocuments,
@@ -460,6 +462,67 @@ class SubmissionService @Inject() (
               )
             )
         }
+    }
+  }
+  // scalastyle:on method.length
+
+  // scalastyle:off method.length
+  private def consignmentItemCommodityReads(
+    ie043: Option[CommodityType08]
+  )(
+    houseConsignmentIndex: Index,
+    itemIndex: Index
+  ): Reads[Option[CommodityType03]] = {
+    import pages.houseConsignment.index.items._
+
+    lazy val commodityCode = ie043.flatMap(_.CommodityCode)
+    lazy val goodsMeasure  = ie043.map(_.GoodsMeasure)
+
+    def commodityReads(ie043: Option[CommodityCodeType05]): Reads[Option[CommodityCodeType03]] =
+      for {
+        harmonizedSystemSubHeadingCode <- CommodityCodePage(houseConsignmentIndex, itemIndex).readNullable(identity).apply(ie043)
+        combinedNomenclatureCode       <- CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex).readNullable(identity).apply(ie043)
+      } yield harmonizedSystemSubHeadingCode.map {
+        value =>
+          CommodityCodeType03(
+            harmonizedSystemSubHeadingCode = value,
+            combinedNomenclatureCode = combinedNomenclatureCode
+          )
+      }
+
+    def goodsMeasureReads(ie043: Option[GoodsMeasureType03]): Reads[Option[GoodsMeasureType04]] =
+      for {
+        grossMass <- GrossWeightPage(houseConsignmentIndex, itemIndex).readNullable(identity).apply(ie043)
+        netMass   <- NetWeightPage(houseConsignmentIndex, itemIndex).readNullable(identity).apply(ie043)
+      } yield (grossMass, netMass) match {
+        case (None, None) =>
+          None
+        case _ =>
+          Some(
+            GoodsMeasureType04(
+              grossMass = grossMass,
+              netMass = netMass
+            )
+          )
+      }
+
+    for {
+      descriptionOfGoods <- ItemDescriptionPage(houseConsignmentIndex, itemIndex).readNullable(identity).apply(ie043)
+      cusCode            <- CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex).readNullable(identity).apply(ie043)
+      commodityCode      <- (__ \ "CommodityCode").readSafe(commodityReads(commodityCode))
+      goodsMeasure       <- (__ \ "GoodsMeasure").readSafe(goodsMeasureReads(goodsMeasure))
+    } yield (descriptionOfGoods, cusCode, commodityCode, goodsMeasure) match {
+      case (None, None, None, None) =>
+        None
+      case _ =>
+        Some(
+          CommodityType03(
+            descriptionOfGoods = descriptionOfGoods,
+            cusCode = cusCode,
+            CommodityCode = commodityCode,
+            GoodsMeasure = goodsMeasure
+          )
+        )
     }
   }
   // scalastyle:on method.length

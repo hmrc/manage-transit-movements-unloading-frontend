@@ -1146,13 +1146,111 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
   }
 
   "consignmentItemReads" - {
-    import pages.houseConsignment.index.items.DeclarationGoodsItemNumberPage
+    import pages.houseConsignment.index.items._
     import pages.sections.ItemSection
 
     val sequenceNumber = 1
 
     def getResult(userAnswers: UserAnswers, reads: Reads[Option[ConsignmentItemType05]]): Option[ConsignmentItemType05] =
       (userAnswers.data \ "Consignment" \ "HouseConsignment" \ 0 \ "ConsignmentItem" \ 0).get.as[Option[ConsignmentItemType05]](reads)
+
+    "must create commodity" - {
+
+      "when there are discrepancies" in {
+        forAll(arbitrary[ConsignmentItemType04]) {
+          consignmentItem =>
+            val commodity = CommodityType08(
+              descriptionOfGoods = "originalDescriptionOfGoods",
+              cusCode = Some("originalCusCode"),
+              CommodityCode = Some(
+                CommodityCodeType05(
+                  harmonizedSystemSubHeadingCode = "originalHarmonizedSystemSubHeadingCode",
+                  combinedNomenclatureCode = Some("originalCombinedNomenclatureCode")
+                )
+              ),
+              DangerousGoods = Nil,
+              GoodsMeasure = GoodsMeasureType03(
+                grossMass = 100,
+                netMass = Some(50)
+              )
+            )
+            val ie043 = consignmentItem.copy(
+              goodsItemNumber = sequenceNumber,
+              Commodity = commodity
+            )
+
+            val userAnswers = emptyUserAnswers
+              .setNotRemoved(ItemSection(Index(0), Index(0)))
+              .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
+              .setValue(ItemDescriptionPage(Index(0), Index(0)), "newDescriptionOfGoods")
+              .setValue(CustomsUnionAndStatisticsCodePage(Index(0), Index(0)), "newCusCode")
+              .setValue(CommodityCodePage(Index(0), Index(0)), "newHarmonizedSystemSubHeadingCode")
+              .setValue(CombinedNomenclatureCodePage(Index(0), Index(0)), "newCombinedNomenclatureCode")
+              .setValue(GrossWeightPage(Index(0), Index(0)), BigDecimal(1000))
+              .setValue(NetWeightPage(Index(0), Index(0)), BigDecimal(500))
+
+            val reads  = service.consignmentItemReads(Seq(ie043))(Index(0))(Index(0), sequenceNumber)
+            val result = getResult(userAnswers, reads).value.Commodity.value
+
+            result mustBe CommodityType03(
+              descriptionOfGoods = Some("newDescriptionOfGoods"),
+              cusCode = Some("newCusCode"),
+              CommodityCode = Some(
+                CommodityCodeType03(
+                  harmonizedSystemSubHeadingCode = "newHarmonizedSystemSubHeadingCode",
+                  combinedNomenclatureCode = Some("newCombinedNomenclatureCode")
+                )
+              ),
+              GoodsMeasure = Some(
+                GoodsMeasureType04(
+                  grossMass = Some(1000),
+                  netMass = Some(500)
+                )
+              )
+            )
+        }
+      }
+
+      "when there are no discrepancies" in {
+        forAll(arbitrary[ConsignmentItemType04]) {
+          consignmentItem =>
+            val commodity = CommodityType08(
+              descriptionOfGoods = "originalDescriptionOfGoods",
+              cusCode = Some("originalCusCode"),
+              CommodityCode = Some(
+                CommodityCodeType05(
+                  harmonizedSystemSubHeadingCode = "originalHarmonizedSystemSubHeadingCode",
+                  combinedNomenclatureCode = Some("originalCombinedNomenclatureCode")
+                )
+              ),
+              DangerousGoods = Nil,
+              GoodsMeasure = GoodsMeasureType03(
+                grossMass = 100,
+                netMass = Some(50)
+              )
+            )
+            val ie043 = consignmentItem.copy(
+              goodsItemNumber = sequenceNumber,
+              Commodity = commodity
+            )
+
+            val userAnswers = emptyUserAnswers
+              .setNotRemoved(ItemSection(Index(0), Index(0)))
+              .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
+              .setValue(ItemDescriptionPage(Index(0), Index(0)), "originalDescriptionOfGoods")
+              .setValue(CustomsUnionAndStatisticsCodePage(Index(0), Index(0)), "originalCusCode")
+              .setValue(CommodityCodePage(Index(0), Index(0)), "originalHarmonizedSystemSubHeadingCode")
+              .setValue(CombinedNomenclatureCodePage(Index(0), Index(0)), "originalCombinedNomenclatureCode")
+              .setValue(GrossWeightPage(Index(0), Index(0)), BigDecimal(100))
+              .setValue(NetWeightPage(Index(0), Index(0)), BigDecimal(50))
+
+            val reads  = service.consignmentItemReads(Seq(ie043))(Index(0))(Index(0), sequenceNumber)
+            val result = getResult(userAnswers, reads)
+
+            result mustBe None
+        }
+      }
+    }
 
     "must create supporting documents" - {
       import pages.houseConsignment.index.items.document._
