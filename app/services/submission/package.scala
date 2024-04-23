@@ -47,6 +47,8 @@ package object submission {
       */
     def take(pathNodes: Int): JsPath =
       JsPath(value.path.takeRight(pathNodes))
+
+    def last: JsPath = take(1)
   }
 
   implicit def boolToFlag(x: Boolean): Flag =
