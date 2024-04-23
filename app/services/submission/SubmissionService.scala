@@ -48,25 +48,27 @@ class SubmissionService @Inject() (
   private def transform(userAnswers: UserAnswers): CC044CType = {
     import pages.sections.ConsignmentSection
 
-    val officeOfDestination = userAnswers.ie043Data.CustomsOfficeOfDestinationActual.referenceNumber
     implicit val reads: Reads[CC044CType] =
       for {
         transitOperation <- __.read[TransitOperationType15](transitOperationReads(userAnswers))
         unloadingRemark  <- __.read[UnloadingRemarkType]
         consignment      <- ConsignmentSection.path.read[Option[ConsignmentType06]](consignmentReads(userAnswers.ie043Data.Consignment))
-      } yield CC044CType(
-        messageSequence1 = messageSequence(userAnswers.eoriNumber, officeOfDestination),
-        TransitOperation = transitOperation,
-        CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActualType03(
-          referenceNumber = officeOfDestination
-        ),
-        TraderAtDestination = TraderAtDestinationType02(
-          identificationNumber = userAnswers.ie043Data.TraderAtDestination.identificationNumber
-        ),
-        UnloadingRemark = unloadingRemark,
-        Consignment = consignment,
-        attributes = Map("@PhaseID" -> DataRecord(PhaseIDtype.fromString("NCTS5.0", scope)))
-      )
+      } yield {
+        val officeOfDestination = userAnswers.ie043Data.CustomsOfficeOfDestinationActual.referenceNumber
+        CC044CType(
+          messageSequence1 = messageSequence(userAnswers.eoriNumber, officeOfDestination),
+          TransitOperation = transitOperation,
+          CustomsOfficeOfDestinationActual = CustomsOfficeOfDestinationActualType03(
+            referenceNumber = officeOfDestination
+          ),
+          TraderAtDestination = TraderAtDestinationType02(
+            identificationNumber = userAnswers.ie043Data.TraderAtDestination.identificationNumber
+          ),
+          UnloadingRemark = unloadingRemark,
+          Consignment = consignment,
+          attributes = Map("@PhaseID" -> DataRecord(PhaseIDtype.fromString("NCTS5.0", scope)))
+        )
+      }
 
     userAnswers.data.as[CC044CType]
   }
@@ -191,9 +193,9 @@ class SubmissionService @Inject() (
         }
       }
 
-    val transportEquipment   = ie043.find(_.sequenceNumber == sequenceNumber)
-    lazy val seals           = transportEquipment.getList(_.Seal)
-    lazy val goodsReferences = transportEquipment.getList(_.GoodsReference)
+    lazy val transportEquipment = ie043.find(_.sequenceNumber == sequenceNumber)
+    lazy val seals              = transportEquipment.getList(_.Seal)
+    lazy val goodsReferences    = transportEquipment.getList(_.GoodsReference)
 
     for {
       removed                       <- (__ \ Removed).readNullable[Boolean]
@@ -416,10 +418,10 @@ class SubmissionService @Inject() (
     import pages.sections.houseConsignment.index.items.additionalReference._
     import pages.sections.houseConsignment.index.items.documents.DocumentsSection
 
-    val consignmentItem      = ie043.find(_.goodsItemNumber == sequenceNumber)
-    val supportingDocuments  = consignmentItem.getList(_.SupportingDocument)
-    val transportDocuments   = consignmentItem.getList(_.TransportDocument)
-    val additionalReferences = consignmentItem.getList(_.AdditionalReference)
+    lazy val consignmentItem      = ie043.find(_.goodsItemNumber == sequenceNumber)
+    lazy val supportingDocuments  = consignmentItem.getList(_.SupportingDocument)
+    lazy val transportDocuments   = consignmentItem.getList(_.TransportDocument)
+    lazy val additionalReferences = consignmentItem.getList(_.AdditionalReference)
 
     for {
       removed                    <- (__ \ Removed).readNullable[Boolean]
