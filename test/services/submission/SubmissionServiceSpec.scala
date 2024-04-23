@@ -19,7 +19,7 @@ package services.submission
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generated._
 import generators.Generators
-import models.reference.{AdditionalReferenceType, Country, DocumentType, TransportMeansIdentification}
+import models.reference.{AdditionalReferenceType, Country, DocumentType, PackageType, TransportMeansIdentification}
 import models.{DocType, Index, UnloadingType, UserAnswers}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -1243,6 +1243,151 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               .setValue(CombinedNomenclatureCodePage(Index(0), Index(0)), "originalCombinedNomenclatureCode")
               .setValue(GrossWeightPage(Index(0), Index(0)), BigDecimal(100))
               .setValue(NetWeightPage(Index(0), Index(0)), BigDecimal(50))
+
+            val reads  = service.consignmentItemReads(Seq(ie043))(Index(0))(Index(0), sequenceNumber)
+            val result = getResult(userAnswers, reads)
+
+            result mustBe None
+        }
+      }
+    }
+
+    "must create packaging" - {
+      import pages.houseConsignment.index.items.packages._
+      import pages.sections.PackagingSection
+
+      "when there are discrepancies" in {
+        forAll(arbitrary[ConsignmentItemType04]) {
+          consignmentItem =>
+            val packaging = Seq(
+              PackagingType02(
+                sequenceNumber = 1,
+                typeOfPackages = "originalTypeOfPackages1",
+                numberOfPackages = Some(100),
+                shippingMarks = Some("originalShippingMarks1")
+              ),
+              PackagingType02(
+                sequenceNumber = 2,
+                typeOfPackages = "originalTypeOfPackages2",
+                numberOfPackages = Some(200),
+                shippingMarks = Some("originalShippingMarks2")
+              ),
+              PackagingType02(
+                sequenceNumber = 3,
+                typeOfPackages = "originalTypeOfPackages3",
+                numberOfPackages = Some(300),
+                shippingMarks = Some("originalShippingMarks3")
+              ),
+              PackagingType02(
+                sequenceNumber = 4,
+                typeOfPackages = "originalTypeOfPackages4",
+                numberOfPackages = Some(400),
+                shippingMarks = Some("originalShippingMarks4")
+              )
+            )
+            val ie043 = consignmentItem.copy(
+              goodsItemNumber = sequenceNumber,
+              Packaging = packaging
+            )
+
+            val userAnswers = emptyUserAnswers
+              .setNotRemoved(ItemSection(Index(0), Index(0)))
+              .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
+              // Packaging 1 - Changed type value
+              .setSequenceNumber(PackagingSection(Index(0), Index(0), Index(0)), 1)
+              .setNotRemoved(PackagingSection(Index(0), Index(0), Index(0)))
+              .setValue(PackageTypePage(Index(0), Index(0), Index(0)), PackageType("newTypeOfPackages1", "newTypeOfPackages1Description"))
+              .setValue(NumberOfPackagesPage(Index(0), Index(0), Index(0)), BigInt(100))
+              .setValue(PackageShippingMarkPage(Index(0), Index(0), Index(0)), "originalShippingMarks1")
+              // Packaging 2 - Changed number of packages and shipping marks
+              .setSequenceNumber(PackagingSection(Index(0), Index(0), Index(1)), 2)
+              .setNotRemoved(PackagingSection(Index(0), Index(0), Index(1)))
+              .setValue(PackageTypePage(Index(0), Index(0), Index(1)), PackageType("originalTypeOfPackages2", "originalTypeOfPackages2Description"))
+              .setValue(NumberOfPackagesPage(Index(0), Index(0), Index(1)), BigInt(2000))
+              .setValue(PackageShippingMarkPage(Index(0), Index(0), Index(1)), "newShippingMarks2")
+              // Packaging 3 - Removed
+              .setSequenceNumber(PackagingSection(Index(0), Index(0), Index(2)), 3)
+              .setRemoved(PackagingSection(Index(0), Index(0), Index(2)))
+              // Packaging 4 - Unchanged
+              .setSequenceNumber(PackagingSection(Index(0), Index(0), Index(3)), 4)
+              .setNotRemoved(PackagingSection(Index(0), Index(0), Index(3)))
+              .setValue(PackageTypePage(Index(0), Index(0), Index(3)), PackageType("originalTypeOfPackages4", "originalTypeOfPackages4Description"))
+              .setValue(NumberOfPackagesPage(Index(0), Index(0), Index(3)), BigInt(400))
+              .setValue(PackageShippingMarkPage(Index(0), Index(0), Index(3)), "originalShippingMarks4")
+              // Packaging 5 - Added
+              .setValue(PackageTypePage(Index(0), Index(0), Index(4)), PackageType("newTypeOfPackages5", "newTypeOfPackages5Description"))
+              .setValue(NumberOfPackagesPage(Index(0), Index(0), Index(4)), BigInt(5000))
+              .setValue(PackageShippingMarkPage(Index(0), Index(0), Index(4)), "newShippingMarks5")
+
+            val reads  = service.consignmentItemReads(Seq(ie043))(Index(0))(Index(0), sequenceNumber)
+            val result = getResult(userAnswers, reads).value.Packaging
+
+            result mustBe Seq(
+              PackagingType04(
+                sequenceNumber = 1,
+                typeOfPackages = Some("newTypeOfPackages1"),
+                numberOfPackages = None,
+                shippingMarks = None
+              ),
+              PackagingType04(
+                sequenceNumber = 2,
+                typeOfPackages = None,
+                numberOfPackages = Some(2000),
+                shippingMarks = Some("newShippingMarks2")
+              ),
+              PackagingType04(
+                sequenceNumber = 3,
+                typeOfPackages = None,
+                numberOfPackages = None,
+                shippingMarks = None
+              ),
+              PackagingType04(
+                sequenceNumber = 5,
+                typeOfPackages = Some("newTypeOfPackages5"),
+                numberOfPackages = Some(5000),
+                shippingMarks = Some("newShippingMarks5")
+              )
+            )
+        }
+      }
+
+      "when there are no discrepancies" in {
+        forAll(arbitrary[ConsignmentItemType04]) {
+          consignmentItem =>
+            val packaging = Seq(
+              PackagingType02(
+                sequenceNumber = 1,
+                typeOfPackages = "originalTypeOfPackages1",
+                numberOfPackages = Some(100),
+                shippingMarks = Some("originalShippingMarks1")
+              ),
+              PackagingType02(
+                sequenceNumber = 2,
+                typeOfPackages = "originalTypeOfPackages2",
+                numberOfPackages = Some(200),
+                shippingMarks = Some("originalShippingMarks2")
+              )
+            )
+            val ie043 = consignmentItem.copy(
+              goodsItemNumber = sequenceNumber,
+              Packaging = packaging
+            )
+
+            val userAnswers = emptyUserAnswers
+              .setNotRemoved(ItemSection(Index(0), Index(0)))
+              .setValue(DeclarationGoodsItemNumberPage(Index(0), Index(0)), BigInt(1))
+              // Packaging 1 - Unchanged
+              .setSequenceNumber(PackagingSection(Index(0), Index(0), Index(0)), 1)
+              .setNotRemoved(PackagingSection(Index(0), Index(0), Index(0)))
+              .setValue(PackageTypePage(Index(0), Index(0), Index(0)), PackageType("originalTypeOfPackages1", "originalTypeOfPackages1Description"))
+              .setValue(NumberOfPackagesPage(Index(0), Index(0), Index(0)), BigInt(100))
+              .setValue(PackageShippingMarkPage(Index(0), Index(0), Index(0)), "originalShippingMarks1")
+              // Packaging 2 - Unchanged
+              .setSequenceNumber(PackagingSection(Index(0), Index(0), Index(1)), 2)
+              .setNotRemoved(PackagingSection(Index(0), Index(0), Index(1)))
+              .setValue(PackageTypePage(Index(0), Index(0), Index(1)), PackageType("originalTypeOfPackages2", "originalTypeOfPackages2Description"))
+              .setValue(NumberOfPackagesPage(Index(0), Index(0), Index(1)), BigInt(200))
+              .setValue(PackageShippingMarkPage(Index(0), Index(0), Index(1)), "originalShippingMarks2")
 
             val reads  = service.consignmentItemReads(Seq(ie043))(Index(0))(Index(0), sequenceNumber)
             val result = getResult(userAnswers, reads)

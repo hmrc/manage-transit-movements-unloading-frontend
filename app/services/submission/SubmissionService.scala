@@ -19,6 +19,7 @@ package services.submission
 import connectors.ApiConnector
 import generated._
 import models.{ArrivalId, DocType, EoriNumber, Index, UnloadingType, UserAnswers}
+import pages.sections.PackagingListSection
 import play.api.libs.json.{__, Reads}
 import scalaxb.DataRecord
 import scalaxb.`package`.toXML
@@ -420,6 +421,7 @@ class SubmissionService @Inject() (
 
     lazy val consignmentItem      = ie043.find(_.goodsItemNumber == sequenceNumber)
     lazy val commodity            = consignmentItem.map(_.Commodity)
+    lazy val packaging            = consignmentItem.getList(_.Packaging)
     lazy val supportingDocuments  = consignmentItem.getList(_.SupportingDocument)
     lazy val transportDocuments   = consignmentItem.getList(_.TransportDocument)
     lazy val additionalReferences = consignmentItem.getList(_.AdditionalReference)
@@ -428,6 +430,9 @@ class SubmissionService @Inject() (
       removed                    <- (__ \ Removed).readNullable[Boolean]
       declarationGoodsItemNumber <- DeclarationGoodsItemNumberPage(houseConsignmentIndex, itemIndex).path.last.read[BigInt]
       commodity                  <- (__ \ "Commodity").readSafe(consignmentItemCommodityReads(commodity)(houseConsignmentIndex, itemIndex))
+      packaging <- PackagingListSection(houseConsignmentIndex, itemIndex).readArray(
+        consignmentItemPackagingReads(packaging)(houseConsignmentIndex, itemIndex)
+      )
       supportingDocuments <- DocumentsSection(houseConsignmentIndex, itemIndex).readArray(
         consignmentItemSupportingDocumentReads(supportingDocuments)(houseConsignmentIndex, itemIndex)
       )
@@ -446,8 +451,8 @@ class SubmissionService @Inject() (
           )
         )
       case _ =>
-        (commodity, supportingDocuments, transportDocuments, additionalReferences) match {
-          case (None, Nil, Nil, Nil) =>
+        (commodity, packaging, supportingDocuments, transportDocuments, additionalReferences) match {
+          case (None, Nil, Nil, Nil, Nil) =>
             None
           case _ =>
             Some(
@@ -455,7 +460,7 @@ class SubmissionService @Inject() (
                 goodsItemNumber = sequenceNumber,
                 declarationGoodsItemNumber = declarationGoodsItemNumber,
                 Commodity = commodity,
-                Packaging = Nil,
+                Packaging = packaging,
                 SupportingDocument = supportingDocuments,
                 TransportDocument = transportDocuments,
                 AdditionalReference = additionalReferences
@@ -478,7 +483,7 @@ class SubmissionService @Inject() (
     lazy val commodityCode = ie043.flatMap(_.CommodityCode)
     lazy val goodsMeasure  = ie043.map(_.GoodsMeasure)
 
-    def commodityReads(ie043: Option[CommodityCodeType05]): Reads[Option[CommodityCodeType03]] =
+    def commodityCodeReads(ie043: Option[CommodityCodeType05]): Reads[Option[CommodityCodeType03]] =
       for {
         harmonizedSystemSubHeadingCode <- CommodityCodePage(houseConsignmentIndex, itemIndex).readNullable(identity).apply(ie043)
         combinedNomenclatureCode       <- CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex).readNullable(identity).apply(ie043)
@@ -509,7 +514,7 @@ class SubmissionService @Inject() (
     for {
       descriptionOfGoods <- ItemDescriptionPage(houseConsignmentIndex, itemIndex).readNullable(identity).apply(ie043)
       cusCode            <- CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex).readNullable(identity).apply(ie043)
-      commodityCode      <- (__ \ "CommodityCode").readSafe(commodityReads(commodityCode))
+      commodityCode      <- (__ \ "CommodityCode").readSafe(commodityCodeReads(commodityCode))
       goodsMeasure       <- (__ \ "GoodsMeasure").readSafe(goodsMeasureReads(goodsMeasure))
     } yield (descriptionOfGoods, cusCode, commodityCode, goodsMeasure) match {
       case (None, None, None, None) =>
@@ -526,6 +531,43 @@ class SubmissionService @Inject() (
     }
   }
   // scalastyle:on method.length
+
+  private def consignmentItemPackagingReads(
+    ie043: Seq[PackagingType02]
+  )(
+    houseConsignmentIndex: Index,
+    itemIndex: Index
+  )(index: Index, sequenceNumber: BigInt): Reads[Option[PackagingType04]] = {
+    import pages.houseConsignment.index.items.packages._
+
+    for {
+      removed          <- (__ \ Removed).readNullable[Boolean]
+      typeOfPackages   <- PackageTypePage(houseConsignmentIndex, itemIndex, index).readNullable(_.code).apply(ie043)
+      numberOfPackages <- NumberOfPackagesPage(houseConsignmentIndex, itemIndex, index).readNullable(identity).apply(ie043)
+      shippingMarks    <- PackageShippingMarkPage(houseConsignmentIndex, itemIndex, index).readNullable(identity).apply(ie043)
+    } yield removed match {
+      case Some(true) =>
+        Some(
+          PackagingType04(
+            sequenceNumber = sequenceNumber
+          )
+        )
+      case _ =>
+        (typeOfPackages, numberOfPackages, shippingMarks) match {
+          case (None, None, None) =>
+            None
+          case _ =>
+            Some(
+              PackagingType04(
+                sequenceNumber = sequenceNumber,
+                typeOfPackages = typeOfPackages,
+                numberOfPackages = numberOfPackages,
+                shippingMarks = shippingMarks
+              )
+            )
+        }
+    }
+  }
 
   private def consignmentItemSupportingDocumentReads(
     ie043: Seq[SupportingDocumentType02]
