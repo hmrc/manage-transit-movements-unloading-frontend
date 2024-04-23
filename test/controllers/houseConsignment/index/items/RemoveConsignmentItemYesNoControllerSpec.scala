@@ -86,7 +86,7 @@ class RemoveConsignmentItemYesNoControllerSpec extends SpecBase with AppWithDefa
         userAnswersCaptor.getValue.get(ItemSection(houseConsignmentIndex, itemIndex)).value mustBe Json.parse("""
             |{
             |  "declarationGoodsItemNumber" : 1,
-            |  "sequenceNumber" : "1",
+            |  "sequenceNumber" : 1,
             |  "removed" : true
             |}
             |""".stripMargin)
@@ -119,7 +119,7 @@ class RemoveConsignmentItemYesNoControllerSpec extends SpecBase with AppWithDefa
         userAnswersCaptor.getValue.get(ItemSection(houseConsignmentIndex, itemIndex)).value mustBe Json.parse("""
             |{
             |  "declarationGoodsItemNumber" : 1,
-            |  "sequenceNumber" : "1",
+            |  "sequenceNumber" : 1,
             |  "foo" : "bar",
             |  "removed" : false
             |}
