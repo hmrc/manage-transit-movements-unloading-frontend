@@ -1135,6 +1135,17 @@ houseConsignment.index.departureMeansOfTransport.country.check.error.required = 
 
 unloadingFindings.rowHeadings.houseConsignment.countryOfDestination = Country of destination
 
+houseConsignment.index.documents.referenceNumber.NormalMode.title = What is the document’s reference number?
+houseConsignment.index.documents.referenceNumber.CheckMode.title = What is the new document’s reference number in house consignment {0}?
+houseConsignment.index.documents.referenceNumber.NormalMode.heading = What is the document’s reference number?
+houseConsignment.index.documents.referenceNumber.CheckMode.heading = What is the new document’s reference number in house consignment {0}?
+houseConsignment.index.documents.referenceNumber.hint = This can be up to 70 characters long and include both letters and numbers.
+houseConsignment.index.documents.referenceNumber.NormalMode.error.required = Enter the document’s reference number
+houseConsignment.index.documents.referenceNumber.CheckMode.error.required = Enter the new document’s reference number in house consignment {0}
+houseConsignment.index.documents.referenceNumber.error.invalidCharacters = The reference number must only include letters a to z and numbers 0 to 9
+houseConsignment.index.documents.referenceNumber.error.length = The reference number must be 70 characters or less
+houseConsignment.index.documents.referenceNumber.error.duplicate = The reference number must be unique
+
 houseConsignment.index.departureMeansOfTransport.identification.NormalMode.title = Which identification do you want to use for the departure means of transport?
 houseConsignment.index.departureMeansOfTransport.identification.CheckMode.title = Which identification do you want to use for the new departure means of transport in house consignment {0}?
 houseConsignment.index.departureMeansOfTransport.identification.NormalMode.heading = Which identification do you want to use for the departure means of transport?
