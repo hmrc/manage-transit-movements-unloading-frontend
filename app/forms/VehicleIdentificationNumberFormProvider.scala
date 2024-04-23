@@ -26,13 +26,13 @@ import play.api.data.Form
 
 class VehicleIdentificationNumberFormProvider @Inject() extends Mappings {
 
-  def apply(mode: Mode): Form[String] =
+  def apply(prefix: String, mode: Mode, args: Any*): Form[String] =
     Form(
-      "value" -> text(s"departureMeansOfTransport.identificationNumber.$mode.error.required")
+      "value" -> text(s"$prefix.$mode.error.required", args = args.map(_.toString))
         .verifying(
           StopOnFirstFail[String](
-            maxLength(UnloadingRemarksRequest.vehicleIdentificationNumberMaxLength, "departureMeansOfTransport.identificationNumber.error.length"),
-            regexp(alphaNumericRegex.r, "departureMeansOfTransport.identificationNumber.error.invalid", Seq.empty)
+            maxLength(UnloadingRemarksRequest.vehicleIdentificationNumberMaxLength, s"$prefix.error.length"),
+            regexp(alphaNumericRegex.r, s"$prefix.error.invalid", Seq.empty)
           )
         )
     )

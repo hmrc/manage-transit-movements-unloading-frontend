@@ -16,10 +16,11 @@
 
 package pages.documents
 
+import generated.{SupportingDocumentType02, TransportDocumentType02}
 import models.Index
 import models.reference.DocumentType
-import pages.QuestionPage
 import pages.sections.documents.DocumentSection
+import pages.{DiscrepancyQuestionPage, QuestionPage}
 import play.api.libs.json.JsPath
 
 case class TypePage(documentIndex: Index) extends QuestionPage[DocumentType] {
@@ -27,4 +28,33 @@ case class TypePage(documentIndex: Index) extends QuestionPage[DocumentType] {
   override def path: JsPath = DocumentSection(documentIndex).path \ toString
 
   override def toString: String = "type"
+}
+
+trait BaseTypePage[T] extends DiscrepancyQuestionPage[DocumentType, Seq[T], String] {
+
+  val documentIndex: Index
+
+  override def path: JsPath = TypePage(documentIndex).path
+
+  override def toString: String = TypePage(documentIndex).toString
+}
+
+case class SupportingTypePage(documentIndex: Index) extends BaseTypePage[SupportingDocumentType02] {
+
+  override def valueInIE043(ie043: Seq[SupportingDocumentType02], sequenceNumber: Option[BigInt]): Option[String] =
+    ie043
+      .find {
+        x => sequenceNumber.contains(x.sequenceNumber)
+      }
+      .map(_.typeValue)
+}
+
+case class TransportTypePage(documentIndex: Index) extends BaseTypePage[TransportDocumentType02] {
+
+  override def valueInIE043(ie043: Seq[TransportDocumentType02], sequenceNumber: Option[BigInt]): Option[String] =
+    ie043
+      .find {
+        x => sequenceNumber.contains(x.sequenceNumber)
+      }
+      .map(_.typeValue)
 }

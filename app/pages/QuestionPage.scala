@@ -18,6 +18,7 @@ package pages
 
 import play.api.libs.json.{__, Reads}
 import queries.{Gettable, Settable}
+import services.submission.RichJsPath
 import utils.transformers.SequenceNumber
 
 trait QuestionPage[A] extends Page with Gettable[A] with Settable[A]
@@ -30,10 +31,10 @@ trait DiscrepancyQuestionPage[A, B, C] extends QuestionPage[A] {
     * @param reads reads the value from user answers
     * @return a reads of a defined `Option` if there is a discrepancy and an undefined `Option` if there is not
     */
-  def readNullable(f: A => C)(implicit reads: Reads[A]): B => Reads[Option[C]] = ie043 => {
+  def readNullable(f: A => C, pathNodes: Int = 1)(implicit reads: Reads[A]): B => Reads[Option[C]] = ie043 => {
     for {
       sequenceNumber   <- (__ \ SequenceNumber).readNullable[BigInt]
-      userAnswersValue <- (__ \ this.toString).readNullable[A].map(_.map(f))
+      userAnswersValue <- path.take(pathNodes).readNullableSafe[A].map(_.map(f))
     } yield {
       val ie043Value = valueInIE043(ie043, sequenceNumber)
       (ie043Value, userAnswersValue) match {
