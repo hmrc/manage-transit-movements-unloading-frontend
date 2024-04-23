@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package pages.sections.documents
+package pages.houseConsignment.index.departureMeansOfTransport
 
-import pages.sections.{ConsignmentSection, Section}
-import play.api.libs.json.{JsArray, JsPath}
+import models.Index
+import pages.QuestionPage
+import pages.sections.houseConsignment.index.departureTransportMeans.TransportMeansSection
+import play.api.libs.json.JsPath
 
-case object DocumentsSection extends Section[JsArray] {
+case class VehicleIdentificationNumberPage(houseConsignmentIndex: Index, transportMeansIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = ConsignmentSection.path \ toString
-
-  override def toString: String = "Documents"
+  override def path: JsPath     = TransportMeansSection(houseConsignmentIndex, transportMeansIndex).path \ toString
+  override def toString: String = "identificationNumber"
 }

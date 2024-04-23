@@ -18,7 +18,8 @@ package pages.sections
 
 import models.Index
 import pages.QuestionPage
-import play.api.libs.json.{__, JsArray, JsValue, Reads}
+import play.api.libs.json._
+import services.submission.RichJsPath
 import utils.transformers.SequenceNumber
 
 import scala.annotation.tailrec
@@ -26,7 +27,8 @@ import scala.annotation.tailrec
 trait Section[T <: JsValue] extends QuestionPage[T] {
 
   def readArray[A](implicit reads: (Index, BigInt) => Reads[Option[A]]): Reads[Seq[A]] =
-    (__ \ this.toString)
+    path
+      .take(1)
       .readWithDefault(JsArray())
       .map {
         jsArray =>

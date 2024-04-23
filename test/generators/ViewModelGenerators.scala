@@ -52,6 +52,7 @@ import viewModels.transportEquipment.AddAnotherEquipmentViewModel
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
 import viewModels.transportEquipment.index.{AddAnotherSealViewModel, ApplyAnotherItemViewModel, ContainerIdentificationNumberViewModel}
 import viewModels.{ListItem, UnloadingFindingsViewModel}
+import viewModels.houseConsignment.index.departureTransportMeans.{IdentificationNumberViewModel => HCIdentificationNumberViewModel}
 
 trait ViewModelGenerators {
   self: Generators =>
@@ -278,6 +279,14 @@ trait ViewModelGenerators {
       title         <- nonEmptyString
       requiredError <- nonEmptyString
     } yield IdentificationNumberViewModel(heading, title, requiredError)
+  }
+
+  implicit lazy val arbitraryHCIdentificationNumberViewModel: Arbitrary[HCIdentificationNumberViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+    } yield HCIdentificationNumberViewModel(heading, title, requiredError)
   }
 
   implicit lazy val arbitraryListItem: Arbitrary[ListItem] = Arbitrary {

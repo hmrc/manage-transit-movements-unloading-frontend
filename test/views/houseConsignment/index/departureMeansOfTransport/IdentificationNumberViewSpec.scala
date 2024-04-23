@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.departureMeansOfTransport
+package views.houseConsignment.index.departureMeansOfTransport
 
 import forms.VehicleIdentificationNumberFormProvider
 import models.{CheckMode, NormalMode}
@@ -22,9 +22,9 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.departureTransportMeans.IdentificationNumberViewModel
+import viewModels.houseConsignment.index.departureTransportMeans.IdentificationNumberViewModel
 import views.behaviours.InputTextViewBehaviours
-import views.html.departureMeansOfTransport.IdentificationNumberView
+import views.html.houseConsignment.index.departureMeansOfTransport.IdentificationNumberView
 
 class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
   private val mode = Gen.oneOf(NormalMode, CheckMode).sample.value
@@ -33,9 +33,9 @@ class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
   private val viewModel           = arbitrary[IdentificationNumberViewModel].sample.value
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[IdentificationNumberView].apply(form, mrn, arrivalId, index, NormalMode, viewModel)(fakeRequest, messages)
+    injector.instanceOf[IdentificationNumberView].apply(form, mrn, arrivalId, houseConsignmentIndex, index, NormalMode, viewModel)(fakeRequest, messages)
 
-  override val prefix: String = "departureMeansOfTransport.identificationNumber"
+  override val prefix: String = "houseConsignment.index.departureMeansOfTransport.identificationNumber"
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 

@@ -39,16 +39,18 @@ class IdentificationNumberController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   navigator: DepartureTransportMeansNavigator,
   view: IdentificationNumberView,
-  identificationNUmberViewModelProvider: IdentificationNumberViewModelProvider
+  identificationNumberViewModelProvider: IdentificationNumberViewModelProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
+  val prefix = "departureMeansOfTransport.identificationNumber"
+
   def onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId) {
       implicit request =>
-        val viewModel = identificationNUmberViewModelProvider.apply(mode)
-        val form      = formProvider(mode)
+        val viewModel = identificationNumberViewModelProvider.apply(mode)
+        val form      = formProvider(prefix, mode)
 
         val preparedForm = request.userAnswers.get(VehicleIdentificationNumberPage(transportMeansIndex)) match {
           case None        => form
@@ -61,8 +63,8 @@ class IdentificationNumberController @Inject() (
   def onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
-        val viewModel = identificationNUmberViewModelProvider.apply(mode)
-        val form      = formProvider(mode)
+        val viewModel = identificationNumberViewModelProvider.apply(mode)
+        val form      = formProvider(prefix, mode)
         form
           .bindFromRequest()
           .fold(

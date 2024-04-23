@@ -1125,6 +1125,19 @@ houseConsignment.index.additionalReference.addAnotherAdditionalReference.maxLimi
 houseConsignment.index.additionalReference.addAnotherAdditionalReference.error.required = Select yes if you want to add another additional reference for house consignment {0}
 houseConsignment.index.additionalReference.addAnotherAdditionalReference.paragraph = This can be any other reference you want to declare, such as a certificate number, import licence or accompanying document.
 
+houseConsignment.index.departureMeansOfTransport.identificationNumber.NormalMode.title = What is the identification for this vehicle?
+houseConsignment.index.departureMeansOfTransport.identificationNumber.CheckMode.title = What is the identification for the new departure means of transport in house consignment {0}?
+houseConsignment.index.departureMeansOfTransport.identificationNumber.NormalMode.heading = What is the identification for this vehicle?
+houseConsignment.index.departureMeansOfTransport.identificationNumber.CheckMode.heading = What is the identification for the new departure means of transport in house consignment {0}?
+houseConsignment.index.departureMeansOfTransport.identificationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
+houseConsignment.index.departureMeansOfTransport.identificationNumber.checkYourAnswersLabel = What is the identification for the new vehicle?
+houseConsignment.index.departureMeansOfTransport.identificationNumber.NormalMode.error.required = Enter the identification for this vehicle
+houseConsignment.index.departureMeansOfTransport.identificationNumber.CheckMode.error.required = Enter the identification for the new departure means of transport in house consignment {0}
+houseConsignment.index.departureMeansOfTransport.identificationNumber.error.length = The identification must be 35 characters or less
+houseConsignment.index.departureMeansOfTransport.identificationNumber.error.invalid = The identification must only include letters a to z and numbers 0 to 9
+houseConsignment.index.departureMeansOfTransport.identificationNumber.change.hidden = the identification for the new vehicle
+
+
 houseConsignment.index.departureMeansOfTransport.country.NormalMode.title = What country is this vehicle registered to?
 houseConsignment.index.departureMeansOfTransport.country.CheckMode.title = What country is the new vehicle registered to in house consignment {0}?
 houseConsignment.index.departureMeansOfTransport.country.NormalMode.heading = What country is this vehicle registered to?
