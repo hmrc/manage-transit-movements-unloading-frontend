@@ -80,13 +80,16 @@ final case class UserAnswers(
     }
   }
 
-  def removeExceptSequenceNumber[A](section: QuestionPage[A]): Try[UserAnswers] =
-    removeExceptFields(section, SequenceNumber)
+  def removeDataGroup[A](section: QuestionPage[A]): Try[UserAnswers] =
+    removeExceptPaths(section, __ \ SequenceNumber)
 
-  def removeExceptSequenceNumberAndDeclarationGoodsItemNumber[A](section: QuestionPage[A]): Try[UserAnswers] =
-    removeExceptFields(section, SequenceNumber, "declarationGoodsItemNumber")
+  def removeItem[A](section: QuestionPage[A]): Try[UserAnswers] =
+    removeExceptPaths(section, __ \ SequenceNumber, __ \ "declarationGoodsItemNumber")
 
-  private def removeExceptFields[A](section: QuestionPage[A], fields: String*): Try[UserAnswers] =
+  def removeDocument[A](section: QuestionPage[A]): Try[UserAnswers] =
+    removeExceptPaths(section, __ \ SequenceNumber, __ \ "type" \ "type")
+
+  private def removeExceptPaths[A](section: QuestionPage[A], paths: JsPath*): Try[UserAnswers] =
     for {
       obj <- data
         .transform(section.path.json.pick[JsObject])
@@ -94,9 +97,16 @@ final case class UserAnswers(
           errors => Failure(JsResultException(errors)),
           Success(_)
         )
-      userAnswers <- obj.fields.filter {
-        field => fields.contains(field._1)
-      } match {
+      objWithPathsRetained = paths.foldLeft(Json.obj()) {
+        case (acc, path) =>
+          (
+            for {
+              pick <- obj.transform(path.json.pick)
+              put  <- acc.transform(__.json.update(path.json.put(pick)))
+            } yield put
+          ).getOrElse(acc)
+      }
+      userAnswers <- objWithPathsRetained.fields match {
         case Nil    => remove(section)
         case values => set(section.path, JsObject(values :+ (Removed -> JsBoolean(true))))
       }

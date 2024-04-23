@@ -1113,6 +1113,18 @@ houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.tit
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.error.required = Select yes if you want to add an additional reference number
 
+houseConsignment.index.departureMeansOfTransport.identificationNumber.NormalMode.title = What is the identification for this vehicle?
+houseConsignment.index.departureMeansOfTransport.identificationNumber.CheckMode.title = What is the identification for the new departure means of transport in house consignment {0}?
+houseConsignment.index.departureMeansOfTransport.identificationNumber.NormalMode.heading = What is the identification for this vehicle?
+houseConsignment.index.departureMeansOfTransport.identificationNumber.CheckMode.heading = What is the identification for the new departure means of transport in house consignment {0}?
+houseConsignment.index.departureMeansOfTransport.identificationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
+houseConsignment.index.departureMeansOfTransport.identificationNumber.checkYourAnswersLabel = What is the identification for the new vehicle?
+houseConsignment.index.departureMeansOfTransport.identificationNumber.NormalMode.error.required = Enter the identification for this vehicle
+houseConsignment.index.departureMeansOfTransport.identificationNumber.CheckMode.error.required = Enter the identification for the new departure means of transport in house consignment {0}
+houseConsignment.index.departureMeansOfTransport.identificationNumber.error.length = The identification must be 35 characters or less
+houseConsignment.index.departureMeansOfTransport.identificationNumber.error.invalid = The identification must only include letters a to z and numbers 0 to 9
+houseConsignment.index.departureMeansOfTransport.identificationNumber.change.hidden = the identification for the new vehicle
+
 houseConsignment.index.departureMeansOfTransport.country.NormalMode.title = What country is this vehicle registered to?
 houseConsignment.index.departureMeansOfTransport.country.CheckMode.title = What country is the new vehicle registered to in house consignment {0}?
 houseConsignment.index.departureMeansOfTransport.country.NormalMode.heading = What country is this vehicle registered to?
@@ -1126,6 +1138,17 @@ houseConsignment.index.additionalReference.removeAdditionalReferenceYesNo.headin
 houseConsignment.index.additionalReference.removeAdditionalReferenceYesNo.error.required = Select yes if you want to remove this additional reference
 
 unloadingFindings.rowHeadings.houseConsignment.countryOfDestination = Country of destination
+
+houseConsignment.index.documents.referenceNumber.NormalMode.title = What is the document’s reference number?
+houseConsignment.index.documents.referenceNumber.CheckMode.title = What is the new document’s reference number in house consignment {0}?
+houseConsignment.index.documents.referenceNumber.NormalMode.heading = What is the document’s reference number?
+houseConsignment.index.documents.referenceNumber.CheckMode.heading = What is the new document’s reference number in house consignment {0}?
+houseConsignment.index.documents.referenceNumber.hint = This can be up to 70 characters long and include both letters and numbers.
+houseConsignment.index.documents.referenceNumber.NormalMode.error.required = Enter the document’s reference number
+houseConsignment.index.documents.referenceNumber.CheckMode.error.required = Enter the new document’s reference number in house consignment {0}
+houseConsignment.index.documents.referenceNumber.error.invalidCharacters = The reference number must only include letters a to z and numbers 0 to 9
+houseConsignment.index.documents.referenceNumber.error.length = The reference number must be 70 characters or less
+houseConsignment.index.documents.referenceNumber.error.duplicate = The reference number must be unique
 
 houseConsignment.index.departureMeansOfTransport.identification.NormalMode.title = Which identification do you want to use for the departure means of transport?
 houseConsignment.index.departureMeansOfTransport.identification.CheckMode.title = Which identification do you want to use for the new departure means of transport in house consignment {0}?

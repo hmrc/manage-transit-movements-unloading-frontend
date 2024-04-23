@@ -130,7 +130,7 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
       updatedAnswers <-
         if (value) {
           val additionalReferenceSection = AdditionalReferenceSection(houseConsignmentIndex, itemIndex, additionalReferenceIndex)
-          Future.fromTry(request.userAnswers.removeExceptSequenceNumber(additionalReferenceSection))
+          Future.fromTry(request.userAnswers.removeDataGroup(additionalReferenceSection))
         } else {
           Future.successful(request.userAnswers)
         }

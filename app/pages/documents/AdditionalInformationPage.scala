@@ -16,14 +16,22 @@
 
 package pages.documents
 
+import generated.SupportingDocumentType02
 import models.Index
-import pages.QuestionPage
+import pages.DiscrepancyQuestionPage
 import pages.sections.documents.DocumentDetailsSection
 import play.api.libs.json.JsPath
 
-case class AdditionalInformationPage(documentIndex: Index) extends QuestionPage[String] {
+case class AdditionalInformationPage(documentIndex: Index) extends DiscrepancyQuestionPage[String, Seq[SupportingDocumentType02], String] {
 
   override def path: JsPath = DocumentDetailsSection(documentIndex).path \ toString
 
   override def toString: String = "additionalInformation"
+
+  override def valueInIE043(ie043: Seq[SupportingDocumentType02], sequenceNumber: Option[BigInt]): Option[String] =
+    ie043
+      .find {
+        x => sequenceNumber.contains(x.sequenceNumber)
+      }
+      .flatMap(_.complementOfInformation)
 }

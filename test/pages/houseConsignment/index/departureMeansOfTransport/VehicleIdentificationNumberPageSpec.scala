@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package pages.sections.documents
+package pages.houseConsignment.index.departureMeansOfTransport
 
-import pages.sections.Section
-import play.api.libs.json.{JsObject, JsPath}
+import pages.behaviours.PageBehaviours
 
-case object DocumentParentSection extends Section[JsObject] {
+class VehicleIdentificationNumberPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "VehicleIdentificationNumberPage" - {
 
-  override def toString: String = "documents"
+    beRetrievable[String](VehicleIdentificationNumberPage(houseConsignmentIndex, index))
+
+    beSettable[String](VehicleIdentificationNumberPage(houseConsignmentIndex, index))
+
+    beRemovable[String](VehicleIdentificationNumberPage(houseConsignmentIndex, index))
+  }
 }
