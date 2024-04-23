@@ -18,7 +18,7 @@ package pages.houseConsignment.index.items.document
 
 import generated.SupportingDocumentType02
 import models.Index
-import pages.{DiscrepancyQuestionPage, QuestionPage}
+import pages.DiscrepancyQuestionPage
 import pages.sections.houseConsignment.index.items.documents.DocumentSection
 import play.api.libs.json.JsPath
 

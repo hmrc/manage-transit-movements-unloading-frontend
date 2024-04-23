@@ -46,6 +46,17 @@ object AdditionalReference {
     userAnswers.data.asOpt[AdditionalReference]
   }
 
+  def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index, additionalReferenceIndex: Index): Option[AdditionalReference] = {
+    import pages.houseConsignment.index.additionalReference._
+    implicit val reads: Reads[AdditionalReference] = (
+      HouseConsignmentAdditionalReferenceTypePage(houseConsignmentIndex, additionalReferenceIndex).path.read[AdditionalReferenceType] and
+        HouseConsignmentAdditionalReferenceNumberPage(houseConsignmentIndex, additionalReferenceIndex).path.readNullable[String]
+    ).apply {
+      (additionalReferenceType, referenceNumber) => AdditionalReference(additionalReferenceType, referenceNumber)
+    }
+    userAnswers.data.asOpt[AdditionalReference]
+  }
+
   def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): Option[AdditionalReference] = {
     import pages.houseConsignment.index.items.additionalReference._
     implicit val reads: Reads[AdditionalReference] = (
