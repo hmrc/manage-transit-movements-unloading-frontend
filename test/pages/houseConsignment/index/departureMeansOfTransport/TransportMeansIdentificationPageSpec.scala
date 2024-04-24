@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package pages.houseConsignment.index.departureTransportMeans
+package pages.houseConsignment.index.departureMeansOfTransport
 
 import models.reference.TransportMeansIdentification
 import pages.behaviours.PageBehaviours
-import pages.houseConsignment.index.departureMeansOfTransport.TransportMeansIdentificationPage
 
 class TransportMeansIdentificationPageSpec extends PageBehaviours {
 
