@@ -43,7 +43,7 @@ class DepartureTransportMeansAnswersHelper(
     page = VehicleIdentificationNumberPage(transportMeansIndex),
     formatAnswer = formatAsText,
     prefix = "checkYourAnswers.departureMeansOfTransport.identificationNumber",
-    id = Some(s"change-transport-means-identification-${transportMeansIndex.display}"),
+    id = Some(s"change-transport-means-identification-number-${transportMeansIndex.display}"),
     call = Some(controllers.departureMeansOfTransport.routes.IdentificationNumberController.onPageLoad(arrivalId, transportMeansIndex, CheckMode)),
     args = transportMeansIndex.display
   )

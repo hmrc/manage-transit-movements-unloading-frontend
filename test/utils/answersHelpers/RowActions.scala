@@ -92,7 +92,7 @@ trait RowActions {
             Text("Change"),
             Some("identification number for the departure means of transport"),
             "",
-            Map("id" -> s"change-transport-means-identification-$index")
+            Map("id" -> s"change-transport-means-identification-number-$index")
           )
         )
       )
