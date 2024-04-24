@@ -121,17 +121,17 @@ dateGoodsUnloaded.change.hidden = the date when the goods were unloaded
 traderAtDestination = Authorised consignee’s EORI number or Trader Identification Number (TIN)
 customsOfficeOfDestinationActual = Office of destination
 
-departureMeansOfTransport.identificationNumber.NormalMode.title = What is the identification number for this vehicle?
-departureMeansOfTransport.identificationNumber.CheckMode.title = What is the identification number for the new departure means of transport?
-departureMeansOfTransport.identificationNumber.NormalMode.heading = What is the identification number for this vehicle?
-departureMeansOfTransport.identificationNumber.CheckMode.heading = What is the identification number for the new departure means of transport?
+departureMeansOfTransport.identificationNumber.NormalMode.title = What is the identification for this vehicle?
+departureMeansOfTransport.identificationNumber.CheckMode.title = What is the identification for the new departure means of transport?
+departureMeansOfTransport.identificationNumber.NormalMode.heading = What is the identification for this vehicle?
+departureMeansOfTransport.identificationNumber.CheckMode.heading = What is the identification for the new departure means of transport?
 departureMeansOfTransport.identificationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
-departureMeansOfTransport.identificationNumber.checkYourAnswersLabel = What is the identification number for the new vehicle?
-departureMeansOfTransport.identificationNumber.NormalMode.error.required = Enter the identification number for this vehicle
-departureMeansOfTransport.identificationNumber.CheckMode.error.required = Enter the identification number for the new departure means of transport
-departureMeansOfTransport.identificationNumber.error.length = The identification number must be 35 characters or less
-departureMeansOfTransport.identificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
-departureMeansOfTransport.identificationNumber.change.hidden = the identification number for the new vehicle
+departureMeansOfTransport.identificationNumber.checkYourAnswersLabel = What is the identification for the new vehicle?
+departureMeansOfTransport.identificationNumber.NormalMode.error.required = Enter the identification for this vehicle
+departureMeansOfTransport.identificationNumber.CheckMode.error.required = Enter the identification for the new departure means of transport
+departureMeansOfTransport.identificationNumber.error.length = The identification must be 35 characters or less
+departureMeansOfTransport.identificationNumber.error.invalid = The identification must only include letters a to z and numbers 0 to 9
+departureMeansOfTransport.identificationNumber.change.hidden = the identification for the new vehicle
 
 departureMeansOfTransport.country.NormalMode.title = What country is this vehicle registered to?
 departureMeansOfTransport.country.CheckMode.title = What country is the new departure means of transport registered to?
@@ -157,9 +157,9 @@ departureMeansOfTransport.addIdentificationYesNo.heading = Do you want to add th
 departureMeansOfTransport.addIdentificationYesNo.error.required = Select yes if you want to add the type of identification for the departure means of transport
 departureMeansOfTransport.addIdentificationYesNo.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
 
-departureMeansOfTransport.addIdentificationNumberYesNo.title = Do you want to add an identification number for this vehicle?
-departureMeansOfTransport.addIdentificationNumberYesNo.heading = Do you want to add an identification number for this vehicle?
-departureMeansOfTransport.addIdentificationNumberYesNo.error.required = Select yes if you want to add an identification number for this vehicle
+departureMeansOfTransport.addIdentificationNumberYesNo.title = Do you want to add an identification for this vehicle?
+departureMeansOfTransport.addIdentificationNumberYesNo.heading = Do you want to add an identification for this vehicle?
+departureMeansOfTransport.addIdentificationNumberYesNo.error.required = Select yes if you want to add an identification for this vehicle
 
 departureMeansOfTransport.addNationalityYesNo.title = Do you want to add the registered country for this vehicle?
 departureMeansOfTransport.addNationalityYesNo.heading = Do you want to add the registered country for this vehicle?
@@ -251,8 +251,8 @@ unloadingSummary.seals.subheading = Official customs seals
 
 vehicleUsed.title = Vehicle used
 
-changeVehicle.reference.checkYourAnswersLabel = Identification number for the new vehicle
-changeVehicle.reference.change.hidden = identification number for the new vehicle
+changeVehicle.reference.checkYourAnswersLabel = Identification
+changeVehicle.reference.change.hidden = identification
 
 changeVehicle.registeredCountry.checkYourAnswersLabel = Registered
 changeVehicle.registeredCountry.change.hidden = registered
@@ -641,10 +641,10 @@ checkYourAnswers.sendRemarks = Send your unloading remarks
 checkYourAnswers.paragraph = By sending this, you are confirming that these details are correct to the best of your knowledge.
 
 checkYourAnswers.departureMeansOfTransport.identification = Identification type
-checkYourAnswers.departureMeansOfTransport.identificationNumber = Identification number
+checkYourAnswers.departureMeansOfTransport.identificationNumber = Identification
 checkYourAnswers.departureMeansOfTransport.country = Registered country
 checkYourAnswers.departureMeansOfTransport.identification.change.hidden = identification type for departure means of transport {0}
-checkYourAnswers.departureMeansOfTransport.identificationNumber.change.hidden = identification number for departure means of transport {0}
+checkYourAnswers.departureMeansOfTransport.identificationNumber.change.hidden = identification for departure means of transport {0}
 checkYourAnswers.departureMeansOfTransport.country.change.hidden = registered country for departure means of transport {0}
 
 cannotSendUnloadingRemarks.title = You cannot send these unloading remarks
