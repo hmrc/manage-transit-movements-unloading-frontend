@@ -19,7 +19,7 @@ package views.houseConsignment.index.documents
 import forms.Constants.maxDocumentsAdditionalInfoLength
 import forms.DocumentsAdditionalInformationFormProvider
 import generators.Generators
-import models.NormalMode
+import models.{CheckMode, Mode, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.data.Form
@@ -33,12 +33,14 @@ class AdditionalInformationViewSpec extends CharacterCountViewBehaviours with Ge
   private val viewModel: AdditionalInformationViewModel =
     arbitrary[AdditionalInformationViewModel].sample.value
 
+  private val mode: Mode = Gen.oneOf(NormalMode, CheckMode).sample.value
+
   override def form: Form[String] = new DocumentsAdditionalInformationFormProvider()(viewModel.requiredError)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector
       .instanceOf[AdditionalInformationView]
-      .apply(form, mrn, arrivalId, NormalMode, viewModel, houseConsignmentIndex, documentIndex)(fakeRequest, messages)
+      .apply(form, mrn, arrivalId, mode, viewModel, houseConsignmentIndex, documentIndex)(fakeRequest, messages)
 
   override val prefix: String = Gen
     .oneOf(
