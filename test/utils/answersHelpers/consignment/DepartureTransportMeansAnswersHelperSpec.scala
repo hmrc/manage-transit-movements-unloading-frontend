@@ -83,7 +83,7 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
                 .onPageLoad(arrivalId, transportMeansIndex, CheckMode)
                 .url
               action.visuallyHiddenText.value mustBe "identification for departure means of transport 1"
-              action.id mustBe "change-transport-means-identification-1"
+              action.id mustBe "change-transport-means-identification-number-1"
           }
         }
       }
