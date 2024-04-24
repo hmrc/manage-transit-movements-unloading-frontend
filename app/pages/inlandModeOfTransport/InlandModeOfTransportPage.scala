@@ -18,11 +18,12 @@ package pages.inlandModeOfTransport
 
 import models.reference.TransportMode.InlandMode
 import pages.QuestionPage
+import pages.sections.ConsignmentSection
 import play.api.libs.json.JsPath
 
 case object InlandModeOfTransportPage extends QuestionPage[InlandMode] {
 
-  override def path: JsPath = JsPath \ "Consignment" \ toString
+  override def path: JsPath = ConsignmentSection.path \ toString
 
   override def toString: String = "inlandModeOfTransport"
 }

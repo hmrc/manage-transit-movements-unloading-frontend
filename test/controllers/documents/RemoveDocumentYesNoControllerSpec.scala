@@ -98,7 +98,14 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
-        userAnswersCaptor.getValue.get(DocumentSection(documentIndex)) mustNot be(defined)
+        userAnswersCaptor.getValue.get(DocumentSection(documentIndex)).value mustBe Json.parse("""
+            |{
+            |  "type" : {
+            |    "type" : "Supporting"
+            |  },
+            |  "removed" : true
+            |}
+            |""".stripMargin)
       }
     }
 

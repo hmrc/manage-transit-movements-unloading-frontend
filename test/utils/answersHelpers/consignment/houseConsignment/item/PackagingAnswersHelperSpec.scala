@@ -46,7 +46,7 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
               val result = helper.packageTypeRow.value
 
               result.key.value mustBe "Type"
-              result.value.value mustBe s"${value.asDescription}"
+              result.value.value mustBe s"${value.description}"
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
               action.visuallyHiddenText.value mustBe "type of package 1 for item 1"

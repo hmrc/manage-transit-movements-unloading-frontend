@@ -75,14 +75,14 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new DepartureTransportMeansAnswersHelper(answers, dtmIndex)
               val result = helper.transportMeansNumber.value
 
-              result.key.value mustBe "Identification number"
+              result.key.value mustBe "Identification"
               result.value.value mustBe value
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
               action.href mustBe controllers.departureMeansOfTransport.routes.IdentificationNumberController
                 .onPageLoad(arrivalId, transportMeansIndex, CheckMode)
                 .url
-              action.visuallyHiddenText.value mustBe "identification number for departure means of transport 1"
+              action.visuallyHiddenText.value mustBe "identification for departure means of transport 1"
               action.id mustBe "change-transport-means-identification-number-1"
           }
         }

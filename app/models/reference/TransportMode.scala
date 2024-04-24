@@ -38,7 +38,9 @@ object TransportMode {
   object InlandMode extends DynamicEnumerableType[InlandMode] {
     implicit val format: Format[InlandMode] = Json.format[InlandMode]
 
-    implicit val order: Order[InlandMode] = (x: InlandMode, y: InlandMode) => x.code.compareToIgnoreCase(y.code)
+    implicit val order: Order[InlandMode] = (x: InlandMode, y: InlandMode) => {
+      (x, y).compareBy(_.code)
+    }
 
     val messageKeyPrefix = "transport.inlandModeOfTransport"
   }
@@ -50,7 +52,9 @@ object TransportMode {
   object BorderMode extends DynamicEnumerableType[BorderMode] {
     implicit val format: Format[BorderMode] = Json.format[BorderMode]
 
-    implicit val order: Order[BorderMode] = (x: BorderMode, y: BorderMode) => x.code.compareToIgnoreCase(y.code)
+    implicit val order: Order[BorderMode] = (x: BorderMode, y: BorderMode) => {
+      (x, y).compareBy(_.code)
+    }
 
     val messageKeyPrefix = "transport.border.borderModeOfTransport"
   }
