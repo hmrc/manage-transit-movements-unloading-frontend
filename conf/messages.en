@@ -1160,3 +1160,8 @@ houseConsignment.index.departureMeansOfTransport.identification.title = Which id
 houseConsignment.index.departureMeansOfTransport.identification.check.error.required = Select which identification you want to use for the new departure means of transport in house consignment {0}
 houseConsignment.index.departureMeansOfTransport.identification.error.required = Select which identification you want to use for the departure means of transport
 houseConsignment.index.departureMeansOfTransport.identification.CheckMode.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
+
+houseConsignment.index.addDepartureTransportMeansYesNo.title = Do you want to add a departure means of transport for house consignment {0}?
+houseConsignment.index.addDepartureTransportMeansYesNo.heading = Do you want to add a departure means of transport for house consignment {0}?
+houseConsignment.index.addDepartureTransportMeansYesNo.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
+houseConsignment.index.addDepartureTransportMeansYesNo.error.required = Select yes if you want to add a departure means of transport for house consignment {0}
