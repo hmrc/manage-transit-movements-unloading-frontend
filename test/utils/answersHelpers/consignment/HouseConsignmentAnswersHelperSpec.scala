@@ -534,7 +534,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         result.children.head.children(5).children.head.sectionTitle.get mustBe "Package 1"
         result.children.head.children(5).children.head.id.get mustBe "item-1-package-1"
         result.children.head.children(5).children.head.rows.size mustBe 3
-        result.children.head.children(5).children.head.rows(0).value.value mustBe s"${packageType.asDescription}"
+        result.children.head.children(5).children.head.rows(0).value.value mustBe s"${packageType.description}"
         result.children.head.children(5).children.head.rows(1).value.value mustBe s"$count"
         result.children.head.children(5).children.head.rows(2).value.value mustBe s"$description"
       }
