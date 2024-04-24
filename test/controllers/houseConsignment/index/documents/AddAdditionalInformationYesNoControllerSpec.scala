@@ -32,7 +32,7 @@ import scala.concurrent.Future
 class AddAdditionalInformationYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider = new YesNoFormProvider()
-  private val form         = formProvider("document.addAdditionalInformationYesNo")
+  private val form         = formProvider("houseConsignment.index.documents.addAdditionalInformationYesNo")
   private val mode         = NormalMode
 
   private lazy val addAdditionalInformationYesNoRoute =
