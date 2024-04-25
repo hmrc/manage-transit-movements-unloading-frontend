@@ -18,9 +18,7 @@ package controllers.houseConsignment.index.items.packages
 
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.reference.PackageType
 import models.removable.Packaging
-import models.requests.SpecificDataRequestProvider1
 import models.{ArrivalId, Index, Mode, UserAnswers}
 import pages.sections.PackagingSection
 import play.api.data.Form
@@ -43,10 +41,6 @@ class RemovePackageTypeYesNoController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
-
-  private type Request = SpecificDataRequestProvider1[PackageType]#SpecificDataRequest[_]
-
-  private def packageType(implicit request: Request): PackageType = request.arg
 
   private def addAnother(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Call =
     routes.AddAnotherPackageController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
@@ -99,12 +93,11 @@ class RemovePackageTypeYesNoController @Inject() (
                 for {
                   updatedAnswers <-
                     if (value) {
-                      Future.fromTry(request.userAnswers.removeExceptSequenceNumber(PackagingSection(houseConsignmentIndex, itemIndex, packageIndex)))
+                      Future.fromTry(request.userAnswers.removeDataGroup(PackagingSection(houseConsignmentIndex, itemIndex, packageIndex)))
                     } else { Future.successful(request.userAnswers) }
                   _ <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(
-                  controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController
-                    .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+                  addAnother(arrivalId, houseConsignmentIndex, itemIndex, mode)
                 )
             )
       }

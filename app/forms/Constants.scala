@@ -17,15 +17,16 @@
 package forms
 
 object Constants {
-  lazy val maxItemDescriptionLength: Int        = 512
-  lazy val exactCUSCodeLength: Int              = 9
-  lazy val grossWeightDecimalPlaces: Int        = 6
-  lazy val grossWeightIntegerLength: Int        = 16
-  lazy val maxPackageShippingMarkLength: Int    = 512
-  lazy val maxSealIdentificationLength: Int     = 20
-  lazy val maxDocumentRefNumberLength: Int      = 70
-  lazy val maxAdditionalInfoLength: Int         = 35
-  lazy val maxAdditionalReferenceNumLength: Int = 70
-  lazy val maxNumberOfPackages: BigInt          = 999999999
-  lazy val otherThingsToReportLength: Int       = 512
+  lazy val maxItemDescriptionLength: Int         = 512
+  lazy val exactCUSCodeLength: Int               = 9
+  lazy val grossWeightDecimalPlaces: Int         = 6
+  lazy val grossWeightIntegerLength: Int         = 16
+  lazy val maxPackageShippingMarkLength: Int     = 512
+  lazy val maxSealIdentificationLength: Int      = 20
+  lazy val maxDocumentRefNumberLength: Int       = 70
+  lazy val maxAdditionalInfoLength: Int          = 35
+  lazy val maxAdditionalReferenceNumLength: Int  = 70
+  lazy val maxNumberOfPackages: BigInt           = 999999999
+  lazy val otherThingsToReportLength: Int        = 512
+  lazy val maxDocumentsAdditionalInfoLength: Int = 35
 }

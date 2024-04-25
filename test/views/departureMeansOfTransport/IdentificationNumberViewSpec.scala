@@ -29,7 +29,7 @@ import views.html.departureMeansOfTransport.IdentificationNumberView
 class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
   private val mode = Gen.oneOf(NormalMode, CheckMode).sample.value
 
-  override def form: Form[String] = new VehicleIdentificationNumberFormProvider()(mode)
+  override def form: Form[String] = new VehicleIdentificationNumberFormProvider()(prefix, mode)
   private val viewModel           = arbitrary[IdentificationNumberViewModel].sample.value
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =

@@ -16,15 +16,24 @@
 
 package pages.houseConsignment.index.additionalReference
 
+import generated.AdditionalReferenceType03
 import models.Index
-import pages.QuestionPage
+import pages.DiscrepancyQuestionPage
 import pages.sections.houseConsignment.index.additionalReference.AdditionalReferenceSection
 import play.api.libs.json.JsPath
 
-case class HouseConsignmentAdditionalReferenceNumberPage(houseConsignmentIndex: Index, additionalReferenceIndex: Index) extends QuestionPage[String] {
+case class HouseConsignmentAdditionalReferenceNumberPage(houseConsignmentIndex: Index, additionalReferenceIndex: Index)
+    extends DiscrepancyQuestionPage[String, Seq[AdditionalReferenceType03], String] {
 
   override def path: JsPath =
     AdditionalReferenceSection(houseConsignmentIndex, additionalReferenceIndex).path \ toString
 
   override def toString: String = "referenceNumber"
+
+  override def valueInIE043(ie043: Seq[AdditionalReferenceType03], sequenceNumber: Option[BigInt]): Option[String] =
+    ie043
+      .find {
+        x => sequenceNumber.contains(x.sequenceNumber)
+      }
+      .flatMap(_.referenceNumber)
 }

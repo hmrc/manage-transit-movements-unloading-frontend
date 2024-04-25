@@ -22,7 +22,7 @@ import models.{DynamicAddress, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
-import pages.consignor.CountryPage
+import pages.houseConsignment.consignor.CountryPage
 import pages.houseConsignment.index.CountryOfDestinationPage
 import utils.answersHelpers.AnswersHelperSpecBase
 import viewModels.sections.Section.AccordionSection
@@ -59,6 +59,32 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
     }
   }
 
+  "preGrossMassRow" - {
+    import pages.houseConsignment.index.GrossWeightPage
+
+    "must return None" - {
+      s"when no transport equipments defined" in {
+        val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, hcIndex)
+        val result = helper.preGrossMassRow
+        result.isEmpty mustBe true
+      }
+    }
+
+    "must return Some(Row)" - {
+      s"when $GrossWeightPage is defined" in {
+        val answers = emptyUserAnswers
+          .setValue(GrossWeightPage(hcIndex), BigDecimal(999.99))
+
+        val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
+        val result = helper.preGrossMassRow.value
+
+        result.key.value mustBe "Gross weight"
+        result.value.value mustBe "999.99"
+        result.actions mustBe None
+      }
+    }
+  }
+
   "HouseConsignmentAnswersHelper" - {
 
     "consignorName" - {
@@ -66,7 +92,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, hcIndex)
-          helper.consignorName mustBe None
+          helper.consignorName() mustBe None
         }
       }
 
@@ -77,9 +103,9 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               val answers = emptyUserAnswers.setValue(page, value)
 
               val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
-              val result = helper.consignorName.value
+              val result = helper.consignorName().value
 
-              result.key.value mustBe "Consignor name"
+              result.key.value mustBe "Name"
               result.value.value mustBe value
               result.actions must not be defined
           }
@@ -92,7 +118,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, hcIndex)
-          helper.consignorIdentification mustBe None
+          helper.consignorIdentification() mustBe None
         }
       }
 
@@ -103,9 +129,9 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               val answers = emptyUserAnswers.setValue(page, value)
 
               val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
-              val result = helper.consignorIdentification.value
+              val result = helper.consignorIdentification().value
 
-              result.key.value mustBe "Consignor EORI number or Trader Identification Number (TIN)"
+              result.key.value mustBe "EORI number or Trader Identification Number (TIN)"
               result.value.value mustBe value
               result.actions must not be defined
           }
@@ -131,7 +157,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
               val result = helper.consigneeName.value
 
-              result.key.value mustBe "Consignee name"
+              result.key.value mustBe "Name"
               result.value.value mustBe value
               result.actions must not be defined
           }
@@ -167,7 +193,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
     }
 
     "country" - {
-      val page = CountryPage
+      val page = CountryPage(houseConsignmentIndex)
       "must return None" - {
         s"when $page undefined" in {
           val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, houseConsignmentIndex)
@@ -210,7 +236,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
               val result = helper.consigneeIdentification.value
 
-              result.key.value mustBe "Consignee EORI number or Trader Identification Number (TIN)"
+              result.key.value mustBe "EORI number or Trader Identification Number (TIN)"
               result.value.value mustBe value
               result.actions must not be defined
           }
@@ -534,7 +560,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         result.children.head.children(5).children.head.sectionTitle.get mustBe "Package 1"
         result.children.head.children(5).children.head.id.get mustBe "item-1-package-1"
         result.children.head.children(5).children.head.rows.size mustBe 3
-        result.children.head.children(5).children.head.rows(0).value.value mustBe s"${packageType.asDescription}"
+        result.children.head.children(5).children.head.rows(0).value.value mustBe s"${packageType.description}"
         result.children.head.children(5).children.head.rows(1).value.value mustBe s"$count"
         result.children.head.children(5).children.head.rows(2).value.value mustBe s"$description"
       }

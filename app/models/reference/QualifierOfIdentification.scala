@@ -30,6 +30,6 @@ object QualifierOfIdentification extends DynamicEnumerableType[QualifierOfIdenti
   implicit val format: Format[QualifierOfIdentification] = Json.format[QualifierOfIdentification]
 
   implicit val order: Order[QualifierOfIdentification] = (x: QualifierOfIdentification, y: QualifierOfIdentification) => {
-    x.qualifier.compareToIgnoreCase(y.qualifier)
+    (x, y).compareBy(_.qualifier)
   }
 }

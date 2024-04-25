@@ -29,6 +29,10 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import viewModels.additionalReference.index.{AddAnotherAdditionalReferenceViewModel, AdditionalReferenceTypeViewModel}
 import viewModels.departureTransportMeans._
 import viewModels.documents.{AddAnotherDocumentViewModel, AdditionalInformationViewModel, DocumentReferenceNumberViewModel, TypeViewModel}
+import viewModels.houseConsignment.index.additionalReference.{AdditionalReferenceTypeViewModel => HCAdditionalReferenceTypeViewModel}
+import viewModels.houseConsignment.index.departureMeansOfTransport.HouseConsignmentCountryViewModel
+import viewModels.houseConsignment.index.departureTransportMeans.{IdentificationNumberViewModel => HCIdentificationNumberViewModel}
+import viewModels.houseConsignment.index.documents.ReferenceNumberViewModel
 import viewModels.houseConsignment.index.items.additionalReference.{
   AdditionalReferenceNumberViewModel,
   AdditionalReferenceTypeViewModel => AdditionalReferenceTypeItemViewModel
@@ -254,6 +258,14 @@ trait ViewModelGenerators {
     } yield CountryViewModel(heading, title, requiredError)
   }
 
+  implicit lazy val arbitraryHouseConsignmentCountryViewModel: Arbitrary[HouseConsignmentCountryViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+    } yield HouseConsignmentCountryViewModel(heading, title, requiredError)
+  }
+
   implicit lazy val arbitraryIdentificationViewModel: Arbitrary[IdentificationViewModel] = Arbitrary {
     for {
       heading       <- nonEmptyString
@@ -268,6 +280,14 @@ trait ViewModelGenerators {
       title         <- nonEmptyString
       requiredError <- nonEmptyString
     } yield IdentificationNumberViewModel(heading, title, requiredError)
+  }
+
+  implicit lazy val arbitraryHCIdentificationNumberViewModel: Arbitrary[HCIdentificationNumberViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+    } yield HCIdentificationNumberViewModel(heading, title, requiredError)
   }
 
   implicit lazy val arbitraryListItem: Arbitrary[ListItem] = Arbitrary {
@@ -337,6 +357,14 @@ trait ViewModelGenerators {
       title         <- nonEmptyString
       requiredError <- nonEmptyString
     } yield DocumentReferenceNumberViewModel(heading, title, requiredError)
+  }
+
+  implicit lazy val arbitraryReferenceNumberViewModel: Arbitrary[ReferenceNumberViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+    } yield ReferenceNumberViewModel(heading, title, requiredError)
   }
 
   implicit lazy val arbitraryAdditionalInformationViewModel: Arbitrary[AdditionalInformationViewModel] = Arbitrary {
@@ -483,5 +511,33 @@ trait ViewModelGenerators {
       nextIndex    <- arbitrary[Index]
     } yield AddAnotherPackageViewModel(listItems, onSubmitCall, nextIndex)
   }
+
+  implicit lazy val arbitraryHCAdditionalReferenceViewModel: Arbitrary[HCAdditionalReferenceTypeViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+      arrivalId     <- nonEmptyString
+    } yield HCAdditionalReferenceTypeViewModel(heading, title, requiredError, ArrivalId(arrivalId), NormalMode, Index(0), Index(0))
+  }
+
+  implicit lazy val arbitraryHouseConsignmentIdentificationViewModel
+    : Arbitrary[viewModels.houseConsignment.index.departureTransportMeans.IdentificationViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+      paragraph     <- nonEmptyString
+    } yield viewModels.houseConsignment.index.departureTransportMeans.IdentificationViewModel(heading, title, requiredError, Some(paragraph))
+  }
+
+  implicit lazy val arbitraryHCDocumentsAdditionalInformationViewModel: Arbitrary[viewModels.houseConsignment.index.documents.AdditionalInformationViewModel] =
+    Arbitrary {
+      for {
+        heading       <- nonEmptyString
+        title         <- nonEmptyString
+        requiredError <- nonEmptyString
+      } yield viewModels.houseConsignment.index.documents.AdditionalInformationViewModel(heading, title, requiredError)
+    }
 
 }
