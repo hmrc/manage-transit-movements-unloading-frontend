@@ -27,5 +27,27 @@ class DoYouHaveAnythingElseToReportYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](DoYouHaveAnythingElseToReportYesNoPage)
 
     beRemovable[Boolean](DoYouHaveAnythingElseToReportYesNoPage)
+
+    "cleanup" - {
+      "must remove other things reported when no selected" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(DoYouHaveAnythingElseToReportYesNoPage, true)
+          .setValue(OtherThingsToReportPage, "Other things reported")
+
+        val result = userAnswers.setValue(DoYouHaveAnythingElseToReportYesNoPage, false)
+
+        result.get(OtherThingsToReportPage) must not be defined
+      }
+
+      "must keep other things reported when yes selected" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(DoYouHaveAnythingElseToReportYesNoPage, true)
+          .setValue(OtherThingsToReportPage, "comments")
+
+        val result = userAnswers.setValue(DoYouHaveAnythingElseToReportYesNoPage, true)
+
+        result.get(OtherThingsToReportPage) must be(defined)
+      }
+    }
   }
 }
