@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package models.reference
+package models
 
-import cats.Order
-import play.api.libs.json.{Format, Json}
+package object reference {
 
-case class AdditionalReferenceType(documentType: String, description: String) extends Selectable {
+  implicit class RichComparison[T](value: (T, T)) {
 
-  override def toString: String = s"$documentType - $description"
-
-  override val value: String = documentType
-}
-
-object AdditionalReferenceType {
-  implicit val format: Format[AdditionalReferenceType] = Json.format[AdditionalReferenceType]
-
-  implicit val order: Order[AdditionalReferenceType] = (x: AdditionalReferenceType, y: AdditionalReferenceType) => {
-    (x, y).compareBy(_.description, _.documentType)
+    def compareBy(fs: (T => String)*): Int =
+      value match {
+        case (x, y) =>
+          fs.toList match {
+            case Nil => 0
+            case f :: tail =>
+              f(x).compareToIgnoreCase(f(y)) match {
+                case 0      => compareBy(tail: _*)
+                case result => result
+              }
+          }
+      }
   }
-
 }
