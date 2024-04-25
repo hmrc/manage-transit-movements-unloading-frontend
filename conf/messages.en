@@ -1157,6 +1157,10 @@ houseConsignment.index.documents.addAdditionalInformationYesNo.heading = Do you 
 houseConsignment.index.documents.addAdditionalInformationYesNo.paragraph = This can be any other information you want to declare, such as a contact, any safety risks or further descriptions.
 houseConsignment.index.documents.addAdditionalInformationYesNo.error.required  = Select yes if you want to add any additional information for this document
 
+houseConsignment.index.documents.removeDocumentYesNo.title = Are you sure you want to remove this document from all items in house consignment {0}?
+houseConsignment.index.documents.removeDocumentYesNo.heading = Are you sure you want to remove this document from all items in house consignment {0}?
+houseConsignment.index.documents.removeDocumentYesNo.error.required = Select yes if you want to remove this document from all items in house consignment {0}
+
 houseConsignment.index.departureMeansOfTransport.identification.NormalMode.title = Which identification do you want to use for the departure means of transport?
 houseConsignment.index.departureMeansOfTransport.identification.CheckMode.title = Which identification do you want to use for the new departure means of transport in house consignment {0}?
 houseConsignment.index.departureMeansOfTransport.identification.NormalMode.heading = Which identification do you want to use for the departure means of transport?
