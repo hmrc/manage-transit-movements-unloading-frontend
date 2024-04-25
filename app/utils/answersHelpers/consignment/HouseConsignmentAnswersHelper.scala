@@ -50,6 +50,14 @@ class HouseConsignmentAnswersHelper(
     call = Some(Call(GET, "#"))
   )
 
+  def preGrossMassRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
+    page = GrossWeightPage(houseConsignmentIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.grossMass",
+    id = Some(s"change-gross-mass"),
+    call = None
+  )
+
   def safetyAndSecurityDetails: Option[SummaryListRow] = getAnswerAndBuildRow[SecurityType](
     page = SecurityIndicatorFromExportDeclarationPage(houseConsignmentIndex),
     formatAnswer = x => formatAsText(x.toString),
