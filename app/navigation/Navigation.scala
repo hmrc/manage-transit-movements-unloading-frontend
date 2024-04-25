@@ -48,9 +48,9 @@ class Navigation extends Navigator {
         }
     case DoYouHaveAnythingElseToReportYesNoPage =>
       ua =>
-        ua.get(DoYouHaveAnythingElseToReportYesNoPage) map {
-          case _ => Call(GET, "#") //TODO: Update DoYouHaveAnythingElseToReport navigation
-        }
+        ua.get(DoYouHaveAnythingElseToReportYesNoPage) map (
+          _ => Call(GET, "#")
+        ) //TODO: Update DoYouHaveAnythingElseToReport navigation)
 
     case _ =>
       _ => Some(routes.SessionExpiredController.onPageLoad())
@@ -69,6 +69,8 @@ class Navigation extends Navigator {
           case Some(false) => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
           case _           => Some(routes.SessionExpiredController.onPageLoad())
         }
-    case _ => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
+    case GrossWeightPage => ua => Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
+    case _               => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
+
   }
 }

@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.Constants.{grossWeightDecimalPlaces, grossWeightIntegerLength}
 import forms.GrossWeightFormProvider
 import models.{ArrivalId, Mode}
-import navigation.Navigator
+import navigation.{Navigation, Navigator}
 import pages.GrossWeightPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class GrossWeightController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: Navigation,
   actions: Actions,
   formProvider: GrossWeightFormProvider,
   val controllerComponents: MessagesControllerComponents,
