@@ -125,7 +125,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual "/manage-transit-movements/unloading/AB123/transit-unloading-permission-discrepancies/house-consignment/1"
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

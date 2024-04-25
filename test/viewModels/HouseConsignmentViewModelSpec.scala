@@ -24,6 +24,9 @@ import models.{Index, SecurityType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
+import pages.houseConsignment.index.departureMeansOfTransport.CountryPage
+import pages.houseConsignment.index.departureMeansOfTransport.VehicleIdentificationNumberPage
+import pages.houseConsignment.index.departureMeansOfTransport.TransportMeansIdentificationPage
 import pages.houseConsignment.index.{CountryOfDestinationPage, SecurityIndicatorFromExportDeclarationPage}
 import pages.houseConsignment.index.additionalReference.{HouseConsignmentAdditionalReferenceNumberPage, HouseConsignmentAdditionalReferenceTypePage}
 import pages.houseConsignment.index.additionalinformation.{HouseConsignmentAdditionalInformationCodePage, HouseConsignmentAdditionalInformationTextPage}
@@ -51,9 +54,9 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       "when there is one" in {
 
         val answers = emptyUserAnswers
-          .setValue(DepartureTransportMeansIdentificationNumberPage(Index(0), index), vehicleIdentificationNumber)
-          .setValue(DepartureTransportMeansIdentificationTypePage(Index(0), index), identificationType)
-          .setValue(DepartureTransportMeansCountryPage(Index(0), index), country)
+          .setValue(VehicleIdentificationNumberPage(Index(0), index), vehicleIdentificationNumber)
+          .setValue(TransportMeansIdentificationPage(Index(0), index), identificationType)
+          .setValue(CountryPage(Index(0), index), country)
 
         setExistingUserAnswers(answers)
 
@@ -73,12 +76,12 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       "when there is multiple" in {
 
         val answers = emptyUserAnswers
-          .setValue(DepartureTransportMeansIdentificationNumberPage(hcIndex, Index(0)), vehicleIdentificationNumber)
-          .setValue(DepartureTransportMeansIdentificationTypePage(hcIndex, Index(0)), identificationType)
-          .setValue(DepartureTransportMeansCountryPage(hcIndex, Index(0)), country)
-          .setValue(DepartureTransportMeansIdentificationNumberPage(hcIndex, Index(1)), vehicleIdentificationNumber)
-          .setValue(DepartureTransportMeansIdentificationTypePage(hcIndex, Index(1)), identificationType)
-          .setValue(DepartureTransportMeansCountryPage(hcIndex, Index(1)), country)
+          .setValue(VehicleIdentificationNumberPage(hcIndex, Index(0)), vehicleIdentificationNumber)
+          .setValue(TransportMeansIdentificationPage(hcIndex, Index(0)), identificationType)
+          .setValue(CountryPage(hcIndex, Index(0)), country)
+          .setValue(VehicleIdentificationNumberPage(hcIndex, Index(1)), vehicleIdentificationNumber)
+          .setValue(TransportMeansIdentificationPage(hcIndex, Index(1)), identificationType)
+          .setValue(CountryPage(hcIndex, Index(1)), country)
 
         setExistingUserAnswers(answers)
 
