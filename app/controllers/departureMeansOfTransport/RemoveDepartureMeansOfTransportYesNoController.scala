@@ -72,7 +72,7 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
               for {
                 updatedAnswers <-
                   if (value) {
-                    Future.fromTry(request.userAnswers.removeExceptSequenceNumber(TransportMeansSection(transportMeansIndex)))
+                    Future.fromTry(request.userAnswers.removeDataGroup(TransportMeansSection(transportMeansIndex)))
                   } else {
                     Future.successful(request.userAnswers)
                   }

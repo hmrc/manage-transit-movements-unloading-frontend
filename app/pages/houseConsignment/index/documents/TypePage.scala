@@ -16,10 +16,11 @@
 
 package pages.houseConsignment.index.documents
 
+import generated.{SupportingDocumentType02, TransportDocumentType02}
 import models.Index
 import models.reference.DocumentType
-import pages.QuestionPage
 import pages.sections.houseConsignment.index.documents.DocumentSection
+import pages.{DiscrepancyQuestionPage, QuestionPage}
 import play.api.libs.json.JsPath
 
 case class TypePage(houseConsignmentIndex: Index, documentIndex: Index) extends QuestionPage[DocumentType] {
@@ -27,4 +28,34 @@ case class TypePage(houseConsignmentIndex: Index, documentIndex: Index) extends 
   override def path: JsPath = DocumentSection(houseConsignmentIndex, documentIndex).path \ toString
 
   override def toString: String = "type"
+}
+
+trait BaseTypePage[T] extends DiscrepancyQuestionPage[DocumentType, Seq[T], String] {
+
+  val houseConsignmentIndex: Index
+  val documentIndex: Index
+
+  override def path: JsPath = TypePage(houseConsignmentIndex, documentIndex).path
+
+  override def toString: String = TypePage(houseConsignmentIndex, documentIndex).toString
+}
+
+case class SupportingTypePage(houseConsignmentIndex: Index, documentIndex: Index) extends BaseTypePage[SupportingDocumentType02] {
+
+  override def valueInIE043(ie043: Seq[SupportingDocumentType02], sequenceNumber: Option[BigInt]): Option[String] =
+    ie043
+      .find {
+        x => sequenceNumber.contains(x.sequenceNumber)
+      }
+      .map(_.typeValue)
+}
+
+case class TransportTypePage(houseConsignmentIndex: Index, documentIndex: Index) extends BaseTypePage[TransportDocumentType02] {
+
+  override def valueInIE043(ie043: Seq[TransportDocumentType02], sequenceNumber: Option[BigInt]): Option[String] =
+    ie043
+      .find {
+        x => sequenceNumber.contains(x.sequenceNumber)
+      }
+      .map(_.typeValue)
 }

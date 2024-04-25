@@ -26,17 +26,17 @@ trait ModeViewModelProvider {
   def heading(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
     messages(s"$prefix.${mode.toString}.heading", houseConsignmentIndex.display, itemIndex.display)
 
-  def title(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
-    messages(s"$prefix.${mode.toString}.title", houseConsignmentIndex.display, itemIndex.display)
-
-  def requiredError(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
-    messages(s"$prefix.${mode.toString}.error.required", houseConsignmentIndex.display, itemIndex.display)
-
   def heading(mode: Mode, houseConsignmentIndex: Index)(implicit messages: Messages): String =
     messages(s"$prefix.${mode.toString}.heading", houseConsignmentIndex.display)
 
+  def title(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
+    messages(s"$prefix.${mode.toString}.title", houseConsignmentIndex.display, itemIndex.display)
+
   def title(mode: Mode, houseConsignmentIndex: Index)(implicit messages: Messages): String =
-    messages(s"$prefix.${mode.toString}.title", houseConsignmentIndex.display)
+    messages(s"$prefix.${mode.toString}.heading", houseConsignmentIndex.display)
+
+  def requiredError(mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit messages: Messages): String =
+    messages(s"$prefix.${mode.toString}.error.required", houseConsignmentIndex.display, itemIndex.display)
 
   def requiredError(mode: Mode, houseConsignmentIndex: Index)(implicit messages: Messages): String =
     messages(s"$prefix.${mode.toString}.error.required", houseConsignmentIndex.display)

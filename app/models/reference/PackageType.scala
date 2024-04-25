@@ -21,15 +21,7 @@ import play.api.libs.json.{Json, OFormat}
 
 case class PackageType(code: String, description: String) extends Selectable {
 
-  override def toString: String = description match {
-    case value if value.trim.nonEmpty => s"($code) $value"
-    case _                            => code
-  }
-
-  def asDescription: String = description match {
-    case value if value.trim.nonEmpty => s"$value"
-    case _                            => code
-  }
+  override def toString: String = s"($code) $description"
 
   override val value: String = code
 }
@@ -37,5 +29,7 @@ case class PackageType(code: String, description: String) extends Selectable {
 object PackageType {
   implicit val format: OFormat[PackageType] = Json.format[PackageType]
 
-  implicit val order: Order[PackageType] = (x: PackageType, y: PackageType) => x.description.compareToIgnoreCase(y.description)
+  implicit val order: Order[PackageType] = (x: PackageType, y: PackageType) => {
+    (x, y).compareBy(_.description, _.code)
+  }
 }

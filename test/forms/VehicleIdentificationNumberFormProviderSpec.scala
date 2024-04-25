@@ -24,12 +24,14 @@ import play.api.data.{Field, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
 
 class VehicleIdentificationNumberFormProviderSpec extends StringFieldBehaviours {
-  private val mode        = NormalMode
-  private val requiredKey = "departureMeansOfTransport.identificationNumber.NormalMode.error.required"
-  private val maxLength   = UnloadingRemarksRequest.vehicleIdentificationNumberMaxLength
-  private val invalidKey  = "departureMeansOfTransport.identificationNumber.error.invalid"
-  private val form        = new VehicleIdentificationNumberFormProvider()(mode)
-  private val fieldName   = "value"
+
+  private val prefix: String = Gen.alphaNumStr.sample.value
+  private val mode           = NormalMode
+  private val requiredKey    = s"$prefix.NormalMode.error.required"
+  private val maxLength      = UnloadingRemarksRequest.vehicleIdentificationNumberMaxLength
+  private val invalidKey     = s"$prefix.error.invalid"
+  private val form           = new VehicleIdentificationNumberFormProvider()(prefix, mode)
+  private val fieldName      = "value"
 
   ".value" - {
 

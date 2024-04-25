@@ -16,12 +16,12 @@
 
 package pages.sections.documents
 
-import pages.sections.Section
+import pages.sections.{ConsignmentSection, Section}
 import play.api.libs.json.{JsArray, JsPath}
 
 case object DocumentsSection extends Section[JsArray] {
 
-  override def path: JsPath = DocumentParentSection.path \ toString
+  override def path: JsPath = ConsignmentSection.path \ toString
 
-  override def toString: String = "documents"
+  override def toString: String = "Documents"
 }

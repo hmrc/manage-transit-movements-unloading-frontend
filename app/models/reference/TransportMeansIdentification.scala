@@ -34,8 +34,9 @@ case class TransportMeansIdentification(`type`: String, description: String) ext
 object TransportMeansIdentification extends DynamicEnumerableType[TransportMeansIdentification] {
   implicit val format: Format[TransportMeansIdentification] = Json.format[TransportMeansIdentification]
 
-  implicit val order: Order[TransportMeansIdentification] = (x: TransportMeansIdentification, y: TransportMeansIdentification) =>
-    x.code.compareToIgnoreCase(y.code)
+  implicit val order: Order[TransportMeansIdentification] = (x: TransportMeansIdentification, y: TransportMeansIdentification) => {
+    (x, y).compareBy(_.`type`)
+  }
 
   val messageKeyPrefix = "departureMeansOfTransport.identification"
 }

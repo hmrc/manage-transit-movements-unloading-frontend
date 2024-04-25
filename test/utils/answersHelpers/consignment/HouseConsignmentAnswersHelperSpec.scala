@@ -66,7 +66,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, hcIndex)
-          helper.consignorName mustBe None
+          helper.consignorName() mustBe None
         }
       }
 
@@ -77,7 +77,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               val answers = emptyUserAnswers.setValue(page, value)
 
               val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
-              val result = helper.consignorName.value
+              val result = helper.consignorName().value
 
               result.key.value mustBe "Name"
               result.value.value mustBe value
@@ -92,7 +92,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       "must return None" - {
         s"when $page undefined" in {
           val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, hcIndex)
-          helper.consignorIdentification mustBe None
+          helper.consignorIdentification() mustBe None
         }
       }
 
@@ -103,7 +103,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               val answers = emptyUserAnswers.setValue(page, value)
 
               val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
-              val result = helper.consignorIdentification.value
+              val result = helper.consignorIdentification().value
 
               result.key.value mustBe "EORI number or Trader Identification Number (TIN)"
               result.value.value mustBe value
@@ -131,7 +131,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
               val result = helper.consigneeName.value
 
-              result.key.value mustBe "Consignee name"
+              result.key.value mustBe "Name"
               result.value.value mustBe value
               result.actions must not be defined
           }
@@ -534,7 +534,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         result.children.head.children(5).children.head.sectionTitle.get mustBe "Package 1"
         result.children.head.children(5).children.head.id.get mustBe "item-1-package-1"
         result.children.head.children(5).children.head.rows.size mustBe 3
-        result.children.head.children(5).children.head.rows(0).value.value mustBe s"${packageType.asDescription}"
+        result.children.head.children(5).children.head.rows(0).value.value mustBe s"${packageType.description}"
         result.children.head.children(5).children.head.rows(1).value.value mustBe s"$count"
         result.children.head.children(5).children.head.rows(2).value.value mustBe s"$description"
       }

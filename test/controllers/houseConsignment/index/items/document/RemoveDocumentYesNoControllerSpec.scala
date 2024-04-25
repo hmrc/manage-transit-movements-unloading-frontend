@@ -29,6 +29,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import pages.houseConsignment.index.items.document.{DocumentReferenceNumberPage, TypePage}
 import pages.sections.houseConsignment.index.items.documents.DocumentSection
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.houseConsignment.index.items.document.RemoveDocumentYesNoView
@@ -112,7 +113,14 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
-        userAnswersCaptor.getValue.get(DocumentSection(houseConsignmentIndex, itemIndex, documentIndex)) mustNot be(defined)
+        userAnswersCaptor.getValue.get(DocumentSection(houseConsignmentIndex, itemIndex, documentIndex)).value mustBe Json.parse("""
+            |{
+            |  "type" : {
+            |    "type" : "Supporting"
+            |  },
+            |  "removed" : true
+            |}
+            |""".stripMargin)
       }
     }
 

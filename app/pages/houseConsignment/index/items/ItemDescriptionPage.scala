@@ -16,14 +16,18 @@
 
 package pages.houseConsignment.index.items
 
+import generated.CommodityType08
 import models.Index
-import pages.QuestionPage
+import pages.DiscrepancyQuestionPage
 import pages.sections.ItemSection
 import play.api.libs.json.JsPath
 
-case class ItemDescriptionPage(houseConsignmentIndex: Index, itemIndex: Index) extends QuestionPage[String] {
+case class ItemDescriptionPage(houseConsignmentIndex: Index, itemIndex: Index) extends DiscrepancyQuestionPage[String, Option[CommodityType08], String] {
 
   override def path: JsPath = ItemSection(houseConsignmentIndex, itemIndex).path \ "Commodity" \ toString
 
   override def toString: String = "descriptionOfGoods"
+
+  override def valueInIE043(ie043: Option[CommodityType08], sequenceNumber: Option[BigInt]): Option[String] =
+    ie043.map(_.descriptionOfGoods)
 }

@@ -16,12 +16,12 @@
 
 package views.departureMeansOfTransport
 
-import forms.DepartureMeansOfTransportCountryFormProvider
+import forms.SelectableFormProvider
 import generators.Generators
-import models.{CheckMode, NormalMode}
 import models.reference.Country
-import org.scalacheck.{Arbitrary, Gen}
+import models.{CheckMode, NormalMode, SelectableList}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.departureTransportMeans.CountryViewModel
@@ -30,7 +30,7 @@ import views.html.departureMeansOfTransport.CountryView
 
 class CountryViewSpec extends InputSelectViewBehaviours[Country] with Generators {
   private val mode                        = Gen.oneOf(NormalMode, CheckMode).sample.value
-  override def form: Form[Country]        = new DepartureMeansOfTransportCountryFormProvider()(mode, values)
+  override def form: Form[Country]        = new SelectableFormProvider()(mode, prefix, SelectableList(values))
   private val viewModel: CountryViewModel = arbitrary[CountryViewModel].sample.value
 
   override def applyView(form: Form[Country]): HtmlFormat.Appendable =
@@ -40,11 +40,13 @@ class CountryViewSpec extends InputSelectViewBehaviours[Country] with Generators
 
   implicit override val arbitraryT: Arbitrary[Country] = arbitraryCountry
 
-  override lazy val values: Seq[Country] = Seq(
+  val countrySeq: Seq[Country] = Seq(
     Country("UK", "United Kingdom"),
     Country("US", "United States"),
     Country("ES", "Spain")
   )
+
+  val selectableListCountries: SelectableList[Country] = SelectableList(countrySeq)
 
   behave like pageWithTitle(text = viewModel.title)
 
