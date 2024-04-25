@@ -129,27 +129,53 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       import pages._
 
       "when there are seal numbers in the IE043 message" - {
-        "when seals can be read and no seals broken" in {
-          forAll(Gen.alphaNumStr) {
-            unloadingRemark =>
-              val userAnswers = emptyUserAnswers
-                .setValue(UnloadingTypePage, UnloadingType.Fully)
-                .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
-                .setValue(CanSealsBeReadPage, true)
-                .setValue(AreAnySealsBrokenPage, false)
-                .setValue(AddUnloadingCommentsYesNoPage, true)
-                .setValue(UnloadingCommentsPage, unloadingRemark)
+        "when seals can be read and no seals broken" - {
+          "and AddUnloadingCommentsYesNo is true" in {
+            forAll(Gen.alphaNumStr) {
+              unloadingRemark =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(UnloadingTypePage, UnloadingType.Fully)
+                  .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
+                  .setValue(CanSealsBeReadPage, true)
+                  .setValue(AreAnySealsBrokenPage, false)
+                  .setValue(AddUnloadingCommentsYesNoPage, true)
+                  .setValue(UnloadingCommentsPage, unloadingRemark)
 
-              val reads  = service.unloadingRemarkReads
-              val result = userAnswers.data.as[UnloadingRemarkType](reads)
+                val reads  = service.unloadingRemarkReads
+                val result = userAnswers.data.as[UnloadingRemarkType](reads)
 
-              result mustBe UnloadingRemarkType(
-                conform = Number0,
-                unloadingCompletion = Number1,
-                unloadingDate = XMLCalendar("2020-01-01"),
-                stateOfSeals = Some(Number1),
-                unloadingRemark = Some(unloadingRemark)
-              )
+                result mustBe UnloadingRemarkType(
+                  conform = Number0,
+                  unloadingCompletion = Number1,
+                  unloadingDate = XMLCalendar("2020-01-01"),
+                  stateOfSeals = Some(Number1),
+                  unloadingRemark = Some(unloadingRemark)
+                )
+            }
+          }
+
+          "and AddUnloadingCommentsYesNo is false" in {
+            forAll(Gen.alphaNumStr) {
+              unloadingRemark =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(UnloadingTypePage, UnloadingType.Fully)
+                  .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
+                  .setValue(CanSealsBeReadPage, true)
+                  .setValue(AreAnySealsBrokenPage, false)
+                  .setValue(AddUnloadingCommentsYesNoPage, false)
+                  .setValue(UnloadingCommentsPage, unloadingRemark)
+
+                val reads  = service.unloadingRemarkReads
+                val result = userAnswers.data.as[UnloadingRemarkType](reads)
+
+                result mustBe UnloadingRemarkType(
+                  conform = Number1,
+                  unloadingCompletion = Number1,
+                  unloadingDate = XMLCalendar("2020-01-01"),
+                  stateOfSeals = Some(Number1),
+                  unloadingRemark = Some(unloadingRemark)
+                )
+            }
           }
         }
 
@@ -161,7 +187,6 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                 .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
                 .setValue(CanSealsBeReadPage, true)
                 .setValue(AreAnySealsBrokenPage, true)
-                .setValue(AddUnloadingCommentsYesNoPage, true)
                 .setValue(UnloadingCommentsPage, unloadingRemark)
 
               val reads  = service.unloadingRemarkReads
@@ -185,7 +210,6 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                 .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
                 .setValue(CanSealsBeReadPage, false)
                 .setValue(AreAnySealsBrokenPage, true)
-                .setValue(AddUnloadingCommentsYesNoPage, true)
                 .setValue(UnloadingCommentsPage, unloadingRemark)
 
               val reads  = service.unloadingRemarkReads
@@ -209,7 +233,6 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
                 .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
                 .setValue(CanSealsBeReadPage, false)
                 .setValue(AreAnySealsBrokenPage, false)
-                .setValue(AddUnloadingCommentsYesNoPage, true)
                 .setValue(UnloadingCommentsPage, unloadingRemark)
 
               val reads  = service.unloadingRemarkReads
@@ -224,24 +247,44 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               )
           }
         }
-      }
 
-      "when there are no seal numbers in the IE043 message" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(UnloadingTypePage, UnloadingType.Partially)
-          .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
-          .setValue(AddUnloadingCommentsYesNoPage, false)
+        "when there are no seal numbers in the IE043 message" - {
+          "and AddUnloadingCommentsYesNo is false" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(UnloadingTypePage, UnloadingType.Partially)
+              .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
+              .setValue(AddUnloadingCommentsYesNoPage, false)
 
-        val reads  = service.unloadingRemarkReads
-        val result = userAnswers.data.as[UnloadingRemarkType](reads)
+            val reads  = service.unloadingRemarkReads
+            val result = userAnswers.data.as[UnloadingRemarkType](reads)
 
-        result mustBe UnloadingRemarkType(
-          conform = Number1,
-          unloadingCompletion = Number0,
-          unloadingDate = XMLCalendar("2020-01-01"),
-          stateOfSeals = None,
-          unloadingRemark = None
-        )
+            result mustBe UnloadingRemarkType(
+              conform = Number1,
+              unloadingCompletion = Number0,
+              unloadingDate = XMLCalendar("2020-01-01"),
+              stateOfSeals = None,
+              unloadingRemark = None
+            )
+          }
+
+          "and AddUnloadingCommentsYesNo is true" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(UnloadingTypePage, UnloadingType.Partially)
+              .setValue(DateGoodsUnloadedPage, LocalDate.of(2020: Int, 1, 1))
+              .setValue(AddUnloadingCommentsYesNoPage, true)
+
+            val reads  = service.unloadingRemarkReads
+            val result = userAnswers.data.as[UnloadingRemarkType](reads)
+
+            result mustBe UnloadingRemarkType(
+              conform = Number0,
+              unloadingCompletion = Number0,
+              unloadingDate = XMLCalendar("2020-01-01"),
+              stateOfSeals = None,
+              unloadingRemark = None
+            )
+          }
+        }
       }
     }
   }

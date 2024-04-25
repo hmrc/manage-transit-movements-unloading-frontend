@@ -99,21 +99,25 @@ class SubmissionService @Inject() (
     import pages._
 
     for {
-      conform             <- AddUnloadingCommentsYesNoPage.path.read[Boolean].map(!_).map(boolToFlag)
       unloadingCompletion <- UnloadingTypePage.path.read[UnloadingType].map(unloadingTypeToFlag)
       unloadingDate       <- DateGoodsUnloadedPage.path.read[LocalDate].map(localDateToXMLGregorianCalendar)
       canSealsBeRead      <- CanSealsBeReadPage.path.readNullable[Boolean]
       areAnySealsBroken   <- AreAnySealsBrokenPage.path.readNullable[Boolean]
       unloadingRemark     <- UnloadingCommentsPage.path.readNullable[String]
-    } yield UnloadingRemarkType(
-      conform = conform,
-      unloadingCompletion = unloadingCompletion,
-      unloadingDate = unloadingDate,
       stateOfSeals = (canSealsBeRead, areAnySealsBroken) match {
         case (Some(true), Some(false)) => Some(Number1)
         case (Some(_), Some(_))        => Some(Number0)
         case _                         => None
-      },
+      }
+      conform <- stateOfSeals match {
+        case Some(Number0) => Number0: Reads[Flag]
+        case _             => AddUnloadingCommentsYesNoPage.path.read[Boolean].map(!_).map(boolToFlag)
+      }
+    } yield UnloadingRemarkType(
+      conform = conform,
+      unloadingCompletion = unloadingCompletion,
+      unloadingDate = unloadingDate,
+      stateOfSeals = stateOfSeals,
       unloadingRemark = unloadingRemark
     )
   }
