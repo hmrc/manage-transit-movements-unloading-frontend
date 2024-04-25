@@ -387,7 +387,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
           AccordionSection(
             sectionTitle = messages("unloadingFindings.subsections.houseConsignment", index.display),
-            rows = Seq(helper.grossMassRow, helper.consignorIdentification(Some("pre")), helper.consignorName(Some("pre"))).flatten,
+            rows = Seq(helper.preGrossMassRow, helper.consignorIdentification(Some("pre")), helper.consignorName(Some("pre"))).flatten,
             viewLinks = Seq(
               Link(
                 id = s"view-house-consignment-${index.display}",
