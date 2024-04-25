@@ -1170,3 +1170,12 @@ houseConsignment.index.addDepartureTransportMeansYesNo.title = Do you want to ad
 houseConsignment.index.addDepartureTransportMeansYesNo.heading = Do you want to add a departure means of transport for house consignment {0}?
 houseConsignment.index.addDepartureTransportMeansYesNo.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
 houseConsignment.index.addDepartureTransportMeansYesNo.error.required = Select yes if you want to add a departure means of transport for house consignment {0}
+
+houseConsignment.index.documents.additionalInformation.NormalMode.title = Enter the additional information
+houseConsignment.index.documents.additionalInformation.CheckMode.title = Enter the new additional information in house consignment {0}?
+houseConsignment.index.documents.additionalInformation.NormalMode.heading = Enter the additional information
+houseConsignment.index.documents.additionalInformation.CheckMode.heading = Enter the new additional information in house consignment {0}?
+houseConsignment.index.documents.additionalInformation.NormalMode.error.required = Enter the additional information
+houseConsignment.index.documents.additionalInformation.CheckMode.error.required = Enter the new additional information in house consignment {0}
+houseConsignment.index.documents.additionalInformation.error.length = The additional information must be 35 characters or less
+houseConsignment.index.documents.additionalInformation.error.invalidCharacters = The additional information must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
