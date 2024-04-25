@@ -59,6 +59,32 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
     }
   }
 
+  "preGrossMassRow" - {
+    import pages.houseConsignment.index.GrossWeightPage
+
+    "must return None" - {
+      s"when no transport equipments defined" in {
+        val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, hcIndex)
+        val result = helper.preGrossMassRow
+        result.isEmpty mustBe true
+      }
+    }
+
+    "must return Some(Row)" - {
+      s"when $GrossWeightPage is defined" in {
+        val answers = emptyUserAnswers
+          .setValue(GrossWeightPage(hcIndex), BigDecimal(999.99))
+
+        val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
+        val result = helper.preGrossMassRow.value
+
+        result.key.value mustBe "Gross weight"
+        result.value.value mustBe "999.99"
+        result.actions mustBe None
+      }
+    }
+  }
+
   "HouseConsignmentAnswersHelper" - {
 
     "consignorName" - {

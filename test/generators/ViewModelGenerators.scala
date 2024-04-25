@@ -30,8 +30,9 @@ import viewModels.additionalReference.index.{AddAnotherAdditionalReferenceViewMo
 import viewModels.departureTransportMeans._
 import viewModels.documents.{AddAnotherDocumentViewModel, AdditionalInformationViewModel, DocumentReferenceNumberViewModel, TypeViewModel}
 import viewModels.houseConsignment.index.additionalReference.{AdditionalReferenceTypeViewModel => HCAdditionalReferenceTypeViewModel}
-import viewModels.houseConsignment.index.documents.ReferenceNumberViewModel
 import viewModels.houseConsignment.index.departureMeansOfTransport.HouseConsignmentCountryViewModel
+import viewModels.houseConsignment.index.departureTransportMeans.{IdentificationNumberViewModel => HCIdentificationNumberViewModel}
+import viewModels.houseConsignment.index.documents.ReferenceNumberViewModel
 import viewModels.houseConsignment.index.items.additionalReference.{
   AdditionalReferenceNumberViewModel,
   AdditionalReferenceTypeViewModel => AdditionalReferenceTypeItemViewModel
@@ -53,7 +54,6 @@ import viewModels.transportEquipment.AddAnotherEquipmentViewModel
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
 import viewModels.transportEquipment.index.{AddAnotherSealViewModel, ApplyAnotherItemViewModel, ContainerIdentificationNumberViewModel}
 import viewModels.{ListItem, UnloadingFindingsViewModel}
-import viewModels.houseConsignment.index.departureTransportMeans.{IdentificationNumberViewModel => HCIdentificationNumberViewModel}
 
 trait ViewModelGenerators {
   self: Generators =>
@@ -530,5 +530,14 @@ trait ViewModelGenerators {
       paragraph     <- nonEmptyString
     } yield viewModels.houseConsignment.index.departureTransportMeans.IdentificationViewModel(heading, title, requiredError, Some(paragraph))
   }
+
+  implicit lazy val arbitraryHCDocumentsAdditionalInformationViewModel: Arbitrary[viewModels.houseConsignment.index.documents.AdditionalInformationViewModel] =
+    Arbitrary {
+      for {
+        heading       <- nonEmptyString
+        title         <- nonEmptyString
+        requiredError <- nonEmptyString
+      } yield viewModels.houseConsignment.index.documents.AdditionalInformationViewModel(heading, title, requiredError)
+    }
 
 }

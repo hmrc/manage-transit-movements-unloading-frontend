@@ -31,10 +31,8 @@ import pages.sections.documents.DocumentsSection
 import pages.sections.incidents.IncidentsSection
 import pages.{CustomsOfficeOfDestinationActualPage, SecurityTypePage}
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.consignment._
 import utils.answersHelpers.consignment.incident.IncidentAnswersHelper
 import viewModels.sections.Section
@@ -387,7 +385,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
           AccordionSection(
             sectionTitle = messages("unloadingFindings.subsections.houseConsignment", index.display),
-            rows = Seq(helper.grossMassRow, helper.consignorIdentification(Some("pre")), helper.consignorName(Some("pre"))).flatten,
+            rows = Seq(helper.preGrossMassRow, helper.consignorIdentification(Some("pre")), helper.consignorName(Some("pre"))).flatten,
             viewLinks = Seq(
               Link(
                 id = s"view-house-consignment-${index.display}",
