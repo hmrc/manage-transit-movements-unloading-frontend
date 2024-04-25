@@ -1152,6 +1152,11 @@ houseConsignment.index.documents.referenceNumber.error.invalidCharacters = The r
 houseConsignment.index.documents.referenceNumber.error.length = The reference number must be 70 characters or less
 houseConsignment.index.documents.referenceNumber.error.duplicate = The reference number must be unique
 
+houseConsignment.index.documents.addAdditionalInformationYesNo.title = Do you want to add any additional information for this document?
+houseConsignment.index.documents.addAdditionalInformationYesNo.heading = Do you want to add any additional information for this document?
+houseConsignment.index.documents.addAdditionalInformationYesNo.paragraph = This can be any other information you want to declare, such as a contact, any safety risks or further descriptions.
+houseConsignment.index.documents.addAdditionalInformationYesNo.error.required  = Select yes if you want to add any additional information for this document
+
 houseConsignment.index.departureMeansOfTransport.identification.NormalMode.title = Which identification do you want to use for the departure means of transport?
 houseConsignment.index.departureMeansOfTransport.identification.CheckMode.title = Which identification do you want to use for the new departure means of transport in house consignment {0}?
 houseConsignment.index.departureMeansOfTransport.identification.NormalMode.heading = Which identification do you want to use for the departure means of transport?
