@@ -19,8 +19,8 @@ package utils.transformers
 import connectors.ReferenceDataConnector
 import generated.ConsignmentType05
 import models.UserAnswers
+import pages.GrossWeightPage
 import pages.countryOfDestination.CountryOfDestinationPage
-import pages.grossMass.GrossMassPage
 import pages.inlandModeOfTransport.InlandModeOfTransportPage
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -53,7 +53,7 @@ class ConsignmentTransformer @Inject() (
             houseConsignmentsTransformer.transform(consignment05.HouseConsignment) andThen
             additionalReferencesTransformer.transform(consignment05.AdditionalReference) andThen
             additionalInformationTransformer.transform(consignment05.AdditionalInformation) andThen
-            set(GrossMassPage, consignment05.grossMass) andThen
+            set(GrossWeightPage, consignment05.grossMass) andThen
             additionalReferencesTransformer.transform(consignment05.AdditionalReference) andThen
             incidentsTransformer.transform(consignment05.Incident) andThen
             transformCountryOfDestination(consignment05.countryOfDestination) andThen

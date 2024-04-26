@@ -24,7 +24,6 @@ import models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
-import pages.grossMass.GrossMassPage
 import pages.houseConsignment.index.items.GrossWeightPage
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 
@@ -341,7 +340,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
-              .nextPage(GrossMassPage, mode, answers)
+              .nextPage(pages.GrossWeightPage, mode, answers)
               .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
         }
       }

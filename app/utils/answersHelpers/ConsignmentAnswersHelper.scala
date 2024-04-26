@@ -22,14 +22,13 @@ import models.reference.{Country, CustomsOffice}
 import models.{CheckMode, Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
 import pages.countryOfDestination.CountryOfDestinationPage
 import pages.documents.TypePage
-import pages.grossMass.GrossMassPage
 import pages.inlandModeOfTransport.InlandModeOfTransportPage
 import pages.sections._
 import pages.sections.additionalInformation.AdditionalInformationListSection
 import pages.sections.additionalReference.AdditionalReferencesSection
 import pages.sections.documents.DocumentsSection
 import pages.sections.incidents.IncidentsSection
-import pages.{CustomsOfficeOfDestinationActualPage, SecurityTypePage}
+import pages.{CustomsOfficeOfDestinationActualPage, GrossWeightPage, SecurityTypePage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -135,7 +134,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     )
 
   def grossMassRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
-    page = GrossMassPage,
+    page = GrossWeightPage,
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.grossMass",
     id = Some(s"change-gross-mass"),
