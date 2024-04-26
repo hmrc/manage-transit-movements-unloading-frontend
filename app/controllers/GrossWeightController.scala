@@ -21,7 +21,7 @@ import forms.Constants.{grossWeightDecimalPlaces, grossWeightIntegerLength}
 import forms.GrossWeightFormProvider
 import models.{ArrivalId, Mode}
 import navigation.{Navigation, Navigator}
-import pages.GrossWeightPage
+import pages.grossMass.GrossMassPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -49,7 +49,7 @@ class GrossWeightController @Inject() (
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId) {
       implicit request =>
-        val preparedForm = request.userAnswers.get(GrossWeightPage) match {
+        val preparedForm = request.userAnswers.get(GrossMassPage) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
@@ -66,9 +66,9 @@ class GrossWeightController @Inject() (
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode))),
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(GrossWeightPage, value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(GrossMassPage, value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(GrossWeightPage, mode, updatedAnswers))
+              } yield Redirect(navigator.nextPage(GrossMassPage, mode, updatedAnswers))
           )
     }
 }

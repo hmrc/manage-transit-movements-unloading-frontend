@@ -20,6 +20,7 @@ import com.google.inject.Singleton
 import controllers.routes
 import models.{CheckMode, NormalMode, RichCC043CType, UserAnswers}
 import pages._
+import pages.grossMass.GrossMassPage
 import play.api.mvc.Call
 
 @Singleton
@@ -80,8 +81,8 @@ class Navigation extends Navigator {
           case Some(false) => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
           case _           => Some(routes.SessionExpiredController.onPageLoad())
         }
-    case GrossWeightPage => ua => Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
-    case _               => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
+    case GrossMassPage => ua => Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
+    case _             => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
 
   }
 }
