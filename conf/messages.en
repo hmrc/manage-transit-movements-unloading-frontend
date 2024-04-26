@@ -920,6 +920,16 @@ houseConsignment.index.items.document.type.error.required = Select the type of d
 houseConsignment.index.items.document.type.check.error.required = Select the new document type for item {1} in house consignment {0}
 houseConsignment.index.items.document.type.maxLimitForType.label = You cannot add any more {0} documents to all items. To add another, you need to remove one first. You can, however, still add a {1} document to your items.
 
+houseConsignment.index.document.type.NormalMode.title = What type of document do you want to add?
+houseConsignment.index.document.type.CheckMode.title = What is the new document type for house consignment {0}?
+houseConsignment.index.document.type.NormalMode.heading = What type of document do you want to add?
+houseConsignment.index.document.type.CheckMode.heading = What is the new document type for house consignment {0}?
+houseConsignment.index.document.type.hint = Enter the document name or code.
+houseConsignment.index.document.type.placeholder = Select a document type
+houseConsignment.index.document.type.error.required = Select the type of document you want to add
+houseConsignment.index.document.type.check.error.required = Select the new document type for house consignment {0}
+houseConsignment.index.document.type.maxLimitForType.label = You cannot add any more documents of this type. To add another, you need to remove one first
+
 houseConsignment.item.addDocumentYesNo.title = Do you want to add a document for the item?
 houseConsignment.item.addDocumentYesNo.heading = Do you want to add a document for the item?
 houseConsignment.item.addDocumentYesNo.error.required = Select yes if you you want to add a document for the item

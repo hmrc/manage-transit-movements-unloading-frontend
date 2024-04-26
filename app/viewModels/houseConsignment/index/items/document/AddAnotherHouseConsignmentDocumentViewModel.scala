@@ -86,7 +86,7 @@ object AddAnotherHouseConsignmentDocumentViewModel {
           }
       }.flatten
 
-      val houseConsignmentLevelDocuments = HouseConsignmentLevelDocuments(userAnswers, houseConsignmentIndex, itemsIndex)
+      val houseConsignmentLevelDocuments = HouseConsignmentLevelDocuments(userAnswers, houseConsignmentIndex, itemsIndex, None)
 
       new AddAnotherHouseConsignmentDocumentViewModel(
         listItems = listItems,

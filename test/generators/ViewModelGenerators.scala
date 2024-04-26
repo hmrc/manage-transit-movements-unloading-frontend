@@ -50,7 +50,8 @@ import viewModels.houseConsignment.index.items.packages.{
   PackageShippingMarksViewModel,
   PackageTypeViewModel
 }
-import viewModels.houseConsignment.index.items.{AddAnotherItemViewModel, document => hcViewModel}
+import viewModels.houseConsignment.index.items.{AddAnotherItemViewModel, document => hcItemViewModel}
+import viewModels.houseConsignment.index.{documents => hcViewModel}
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 import viewModels.transportEquipment.AddAnotherEquipmentViewModel
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
@@ -414,6 +415,15 @@ trait ViewModelGenerators {
 
   implicit lazy val arbitraryHouseConsignmentLevelDocumentsMaxedOutSupport: Arbitrary[HouseConsignmentLevelDocuments] = Arbitrary {
     HouseConsignmentLevelDocuments(maxSupportDocHC, 0)
+  }
+
+  implicit lazy val arbitraryHouseConsignmentItemTypeViewModel: Arbitrary[hcItemViewModel.TypeViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+      documents     <- arbitrary[HouseConsignmentLevelDocuments](arbitraryHouseConsignmentLevelDocuments)
+    } yield hcItemViewModel.TypeViewModel(heading, title, requiredError, documents)
   }
 
   implicit lazy val arbitraryHouseConsignmentTypeViewModel: Arbitrary[hcViewModel.TypeViewModel] = Arbitrary {
