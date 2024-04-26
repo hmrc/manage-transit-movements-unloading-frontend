@@ -159,12 +159,52 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
           }
 
           "returns a list of list of supporting documents when a supporting document type selected previously" in {
+
+            import pages.houseConsignment.index.documents.TypePage
+
             when(mockRefDataConnector.getSupportingDocuments()(any(), any()))
               .thenReturn(Future.successful(supportingDocuments))
 
-            val userAnswers = emptyUserAnswers.setValue(ItemDocTypePage(houseConsignmentIndex, itemIndex, documentIndex), supportingDocument2)
+            val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, documentIndex), supportingDocument2)
 
-            service.getDocumentList(userAnswers, houseConsignmentIndex, itemIndex, documentIndex, CheckMode).futureValue mustBe
+            service.getDocumentList(userAnswers, houseConsignmentIndex, documentIndex, CheckMode).futureValue mustBe
+              SelectableList(Seq(supportingDocument1, supportingDocument2))
+          }
+
+          "returns a list of list of transport and supporting documents when no document type selected previously (non item)" in {
+
+            when(mockRefDataConnector.getTransportDocuments()(any(), any()))
+              .thenReturn(Future.successful(transportDocuments))
+            when(mockRefDataConnector.getSupportingDocuments()(any(), any()))
+              .thenReturn(Future.successful(supportingDocuments))
+
+            service.getDocumentList(emptyUserAnswers, houseConsignmentIndex, documentIndex, CheckMode).futureValue mustBe
+              SelectableList(Seq(supportingDocument1, transportDocument1, transportDocument2, supportingDocument2))
+          }
+
+          "returns a list of list of transport documents when a transport document type selected previously (non item)" in {
+
+            import pages.houseConsignment.index.documents.TypePage
+
+            when(mockRefDataConnector.getTransportDocuments()(any(), any()))
+              .thenReturn(Future.successful(transportDocuments))
+
+            val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, documentIndex), transportDocument2)
+
+            service.getDocumentList(userAnswers, houseConsignmentIndex, documentIndex, CheckMode).futureValue mustBe
+              SelectableList(Seq(transportDocument1, transportDocument2))
+          }
+
+          "returns a list of list of supporting documents when a supporting document type selected previously (non item)" in {
+
+            import pages.houseConsignment.index.documents.TypePage
+
+            when(mockRefDataConnector.getSupportingDocuments()(any(), any()))
+              .thenReturn(Future.successful(supportingDocuments))
+
+            val userAnswers = emptyUserAnswers.setValue(TypePage(houseConsignmentIndex, documentIndex), supportingDocument2)
+
+            service.getDocumentList(userAnswers, houseConsignmentIndex, documentIndex, CheckMode).futureValue mustBe
               SelectableList(Seq(supportingDocument1, supportingDocument2))
           }
         }

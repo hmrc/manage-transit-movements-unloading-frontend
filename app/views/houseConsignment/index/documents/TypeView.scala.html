@@ -1,0 +1,62 @@
+@*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.FrontendAppConfig
+@import controllers.houseConsignment.index.documents.routes
+@import models.MovementReferenceNumber
+@import models.reference.DocumentType
+@import models.reference.Selectable._
+@import viewModels.components.InputSelectViewModel._
+@import viewModels.houseConsignment.index.documents.TypeViewModel
+@import views.html.components.{Button, ErrorSummary, InputSelect}
+
+
+@this(
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    inputSelect: InputSelect,
+    errorSummary: ErrorSummary,
+    button: Button
+)
+
+@(form: Form[DocumentType], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode, documents: Seq[DocumentType], viewModel: TypeViewModel, houseConsignmentIndex: Index, documentIndex: Index)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
+
+@mainTemplate(
+    title = viewModel.title,
+    showBackLink = true
+) {
+
+    @formHelper(action = routes.TypeController.onSubmit(arrivalId, mode, houseConsignmentIndex, documentIndex), Symbol("autoComplete") -> "off") {
+
+        @errorSummary(form.errors)
+
+        @inputSelect(
+            field = form("value"),
+            selectType = OrdinarySelect(
+                heading = viewModel.heading,
+                caption = Some(messages("site.caption", mrn.toString))
+            ),
+            hint = Some(messages("houseConsignment.index.document.type.hint")),
+            selectItems = documents.toSelectItems(form.value),
+            placeholder = messages("houseConsignment.index.document.type.placeholder")
+        )
+        @viewModel.maxLimitLabelForType.map { label =>
+            <p class="govuk-body" data-testId="maxLimitForType">@label</p>
+        }
+
+        @button(attributes = Map("id" -> "submit"))
+    }
+}
