@@ -23,14 +23,15 @@ import play.api.libs.json.Reads
 
 case class AdditionalReference(`type`: AdditionalReferenceType, referenceNumber: Option[String]) {
 
-  override def toString: String = referenceNumber match {
+  def forRemoveDisplay: String = referenceNumber match {
+    case Some(rn) => s"${`type`} - $rn"
+    case None     => `type`.toString
+  }
+
+  def forAddAnotherDisplay: String = referenceNumber match {
     case Some(rn) => s"${`type`.documentType} - $rn"
     case None     => `type`.documentType
   }
-
-  def forRemoveDisplay: String = this.toString
-
-  def forAddAnotherDisplay: String = this.toString
 }
 
 object AdditionalReference {
