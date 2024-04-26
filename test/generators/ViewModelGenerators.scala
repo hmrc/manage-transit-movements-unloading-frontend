@@ -30,8 +30,10 @@ import viewModels.additionalReference.index.{AddAnotherAdditionalReferenceViewMo
 import viewModels.departureTransportMeans._
 import viewModels.documents.{AddAnotherDocumentViewModel, AdditionalInformationViewModel, DocumentReferenceNumberViewModel, TypeViewModel}
 import viewModels.houseConsignment.index.additionalReference.{AdditionalReferenceTypeViewModel => HCAdditionalReferenceTypeViewModel}
-import viewModels.houseConsignment.index.departureMeansOfTransport.HouseConsignmentCountryViewModel
-import viewModels.houseConsignment.index.departureTransportMeans.{IdentificationNumberViewModel => HCIdentificationNumberViewModel}
+import viewModels.houseConsignment.index.departureTransportMeans.{
+  HouseConsignmentCountryViewModel,
+  IdentificationNumberViewModel => HCIdentificationNumberViewModel
+}
 import viewModels.houseConsignment.index.documents.ReferenceNumberViewModel
 import viewModels.houseConsignment.index.items.additionalReference.{
   AdditionalReferenceNumberViewModel,
