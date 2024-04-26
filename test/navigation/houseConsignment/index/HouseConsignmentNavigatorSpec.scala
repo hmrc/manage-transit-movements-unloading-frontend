@@ -19,13 +19,13 @@ package navigation.houseConsignment.index
 import base.SpecBase
 import generators.Generators
 import models._
-import navigation.houseConsignment.index.GrossWeightNavigator
+import navigation.houseConsignment.index.HouseConsignmentNavigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.houseConsignment.index.GrossWeightPage
 
-class GrossWeightNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  val navigator = new GrossWeightNavigator
+  val navigator = new HouseConsignmentNavigator
 
   "GrossWeightNavigator" - {
 

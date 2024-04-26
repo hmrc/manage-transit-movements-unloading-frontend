@@ -17,7 +17,7 @@
 package navigation
 
 import models.{Mode, UserAnswers}
-import navigation.houseConsignment.index.GrossWeightNavigator
+import navigation.houseConsignment.index.HouseConsignmentNavigator
 import navigation.houseConsignment.index.departureMeansOfTransport.HCDepartureTransportMeansNavigator
 import navigation.houseConsignment.index.items.{HouseConsignmentItemNavigator, PackagesNavigator, DocumentNavigator => ItemDocumentNavigator}
 import pages._
@@ -83,7 +83,7 @@ class FakePackagesNavigator(desiredRoute: Call) extends PackagesNavigator {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeGrossWeightNavigator(desiredRoute: Call) extends GrossWeightNavigator {
+class FakeHouseConsignmentNavigator(desiredRoute: Call) extends HouseConsignmentNavigator {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 

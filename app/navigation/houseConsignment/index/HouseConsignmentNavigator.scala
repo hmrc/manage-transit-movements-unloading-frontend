@@ -24,7 +24,7 @@ import pages.houseConsignment.index.GrossWeightPage
 import play.api.mvc.Call
 
 @Singleton
-class GrossWeightNavigator extends Navigator {
+class HouseConsignmentNavigator extends Navigator {
 
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
 
