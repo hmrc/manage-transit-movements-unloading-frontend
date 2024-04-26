@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.departureMeansOfTransport
 import controllers.actions._
 import forms.SelectableFormProvider
 import models.{ArrivalId, Index, Mode, SelectableList}
-import navigation.houseConsignment.index.departureMeansOfTransport.HCDepartureTransportMeansNavigator
+import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
 import pages.houseConsignment.index.departureMeansOfTransport.CountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -40,7 +40,7 @@ class CountryController @Inject() (
   referenceDataService: ReferenceDataService,
   val controllerComponents: MessagesControllerComponents,
   view: CountryView,
-  navigator: HCDepartureTransportMeansNavigator,
+  navigator: DepartureTransportMeansNavigator,
   countryViewModelProvider: HouseConsignmentCountryViewModelProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController

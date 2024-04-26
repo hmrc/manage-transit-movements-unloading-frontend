@@ -23,7 +23,7 @@ import models.reference.{Country, TransportMeansIdentification}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.departureMeansOfTransport._
 
-class HCDepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   val navigator = new DepartureTransportMeansNavigator
 

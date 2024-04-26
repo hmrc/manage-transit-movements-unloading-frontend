@@ -20,13 +20,13 @@ import base.SpecBase
 import generators.Generators
 import models._
 import models.reference.{Country, TransportMeansIdentification}
-import navigation.houseConsignment.index.departureMeansOfTransport.HCDepartureTransportMeansNavigator
+import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.houseConsignment.index.departureMeansOfTransport._
 
-class HCDepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  val navigator = new HCDepartureTransportMeansNavigator
+  val navigator = new DepartureTransportMeansNavigator
 
   "DepartureTransportMeansNavigator" - {
 
