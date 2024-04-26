@@ -113,7 +113,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual "/manage-transit-movements/unloading/AB123/transit-unloading-permission-discrepancies/house-consignment/1"
+      redirectLocation(result).value mustEqual onwardRoute.url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

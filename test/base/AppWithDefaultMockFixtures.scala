@@ -23,6 +23,8 @@ import models.{Mode, UserAnswers}
 import navigation.GoodsReferenceNavigator.GoodsReferenceNavigatorProvider
 import navigation.SealNavigator.SealNavigatorProvider
 import navigation._
+import navigation.houseConsignment.index.GrossWeightNavigator
+import navigation.houseConsignment.index.departureMeansOfTransport.HCDepartureTransportMeansNavigator
 import navigation.houseConsignment.index.items.{HouseConsignmentItemNavigator, PackagesNavigator, DocumentNavigator => ItemDocumentNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -94,6 +96,11 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected val fakeAdditionalReferenceNavigator: AdditionalReferenceNavigator         = new FakeAdditionalReferenceNavigator(onwardRoute)
   protected val fakeHouseConsignmentIteNavigator: HouseConsignmentItemNavigator        = new FakeHouseConsignmentItemNavigator(onwardRoute)
   protected val fakePackagesNavigator: PackagesNavigator                               = new FakePackagesNavigator(onwardRoute)
+  protected val fakeGrossWeightNavigator: GrossWeightNavigator                         = new FakeGrossWeightNavigator(onwardRoute)
+
+  protected val fakeHCDepartureTransportMeansNavigator: HCDepartureTransportMeansNavigator = new FakeHouseConsignmentHCDepartureTransportMeansNavigator(
+    onwardRoute
+  )
 
   def guiceApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
@@ -112,6 +119,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[HouseConsignmentItemNavigator].toInstance(fakeHouseConsignmentIteNavigator),
         bind[DepartureTransportMeansNavigator].toInstance(fakeDepartureTransportMeansNavigator),
         bind[AdditionalReferenceNavigator].toInstance(fakeAdditionalReferenceNavigator),
-        bind[PackagesNavigator].toInstance(fakePackagesNavigator)
+        bind[PackagesNavigator].toInstance(fakePackagesNavigator),
+        bind[GrossWeightNavigator].toInstance(fakeGrossWeightNavigator),
+        bind[HCDepartureTransportMeansNavigator].toInstance(fakeHCDepartureTransportMeansNavigator)
       )
 }

@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.VehicleIdentificationNumberFormProvider
 import models.requests.DataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
+import navigation.houseConsignment.index.departureMeansOfTransport.HCDepartureTransportMeansNavigator
 import pages.houseConsignment.index.departureMeansOfTransport.VehicleIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -38,7 +38,7 @@ class IdentificationNumberController @Inject() (
   actions: Actions,
   formProvider: VehicleIdentificationNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  navigator: DepartureTransportMeansNavigator,
+  navigator: HCDepartureTransportMeansNavigator,
   view: IdentificationNumberView,
   identificationNumberViewModelProvider: IdentificationNumberViewModelProvider
 )(implicit ec: ExecutionContext)

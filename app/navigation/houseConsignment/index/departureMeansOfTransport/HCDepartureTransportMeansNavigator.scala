@@ -24,7 +24,7 @@ import pages.houseConsignment.index.departureMeansOfTransport._
 import play.api.mvc.Call
 
 @Singleton
-class DepartureTransportMeansNavigator extends Navigator {
+class HCDepartureTransportMeansNavigator extends Navigator {
 
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
 
