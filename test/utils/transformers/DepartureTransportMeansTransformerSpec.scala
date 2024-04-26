@@ -26,6 +26,7 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.houseConsignment.index.departureMeansOfTransport._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 
@@ -108,9 +109,9 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
               val dtmIndex = Index(i)
 
               result.getSequenceNumber(TransportMeansSection(hcIndex, dtmIndex)) mustBe dtm.sequenceNumber
-              result.getValue(DepartureTransportMeansIdentificationTypePage(hcIndex, dtmIndex)).description mustBe dtm.typeOfIdentification
-              result.getValue(DepartureTransportMeansIdentificationNumberPage(hcIndex, dtmIndex)) mustBe dtm.identificationNumber
-              result.getValue(DepartureTransportMeansCountryPage(hcIndex, dtmIndex)).description mustBe dtm.nationality
+              result.getValue(TransportMeansIdentificationPage(hcIndex, dtmIndex)).description mustBe dtm.typeOfIdentification
+              result.getValue(VehicleIdentificationNumberPage(hcIndex, dtmIndex)) mustBe dtm.identificationNumber
+              result.getValue(CountryPage(hcIndex, dtmIndex)).description mustBe dtm.nationality
           }
       }
     }

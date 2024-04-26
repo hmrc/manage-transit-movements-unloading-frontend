@@ -54,15 +54,15 @@ class DepartureTransportMeansTransformer @Inject() (referenceDataConnector: Refe
     departureTransportMeans: Seq[DepartureTransportMeansType02],
     hcIndex: Index
   )(implicit headerCarrier: HeaderCarrier): UserAnswers => Future[UserAnswers] = {
-    import pages._
+    import pages.houseConsignment.index.departureMeansOfTransport._
     import pages.sections.houseConsignment.index.departureTransportMeans.TransportMeansSection
 
     genericTransform(departureTransportMeans) {
       case (TempDepartureTransportMeans(underlying, typeOfIdentification, nationality), index) =>
         setSequenceNumber(TransportMeansSection(hcIndex, index), underlying.sequenceNumber) andThen
-          set(DepartureTransportMeansIdentificationTypePage(hcIndex, index), typeOfIdentification) andThen
-          set(DepartureTransportMeansIdentificationNumberPage(hcIndex, index), underlying.identificationNumber) andThen
-          set(DepartureTransportMeansCountryPage(hcIndex, index), nationality)
+          set(TransportMeansIdentificationPage(hcIndex, index), typeOfIdentification) andThen
+          set(VehicleIdentificationNumberPage(hcIndex, index), underlying.identificationNumber) andThen
+          set(CountryPage(hcIndex, index), nationality)
     }
   }
 

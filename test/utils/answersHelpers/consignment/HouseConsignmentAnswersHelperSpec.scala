@@ -22,6 +22,8 @@ import models.{DynamicAddress, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
+import pages.houseConsignment.index.departureMeansOfTransport.TransportMeansIdentificationPage
+import pages.houseConsignment.index.departureMeansOfTransport.VehicleIdentificationNumberPage
 import pages.houseConsignment.consignor.CountryPage
 import pages.houseConsignment.index.CountryOfDestinationPage
 import utils.answersHelpers.AnswersHelperSpecBase
@@ -52,7 +54,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         result.value.value mustBe "999.99"
         val action = result.actions.value.items.head
         action.content.value mustBe "Change"
-        action.href mustBe "#"
+        action.href mustBe "/manage-transit-movements/unloading/AB123/house-consignment/1/change-gross-weight"
         action.visuallyHiddenText.value mustBe "gross weight"
         action.id mustBe "change-gross-mass"
       }
@@ -339,9 +341,9 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         forAll(arbitrary[TransportMeansIdentification], Gen.alphaNumStr, arbitrary[Country]) {
           (`type`, number, country) =>
             val answers = emptyUserAnswers
-              .setValue(DepartureTransportMeansIdentificationTypePage(hcIndex, dtmIndex), `type`)
-              .setValue(DepartureTransportMeansIdentificationNumberPage(hcIndex, dtmIndex), number)
-              .setValue(DepartureTransportMeansCountryPage(hcIndex, dtmIndex), country)
+              .setValue(TransportMeansIdentificationPage(hcIndex, dtmIndex), `type`)
+              .setValue(VehicleIdentificationNumberPage(hcIndex, dtmIndex), number)
+              .setValue(pages.houseConsignment.index.departureMeansOfTransport.CountryPage(hcIndex, dtmIndex), country)
 
             val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
             val result = helper.departureTransportMeansSection

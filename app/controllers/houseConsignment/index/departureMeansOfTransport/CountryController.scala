@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.departureMeansOfTransport
 import controllers.actions._
 import forms.SelectableFormProvider
 import models.{ArrivalId, Index, Mode, SelectableList}
-import navigation.DepartureTransportMeansNavigator
+import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
 import pages.houseConsignment.index.departureMeansOfTransport.CountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
