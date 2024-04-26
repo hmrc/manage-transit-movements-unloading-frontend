@@ -387,7 +387,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
           AccordionSection(
             sectionTitle = messages("unloadingFindings.subsections.houseConsignment", index.display),
-            rows = Nil,
+            rows = Seq(helper.preGrossMassRow, helper.consignorIdentification(Some("pre")), helper.consignorName(Some("pre"))).flatten,
             viewLinks = Seq(
               Link(
                 id = s"view-house-consignment-${index.display}",
@@ -397,10 +397,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
               )
             ),
             id = s"houseConsignment$index",
-            children = Seq(
-              helper.houseConsignmentConsignorSection,
-              helper.houseConsignmentConsigneeSection
-            )
+            children = Nil
           )
       } match {
       case children =>

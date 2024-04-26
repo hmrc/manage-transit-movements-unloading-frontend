@@ -50,6 +50,14 @@ class HouseConsignmentAnswersHelper(
     call = Some(Call(GET, "#"))
   )
 
+  def preGrossMassRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
+    page = GrossWeightPage(houseConsignmentIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.grossMass",
+    id = Some(s"change-gross-mass"),
+    call = None
+  )
+
   def safetyAndSecurityDetails: Option[SummaryListRow] = getAnswerAndBuildRow[SecurityType](
     page = SecurityIndicatorFromExportDeclarationPage(houseConsignmentIndex),
     formatAnswer = x => formatAsText(x.toString),
@@ -66,21 +74,43 @@ class HouseConsignmentAnswersHelper(
     call = None
   )
 
-  def consignorName: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = ConsignorNamePage(houseConsignmentIndex),
-    formatAnswer = formatAsText,
-    prefix = "unloadingFindings.rowHeadings.houseConsignment.consignorName",
-    id = None,
-    call = None
-  )
+  def consignorName(suffix: Option[String] = None): Option[SummaryListRow] = suffix.fold(
+    getAnswerAndBuildRow[String](
+      page = ConsignorNamePage(houseConsignmentIndex),
+      formatAnswer = formatAsText,
+      prefix = "unloadingFindings.rowHeadings.houseConsignment.consignorName",
+      id = None,
+      call = None
+    )
+  ) {
+    suffix =>
+      getAnswerAndBuildRow[String](
+        page = ConsignorNamePage(houseConsignmentIndex),
+        formatAnswer = formatAsText,
+        prefix = s"unloadingFindings.rowHeadings.houseConsignment.consignorName.$suffix",
+        id = None,
+        call = None
+      )
+  }
 
-  def consignorIdentification: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = ConsignorIdentifierPage(houseConsignmentIndex),
-    formatAnswer = formatAsText,
-    prefix = "unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier",
-    id = None,
-    call = None
-  )
+  def consignorIdentification(suffix: Option[String] = None): Option[SummaryListRow] = suffix.fold(
+    getAnswerAndBuildRow[String](
+      page = ConsignorIdentifierPage(houseConsignmentIndex),
+      formatAnswer = formatAsText,
+      prefix = s"unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier",
+      id = None,
+      call = None
+    )
+  ) {
+    suffix =>
+      getAnswerAndBuildRow[String](
+        page = ConsignorIdentifierPage(houseConsignmentIndex),
+        formatAnswer = formatAsText,
+        prefix = s"unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier.$suffix",
+        id = None,
+        call = None
+      )
+  }
 
   def consignorAddress: Option[SummaryListRow] =
     buildRowWithNoChangeLink[DynamicAddress](
@@ -120,8 +150,8 @@ class HouseConsignmentAnswersHelper(
     StaticSection(
       sectionTitle = messages("unloadingFindings.consignor.heading"),
       rows = Seq(
-        consignorIdentification,
-        consignorName,
+        consignorIdentification(),
+        consignorName(),
         consignorCountry,
         consignorAddress
       ).flatten

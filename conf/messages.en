@@ -121,17 +121,17 @@ dateGoodsUnloaded.change.hidden = the date when the goods were unloaded
 traderAtDestination = Authorised consignee’s EORI number or Trader Identification Number (TIN)
 customsOfficeOfDestinationActual = Office of destination
 
-departureMeansOfTransport.identificationNumber.NormalMode.title = What is the identification number for this vehicle?
-departureMeansOfTransport.identificationNumber.CheckMode.title = What is the identification number for the new departure means of transport?
-departureMeansOfTransport.identificationNumber.NormalMode.heading = What is the identification number for this vehicle?
-departureMeansOfTransport.identificationNumber.CheckMode.heading = What is the identification number for the new departure means of transport?
+departureMeansOfTransport.identificationNumber.NormalMode.title = What is the identification for this vehicle?
+departureMeansOfTransport.identificationNumber.CheckMode.title = What is the identification for the new departure means of transport?
+departureMeansOfTransport.identificationNumber.NormalMode.heading = What is the identification for this vehicle?
+departureMeansOfTransport.identificationNumber.CheckMode.heading = What is the identification for the new departure means of transport?
 departureMeansOfTransport.identificationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
-departureMeansOfTransport.identificationNumber.checkYourAnswersLabel = What is the identification number for the new vehicle?
-departureMeansOfTransport.identificationNumber.NormalMode.error.required = Enter the identification number for this vehicle
-departureMeansOfTransport.identificationNumber.CheckMode.error.required = Enter the identification number for the new departure means of transport
-departureMeansOfTransport.identificationNumber.error.length = The identification number must be 35 characters or less
-departureMeansOfTransport.identificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
-departureMeansOfTransport.identificationNumber.change.hidden = the identification number for the new vehicle
+departureMeansOfTransport.identificationNumber.checkYourAnswersLabel = What is the identification for the new vehicle?
+departureMeansOfTransport.identificationNumber.NormalMode.error.required = Enter the identification for this vehicle
+departureMeansOfTransport.identificationNumber.CheckMode.error.required = Enter the identification for the new departure means of transport
+departureMeansOfTransport.identificationNumber.error.length = The identification must be 35 characters or less
+departureMeansOfTransport.identificationNumber.error.invalid = The identification must only include letters a to z and numbers 0 to 9
+departureMeansOfTransport.identificationNumber.change.hidden = the identification for the new vehicle
 
 departureMeansOfTransport.country.NormalMode.title = What country is this vehicle registered to?
 departureMeansOfTransport.country.CheckMode.title = What country is the new departure means of transport registered to?
@@ -157,9 +157,9 @@ departureMeansOfTransport.addIdentificationYesNo.heading = Do you want to add th
 departureMeansOfTransport.addIdentificationYesNo.error.required = Select yes if you want to add the type of identification for the departure means of transport
 departureMeansOfTransport.addIdentificationYesNo.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
 
-departureMeansOfTransport.addIdentificationNumberYesNo.title = Do you want to add an identification number for this vehicle?
-departureMeansOfTransport.addIdentificationNumberYesNo.heading = Do you want to add an identification number for this vehicle?
-departureMeansOfTransport.addIdentificationNumberYesNo.error.required = Select yes if you want to add an identification number for this vehicle
+departureMeansOfTransport.addIdentificationNumberYesNo.title = Do you want to add an identification for this vehicle?
+departureMeansOfTransport.addIdentificationNumberYesNo.heading = Do you want to add an identification for this vehicle?
+departureMeansOfTransport.addIdentificationNumberYesNo.error.required = Select yes if you want to add an identification for this vehicle
 
 departureMeansOfTransport.addNationalityYesNo.title = Do you want to add the registered country for this vehicle?
 departureMeansOfTransport.addNationalityYesNo.heading = Do you want to add the registered country for this vehicle?
@@ -251,8 +251,8 @@ unloadingSummary.seals.subheading = Official customs seals
 
 vehicleUsed.title = Vehicle used
 
-changeVehicle.reference.checkYourAnswersLabel = Identification number for the new vehicle
-changeVehicle.reference.change.hidden = identification number for the new vehicle
+changeVehicle.reference.checkYourAnswersLabel = Identification
+changeVehicle.reference.change.hidden = identification
 
 changeVehicle.registeredCountry.checkYourAnswersLabel = Registered
 changeVehicle.registeredCountry.change.hidden = registered
@@ -487,8 +487,10 @@ unloadingFindings.subsections.houseConsignment.parent.heading = House consignmen
 unloadingFindings.rowHeadings.houseConsignment.grossWeight = Gross weight
 unloadingFindings.rowHeadings.houseConsignment.netWeight = Net weight
 unloadingFindings.rowHeadings.houseConsignment.consignorName = Name
+unloadingFindings.rowHeadings.houseConsignment.consignorName.pre = Consignor name
 unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier = EORI number or Trader Identification Number (TIN)
-unloadingFindings.rowHeadings.houseConsignment.consigneeName = Consignee name
+unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier.pre = Consignor EORI number or Trader Identification Number (TIN)
+unloadingFindings.rowHeadings.houseConsignment.consigneeName = Name
 unloadingFindings.rowHeadings.houseConsignment.grossWeight.change.hidden = Change Gross weight
 unloadingFindings.rowHeadings.houseConsignment.netWeight.change.hidden = Change Net weight
 unloadingFindings.rowHeadings.houseConsignment.consigneeCountry = Country
@@ -639,10 +641,10 @@ checkYourAnswers.sendRemarks = Send your unloading remarks
 checkYourAnswers.paragraph = By sending this, you are confirming that these details are correct to the best of your knowledge.
 
 checkYourAnswers.departureMeansOfTransport.identification = Identification type
-checkYourAnswers.departureMeansOfTransport.identificationNumber = Identification number
+checkYourAnswers.departureMeansOfTransport.identificationNumber = Identification
 checkYourAnswers.departureMeansOfTransport.country = Registered country
 checkYourAnswers.departureMeansOfTransport.identification.change.hidden = identification type for departure means of transport {0}
-checkYourAnswers.departureMeansOfTransport.identificationNumber.change.hidden = identification number for departure means of transport {0}
+checkYourAnswers.departureMeansOfTransport.identificationNumber.change.hidden = identification for departure means of transport {0}
 checkYourAnswers.departureMeansOfTransport.country.change.hidden = registered country for departure means of transport {0}
 
 cannotSendUnloadingRemarks.title = You cannot send these unloading remarks
@@ -918,6 +920,16 @@ houseConsignment.index.items.document.type.error.required = Select the type of d
 houseConsignment.index.items.document.type.check.error.required = Select the new document type for item {1} in house consignment {0}
 houseConsignment.index.items.document.type.maxLimitForType.label = You cannot add any more {0} documents to all items. To add another, you need to remove one first. You can, however, still add a {1} document to your items.
 
+houseConsignment.index.document.type.NormalMode.title = What type of document do you want to add?
+houseConsignment.index.document.type.CheckMode.title = What is the new document type for house consignment {0}?
+houseConsignment.index.document.type.NormalMode.heading = What type of document do you want to add?
+houseConsignment.index.document.type.CheckMode.heading = What is the new document type for house consignment {0}?
+houseConsignment.index.document.type.hint = Enter the document name or code.
+houseConsignment.index.document.type.placeholder = Select a document type
+houseConsignment.index.document.type.error.required = Select the type of document you want to add
+houseConsignment.index.document.type.check.error.required = Select the new document type for house consignment {0}
+houseConsignment.index.document.type.maxLimitForType.label = You cannot add any more documents of this type. To add another, you need to remove one first
+
 houseConsignment.item.addDocumentYesNo.title = Do you want to add a document for the item?
 houseConsignment.item.addDocumentYesNo.heading = Do you want to add a document for the item?
 houseConsignment.item.addDocumentYesNo.error.required = Select yes if you you want to add a document for the item
@@ -1163,6 +1175,15 @@ houseConsignment.index.documents.referenceNumber.error.invalidCharacters = The r
 houseConsignment.index.documents.referenceNumber.error.length = The reference number must be 70 characters or less
 houseConsignment.index.documents.referenceNumber.error.duplicate = The reference number must be unique
 
+houseConsignment.index.documents.addAdditionalInformationYesNo.title = Do you want to add any additional information for this document?
+houseConsignment.index.documents.addAdditionalInformationYesNo.heading = Do you want to add any additional information for this document?
+houseConsignment.index.documents.addAdditionalInformationYesNo.paragraph = This can be any other information you want to declare, such as a contact, any safety risks or further descriptions.
+houseConsignment.index.documents.addAdditionalInformationYesNo.error.required  = Select yes if you want to add any additional information for this document
+
+houseConsignment.index.documents.removeDocumentYesNo.title = Are you sure you want to remove this document from all items in house consignment {0}?
+houseConsignment.index.documents.removeDocumentYesNo.heading = Are you sure you want to remove this document from all items in house consignment {0}?
+houseConsignment.index.documents.removeDocumentYesNo.error.required = Select yes if you want to remove this document from all items in house consignment {0}
+
 houseConsignment.index.departureMeansOfTransport.identification.NormalMode.title = Which identification do you want to use for the departure means of transport?
 houseConsignment.index.departureMeansOfTransport.identification.CheckMode.title = Which identification do you want to use for the new departure means of transport in house consignment {0}?
 houseConsignment.index.departureMeansOfTransport.identification.NormalMode.heading = Which identification do you want to use for the departure means of transport?
@@ -1171,3 +1192,17 @@ houseConsignment.index.departureMeansOfTransport.identification.title = Which id
 houseConsignment.index.departureMeansOfTransport.identification.check.error.required = Select which identification you want to use for the new departure means of transport in house consignment {0}
 houseConsignment.index.departureMeansOfTransport.identification.error.required = Select which identification you want to use for the departure means of transport
 houseConsignment.index.departureMeansOfTransport.identification.CheckMode.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
+
+houseConsignment.index.addDepartureTransportMeansYesNo.title = Do you want to add a departure means of transport for house consignment {0}?
+houseConsignment.index.addDepartureTransportMeansYesNo.heading = Do you want to add a departure means of transport for house consignment {0}?
+houseConsignment.index.addDepartureTransportMeansYesNo.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
+houseConsignment.index.addDepartureTransportMeansYesNo.error.required = Select yes if you want to add a departure means of transport for house consignment {0}
+
+houseConsignment.index.documents.additionalInformation.NormalMode.title = Enter the additional information
+houseConsignment.index.documents.additionalInformation.CheckMode.title = Enter the new additional information in house consignment {0}?
+houseConsignment.index.documents.additionalInformation.NormalMode.heading = Enter the additional information
+houseConsignment.index.documents.additionalInformation.CheckMode.heading = Enter the new additional information in house consignment {0}?
+houseConsignment.index.documents.additionalInformation.NormalMode.error.required = Enter the additional information
+houseConsignment.index.documents.additionalInformation.CheckMode.error.required = Enter the new additional information in house consignment {0}
+houseConsignment.index.documents.additionalInformation.error.length = The additional information must be 35 characters or less
+houseConsignment.index.documents.additionalInformation.error.invalidCharacters = The additional information must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
