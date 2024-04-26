@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.DocType.{Support, Transport}
 import models.reference._
-import models.{Index, SecurityType}
+import models.{CheckMode, Index, SecurityType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
@@ -171,7 +171,9 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         section.children.head.sectionTitle.value mustBe "Additional reference 1"
         section.children.head.rows.size mustBe 2
 
-        section.viewLinks.head.href mustBe "#"
+        section.viewLinks.head.href mustBe controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController
+          .onSubmit(arrivalId, CheckMode, hcIndex)
+          .url
       }
 
       "when there is multiple" in {
@@ -197,7 +199,9 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         section.children(1).sectionTitle.value mustBe "Additional reference 2"
         section.children(1).rows.size mustBe 2
 
-        section.viewLinks.head.href mustBe "#"
+        section.viewLinks.head.href mustBe controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController
+          .onSubmit(arrivalId, CheckMode, hcIndex)
+          .url
       }
     }
 

@@ -189,7 +189,9 @@ class HouseConsignmentAnswersHelper(
 
   private val additionalReferenceAddRemoveLink: Link = Link(
     id = "add-remove-additional-reference",
-    href = "#", // TODO update when controller added
+    href = controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController
+      .onPageLoad(arrivalId, NormalMode, houseConsignmentIndex)
+      .url,
     text = messages("additionalReferenceLink.addRemove")
   )
 

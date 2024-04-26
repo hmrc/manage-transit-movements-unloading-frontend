@@ -18,7 +18,7 @@ package utils.answersHelpers.consignment
 
 import generated.{AddressType07, ConsignmentType05, ConsignorType06, HouseConsignmentType04}
 import models.reference._
-import models.{DynamicAddress, Index}
+import models.{DynamicAddress, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
@@ -423,7 +423,9 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             addOrRemoveLink.id mustBe "add-remove-additional-reference"
             addOrRemoveLink.text mustBe "Add or remove additional reference"
             addOrRemoveLink.visuallyHidden must not be defined
-            addOrRemoveLink.href mustBe "#"
+            addOrRemoveLink.href mustBe controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController
+              .onSubmit(arrivalId, NormalMode, houseConsignmentIndex)
+              .url
 
             val additionalInfo1 = result.children.head
             additionalInfo1 mustBe a[AccordionSection]

@@ -109,7 +109,9 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual "#"
+        redirectLocation(result).value mustEqual controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController
+          .onPageLoad(arrivalId, mode, houseConsignmentIndex)
+          .url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -141,7 +143,9 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual "#"
+        redirectLocation(result).value mustEqual controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController
+          .onPageLoad(arrivalId, mode, houseConsignmentIndex)
+          .url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -175,7 +179,9 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual "#"
+      redirectLocation(result).value mustEqual controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController
+        .onPageLoad(arrivalId, mode, houseConsignmentIndex)
+        .url
 
     }
 
