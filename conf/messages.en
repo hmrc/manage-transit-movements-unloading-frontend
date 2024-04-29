@@ -175,7 +175,7 @@ departureMeansOfTransport.addAnotherDepartureMeansOfTransport.empty.label = Do y
 departureMeansOfTransport.addAnotherDepartureMeansOfTransport.label = Do you want to add another departure means of transport?
 departureMeansOfTransport.addAnotherDepartureMeansOfTransport.maxLimit.label = You cannot add another departure means of transport. To add another, you need to remove one first.
 departureMeansOfTransport.addAnotherDepartureMeansOfTransport.error.required = Select yes if you want to add a departure means of transport
-departureMeansOfTransportPrefix.prefix = Departure means of transport {0}
+departureMeansOfTransport.prefix = Departure means of transport {0}
 
 houseConsignment.item.grossWeight.title = What is the new gross weight of item {0} in house consignment {1}?
 houseConsignment.item.grossWeight.heading = What is the new gross weight of item {0} in house consignment {1}?
