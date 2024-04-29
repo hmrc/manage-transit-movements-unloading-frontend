@@ -18,7 +18,7 @@ package viewModels.houseConsignment
 
 import base.SpecBase
 import generators.Generators
-import models.reference.TransportMeansIdentification
+import models.reference.{Country, TransportMeansIdentification}
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -36,12 +36,14 @@ class AddAnotherHouseConsignmentViewModelSpec extends SpecBase with Generators w
       "must get list items" - {
 
         "when there is one house consignment" in {
-          forAll(arbitrary[Mode], arbitrary[BigDecimal], arbitrary[TransportMeansIdentification]) {
-            (mode, weight, identification) =>
+          forAll(arbitrary[Mode], arbitrary[BigDecimal], arbitrary[TransportMeansIdentification], nonEmptyString.sample.value, arbitrary[Country]) {
+            (mode, weight, identification, text, country) =>
               val userAnswers = emptyUserAnswers
                 .setValue(GrossWeightPage(Index(0)), weight)
                 .setValue(AddDepartureTransportMeansYesNoPage(Index(0)), true)
                 .setValue(TransportMeansIdentificationPage(Index(0), Index(0)), identification)
+                .setValue(VehicleIdentificationNumberPage(Index(0), Index(0)), text)
+                .setValue(CountryPage(Index(0), Index(0)), country)
 
               val result = new AddAnotherHouseConsignmentViewModelProvider().apply(userAnswers, arrivalId, mode)
 
@@ -55,17 +57,21 @@ class AddAnotherHouseConsignmentViewModelSpec extends SpecBase with Generators w
         }
 
         "when there are multiple house consignments" in {
-          forAll(arbitrary[Mode], arbitrary[BigDecimal], arbitrary[TransportMeansIdentification]) {
-            (mode, weight, identification) =>
+          forAll(arbitrary[Mode], arbitrary[BigDecimal], arbitrary[TransportMeansIdentification], nonEmptyString.sample.value, arbitrary[Country]) {
+            (mode, weight, identification, text, country) =>
               val userAnswers = emptyUserAnswers
                 .setValue(GrossWeightPage(Index(0)), weight)
                 .setValue(AddDepartureTransportMeansYesNoPage(Index(0)), true)
                 .setValue(TransportMeansIdentificationPage(Index(0), Index(0)), identification)
+                .setValue(VehicleIdentificationNumberPage(Index(0), Index(0)), text)
+                .setValue(CountryPage(Index(0), Index(0)), country)
                 .setValue(GrossWeightPage(Index(1)), weight)
                 .setValue(AddDepartureTransportMeansYesNoPage(Index(1)), false)
                 .setValue(GrossWeightPage(Index(2)), weight)
                 .setValue(AddDepartureTransportMeansYesNoPage(Index(2)), true)
                 .setValue(TransportMeansIdentificationPage(Index(2), Index(0)), identification)
+                .setValue(VehicleIdentificationNumberPage(Index(2), Index(0)), text)
+                .setValue(CountryPage(Index(2), Index(0)), country)
                 .setValue(GrossWeightPage(Index(3)), weight)
                 .setValue(AddDepartureTransportMeansYesNoPage(Index(3)), false)
 
@@ -81,16 +87,20 @@ class AddAnotherHouseConsignmentViewModelSpec extends SpecBase with Generators w
         }
 
         "when one has been removed" in {
-          forAll(arbitrary[Mode], arbitrary[BigDecimal], arbitrary[TransportMeansIdentification]) {
-            (mode, weight, identification) =>
+          forAll(arbitrary[Mode], arbitrary[BigDecimal], arbitrary[TransportMeansIdentification], nonEmptyString.sample.value, arbitrary[Country]) {
+            (mode, weight, identification, text, country) =>
               val userAnswers = emptyUserAnswers
                 .setValue(GrossWeightPage(Index(0)), weight)
                 .setValue(AddDepartureTransportMeansYesNoPage(Index(0)), true)
                 .setValue(TransportMeansIdentificationPage(Index(0), Index(0)), identification)
+                .setValue(VehicleIdentificationNumberPage(Index(0), Index(0)), text)
+                .setValue(CountryPage(Index(0), Index(0)), country)
                 .setRemoved(HouseConsignmentSection(Index(1)))
                 .setValue(GrossWeightPage(Index(2)), weight)
                 .setValue(AddDepartureTransportMeansYesNoPage(Index(2)), true)
                 .setValue(TransportMeansIdentificationPage(Index(2), Index(0)), identification)
+                .setValue(VehicleIdentificationNumberPage(Index(2), Index(0)), text)
+                .setValue(CountryPage(Index(2), Index(0)), country)
                 .setValue(GrossWeightPage(Index(3)), weight)
                 .setValue(AddDepartureTransportMeansYesNoPage(Index(3)), false)
 
@@ -106,17 +116,21 @@ class AddAnotherHouseConsignmentViewModelSpec extends SpecBase with Generators w
         }
 
         "and show remove links" in {
-          forAll(arbitrary[Mode], arbitrary[BigDecimal], arbitrary[TransportMeansIdentification]) {
-            (mode, weight, identification) =>
+          forAll(arbitrary[Mode], arbitrary[BigDecimal], arbitrary[TransportMeansIdentification], nonEmptyString.sample.value, arbitrary[Country]) {
+            (mode, weight, identification, text, country) =>
               val userAnswers = emptyUserAnswers
                 .setValue(GrossWeightPage(Index(0)), weight)
                 .setValue(AddDepartureTransportMeansYesNoPage(Index(0)), true)
                 .setValue(TransportMeansIdentificationPage(Index(0), Index(0)), identification)
+                .setValue(VehicleIdentificationNumberPage(Index(0), Index(0)), text)
+                .setValue(CountryPage(Index(0), Index(0)), country)
                 .setValue(GrossWeightPage(Index(1)), weight)
                 .setValue(AddDepartureTransportMeansYesNoPage(Index(1)), false)
                 .setValue(GrossWeightPage(Index(2)), weight)
                 .setValue(AddDepartureTransportMeansYesNoPage(Index(2)), true)
                 .setValue(TransportMeansIdentificationPage(Index(2), Index(0)), identification)
+                .setValue(VehicleIdentificationNumberPage(Index(2), Index(0)), text)
+                .setValue(CountryPage(Index(2), Index(0)), country)
                 .setValue(GrossWeightPage(Index(3)), weight)
                 .setValue(AddDepartureTransportMeansYesNoPage(Index(3)), false)
 
