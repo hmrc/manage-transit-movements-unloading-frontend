@@ -53,7 +53,7 @@ object AddAnotherHouseConsignmentViewModel {
           ListItem(
             name = name,
             changeUrl = None,
-            removeUrl = Some(Call("GET", "#").url) //TODO: To be added when built
+            removeUrl = Some(controllers.houseConsignment.index.routes.RemoveHouseConsignmentYesNoController.onPageLoad(arrivalId, hcIndex, mode).url)
           )
       }
 

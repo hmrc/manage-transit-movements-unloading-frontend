@@ -140,22 +140,38 @@ class AddAnotherHouseConsignmentViewModelSpec extends SpecBase with Generators w
                 ListItem(
                   name = s"House consignment 1",
                   changeUrl = None,
-                  removeUrl = Some("#") //TODO: To be updated when built
+                  removeUrl = Some(
+                    controllers.houseConsignment.index.routes.RemoveHouseConsignmentYesNoController
+                      .onPageLoad(arrivalId, Index(0), mode)
+                      .url
+                  )
                 ),
                 ListItem(
                   name = s"House consignment 2",
                   changeUrl = None,
-                  removeUrl = Some("#") //TODO: To be updated when built
+                  removeUrl = Some(
+                    controllers.houseConsignment.index.routes.RemoveHouseConsignmentYesNoController
+                      .onPageLoad(arrivalId, Index(1), mode)
+                      .url
+                  )
                 ),
                 ListItem(
                   name = s"House consignment 3",
                   changeUrl = None,
-                  removeUrl = Some("#") //TODO: To be updated when built
+                  removeUrl = Some(
+                    controllers.houseConsignment.index.routes.RemoveHouseConsignmentYesNoController
+                      .onPageLoad(arrivalId, Index(2), mode)
+                      .url
+                  )
                 ),
                 ListItem(
                   name = s"House consignment 4",
                   changeUrl = None,
-                  removeUrl = Some("#") //TODO: To be updated when built
+                  removeUrl = Some(
+                    controllers.houseConsignment.index.routes.RemoveHouseConsignmentYesNoController
+                      .onPageLoad(arrivalId, Index(3), mode)
+                      .url
+                  )
                 )
               )
 

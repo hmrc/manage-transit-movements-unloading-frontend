@@ -42,13 +42,13 @@ class RemoveHouseConsignmentYesNoController @Inject() (
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode): Action[AnyContent] = actions
-    .requireIndex(arrivalId, HouseConsignmentSection(houseConsignmentIndex), addAnother(arrivalId, mode, houseConsignmentIndex)) {
+    .requireIndex(arrivalId, HouseConsignmentSection(houseConsignmentIndex), addAnother(arrivalId, mode)) {
       implicit request =>
         Ok(view(form(houseConsignmentIndex), request.userAnswers.mrn, arrivalId, houseConsignmentIndex, mode))
     }
 
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode): Action[AnyContent] = actions
-    .requireIndex(arrivalId, HouseConsignmentSection(houseConsignmentIndex), addAnother(arrivalId, mode, houseConsignmentIndex))
+    .requireIndex(arrivalId, HouseConsignmentSection(houseConsignmentIndex), addAnother(arrivalId, mode))
     .async {
       implicit request =>
         form(houseConsignmentIndex)
@@ -70,14 +70,14 @@ class RemoveHouseConsignmentYesNoController @Inject() (
                     Future.successful(request.userAnswers)
                   }
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(addAnother(arrivalId, mode, houseConsignmentIndex))
+              } yield Redirect(addAnother(arrivalId, mode))
           )
     }
 
   def form(houseConsignmentIndex: Index): Form[Boolean] =
     formProvider("houseConsignment.index.removeHouseConsignmentYesNo", houseConsignmentIndex.display)
 
-  private def addAnother(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index): Call = Call("GET", "#")
-  //TODO: update when add another controller done
+  private def addAnother(arrivalId: ArrivalId, mode: Mode): Call =
+    controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(arrivalId, mode)
 
 }
