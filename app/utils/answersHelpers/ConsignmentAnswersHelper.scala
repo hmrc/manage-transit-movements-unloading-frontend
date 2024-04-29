@@ -69,7 +69,7 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
 
   private val houseConsignmentAddRemoveLink: Link = Link(
     id = s"add-remove-house-consignment",
-    href = "#", // TODO update when controller added
+    href = controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(arrivalId, NormalMode).url,
     text = messages("houseConsignment.addRemove")
   )
 
