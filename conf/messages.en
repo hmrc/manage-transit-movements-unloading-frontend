@@ -920,6 +920,16 @@ houseConsignment.index.items.document.type.error.required = Select the type of d
 houseConsignment.index.items.document.type.check.error.required = Select the new document type for item {1} in house consignment {0}
 houseConsignment.index.items.document.type.maxLimitForType.label = You cannot add any more {0} documents to all items. To add another, you need to remove one first. You can, however, still add a {1} document to your items.
 
+houseConsignment.index.document.type.NormalMode.title = What type of document do you want to add?
+houseConsignment.index.document.type.CheckMode.title = What is the new document type for house consignment {0}?
+houseConsignment.index.document.type.NormalMode.heading = What type of document do you want to add?
+houseConsignment.index.document.type.CheckMode.heading = What is the new document type for house consignment {0}?
+houseConsignment.index.document.type.hint = Enter the document name or code.
+houseConsignment.index.document.type.placeholder = Select a document type
+houseConsignment.index.document.type.error.required = Select the type of document you want to add
+houseConsignment.index.document.type.check.error.required = Select the new document type for house consignment {0}
+houseConsignment.index.document.type.maxLimitForType.label = You cannot add any more documents of this type. To add another, you need to remove one first
+
 houseConsignment.item.addDocumentYesNo.title = Do you want to add a document for the item?
 houseConsignment.item.addDocumentYesNo.heading = Do you want to add a document for the item?
 houseConsignment.item.addDocumentYesNo.error.required = Select yes if you you want to add a document for the item
@@ -1115,6 +1125,18 @@ houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.tit
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
 houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.error.required = Select yes if you want to add an additional reference number
 
+houseConsignment.index.additionalReference.addAnotherAdditionalReference.empty.title = You have added 0 additional references for house consignment {1}
+houseConsignment.index.additionalReference.addAnotherAdditionalReference.singular.title = You have added 1 additional reference for house consignment {1}
+houseConsignment.index.additionalReference.addAnotherAdditionalReference.plural.title = You have added {0} additional references for house consignment {1}
+houseConsignment.index.additionalReference.addAnotherAdditionalReference.empty.heading = You have added 0 additional references for house consignment {1}
+houseConsignment.index.additionalReference.addAnotherAdditionalReference.singular.heading = You have added 1 additional reference for house consignment {1}
+houseConsignment.index.additionalReference.addAnotherAdditionalReference.plural.heading = You have added {0} additional references for house consignment {1}
+houseConsignment.index.additionalReference.addAnotherAdditionalReference.empty.label = Do you want to add a additional reference for house consignment {1}?
+houseConsignment.index.additionalReference.addAnotherAdditionalReference.label = Do you want to add another additional reference for house consignment {1}?
+houseConsignment.index.additionalReference.addAnotherAdditionalReference.maxLimit.label = You cannot add any more additional references for house consignment {1}. To add another, you need to remove one first.
+houseConsignment.index.additionalReference.addAnotherAdditionalReference.error.required = Select yes if you want to add another additional reference for house consignment {0}
+houseConsignment.index.additionalReference.addAnotherAdditionalReference.paragraph = This can be any other reference you want to declare, such as a certificate number, import licence or accompanying document.
+
 houseConsignment.index.departureMeansOfTransport.identificationNumber.NormalMode.title = What is the identification for this vehicle?
 houseConsignment.index.departureMeansOfTransport.identificationNumber.CheckMode.title = What is the identification for the new departure means of transport in house consignment {0}?
 houseConsignment.index.departureMeansOfTransport.identificationNumber.NormalMode.heading = What is the identification for this vehicle?
@@ -1126,6 +1148,7 @@ houseConsignment.index.departureMeansOfTransport.identificationNumber.CheckMode.
 houseConsignment.index.departureMeansOfTransport.identificationNumber.error.length = The identification must be 35 characters or less
 houseConsignment.index.departureMeansOfTransport.identificationNumber.error.invalid = The identification must only include letters a to z and numbers 0 to 9
 houseConsignment.index.departureMeansOfTransport.identificationNumber.change.hidden = the identification for the new vehicle
+
 
 houseConsignment.index.departureMeansOfTransport.country.NormalMode.title = What country is this vehicle registered to?
 houseConsignment.index.departureMeansOfTransport.country.CheckMode.title = What country is the new vehicle registered to in house consignment {0}?
@@ -1183,6 +1206,10 @@ houseConsignment.index.documents.additionalInformation.NormalMode.error.required
 houseConsignment.index.documents.additionalInformation.CheckMode.error.required = Enter the new additional information in house consignment {0}
 houseConsignment.index.documents.additionalInformation.error.length = The additional information must be 35 characters or less
 houseConsignment.index.documents.additionalInformation.error.invalidCharacters = The additional information must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+
+houseConsignment.index.removeHouseConsignmentYesNo.title = Are you sure you want to remove house consignment {0}?
+houseConsignment.index.removeHouseConsignmentYesNo.heading = Are you sure you want to remove house consignment {0}?
+houseConsignment.index.removeHouseConsignmentYesNo.error.required = Select yes if you want to remove house consignment {0}
 
 houseConsignment.addAnotherHouseConsignment.singular.title = You have added 1 house consignment
 houseConsignment.addAnotherHouseConsignment.plural.title = You have added {0} house consignments

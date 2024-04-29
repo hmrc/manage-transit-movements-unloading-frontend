@@ -16,9 +16,10 @@
 
 package utils.answersHelpers.consignment
 
+import controllers.houseConsignment.index.routes
 import models.DocType.Previous
 import models.reference.Country
-import models.{DynamicAddress, Index, Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
+import models.{CheckMode, DynamicAddress, Index, Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
 import pages.houseConsignment.consignor.CountryPage
 import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage, SecurityIndicatorFromExportDeclarationPage}
 import pages.sections.ItemsSection
@@ -47,7 +48,7 @@ class HouseConsignmentAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.grossMass",
     id = Some(s"change-gross-mass"),
-    call = Some(Call(GET, "#"))
+    call = Some(routes.GrossWeightController.onPageLoad(arrivalId, houseConsignmentIndex, CheckMode))
   )
 
   def preGrossMassRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
@@ -188,7 +189,9 @@ class HouseConsignmentAnswersHelper(
 
   private val additionalReferenceAddRemoveLink: Link = Link(
     id = "add-remove-additional-reference",
-    href = "#", // TODO update when controller added
+    href = controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController
+      .onPageLoad(arrivalId, NormalMode, houseConsignmentIndex)
+      .url,
     text = messages("additionalReferenceLink.addRemove")
   )
 

@@ -24,7 +24,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.houseConsignment.index.departureMeansOfTransport.HouseConsignmentCountryViewModel
+import viewModels.houseConsignment.index.departureTransportMeans.HouseConsignmentCountryViewModel
 import views.behaviours.InputSelectViewBehaviours
 import views.html.houseConsignment.index.departureMeansOfTransport.CountryView
 

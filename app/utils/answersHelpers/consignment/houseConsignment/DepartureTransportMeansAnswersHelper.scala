@@ -16,9 +16,10 @@
 
 package utils.answersHelpers.consignment.houseConsignment
 
+import controllers.houseConsignment.index.departureMeansOfTransport.routes
 import models.reference.{Country, TransportMeansIdentification}
-import models.{Index, UserAnswers}
-import pages._
+import models.{CheckMode, Index, UserAnswers}
+import pages.houseConsignment.index.departureMeansOfTransport._
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
@@ -33,29 +34,29 @@ class DepartureTransportMeansAnswersHelper(
     extends AnswersHelper(userAnswers) {
 
   def transportMeansID: Option[SummaryListRow] = getAnswerAndBuildRow[TransportMeansIdentification](
-    page = DepartureTransportMeansIdentificationTypePage(houseConsignmentIndex, transportMeansIndex),
+    page = TransportMeansIdentificationPage(houseConsignmentIndex, transportMeansIndex),
     formatAnswer = formatAsText,
     prefix = "checkYourAnswers.departureMeansOfTransport.identification",
     id = None,
-    call = Some(Call("GET", "#")), // TODO add link after controller created
+    call = Some(routes.IdentificationController.onPageLoad(arrivalId, houseConsignmentIndex, transportMeansIndex, CheckMode)),
     args = transportMeansIndex.display
   )
 
   def transportMeansIDNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = DepartureTransportMeansIdentificationNumberPage(houseConsignmentIndex, transportMeansIndex),
+    page = VehicleIdentificationNumberPage(houseConsignmentIndex, transportMeansIndex),
     formatAnswer = formatAsText,
     prefix = "checkYourAnswers.departureMeansOfTransport.identificationNumber",
     id = None,
-    call = Some(Call("GET", "#")), // TODO add link after controller created
+    call = Some(routes.IdentificationNumberController.onPageLoad(arrivalId, houseConsignmentIndex, transportMeansIndex, CheckMode)),
     args = transportMeansIndex.display
   )
 
   def buildVehicleNationalityRow: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
-    page = DepartureTransportMeansCountryPage(houseConsignmentIndex, transportMeansIndex),
+    page = CountryPage(houseConsignmentIndex, transportMeansIndex),
     formatAnswer = x => Text(x.description),
     prefix = "checkYourAnswers.departureMeansOfTransport.country",
     id = None,
-    call = Some(Call("GET", "#")), // TODO add link after controller created
+    call = Some(routes.CountryController.onPageLoad(arrivalId, houseConsignmentIndex, transportMeansIndex, CheckMode)),
     args = transportMeansIndex.display
   )
 }

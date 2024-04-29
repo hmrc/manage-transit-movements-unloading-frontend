@@ -31,8 +31,8 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.ReferenceDataService
-import viewModels.houseConsignment.index.departureMeansOfTransport.HouseConsignmentCountryViewModel
-import viewModels.houseConsignment.index.departureMeansOfTransport.HouseConsignmentCountryViewModel.HouseConsignmentCountryViewModelProvider
+import viewModels.houseConsignment.index.departureTransportMeans.HouseConsignmentCountryViewModel
+import viewModels.houseConsignment.index.departureTransportMeans.HouseConsignmentCountryViewModel.HouseConsignmentCountryViewModelProvider
 import views.html.houseConsignment.index.departureMeansOfTransport.CountryView
 
 import scala.concurrent.Future

@@ -17,12 +17,12 @@
 package utils.answersHelpers.consignment.houseConsignment
 
 import models.reference.AdditionalReferenceType
-import models.{Index, UserAnswers}
+import models.{CheckMode, Index, UserAnswers}
 import pages.houseConsignment.index.additionalReference.{HouseConsignmentAdditionalReferenceNumberPage, HouseConsignmentAdditionalReferenceTypePage}
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
+import controllers.houseConsignment.index.additionalReference.routes
 
 class HouseConsignmentAdditionalReferencesAnswersHelper(
   userAnswers: UserAnswers,
@@ -36,7 +36,7 @@ class HouseConsignmentAdditionalReferencesAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.houseConsignment.additionalReference.type",
     id = Some(s"change-additional-reference-type-${additionalReferenceIndex.display}"),
-    call = Some(Call("GET", "#")),
+    call = Some(routes.AdditionalReferenceTypeController.onPageLoad(arrivalId, CheckMode, houseConsignmentIndex, additionalReferenceIndex)),
     args = Seq(additionalReferenceIndex.display): _*
   )
 
@@ -45,7 +45,7 @@ class HouseConsignmentAdditionalReferencesAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.houseConsignment.additionalReference.number",
     id = Some(s"change-additional-reference-number-${additionalReferenceIndex.display}"),
-    call = Some(Call("GET", "#")),
+    call = Some(routes.AdditionalReferenceNumberController.onPageLoad(arrivalId, CheckMode, houseConsignmentIndex, additionalReferenceIndex)),
     args = Seq(additionalReferenceIndex.display): _*
   )
 }

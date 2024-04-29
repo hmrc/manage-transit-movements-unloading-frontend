@@ -1,5 +1,5 @@
 @*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,45 +14,48 @@
  * limitations under the License.
  *@
 
+@import config.FrontendAppConfig
+@import controllers.houseConsignment.index.documents.routes
 @import models.MovementReferenceNumber
+@import models.reference.DocumentType
 @import models.reference.Selectable._
-@import models.reference.{Country, Selectable}
 @import viewModels.components.InputSelectViewModel._
+@import viewModels.houseConsignment.index.documents.TypeViewModel
 @import views.html.components.{Button, ErrorSummary, InputSelect}
-@import controllers.houseConsignment.index.departureMeansOfTransport.routes
-@import viewModels.houseConsignment.index.departureTransportMeans.HouseConsignmentCountryViewModel
 
 
 @this(
     mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    inputSelect: InputSelect,
     errorSummary: ErrorSummary,
-    select: InputSelect,
-    button: Button,
-    formHelper: FormWithCSRF
+    button: Button
 )
 
-@(form: Form[Country], countryList: Seq[Selectable], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index,transportMeansIndex: Index, mode: Mode, viewModel: HouseConsignmentCountryViewModel)(implicit request: Request[_], messages: Messages)
+@(form: Form[DocumentType], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode, documents: Seq[DocumentType], viewModel: TypeViewModel, houseConsignmentIndex: Index, documentIndex: Index)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
 
 @mainTemplate(
     title = viewModel.title,
     showBackLink = true
 ) {
 
-        @formHelper(action = controllers.houseConsignment.index.departureMeansOfTransport.routes.CountryController.onSubmit(arrivalId,houseConsignmentIndex,transportMeansIndex, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.TypeController.onSubmit(arrivalId, mode, houseConsignmentIndex, documentIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
-
-        @select(
+        @inputSelect(
             field = form("value"),
             selectType = OrdinarySelect(
                 heading = viewModel.heading,
                 caption = Some(messages("site.caption", mrn.toString))
             ),
-            selectItems = countryList.toSelectItems(form.value),
-            placeholder = messages("departureMeansOfTransport.country.placeholder"),
-            hint = Some(messages("houseConsignment.index.departureMeansOfTransport.nationality.hintText"))
+            hint = Some(messages("houseConsignment.index.document.type.hint")),
+            selectItems = documents.toSelectItems(form.value),
+            placeholder = messages("houseConsignment.index.document.type.placeholder")
         )
+        @viewModel.maxLimitLabelForType.map { label =>
+            <p class="govuk-body" data-testId="maxLimitForType">@label</p>
+        }
 
         @button(attributes = Map("id" -> "submit"))
     }
