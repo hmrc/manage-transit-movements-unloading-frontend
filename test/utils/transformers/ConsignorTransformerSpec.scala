@@ -20,6 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import connectors.ReferenceDataConnector
 import generated._
 import generators.Generators
+import models.DynamicAddress
 import models.reference.Country
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verifyNoInteractions, when}
@@ -95,7 +96,7 @@ class ConsignorTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
     }
 
     "at house consignment level" - {
-      import pages.{ConsignorIdentifierPage, ConsignorNamePage}
+      import pages.{ConsignorAddressPage, ConsignorIdentifierPage, ConsignorNamePage}
 
       "when consignor defined" in {
         forAll(arbitrary[ConsignorType06], arbitrary[AddressType07], arbitrary[Country]) {
@@ -111,6 +112,7 @@ class ConsignorTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
             result.get(ConsignorIdentifierPage(hcIndex)) mustBe consignor.identificationNumber
             result.get(ConsignorNamePage(hcIndex)) mustBe consignor.name
+            result.get(ConsignorAddressPage(hcIndex)) mustBe Some(DynamicAddress(address.streetAndNumber, address.city, address.postcode))
         }
       }
 
@@ -119,6 +121,7 @@ class ConsignorTransformerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
         result.get(ConsignorIdentifierPage(hcIndex)) must not be defined
         result.get(ConsignorNamePage(hcIndex)) must not be defined
+        result.get(ConsignorAddressPage(hcIndex)) must not be defined
       }
     }
   }
