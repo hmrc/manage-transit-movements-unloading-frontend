@@ -32,7 +32,7 @@ case class TransportMeans(index: Index, identificationType: Option[TransportMean
   }
 
   def forAddAnotherDisplay(implicit messages: Messages): String = {
-    val prefix = messages("departureMeansOfTransportPrefix.prefix", index.display)
+    val prefix = messages("departureMeansOfTransport.prefix", index.display)
     (identificationType, identificationNumber) match {
       case (Some(a), Some(b)) => s"$prefix - $a - $b"
       case (Some(a), None)    => s"$prefix - $a"

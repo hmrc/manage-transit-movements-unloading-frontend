@@ -666,8 +666,8 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         )
 
         val expectResult = NonEmptySet.of(
-          DocumentType(Support, "1", "Document 1"),
-          DocumentType(Support, "4", "Document 2")
+          DocumentType(Previous, "1", "Document 1"),
+          DocumentType(Previous, "4", "Document 2")
         )
 
         connector.getPreviousDocuments().futureValue mustEqual expectResult

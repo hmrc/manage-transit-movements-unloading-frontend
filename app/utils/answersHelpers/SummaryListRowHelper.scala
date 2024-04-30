@@ -46,7 +46,7 @@ class SummaryListRowHelper(implicit messages: Messages) {
     }
 
   protected def formatAsText[T](answer: T): Content           = s"$answer".toText
-  protected def formatAsPackage(answer: PackageType): Content = s"${answer.asDescription}".toText
+  protected def formatAsPackage(answer: PackageType): Content = s"${answer.description}".toText
   protected def formatAsWeight[T](answer: T): Content         = s"${answer}kg".toText
 
   protected def formatAsLink(answer: String, href: String): Content = {

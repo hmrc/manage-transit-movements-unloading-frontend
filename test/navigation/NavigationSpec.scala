@@ -41,19 +41,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         val userAnswers = emptyUserAnswers.setValue(UnloadingTypePage, UnloadingType.Fully)
         navigator
           .nextPage(UnloadingTypePage, mode, userAnswers)
-          .mustBe(controllers.routes.DateGoodsUnloadedController.onPageLoad(userAnswers.id, NormalMode))
-      }
-
-      "must go from a page that doesn't exist in the route map to unloading summary" in {
-
-        case object UnknownPage extends Page
-
-        forAll(arbitrary[UserAnswers]) {
-          answers =>
-            navigator
-              .nextPage(UnknownPage, mode, answers)
-              .mustBe(routes.SessionExpiredController.onPageLoad())
-        }
+          .mustBe(routes.DateGoodsUnloadedController.onPageLoad(userAnswers.id, NormalMode))
       }
 
       "must go from date goods unloaded page" - {
@@ -71,7 +59,7 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           navigator
             .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
-            .mustBe(controllers.routes.CanSealsBeReadController.onPageLoad(userAnswers.id, mode))
+            .mustBe(routes.CanSealsBeReadController.onPageLoad(userAnswers.id, mode))
         }
 
         "to can seals be read page when seals exist in incident transport equipment" in {
@@ -90,17 +78,17 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           navigator
             .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
-            .mustBe(controllers.routes.CanSealsBeReadController.onPageLoad(userAnswers.id, mode))
+            .mustBe(routes.CanSealsBeReadController.onPageLoad(userAnswers.id, mode))
         }
 
-        "to cross-check page when no seals exist" in {
+        "to add unloading comments yes/no page when no seals exist" in {
           val ie043 = arbitrary[CC043CType].map(_.copy(Consignment = None)).sample.value
 
           val userAnswers = emptyUserAnswers.copy(ie043Data = ie043)
 
           navigator
             .nextPage(DateGoodsUnloadedPage, mode, userAnswers)
-            .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
+            .mustBe(routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, mode))
         }
       }
 
@@ -110,68 +98,222 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           val userAnswers = emptyUserAnswers.setValue(CanSealsBeReadPage, true)
           navigator
             .nextPage(CanSealsBeReadPage, mode, userAnswers)
-            .mustBe(controllers.routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, mode))
+            .mustBe(routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, mode))
         }
 
-        "to Are any seals broken page  when the answer is No" in {
+        "to Are any seals broken page when the answer is No" in {
 
           val userAnswers = emptyUserAnswers.setValue(CanSealsBeReadPage, false)
           navigator
             .nextPage(CanSealsBeReadPage, mode, userAnswers)
-            .mustBe(controllers.routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, mode))
+            .mustBe(routes.AreAnySealsBrokenController.onPageLoad(userAnswers.id, mode))
         }
-      }
-
-      "must go from can unloading comment page to check your answers page" in {
-
-        val userAnswers = emptyUserAnswers.setValue(UnloadingCommentsPage, "test")
-        navigator
-          .nextPage(UnloadingCommentsPage, mode, userAnswers)
-          .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
       }
 
       "must go from are any seals broken page " - {
-        "to unloading findings page when the answer is No" in {
+        "to add unloading comments yes/no page when seals are present and not damaged" in {
 
-          val userAnswers = emptyUserAnswers.setValue(AreAnySealsBrokenPage, false)
+          val userAnswers = emptyUserAnswers
+            .setValue(CanSealsBeReadPage, true)
+            .setValue(AreAnySealsBrokenPage, false)
+
+          navigator
+            .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
+            .mustBe(routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, NormalMode))
+        }
+
+        "to unloading findings page when seals are not present" in {
+
+          navigator
+            .nextPage(AreAnySealsBrokenPage, mode, emptyUserAnswers)
+            .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
+        }
+
+        "to unloading findings page when seals are present but not readable" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(CanSealsBeReadPage, false)
+            .setValue(AreAnySealsBrokenPage, false)
 
           navigator
             .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
             .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
         }
 
-        "to unloading findings page when the answer is Yes" in {
+        "to unloading findings page when seals are present but broken" in {
 
-          val userAnswers = emptyUserAnswers.setValue(AreAnySealsBrokenPage, true)
+          val userAnswers = emptyUserAnswers
+            .setValue(CanSealsBeReadPage, true)
+            .setValue(AreAnySealsBrokenPage, true)
 
           navigator
             .nextPage(AreAnySealsBrokenPage, mode, userAnswers)
             .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
         }
       }
-      "must go from unloading comments yes no page" - {
+
+      "must go from add unloading comments yes/no page" - {
         "when answer is true to unloading comments controller" in {
           val userAnswers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, true)
 
           navigator
             .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
-            .mustBe(routes.UnloadingCommentsController.onPageLoad(arrivalId, mode))
+            .mustBe(routes.UnloadingFindingsController.onPageLoad(arrivalId))
         }
-        "when answer is false to check your answers controller" in {
+
+        "when answer is false to do you have anything else to report yes/no page" in {
           val userAnswers = emptyUserAnswers.setValue(AddUnloadingCommentsYesNoPage, false)
 
           navigator
             .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
-            .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
+            .mustBe(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId))
         }
-        "to session expired controller when no exisiting answers found" in {
+
+        "to session expired controller when no existing answers found" in {
           navigator
             .nextPage(AddUnloadingCommentsYesNoPage, mode, emptyUserAnswers)
             .mustBe(routes.SessionExpiredController.onPageLoad())
         }
       }
 
-      "must go from New Seal Number page to unloading summary page" ignore {
+      "must go from add comments yes/no page" - {
+        "when answer is true to unloading comments controller" in {
+          val userAnswers = emptyUserAnswers.setValue(AddCommentsYesNoPage, true)
+
+          navigator
+            .nextPage(AddCommentsYesNoPage, mode, userAnswers)
+            .mustBe(routes.UnloadingCommentsController.onPageLoad(arrivalId, NormalMode))
+        }
+
+        "when answer is false to do you have anything else to report yes/no page" in {
+          val userAnswers = emptyUserAnswers.setValue(AddCommentsYesNoPage, false)
+
+          navigator
+            .nextPage(AddCommentsYesNoPage, mode, userAnswers)
+            .mustBe(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId))
+        }
+      }
+
+      "must go from can unloading comments page to do you have anything else to report yes/no page" in {
+        val userAnswers = emptyUserAnswers.setValue(UnloadingCommentsPage, "test")
+        navigator
+          .nextPage(UnloadingCommentsPage, mode, userAnswers)
+          .mustBe(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(userAnswers.id))
+      }
+
+      "must go from do you have anything else to report page" - {
+        "when answer is true to other things to report controller" in {
+          val userAnswers = emptyUserAnswers.setValue(DoYouHaveAnythingElseToReportYesNoPage, true)
+
+          navigator
+            .nextPage(DoYouHaveAnythingElseToReportYesNoPage, mode, userAnswers)
+            .mustBe(routes.OtherThingsToReportController.onPageLoad(arrivalId, NormalMode))
+        }
+
+        "when answer is false to check your answers page" in {
+          val userAnswers = emptyUserAnswers.setValue(DoYouHaveAnythingElseToReportYesNoPage, false)
+
+          navigator
+            .nextPage(DoYouHaveAnythingElseToReportYesNoPage, mode, userAnswers)
+            .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
+        }
+      }
+
+      "must go from other things to report page to check your answers page" in {
+        val userAnswers = emptyUserAnswers.setValue(OtherThingsToReportPage, "test")
+        navigator
+          .nextPage(OtherThingsToReportPage, mode, userAnswers)
+          .mustBe(routes.CheckYourAnswersController.onPageLoad(userAnswers.id))
+
+      }
+
+      "must go from a page that doesn't exist in the route map to session expired" in {
+
+        case object UnknownPage extends Page
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(UnknownPage, mode, answers)
+              .mustBe(routes.SessionExpiredController.onPageLoad())
+        }
+      }
+    }
+
+    "in Check mode" - {
+
+      val mode = CheckMode
+
+      "must go from a page that doesn't exist in the edit route map  to Check Your Answers" in {
+
+        case object UnknownPage extends Page
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(UnknownPage, mode, answers)
+              .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
+        }
+      }
+
+      "must go from unloading comments yes no page" - {
+        "to check your answers page if no selected" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddUnloadingCommentsYesNoPage, false)
+
+          navigator
+            .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
+            .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
+        }
+        "to additional comments page if yes is selected and no comments found" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddUnloadingCommentsYesNoPage, true)
+
+          navigator
+            .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
+            .mustBe(routes.UnloadingCommentsController.onPageLoad(arrivalId, mode))
+        }
+        "to additional comments page if yes is selected and comments found" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddUnloadingCommentsYesNoPage, true)
+            .setValue(UnloadingCommentsPage, "comment")
+
+          navigator
+            .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
+            .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
+        }
+        "to session expired controller when no existing answers found" in {
+          navigator
+            .nextPage(AddUnloadingCommentsYesNoPage, mode, emptyUserAnswers)
+            .mustBe(routes.SessionExpiredController.onPageLoad())
+        }
+      }
+
+      "must go from date goods unloaded page to check your answers page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(DateGoodsUnloadedPage, mode, answers)
+              .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
+        }
+      }
+
+      "must go from Gross mass amount page to check your answers page" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          answers =>
+            navigator
+              .nextPage(GrossWeightPage(index, itemIndex), mode, answers)
+              .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
+        }
+      }
+
+      "must go from New Seal Number page to check your answers page" in {
+
         forAll(arbitrary[UserAnswers]) {
           answers =>
             navigator
@@ -180,97 +322,14 @@ class NavigationSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         }
       }
 
-      "in Check mode" - {
-
-        val mode = CheckMode
-
-        "must go from a page that doesn't exist in the edit route map  to Check Your Answers" in {
-
-          case object UnknownPage extends Page
+      "must go from Remove comments page " - {
+        "to check your answers page when the form is submitted" in {
 
           forAll(arbitrary[UserAnswers]) {
             answers =>
               navigator
-                .nextPage(UnknownPage, mode, answers)
-                .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId))
-          }
-        }
-
-        "must go from unloading comments yes no page" - {
-          "to check your answers page if no selected" in {
-
-            val userAnswers = emptyUserAnswers
-              .setValue(AddUnloadingCommentsYesNoPage, false)
-
-            navigator
-              .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId))
-          }
-          "to additional comments page if yes is selected and no comments found" in {
-
-            val userAnswers = emptyUserAnswers
-              .setValue(AddUnloadingCommentsYesNoPage, true)
-
-            navigator
-              .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
-              .mustBe(controllers.routes.UnloadingCommentsController.onPageLoad(arrivalId, mode))
-          }
-          "to additional comments page if yes is selected and comments found" in {
-
-            val userAnswers = emptyUserAnswers
-              .setValue(AddUnloadingCommentsYesNoPage, true)
-              .setValue(UnloadingCommentsPage, "comment")
-
-            navigator
-              .nextPage(AddUnloadingCommentsYesNoPage, mode, userAnswers)
-              .mustBe(controllers.routes.CheckYourAnswersController.onPageLoad(arrivalId))
-          }
-          "to session expired controller when no existing answers found" in {
-            navigator
-              .nextPage(AddUnloadingCommentsYesNoPage, mode, emptyUserAnswers)
-              .mustBe(routes.SessionExpiredController.onPageLoad())
-          }
-        }
-
-        "must go from date goods unloaded page to check your answers page" in {
-
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              navigator
-                .nextPage(DateGoodsUnloadedPage, mode, answers)
+                .nextPage(ConfirmRemoveCommentsPage, mode, answers)
                 .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
-          }
-        }
-
-        "must go from Gross mass amount page to check your answers page" in {
-
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              navigator
-                .nextPage(GrossWeightPage(index, itemIndex), mode, answers)
-                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
-          }
-        }
-
-        "must go from New Seal Number page to check your answers page" in {
-
-          forAll(arbitrary[UserAnswers]) {
-            answers =>
-              navigator
-                .nextPage(SealIdentificationNumberPage(equipmentIndex, sealIndex), mode, answers)
-                .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
-          }
-        }
-
-        "must go from Remove comments page " - {
-          "to check your answers page when the form is submitted" in {
-
-            forAll(arbitrary[UserAnswers]) {
-              answers =>
-                navigator
-                  .nextPage(ConfirmRemoveCommentsPage, mode, answers)
-                  .mustBe(routes.CheckYourAnswersController.onPageLoad(arrivalId))
-            }
           }
         }
       }

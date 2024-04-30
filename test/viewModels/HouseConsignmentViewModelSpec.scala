@@ -20,10 +20,13 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.DocType.{Support, Transport}
 import models.reference._
-import models.{Index, SecurityType}
+import models.{CheckMode, Index, SecurityType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
+import pages.houseConsignment.index.departureMeansOfTransport.CountryPage
+import pages.houseConsignment.index.departureMeansOfTransport.VehicleIdentificationNumberPage
+import pages.houseConsignment.index.departureMeansOfTransport.TransportMeansIdentificationPage
 import pages.houseConsignment.index.{CountryOfDestinationPage, SecurityIndicatorFromExportDeclarationPage}
 import pages.houseConsignment.index.additionalReference.{HouseConsignmentAdditionalReferenceNumberPage, HouseConsignmentAdditionalReferenceTypePage}
 import pages.houseConsignment.index.additionalinformation.{HouseConsignmentAdditionalInformationCodePage, HouseConsignmentAdditionalInformationTextPage}
@@ -51,9 +54,9 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       "when there is one" in {
 
         val answers = emptyUserAnswers
-          .setValue(DepartureTransportMeansIdentificationNumberPage(Index(0), index), vehicleIdentificationNumber)
-          .setValue(DepartureTransportMeansIdentificationTypePage(Index(0), index), identificationType)
-          .setValue(DepartureTransportMeansCountryPage(Index(0), index), country)
+          .setValue(VehicleIdentificationNumberPage(Index(0), index), vehicleIdentificationNumber)
+          .setValue(TransportMeansIdentificationPage(Index(0), index), identificationType)
+          .setValue(CountryPage(Index(0), index), country)
 
         setExistingUserAnswers(answers)
 
@@ -73,12 +76,12 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       "when there is multiple" in {
 
         val answers = emptyUserAnswers
-          .setValue(DepartureTransportMeansIdentificationNumberPage(hcIndex, Index(0)), vehicleIdentificationNumber)
-          .setValue(DepartureTransportMeansIdentificationTypePage(hcIndex, Index(0)), identificationType)
-          .setValue(DepartureTransportMeansCountryPage(hcIndex, Index(0)), country)
-          .setValue(DepartureTransportMeansIdentificationNumberPage(hcIndex, Index(1)), vehicleIdentificationNumber)
-          .setValue(DepartureTransportMeansIdentificationTypePage(hcIndex, Index(1)), identificationType)
-          .setValue(DepartureTransportMeansCountryPage(hcIndex, Index(1)), country)
+          .setValue(VehicleIdentificationNumberPage(hcIndex, Index(0)), vehicleIdentificationNumber)
+          .setValue(TransportMeansIdentificationPage(hcIndex, Index(0)), identificationType)
+          .setValue(CountryPage(hcIndex, Index(0)), country)
+          .setValue(VehicleIdentificationNumberPage(hcIndex, Index(1)), vehicleIdentificationNumber)
+          .setValue(TransportMeansIdentificationPage(hcIndex, Index(1)), identificationType)
+          .setValue(CountryPage(hcIndex, Index(1)), country)
 
         setExistingUserAnswers(answers)
 
@@ -168,7 +171,9 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         section.children.head.sectionTitle.value mustBe "Additional reference 1"
         section.children.head.rows.size mustBe 2
 
-        section.viewLinks.head.href mustBe "#"
+        section.viewLinks.head.href mustBe controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController
+          .onSubmit(arrivalId, CheckMode, hcIndex)
+          .url
       }
 
       "when there is multiple" in {
@@ -194,7 +199,9 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         section.children(1).sectionTitle.value mustBe "Additional reference 2"
         section.children(1).rows.size mustBe 2
 
-        section.viewLinks.head.href mustBe "#"
+        section.viewLinks.head.href mustBe controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController
+          .onSubmit(arrivalId, CheckMode, hcIndex)
+          .url
       }
     }
 

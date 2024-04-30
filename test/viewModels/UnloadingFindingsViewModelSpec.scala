@@ -517,9 +517,11 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(ConsignorIdentifierPage(hcIndex), "csgr1")
           .setValue(ConsigneeNamePage(hcIndex), "John Smith")
           .setValue(ConsigneeIdentifierPage(hcIndex), "csgee1")
-          .setValue(DepartureTransportMeansIdentificationTypePage(hcIndex, dtmIndex), TransportMeansIdentification("2", ""))
-          .setValue(DepartureTransportMeansIdentificationNumberPage(hcIndex, dtmIndex), "23")
-          .setValue(DepartureTransportMeansCountryPage(hcIndex, dtmIndex), Country("IT", ""))
+          .setValue(pages.houseConsignment.index.departureMeansOfTransport.TransportMeansIdentificationPage(hcIndex, dtmIndex),
+                    TransportMeansIdentification("2", "")
+          )
+          .setValue(pages.houseConsignment.index.departureMeansOfTransport.VehicleIdentificationNumberPage(hcIndex, dtmIndex), "23")
+          .setValue(pages.houseConsignment.index.departureMeansOfTransport.CountryPage(hcIndex, dtmIndex), Country("IT", ""))
           .setValue(ItemDescriptionPage(hcIndex, itemIndex), "shirts")
           .setValue(GrossWeightPage(hcIndex, itemIndex), BigDecimal(123.45))
           .setValue(NetWeightPage(hcIndex, itemIndex), BigDecimal(123.45))
@@ -532,14 +534,8 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         section.children.length mustBe 1
 
         section.children.head.sectionTitle.value mustBe "House consignment 1"
-        section.children.head.rows.size mustBe 0
+        section.children.head.rows.size mustBe 2
         section.children.head.viewLinks.size mustBe 1
-
-        section.children.head.children.head.sectionTitle.value mustBe "Consignor"
-        section.children.head.children.head.rows.size mustBe 2
-
-        section.children.head.children(1).sectionTitle.value mustBe "Consignee"
-        section.children.head.children(1).rows.size mustBe 2
       }
       "when there is multiple" in {
         val userAnswers = emptyUserAnswers
@@ -547,9 +543,11 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(ConsignorIdentifierPage(Index(0)), "csgr1")
           .setValue(ConsigneeNamePage(Index(0)), "John Smith")
           .setValue(ConsigneeIdentifierPage(Index(0)), "csgee1")
-          .setValue(DepartureTransportMeansIdentificationTypePage(Index(0), dtmIndex), TransportMeansIdentification("2", ""))
-          .setValue(DepartureTransportMeansIdentificationNumberPage(Index(0), dtmIndex), "23")
-          .setValue(DepartureTransportMeansCountryPage(Index(0), dtmIndex), Country("IT", ""))
+          .setValue(pages.houseConsignment.index.departureMeansOfTransport.TransportMeansIdentificationPage(Index(0), dtmIndex),
+                    TransportMeansIdentification("2", "")
+          )
+          .setValue(pages.houseConsignment.index.departureMeansOfTransport.VehicleIdentificationNumberPage(Index(0), dtmIndex), "23")
+          .setValue(pages.houseConsignment.index.departureMeansOfTransport.CountryPage(Index(0), dtmIndex), Country("IT", ""))
           .setValue(ItemDescriptionPage(Index(0), itemIndex), "shirts")
           .setValue(GrossWeightPage(Index(0), itemIndex), BigDecimal(123.45))
           .setValue(NetWeightPage(Index(0), itemIndex), BigDecimal(123.45))
@@ -557,9 +555,11 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
           .setValue(ConsignorIdentifierPage(Index(1)), "csgr1")
           .setValue(ConsigneeNamePage(Index(1)), "John Smith")
           .setValue(ConsigneeIdentifierPage(Index(1)), "csgee1")
-          .setValue(DepartureTransportMeansIdentificationTypePage(Index(1), dtmIndex), TransportMeansIdentification("2", ""))
-          .setValue(DepartureTransportMeansIdentificationNumberPage(Index(1), dtmIndex), "23")
-          .setValue(DepartureTransportMeansCountryPage(Index(1), dtmIndex), Country("IT", ""))
+          .setValue(pages.houseConsignment.index.departureMeansOfTransport.TransportMeansIdentificationPage(Index(1), dtmIndex),
+                    TransportMeansIdentification("2", "")
+          )
+          .setValue(pages.houseConsignment.index.departureMeansOfTransport.VehicleIdentificationNumberPage(Index(1), dtmIndex), "23")
+          .setValue(pages.houseConsignment.index.departureMeansOfTransport.CountryPage(Index(1), dtmIndex), Country("IT", ""))
           .setValue(ItemDescriptionPage(Index(1), itemIndex), "shirts")
           .setValue(GrossWeightPage(Index(1), itemIndex), BigDecimal(123.45))
           .setValue(NetWeightPage(Index(1), itemIndex), BigDecimal(123.45))
@@ -572,14 +572,9 @@ class UnloadingFindingsViewModelSpec extends SpecBase with AppWithDefaultMockFix
         section.children.length mustBe 2
 
         section.children.head.sectionTitle.value mustBe "House consignment 1"
-        section.children.head.rows.size mustBe 0
+        section.children.head.rows.size mustBe 2
         section.children.head.viewLinks.size mustBe 1
 
-        section.children.head.children.head.sectionTitle.value mustBe "Consignor"
-        section.children.head.children.head.rows.size mustBe 2
-
-        section.children.head.children(1).sectionTitle.value mustBe "Consignee"
-        section.children.head.children(1).rows.size mustBe 2
       }
     }
 

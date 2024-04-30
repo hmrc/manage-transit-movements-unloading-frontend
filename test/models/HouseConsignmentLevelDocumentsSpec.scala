@@ -37,7 +37,7 @@ class HouseConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropert
               val userAnswers = emptyUserAnswers
                 .setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex), document)
 
-              val result = HouseConsignmentLevelDocuments.apply(userAnswers, houseConsignmentIndex, itemIndex)
+              val result = HouseConsignmentLevelDocuments.apply(userAnswers, houseConsignmentIndex, itemIndex, None)
               result.supporting mustBe 1
               result.transport mustBe 0
           }
@@ -54,6 +54,20 @@ class HouseConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropert
               result.transport mustBe 0
           }
         }
+
+        "when not at item level" in {
+          import pages.houseConsignment.index.documents.TypePage
+
+          forAll(arbitrary[DocumentType](arbitrarySupportDocument)) {
+            document =>
+              val userAnswers = emptyUserAnswers
+                .setValue(TypePage(houseConsignmentIndex, documentIndex), document)
+
+              val result = HouseConsignmentLevelDocuments.apply(userAnswers, houseConsignmentIndex, documentIndex)
+              result.supporting mustBe 0
+              result.transport mustBe 0
+          }
+        }
       }
 
       "when there is a transport document" - {
@@ -64,7 +78,7 @@ class HouseConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropert
               val userAnswers = emptyUserAnswers
                 .setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex), document)
 
-              val result = HouseConsignmentLevelDocuments.apply(userAnswers, houseConsignmentIndex, itemIndex)
+              val result = HouseConsignmentLevelDocuments.apply(userAnswers, houseConsignmentIndex, itemIndex, None)
               result.supporting mustBe 0
               result.transport mustBe 1
           }
@@ -77,6 +91,20 @@ class HouseConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropert
                 .setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex), document)
 
               val result = HouseConsignmentLevelDocuments.apply(userAnswers, houseConsignmentIndex, itemIndex, Some(index))
+              result.supporting mustBe 0
+              result.transport mustBe 0
+          }
+        }
+
+        "when not at item level" in {
+          import pages.houseConsignment.index.documents.TypePage
+
+          forAll(arbitrary[DocumentType](arbitraryTransportDocument)) {
+            document =>
+              val userAnswers = emptyUserAnswers
+                .setValue(TypePage(houseConsignmentIndex, documentIndex), document)
+
+              val result = HouseConsignmentLevelDocuments.apply(userAnswers, houseConsignmentIndex, documentIndex)
               result.supporting mustBe 0
               result.transport mustBe 0
           }

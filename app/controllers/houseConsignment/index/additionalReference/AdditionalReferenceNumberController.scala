@@ -20,7 +20,6 @@ import controllers.actions._
 import forms.HouseConsignmentAdditionalReferenceNumberFormProvider
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigator
 import navigation.houseConsignment.index.AdditionalReferenceNavigator
 import pages.houseConsignment.index.additionalReference.HouseConsignmentAdditionalReferenceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}

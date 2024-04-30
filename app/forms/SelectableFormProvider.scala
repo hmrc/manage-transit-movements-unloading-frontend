@@ -33,7 +33,6 @@ class SelectableFormProvider @Inject() extends Mappings {
     val prefixMode = mode match {
       case NormalMode => prefix
       case CheckMode  => s"$prefix.check"
-
     }
 
     Form(

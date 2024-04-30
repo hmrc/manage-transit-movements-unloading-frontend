@@ -19,7 +19,7 @@ package utils.answersHelpers.consignment.houseConsignment
 import models.reference.{Country, TransportMeansIdentification}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages._
+import pages.houseConsignment.index.departureMeansOfTransport._
 import utils.answersHelpers.AnswersHelperSpecBase
 
 class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
@@ -27,7 +27,7 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
   "DepartureTransportMeansAnswersHelper" - {
 
     "transportMeansID" - {
-      val page = DepartureTransportMeansIdentificationTypePage(hcIndex, dtmIndex)
+      val page = TransportMeansIdentificationPage(hcIndex, dtmIndex)
       "must return None" - {
         s"when $page undefined" in {
           val helper = new DepartureTransportMeansAnswersHelper(emptyUserAnswers, hcIndex, dtmIndex)
@@ -49,14 +49,14 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
               action.visuallyHiddenText.value mustBe "identification type for departure means of transport 1"
-              action.href mustBe "#"
+              action.href mustBe "/manage-transit-movements/unloading/AB123/house-consignment/1/departure-means-of-transport/1/change-identification"
           }
         }
       }
     }
 
     "transportMeansIDNumber" - {
-      val page = DepartureTransportMeansIdentificationNumberPage(hcIndex, dtmIndex)
+      val page = VehicleIdentificationNumberPage(hcIndex, dtmIndex)
       "must return None" - {
         s"when $page undefined" in {
           val helper = new DepartureTransportMeansAnswersHelper(emptyUserAnswers, hcIndex, dtmIndex)
@@ -73,19 +73,19 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
               val helper = new DepartureTransportMeansAnswersHelper(answers, hcIndex, dtmIndex)
               val result = helper.transportMeansIDNumber.value
 
-              result.key.value mustBe "Identification number"
+              result.key.value mustBe "Identification"
               result.value.value mustBe value
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
-              action.visuallyHiddenText.value mustBe "identification number for departure means of transport 1"
-              action.href mustBe "#"
+              action.visuallyHiddenText.value mustBe "identification for departure means of transport 1"
+              action.href mustBe "/manage-transit-movements/unloading/AB123/house-consignment/1/departure-means-of-transport/1/change-identification-number"
           }
         }
       }
     }
 
     "buildVehicleNationalityRow" - {
-      val page = DepartureTransportMeansCountryPage(hcIndex, dtmIndex)
+      val page = CountryPage(hcIndex, dtmIndex)
       "must return None" - {
         s"when $page undefined" in {
           val helper = new DepartureTransportMeansAnswersHelper(emptyUserAnswers, hcIndex, dtmIndex)
@@ -107,7 +107,7 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
               action.visuallyHiddenText.value mustBe "registered country for departure means of transport 1"
-              action.href mustBe "#"
+              action.href mustBe "/manage-transit-movements/unloading/AB123/house-consignment/1/departure-means-of-transport/1/change-country"
           }
         }
       }

@@ -40,6 +40,7 @@ object CustomsOffice {
         (__ \ "phoneNumber").readNullable[String]
     )(CustomsOffice.apply _)
 
-  implicit val order: Order[CustomsOffice] = (x: CustomsOffice, y: CustomsOffice) => x.name.compareToIgnoreCase(y.name)
-
+  implicit val order: Order[CustomsOffice] = (x: CustomsOffice, y: CustomsOffice) => {
+    (x, y).compareBy(_.name, _.id)
+  }
 }

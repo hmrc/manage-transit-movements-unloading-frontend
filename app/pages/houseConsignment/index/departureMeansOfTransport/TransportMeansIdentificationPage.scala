@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,26 @@
  * limitations under the License.
  */
 
-package pages
+package pages.houseConsignment.index.departureMeansOfTransport
 
+import generated.DepartureTransportMeansType02
 import models.Index
-import models.reference.Country
+import models.reference.TransportMeansIdentification
+import pages.DiscrepancyQuestionPage
 import pages.sections.houseConsignment.index.departureTransportMeans.TransportMeansSection
 import play.api.libs.json.JsPath
 
-case class DepartureTransportMeansCountryPage(houseConsignmentIndex: Index, transportMeansIndex: Index) extends QuestionPage[Country] {
+case class TransportMeansIdentificationPage(houseConsignmentIndex: Index, transportMeansIndex: Index)
+    extends DiscrepancyQuestionPage[TransportMeansIdentification, Seq[DepartureTransportMeansType02], String] {
 
   override def path: JsPath = TransportMeansSection(houseConsignmentIndex, transportMeansIndex).path \ toString
 
-  override def toString: String = "nationality"
+  override def toString: String = "identification"
+
+  override def valueInIE043(ie043: Seq[DepartureTransportMeansType02], sequenceNumber: Option[BigInt]): Option[String] =
+    ie043
+      .find {
+        x => sequenceNumber.contains(x.sequenceNumber)
+      }
+      .map(_.typeOfIdentification)
 }

@@ -32,6 +32,26 @@ package object submission {
 
     def readNullableSafe[T](implicit reads: Reads[T]): Reads[Option[T]] =
       value.readNullable[T] orElse None
+
+    def readSafe[T](implicit reads: Reads[Option[T]]): Reads[Option[T]] =
+      value.read[Option[T]] orElse None
+
+    /** @param pathNodes number of path nodes to take from the right
+      * @return the rightmost path nodes
+      *
+      * Examples:
+      * <blockquote>
+      * <pre>
+      * (JsPath \ "foo" \ "bar" \ "baz").take(1) returns JsPath \ "baz"
+      * (JsPath \ "foo" \ "bar" \ "baz").take(2) returns JsPath \ "bar" \ "baz"
+      * (JsPath \ "foo" \ "bar" \ "baz").take(3) returns JsPath \ "foo" \ "bar" \ "baz"
+      * </pre>
+      * </blockquote>
+      */
+    def take(pathNodes: Int): JsPath =
+      JsPath(value.path.takeRight(pathNodes))
+
+    def last: JsPath = take(1)
   }
 
   implicit def boolToFlag(x: Boolean): Flag =

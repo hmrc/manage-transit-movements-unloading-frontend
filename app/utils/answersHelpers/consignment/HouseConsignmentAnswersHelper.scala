@@ -16,9 +16,10 @@
 
 package utils.answersHelpers.consignment
 
+import controllers.houseConsignment.index.routes
 import models.DocType.Previous
 import models.reference.Country
-import models.{DynamicAddress, Index, Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
+import models.{CheckMode, DynamicAddress, Index, Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
 import pages.houseConsignment.consignor.CountryPage
 import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage, SecurityIndicatorFromExportDeclarationPage}
 import pages.sections.ItemsSection
@@ -28,9 +29,7 @@ import pages.sections.houseConsignment.index.additionalInformation.AdditionalInf
 import pages.sections.houseConsignment.index.additionalReference.AdditionalReferenceListSection
 import pages.{houseConsignment, _}
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
 import utils.answersHelpers.consignment.houseConsignment._
 import viewModels.sections.Section
@@ -47,7 +46,15 @@ class HouseConsignmentAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.grossMass",
     id = Some(s"change-gross-mass"),
-    call = Some(Call(GET, "#"))
+    call = Some(routes.GrossWeightController.onPageLoad(arrivalId, houseConsignmentIndex, CheckMode))
+  )
+
+  def preGrossMassRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
+    page = GrossWeightPage(houseConsignmentIndex),
+    formatAnswer = formatAsText,
+    prefix = "unloadingFindings.grossMass",
+    id = Some(s"change-gross-mass"),
+    call = None
   )
 
   def safetyAndSecurityDetails: Option[SummaryListRow] = getAnswerAndBuildRow[SecurityType](
@@ -66,30 +73,47 @@ class HouseConsignmentAnswersHelper(
     call = None
   )
 
-  def consignorName: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = ConsignorNamePage(houseConsignmentIndex),
-    formatAnswer = formatAsText,
-    prefix = "unloadingFindings.rowHeadings.houseConsignment.consignorName",
-    id = None,
-    call = None
-  )
+  def consignorName(suffix: Option[String] = None): Option[SummaryListRow] = suffix.fold(
+    getAnswerAndBuildRow[String](
+      page = ConsignorNamePage(houseConsignmentIndex),
+      formatAnswer = formatAsText,
+      prefix = "unloadingFindings.rowHeadings.houseConsignment.consignorName",
+      id = None,
+      call = None
+    )
+  ) {
+    suffix =>
+      getAnswerAndBuildRow[String](
+        page = ConsignorNamePage(houseConsignmentIndex),
+        formatAnswer = formatAsText,
+        prefix = s"unloadingFindings.rowHeadings.houseConsignment.consignorName.$suffix",
+        id = None,
+        call = None
+      )
+  }
 
-  def consignorIdentification: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = ConsignorIdentifierPage(houseConsignmentIndex),
-    formatAnswer = formatAsText,
-    prefix = "unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier",
-    id = None,
-    call = None
-  )
+  def consignorIdentification(suffix: Option[String] = None): Option[SummaryListRow] = suffix.fold(
+    getAnswerAndBuildRow[String](
+      page = ConsignorIdentifierPage(houseConsignmentIndex),
+      formatAnswer = formatAsText,
+      prefix = s"unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier",
+      id = None,
+      call = None
+    )
+  ) {
+    suffix =>
+      getAnswerAndBuildRow[String](
+        page = ConsignorIdentifierPage(houseConsignmentIndex),
+        formatAnswer = formatAsText,
+        prefix = s"unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier.$suffix",
+        id = None,
+        call = None
+      )
+  }
 
   def consignorAddress: Option[SummaryListRow] =
     buildRowWithNoChangeLink[DynamicAddress](
-      data = userAnswers.ie043Data.Consignment
-        .flatMap(_.HouseConsignment.lift(houseConsignmentIndex.position))
-        .flatMap(_.Consignor.flatMap(_.Address))
-        .map(
-          address07 => DynamicAddress(address07)
-        ),
+      data = userAnswers.get(ConsignorAddressPage(houseConsignmentIndex)),
       formatAnswer = formatAsHtmlContent,
       prefix = "unloadingFindings.consignor.address"
     )
@@ -120,8 +144,8 @@ class HouseConsignmentAnswersHelper(
     StaticSection(
       sectionTitle = messages("unloadingFindings.consignor.heading"),
       rows = Seq(
-        consignorIdentification,
-        consignorName,
+        consignorIdentification(),
+        consignorName(),
         consignorCountry,
         consignorAddress
       ).flatten
@@ -158,7 +182,9 @@ class HouseConsignmentAnswersHelper(
 
   private val additionalReferenceAddRemoveLink: Link = Link(
     id = "add-remove-additional-reference",
-    href = "#", // TODO update when controller added
+    href = controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController
+      .onPageLoad(arrivalId, NormalMode, houseConsignmentIndex)
+      .url,
     text = messages("additionalReferenceLink.addRemove")
   )
 
