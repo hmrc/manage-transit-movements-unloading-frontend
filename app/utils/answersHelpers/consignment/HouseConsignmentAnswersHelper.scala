@@ -29,9 +29,7 @@ import pages.sections.houseConsignment.index.additionalInformation.AdditionalInf
 import pages.sections.houseConsignment.index.additionalReference.AdditionalReferenceListSection
 import pages.{houseConsignment, _}
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
 import utils.answersHelpers.consignment.houseConsignment._
 import viewModels.sections.Section

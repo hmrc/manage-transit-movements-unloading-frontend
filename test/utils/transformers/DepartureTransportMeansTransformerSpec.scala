@@ -26,7 +26,6 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.houseConsignment.index.departureMeansOfTransport._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 
@@ -91,7 +90,7 @@ class DepartureTransportMeansTransformerSpec extends SpecBase with AppWithDefaul
     }
 
     "when house consignment level" in {
-      import pages._
+      import pages.houseConsignment.index.departureMeansOfTransport._
       import pages.sections.houseConsignment.index.departureTransportMeans.TransportMeansSection
 
       forAll(departureTransportMeansGen) {

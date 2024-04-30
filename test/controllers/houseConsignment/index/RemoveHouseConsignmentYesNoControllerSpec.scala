@@ -99,11 +99,10 @@ class RemoveHouseConsignmentYesNoControllerSpec extends SpecBase with AppWithDef
 
         status(result) mustEqual SEE_OTHER
 
-        // TODO: uncomment when add another controller ready
-//        redirectLocation(result).value mustEqual
-//          controllers.houseConsignment.index.routes.AddAnotherHouseConsignmentController
-//            .onPageLoad(arrivalId, mode)
-//            .url
+        redirectLocation(result).value mustEqual
+          controllers.houseConsignment.routes.AddAnotherHouseConsignmentController
+            .onPageLoad(arrivalId, mode)
+            .url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -127,11 +126,10 @@ class RemoveHouseConsignmentYesNoControllerSpec extends SpecBase with AppWithDef
 
         status(result) mustEqual SEE_OTHER
 
-//        redirectLocation(result).value mustEqual
-//          controllers.houseConsignment.index.documents.routes.AddAnotherDocumentController
-//            .onPageLoad(arrivalId, houseConsignmentIndex, mode)
-//            .url
-//        TODO: uncomment when controller ready
+        redirectLocation(result).value mustEqual
+          controllers.houseConsignment.routes.AddAnotherHouseConsignmentController
+            .onPageLoad(arrivalId, mode)
+            .url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -152,11 +150,10 @@ class RemoveHouseConsignmentYesNoControllerSpec extends SpecBase with AppWithDef
 
       status(result) mustEqual SEE_OTHER
 
-//      redirectLocation(result).value mustEqual
-//        controllers.houseConsignment.index.documents.routes.AddAnotherDocumentController
-//          .onPageLoad(arrivalId, houseConsignmentIndex, mode)
-//          .url
-      // TODO: update when controller done
+      redirectLocation(result).value mustEqual
+        controllers.houseConsignment.routes.AddAnotherHouseConsignmentController
+          .onPageLoad(arrivalId, mode)
+          .url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

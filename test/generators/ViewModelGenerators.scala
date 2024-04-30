@@ -29,6 +29,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import viewModels.additionalReference.index.{AddAnotherAdditionalReferenceViewModel, AdditionalReferenceTypeViewModel}
 import viewModels.departureTransportMeans._
 import viewModels.documents.{AddAnotherDocumentViewModel, AdditionalInformationViewModel, DocumentReferenceNumberViewModel, TypeViewModel}
+import viewModels.houseConsignment.AddAnotherHouseConsignmentViewModel
 import viewModels.houseConsignment.index.additionalReference.{AdditionalReferenceTypeViewModel => HCAdditionalReferenceTypeViewModel}
 import viewModels.houseConsignment.index.departureTransportMeans.{
   HouseConsignmentCountryViewModel,
@@ -560,5 +561,13 @@ trait ViewModelGenerators {
         requiredError <- nonEmptyString
       } yield viewModels.houseConsignment.index.documents.AdditionalInformationViewModel(heading, title, requiredError)
     }
+
+  implicit lazy val arbitraryAddAnotherHouseConsignmentViewModel: Arbitrary[AddAnotherHouseConsignmentViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+      nextIndex    <- arbitrary[Index]
+    } yield AddAnotherHouseConsignmentViewModel(listItems, onSubmitCall, nextIndex)
+  }
 
 }
