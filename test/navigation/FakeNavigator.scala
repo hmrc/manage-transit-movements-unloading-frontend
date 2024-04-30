@@ -67,7 +67,7 @@ class FakeDepartureTransportMeansNavigator(desiredRoute: Call) extends navigatio
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeHouseConsignmentItemNavigator(desiredRoute: Call) extends HouseConsignmentItemNavigator {
+class FakeHouseConsignmentItemNavigator(desiredRoute: Call, mode: Mode) extends HouseConsignmentItemNavigator(mode) {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 

@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.CommodityCodeFormProvider
 import generators.Generators
-import models.CheckMode
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.items.CommodityCodePage
@@ -34,10 +34,12 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
   private val formProvider = new CommodityCodeFormProvider()
   private val form         = formProvider(index, index)
-  private val mode         = CheckMode
+
+  private val houseConsignmentMode = NormalMode
+  private val itemMode             = NormalMode
 
   lazy val commodityCodeControllerRoute: String =
-    controllers.houseConsignment.index.items.routes.CommodityCodeController.onPageLoad(arrivalId, index, index, mode).url
+    controllers.houseConsignment.index.items.routes.CommodityCodeController.onPageLoad(arrivalId, index, index, houseConsignmentMode, itemMode).url
 
   "CommodityCodeController" - {
 
@@ -55,7 +57,7 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, index, index, isXI = false, mode)(request, messages).toString
+        view(form, mrn, arrivalId, index, index, isXI = false, houseConsignmentMode, itemMode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -75,7 +77,7 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, index, index, isXI = false, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, index, index, isXI = false, houseConsignmentMode, itemMode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -110,7 +112,7 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       val view = injector.instanceOf[CommodityCodeView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, arrivalId, index, index, isXI = false, mode)(request, messages).toString
+        view(boundForm, mrn, arrivalId, index, index, isXI = false, houseConsignmentMode, itemMode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

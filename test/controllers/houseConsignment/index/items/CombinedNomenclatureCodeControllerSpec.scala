@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.CombinedNomenclatureCodeFormProvider
 import generators.Generators
-import models.{CheckMode, NormalMode}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.items.CombinedNomenclatureCodePage
@@ -34,14 +34,12 @@ class CombinedNomenclatureCodeControllerSpec extends SpecBase with AppWithDefaul
 
   private val formProvider = new CombinedNomenclatureCodeFormProvider()
   private val form         = formProvider(index, index)
-  private val mode         = NormalMode
-  private val checkMode    = CheckMode
+
+  private val houseConsignmentMode = NormalMode
+  private val itemMode             = NormalMode
 
   lazy val combinedNomenclatureCodeControllerRoute: String =
-    controllers.houseConsignment.index.items.routes.CombinedNomenclatureCodeController.onPageLoad(arrivalId, index, index, mode).url
-
-  lazy val combinedNomenclatureCodeControllerRouteCheckMode: String =
-    controllers.houseConsignment.index.items.routes.CombinedNomenclatureCodeController.onPageLoad(arrivalId, index, index, checkMode).url
+    controllers.houseConsignment.index.items.routes.CombinedNomenclatureCodeController.onPageLoad(arrivalId, index, index, houseConsignmentMode, itemMode).url
 
   "CombinedNomenclatureCodeController" - {
 
@@ -59,7 +57,7 @@ class CombinedNomenclatureCodeControllerSpec extends SpecBase with AppWithDefaul
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, index, index, isXI = false, mode)(request, messages).toString
+        view(form, mrn, arrivalId, index, index, isXI = false, houseConsignmentMode, itemMode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -79,7 +77,7 @@ class CombinedNomenclatureCodeControllerSpec extends SpecBase with AppWithDefaul
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, index, index, isXI = false, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, index, index, isXI = false, houseConsignmentMode, itemMode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -90,7 +88,7 @@ class CombinedNomenclatureCodeControllerSpec extends SpecBase with AppWithDefaul
       setExistingUserAnswers(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, combinedNomenclatureCodeControllerRouteCheckMode)
+        FakeRequest(POST, combinedNomenclatureCodeControllerRoute)
           .withFormUrlEncodedBody(("value", "A1"))
 
       val result = route(app, request).value
@@ -114,7 +112,7 @@ class CombinedNomenclatureCodeControllerSpec extends SpecBase with AppWithDefaul
       val view = injector.instanceOf[CombinedNomenclatureCodeView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, arrivalId, index, index, isXI = false, mode)(request, messages).toString
+        view(boundForm, mrn, arrivalId, index, index, isXI = false, houseConsignmentMode, itemMode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

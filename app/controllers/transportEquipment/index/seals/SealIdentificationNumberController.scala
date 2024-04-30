@@ -62,7 +62,7 @@ class SealIdentificationNumberController @Inject() (
   def onPageLoad(arrivalId: ArrivalId, equipmentMode: Mode, sealMode: Mode, equipmentIndex: Index, sealIndex: Index): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
-        val viewModel = viewModelProvider.apply(equipmentMode)
+        val viewModel = viewModelProvider.apply(sealMode)
         val preparedForm = request.userAnswers.get(SealIdentificationNumberPage(equipmentIndex, sealIndex)) match {
           case None        => form(viewModel.requiredError, equipmentIndex, sealIndex)
           case Some(value) => form(viewModel.requiredError, equipmentIndex, sealIndex).fill(value)
@@ -76,7 +76,7 @@ class SealIdentificationNumberController @Inject() (
       .requireData(arrivalId)
       .async {
         implicit request =>
-          val viewModel = viewModelProvider.apply(equipmentMode)
+          val viewModel = viewModelProvider.apply(sealMode)
           form(viewModel.requiredError, equipmentIndex, sealIndex)
             .bindFromRequest()
             .fold(

@@ -32,7 +32,7 @@ class SealNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
     "in NormalMode" - {
 
-      val equipmentMode = NormalMode
+      val equipmentMode = arbitrary[Mode].sample.value
       val sealMode      = NormalMode
       val navigator     = navigatorProvider.apply(equipmentMode)
 
@@ -48,7 +48,7 @@ class SealNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
     "in CheckMode" - {
 
-      val equipmentMode = arbitrary[Mode].sample.value
+      val equipmentMode = CheckMode
       val sealMode      = CheckMode
       val navigator     = navigatorProvider.apply(equipmentMode)
 

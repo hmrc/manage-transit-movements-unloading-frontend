@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.DescriptionFormProvider
-import models.CheckMode
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.items.ItemDescriptionPage
@@ -34,10 +34,14 @@ class DescriptionControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
   private lazy val formProvider = new DescriptionFormProvider()
   private lazy val form         = formProvider("houseConsignment.item.description", itemIndex.display, houseConsignmentIndex.display)
-  private val mode              = CheckMode
+
+  private val houseConsignmentMode = NormalMode
+  private val itemMode             = NormalMode
 
   private lazy val itemDescriptionRoute =
-    controllers.houseConsignment.index.items.routes.DescriptionController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex).url
+    controllers.houseConsignment.index.items.routes.DescriptionController
+      .onPageLoad(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)
+      .url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -57,7 +61,7 @@ class DescriptionControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex)(request, messages).toString
+        view(form, mrn, arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -76,7 +80,7 @@ class DescriptionControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -111,7 +115,7 @@ class DescriptionControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       val view = injector.instanceOf[DescriptionView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

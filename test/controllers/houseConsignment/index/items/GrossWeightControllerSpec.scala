@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.GrossWeightFormProvider
 import generators.Generators
-import models.{CheckMode, NormalMode}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.items.GrossWeightPage
@@ -35,15 +35,14 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val characterCount = notTooBigPositiveNumbers.sample.value
   private val formProvider   = new GrossWeightFormProvider()
   private val form           = formProvider("houseConsignment.item.grossWeight", decimalPlace, characterCount, itemIndex.display, houseConsignmentIndex.display)
-  private val mode           = NormalMode
-  private val checkMode      = CheckMode
-  private val validAnswer    = BigDecimal(123.45)
 
-  private lazy val GrossWeightAmountRoute =
-    controllers.houseConsignment.index.items.routes.GrossWeightController.onPageLoad(arrivalId, index, index, mode).url
+  private val houseConsignmentMode = NormalMode
+  private val itemMode             = NormalMode
 
-  private lazy val GrossWeightAmountRouteCheckMode =
-    controllers.houseConsignment.index.items.routes.GrossWeightController.onPageLoad(arrivalId, index, index, checkMode).url
+  private val validAnswer = BigDecimal(123.45)
+
+  private lazy val grossWeightRoute =
+    controllers.houseConsignment.index.items.routes.GrossWeightController.onPageLoad(arrivalId, index, index, houseConsignmentMode, itemMode).url
 
   "GrossWeightAmount Controller" - {
 
@@ -52,7 +51,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, GrossWeightAmountRoute)
+      val request = FakeRequest(GET, grossWeightRoute)
 
       val result = route(app, request).value
 
@@ -61,7 +60,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, index, index, mode)(request, messages).toString
+        view(form, mrn, arrivalId, index, index, houseConsignmentMode, itemMode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -70,7 +69,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       val userAnswers = emptyUserAnswers.setValue(GrossWeightPage(index, itemIndex), validAnswer)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, GrossWeightAmountRoute)
+      val request = FakeRequest(GET, grossWeightRoute)
 
       val result = route(app, request).value
 
@@ -81,7 +80,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       val view = injector.instanceOf[GrossWeightView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, index, index, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, index, index, houseConsignmentMode, itemMode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -92,7 +91,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       setExistingUserAnswers(emptyUserAnswers)
 
       val request =
-        FakeRequest(POST, GrossWeightAmountRouteCheckMode)
+        FakeRequest(POST, grossWeightRoute)
           .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(app, request).value
@@ -106,7 +105,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, GrossWeightAmountRoute).withFormUrlEncodedBody(("value", ""))
+      val request   = FakeRequest(POST, grossWeightRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
@@ -115,7 +114,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       val view = injector.instanceOf[GrossWeightView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, arrivalId, index, index, mode)(request, messages).toString
+        view(boundForm, mrn, arrivalId, index, index, houseConsignmentMode, itemMode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -123,7 +122,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, GrossWeightAmountRoute)
+      val request = FakeRequest(GET, grossWeightRoute)
 
       val result = route(app, request).value
 
@@ -138,7 +137,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       setNoExistingUserAnswers()
 
       val request =
-        FakeRequest(POST, GrossWeightAmountRoute)
+        FakeRequest(POST, grossWeightRoute)
           .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(app, request).value

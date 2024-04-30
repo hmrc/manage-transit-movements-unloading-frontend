@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items.additionalReference
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.{ArrivalId, Index, Mode}
+import models.{ArrivalId, CheckMode, Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -67,7 +67,15 @@ class AddAnotherAdditionalReferenceController @Inject() (
                   .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, viewModel.nextIndex)
               )
             case false =>
-              Redirect(controllers.houseConsignment.index.items.routes.AddPackagesYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode))
+              mode match {
+                case CheckMode =>
+                  Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+                case NormalMode =>
+                  Redirect(
+                    controllers.houseConsignment.index.items.routes.AddPackagesYesNoController
+                      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode, NormalMode)
+                  )
+              }
           }
         )
   }

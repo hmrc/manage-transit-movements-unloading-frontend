@@ -146,7 +146,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.routes.AddPackagesYesNoController
-            .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+            .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode, NormalMode)
             .url
         }
       }
@@ -167,7 +167,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.routes.AddPackagesYesNoController
-          .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+          .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode, NormalMode)
           .url
       }
     }

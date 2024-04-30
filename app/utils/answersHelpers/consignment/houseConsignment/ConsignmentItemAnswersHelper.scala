@@ -52,7 +52,7 @@ class ConsignmentItemAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.rowHeadings.item.description",
     id = None,
-    call = Some(routes.DescriptionController.onPageLoad(arrivalId, CheckMode, houseConsignmentIndex, itemIndex))
+    call = Some(routes.DescriptionController.onPageLoad(arrivalId, CheckMode, CheckMode, houseConsignmentIndex, itemIndex))
   )
 
   def declarationType: Option[SummaryListRow] = buildRowWithNoChangeLink[String](
@@ -73,7 +73,7 @@ class ConsignmentItemAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.item.grossWeight",
     args = itemIndex.display,
     id = s"gross-weight-${itemIndex.display}",
-    change = routes.GrossWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode),
+    change = routes.GrossWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode, CheckMode),
     remove = routes.RemoveGrossWeightYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode),
     hiddenLink = "grossWeightLink"
   )
@@ -84,7 +84,7 @@ class ConsignmentItemAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.item.netWeight",
     args = itemIndex.display,
     id = s"net-weight-${itemIndex.display}",
-    change = controllers.houseConsignment.index.items.routes.NetWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode),
+    change = controllers.houseConsignment.index.items.routes.NetWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode, CheckMode),
     remove = controllers.houseConsignment.index.items.routes.RemoveNetWeightYesNoController
       .onPageLoad(arrivalId, NormalMode, houseConsignmentIndex, itemIndex),
     hiddenLink = "netWeightLink"
@@ -209,7 +209,7 @@ class ConsignmentItemAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.item.cusCode",
     args = itemIndex.display,
     id = Some(s"change-cus-code-${itemIndex.display}"),
-    call = Some(routes.CustomsUnionAndStatisticsCodeController.onPageLoad(arrivalId, CheckMode, houseConsignmentIndex, itemIndex))
+    call = Some(routes.CustomsUnionAndStatisticsCodeController.onPageLoad(arrivalId, CheckMode, CheckMode, houseConsignmentIndex, itemIndex))
   )
 
   def commodityCodeRow: SummaryListRow = getAnswerAndBuildRowWithRemove[String](
@@ -218,7 +218,7 @@ class ConsignmentItemAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.item.commodityCode",
     args = itemIndex.display,
     id = s"commodity-code-${itemIndex.display}",
-    change = routes.CommodityCodeController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode),
+    change = routes.CommodityCodeController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode, CheckMode),
     remove = routes.RemoveCommodityCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode),
     hiddenLink = "commodityCodeLink"
   )
@@ -229,7 +229,7 @@ class ConsignmentItemAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.item.nomenclatureCode",
     args = itemIndex.display,
     id = s"nomenclature-code-${itemIndex.display}",
-    change = routes.CombinedNomenclatureCodeController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode),
+    change = routes.CombinedNomenclatureCodeController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode, CheckMode),
     remove = routes.RemoveCombinedNomenclatureCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode),
     hiddenLink = "nomenclatureCodeLink"
   )

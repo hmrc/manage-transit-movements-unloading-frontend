@@ -32,7 +32,9 @@ class CustomsUnionAndStatisticsCodeViewSpec extends InputTextViewBehaviours[Stri
   override def form: Form[String] = new CUSCodeFormProvider()(prefix, itemIndex.display, houseConsignmentIndex.display)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[CustomsUnionAndStatisticsCodeView].apply(form, mrn, arrivalId, NormalMode, houseConsignmentIndex, itemIndex)(fakeRequest, messages)
+    injector
+      .instanceOf[CustomsUnionAndStatisticsCodeView]
+      .apply(form, mrn, arrivalId, NormalMode, NormalMode, houseConsignmentIndex, itemIndex)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 

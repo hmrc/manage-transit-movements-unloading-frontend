@@ -19,9 +19,7 @@ package controllers.houseConsignment.index.items.document
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.{ArrivalId, Index, Mode}
-import pages.houseConsignment.index.items.AddAdditionalReferenceYesNoPage
-import pages.transportEquipment.index.ItemPage
+import models.{ArrivalId, CheckMode, Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -72,16 +70,15 @@ class AddAnotherDocumentController @Inject() (
                   .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemsIndex, viewModel.nextIndex)
               )
             case false =>
-              val redirectUrl = (request.userAnswers.get(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemsIndex)),
-                                 request.userAnswers.get(ItemPage(houseConsignmentIndex, itemsIndex))
-              ) match {
-                case (Some(_), _) => controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex)
-                case (_, Some(_)) => controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex)
-                case _ =>
-                  controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
-                    .onPageLoad(arrivalId, houseConsignmentIndex, itemsIndex, mode)
+              mode match {
+                case CheckMode =>
+                  Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+                case NormalMode =>
+                  Redirect(
+                    controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
+                      .onPageLoad(arrivalId, houseConsignmentIndex, itemsIndex, mode, NormalMode)
+                  )
               }
-              Redirect(redirectUrl)
           }
         )
   }

@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.DescriptionFormProvider
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator
+import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
 import pages.houseConsignment.index.items.ItemDescriptionPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -36,7 +36,7 @@ class DescriptionController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   actions: Actions,
-  navigator: HouseConsignmentItemNavigator,
+  navigatorProvider: HouseConsignmentItemNavigatorProvider,
   val controllerComponents: MessagesControllerComponents,
   formProvider: DescriptionFormProvider,
   view: DescriptionView
@@ -47,33 +47,42 @@ class DescriptionController @Inject() (
   private def form(houseConsignmentIndex: Index, itemIndex: Index): Form[String] =
     formProvider("houseConsignment.item.description", itemIndex.display, houseConsignmentIndex.display)
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(ItemDescriptionPage(houseConsignmentIndex, itemIndex)) match {
-        case None        => form(houseConsignmentIndex, itemIndex)
-        case Some(value) => form(houseConsignmentIndex, itemIndex).fill(value)
-      }
-      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode, houseConsignmentIndex, itemIndex))
-  }
+  def onPageLoad(arrivalId: ArrivalId, houseConsignmentMode: Mode, itemMode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Action[AnyContent] =
+    actions.requireData(arrivalId) {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(ItemDescriptionPage(houseConsignmentIndex, itemIndex)) match {
+          case None        => form(houseConsignmentIndex, itemIndex)
+          case Some(value) => form(houseConsignmentIndex, itemIndex).fill(value)
+        }
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex))
+    }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Action[AnyContent] = actions.requireData(arrivalId).async {
-    implicit request =>
-      form(houseConsignmentIndex, itemIndex)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode, houseConsignmentIndex, itemIndex))),
-          value => redirect(value, houseConsignmentIndex, itemIndex, mode)
-        )
-  }
+  def onSubmit(arrivalId: ArrivalId, houseConsignmentMode: Mode, itemMode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Action[AnyContent] =
+    actions.requireData(arrivalId).async {
+      implicit request =>
+        form(houseConsignmentIndex, itemIndex)
+          .bindFromRequest()
+          .fold(
+            formWithErrors =>
+              Future.successful(
+                BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex))
+              ),
+            value => redirect(value, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+          )
+    }
 
   private def redirect(
     value: String,
     houseConsignmentIndex: Index,
     itemIndex: Index,
-    mode: Mode
+    houseConsignmentMode: Mode,
+    itemMode: Mode
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(ItemDescriptionPage(houseConsignmentIndex, itemIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(ItemDescriptionPage(houseConsignmentIndex, itemIndex), mode, request.userAnswers))
+    } yield {
+      val navigator = navigatorProvider.apply(houseConsignmentMode)
+      Redirect(navigator.nextPage(ItemDescriptionPage(houseConsignmentIndex, itemIndex), itemMode, request.userAnswers))
+    }
 }

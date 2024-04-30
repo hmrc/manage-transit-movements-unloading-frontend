@@ -33,11 +33,13 @@ class AddAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWithDef
 
   private val formProvider = new YesNoFormProvider()
   private val form         = formProvider("houseConsignment.item.addAdditionalReferenceYesNo")
-  private val mode         = NormalMode
+
+  private val houseConsignmentMode = NormalMode
+  private val itemMode             = NormalMode
 
   private lazy val addAdditionalReferenceYesNoRoute =
     controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
-      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
       .url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -59,7 +61,7 @@ class AddAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWithDef
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, mode)(request, messages).toString
+        view(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -78,7 +80,7 @@ class AddAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWithDef
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -113,7 +115,7 @@ class AddAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWithDef
       val view = injector.instanceOf[AddAdditionalReferenceYesNoView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

@@ -33,7 +33,7 @@ class GrossWeightViewSpec extends InputTextViewBehaviours[BigDecimal] {
   override def form: Form[BigDecimal] = app.injector.instanceOf[GrossWeightFormProvider].apply(prefix, decimalPlace, characterCount)
 
   override def applyView(form: Form[BigDecimal]): HtmlFormat.Appendable =
-    injector.instanceOf[GrossWeightView].apply(form, mrn, arrivalId, index, index, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[GrossWeightView].apply(form, mrn, arrivalId, index, index, NormalMode, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "houseConsignment.item.grossWeight"
 
