@@ -32,10 +32,16 @@ class AddAnotherHouseConsignmentViewSpec extends ListWithActionsViewBehaviours {
     new AddAnotherFormProvider()(viewModel.prefix, viewModel.allowMore)
 
   private val viewModel            = arbitrary[AddAnotherHouseConsignmentViewModel].sample.value
+  private val noItemsViewModel     = viewModel.copy(listItems = Nil)
   private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
   private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
 
   override def form: Form[Boolean] = formProvider(notMaxedOutViewModel)
+
+  def applyNoItemsView: HtmlFormat.Appendable =
+    injector
+      .instanceOf[AddAnotherHouseConsignmentView]
+      .apply(formProvider(noItemsViewModel), mrn, arrivalId, noItemsViewModel)(fakeRequest, messages, frontendAppConfig)
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
@@ -59,4 +65,14 @@ class AddAnotherHouseConsignmentViewSpec extends ListWithActionsViewBehaviours {
 
   behave like pageWithSubmitButton("Continue")
 
+  "page with no items" - {
+
+    val doc = parseView(applyNoItemsView)
+
+    behave like pageWithTitle(doc, s"$prefix.empty", noItemsViewModel.count)
+
+    behave like pageWithHeading(doc, s"$prefix.empty", noItemsViewModel.count)
+
+    behave like pageWithRadioItems(document = doc, legendIsHeading = false, args = Seq(noItemsViewModel.count))
+  }
 }

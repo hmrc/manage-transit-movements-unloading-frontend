@@ -1211,11 +1211,14 @@ houseConsignment.index.removeHouseConsignmentYesNo.title = Are you sure you want
 houseConsignment.index.removeHouseConsignmentYesNo.heading = Are you sure you want to remove house consignment {0}?
 houseConsignment.index.removeHouseConsignmentYesNo.error.required = Select yes if you want to remove house consignment {0}
 
+houseConsignment.addAnotherHouseConsignment.empty.title = You have added 0 house consignments
 houseConsignment.addAnotherHouseConsignment.singular.title = You have added 1 house consignment
 houseConsignment.addAnotherHouseConsignment.plural.title = You have added {0} house consignments
+houseConsignment.addAnotherHouseConsignment.empty.heading = You have added 0 house consignments
 houseConsignment.addAnotherHouseConsignment.singular.heading = You have added 1 house consignment
 houseConsignment.addAnotherHouseConsignment.plural.heading = You have added {0} house consignments
+houseConsignment.addAnotherHouseConsignment.empty.label = Do you want to add a house consignment?
 houseConsignment.addAnotherHouseConsignment.label = Do you want to add another house consignment?
 houseConsignment.addAnotherHouseConsignment.maxLimit.label = You cannot add any more house consignments. To add another, you need to remove one first.
-houseConsignment.addAnotherHouseConsignment.error.required = Select yes if you want to add another house consignment
+houseConsignment.addAnotherHouseConsignment.error.required = Select yes if you want to add a house consignment
 houseConsignment.prefix = House consignment {0}
