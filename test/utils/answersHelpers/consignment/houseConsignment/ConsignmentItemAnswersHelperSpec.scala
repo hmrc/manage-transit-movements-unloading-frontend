@@ -355,7 +355,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
             addOrRemoveLink.id mustBe "add-remove-item-1-additional-reference"
             addOrRemoveLink.text mustBe "Add or remove additional reference"
             addOrRemoveLink.visuallyHidden.value mustBe "from item 1"
-            addOrRemoveLink.href mustBe "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/additional-reference/add-another"
+            addOrRemoveLink.href mustBe "/manage-transit-movements/unloading/AB123/change-house-consignment/1/change-item/1/additional-reference/add-another"
 
         }
       }

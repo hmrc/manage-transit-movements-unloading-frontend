@@ -18,16 +18,20 @@ package viewModels.houseConsignment.index.items.additionalReference
 
 import base.SpecBase
 import generators.Generators
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Mode, NormalMode}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import viewModels.houseConsignment.index.items.additionalReference.AdditionalReferenceTypeViewModel.AdditionalReferenceTypeViewModelProvider
 
 class AdditionalReferenceTypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
+  private val houseConsignmentMode = arbitrary[Mode].sample.value
+  private val itemMode             = arbitrary[Mode].sample.value
+
   "must create view model" - {
     "when Normal mode" in {
       val viewModelProvider = new AdditionalReferenceTypeViewModelProvider()
-      val result            = viewModelProvider.apply(arrivalId, NormalMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+      val result            = viewModelProvider.apply(arrivalId, houseConsignmentMode, itemMode, NormalMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
 
       result.title mustBe "What type of additional reference do you want to add?"
       result.heading mustBe "What type of additional reference do you want to add?"
@@ -36,7 +40,7 @@ class AdditionalReferenceTypeViewModelSpec extends SpecBase with ScalaCheckPrope
     "when Check mode" in {
       val viewModelProvider = new AdditionalReferenceTypeViewModelProvider()
 
-      val result = viewModelProvider.apply(arrivalId, CheckMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+      val result = viewModelProvider.apply(arrivalId, houseConsignmentMode, itemMode, CheckMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
 
       result.title mustBe s"What is the new additional reference type for item ${itemIndex.display} in house consignment ${houseConsignmentIndex.display}?"
       result.heading mustBe s"What is the new additional reference type for item ${itemIndex.display} in house consignment ${houseConsignmentIndex.display}?"

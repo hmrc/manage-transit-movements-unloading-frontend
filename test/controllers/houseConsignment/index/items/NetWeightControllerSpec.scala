@@ -23,10 +23,13 @@ import generators.Generators
 import models.NormalMode
 import models.P5.ArrivalMessageType.UnloadingPermission
 import models.P5.{ArrivalMessageType, MessageMetaData}
+import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import pages.houseConsignment.index.items.NetWeightPage
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.houseConsignment.index.items.NetWeightView
@@ -44,6 +47,13 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
 
   private lazy val NetWeightRoute =
     controllers.houseConsignment.index.items.routes.NetWeightController.onPageLoad(arrivalId, hcIndex, itemIndex, houseConsignmentMode, itemMode).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(
+        bind(classOf[HouseConsignmentItemNavigatorProvider]).toInstance(FakeConsignmentItemNavigators.fakeConsignmentItemNavigatorProvider)
+      )
 
   "NetWeightAmount Controller" - {
 

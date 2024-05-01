@@ -21,7 +21,7 @@ import forms.SelectableFormProvider
 import models.reference.AdditionalReferenceType
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.houseConsignment.index.items.AdditionalReferenceNavigator
+import navigation.houseConsignment.index.items.AdditionalReferenceNavigator.AdditionalReferenceNavigatorProvider
 import pages.houseConsignment.index.items.additionalReference.AdditionalReferenceTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AdditionalReferenceTypeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: AdditionalReferenceNavigator,
+  navigatorProvider: AdditionalReferenceNavigatorProvider,
   actions: Actions,
   formProvider: SelectableFormProvider,
   service: AdditionalReferencesService,
@@ -50,15 +50,24 @@ class AdditionalReferenceTypeController @Inject() (
 
   private val prefix: String = "houseConsignment.index.items.additionalReference.additionalReferenceType"
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] =
+  def onPageLoad(
+    arrivalId: ArrivalId,
+    houseConsignmentMode: Mode,
+    itemMode: Mode,
+    additionalReferenceMode: Mode,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
+    additionalReferenceIndex: Index
+  ): Action[AnyContent] =
     actions
       .requireData(arrivalId)
       .async {
         implicit request =>
           service.getAdditionalReferences().map {
             additionalReferences =>
-              val form      = formProvider(mode, prefix, additionalReferences, houseConsignmentIndex.display, itemIndex.display)
-              val viewModel = viewModelProvider.apply(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+              val form = formProvider(additionalReferenceMode, prefix, additionalReferences, houseConsignmentIndex.display, itemIndex.display)
+              val viewModel = viewModelProvider
+                .apply(arrivalId, houseConsignmentMode, itemMode, additionalReferenceMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
               val preparedForm = request.userAnswers.get(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) match {
                 case None        => form
                 case Some(value) => form.fill(value)
@@ -70,13 +79,22 @@ class AdditionalReferenceTypeController @Inject() (
           }
       }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] =
+  def onSubmit(
+    arrivalId: ArrivalId,
+    houseConsignmentMode: Mode,
+    itemMode: Mode,
+    additionalReferenceMode: Mode,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
+    additionalReferenceIndex: Index
+  ): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
         service.getAdditionalReferences().flatMap {
           additionalReferences =>
-            val form      = formProvider(mode, prefix, additionalReferences, houseConsignmentIndex.display, itemIndex.display)
-            val viewModel = viewModelProvider.apply(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+            val form = formProvider(additionalReferenceMode, prefix, additionalReferences, houseConsignmentIndex.display, itemIndex.display)
+            val viewModel = viewModelProvider
+              .apply(arrivalId, houseConsignmentMode, itemMode, additionalReferenceMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
             form
               .bindFromRequest()
               .fold(
@@ -86,7 +104,7 @@ class AdditionalReferenceTypeController @Inject() (
                       view(formWithErrors, request.userAnswers.mrn, additionalReferences.values, viewModel)
                     )
                   ),
-                value => redirect(value, houseConsignmentIndex, itemIndex, additionalReferenceIndex, mode)
+                value => redirect(value, houseConsignmentIndex, itemIndex, additionalReferenceIndex, houseConsignmentMode, itemMode, additionalReferenceMode)
               )
         }
     }
@@ -96,10 +114,21 @@ class AdditionalReferenceTypeController @Inject() (
     houseConsignmentIndex: Index,
     itemIndex: Index,
     additionalReferenceIndex: Index,
-    mode: Mode
+    houseConsignmentMode: Mode,
+    itemMode: Mode,
+    additionalReferenceMode: Mode
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), mode, request.userAnswers))
+    } yield {
+      val navigator = navigatorProvider.apply(houseConsignmentMode, itemMode)
+      Redirect(
+        navigator.nextPage(
+          AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
+          additionalReferenceMode,
+          request.userAnswers
+        )
+      )
+    }
 }

@@ -19,9 +19,11 @@ package controllers.houseConsignment.index.items.packages
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
+import navigation.houseConsignment.index.items.PackagesNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.items.packages.AddPackageShippingMarkYesNoPage
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -41,6 +43,9 @@ class AddPackageShippingMarkYesNoControllerSpec extends SpecBase with AppWithDef
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(
+        bind(classOf[PackagesNavigator]).toInstance(FakeConsignmentItemNavigators.fakePackagesNavigator)
+      )
 
   "PackageShippingMarkYesNoController" - {
 

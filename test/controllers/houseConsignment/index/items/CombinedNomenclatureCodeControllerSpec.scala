@@ -21,9 +21,12 @@ import controllers.routes
 import forms.CombinedNomenclatureCodeFormProvider
 import generators.Generators
 import models.NormalMode
+import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.items.CombinedNomenclatureCodePage
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.houseConsignment.index.items.CombinedNomenclatureCodeView
@@ -40,6 +43,13 @@ class CombinedNomenclatureCodeControllerSpec extends SpecBase with AppWithDefaul
 
   lazy val combinedNomenclatureCodeControllerRoute: String =
     controllers.houseConsignment.index.items.routes.CombinedNomenclatureCodeController.onPageLoad(arrivalId, index, index, houseConsignmentMode, itemMode).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(
+        bind(classOf[HouseConsignmentItemNavigatorProvider]).toInstance(FakeConsignmentItemNavigators.fakeConsignmentItemNavigatorProvider)
+      )
 
   "CombinedNomenclatureCodeController" - {
 

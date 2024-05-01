@@ -20,9 +20,12 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.HouseConsignmentAdditionalReferenceNumberFormProvider
 import generators.Generators
 import models.NormalMode
+import navigation.Navigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.additionalReference.HouseConsignmentAdditionalReferenceNumberPage
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.houseConsignment.index.additionalReference.AdditionalReferenceNumberView
@@ -37,6 +40,13 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
 
   private lazy val additionalReferenceNumberRoute =
     routes.AdditionalReferenceNumberController.onPageLoad(arrivalId, mode, houseConsignmentIndex, additionalReferenceIndex).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(
+        bind[Navigator].toInstance(fakeNavigator)
+      )
 
   "AdditionalReferenceNumber Controller" - {
 

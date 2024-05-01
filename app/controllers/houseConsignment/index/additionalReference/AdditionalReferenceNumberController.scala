@@ -37,7 +37,6 @@ class AdditionalReferenceNumberController @Inject() (
   navigator: Navigator,
   formProvider: HouseConsignmentAdditionalReferenceNumberFormProvider,
   actions: Actions,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AdditionalReferenceNumberView
 )(implicit ec: ExecutionContext)

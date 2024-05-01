@@ -46,19 +46,26 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
 
   private val form = formProvider("houseConsignment.index.items.additionalReference.removeAdditionalReferenceYesNo")
 
-  private def addAnother(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Call =
+  private def addAnother(arrivalId: ArrivalId, houseConsignmentMode: Mode, itemMode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Call =
     controllers.houseConsignment.index.items.additionalReference.routes.AddAnotherAdditionalReferenceController
-      .onSubmit(arrivalId, mode, houseConsignmentIndex, itemIndex)
+      .onSubmit(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)
 
   def insetText(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): Option[String] =
     AdditionalReference(userAnswers, houseConsignmentIndex, itemIndex, additionalReferenceIndex).map(_.forRemoveDisplay)
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] =
+  def onPageLoad(
+    arrivalId: ArrivalId,
+    houseConsignmentMode: Mode,
+    itemMode: Mode,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
+    additionalReferenceIndex: Index
+  ): Action[AnyContent] =
     actions
       .requireIndex(
         arrivalId,
         AdditionalReferenceSection(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
-        addAnother(arrivalId, mode, houseConsignmentIndex, itemIndex)
+        addAnother(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)
       )
       .andThen(getMandatoryPage.getFirst(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex))) {
         implicit request =>
@@ -73,7 +80,8 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
               preparedForm,
               request.userAnswers.mrn,
               arrivalId,
-              mode,
+              houseConsignmentMode,
+              itemMode,
               houseConsignmentIndex,
               itemIndex,
               additionalReferenceIndex,
@@ -82,49 +90,61 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
           )
       }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] = actions
-    .requireIndex(
-      arrivalId,
-      AdditionalReferenceSection(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
-      addAnother(arrivalId, mode, houseConsignmentIndex, itemIndex)
-    )
-    .async {
-      implicit request =>
-        val preparedForm = request.userAnswers.get(RemoveAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
+  def onSubmit(
+    arrivalId: ArrivalId,
+    houseConsignmentMode: Mode,
+    itemMode: Mode,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
+    additionalReferenceIndex: Index
+  ): Action[AnyContent] =
+    actions
+      .requireIndex(
+        arrivalId,
+        AdditionalReferenceSection(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
+        addAnother(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)
+      )
+      .async {
+        implicit request =>
+          val preparedForm =
+            request.userAnswers.get(RemoveAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex)) match {
+              case None        => form
+              case Some(value) => form.fill(value)
+            }
 
-        preparedForm
-          .bindFromRequest()
-          .fold(
-            formWithErrors =>
-              Future
-                .successful(
-                  BadRequest(
-                    view(
-                      formWithErrors,
-                      request.userAnswers.mrn,
-                      arrivalId,
-                      mode,
-                      houseConsignmentIndex,
-                      itemIndex,
-                      additionalReferenceIndex,
-                      insetText(request.userAnswers, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+          preparedForm
+            .bindFromRequest()
+            .fold(
+              formWithErrors =>
+                Future
+                  .successful(
+                    BadRequest(
+                      view(
+                        formWithErrors,
+                        request.userAnswers.mrn,
+                        arrivalId,
+                        houseConsignmentMode,
+                        itemMode,
+                        houseConsignmentIndex,
+                        itemIndex,
+                        additionalReferenceIndex,
+                        insetText(request.userAnswers, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+                      )
                     )
-                  )
-                ),
-            value => redirect(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex, request, value)
-          )
-    }
+                  ),
+              value => redirect(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex, request, value)
+            )
+      }
 
-  private def redirect(arrivalId: ArrivalId,
-                       mode: Mode,
-                       houseConsignmentIndex: Index,
-                       itemIndex: Index,
-                       additionalReferenceIndex: Index,
-                       request: DataRequest[AnyContent],
-                       value: Boolean
+  private def redirect(
+    arrivalId: ArrivalId,
+    houseConsignmentMode: Mode,
+    itemMode: Mode,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
+    additionalReferenceIndex: Index,
+    request: DataRequest[AnyContent],
+    value: Boolean
   ) =
     for {
       updatedAnswers <-
@@ -135,5 +155,5 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
           Future.successful(request.userAnswers)
         }
       _ <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(addAnother(arrivalId, mode, houseConsignmentIndex, itemIndex))
+    } yield Redirect(addAnother(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex))
 }

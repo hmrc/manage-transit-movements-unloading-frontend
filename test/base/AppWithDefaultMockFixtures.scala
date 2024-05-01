@@ -23,10 +23,6 @@ import models.{Mode, UserAnswers}
 import navigation.GoodsReferenceNavigator.GoodsReferenceNavigatorProvider
 import navigation.SealNavigator.SealNavigatorProvider
 import navigation._
-import navigation.houseConsignment.index.HouseConsignmentNavigator
-import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
-import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
-import navigation.houseConsignment.index.items.{HouseConsignmentItemNavigator, PackagesNavigator, DocumentNavigator => ItemDocumentNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
@@ -85,41 +81,62 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected val fakeNavigation: Navigation =
     new FakeNavigation(onwardRoute)
 
-  protected val fakeDocumentNavigator: DocumentNavigator =
-    new FakeDocumentNavigator(onwardRoute)
+  object FakeConsignmentNavigators {
 
-  protected val fakeItemDocumentNavigator: ItemDocumentNavigator =
-    new FakeItemDocumentNavigator(onwardRoute)
+    val fakeTransportEquipmentNavigator: TransportEquipmentNavigator =
+      new FakeTransportEquipmentNavigator(onwardRoute)
 
-  protected val fakeTransportEquipmentNavigator: TransportEquipmentNavigator =
-    new FakeTransportEquipmentNavigator(onwardRoute)
+    val fakeSealNavigatorProvider: SealNavigatorProvider = new SealNavigatorProvider {
+      override def apply(equipmentMode: Mode): SealNavigator = new FakeSealNavigator(onwardRoute, equipmentMode)
+    }
 
-  protected val fakeSealNavigatorProvider: SealNavigatorProvider = new SealNavigatorProvider {
-    override def apply(equipmentMode: Mode): SealNavigator = new FakeSealNavigator(onwardRoute, equipmentMode)
+    val fakeGoodsReferenceNavigatorProvider: GoodsReferenceNavigatorProvider = new GoodsReferenceNavigatorProvider {
+      override def apply(equipmentMode: Mode): GoodsReferenceNavigator = new FakeGoodsReferenceNavigator(onwardRoute, equipmentMode)
+    }
+
+    val fakeDocumentNavigator: DocumentNavigator =
+      new FakeDocumentNavigator(onwardRoute)
+
+    val fakeDepartureTransportMeansNavigator: navigation.DepartureTransportMeansNavigator =
+      new FakeDepartureTransportMeansNavigator(onwardRoute)
+
+    val fakeAdditionalReferenceNavigator: AdditionalReferenceNavigator =
+      new FakeAdditionalReferenceNavigator(onwardRoute)
   }
 
-  protected val fakeGoodsReferenceNavigatorProvider: GoodsReferenceNavigatorProvider = new GoodsReferenceNavigatorProvider {
-    override def apply(equipmentMode: Mode): GoodsReferenceNavigator = new FakeGoodsReferenceNavigator(onwardRoute, equipmentMode)
+  object FakeHouseConsignmentNavigators {
+    import navigation.houseConsignment.index.HouseConsignmentNavigator
+    import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
+
+    val fakeHouseConsignmentNavigator: HouseConsignmentNavigator =
+      new FakeHouseConsignmentNavigator(onwardRoute)
+
+    val fakeDepartureTransportMeansNavigator: DepartureTransportMeansNavigator =
+      new FakeHouseConsignmentDepartureTransportMeansNavigator(onwardRoute)
   }
 
-  protected val fakeDepartureTransportMeansNavigator: navigation.DepartureTransportMeansNavigator =
-    new FakeDepartureTransportMeansNavigator(onwardRoute)
+  object FakeConsignmentItemNavigators {
+    import navigation.houseConsignment.index.items.AdditionalReferenceNavigator.AdditionalReferenceNavigatorProvider
+    import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
+    import navigation.houseConsignment.index.items._
 
-  protected val fakeAdditionalReferenceNavigator: AdditionalReferenceNavigator =
-    new FakeAdditionalReferenceNavigator(onwardRoute)
+    val fakeConsignmentItemNavigatorProvider: HouseConsignmentItemNavigatorProvider = new HouseConsignmentItemNavigatorProvider {
+      override def apply(houseConsignmentMode: Mode): HouseConsignmentItemNavigator = new FakeHouseConsignmentItemNavigator(onwardRoute, houseConsignmentMode)
+    }
 
-  protected val fakeHouseConsignmentItemNavigatorProvider: HouseConsignmentItemNavigatorProvider = new HouseConsignmentItemNavigatorProvider {
-    override def apply(houseConsignmentMode: Mode): HouseConsignmentItemNavigator = new FakeHouseConsignmentItemNavigator(onwardRoute, houseConsignmentMode)
+    val fakeAdditionalReferenceNavigatorProvider: AdditionalReferenceNavigatorProvider =
+      new AdditionalReferenceNavigatorProvider {
+
+        override def apply(houseConsignmentMode: Mode, itemMode: Mode): AdditionalReferenceNavigator =
+          new FakeConsignmentItemAdditionalReferenceNavigator(onwardRoute, houseConsignmentMode, itemMode)
+      }
+
+    val fakePackagesNavigator: PackagesNavigator =
+      new FakePackagesNavigator(onwardRoute)
+
+    val fakeDocumentNavigator: DocumentNavigator =
+      new FakeItemDocumentNavigator(onwardRoute)
   }
-
-  protected val fakePackagesNavigator: PackagesNavigator =
-    new FakePackagesNavigator(onwardRoute)
-
-  protected val fakeGrossWeightNavigator: HouseConsignmentNavigator =
-    new FakeHouseConsignmentNavigator(onwardRoute)
-
-  protected val fakeHCDepartureTransportMeansNavigator: DepartureTransportMeansNavigator =
-    new FakeHouseConsignmentDepartureTransportMeansNavigator(onwardRoute)
 
   def guiceApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
@@ -129,17 +146,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[SessionRepository].toInstance(mockSessionRepository),
         bind[UnloadingPermissionActionProvider].toInstance(mockUnloadingPermissionActionProvider),
         bind[UnloadingPermissionMessageService].toInstance(mockUnloadingPermissionMessageService),
-        bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),
-        bind[Navigator].toInstance(fakeNavigator),
-        bind[Navigation].toInstance(fakeNavigation),
-        bind[DocumentNavigator].toInstance(fakeDocumentNavigator),
-        bind[ItemDocumentNavigator].toInstance(fakeItemDocumentNavigator),
-        bind[TransportEquipmentNavigator].toInstance(fakeTransportEquipmentNavigator),
-        bind[HouseConsignmentItemNavigatorProvider].toInstance(fakeHouseConsignmentItemNavigatorProvider),
-        bind[navigation.DepartureTransportMeansNavigator].toInstance(fakeDepartureTransportMeansNavigator),
-        bind[AdditionalReferenceNavigator].toInstance(fakeAdditionalReferenceNavigator),
-        bind[PackagesNavigator].toInstance(fakePackagesNavigator),
-        bind[HouseConsignmentNavigator].toInstance(fakeGrossWeightNavigator),
-        bind[DepartureTransportMeansNavigator].toInstance(fakeHCDepartureTransportMeansNavigator)
+        bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider)
       )
 }

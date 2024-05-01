@@ -485,7 +485,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         addOrRemoveLink.id mustBe "add-remove-items"
         addOrRemoveLink.text mustBe "Add or remove item"
         addOrRemoveLink.visuallyHidden must not be defined
-        addOrRemoveLink.href mustBe "/manage-transit-movements/unloading/AB123/house-consignment/1/items/add-another"
+        addOrRemoveLink.href mustBe "/manage-transit-movements/unloading/AB123/change-house-consignment/1/items/add-another"
 
         result mustBe a[AccordionSection]
         result.sectionTitle.value mustBe "Items"

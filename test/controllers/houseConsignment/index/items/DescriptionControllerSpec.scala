@@ -20,9 +20,11 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.DescriptionFormProvider
 import models.NormalMode
+import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.items.ItemDescriptionPage
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -46,6 +48,9 @@ class DescriptionControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(
+        bind(classOf[HouseConsignmentItemNavigatorProvider]).toInstance(FakeConsignmentItemNavigators.fakeConsignmentItemNavigatorProvider)
+      )
 
   "ItemDescription Controller" - {
 

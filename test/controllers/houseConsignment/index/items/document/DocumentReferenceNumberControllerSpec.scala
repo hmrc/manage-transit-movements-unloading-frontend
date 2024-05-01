@@ -20,6 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.ItemsDocumentReferenceNumberFormProvider
 import generators.Generators
 import models.NormalMode
+import navigation.houseConsignment.index.items.DocumentNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -46,7 +47,10 @@ class DocumentReferenceNumberControllerSpec extends SpecBase with AppWithDefault
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[ItemsDocumentReferenceNumberViewModelProvider].toInstance(mockViewModelProvider))
+      .overrides(
+        bind(classOf[DocumentNavigator]).toInstance(FakeConsignmentItemNavigators.fakeDocumentNavigator),
+        bind[ItemsDocumentReferenceNumberViewModelProvider].toInstance(mockViewModelProvider)
+      )
 
   override def beforeEach(): Unit = {
     super.beforeEach()

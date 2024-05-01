@@ -21,9 +21,12 @@ import controllers.routes
 import forms.GrossWeightFormProvider
 import generators.Generators
 import models.NormalMode
+import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.items.GrossWeightPage
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.houseConsignment.index.items.GrossWeightView
@@ -43,6 +46,13 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
   private lazy val grossWeightRoute =
     controllers.houseConsignment.index.items.routes.GrossWeightController.onPageLoad(arrivalId, index, index, houseConsignmentMode, itemMode).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(
+        bind(classOf[HouseConsignmentItemNavigatorProvider]).toInstance(FakeConsignmentItemNavigators.fakeConsignmentItemNavigatorProvider)
+      )
 
   "GrossWeightAmount Controller" - {
 

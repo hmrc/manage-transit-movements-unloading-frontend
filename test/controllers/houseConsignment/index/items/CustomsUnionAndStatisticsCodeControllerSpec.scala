@@ -20,6 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.CUSCodeFormProvider
 import models.NormalMode
+import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.items.CustomsUnionAndStatisticsCodePage
@@ -50,7 +51,10 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[ReferenceDataService].toInstance(mockReferenceDataService))
+      .overrides(
+        bind(classOf[HouseConsignmentItemNavigatorProvider]).toInstance(FakeConsignmentItemNavigators.fakeConsignmentItemNavigatorProvider),
+        bind[ReferenceDataService].toInstance(mockReferenceDataService)
+      )
 
   "CustomsUnionAndStatisticsCode Controller" - {
 

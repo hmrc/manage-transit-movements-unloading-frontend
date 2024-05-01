@@ -21,6 +21,7 @@ import controllers.routes
 import forms.AddAnotherFormProvider
 import generators.Generators
 import models.NormalMode
+import navigation.Navigator
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -55,7 +56,10 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[AddAnotherAdditionalReferenceViewModelProvider]).toInstance(mockViewModelProvider))
+      .overrides(
+        bind[Navigator].toInstance(fakeNavigator),
+        bind(classOf[AddAnotherAdditionalReferenceViewModelProvider]).toInstance(mockViewModelProvider)
+      )
 
   override def beforeEach(): Unit = {
     super.beforeEach()

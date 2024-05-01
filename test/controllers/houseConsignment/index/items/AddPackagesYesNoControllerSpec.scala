@@ -19,9 +19,11 @@ package controllers.houseConsignment.index.items
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
+import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.items.AddPackagesYesNoPage
+import play.api.inject.bind
 import views.html.houseConsignment.index.items.AddPackagesYesNoView
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -45,6 +47,9 @@ class AddPackagesYesNoControllerSpec extends SpecBase with AppWithDefaultMockFix
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(
+        bind(classOf[HouseConsignmentItemNavigatorProvider]).toInstance(FakeConsignmentItemNavigators.fakeConsignmentItemNavigatorProvider)
+      )
 
   "AddPackagesYesNoController" - {
 

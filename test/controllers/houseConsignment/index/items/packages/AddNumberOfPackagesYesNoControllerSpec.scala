@@ -20,9 +20,11 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
 import models.reference.PackageType
+import navigation.houseConsignment.index.items.PackagesNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.items.packages.{AddNumberOfPackagesYesNoPage, PackageTypePage}
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -44,6 +46,9 @@ class AddNumberOfPackagesYesNoControllerSpec extends SpecBase with AppWithDefaul
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(
+        bind(classOf[PackagesNavigator]).toInstance(FakeConsignmentItemNavigators.fakePackagesNavigator)
+      )
 
   "AddNumberOfPackagesYesNoController" - {
 

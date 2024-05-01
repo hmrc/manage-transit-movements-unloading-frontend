@@ -21,6 +21,7 @@ import controllers.routes
 import forms.YesNoFormProvider
 import models.NormalMode
 import models.reference.GoodsReference
+import navigation.TransportEquipmentNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import pages.transportEquipment.index.ApplyAnItemYesNoPage
@@ -47,7 +48,10 @@ class ApplyAnItemYesNoControllerSpec extends SpecBase with AppWithDefaultMockFix
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[GoodsReferenceService].toInstance(mockGoodsReferenceService))
+      .overrides(
+        bind[TransportEquipmentNavigator].toInstance(FakeConsignmentNavigators.fakeTransportEquipmentNavigator),
+        bind[GoodsReferenceService].toInstance(mockGoodsReferenceService)
+      )
 
   override def beforeEach(): Unit = {
     super.beforeEach()

@@ -297,7 +297,7 @@ class ConsignmentItemAnswersHelper(
     import controllers.houseConsignment.index.items.additionalReference.routes
     Link(
       id = s"add-remove-item-$itemIndex-additional-reference",
-      href = routes.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId, NormalMode, houseConsignmentIndex, itemIndex).url,
+      href = routes.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId, CheckMode, CheckMode, houseConsignmentIndex, itemIndex).url,
       text = messages("additionalReferenceLink.addRemove"),
       visuallyHidden = Some(messages("additionalReferenceLink.visuallyHidden", itemIndex.display))
     )

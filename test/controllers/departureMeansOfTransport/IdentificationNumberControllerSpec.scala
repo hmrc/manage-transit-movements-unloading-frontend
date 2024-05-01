@@ -21,6 +21,7 @@ import controllers.routes
 import forms.VehicleIdentificationNumberFormProvider
 import generators.Generators
 import models.CheckMode
+import navigation.DepartureTransportMeansNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -47,7 +48,10 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[IdentificationNumberViewModelProvider].toInstance(mockViewModelProvider))
+      .overrides(
+        bind(classOf[DepartureTransportMeansNavigator]).toInstance(FakeConsignmentNavigators.fakeDepartureTransportMeansNavigator),
+        bind[IdentificationNumberViewModelProvider].toInstance(mockViewModelProvider)
+      )
 
   override def beforeEach(): Unit = {
     super.beforeEach()

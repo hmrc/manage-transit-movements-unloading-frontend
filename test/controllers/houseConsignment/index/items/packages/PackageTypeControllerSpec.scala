@@ -20,6 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SelectableFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}
+import navigation.houseConsignment.index.items.PackagesNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -54,8 +55,11 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[PackageTypeViewModelProvider]).toInstance(mockViewModelProvider))
-      .overrides(bind(classOf[PackagesService]).toInstance(mockPackagesService))
+      .overrides(
+        bind(classOf[PackagesNavigator]).toInstance(FakeConsignmentItemNavigators.fakePackagesNavigator),
+        bind(classOf[PackageTypeViewModelProvider]).toInstance(mockViewModelProvider),
+        bind(classOf[PackagesService]).toInstance(mockPackagesService)
+      )
 
   override def beforeEach(): Unit = {
     super.beforeEach()

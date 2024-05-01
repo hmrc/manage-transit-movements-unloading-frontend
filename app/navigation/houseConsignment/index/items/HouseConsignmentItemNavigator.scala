@@ -43,7 +43,7 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode) extends Navigato
     case CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex) =>
       ua => Some(routes.AddCommodityCodeYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, NormalMode))
     case AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex) =>
-      ua => addAdditionalReferenceYesNoRoute(ua, houseConsignmentIndex, itemIndex, houseConsignmentMode)
+      ua => addAdditionalReferenceYesNoRoute(ua, houseConsignmentIndex, itemIndex, houseConsignmentMode, NormalMode)
     case AddPackagesYesNoPage(houseConsignmentIndex, itemIndex) =>
       ua => addPackagesYesNoRoute(ua, houseConsignmentIndex, itemIndex, houseConsignmentMode)
     case AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex) =>
@@ -82,27 +82,29 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode) extends Navigato
     case CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, _) =>
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
     case AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex) =>
-      ua => addAdditionalReferenceYesNoCheckRoute(ua, houseConsignmentIndex, itemIndex)
+      ua => addAdditionalReferenceYesNoRoute(ua, houseConsignmentIndex, itemIndex, houseConsignmentMode, CheckMode)
   }
 
-  def addGrossWeightYesNoRoute(ua: UserAnswers,
-                               arrivalId: ArrivalId,
-                               houseConsignmentIndex: Index,
-                               itemIndex: Index,
-                               houseConsignmentMode: Mode,
-                               itemMode: Mode
+  def addGrossWeightYesNoRoute(
+    ua: UserAnswers,
+    arrivalId: ArrivalId,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
+    houseConsignmentMode: Mode,
+    itemMode: Mode
   ): Option[Call] =
     ua.get(AddGrossWeightYesNoPage(houseConsignmentIndex, itemIndex)).map {
       case true  => routes.GrossWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
       case false => routes.AddNetWeightYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
     }
 
-  def addNetWeightYesNoRoute(ua: UserAnswers,
-                             arrivalId: ArrivalId,
-                             houseConsignmentIndex: Index,
-                             itemIndex: Index,
-                             houseConsignmentMode: Mode,
-                             itemMode: Mode
+  def addNetWeightYesNoRoute(
+    ua: UserAnswers,
+    arrivalId: ArrivalId,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
+    houseConsignmentMode: Mode,
+    itemMode: Mode
   ): Option[Call] =
     ua.get(AddNetWeightYesNoPage(houseConsignmentIndex, itemIndex)).map {
       case true => routes.NetWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
@@ -123,23 +125,25 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode) extends Navigato
       case false => routes.AddCommodityCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
     }
 
-  private def addAdditionalReferenceYesNoRoute(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode): Option[Call] =
+  private def addAdditionalReferenceYesNoRoute(
+    ua: UserAnswers,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
+    houseConsignmentMode: Mode,
+    itemMode: Mode
+  ): Option[Call] =
     ua.get(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex)) map {
       case true =>
         controllers.houseConsignment.index.items.additionalReference.routes.AdditionalReferenceTypeController
-          .onPageLoad(ua.id, NormalMode, houseConsignmentIndex, itemIndex, Index(0))
+          .onPageLoad(ua.id, houseConsignmentMode, itemMode, NormalMode, houseConsignmentIndex, itemIndex, Index(0))
       case false =>
-        controllers.houseConsignment.index.items.routes.AddPackagesYesNoController
-          .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, NormalMode)
-    }
-
-  private def addAdditionalReferenceYesNoCheckRoute(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index): Option[Call] =
-    ua.get(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex)) map {
-      case true =>
-        controllers.houseConsignment.index.items.additionalReference.routes.AdditionalReferenceTypeController
-          .onPageLoad(ua.id, CheckMode, houseConsignmentIndex, itemIndex, Index(0))
-      case false =>
-        controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex)
+        itemMode match {
+          case NormalMode =>
+            controllers.houseConsignment.index.items.routes.AddPackagesYesNoController
+              .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, NormalMode)
+          case CheckMode =>
+            controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex)
+        }
     }
 
   private def addPackagesYesNoRoute(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode): Option[Call] =

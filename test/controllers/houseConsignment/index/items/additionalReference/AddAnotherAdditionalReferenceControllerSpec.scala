@@ -43,11 +43,12 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
   private def form(viewModel: AddAnotherAdditionalReferenceViewModel) =
     formProvider(viewModel.prefix, viewModel.allowMore)
 
-  private val mode = NormalMode
+  private val houseConsignmentMode = NormalMode
+  private val itemMode             = NormalMode
 
   private lazy val addAnotherAdditionalReferenceRoute =
     controllers.houseConsignment.index.items.additionalReference.routes.AddAnotherAdditionalReferenceController
-      .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex)
+      .onPageLoad(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)
       .url
 
   private val mockViewModelProvider = mock[AddAnotherAdditionalReferenceViewModelProvider]
@@ -74,7 +75,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
   "AddAnotherAdditionalReferenceController" - {
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), ArgumentMatchers.eq(houseConsignmentIndex), ArgumentMatchers.eq(itemIndex)))
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), ArgumentMatchers.eq(houseConsignmentIndex), ArgumentMatchers.eq(itemIndex)))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -92,7 +93,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
       }
 
       "when max limit reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), ArgumentMatchers.eq(houseConsignmentIndex), ArgumentMatchers.eq(itemIndex)))
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), ArgumentMatchers.eq(houseConsignmentIndex), ArgumentMatchers.eq(itemIndex)))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -113,7 +114,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to additional reference type page at next index" in {
-          when(mockViewModelProvider.apply(any(), any(), any(), ArgumentMatchers.eq(houseConsignmentIndex), ArgumentMatchers.eq(itemIndex)))
+          when(mockViewModelProvider.apply(any(), any(), any(), any(), ArgumentMatchers.eq(houseConsignmentIndex), ArgumentMatchers.eq(itemIndex)))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -126,14 +127,14 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.additionalReference.routes.AdditionalReferenceTypeController
-            .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, notMaxedOutViewModel.nextIndex)
+            .onPageLoad(arrivalId, houseConsignmentMode, itemMode, NormalMode, houseConsignmentIndex, itemIndex, notMaxedOutViewModel.nextIndex)
             .url
         }
       }
 
       "when no submitted" - {
         "must redirect to next page" in {
-          when(mockViewModelProvider.apply(any(), any(), any(), ArgumentMatchers.eq(houseConsignmentIndex), ArgumentMatchers.eq(itemIndex)))
+          when(mockViewModelProvider.apply(any(), any(), any(), any(), ArgumentMatchers.eq(houseConsignmentIndex), ArgumentMatchers.eq(itemIndex)))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -146,7 +147,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.routes.AddPackagesYesNoController
-            .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode, NormalMode)
+            .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
             .url
         }
       }
@@ -154,7 +155,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
 
     "when max limit reached" - {
       "must redirect to next page" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), ArgumentMatchers.eq(houseConsignmentIndex), ArgumentMatchers.eq(itemIndex)))
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), ArgumentMatchers.eq(houseConsignmentIndex), ArgumentMatchers.eq(itemIndex)))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -167,14 +168,14 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.routes.AddPackagesYesNoController
-          .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode, NormalMode)
+          .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
           .url
       }
     }
 
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), ArgumentMatchers.eq(houseConsignmentIndex), ArgumentMatchers.eq(itemIndex)))
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), ArgumentMatchers.eq(houseConsignmentIndex), ArgumentMatchers.eq(itemIndex)))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)

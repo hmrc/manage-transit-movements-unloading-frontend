@@ -38,7 +38,7 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
 
       val houseConsignmentMode: Mode = arbitrary[Mode].sample.value
       val itemMode: Mode             = NormalMode
-      val navigator                  = navigatorProvider.apply(itemMode)
+      val navigator                  = navigatorProvider.apply(houseConsignmentMode)
 
       "must go from ItemDescriptionPage to AddGrossWeightYesNoPage" in {
 
@@ -152,7 +152,7 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
             .nextPage(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
             .mustBe(
               controllers.houseConsignment.index.items.additionalReference.routes.AdditionalReferenceTypeController
-                .onPageLoad(arrivalId, itemMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+                .onPageLoad(arrivalId, houseConsignmentMode, itemMode, NormalMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
             )
         }
 
@@ -186,7 +186,7 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
           navigator
             .nextPage(AddPackagesYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
             .mustBe(
-              controllers.houseConsignment.index.items.routes.AddAnotherItemController.onPageLoad(arrivalId, houseConsignmentIndex, itemMode)
+              controllers.houseConsignment.index.items.routes.AddAnotherItemController.onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
             )
         }
 
@@ -254,7 +254,7 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
             .nextPage(AddCombinedNomenclatureCodeYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
             .mustBe(
               controllers.houseConsignment.index.items.document.routes.AddDocumentYesNoController
-                .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
+                .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode)
             )
 
         }
@@ -418,7 +418,7 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
           .nextPage(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
           .mustBe(
             controllers.houseConsignment.index.items.additionalReference.routes.AdditionalReferenceTypeController
-              .onPageLoad(arrivalId, itemMode, hcIndex, itemIndex, additionalReferenceIndex)
+              .onPageLoad(arrivalId, houseConsignmentMode, itemMode, NormalMode, hcIndex, itemIndex, additionalReferenceIndex)
           )
       }
     }

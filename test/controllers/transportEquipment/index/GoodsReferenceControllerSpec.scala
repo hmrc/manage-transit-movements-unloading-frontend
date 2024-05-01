@@ -56,7 +56,7 @@ class GoodsReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[GoodsReferenceNavigatorProvider].toInstance(fakeGoodsReferenceNavigatorProvider),
+        bind[GoodsReferenceNavigatorProvider].toInstance(FakeConsignmentNavigators.fakeGoodsReferenceNavigatorProvider),
         bind[GoodsReferenceService].toInstance(mockGoodsReferenceService)
       )
 

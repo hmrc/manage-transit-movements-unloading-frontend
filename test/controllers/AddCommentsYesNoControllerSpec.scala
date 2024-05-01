@@ -19,9 +19,11 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
+import navigation.{Navigation, TransportEquipmentNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.AddCommentsYesNoPage
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -41,6 +43,9 @@ class AddCommentsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFix
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(
+        bind[Navigation].toInstance(fakeNavigation)
+      )
 
   "AddCommentsYesNo Controller" - {
 

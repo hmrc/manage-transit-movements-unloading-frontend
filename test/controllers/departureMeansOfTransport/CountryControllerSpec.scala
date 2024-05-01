@@ -22,6 +22,7 @@ import forms.SelectableFormProvider
 import generators.Generators
 import models.reference.Country
 import models.{CheckMode, SelectableList}
+import navigation.DepartureTransportMeansNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -62,8 +63,11 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[ReferenceDataService].toInstance(mockReferenceDataService))
-      .overrides(bind[CountryViewModelProvider].toInstance(mockViewModelProvider))
+      .overrides(
+        bind(classOf[DepartureTransportMeansNavigator]).toInstance(FakeConsignmentNavigators.fakeDepartureTransportMeansNavigator),
+        bind[ReferenceDataService].toInstance(mockReferenceDataService),
+        bind[CountryViewModelProvider].toInstance(mockViewModelProvider)
+      )
 
   "departureMeansOfTransportCountry Controller" - {
 

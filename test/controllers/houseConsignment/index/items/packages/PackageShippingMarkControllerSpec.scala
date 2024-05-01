@@ -21,6 +21,7 @@ import controllers.houseConsignment.index.items.packages.routes
 import forms.PackageShippingMarkFormProvider
 import generators.Generators
 import models.CheckMode
+import navigation.houseConsignment.index.items.PackagesNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -46,7 +47,10 @@ class PackageShippingMarkControllerSpec extends SpecBase with AppWithDefaultMock
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[PackageShippingMarksViewModelProvider].toInstance(mockViewModelProvider))
+      .overrides(
+        bind(classOf[PackagesNavigator]).toInstance(FakeConsignmentItemNavigators.fakePackagesNavigator),
+        bind[PackageShippingMarksViewModelProvider].toInstance(mockViewModelProvider)
+      )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
