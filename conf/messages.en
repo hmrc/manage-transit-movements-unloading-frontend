@@ -1106,6 +1106,10 @@ houseConsignment.index.grossWeight.error.invalidValue = The new gross weight mus
 houseConsignment.index.grossWeight.error.invalidCharacters = The new gross weight must only include numbers 0 to 9 and a decimal point
 houseConsignment.index.grossWeight.error.invalidFormat = The new gross weight must only include 6 decimal places or less
 
+houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference for house consignment {0}?
+houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference for house consignment {0}?
+houseConsignment.index.additionalReference.addAdditionalReferenceYesNo.error.required = Select yes if you want to add an additional reference for house consignment {0}
+
 houseConsignment.index.additionalReference.additionalReferenceNumber.title = What is the additional reference number?
 houseConsignment.index.additionalReference.additionalReferenceNumber.heading = What is the additional reference number?
 houseConsignment.index.additionalReference.additionalReferenceNumber.error.required = Enter the additional reference number
@@ -1120,10 +1124,6 @@ houseConsignment.index.additionalReference.additionalReferenceType.error.require
 houseConsignment.index.additionalReference.additionalReferenceType.check.error.required = Select the type of additional reference in house consignment {0}
 houseConsignment.index.additionalReference.additionalReferenceType.hint = Enter the reference name or code, like Carrier (AEO certificate number) or Y028.
 houseConsignment.index.additionalReference.additionalReferenceType.placeholder = Select an additional reference
-
-houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
-houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
-houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.error.required = Select yes if you want to add an additional reference number
 
 houseConsignment.index.additionalReference.addAnotherAdditionalReference.empty.title = You have added 0 additional references for house consignment {1}
 houseConsignment.index.additionalReference.addAnotherAdditionalReference.singular.title = You have added 1 additional reference for house consignment {1}
