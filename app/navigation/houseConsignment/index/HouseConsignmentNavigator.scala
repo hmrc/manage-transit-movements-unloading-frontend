@@ -35,4 +35,5 @@ class HouseConsignmentNavigator extends Navigator {
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
   }
 
+
 }

@@ -39,7 +39,7 @@ class HouseConsignmentDocumentNavigator extends Navigator {
         )
     case AddAdditionalInformationYesNoPage(houseConsignmentIndex, documentIndex) =>
       ua => addAdditionalInformationYesNoRoute(ua, houseConsignmentIndex, documentIndex, NormalMode)
-    case _ => _ => Some(Call("GET", "#")) //TODO: Update navigation
+
   }
 
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
