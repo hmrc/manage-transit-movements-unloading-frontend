@@ -26,6 +26,7 @@ import navigation._
 import navigation.houseConsignment.index.HouseConsignmentNavigator
 import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
 import navigation.houseConsignment.index.items.{HouseConsignmentItemNavigator, PackagesNavigator, DocumentNavigator => ItemDocumentNavigator}
+import navigation.houseConsignment.index.{AdditionalReferenceNavigator => HCAdditionalReferenceNavigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
@@ -94,11 +95,15 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   protected val fakeDepartureTransportMeansNavigator: navigation.DepartureTransportMeansNavigator = new FakeDepartureTransportMeansNavigator(onwardRoute)
   protected val fakeAdditionalReferenceNavigator: AdditionalReferenceNavigator                    = new FakeAdditionalReferenceNavigator(onwardRoute)
-  protected val fakeHouseConsignmentIteNavigator: HouseConsignmentItemNavigator                   = new FakeHouseConsignmentItemNavigator(onwardRoute)
+  protected val fakeHouseConsignmentItemNavigator: HouseConsignmentItemNavigator                  = new FakeHouseConsignmentItemNavigator(onwardRoute)
   protected val fakePackagesNavigator: PackagesNavigator                                          = new FakePackagesNavigator(onwardRoute)
   protected val fakeGrossWeightNavigator: HouseConsignmentNavigator                               = new FakeHouseConsignmentNavigator(onwardRoute)
 
   protected val fakeHCDepartureTransportMeansNavigator: DepartureTransportMeansNavigator = new FakeHouseConsignmentDepartureTransportMeansNavigator(
+    onwardRoute
+  )
+
+  protected val fakeHCAdditionalReferenceHouseConsignmentNavigator: HCAdditionalReferenceNavigator = new FakeHCAdditionalReferenceHouseConsignmentNavigator(
     onwardRoute
   )
 
@@ -116,10 +121,11 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[DocumentNavigator].toInstance(fakeDocumentNavigator),
         bind[ItemDocumentNavigator].toInstance(fakeItemDocumentNavigator),
         bind[TransportEquipmentNavigator].toInstance(fakeTransportEquipmentNavigator),
-        bind[HouseConsignmentItemNavigator].toInstance(fakeHouseConsignmentIteNavigator),
+        bind[HouseConsignmentItemNavigator].toInstance(fakeHouseConsignmentItemNavigator),
         bind[navigation.DepartureTransportMeansNavigator].toInstance(fakeDepartureTransportMeansNavigator),
         bind[AdditionalReferenceNavigator].toInstance(fakeAdditionalReferenceNavigator),
         bind[PackagesNavigator].toInstance(fakePackagesNavigator),
+        bind[HCAdditionalReferenceNavigator].toInstance(fakeHCAdditionalReferenceHouseConsignmentNavigator),
         bind[HouseConsignmentNavigator].toInstance(fakeGrossWeightNavigator),
         bind[DepartureTransportMeansNavigator].toInstance(fakeHCDepartureTransportMeansNavigator)
       )

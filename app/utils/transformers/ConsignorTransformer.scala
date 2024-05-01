@@ -19,7 +19,6 @@ package utils.transformers
 import connectors.ReferenceDataConnector
 import generated._
 import models.{DynamicAddress, Index, UserAnswers}
-import pages.{ConsigneeAddressPage, ConsigneeCountryPage}
 import pages.houseConsignment.consignor.{CountryPage => HouseCountryPage}
 import uk.gov.hmrc.http.HeaderCarrier
 

@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.HouseConsignmentAdditionalReferenceNumberFormProvider
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigator
+import navigation.houseConsignment.index.AdditionalReferenceNavigator
 import pages.houseConsignment.index.additionalReference.HouseConsignmentAdditionalReferenceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AdditionalReferenceNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: Navigator,
+  navigator: AdditionalReferenceNavigator,
   formProvider: HouseConsignmentAdditionalReferenceNumberFormProvider,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,

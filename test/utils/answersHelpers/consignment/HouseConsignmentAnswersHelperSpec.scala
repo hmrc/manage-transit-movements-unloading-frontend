@@ -16,16 +16,14 @@
 
 package utils.answersHelpers.consignment
 
-import generated.{AddressType07, ConsignmentType05, ConsignorType06, HouseConsignmentType04}
 import models.reference._
 import models.{DynamicAddress, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
-import pages.houseConsignment.index.departureMeansOfTransport.TransportMeansIdentificationPage
-import pages.houseConsignment.index.departureMeansOfTransport.VehicleIdentificationNumberPage
 import pages.houseConsignment.consignor.CountryPage
 import pages.houseConsignment.index.CountryOfDestinationPage
+import pages.houseConsignment.index.departureMeansOfTransport.{TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 import utils.answersHelpers.AnswersHelperSpecBase
 import viewModels.sections.Section.AccordionSection
 
