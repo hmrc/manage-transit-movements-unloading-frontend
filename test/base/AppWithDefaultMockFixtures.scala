@@ -23,7 +23,7 @@ import models.{Mode, UserAnswers}
 import navigation.GoodsReferenceNavigator.GoodsReferenceNavigatorProvider
 import navigation.SealNavigator.SealNavigatorProvider
 import navigation._
-import navigation.houseConsignment.index.HouseConsignmentNavigator
+import navigation.houseConsignment.index.{AdditionalReferenceNavigator, HouseConsignmentNavigator}
 import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
 import navigation.houseConsignment.index.items.{HouseConsignmentItemNavigator, PackagesNavigator, DocumentNavigator => ItemDocumentNavigator}
 import org.mockito.ArgumentMatchers.any
@@ -93,7 +93,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   }
 
   protected val fakeDepartureTransportMeansNavigator: navigation.DepartureTransportMeansNavigator = new FakeDepartureTransportMeansNavigator(onwardRoute)
-  protected val fakeAdditionalReferenceNavigator: AdditionalReferenceNavigator                    = new FakeAdditionalReferenceNavigator(onwardRoute)
+  protected val fakeAdditionalReferenceNavigator: navigation.AdditionalReferenceNavigator         = new FakeAdditionalReferenceNavigator(onwardRoute)
   protected val fakeHouseConsignmentIteNavigator: HouseConsignmentItemNavigator                   = new FakeHouseConsignmentItemNavigator(onwardRoute)
   protected val fakePackagesNavigator: PackagesNavigator                                          = new FakePackagesNavigator(onwardRoute)
   protected val fakeGrossWeightNavigator: HouseConsignmentNavigator                               = new FakeHouseConsignmentNavigator(onwardRoute)
@@ -101,6 +101,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected val fakeHCDepartureTransportMeansNavigator: DepartureTransportMeansNavigator = new FakeHouseConsignmentDepartureTransportMeansNavigator(
     onwardRoute
   )
+  protected val fakeHCAdditionalReferenceNavigator: AdditionalReferenceNavigator = new FakeHCAdditionalReferenceNavigator(onwardRoute)
 
   def guiceApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
@@ -118,9 +119,10 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[TransportEquipmentNavigator].toInstance(fakeTransportEquipmentNavigator),
         bind[HouseConsignmentItemNavigator].toInstance(fakeHouseConsignmentIteNavigator),
         bind[navigation.DepartureTransportMeansNavigator].toInstance(fakeDepartureTransportMeansNavigator),
-        bind[AdditionalReferenceNavigator].toInstance(fakeAdditionalReferenceNavigator),
+        bind[navigation.AdditionalReferenceNavigator].toInstance(fakeAdditionalReferenceNavigator),
         bind[PackagesNavigator].toInstance(fakePackagesNavigator),
         bind[HouseConsignmentNavigator].toInstance(fakeGrossWeightNavigator),
-        bind[DepartureTransportMeansNavigator].toInstance(fakeHCDepartureTransportMeansNavigator)
+        bind[DepartureTransportMeansNavigator].toInstance(fakeHCDepartureTransportMeansNavigator),
+        bind[AdditionalReferenceNavigator].toInstance(fakeHCAdditionalReferenceNavigator)
       )
 }
