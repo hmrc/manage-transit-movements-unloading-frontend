@@ -16,7 +16,7 @@
 
 package navigation.houseConsignment.index
 
-import models.UserAnswers
+import models.{Index, NormalMode, UserAnswers}
 import navigation.Navigator
 import pages.Page
 import pages.houseConsignment.index.additionalReference.{
@@ -36,7 +36,7 @@ class AdditionalReferenceNavigator extends Navigator {
           controllers.houseConsignment.index.additionalReference.routes.AddAdditionalReferenceNumberYesNoController
             .onPageLoad(ua.id, NormalMode, houseConsignmentIndex, referenceIndex)
         )
-    case HouseConsignmentAdditionalReferenceNumberPage(houseConsignmentIndex, referenceIndex) =>
+    case HouseConsignmentAdditionalReferenceNumberPage(houseConsignmentIndex, _) =>
       ua =>
         Some(
           controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController

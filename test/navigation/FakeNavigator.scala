@@ -18,7 +18,6 @@ package navigation
 
 import models.{Mode, UserAnswers}
 import navigation.houseConsignment.index.HouseConsignmentNavigator
-import navigation.houseConsignment.index.AdditionalReferenceNavigator
 import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
 import navigation.houseConsignment.index.items.{HouseConsignmentItemNavigator, PackagesNavigator, DocumentNavigator => ItemDocumentNavigator}
 import pages._
@@ -72,7 +71,7 @@ class FakeHouseConsignmentItemNavigator(desiredRoute: Call) extends HouseConsign
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeAdditionalReferenceNavigator(desiredRoute: Call) extends navigation.AdditionalReferenceNavigator {
+class FakeAdditionalReferenceNavigator(desiredRoute: Call) extends AdditionalReferenceNavigator {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
@@ -93,9 +92,5 @@ class FakeHouseConsignmentNavigator(desiredRoute: Call) extends HouseConsignment
 }
 
 class FakeHouseConsignmentDepartureTransportMeansNavigator(desiredRoute: Call) extends DepartureTransportMeansNavigator {
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
-}
-
-class FakeHCAdditionalReferenceNavigator(desiredRoute: Call) extends AdditionalReferenceNavigator {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }

@@ -23,7 +23,7 @@ import models.{Mode, UserAnswers}
 import navigation.GoodsReferenceNavigator.GoodsReferenceNavigatorProvider
 import navigation.SealNavigator.SealNavigatorProvider
 import navigation._
-import navigation.houseConsignment.index.{AdditionalReferenceNavigator, HouseConsignmentNavigator}
+import navigation.houseConsignment.index.HouseConsignmentNavigator
 import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
 import navigation.houseConsignment.index.items.{HouseConsignmentItemNavigator, PackagesNavigator, DocumentNavigator => ItemDocumentNavigator}
 import navigation.houseConsignment.index.{AdditionalReferenceNavigator => HCAdditionalReferenceNavigator}
@@ -94,7 +94,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   }
 
   protected val fakeDepartureTransportMeansNavigator: navigation.DepartureTransportMeansNavigator = new FakeDepartureTransportMeansNavigator(onwardRoute)
-  protected val fakeAdditionalReferenceNavigator: navigation.AdditionalReferenceNavigator                    = new FakeAdditionalReferenceNavigator(onwardRoute)
+  protected val fakeAdditionalReferenceNavigator: AdditionalReferenceNavigator                    = new FakeAdditionalReferenceNavigator(onwardRoute)
   protected val fakeHouseConsignmentItemNavigator: HouseConsignmentItemNavigator                  = new FakeHouseConsignmentItemNavigator(onwardRoute)
   protected val fakePackagesNavigator: PackagesNavigator                                          = new FakePackagesNavigator(onwardRoute)
   protected val fakeGrossWeightNavigator: HouseConsignmentNavigator                               = new FakeHouseConsignmentNavigator(onwardRoute)
@@ -102,7 +102,6 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected val fakeHCDepartureTransportMeansNavigator: DepartureTransportMeansNavigator = new FakeHouseConsignmentDepartureTransportMeansNavigator(
     onwardRoute
   )
-  protected val fakeHCAdditionalReferenceNavigator: AdditionalReferenceNavigator = new FakeHCAdditionalReferenceNavigator(onwardRoute)
 
   protected val fakeHCAdditionalReferenceHouseConsignmentNavigator: HCAdditionalReferenceNavigator = new FakeHCAdditionalReferenceHouseConsignmentNavigator(
     onwardRoute
@@ -124,11 +123,10 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[TransportEquipmentNavigator].toInstance(fakeTransportEquipmentNavigator),
         bind[HouseConsignmentItemNavigator].toInstance(fakeHouseConsignmentItemNavigator),
         bind[navigation.DepartureTransportMeansNavigator].toInstance(fakeDepartureTransportMeansNavigator),
-        bind[navigation.AdditionalReferenceNavigator].toInstance(fakeAdditionalReferenceNavigator),
+        bind[AdditionalReferenceNavigator].toInstance(fakeAdditionalReferenceNavigator),
         bind[PackagesNavigator].toInstance(fakePackagesNavigator),
         bind[HCAdditionalReferenceNavigator].toInstance(fakeHCAdditionalReferenceHouseConsignmentNavigator),
         bind[HouseConsignmentNavigator].toInstance(fakeGrossWeightNavigator),
-        bind[DepartureTransportMeansNavigator].toInstance(fakeHCDepartureTransportMeansNavigator),
-        bind[AdditionalReferenceNavigator].toInstance(fakeHCAdditionalReferenceNavigator)
+        bind[DepartureTransportMeansNavigator].toInstance(fakeHCDepartureTransportMeansNavigator)
       )
 }
