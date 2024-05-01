@@ -35,7 +35,7 @@ class HouseConsignmentDocumentNavigator extends Navigator {
       ua =>
         Some(
           controllers.houseConsignment.index.documents.routes.AddAdditionalInformationYesNoController
-            .onPageLoad(ua.id, NormalMode, houseConsignmentIndex, documentIndex)
+            .onPageLoad(ua.id, houseConsignmentIndex, documentIndex)
         )
     case AddAdditionalInformationYesNoPage(houseConsignmentIndex, documentIndex) =>
       ua => addAdditionalInformationYesNoRoute(ua, houseConsignmentIndex, documentIndex, NormalMode)
@@ -49,8 +49,6 @@ class HouseConsignmentDocumentNavigator extends Navigator {
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
     case AdditionalInformationPage(houseConsignmentIndex, _) =>
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
-    case AddAdditionalInformationYesNoPage(houseConsignmentIndex, documentIndex) =>
-      ua => addAdditionalInformationYesNoRoute(ua, houseConsignmentIndex, documentIndex, CheckMode)
 
   }
 
@@ -58,10 +56,7 @@ class HouseConsignmentDocumentNavigator extends Navigator {
     ua.get(AddAdditionalInformationYesNoPage(houseConsignmentIndex, documentIndex)).map {
       case true =>
         controllers.houseConsignment.index.documents.routes.AdditionalInformationController.onPageLoad(ua.id, mode, houseConsignmentIndex, documentIndex)
-      case false =>
-        mode match {
-          case CheckMode  => controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex)
-          case NormalMode => ??? //todo will be add another document page once built
-        }
+      case false => ??? //todo will be add another document page once built
+
     }
 }

@@ -87,7 +87,7 @@ class DocumentAnswersHelper(
         args = Seq(documentIndex.display): _*,
         id = Some(s"change-document-additional-information-${documentIndex.display}"),
         call = Some(
-          controllers.houseConsignment.index.documents.routes.AddAdditionalInformationYesNoController
+          controllers.houseConsignment.index.documents.routes.AdditionalInformationController
             .onPageLoad(userAnswers.id, CheckMode, houseConsignmentIndex, documentIndex)
         )
       )

@@ -61,7 +61,7 @@ class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckProp
               .nextPage(DocumentReferenceNumberPage(hcIndex, documentIndex), mode, userAnswers)
               .mustBe(
                 controllers.houseConsignment.index.documents.routes.AddAdditionalInformationYesNoController
-                  .onPageLoad(arrivalId, NormalMode, houseConsignmentIndex, documentIndex)
+                  .onPageLoad(arrivalId, houseConsignmentIndex, documentIndex)
               )
 
         }
@@ -149,31 +149,6 @@ class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckProp
               .nextPage(AdditionalInformationPage(hcIndex, documentIndex), mode, userAnswers)
               .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
         }
-      }
-
-      "must go from AddAdditionalInformationYesPage to HouseConsignmentController when user answers NO" in {
-
-        val userAnswers = emptyUserAnswers
-          .setValue(AddAdditionalInformationYesNoPage(hcIndex, documentIndex), false)
-
-        navigator
-          .nextPage(AddAdditionalInformationYesNoPage(hcIndex, documentIndex), mode, userAnswers)
-          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
-
-      }
-
-      "must go from AddAdditionalInformationYesPage to AdditionalInformationPage when user answers Yes" in {
-
-        val userAnswers = emptyUserAnswers
-          .setValue(AddAdditionalInformationYesNoPage(hcIndex, documentIndex), true)
-
-        navigator
-          .nextPage(AddAdditionalInformationYesNoPage(hcIndex, documentIndex), mode, userAnswers)
-          .mustBe(
-            controllers.houseConsignment.index.documents.routes.AdditionalInformationController
-              .onPageLoad(arrivalId, CheckMode, houseConsignmentIndex, documentIndex)
-          )
-
       }
 
     }
