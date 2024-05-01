@@ -17,19 +17,18 @@
 package navigation.houseConsignment.index
 
 import com.google.inject.Singleton
-import models.{CheckMode, _}
+import models._
 import navigation.Navigator
 import pages._
 import pages.houseConsignment.index.GrossWeightPage
-import pages.houseConsignment.index.documents._
 import play.api.mvc.Call
 
 @Singleton
 class HouseConsignmentNavigator extends Navigator {
 
-  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] =
-    ???
-
+  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case _ => _ => Some(Call("GET", "#")) //TODO: Update navigation
+  }
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
 
     case GrossWeightPage(houseConsignmentIndex) =>
