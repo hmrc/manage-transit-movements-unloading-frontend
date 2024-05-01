@@ -18,7 +18,7 @@ package utils.transformers
 
 import connectors.ReferenceDataConnector
 import generated._
-import models.{Index, UserAnswers}
+import models.{DynamicAddress, Index, UserAnswers}
 import pages.houseConsignment.consignor.{CountryPage => HouseCountryPage}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -57,10 +57,9 @@ class ConsignorTransformer @Inject() (
       consignor match {
         case Some(ConsignorType06(identificationNumber, name, address)) =>
           for {
-            country <- address.map(_.country).lookup(referenceDataConnector.getCountry)
             userAnswers <- {
               val pipeline: UserAnswers => Future[UserAnswers] =
-                set(HouseCountryPage(hcIndex), country) andThen
+                transformAddress(address, hcIndex) andThen
                   set(ConsignorIdentifierPage(hcIndex), identificationNumber) andThen
                   set(ConsignorNamePage(hcIndex), name)
 
@@ -71,5 +70,26 @@ class ConsignorTransformer @Inject() (
         case None =>
           Future.successful(userAnswers)
       }
+  }
+
+  private def transformAddress(address: Option[AddressType07], hcIndex: Index)(implicit
+    hc: HeaderCarrier
+  ): UserAnswers => Future[UserAnswers] = userAnswers => {
+    import pages.ConsignorAddressPage
+
+    address match {
+
+      case Some(AddressType07(streetAndNumber, postcode, city, country)) =>
+        referenceDataConnector.getCountry(country).flatMap {
+          countryVal =>
+            val pipeline: UserAnswers => Future[UserAnswers] = {
+              set(HouseCountryPage(hcIndex), countryVal) andThen
+                set(ConsignorAddressPage(hcIndex), DynamicAddress(streetAndNumber, city, postcode))
+            }
+            pipeline(userAnswers)
+        }
+
+      case None => Future.successful(userAnswers)
+    }
   }
 }

@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.additionalReference
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
-import navigation.Navigator
+import navigation.houseConsignment.index.AdditionalReferenceNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.additionalReference.AddHouseConsignmentAdditionalReferenceNumberYesNoPage
@@ -44,7 +44,7 @@ class AddAdditionalReferenceNumberYesNoControllerSpec extends SpecBase with AppW
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[Navigator].toInstance(fakeNavigator)
+        bind[AdditionalReferenceNavigator].toInstance(FakeHouseConsignmentNavigators.fakeAdditionalReferenceNavigator)
       )
 
   "AddAdditionalReferenceNumberYesNoController Controller" - {

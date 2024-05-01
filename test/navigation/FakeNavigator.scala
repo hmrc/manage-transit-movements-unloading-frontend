@@ -75,6 +75,10 @@ class FakeAdditionalReferenceNavigator(desiredRoute: Call) extends AdditionalRef
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
+class FakeHouseConsignmentAdditionalReferenceNavigator(desiredRoute: Call) extends navigation.houseConsignment.index.AdditionalReferenceNavigator {
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
+}
+
 class FakeConsignmentItemAdditionalReferenceNavigator(desiredRoute: Call, houseConsignmentMode: Mode, itemMode: Mode)
     extends navigation.houseConsignment.index.items.AdditionalReferenceNavigator(houseConsignmentMode, itemMode) {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute

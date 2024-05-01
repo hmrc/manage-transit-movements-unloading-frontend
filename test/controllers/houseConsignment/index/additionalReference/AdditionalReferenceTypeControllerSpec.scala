@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SelectableFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}
-import navigation.Navigator
+import navigation.houseConsignment.index.AdditionalReferenceNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -57,7 +57,7 @@ class AdditionalReferenceTypeControllerSpec extends SpecBase with AppWithDefault
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[Navigator].toInstance(fakeNavigator),
+        bind[AdditionalReferenceNavigator].toInstance(FakeHouseConsignmentNavigators.fakeAdditionalReferenceNavigator),
         bind(classOf[AdditionalReferenceTypeViewModelProvider]).toInstance(mockViewModelProvider),
         bind(classOf[AdditionalReferencesService]).toInstance(mockAdditionalReferencesService)
       )

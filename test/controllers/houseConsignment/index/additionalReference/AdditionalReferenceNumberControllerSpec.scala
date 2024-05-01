@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.HouseConsignmentAdditionalReferenceNumberFormProvider
 import generators.Generators
 import models.NormalMode
-import navigation.Navigator
+import navigation.houseConsignment.index.AdditionalReferenceNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.additionalReference.HouseConsignmentAdditionalReferenceNumberPage
@@ -45,7 +45,7 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[Navigator].toInstance(fakeNavigator)
+        bind[AdditionalReferenceNavigator].toInstance(FakeHouseConsignmentNavigators.fakeAdditionalReferenceNavigator)
       )
 
   "AdditionalReferenceNumber Controller" - {

@@ -16,16 +16,14 @@
 
 package utils.answersHelpers.consignment
 
-import generated.{AddressType07, ConsignmentType05, ConsignorType06, HouseConsignmentType04}
 import models.reference._
 import models.{DynamicAddress, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
-import pages.houseConsignment.index.departureMeansOfTransport.TransportMeansIdentificationPage
-import pages.houseConsignment.index.departureMeansOfTransport.VehicleIdentificationNumberPage
 import pages.houseConsignment.consignor.CountryPage
 import pages.houseConsignment.index.CountryOfDestinationPage
+import pages.houseConsignment.index.departureMeansOfTransport.{TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 import utils.answersHelpers.AnswersHelperSpecBase
 import viewModels.sections.Section.AccordionSection
 
@@ -168,6 +166,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
     }
 
     "consignorAddress" - {
+      val page = ConsignorAddressPage(hcIndex)
       "must return None" - {
         "when address undefined" in {
           val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, houseConsignmentIndex)
@@ -177,17 +176,15 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
       "must return Some(row)" - {
         "when address defined" in {
-          forAll(arbitrary[AddressType07], arbitrary[HouseConsignmentType04], arbitrary[ConsignmentType05]) {
-            (address, house, consignment) =>
-              val updatedHouse: HouseConsignmentType04 = house.copy(Consignor = Some(ConsignorType06(None, None, Some(address))))
+          forAll(arbitrary[DynamicAddress]) {
+            address =>
+              val answers = emptyUserAnswers.setValue(page, address)
 
-              val updConsignment = emptyUserAnswers.ie043Data.copy(Consignment = Some(consignment.copy(HouseConsignment = Seq(updatedHouse))))
-              val ua             = emptyUserAnswers.copy(ie043Data = updConsignment)
-              val helper         = new HouseConsignmentAnswersHelper(ua, houseConsignmentIndex)
-              val result         = helper.consignorAddress.value
+              val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
+              val result = helper.consignorAddress.value
 
               result.key.value mustBe "Address"
-              result.value.value mustBe DynamicAddress(address).toString
+              result.value.value mustBe address.toString
               result.actions must not be defined
           }
         }
