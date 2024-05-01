@@ -22,7 +22,7 @@ import forms.SelectableFormProvider
 import models.reference.DocumentType
 import models.requests.DataRequest
 import models.{ArrivalId, HouseConsignmentLevelDocuments, Index, Mode}
-import navigation.houseConsignment.index.items.DocumentNavigator
+import navigation.houseConsignment.index.items.DocumentNavigator.DocumentNavigatorProvider
 import pages.houseConsignment.index.items.document.TypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TypeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: DocumentNavigator,
+  navigatorProvider: DocumentNavigatorProvider,
   actions: Actions,
   formProvider: SelectableFormProvider,
   service: DocumentsService,
@@ -51,65 +51,102 @@ class TypeController @Inject() (
 
   private val prefix: String = "houseConsignment.index.items.document.type"
 
-  private def houseConsignmentLevelDocuments(houseConsigmentIndex: Index, itemIndex: Index, documentIndex: Index)(implicit
+  private def houseConsignmentLevelDocuments(houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index)(implicit
     request: DataRequest[AnyContent]
   ): HouseConsignmentLevelDocuments =
-    HouseConsignmentLevelDocuments(request.userAnswers, houseConsigmentIndex, itemIndex, documentIndex)
+    HouseConsignmentLevelDocuments(request.userAnswers, houseConsignmentIndex, itemIndex, documentIndex)
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions
-    .requireData(arrivalId)
-    .async {
-      implicit request =>
-        service.getDocumentList(request.userAnswers, houseConsignmentIndex, itemIndex, documentIndex, mode).map {
-          documentList =>
-            val documents          = houseConsignmentLevelDocuments(houseConsignmentIndex, itemIndex, documentIndex)
-            val viewModel          = viewModelProvider.apply(mode, documents, houseConsignmentIndex, itemIndex)
-            val availableDocuments = documents.availableDocuments(documentList.values)
-            val form               = formProvider(mode, prefix, documentList, houseConsignmentIndex.display, itemIndex.display)
-            val preparedForm = request.userAnswers.get(TypePage(houseConsignmentIndex, itemIndex, documentIndex)) match {
-              case None        => form
-              case Some(value) => form.fill(value)
-            }
+  def onPageLoad(
+    arrivalId: ArrivalId,
+    houseConsignmentMode: Mode,
+    itemMode: Mode,
+    documentMode: Mode,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
+    documentIndex: Index
+  ): Action[AnyContent] =
+    actions
+      .requireData(arrivalId)
+      .async {
+        implicit request =>
+          service.getDocumentList(request.userAnswers, houseConsignmentIndex, itemIndex, documentIndex, documentMode).map {
+            documentList =>
+              val documents          = houseConsignmentLevelDocuments(houseConsignmentIndex, itemIndex, documentIndex)
+              val viewModel          = viewModelProvider.apply(documentMode, documents, houseConsignmentIndex, itemIndex)
+              val availableDocuments = documents.availableDocuments(documentList.values)
+              val form               = formProvider(documentMode, prefix, documentList, houseConsignmentIndex.display, itemIndex.display)
+              val preparedForm = request.userAnswers.get(TypePage(houseConsignmentIndex, itemIndex, documentIndex)) match {
+                case None        => form
+                case Some(value) => form.fill(value)
+              }
 
-            Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode, availableDocuments, viewModel, houseConsignmentIndex, itemIndex, documentIndex))
-        }
-    }
-
-  def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions
-    .requireData(arrivalId)
-    .async {
-      implicit request =>
-        service.getDocumentList(request.userAnswers, houseConsignmentIndex, itemIndex, documentIndex, mode).flatMap {
-          documentList =>
-            val documents          = houseConsignmentLevelDocuments(houseConsignmentIndex, itemIndex, documentIndex)
-            val viewModel          = viewModelProvider.apply(mode, documents, houseConsignmentIndex, itemIndex)
-            val availableDocuments = documents.availableDocuments(documentList.values)
-            val form               = formProvider(mode, prefix, documentList, houseConsignmentIndex.display, itemIndex.display)
-            form
-              .bindFromRequest()
-              .fold(
-                formWithErrors =>
-                  Future.successful(
-                    BadRequest(
-                      view(formWithErrors,
-                           request.userAnswers.mrn,
-                           arrivalId,
-                           mode,
-                           availableDocuments,
-                           viewModel,
-                           houseConsignmentIndex,
-                           itemIndex,
-                           documentIndex
-                      )
-                    )
-                  ),
-                value => redirect(mode, value, houseConsignmentIndex, itemIndex, documentIndex)
+              Ok(
+                view(
+                  preparedForm,
+                  request.userAnswers.mrn,
+                  arrivalId,
+                  houseConsignmentMode,
+                  itemMode,
+                  documentMode,
+                  availableDocuments,
+                  viewModel,
+                  houseConsignmentIndex,
+                  itemIndex,
+                  documentIndex
+                )
               )
-        }
-    }
+          }
+      }
+
+  def onSubmit(
+    arrivalId: ArrivalId,
+    houseConsignmentMode: Mode,
+    itemMode: Mode,
+    documentMode: Mode,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
+    documentIndex: Index
+  ): Action[AnyContent] =
+    actions
+      .requireData(arrivalId)
+      .async {
+        implicit request =>
+          service.getDocumentList(request.userAnswers, houseConsignmentIndex, itemIndex, documentIndex, documentMode).flatMap {
+            documentList =>
+              val documents          = houseConsignmentLevelDocuments(houseConsignmentIndex, itemIndex, documentIndex)
+              val viewModel          = viewModelProvider.apply(documentMode, documents, houseConsignmentIndex, itemIndex)
+              val availableDocuments = documents.availableDocuments(documentList.values)
+              val form               = formProvider(documentMode, prefix, documentList, houseConsignmentIndex.display, itemIndex.display)
+              form
+                .bindFromRequest()
+                .fold(
+                  formWithErrors =>
+                    Future.successful(
+                      BadRequest(
+                        view(
+                          formWithErrors,
+                          request.userAnswers.mrn,
+                          arrivalId,
+                          houseConsignmentMode,
+                          itemMode,
+                          documentMode,
+                          availableDocuments,
+                          viewModel,
+                          houseConsignmentIndex,
+                          itemIndex,
+                          documentIndex
+                        )
+                      )
+                    ),
+                  value => redirect(houseConsignmentMode, itemMode, documentMode, value, houseConsignmentIndex, itemIndex, documentIndex)
+                )
+          }
+      }
 
   private def redirect(
-    mode: Mode,
+    houseConsignmentMode: Mode,
+    itemMode: Mode,
+    documentMode: Mode,
     value: DocumentType,
     houseConsignmentIndex: Index,
     itemIndex: Index,
@@ -118,5 +155,8 @@ class TypeController @Inject() (
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(TypePage(houseConsignmentIndex, itemIndex, documentIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(TypePage(houseConsignmentIndex, itemIndex, documentIndex), mode, updatedAnswers))
+    } yield {
+      val navigator = navigatorProvider.apply(houseConsignmentMode, itemMode)
+      Redirect(navigator.nextPage(TypePage(houseConsignmentIndex, itemIndex, documentIndex), documentMode, updatedAnswers))
+    }
 }

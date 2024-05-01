@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.ItemsAdditionalInformationFormProvider
 import generators.Generators
 import models.NormalMode
-import navigation.houseConsignment.index.items.DocumentNavigator
+import navigation.houseConsignment.index.items.DocumentNavigator.DocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -41,10 +41,16 @@ class AdditionalInformationControllerSpec extends SpecBase with AppWithDefaultMo
 
   private val formProvider = new ItemsAdditionalInformationFormProvider()
   private val form         = formProvider(viewModel.requiredError)
-  private val mode         = NormalMode
+
+  private val houseConsignmentMode = NormalMode
+  private val itemMode             = NormalMode
+  private val documentMode         = NormalMode
 
   private lazy val documentAdditionalInformationRoute =
-    routes.AdditionalInformationController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, documentIndex).url
+    routes.AdditionalInformationController
+      .onPageLoad(arrivalId, houseConsignmentMode, itemMode, documentMode, houseConsignmentIndex, itemIndex, documentIndex)
+      .url
+
   private val mockViewModelProvider = mock[ItemsAdditionalInformationViewModelProvider]
 
   override def beforeEach(): Unit = {
@@ -59,7 +65,7 @@ class AdditionalInformationControllerSpec extends SpecBase with AppWithDefaultMo
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind(classOf[DocumentNavigator]).toInstance(FakeConsignmentItemNavigators.fakeDocumentNavigator),
+        bind(classOf[DocumentNavigatorProvider]).toInstance(FakeConsignmentItemNavigators.fakeDocumentNavigatorProvider),
         bind(classOf[ItemsAdditionalInformationViewModelProvider]).toInstance(mockViewModelProvider)
       )
 
@@ -77,7 +83,9 @@ class AdditionalInformationControllerSpec extends SpecBase with AppWithDefaultMo
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, mode, viewModel, houseConsignmentIndex, itemIndex, documentIndex)(request, messages).toString
+        view(form, mrn, arrivalId, houseConsignmentMode, itemMode, documentMode, viewModel, houseConsignmentIndex, itemIndex, documentIndex)(request,
+                                                                                                                                             messages
+        ).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -96,7 +104,9 @@ class AdditionalInformationControllerSpec extends SpecBase with AppWithDefaultMo
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, mode, viewModel, houseConsignmentIndex, itemIndex, documentIndex)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentMode, itemMode, documentMode, viewModel, houseConsignmentIndex, itemIndex, documentIndex)(request,
+                                                                                                                                                   messages
+        ).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -131,7 +141,9 @@ class AdditionalInformationControllerSpec extends SpecBase with AppWithDefaultMo
       val view = injector.instanceOf[AdditionalInformationView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, mode, viewModel, houseConsignmentIndex, itemIndex, documentIndex)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentMode, itemMode, documentMode, viewModel, houseConsignmentIndex, itemIndex, documentIndex)(request,
+                                                                                                                                                   messages
+        ).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

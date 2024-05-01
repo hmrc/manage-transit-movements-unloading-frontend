@@ -281,7 +281,7 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
             .nextPage(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
             .mustBe(
               controllers.houseConsignment.index.items.document.routes.TypeController
-                .onPageLoad(arrivalId, NormalMode, houseConsignmentIndex, itemIndex, documentIndex)
+                .onPageLoad(arrivalId, houseConsignmentMode, itemMode, NormalMode, houseConsignmentIndex, itemIndex, documentIndex)
             )
 
         }

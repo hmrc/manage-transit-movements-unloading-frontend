@@ -43,10 +43,13 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
   private def form(viewModel: AddAnotherHouseConsignmentDocumentViewModel, houseIndex: Index, itemIndex: Index): Form[Boolean] =
     formProvider(viewModel.prefix, viewModel.allowMore, itemIndex.display, houseIndex.display)
 
-  private val mode = NormalMode
+  private val houseConsignmentMode = NormalMode
+  private val itemMode             = NormalMode
 
   private lazy val addAnotherDocumentRoute =
-    controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode).url
+    controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
+      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+      .url
 
   private val mockViewModelProvider = mock[AddAnotherHouseConsignmentDocumentViewModelProvider]
 
@@ -73,7 +76,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
   "AddAnotherDocumentController" - {
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -87,14 +90,18 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(viewModel, houseConsignmentIndex, itemIndex), mrn, arrivalId, houseConsignmentIndex, itemIndex, notMaxedOutViewModel)(request,
-                                                                                                                                          messages,
-                                                                                                                                          frontendAppConfig
-          ).toString
+          view(
+            form(viewModel, houseConsignmentIndex, itemIndex),
+            mrn,
+            arrivalId,
+            houseConsignmentIndex,
+            itemIndex,
+            notMaxedOutViewModel
+          )(request, messages, frontendAppConfig).toString
       }
 
       "when max limit reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -108,17 +115,21 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(maxedOutViewModel, itemIndex, houseConsignmentIndex), mrn, arrivalId, houseConsignmentIndex, itemIndex, maxedOutViewModel)(request,
-                                                                                                                                               messages,
-                                                                                                                                               frontendAppConfig
-          ).toString
+          view(
+            form(maxedOutViewModel, itemIndex, houseConsignmentIndex),
+            mrn,
+            arrivalId,
+            houseConsignmentIndex,
+            itemIndex,
+            maxedOutViewModel
+          )(request, messages, frontendAppConfig).toString
       }
     }
 
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to type page at next index" in {
-          when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
+          when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -136,7 +147,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
       "when no submitted" - {
         "must redirect to next page" in {
-          when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
+          when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -150,7 +161,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
           redirectLocation(result).value mustEqual
             controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
-              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode, NormalMode)
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
               .url
         }
       }
@@ -158,7 +169,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "when max limit reached" - {
       "must redirect to next page" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -172,14 +183,14 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
         redirectLocation(result).value mustEqual
           controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
-            .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode, NormalMode)
+            .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
             .url
       }
     }
 
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)

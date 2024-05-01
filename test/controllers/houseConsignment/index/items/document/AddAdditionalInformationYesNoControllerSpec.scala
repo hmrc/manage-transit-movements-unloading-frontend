@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items.document
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
-import navigation.houseConsignment.index.items.DocumentNavigator
+import navigation.houseConsignment.index.items.DocumentNavigator.DocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.items.document.AddAdditionalInformationYesNoPage
@@ -35,18 +35,21 @@ class AddAdditionalInformationYesNoControllerSpec extends SpecBase with AppWithD
 
   private val formProvider = new YesNoFormProvider()
   private val form         = formProvider("houseConsignment.index.items.document.addAdditionalInformationYesNo")
-  private val mode         = NormalMode
+
+  private val houseConsignmentMode = NormalMode
+  private val itemMode             = NormalMode
+  private val documentMode         = NormalMode
 
   private lazy val addAdditionalInformationYesNoRoute =
     controllers.houseConsignment.index.items.document.routes.AddAdditionalInformationYesNoController
-      .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, documentIndex)
+      .onPageLoad(arrivalId, houseConsignmentMode, itemMode, documentMode, houseConsignmentIndex, itemIndex, documentIndex)
       .url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind(classOf[DocumentNavigator]).toInstance(FakeConsignmentItemNavigators.fakeDocumentNavigator)
+        bind(classOf[DocumentNavigatorProvider]).toInstance(FakeConsignmentItemNavigators.fakeDocumentNavigatorProvider)
       )
 
   "AddAdditionalInformationYesNoController" - {
@@ -64,7 +67,7 @@ class AddAdditionalInformationYesNoControllerSpec extends SpecBase with AppWithD
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, documentIndex, mode)(request, messages).toString
+        view(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, documentIndex, houseConsignmentMode, itemMode, documentMode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -83,7 +86,9 @@ class AddAdditionalInformationYesNoControllerSpec extends SpecBase with AppWithD
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, documentIndex, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, documentIndex, houseConsignmentMode, itemMode, documentMode)(request,
+                                                                                                                                        messages
+        ).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -118,7 +123,9 @@ class AddAdditionalInformationYesNoControllerSpec extends SpecBase with AppWithD
       val view = injector.instanceOf[AddAdditionalInformationYesNoView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, documentIndex, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, documentIndex, houseConsignmentMode, itemMode, documentMode)(request,
+                                                                                                                                        messages
+        ).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

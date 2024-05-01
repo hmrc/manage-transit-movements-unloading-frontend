@@ -52,7 +52,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         result.value.value mustBe "999.99"
         val action = result.actions.value.items.head
         action.content.value mustBe "Change"
-        action.href mustBe "/manage-transit-movements/unloading/AB123/house-consignment/1/change-gross-weight"
+        action.href mustBe "/manage-transit-movements/unloading/AB123/change-house-consignment/1/gross-weight"
         action.visuallyHiddenText.value mustBe "gross weight"
         action.id mustBe "change-gross-mass"
       }

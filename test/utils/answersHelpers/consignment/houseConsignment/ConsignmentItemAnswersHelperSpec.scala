@@ -308,7 +308,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
             addOrRemoveLink.text mustBe "Add or remove document"
             addOrRemoveLink.visuallyHidden.value mustBe "from item 1"
             addOrRemoveLink.href mustBe controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
-              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode, CheckMode)
               .url
 
             result.children.head mustBe a[AccordionSection]
