@@ -20,6 +20,7 @@ import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode}
 import navigation.DocumentNavigator
+import navigation.houseConsignment.index.HouseConsignmentNavigator
 import pages.houseConsignment.index.documents.AddAdditionalInformationYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddAdditionalInformationYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: DocumentNavigator,
+  navigator: HouseConsignmentNavigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,

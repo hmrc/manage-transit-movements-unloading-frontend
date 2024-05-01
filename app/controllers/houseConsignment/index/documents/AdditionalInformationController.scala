@@ -21,6 +21,7 @@ import forms.DocumentsAdditionalInformationFormProvider
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
 import navigation.Navigation
+import navigation.houseConsignment.index.HouseConsignmentNavigator
 import pages.houseConsignment.index.documents.AdditionalInformationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -38,7 +39,7 @@ class AdditionalInformationController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   formProvider: DocumentsAdditionalInformationFormProvider,
-  navigator: Navigation, //TODO: to be updated in nav ticket
+  navigator: HouseConsignmentNavigator,
   view: AdditionalInformationView,
   viewModelProvider: AdditionalInformationViewModelProvider
 )(implicit ec: ExecutionContext)
