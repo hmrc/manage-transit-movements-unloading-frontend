@@ -113,12 +113,7 @@ class HouseConsignmentAnswersHelper(
 
   def consignorAddress: Option[SummaryListRow] =
     buildRowWithNoChangeLink[DynamicAddress](
-      data = userAnswers.ie043Data.Consignment
-        .flatMap(_.HouseConsignment.lift(houseConsignmentIndex.position))
-        .flatMap(_.Consignor.flatMap(_.Address))
-        .map(
-          address07 => DynamicAddress(address07)
-        ),
+      data = userAnswers.get(ConsignorAddressPage(houseConsignmentIndex)),
       formatAnswer = formatAsHtmlContent,
       prefix = "unloadingFindings.consignor.address"
     )

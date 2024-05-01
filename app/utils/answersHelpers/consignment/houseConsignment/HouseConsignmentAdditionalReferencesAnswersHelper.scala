@@ -16,13 +16,13 @@
 
 package utils.answersHelpers.consignment.houseConsignment
 
+import controllers.houseConsignment.index.additionalReference.routes
 import models.reference.AdditionalReferenceType
 import models.{CheckMode, Index, UserAnswers}
 import pages.houseConsignment.index.additionalReference.{HouseConsignmentAdditionalReferenceNumberPage, HouseConsignmentAdditionalReferenceTypePage}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.answersHelpers.AnswersHelper
-import controllers.houseConsignment.index.additionalReference.routes
 
 class HouseConsignmentAdditionalReferencesAnswersHelper(
   userAnswers: UserAnswers,

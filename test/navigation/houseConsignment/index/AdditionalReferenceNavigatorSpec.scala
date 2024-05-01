@@ -20,7 +20,6 @@ import base.SpecBase
 import generators.Generators
 import models._
 import models.reference.AdditionalReferenceType
-import navigation.houseConsignment.index.AdditionalReferenceNavigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.houseConsignment.index.additionalReference.{
   AddHouseConsignmentAdditionalReferenceNumberYesNoPage,
@@ -32,31 +31,30 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
   val navigator = new AdditionalReferenceNavigator
 
-  "AdditionalReferenceNavigator" - {
+  "AdditionalReferenceNavigator HC level" - {
 
     "in Checkmode" - {
 
       val mode = CheckMode
 
-      "must go from HouseConsignmentAdditionalReferenceTypePage to UnloadingFindingsPage page" in {
+      "must go from AdditionalReferenceTypePage to HouseConsignmentController page" in {
 
         val userAnswers =
           emptyUserAnswers.setValue(HouseConsignmentAdditionalReferenceTypePage(hcIndex, additionalReferenceIndex), AdditionalReferenceType("test", "test"))
 
         navigator
           .nextPage(HouseConsignmentAdditionalReferenceTypePage(hcIndex, additionalReferenceIndex), mode, userAnswers)
-          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
       }
 
-      "must go from HouseConsignmentAdditionalReferenceNumberPage to UnloadingFindingsPage page" in {
+      "must go from AdditionalReferenceNumberPage to HouseConsignmentController page" in {
 
         val userAnswers = emptyUserAnswers.setValue(HouseConsignmentAdditionalReferenceNumberPage(hcIndex, additionalReferenceIndex), "test")
 
         navigator
           .nextPage(HouseConsignmentAdditionalReferenceNumberPage(hcIndex, additionalReferenceIndex), mode, userAnswers)
-          .mustBe(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+          .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
       }
-
     }
 
     "in NormalMode" - {

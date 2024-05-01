@@ -16,10 +16,9 @@
 
 package navigation.houseConsignment.index
 
-import com.google.inject.Singleton
-import models.{Index, NormalMode, UserAnswers}
+import models.UserAnswers
 import navigation.Navigator
-import pages._
+import pages.Page
 import pages.houseConsignment.index.additionalReference.{
   AddHouseConsignmentAdditionalReferenceNumberYesNoPage,
   HouseConsignmentAdditionalReferenceNumberPage,
@@ -27,7 +26,6 @@ import pages.houseConsignment.index.additionalReference.{
 }
 import play.api.mvc.Call
 
-@Singleton
 class AdditionalReferenceNavigator extends Navigator {
 
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
@@ -59,9 +57,10 @@ class AdditionalReferenceNavigator extends Navigator {
     }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case HouseConsignmentAdditionalReferenceTypePage(_, _)   => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
-    case HouseConsignmentAdditionalReferenceNumberPage(_, _) => ua => Some(controllers.routes.UnloadingFindingsController.onPageLoad(ua.id))
+    case HouseConsignmentAdditionalReferenceTypePage(houseConsignmentIndex, _) =>
+      ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
+    case HouseConsignmentAdditionalReferenceNumberPage(houseConsignmentIndex, _) =>
+      ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
 
   }
-
 }
