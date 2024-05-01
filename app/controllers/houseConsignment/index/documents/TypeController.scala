@@ -22,7 +22,7 @@ import forms.SelectableFormProvider
 import models.reference.DocumentType
 import models.requests.DataRequest
 import models.{ArrivalId, HouseConsignmentLevelDocuments, Index, Mode}
-import navigation.houseConsignment.index.HouseConsignmentNavigator
+import navigation.houseConsignment.index.HouseConsignmentDocumentNavigator
 import pages.houseConsignment.index.documents.TypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TypeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: HouseConsignmentNavigator,
+  navigator: HouseConsignmentDocumentNavigator,
   actions: Actions,
   formProvider: SelectableFormProvider,
   service: DocumentsService,

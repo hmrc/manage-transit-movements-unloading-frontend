@@ -20,8 +20,7 @@ import controllers.actions._
 import forms.DocumentsAdditionalInformationFormProvider
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.Navigation
-import navigation.houseConsignment.index.HouseConsignmentNavigator
+import navigation.houseConsignment.index.HouseConsignmentDocumentNavigator
 import pages.houseConsignment.index.documents.AdditionalInformationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -39,7 +38,7 @@ class AdditionalInformationController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   formProvider: DocumentsAdditionalInformationFormProvider,
-  navigator: HouseConsignmentNavigator,
+  navigator: HouseConsignmentDocumentNavigator,
   view: AdditionalInformationView,
   viewModelProvider: AdditionalInformationViewModelProvider
 )(implicit ec: ExecutionContext)

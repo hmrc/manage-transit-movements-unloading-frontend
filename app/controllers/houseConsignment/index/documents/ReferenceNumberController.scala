@@ -20,8 +20,7 @@ import controllers.actions._
 import forms.ReferenceNumberFormProvider
 import models.requests.{DataRequest, MandatoryDataRequest}
 import models.{ArrivalId, Index, Mode, RichOptionalJsArray}
-import navigation.Navigator
-import navigation.houseConsignment.index.HouseConsignmentNavigator
+import navigation.houseConsignment.index.HouseConsignmentDocumentNavigator
 import pages.houseConsignment.index.documents.DocumentReferenceNumberPage
 import pages.sections.houseConsignment.index.documents.DocumentsSection
 import play.api.data.Form
@@ -39,7 +38,7 @@ class ReferenceNumberController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
-  navigator: HouseConsignmentNavigator,
+  navigator: HouseConsignmentDocumentNavigator,
   formProvider: ReferenceNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: ReferenceNumberView,
