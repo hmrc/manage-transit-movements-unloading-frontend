@@ -42,14 +42,16 @@ class AddDocumentsYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("houseConsignment.item.addDocumentYesNo")
+  private val prefix = "houseConsignment.index.documents.addDocumentsYesNo"
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddDocumentYesNoPage(houseConsignmentIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+      val form = formProvider(prefix, houseConsignmentIndex)
+      val preparedForm =
+        request.userAnswers.get(AddDocumentYesNoPage(houseConsignmentIndex)) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
 
       Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, mode))
   }
@@ -57,6 +59,8 @@ class AddDocumentsYesNoController @Inject() (
   def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
+        val form = formProvider(prefix, houseConsignmentIndex)
+
         form
           .bindFromRequest()
           .fold(
