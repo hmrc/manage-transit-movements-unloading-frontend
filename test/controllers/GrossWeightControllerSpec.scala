@@ -20,9 +20,12 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.GrossWeightFormProvider
 import generators.Generators
 import models.{CheckMode, NormalMode}
+import navigation.Navigation
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.GrossWeightPage
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.GrossWeightView
@@ -43,6 +46,13 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
   private lazy val GrossWeightAmountRouteCheckMode =
     controllers.routes.GrossWeightController.onPageLoad(arrivalId, checkMode).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(
+        bind[Navigation].toInstance(fakeNavigation)
+      )
 
   "GrossWeightAmount Controller" - {
 
