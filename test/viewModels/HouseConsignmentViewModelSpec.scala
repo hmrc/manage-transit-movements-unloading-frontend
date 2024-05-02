@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.DocType.{Support, Transport}
 import models.reference._
-import models.{CheckMode, Index, SecurityType}
+import models.{CheckMode, Index, NormalMode, SecurityType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
@@ -70,7 +70,9 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         section.children.head.sectionTitle.value mustBe "Departure means of transport 1"
         section.children.head.rows.size mustBe 3
 
-        section.viewLinks.head.href mustBe "#"
+        section.viewLinks.head.href mustBe controllers.houseConsignment.index.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
+          .onPageLoad(arrivalId, houseConsignmentIndex, NormalMode)
+          .url
       }
 
       "when there is multiple" in {
@@ -98,7 +100,9 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         section.children(1).sectionTitle.value mustBe "Departure means of transport 2"
         section.children(1).rows.size mustBe 3
 
-        section.viewLinks.head.href mustBe "#"
+        section.viewLinks.head.href mustBe controllers.houseConsignment.index.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
+          .onPageLoad(arrivalId, houseConsignmentIndex, NormalMode)
+          .url
       }
     }
 

@@ -68,7 +68,7 @@ class AddAnotherDepartureMeansOfTransportController @Inject() (
                   .onPageLoad(arrivalId, houseConsignmentIndex, viewModel.nextIndex, mode)
               )
             case false =>
-              Redirect(controllers.routes.UnloadingFindingsController.onPageLoad(arrivalId))
+              Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
           }
         )
   }
