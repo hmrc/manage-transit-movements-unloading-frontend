@@ -24,6 +24,7 @@ import navigation.GoodsReferenceNavigator.GoodsReferenceNavigatorProvider
 import navigation.SealNavigator.SealNavigatorProvider
 import navigation._
 import navigation.houseConsignment.index.items.DocumentNavigator.DocumentNavigatorProvider
+import navigation.houseConsignment.index.items.PackagesNavigator.PackagesNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
@@ -135,8 +136,12 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
           new FakeConsignmentItemAdditionalReferenceNavigator(onwardRoute, houseConsignmentMode, itemMode)
       }
 
-    val fakePackagesNavigator: PackagesNavigator =
-      new FakePackagesNavigator(onwardRoute)
+    val fakePackagesNavigatorProvider: PackagesNavigatorProvider =
+      new PackagesNavigatorProvider {
+
+        override def apply(houseConsignmentMode: Mode, itemMode: Mode): PackagesNavigator =
+          new FakePackagesNavigator(onwardRoute, houseConsignmentMode, itemMode)
+      }
 
     val fakeDocumentNavigatorProvider: DocumentNavigatorProvider =
       new DocumentNavigatorProvider {

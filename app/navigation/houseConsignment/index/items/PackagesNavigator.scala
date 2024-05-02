@@ -16,32 +16,52 @@
 
 package navigation.houseConsignment.index.items
 
-import com.google.inject.Singleton
 import controllers.houseConsignment.index.items.packages.routes
-import models.{Index, NormalMode, UserAnswers}
+import models.{Index, Mode, NormalMode, UserAnswers}
 import navigation.Navigator
 import pages._
 import pages.houseConsignment.index.items.packages._
 import play.api.mvc.Call
 
-@Singleton
-class PackagesNavigator extends Navigator {
+class PackagesNavigator(houseConsignmentMode: Mode, itemMode: Mode) extends Navigator {
 
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex) =>
-      ua => Some(routes.AddNumberOfPackagesYesNoController.onPageLoad(ua.id, NormalMode, houseConsignmentIndex, itemIndex, packageIndex))
+      ua =>
+        Some(
+          routes.AddNumberOfPackagesYesNoController.onPageLoad(
+            ua.id,
+            houseConsignmentMode,
+            itemMode,
+            NormalMode,
+            houseConsignmentIndex,
+            itemIndex,
+            packageIndex
+          )
+        )
 
     case AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex) =>
       ua => addNumberOfPackagesYesNoNavigation(ua, houseConsignmentIndex, itemIndex, packageIndex)
 
     case NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex) =>
-      ua => Some(routes.AddPackageShippingMarkYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, packageIndex, NormalMode))
+      ua =>
+        Some(
+          routes.AddPackageShippingMarkYesNoController.onPageLoad(
+            ua.id,
+            houseConsignmentIndex,
+            itemIndex,
+            packageIndex,
+            houseConsignmentMode,
+            itemMode,
+            NormalMode
+          )
+        )
 
     case AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex) =>
       ua => addPackageShippingMarkYesNoNavigation(ua, houseConsignmentIndex, itemIndex, packageIndex)
 
     case PackageShippingMarkPage(houseConsignmentIndex, itemIndex, _) =>
-      ua => Some(routes.AddAnotherPackageController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode))
+      ua => Some(routes.AddAnotherPackageController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode))
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
@@ -56,9 +76,10 @@ class PackagesNavigator extends Navigator {
   ): Option[Call] =
     ua.get(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex)).map {
       case true =>
-        routes.NumberOfPackagesController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, packageIndex, NormalMode)
+        routes.NumberOfPackagesController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, NormalMode)
       case false =>
-        routes.AddPackageShippingMarkYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, packageIndex, NormalMode)
+        routes.AddPackageShippingMarkYesNoController
+          .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, NormalMode)
     }
 
   private def addPackageShippingMarkYesNoNavigation(
@@ -69,8 +90,17 @@ class PackagesNavigator extends Navigator {
   ): Option[Call] =
     ua.get(AddPackageShippingMarkYesNoPage(houseConsignmentIndex, itemIndex, packageIndex)).map {
       case true =>
-        routes.PackageShippingMarkController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, packageIndex, NormalMode)
+        routes.PackageShippingMarkController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, NormalMode)
       case false =>
-        routes.AddAnotherPackageController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
+        routes.AddAnotherPackageController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
     }
+}
+
+object PackagesNavigator {
+
+  class PackagesNavigatorProvider {
+
+    def apply(houseConsignmentMode: Mode, itemMode: Mode): PackagesNavigator =
+      new PackagesNavigator(houseConsignmentMode, itemMode)
+  }
 }

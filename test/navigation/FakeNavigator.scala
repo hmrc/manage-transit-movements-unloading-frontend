@@ -84,7 +84,7 @@ class FakeConsignmentItemAdditionalReferenceNavigator(desiredRoute: Call, houseC
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakePackagesNavigator(desiredRoute: Call) extends PackagesNavigator {
+class FakePackagesNavigator(desiredRoute: Call, houseConsignmentMode: Mode, itemMode: Mode) extends PackagesNavigator(houseConsignmentMode, itemMode) {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 

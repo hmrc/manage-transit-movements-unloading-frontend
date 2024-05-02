@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items.packages
 import controllers.actions._
 import forms.NumberOfPackagesFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.houseConsignment.index.items.PackagesNavigator
+import navigation.houseConsignment.index.items.PackagesNavigator.PackagesNavigatorProvider
 import pages.houseConsignment.index.items.packages.NumberOfPackagesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class NumberOfPackagesController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: PackagesNavigator,
+  navigatorProvider: PackagesNavigatorProvider,
   actions: Actions,
   formProvider: NumberOfPackagesFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -46,10 +46,18 @@ class NumberOfPackagesController @Inject() (
 
   val prefix = "houseConsignment.index.item.packageType"
 
-  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(
+    arrivalId: ArrivalId,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
+    packageIndex: Index,
+    houseConsignmentMode: Mode,
+    itemMode: Mode,
+    packageMode: Mode
+  ): Action[AnyContent] =
     actions.getStatus(arrivalId) {
       implicit request =>
-        val viewModel = modeViewModelProvider.apply(houseConsignmentIndex, itemIndex, mode)
+        val viewModel = modeViewModelProvider.apply(houseConsignmentIndex, itemIndex, packageMode)
         val form      = formProvider(prefix)
         val preparedForm = request.userAnswers.get(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex)) match {
           case None        => form
@@ -63,17 +71,27 @@ class NumberOfPackagesController @Inject() (
             houseConsignmentIndex,
             itemIndex,
             packageIndex,
-            mode,
+            houseConsignmentMode,
+            itemMode,
+            packageMode,
             viewModel
           )
         )
 
     }
 
-  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(
+    arrivalId: ArrivalId,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
+    packageIndex: Index,
+    houseConsignmentMode: Mode,
+    itemMode: Mode,
+    packageMode: Mode
+  ): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
-        val viewModel = modeViewModelProvider.apply(houseConsignmentIndex, itemIndex, mode)
+        val viewModel = modeViewModelProvider.apply(houseConsignmentIndex, itemIndex, packageMode)
         val form      = formProvider(prefix, args = viewModel.args)
         form
           .bindFromRequest()
@@ -88,7 +106,9 @@ class NumberOfPackagesController @Inject() (
                     houseConsignmentIndex,
                     itemIndex,
                     packageIndex,
-                    mode,
+                    houseConsignmentMode,
+                    itemMode,
+                    packageMode,
                     viewModel
                   )
                 )
@@ -99,7 +119,10 @@ class NumberOfPackagesController @Inject() (
                 updatedAnswers <- Future
                   .fromTry(request.userAnswers.set(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex), value))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex), mode, updatedAnswers))
+              } yield {
+                val navigator = navigatorProvider.apply(houseConsignmentMode, itemMode)
+                Redirect(navigator.nextPage(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, updatedAnswers))
+              }
           )
     }
 }

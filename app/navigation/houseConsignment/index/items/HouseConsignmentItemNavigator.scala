@@ -146,7 +146,7 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode) extends Navigato
     ua.get(AddPackagesYesNoPage(houseConsignmentIndex, itemIndex)) map {
       case true =>
         controllers.houseConsignment.index.items.packages.routes.PackageTypeController
-          .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, Index(0), NormalMode)
+          .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, Index(0), houseConsignmentMode, itemMode, NormalMode)
       case false =>
         controllers.houseConsignment.index.items.routes.AddAnotherItemController.onPageLoad(ua.id, houseConsignmentIndex, houseConsignmentMode)
     }

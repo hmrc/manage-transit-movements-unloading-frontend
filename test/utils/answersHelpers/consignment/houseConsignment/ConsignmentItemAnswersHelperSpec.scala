@@ -413,7 +413,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
             addOrRemove.text mustBe "Add or remove package"
             addOrRemove.visuallyHidden.value mustBe "from item 1"
             addOrRemove.href mustBe controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController
-              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode, CheckMode)
               .url
 
             result.children.head mustBe a[AccordionSection]

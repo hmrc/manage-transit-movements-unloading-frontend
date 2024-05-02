@@ -30,7 +30,7 @@ import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, Packag
 
 class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  val navigatorProvider = new HouseConsignmentItemNavigatorProvider
+  private val navigatorProvider = new HouseConsignmentItemNavigatorProvider
 
   "HouseConsignmentItemNavigator" - {
 
@@ -176,7 +176,7 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
             .nextPage(AddPackagesYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
             .mustBe(
               controllers.houseConsignment.index.items.packages.routes.PackageTypeController
-                .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, itemMode)
+                .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, NormalMode)
             )
         }
 

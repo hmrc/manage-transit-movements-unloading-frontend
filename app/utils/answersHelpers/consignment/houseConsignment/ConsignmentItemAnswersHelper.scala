@@ -277,7 +277,7 @@ class ConsignmentItemAnswersHelper(
     import controllers.houseConsignment.index.items.packages.routes
     Link(
       id = s"add-remove-item-$itemIndex-packaging",
-      href = routes.AddAnotherPackageController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode).url,
+      href = routes.AddAnotherPackageController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode, CheckMode).url,
       text = messages("packagingLink.addRemove"),
       visuallyHidden = Some(messages("packagingLink.visuallyHidden", itemIndex.display))
     )
