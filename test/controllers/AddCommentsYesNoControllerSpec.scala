@@ -19,7 +19,7 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
-import navigation.{Navigation, TransportEquipmentNavigator}
+import navigation.Navigation
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.AddCommentsYesNoPage

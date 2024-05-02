@@ -20,11 +20,8 @@ import controllers.actions._
 import models.P5.ArrivalMessageType.UnloadingPermission
 import models.P5._
 import models.{Mode, UserAnswers}
-import navigation.GoodsReferenceNavigator.GoodsReferenceNavigatorProvider
 import navigation.SealNavigator.SealNavigatorProvider
 import navigation._
-import navigation.houseConsignment.index.items.DocumentNavigator.DocumentNavigatorProvider
-import navigation.houseConsignment.index.items.PackagesNavigator.PackagesNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
@@ -84,6 +81,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
     new FakeNavigation(onwardRoute)
 
   object FakeConsignmentNavigators {
+    import navigation.GoodsReferenceNavigator.GoodsReferenceNavigatorProvider
 
     val fakeTransportEquipmentNavigator: TransportEquipmentNavigator =
       new FakeTransportEquipmentNavigator(onwardRoute)
@@ -107,8 +105,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   }
 
   object FakeHouseConsignmentNavigators {
+    import navigation.houseConsignment.index._
     import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
-    import navigation.houseConsignment.index.{AdditionalReferenceNavigator, HouseConsignmentNavigator}
 
     val fakeHouseConsignmentNavigator: HouseConsignmentNavigator =
       new FakeHouseConsignmentNavigator(onwardRoute)
@@ -118,11 +116,16 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
     val fakeDepartureTransportMeansNavigator: DepartureTransportMeansNavigator =
       new FakeHouseConsignmentDepartureTransportMeansNavigator(onwardRoute)
+
+    val fakeDocumentNavigator: HouseConsignmentDocumentNavigator =
+      new FakeHouseConsignmentDocumentNavigator(onwardRoute)
   }
 
   object FakeConsignmentItemNavigators {
     import navigation.houseConsignment.index.items.AdditionalReferenceNavigator.AdditionalReferenceNavigatorProvider
+    import navigation.houseConsignment.index.items.DocumentNavigator.DocumentNavigatorProvider
     import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
+    import navigation.houseConsignment.index.items.PackagesNavigator.PackagesNavigatorProvider
     import navigation.houseConsignment.index.items._
 
     val fakeConsignmentItemNavigatorProvider: HouseConsignmentItemNavigatorProvider = new HouseConsignmentItemNavigatorProvider {

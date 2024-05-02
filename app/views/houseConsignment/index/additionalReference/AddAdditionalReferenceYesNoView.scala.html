@@ -18,36 +18,34 @@
 @import viewModels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo}
 @import views.utils.ViewUtils.StringImplicits
+@import controllers.houseConsignment.index.additionalReference.routes
 
 @this(
-mainTemplate: MainTemplate,
-formHelper: FormWithCSRF,
-inputYesNo: InputYesNo,
-errorSummary: ErrorSummary,
-button: Button
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    inputYesNo: InputYesNo,
+    errorSummary: ErrorSummary,
+    button: Button
 )
 
-@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId,houseConsignmentIndex:Index, documentIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("houseConsignment.index.documents.addAdditionalInformationYesNo.title"),
+    title = messages("houseConsignment.index.additionalReference.addAdditionalReferenceYesNo.title", houseConsignmentIndex.display),
     showBackLink = true
 ) {
 
         @errorSummary(form.errors)
 
-        @formHelper(action = controllers.houseConsignment.index.documents.routes.AddAdditionalInformationYesNoController.onSubmit(arrivalId, houseConsignmentIndex, documentIndex), Symbol("autoComplete") -> "off") {
+        @formHelper(action = controllers.houseConsignment.index.additionalReference.routes.AddAdditionalReferenceYesNoController.onSubmit(arrivalId, mode,houseConsignmentIndex), Symbol("autoComplete") -> "off") {
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("houseConsignment.index.documents.addAdditionalInformationYesNo.heading"),
-                caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = messages("houseConsignment.index.documents.addAdditionalInformationYesNo.paragraph").toParagraph
+            yesNoType = OrdinaryYesNo(
+                heading = messages("houseConsignment.index.additionalReference.addAdditionalReferenceYesNo.heading", houseConsignmentIndex.display),
+                caption = Some(messages("site.caption", mrn.toString))
             )
         )
-
-
 
         @button(attributes = Map("id" -> "submit"))
     }
