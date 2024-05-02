@@ -25,7 +25,6 @@ import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.Hou
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.houseConsignment.index.items._
-import pages.houseConsignment.index.items.document.AddDocumentYesNoPage
 import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
 
 class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -211,10 +210,7 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
 
           navigator
             .nextPage(AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
-            .mustBe(
-              controllers.houseConsignment.index.items.document.routes.AddDocumentYesNoController
-                .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
-            )
+            .mustBe(routes.AddDocumentYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode))
 
         }
 
@@ -252,10 +248,7 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
 
           navigator
             .nextPage(AddCombinedNomenclatureCodeYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
-            .mustBe(
-              controllers.houseConsignment.index.items.document.routes.AddDocumentYesNoController
-                .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode)
-            )
+            .mustBe(routes.AddDocumentYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode))
 
         }
 
@@ -265,10 +258,7 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
 
           navigator
             .nextPage(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
-            .mustBe(
-              controllers.houseConsignment.index.items.document.routes.AddDocumentYesNoController
-                .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
-            )
+            .mustBe(routes.AddDocumentYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode))
 
         }
 
