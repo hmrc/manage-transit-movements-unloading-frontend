@@ -14,11 +14,11 @@
  * limitations under the License.
  *@
 
+@import controllers.houseConsignment.index.routes
 @import models.MovementReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo}
 @import views.utils.ViewUtils.StringImplicits
-@import controllers.houseConsignment.index.additionalReference.routes
 
 @this(
     mainTemplate: MainTemplate,
@@ -28,22 +28,23 @@
     button: Button
 )
 
-@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex:Index, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("houseConsignment.index.additionalReference.addAdditionalReferenceYesNo.title", houseConsignmentIndex.display),
+    title = messages("houseConsignment.index.documents.addDocumentsYesNo.title", houseConsignmentIndex.display),
     showBackLink = true
 ) {
 
-        @errorSummary(form.errors)
+    @formHelper(action = routes.AddDocumentsYesNoController.onSubmit(arrivalId,mode, houseConsignmentIndex), Symbol("autoComplete") -> "off") {
 
-        @formHelper(action = controllers.houseConsignment.index.additionalReference.routes.AddAdditionalReferenceYesNoController.onSubmit(arrivalId, mode,houseConsignmentIndex), Symbol("autoComplete") -> "off") {
+        @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
-                heading = messages("houseConsignment.index.additionalReference.addAdditionalReferenceYesNo.heading", houseConsignmentIndex.display),
-                caption = Some(messages("site.caption", mrn.toString))
+            yesNoType = YesNoWithAdditionalHtml(
+                heading = messages("houseConsignment.index.documents.addDocumentsYesNo.heading",houseConsignmentIndex.display),
+                caption = Some(messages("site.caption", mrn.toString)),
+                additionalHtml = messages("houseConsignment.index.documents.addDocumentsYesNo.paragraph").toParagraph
             )
         )
 

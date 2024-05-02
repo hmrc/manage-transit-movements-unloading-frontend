@@ -19,7 +19,6 @@ package controllers.houseConsignment.index.documents
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
-import navigation.DocumentNavigator
 import navigation.houseConsignment.index.HouseConsignmentDocumentNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

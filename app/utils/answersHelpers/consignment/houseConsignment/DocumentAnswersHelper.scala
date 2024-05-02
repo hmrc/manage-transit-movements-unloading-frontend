@@ -20,9 +20,7 @@ import models.reference.DocumentType
 import models.{CheckMode, Index, UserAnswers}
 import pages.houseConsignment.index.documents._
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.AnswersHelper
 
 class DocumentAnswersHelper(

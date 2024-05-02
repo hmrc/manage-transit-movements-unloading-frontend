@@ -17,6 +17,7 @@
 package pages.houseConsignment.index.documents
 
 import pages.behaviours.PageBehaviours
+import pages.houseConsignment.index.AddDocumentYesNoPage
 import pages.sections.houseConsignment.index.documents.DocumentsSection
 import play.api.libs.json.{JsArray, Json}
 

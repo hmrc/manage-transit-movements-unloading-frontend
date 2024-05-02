@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package controllers.houseConsignment.index.additionalReference
+package controllers.houseConsignment.index
 
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.houseConsignment.index.AdditionalReferenceNavigator
+import navigation.houseConsignment.index.HouseConsignmentNavigator
 import pages.houseConsignment.index.AddAdditionalReferenceYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.houseConsignment.index.additionalReference.AddAdditionalReferenceYesNoView
+import views.html.houseConsignment.index.AddAdditionalReferenceYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddAdditionalReferenceYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: AdditionalReferenceNavigator,
+  navigator: HouseConsignmentNavigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
