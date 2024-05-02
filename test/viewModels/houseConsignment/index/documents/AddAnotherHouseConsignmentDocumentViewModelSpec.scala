@@ -241,12 +241,14 @@ class AddAnotherHouseConsignmentDocumentViewModelSpec extends SpecBase with Scal
                 ListItem(
                   name = "Supporting - (code1) description1 - ref1",
                   changeUrl = None,
-                  removeUrl = Some("#")
+                  removeUrl =
+                    Some(controllers.houseConsignment.index.documents.routes.RemoveDocumentYesNoController.onPageLoad(arrivalId, mode, Index(0), Index(0)).url)
                 ),
                 ListItem(
                   name = "Transport - (code2) description2 - ref2",
                   changeUrl = None,
-                  removeUrl = Some("#")
+                  removeUrl =
+                    Some(controllers.houseConsignment.index.documents.routes.RemoveDocumentYesNoController.onPageLoad(arrivalId, mode, Index(0), Index(1)).url)
                 )
               )
 

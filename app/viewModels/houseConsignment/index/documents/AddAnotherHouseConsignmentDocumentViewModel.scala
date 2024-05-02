@@ -80,7 +80,7 @@ object AddAnotherHouseConsignmentDocumentViewModel {
                   ListItem(
                     name = document.forAddAnotherDisplay,
                     changeUrl = None,
-                    removeUrl = Some("#") //TODO add the remove page here
+                    removeUrl = Some(routes.RemoveDocumentYesNoController.onPageLoad(arrivalId, mode, houseConsignmentIndex, index).url)
                   )
               }
           }
