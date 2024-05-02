@@ -821,6 +821,18 @@ houseConsignment.index.items.document.addAnotherDocument.error.required = Select
 houseConsignment.index.items.document.addAnotherDocument.label = Do you want to add another document to item {0} in house consignment {1}?
 houseConsignment.index.items.document.addAnotherDocument.maxLimitForType.label = You cannot add any more {0} documents to item {3} in house consignment {2}. To add another, you need to remove one first. You can, however, still add a {1} document to your item.
 
+houseConsignment.index.document.addAnotherDocument.singular.title = You have added 1 document to all items in house consignment {1}
+houseConsignment.index.document.addAnotherDocument.plural.title = You have added {0} documents to all items in house consignment {1}
+houseConsignment.index.document.addAnotherDocument.empty.title = You have added {0} documents to all items in house consignment {1}
+houseConsignment.index.document.addAnotherDocument.singular.heading = You have added 1 document to all items in house consignment {1}
+houseConsignment.index.document.addAnotherDocument.empty.heading = You have added {0} documents to all items in house consignment {1}
+houseConsignment.index.document.addAnotherDocument.plural.heading = You have added {0} documents to all items in house consignment {1}
+houseConsignment.index.document.addAnotherDocument.singular.label = Do you want to add a document to all items in house consignment {0}?
+houseConsignment.index.document.addAnotherDocument.plural.label = Do you want to add another document to all items in house consignment {0}?
+houseConsignment.index.document.addAnotherDocument.maxLimit.label = You cannot add any more documents to all items in this house consignment. You can still add and attach documents to individual items from their house consignment cross-check screens.
+houseConsignment.index.document.addAnotherDocument.error.required = Select yes if you want to add another document to all items in house consignment {0}
+houseConsignment.index.document.addAnotherDocument.label = Do you want to add another document to all items in house consignment {0}?
+houseConsignment.index.document.addAnotherDocument.maxLimitForType.label = You cannot add any more documents to all items in this house consignment. You can still add and attach documents to individual items from their house consignment cross-check screens.
 
 additionalReferenceNumber.index.NormalMode.title = What is the additional reference number?
 additionalReferenceNumber.index.CheckMode.title = What is the new additional reference number?

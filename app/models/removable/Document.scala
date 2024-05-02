@@ -57,4 +57,15 @@ object Document {
     }
     userAnswers.data.asOpt[Document]
   }
+
+  def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index, documentIndex: Index): Option[Document] = {
+    import pages.houseConsignment.index.documents._
+    implicit val reads: Reads[Document] = (
+      TypePage(houseConsignmentIndex, documentIndex).path.read[DocumentType] and
+        DocumentReferenceNumberPage(houseConsignmentIndex, documentIndex).path.readNullable[String]
+    ).apply {
+      (documentType, referenceNumber) => Document(documentType, referenceNumber)
+    }
+    userAnswers.data.asOpt[Document]
+  }
 }
