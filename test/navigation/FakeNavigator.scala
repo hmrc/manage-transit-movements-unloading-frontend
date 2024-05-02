@@ -17,9 +17,9 @@
 package navigation
 
 import models.{Mode, UserAnswers}
-import navigation.houseConsignment.index.HouseConsignmentNavigator
 import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
 import navigation.houseConsignment.index.items.{HouseConsignmentItemNavigator, PackagesNavigator, DocumentNavigator => ItemDocumentNavigator}
+import navigation.houseConsignment.index.{HouseConsignmentDocumentNavigator, HouseConsignmentNavigator}
 import pages._
 import play.api.mvc.Call
 
@@ -47,7 +47,7 @@ class FakeNavigation(desiredRoute: Call) extends Navigation {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeItemDocumentNavigator(desiredRoute: Call) extends ItemDocumentNavigator {
+class FakeItemDocumentNavigator(desiredRoute: Call, houseConsignmentMode: Mode, itemMode: Mode) extends ItemDocumentNavigator(houseConsignmentMode, itemMode) {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
@@ -55,11 +55,11 @@ class FakeTransportEquipmentNavigator(desiredRoute: Call) extends TransportEquip
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeSealNavigator(desiredRoute: Call, mode: Mode) extends SealNavigator(mode) {
+class FakeSealNavigator(desiredRoute: Call, equipmentMode: Mode) extends SealNavigator(equipmentMode) {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeGoodsReferenceNavigator(desiredRoute: Call, mode: Mode) extends GoodsReferenceNavigator(mode) {
+class FakeGoodsReferenceNavigator(desiredRoute: Call, equipmentMode: Mode) extends GoodsReferenceNavigator(equipmentMode) {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
@@ -67,7 +67,11 @@ class FakeDepartureTransportMeansNavigator(desiredRoute: Call) extends navigatio
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeHouseConsignmentItemNavigator(desiredRoute: Call) extends HouseConsignmentItemNavigator {
+class FakeHouseConsignmentItemNavigator(desiredRoute: Call, houseConsignmentMode: Mode) extends HouseConsignmentItemNavigator(houseConsignmentMode) {
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
+}
+
+class FakeHouseConsignmentDocumentNavigator(desiredRoute: Call) extends HouseConsignmentDocumentNavigator {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
@@ -75,15 +79,17 @@ class FakeAdditionalReferenceNavigator(desiredRoute: Call) extends AdditionalRef
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeHCItemsAdditionalReferenceHouseConsignmentNavigator(desiredRoute: Call) extends navigation.houseConsignment.index.items.AdditionalReferenceNavigator {
+class FakeHouseConsignmentAdditionalReferenceNavigator(desiredRoute: Call, houseConsignmentMode: Mode)
+    extends navigation.houseConsignment.index.AdditionalReferenceNavigator(houseConsignmentMode) {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeHCAdditionalReferenceHouseConsignmentNavigator(desiredRoute: Call) extends navigation.houseConsignment.index.AdditionalReferenceNavigator {
+class FakeConsignmentItemAdditionalReferenceNavigator(desiredRoute: Call, houseConsignmentMode: Mode, itemMode: Mode)
+    extends navigation.houseConsignment.index.items.AdditionalReferenceNavigator(houseConsignmentMode, itemMode) {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakePackagesNavigator(desiredRoute: Call) extends PackagesNavigator {
+class FakePackagesNavigator(desiredRoute: Call, houseConsignmentMode: Mode, itemMode: Mode) extends PackagesNavigator(houseConsignmentMode, itemMode) {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = desiredRoute
 }
 

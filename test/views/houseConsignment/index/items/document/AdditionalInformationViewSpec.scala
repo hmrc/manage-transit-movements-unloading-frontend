@@ -38,7 +38,7 @@ class AdditionalInformationViewSpec extends CharacterCountViewBehaviours with Ge
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector
       .instanceOf[AdditionalInformationView]
-      .apply(form, mrn, arrivalId, NormalMode, viewModel, houseConsignmentIndex, itemIndex, documentIndex)(fakeRequest, messages)
+      .apply(form, mrn, arrivalId, NormalMode, NormalMode, NormalMode, viewModel, houseConsignmentIndex, itemIndex, documentIndex)(fakeRequest, messages)
 
   override val prefix: String = Gen
     .oneOf(

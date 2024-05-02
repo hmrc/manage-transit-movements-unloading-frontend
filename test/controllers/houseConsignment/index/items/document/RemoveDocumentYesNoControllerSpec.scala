@@ -42,11 +42,13 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
   private def form(houseConsignmentIndex: Index, itemIndex: Index) =
     formProvider("houseConsignment.index.items.document.removeDocumentYesNo", houseConsignmentIndex.display, itemIndex.display)
-  private val mode = NormalMode
+
+  private val houseConsignmentMode = NormalMode
+  private val itemMode             = NormalMode
 
   private lazy val removeDocumentRoute =
     controllers.houseConsignment.index.items.document.routes.RemoveDocumentYesNoController
-      .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, documentIndex)
+      .onPageLoad(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex, documentIndex)
       .url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -83,7 +85,8 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
               houseConsignmentIndex,
               itemIndex,
               documentIndex,
-              mode,
+              houseConsignmentMode,
+              itemMode,
               Some(insetText)
             )(request, messages).toString
       }
@@ -108,7 +111,7 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
         redirectLocation(result).value mustEqual
           controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
-            .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+            .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
             .url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
@@ -142,7 +145,7 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
         redirectLocation(result).value mustEqual
           controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
-            .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+            .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
             .url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
@@ -166,7 +169,7 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
       redirectLocation(result).value mustEqual
         controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
-          .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+          .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
           .url
     }
 
@@ -194,7 +197,17 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
           val view = injector.instanceOf[RemoveDocumentYesNoView]
 
           contentAsString(result) mustEqual
-            view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, documentIndex, mode, Some(insetText))(request, messages).toString
+            view(
+              filledForm,
+              mrn,
+              arrivalId,
+              houseConsignmentIndex,
+              itemIndex,
+              documentIndex,
+              houseConsignmentMode,
+              itemMode,
+              Some(insetText)
+            )(request, messages).toString
       }
     }
 

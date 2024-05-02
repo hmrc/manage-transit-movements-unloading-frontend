@@ -27,7 +27,7 @@ class AddCombinedNomenclatureCodeYesNoViewSpec extends YesNoViewBehaviours {
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[AddCombinedNomenclatureCodeYesNoView]
-      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, NormalMode)(fakeRequest, messages)
+      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, NormalMode, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "houseConsignment.item.addCombinedNomenclatureCodeYesNo"
 

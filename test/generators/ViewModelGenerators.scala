@@ -467,7 +467,17 @@ trait ViewModelGenerators {
       title         <- nonEmptyString
       requiredError <- nonEmptyString
       arrivalId     <- nonEmptyString
-    } yield AdditionalReferenceTypeItemViewModel(heading, title, requiredError, ArrivalId(arrivalId), NormalMode, Index(0), Index(0), Index(0))
+    } yield AdditionalReferenceTypeItemViewModel(heading,
+                                                 title,
+                                                 requiredError,
+                                                 ArrivalId(arrivalId),
+                                                 NormalMode,
+                                                 NormalMode,
+                                                 NormalMode,
+                                                 Index(0),
+                                                 Index(0),
+                                                 Index(0)
+    )
   }
 
   implicit lazy val arbitraryItemsAdditionalReferenceNumberViewModel: Arbitrary[AdditionalReferenceNumberViewModel] = Arbitrary {
@@ -476,7 +486,17 @@ trait ViewModelGenerators {
       title         <- nonEmptyString
       requiredError <- nonEmptyString
       arrivalId     <- nonEmptyString
-    } yield AdditionalReferenceNumberViewModel(heading, title, requiredError, ArrivalId(arrivalId), NormalMode, Index(0), Index(0), Index(0))
+    } yield AdditionalReferenceNumberViewModel(heading,
+                                               title,
+                                               requiredError,
+                                               ArrivalId(arrivalId),
+                                               NormalMode,
+                                               NormalMode,
+                                               NormalMode,
+                                               Index(0),
+                                               Index(0),
+                                               Index(0)
+    )
   }
 
   implicit lazy val arbitraryAdditionalReferenceViewModel: Arbitrary[AdditionalReferenceTypeViewModel] = Arbitrary {
@@ -549,7 +569,7 @@ trait ViewModelGenerators {
       title         <- nonEmptyString
       requiredError <- nonEmptyString
       arrivalId     <- nonEmptyString
-    } yield HCAdditionalReferenceTypeViewModel(heading, title, requiredError, ArrivalId(arrivalId), NormalMode, Index(0), Index(0))
+    } yield HCAdditionalReferenceTypeViewModel(heading, title, requiredError, ArrivalId(arrivalId), NormalMode, NormalMode, Index(0), Index(0))
   }
 
   implicit lazy val arbitraryHouseConsignmentIdentificationViewModel

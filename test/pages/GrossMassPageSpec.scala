@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package pages.grossMass
+package pages
 
 import pages.behaviours.PageBehaviours
 
-class GrossMassPageSpec extends PageBehaviours {
+class GrossWeightPageSpec extends PageBehaviours {
 
   "GrossMossPageSpec" - {
 
-    beRetrievable[BigDecimal](GrossMassPage)
+    beRetrievable[BigDecimal](GrossWeightPage)
 
-    beSettable[BigDecimal](GrossMassPage)
+    beSettable[BigDecimal](GrossWeightPage)
 
-    beRemovable[BigDecimal](GrossMassPage)
+    beRemovable[BigDecimal](GrossWeightPage)
   }
 }

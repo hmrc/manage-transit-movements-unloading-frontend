@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator
+import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
 import pages.houseConsignment.index.items.AddPackagesYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddPackagesYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: HouseConsignmentItemNavigator,
+  navigatorProvider: HouseConsignmentItemNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -44,7 +44,7 @@ class AddPackagesYesNoController @Inject() (
 
   private val form = formProvider("houseConsignment.item.addPackagesYesNo")
 
-  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId) {
       implicit request =>
         val preparedForm = request.userAnswers.get(AddPackagesYesNoPage(houseConsignmentIndex, itemIndex)) match {
@@ -52,22 +52,28 @@ class AddPackagesYesNoController @Inject() (
           case Some(value) => form.fill(value)
         }
 
-        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode))
     }
 
-  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))),
+            formWithErrors =>
+              Future.successful(
+                BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode))
+              ),
             value =>
               for {
                 updatedAnswers <- Future
                   .fromTry(request.userAnswers.set(AddPackagesYesNoPage(houseConsignmentIndex, itemIndex), value))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(AddPackagesYesNoPage(houseConsignmentIndex, itemIndex), mode, updatedAnswers))
+              } yield {
+                val navigator = navigatorProvider.apply(houseConsignmentMode)
+                Redirect(navigator.nextPage(AddPackagesYesNoPage(houseConsignmentIndex, itemIndex), itemMode, updatedAnswers))
+              }
           )
     }
 }

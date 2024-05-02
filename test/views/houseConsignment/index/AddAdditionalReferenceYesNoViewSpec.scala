@@ -14,34 +14,32 @@
  * limitations under the License.
  */
 
-package views.houseConsignment.index.items.document
+package views.houseConsignment.index
 
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.houseConsignment.index.items.document.AddDocumentYesNoView
+import views.html.houseConsignment.index.AddAdditionalReferenceYesNoView
 
-class AddDocumentYesNoViewSpec extends YesNoViewBehaviours {
+class AddAdditionalReferenceYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
-      .instanceOf[AddDocumentYesNoView]
-      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, NormalMode)(fakeRequest, messages)
+      .instanceOf[AddAdditionalReferenceYesNoView]
+      .apply(form, mrn, arrivalId, hcIndex, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "houseConsignment.item.addDocumentYesNo"
+  override val prefix: String = "houseConsignment.index.additionalReference.addAdditionalReferenceYesNo"
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(hcIndex)
 
   behave like pageWithBackLink()
 
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(hcIndex)
 
-  behave like pageWithContent("p", "This is to provide handling instructions or information, like packing lists or insurance details, for the item.")
-
-  behave like pageWithRadioItems()
+  behave like pageWithRadioItems(args = Seq(hcIndex.display))
 
   behave like pageWithSubmitButton("Continue")
 }

@@ -38,7 +38,7 @@ class PackageShippingMarkViewSpec extends CharacterCountViewBehaviours with Gene
   def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector
       .instanceOf[PackageShippingMarkView]
-      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, NormalMode, viewModel)(fakeRequest, messages)
+      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, NormalMode, NormalMode, NormalMode, viewModel)(fakeRequest, messages)
 
   override val prefix: String = Gen
     .oneOf(

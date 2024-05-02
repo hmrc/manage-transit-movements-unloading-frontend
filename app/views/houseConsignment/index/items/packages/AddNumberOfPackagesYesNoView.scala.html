@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import controllers.houseConsignment.index.items.packages.routes
 @import models.MovementReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
@@ -27,16 +28,16 @@
     insetText: InsetText
 )
 
-@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex:Index, itemIndex: Index, packageIndex: Index, packageType: String, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex:Index, itemIndex: Index, packageIndex: Index, packageType: String, houseConsignmentMode: Mode, itemMode: Mode, packageMode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("houseConsignment.index.items.packages.addNumberOfPackagesYesNo.title"),
     showBackLink = true
 ) {
 
-    @errorSummary(form.errors)
+    @formHelper(action = routes.AddNumberOfPackagesYesNoController.onSubmit(arrivalId, houseConsignmentMode, itemMode, packageMode, houseConsignmentIndex, itemIndex, packageIndex), Symbol("autoComplete") -> "off") {
 
-    @formHelper(action = controllers.houseConsignment.index.items.packages.routes.AddNumberOfPackagesYesNoController.onSubmit(arrivalId, mode, houseConsignmentIndex, itemIndex, packageIndex), Symbol("autoComplete") -> "off") {
+        @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),

@@ -14,26 +14,22 @@
  * limitations under the License.
  */
 
-package views
+package views.houseConsignment.index.items
 
-import forms.NewContainerIdentificationNumberFormProvider
 import models.NormalMode
-import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.InputTextViewBehaviours
-import views.html.NewContainerIdentificationNumberView
+import views.behaviours.YesNoViewBehaviours
+import views.html.houseConsignment.index.items.AddDocumentYesNoView
 
-class NewContainerIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
+class AddDocumentYesNoViewSpec extends YesNoViewBehaviours {
 
-  override def form: Form[String] = new NewContainerIdentificationNumberFormProvider()()
+  override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
+    injector
+      .instanceOf[AddDocumentYesNoView]
+      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, NormalMode)(fakeRequest, messages)
 
-  override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[NewContainerIdentificationNumberView].apply(form, mrn, arrivalId, index, NormalMode)(fakeRequest, messages)
-
-  override val prefix: String = "newContainerIdentificationNumber"
-
-  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
+  override val prefix: String = "houseConsignment.item.addDocumentYesNo"
 
   behave like pageWithTitle()
 
@@ -43,9 +39,9 @@ class NewContainerIdentificationNumberViewSpec extends InputTextViewBehaviours[S
 
   behave like pageWithHeading()
 
-  behave like pageWithHint("This can be up to 17 characters long and include both letters and numbers.")
+  behave like pageWithContent("p", "This is to provide handling instructions or information, like packing lists or insurance details, for the item.")
 
-  behave like pageWithInputText()
+  behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Continue")
 }

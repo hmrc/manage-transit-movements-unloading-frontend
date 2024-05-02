@@ -51,7 +51,7 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               result.value.value mustBe value.toString
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
-              action.href mustBe routes.TypeController.onPageLoad(arrivalId, CheckMode, hcIndex, itemIndex, documentIndex).url
+              action.href mustBe routes.TypeController.onPageLoad(arrivalId, CheckMode, CheckMode, CheckMode, hcIndex, itemIndex, documentIndex).url
               action.visuallyHiddenText.value mustBe "document type for document 1 in item 1"
               action.id mustBe "change-document-type-1-1"
           }
@@ -98,7 +98,9 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               result.value.value mustBe value
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
-              action.href mustBe routes.DocumentReferenceNumberController.onPageLoad(arrivalId, CheckMode, hcIndex, itemIndex, documentIndex).url
+              action.href mustBe routes.DocumentReferenceNumberController
+                .onPageLoad(arrivalId, CheckMode, CheckMode, CheckMode, hcIndex, itemIndex, documentIndex)
+                .url
               action.visuallyHiddenText.value mustBe "reference number for document 1 in item 1"
               action.id mustBe "change-document-reference-number-1-1"
           }
@@ -145,7 +147,9 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               result.value.value mustBe value
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
-              action.href mustBe routes.AdditionalInformationController.onPageLoad(arrivalId, CheckMode, hcIndex, itemIndex, documentIndex).url
+              action.href mustBe routes.AdditionalInformationController
+                .onPageLoad(arrivalId, CheckMode, CheckMode, CheckMode, hcIndex, itemIndex, documentIndex)
+                .url
               action.visuallyHiddenText.value mustBe "additional information for document 1 in item 1"
               action.id mustBe "change-document-additional-information-1-1"
           }
