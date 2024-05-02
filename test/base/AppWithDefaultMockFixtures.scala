@@ -23,7 +23,7 @@ import models.{Mode, UserAnswers}
 import navigation.GoodsReferenceNavigator.GoodsReferenceNavigatorProvider
 import navigation.SealNavigator.SealNavigatorProvider
 import navigation._
-import navigation.houseConsignment.index.HouseConsignmentNavigator
+import navigation.houseConsignment.index.{HouseConsignmentDocumentNavigator, HouseConsignmentNavigator}
 import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
 import navigation.houseConsignment.index.items.{HouseConsignmentItemNavigator, PackagesNavigator, DocumentNavigator => ItemDocumentNavigator}
 import navigation.houseConsignment.index.{AdditionalReferenceNavigator => HCAdditionalReferenceNavigator}
@@ -98,6 +98,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected val fakeHouseConsignmentItemNavigator: HouseConsignmentItemNavigator                  = new FakeHouseConsignmentItemNavigator(onwardRoute)
   protected val fakePackagesNavigator: PackagesNavigator                                          = new FakePackagesNavigator(onwardRoute)
   protected val fakeGrossWeightNavigator: HouseConsignmentNavigator                               = new FakeHouseConsignmentNavigator(onwardRoute)
+  protected val fakeHouseConsignmentDocumentNavigator: HouseConsignmentDocumentNavigator          = new FakeHouseConsignmentDocumentNavigator(onwardRoute)
 
   protected val fakeHCDepartureTransportMeansNavigator: DepartureTransportMeansNavigator = new FakeHouseConsignmentDepartureTransportMeansNavigator(
     onwardRoute
@@ -127,6 +128,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[PackagesNavigator].toInstance(fakePackagesNavigator),
         bind[HCAdditionalReferenceNavigator].toInstance(fakeHCAdditionalReferenceHouseConsignmentNavigator),
         bind[HouseConsignmentNavigator].toInstance(fakeGrossWeightNavigator),
-        bind[DepartureTransportMeansNavigator].toInstance(fakeHCDepartureTransportMeansNavigator)
+        bind[DepartureTransportMeansNavigator].toInstance(fakeHCDepartureTransportMeansNavigator),
+        bind[HouseConsignmentDocumentNavigator].toInstance(fakeHouseConsignmentDocumentNavigator)
       )
 }

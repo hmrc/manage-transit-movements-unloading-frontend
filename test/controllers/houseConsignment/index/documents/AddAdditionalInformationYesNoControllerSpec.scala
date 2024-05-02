@@ -37,7 +37,7 @@ class AddAdditionalInformationYesNoControllerSpec extends SpecBase with AppWithD
 
   private lazy val addAdditionalInformationYesNoRoute =
     controllers.houseConsignment.index.documents.routes.AddAdditionalInformationYesNoController
-      .onPageLoad(arrivalId, mode, houseConsignmentIndex, documentIndex)
+      .onPageLoad(arrivalId, houseConsignmentIndex, documentIndex)
       .url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
