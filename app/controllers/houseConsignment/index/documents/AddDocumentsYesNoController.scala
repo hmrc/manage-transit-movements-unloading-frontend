@@ -60,7 +60,6 @@ class AddDocumentsYesNoController @Inject() (
     actions.getStatus(arrivalId).async {
       implicit request =>
         val form = formProvider(prefix, houseConsignmentIndex)
-
         form
           .bindFromRequest()
           .fold(
