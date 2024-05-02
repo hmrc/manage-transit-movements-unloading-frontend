@@ -1171,7 +1171,7 @@ houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTrans
 houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.empty.label = Do you want to add a departure means of transport for house consignment {1}?
 houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.label = Do you want to add another departure means of transport for house consignment {1}?
 houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.maxLimit.label = You cannot add another departure means of transport for house consignment {1}. To add another, you need to remove one first.
-houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.error.required = Select yes if you want to add a departure means of transport for house consignment {1}
+houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.error.required = Select yes if you want to add a departure means of transport for house consignment {0}
 houseConsignment.index.departureMeansOfTransport.prefix = Departure means of transport {0}
 
 houseConsignment.index.additionalReference.removeAdditionalReferenceYesNo.title = Are you sure you want to remove this additional reference?
