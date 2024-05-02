@@ -176,7 +176,9 @@ class HouseConsignmentAnswersHelper(
 
   private val departureTransportMeansAddRemoveLink: Link = Link(
     id = s"add-remove-departure-transport-means",
-    href = "#", // TODO update when controller added
+    href = controllers.houseConsignment.index.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
+      .onPageLoad(arrivalId, houseConsignmentIndex, NormalMode)
+      .url,
     text = messages("houseConsignment.departureTransportMeans.addRemove")
   )
 
