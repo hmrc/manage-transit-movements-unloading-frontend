@@ -18,7 +18,7 @@
 @import viewModels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo}
 @import views.utils.ViewUtils.StringImplicits
-@import controllers.houseConsignment.index.documents.routes
+@import controllers.houseConsignment.index.items.routes
 
 @this(
     mainTemplate: MainTemplate,
@@ -28,23 +28,23 @@
     button: Button
 )
 
-@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex:Index, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex:Index, itemIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("houseConsignment.index.documents.addDocumentsYesNo.title", houseConsignmentIndex.display),
+    title = messages("houseConsignment.item.addDocumentYesNo.title"),
     showBackLink = true
 ) {
 
         @errorSummary(form.errors)
 
-        @formHelper(action = routes.AddDocumentsYesNoController.onSubmit(arrivalId,mode, houseConsignmentIndex), Symbol("autoComplete") -> "off") {
+        @formHelper(action = routes.AddDocumentYesNoController.onSubmit(arrivalId, houseConsignmentIndex, itemIndex, mode), Symbol("autoComplete") -> "off") {
 
         @inputYesNo(
             field = form("value"),
             yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("houseConsignment.index.documents.addDocumentsYesNo.heading",houseConsignmentIndex.display),
+                heading = messages("houseConsignment.item.addDocumentYesNo.heading"),
                 caption = Some(messages("site.caption", mrn.toString)),
-                additionalHtml = messages("houseConsignment.index.documents.addDocumentsYesNo.paragraph").toParagraph
+                additionalHtml = messages("houseConsignment.item.addDocumentYesNo.paragraph").toParagraph
             )
         )
 

@@ -14,62 +14,62 @@
  * limitations under the License.
  */
 
-package controllers.houseConsignment.index.documents
+package controllers.houseConsignment.index.items
 
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.houseConsignment.index.HouseConsignmentNavigator
-import pages.houseConsignment.index.documents.AddDocumentYesNoPage
+import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
+import pages.houseConsignment.index.items.AddDocumentYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.houseConsignment.index.documents.AddDocumentsYesNoView
+import views.html.houseConsignment.index.items.AddDocumentYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddDocumentsYesNoController @Inject() (
+class AddDocumentYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: HouseConsignmentNavigator,
+  navigatorProvider: HouseConsignmentItemNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddDocumentsYesNoView
+  view: AddDocumentYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val prefix = "houseConsignment.index.documents.addDocumentsYesNo"
+  private val form = formProvider("houseConsignment.item.addDocumentYesNo")
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val form = formProvider(prefix, houseConsignmentIndex)
-      val preparedForm =
-        request.userAnswers.get(AddDocumentYesNoPage(houseConsignmentIndex)) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
+      val preparedForm = request.userAnswers.get(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex)) match {
+        case None        => form
+        case Some(value) => form.fill(value)
+      }
 
-      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, mode))
+      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))
   }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index): Action[AnyContent] =
+  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
-        val form = formProvider(prefix, houseConsignmentIndex)
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, mode))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))),
             value =>
               for {
                 updatedAnswers <- Future
-                  .fromTry(request.userAnswers.set(AddDocumentYesNoPage(houseConsignmentIndex), value))
+                  .fromTry(request.userAnswers.set(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex), value))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(AddDocumentYesNoPage(houseConsignmentIndex), mode, updatedAnswers))
+              } yield {
+                val navigator = navigatorProvider.apply(mode)
+                Redirect(navigator.nextPage(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex), mode, updatedAnswers))
+              }
           )
     }
 }

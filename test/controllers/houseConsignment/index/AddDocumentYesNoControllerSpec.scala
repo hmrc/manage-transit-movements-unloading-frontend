@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,53 +14,52 @@
  * limitations under the License.
  */
 
-package controllers.additionalReference.index
+package controllers.houseConsignment.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.houseConsignment.index.additionalReference.routes
 import forms.YesNoFormProvider
 import models.NormalMode
-import navigation.houseConsignment.index.AdditionalReferenceNavigator
+import navigation.houseConsignment.index.HouseConsignmentNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.houseConsignment.index.AddAdditionalReferenceYesNoPage
+import pages.houseConsignment.index.AddDocumentYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.houseConsignment.index.additionalReference.AddAdditionalReferenceYesNoView
+import views.html.houseConsignment.index.AddDocumentsYesNoView
 
 import scala.concurrent.Future
 
-class AddAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
-
-  private val prefix = "houseConsignment.index.additionalReference.addAdditionalReferenceYesNo"
+class AddDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider = new YesNoFormProvider()
-  private val form         = formProvider(prefix, hcIndex)
+  private val form         = formProvider("houseConsignment.index.documents.addDocumentsYesNo", hcIndex)
   private val mode         = NormalMode
 
-  private lazy val additionalReferenceNumberYesNoRoute =
-    routes.AddAdditionalReferenceYesNoController.onPageLoad(arrivalId, mode, houseConsignmentIndex).url
+  private lazy val addDocumentYesNoRoute =
+    routes.AddDocumentsYesNoController
+      .onPageLoad(arrivalId, mode, houseConsignmentIndex)
+      .url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind(classOf[AdditionalReferenceNavigator]).toInstance(FakeHouseConsignmentNavigators.fakeAdditionalReferenceNavigator)
+        bind[HouseConsignmentNavigator].toInstance(FakeHouseConsignmentNavigators.fakeHouseConsignmentNavigator)
       )
 
-  "AdditionalReferenceNumberYesNoController Controller" - {
+  "AddDocumentYesNoController" - {
 
     "must return OK and the correct view for a GET" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, additionalReferenceNumberYesNoRoute)
+      val request = FakeRequest(GET, addDocumentYesNoRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[AddAdditionalReferenceYesNoView]
+      val view = injector.instanceOf[AddDocumentsYesNoView]
 
       status(result) mustEqual OK
 
@@ -70,16 +69,16 @@ class AddAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWithDef
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddAdditionalReferenceYesNoPage(houseConsignmentIndex), true)
+      val userAnswers = emptyUserAnswers.setValue(AddDocumentYesNoPage(houseConsignmentIndex), true)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, additionalReferenceNumberYesNoRoute)
+      val request = FakeRequest(GET, addDocumentYesNoRoute)
 
       val result = route(app, request).value
 
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[AddAdditionalReferenceYesNoView]
+      val view = injector.instanceOf[AddDocumentsYesNoView]
 
       status(result) mustEqual OK
 
@@ -93,7 +92,7 @@ class AddAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWithDef
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, additionalReferenceNumberYesNoRoute)
+      val request = FakeRequest(POST, addDocumentYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
@@ -109,14 +108,14 @@ class AddAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWithDef
 
       val invalidAnswer = ""
 
-      val request    = FakeRequest(POST, additionalReferenceNumberYesNoRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, addDocumentYesNoRoute).withFormUrlEncodedBody(("value", ""))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AddAdditionalReferenceYesNoView]
+      val view = injector.instanceOf[AddDocumentsYesNoView]
 
       contentAsString(result) mustEqual
         view(filledForm, mrn, arrivalId, houseConsignmentIndex, mode)(request, messages).toString
@@ -126,7 +125,7 @@ class AddAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWithDef
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, additionalReferenceNumberYesNoRoute)
+      val request = FakeRequest(GET, addDocumentYesNoRoute)
 
       val result = route(app, request).value
 
@@ -139,7 +138,7 @@ class AddAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWithDef
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, additionalReferenceNumberYesNoRoute)
+      val request = FakeRequest(POST, addDocumentYesNoRoute)
         .withFormUrlEncodedBody(("value", "test string"))
 
       val result = route(app, request).value

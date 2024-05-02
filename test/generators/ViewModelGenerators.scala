@@ -560,7 +560,7 @@ trait ViewModelGenerators {
       title         <- nonEmptyString
       requiredError <- nonEmptyString
       arrivalId     <- nonEmptyString
-    } yield HCAdditionalReferenceTypeViewModel(heading, title, requiredError, ArrivalId(arrivalId), NormalMode, Index(0), Index(0))
+    } yield HCAdditionalReferenceTypeViewModel(heading, title, requiredError, ArrivalId(arrivalId), NormalMode, NormalMode, Index(0), Index(0))
   }
 
   implicit lazy val arbitraryHouseConsignmentIdentificationViewModel

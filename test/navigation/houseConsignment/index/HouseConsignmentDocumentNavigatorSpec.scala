@@ -22,8 +22,8 @@ import models._
 import models.reference.DocumentType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.houseConsignment.index.documents
 import pages.houseConsignment.index.documents._
-import pages.houseConsignment.index.{documents, GrossWeightPage}
 
 class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SelectableFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}
-import navigation.houseConsignment.index.AdditionalReferenceNavigator
+import navigation.houseConsignment.index.AdditionalReferenceNavigator.AdditionalReferenceNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -47,17 +47,22 @@ class AdditionalReferenceTypeControllerSpec extends SpecBase with AppWithDefault
 
   private val mockAdditionalReferencesService: AdditionalReferencesService = mock[AdditionalReferencesService]
   private val formProvider                                                 = new SelectableFormProvider()
-  private val mode                                                         = NormalMode
-  private val form                                                         = formProvider(mode, "houseConsignment.index.additionalReference.additionalReferenceType", additionalReferenceList)
+
+  private val houseConsignmentMode    = NormalMode
+  private val additionalReferenceMode = NormalMode
+
+  private val form = formProvider(additionalReferenceMode, "houseConsignment.index.additionalReference.additionalReferenceType", additionalReferenceList)
 
   private lazy val additionalReferenceRoute =
-    routes.AdditionalReferenceTypeController.onPageLoad(arrivalId, mode, houseConsignmentIndex, additionalReferenceIndex).url
+    routes.AdditionalReferenceTypeController
+      .onPageLoad(arrivalId, houseConsignmentMode, additionalReferenceMode, houseConsignmentIndex, additionalReferenceIndex)
+      .url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[AdditionalReferenceNavigator].toInstance(FakeHouseConsignmentNavigators.fakeAdditionalReferenceNavigator),
+        bind[AdditionalReferenceNavigatorProvider].toInstance(FakeHouseConsignmentNavigators.fakeAdditionalReferenceNavigatorProvider),
         bind(classOf[AdditionalReferenceTypeViewModelProvider]).toInstance(mockViewModelProvider),
         bind(classOf[AdditionalReferencesService]).toInstance(mockAdditionalReferencesService)
       )
@@ -66,7 +71,7 @@ class AdditionalReferenceTypeControllerSpec extends SpecBase with AppWithDefault
     super.beforeEach()
     reset(mockViewModelProvider)
 
-    when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
+    when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
       .thenReturn(viewModel)
   }
 

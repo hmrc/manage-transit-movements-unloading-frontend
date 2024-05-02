@@ -16,7 +16,7 @@
 
 package navigation.houseConsignment.index
 
-import models.{Index, NormalMode, UserAnswers}
+import models.{Index, Mode, NormalMode, UserAnswers}
 import navigation.Navigator
 import pages.Page
 import pages.houseConsignment.index.additionalReference.{
@@ -26,7 +26,7 @@ import pages.houseConsignment.index.additionalReference.{
 }
 import play.api.mvc.Call
 
-class AdditionalReferenceNavigator extends Navigator {
+class AdditionalReferenceNavigator(houseConsignmentMode: Mode) extends Navigator {
 
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
 
@@ -34,13 +34,13 @@ class AdditionalReferenceNavigator extends Navigator {
       ua =>
         Some(
           controllers.houseConsignment.index.additionalReference.routes.AddAdditionalReferenceNumberYesNoController
-            .onPageLoad(ua.id, NormalMode, houseConsignmentIndex, referenceIndex)
+            .onPageLoad(ua.id, houseConsignmentMode, NormalMode, houseConsignmentIndex, referenceIndex)
         )
     case HouseConsignmentAdditionalReferenceNumberPage(houseConsignmentIndex, _) =>
       ua =>
         Some(
           controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController
-            .onPageLoad(ua.id, NormalMode, houseConsignmentIndex)
+            .onPageLoad(ua.id, houseConsignmentMode, houseConsignmentIndex)
         )
     case AddHouseConsignmentAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, referenceIndex) =>
       ua => additionalReferenceNumberYesNoRoute(ua, houseConsignmentIndex, referenceIndex)
@@ -50,10 +50,10 @@ class AdditionalReferenceNavigator extends Navigator {
     ua.get(AddHouseConsignmentAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, referenceIndex)) map {
       case true =>
         controllers.houseConsignment.index.additionalReference.routes.AdditionalReferenceNumberController
-          .onPageLoad(ua.id, NormalMode, houseConsignmentIndex, referenceIndex)
+          .onPageLoad(ua.id, houseConsignmentMode, NormalMode, houseConsignmentIndex, referenceIndex)
       case false =>
         controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController
-          .onPageLoad(ua.id, NormalMode, houseConsignmentIndex)
+          .onPageLoad(ua.id, houseConsignmentMode, houseConsignmentIndex)
     }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
@@ -62,5 +62,14 @@ class AdditionalReferenceNavigator extends Navigator {
     case HouseConsignmentAdditionalReferenceNumberPage(houseConsignmentIndex, _) =>
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
 
+  }
+}
+
+object AdditionalReferenceNavigator {
+
+  class AdditionalReferenceNavigatorProvider {
+
+    def apply(houseConsignmentMode: Mode): AdditionalReferenceNavigator =
+      new AdditionalReferenceNavigator(houseConsignmentMode)
   }
 }

@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package views.houseConsignment.index.additionalReference
+package views.houseConsignment.index.items
 
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.houseConsignment.index.additionalReference.AddAdditionalReferenceNumberYesNoView
+import views.html.houseConsignment.index.items.AddDocumentYesNoView
 
-class AddAdditionalReferenceNumberYesNoViewSpec extends YesNoViewBehaviours {
+class AddDocumentYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
-      .instanceOf[AddAdditionalReferenceNumberYesNoView]
-      .apply(form, mrn, arrivalId, NormalMode, NormalMode, houseConsignmentIndex, additionalReferenceIndex)(fakeRequest, messages)
+      .instanceOf[AddDocumentYesNoView]
+      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo"
+  override val prefix: String = "houseConsignment.item.addDocumentYesNo"
 
   behave like pageWithTitle()
 
@@ -38,6 +38,8 @@ class AddAdditionalReferenceNumberYesNoViewSpec extends YesNoViewBehaviours {
   behave like pageWithCaption(s"This notification is MRN: ${mrn.toString}")
 
   behave like pageWithHeading()
+
+  behave like pageWithContent("p", "This is to provide handling instructions or information, like packing lists or insurance details, for the item.")
 
   behave like pageWithRadioItems()
 

@@ -14,11 +14,11 @@
  * limitations under the License.
  *@
 
+@import controllers.houseConsignment.index.routes
 @import models.MovementReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo}
 @import views.utils.ViewUtils.StringImplicits
-@import controllers.houseConsignment.index.additionalReference.routes
 
 @this(
     mainTemplate: MainTemplate,
@@ -35,9 +35,9 @@
     showBackLink = true
 ) {
 
-        @errorSummary(form.errors)
+    @formHelper(action = routes.AddAdditionalReferenceYesNoController.onSubmit(arrivalId, mode,houseConsignmentIndex), Symbol("autoComplete") -> "off") {
 
-        @formHelper(action = controllers.houseConsignment.index.additionalReference.routes.AddAdditionalReferenceYesNoController.onSubmit(arrivalId, mode,houseConsignmentIndex), Symbol("autoComplete") -> "off") {
+        @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),
