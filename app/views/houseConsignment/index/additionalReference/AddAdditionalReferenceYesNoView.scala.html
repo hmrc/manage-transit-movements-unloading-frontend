@@ -37,12 +37,12 @@
 
         @errorSummary(form.errors)
 
-        @formHelper(action = routes.AddAdditionalReferenceYesNoController.onSubmit(arrivalId, mode,houseConsignmentIndex), Symbol("autoComplete") -> "off") {
+        @formHelper(action = controllers.houseConsignment.index.additionalReference.routes.AddAdditionalReferenceYesNoController.onSubmit(arrivalId, mode,houseConsignmentIndex), Symbol("autoComplete") -> "off") {
 
         @inputYesNo(
             field = form("value"),
             yesNoType = OrdinaryYesNo(
-                heading = messages("houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.title", houseConsignmentIndex.display),
+                heading = messages("houseConsignment.index.additionalReference.addAdditionalReferenceYesNo.heading", houseConsignmentIndex.display),
                 caption = Some(messages("site.caption", mrn.toString))
             )
         )

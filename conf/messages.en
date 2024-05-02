@@ -885,7 +885,6 @@ additionalReference.index.additionalReferenceNumberYesNo.title = Do you want to 
 additionalReference.index.additionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
 additionalReference.index.additionalReferenceNumberYesNo.error.required = Select yes if you want to add an additional reference number
 
-
 unloadingFindings.grossMass = Gross weight
 unloadingFindings.grossMass.change.hidden = gross weight
 
@@ -1106,8 +1105,12 @@ houseConsignment.index.grossWeight.error.invalidValue = The new gross weight mus
 houseConsignment.index.grossWeight.error.invalidCharacters = The new gross weight must only include numbers 0 to 9 and a decimal point
 houseConsignment.index.grossWeight.error.invalidFormat = The new gross weight must only include 6 decimal places or less
 
-houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference for house consignment {0}?
-houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference for house consignment {0}?
+houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
+houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
+houseConsignment.index.additionalReference.addAdditionalReferenceNumberYesNo.error.required = Select yes if you want to add an additional number reference?
+
+houseConsignment.index.additionalReference.addAdditionalReferenceYesNo.title = Do you want to add an additional reference for house consignment {0}?
+houseConsignment.index.additionalReference.addAdditionalReferenceYesNo.heading = Do you want to add an additional reference for house consignment {0}?
 houseConsignment.index.additionalReference.addAdditionalReferenceYesNo.error.required = Select yes if you want to add an additional reference for house consignment {0}
 
 houseConsignment.index.additionalReference.additionalReferenceNumber.title = What is the additional reference number?
