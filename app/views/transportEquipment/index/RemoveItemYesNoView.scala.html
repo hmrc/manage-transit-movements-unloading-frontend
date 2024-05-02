@@ -29,14 +29,14 @@
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, equipmentIndex: Index, itemIndex: Index, equipmentMode: Mode, goodsReferenceMode: Mode, insetText: Option[String])(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, equipmentIndex: Index, itemIndex: Index, equipmentMode: Mode, insetText: Option[String])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("transportEquipment.index.item.removeItemYesNo.title", equipmentIndex.display),
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.RemoveGoodsReferenceYesNoController.onSubmit(arrivalId, equipmentIndex, itemIndex, equipmentMode, goodsReferenceMode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.RemoveGoodsReferenceYesNoController.onSubmit(arrivalId, equipmentIndex, itemIndex, equipmentMode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

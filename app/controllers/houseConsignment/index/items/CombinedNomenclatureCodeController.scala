@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items
 import controllers.actions._
 import forms.CombinedNomenclatureCodeFormProvider
 import models.{ArrivalId, Index, Mode, RichCC043CType}
-import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator
+import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
 import pages.houseConsignment.index.items.CombinedNomenclatureCodePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,14 +35,14 @@ class CombinedNomenclatureCodeController @Inject() (
   sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: CombinedNomenclatureCodeFormProvider,
-  navigator: HouseConsignmentItemNavigator,
+  navigatorProvider: HouseConsignmentItemNavigatorProvider,
   val controllerComponents: MessagesControllerComponents,
   view: CombinedNomenclatureCodeView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId) {
       implicit request =>
         val isXI = request.userAnswers.ie043Data.hasXIOfficeOfDestination
@@ -51,10 +51,10 @@ class CombinedNomenclatureCodeController @Inject() (
           case Some(value) => formProvider(houseConsignmentIndex, itemIndex).fill(value)
         }
 
-        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, isXI, mode))
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, isXI, houseConsignmentMode, itemMode))
     }
 
-  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
         val isXI = request.userAnswers.ie043Data.hasXIOfficeOfDestination
@@ -62,12 +62,17 @@ class CombinedNomenclatureCodeController @Inject() (
           .bindFromRequest()
           .fold(
             formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, isXI, mode))),
+              Future.successful(
+                BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, isXI, houseConsignmentMode, itemMode))
+              ),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex), value))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex), mode, request.userAnswers))
+              } yield {
+                val navigator = navigatorProvider.apply(houseConsignmentMode)
+                Redirect(navigator.nextPage(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex), itemMode, request.userAnswers))
+              }
           )
     }
 

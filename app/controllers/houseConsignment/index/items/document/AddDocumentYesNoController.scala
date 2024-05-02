@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items.document
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator
+import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
 import pages.houseConsignment.index.items.document.AddDocumentYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddDocumentYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: HouseConsignmentItemNavigator,
+  navigatorProvider: HouseConsignmentItemNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -66,7 +66,10 @@ class AddDocumentYesNoController @Inject() (
                 updatedAnswers <- Future
                   .fromTry(request.userAnswers.set(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex), value))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex), mode, updatedAnswers))
+              } yield {
+                val navigator = navigatorProvider.apply(mode)
+                Redirect(navigator.nextPage(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex), mode, updatedAnswers))
+              }
           )
     }
 }

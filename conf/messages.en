@@ -1096,7 +1096,7 @@ houseConsignment.item.addCommodityCodeYesNo.error.required = Select yes if you w
 houseConsignment.item.addCommodityCodeYesNo.paragraph = This is an internationally recognised reference number used to identify the specific product in transit.
 
 houseConsignment.item.addCombinedNomenclatureCodeYesNo.title = Do you want to add a combined nomenclature code for the item?
-houseConsignment.item.addCombinedNomenclatureCodeYesNo.heading = Do you want to add a combined nomenclature for the item?
+houseConsignment.item.addCombinedNomenclatureCodeYesNo.heading = Do you want to add a combined nomenclature code for the item?
 houseConsignment.item.addCombinedNomenclatureCodeYesNo.error.required = Select yes if you want to add a combined nomenclature code for the item
 houseConsignment.item.addCombinedNomenclatureCodeYesNo.paragraph = This is used to classify goods when they’re declared to Customs in the EU.
 

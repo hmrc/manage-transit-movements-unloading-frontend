@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import controllers.houseConsignment.index.items.document.routes
 @import models.MovementReferenceNumber
 @import viewModels.components.InputYesNoViewModel
 @import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
@@ -27,16 +28,16 @@
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index, mode: Mode, document: Option[String])(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index, houseConsignmentMode: Mode, itemMode: Mode, document: Option[String])(implicit request: Request[_], messages: Messages)
 
-    @mainTemplate(
-        title = messages("houseConsignment.index.items.document.removeDocumentYesNo.title", houseConsignmentIndex.display, itemIndex.display),
-        showBackLink = true
-    ) {
+@mainTemplate(
+    title = messages("houseConsignment.index.items.document.removeDocumentYesNo.title", houseConsignmentIndex.display, itemIndex.display),
+    showBackLink = true
+) {
 
-    @errorSummary(form.errors)
+    @formHelper(action = routes.RemoveDocumentYesNoController.onSubmit(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex, documentIndex), Symbol("autoComplete") -> "off") {
 
-    @formHelper(action = controllers.houseConsignment.index.items.document.routes.RemoveDocumentYesNoController.onSubmit(arrivalId,mode, houseConsignmentIndex, itemIndex, documentIndex), Symbol("autoComplete") -> "off") {
+        @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),

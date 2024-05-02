@@ -28,14 +28,14 @@
     button: Button
 )
 
-@(form: Form[String], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentMode: Mode, itemMode: Mode, houseConsignmentIndex: Index, itemIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("houseConsignment.item.description.title", itemIndex.display, houseConsignmentIndex.display),
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.DescriptionController.onSubmit(arrivalId, mode, houseConsignmentIndex, itemIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.DescriptionController.onSubmit(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

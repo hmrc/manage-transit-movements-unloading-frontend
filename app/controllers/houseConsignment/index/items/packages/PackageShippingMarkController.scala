@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.PackageShippingMarkFormProvider
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.houseConsignment.index.items.PackagesNavigator
+import navigation.houseConsignment.index.items.PackagesNavigator.PackagesNavigatorProvider
 import pages.houseConsignment.index.items.packages.PackageShippingMarkPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -36,7 +36,7 @@ class PackageShippingMarkController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   actions: Actions,
-  navigator: PackagesNavigator,
+  navigatorProvider: PackagesNavigatorProvider,
   val controllerComponents: MessagesControllerComponents,
   formProvider: PackageShippingMarkFormProvider,
   viewModelProvider: PackageShippingMarksViewModelProvider,
@@ -45,31 +45,71 @@ class PackageShippingMarkController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(
+    arrivalId: ArrivalId,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
+    packageIndex: Index,
+    houseConsignmentMode: Mode,
+    itemMode: Mode,
+    packageMode: Mode
+  ): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
-        val viewModel = viewModelProvider.apply(houseConsignmentIndex, itemIndex, mode)
+        val viewModel = viewModelProvider.apply(houseConsignmentIndex, itemIndex, packageMode)
         val form      = formProvider(viewModel.requiredError)
         val preparedForm = request.userAnswers.get(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
-        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode, viewModel))
+        Ok(
+          view(preparedForm,
+               request.userAnswers.mrn,
+               arrivalId,
+               houseConsignmentIndex,
+               itemIndex,
+               packageIndex,
+               houseConsignmentMode,
+               itemMode,
+               packageMode,
+               viewModel
+          )
+        )
     }
 
-  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(
+    arrivalId: ArrivalId,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
+    packageIndex: Index,
+    houseConsignmentMode: Mode,
+    itemMode: Mode,
+    packageMode: Mode
+  ): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
-        val viewModel = viewModelProvider.apply(houseConsignmentIndex, itemIndex, mode)
+        val viewModel = viewModelProvider.apply(houseConsignmentIndex, itemIndex, packageMode)
         val form      = formProvider(viewModel.requiredError)
         form
           .bindFromRequest()
           .fold(
             formWithErrors =>
               Future.successful(
-                BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode, viewModel))
+                BadRequest(
+                  view(formWithErrors,
+                       request.userAnswers.mrn,
+                       arrivalId,
+                       houseConsignmentIndex,
+                       itemIndex,
+                       packageIndex,
+                       houseConsignmentMode,
+                       itemMode,
+                       packageMode,
+                       viewModel
+                  )
+                )
               ),
-            value => redirect(value, houseConsignmentIndex, itemIndex, packageIndex, mode)
+            value => redirect(value, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, packageMode)
           )
     }
 
@@ -78,10 +118,15 @@ class PackageShippingMarkController @Inject() (
     houseConsignmentIndex: Index,
     itemIndex: Index,
     packageIndex: Index,
-    mode: Mode
+    houseConsignmentMode: Mode,
+    itemMode: Mode,
+    packageMode: Mode
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex), mode, request.userAnswers))
+    } yield {
+      val navigator = navigatorProvider.apply(houseConsignmentMode, itemMode)
+      Redirect(navigator.nextPage(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, request.userAnswers))
+    }
 }

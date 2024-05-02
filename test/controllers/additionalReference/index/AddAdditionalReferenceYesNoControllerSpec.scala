@@ -17,15 +17,17 @@
 package controllers.additionalReference.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.houseConsignment.index.additionalReference.routes
 import forms.YesNoFormProvider
 import models.NormalMode
+import navigation.houseConsignment.index.AdditionalReferenceNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.AddAdditionalReferenceYesNoPage
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import controllers.houseConsignment.index.additionalReference.routes
 import views.html.houseConsignment.index.additionalReference.AddAdditionalReferenceYesNoView
 
 import scala.concurrent.Future
@@ -44,6 +46,9 @@ class AddAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWithDef
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(
+        bind(classOf[AdditionalReferenceNavigator]).toInstance(FakeHouseConsignmentNavigators.fakeAdditionalReferenceNavigator)
+      )
 
   "AdditionalReferenceNumberYesNoController Controller" - {
 

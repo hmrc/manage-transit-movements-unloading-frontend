@@ -19,9 +19,11 @@ package controllers.houseConsignment.index.items.additionalReference
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
+import navigation.houseConsignment.index.items.AdditionalReferenceNavigator.AdditionalReferenceNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.items.additionalReference.AddAdditionalReferenceNumberYesNoPage
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -33,14 +35,22 @@ class AddAdditionalReferenceNumberYesNoControllerSpec extends SpecBase with AppW
 
   private val formProvider = new YesNoFormProvider()
   private val form         = formProvider("houseConsignment.index.items.additionalReference.addAdditionalReferenceNumberYesNo")
-  private val mode         = NormalMode
+
+  private val houseConsignmentMode    = NormalMode
+  private val itemMode                = NormalMode
+  private val additionalReferenceMode = NormalMode
 
   private lazy val additionalReferenceNumberYesNoRoute =
-    routes.AddAdditionalReferenceNumberYesNoController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex).url
+    routes.AddAdditionalReferenceNumberYesNoController
+      .onPageLoad(arrivalId, houseConsignmentMode, itemMode, additionalReferenceMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+      .url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(
+        bind(classOf[AdditionalReferenceNavigatorProvider]).toInstance(FakeConsignmentItemNavigators.fakeAdditionalReferenceNavigatorProvider)
+      )
 
   "AdditionalReferenceNumberYesNoController Controller" - {
 
@@ -57,7 +67,9 @@ class AddAdditionalReferenceNumberYesNoControllerSpec extends SpecBase with AppW
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)(request, messages).toString
+        view(form, mrn, arrivalId, houseConsignmentMode, itemMode, additionalReferenceMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)(request,
+                                                                                                                                                        messages
+        ).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -76,7 +88,10 @@ class AddAdditionalReferenceNumberYesNoControllerSpec extends SpecBase with AppW
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentMode, itemMode, additionalReferenceMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)(
+          request,
+          messages
+        ).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -92,9 +107,7 @@ class AddAdditionalReferenceNumberYesNoControllerSpec extends SpecBase with AppW
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.additionalReference.routes.AdditionalReferenceNumberController
-        .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
-        .url
+      redirectLocation(result).value mustEqual onwardRoute.url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
@@ -113,7 +126,10 @@ class AddAdditionalReferenceNumberYesNoControllerSpec extends SpecBase with AppW
       val view = injector.instanceOf[AddAdditionalReferenceNumberYesNoView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentMode, itemMode, additionalReferenceMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)(
+          request,
+          messages
+        ).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

@@ -20,6 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SelectableFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}
+import navigation.houseConsignment.index.AdditionalReferenceNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -55,8 +56,11 @@ class AdditionalReferenceTypeControllerSpec extends SpecBase with AppWithDefault
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[AdditionalReferenceTypeViewModelProvider]).toInstance(mockViewModelProvider))
-      .overrides(bind(classOf[AdditionalReferencesService]).toInstance(mockAdditionalReferencesService))
+      .overrides(
+        bind[AdditionalReferenceNavigator].toInstance(FakeHouseConsignmentNavigators.fakeAdditionalReferenceNavigator),
+        bind(classOf[AdditionalReferenceTypeViewModelProvider]).toInstance(mockViewModelProvider),
+        bind(classOf[AdditionalReferencesService]).toInstance(mockAdditionalReferencesService)
+      )
 
   override def beforeEach(): Unit = {
     super.beforeEach()

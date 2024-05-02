@@ -19,9 +19,11 @@ package controllers.houseConsignment.index.items
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
+import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.items.AddCustomsUnionAndStatisticsCodeYesNoPage
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -33,16 +35,21 @@ class AddCustomsUnionAndStatisticsCodeYesNoControllerSpec extends SpecBase with 
 
   private val formProvider = new YesNoFormProvider()
   private val form         = formProvider("houseConsignment.item.addCustomsUnionAndStatisticsCodeYesNo")
-  private val mode         = NormalMode
+
+  private val houseConsignmentMode = NormalMode
+  private val itemMode             = NormalMode
 
   private lazy val addCustomsUnionAndStatisticsCodeYesNoRoute =
     controllers.houseConsignment.index.items.routes.AddCustomsUnionAndStatisticsCodeYesNoController
-      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
       .url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(
+        bind(classOf[HouseConsignmentItemNavigatorProvider]).toInstance(FakeConsignmentItemNavigators.fakeConsignmentItemNavigatorProvider)
+      )
 
   "AddCustomsUnionAndStatisticsCodeYesNoController" - {
 
@@ -59,7 +66,7 @@ class AddCustomsUnionAndStatisticsCodeYesNoControllerSpec extends SpecBase with 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, mode)(request, messages).toString
+        view(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -78,7 +85,7 @@ class AddCustomsUnionAndStatisticsCodeYesNoControllerSpec extends SpecBase with 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -113,7 +120,7 @@ class AddCustomsUnionAndStatisticsCodeYesNoControllerSpec extends SpecBase with 
       val view = injector.instanceOf[AddCustomsUnionAndStatisticsCodeYesNoView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

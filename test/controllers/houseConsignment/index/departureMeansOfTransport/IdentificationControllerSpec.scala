@@ -23,6 +23,7 @@ import generators.Generators
 import models.CheckMode
 import models.reference.TransportMeansIdentification
 import models.reference.TransportMode.InlandMode
+import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -70,8 +71,11 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[MeansOfTransportIdentificationTypesService]).toInstance(mockMeansOfTransportIdentificationTypesService))
-      .overrides(bind(classOf[IdentificationViewModelProvider]).toInstance(mockViewModelProvider))
+      .overrides(
+        bind(classOf[DepartureTransportMeansNavigator]).toInstance(FakeHouseConsignmentNavigators.fakeDepartureTransportMeansNavigator),
+        bind(classOf[MeansOfTransportIdentificationTypesService]).toInstance(mockMeansOfTransportIdentificationTypesService),
+        bind(classOf[IdentificationViewModelProvider]).toInstance(mockViewModelProvider)
+      )
 
   "TransportMeansIdentification Controller" - {
 

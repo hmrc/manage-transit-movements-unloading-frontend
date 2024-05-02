@@ -32,27 +32,27 @@
     button: Button
 )
 
-@(viewModel: PackageTypeViewModel,form: Form[PackageType],mrn: MovementReferenceNumber, arrivalId: ArrivalId, packageTypes: Seq[PackageType], mode: Mode,houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index)(implicit request: Request[_], messages: Messages)
+@(viewModel: PackageTypeViewModel, form: Form[PackageType], mrn: MovementReferenceNumber, arrivalId: ArrivalId, packageTypes: Seq[PackageType], houseConsignmentMode: Mode, itemMode: Mode, packageMode: Mode, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = viewModel.title,
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.PackageTypeController.onSubmit(arrivalId, houseConsignmentIndex,itemIndex, packageIndex, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.PackageTypeController.onSubmit(arrivalId, houseConsignmentIndex,itemIndex, packageIndex, houseConsignmentMode, itemMode, packageMode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputSelect(
-                field = form("value"),
-                selectType = SelectWithAdditionalHtml(
-                    heading = viewModel.heading,
-                    caption = Some(messages("site.caption", mrn.toString)),
+            field = form("value"),
+            selectType = SelectWithAdditionalHtml(
+                heading = viewModel.heading,
+                caption = Some(messages("site.caption", mrn.toString)),
                 additionalHtml = messages("houseConsignment.index.item.packageType.paragraph").toParagraph
             ),
-                hint = Some(messages("houseConsignment.index.item.packageType.hint")),
-                selectItems = packageTypes.toSelectItems(form.value),
-                placeholder = messages("item.packages.index.packageType.placeholder")
+            hint = Some(messages("houseConsignment.index.item.packageType.hint")),
+            selectItems = packageTypes.toSelectItems(form.value),
+            placeholder = messages("item.packages.index.packageType.placeholder")
         )
 
         @button(attributes = Map("id" -> "submit"))

@@ -29,14 +29,14 @@
     button: Button
 )
 
-@(form: Form[String], mrn: MovementReferenceNumber, arrivalId: ArrivalId,  houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode, viewModel: PackageShippingMarksViewModel)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], mrn: MovementReferenceNumber, arrivalId: ArrivalId,  houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, houseConsignmentMode: Mode, itemMode: Mode, packageMode: Mode, viewModel: PackageShippingMarksViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = viewModel.title,
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.PackageShippingMarkController.onSubmit(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.PackageShippingMarkController.onSubmit(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, packageMode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

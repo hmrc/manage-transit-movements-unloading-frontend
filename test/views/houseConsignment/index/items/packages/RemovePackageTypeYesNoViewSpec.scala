@@ -31,7 +31,7 @@ class RemovePackageTypeYesNoViewSpec extends YesNoViewBehaviours with Generators
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[RemovePackageTypeYesNoView]
-      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode, Some(insetText))(fakeRequest, messages)
+      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode, mode, Some(insetText))(fakeRequest, messages)
 
   override val prefix: String = "houseConsignment.index.items.packages.removePackageTypeYesNo"
 

@@ -41,11 +41,10 @@ class RemoveGoodsReferenceYesNoControllerSpec extends SpecBase with AppWithDefau
   private val formProvider = new YesNoFormProvider()
   private val form         = formProvider("transportEquipment.index.item.removeItemYesNo", equipmentIndex.display)
 
-  private val equipmentMode      = NormalMode
-  private val goodsReferenceMode = NormalMode
+  private val equipmentMode = NormalMode
 
   private lazy val removeItemYesNoRoute =
-    routes.RemoveGoodsReferenceYesNoController.onPageLoad(arrivalId, equipmentIndex, itemIndex, equipmentMode, goodsReferenceMode).url
+    routes.RemoveGoodsReferenceYesNoController.onPageLoad(arrivalId, equipmentIndex, itemIndex, equipmentMode).url
 
   private val mockGoodsReferenceService = mock[GoodsReferenceService]
 
@@ -77,7 +76,7 @@ class RemoveGoodsReferenceYesNoControllerSpec extends SpecBase with AppWithDefau
       val view = injector.instanceOf[RemoveItemYesNoView]
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, equipmentIndex, itemIndex, equipmentMode, goodsReferenceMode, Some("Item 123 - shirts"))(request, messages).toString
+        view(form, mrn, arrivalId, equipmentIndex, itemIndex, equipmentMode, Some("Item 123 - shirts"))(request, messages).toString
     }
 
     "must redirect to the next page" - {
@@ -94,7 +93,7 @@ class RemoveGoodsReferenceYesNoControllerSpec extends SpecBase with AppWithDefau
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          routes.ApplyAnotherItemController.onPageLoad(arrivalId, equipmentMode, goodsReferenceMode, equipmentIndex).url
+          routes.ApplyAnotherItemController.onPageLoad(arrivalId, equipmentMode, equipmentIndex).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -113,7 +112,7 @@ class RemoveGoodsReferenceYesNoControllerSpec extends SpecBase with AppWithDefau
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          routes.ApplyAnotherItemController.onPageLoad(arrivalId, equipmentMode, goodsReferenceMode, equipmentIndex).url
+          routes.ApplyAnotherItemController.onPageLoad(arrivalId, equipmentMode, equipmentIndex).url
 
         verifyNoInteractions(mockSessionRepository)
       }
@@ -134,7 +133,7 @@ class RemoveGoodsReferenceYesNoControllerSpec extends SpecBase with AppWithDefau
       val view = injector.instanceOf[RemoveItemYesNoView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, arrivalId, equipmentIndex, itemIndex, equipmentMode, goodsReferenceMode, Some("Item 123 - shirts"))(request, messages).toString
+        view(boundForm, mrn, arrivalId, equipmentIndex, itemIndex, equipmentMode, Some("Item 123 - shirts"))(request, messages).toString
     }
 
     "must redirect for a GET" - {
@@ -162,7 +161,7 @@ class RemoveGoodsReferenceYesNoControllerSpec extends SpecBase with AppWithDefau
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          routes.ApplyAnotherItemController.onPageLoad(arrivalId, equipmentMode, goodsReferenceMode, equipmentIndex).url
+          routes.ApplyAnotherItemController.onPageLoad(arrivalId, equipmentMode, equipmentIndex).url
       }
     }
 
@@ -193,7 +192,7 @@ class RemoveGoodsReferenceYesNoControllerSpec extends SpecBase with AppWithDefau
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          routes.ApplyAnotherItemController.onPageLoad(arrivalId, equipmentMode, goodsReferenceMode, equipmentIndex).url
+          routes.ApplyAnotherItemController.onPageLoad(arrivalId, equipmentMode, equipmentIndex).url
       }
     }
   }

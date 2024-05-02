@@ -337,7 +337,7 @@ class HouseConsignmentAnswersHelper(
   def itemsAddRemoveLink: Link =
     Link(
       id = "add-remove-items",
-      href = controllers.houseConsignment.index.items.routes.AddAnotherItemController.onPageLoad(arrivalId, houseConsignmentIndex, NormalMode).url,
+      href = controllers.houseConsignment.index.items.routes.AddAnotherItemController.onPageLoad(arrivalId, houseConsignmentIndex, CheckMode).url,
       text = messages("itemsLink.addRemove")
     )
 }
