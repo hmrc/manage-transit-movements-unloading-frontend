@@ -19,14 +19,14 @@ package controllers.houseConsignment.index.departureMeansOfTransport
 import controllers.actions._
 import forms.SelectableFormProvider
 import models.{ArrivalId, Index, Mode, SelectableList}
-import navigation.DepartureTransportMeansNavigator
+import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
 import pages.houseConsignment.index.departureMeansOfTransport.CountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import repositories.SessionRepository
 import services.ReferenceDataService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.houseConsignment.index.departureMeansOfTransport.HouseConsignmentCountryViewModel.HouseConsignmentCountryViewModelProvider
+import viewModels.houseConsignment.index.departureTransportMeans.HouseConsignmentCountryViewModel.HouseConsignmentCountryViewModelProvider
 import views.html.houseConsignment.index.departureMeansOfTransport.CountryView
 
 import javax.inject.Inject
@@ -58,7 +58,7 @@ class CountryController @Inject() (
           ) map {
           countries =>
             val viewModel = countryViewModelProvider.apply(mode, houseConsignmentIndex)
-            val form      = formProvider(mode, prefix, countries, transportMeansIndex)
+            val form      = formProvider(mode, prefix, countries, houseConsignmentIndex, transportMeansIndex)
 
             val preparedForm = request.userAnswers.get(CountryPage(houseConsignmentIndex, transportMeansIndex)) match {
               case None        => form
@@ -78,7 +78,7 @@ class CountryController @Inject() (
           ) flatMap {
           countries =>
             val viewModel = countryViewModelProvider.apply(mode, houseConsignmentIndex)
-            val form      = formProvider(mode, prefix, countries, transportMeansIndex)
+            val form      = formProvider(mode, prefix, countries, houseConsignmentIndex, transportMeansIndex)
             form
               .bindFromRequest()
               .fold(

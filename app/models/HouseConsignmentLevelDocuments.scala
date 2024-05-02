@@ -53,7 +53,7 @@ object HouseConsignmentLevelDocuments {
   def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index): HouseConsignmentLevelDocuments =
     HouseConsignmentLevelDocuments(userAnswers, houseConsignmentIndex, itemIndex, Some(documentIndex))
 
-  def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Option[Index] = None): HouseConsignmentLevelDocuments = {
+  def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Option[Index]): HouseConsignmentLevelDocuments = {
     val numberOfDocuments = userAnswers.get(DocumentsSection(houseConsignmentIndex, itemIndex)).map(_.value.size).getOrElse(0)
 
     (0 until numberOfDocuments).map(Index(_)).foldLeft(HouseConsignmentLevelDocuments()) {
@@ -74,6 +74,25 @@ object HouseConsignmentLevelDocuments {
     (0 until numberOfDocuments).map(Index(_)).foldLeft(HouseConsignmentLevelDocuments()) {
       case (HouseConsignmentLevelDocuments(supporting, transport), index) if !documentIndex.contains(index) =>
         val values = userAnswers.get(HouseTypePage(houseConsignmentIndex, index)).map(_.`type`) match {
+          case Some(DocType.Support)   => (supporting + 1, transport)
+          case Some(DocType.Transport) => (supporting, transport + 1)
+          case _                       => (supporting, transport)
+        }
+        HouseConsignmentLevelDocuments(values)
+      case (houseConsignmentLevelDocuments, _) => houseConsignmentLevelDocuments
+    }
+  }
+
+  def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index, documentIndex: Index): HouseConsignmentLevelDocuments = {
+
+    import pages.houseConsignment.index.documents.TypePage
+    import pages.sections.houseConsignment.index.documents.DocumentsSection
+
+    val numberOfDocuments = userAnswers.get(DocumentsSection(houseConsignmentIndex)).map(_.value.size).getOrElse(0)
+
+    (0 until numberOfDocuments).map(Index(_)).foldLeft(HouseConsignmentLevelDocuments()) {
+      case (HouseConsignmentLevelDocuments(supporting, transport), index) if documentIndex != index =>
+        val values = userAnswers.get(TypePage(houseConsignmentIndex, index)).map(_.`type`) match {
           case Some(DocType.Support)   => (supporting + 1, transport)
           case Some(DocType.Transport) => (supporting, transport + 1)
           case _                       => (supporting, transport)

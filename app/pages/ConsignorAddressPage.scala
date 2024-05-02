@@ -16,15 +16,13 @@
 
 package pages
 
-import models.Index
-import models.reference.TransportMeansIdentification
-import pages.sections.houseConsignment.index.departureTransportMeans.TransportMeansSection
+import models.{DynamicAddress, Index}
+import pages.sections.HouseConsignmentSection
 import play.api.libs.json.JsPath
 
-case class DepartureTransportMeansIdentificationTypePage(houseConsignmentIndex: Index, transportMeansIndex: Index)
-    extends QuestionPage[TransportMeansIdentification] {
+case class ConsignorAddressPage(houseConsignmentIndex: Index) extends QuestionPage[DynamicAddress] {
 
-  override def path: JsPath = TransportMeansSection(houseConsignmentIndex, transportMeansIndex).path \ toString
+  override def path: JsPath = HouseConsignmentSection(houseConsignmentIndex).path \ "Consignor" \ toString
 
-  override def toString: String = "typeOfIdentification"
+  override def toString: String = "Address"
 }

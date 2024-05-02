@@ -55,7 +55,7 @@ object Radioable {
       radioables.zipWithIndex
         .map {
           case (value, index) =>
-            value.toRadioItem(index, formKey, checkedValue.contains(value))
+            value.toRadioItem(index, formKey, checkedValue.map(_.code).contains(value.code))
         }
   }
 }

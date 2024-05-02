@@ -1,7 +1,7 @@
 # microservice specific routes
 
 ->         /                                            app.departureMeansOfTransport.Routes
-->         /                                            app.houseConsignment.index.Routes
+->         /                                            app.houseConsignment.Routes
 ->         /                                            app.transportEquipment.Routes
 ->         /                                            app.transportEquipment.index.Routes
 ->         /                                            app.documents.Routes

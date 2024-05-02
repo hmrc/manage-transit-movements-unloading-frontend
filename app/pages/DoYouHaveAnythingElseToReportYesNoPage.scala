@@ -16,12 +16,21 @@
 
 package pages
 
+import models.UserAnswers
 import pages.sections.OtherQuestionsSection
 import play.api.libs.json.JsPath
+
+import scala.util.Try
 
 case object DoYouHaveAnythingElseToReportYesNoPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = OtherQuestionsSection.path \ toString
 
   override def toString: String = "doYouHaveAnythingElseToReport"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(OtherThingsToReportPage)
+      case _           => super.cleanup(value, userAnswers)
+    }
 }

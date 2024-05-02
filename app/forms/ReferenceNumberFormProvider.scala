@@ -19,7 +19,7 @@ package forms
 import forms.Constants.maxDocumentRefNumberLength
 import forms.mappings.Mappings
 import models.messages.UnloadingRemarksRequest.alphaNumericWithSpacesRegex
-import models.{Index, Mode, RichString}
+import models.{Index, RichString}
 import play.api.data.Form
 
 import javax.inject.Inject

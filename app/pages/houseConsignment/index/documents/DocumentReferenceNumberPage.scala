@@ -16,9 +16,10 @@
 
 package pages.houseConsignment.index.documents
 
+import generated.{SupportingDocumentType02, TransportDocumentType02}
 import models.Index
-import pages.QuestionPage
 import pages.sections.houseConsignment.index.documents.DocumentSection
+import pages.{DiscrepancyQuestionPage, QuestionPage}
 import play.api.libs.json.JsPath
 
 case class DocumentReferenceNumberPage(houseConsignmentIndex: Index, documentIndex: Index) extends QuestionPage[String] {
@@ -26,5 +27,36 @@ case class DocumentReferenceNumberPage(houseConsignmentIndex: Index, documentInd
   override def path: JsPath = DocumentSection(houseConsignmentIndex, documentIndex).path \ toString
 
   override def toString: String = "referenceNumber"
+}
 
+trait BaseDocumentReferenceNumberPage[T] extends DiscrepancyQuestionPage[String, Seq[T], String] {
+
+  val houseConsignmentIndex: Index
+  val documentIndex: Index
+
+  override def path: JsPath = DocumentReferenceNumberPage(houseConsignmentIndex, documentIndex).path
+
+  override def toString: String = DocumentReferenceNumberPage(houseConsignmentIndex, documentIndex).toString
+}
+
+case class SupportingDocumentReferenceNumberPage(houseConsignmentIndex: Index, documentIndex: Index)
+    extends BaseDocumentReferenceNumberPage[SupportingDocumentType02] {
+
+  override def valueInIE043(ie043: Seq[SupportingDocumentType02], sequenceNumber: Option[BigInt]): Option[String] =
+    ie043
+      .find {
+        x => sequenceNumber.contains(x.sequenceNumber)
+      }
+      .map(_.referenceNumber)
+}
+
+case class TransportDocumentReferenceNumberPage(houseConsignmentIndex: Index, documentIndex: Index)
+    extends BaseDocumentReferenceNumberPage[TransportDocumentType02] {
+
+  override def valueInIE043(ie043: Seq[TransportDocumentType02], sequenceNumber: Option[BigInt]): Option[String] =
+    ie043
+      .find {
+        x => sequenceNumber.contains(x.sequenceNumber)
+      }
+      .map(_.referenceNumber)
 }

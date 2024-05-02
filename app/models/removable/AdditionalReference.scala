@@ -23,14 +23,15 @@ import play.api.libs.json.Reads
 
 case class AdditionalReference(`type`: AdditionalReferenceType, referenceNumber: Option[String]) {
 
-  override def toString: String = referenceNumber match {
-    case Some(rn) => s"${`type`.documentType} - $rn"
-    case None     => `type`.documentType
+  def forRemoveDisplay: String = referenceNumber match {
+    case Some(value) => s"${`type`} - $value"
+    case None        => `type`.toString
   }
 
-  def forRemoveDisplay: String = this.toString
-
-  def forAddAnotherDisplay: String = this.toString
+  def forAddAnotherDisplay: String = referenceNumber match {
+    case Some(value) => s"${`type`.documentType} - $value"
+    case None        => `type`.documentType
+  }
 }
 
 object AdditionalReference {
@@ -40,6 +41,17 @@ object AdditionalReference {
     implicit val reads: Reads[AdditionalReference] = (
       AdditionalReferenceTypePage(additionalReferenceIndex).path.read[AdditionalReferenceType] and
         AdditionalReferenceNumberPage(additionalReferenceIndex).path.readNullable[String]
+    ).apply {
+      (additionalReferenceType, referenceNumber) => AdditionalReference(additionalReferenceType, referenceNumber)
+    }
+    userAnswers.data.asOpt[AdditionalReference]
+  }
+
+  def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index, additionalReferenceIndex: Index): Option[AdditionalReference] = {
+    import pages.houseConsignment.index.additionalReference._
+    implicit val reads: Reads[AdditionalReference] = (
+      HouseConsignmentAdditionalReferenceTypePage(houseConsignmentIndex, additionalReferenceIndex).path.read[AdditionalReferenceType] and
+        HouseConsignmentAdditionalReferenceNumberPage(houseConsignmentIndex, additionalReferenceIndex).path.readNullable[String]
     ).apply {
       (additionalReferenceType, referenceNumber) => AdditionalReference(additionalReferenceType, referenceNumber)
     }
@@ -56,4 +68,5 @@ object AdditionalReference {
     }
     userAnswers.data.asOpt[AdditionalReference]
   }
+
 }

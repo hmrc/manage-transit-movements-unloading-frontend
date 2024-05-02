@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,23 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import models.Index
-import models.reference.Country
-import pages.sections.houseConsignment.index.departureTransportMeans.TransportMeansSection
-import play.api.libs.json.JsPath
+package object reference {
 
-case class DepartureTransportMeansCountryPage(houseConsignmentIndex: Index, transportMeansIndex: Index) extends QuestionPage[Country] {
+  implicit class RichComparison[T](value: (T, T)) {
 
-  override def path: JsPath = TransportMeansSection(houseConsignmentIndex, transportMeansIndex).path \ toString
-
-  override def toString: String = "nationality"
+    def compareBy(fs: (T => String)*): Int =
+      value match {
+        case (x, y) =>
+          fs.toList match {
+            case Nil => 0
+            case f :: tail =>
+              f(x).compareToIgnoreCase(f(y)) match {
+                case 0      => compareBy(tail: _*)
+                case result => result
+              }
+          }
+      }
+  }
 }
