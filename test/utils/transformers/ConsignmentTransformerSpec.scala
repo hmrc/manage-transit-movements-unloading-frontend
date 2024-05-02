@@ -26,9 +26,8 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.QuestionPage
+import pages.{GrossWeightPage, QuestionPage}
 import pages.countryOfDestination.CountryOfDestinationPage
-import pages.grossMass.GrossMassPage
 import pages.inlandModeOfTransport.InlandModeOfTransportPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -170,7 +169,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
           result.getValue(FakeHouseConsignmentSection) mustBe Json.obj("foo" -> "bar")
           result.getValue(FakeAdditionalReferenceSection) mustBe Json.obj("foo" -> "bar")
           result.getValue(FakeAdditionalInformationSection) mustBe Json.obj("foo" -> "bar")
-          result.get(GrossMassPage) mustBe updatedConsignment.grossMass
+          result.get(GrossWeightPage) mustBe updatedConsignment.grossMass
           result.getValue(FakeIncidentSection) mustBe Json.obj("foo" -> "bar")
           result.getValue(CountryOfDestinationPage) mustBe country
           result.getValue(InlandModeOfTransportPage) mustBe inlandMode
@@ -188,7 +187,7 @@ class ConsignmentTransformerSpec extends SpecBase with AppWithDefaultMockFixture
       result.get(FakeHouseConsignmentSection) must not be defined
       result.get(FakeAdditionalReferenceSection) must not be defined
       result.get(FakeAdditionalInformationSection) must not be defined
-      result.get(GrossMassPage) must not be defined
+      result.get(GrossWeightPage) must not be defined
       result.get(FakeIncidentSection) must not be defined
       result.get(CountryOfDestinationPage) must not be defined
       result.get(InlandModeOfTransportPage) must not be defined

@@ -19,22 +19,19 @@ package utils.answersHelpers
 import models.DocType.Previous
 import models.reference.TransportMode.InlandMode
 import models.reference.{Country, CustomsOffice}
-import models.{Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
+import models.{CheckMode, Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
 import pages.countryOfDestination.CountryOfDestinationPage
 import pages.documents.TypePage
-import pages.grossMass.GrossMassPage
 import pages.inlandModeOfTransport.InlandModeOfTransportPage
 import pages.sections._
 import pages.sections.additionalInformation.AdditionalInformationListSection
 import pages.sections.additionalReference.AdditionalReferencesSection
 import pages.sections.documents.DocumentsSection
 import pages.sections.incidents.IncidentsSection
-import pages.{CustomsOfficeOfDestinationActualPage, SecurityTypePage}
+import pages.{CustomsOfficeOfDestinationActualPage, GrossWeightPage, SecurityTypePage}
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.http.HttpVerbs.GET
 import utils.answersHelpers.consignment._
 import utils.answersHelpers.consignment.incident.IncidentAnswersHelper
 import viewModels.sections.Section
@@ -137,11 +134,11 @@ class ConsignmentAnswersHelper(userAnswers: UserAnswers)(implicit messages: Mess
     )
 
   def grossMassRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
-    page = GrossMassPage,
+    page = GrossWeightPage,
     formatAnswer = formatAsText,
     prefix = "unloadingFindings.grossMass",
     id = Some(s"change-gross-mass"),
-    call = Some(Call(GET, "#"))
+    call = Some(controllers.routes.GrossWeightController.onPageLoad(userAnswers.id, CheckMode))
   )
 
   def inlandModeOfTransportRow: Option[SummaryListRow] = getAnswerAndBuildRow[InlandMode](

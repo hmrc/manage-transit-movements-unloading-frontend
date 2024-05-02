@@ -123,7 +123,6 @@ class SubmissionService @Inject() (
   }
 
   def consignmentReads(ie043: Option[ConsignmentType05]): Reads[Option[ConsignmentType06]] = {
-    import pages.grossMass.GrossMassPage
     import pages.sections._
     import pages.sections.additionalReference.AdditionalReferencesSection
     import pages.sections.documents.DocumentsSection
@@ -136,7 +135,7 @@ class SubmissionService @Inject() (
     lazy val houseConsignments       = ie043.getList(_.HouseConsignment)
 
     for {
-      grossMass               <- GrossMassPage.readNullable(identity).apply(ie043)
+      grossMass               <- pages.GrossWeightPage.readNullable(identity).apply(ie043)
       transportEquipment      <- TransportEquipmentListSection.readArray(consignmentTransportEquipmentReads(transportEquipment))
       departureTransportMeans <- TransportMeansListSection.readArray(consignmentDepartureTransportMeansReads(departureTransportMeans))
       supportingDocuments     <- DocumentsSection.readArray(consignmentSupportingDocumentReads(supportingDocuments))

@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package pages.grossMass
+package pages
 
 import generated.ConsignmentType05
-import pages.DiscrepancyQuestionPage
 import pages.sections.ConsignmentSection
 import play.api.libs.json.JsPath
 
-case object GrossMassPage extends DiscrepancyQuestionPage[BigDecimal, Option[ConsignmentType05], BigDecimal] {
+case object GrossWeightPage extends DiscrepancyQuestionPage[BigDecimal, Option[ConsignmentType05], BigDecimal] {
 
   override def path: JsPath = ConsignmentSection.path \ toString
 
