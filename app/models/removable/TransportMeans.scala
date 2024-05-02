@@ -54,4 +54,15 @@ object TransportMeans {
     }
     userAnswers.data.asOpt[TransportMeans]
   }
+
+  def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index, transportMeansIndex: Index): Option[TransportMeans] = {
+    import pages.houseConsignment.index.departureMeansOfTransport._
+    implicit val reads: Reads[TransportMeans] = (
+      TransportMeansIdentificationPage(houseConsignmentIndex, transportMeansIndex).path.readNullable[TransportMeansIdentification] and
+        VehicleIdentificationNumberPage(houseConsignmentIndex, transportMeansIndex).path.readNullable[String]
+    ).apply {
+      (identifier, identificationNumber) => TransportMeans(transportMeansIndex, identifier, identificationNumber)
+    }
+    userAnswers.data.asOpt[TransportMeans]
+  }
 }
