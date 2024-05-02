@@ -41,7 +41,7 @@ class SealNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
         navigator
           .nextPage(SealIdentificationNumberPage(equipmentIndex, sealIndex), sealMode, userAnswers)
-          .mustBe(controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, equipmentMode, sealMode, equipmentIndex))
+          .mustBe(controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, equipmentMode, equipmentIndex))
 
       }
     }

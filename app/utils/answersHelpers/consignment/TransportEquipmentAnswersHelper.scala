@@ -16,7 +16,7 @@
 
 package utils.answersHelpers.consignment
 
-import models.{CheckMode, Index, Link, NormalMode, RichOptionalJsArray, UserAnswers}
+import models.{CheckMode, Index, Link, RichOptionalJsArray, UserAnswers}
 import pages.ContainerIdentificationNumberPage
 import pages.sections.SealsSection
 import pages.sections.transport.equipment.ItemsSection
@@ -92,7 +92,7 @@ class TransportEquipmentAnswersHelper(
   private def sealsAddRemoveLink: Link =
     Link(
       id = s"add-remove-transport-equipment-${equipmentIndex.display}-seal",
-      href = controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, CheckMode, NormalMode, equipmentIndex).url,
+      href = controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, CheckMode, equipmentIndex).url,
       text = messages("sealsLink.addRemove"),
       visuallyHidden = Some(messages("sealsLink.visuallyHidden", equipmentIndex.display))
     )
@@ -100,7 +100,7 @@ class TransportEquipmentAnswersHelper(
   private def itemsAddRemoveLink: Link =
     Link(
       id = s"add-remove-transport-equipment-${equipmentIndex.display}-item",
-      href = controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, CheckMode, NormalMode, equipmentIndex).url,
+      href = controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, CheckMode, equipmentIndex).url,
       text = messages("consignmentItemLink.addRemove", equipmentIndex.display)
     )
 }
