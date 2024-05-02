@@ -21,9 +21,12 @@ import forms.EnumerableFormProvider
 import generators.Generators
 import matchers.JsonMatchers
 import models.{NormalMode, UnloadingType}
+import navigation.Navigation
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.UnloadingTypePage
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.UnloadingTypeView
@@ -37,6 +40,13 @@ class UnloadingTypeControllerSpec extends SpecBase with Generators with AppWithD
   private val form         = formProvider[UnloadingType](mode, "unloadingType")
 
   lazy val unloadingTypeRoute: String = controllers.routes.UnloadingTypeController.onPageLoad(arrivalId, mode).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(
+        bind[Navigation].toInstance(fakeNavigation)
+      )
 
   "UnloadingTypeController" - {
 

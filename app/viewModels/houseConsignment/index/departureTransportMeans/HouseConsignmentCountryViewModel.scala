@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewModels.houseConsignment.index.departureMeansOfTransport
+package viewModels.houseConsignment.index.departureTransportMeans
 
 import models.{Index, Mode}
 import play.api.i18n.Messages

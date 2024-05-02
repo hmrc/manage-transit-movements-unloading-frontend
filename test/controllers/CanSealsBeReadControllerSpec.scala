@@ -20,9 +20,12 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.CanSealsBeReadFormProvider
 import generators.Generators
 import models.NormalMode
+import navigation.Navigation
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.CanSealsBeReadPage
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.CanSealsBeReadView
@@ -36,6 +39,13 @@ class CanSealsBeReadControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private val mode         = NormalMode
 
   private lazy val canSealsBeReadRoute = routes.CanSealsBeReadController.onPageLoad(arrivalId, NormalMode).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(
+        bind[Navigation].toInstance(fakeNavigation)
+      )
 
   "CanSealsBeRead Controller" - {
 

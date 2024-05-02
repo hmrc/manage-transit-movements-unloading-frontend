@@ -21,6 +21,7 @@ import forms.SelectableFormProvider
 import generators.Generators
 import models.reference.DocumentType
 import models.{CheckMode, Index, Mode, NormalMode, SelectableList}
+import navigation.DocumentNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -65,8 +66,11 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[DocumentsService]).toInstance(mockDocumentTypesService))
-      .overrides(bind[TypeViewModelProvider].toInstance(mockViewModelProvider))
+      .overrides(
+        bind(classOf[DocumentNavigator]).toInstance(FakeConsignmentNavigators.fakeDocumentNavigator),
+        bind(classOf[DocumentsService]).toInstance(mockDocumentTypesService),
+        bind[TypeViewModelProvider].toInstance(mockViewModelProvider)
+      )
 
   "Type Controller" - {
 

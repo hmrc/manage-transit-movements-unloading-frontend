@@ -20,6 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.DateGoodsUnloadedFormProvider
 import generators.Generators
 import models.NormalMode
+import navigation.Navigation
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.DateGoodsUnloadedPage
@@ -46,6 +47,7 @@ class DateGoodsUnloadedControllerSpec extends SpecBase with AppWithDefaultMockFi
     super
       .guiceApplicationBuilder()
       .overrides(
+        bind[Navigation].toInstance(fakeNavigation),
         bind[Clock].toInstance(stubClock)
       )
 

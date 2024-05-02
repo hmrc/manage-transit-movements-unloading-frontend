@@ -19,6 +19,7 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.{NormalMode, UserAnswers}
+import navigation.Navigation
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
@@ -49,6 +50,7 @@ class AddTransitUnloadingPermissionDiscrepanciesYesNoControllerSpec extends Spec
     super
       .guiceApplicationBuilder()
       .overrides(
+        bind[Navigation].toInstance(fakeNavigation),
         bind[IE043Transformer].toInstance(mockTransformer)
       )
 

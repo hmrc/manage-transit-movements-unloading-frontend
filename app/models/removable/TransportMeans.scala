@@ -32,7 +32,7 @@ case class TransportMeans(index: Index, identificationType: Option[TransportMean
   }
 
   def forAddAnotherDisplay(implicit messages: Messages): String = {
-    val prefix = messages("departureMeansOfTransportPrefix.prefix", index.display)
+    val prefix = messages("departureMeansOfTransport.prefix", index.display)
     (identificationType, identificationNumber) match {
       case (Some(a), Some(b)) => s"$prefix - $a - $b"
       case (Some(a), None)    => s"$prefix - $a"
@@ -49,6 +49,17 @@ object TransportMeans {
     implicit val reads: Reads[TransportMeans] = (
       TransportMeansIdentificationPage(transportMeansIndex).path.readNullable[TransportMeansIdentification] and
         VehicleIdentificationNumberPage(transportMeansIndex).path.readNullable[String]
+    ).apply {
+      (identifier, identificationNumber) => TransportMeans(transportMeansIndex, identifier, identificationNumber)
+    }
+    userAnswers.data.asOpt[TransportMeans]
+  }
+
+  def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index, transportMeansIndex: Index): Option[TransportMeans] = {
+    import pages.houseConsignment.index.departureMeansOfTransport._
+    implicit val reads: Reads[TransportMeans] = (
+      TransportMeansIdentificationPage(houseConsignmentIndex, transportMeansIndex).path.readNullable[TransportMeansIdentification] and
+        VehicleIdentificationNumberPage(houseConsignmentIndex, transportMeansIndex).path.readNullable[String]
     ).apply {
       (identifier, identificationNumber) => TransportMeans(transportMeansIndex, identifier, identificationNumber)
     }

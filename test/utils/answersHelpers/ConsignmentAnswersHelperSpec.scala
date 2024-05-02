@@ -291,13 +291,13 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.children.head.children.head.rows.size mustBe 1
             result.children.head.children.head.rows.head.value.value mustBe sealId
             result.children.head.children.head.viewLinks.head.href mustBe
-              controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, CheckMode, NormalMode, equipmentIndex).url
+              controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, CheckMode, equipmentIndex).url
 
             result.children.head.children(1) mustBe a[AccordionSection]
             result.children.head.children(1).rows.size mustBe 1
             result.children.head.children(1).rows.head.value.value mustBe item.toString
             result.children.head.children(1).viewLinks.head.href mustBe
-              controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, CheckMode, NormalMode, equipmentIndex).url
+              controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, CheckMode, equipmentIndex).url
         }
       }
     }
@@ -429,7 +429,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
             result mustBe a[AccordionSection]
             result.sectionTitle.value mustBe "House consignments"
-            result.viewLinks.head.href mustBe "#"
+            result.viewLinks.head.href mustBe controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(answers.id, NormalMode).url
 
             result.children.head mustBe a[AccordionSection]
             result.children.head.sectionTitle.value mustBe "House consignment 1"
@@ -445,16 +445,14 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       }
 
       "must generate add remove link even if there  is no house consignment" in {
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
-          (consignorName, consignorId, consigneeName, consigneeId) =>
-            val helper = new ConsignmentAnswersHelper(emptyUserAnswers)
-            val result = helper.houseConsignmentSection
+        val answers = emptyUserAnswers
+        val helper  = new ConsignmentAnswersHelper(answers)
+        val result  = helper.houseConsignmentSection
 
-            result mustBe a[AccordionSection]
-            result.sectionTitle.value mustBe "House consignments"
-            result.children mustBe Nil
-            result.viewLinks.head.href mustBe "#" // TODO replace with actual add remove link when the controller is implemented
-        }
+        result mustBe a[AccordionSection]
+        result.sectionTitle.value mustBe "House consignments"
+        result.children mustBe Nil
+        result.viewLinks.head.href mustBe controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(answers.id, NormalMode).url
       }
     }
 

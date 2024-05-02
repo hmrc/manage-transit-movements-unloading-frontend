@@ -14,29 +14,30 @@
  * limitations under the License.
  *@
 
+@import controllers.houseConsignment.index.items.document.routes
 @import models.MovementReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo}
 @import views.utils.ViewUtils.StringImplicits
 
 @this(
-mainTemplate: MainTemplate,
-formHelper: FormWithCSRF,
-inputYesNo: InputYesNo,
-errorSummary: ErrorSummary,
-button: Button
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    inputYesNo: InputYesNo,
+    errorSummary: ErrorSummary,
+    button: Button
 )
 
-@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId,houseConsignmentIndex:Index, itemIndex: Index, documentIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId,houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index, houseConsignmentMode: Mode, itemMode: Mode, documentMode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("houseConsignment.index.items.document.addAdditionalInformationYesNo.title"),
     showBackLink = true
 ) {
 
-        @errorSummary(form.errors)
+    @formHelper(action = routes.AddAdditionalInformationYesNoController.onSubmit(arrivalId, houseConsignmentMode, itemMode, documentMode, houseConsignmentIndex, itemIndex, documentIndex), Symbol("autoComplete") -> "off") {
 
-        @formHelper(action = controllers.houseConsignment.index.items.document.routes.AddAdditionalInformationYesNoController.onSubmit(arrivalId,mode, houseConsignmentIndex, itemIndex, documentIndex), Symbol("autoComplete") -> "off") {
+        @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),
@@ -46,8 +47,6 @@ button: Button
                 additionalHtml = messages("houseConsignment.index.items.document.addAdditionalInformationYesNo.paragraph").toParagraph
             )
         )
-
-
 
         @button(attributes = Map("id" -> "submit"))
     }

@@ -19,9 +19,11 @@ package controllers.houseConsignment.index.additionalReference
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
+import navigation.houseConsignment.index.AdditionalReferenceNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.additionalReference.AddHouseConsignmentAdditionalReferenceNumberYesNoPage
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -41,6 +43,9 @@ class AddAdditionalReferenceNumberYesNoControllerSpec extends SpecBase with AppW
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(
+        bind[AdditionalReferenceNavigator].toInstance(FakeHouseConsignmentNavigators.fakeAdditionalReferenceNavigator)
+      )
 
   "AddAdditionalReferenceNumberYesNoController Controller" - {
 
@@ -92,9 +97,7 @@ class AddAdditionalReferenceNumberYesNoControllerSpec extends SpecBase with AppW
 
       status(result) mustEqual SEE_OTHER
 
-//      redirectLocation(result).value mustEqual controllers.houseConsignment.index.additionalReference.routes.AdditionalReferenceNumberController
-//        .onPageLoad(arrivalId, mode, houseConsignmentIndex, additionalReferenceIndex)
-//        .url // TODO Uncomment when navigator is built
+      redirectLocation(result).value mustEqual onwardRoute.url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

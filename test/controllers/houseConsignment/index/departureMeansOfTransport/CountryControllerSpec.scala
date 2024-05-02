@@ -21,6 +21,7 @@ import forms.SelectableFormProvider
 import generators.Generators
 import models.reference.Country
 import models.{CheckMode, SelectableList}
+import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -31,8 +32,8 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.ReferenceDataService
-import viewModels.houseConsignment.index.departureMeansOfTransport.HouseConsignmentCountryViewModel
-import viewModels.houseConsignment.index.departureMeansOfTransport.HouseConsignmentCountryViewModel.HouseConsignmentCountryViewModelProvider
+import viewModels.houseConsignment.index.departureTransportMeans.HouseConsignmentCountryViewModel
+import viewModels.houseConsignment.index.departureTransportMeans.HouseConsignmentCountryViewModel.HouseConsignmentCountryViewModelProvider
 import views.html.houseConsignment.index.departureMeansOfTransport.CountryView
 
 import scala.concurrent.Future
@@ -63,8 +64,11 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[ReferenceDataService].toInstance(mockReferenceDataService))
-      .overrides(bind[HouseConsignmentCountryViewModelProvider].toInstance(mockViewModelProvider))
+      .overrides(
+        bind(classOf[DepartureTransportMeansNavigator]).toInstance(FakeHouseConsignmentNavigators.fakeDepartureTransportMeansNavigator),
+        bind[ReferenceDataService].toInstance(mockReferenceDataService),
+        bind[HouseConsignmentCountryViewModelProvider].toInstance(mockViewModelProvider)
+      )
 
   "departureMeansOfTransportCountry Controller" - {
 

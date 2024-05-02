@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -42,11 +42,12 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
   private def form(viewModel: AddAnotherPackageViewModel) =
     formProvider(viewModel.prefix, viewModel.allowMore, viewModel.count, itemIndex.display, houseConsignmentIndex.display)
 
-  private val mode = NormalMode
+  private val houseConsignmentMode = NormalMode
+  private val itemMode             = NormalMode
 
   private lazy val addAnotherPackageRoute =
     controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController
-      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
       .url
 
   private val mockViewModelProvider = mock[AddAnotherPackageViewModelProvider]
@@ -73,7 +74,7 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
   "AddAnotherPackageController" - {
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -87,14 +88,18 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(notMaxedOutViewModel), mrn, arrivalId, houseConsignmentIndex, itemIndex, notMaxedOutViewModel)(request,
-                                                                                                                   messages,
-                                                                                                                   frontendAppConfig
-          ).toString
+          view(
+            form(notMaxedOutViewModel),
+            mrn,
+            arrivalId,
+            houseConsignmentIndex,
+            itemIndex,
+            notMaxedOutViewModel
+          )(request, messages, frontendAppConfig).toString
       }
 
       "when max limit reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -108,14 +113,21 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(maxedOutViewModel), mrn, arrivalId, houseConsignmentIndex, itemIndex, maxedOutViewModel)(request, messages, frontendAppConfig).toString
+          view(
+            form(maxedOutViewModel),
+            mrn,
+            arrivalId,
+            houseConsignmentIndex,
+            itemIndex,
+            maxedOutViewModel
+          )(request, messages, frontendAppConfig).toString
       }
     }
 
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to package type page at next index" in {
-          when(mockViewModelProvider.apply(any(), any(), any(), any(), any()))
+          when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -128,35 +140,64 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.packages.routes.PackageTypeController
-            .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, notMaxedOutViewModel.nextIndex, mode)
+            .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, notMaxedOutViewModel.nextIndex, houseConsignmentMode, itemMode, NormalMode)
             .url
         }
       }
 
       "when no submitted" - {
-        "must redirect to next page" in {
-          when(mockViewModelProvider.apply(any(), any(), any(), any(), any()))
-            .thenReturn(notMaxedOutViewModel)
+        "and normal mode" - {
+          "must redirect to add another item" in {
+            when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any()))
+              .thenReturn(notMaxedOutViewModel)
 
-          setExistingUserAnswers(emptyUserAnswers)
+            setExistingUserAnswers(emptyUserAnswers)
 
-          val request = FakeRequest(POST, addAnotherPackageRoute)
-            .withFormUrlEncodedBody(("value", "false"))
+            val request = FakeRequest(POST, addAnotherPackageRoute)
+              .withFormUrlEncodedBody(("value", "false"))
 
-          val result = route(app, request).value
+            val result = route(app, request).value
 
-          status(result) mustEqual SEE_OTHER
+            status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.routes.AddAnotherItemController
-            .onPageLoad(arrivalId, houseConsignmentIndex, mode)
-            .url
+            redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.routes.AddAnotherItemController
+              .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
+              .url
+          }
+        }
+
+        "and check mode" - {
+          "must redirect to cross-check" in {
+            when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any()))
+              .thenReturn(notMaxedOutViewModel)
+
+            setExistingUserAnswers(emptyUserAnswers)
+
+            val houseConsignmentMode = CheckMode
+            val itemMode             = CheckMode
+
+            val addAnotherPackageRoute =
+              controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController
+                .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+                .url
+
+            val request = FakeRequest(POST, addAnotherPackageRoute)
+              .withFormUrlEncodedBody(("value", "false"))
+
+            val result = route(app, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual
+              controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
+          }
         }
       }
     }
 
     "when max limit reached" - {
       "must redirect to next page" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -169,14 +210,14 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.routes.AddAnotherItemController
-          .onPageLoad(arrivalId, houseConsignmentIndex, mode)
+          .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
           .url
       }
     }
 
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -184,11 +225,12 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
         val request = FakeRequest(POST, addAnotherPackageRoute)
           .withFormUrlEncodedBody(("value", ""))
 
-        val boundForm = formProvider(notMaxedOutViewModel.prefix,
-                                     notMaxedOutViewModel.allowMore,
-                                     notMaxedOutViewModel.count,
-                                     itemIndex.display,
-                                     houseConsignmentIndex.display
+        val boundForm = formProvider(
+          notMaxedOutViewModel.prefix,
+          notMaxedOutViewModel.allowMore,
+          notMaxedOutViewModel.count,
+          itemIndex.display,
+          houseConsignmentIndex.display
         )
           .bind(Map("value" -> ""))
 

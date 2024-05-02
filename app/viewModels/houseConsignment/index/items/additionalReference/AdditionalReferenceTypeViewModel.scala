@@ -16,21 +16,38 @@
 
 package viewModels.houseConsignment.index.items.additionalReference
 
+import controllers.houseConsignment.index.items.additionalReference.routes
 import models.{ArrivalId, Index, Mode}
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import viewModels.ModeViewModelProvider
 
 import javax.inject.Inject
 
-case class AdditionalReferenceTypeViewModel(heading: String,
-                                            title: String,
-                                            requiredError: String,
-                                            arrivalId: ArrivalId,
-                                            mode: Mode,
-                                            houseConsignmentIndex: Index,
-                                            itemIndex: Index,
-                                            additionalReferenceIndex: Index
-)
+case class AdditionalReferenceTypeViewModel(
+  heading: String,
+  title: String,
+  requiredError: String,
+  arrivalId: ArrivalId,
+  houseConsignmentMode: Mode,
+  itemMode: Mode,
+  additionalReferenceMode: Mode,
+  houseConsignmentIndex: Index,
+  itemIndex: Index,
+  additionalReferenceIndex: Index
+) {
+
+  def onSubmit(): Call = routes.AdditionalReferenceTypeController.onSubmit(
+    arrivalId,
+    houseConsignmentMode,
+    itemMode,
+    additionalReferenceMode,
+    houseConsignmentIndex,
+    itemIndex,
+    additionalReferenceIndex
+  )
+
+}
 
 object AdditionalReferenceTypeViewModel {
 
@@ -38,15 +55,25 @@ object AdditionalReferenceTypeViewModel {
 
     override val prefix = "houseConsignment.index.items.additionalReference.additionalReferenceType"
 
-    def apply(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index)(implicit
+    def apply(
+      arrivalId: ArrivalId,
+      houseConsignmentMode: Mode,
+      itemMode: Mode,
+      additionalReferenceMode: Mode,
+      houseConsignmentIndex: Index,
+      itemIndex: Index,
+      additionalReferenceIndex: Index
+    )(implicit
       message: Messages
     ): AdditionalReferenceTypeViewModel =
       new AdditionalReferenceTypeViewModel(
-        heading(mode, houseConsignmentIndex, itemIndex),
-        title(mode, houseConsignmentIndex, itemIndex),
-        requiredError(mode, houseConsignmentIndex, itemIndex),
+        heading(additionalReferenceMode, houseConsignmentIndex, itemIndex),
+        title(additionalReferenceMode, houseConsignmentIndex, itemIndex),
+        requiredError(additionalReferenceMode, houseConsignmentIndex, itemIndex),
         arrivalId,
-        mode,
+        houseConsignmentMode,
+        itemMode,
+        additionalReferenceMode,
         houseConsignmentIndex,
         itemIndex,
         additionalReferenceIndex

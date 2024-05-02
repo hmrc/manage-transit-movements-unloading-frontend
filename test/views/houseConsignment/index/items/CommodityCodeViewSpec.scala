@@ -30,7 +30,7 @@ class CommodityCodeViewSpec extends InputTextViewBehaviours[String] with SpecBas
   override def form: Form[String] = new CommodityCodeFormProvider()(index, index)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[CommodityCodeView].apply(form, mrn, arrivalId, index, index, isXI = true, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[CommodityCodeView].apply(form, mrn, arrivalId, index, index, isXI = true, NormalMode, NormalMode)(fakeRequest, messages)
 
   override val prefix: String                         = "houseConsignment.commodityCode"
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
@@ -59,7 +59,7 @@ class CommodityCodeViewSpec extends InputTextViewBehaviours[String] with SpecBas
 
   "when isXI is false" - {
     val view = injector.instanceOf[CommodityCodeView]
-    val doc  = parseView(view.apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, isXI = false, NormalMode)(fakeRequest, messages))
+    val doc  = parseView(view.apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, isXI = false, NormalMode, NormalMode)(fakeRequest, messages))
     behave like pageWithoutContent(doc, "p", paragraph)
   }
 

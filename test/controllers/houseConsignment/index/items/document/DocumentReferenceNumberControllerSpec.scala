@@ -20,6 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.ItemsDocumentReferenceNumberFormProvider
 import generators.Generators
 import models.NormalMode
+import navigation.houseConsignment.index.items.DocumentNavigator.DocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -39,14 +40,20 @@ class DocumentReferenceNumberControllerSpec extends SpecBase with AppWithDefault
   private val viewModel    = arbitrary[ItemsDocumentReferenceNumberViewModel].sample.value
   private val formProvider = new ItemsDocumentReferenceNumberFormProvider()
   private val form         = formProvider(viewModel.requiredError)
-  private val mode         = NormalMode
+
+  private val houseConsignmentMode = NormalMode
+  private val itemMode             = NormalMode
+  private val documentMode         = NormalMode
 
   private val mockViewModelProvider = mock[ItemsDocumentReferenceNumberViewModelProvider]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[ItemsDocumentReferenceNumberViewModelProvider].toInstance(mockViewModelProvider))
+      .overrides(
+        bind(classOf[DocumentNavigatorProvider]).toInstance(FakeConsignmentItemNavigators.fakeDocumentNavigatorProvider),
+        bind[ItemsDocumentReferenceNumberViewModelProvider].toInstance(mockViewModelProvider)
+      )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -57,7 +64,9 @@ class DocumentReferenceNumberControllerSpec extends SpecBase with AppWithDefault
   }
 
   private lazy val documentReferenceNumberRoute =
-    routes.DocumentReferenceNumberController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, documentIndex).url
+    routes.DocumentReferenceNumberController
+      .onPageLoad(arrivalId, houseConsignmentMode, itemMode, documentMode, houseConsignmentIndex, itemIndex, documentIndex)
+      .url
 
   "DocumentReferenceNumber Controller" - {
 
@@ -74,7 +83,9 @@ class DocumentReferenceNumberControllerSpec extends SpecBase with AppWithDefault
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, mode, viewModel, houseConsignmentIndex, itemIndex, documentIndex)(request, messages).toString
+        view(form, mrn, arrivalId, houseConsignmentMode, itemMode, documentMode, viewModel, houseConsignmentIndex, itemIndex, documentIndex)(request,
+                                                                                                                                             messages
+        ).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -93,7 +104,9 @@ class DocumentReferenceNumberControllerSpec extends SpecBase with AppWithDefault
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, mode, viewModel, houseConsignmentIndex, itemIndex, documentIndex)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentMode, itemMode, documentMode, viewModel, houseConsignmentIndex, itemIndex, documentIndex)(request,
+                                                                                                                                                   messages
+        ).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -128,7 +141,9 @@ class DocumentReferenceNumberControllerSpec extends SpecBase with AppWithDefault
       val view = injector.instanceOf[DocumentReferenceNumberView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, mode, viewModel, houseConsignmentIndex, itemIndex, documentIndex)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentMode, itemMode, documentMode, viewModel, houseConsignmentIndex, itemIndex, documentIndex)(request,
+                                                                                                                                                   messages
+        ).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

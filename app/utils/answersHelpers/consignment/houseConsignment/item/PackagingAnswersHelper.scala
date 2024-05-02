@@ -16,6 +16,7 @@
 
 package utils.answersHelpers.consignment.houseConsignment.item
 
+import controllers.houseConsignment.index.items.packages.routes
 import models.reference.PackageType
 import models.{CheckMode, Index, UserAnswers}
 import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
@@ -32,10 +33,7 @@ class PackagingAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: In
     prefix = "unloadingFindings.rowHeadings.item.packageType",
     args = Seq(packageIndex.display, itemIndex.display): _*,
     id = Some(s"change-package-type-${itemIndex.display}-${packageIndex.display}"),
-    call = Some(
-      controllers.houseConsignment.index.items.packages.routes.PackageTypeController
-        .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, CheckMode)
-    )
+    call = Some(routes.PackageTypeController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, CheckMode, CheckMode, CheckMode))
   )
 
   private[houseConsignment] def packageMarksRow: Option[SummaryListRow] = getAnswerAndBuildRow[String](
@@ -44,10 +42,7 @@ class PackagingAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: In
     prefix = "unloadingFindings.rowHeadings.item.packageMarks",
     args = Seq(packageIndex.display, itemIndex.display): _*,
     id = Some(s"change-package-mark-${itemIndex.display}-${packageIndex.display}"),
-    call = Some(
-      controllers.houseConsignment.index.items.packages.routes.PackageShippingMarkController
-        .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, CheckMode)
-    )
+    call = Some(routes.PackageShippingMarkController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, CheckMode, CheckMode, CheckMode))
   )
 
   private[houseConsignment] def packageCountRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigInt](
@@ -56,10 +51,6 @@ class PackagingAnswersHelper(userAnswers: UserAnswers, houseConsignmentIndex: In
     prefix = "unloadingFindings.rowHeadings.item.packageCount",
     args = Seq(packageIndex.display, itemIndex.display): _*,
     id = Some(s"change-package-count-${itemIndex.display}-${packageIndex.display}"),
-    call = Some(
-      controllers.houseConsignment.index.items.packages.routes.NumberOfPackagesController
-        .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, CheckMode)
-    )
+    call = Some(routes.NumberOfPackagesController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, CheckMode, CheckMode, CheckMode))
   )
-
 }

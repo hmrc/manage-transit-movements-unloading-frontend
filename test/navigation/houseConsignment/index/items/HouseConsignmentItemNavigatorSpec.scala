@@ -21,6 +21,7 @@ import controllers.houseConsignment.index.items.routes
 import generators.Generators
 import models._
 import models.reference.PackageType
+import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.houseConsignment.index.items._
@@ -29,13 +30,15 @@ import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, Packag
 
 class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  val navigator = new HouseConsignmentItemNavigator
+  private val navigatorProvider = new HouseConsignmentItemNavigatorProvider
 
   "HouseConsignmentItemNavigator" - {
 
     "in Normal mode" - {
 
-      val mode = NormalMode
+      val houseConsignmentMode: Mode = arbitrary[Mode].sample.value
+      val itemMode: Mode             = NormalMode
+      val navigator                  = navigatorProvider.apply(houseConsignmentMode)
 
       "must go from ItemDescriptionPage to AddGrossWeightYesNoPage" in {
 
@@ -43,8 +46,8 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
           .setValue(ItemDescriptionPage(houseConsignmentIndex, itemIndex), "test")
 
         navigator
-          .nextPage(ItemDescriptionPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
-          .mustBe(routes.AddGrossWeightYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode))
+          .nextPage(ItemDescriptionPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
+          .mustBe(routes.AddGrossWeightYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode))
       }
 
       "must go from AddGrossWeightYesNoPage to GrossWeightPage when answer is true" in {
@@ -53,8 +56,8 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
           .setValue(AddGrossWeightYesNoPage(houseConsignmentIndex, itemIndex), true)
 
         navigator
-          .nextPage(AddGrossWeightYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
-          .mustBe(routes.GrossWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode))
+          .nextPage(AddGrossWeightYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
+          .mustBe(routes.GrossWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode))
       }
 
       "must go from AddGrossWeightYesNoPage to AddNetWeightYesNoPage when answer is false" in {
@@ -63,8 +66,8 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
           .setValue(AddGrossWeightYesNoPage(houseConsignmentIndex, itemIndex), false)
 
         navigator
-          .nextPage(AddGrossWeightYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
-          .mustBe(routes.AddNetWeightYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode))
+          .nextPage(AddGrossWeightYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
+          .mustBe(routes.AddNetWeightYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode))
       }
 
       "must go from GrossWeightPage to AddNetWeightYesNoPage" in {
@@ -73,8 +76,8 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
           .setValue(GrossWeightPage(houseConsignmentIndex, itemIndex), BigDecimal(123.45))
 
         navigator
-          .nextPage(GrossWeightPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
-          .mustBe(routes.AddNetWeightYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode))
+          .nextPage(GrossWeightPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
+          .mustBe(routes.AddNetWeightYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode))
       }
 
       "must go from AddNetWeightYesNoPage to NetWeightPage when answer is true" in {
@@ -83,8 +86,8 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
           .setValue(AddNetWeightYesNoPage(houseConsignmentIndex, itemIndex), true)
 
         navigator
-          .nextPage(AddNetWeightYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
-          .mustBe(routes.NetWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode))
+          .nextPage(AddNetWeightYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
+          .mustBe(routes.NetWeightController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode))
       }
 
       "must go from AddNetWeightYesNoPage to AddCustomsUnionAndStatisticsCodeYesNoPage when answer is false" in {
@@ -93,8 +96,10 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
           .setValue(AddNetWeightYesNoPage(houseConsignmentIndex, itemIndex), false)
 
         navigator
-          .nextPage(AddNetWeightYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
-          .mustBe(routes.AddCustomsUnionAndStatisticsCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode))
+          .nextPage(AddNetWeightYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
+          .mustBe(
+            routes.AddCustomsUnionAndStatisticsCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+          )
       }
 
       "must go from NetWeightPage to AddCustomsUnionAndStatisticsCodeYesNoPage" in {
@@ -103,8 +108,10 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
           .setValue(NetWeightPage(houseConsignmentIndex, itemIndex), BigDecimal(20.351))
 
         navigator
-          .nextPage(NetWeightPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
-          .mustBe(routes.AddCustomsUnionAndStatisticsCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode))
+          .nextPage(NetWeightPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
+          .mustBe(
+            routes.AddCustomsUnionAndStatisticsCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+          )
       }
 
       "must go from AddCustomsUnionAndStatisticsCodeYesNoPage to CustomsUnionAndStatisticsCodePage when answer is true" in {
@@ -113,8 +120,8 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
           .setValue(AddCustomsUnionAndStatisticsCodeYesNoPage(houseConsignmentIndex, itemIndex), true)
 
         navigator
-          .nextPage(AddCustomsUnionAndStatisticsCodeYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
-          .mustBe(routes.CustomsUnionAndStatisticsCodeController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex))
+          .nextPage(AddCustomsUnionAndStatisticsCodeYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
+          .mustBe(routes.CustomsUnionAndStatisticsCodeController.onPageLoad(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex))
       }
 
       "must go from AddCustomsUnionAndStatisticsCodeYesNoPage to AddCommodityCodeYesNoPage when answer is false" in {
@@ -123,8 +130,8 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
           .setValue(AddCustomsUnionAndStatisticsCodeYesNoPage(houseConsignmentIndex, itemIndex), false)
 
         navigator
-          .nextPage(AddCustomsUnionAndStatisticsCodeYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
-          .mustBe(routes.AddCommodityCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode))
+          .nextPage(AddCustomsUnionAndStatisticsCodeYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
+          .mustBe(routes.AddCommodityCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode))
       }
 
       "must go from CustomsUnionAndStatisticsCodePage to AddCommodityCodeYesNoPage" in {
@@ -133,8 +140,8 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
           .setValue(CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex), "code")
 
         navigator
-          .nextPage(CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex), mode, userAnswers)
-          .mustBe(routes.AddCommodityCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode))
+          .nextPage(CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
+          .mustBe(routes.AddCommodityCodeYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode))
       }
 
       "must go from AddAdditionalReferenceYesNo page" - {
@@ -142,10 +149,10 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
           val userAnswers = emptyUserAnswers.setValue(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex), true)
 
           navigator
-            .nextPage(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+            .nextPage(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
             .mustBe(
               controllers.houseConsignment.index.items.additionalReference.routes.AdditionalReferenceTypeController
-                .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+                .onPageLoad(arrivalId, houseConsignmentMode, itemMode, NormalMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
             )
         }
 
@@ -153,8 +160,11 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
           val userAnswers = emptyUserAnswers.setValue(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex), false)
 
           navigator
-            .nextPage(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
-            .mustBe(controllers.houseConsignment.index.items.routes.AddPackagesYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode))
+            .nextPage(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
+            .mustBe(
+              controllers.houseConsignment.index.items.routes.AddPackagesYesNoController
+                .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+            )
         }
       }
 
@@ -163,10 +173,10 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
           val userAnswers = emptyUserAnswers.setValue(AddPackagesYesNoPage(houseConsignmentIndex, itemIndex), true)
 
           navigator
-            .nextPage(AddPackagesYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+            .nextPage(AddPackagesYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
             .mustBe(
               controllers.houseConsignment.index.items.packages.routes.PackageTypeController
-                .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)
+                .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, NormalMode)
             )
         }
 
@@ -174,17 +184,129 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
           val userAnswers = emptyUserAnswers.setValue(AddPackagesYesNoPage(houseConsignmentIndex, itemIndex), false)
 
           navigator
-            .nextPage(AddPackagesYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+            .nextPage(AddPackagesYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
             .mustBe(
-              controllers.houseConsignment.index.items.routes.AddAnotherItemController.onPageLoad(arrivalId, houseConsignmentIndex, mode)
+              controllers.houseConsignment.index.items.routes.AddAnotherItemController.onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
             )
+        }
+
+        "must go from AddCommodityCodeYesNoPage to CommodityCodePage when answered Yes" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex), true)
+
+          navigator
+            .nextPage(AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
+            .mustBe(
+              controllers.houseConsignment.index.items.routes.CommodityCodeController
+                .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, NormalMode)
+            )
+
+        }
+
+        "must go from AddCommodityCodeYesNoPage to AddDocumentYesNoPage when answered No" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex), false)
+
+          navigator
+            .nextPage(AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
+            .mustBe(
+              controllers.houseConsignment.index.items.document.routes.AddDocumentYesNoController
+                .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
+            )
+
+        }
+
+        "must go from CommodityCodePage to AddCombinedNomenclatureCodeYesNoPage " in {
+
+          val userAnswers = emptyUserAnswers
+
+          navigator
+            .nextPage(CommodityCodePage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
+            .mustBe(
+              controllers.houseConsignment.index.items.routes.AddCombinedNomenclatureCodeYesNoController
+                .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, NormalMode)
+            )
+
+        }
+
+        "must go from AddCombinedNomenclatureCodeYesNoPage to CombinedNomenclatureCodePage when answered Yes" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddCombinedNomenclatureCodeYesNoPage(houseConsignmentIndex, itemIndex), true)
+
+          navigator
+            .nextPage(AddCombinedNomenclatureCodeYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
+            .mustBe(
+              controllers.houseConsignment.index.items.routes.CombinedNomenclatureCodeController
+                .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, NormalMode)
+            )
+
+        }
+
+        "must go from AddCombinedNomenclatureCodeYesNoPage to AddDocumentYesNoPage when answered No" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddCombinedNomenclatureCodeYesNoPage(houseConsignmentIndex, itemIndex), false)
+
+          navigator
+            .nextPage(AddCombinedNomenclatureCodeYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
+            .mustBe(
+              controllers.houseConsignment.index.items.document.routes.AddDocumentYesNoController
+                .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode)
+            )
+
+        }
+
+        "must go from CombinedNomenclatureCodePage to AddDocumentYesNoPage" in {
+
+          val userAnswers = emptyUserAnswers
+
+          navigator
+            .nextPage(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
+            .mustBe(
+              controllers.houseConsignment.index.items.document.routes.AddDocumentYesNoController
+                .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
+            )
+
+        }
+
+        "must go from AddDocumentYesNoPage to TypePage when answered Yes" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex), true)
+
+          navigator
+            .nextPage(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
+            .mustBe(
+              controllers.houseConsignment.index.items.document.routes.TypeController
+                .onPageLoad(arrivalId, houseConsignmentMode, itemMode, NormalMode, houseConsignmentIndex, itemIndex, documentIndex)
+            )
+
+        }
+
+        "must go from AddDocumentYesNoPage to AddAdditionalReferenceYesNoPage when answered No" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex), false)
+
+          navigator
+            .nextPage(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
+            .mustBe(
+              controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
+                .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, NormalMode)
+            )
+
         }
       }
     }
 
     "in Check mode" - {
 
-      val mode = CheckMode
+      val houseConsignmentMode: Mode = CheckMode
+      val itemMode: Mode             = CheckMode
+      val navigator                  = navigatorProvider.apply(houseConsignmentMode)
 
       "must go from ItemDescriptionPage to UnloadingFindingsController" in {
 
@@ -192,7 +314,7 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
           .setValue(ItemDescriptionPage(houseConsignmentIndex, itemIndex), "test")
 
         navigator
-          .nextPage(ItemDescriptionPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .nextPage(ItemDescriptionPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
           .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
 
       }
@@ -203,7 +325,7 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
           .setValue(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex), PackageType("code", "description"))
 
         navigator
-          .nextPage(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex), mode, userAnswers)
+          .nextPage(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex), itemMode, userAnswers)
           .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
 
       }
@@ -214,7 +336,7 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
           .setValue(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex), "Shipping mark")
 
         navigator
-          .nextPage(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex), mode, userAnswers)
+          .nextPage(PackageShippingMarkPage(houseConsignmentIndex, itemIndex, packageIndex), itemMode, userAnswers)
           .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
 
       }
@@ -225,7 +347,7 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
           .setValue(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex), BigInt(1))
 
         navigator
-          .nextPage(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex), mode, userAnswers)
+          .nextPage(NumberOfPackagesPage(houseConsignmentIndex, itemIndex, packageIndex), itemMode, userAnswers)
           .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
 
       }
@@ -235,7 +357,7 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
         val userAnswers = emptyUserAnswers.setValue(GrossWeightPage(houseConsignmentIndex, itemIndex), BigDecimal(123.45))
 
         navigator
-          .nextPage(GrossWeightPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .nextPage(GrossWeightPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
           .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
       }
 
@@ -245,7 +367,7 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
             val userAnswers = emptyUserAnswers.setValue(NetWeightPage(houseConsignmentIndex, itemIndex), netWeight)
 
             navigator
-              .nextPage(NetWeightPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+              .nextPage(NetWeightPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
               .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
         }
       }
@@ -255,7 +377,7 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
         val userAnswers = emptyUserAnswers.setValue(CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex), "12345")
 
         navigator
-          .nextPage(CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .nextPage(CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
           .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
       }
 
@@ -264,7 +386,7 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
         val userAnswers = emptyUserAnswers.setValue(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex), "23")
 
         navigator
-          .nextPage(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .nextPage(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
           .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
       }
 
@@ -274,7 +396,7 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
             val userAnswers = emptyUserAnswers.setValue(CommodityCodePage(houseConsignmentIndex, itemIndex), code)
 
             navigator
-              .nextPage(CommodityCodePage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+              .nextPage(CommodityCodePage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
               .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
         }
       }
@@ -283,7 +405,7 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
         val userAnswers = emptyUserAnswers.setValue(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex), false)
 
         navigator
-          .nextPage(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .nextPage(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
           .mustBe(
             controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex)
           )
@@ -293,125 +415,12 @@ class HouseConsignmentItemNavigatorSpec extends SpecBase with ScalaCheckProperty
         val userAnswers = emptyUserAnswers.setValue(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex), true)
 
         navigator
-          .nextPage(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
+          .nextPage(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex), itemMode, userAnswers)
           .mustBe(
             controllers.houseConsignment.index.items.additionalReference.routes.AdditionalReferenceTypeController
-              .onPageLoad(arrivalId, mode, hcIndex, itemIndex, additionalReferenceIndex)
+              .onPageLoad(arrivalId, houseConsignmentMode, itemMode, NormalMode, hcIndex, itemIndex, additionalReferenceIndex)
           )
       }
     }
-
-    "in Normal mode" - {
-      val mode = NormalMode
-
-      "must go from AddCommodityCodeYesNoPage to CommodityCodePage when answered Yes" in {
-
-        val userAnswers = emptyUserAnswers
-          .setValue(AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex), true)
-
-        navigator
-          .nextPage(AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
-          .mustBe(controllers.houseConsignment.index.items.routes.CommodityCodeController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode))
-
-      }
-
-      "must go from AddCommodityCodeYesNoPage to AddDocumentYesNoPage when answered No" in {
-
-        val userAnswers = emptyUserAnswers
-          .setValue(AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex), false)
-
-        navigator
-          .nextPage(AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
-          .mustBe(
-            controllers.houseConsignment.index.items.document.routes.AddDocumentYesNoController
-              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
-          )
-
-      }
-
-      "must go from CommodityCodePage to AddCombinedNomenclatureCodeYesNoPage " in {
-
-        val userAnswers = emptyUserAnswers
-
-        navigator
-          .nextPage(CommodityCodePage(houseConsignmentIndex, itemIndex), mode, userAnswers)
-          .mustBe(
-            controllers.houseConsignment.index.items.routes.AddCombinedNomenclatureCodeYesNoController
-              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
-          )
-
-      }
-
-      "must go from AddCombinedNomenclatureCodeYesNoPage to CombinedNomenclatureCodePage when answered Yes" in {
-
-        val userAnswers = emptyUserAnswers
-          .setValue(AddCombinedNomenclatureCodeYesNoPage(houseConsignmentIndex, itemIndex), true)
-
-        navigator
-          .nextPage(AddCombinedNomenclatureCodeYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
-          .mustBe(
-            controllers.houseConsignment.index.items.routes.CombinedNomenclatureCodeController
-              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
-          )
-
-      }
-
-      "must go from AddCombinedNomenclatureCodeYesNoPage to AddDocumentYesNoPage when answered No" in {
-
-        val userAnswers = emptyUserAnswers
-          .setValue(AddCombinedNomenclatureCodeYesNoPage(houseConsignmentIndex, itemIndex), false)
-
-        navigator
-          .nextPage(AddCombinedNomenclatureCodeYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
-          .mustBe(
-            controllers.houseConsignment.index.items.document.routes.AddDocumentYesNoController
-              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
-          )
-
-      }
-
-      "must go from CombinedNomenclatureCodePage to AddDocumentYesNoPage" in {
-
-        val userAnswers = emptyUserAnswers
-
-        navigator
-          .nextPage(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex), mode, userAnswers)
-          .mustBe(
-            controllers.houseConsignment.index.items.document.routes.AddDocumentYesNoController
-              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
-          )
-
-      }
-
-      "must go from AddDocumentYesNoPage to TypePage when answered Yes" in {
-
-        val userAnswers = emptyUserAnswers
-          .setValue(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex), true)
-
-        navigator
-          .nextPage(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
-          .mustBe(
-            controllers.houseConsignment.index.items.document.routes.TypeController
-              .onPageLoad(arrivalId, NormalMode, houseConsignmentIndex, itemIndex, documentIndex)
-          )
-
-      }
-
-      "must go from AddDocumentYesNoPage to AddAdditionalReferenceYesNoPage when answered No" in {
-
-        val userAnswers = emptyUserAnswers
-          .setValue(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex), false)
-
-        navigator
-          .nextPage(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex), mode, userAnswers)
-          .mustBe(
-            controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
-              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
-          )
-
-      }
-
-    }
-
   }
 }

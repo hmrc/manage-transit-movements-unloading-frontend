@@ -107,14 +107,14 @@ trait RowActions {
       "",
       List(
         ActionItem(
-          "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/change-gross-weight",
+          "/manage-transit-movements/unloading/AB123/change-house-consignment/1/change-item/1/gross-weight",
           Text("Change"),
           Some("gross weight of item 1"),
           "",
           Map("id" -> "change-gross-weight-1")
         ),
         ActionItem(
-          "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/gross-weight/remove",
+          "/manage-transit-movements/unloading/AB123/change-house-consignment/1/item/1/gross-weight/remove",
           Text("Remove"),
           Some("gross weight of item 1"),
           "",
@@ -141,7 +141,7 @@ trait RowActions {
       "",
       List(
         ActionItem(
-          "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/change-cus-code",
+          "/manage-transit-movements/unloading/AB123/change-house-consignment/1/change-item/1/cus-code",
           Text("Change"),
           Some("Customs Union and Statistics (CUS) code for item 1"),
           "",
@@ -156,14 +156,14 @@ trait RowActions {
       "",
       List(
         ActionItem(
-          "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/change-commodity-code",
+          "/manage-transit-movements/unloading/AB123/change-house-consignment/1/change-item/1/commodity-code",
           Text("Change"),
           Some("commodity code for item 1"),
           "",
           Map("id" -> "change-commodity-code-1")
         ),
         ActionItem(
-          "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/commodity-code/remove",
+          "/manage-transit-movements/unloading/AB123/change-house-consignment/1/item/1/commodity-code/remove",
           Text("Remove"),
           Some("commodity code for item 1"),
           "",
@@ -178,14 +178,14 @@ trait RowActions {
       "",
       List(
         ActionItem(
-          "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/change-combined-nomenclature-code",
+          "/manage-transit-movements/unloading/AB123/change-house-consignment/1/change-item/1/combined-nomenclature-code",
           Text("Change"),
           Some("combined nomenclature code for item 1"),
           "",
           Map("id" -> "change-nomenclature-code-1")
         ),
         ActionItem(
-          "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/combined-nomenclature-code/remove",
+          "/manage-transit-movements/unloading/AB123/change-house-consignment/1/item/1/combined-nomenclature-code/remove",
           Text("Remove"),
           Some("combined nomenclature code for item 1"),
           "",

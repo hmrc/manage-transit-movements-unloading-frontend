@@ -49,18 +49,18 @@ class RemoveSealYesNoController @Inject() (
   private def form(equipmentIndex: Index)(implicit request: Request): Form[Boolean] =
     formProvider("transportEquipment.index.seal.removeSealYesNo", equipmentIndex.display, request.arg)
 
-  private def addAnother(arrivalId: ArrivalId, equipmentMode: Mode, sealMode: Mode, equipmentIndex: Index): Call =
-    controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, equipmentMode, sealMode, equipmentIndex)
+  private def addAnother(arrivalId: ArrivalId, equipmentMode: Mode, equipmentIndex: Index): Call =
+    controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, equipmentMode, equipmentIndex)
 
-  def onPageLoad(arrivalId: ArrivalId, equipmentMode: Mode, sealMode: Mode, equipmentIndex: Index, sealIndex: Index): Action[AnyContent] = actions
-    .requireIndex(arrivalId, SealSection(equipmentIndex, sealIndex), addAnother(arrivalId, equipmentMode, sealMode, equipmentIndex))
+  def onPageLoad(arrivalId: ArrivalId, equipmentMode: Mode, equipmentIndex: Index, sealIndex: Index): Action[AnyContent] = actions
+    .requireIndex(arrivalId, SealSection(equipmentIndex, sealIndex), addAnother(arrivalId, equipmentMode, equipmentIndex))
     .andThen(getMandatoryPage(SealIdentificationNumberPage(equipmentIndex, sealIndex))) {
       implicit request =>
-        Ok(view(form(equipmentIndex), request.userAnswers.mrn, arrivalId, equipmentMode, sealMode, equipmentIndex, sealIndex, request.arg))
+        Ok(view(form(equipmentIndex), request.userAnswers.mrn, arrivalId, equipmentMode, equipmentIndex, sealIndex, request.arg))
     }
 
-  def onSubmit(arrivalId: ArrivalId, equipmentMode: Mode, sealMode: Mode, equipmentIndex: Index, sealIndex: Index): Action[AnyContent] = actions
-    .requireIndex(arrivalId, SealSection(equipmentIndex, sealIndex), addAnother(arrivalId, equipmentMode, sealMode, equipmentIndex))
+  def onSubmit(arrivalId: ArrivalId, equipmentMode: Mode, equipmentIndex: Index, sealIndex: Index): Action[AnyContent] = actions
+    .requireIndex(arrivalId, SealSection(equipmentIndex, sealIndex), addAnother(arrivalId, equipmentMode, equipmentIndex))
     .andThen(getMandatoryPage(SealIdentificationNumberPage(equipmentIndex, sealIndex)))
     .async {
       implicit request =>
@@ -70,7 +70,7 @@ class RemoveSealYesNoController @Inject() (
             formWithErrors =>
               Future.successful(
                 BadRequest(
-                  view(formWithErrors, request.userAnswers.mrn, arrivalId, equipmentMode, sealMode, equipmentIndex, sealIndex, request.arg)
+                  view(formWithErrors, request.userAnswers.mrn, arrivalId, equipmentMode, equipmentIndex, sealIndex, request.arg)
                 )
               ),
             value =>
@@ -82,7 +82,7 @@ class RemoveSealYesNoController @Inject() (
                     Future.successful(request.userAnswers)
                   }
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(addAnother(arrivalId, equipmentMode, sealMode, equipmentIndex))
+              } yield Redirect(addAnother(arrivalId, equipmentMode, equipmentIndex))
           )
     }
 }

@@ -17,7 +17,7 @@
 package navigation
 
 import controllers.transportEquipment.index.routes
-import models.{Mode, NormalMode, UserAnswers}
+import models.{Mode, UserAnswers}
 import pages._
 import pages.transportEquipment.index.seals.SealIdentificationNumberPage
 import play.api.mvc.Call
@@ -26,7 +26,7 @@ class SealNavigator(equipmentMode: Mode) extends Navigator {
 
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case SealIdentificationNumberPage(equipmentIndex, _) =>
-      ua => Some(routes.AddAnotherSealController.onPageLoad(ua.id, equipmentMode, NormalMode, equipmentIndex))
+      ua => Some(routes.AddAnotherSealController.onPageLoad(ua.id, equipmentMode, equipmentIndex))
   }
 
   override protected def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {

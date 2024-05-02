@@ -21,9 +21,12 @@ import forms.UnloadingCommentsFormProvider
 import generators.Generators
 import models.NormalMode
 import models.messages.RemarksNonConform._
+import navigation.Navigation
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.UnloadingCommentsPage
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.UnloadingCommentsView
@@ -37,6 +40,13 @@ class UnloadingCommentsControllerSpec extends SpecBase with AppWithDefaultMockFi
   private val mode         = NormalMode
 
   private lazy val unloadingCommentsRoute = controllers.routes.UnloadingCommentsController.onPageLoad(arrivalId, NormalMode).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(
+        bind[Navigation].toInstance(fakeNavigation)
+      )
 
   "UnloadingComments Controller" - {
 

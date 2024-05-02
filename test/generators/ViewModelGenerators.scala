@@ -29,9 +29,12 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import viewModels.additionalReference.index.{AddAnotherAdditionalReferenceViewModel, AdditionalReferenceTypeViewModel}
 import viewModels.departureTransportMeans._
 import viewModels.documents.{AddAnotherDocumentViewModel, AdditionalInformationViewModel, DocumentReferenceNumberViewModel, TypeViewModel}
+import viewModels.houseConsignment.AddAnotherHouseConsignmentViewModel
 import viewModels.houseConsignment.index.additionalReference.{AdditionalReferenceTypeViewModel => HCAdditionalReferenceTypeViewModel}
-import viewModels.houseConsignment.index.departureMeansOfTransport.HouseConsignmentCountryViewModel
-import viewModels.houseConsignment.index.departureTransportMeans.{IdentificationNumberViewModel => HCIdentificationNumberViewModel}
+import viewModels.houseConsignment.index.departureTransportMeans.{
+  HouseConsignmentCountryViewModel,
+  IdentificationNumberViewModel => HCIdentificationNumberViewModel
+}
 import viewModels.houseConsignment.index.documents.ReferenceNumberViewModel
 import viewModels.houseConsignment.index.items.additionalReference.{
   AdditionalReferenceNumberViewModel,
@@ -48,7 +51,8 @@ import viewModels.houseConsignment.index.items.packages.{
   PackageShippingMarksViewModel,
   PackageTypeViewModel
 }
-import viewModels.houseConsignment.index.items.{AddAnotherItemViewModel, document => hcViewModel}
+import viewModels.houseConsignment.index.items.{AddAnotherItemViewModel, document => hcItemViewModel}
+import viewModels.houseConsignment.index.{documents => hcViewModel}
 import viewModels.sections.Section.{AccordionSection, StaticSection}
 import viewModels.transportEquipment.AddAnotherEquipmentViewModel
 import viewModels.transportEquipment.index.seals.SealIdentificationNumberViewModel
@@ -414,6 +418,15 @@ trait ViewModelGenerators {
     HouseConsignmentLevelDocuments(maxSupportDocHC, 0)
   }
 
+  implicit lazy val arbitraryHouseConsignmentItemTypeViewModel: Arbitrary[hcItemViewModel.TypeViewModel] = Arbitrary {
+    for {
+      heading       <- nonEmptyString
+      title         <- nonEmptyString
+      requiredError <- nonEmptyString
+      documents     <- arbitrary[HouseConsignmentLevelDocuments](arbitraryHouseConsignmentLevelDocuments)
+    } yield hcItemViewModel.TypeViewModel(heading, title, requiredError, documents)
+  }
+
   implicit lazy val arbitraryHouseConsignmentTypeViewModel: Arbitrary[hcViewModel.TypeViewModel] = Arbitrary {
     for {
       heading       <- nonEmptyString
@@ -445,7 +458,17 @@ trait ViewModelGenerators {
       title         <- nonEmptyString
       requiredError <- nonEmptyString
       arrivalId     <- nonEmptyString
-    } yield AdditionalReferenceTypeItemViewModel(heading, title, requiredError, ArrivalId(arrivalId), NormalMode, Index(0), Index(0), Index(0))
+    } yield AdditionalReferenceTypeItemViewModel(heading,
+                                                 title,
+                                                 requiredError,
+                                                 ArrivalId(arrivalId),
+                                                 NormalMode,
+                                                 NormalMode,
+                                                 NormalMode,
+                                                 Index(0),
+                                                 Index(0),
+                                                 Index(0)
+    )
   }
 
   implicit lazy val arbitraryItemsAdditionalReferenceNumberViewModel: Arbitrary[AdditionalReferenceNumberViewModel] = Arbitrary {
@@ -454,7 +477,17 @@ trait ViewModelGenerators {
       title         <- nonEmptyString
       requiredError <- nonEmptyString
       arrivalId     <- nonEmptyString
-    } yield AdditionalReferenceNumberViewModel(heading, title, requiredError, ArrivalId(arrivalId), NormalMode, Index(0), Index(0), Index(0))
+    } yield AdditionalReferenceNumberViewModel(heading,
+                                               title,
+                                               requiredError,
+                                               ArrivalId(arrivalId),
+                                               NormalMode,
+                                               NormalMode,
+                                               NormalMode,
+                                               Index(0),
+                                               Index(0),
+                                               Index(0)
+    )
   }
 
   implicit lazy val arbitraryAdditionalReferenceViewModel: Arbitrary[AdditionalReferenceTypeViewModel] = Arbitrary {
@@ -490,7 +523,7 @@ trait ViewModelGenerators {
     } yield AddAnotherAdditionalReferenceViewModel(listItems, onSubmitCall, nextIndex)
   }
 
-  implicit lazy val addAnotherAdditionalReferenceViewModelViewModelHouseConsignmentLevel
+  implicit lazy val addAnotherAdditionalReferenceViewModelViewModelHouseConsignmentItemLevel
     : Arbitrary[viewModels.houseConsignment.index.items.additionalReference.AddAnotherAdditionalReferenceViewModel] = Arbitrary {
     for {
       listItems    <- arbitrary[Seq[ListItem]]
@@ -502,6 +535,15 @@ trait ViewModelGenerators {
                                                                                                                Index(0),
                                                                                                                Index(0)
     )
+  }
+
+  implicit lazy val addAnotherAdditionalReferenceViewModelViewModelHouseConsignmentLevel
+    : Arbitrary[viewModels.houseConsignment.index.additionalReference.AddAnotherAdditionalReferenceViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+      nextIndex    <- arbitrary[Index]
+    } yield viewModels.houseConsignment.index.additionalReference.AddAnotherAdditionalReferenceViewModel(listItems, onSubmitCall, nextIndex, Index(0))
   }
 
   implicit lazy val arbitraryAddAnotherPackageViewModel: Arbitrary[AddAnotherPackageViewModel] = Arbitrary {
@@ -539,5 +581,13 @@ trait ViewModelGenerators {
         requiredError <- nonEmptyString
       } yield viewModels.houseConsignment.index.documents.AdditionalInformationViewModel(heading, title, requiredError)
     }
+
+  implicit lazy val arbitraryAddAnotherHouseConsignmentViewModel: Arbitrary[AddAnotherHouseConsignmentViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+      nextIndex    <- arbitrary[Index]
+    } yield AddAnotherHouseConsignmentViewModel(listItems, onSubmitCall, nextIndex)
+  }
 
 }

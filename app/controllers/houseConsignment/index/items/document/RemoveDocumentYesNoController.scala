@@ -42,15 +42,50 @@ class RemoveDocumentYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions
-    .requireIndex(arrivalId, DocumentSection(houseConsignmentIndex, itemIndex, documentIndex), addAnother(arrivalId, mode, houseConsignmentIndex, itemIndex)) {
-      implicit request =>
-        val insetText = formatInsetText(request.userAnswers, houseConsignmentIndex, itemIndex, documentIndex)
-        Ok(view(form(houseConsignmentIndex, itemIndex), request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, documentIndex, mode, insetText))
-    }
+  def onPageLoad(
+    arrivalId: ArrivalId,
+    houseConsignmentMode: Mode,
+    itemMode: Mode,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
+    documentIndex: Index
+  ): Action[AnyContent] =
+    actions
+      .requireIndex(
+        arrivalId,
+        DocumentSection(houseConsignmentIndex, itemIndex, documentIndex),
+        addAnother(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)
+      ) {
+        implicit request =>
+          val insetText = formatInsetText(request.userAnswers, houseConsignmentIndex, itemIndex, documentIndex)
+          Ok(
+            view(
+              form(houseConsignmentIndex, itemIndex),
+              request.userAnswers.mrn,
+              arrivalId,
+              houseConsignmentIndex,
+              itemIndex,
+              documentIndex,
+              houseConsignmentMode,
+              itemMode,
+              insetText
+            )
+          )
+      }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions
-    .requireIndex(arrivalId, DocumentSection(houseConsignmentIndex, itemIndex, documentIndex), addAnother(arrivalId, mode, houseConsignmentIndex, itemIndex))
+  def onSubmit(
+    arrivalId: ArrivalId,
+    houseConsignmentMode: Mode,
+    itemMode: Mode,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
+    documentIndex: Index
+  ): Action[AnyContent] = actions
+    .requireIndex(
+      arrivalId,
+      DocumentSection(houseConsignmentIndex, itemIndex, documentIndex),
+      addAnother(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)
+    )
     .async {
       implicit request =>
         val insetText = formatInsetText(request.userAnswers, houseConsignmentIndex, itemIndex, documentIndex)
@@ -61,7 +96,17 @@ class RemoveDocumentYesNoController @Inject() (
               Future
                 .successful(
                   BadRequest(
-                    view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex: Index, itemIndex: Index, documentIndex, mode, insetText)
+                    view(
+                      formWithErrors,
+                      request.userAnswers.mrn,
+                      arrivalId,
+                      houseConsignmentIndex: Index,
+                      itemIndex: Index,
+                      documentIndex,
+                      houseConsignmentMode,
+                      itemMode,
+                      insetText
+                    )
                   )
                 ),
             value =>
@@ -73,15 +118,16 @@ class RemoveDocumentYesNoController @Inject() (
                     Future.successful(request.userAnswers)
                   }
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(addAnother(arrivalId, mode, houseConsignmentIndex, itemIndex))
+              } yield Redirect(addAnother(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex))
           )
     }
 
   def form(houseConsignmentIndex: Index, itemIndex: Index): Form[Boolean] =
     formProvider("houseConsignment.index.items.document.removeDocumentYesNo", houseConsignmentIndex.display, itemIndex.display)
 
-  private def addAnother(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Call =
-    controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+  private def addAnother(arrivalId: ArrivalId, houseConsignmentMode: Mode, itemMode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Call =
+    controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
+      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
 
   private def formatInsetText(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index): Option[String] =
     Document(userAnswers, houseConsignmentIndex, itemIndex, documentIndex).map(_.forRemoveDisplay)

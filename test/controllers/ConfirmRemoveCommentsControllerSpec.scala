@@ -20,8 +20,11 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.ConfirmRemoveCommentsFormProvider
 import generators.Generators
 import models.NormalMode
+import navigation.Navigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.ConfirmRemoveCommentsView
@@ -35,6 +38,13 @@ class ConfirmRemoveCommentsControllerSpec extends SpecBase with AppWithDefaultMo
   private val mode         = NormalMode
 
   lazy val confirmRemoveCommentsRoute = routes.ConfirmRemoveCommentsController.onPageLoad(arrivalId, mode).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(
+        bind[Navigator].toInstance(fakeNavigator)
+      )
 
   "ConfirmRemoveComments Controller" - {
 

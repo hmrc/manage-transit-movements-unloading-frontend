@@ -46,7 +46,7 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
     formProvider("houseConsignment.index.additionalReference.removeAdditionalReferenceYesNo")
 
   private def addAnother(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index): Call =
-    Call("GET", "#") //TODO redirect to addAnotherController
+    controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId, mode, houseConsignmentIndex)
 
   def insetText(userAnswers: UserAnswers, houseConsignmentIndex: Index, additionalReferenceIndex: Index): Option[String] =
     AdditionalReference(userAnswers, houseConsignmentIndex, additionalReferenceIndex).map(_.forRemoveDisplay)

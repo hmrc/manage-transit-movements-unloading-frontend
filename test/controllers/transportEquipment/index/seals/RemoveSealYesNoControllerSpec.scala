@@ -35,12 +35,13 @@ import scala.concurrent.Future
 
 class RemoveSealYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val sealIdNumber              = nonEmptyString.sample.value
-  private val formProvider              = new YesNoFormProvider()
-  private val form                      = formProvider("transportEquipment.index.seal.removeSealYesNo", equipmentIndex.display, sealIdNumber)
-  private val equipmentMode             = NormalMode
-  private val sealMode                  = NormalMode
-  private lazy val removeSealYesNoRoute = routes.RemoveSealYesNoController.onPageLoad(arrivalId, equipmentMode, sealMode, equipmentIndex, sealIndex).url
+  private val sealIdNumber = nonEmptyString.sample.value
+  private val formProvider = new YesNoFormProvider()
+  private val form         = formProvider("transportEquipment.index.seal.removeSealYesNo", equipmentIndex.display, sealIdNumber)
+
+  private val equipmentMode = NormalMode
+
+  private lazy val removeSealYesNoRoute = routes.RemoveSealYesNoController.onPageLoad(arrivalId, equipmentMode, equipmentIndex, sealIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -61,7 +62,7 @@ class RemoveSealYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, equipmentMode, sealMode, equipmentIndex, sealIndex, sealIdNumber)(request, messages).toString
+        view(form, mrn, arrivalId, equipmentMode, equipmentIndex, sealIndex, sealIdNumber)(request, messages).toString
     }
 
     "must redirect to the next page" - {
@@ -83,7 +84,7 @@ class RemoveSealYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
         redirectLocation(result).value mustEqual
           controllers.transportEquipment.index.routes.AddAnotherSealController
-            .onPageLoad(arrivalId, equipmentMode, sealMode, equipmentIndex)
+            .onPageLoad(arrivalId, equipmentMode, equipmentIndex)
             .url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
@@ -107,7 +108,7 @@ class RemoveSealYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
         redirectLocation(result).value mustEqual
           controllers.transportEquipment.index.routes.AddAnotherSealController
-            .onPageLoad(arrivalId, equipmentMode, sealMode, equipmentIndex)
+            .onPageLoad(arrivalId, equipmentMode, equipmentIndex)
             .url
       }
     }
@@ -127,7 +128,7 @@ class RemoveSealYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
       val view = injector.instanceOf[RemoveSealYesNoView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, arrivalId, equipmentMode, sealMode, equipmentIndex, sealIndex, sealIdNumber)(request, messages).toString
+        view(boundForm, mrn, arrivalId, equipmentMode, equipmentIndex, sealIndex, sealIdNumber)(request, messages).toString
     }
 
     "must redirect for a GET" - {
@@ -156,7 +157,7 @@ class RemoveSealYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
         redirectLocation(result).value mustEqual
           controllers.transportEquipment.index.routes.AddAnotherSealController
-            .onPageLoad(arrivalId, equipmentMode, sealMode, equipmentIndex)
+            .onPageLoad(arrivalId, equipmentMode, equipmentIndex)
             .url
       }
     }
@@ -189,7 +190,7 @@ class RemoveSealYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
         redirectLocation(result).value mustEqual
           controllers.transportEquipment.index.routes.AddAnotherSealController
-            .onPageLoad(arrivalId, equipmentMode, sealMode, equipmentIndex)
+            .onPageLoad(arrivalId, equipmentMode, equipmentIndex)
             .url
       }
     }

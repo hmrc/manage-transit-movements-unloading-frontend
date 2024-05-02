@@ -18,19 +18,35 @@ package viewModels.houseConsignment.index.items.additionalReference
 
 import models.{ArrivalId, Index, Mode}
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import viewModels.ModeViewModelProvider
 
 import javax.inject.Inject
+import controllers.houseConsignment.index.items.additionalReference.routes
 
-case class AdditionalReferenceNumberViewModel(heading: String,
-                                              title: String,
-                                              requiredError: String,
-                                              arrivalId: ArrivalId,
-                                              mode: Mode,
-                                              houseConsignmentIndex: Index,
-                                              itemIndex: Index,
-                                              additionalReferenceIndex: Index
-)
+case class AdditionalReferenceNumberViewModel(
+  heading: String,
+  title: String,
+  requiredError: String,
+  arrivalId: ArrivalId,
+  houseConsignmentMode: Mode,
+  itemMode: Mode,
+  additionalReferenceMode: Mode,
+  houseConsignmentIndex: Index,
+  itemIndex: Index,
+  additionalReferenceIndex: Index
+) {
+
+  def onSubmit(): Call = routes.AdditionalReferenceNumberController.onSubmit(
+    arrivalId,
+    houseConsignmentMode,
+    itemMode,
+    additionalReferenceMode,
+    houseConsignmentIndex,
+    itemIndex,
+    additionalReferenceIndex
+  )
+}
 
 object AdditionalReferenceNumberViewModel {
 
@@ -38,15 +54,25 @@ object AdditionalReferenceNumberViewModel {
 
     override val prefix = "houseConsignment.index.items.additionalReference.additionalReferenceNumber"
 
-    def apply(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index)(implicit
+    def apply(
+      arrivalId: ArrivalId,
+      houseConsignmentMode: Mode,
+      itemMode: Mode,
+      additionalReferenceMode: Mode,
+      houseConsignmentIndex: Index,
+      itemIndex: Index,
+      additionalReferenceIndex: Index
+    )(implicit
       message: Messages
     ): AdditionalReferenceNumberViewModel =
       new AdditionalReferenceNumberViewModel(
-        heading(mode, houseConsignmentIndex, itemIndex),
-        title(mode, houseConsignmentIndex, itemIndex),
-        requiredError(mode, houseConsignmentIndex, itemIndex),
+        heading(additionalReferenceMode, houseConsignmentIndex, itemIndex),
+        title(additionalReferenceMode, houseConsignmentIndex, itemIndex),
+        requiredError(additionalReferenceMode, houseConsignmentIndex, itemIndex),
         arrivalId,
-        mode,
+        houseConsignmentMode,
+        itemMode,
+        additionalReferenceMode,
         houseConsignmentIndex,
         itemIndex,
         additionalReferenceIndex
