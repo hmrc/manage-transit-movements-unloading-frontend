@@ -169,7 +169,7 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
 
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any(), ArgumentMatchers.eq(houseConsignmentIndex), any())(any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -177,7 +177,8 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
         val request = FakeRequest(POST, addAnotherDepartureMeansOfTransportRoute)
           .withFormUrlEncodedBody(("value", ""))
 
-        val boundForm = form(notMaxedOutViewModel).bind(Map("value" -> ""))
+        val boundForm = formProvider(notMaxedOutViewModel.prefix, notMaxedOutViewModel.allowMore, houseConsignmentIndex)
+          .bind(Map("value" -> ""))
 
         val result = route(app, request).value
 

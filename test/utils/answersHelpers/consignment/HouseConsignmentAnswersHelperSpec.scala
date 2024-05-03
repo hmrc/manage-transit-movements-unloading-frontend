@@ -17,7 +17,7 @@
 package utils.answersHelpers.consignment
 
 import models.reference._
-import models.{CheckMode, DynamicAddress, Index}
+import models.{CheckMode, DynamicAddress, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
