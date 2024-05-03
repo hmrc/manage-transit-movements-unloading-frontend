@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.VehicleIdentificationNumberFormProvider
 import models.requests.DataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
+import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator.DepartureTransportMeansNavigatorProvider
 import pages.houseConsignment.index.departureMeansOfTransport.VehicleIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -38,7 +38,7 @@ class IdentificationNumberController @Inject() (
   actions: Actions,
   formProvider: VehicleIdentificationNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  navigator: DepartureTransportMeansNavigator,
+  navigatorProvider: DepartureTransportMeansNavigatorProvider,
   view: IdentificationNumberView,
   identificationNumberViewModelProvider: IdentificationNumberViewModelProvider
 )(implicit ec: ExecutionContext)
@@ -47,38 +47,81 @@ class IdentificationNumberController @Inject() (
 
   val prefix = "houseConsignment.index.departureMeansOfTransport.identificationNumber"
 
-  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(
+    arrivalId: ArrivalId,
+    houseConsignmentIndex: Index,
+    transportMeansIndex: Index,
+    houseConsignmentMode: Mode,
+    transportMeansMode: Mode
+  ): Action[AnyContent] =
     actions.getStatus(arrivalId) {
       implicit request =>
-        val viewModel = identificationNumberViewModelProvider.apply(mode, houseConsignmentIndex)
-        val form      = formProvider(prefix, mode, houseConsignmentIndex.display)
+        val viewModel = identificationNumberViewModelProvider.apply(transportMeansMode, houseConsignmentIndex)
+        val form      = formProvider(prefix, transportMeansMode, houseConsignmentIndex.display)
 
         val preparedForm = request.userAnswers.get(VehicleIdentificationNumberPage(houseConsignmentIndex, transportMeansIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
 
-        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, transportMeansIndex, mode, viewModel))
+        Ok(
+          view(preparedForm,
+               request.userAnswers.mrn,
+               arrivalId,
+               houseConsignmentIndex,
+               transportMeansIndex,
+               houseConsignmentMode,
+               transportMeansMode,
+               viewModel
+          )
+        )
     }
 
-  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(
+    arrivalId: ArrivalId,
+    houseConsignmentIndex: Index,
+    transportMeansIndex: Index,
+    houseConsignmentMode: Mode,
+    transportMeansMode: Mode
+  ): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
-        val viewModel = identificationNumberViewModelProvider.apply(mode, houseConsignmentIndex)
-        val form      = formProvider(prefix, mode, houseConsignmentIndex.display)
+        val viewModel = identificationNumberViewModelProvider.apply(transportMeansMode, houseConsignmentIndex)
+        val form      = formProvider(prefix, transportMeansMode, houseConsignmentIndex.display)
         form
           .bindFromRequest()
           .fold(
             formWithErrors =>
               Future
-                .successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, transportMeansIndex, mode, viewModel))),
-            value => redirect(houseConsignmentIndex, transportMeansIndex, mode, request, value)
+                .successful(
+                  BadRequest(
+                    view(formWithErrors,
+                         request.userAnswers.mrn,
+                         arrivalId,
+                         houseConsignmentIndex,
+                         transportMeansIndex,
+                         houseConsignmentMode,
+                         transportMeansMode,
+                         viewModel
+                    )
+                  )
+                ),
+            value => redirect(houseConsignmentIndex, transportMeansIndex, houseConsignmentMode, transportMeansMode, value)
           )
     }
 
-  private def redirect(houseConsignmentIndex: Index, transportMeansIndex: Index, mode: Mode, request: DataRequest[AnyContent], value: String): Future[Result] =
+  private def redirect(
+    houseConsignmentIndex: Index,
+    transportMeansIndex: Index,
+    houseConsignmentMode: Mode,
+    transportMeansMode: Mode,
+    value: String
+  )(implicit request: DataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(VehicleIdentificationNumberPage(houseConsignmentIndex, transportMeansIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(VehicleIdentificationNumberPage(houseConsignmentIndex, transportMeansIndex), mode, request.userAnswers))
+    } yield {
+      val navigator = navigatorProvider.apply(houseConsignmentMode)
+      Redirect(navigator.nextPage(VehicleIdentificationNumberPage(houseConsignmentIndex, transportMeansIndex), transportMeansMode, request.userAnswers))
+    }
 }

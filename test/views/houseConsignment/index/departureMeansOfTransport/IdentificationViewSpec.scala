@@ -35,7 +35,7 @@ class IdentificationViewSpec extends EnumerableViewBehaviours[TransportMeansIden
   private val viewModel: IdentificationViewModel        = arbitrary[IdentificationViewModel].sample.value
 
   override def applyView(form: Form[TransportMeansIdentification]): HtmlFormat.Appendable =
-    injector.instanceOf[IdentificationView].apply(form, mrn, arrivalId, hcIndex, index, values, NormalMode, viewModel)(fakeRequest, messages)
+    injector.instanceOf[IdentificationView].apply(form, mrn, arrivalId, hcIndex, index, values, NormalMode, NormalMode, viewModel)(fakeRequest, messages)
 
   override val prefix: String = "houseConsignment.index.departureMeansOfTransport.identification"
 

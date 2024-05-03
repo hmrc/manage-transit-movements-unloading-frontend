@@ -37,7 +37,7 @@ class DepartureTransportMeansAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "checkYourAnswers.departureMeansOfTransport.identification",
     id = None,
-    call = Some(routes.IdentificationController.onPageLoad(arrivalId, houseConsignmentIndex, transportMeansIndex, CheckMode)),
+    call = Some(routes.IdentificationController.onPageLoad(arrivalId, houseConsignmentIndex, transportMeansIndex, CheckMode, CheckMode)),
     args = transportMeansIndex.display
   )
 
@@ -46,7 +46,7 @@ class DepartureTransportMeansAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "checkYourAnswers.departureMeansOfTransport.identificationNumber",
     id = None,
-    call = Some(routes.IdentificationNumberController.onPageLoad(arrivalId, houseConsignmentIndex, transportMeansIndex, CheckMode)),
+    call = Some(routes.IdentificationNumberController.onPageLoad(arrivalId, houseConsignmentIndex, transportMeansIndex, CheckMode, CheckMode)),
     args = transportMeansIndex.display
   )
 
@@ -55,7 +55,7 @@ class DepartureTransportMeansAnswersHelper(
     formatAnswer = x => Text(x.description),
     prefix = "checkYourAnswers.departureMeansOfTransport.country",
     id = None,
-    call = Some(routes.CountryController.onPageLoad(arrivalId, houseConsignmentIndex, transportMeansIndex, CheckMode)),
+    call = Some(routes.CountryController.onPageLoad(arrivalId, houseConsignmentIndex, transportMeansIndex, CheckMode, CheckMode)),
     args = transportMeansIndex.display
   )
 }
