@@ -26,7 +26,6 @@ import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
-import pages.houseConsignment.index.items.AddAdditionalReferenceYesNoPage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -44,10 +43,13 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
   private def form(viewModel: AddAnotherHouseConsignmentDocumentViewModel, houseIndex: Index, itemIndex: Index): Form[Boolean] =
     formProvider(viewModel.prefix, viewModel.allowMore, itemIndex.display, houseIndex.display)
 
-  private val mode = NormalMode
+  private val houseConsignmentMode = NormalMode
+  private val itemMode             = NormalMode
 
   private lazy val addAnotherDocumentRoute =
-    controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode).url
+    controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
+      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+      .url
 
   private val mockViewModelProvider = mock[AddAnotherHouseConsignmentDocumentViewModelProvider]
 
@@ -74,7 +76,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
   "AddAnotherDocumentController" - {
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -88,14 +90,18 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(viewModel, houseConsignmentIndex, itemIndex), mrn, arrivalId, houseConsignmentIndex, itemIndex, notMaxedOutViewModel)(request,
-                                                                                                                                          messages,
-                                                                                                                                          frontendAppConfig
-          ).toString
+          view(
+            form(viewModel, houseConsignmentIndex, itemIndex),
+            mrn,
+            arrivalId,
+            houseConsignmentIndex,
+            itemIndex,
+            notMaxedOutViewModel
+          )(request, messages, frontendAppConfig).toString
       }
 
       "when max limit reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -109,17 +115,21 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(maxedOutViewModel, itemIndex, houseConsignmentIndex), mrn, arrivalId, houseConsignmentIndex, itemIndex, maxedOutViewModel)(request,
-                                                                                                                                               messages,
-                                                                                                                                               frontendAppConfig
-          ).toString
+          view(
+            form(maxedOutViewModel, itemIndex, houseConsignmentIndex),
+            mrn,
+            arrivalId,
+            houseConsignmentIndex,
+            itemIndex,
+            maxedOutViewModel
+          )(request, messages, frontendAppConfig).toString
       }
     }
 
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to type page at next index" in {
-          when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
+          when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -137,7 +147,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
       "when no submitted" - {
         "must redirect to next page" in {
-          when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
+          when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -151,29 +161,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
           redirectLocation(result).value mustEqual
             controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
-              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
-              .url
-        }
-
-        "must redirect to cross check page if AddAdditionalReferenceYesNoPage answered" in {
-          when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
-            .thenReturn(notMaxedOutViewModel)
-
-          val userAnswers =
-            emptyUserAnswers.setValue(AddAdditionalReferenceYesNoPage(houseConsignmentIndex, itemIndex), false)
-
-          setExistingUserAnswers(userAnswers)
-
-          val request = FakeRequest(POST, addAnotherDocumentRoute)
-            .withFormUrlEncodedBody(("value", "false"))
-
-          val result = route(app, request).value
-
-          status(result) mustEqual SEE_OTHER
-
-          redirectLocation(result).value mustEqual
-            controllers.routes.HouseConsignmentController
-              .onPageLoad(arrivalId, itemIndex)
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
               .url
         }
       }
@@ -181,7 +169,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "when max limit reached" - {
       "must redirect to next page" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -195,14 +183,14 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
         redirectLocation(result).value mustEqual
           controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
-            .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+            .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
             .url
       }
     }
 
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any())(any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)

@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package controllers.houseConsignment.index.documents
+package controllers.houseConsignment.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
+import navigation.houseConsignment.index.HouseConsignmentNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.houseConsignment.index.documents.AddDocumentYesNoPage
+import pages.houseConsignment.index.AddDocumentYesNoPage
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.houseConsignment.index.documents.AddDocumentsYesNoView
+import views.html.houseConsignment.index.AddDocumentsYesNoView
 
 import scala.concurrent.Future
 
@@ -36,13 +38,16 @@ class AddDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMockFix
   private val mode         = NormalMode
 
   private lazy val addDocumentYesNoRoute =
-    controllers.houseConsignment.index.documents.routes.AddDocumentsYesNoController
+    routes.AddDocumentsYesNoController
       .onPageLoad(arrivalId, mode, houseConsignmentIndex)
       .url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(
+        bind[HouseConsignmentNavigator].toInstance(FakeHouseConsignmentNavigators.fakeHouseConsignmentNavigator)
+      )
 
   "AddDocumentYesNoController" - {
 

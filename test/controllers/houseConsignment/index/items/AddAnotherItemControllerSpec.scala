@@ -123,7 +123,7 @@ class AddAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFixtu
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.routes.DescriptionController
-            .onPageLoad(arrivalId, mode, houseConsignmentIndex, notMaxedOutViewModel.nextIndex)
+            .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, notMaxedOutViewModel.nextIndex)
             .url
         }
       }

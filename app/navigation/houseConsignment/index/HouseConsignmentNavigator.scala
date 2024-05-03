@@ -26,14 +26,14 @@ import play.api.mvc.Call
 @Singleton
 class HouseConsignmentNavigator extends Navigator {
 
+  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case _ => _ => Some(Call("GET", "#")) //TODO: Update navigation
+  }
+
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
 
     case GrossWeightPage(houseConsignmentIndex) =>
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
-
   }
 
-  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case _ => _ => Some(Call("GET", "#")) //TODO: Update navigation
-  }
 }

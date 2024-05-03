@@ -21,6 +21,7 @@ import forms.ItemsAdditionalReferenceNumberFormProvider
 import generators.Generators
 import models.NormalMode
 import models.reference.AdditionalReferenceType
+import navigation.houseConsignment.index.items.AdditionalReferenceNavigator.AdditionalReferenceNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -41,17 +42,25 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
 
   private lazy val formProvider = new ItemsAdditionalReferenceNumberFormProvider()
   private lazy val form         = formProvider(viewModel.requiredError)
-  private val mode              = NormalMode
+
+  private val houseConsignmentMode    = NormalMode
+  private val itemMode                = NormalMode
+  private val additionalReferenceMode = NormalMode
 
   private lazy val additionalReferenceNumberRoute =
-    routes.AdditionalReferenceNumberController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex).url
+    routes.AdditionalReferenceNumberController
+      .onPageLoad(arrivalId, houseConsignmentMode, itemMode, additionalReferenceMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+      .url
 
   private val mockViewModelProvider = mock[AdditionalReferenceNumberViewModelProvider]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[AdditionalReferenceNumberViewModelProvider]).toInstance(mockViewModelProvider))
+      .overrides(
+        bind(classOf[AdditionalReferenceNavigatorProvider]).toInstance(FakeConsignmentItemNavigators.fakeAdditionalReferenceNavigatorProvider),
+        bind(classOf[AdditionalReferenceNumberViewModelProvider]).toInstance(mockViewModelProvider)
+      )
 
   private val additionalReference = arbitrary[AdditionalReferenceType].sample.value
 
@@ -61,7 +70,7 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockViewModelProvider)
-    when(mockViewModelProvider.apply(any(), any(), any(), any(), any())(any())).thenReturn(viewModel)
+    when(mockViewModelProvider.apply(any(), any(), any(), any(), any(), any(), any())(any())).thenReturn(viewModel)
   }
 
   "AdditionalReferenceNumber Controller" - {
@@ -114,10 +123,7 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.additionalReference.routes.AddAnotherAdditionalReferenceController
-        .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex)
-        .url
-
+      redirectLocation(result).value mustEqual onwardRoute.url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

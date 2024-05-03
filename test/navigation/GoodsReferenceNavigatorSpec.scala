@@ -42,7 +42,7 @@ class GoodsReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
         navigator
           .nextPage(ItemPage(equipmentIndex, itemIndex), goodsReferenceMode, userAnswers)
           .mustBe(
-            controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, equipmentMode, goodsReferenceMode, equipmentIndex)
+            controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, equipmentMode, equipmentIndex)
           )
 
       }

@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package controllers.houseConsignment.index.documents
+package controllers.houseConsignment.index
 
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator
-import pages.houseConsignment.index.documents.AddDocumentYesNoPage
+import navigation.houseConsignment.index.HouseConsignmentNavigator
+import pages.houseConsignment.index.AddDocumentYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.houseConsignment.index.documents.AddDocumentsYesNoView
+import views.html.houseConsignment.index.AddDocumentsYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddDocumentsYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: HouseConsignmentItemNavigator,
+  navigator: HouseConsignmentNavigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,

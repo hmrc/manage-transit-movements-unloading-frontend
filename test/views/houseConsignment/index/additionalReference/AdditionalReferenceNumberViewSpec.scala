@@ -35,7 +35,7 @@ class AdditionalReferenceNumberViewSpec extends SpecBase with CharacterCountView
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector
       .instanceOf[AdditionalReferenceNumberView]
-      .apply(form, arrivalId, mrn, NormalMode, houseConsignmentIndex, additionalReferenceIndex)(fakeRequest, messages)
+      .apply(form, arrivalId, mrn, NormalMode, NormalMode, houseConsignmentIndex, additionalReferenceIndex)(fakeRequest, messages)
 
   override val prefix: String =
     "houseConsignment.index.additionalReference.additionalReferenceNumber"

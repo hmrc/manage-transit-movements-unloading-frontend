@@ -64,7 +64,6 @@ object ApplyAnotherItemViewModel {
       userAnswers: UserAnswers,
       arrivalId: ArrivalId,
       equipmentMode: Mode,
-      goodsReferenceMode: Mode,
       equipmentIndex: Index,
       availableGoodsReferences: Seq[GoodsReference]
     )(implicit messages: Messages): ApplyAnotherItemViewModel = {
@@ -79,7 +78,7 @@ object ApplyAnotherItemViewModel {
                   name = messages("transport.item.prefix", declarationGoodsItemNumber.toString),
                   changeUrl = None,
                   removeUrl = Some(
-                    routes.RemoveGoodsReferenceYesNoController.onPageLoad(arrivalId, equipmentIndex, itemIndex, equipmentMode, goodsReferenceMode).url
+                    routes.RemoveGoodsReferenceYesNoController.onPageLoad(arrivalId, equipmentIndex, itemIndex, equipmentMode).url
                   )
                 )
             }
@@ -87,7 +86,7 @@ object ApplyAnotherItemViewModel {
 
       new ApplyAnotherItemViewModel(
         listItems = listItems,
-        onSubmitCall = routes.ApplyAnotherItemController.onSubmit(arrivalId, equipmentMode, goodsReferenceMode, equipmentIndex),
+        onSubmitCall = routes.ApplyAnotherItemController.onSubmit(arrivalId, equipmentMode, equipmentIndex),
         equipmentIndex = equipmentIndex,
         isNumberItemsZero = availableGoodsReferences.isEmpty,
         nextIndex = array.nextIndex

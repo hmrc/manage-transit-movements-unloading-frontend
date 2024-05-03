@@ -30,7 +30,9 @@ class AddNumberOfPackagesYesNoViewSpec extends YesNoViewBehaviours {
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[AddNumberOfPackagesYesNoView]
-      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, packageType.toString, NormalMode)(fakeRequest, messages)
+      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, packageType.toString, NormalMode, NormalMode, NormalMode)(fakeRequest,
+                                                                                                                                             messages
+      )
 
   override val prefix: String = "houseConsignment.index.items.packages.addNumberOfPackagesYesNo"
 

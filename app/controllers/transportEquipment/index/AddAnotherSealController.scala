@@ -48,22 +48,22 @@ class AddAnotherSealController @Inject() (
   private def form(viewModel: AddAnotherSealViewModel, equipmentIndex: Index): Form[Boolean] =
     formProvider(viewModel.prefix, viewModel.allowMore, equipmentIndex.display)
 
-  def onPageLoad(arrivalId: ArrivalId, equipmentMode: Mode, sealMode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, equipmentMode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, arrivalId, equipmentMode, sealMode, equipmentIndex)
+      val viewModel = viewModelProvider(request.userAnswers, arrivalId, equipmentMode, equipmentIndex)
       Ok(view(form(viewModel, equipmentIndex), request.userAnswers.mrn, arrivalId, viewModel))
   }
 
-  def onSubmit(arrivalId: ArrivalId, equipmentMode: Mode, sealMode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onSubmit(arrivalId: ArrivalId, equipmentMode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, arrivalId, equipmentMode, sealMode, equipmentIndex)
+      val viewModel = viewModelProvider(request.userAnswers, arrivalId, equipmentMode, equipmentIndex)
       form(viewModel, equipmentIndex)
         .bindFromRequest()
         .fold(
           formWithErrors => BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel)),
           {
             case true =>
-              Redirect(SealIdentificationNumberController.onPageLoad(arrivalId, equipmentMode, sealMode, equipmentIndex, viewModel.nextIndex))
+              Redirect(SealIdentificationNumberController.onPageLoad(arrivalId, equipmentMode, NormalMode, equipmentIndex, viewModel.nextIndex))
             case false =>
               equipmentMode match {
                 case NormalMode =>

@@ -20,6 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NumberOfPackagesFormProvider
 import generators.Generators
 import models.NormalMode
+import navigation.houseConsignment.index.items.PackagesNavigator.PackagesNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -40,15 +41,22 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
 
   private val mockViewModelProvider = mock[NumberOfPackagesViewModelProvider]
   private val viewModel             = arbitrary[NumberOfPackagesViewModel].sample.value
-  private val mode                  = NormalMode
-  val form: Form[BigInt]            = new NumberOfPackagesFormProvider()(prefix, BigInt(0), Seq("2", "test"))
+
+  private val houseConsignmentMode = NormalMode
+  private val itemMode             = NormalMode
+  private val packageMode          = NormalMode
+
+  val form: Form[BigInt] = new NumberOfPackagesFormProvider()(prefix, BigInt(0), Seq("2", "test"))
 
   private val validAnswer = "1"
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[NumberOfPackagesViewModelProvider].toInstance(mockViewModelProvider))
+      .overrides(
+        bind(classOf[PackagesNavigatorProvider]).toInstance(FakeConsignmentItemNavigators.fakePackagesNavigatorProvider),
+        bind[NumberOfPackagesViewModelProvider].toInstance(mockViewModelProvider)
+      )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -59,7 +67,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
   }
 
   lazy val totalNumberOfPackagesRoute: String =
-    routes.NumberOfPackagesController.onPageLoad(arrivalId, hcIndex, itemIndex, index, NormalMode).url
+    routes.NumberOfPackagesController.onPageLoad(arrivalId, hcIndex, itemIndex, index, houseConsignmentMode, itemMode, packageMode).url
 
   "TotalNumberOfPackages Controller" - {
 
@@ -75,7 +83,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, arrivalId, mrn, hcIndex, itemIndex, index, mode, viewModel)(request, messages).toString
+        view(form, arrivalId, mrn, hcIndex, itemIndex, index, houseConsignmentMode, itemMode, packageMode, viewModel)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -94,7 +102,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
       val view       = injector.instanceOf[NumberOfPackagesView]
 
       contentAsString(result) mustEqual
-        view(filledForm, arrivalId, mrn, hcIndex, itemIndex, index, mode, viewModel)(request, messages).toString
+        view(filledForm, arrivalId, mrn, hcIndex, itemIndex, index, houseConsignmentMode, itemMode, packageMode, viewModel)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -129,7 +137,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
       val view = injector.instanceOf[NumberOfPackagesView]
 
       contentAsString(result) mustEqual
-        view(boundForm, arrivalId, mrn, hcIndex, itemIndex, index, mode, viewModel)(request, messages).toString
+        view(boundForm, arrivalId, mrn, hcIndex, itemIndex, index, houseConsignmentMode, itemMode, packageMode, viewModel)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

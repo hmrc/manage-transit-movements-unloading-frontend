@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items.additionalReference
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.{ArrivalId, Index, Mode}
+import models.{ArrivalId, CheckMode, Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -46,29 +46,39 @@ class AddAnotherAdditionalReferenceController @Inject() (
   private def form(viewModel: AddAnotherAdditionalReferenceViewModel): Form[Boolean] =
     formProvider(viewModel.prefix, viewModel.allowMore)
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
-    implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode, houseConsignmentIndex, itemIndex)
-      Ok(view(form(viewModel), request.userAnswers.mrn, arrivalId, viewModel))
-  }
+  def onPageLoad(arrivalId: ArrivalId, houseConsignmentMode: Mode, itemMode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Action[AnyContent] =
+    actions.requireData(arrivalId) {
+      implicit request =>
+        val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)
+        Ok(view(form(viewModel), request.userAnswers.mrn, arrivalId, viewModel))
+    }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
-    implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode, houseConsignmentIndex, itemIndex)
-      val form      = formProvider(viewModel.prefix, viewModel.allowMore, houseConsignmentIndex.display, itemIndex.display)
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel)),
-          {
-            case true =>
-              Redirect(
-                controllers.houseConsignment.index.items.additionalReference.routes.AdditionalReferenceTypeController
-                  .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, viewModel.nextIndex)
-              )
-            case false =>
-              Redirect(controllers.houseConsignment.index.items.routes.AddPackagesYesNoController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode))
-          }
-        )
-  }
+  def onSubmit(arrivalId: ArrivalId, houseConsignmentMode: Mode, itemMode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Action[AnyContent] =
+    actions.requireData(arrivalId) {
+      implicit request =>
+        val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)
+        val form      = formProvider(viewModel.prefix, viewModel.allowMore, houseConsignmentIndex.display, itemIndex.display)
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel)),
+            {
+              case true =>
+                Redirect(
+                  controllers.houseConsignment.index.items.additionalReference.routes.AdditionalReferenceTypeController
+                    .onPageLoad(arrivalId, houseConsignmentMode, itemMode, NormalMode, houseConsignmentIndex, itemIndex, viewModel.nextIndex)
+                )
+              case false =>
+                itemMode match {
+                  case CheckMode =>
+                    Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+                  case NormalMode =>
+                    Redirect(
+                      controllers.houseConsignment.index.items.routes.AddPackagesYesNoController
+                        .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+                    )
+                }
+            }
+          )
+    }
 }

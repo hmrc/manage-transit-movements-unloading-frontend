@@ -20,9 +20,11 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.routes
 import forms.YesNoFormProvider
 import models.NormalMode
+import navigation.AdditionalReferenceNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.additionalReference.AdditionalReferenceNumberYesNoPage
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -42,6 +44,9 @@ class AdditionalReferenceNumberYesNoControllerSpec extends SpecBase with AppWith
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(
+        bind(classOf[AdditionalReferenceNavigator]).toInstance(FakeConsignmentNavigators.fakeAdditionalReferenceNavigator)
+      )
 
   "AdditionalReferenceNumberYesNoController Controller" - {
 

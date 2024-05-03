@@ -28,6 +28,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import controllers.houseConsignment.index.departureMeansOfTransport.routes
+import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
 import org.mockito.ArgumentMatchers
 import pages.houseConsignment.index.departureMeansOfTransport.VehicleIdentificationNumberPage
 import viewModels.houseConsignment.index.departureTransportMeans.IdentificationNumberViewModel
@@ -48,7 +49,10 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[IdentificationNumberViewModelProvider].toInstance(mockViewModelProvider))
+      .overrides(
+        bind(classOf[DepartureTransportMeansNavigator]).toInstance(FakeHouseConsignmentNavigators.fakeDepartureTransportMeansNavigator),
+        bind[IdentificationNumberViewModelProvider].toInstance(mockViewModelProvider)
+      )
 
   override def beforeEach(): Unit = {
     super.beforeEach()

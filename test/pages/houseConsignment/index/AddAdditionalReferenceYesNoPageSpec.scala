@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package pages.houseConsignment.index.additionalReference
+package pages.houseConsignment.index
 
 import pages.behaviours.PageBehaviours
-import pages.houseConsignment.index.AddAdditionalReferenceYesNoPage
 import pages.sections.houseConsignment.index.additionalReference.AdditionalReferenceListSection
 import play.api.libs.json.{JsArray, Json}
 

@@ -38,11 +38,13 @@ class RemovePackageTypeYesNoControllerSpec extends SpecBase with AppWithDefaultM
   private val formProvider = new YesNoFormProvider()
   private val packageType  = arbitrary[PackageType].sample.value
   private val form         = formProvider("houseConsignment.index.items.packages.removePackageTypeYesNo", houseConsignmentIndex, itemIndex)
-  private val mode         = NormalMode
+
+  private val houseConsignmentMode = NormalMode
+  private val itemMode             = NormalMode
 
   private lazy val removePackageTypeYesNoRoute =
     controllers.houseConsignment.index.items.packages.routes.RemovePackageTypeYesNoController
-      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)
+      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode)
       .url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -70,9 +72,17 @@ class RemovePackageTypeYesNoControllerSpec extends SpecBase with AppWithDefaultM
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode, Some(s"${quantity.toString} ${packageType.toString}"))(request,
-                                                                                                                                                    messages
-            ).toString
+            view(
+              form,
+              mrn,
+              arrivalId,
+              houseConsignmentIndex,
+              itemIndex,
+              packageIndex,
+              houseConsignmentMode,
+              itemMode,
+              Some(s"${quantity.toString} ${packageType.toString}")
+            )(request, messages).toString
       }
     }
 
@@ -95,7 +105,7 @@ class RemovePackageTypeYesNoControllerSpec extends SpecBase with AppWithDefaultM
             status(result) mustEqual SEE_OTHER
 
             redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController
-              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
               .url
 
             val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
@@ -126,7 +136,7 @@ class RemovePackageTypeYesNoControllerSpec extends SpecBase with AppWithDefaultM
             status(result) mustEqual SEE_OTHER
 
             redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController
-              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
               .url
 
             val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
@@ -159,10 +169,17 @@ class RemovePackageTypeYesNoControllerSpec extends SpecBase with AppWithDefaultM
           val view = injector.instanceOf[RemovePackageTypeYesNoView]
 
           contentAsString(result) mustEqual
-            view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode, Some(s"${quantity.toString} ${packageType.toString}"))(
-              request,
-              messages
-            ).toString
+            view(
+              filledForm,
+              mrn,
+              arrivalId,
+              houseConsignmentIndex,
+              itemIndex,
+              packageIndex,
+              houseConsignmentMode,
+              itemMode,
+              Some(s"${quantity.toString} ${packageType.toString}")
+            )(request, messages).toString
       }
     }
 

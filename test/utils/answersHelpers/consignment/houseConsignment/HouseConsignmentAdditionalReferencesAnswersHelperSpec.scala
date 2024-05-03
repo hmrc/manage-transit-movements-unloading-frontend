@@ -16,12 +16,12 @@
 
 package utils.answersHelpers.consignment.houseConsignment
 
+import controllers.houseConsignment.index.additionalReference.routes
+import models.CheckMode
 import models.reference.AdditionalReferenceType
 import org.scalacheck.Arbitrary.arbitrary
 import pages.houseConsignment.index.additionalReference.{HouseConsignmentAdditionalReferenceNumberPage, HouseConsignmentAdditionalReferenceTypePage}
 import utils.answersHelpers.AnswersHelperSpecBase
-import controllers.houseConsignment.index.additionalReference.routes
-import models.CheckMode
 
 class HouseConsignmentAdditionalReferencesAnswersHelperSpec extends AnswersHelperSpecBase {
 
@@ -49,7 +49,7 @@ class HouseConsignmentAdditionalReferencesAnswersHelperSpec extends AnswersHelpe
             result.value.value mustBe value.toString
             val action = result.actions.value.items.head
             action.content.value mustBe "Change"
-            action.href mustBe routes.AdditionalReferenceTypeController.onPageLoad(arrivalId, CheckMode, hcIndex, index).url
+            action.href mustBe routes.AdditionalReferenceTypeController.onPageLoad(arrivalId, CheckMode, CheckMode, hcIndex, index).url
             action.visuallyHiddenText.value mustBe "type for additional reference 1"
             action.id mustBe "change-additional-reference-type-1"
         }
@@ -78,7 +78,7 @@ class HouseConsignmentAdditionalReferencesAnswersHelperSpec extends AnswersHelpe
             result.value.value mustBe value
             val action = result.actions.value.items.head
             action.content.value mustBe "Change"
-            action.href mustBe routes.AdditionalReferenceNumberController.onPageLoad(arrivalId, CheckMode, hcIndex, index).url
+            action.href mustBe routes.AdditionalReferenceNumberController.onPageLoad(arrivalId, CheckMode, CheckMode, hcIndex, index).url
             action.visuallyHiddenText.value mustBe "reference number for additional reference 1"
             action.id mustBe "change-additional-reference-number-1"
         }

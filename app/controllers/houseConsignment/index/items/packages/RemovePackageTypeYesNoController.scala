@@ -42,13 +42,20 @@ class RemovePackageTypeYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def addAnother(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Call =
-    routes.AddAnotherPackageController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+  private def addAnother(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Call =
+    routes.AddAnotherPackageController.onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
 
   private def form(houseConsignmentIndex: Index, itemIndex: Index): Form[Boolean] =
     formProvider("houseConsignment.index.items.packages.removePackageTypeYesNo", houseConsignmentIndex, itemIndex)
 
-  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(
+    arrivalId: ArrivalId,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
+    packageIndex: Index,
+    houseConsignmentMode: Mode,
+    itemMode: Mode
+  ): Action[AnyContent] =
     actions
       .getStatus(arrivalId) {
         implicit request =>
@@ -60,13 +67,21 @@ class RemovePackageTypeYesNoController @Inject() (
               houseConsignmentIndex,
               itemIndex,
               packageIndex,
-              mode,
+              houseConsignmentMode,
+              itemMode,
               insetText(request.userAnswers, houseConsignmentIndex, itemIndex, packageIndex)
             )
           )
       }
 
-  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(
+    arrivalId: ArrivalId,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
+    packageIndex: Index,
+    houseConsignmentMode: Mode,
+    itemMode: Mode
+  ): Action[AnyContent] =
     actions
       .getStatus(arrivalId)
       .async {
@@ -84,7 +99,8 @@ class RemovePackageTypeYesNoController @Inject() (
                       houseConsignmentIndex,
                       itemIndex,
                       packageIndex,
-                      mode,
+                      houseConsignmentMode,
+                      itemMode,
                       insetText(request.userAnswers, houseConsignmentIndex, itemIndex, packageIndex)
                     )
                   )
@@ -97,7 +113,7 @@ class RemovePackageTypeYesNoController @Inject() (
                     } else { Future.successful(request.userAnswers) }
                   _ <- sessionRepository.set(updatedAnswers)
                 } yield Redirect(
-                  addAnother(arrivalId, houseConsignmentIndex, itemIndex, mode)
+                  addAnother(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
                 )
             )
       }

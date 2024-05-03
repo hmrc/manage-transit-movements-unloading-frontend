@@ -63,8 +63,8 @@ object AddAnotherHouseConsignmentDocumentViewModel {
 
   class AddAnotherHouseConsignmentDocumentViewModelProvider {
 
-    def apply(userAnswers: UserAnswers, arrivalId: ArrivalId, houseConsignmentIndex: Index, itemsIndex: Index, mode: Mode)(implicit
-      config: FrontendAppConfig
+    def apply(userAnswers: UserAnswers, arrivalId: ArrivalId, houseConsignmentIndex: Index, itemsIndex: Index, houseConsignmentMode: Mode, itemMode: Mode)(
+      implicit config: FrontendAppConfig
     ): AddAnotherHouseConsignmentDocumentViewModel = {
 
       val documents: Option[JsArray] = userAnswers.get(DocumentsSection(houseConsignmentIndex, itemsIndex))
@@ -80,7 +80,9 @@ object AddAnotherHouseConsignmentDocumentViewModel {
                   ListItem(
                     name = document.forAddAnotherDisplay,
                     changeUrl = None,
-                    removeUrl = Some(routes.RemoveDocumentYesNoController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemsIndex, index).url)
+                    removeUrl = Some(
+                      routes.RemoveDocumentYesNoController.onPageLoad(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemsIndex, index).url
+                    )
                   )
               }
           }
@@ -90,7 +92,7 @@ object AddAnotherHouseConsignmentDocumentViewModel {
 
       new AddAnotherHouseConsignmentDocumentViewModel(
         listItems = listItems,
-        onSubmitCall = routes.AddAnotherDocumentController.onSubmit(arrivalId, houseConsignmentIndex, itemsIndex, mode),
+        onSubmitCall = routes.AddAnotherDocumentController.onSubmit(arrivalId, houseConsignmentIndex, itemsIndex, houseConsignmentMode, itemMode),
         nextIndex = documents.nextIndex,
         documents = houseConsignmentLevelDocuments,
         allowMore = houseConsignmentLevelDocuments.canAddMore

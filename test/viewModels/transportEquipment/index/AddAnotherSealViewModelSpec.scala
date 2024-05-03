@@ -31,7 +31,7 @@ class AddAnotherSealViewModelSpec extends SpecBase with Generators with ScalaChe
     "when there is no seal" in {
       forAll(arbitrary[Mode]) {
         mode =>
-          val result = new AddAnotherSealViewModelProvider().apply(emptyUserAnswers, arrivalId, mode, mode, equipmentIndex)
+          val result = new AddAnotherSealViewModelProvider().apply(emptyUserAnswers, arrivalId, mode, equipmentIndex)
 
           result.listItems mustBe Nil
 
@@ -49,7 +49,7 @@ class AddAnotherSealViewModelSpec extends SpecBase with Generators with ScalaChe
           val userAnswers = emptyUserAnswers
             .setValue(SealIdentificationNumberPage(equipmentIndex, Index(0)), identificationNumber)
 
-          val result = new AddAnotherSealViewModelProvider().apply(userAnswers, arrivalId, mode, mode, equipmentIndex)
+          val result = new AddAnotherSealViewModelProvider().apply(userAnswers, arrivalId, mode, equipmentIndex)
 
           result.listItems.length mustBe 1
           result.title mustBe s"You have added 1 seal to transport equipment ${equipmentIndex.display}"
@@ -70,7 +70,7 @@ class AddAnotherSealViewModelSpec extends SpecBase with Generators with ScalaChe
             .setValue(SealIdentificationNumberPage(equipmentIndex, Index(2)), identificationNumber)
             .setValue(SealIdentificationNumberPage(equipmentIndex, Index(3)), identificationNumber)
 
-          val result = new AddAnotherSealViewModelProvider().apply(userAnswers, arrivalId, mode, mode, equipmentIndex)
+          val result = new AddAnotherSealViewModelProvider().apply(userAnswers, arrivalId, mode, equipmentIndex)
           result.listItems.length mustBe 4
           result.title mustBe s"You have added 4 seals to transport equipment ${equipmentIndex.display}"
           result.heading mustBe s"You have added 4 seals to transport equipment ${equipmentIndex.display}"

@@ -19,7 +19,6 @@ package navigation.houseConsignment.index
 import base.SpecBase
 import generators.Generators
 import models._
-import navigation.houseConsignment.index.HouseConsignmentNavigator
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.houseConsignment.index.GrossWeightPage
 

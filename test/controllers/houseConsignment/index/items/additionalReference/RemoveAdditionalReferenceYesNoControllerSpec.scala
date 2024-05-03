@@ -39,10 +39,14 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
 
   private val formProvider = new YesNoFormProvider()
   private val form         = formProvider("houseConsignment.index.items.additionalReference.removeAdditionalReferenceYesNo", additionalReferenceIndex.display)
-  private val mode         = NormalMode
+
+  private val houseConsignmentMode = NormalMode
+  private val itemMode             = NormalMode
 
   private lazy val removeAdditionalReferenceRoute =
-    routes.RemoveAdditionalReferenceYesNoController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex).url
+    routes.RemoveAdditionalReferenceYesNoController
+      .onPageLoad(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+      .url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -73,7 +77,9 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex, Some(insetText))(request, messages).toString
+        view(form, mrn, arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex, Some(insetText))(request,
+                                                                                                                                                messages
+        ).toString
 
     }
     "must return OK and the correct view for a GET when no number exists" in {
@@ -92,7 +98,9 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex, Some(insetText))(request, messages).toString
+        view(form, mrn, arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex, Some(insetText))(request,
+                                                                                                                                                messages
+        ).toString
 
     }
     "when yes submitted" - {
@@ -113,7 +121,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          routes.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex).url
+          routes.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -146,7 +154,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          routes.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex).url
+          routes.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())
@@ -181,7 +189,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual controllers.houseConsignment.index.items.additionalReference.routes.AddAnotherAdditionalReferenceController
-        .onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex)
+        .onPageLoad(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex)
         .url
 
     }
@@ -204,7 +212,9 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
       val view = injector.instanceOf[RemoveAdditionalReferenceYesNoView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex, Some(insetText))(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex, Some(insetText))(request,
+                                                                                                                                                      messages
+        ).toString
     }
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
