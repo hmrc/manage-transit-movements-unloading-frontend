@@ -22,7 +22,6 @@
 @import controllers.houseConsignment.index.departureMeansOfTransport.routes
 @import viewModels.houseConsignment.index.departureTransportMeans.HouseConsignmentCountryViewModel
 
-
 @this(
     mainTemplate: MainTemplate,
     errorSummary: ErrorSummary,
@@ -31,17 +30,16 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[Country], countryList: Seq[Selectable], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index,transportMeansIndex: Index, mode: Mode, viewModel: HouseConsignmentCountryViewModel)(implicit request: Request[_], messages: Messages)
+@(form: Form[Country], countryList: Seq[Selectable], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index,transportMeansIndex: Index, houseConsignmentMode: Mode, transportMeansMode: Mode, viewModel: HouseConsignmentCountryViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = viewModel.title,
     showBackLink = true
 ) {
 
-        @formHelper(action = controllers.houseConsignment.index.departureMeansOfTransport.routes.CountryController.onSubmit(arrivalId,houseConsignmentIndex,transportMeansIndex, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.houseConsignment.index.departureMeansOfTransport.routes.CountryController.onSubmit(arrivalId,houseConsignmentIndex,transportMeansIndex, houseConsignmentMode, transportMeansMode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
-
 
         @select(
             field = form("value"),

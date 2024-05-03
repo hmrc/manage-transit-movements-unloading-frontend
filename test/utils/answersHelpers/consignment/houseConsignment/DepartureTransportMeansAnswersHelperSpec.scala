@@ -49,7 +49,7 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
               action.visuallyHiddenText.value mustBe "identification type for departure means of transport 1"
-              action.href mustBe "/manage-transit-movements/unloading/AB123/house-consignment/1/departure-means-of-transport/1/change-identification"
+              action.href mustBe "/manage-transit-movements/unloading/AB123/change-house-consignment/1/change-departure-means-of-transport/1/identification"
           }
         }
       }
@@ -78,7 +78,7 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
               action.visuallyHiddenText.value mustBe "identification for departure means of transport 1"
-              action.href mustBe "/manage-transit-movements/unloading/AB123/house-consignment/1/departure-means-of-transport/1/change-identification-number"
+              action.href mustBe "/manage-transit-movements/unloading/AB123/change-house-consignment/1/change-departure-means-of-transport/1/identification-number"
           }
         }
       }
@@ -107,7 +107,7 @@ class DepartureTransportMeansAnswersHelperSpec extends AnswersHelperSpecBase {
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
               action.visuallyHiddenText.value mustBe "registered country for departure means of transport 1"
-              action.href mustBe "/manage-transit-movements/unloading/AB123/house-consignment/1/departure-means-of-transport/1/change-country"
+              action.href mustBe "/manage-transit-movements/unloading/AB123/change-house-consignment/1/change-departure-means-of-transport/1/country"
           }
         }
       }

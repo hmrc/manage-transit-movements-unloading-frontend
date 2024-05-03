@@ -21,7 +21,7 @@ import forms.EnumerableFormProvider
 import models.reference.TransportMeansIdentification
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
+import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator.DepartureTransportMeansNavigatorProvider
 import pages.houseConsignment.index.departureMeansOfTransport.TransportMeansIdentificationPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -42,7 +42,7 @@ class IdentificationController @Inject() (
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: IdentificationView,
-  navigator: DepartureTransportMeansNavigator,
+  navigatorProvider: DepartureTransportMeansNavigatorProvider,
   service: MeansOfTransportIdentificationTypesService,
   identificationViewModelProvider: IdentificationViewModelProvider
 )(implicit ec: ExecutionContext)
@@ -50,46 +50,79 @@ class IdentificationController @Inject() (
     with I18nSupport {
 
   private def form(mode: Mode, identificationTypes: Seq[TransportMeansIdentification], houseConsignmentIndex: Index): Form[TransportMeansIdentification] =
-    formProvider[TransportMeansIdentification](mode,
-                                               "houseConsignment.index.departureMeansOfTransport.identification",
-                                               identificationTypes,
-                                               houseConsignmentIndex
+    formProvider[TransportMeansIdentification](
+      mode,
+      "houseConsignment.index.departureMeansOfTransport.identification",
+      identificationTypes,
+      houseConsignmentIndex
     )
 
-  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(
+    arrivalId: ArrivalId,
+    houseConsignmentIndex: Index,
+    transportMeansIndex: Index,
+    houseConsignmentMode: Mode,
+    transportMeansMode: Mode
+  ): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
         service.getMeansOfTransportIdentificationTypes(request.userAnswers).flatMap {
           identifiers =>
-            val viewModel = identificationViewModelProvider.apply(mode, houseConsignmentIndex)
+            val viewModel = identificationViewModelProvider.apply(transportMeansMode, houseConsignmentIndex)
             val preparedForm = request.userAnswers.get(TransportMeansIdentificationPage(houseConsignmentIndex, transportMeansIndex)) match {
-              case None        => form(mode, identifiers, houseConsignmentIndex)
-              case Some(value) => form(mode, identifiers, houseConsignmentIndex).fill(value)
+              case None        => form(transportMeansMode, identifiers, houseConsignmentIndex)
+              case Some(value) => form(transportMeansMode, identifiers, houseConsignmentIndex).fill(value)
             }
             Future.successful(
               Ok(
-                view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, transportMeansIndex, identifiers, mode, viewModel)
+                view(
+                  preparedForm,
+                  request.userAnswers.mrn,
+                  arrivalId,
+                  houseConsignmentIndex,
+                  transportMeansIndex,
+                  identifiers,
+                  houseConsignmentMode,
+                  transportMeansMode,
+                  viewModel
+                )
               )
             )
         }
     }
 
-  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(
+    arrivalId: ArrivalId,
+    houseConsignmentIndex: Index,
+    transportMeansIndex: Index,
+    houseConsignmentMode: Mode,
+    transportMeansMode: Mode
+  ): Action[AnyContent] =
     actions.requireData(arrivalId).async {
       implicit request =>
         service.getMeansOfTransportIdentificationTypes(request.userAnswers).flatMap {
           identifiers =>
-            val viewModel = identificationViewModelProvider.apply(mode, houseConsignmentIndex)
-            form(mode, identifiers, houseConsignmentIndex)
+            val viewModel = identificationViewModelProvider.apply(transportMeansMode, houseConsignmentIndex)
+            form(transportMeansMode, identifiers, houseConsignmentIndex)
               .bindFromRequest()
               .fold(
                 formWithErrors =>
                   Future.successful(
                     BadRequest(
-                      view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, transportMeansIndex, identifiers, mode, viewModel)
+                      view(
+                        formWithErrors,
+                        request.userAnswers.mrn,
+                        arrivalId,
+                        houseConsignmentIndex,
+                        transportMeansIndex,
+                        identifiers,
+                        houseConsignmentMode,
+                        transportMeansMode,
+                        viewModel
+                      )
                     )
                   ),
-                value => redirect(value, houseConsignmentIndex, transportMeansIndex, mode)
+                value => redirect(value, houseConsignmentIndex, transportMeansIndex, houseConsignmentMode, transportMeansMode)
               )
         }
     }
@@ -98,10 +131,14 @@ class IdentificationController @Inject() (
     value: TransportMeansIdentification,
     houseConsignmentIndex: Index,
     transportMeansIndex: Index,
-    mode: Mode
+    houseConsignmentMode: Mode,
+    transportMeansMode: Mode
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(TransportMeansIdentificationPage(houseConsignmentIndex, transportMeansIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(TransportMeansIdentificationPage(houseConsignmentIndex, transportMeansIndex), mode, request.userAnswers))
+    } yield {
+      val navigator = navigatorProvider.apply(houseConsignmentMode)
+      Redirect(navigator.nextPage(TransportMeansIdentificationPage(houseConsignmentIndex, transportMeansIndex), transportMeansMode, request.userAnswers))
+    }
 }

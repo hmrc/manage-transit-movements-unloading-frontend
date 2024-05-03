@@ -108,6 +108,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
     import navigation.houseConsignment.index.AdditionalReferenceNavigator.AdditionalReferenceNavigatorProvider
     import navigation.houseConsignment.index._
     import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
+    import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator.DepartureTransportMeansNavigatorProvider
 
     val fakeHouseConsignmentNavigator: HouseConsignmentNavigator =
       new FakeHouseConsignmentNavigator(onwardRoute)
@@ -119,8 +120,12 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
           new FakeHouseConsignmentAdditionalReferenceNavigator(onwardRoute, houseConsignmentMode)
       }
 
-    val fakeDepartureTransportMeansNavigator: DepartureTransportMeansNavigator =
-      new FakeHouseConsignmentDepartureTransportMeansNavigator(onwardRoute)
+    val fakeDepartureTransportMeansNavigatorProvider: DepartureTransportMeansNavigatorProvider =
+      new DepartureTransportMeansNavigatorProvider {
+
+        override def apply(houseConsignmentMode: Mode): DepartureTransportMeansNavigator =
+          new FakeHouseConsignmentDepartureTransportMeansNavigator(onwardRoute, houseConsignmentMode)
+      }
 
     val fakeDocumentNavigator: HouseConsignmentDocumentNavigator =
       new FakeHouseConsignmentDocumentNavigator(onwardRoute)
