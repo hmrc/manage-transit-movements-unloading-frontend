@@ -45,6 +45,7 @@ import viewModels.houseConsignment.index.items.document.{
   ItemsAdditionalInformationViewModel,
   ItemsDocumentReferenceNumberViewModel
 }
+import viewModels.houseConsignment.index.documents.{AddAnotherHouseConsignmentDocumentViewModel => DocumentsAddAnotherHouseConsignmentDocumentViewModel}
 import viewModels.houseConsignment.index.items.packages.{
   AddAnotherPackageViewModel,
   NumberOfPackagesViewModel,
@@ -344,6 +345,16 @@ trait ViewModelGenerators {
       documents    <- arbitrary[HouseConsignmentLevelDocuments](arbitraryHouseConsignmentLevelDocuments)
       allowMore    <- arbitrary[Boolean]
     } yield AddAnotherHouseConsignmentDocumentViewModel(listItems, onSubmitCall, nextIndex, documents, allowMore)
+  }
+
+  implicit lazy val houseConsignmentDocumentAddAnotherDocumentViewModel: Arbitrary[DocumentsAddAnotherHouseConsignmentDocumentViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+      nextIndex    <- arbitrary[Index]
+      documents    <- arbitrary[HouseConsignmentLevelDocuments](arbitraryHouseConsignmentLevelDocuments)
+      allowMore    <- arbitrary[Boolean]
+    } yield DocumentsAddAnotherHouseConsignmentDocumentViewModel(listItems, onSubmitCall, nextIndex, documents, allowMore)
   }
 
   implicit lazy val arbitraryContainerIdentificationNumberViewModel: Arbitrary[ContainerIdentificationNumberViewModel] = Arbitrary {
