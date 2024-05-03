@@ -24,6 +24,27 @@ import play.api.mvc.Call
 
 class DepartureTransportMeansNavigator(houseConsignmentMode: Mode) extends Navigator {
 
+  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
+    case TransportMeansIdentificationPage(houseConsignmentIndex, transportMeansIndex) =>
+      ua =>
+        Some(
+          controllers.houseConsignment.index.departureMeansOfTransport.routes.IdentificationNumberController
+            .onPageLoad(ua.id, houseConsignmentIndex, transportMeansIndex, houseConsignmentMode, NormalMode)
+        )
+    case VehicleIdentificationNumberPage(houseConsignmentIndex, transportMeansIndex) =>
+      ua =>
+        Some(
+          controllers.houseConsignment.index.departureMeansOfTransport.routes.CountryController
+            .onPageLoad(ua.id, houseConsignmentIndex, transportMeansIndex, houseConsignmentMode, NormalMode)
+        )
+    case CountryPage(houseConsignmentIndex, _) =>
+      ua =>
+        Some(
+          controllers.houseConsignment.index.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
+            .onPageLoad(ua.id, houseConsignmentIndex, houseConsignmentMode)
+        )
+  }
+
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
 
     case TransportMeansIdentificationPage(houseConsignmentIndex, _) =>
@@ -33,10 +54,6 @@ class DepartureTransportMeansNavigator(houseConsignmentMode: Mode) extends Navig
     case VehicleIdentificationNumberPage(houseConsignmentIndex, _) =>
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
 
-  }
-
-  override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
-    case _ => _ => Some(Call("GET", "#")) //TODO: Update navigation
   }
 }
 
