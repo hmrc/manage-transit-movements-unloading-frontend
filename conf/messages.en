@@ -1186,6 +1186,18 @@ houseConsignment.index.departureMeansOfTransport.nationality.hintText = Enter th
 houseConsignment.index.departureMeansOfTransport.country.error.required = Select the country the vehicle is registered to
 houseConsignment.index.departureMeansOfTransport.country.check.error.required = Select the country the new vehicle is registered to in house consignment {0}
 
+houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.empty.title = You have added 0 departure means of transport for house consignment {1}
+houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.singular.title = You have added 1 departure means of transport for house consignment {1}
+houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.plural.title = You have added {0} departure means of transport for house consignment {1}
+houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.empty.heading = You have added 0 departure means of transport for house consignment {1}
+houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.singular.heading = You have added 1 departure means of transport for house consignment {1}
+houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.plural.heading = You have added {0} departure means of transport for house consignment {1}
+houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.empty.label = Do you want to add a departure means of transport for house consignment {1}?
+houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.label = Do you want to add another departure means of transport for house consignment {1}?
+houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.maxLimit.label = You cannot add another departure means of transport for house consignment {1}. To add another, you need to remove one first.
+houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.error.required = Select yes if you want to add a departure means of transport for house consignment {0}
+houseConsignment.index.departureMeansOfTransport.prefix = Departure means of transport {0}
+
 houseConsignment.index.additionalReference.removeAdditionalReferenceYesNo.title = Are you sure you want to remove this additional reference?
 houseConsignment.index.additionalReference.removeAdditionalReferenceYesNo.heading = Are you sure you want to remove this additional reference?
 houseConsignment.index.additionalReference.removeAdditionalReferenceYesNo.error.required = Select yes if you want to remove this additional reference

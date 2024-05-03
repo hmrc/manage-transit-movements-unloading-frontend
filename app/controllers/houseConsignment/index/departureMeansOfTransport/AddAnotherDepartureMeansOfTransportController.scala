@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.houseConsignment.index.additionalReference
+package controllers.houseConsignment.index.departureMeansOfTransport
 
 import config.FrontendAppConfig
 import controllers.actions._
@@ -22,40 +22,41 @@ import forms.AddAnotherFormProvider
 import models.{ArrivalId, Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc._
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.houseConsignment.index.additionalReference.AddAnotherAdditionalReferenceViewModel
-import viewModels.houseConsignment.index.additionalReference.AddAnotherAdditionalReferenceViewModel.AddAnotherAdditionalReferenceViewModelProvider
-import views.html.houseConsignment.index.additionalReference.AddAnotherAdditionalReferenceView
+import viewModels.houseConsignment.index.departureTransportMeans.AddAnotherDepartureMeansOfTransportViewModel
+import viewModels.houseConsignment.index.departureTransportMeans.AddAnotherDepartureMeansOfTransportViewModel.AddAnotherDepartureMeansOfTransportViewModelProvider
+import views.html.houseConsignment.index.departureMeansOfTransport.AddAnotherDepartureMeansOfTransportView
 
 import javax.inject.Inject
 
-class AddAnotherAdditionalReferenceController @Inject() (
+class AddAnotherDepartureMeansOfTransportController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddAnotherAdditionalReferenceView,
-  viewModelProvider: AddAnotherAdditionalReferenceViewModelProvider
+  view: AddAnotherDepartureMeansOfTransportView,
+  viewModelProvider: AddAnotherDepartureMeansOfTransportViewModelProvider
 )(implicit config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(viewModel: AddAnotherAdditionalReferenceViewModel): Form[Boolean] =
+  private def form(viewModel: AddAnotherDepartureMeansOfTransportViewModel): Form[Boolean] =
     formProvider(viewModel.prefix, viewModel.allowMore)
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode, houseConsignmentIndex)
+      val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentIndex, mode)
+
       Ok(view(form(viewModel), request.userAnswers.mrn, arrivalId, viewModel))
   }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, arrivalId, mode, houseConsignmentIndex)
-      val form      = formProvider(viewModel.prefix, viewModel.allowMore, houseConsignmentIndex.display)
+      val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentIndex, mode)
+      val form      = formProvider(viewModel.prefix, viewModel.allowMore, houseConsignmentIndex)
       form
         .bindFromRequest()
         .fold(
@@ -63,8 +64,8 @@ class AddAnotherAdditionalReferenceController @Inject() (
           {
             case true =>
               Redirect(
-                controllers.houseConsignment.index.additionalReference.routes.AdditionalReferenceTypeController
-                  .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, viewModel.nextIndex)
+                controllers.houseConsignment.index.departureMeansOfTransport.routes.IdentificationController
+                  .onPageLoad(arrivalId, houseConsignmentIndex, viewModel.nextIndex, mode, NormalMode)
               )
             case false =>
               // TODO: pattern match on mode (houseConsignment mode), to decide to go back to cross check page, or next page
@@ -73,4 +74,5 @@ class AddAnotherAdditionalReferenceController @Inject() (
           }
         )
   }
+
 }

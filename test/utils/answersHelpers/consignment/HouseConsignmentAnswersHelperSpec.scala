@@ -354,7 +354,9 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             addOrRemoveLink.id mustBe "add-remove-departure-transport-means"
             addOrRemoveLink.text mustBe "Add or remove departure means of transport"
             addOrRemoveLink.visuallyHidden must not be defined
-            addOrRemoveLink.href mustBe "#"
+            addOrRemoveLink.href mustBe controllers.houseConsignment.index.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
+              .onPageLoad(arrivalId, houseConsignmentIndex, CheckMode)
+              .url
 
             val dtm1 = result.children.head
             dtm1 mustBe a[AccordionSection]

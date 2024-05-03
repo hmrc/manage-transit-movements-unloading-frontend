@@ -17,7 +17,7 @@
 package controllers.houseConsignment.index.departureMeansOfTransport
 
 import controllers.actions._
-import controllers.departureMeansOfTransport.routes
+import controllers.houseConsignment.index.departureMeansOfTransport.routes
 import forms.YesNoFormProvider
 import models.removable.TransportMeans
 import models.{ArrivalId, Index, Mode, UserAnswers}
@@ -47,7 +47,7 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
     formProvider("houseConsignment.index.departureMeansOfTransport.removeDepartureMeansOfTransportYesNo")
 
   private def addAnother(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index): Call =
-    routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, mode) //TODO: Needs updating with house consignment level controller
+    routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, houseConsignmentIndex, mode)
 
   def insetText(userAnswers: UserAnswers, houseConsignmentIndex: Index, transportMeansIndex: Index): Option[String] =
     TransportMeans(userAnswers, houseConsignmentIndex, transportMeansIndex).flatMap(_.forRemoveDisplay)

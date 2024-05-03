@@ -319,6 +319,15 @@ trait ViewModelGenerators {
     } yield AddAnotherDepartureMeansOfTransportViewModel(listItems, onSubmitCall, nextIndex)
   }
 
+  implicit lazy val arbitraryAddAnotherDepartureMeansOfTransportHCViewModel
+    : Arbitrary[viewModels.houseConsignment.index.departureTransportMeans.AddAnotherDepartureMeansOfTransportViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+      nextIndex    <- arbitrary[Index]
+    } yield viewModels.houseConsignment.index.departureTransportMeans.AddAnotherDepartureMeansOfTransportViewModel(listItems, onSubmitCall, nextIndex, Index(0))
+  }
+
   implicit lazy val addAnotherEquipmentViewModel: Arbitrary[AddAnotherEquipmentViewModel] = Arbitrary {
     for {
       listItems    <- arbitrary[Seq[ListItem]]
