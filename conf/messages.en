@@ -322,10 +322,10 @@ confirmation.para2 = You must wait for the goods to be released.
 confirmation.linkText = Go to arrival notifications
 confirmation.para3 = to see the latest messages.
 
-addUnloadingCommentsYesNo.title = Were there any discrepancies between the transit and the declaration summary?
-addUnloadingCommentsYesNo.heading = Were there any discrepancies between the transit and the declaration summary?
+addUnloadingCommentsYesNo.title = Were there any discrepancies between the transit and unloading permission?
+addUnloadingCommentsYesNo.heading = Were there any discrepancies between the transit and unloading permission?
 addUnloadingCommentsYesNo.paragraph = This includes any changes to the means of transport, items or transport equipment.
-addUnloadingCommentsYesNo.error.required = Select yes if there were any discrepancies between the transit and the declaration summary
+addUnloadingCommentsYesNo.error.required = Select yes if there were any discrepancies between the transit and unloading permission
 
 addCommentsYesNo.title = Do you want to add any comments?
 addCommentsYesNo.heading = Do you want to add any comments?
@@ -641,8 +641,8 @@ checkYourAnswers.rowHeadings.anySealsBroken = Are any of the seals broken?
 checkYourAnswers.rowHeadings.anySealsBroken.change.hidden = if any of the seals are broken
 
 checkYourAnswers.subsections.additionalComments = Transit and declaration summary cross-check
-checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo = Were there any discrepancies between the transit and the declaration summary?
-checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo.change.hidden = if there were any discrepancies between the transit and the declaration summary
+checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo = Were there any discrepancies between the transit and unloading permission?
+checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo.change.hidden = if there were any discrepancies between the transit and unloading permission
 checkYourAnswers.rowHeadings.additionalComments = Discrepancies
 checkYourAnswers.rowHeadings.additionalComments.change.hidden = discrepancies between the transit and declaration summary
 

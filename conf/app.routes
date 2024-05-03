@@ -56,10 +56,10 @@ POST       /:arrivalId/remove-additional-comments                               
 GET        /:arrivalId/change-remove-additional-comments                                                             controllers.ConfirmRemoveCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
 POST       /:arrivalId/change-remove-additional-comments                                                             controllers.ConfirmRemoveCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
-GET        /:arrivalId/add-transit-declaration-discrepancies                                                         controllers.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
-POST       /:arrivalId/add-transit-declaration-discrepancies                                                         controllers.AddUnloadingCommentsYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
-GET        /:arrivalId/change-add-transit-declaration-discrepancies                                                  controllers.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
-POST       /:arrivalId/change-add-transit-declaration-discrepancies                                                  controllers.AddUnloadingCommentsYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
+GET        /:arrivalId/add-transit-unloading-permission-discrepancies                                                controllers.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/add-transit-unloading-permission-discrepancies                                                controllers.AddUnloadingCommentsYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-add-transit-unloading-permission-discrepancies                                         controllers.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-add-transit-unloading-permission-discrepancies                                         controllers.AddUnloadingCommentsYesNoController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)
 
 GET        /:arrivalId/transit-declaration-discrepancies                                                             controllers.UnloadingCommentsController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
 POST       /:arrivalId/transit-declaration-discrepancies                                                             controllers.UnloadingCommentsController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
