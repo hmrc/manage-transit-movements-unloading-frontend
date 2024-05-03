@@ -49,7 +49,7 @@ object CheckYourAnswersViewModel {
       val commentsSection = StaticSection(
         sectionTitle = messages("checkYourAnswers.subsections.additionalComments"),
         rows = Seq(
-          helper.unloadingCommentsYesNo,
+          helper.addDiscrepanciesYesNo,
           helper.addCommentsYesNo,
           helper.additionalComment,
           helper.addReportYesNo,

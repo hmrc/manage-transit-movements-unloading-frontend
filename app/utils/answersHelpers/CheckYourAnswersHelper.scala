@@ -58,7 +58,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     call = Some(controllers.routes.CanSealsBeReadController.onPageLoad(arrivalId, CheckMode))
   )
 
-  def unloadingCommentsYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  def addDiscrepanciesYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddTransitUnloadingPermissionDiscrepanciesYesNoPage,
     formatAnswer = formatAsYesOrNo,
     prefix = "checkYourAnswers.rowHeadings.addTransitUnloadingPermissionDiscrepanciesYesNo",

@@ -181,7 +181,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
           val answers = emptyUserAnswers.setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
           val helper  = new CheckYourAnswersHelper(answers)
-          val result  = helper.unloadingCommentsYesNo
+          val result  = helper.addDiscrepanciesYesNo
 
           result mustBe Some(
             SummaryListRow(
@@ -208,7 +208,7 @@ class CheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
           val answers = emptyUserAnswers.setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
           val helper  = new CheckYourAnswersHelper(answers)
-          val result  = helper.unloadingCommentsYesNo
+          val result  = helper.addDiscrepanciesYesNo
 
           result mustBe Some(
             SummaryListRow(
