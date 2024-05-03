@@ -640,14 +640,21 @@ checkYourAnswers.rowHeadings.canSealsBeRead.change.hidden = if all of the seal i
 checkYourAnswers.rowHeadings.anySealsBroken = Are any of the seals broken?
 checkYourAnswers.rowHeadings.anySealsBroken.change.hidden = if any of the seals are broken
 
-checkYourAnswers.subsections.additionalComments = Transit and declaration summary cross-check
+checkYourAnswers.subsections.additionalComments = Transit and unloading permission discrepancies
 checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo = Were there any discrepancies between the transit and unloading permission?
 checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo.change.hidden = if there were any discrepancies between the transit and unloading permission
-checkYourAnswers.rowHeadings.additionalComments = Discrepancies
-checkYourAnswers.rowHeadings.additionalComments.change.hidden = discrepancies between the transit and declaration summary
+checkYourAnswers.rowHeadings.addCommentsYesNo = Do you want to add any comments?
+checkYourAnswers.rowHeadings.addCommentsYesNo.change.hidden = if you want to add any comments
+checkYourAnswers.rowHeadings.additionalComments = Comments
+checkYourAnswers.rowHeadings.additionalComments.change.hidden = comments
+checkYourAnswers.rowHeadings.addReportYesNo = Do you have anything else to report?
+checkYourAnswers.rowHeadings.addReportYesNo.change.hidden = if you have anything to report
+checkYourAnswers.rowHeadings.report = What do you want to report?
+checkYourAnswers.rowHeadings.report.change.hidden = what you want to report
 
 checkYourAnswers.sendRemarks = Send your unloading remarks
 checkYourAnswers.paragraph = By sending this, you are confirming that these details are correct to the best of your knowledge.
+checkYourAnswers.link = Back to discrepancies between the transit and unloading permission
 
 checkYourAnswers.departureMeansOfTransport.identification = Identification type
 checkYourAnswers.departureMeansOfTransport.identificationNumber = Identification
@@ -1176,7 +1183,6 @@ houseConsignment.index.departureMeansOfTransport.identificationNumber.CheckMode.
 houseConsignment.index.departureMeansOfTransport.identificationNumber.error.length = The identification must be 35 characters or less
 houseConsignment.index.departureMeansOfTransport.identificationNumber.error.invalid = The identification must only include letters a to z and numbers 0 to 9
 houseConsignment.index.departureMeansOfTransport.identificationNumber.change.hidden = the identification for the new vehicle
-
 
 houseConsignment.index.departureMeansOfTransport.country.NormalMode.title = What country is this vehicle registered to?
 houseConsignment.index.departureMeansOfTransport.country.CheckMode.title = What country is the new vehicle registered to in house consignment {0}?

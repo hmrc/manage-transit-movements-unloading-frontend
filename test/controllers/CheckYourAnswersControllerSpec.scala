@@ -68,10 +68,10 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       val sections = arbitraryStaticSections.arbitrary.sample.value
 
-      when(mockCheckYourAnswersViewModelProvider.apply(any())(any()))
-        .thenReturn(CheckYourAnswersViewModel(sections))
+      val checkYourAnswersViewModel = CheckYourAnswersViewModel(sections, false)
 
-      val checkYourAnswersViewModel = CheckYourAnswersViewModel(sections)
+      when(mockCheckYourAnswersViewModelProvider.apply(any())(any()))
+        .thenReturn(checkYourAnswersViewModel)
 
       val request = FakeRequest(GET, checkYourAnswersRoute)
 

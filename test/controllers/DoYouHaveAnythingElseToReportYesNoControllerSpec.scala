@@ -34,7 +34,7 @@ import scala.concurrent.Future
 class DoYouHaveAnythingElseToReportYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private lazy val doYouHaveAnythingElseToReportYesNoRoute =
-    controllers.routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId).url
+    controllers.routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId, mode).url
   private val formProvider = new YesNoFormProvider()
   private val form         = formProvider("doYouHaveAnythingElseToReportYesNo")
   private val mode         = NormalMode

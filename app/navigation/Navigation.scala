@@ -46,16 +46,16 @@ class Navigation extends Navigator {
       ua =>
         ua.get(AddUnloadingCommentsYesNoPage) map {
           case true  => routes.UnloadingFindingsController.onPageLoad(ua.id)
-          case false => routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id)
+          case false => routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id, NormalMode)
         }
     case AddCommentsYesNoPage =>
       ua =>
         ua.get(AddCommentsYesNoPage) map {
           case true  => routes.UnloadingCommentsController.onPageLoad(ua.id, NormalMode)
-          case false => routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id)
+          case false => routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id, NormalMode)
         }
     case UnloadingCommentsPage =>
-      ua => Some(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id))
+      ua => Some(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id, NormalMode))
     case DoYouHaveAnythingElseToReportYesNoPage =>
       ua =>
         ua.get(DoYouHaveAnythingElseToReportYesNoPage) map {
