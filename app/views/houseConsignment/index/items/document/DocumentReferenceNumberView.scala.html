@@ -28,16 +28,16 @@
     errorSummary: ErrorSummary
 )
 
-@(form: Form[_], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode, viewModel: ItemsDocumentReferenceNumberViewModel, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentMode: Mode, itemMode: Mode, documentMode: Mode, viewModel: ItemsDocumentReferenceNumberViewModel, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = viewModel.title,
     showBackLink = true,
 ) {
 
-    @errorSummary(form.errors)
+    @formHelper(action = routes.DocumentReferenceNumberController.onSubmit(arrivalId, houseConsignmentMode, itemMode, documentMode, houseConsignmentIndex, itemIndex, documentIndex), Symbol("autoComplete") -> "off") {
 
-    @formHelper(action = routes.DocumentReferenceNumberController.onSubmit(arrivalId, mode, houseConsignmentIndex, itemIndex, documentIndex), Symbol("autoComplete") -> "off") {
+        @errorSummary(form.errors)
 
         @inputText(
             field = form("value"),

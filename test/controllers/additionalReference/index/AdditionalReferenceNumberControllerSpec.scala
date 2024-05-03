@@ -21,6 +21,7 @@ import forms.AdditionalReferenceNumberFormProvider
 import generators.Generators
 import models.NormalMode
 import models.reference.AdditionalReferenceType
+import navigation.AdditionalReferenceNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -51,7 +52,10 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[AdditionalReferenceNumberViewModelProvider]).toInstance(mockViewModelProvider))
+      .overrides(
+        bind(classOf[AdditionalReferenceNavigator]).toInstance(FakeConsignmentNavigators.fakeAdditionalReferenceNavigator),
+        bind(classOf[AdditionalReferenceNumberViewModelProvider]).toInstance(mockViewModelProvider)
+      )
 
   private val additionalReference = arbitrary[AdditionalReferenceType].sample.value
 

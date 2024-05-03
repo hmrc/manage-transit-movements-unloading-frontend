@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.CUSCodeFormProvider
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator
+import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
 import pages.houseConsignment.index.items.CustomsUnionAndStatisticsCodePage
 import play.api.data.{Form, FormError}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CustomsUnionAndStatisticsCodeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigator: HouseConsignmentItemNavigator,
+  navigatorProvider: HouseConsignmentItemNavigatorProvider,
   formProvider: CUSCodeFormProvider,
   service: ReferenceDataService,
   actions: Actions,
@@ -49,40 +49,51 @@ class CustomsUnionAndStatisticsCodeController @Inject() (
   private def form(houseConsignmentIndex: Index, itemIndex: Index): Form[String] =
     formProvider("houseConsignment.item.customsUnionAndStatisticsCode", itemIndex.display, houseConsignmentIndex.display)
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex)) match {
-        case None        => form(houseConsignmentIndex, itemIndex)
-        case Some(value) => form(houseConsignmentIndex, itemIndex).fill(value)
-      }
-      Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode, houseConsignmentIndex, itemIndex))
-  }
+  def onPageLoad(arrivalId: ArrivalId, houseConsignmentMode: Mode, itemMode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Action[AnyContent] =
+    actions.requireData(arrivalId) {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex)) match {
+          case None        => form(houseConsignmentIndex, itemIndex)
+          case Some(value) => form(houseConsignmentIndex, itemIndex).fill(value)
+        }
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex))
+    }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Action[AnyContent] = actions.requireData(arrivalId).async {
-    implicit request =>
-      form(houseConsignmentIndex, itemIndex)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode, houseConsignmentIndex, itemIndex))),
-          value =>
-            service.doesCUSCodeExist(value).flatMap {
-              case true => redirect(value, houseConsignmentIndex, itemIndex, mode)
-              case false =>
-                val formWithErrors =
-                  form(houseConsignmentIndex, itemIndex).withError(FormError("value", "houseConsignment.item.customsUnionAndStatisticsCode.error.not.exists"))
-                Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode, houseConsignmentIndex, itemIndex)))
-            }
-        )
-  }
+  def onSubmit(arrivalId: ArrivalId, houseConsignmentMode: Mode, itemMode: Mode, houseConsignmentIndex: Index, itemIndex: Index): Action[AnyContent] =
+    actions.requireData(arrivalId).async {
+      implicit request =>
+        form(houseConsignmentIndex, itemIndex)
+          .bindFromRequest()
+          .fold(
+            formWithErrors =>
+              Future.successful(
+                BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex))
+              ),
+            value =>
+              service.doesCUSCodeExist(value).flatMap {
+                case true => redirect(value, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+                case false =>
+                  val formWithErrors =
+                    form(houseConsignmentIndex, itemIndex).withError(FormError("value", "houseConsignment.item.customsUnionAndStatisticsCode.error.not.exists"))
+                  Future.successful(
+                    BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex))
+                  )
+              }
+          )
+    }
 
   private def redirect(
     value: String,
     houseConsignmentIndex: Index,
     itemIndex: Index,
-    mode: Mode
+    houseConsignmentMode: Mode,
+    itemMode: Mode
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex), mode, request.userAnswers))
+    } yield {
+      val navigator = navigatorProvider.apply(houseConsignmentMode)
+      Redirect(navigator.nextPage(CustomsUnionAndStatisticsCodePage(houseConsignmentIndex, itemIndex), itemMode, request.userAnswers))
+    }
 }

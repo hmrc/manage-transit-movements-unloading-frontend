@@ -56,7 +56,14 @@ object AddAnotherPackageViewModel {
 
   class AddAnotherPackageViewModelProvider {
 
-    def apply(userAnswers: UserAnswers, arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): AddAnotherPackageViewModel = {
+    def apply(
+      userAnswers: UserAnswers,
+      arrivalId: ArrivalId,
+      houseConsignmentIndex: Index,
+      itemIndex: Index,
+      houseConsignmentMode: Mode,
+      itemMode: Mode
+    ): AddAnotherPackageViewModel = {
 
       val array = userAnswers.get(PackagingListSection(houseConsignmentIndex, itemIndex))
 
@@ -70,7 +77,7 @@ object AddAnotherPackageViewModel {
                   changeUrl = None,
                   removeUrl = Some(
                     routes.RemovePackageTypeYesNoController
-                      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, mode)
+                      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode)
                       .url
                   )
                 )
@@ -79,7 +86,7 @@ object AddAnotherPackageViewModel {
 
       new AddAnotherPackageViewModel(
         listItems,
-        onSubmitCall = routes.AddAnotherPackageController.onSubmit(arrivalId, houseConsignmentIndex, itemIndex, mode),
+        onSubmitCall = routes.AddAnotherPackageController.onSubmit(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode),
         nextIndex = array.nextIndex
       )
     }

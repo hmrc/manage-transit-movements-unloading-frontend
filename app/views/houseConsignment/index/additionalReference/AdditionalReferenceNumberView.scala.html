@@ -28,28 +28,28 @@
     errorSummary: ErrorSummary
 )
 
-@(form: Form[_], arrivalId: ArrivalId, mrn: MovementReferenceNumber, mode: Mode, houseConsignmentIndex: Index, additionalReferenceIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], arrivalId: ArrivalId, mrn: MovementReferenceNumber, houseConsignmentMode: Mode, additionalReferenceMode: Mode, houseConsignmentIndex: Index, additionalReferenceIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("houseConsignment.index.additionalReference.additionalReferenceNumber.title"),
     showBackLink = true
 ) {
 
-    @errorSummary(form.errors)
+    @formHelper(action = routes.AdditionalReferenceNumberController.onSubmit(arrivalId, houseConsignmentMode, additionalReferenceMode, houseConsignmentIndex, additionalReferenceIndex), Symbol("autoComplete") -> "off") {
 
-    @formHelper(action = routes.AdditionalReferenceNumberController.onSubmit(arrivalId, mode, houseConsignmentIndex, additionalReferenceIndex), Symbol("autoComplete") -> "off") {
+        @errorSummary(form.errors)
 
-    @inputCharacterCount(
-        field = form("value"),
-        inputCharacterCountType = InputCharacterCountViewModel(
-            heading = messages("houseConsignment.index.additionalReference.additionalReferenceNumber.heading"),
-            caption = Some(messages("site.caption", mrn.toString)),
-            additionalHtml = None
-        ),
-        label = messages("houseConsignment.index.additionalReference.additionalReferenceNumber.heading"),
-        maxLength = maxAdditionalReferenceNumLength,
-        rows = 2
-    )
+        @inputCharacterCount(
+            field = form("value"),
+            inputCharacterCountType = InputCharacterCountViewModel(
+                heading = messages("houseConsignment.index.additionalReference.additionalReferenceNumber.heading"),
+                caption = Some(messages("site.caption", mrn.toString)),
+                additionalHtml = None
+            ),
+            label = messages("houseConsignment.index.additionalReference.additionalReferenceNumber.heading"),
+            maxLength = maxAdditionalReferenceNumLength,
+            rows = 2
+        )
 
         @button(attributes = Map("id" -> "submit"))
     }

@@ -30,7 +30,7 @@ class NetWeightViewSpec extends InputTextViewBehaviours[BigDecimal] {
   override def form: Form[BigDecimal] = new NetWeightFormProvider()(index, hcIndex)
 
   override def applyView(form: Form[BigDecimal]): HtmlFormat.Appendable =
-    injector.instanceOf[NetWeightView].apply(form, mrn, arrivalId, index, index, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[NetWeightView].apply(form, mrn, arrivalId, index, index, NormalMode, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "netWeight"
 

@@ -16,8 +16,8 @@
 
 package utils.answersHelpers.consignment.houseConsignment.item
 
-import models.reference.AdditionalReferenceType
 import controllers.houseConsignment.index.items.additionalReference.routes
+import models.reference.AdditionalReferenceType
 import models.{CheckMode, Index, UserAnswers}
 import pages.houseConsignment.index.items.additionalReference._
 import play.api.i18n.Messages
@@ -39,7 +39,7 @@ class AdditionalReferencesAnswerHelper(
     id = Some(s"change-additional-reference-type-${itemIndex.display}-${additionalReferenceIndex.display}"),
     call = Some(
       routes.AdditionalReferenceTypeController
-        .onPageLoad(arrivalId, CheckMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+        .onPageLoad(arrivalId, CheckMode, CheckMode, CheckMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
     ),
     args = Seq(itemIndex.display, additionalReferenceIndex.display): _*
   )
@@ -51,7 +51,7 @@ class AdditionalReferencesAnswerHelper(
     id = Some(s"change-additional-reference-number-${itemIndex.display}-${additionalReferenceIndex.display}"),
     call = Some(
       routes.AdditionalReferenceNumberController
-        .onPageLoad(arrivalId, CheckMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+        .onPageLoad(arrivalId, CheckMode, CheckMode, CheckMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
     ),
     args = Seq(itemIndex.display, additionalReferenceIndex.display): _*
   )

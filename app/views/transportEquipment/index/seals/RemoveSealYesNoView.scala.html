@@ -27,14 +27,14 @@
     button: Button
 )
 
-@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, equipmentMode: Mode, sealMode: Mode, equipmentIndex: Index, sealIndex: Index, sealIdNumber: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], mrn: MovementReferenceNumber, arrivalId: ArrivalId, equipmentMode: Mode, equipmentIndex: Index, sealIndex: Index, sealIdNumber: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("transportEquipment.index.seal.removeSealYesNo.title", equipmentIndex.display, sealIdNumber),
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.RemoveSealYesNoController.onSubmit(arrivalId, equipmentMode, sealMode, equipmentIndex, sealIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.RemoveSealYesNoController.onSubmit(arrivalId, equipmentMode, equipmentIndex, sealIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

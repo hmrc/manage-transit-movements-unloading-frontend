@@ -24,7 +24,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.houseConsignment.index.departureMeansOfTransport.HouseConsignmentCountryViewModel
+import viewModels.houseConsignment.index.departureTransportMeans.HouseConsignmentCountryViewModel
 import views.behaviours.InputSelectViewBehaviours
 import views.html.houseConsignment.index.departureMeansOfTransport.CountryView
 
@@ -36,7 +36,7 @@ class CountryViewSpec extends InputSelectViewBehaviours[Country] with Generators
   override def applyView(form: Form[Country]): HtmlFormat.Appendable =
     injector
       .instanceOf[CountryView]
-      .apply(form, values, mrn, arrivalId, houseConsignmentIndex, dtmIndex, NormalMode, viewModel)(fakeRequest, messages)
+      .apply(form, values, mrn, arrivalId, houseConsignmentIndex, dtmIndex, NormalMode, NormalMode, viewModel)(fakeRequest, messages)
 
   override val prefix: String = "houseConsignment.index.departureMeansOfTransport.country"
 

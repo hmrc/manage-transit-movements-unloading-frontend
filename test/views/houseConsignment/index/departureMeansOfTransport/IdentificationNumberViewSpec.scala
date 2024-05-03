@@ -33,7 +33,9 @@ class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
   private val viewModel           = arbitrary[IdentificationNumberViewModel].sample.value
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[IdentificationNumberView].apply(form, mrn, arrivalId, houseConsignmentIndex, index, NormalMode, viewModel)(fakeRequest, messages)
+    injector
+      .instanceOf[IdentificationNumberView]
+      .apply(form, mrn, arrivalId, houseConsignmentIndex, index, NormalMode, NormalMode, viewModel)(fakeRequest, messages)
 
   override val prefix: String = "houseConsignment.index.departureMeansOfTransport.identificationNumber"
 

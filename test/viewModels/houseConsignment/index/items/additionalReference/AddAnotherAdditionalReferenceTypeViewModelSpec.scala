@@ -31,7 +31,7 @@ class AddAnotherAdditionalReferenceTypeViewModelSpec extends SpecBase with Gener
     "when there is no additional references" in {
       forAll(arbitrary[Mode]) {
         mode =>
-          val result = new AddAnotherAdditionalReferenceViewModelProvider().apply(emptyUserAnswers, arrivalId, mode, houseConsignmentIndex, itemIndex)
+          val result = new AddAnotherAdditionalReferenceViewModelProvider().apply(emptyUserAnswers, arrivalId, mode, mode, houseConsignmentIndex, itemIndex)
 
           result.listItems mustBe Nil
 
@@ -49,7 +49,7 @@ class AddAnotherAdditionalReferenceTypeViewModelSpec extends SpecBase with Gener
           val userAnswers = emptyUserAnswers
             .setValue(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), identificationReference)
 
-          val result = new AddAnotherAdditionalReferenceViewModelProvider().apply(userAnswers, arrivalId, mode, houseConsignmentIndex, itemIndex)
+          val result = new AddAnotherAdditionalReferenceViewModelProvider().apply(userAnswers, arrivalId, mode, mode, houseConsignmentIndex, itemIndex)
 
           result.listItems.length mustBe 1
           result.title mustBe s"You have added 1 additional reference for item 1 in house consignment 1"
@@ -70,7 +70,7 @@ class AddAnotherAdditionalReferenceTypeViewModelSpec extends SpecBase with Gener
             .setValue(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, Index(2)), identificationReference)
             .setValue(AdditionalReferenceTypePage(houseConsignmentIndex, itemIndex, Index(3)), identificationReference)
 
-          val result = new AddAnotherAdditionalReferenceViewModelProvider().apply(userAnswers, arrivalId, mode, houseConsignmentIndex, itemIndex)
+          val result = new AddAnotherAdditionalReferenceViewModelProvider().apply(userAnswers, arrivalId, mode, mode, houseConsignmentIndex, itemIndex)
           result.listItems.length mustBe 4
           result.title mustBe s"You have added 4 additional references for item 1 in house consignment 1"
           result.heading mustBe s"You have added 4 additional references for item 1 in house consignment 1"

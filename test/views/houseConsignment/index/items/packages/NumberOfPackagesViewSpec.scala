@@ -61,7 +61,7 @@ class NumberOfPackagesViewSpec extends InputTextViewBehaviours[BigInt] {
   override def applyView(form: Form[BigInt]): HtmlFormat.Appendable =
     injector
       .instanceOf[NumberOfPackagesView]
-      .apply(form, arrivalId, mrn, hcIndex, itemIndex, index, mode, viewModel)(fakeRequest, messages)
+      .apply(form, arrivalId, mrn, hcIndex, itemIndex, index, mode, mode, mode, viewModel)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[BigInt] = Arbitrary(positiveBigInts)
 

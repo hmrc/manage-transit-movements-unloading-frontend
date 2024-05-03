@@ -21,9 +21,11 @@ import controllers.routes
 import forms.YesNoFormProvider
 import generators.Generators
 import models.NormalMode
+import navigation.DepartureTransportMeansNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.departureMeansOfTransport.AddIdentificationYesNoPage
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -41,6 +43,9 @@ class AddIdentificationYesNoControllerSpec extends SpecBase with AppWithDefaultM
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(
+        bind(classOf[DepartureTransportMeansNavigator]).toInstance(FakeConsignmentNavigators.fakeDepartureTransportMeansNavigator)
+      )
 
   lazy val addIdentificationYesNoRoute: String =
     controllers.departureMeansOfTransport.routes.AddIdentificationYesNoController.onPageLoad(arrivalId, index, mode).url

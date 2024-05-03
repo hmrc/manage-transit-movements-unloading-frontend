@@ -16,44 +16,39 @@
 
 @import models.MovementReferenceNumber
 @import models.reference.TransportMeansIdentification
-@import viewModels.components.InputRadioViewModel._
+@import viewModels.components.InputRadioViewModel
 @import views.html.components.{Button, ErrorSummary, InputRadio}
 @import viewModels.houseConsignment.index.departureTransportMeans.IdentificationViewModel
 
 @this(
-   mainTemplate: MainTemplate,
-   formHelper: FormWithCSRF,
-   inputRadio: InputRadio,
-   errorSummary: ErrorSummary,
-   button: Button
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    inputRadio: InputRadio,
+    errorSummary: ErrorSummary,
+    button: Button
 )
 
-@(form: Form[TransportMeansIdentification], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index, transportMeansIndex: Index, identifiers: Seq[TransportMeansIdentification], mode: Mode, viewModel: IdentificationViewModel)(implicit request: Request[_], messages: Messages)
+@(form: Form[TransportMeansIdentification], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index, transportMeansIndex: Index, identifiers: Seq[TransportMeansIdentification], houseConsignmentMode: Mode, transportMeansMode: Mode, viewModel: IdentificationViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-   title = viewModel.title,
-   showBackLink = true
+    title = viewModel.title,
+    showBackLink = true
 ) {
 
-   @formHelper(action = controllers.houseConsignment.index.departureMeansOfTransport.routes.IdentificationController.onSubmit(arrivalId, houseConsignmentIndex, transportMeansIndex, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.houseConsignment.index.departureMeansOfTransport.routes.IdentificationController.onSubmit(arrivalId, houseConsignmentIndex, transportMeansIndex, houseConsignmentMode, transportMeansMode), Symbol("autoComplete") -> "off") {
 
-      @errorSummary(form.errors)
+        @errorSummary(form.errors)
 
+        @inputRadio(
+            field = form("value"),
+            radioType = InputRadioViewModel(
+                heading = viewModel.heading,
+                caption = Some(s"MRN: $mrn"),
+                additionalHtml = viewModel.paragraph.map(_.toParagraph)
+            ),
+            radioItems = fieldId => identifiers.toRadioItems(fieldId, form.value)
+        )
 
-      @inputRadio(
-         field = form("value"),
-         radioType =
-      if (viewModel.paragraph.isDefined)
-           RadioWithAdditionalHtml(
-               caption = Some(s"MRN: $mrn"),
-               heading = viewModel.heading,
-               additionalHtml = viewModel.paragraph.map(_.toParagraph).get)
-      else
-          Radio(caption = Some(s"MRN: $mrn"), heading = viewModel.heading),
-
-         radioItems = fieldId => identifiers.toRadioItems(fieldId, form.value)
-      )
-
-   @button(attributes = Map("id" -> "submit"))
-   }
+        @button(attributes = Map("id" -> "submit"))
+    }
 }

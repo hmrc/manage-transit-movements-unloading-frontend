@@ -19,14 +19,14 @@ package controllers.houseConsignment.index.departureMeansOfTransport
 import controllers.actions._
 import forms.SelectableFormProvider
 import models.{ArrivalId, Index, Mode, SelectableList}
-import navigation.DepartureTransportMeansNavigator
+import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator.DepartureTransportMeansNavigatorProvider
 import pages.houseConsignment.index.departureMeansOfTransport.CountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import repositories.SessionRepository
 import services.ReferenceDataService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.houseConsignment.index.departureMeansOfTransport.HouseConsignmentCountryViewModel.HouseConsignmentCountryViewModelProvider
+import viewModels.houseConsignment.index.departureTransportMeans.HouseConsignmentCountryViewModel.HouseConsignmentCountryViewModelProvider
 import views.html.houseConsignment.index.departureMeansOfTransport.CountryView
 
 import javax.inject.Inject
@@ -40,15 +40,21 @@ class CountryController @Inject() (
   referenceDataService: ReferenceDataService,
   val controllerComponents: MessagesControllerComponents,
   view: CountryView,
-  navigator: DepartureTransportMeansNavigator,
+  navigatorProvider: DepartureTransportMeansNavigatorProvider,
   countryViewModelProvider: HouseConsignmentCountryViewModelProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  val prefix = "houseConsignment.index.departureMeansOfTransport.country"
+  private val prefix = "houseConsignment.index.departureMeansOfTransport.country"
 
-  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(
+    arrivalId: ArrivalId,
+    houseConsignmentIndex: Index,
+    transportMeansIndex: Index,
+    houseConsignmentMode: Mode,
+    transportMeansMode: Mode
+  ): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
         referenceDataService
@@ -57,18 +63,36 @@ class CountryController @Inject() (
             country => SelectableList(country.toSeq)
           ) map {
           countries =>
-            val viewModel = countryViewModelProvider.apply(mode, houseConsignmentIndex)
-            val form      = formProvider(mode, prefix, countries, transportMeansIndex)
+            val viewModel = countryViewModelProvider.apply(transportMeansMode, houseConsignmentIndex)
+            val form      = formProvider(transportMeansMode, prefix, countries, houseConsignmentIndex, transportMeansIndex)
 
             val preparedForm = request.userAnswers.get(CountryPage(houseConsignmentIndex, transportMeansIndex)) match {
               case None        => form
               case Some(value) => form.fill(value)
             }
-            Ok(view(preparedForm, countries.values, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, transportMeansIndex, mode, viewModel))
+            Ok(
+              view(
+                preparedForm,
+                countries.values,
+                request.userAnswers.mrn,
+                arrivalId,
+                houseConsignmentIndex,
+                transportMeansIndex,
+                houseConsignmentMode,
+                transportMeansMode,
+                viewModel
+              )
+            )
         }
     }
 
-  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(
+    arrivalId: ArrivalId,
+    houseConsignmentIndex: Index,
+    transportMeansIndex: Index,
+    houseConsignmentMode: Mode,
+    transportMeansMode: Mode
+  ): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
         referenceDataService
@@ -77,15 +101,25 @@ class CountryController @Inject() (
             country => SelectableList(country.toSeq)
           ) flatMap {
           countries =>
-            val viewModel = countryViewModelProvider.apply(mode, houseConsignmentIndex)
-            val form      = formProvider(mode, prefix, countries, transportMeansIndex)
+            val viewModel = countryViewModelProvider.apply(transportMeansMode, houseConsignmentIndex)
+            val form      = formProvider(transportMeansMode, prefix, countries, houseConsignmentIndex, transportMeansIndex)
             form
               .bindFromRequest()
               .fold(
                 formWithErrors =>
                   Future.successful(
                     BadRequest(
-                      view(formWithErrors, countries.values, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, transportMeansIndex, mode, viewModel)
+                      view(
+                        formWithErrors,
+                        countries.values,
+                        request.userAnswers.mrn,
+                        arrivalId,
+                        houseConsignmentIndex,
+                        transportMeansIndex,
+                        houseConsignmentMode,
+                        transportMeansMode,
+                        viewModel
+                      )
                     )
                   ),
                 value =>
@@ -93,7 +127,10 @@ class CountryController @Inject() (
                     updatedAnswers <- Future
                       .fromTry(request.userAnswers.set(CountryPage(houseConsignmentIndex, transportMeansIndex), value))
                     _ <- sessionRepository.set(updatedAnswers)
-                  } yield Redirect(navigator.nextPage(CountryPage(houseConsignmentIndex, transportMeansIndex), mode, request.userAnswers))
+                  } yield {
+                    val navigator = navigatorProvider.apply(houseConsignmentMode)
+                    Redirect(navigator.nextPage(CountryPage(houseConsignmentIndex, transportMeansIndex), transportMeansMode, request.userAnswers))
+                  }
               )
         }
     }

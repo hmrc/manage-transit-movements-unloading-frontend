@@ -27,7 +27,7 @@ class AddGrossWeightYesNoViewSpec extends YesNoViewBehaviours {
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[AddGrossWeightYesNoView]
-      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, NormalMode)(fakeRequest, messages)
+      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, NormalMode, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "houseConsignment.item.addGrossWeightYesNo"
 

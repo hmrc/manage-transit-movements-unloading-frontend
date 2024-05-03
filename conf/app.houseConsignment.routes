@@ -1,0 +1,6 @@
+->         /                                                            app.houseConsignment.index.Routes
+
+GET        /:arrivalId/house-consignments/add-another                   controllers.houseConsignment.AddAnotherHouseConsignmentController.onPageLoad(arrivalId: ArrivalId, mode: Mode = NormalMode)
+POST       /:arrivalId/house-consignments/add-another                   controllers.houseConsignment.AddAnotherHouseConsignmentController.onSubmit(arrivalId: ArrivalId, mode: Mode = NormalMode)
+GET        /:arrivalId/change-house-consignments/add-another            controllers.houseConsignment.AddAnotherHouseConsignmentController.onPageLoad(arrivalId: ArrivalId, mode: Mode = CheckMode)
+POST       /:arrivalId/change-house-consignments/add-another            controllers.houseConsignment.AddAnotherHouseConsignmentController.onSubmit(arrivalId: ArrivalId, mode: Mode = CheckMode)

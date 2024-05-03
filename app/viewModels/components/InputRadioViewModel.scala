@@ -33,4 +33,13 @@ object InputRadioViewModel {
     additionalHtml: Html
   ) extends InputRadioViewModel
       with AdditionalHtmlViewModel
+
+  def apply(
+    heading: String,
+    caption: Option[String],
+    additionalHtml: Option[Html]
+  ): InputRadioViewModel = additionalHtml match {
+    case Some(value) => RadioWithAdditionalHtml(heading, caption, value)
+    case None        => Radio(heading, caption)
+  }
 }

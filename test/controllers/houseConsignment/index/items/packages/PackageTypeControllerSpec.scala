@@ -20,6 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SelectableFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}
+import navigation.houseConsignment.index.items.PackagesNavigator.PackagesNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -48,14 +49,17 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
   private lazy val packageTypeRoute =
     controllers.houseConsignment.index.items.packages.routes.PackageTypeController
-      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, NormalMode)
+      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, packageIndex, houseConsignmentMode, itemMode, packageMode)
       .url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[PackageTypeViewModelProvider]).toInstance(mockViewModelProvider))
-      .overrides(bind(classOf[PackagesService]).toInstance(mockPackagesService))
+      .overrides(
+        bind(classOf[PackagesNavigatorProvider]).toInstance(FakeConsignmentItemNavigators.fakePackagesNavigatorProvider),
+        bind(classOf[PackageTypeViewModelProvider]).toInstance(mockViewModelProvider),
+        bind(classOf[PackagesService]).toInstance(mockPackagesService)
+      )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -66,9 +70,12 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   }
 
   private val formProvider = new SelectableFormProvider()
-  private val mode         = NormalMode
 
-  private val form = formProvider(mode, "houseConsignment.index.item.packageType", packageTypeList)
+  private val houseConsignmentMode = NormalMode
+  private val itemMode             = NormalMode
+  private val packageMode          = NormalMode
+
+  private val form = formProvider(packageMode, "houseConsignment.index.item.packageType", packageTypeList)
 
   "PackageType Controller" - {
 
@@ -86,7 +93,19 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(viewModel, form, mrn, arrivalId, packageTypeList.values, NormalMode, houseConsignmentIndex, itemIndex, packageIndex)(request, messages).toString
+        view(
+          viewModel,
+          form,
+          mrn,
+          arrivalId,
+          packageTypeList.values,
+          houseConsignmentMode,
+          itemMode,
+          packageMode,
+          houseConsignmentIndex,
+          itemIndex,
+          packageIndex
+        )(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -106,9 +125,19 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(viewModel, filledForm, mrn, arrivalId, packageTypeList.values, NormalMode, houseConsignmentIndex, itemIndex, packageIndex)(request,
-                                                                                                                                        messages
-        ).toString
+        view(
+          viewModel,
+          filledForm,
+          mrn,
+          arrivalId,
+          packageTypeList.values,
+          houseConsignmentMode,
+          itemMode,
+          packageMode,
+          houseConsignmentIndex,
+          itemIndex,
+          packageIndex
+        )(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -144,7 +173,19 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       val view = injector.instanceOf[PackageTypeView]
 
       contentAsString(result) mustEqual
-        view(viewModel, boundForm, mrn, arrivalId, packageTypeList.values, mode, houseConsignmentIndex, itemIndex, packageIndex)(request, messages).toString
+        view(
+          viewModel,
+          boundForm,
+          mrn,
+          arrivalId,
+          packageTypeList.values,
+          houseConsignmentMode,
+          itemMode,
+          packageMode,
+          houseConsignmentIndex,
+          itemIndex,
+          packageIndex
+        )(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

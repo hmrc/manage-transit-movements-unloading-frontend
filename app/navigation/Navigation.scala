@@ -80,6 +80,8 @@ class Navigation extends Navigator {
           case Some(false) => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
           case _           => Some(routes.SessionExpiredController.onPageLoad())
         }
-    case _ => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
+    case GrossWeightPage => ua => Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
+    case _               => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
+
   }
 }

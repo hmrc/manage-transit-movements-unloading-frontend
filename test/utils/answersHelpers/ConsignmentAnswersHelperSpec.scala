@@ -34,7 +34,6 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
     "headerSection" - {
       import pages._
-      import pages.grossMass.GrossMassPage
 
       "must return static section" in {
         val ie043 = basicIe043.copy(
@@ -51,7 +50,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
           .copy(ie043Data = ie043)
           .setValue(SecurityTypePage, arbitrary[SecurityType].sample.value)
           .setValue(CustomsOfficeOfDestinationActualPage, arbitrary[CustomsOffice].sample.value)
-          .setValue(GrossMassPage, arbitrary[BigDecimal].sample.value)
+          .setValue(GrossWeightPage, arbitrary[BigDecimal].sample.value)
 
         val helper = new ConsignmentAnswersHelper(answers)
         val result = helper.headerSection
@@ -170,7 +169,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
     }
 
     "grossMassRow" - {
-      import pages.grossMass.GrossMassPage
+      import pages.GrossWeightPage
 
       "must return None" - {
         s"when no transport equipments defined" in {
@@ -181,9 +180,9 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       }
 
       "must return Some(Row)" - {
-        s"when $GrossMassPage is defined" in {
+        s"when $GrossWeightPage is defined" in {
           val answers = emptyUserAnswers
-            .setValue(GrossMassPage, BigDecimal(999.99))
+            .setValue(GrossWeightPage, BigDecimal(999.99))
 
           val helper = new ConsignmentAnswersHelper(answers)
           val result = helper.grossMassRow.value
@@ -192,7 +191,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
           result.value.value mustBe "999.99"
           val action = result.actions.value.items.head
           action.content.value mustBe "Change"
-          action.href mustBe "#"
+          action.href mustBe controllers.routes.GrossWeightController.onPageLoad(arrivalId, CheckMode).url
           action.visuallyHiddenText.value mustBe "gross weight"
           action.id mustBe "change-gross-mass"
         }
@@ -291,13 +290,13 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.children.head.children.head.rows.size mustBe 1
             result.children.head.children.head.rows.head.value.value mustBe sealId
             result.children.head.children.head.viewLinks.head.href mustBe
-              controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, CheckMode, NormalMode, equipmentIndex).url
+              controllers.transportEquipment.index.routes.AddAnotherSealController.onPageLoad(arrivalId, CheckMode, equipmentIndex).url
 
             result.children.head.children(1) mustBe a[AccordionSection]
             result.children.head.children(1).rows.size mustBe 1
             result.children.head.children(1).rows.head.value.value mustBe item.toString
             result.children.head.children(1).viewLinks.head.href mustBe
-              controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, CheckMode, NormalMode, equipmentIndex).url
+              controllers.transportEquipment.index.routes.ApplyAnotherItemController.onPageLoad(arrivalId, CheckMode, equipmentIndex).url
         }
       }
     }
@@ -322,7 +321,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             result.children.head.rows.size mustBe 2
             result.children.head.rows.head.value.value mustBe `type`.toString
             result.children.head.rows(1).value.value mustBe number
-            result.viewLinks.head.href mustBe "/manage-transit-movements/unloading/AB123/additional-reference/add-another"
+            result.viewLinks.head.href mustBe "/manage-transit-movements/unloading/AB123/additional-references/add-another"
             result.id.value mustBe "additionalReferences"
         }
       }
@@ -429,7 +428,7 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
             result mustBe a[AccordionSection]
             result.sectionTitle.value mustBe "House consignments"
-            result.viewLinks.head.href mustBe "#"
+            result.viewLinks.head.href mustBe controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(answers.id, NormalMode).url
 
             result.children.head mustBe a[AccordionSection]
             result.children.head.sectionTitle.value mustBe "House consignment 1"
@@ -445,16 +444,14 @@ class ConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
       }
 
       "must generate add remove link even if there  is no house consignment" in {
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
-          (consignorName, consignorId, consigneeName, consigneeId) =>
-            val helper = new ConsignmentAnswersHelper(emptyUserAnswers)
-            val result = helper.houseConsignmentSection
+        val answers = emptyUserAnswers
+        val helper  = new ConsignmentAnswersHelper(answers)
+        val result  = helper.houseConsignmentSection
 
-            result mustBe a[AccordionSection]
-            result.sectionTitle.value mustBe "House consignments"
-            result.children mustBe Nil
-            result.viewLinks.head.href mustBe "#" // TODO replace with actual add remove link when the controller is implemented
-        }
+        result mustBe a[AccordionSection]
+        result.sectionTitle.value mustBe "House consignments"
+        result.children mustBe Nil
+        result.viewLinks.head.href mustBe controllers.houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(answers.id, NormalMode).url
       }
     }
 

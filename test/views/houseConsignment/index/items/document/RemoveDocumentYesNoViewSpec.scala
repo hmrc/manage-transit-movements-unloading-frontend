@@ -31,7 +31,7 @@ class RemoveDocumentYesNoViewSpec extends YesNoViewBehaviours with Generators {
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[RemoveDocumentYesNoView]
-      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, documentIndex, mode, Some(insetText))(fakeRequest, messages)
+      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, documentIndex, mode, mode, Some(insetText))(fakeRequest, messages)
 
   override val prefix: String = "houseConsignment.index.items.document.removeDocumentYesNo"
 
@@ -52,7 +52,7 @@ class RemoveDocumentYesNoViewSpec extends YesNoViewBehaviours with Generators {
   "when inset text undefined" - {
     val view = injector
       .instanceOf[RemoveDocumentYesNoView]
-      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, documentIndex, mode, None)(fakeRequest, messages)
+      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, documentIndex, mode, mode, None)(fakeRequest, messages)
 
     val doc = parseView(view)
 

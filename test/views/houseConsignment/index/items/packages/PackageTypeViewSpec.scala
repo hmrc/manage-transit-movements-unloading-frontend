@@ -37,7 +37,7 @@ class PackageTypeViewSpec extends InputSelectViewBehaviours[PackageType] {
   override def applyView(form: Form[PackageType]): HtmlFormat.Appendable =
     injector
       .instanceOf[PackageTypeView]
-      .apply(viewModel, form, mrn, arrivalId, values, NormalMode, houseConsignmentIndex, itemIndex, packageIndex)(fakeRequest, messages)
+      .apply(viewModel, form, mrn, arrivalId, values, NormalMode, NormalMode, NormalMode, houseConsignmentIndex, itemIndex, packageIndex)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[PackageType] = arbitraryPackageType
 

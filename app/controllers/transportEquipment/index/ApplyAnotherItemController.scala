@@ -46,26 +46,26 @@ class ApplyAnotherItemController @Inject() (
   private def form(viewModel: ApplyAnotherItemViewModel, equipmentIndex: Index): Form[Boolean] =
     formProvider(viewModel.prefix, viewModel.allowMore, equipmentIndex.display)
 
-  def onPageLoad(arrivalId: ArrivalId, equipmentMode: Mode, goodsReferenceMode: Mode, equipmentIndex: Index): Action[AnyContent] =
+  def onPageLoad(arrivalId: ArrivalId, equipmentMode: Mode, equipmentIndex: Index): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
         val availableGoodsReferences = goodsReferenceService.getGoodsReferences(request.userAnswers, equipmentIndex, None)
-        val viewModel                = viewModelProvider(request.userAnswers, arrivalId, equipmentMode, goodsReferenceMode, equipmentIndex, availableGoodsReferences)
+        val viewModel                = viewModelProvider(request.userAnswers, arrivalId, equipmentMode, equipmentIndex, availableGoodsReferences)
         Ok(view(form(viewModel, equipmentIndex), request.userAnswers.mrn, arrivalId, viewModel))
     }
 
-  def onSubmit(arrivalId: ArrivalId, equipmentMode: Mode, goodsReferenceMode: Mode, equipmentIndex: Index): Action[AnyContent] =
+  def onSubmit(arrivalId: ArrivalId, equipmentMode: Mode, equipmentIndex: Index): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
         val availableGoodsReferences = goodsReferenceService.getGoodsReferences(request.userAnswers, equipmentIndex, None)
-        val viewModel                = viewModelProvider(request.userAnswers, arrivalId, equipmentMode, goodsReferenceMode, equipmentIndex, availableGoodsReferences)
+        val viewModel                = viewModelProvider(request.userAnswers, arrivalId, equipmentMode, equipmentIndex, availableGoodsReferences)
         form(viewModel, equipmentIndex)
           .bindFromRequest()
           .fold(
             formWithErrors => BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, viewModel)),
             {
               case true =>
-                Redirect(routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, viewModel.nextIndex, equipmentMode, goodsReferenceMode))
+                Redirect(routes.GoodsReferenceController.onPageLoad(arrivalId, equipmentIndex, viewModel.nextIndex, equipmentMode, NormalMode))
               case false =>
                 equipmentMode match {
                   case NormalMode =>

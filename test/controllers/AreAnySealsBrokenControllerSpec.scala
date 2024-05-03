@@ -20,9 +20,12 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AreAnySealsBrokenFormProvider
 import generators.Generators
 import models.NormalMode
+import navigation.Navigation
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.AreAnySealsBrokenPage
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.AreAnySealsBrokenView
@@ -36,6 +39,13 @@ class AreAnySealsBrokenControllerSpec extends SpecBase with AppWithDefaultMockFi
   private val mode         = NormalMode
 
   lazy val areAnySealsBrokenRoute: String = controllers.routes.AreAnySealsBrokenController.onPageLoad(arrivalId, mode).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(
+        bind[Navigation].toInstance(fakeNavigation)
+      )
 
   "AreAnySealsBroken Controller" - {
 

@@ -40,7 +40,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.AdditionalReferenceTypeController.onSubmit(viewModel.arrivalId, viewModel.mode, viewModel.houseConsignmentIndex, viewModel.additionalReferenceIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AdditionalReferenceTypeController.onSubmit(viewModel.arrivalId, viewModel.houseConsignmentMode, viewModel.additionalReferenceMode, viewModel.houseConsignmentIndex, viewModel.additionalReferenceIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

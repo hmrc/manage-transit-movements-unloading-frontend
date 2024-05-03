@@ -20,6 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AdditionalInformationFormProvider
 import generators.Generators
 import models.NormalMode
+import navigation.DocumentNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -55,7 +56,10 @@ class AdditionalInformationControllerSpec extends SpecBase with AppWithDefaultMo
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[AdditionalInformationViewModelProvider]).toInstance(mockViewModelProvider))
+      .overrides(
+        bind(classOf[DocumentNavigator]).toInstance(FakeConsignmentNavigators.fakeDocumentNavigator),
+        bind(classOf[AdditionalInformationViewModelProvider]).toInstance(mockViewModelProvider)
+      )
 
   "Additional Information Controller" - {
 

@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items.packages
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.houseConsignment.index.items.PackagesNavigator
+import navigation.houseConsignment.index.items.PackagesNavigator.PackagesNavigatorProvider
 import pages.houseConsignment.index.items.packages.{AddNumberOfPackagesYesNoPage, PackageTypePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddNumberOfPackagesYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: PackagesNavigator,
+  navigatorProvider: PackagesNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -45,7 +45,15 @@ class AddNumberOfPackagesYesNoController @Inject() (
 
   private val form = formProvider("houseConsignment.index.items.packages.addNumberOfPackagesYesNo")
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index): Action[AnyContent] =
+  def onPageLoad(
+    arrivalId: ArrivalId,
+    houseConsignmentMode: Mode,
+    itemMode: Mode,
+    packageMode: Mode,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
+    packageIndex: Index
+  ): Action[AnyContent] =
     actions
       .getStatus(arrivalId)
       .andThen(getMandatoryPage(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex))) {
@@ -55,10 +63,31 @@ class AddNumberOfPackagesYesNoController @Inject() (
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, request.arg.toString, mode))
+          Ok(
+            view(
+              preparedForm,
+              request.userAnswers.mrn,
+              arrivalId,
+              houseConsignmentIndex,
+              itemIndex,
+              packageIndex,
+              request.arg.toString,
+              houseConsignmentMode,
+              itemMode,
+              packageMode
+            )
+          )
       }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, packageIndex: Index): Action[AnyContent] =
+  def onSubmit(
+    arrivalId: ArrivalId,
+    houseConsignmentMode: Mode,
+    itemMode: Mode,
+    packageMode: Mode,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
+    packageIndex: Index
+  ): Action[AnyContent] =
     actions
       .getStatus(arrivalId)
       .andThen(getMandatoryPage(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex)))
@@ -70,7 +99,18 @@ class AddNumberOfPackagesYesNoController @Inject() (
               formWithErrors =>
                 Future.successful(
                   BadRequest(
-                    view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, packageIndex, request.arg.toString, mode)
+                    view(
+                      formWithErrors,
+                      request.userAnswers.mrn,
+                      arrivalId,
+                      houseConsignmentIndex,
+                      itemIndex,
+                      packageIndex,
+                      request.arg.toString,
+                      houseConsignmentMode,
+                      itemMode,
+                      packageMode
+                    )
                   )
                 ),
               value =>
@@ -78,7 +118,13 @@ class AddNumberOfPackagesYesNoController @Inject() (
                   updatedAnswers <- Future
                     .fromTry(request.userAnswers.set(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), value))
                   _ <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(navigator.nextPage(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), mode, updatedAnswers))
+                } yield {
+                  val navigator = navigatorProvider.apply(houseConsignmentMode, itemMode)
+                  Redirect(
+                    navigator
+                      .nextPage(AddNumberOfPackagesYesNoPage(houseConsignmentIndex, itemIndex, packageIndex), packageMode, updatedAnswers)
+                  )
+                }
             )
       }
 }

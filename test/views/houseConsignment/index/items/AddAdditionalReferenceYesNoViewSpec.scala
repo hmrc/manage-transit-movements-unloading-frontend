@@ -27,7 +27,7 @@ class AddAdditionalReferenceYesNoViewSpec extends YesNoViewBehaviours {
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[AddAdditionalReferenceYesNoView]
-      .apply(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, NormalMode)(fakeRequest, messages)
+      .apply(form, mrn, arrivalId, hcIndex, itemIndex, NormalMode, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "houseConsignment.item.addAdditionalReferenceYesNo"
 

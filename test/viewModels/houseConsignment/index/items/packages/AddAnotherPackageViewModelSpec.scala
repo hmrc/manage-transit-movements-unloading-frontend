@@ -31,7 +31,7 @@ class AddAnotherPackageViewModelSpec extends SpecBase with Generators with Scala
     "when there is no packages" in {
       forAll(arbitrary[Mode]) {
         mode =>
-          val result = new AddAnotherPackageViewModelProvider().apply(emptyUserAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode)
+          val result = new AddAnotherPackageViewModelProvider().apply(emptyUserAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode, mode)
 
           result.listItems mustBe Nil
 
@@ -49,7 +49,7 @@ class AddAnotherPackageViewModelSpec extends SpecBase with Generators with Scala
           val userAnswers = emptyUserAnswers
             .setValue(PackageTypePage(houseConsignmentIndex, itemIndex, packageIndex), packageType)
 
-          val result = new AddAnotherPackageViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode)
+          val result = new AddAnotherPackageViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode, mode)
 
           result.listItems.length mustBe 1
           result.title(houseConsignmentIndex, itemIndex) mustBe s"You have added 1 type of package for item 1 in house consignment 1"
@@ -70,7 +70,7 @@ class AddAnotherPackageViewModelSpec extends SpecBase with Generators with Scala
             .setValue(PackageTypePage(houseConsignmentIndex, itemIndex, Index(2)), packageType)
             .setValue(PackageTypePage(houseConsignmentIndex, itemIndex, Index(3)), packageType)
 
-          val result = new AddAnotherPackageViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode)
+          val result = new AddAnotherPackageViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode, mode)
           result.listItems.length mustBe 4
           result.title(houseConsignmentIndex, itemIndex) mustBe s"You have added 4 types of packages for item 1 in house consignment 1"
           result.heading(houseConsignmentIndex, itemIndex) mustBe s"You have added 4 types of packages for item 1 in house consignment 1"

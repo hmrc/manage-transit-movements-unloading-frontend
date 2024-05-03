@@ -61,4 +61,17 @@ object Documents {
       None
     }
 
+  def maxLimitLabelForType(
+    documents: HouseConsignmentLevelDocuments,
+    houseConsignmentIndex: Index,
+    prefix: String
+  )(implicit config: FrontendAppConfig, messages: Messages): Option[String] =
+    if (documents.supporting >= config.maxSupportingDocumentsHouseConsignment) {
+      Some(messages(s"$prefix.maxLimitForType.label", Support.display.toLowerCase, Transport.display.toLowerCase, houseConsignmentIndex))
+    } else if (documents.transport >= config.maxTransportDocumentsHouseConsignment) {
+      Some(messages(s"$prefix.maxLimitForType.label", Transport.display.toLowerCase, Support.display.toLowerCase, houseConsignmentIndex))
+    } else {
+      None
+    }
+
 }

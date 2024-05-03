@@ -26,15 +26,14 @@ import views.html.transportEquipment.index.RemoveItemYesNoView
 
 class RemoveItemYesNoViewSpec extends YesNoViewBehaviours with Generators {
 
-  private val equipmentMode      = NormalMode
-  private val goodsReferenceMode = NormalMode
+  private val equipmentMode = NormalMode
 
   private val insetText = Gen.alphaNumStr.sample.value
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[RemoveItemYesNoView]
-      .apply(form, mrn, arrivalId, equipmentIndex, itemIndex, equipmentMode, goodsReferenceMode, Some(insetText))(fakeRequest, messages)
+      .apply(form, mrn, arrivalId, equipmentIndex, itemIndex, equipmentMode, Some(insetText))(fakeRequest, messages)
 
   override val prefix: String = "transportEquipment.index.item.removeItemYesNo"
 
@@ -55,7 +54,7 @@ class RemoveItemYesNoViewSpec extends YesNoViewBehaviours with Generators {
   "when inset text undefined" - {
     val view = injector
       .instanceOf[RemoveItemYesNoView]
-      .apply(form, mrn, arrivalId, equipmentIndex, itemIndex, equipmentMode, goodsReferenceMode, None)(fakeRequest, messages)
+      .apply(form, mrn, arrivalId, equipmentIndex, itemIndex, equipmentMode, None)(fakeRequest, messages)
     val doc = parseView(view)
 
     behave like pageWithoutInsetText(doc)
