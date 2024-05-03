@@ -19,7 +19,7 @@ package utils.answersHelpers.consignment
 import controllers.houseConsignment.index.routes
 import models.DocType.Previous
 import models.reference.Country
-import models.{CheckMode, DynamicAddress, Index, Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
+import models.{CheckMode, DynamicAddress, Index, Link, RichOptionalJsArray, SecurityType, UserAnswers}
 import pages.houseConsignment.consignor.CountryPage
 import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage, SecurityIndicatorFromExportDeclarationPage}
 import pages.sections.ItemsSection
@@ -176,14 +176,16 @@ class HouseConsignmentAnswersHelper(
 
   private val departureTransportMeansAddRemoveLink: Link = Link(
     id = s"add-remove-departure-transport-means",
-    href = "#", // TODO update when controller added
+    href = controllers.houseConsignment.index.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
+      .onPageLoad(arrivalId, houseConsignmentIndex, CheckMode)
+      .url,
     text = messages("houseConsignment.departureTransportMeans.addRemove")
   )
 
   private val additionalReferenceAddRemoveLink: Link = Link(
     id = "add-remove-additional-reference",
     href = controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController
-      .onPageLoad(arrivalId, NormalMode, houseConsignmentIndex)
+      .onPageLoad(arrivalId, CheckMode, houseConsignmentIndex)
       .url,
     text = messages("additionalReferenceLink.addRemove")
   )

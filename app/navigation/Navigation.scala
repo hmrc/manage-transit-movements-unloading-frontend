@@ -93,6 +93,8 @@ class Navigation extends Navigator {
           case false => controllers.routes.CheckYourAnswersController.onPageLoad(ua.id)
         }
     case OtherThingsToReportPage => ua => Some(controllers.routes.CheckYourAnswersController.onPageLoad(ua.id))
+    case GrossWeightPage         => ua => Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
     case _                       => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
+
   }
 }

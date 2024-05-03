@@ -20,6 +20,8 @@ import base.SpecBase
 import generators.Generators
 import models._
 import models.reference.AdditionalReferenceType
+import navigation.houseConsignment.index.AdditionalReferenceNavigator.AdditionalReferenceNavigatorProvider
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.houseConsignment.index.additionalReference.{
   AddHouseConsignmentAdditionalReferenceNumberYesNoPage,
@@ -29,13 +31,15 @@ import pages.houseConsignment.index.additionalReference.{
 
 class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  val navigator = new AdditionalReferenceNavigator
+  private val navigatorProvider = new AdditionalReferenceNavigatorProvider
 
   "AdditionalReferenceNavigator HC level" - {
 
     "in Checkmode" - {
 
-      val mode = CheckMode
+      val houseConsignmentMode    = CheckMode
+      val additionalReferenceMode = CheckMode
+      val navigator               = navigatorProvider.apply(houseConsignmentMode)
 
       "must go from AdditionalReferenceTypePage to HouseConsignmentController page" in {
 
@@ -43,7 +47,7 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
           emptyUserAnswers.setValue(HouseConsignmentAdditionalReferenceTypePage(hcIndex, additionalReferenceIndex), AdditionalReferenceType("test", "test"))
 
         navigator
-          .nextPage(HouseConsignmentAdditionalReferenceTypePage(hcIndex, additionalReferenceIndex), mode, userAnswers)
+          .nextPage(HouseConsignmentAdditionalReferenceTypePage(hcIndex, additionalReferenceIndex), additionalReferenceMode, userAnswers)
           .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
       }
 
@@ -52,14 +56,16 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
         val userAnswers = emptyUserAnswers.setValue(HouseConsignmentAdditionalReferenceNumberPage(hcIndex, additionalReferenceIndex), "test")
 
         navigator
-          .nextPage(HouseConsignmentAdditionalReferenceNumberPage(hcIndex, additionalReferenceIndex), mode, userAnswers)
+          .nextPage(HouseConsignmentAdditionalReferenceNumberPage(hcIndex, additionalReferenceIndex), additionalReferenceMode, userAnswers)
           .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, hcIndex))
       }
     }
 
     "in NormalMode" - {
 
-      val mode = NormalMode
+      val houseConsignmentMode    = arbitrary[Mode].sample.value
+      val additionalReferenceMode = NormalMode
+      val navigator               = navigatorProvider.apply(houseConsignmentMode)
 
       "must go from HouseConsignmentAdditionalReferenceTypePage to AddHouseConsignmentAdditionalReferenceNumberYesNoPage page" in {
 
@@ -67,10 +73,10 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
           emptyUserAnswers.setValue(HouseConsignmentAdditionalReferenceTypePage(hcIndex, additionalReferenceIndex), AdditionalReferenceType("test", "test"))
 
         navigator
-          .nextPage(HouseConsignmentAdditionalReferenceTypePage(hcIndex, additionalReferenceIndex), mode, userAnswers)
+          .nextPage(HouseConsignmentAdditionalReferenceTypePage(hcIndex, additionalReferenceIndex), additionalReferenceMode, userAnswers)
           .mustBe(
             controllers.houseConsignment.index.additionalReference.routes.AddAdditionalReferenceNumberYesNoController
-              .onPageLoad(arrivalId, mode, hcIndex, additionalReferenceIndex)
+              .onPageLoad(arrivalId, houseConsignmentMode, additionalReferenceMode, hcIndex, additionalReferenceIndex)
           )
       }
 
@@ -79,10 +85,10 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
         val userAnswers = emptyUserAnswers.setValue(AddHouseConsignmentAdditionalReferenceNumberYesNoPage(hcIndex, additionalReferenceIndex), true)
 
         navigator
-          .nextPage(AddHouseConsignmentAdditionalReferenceNumberYesNoPage(hcIndex, additionalReferenceIndex), mode, userAnswers)
+          .nextPage(AddHouseConsignmentAdditionalReferenceNumberYesNoPage(hcIndex, additionalReferenceIndex), additionalReferenceMode, userAnswers)
           .mustBe(
             controllers.houseConsignment.index.additionalReference.routes.AdditionalReferenceNumberController
-              .onPageLoad(arrivalId, mode, hcIndex, additionalReferenceIndex)
+              .onPageLoad(arrivalId, houseConsignmentMode, additionalReferenceMode, hcIndex, additionalReferenceIndex)
           )
       }
 
@@ -91,10 +97,10 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
         val userAnswers = emptyUserAnswers.setValue(AddHouseConsignmentAdditionalReferenceNumberYesNoPage(hcIndex, additionalReferenceIndex), true)
 
         navigator
-          .nextPage(AddHouseConsignmentAdditionalReferenceNumberYesNoPage(hcIndex, additionalReferenceIndex), mode, userAnswers)
+          .nextPage(AddHouseConsignmentAdditionalReferenceNumberYesNoPage(hcIndex, additionalReferenceIndex), additionalReferenceMode, userAnswers)
           .mustBe(
             controllers.houseConsignment.index.additionalReference.routes.AdditionalReferenceNumberController
-              .onPageLoad(arrivalId, NormalMode, hcIndex, additionalReferenceIndex)
+              .onPageLoad(arrivalId, houseConsignmentMode, additionalReferenceMode, hcIndex, additionalReferenceIndex)
           )
       }
 
@@ -103,8 +109,11 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
         val userAnswers = emptyUserAnswers.setValue(AddHouseConsignmentAdditionalReferenceNumberYesNoPage(hcIndex, additionalReferenceIndex), false)
 
         navigator
-          .nextPage(AddHouseConsignmentAdditionalReferenceNumberYesNoPage(hcIndex, additionalReferenceIndex), mode, userAnswers)
-          .mustBe(controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId, mode, hcIndex))
+          .nextPage(AddHouseConsignmentAdditionalReferenceNumberYesNoPage(hcIndex, additionalReferenceIndex), additionalReferenceMode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController
+              .onPageLoad(arrivalId, houseConsignmentMode, hcIndex)
+          )
       }
 
     }

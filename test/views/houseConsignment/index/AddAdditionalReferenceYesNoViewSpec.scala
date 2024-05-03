@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package views.houseConsignment.index.additionalReference
+package views.houseConsignment.index
 
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.houseConsignment.index.additionalReference.AddAdditionalReferenceYesNoView
+import views.html.houseConsignment.index.AddAdditionalReferenceYesNoView
 
 class AddAdditionalReferenceYesNoViewSpec extends YesNoViewBehaviours {
 

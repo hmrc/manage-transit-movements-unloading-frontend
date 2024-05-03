@@ -65,7 +65,7 @@ object AddAnotherDocumentViewModel {
               Document(userAnswers, index).map {
                 document =>
                   ListItem(
-                    name = document.forAddAnotherDisplay,
+                    name = document.forDisplay,
                     changeUrl = None,
                     removeUrl = Some(routes.RemoveDocumentYesNoController.onPageLoad(arrivalId, mode, index).url)
                   )

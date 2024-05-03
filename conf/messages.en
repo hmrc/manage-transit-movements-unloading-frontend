@@ -118,6 +118,15 @@ dateGoodsUnloaded.error.min.date = The date must be on or after {0}
 dateGoodsUnloaded.error.max.date = The date must be today or in the past
 dateGoodsUnloaded.change.hidden = the date when the goods were unloaded
 
+grossWeight.title = What is the consignment’s new gross weight?
+grossWeight.heading = What is the consignment’s new gross weight?
+grossWeight.paragraph = This is the combined weight of the goods and packaging for all house consignments.
+grossWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
+grossWeight.error.required = Enter the consignment’s new gross weight
+grossWeight.error.invalidCharacters = The new gross weight must only include numbers 0 to 9 and a decimal point
+grossWeight.error.invalidValue = The new gross weight must be 23 characters or less. This can include whole numbers up to 16 digits, a decimal point and up to 6 decimal places
+grossWeight.error.invalidFormat = The new gross weight must only include 6 decimal places or less
+
 traderAtDestination = Authorised consignee’s EORI number or Trader Identification Number (TIN)
 customsOfficeOfDestinationActual = Office of destination
 
@@ -182,7 +191,7 @@ houseConsignment.item.grossWeight.heading = What is the new gross weight of item
 houseConsignment.item.grossWeight.paragraph = This is the combined weight of the item’s goods and packaging.
 houseConsignment.item.grossWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
 houseConsignment.item.grossWeight.error.required = Enter the new gross weight of item {0}  in house consignment {1}
-houseConsignment.item.grossWeight.error.invalidValue = The new gross weight must be 23 characters or less. This includes up to 6 decimal places and a decimal point
+houseConsignment.item.grossWeight.error.invalidValue = The new gross weight must be 23 characters or less. This can include whole numbers up to 16 digits, a decimal point and up to 6 decimal places
 houseConsignment.item.grossWeight.error.invalidCharacters = The new gross weight must only include numbers 0 to 9 and a decimal point
 houseConsignment.item.grossWeight.error.invalidFormat = The new gross weight must only include 6 decimal places or less
 houseConsignment.item.grossWeight.change.hidden = the new total gross weight
@@ -193,7 +202,7 @@ netWeight.checkYourAnswersLabel = What is the net net weight of item {0} in hous
 netWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
 netWeight.paragraph = This is the weight of the item’s goods, excluding all packaging.
 netWeight.error.required = Enter the new net weight of item {0} in house consignment {1}
-netWeight.error.length = The new net weight must be 23 characters or less. This includes up to 6 decimal places and a decimal point
+netWeight.error.length = The new net weight must be 23 characters or less. This can include whole numbers up to 16 digits, a decimal point and up to 6 decimal places
 netWeight.error.characters = The new net weight must only include numbers 0 to 9 and a decimal point
 netWeight.error.decimal = The new net weight must only include 6 decimal places or less
 netWeight.change.hidden = the new net weight
@@ -830,6 +839,18 @@ houseConsignment.index.items.document.addAnotherDocument.error.required = Select
 houseConsignment.index.items.document.addAnotherDocument.label = Do you want to add another document to item {0} in house consignment {1}?
 houseConsignment.index.items.document.addAnotherDocument.maxLimitForType.label = You cannot add any more {0} documents to item {3} in house consignment {2}. To add another, you need to remove one first. You can, however, still add a {1} document to your item.
 
+houseConsignment.index.document.addAnotherDocument.singular.title = You have added 1 document to all items in house consignment {1}
+houseConsignment.index.document.addAnotherDocument.plural.title = You have added {0} documents to all items in house consignment {1}
+houseConsignment.index.document.addAnotherDocument.empty.title = You have added {0} documents to all items in house consignment {1}
+houseConsignment.index.document.addAnotherDocument.singular.heading = You have added 1 document to all items in house consignment {1}
+houseConsignment.index.document.addAnotherDocument.empty.heading = You have added {0} documents to all items in house consignment {1}
+houseConsignment.index.document.addAnotherDocument.plural.heading = You have added {0} documents to all items in house consignment {1}
+houseConsignment.index.document.addAnotherDocument.singular.label = Do you want to add a document to all items in house consignment {0}?
+houseConsignment.index.document.addAnotherDocument.plural.label = Do you want to add another document to all items in house consignment {0}?
+houseConsignment.index.document.addAnotherDocument.maxLimit.label = You cannot add any more documents to all items in this house consignment. You can still add and attach documents to individual items from their house consignment cross-check screens.
+houseConsignment.index.document.addAnotherDocument.error.required = Select yes if you want to add another document to all items in house consignment {0}
+houseConsignment.index.document.addAnotherDocument.label = Do you want to add another document to all items in house consignment {0}?
+houseConsignment.index.document.addAnotherDocument.maxLimitForType.label = You cannot add any more documents to all items in this house consignment. You can still add and attach documents to individual items from their house consignment cross-check screens.
 
 additionalReferenceNumber.index.NormalMode.title = What is the additional reference number?
 additionalReferenceNumber.index.CheckMode.title = What is the new additional reference number?
@@ -1112,7 +1133,7 @@ houseConsignment.index.grossWeight.heading = What is the new gross weight of hou
 houseConsignment.index.grossWeight.paragraph = This is the combined weight of the house consignment’s goods and packaging.
 houseConsignment.index.grossWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
 houseConsignment.index.grossWeight.error.required = Enter the new gross weight of house consignment {0}
-houseConsignment.index.grossWeight.error.invalidValue = The new gross weight must be 23 characters or less. This includes up to 6 decimal places and a decimal point
+houseConsignment.index.grossWeight.error.invalidValue = The new gross weight must be 23 characters or less. This can include whole numbers up to 16 digits, a decimal point and up to 6 decimal places
 houseConsignment.index.grossWeight.error.invalidCharacters = The new gross weight must only include numbers 0 to 9 and a decimal point
 houseConsignment.index.grossWeight.error.invalidFormat = The new gross weight must only include 6 decimal places or less
 
@@ -1163,7 +1184,6 @@ houseConsignment.index.departureMeansOfTransport.identificationNumber.error.leng
 houseConsignment.index.departureMeansOfTransport.identificationNumber.error.invalid = The identification must only include letters a to z and numbers 0 to 9
 houseConsignment.index.departureMeansOfTransport.identificationNumber.change.hidden = the identification for the new vehicle
 
-
 houseConsignment.index.departureMeansOfTransport.country.NormalMode.title = What country is this vehicle registered to?
 houseConsignment.index.departureMeansOfTransport.country.CheckMode.title = What country is the new vehicle registered to in house consignment {0}?
 houseConsignment.index.departureMeansOfTransport.country.NormalMode.heading = What country is this vehicle registered to?
@@ -1171,6 +1191,18 @@ houseConsignment.index.departureMeansOfTransport.country.CheckMode.heading = Wha
 houseConsignment.index.departureMeansOfTransport.nationality.hintText = Enter the country or code, like Austria or AT.
 houseConsignment.index.departureMeansOfTransport.country.error.required = Select the country the vehicle is registered to
 houseConsignment.index.departureMeansOfTransport.country.check.error.required = Select the country the new vehicle is registered to in house consignment {0}
+
+houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.empty.title = You have added 0 departure means of transport for house consignment {1}
+houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.singular.title = You have added 1 departure means of transport for house consignment {1}
+houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.plural.title = You have added {0} departure means of transport for house consignment {1}
+houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.empty.heading = You have added 0 departure means of transport for house consignment {1}
+houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.singular.heading = You have added 1 departure means of transport for house consignment {1}
+houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.plural.heading = You have added {0} departure means of transport for house consignment {1}
+houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.empty.label = Do you want to add a departure means of transport for house consignment {1}?
+houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.label = Do you want to add another departure means of transport for house consignment {1}?
+houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.maxLimit.label = You cannot add another departure means of transport for house consignment {1}. To add another, you need to remove one first.
+houseConsignment.index.departureMeansOfTransport.addAnotherDepartureMeansOfTransport.error.required = Select yes if you want to add a departure means of transport for house consignment {0}
+houseConsignment.index.departureMeansOfTransport.prefix = Departure means of transport {0}
 
 houseConsignment.index.additionalReference.removeAdditionalReferenceYesNo.title = Are you sure you want to remove this additional reference?
 houseConsignment.index.additionalReference.removeAdditionalReferenceYesNo.heading = Are you sure you want to remove this additional reference?

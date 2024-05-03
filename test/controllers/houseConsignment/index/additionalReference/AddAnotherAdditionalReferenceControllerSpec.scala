@@ -130,7 +130,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual controllers.houseConsignment.index.additionalReference.routes.AdditionalReferenceTypeController
-            .onPageLoad(arrivalId, mode, houseConsignmentIndex, notMaxedOutViewModel.nextIndex)
+            .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, notMaxedOutViewModel.nextIndex)
             .url
         }
       }

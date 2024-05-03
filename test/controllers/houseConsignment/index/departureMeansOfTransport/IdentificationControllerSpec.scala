@@ -17,13 +17,12 @@
 package controllers.houseConsignment.index.departureMeansOfTransport
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.routes
 import forms.EnumerableFormProvider
 import generators.Generators
-import models.CheckMode
+import models.NormalMode
 import models.reference.TransportMeansIdentification
 import models.reference.TransportMode.InlandMode
-import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
+import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator.DepartureTransportMeansNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -50,11 +49,13 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private val mockViewModelProvider = mock[IdentificationViewModelProvider]
   val formProvider                  = new EnumerableFormProvider()
 
-  private val mode = CheckMode
-  private val form = formProvider(mode, viewModel.requiredError, identificationTypes)
+  private val houseConsignmentMode = NormalMode
+  private val transportMeansMode   = NormalMode
+
+  private val form = formProvider(transportMeansMode, viewModel.requiredError, identificationTypes)
 
   private lazy val identificationRoute =
-    controllers.houseConsignment.index.departureMeansOfTransport.routes.IdentificationController.onPageLoad(arrivalId, hcIndex, index, mode).url
+    routes.IdentificationController.onPageLoad(arrivalId, hcIndex, index, houseConsignmentMode, transportMeansMode).url
 
   private val mockMeansOfTransportIdentificationTypesService: MeansOfTransportIdentificationTypesService =
     mock[MeansOfTransportIdentificationTypesService]
@@ -72,7 +73,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind(classOf[DepartureTransportMeansNavigator]).toInstance(FakeHouseConsignmentNavigators.fakeDepartureTransportMeansNavigator),
+        bind(classOf[DepartureTransportMeansNavigatorProvider]).toInstance(FakeHouseConsignmentNavigators.fakeDepartureTransportMeansNavigatorProvider),
         bind(classOf[MeansOfTransportIdentificationTypesService]).toInstance(mockMeansOfTransportIdentificationTypesService),
         bind(classOf[IdentificationViewModelProvider]).toInstance(mockViewModelProvider)
       )
@@ -95,7 +96,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       val view = injector.instanceOf[IdentificationView]
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, hcIndex, index, identificationTypes, mode, viewModel)(request, messages).toString
+        view(form, mrn, arrivalId, hcIndex, index, identificationTypes, houseConsignmentMode, transportMeansMode, viewModel)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -118,7 +119,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, hcIndex, index, identificationTypes, mode, viewModel)(request, messages).toString
+        view(filledForm, mrn, arrivalId, hcIndex, index, identificationTypes, houseConsignmentMode, transportMeansMode, viewModel)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -158,7 +159,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, arrivalId, hcIndex, index, identificationTypes, mode, viewModel)(request, messages).toString
+        view(boundForm, mrn, arrivalId, hcIndex, index, identificationTypes, houseConsignmentMode, transportMeansMode, viewModel)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -170,7 +171,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -184,7 +185,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
 
   }

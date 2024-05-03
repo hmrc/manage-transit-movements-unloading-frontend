@@ -19,7 +19,7 @@ package controllers.houseConsignment.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
-import navigation.Navigation
+import navigation.houseConsignment.index.HouseConsignmentNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.houseConsignment.index.AddDepartureTransportMeansYesNoPage
@@ -44,7 +44,7 @@ class AddDepartureTransportMeansYesNoControllerSpec extends SpecBase with AppWit
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[Navigation].toInstance(fakeNavigation)
+        bind(classOf[HouseConsignmentNavigator]).toInstance(FakeHouseConsignmentNavigators.fakeHouseConsignmentNavigator)
       )
 
   "AddDepartureTransportMeansYesNo Controller" - {

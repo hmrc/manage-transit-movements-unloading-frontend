@@ -49,7 +49,7 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               result.value.value mustBe value.toString
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
-              action.href mustBe "/manage-transit-movements/unloading/AB123/documents/1/change-type"
+              action.href mustBe "/manage-transit-movements/unloading/AB123/change-document/1/type"
               action.visuallyHiddenText.value mustBe "document type for document 1"
               action.id mustBe "change-document-type-1"
           }
@@ -94,7 +94,7 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               result.value.value mustBe value
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
-              action.href mustBe "/manage-transit-movements/unloading/AB123/documents/1/change-reference-number"
+              action.href mustBe "/manage-transit-movements/unloading/AB123/change-document/1/reference-number"
               action.visuallyHiddenText.value mustBe "reference number for document 1"
               action.id mustBe "change-document-reference-number-1"
           }
@@ -139,7 +139,7 @@ class DocumentAnswersHelperSpec extends AnswersHelperSpecBase {
               result.value.value mustBe value
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
-              action.href mustBe "/manage-transit-movements/unloading/AB123/documents/1/change-additional-information"
+              action.href mustBe "/manage-transit-movements/unloading/AB123/change-document/1/additional-information"
               action.visuallyHiddenText.value mustBe "additional information for document 1"
               action.id mustBe "change-document-additional-information-1"
           }

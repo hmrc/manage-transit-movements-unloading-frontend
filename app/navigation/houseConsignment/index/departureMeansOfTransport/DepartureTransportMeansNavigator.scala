@@ -16,15 +16,13 @@
 
 package navigation.houseConsignment.index.departureMeansOfTransport
 
-import com.google.inject.Singleton
 import models._
 import navigation.Navigator
 import pages._
 import pages.houseConsignment.index.departureMeansOfTransport._
 import play.api.mvc.Call
 
-@Singleton
-class DepartureTransportMeansNavigator extends Navigator {
+class DepartureTransportMeansNavigator(houseConsignmentMode: Mode) extends Navigator {
 
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
 
@@ -39,5 +37,14 @@ class DepartureTransportMeansNavigator extends Navigator {
 
   override protected def normalRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case _ => _ => Some(Call("GET", "#")) //TODO: Update navigation
+  }
+}
+
+object DepartureTransportMeansNavigator {
+
+  class DepartureTransportMeansNavigatorProvider {
+
+    def apply(houseConsignmentMode: Mode): DepartureTransportMeansNavigator =
+      new DepartureTransportMeansNavigator(houseConsignmentMode)
   }
 }

@@ -19,18 +19,17 @@ package controllers.houseConsignment.index.departureMeansOfTransport
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.VehicleIdentificationNumberFormProvider
 import generators.Generators
-import models.CheckMode
+import models.NormalMode
+import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator.DepartureTransportMeansNavigatorProvider
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
+import pages.houseConsignment.index.departureMeansOfTransport.VehicleIdentificationNumberPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import controllers.houseConsignment.index.departureMeansOfTransport.routes
-import navigation.houseConsignment.index.departureMeansOfTransport.DepartureTransportMeansNavigator
-import org.mockito.ArgumentMatchers
-import pages.houseConsignment.index.departureMeansOfTransport.VehicleIdentificationNumberPage
 import viewModels.houseConsignment.index.departureTransportMeans.IdentificationNumberViewModel
 import viewModels.houseConsignment.index.departureTransportMeans.IdentificationNumberViewModel.IdentificationNumberViewModelProvider
 import views.html.houseConsignment.index.departureMeansOfTransport.IdentificationNumberView
@@ -39,10 +38,13 @@ import scala.concurrent.Future
 
 class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val prefix                = "houseConsignment.index.departureMeansOfTransport.identificationNumber"
-  private val formProvider          = new VehicleIdentificationNumberFormProvider()
-  private val mode                  = CheckMode
-  private val form                  = formProvider(prefix, mode, houseConsignmentIndex)
+  private val prefix       = "houseConsignment.index.departureMeansOfTransport.identificationNumber"
+  private val formProvider = new VehicleIdentificationNumberFormProvider()
+
+  private val houseConsignmentMode = NormalMode
+  private val transportMeansMode   = NormalMode
+
+  private val form                  = formProvider(prefix, transportMeansMode, houseConsignmentIndex)
   private val viewModel             = arbitrary[IdentificationNumberViewModel].sample.value
   private val mockViewModelProvider = mock[IdentificationNumberViewModelProvider]
 
@@ -50,7 +52,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind(classOf[DepartureTransportMeansNavigator]).toInstance(FakeHouseConsignmentNavigators.fakeDepartureTransportMeansNavigator),
+        bind(classOf[DepartureTransportMeansNavigatorProvider]).toInstance(FakeHouseConsignmentNavigators.fakeDepartureTransportMeansNavigatorProvider),
         bind[IdentificationNumberViewModelProvider].toInstance(mockViewModelProvider)
       )
 
@@ -63,7 +65,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
   }
 
   lazy val vehicleIdentificationNumberRoute: String =
-    routes.IdentificationNumberController.onPageLoad(arrivalId, houseConsignmentIndex, index, mode).url
+    routes.IdentificationNumberController.onPageLoad(arrivalId, houseConsignmentIndex, index, houseConsignmentMode, transportMeansMode).url
 
   "departureMeansOfTransport.identificationNumber Controller" - {
 
@@ -81,7 +83,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, houseConsignmentIndex, index, mode, viewModel)(request, messages).toString
+        view(form, mrn, arrivalId, houseConsignmentIndex, index, houseConsignmentMode, transportMeansMode, viewModel)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -101,7 +103,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, houseConsignmentIndex, index, mode, viewModel)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentIndex, index, houseConsignmentMode, transportMeansMode, viewModel)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -135,7 +137,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
       val view = injector.instanceOf[IdentificationNumberView]
 
       contentAsString(result) mustEqual
-        view(boundForm, mrn, arrivalId, houseConsignmentIndex, index, mode, viewModel)(request, messages).toString
+        view(boundForm, mrn, arrivalId, houseConsignmentIndex, index, houseConsignmentMode, transportMeansMode, viewModel)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

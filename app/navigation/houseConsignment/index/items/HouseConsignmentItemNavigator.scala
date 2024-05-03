@@ -19,9 +19,8 @@ package navigation.houseConsignment.index.items
 import controllers.houseConsignment.index.items.routes
 import models.{ArrivalId, CheckMode, Index, Mode, NormalMode, UserAnswers}
 import navigation.Navigator
-import pages._
+import pages.Page
 import pages.houseConsignment.index.items._
-import pages.houseConsignment.index.items.document.AddDocumentYesNoPage
 import pages.houseConsignment.index.items.packages.{NumberOfPackagesPage, PackageShippingMarkPage, PackageTypePage}
 import play.api.mvc.Call
 
@@ -53,11 +52,7 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode) extends Navigato
     case AddDocumentYesNoPage(houseConsignmentIndex, itemIndex) =>
       ua => addDocumentYesNoNav(ua, houseConsignmentIndex, itemIndex, NormalMode)
     case CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex) =>
-      ua =>
-        Some(
-          controllers.houseConsignment.index.items.document.routes.AddDocumentYesNoController
-            .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
-        )
+      ua => Some(routes.AddDocumentYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode))
     case CommodityCodePage(houseConsignmentIndex, itemIndex) =>
       ua => Some(routes.AddCombinedNomenclatureCodeYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, NormalMode))
   }
@@ -135,8 +130,7 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode) extends Navigato
       case false =>
         itemMode match {
           case NormalMode =>
-            controllers.houseConsignment.index.items.routes.AddPackagesYesNoController
-              .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, NormalMode)
+            routes.AddPackagesYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, NormalMode)
           case CheckMode =>
             controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex)
         }
@@ -147,28 +141,23 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode) extends Navigato
       case true =>
         controllers.houseConsignment.index.items.packages.routes.PackageTypeController
           .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, Index(0), houseConsignmentMode, itemMode, NormalMode)
-      case false =>
-        controllers.houseConsignment.index.items.routes.AddAnotherItemController.onPageLoad(ua.id, houseConsignmentIndex, houseConsignmentMode)
+      case false => routes.AddAnotherItemController.onPageLoad(ua.id, houseConsignmentIndex, houseConsignmentMode)
     }
 
   def addCommodityCodeNav(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, itemMode: Mode): Option[Call] =
     ua.get(AddCommodityCodeYesNoPage(houseConsignmentIndex, itemIndex)).map {
       case true =>
-        controllers.houseConsignment.index.items.routes.CommodityCodeController
-          .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+        routes.CommodityCodeController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
       case false =>
-        controllers.houseConsignment.index.items.document.routes.AddDocumentYesNoController
-          .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
+        routes.AddDocumentYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, NormalMode)
     }
 
   def addCombinedNomenclatureCodeNav(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, itemMode: Mode): Option[Call] =
     ua.get(AddCombinedNomenclatureCodeYesNoPage(houseConsignmentIndex, itemIndex)).map {
       case true =>
-        controllers.houseConsignment.index.items.routes.CombinedNomenclatureCodeController
+        routes.CombinedNomenclatureCodeController
           .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
-      case false =>
-        controllers.houseConsignment.index.items.document.routes.AddDocumentYesNoController
-          .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode)
+      case false => routes.AddDocumentYesNoController.onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode)
     }
 
   def addDocumentYesNoNav(ua: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, itemMode: Mode): Option[Call] =
@@ -177,7 +166,7 @@ class HouseConsignmentItemNavigator(houseConsignmentMode: Mode) extends Navigato
         controllers.houseConsignment.index.items.document.routes.TypeController
           .onPageLoad(ua.id, houseConsignmentMode, itemMode, NormalMode, houseConsignmentIndex, itemIndex, Index(0))
       case false =>
-        controllers.houseConsignment.index.items.routes.AddAdditionalReferenceYesNoController
+        routes.AddAdditionalReferenceYesNoController
           .onPageLoad(ua.id, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
     }
 }

@@ -295,7 +295,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
       (userAnswers.data \ "Consignment").get.as[Option[ConsignmentType06]](reads)
 
     "must create consignment" - {
-      import pages.grossMass.GrossMassPage
+      import pages.GrossWeightPage
 
       val grossMass = BigDecimal(100)
 
@@ -308,7 +308,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               )
 
               val userAnswers = emptyUserAnswers
-                .setValue(GrossMassPage, grossMass)
+                .setValue(GrossWeightPage, grossMass)
 
               val reads  = service.consignmentReads(Some(ie043))
               val result = getResult(userAnswers, reads)
@@ -325,7 +325,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
               )
 
               val userAnswers = emptyUserAnswers
-                .setValue(GrossMassPage, grossMass)
+                .setValue(GrossWeightPage, grossMass)
 
               val reads  = service.consignmentReads(Some(ie043))
               val result = getResult(userAnswers, reads)
@@ -341,7 +341,7 @@ class SubmissionServiceSpec extends SpecBase with AppWithDefaultMockFixtures wit
             val ie043 = consignment.copy(grossMass = Some(grossMass))
 
             val userAnswers = emptyUserAnswers
-              .setValue(GrossMassPage, grossMass)
+              .setValue(GrossWeightPage, grossMass)
 
             val reads  = service.consignmentReads(Some(ie043))
             val result = getResult(userAnswers, reads)

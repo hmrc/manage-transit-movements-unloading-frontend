@@ -19,14 +19,14 @@ package controllers.houseConsignment.index.additionalReference
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.{ArrivalId, Index, Mode}
+import models.{ArrivalId, Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.houseConsignment.index.additionalReference.AddAnotherAdditionalReferenceViewModel.AddAnotherAdditionalReferenceViewModelProvider
 import viewModels.houseConsignment.index.additionalReference.AddAnotherAdditionalReferenceViewModel
+import viewModels.houseConsignment.index.additionalReference.AddAnotherAdditionalReferenceViewModel.AddAnotherAdditionalReferenceViewModelProvider
 import views.html.houseConsignment.index.additionalReference.AddAnotherAdditionalReferenceView
 
 import javax.inject.Inject
@@ -64,9 +64,11 @@ class AddAnotherAdditionalReferenceController @Inject() (
             case true =>
               Redirect(
                 controllers.houseConsignment.index.additionalReference.routes.AdditionalReferenceTypeController
-                  .onPageLoad(arrivalId, mode, houseConsignmentIndex, viewModel.nextIndex)
+                  .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, viewModel.nextIndex)
               )
             case false =>
+              // TODO: pattern match on mode (houseConsignment mode), to decide to go back to cross check page, or next page
+              // in add HC journey.
               Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
           }
         )
