@@ -65,7 +65,7 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
             .setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex), documentType)
             .setValue(DocumentReferenceNumberPage(houseConsignmentIndex, itemIndex, documentIndex), documentReferenceNumber)
 
-          val insetText = s"${documentType.`type`.display} - $documentReferenceNumber"
+          val insetText = s"${documentType.toString} - $documentReferenceNumber"
 
           setExistingUserAnswers(userAnswers)
 
@@ -181,7 +181,7 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
             .setValue(TypePage(houseConsignmentIndex, itemIndex, documentIndex), documentType)
             .setValue(DocumentReferenceNumberPage(houseConsignmentIndex, itemIndex, documentIndex), documentReferenceNumber)
 
-          val insetText = s"${documentType.`type`.display} - $documentReferenceNumber"
+          val insetText = s"${documentType.toString} - $documentReferenceNumber"
 
           setExistingUserAnswers(userAnswers)
 

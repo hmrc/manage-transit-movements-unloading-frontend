@@ -130,5 +130,5 @@ class RemoveDocumentYesNoController @Inject() (
       .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
 
   private def formatInsetText(userAnswers: UserAnswers, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index): Option[String] =
-    Document(userAnswers, houseConsignmentIndex, itemIndex, documentIndex).map(_.forRemoveDisplay)
+    Document(userAnswers, houseConsignmentIndex, itemIndex, documentIndex).map(_.forDisplay)
 }

@@ -78,7 +78,7 @@ object AddAnotherHouseConsignmentDocumentViewModel {
               Document(userAnswers, houseConsignmentIndex, itemsIndex, index).map {
                 document =>
                   ListItem(
-                    name = document.forAddAnotherDisplay,
+                    name = document.forDisplay,
                     changeUrl = None,
                     removeUrl = Some(
                       routes.RemoveDocumentYesNoController.onPageLoad(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemsIndex, index).url

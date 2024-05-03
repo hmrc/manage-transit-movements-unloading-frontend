@@ -20,8 +20,6 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
 import models.{ArrivalId, Index, Mode}
-import pages.houseConsignment.index.items.AddAdditionalReferenceYesNoPage
-import pages.transportEquipment.index.ItemPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
