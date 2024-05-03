@@ -20,16 +20,13 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.DocType.{Support, Transport}
 import models.reference._
-import models.{CheckMode, Index, NormalMode, SecurityType}
+import models.{CheckMode, Index, SecurityType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
-import pages.houseConsignment.index.departureMeansOfTransport.CountryPage
-import pages.houseConsignment.index.departureMeansOfTransport.VehicleIdentificationNumberPage
-import pages.houseConsignment.index.departureMeansOfTransport.TransportMeansIdentificationPage
-import pages.houseConsignment.index.{CountryOfDestinationPage, SecurityIndicatorFromExportDeclarationPage}
 import pages.houseConsignment.index.additionalReference.{HouseConsignmentAdditionalReferenceNumberPage, HouseConsignmentAdditionalReferenceTypePage}
 import pages.houseConsignment.index.additionalinformation.{HouseConsignmentAdditionalInformationCodePage, HouseConsignmentAdditionalInformationTextPage}
+import pages.houseConsignment.index.departureMeansOfTransport.{CountryPage, TransportMeansIdentificationPage, VehicleIdentificationNumberPage}
 import pages.houseConsignment.index.documents.{AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
 import pages.houseConsignment.index.items.{
   GrossWeightPage,
@@ -38,6 +35,7 @@ import pages.houseConsignment.index.items.{
   ConsigneeIdentifierPage => ItemConsigneeIdentifierPage,
   ConsigneeNamePage => ItemConsigneeNamePage
 }
+import pages.houseConsignment.index.{CountryOfDestinationPage, SecurityIndicatorFromExportDeclarationPage}
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import viewModels.HouseConsignmentViewModel.HouseConsignmentViewModelProvider
 import viewModels.sections.Section.{AccordionSection, StaticSection}
@@ -71,7 +69,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         section.children.head.rows.size mustBe 3
 
         section.viewLinks.head.href mustBe controllers.houseConsignment.index.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
-          .onPageLoad(arrivalId, houseConsignmentIndex, NormalMode)
+          .onPageLoad(arrivalId, houseConsignmentIndex, CheckMode)
           .url
       }
 
@@ -101,7 +99,7 @@ class HouseConsignmentViewModelSpec extends SpecBase with AppWithDefaultMockFixt
         section.children(1).rows.size mustBe 3
 
         section.viewLinks.head.href mustBe controllers.houseConsignment.index.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
-          .onPageLoad(arrivalId, houseConsignmentIndex, NormalMode)
+          .onPageLoad(arrivalId, houseConsignmentIndex, CheckMode)
           .url
       }
     }

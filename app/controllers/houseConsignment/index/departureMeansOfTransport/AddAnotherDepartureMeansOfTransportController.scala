@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.departureMeansOfTransport
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.{ArrivalId, Index, Mode}
+import models.{ArrivalId, Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -65,9 +65,11 @@ class AddAnotherDepartureMeansOfTransportController @Inject() (
             case true =>
               Redirect(
                 controllers.houseConsignment.index.departureMeansOfTransport.routes.IdentificationController
-                  .onPageLoad(arrivalId, houseConsignmentIndex, viewModel.nextIndex, mode)
+                  .onPageLoad(arrivalId, houseConsignmentIndex, viewModel.nextIndex, mode, NormalMode)
               )
             case false =>
+              // TODO: pattern match on mode (houseConsignment mode), to decide to go back to cross check page, or next page
+              // in add HC journey.
               Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
           }
         )

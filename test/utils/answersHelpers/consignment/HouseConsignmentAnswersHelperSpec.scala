@@ -17,7 +17,7 @@
 package utils.answersHelpers.consignment
 
 import models.reference._
-import models.{CheckMode, DynamicAddress, Index, NormalMode}
+import models.{CheckMode, DynamicAddress, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages._
@@ -355,7 +355,7 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
             addOrRemoveLink.text mustBe "Add or remove departure means of transport"
             addOrRemoveLink.visuallyHidden must not be defined
             addOrRemoveLink.href mustBe controllers.houseConsignment.index.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
-              .onPageLoad(arrivalId, houseConsignmentIndex, NormalMode)
+              .onPageLoad(arrivalId, houseConsignmentIndex, CheckMode)
               .url
 
             val dtm1 = result.children.head

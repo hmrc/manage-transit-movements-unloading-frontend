@@ -67,6 +67,8 @@ class AddAnotherAdditionalReferenceController @Inject() (
                   .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, viewModel.nextIndex)
               )
             case false =>
+              // TODO: pattern match on mode (houseConsignment mode), to decide to go back to cross check page, or next page
+              // in add HC journey.
               Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
           }
         )

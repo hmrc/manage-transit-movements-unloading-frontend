@@ -125,7 +125,7 @@ class AddAnotherDepartureMeansOfTransportControllerSpec extends SpecBase with Ap
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual departureMeansOfTransportRoutes.IdentificationController
-            .onPageLoad(arrivalId, houseConsignmentIndex, notMaxedOutViewModel.nextIndex, mode)
+            .onPageLoad(arrivalId, houseConsignmentIndex, notMaxedOutViewModel.nextIndex, mode, NormalMode)
             .url
         }
       }
