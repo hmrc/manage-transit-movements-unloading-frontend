@@ -1101,6 +1101,11 @@ houseConsignment.item.addAdditionalReferenceYesNo.title = Do you want to add an 
 houseConsignment.item.addAdditionalReferenceYesNo.heading = Do you want to add an additional reference for the item?
 houseConsignment.item.addAdditionalReferenceYesNo.error.required = Select yes if you want to add an additional reference for the item
 
+houseConsignment.addItemYesNo.title = Do you want to add an item for house consignment {0}?
+houseConsignment.addItemYesNo.heading = Do you want to add an item for house consignment {0}?
+houseConsignment.addItemYesNo.paragraph = This is to provide details of the goods, like their weight, packages and commodity codes.
+houseConsignment.addItemYesNo.error.required = Select yes if you want to add an item for house consignment {0}
+
 houseConsignment.index.itemPrefix = Item {0}
 houseConsignment.index.items.addAnotherItem.empty.title = You have added 0 items for house consignment {1}
 houseConsignment.index.items.addAnotherItem.empty.heading = You have added 0 items for house consignment {1}
