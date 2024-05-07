@@ -46,7 +46,7 @@ class ApplyAnItemYesNoController @Inject() (
 
   private val form = formProvider("transportEquipment.index.applyAnItemYesNo")
 
-  def onPageLoad(arrivalId: ArrivalId, transportEquipmentIndex: Index, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, transportEquipmentIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
       goodsReferenceService.getGoodsReferences(request.userAnswers, transportEquipmentIndex, None) match {
         case Nil =>
@@ -61,7 +61,7 @@ class ApplyAnItemYesNoController @Inject() (
       }
   }
 
-  def onSubmit(arrivalId: ArrivalId, transportEquipmentIndex: Index, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId).async {
+  def onSubmit(arrivalId: ArrivalId, transportEquipmentIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       form
         .bindFromRequest()

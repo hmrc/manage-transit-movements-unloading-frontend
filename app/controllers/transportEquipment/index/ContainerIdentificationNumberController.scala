@@ -48,7 +48,7 @@ class ContainerIdentificationNumberController @Inject() (
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId, transportEquipmentIndex: Index, mode: Mode): Action[AnyContent] =
-    actions.getStatus(arrivalId) {
+    actions.requireData(arrivalId) {
       implicit request =>
         val viewModel = viewModelProvider.apply(mode)
         val preparedForm = request.userAnswers.get(ContainerIdentificationNumberPage(transportEquipmentIndex)) match {
@@ -68,7 +68,7 @@ class ContainerIdentificationNumberController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, transportEquipmentIndex: Index, mode: Mode): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         val viewModel = viewModelProvider.apply(mode)
         form(viewModel.requiredError, transportEquipmentIndex)

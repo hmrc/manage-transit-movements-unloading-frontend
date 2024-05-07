@@ -43,7 +43,7 @@ class CommodityCodeController @Inject() (
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =
-    actions.getStatus(arrivalId) {
+    actions.requireData(arrivalId) {
       implicit request =>
         val isXI = request.userAnswers.ie043Data.hasXIOfficeOfDestination
         val preparedForm = request.userAnswers.get(CommodityCodePage(houseConsignmentIndex, itemIndex)) match {
@@ -55,7 +55,7 @@ class CommodityCodeController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         val isXI = request.userAnswers.ie043Data.hasXIOfficeOfDestination
 

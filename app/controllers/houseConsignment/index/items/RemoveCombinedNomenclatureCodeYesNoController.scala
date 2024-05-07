@@ -45,14 +45,14 @@ class RemoveCombinedNomenclatureCodeYesNoController @Inject() (
     formProvider("houseConsignment.removeCombinedNomenclatureCodeYesNo", itemIndex.display, houseConsignmentIndex.display)
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
-    actions.getStatus(arrivalId) {
+    actions.requireData(arrivalId) {
       implicit request =>
         val insetText: Option[String] = request.userAnswers.get(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex))
         Ok(view(form(houseConsignmentIndex, itemIndex), request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode, insetText))
     }
 
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         val insetText: Option[String] = request.userAnswers.get(CombinedNomenclatureCodePage(houseConsignmentIndex, itemIndex))
         form(houseConsignmentIndex, itemIndex)

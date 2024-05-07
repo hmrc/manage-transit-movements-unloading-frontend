@@ -44,7 +44,7 @@ class AddNationalityYesNoController @Inject() (
 
   private val form = formProvider("departureMeansOfTransport.addNationalityYesNo")
 
-  def onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
       val preparedForm = request.userAnswers.get(AddNationalityYesNoPage(transportMeansIndex)) match {
         case None        => form
@@ -54,7 +54,7 @@ class AddNationalityYesNoController @Inject() (
       Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, transportMeansIndex, mode))
   }
 
-  def onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId).async {
+  def onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       form
         .bindFromRequest()

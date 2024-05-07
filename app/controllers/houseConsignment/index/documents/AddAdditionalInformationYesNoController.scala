@@ -44,7 +44,7 @@ class AddAdditionalInformationYesNoController @Inject() (
 
   private val form = formProvider("houseConsignment.index.documents.addAdditionalInformationYesNo")
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, documentIndex: Index): Action[AnyContent] = actions.getStatus(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, documentIndex: Index): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
       val preparedForm = request.userAnswers.get(AddAdditionalInformationYesNoPage(houseConsignmentIndex, documentIndex)) match {
         case None        => form
@@ -54,17 +54,19 @@ class AddAdditionalInformationYesNoController @Inject() (
       Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, documentIndex, mode))
   }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, documentIndex: Index): Action[AnyContent] = actions.getStatus(arrivalId).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, documentIndex, mode))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAdditionalInformationYesNoPage(houseConsignmentIndex, documentIndex), value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddAdditionalInformationYesNoPage(houseConsignmentIndex, documentIndex), mode, updatedAnswers))
-        )
-  }
+  def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, documentIndex: Index): Action[AnyContent] =
+    actions.requireData(arrivalId).async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors =>
+              Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, documentIndex, mode))),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAdditionalInformationYesNoPage(houseConsignmentIndex, documentIndex), value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(AddAdditionalInformationYesNoPage(houseConsignmentIndex, documentIndex), mode, updatedAnswers))
+          )
+    }
 }

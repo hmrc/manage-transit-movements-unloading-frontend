@@ -49,7 +49,7 @@ class AddUnloadingCommentsYesNoController @Inject() (
 
   private val form = formProvider("addUnloadingCommentsYesNo")
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
       val preparedForm = request.userAnswers.get(AddUnloadingCommentsYesNoPage) match {
         case None        => form
@@ -59,7 +59,7 @@ class AddUnloadingCommentsYesNoController @Inject() (
       Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode))
   }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId).async {
+  def onSubmit(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       form
         .bindFromRequest()

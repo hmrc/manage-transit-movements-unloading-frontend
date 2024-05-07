@@ -45,7 +45,7 @@ class NetWeightController @Inject() (
   private def form(houseConsignmentIndex: Index, itemIndex: Index) = formProvider(houseConsignmentIndex, itemIndex)
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =
-    actions.getStatus(arrivalId) {
+    actions.requireData(arrivalId) {
       implicit request =>
         val preparedForm = request.userAnswers.get(NetWeightPage(houseConsignmentIndex, itemIndex)) match {
           case None        => form(houseConsignmentIndex, itemIndex)
@@ -56,7 +56,7 @@ class NetWeightController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         form(houseConsignmentIndex, itemIndex)
           .bindFromRequest()

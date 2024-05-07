@@ -28,19 +28,15 @@ class Actions @Inject() (
   identifierAction: IdentifierAction,
   dataRetrievalAction: DataRetrievalActionProvider,
   dataRequiredAction: DataRequiredAction,
-  identify: IdentifierAction,
   checkArrivalStatusProvider: CheckArrivalStatusProvider,
   indexRequiredAction: IndexRequiredActionProvider
 ) {
 
   def getData(arrivalId: ArrivalId): ActionBuilder[OptionalDataRequest, AnyContent] =
-    identifierAction andThen dataRetrievalAction(arrivalId)
+    identifierAction andThen checkArrivalStatusProvider(arrivalId) andThen dataRetrievalAction(arrivalId)
 
   def requireData(arrivalId: ArrivalId): ActionBuilder[DataRequest, AnyContent] =
     getData(arrivalId) andThen dataRequiredAction
-
-  def getStatus(arrivalId: ArrivalId): ActionBuilder[DataRequest, AnyContent] =
-    identify andThen identifierAction andThen checkArrivalStatusProvider(arrivalId) andThen requireData(arrivalId)
 
   def requireIndex(arrivalId: ArrivalId, section: Section[JsObject], addAnother: => Call): ActionBuilder[DataRequest, AnyContent] =
     requireData(arrivalId) andThen indexRequiredAction(section, addAnother)

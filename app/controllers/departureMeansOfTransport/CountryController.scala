@@ -49,7 +49,7 @@ class CountryController @Inject() (
   private val prefix = "departureMeansOfTransport.country"
 
   def onPageLoad(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         referenceDataService
           .getCountries()
@@ -68,7 +68,7 @@ class CountryController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, transportMeansIndex: Index, mode: Mode): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         referenceDataService
           .getCountries()

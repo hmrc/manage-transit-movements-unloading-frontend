@@ -44,7 +44,7 @@ class AddSealYesNoController @Inject() (
 
   private val form = formProvider("transportEquipment.index.addSealYesNo")
 
-  def onPageLoad(arrivalId: ArrivalId, transportEquipmentIndex: Index, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, transportEquipmentIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
       val preparedForm = request.userAnswers.get(AddSealYesNoPage(transportEquipmentIndex)) match {
         case None        => form
@@ -54,7 +54,7 @@ class AddSealYesNoController @Inject() (
       Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, transportEquipmentIndex, mode))
   }
 
-  def onSubmit(arrivalId: ArrivalId, transportEquipmentIndex: Index, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId).async {
+  def onSubmit(arrivalId: ArrivalId, transportEquipmentIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId).async {
     implicit request =>
       form
         .bindFromRequest()

@@ -45,7 +45,7 @@ class AddCombinedNomenclatureCodeYesNoController @Inject() (
   private val form = formProvider("houseConsignment.item.addCombinedNomenclatureCodeYesNo")
 
   def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =
-    actions.getStatus(arrivalId) {
+    actions.requireData(arrivalId) {
       implicit request =>
         val preparedForm = request.userAnswers.get(AddCombinedNomenclatureCodeYesNoPage(houseConsignmentIndex, itemIndex)) match {
           case None        => form
@@ -56,7 +56,7 @@ class AddCombinedNomenclatureCodeYesNoController @Inject() (
     }
 
   def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =
-    actions.getStatus(arrivalId).async {
+    actions.requireData(arrivalId).async {
       implicit request =>
         form
           .bindFromRequest()

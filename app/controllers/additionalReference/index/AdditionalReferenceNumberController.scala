@@ -47,7 +47,7 @@ class AdditionalReferenceNumberController @Inject() (
 
   def onPageLoad(arrivalId: ArrivalId, additionalReferenceIndex: Index, mode: Mode): Action[AnyContent] =
     actions
-      .getStatus(arrivalId) {
+      .requireData(arrivalId) {
         implicit request =>
           val viewModel = viewModelProvider.apply(mode)
           val form      = formProvider(viewModel.requiredError)
@@ -69,7 +69,7 @@ class AdditionalReferenceNumberController @Inject() (
 
   def onSubmit(arrivalId: ArrivalId, additionalReferenceIndex: Index, mode: Mode): Action[AnyContent] =
     actions
-      .getStatus(arrivalId)
+      .requireData(arrivalId)
       .andThen(getMandatoryPage(AdditionalReferenceTypePage(additionalReferenceIndex)))
       .async {
         implicit request =>

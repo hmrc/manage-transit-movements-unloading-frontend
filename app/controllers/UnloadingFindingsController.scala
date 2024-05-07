@@ -38,7 +38,7 @@ class UnloadingFindingsController @Inject() (
     with I18nSupport {
 
   def onPageLoad(arrivalId: ArrivalId): Action[AnyContent] =
-    actions.getStatus(arrivalId) {
+    actions.requireData(arrivalId) {
       implicit request =>
         val viewModel = viewModelProvider.apply(request.userAnswers)
         Ok(view(request.userAnswers.mrn, arrivalId, viewModel))
