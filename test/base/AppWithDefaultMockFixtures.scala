@@ -19,7 +19,7 @@ package base
 import controllers.actions._
 import models.P5.ArrivalMessageType.UnloadingPermission
 import models.P5._
-import models.{Mode, UserAnswers}
+import models.{Mode, Phase, UserAnswers}
 import navigation.SealNavigator.SealNavigatorProvider
 import navigation._
 import org.mockito.ArgumentMatchers.any
@@ -164,7 +164,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
       }
   }
 
-  def guiceApplicationBuilder(): GuiceApplicationBuilder =
+  private def defaultApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
@@ -174,4 +174,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[UnloadingPermissionMessageService].toInstance(mockUnloadingPermissionMessageService),
         bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider)
       )
+
+  protected def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    defaultApplicationBuilder()
 }

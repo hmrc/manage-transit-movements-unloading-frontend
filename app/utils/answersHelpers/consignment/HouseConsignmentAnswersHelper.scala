@@ -16,10 +16,11 @@
 
 package utils.answersHelpers.consignment
 
+import config.PhaseConfig
 import controllers.houseConsignment.index.routes
 import models.DocType.Previous
 import models.reference.Country
-import models.{CheckMode, DynamicAddress, Index, Link, RichOptionalJsArray, SecurityType, UserAnswers}
+import models.{CheckMode, DynamicAddress, Index, Link, Phase, RichOptionalJsArray, SecurityType, UserAnswers}
 import pages.houseConsignment.consignor.CountryPage
 import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage, SecurityIndicatorFromExportDeclarationPage}
 import pages.sections.ItemsSection
@@ -38,7 +39,7 @@ import viewModels.sections.Section.{AccordionSection, StaticSection}
 class HouseConsignmentAnswersHelper(
   userAnswers: UserAnswers,
   houseConsignmentIndex: Index
-)(implicit messages: Messages)
+)(implicit messages: Messages, phaseConfig: PhaseConfig)
     extends AnswersHelper(userAnswers) {
 
   def grossMassRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
@@ -49,13 +50,8 @@ class HouseConsignmentAnswersHelper(
     call = Some(routes.GrossWeightController.onPageLoad(arrivalId, houseConsignmentIndex, CheckMode))
   )
 
-  def preGrossMassRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
-    page = GrossWeightPage(houseConsignmentIndex),
-    formatAnswer = formatAsText,
-    prefix = "unloadingFindings.grossMass",
-    id = Some(s"change-gross-mass"),
-    call = None
-  )
+  def grossMassRowOnConsignmentPage: Option[SummaryListRow] =
+    grossMassRow.map(_.copy(actions = None))
 
   def safetyAndSecurityDetails: Option[SummaryListRow] = getAnswerAndBuildRow[SecurityType](
     page = SecurityIndicatorFromExportDeclarationPage(houseConsignmentIndex),
@@ -73,43 +69,35 @@ class HouseConsignmentAnswersHelper(
     call = None
   )
 
-  def consignorName(suffix: Option[String] = None): Option[SummaryListRow] = suffix.fold(
+  def consignorNameOnConsignmentPage: Option[SummaryListRow] =
+    consignorName("unloadingFindings.rowHeadings.houseConsignment.consignorName.pre")
+
+  def consignorNameOnHouseConsignmentPage: Option[SummaryListRow] =
+    consignorName("unloadingFindings.rowHeadings.houseConsignment.consignorName")
+
+  private def consignorName(prefix: String): Option[SummaryListRow] =
     getAnswerAndBuildRow[String](
       page = ConsignorNamePage(houseConsignmentIndex),
       formatAnswer = formatAsText,
-      prefix = "unloadingFindings.rowHeadings.houseConsignment.consignorName",
+      prefix = prefix,
       id = None,
       call = None
     )
-  ) {
-    suffix =>
-      getAnswerAndBuildRow[String](
-        page = ConsignorNamePage(houseConsignmentIndex),
-        formatAnswer = formatAsText,
-        prefix = s"unloadingFindings.rowHeadings.houseConsignment.consignorName.$suffix",
-        id = None,
-        call = None
-      )
-  }
 
-  def consignorIdentification(suffix: Option[String] = None): Option[SummaryListRow] = suffix.fold(
+  def consignorIdentificationOnConsignmentPage: Option[SummaryListRow] =
+    consignorIdentification("unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier.pre")
+
+  def consignorIdentificationOnHouseConsignmentPage: Option[SummaryListRow] =
+    consignorIdentification("unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier")
+
+  private def consignorIdentification(prefix: String): Option[SummaryListRow] =
     getAnswerAndBuildRow[String](
       page = ConsignorIdentifierPage(houseConsignmentIndex),
       formatAnswer = formatAsText,
-      prefix = s"unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier",
+      prefix = prefix,
       id = None,
       call = None
     )
-  ) {
-    suffix =>
-      getAnswerAndBuildRow[String](
-        page = ConsignorIdentifierPage(houseConsignmentIndex),
-        formatAnswer = formatAsText,
-        prefix = s"unloadingFindings.rowHeadings.houseConsignment.consignorIdentifier.$suffix",
-        id = None,
-        call = None
-      )
-  }
 
   def consignorAddress: Option[SummaryListRow] =
     buildRowWithNoChangeLink[DynamicAddress](
@@ -144,8 +132,8 @@ class HouseConsignmentAnswersHelper(
     StaticSection(
       sectionTitle = messages("unloadingFindings.consignor.heading"),
       rows = Seq(
-        consignorIdentification(),
-        consignorName(),
+        consignorIdentificationOnHouseConsignmentPage,
+        consignorNameOnHouseConsignmentPage,
         consignorCountry,
         consignorAddress
       ).flatten
@@ -174,21 +162,37 @@ class HouseConsignmentAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.houseConsignment.consigneeAddress"
   )
 
-  private val departureTransportMeansAddRemoveLink: Link = Link(
-    id = s"add-remove-departure-transport-means",
-    href = controllers.houseConsignment.index.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
-      .onPageLoad(arrivalId, houseConsignmentIndex, CheckMode)
-      .url,
-    text = messages("houseConsignment.departureTransportMeans.addRemove")
-  )
+  private val departureTransportMeansAddRemoveLink: Option[Link] = {
+    import controllers.houseConsignment.index.departureMeansOfTransport.routes
+    phaseConfig.phase match {
+      case Phase.Transition =>
+        None
+      case Phase.PostTransition =>
+        Some(
+          Link(
+            id = s"add-remove-departure-transport-means",
+            href = routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, houseConsignmentIndex, CheckMode).url,
+            text = messages("houseConsignment.departureTransportMeans.addRemove")
+          )
+        )
+    }
+  }
 
-  private val additionalReferenceAddRemoveLink: Link = Link(
-    id = "add-remove-additional-reference",
-    href = controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController
-      .onPageLoad(arrivalId, CheckMode, houseConsignmentIndex)
-      .url,
-    text = messages("additionalReferenceLink.addRemove")
-  )
+  private val additionalReferenceAddRemoveLink: Option[Link] = {
+    import controllers.houseConsignment.index.additionalReference.routes
+    phaseConfig.phase match {
+      case Phase.Transition =>
+        None
+      case Phase.PostTransition =>
+        Some(
+          Link(
+            id = "add-remove-additional-reference",
+            href = routes.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId, CheckMode, houseConsignmentIndex).url,
+            text = messages("additionalReferenceLink.addRemove")
+          )
+        )
+    }
+  }
 
   def departureTransportMeansSection: Section =
     userAnswers.get(DepartureTransportMeansListSection(houseConsignmentIndex)).mapWithIndex {
@@ -209,7 +213,7 @@ class HouseConsignmentAnswersHelper(
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans.parent.header")),
           children = children,
-          viewLinks = Seq(departureTransportMeansAddRemoveLink),
+          viewLinks = departureTransportMeansAddRemoveLink.toList,
           id = Some("departureTransportMeans")
         )
     }
@@ -237,7 +241,7 @@ class HouseConsignmentAnswersHelper(
       case children =>
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.document.heading.parent.heading")),
-          viewLinks = Seq(documentAddRemoveLink),
+          viewLinks = documentAddRemoveLink.toList,
           children = children,
           id = Some(s"documents")
         )
@@ -260,7 +264,7 @@ class HouseConsignmentAnswersHelper(
       case children =>
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.houseConsignment.additionalReference.heading")),
-          viewLinks = Seq(additionalReferenceAddRemoveLink),
+          viewLinks = additionalReferenceAddRemoveLink.toList,
           children = children,
           id = Some("additionalReferences")
         )
@@ -329,12 +333,19 @@ class HouseConsignmentAnswersHelper(
         )
     }
 
-  private[consignment] def documentAddRemoveLink: Link =
-    Link(
-      id = s"add-remove-document",
-      href = "#",
-      text = messages("documentLink.addRemove")
-    )
+  private[consignment] def documentAddRemoveLink: Option[Link] =
+    phaseConfig.phase match {
+      case Phase.Transition =>
+        None
+      case Phase.PostTransition =>
+        Some(
+          Link(
+            id = s"add-remove-document",
+            href = "#",
+            text = messages("documentLink.addRemove")
+          )
+        )
+    }
 
   def itemsAddRemoveLink: Link =
     Link(

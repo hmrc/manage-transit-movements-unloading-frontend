@@ -16,6 +16,7 @@
 
 package viewModels
 
+import config.PhaseConfig
 import models.{Index, UserAnswers}
 import play.api.i18n.Messages
 import utils.answersHelpers.consignment.HouseConsignmentAnswersHelper
@@ -28,12 +29,7 @@ case class HouseConsignmentViewModel(section: Section)
 
 object HouseConsignmentViewModel {
 
-  def apply(
-    userAnswers: UserAnswers,
-    houseConsignmentIndex: Index
-  )(implicit messages: Messages): HouseConsignmentViewModel = new HouseConsignmentViewModelProvider()(userAnswers, houseConsignmentIndex)
-
-  class HouseConsignmentViewModelProvider @Inject() {
+  class HouseConsignmentViewModelProvider @Inject() (implicit phaseConfig: PhaseConfig) {
 
     def apply(userAnswers: UserAnswers, houseConsignmentIndex: Index)(implicit messages: Messages): HouseConsignmentViewModel = {
       val helper = new HouseConsignmentAnswersHelper(userAnswers, houseConsignmentIndex)
