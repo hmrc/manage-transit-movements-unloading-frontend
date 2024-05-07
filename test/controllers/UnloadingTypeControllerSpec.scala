@@ -48,7 +48,7 @@ class UnloadingTypeControllerSpec extends SpecBase with Generators with AppWithD
         bind[Navigation].toInstance(fakeNavigation)
       )
 
-  "AddUnloadingCommentsYesNoController" - {
+  "UnloadingTypeController" - {
 
     "must return OK and the correct view for a GET" in {
       checkArrivalStatus()

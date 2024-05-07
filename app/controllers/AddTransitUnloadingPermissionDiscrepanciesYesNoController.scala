@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Mode, UserAnswers}
 import navigation.Navigation
-import pages.AddUnloadingCommentsYesNoPage
+import pages.AddTransitUnloadingPermissionDiscrepanciesYesNoPage
 import pages.sections.OtherQuestionsSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -28,30 +28,30 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.transformers.IE043Transformer
-import views.html.AddUnloadingCommentsYesNoView
+import views.html.AddTransitUnloadingPermissionDiscrepanciesYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
-class AddUnloadingCommentsYesNoController @Inject() (
+class AddTransitUnloadingPermissionDiscrepanciesYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   navigator: Navigation,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddUnloadingCommentsYesNoView,
+  view: AddTransitUnloadingPermissionDiscrepanciesYesNoView,
   dataTransformer: IE043Transformer
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("addUnloadingCommentsYesNo")
+  private val form = formProvider("addTransitUnloadingPermissionDiscrepanciesYesNo")
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode): Action[AnyContent] = actions.getStatus(arrivalId) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddUnloadingCommentsYesNoPage) match {
+      val preparedForm = request.userAnswers.get(AddTransitUnloadingPermissionDiscrepanciesYesNoPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -80,9 +80,9 @@ class AddUnloadingCommentsYesNoController @Inject() (
 
             for {
               userAnswers    <- updateUserAnswers()
-              updatedAnswers <- Future.fromTry(userAnswers.set(AddUnloadingCommentsYesNoPage, value))
+              updatedAnswers <- Future.fromTry(userAnswers.set(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddUnloadingCommentsYesNoPage, mode, updatedAnswers))
+            } yield Redirect(navigator.nextPage(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, mode, updatedAnswers))
           }
         )
   }

@@ -322,10 +322,10 @@ confirmation.para2 = You must wait for the goods to be released.
 confirmation.linkText = Go to arrival notifications
 confirmation.para3 = to see the latest messages.
 
-addUnloadingCommentsYesNo.title = Were there any discrepancies between the transit and unloading permission?
-addUnloadingCommentsYesNo.heading = Were there any discrepancies between the transit and unloading permission?
-addUnloadingCommentsYesNo.paragraph = This includes any changes to the means of transport, items or transport equipment.
-addUnloadingCommentsYesNo.error.required = Select yes if there were any discrepancies between the transit and unloading permission
+addTransitUnloadingPermissionDiscrepanciesYesNo.title = Were there any discrepancies between the transit and unloading permission?
+addTransitUnloadingPermissionDiscrepanciesYesNo.heading = Were there any discrepancies between the transit and unloading permission?
+addTransitUnloadingPermissionDiscrepanciesYesNo.paragraph = This includes any changes to the means of transport, items or transport equipment.
+addTransitUnloadingPermissionDiscrepanciesYesNo.error.required = Select yes if there were any discrepancies between the transit and unloading permission
 
 addCommentsYesNo.title = Do you want to add any comments?
 addCommentsYesNo.heading = Do you want to add any comments?
@@ -337,12 +337,12 @@ doYouHaveAnythingElseToReportYesNo.heading = Do you have anything else to report
 doYouHaveAnythingElseToReportYesNo.paragraph = This can be anything else you want to tell us about the transit movement.
 doYouHaveAnythingElseToReportYesNo.error.required = Select yes if you have anything to report
 
-changesToReport.title = Describe the discrepancies between the transit and the declaration summary
-changesToReport.heading = Describe the discrepancies between the transit and the declaration summary
-changesToReport.checkYourAnswersLabel = What comments do you want to add?
-changesToReport.error.required = Describe the discrepancies between the transit and the declaration summary
-changesToReport.error.length = Your description must be 512 characters or less
-changesToReport.error.invalid = Your description must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+unloadingComments.title = Enter your comments
+unloadingComments.heading = Enter your comments
+unloadingComments.checkYourAnswersLabel = What comments do you want to add?
+unloadingComments.error.required = Enter your comments
+unloadingComments.error.length = Your comments must be 512 characters or less
+unloadingComments.error.invalid = Your comments must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 
 otherThingsToReport.title = What do you want to report?
 otherThingsToReport.heading = What do you want to report?
@@ -641,8 +641,8 @@ checkYourAnswers.rowHeadings.anySealsBroken = Are any of the seals broken?
 checkYourAnswers.rowHeadings.anySealsBroken.change.hidden = if any of the seals are broken
 
 checkYourAnswers.subsections.additionalComments = Transit and unloading permission discrepancies
-checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo = Were there any discrepancies between the transit and unloading permission?
-checkYourAnswers.rowHeadings.addUnloadingCommentsYesNo.change.hidden = if there were any discrepancies between the transit and unloading permission
+checkYourAnswers.rowHeadings.addTransitUnloadingPermissionDiscrepanciesYesNo = Were there any discrepancies between the transit and unloading permission?
+checkYourAnswers.rowHeadings.addTransitUnloadingPermissionDiscrepanciesYesNo.change.hidden = if there were any discrepancies between the transit and unloading permission
 checkYourAnswers.rowHeadings.addCommentsYesNo = Do you want to add any comments?
 checkYourAnswers.rowHeadings.addCommentsYesNo.change.hidden = if you want to add any comments
 checkYourAnswers.rowHeadings.additionalComments = Comments

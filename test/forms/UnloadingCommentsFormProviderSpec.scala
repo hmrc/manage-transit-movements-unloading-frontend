@@ -26,9 +26,9 @@ import scala.util.Random
 
 class UnloadingCommentsFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "changesToReport.error.required"
-  val lengthKey   = "changesToReport.error.length"
-  val invalidKey  = "changesToReport.error.invalid"
+  val requiredKey = "unloadingComments.error.required"
+  val lengthKey   = "unloadingComments.error.length"
+  val invalidKey  = "unloadingComments.error.invalid"
   val maxLength   = 512
 
   val form = new UnloadingCommentsFormProvider()()

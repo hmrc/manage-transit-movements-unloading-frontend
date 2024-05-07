@@ -18,7 +18,7 @@ package controllers
 
 import com.google.inject.Inject
 import controllers.actions.Actions
-import models.ArrivalId
+import models.{ArrivalId, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -42,5 +42,12 @@ class UnloadingFindingsController @Inject() (
       implicit request =>
         val viewModel = viewModelProvider.apply(request.userAnswers)
         Ok(view(request.userAnswers.mrn, arrivalId, viewModel))
+    }
+
+  def onSubmit(arrivalId: ArrivalId): Action[AnyContent] =
+    actions.getStatus(arrivalId) {
+      Redirect(
+        controllers.routes.AddCommentsYesNoController.onPageLoad(arrivalId, NormalMode)
+      )
     }
 }

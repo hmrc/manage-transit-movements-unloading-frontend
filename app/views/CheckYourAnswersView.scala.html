@@ -50,7 +50,9 @@
 
     @if(viewModel.showDiscrepanciesLink) {
         <p class="govuk-body">
-            <a href=@routes.UnloadingFindingsController.onPageLoad(arrivalId) class="govuk-link" id="unloadingFindings">@messages("checkYourAnswers.link")</a>
+            <a class="govuk-link" id="unloadingFindings" href=@routes.UnloadingFindingsController.onPageLoad(arrivalId)>
+                @messages("checkYourAnswers.link")
+            </a>
         </p>
     }
 }

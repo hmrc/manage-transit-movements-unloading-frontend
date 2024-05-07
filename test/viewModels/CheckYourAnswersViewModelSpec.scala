@@ -52,7 +52,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
     "must render 1 rows if add comments false" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(AddUnloadingCommentsYesNoPage, false)
+        .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
 
       setExistingUserAnswers(userAnswers)
 
@@ -69,7 +69,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
     "must render 2 rows if add comments true" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(AddUnloadingCommentsYesNoPage, true)
+        .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
         .setValue(UnloadingCommentsPage, "Test")
 
       setExistingUserAnswers(userAnswers)
@@ -91,7 +91,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       val userAnswers = emptyUserAnswers
         .setValue(CanSealsBeReadPage, true)
         .setValue(AreAnySealsBrokenPage, false)
-        .setValue(AddUnloadingCommentsYesNoPage, false)
+        .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
 
       setExistingUserAnswers(userAnswers)
 
@@ -105,7 +105,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       val userAnswers = emptyUserAnswers
         .setValue(CanSealsBeReadPage, true)
         .setValue(AreAnySealsBrokenPage, false)
-        .setValue(AddUnloadingCommentsYesNoPage, true)
+        .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
 
       setExistingUserAnswers(userAnswers)
 
@@ -158,7 +158,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       val userAnswers = emptyUserAnswers
         .setValue(CanSealsBeReadPage, None)
         .setValue(AreAnySealsBrokenPage, None)
-        .setValue(AddUnloadingCommentsYesNoPage, false)
+        .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, false)
 
       setExistingUserAnswers(userAnswers)
 
@@ -172,7 +172,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       val userAnswers = emptyUserAnswers
         .setValue(CanSealsBeReadPage, None)
         .setValue(AreAnySealsBrokenPage, None)
-        .setValue(AddUnloadingCommentsYesNoPage, true)
+        .setValue(AddTransitUnloadingPermissionDiscrepanciesYesNoPage, true)
 
       setExistingUserAnswers(userAnswers)
 
