@@ -16,11 +16,10 @@
 
 package utils.answersHelpers.consignment
 
-import config.PhaseConfig
 import controllers.houseConsignment.index.routes
 import models.DocType.Previous
 import models.reference.Country
-import models.{CheckMode, DynamicAddress, Index, Link, Phase, RichOptionalJsArray, SecurityType, UserAnswers}
+import models.{CheckMode, DynamicAddress, Index, Link, RichOptionalJsArray, SecurityType, UserAnswers}
 import pages.houseConsignment.consignor.CountryPage
 import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage, SecurityIndicatorFromExportDeclarationPage}
 import pages.sections.ItemsSection
@@ -39,7 +38,7 @@ import viewModels.sections.Section.{AccordionSection, StaticSection}
 class HouseConsignmentAnswersHelper(
   userAnswers: UserAnswers,
   houseConsignmentIndex: Index
-)(implicit messages: Messages, phaseConfig: PhaseConfig)
+)(implicit messages: Messages)
     extends AnswersHelper(userAnswers) {
 
   def grossMassRow: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
@@ -162,36 +161,22 @@ class HouseConsignmentAnswersHelper(
     prefix = "unloadingFindings.rowHeadings.houseConsignment.consigneeAddress"
   )
 
-  private val departureTransportMeansAddRemoveLink: Option[Link] = {
+  private val departureTransportMeansAddRemoveLink: Link = {
     import controllers.houseConsignment.index.departureMeansOfTransport.routes
-    phaseConfig.phase match {
-      case Phase.Transition =>
-        None
-      case Phase.PostTransition =>
-        Some(
-          Link(
-            id = s"add-remove-departure-transport-means",
-            href = routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, houseConsignmentIndex, CheckMode).url,
-            text = messages("houseConsignment.departureTransportMeans.addRemove")
-          )
-        )
-    }
+    Link(
+      id = s"add-remove-departure-transport-means",
+      href = routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, houseConsignmentIndex, CheckMode).url,
+      text = messages("houseConsignment.departureTransportMeans.addRemove")
+    )
   }
 
-  private val additionalReferenceAddRemoveLink: Option[Link] = {
+  private val additionalReferenceAddRemoveLink: Link = {
     import controllers.houseConsignment.index.additionalReference.routes
-    phaseConfig.phase match {
-      case Phase.Transition =>
-        None
-      case Phase.PostTransition =>
-        Some(
-          Link(
-            id = "add-remove-additional-reference",
-            href = routes.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId, CheckMode, houseConsignmentIndex).url,
-            text = messages("additionalReferenceLink.addRemove")
-          )
-        )
-    }
+    Link(
+      id = "add-remove-additional-reference",
+      href = routes.AddAnotherAdditionalReferenceController.onPageLoad(arrivalId, CheckMode, houseConsignmentIndex).url,
+      text = messages("additionalReferenceLink.addRemove")
+    )
   }
 
   def departureTransportMeansSection: Section =
@@ -213,7 +198,7 @@ class HouseConsignmentAnswersHelper(
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.subsections.transportMeans.parent.header")),
           children = children,
-          viewLinks = departureTransportMeansAddRemoveLink.toList,
+          viewLinks = Seq(departureTransportMeansAddRemoveLink),
           id = Some("departureTransportMeans")
         )
     }
@@ -241,7 +226,7 @@ class HouseConsignmentAnswersHelper(
       case children =>
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.document.heading.parent.heading")),
-          viewLinks = documentAddRemoveLink.toList,
+          viewLinks = Seq(documentAddRemoveLink),
           children = children,
           id = Some(s"documents")
         )
@@ -264,7 +249,7 @@ class HouseConsignmentAnswersHelper(
       case children =>
         AccordionSection(
           sectionTitle = Some(messages("unloadingFindings.houseConsignment.additionalReference.heading")),
-          viewLinks = additionalReferenceAddRemoveLink.toList,
+          viewLinks = Seq(additionalReferenceAddRemoveLink),
           children = children,
           id = Some("additionalReferences")
         )
@@ -333,19 +318,12 @@ class HouseConsignmentAnswersHelper(
         )
     }
 
-  private[consignment] def documentAddRemoveLink: Option[Link] =
-    phaseConfig.phase match {
-      case Phase.Transition =>
-        None
-      case Phase.PostTransition =>
-        Some(
-          Link(
-            id = s"add-remove-document",
-            href = "#",
-            text = messages("documentLink.addRemove")
-          )
-        )
-    }
+  private[consignment] def documentAddRemoveLink: Link =
+    Link(
+      id = s"add-remove-document",
+      href = "#",
+      text = messages("documentLink.addRemove")
+    )
 
   def itemsAddRemoveLink: Link =
     Link(

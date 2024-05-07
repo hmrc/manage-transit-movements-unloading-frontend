@@ -16,7 +16,6 @@
 
 package utils.answersHelpers.consignment
 
-import config.{PostTransitionConfig, TransitionConfig}
 import models.reference._
 import models.{CheckMode, DynamicAddress, Index}
 import org.scalacheck.Arbitrary.arbitrary
@@ -56,32 +55,6 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
         action.href mustBe "/manage-transit-movements/unloading/AB123/change-house-consignment/1/gross-weight"
         action.visuallyHiddenText.value mustBe "gross weight"
         action.id mustBe "change-gross-mass"
-      }
-    }
-  }
-
-  "preGrossMassRow" - {
-    import pages.houseConsignment.index.GrossWeightPage
-
-    "must return None" - {
-      s"when no transport equipments defined" in {
-        val helper = new HouseConsignmentAnswersHelper(emptyUserAnswers, hcIndex)
-        val result = helper.grossMassRowOnConsignmentPage
-        result.isEmpty mustBe true
-      }
-    }
-
-    "must return Some(Row)" - {
-      s"when $GrossWeightPage is defined" in {
-        val answers = emptyUserAnswers
-          .setValue(GrossWeightPage(hcIndex), BigDecimal(999.99))
-
-        val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
-        val result = helper.grossMassRowOnConsignmentPage.value
-
-        result.key.value mustBe "Gross weight"
-        result.value.value mustBe "999.99"
-        result.actions mustBe None
       }
     }
   }
@@ -299,154 +272,75 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
 
     "documentSections" - {
       import pages.houseConsignment.index.documents.{AdditionalInformationPage, DocumentReferenceNumberPage, TypePage}
+      "must generate accordion sections" in {
+        forAll(arbitrary[DocumentType], Gen.alphaNumStr, Gen.alphaNumStr) {
+          (docType, reference, additionalInfo) =>
+            val answers = emptyUserAnswers
+              .setValue(DocumentReferenceNumberPage(hcIndex, Index(0)), reference)
+              .setValue(AdditionalInformationPage(hcIndex, Index(0)), additionalInfo)
+              .setValue(TypePage(hcIndex, Index(0)), docType)
 
-      "when during transition" - {
-        "must generate accordion sections without add/remove link" in {
-          forAll(arbitrary[DocumentType], Gen.alphaNumStr, Gen.alphaNumStr) {
-            (docType, reference, additionalInfo) =>
-              val answers = emptyUserAnswers
-                .setValue(DocumentReferenceNumberPage(hcIndex, Index(0)), reference)
-                .setValue(AdditionalInformationPage(hcIndex, Index(0)), additionalInfo)
-                .setValue(TypePage(hcIndex, Index(0)), docType)
+            val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
+            val result = helper.documentSection
 
-              val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)(
-                messages,
-                app.injector.instanceOf[TransitionConfig]
-              )
-              val result = helper.documentSection
+            result mustBe a[AccordionSection]
+            result.sectionTitle.value mustBe "Documents"
+            result.children.size mustBe 1
 
-              result mustBe a[AccordionSection]
-              result.sectionTitle.value mustBe "Documents"
-              result.children.size mustBe 1
+            result.viewLinks.size mustBe 1
+            val addOrRemoveLink = result.viewLinks.head
+            addOrRemoveLink.id mustBe "add-remove-document"
+            addOrRemoveLink.text mustBe "Add or remove document"
+            addOrRemoveLink.visuallyHidden must not be defined
+            addOrRemoveLink.href mustBe "#"
 
-              result.viewLinks mustBe Nil
+            val doc1 = result.children.head
+            doc1 mustBe a[AccordionSection]
+            doc1.sectionTitle.value mustBe "Document 1"
+            doc1.id.value mustBe "document-1"
+            doc1.rows.size mustBe 3
 
-              val doc1 = result.children.head
-              doc1 mustBe a[AccordionSection]
-              doc1.sectionTitle.value mustBe "Document 1"
-              doc1.id.value mustBe "document-1"
-              doc1.rows.size mustBe 3
-
-              doc1.rows.head.value.value mustBe docType.toString
-              doc1.rows(1).value.value mustBe reference
-              doc1.rows(2).value.value mustBe additionalInfo
-          }
-        }
-      }
-
-      "when post-transition" - {
-        "must generate accordion sections with add/remove link" in {
-          forAll(arbitrary[DocumentType], Gen.alphaNumStr, Gen.alphaNumStr) {
-            (docType, reference, additionalInfo) =>
-              val answers = emptyUserAnswers
-                .setValue(DocumentReferenceNumberPage(hcIndex, Index(0)), reference)
-                .setValue(AdditionalInformationPage(hcIndex, Index(0)), additionalInfo)
-                .setValue(TypePage(hcIndex, Index(0)), docType)
-
-              val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)(
-                messages,
-                app.injector.instanceOf[PostTransitionConfig]
-              )
-              val result = helper.documentSection
-
-              result mustBe a[AccordionSection]
-              result.sectionTitle.value mustBe "Documents"
-              result.children.size mustBe 1
-
-              result.viewLinks.size mustBe 1
-              val addOrRemoveLink = result.viewLinks.head
-              addOrRemoveLink.id mustBe "add-remove-document"
-              addOrRemoveLink.text mustBe "Add or remove document"
-              addOrRemoveLink.visuallyHidden must not be defined
-              addOrRemoveLink.href mustBe "#"
-
-              val doc1 = result.children.head
-              doc1 mustBe a[AccordionSection]
-              doc1.sectionTitle.value mustBe "Document 1"
-              doc1.id.value mustBe "document-1"
-              doc1.rows.size mustBe 3
-
-              doc1.rows.head.value.value mustBe docType.toString
-              doc1.rows(1).value.value mustBe reference
-              doc1.rows(2).value.value mustBe additionalInfo
-          }
+            doc1.rows.head.value.value mustBe docType.toString
+            doc1.rows(1).value.value mustBe reference
+            doc1.rows(2).value.value mustBe additionalInfo
         }
       }
     }
 
     "departureTransportMeansSections" - {
-      "when during transition" - {
-        "must generate accordion sections without add/remove link" in {
-          forAll(arbitrary[TransportMeansIdentification], Gen.alphaNumStr, arbitrary[Country]) {
-            (`type`, number, country) =>
-              val answers = emptyUserAnswers
-                .setValue(TransportMeansIdentificationPage(hcIndex, dtmIndex), `type`)
-                .setValue(VehicleIdentificationNumberPage(hcIndex, dtmIndex), number)
-                .setValue(pages.houseConsignment.index.departureMeansOfTransport.CountryPage(hcIndex, dtmIndex), country)
+      "must generate accordion sections" in {
+        forAll(arbitrary[TransportMeansIdentification], Gen.alphaNumStr, arbitrary[Country]) {
+          (`type`, number, country) =>
+            val answers = emptyUserAnswers
+              .setValue(TransportMeansIdentificationPage(hcIndex, dtmIndex), `type`)
+              .setValue(VehicleIdentificationNumberPage(hcIndex, dtmIndex), number)
+              .setValue(pages.houseConsignment.index.departureMeansOfTransport.CountryPage(hcIndex, dtmIndex), country)
 
-              val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)(
-                messages,
-                app.injector.instanceOf[TransitionConfig]
-              )
-              val result = helper.departureTransportMeansSection
+            val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
+            val result = helper.departureTransportMeansSection
 
-              result mustBe a[AccordionSection]
-              result.sectionTitle.value mustBe "Departure means of transport"
-              result.children.size mustBe 1
+            result mustBe a[AccordionSection]
+            result.sectionTitle.value mustBe "Departure means of transport"
+            result.children.size mustBe 1
 
-              result.viewLinks mustBe Nil
+            result.viewLinks.size mustBe 1
+            val addOrRemoveLink = result.viewLinks.head
+            addOrRemoveLink.id mustBe "add-remove-departure-transport-means"
+            addOrRemoveLink.text mustBe "Add or remove departure means of transport"
+            addOrRemoveLink.visuallyHidden must not be defined
+            addOrRemoveLink.href mustBe controllers.houseConsignment.index.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
+              .onPageLoad(arrivalId, houseConsignmentIndex, CheckMode)
+              .url
 
-              val dtm1 = result.children.head
-              dtm1 mustBe a[AccordionSection]
-              dtm1.sectionTitle.value mustBe "Departure means of transport 1"
-              dtm1.id.value mustBe "departureTransportMeans1"
-              dtm1.rows.size mustBe 3
+            val dtm1 = result.children.head
+            dtm1 mustBe a[AccordionSection]
+            dtm1.sectionTitle.value mustBe "Departure means of transport 1"
+            dtm1.id.value mustBe "departureTransportMeans1"
+            dtm1.rows.size mustBe 3
 
-              dtm1.rows.head.value.value mustBe `type`.description
-              dtm1.rows(1).value.value mustBe number
-              dtm1.rows(2).value.value mustBe country.description
-          }
-        }
-      }
-
-      "when post-transition" - {
-        "must generate accordion sections with add/remove link" in {
-          forAll(arbitrary[TransportMeansIdentification], Gen.alphaNumStr, arbitrary[Country]) {
-            (`type`, number, country) =>
-              val answers = emptyUserAnswers
-                .setValue(TransportMeansIdentificationPage(hcIndex, dtmIndex), `type`)
-                .setValue(VehicleIdentificationNumberPage(hcIndex, dtmIndex), number)
-                .setValue(pages.houseConsignment.index.departureMeansOfTransport.CountryPage(hcIndex, dtmIndex), country)
-
-              val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)(
-                messages,
-                app.injector.instanceOf[PostTransitionConfig]
-              )
-              val result = helper.departureTransportMeansSection
-
-              result mustBe a[AccordionSection]
-              result.sectionTitle.value mustBe "Departure means of transport"
-              result.children.size mustBe 1
-
-              result.viewLinks.size mustBe 1
-              val addOrRemoveLink = result.viewLinks.head
-              addOrRemoveLink.id mustBe "add-remove-departure-transport-means"
-              addOrRemoveLink.text mustBe "Add or remove departure means of transport"
-              addOrRemoveLink.visuallyHidden must not be defined
-              addOrRemoveLink.href mustBe controllers.houseConsignment.index.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
-                .onPageLoad(arrivalId, houseConsignmentIndex, CheckMode)
-                .url
-
-              val dtm1 = result.children.head
-              dtm1 mustBe a[AccordionSection]
-              dtm1.sectionTitle.value mustBe "Departure means of transport 1"
-              dtm1.id.value mustBe "departureTransportMeans1"
-              dtm1.rows.size mustBe 3
-
-              dtm1.rows.head.value.value mustBe `type`.description
-              dtm1.rows(1).value.value mustBe number
-              dtm1.rows(2).value.value mustBe country.description
-          }
+            dtm1.rows.head.value.value mustBe `type`.description
+            dtm1.rows(1).value.value mustBe number
+            dtm1.rows(2).value.value mustBe country.description
         }
       }
     }
@@ -483,74 +377,37 @@ class HouseConsignmentAnswersHelperSpec extends AnswersHelperSpecBase {
     "additionalReferencesSections" - {
       import pages.houseConsignment.index.additionalReference._
 
-      "when post-transition" - {
-        "must generate accordion sections with add/remove link" in {
-          forAll(arbitrary[AdditionalReferenceType], nonEmptyString) {
-            (code, description) =>
-              val answers = emptyUserAnswers
-                .setValue(HouseConsignmentAdditionalReferenceTypePage(hcIndex, additionalInformationIndex), code)
-                .setValue(HouseConsignmentAdditionalReferenceNumberPage(hcIndex, additionalInformationIndex), description)
+      "must generate accordion sections" in {
+        forAll(arbitrary[AdditionalReferenceType], nonEmptyString) {
+          (code, description) =>
+            val answers = emptyUserAnswers
+              .setValue(HouseConsignmentAdditionalReferenceTypePage(hcIndex, additionalInformationIndex), code)
+              .setValue(HouseConsignmentAdditionalReferenceNumberPage(hcIndex, additionalInformationIndex), description)
 
-              val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)(
-                messages,
-                app.injector.instanceOf[PostTransitionConfig]
-              )
-              val result = helper.additionalReferencesSection
+            val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)
+            val result = helper.additionalReferencesSection
 
-              result mustBe a[AccordionSection]
-              result.sectionTitle.value mustBe "Additional references"
-              result.children.size mustBe 1
+            result mustBe a[AccordionSection]
+            result.sectionTitle.value mustBe "Additional references"
+            result.children.size mustBe 1
 
-              result.viewLinks.size mustBe 1
-              val addOrRemoveLink = result.viewLinks.head
-              addOrRemoveLink.id mustBe "add-remove-additional-reference"
-              addOrRemoveLink.text mustBe "Add or remove additional reference"
-              addOrRemoveLink.visuallyHidden must not be defined
-              addOrRemoveLink.href mustBe controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController
-                .onSubmit(arrivalId, CheckMode, houseConsignmentIndex)
-                .url
+            result.viewLinks.size mustBe 1
+            val addOrRemoveLink = result.viewLinks.head
+            addOrRemoveLink.id mustBe "add-remove-additional-reference"
+            addOrRemoveLink.text mustBe "Add or remove additional reference"
+            addOrRemoveLink.visuallyHidden must not be defined
+            addOrRemoveLink.href mustBe controllers.houseConsignment.index.additionalReference.routes.AddAnotherAdditionalReferenceController
+              .onSubmit(arrivalId, CheckMode, houseConsignmentIndex)
+              .url
 
-              val additionalInfo1 = result.children.head
-              additionalInfo1 mustBe a[AccordionSection]
-              additionalInfo1.sectionTitle.value mustBe "Additional reference 1"
-              additionalInfo1.id.value mustBe "additionalReference1"
-              additionalInfo1.rows.size mustBe 2
+            val additionalInfo1 = result.children.head
+            additionalInfo1 mustBe a[AccordionSection]
+            additionalInfo1.sectionTitle.value mustBe "Additional reference 1"
+            additionalInfo1.id.value mustBe "additionalReference1"
+            additionalInfo1.rows.size mustBe 2
 
-              additionalInfo1.rows.head.value.value mustBe code.toString
-              additionalInfo1.rows(1).value.value mustBe description
-          }
-        }
-      }
-
-      "when during transition" - {
-        "must generate accordion sections without add/remove link" in {
-          forAll(arbitrary[AdditionalReferenceType], nonEmptyString) {
-            (code, description) =>
-              val answers = emptyUserAnswers
-                .setValue(HouseConsignmentAdditionalReferenceTypePage(hcIndex, additionalInformationIndex), code)
-                .setValue(HouseConsignmentAdditionalReferenceNumberPage(hcIndex, additionalInformationIndex), description)
-
-              val helper = new HouseConsignmentAnswersHelper(answers, hcIndex)(
-                messages,
-                app.injector.instanceOf[TransitionConfig]
-              )
-              val result = helper.additionalReferencesSection
-
-              result mustBe a[AccordionSection]
-              result.sectionTitle.value mustBe "Additional references"
-              result.children.size mustBe 1
-
-              result.viewLinks mustBe Nil
-
-              val additionalInfo1 = result.children.head
-              additionalInfo1 mustBe a[AccordionSection]
-              additionalInfo1.sectionTitle.value mustBe "Additional reference 1"
-              additionalInfo1.id.value mustBe "additionalReference1"
-              additionalInfo1.rows.size mustBe 2
-
-              additionalInfo1.rows.head.value.value mustBe code.toString
-              additionalInfo1.rows(1).value.value mustBe description
-          }
+            additionalInfo1.rows.head.value.value mustBe code.toString
+            additionalInfo1.rows(1).value.value mustBe description
         }
       }
     }
