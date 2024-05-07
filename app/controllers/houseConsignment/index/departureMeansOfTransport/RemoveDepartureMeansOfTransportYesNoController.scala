@@ -43,8 +43,8 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  val form: Form[Boolean] =
-    formProvider("houseConsignment.index.departureMeansOfTransport.removeDepartureMeansOfTransportYesNo")
+  def form(transportMeansIndex: Index): Form[Boolean] =
+    formProvider("houseConsignment.index.departureMeansOfTransport.removeDepartureMeansOfTransportYesNo", transportMeansIndex)
 
   private def addAnother(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index): Call =
     routes.AddAnotherDepartureMeansOfTransportController.onPageLoad(arrivalId, mode) //TODO: Needs updating with house consignment level controller
@@ -57,7 +57,7 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
       implicit request =>
         Ok(
           view(
-            form,
+            form(transportMeansIndex),
             request.userAnswers.mrn,
             arrivalId,
             mode,
@@ -72,7 +72,7 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
     .requireIndex(arrivalId, TransportMeansSection(houseConsignmentIndex, transportMeansIndex), addAnother(arrivalId, mode, houseConsignmentIndex))
     .async {
       implicit request =>
-        form
+        form(transportMeansIndex)
           .bindFromRequest()
           .fold(
             formWithErrors =>

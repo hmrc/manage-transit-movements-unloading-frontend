@@ -970,7 +970,7 @@ departureMeansOfTransport.index.removeDepartureMeansOfTransportYesNo.error.requi
 
 houseConsignment.index.departureMeansOfTransport.removeDepartureMeansOfTransportYesNo.title = Are you sure you want to remove departure means of transport {0}?
 houseConsignment.index.departureMeansOfTransport.removeDepartureMeansOfTransportYesNo.heading = Are you sure you want to remove departure means of transport {0}?
-houseConsignment.index.departureMeansOfTransport.removeDepartureMeansOfTransportYesNo.error.required = Select yes if you want to remove this departure means of transport
+houseConsignment.index.departureMeansOfTransport.removeDepartureMeansOfTransportYesNo.error.required = Select yes if you want to remove departure means of transport {0}
 
 transportEquipment.index.removeTransportEquipmentYesNo.title = Are you sure you want to remove transport equipment {0}?
 transportEquipment.index.removeTransportEquipmentYesNo.heading = Are you sure you want to remove transport equipment {0}?
