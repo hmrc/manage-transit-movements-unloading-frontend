@@ -19,7 +19,7 @@ package utils.answersHelpers.consignment
 import controllers.houseConsignment.index.routes
 import models.DocType.Previous
 import models.reference.Country
-import models.{CheckMode, DynamicAddress, Index, Link, RichOptionalJsArray, SecurityType, UserAnswers}
+import models.{CheckMode, DynamicAddress, Index, Link, NormalMode, RichOptionalJsArray, SecurityType, UserAnswers}
 import pages.houseConsignment.consignor.CountryPage
 import pages.houseConsignment.index.{CountryOfDestinationPage, GrossWeightPage, SecurityIndicatorFromExportDeclarationPage}
 import pages.sections.ItemsSection
@@ -332,8 +332,9 @@ class HouseConsignmentAnswersHelper(
   private[consignment] def documentAddRemoveLink: Link =
     Link(
       id = s"add-remove-document",
-      href = "#",
-      text = messages("documentLink.addRemove")
+      href = controllers.houseConsignment.index.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, houseConsignmentIndex, NormalMode).url,
+      text = messages("documentLink.addRemove"),
+      visuallyHidden = Some(messages("documentLink.visuallyHidden"))
     )
 
   def itemsAddRemoveLink: Link =

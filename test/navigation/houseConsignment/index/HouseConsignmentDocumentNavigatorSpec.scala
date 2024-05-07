@@ -18,6 +18,7 @@ package navigation.houseConsignment.index
 
 import base.SpecBase
 import generators.Generators
+import models.DocType.{Support, Transport}
 import models._
 import models.reference.DocumentType
 import org.scalacheck.Arbitrary.arbitrary
@@ -29,7 +30,7 @@ class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckProp
 
   val navigator = new HouseConsignmentDocumentNavigator
 
-  "GrossWeightNavigator" - {
+  "HouseConsignmentDocumentNavigator" - {
 
     "in Normal Mode" - {
 
@@ -51,10 +52,11 @@ class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckProp
         }
       }
 
-      "must go from Reference number AddAdditionalInformationYesNo page" in {
+      "must go from DocumentReferenceNumberPage to AddAdditionalInformationYesNoController when DocType is supporting" in {
         forAll(arbitrary[String]) {
           ref =>
             val userAnswers = emptyUserAnswers
+              .setValue(TypePage(houseConsignmentIndex, documentIndex), DocumentType(`type` = Support, code = "codeValue", description = "descriptionValue"))
               .setValue(DocumentReferenceNumberPage(hcIndex, documentIndex), ref)
 
             navigator
@@ -67,7 +69,24 @@ class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckProp
         }
       }
 
-      "must go from AddAdditionalInformationYesNo page to Additional Information page when user answers yes" in {
+      "must go from DocumentReferenceNumberPage to AddAnotherDocumentController when DocType is Transport" in {
+        forAll(arbitrary[String]) {
+          ref =>
+            val userAnswers = emptyUserAnswers
+              .setValue(TypePage(houseConsignmentIndex, documentIndex), DocumentType(`type` = Transport, code = "codeValue", description = "descriptionValue"))
+              .setValue(DocumentReferenceNumberPage(hcIndex, documentIndex), ref)
+
+            navigator
+              .nextPage(DocumentReferenceNumberPage(hcIndex, documentIndex), mode, userAnswers)
+              .mustBe(
+                controllers.houseConsignment.index.documents.routes.AddAnotherDocumentController
+                  .onPageLoad(arrivalId, houseConsignmentIndex, mode)
+              )
+
+        }
+      }
+
+      "must go from AddAdditionalInformationYesNo page to AdditionalInformationController when user answers yes" in {
 
         val userAnswers = emptyUserAnswers
           .setValue(AddAdditionalInformationYesNoPage(hcIndex, documentIndex), true)
@@ -76,36 +95,35 @@ class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckProp
           .nextPage(documents.AddAdditionalInformationYesNoPage(hcIndex, documentIndex), mode, userAnswers)
           .mustBe(
             controllers.houseConsignment.index.documents.routes.AdditionalInformationController
-              .onPageLoad(arrivalId, NormalMode, houseConsignmentIndex, documentIndex)
+              .onPageLoad(arrivalId, mode, houseConsignmentIndex, documentIndex)
           )
 
       }
 
-      "must go from AddAdditionalInformationYesNo page to Add Another Document page when user answers No" ignore {
-        //todo wait for add another page to be implemented
+      "must go from AddAdditionalInformationYesNo page to AddAnotherDocumentController when user answers No" in {
 
         val userAnswers = emptyUserAnswers
-          .setValue(AddAdditionalInformationYesNoPage(hcIndex, documentIndex), true)
+          .setValue(AddAdditionalInformationYesNoPage(hcIndex, documentIndex), false)
 
         navigator
           .nextPage(documents.AddAdditionalInformationYesNoPage(hcIndex, documentIndex), mode, userAnswers)
           .mustBe(
-            controllers.houseConsignment.index.documents.routes.AdditionalInformationController
-              .onPageLoad(arrivalId, NormalMode, houseConsignmentIndex, documentIndex)
+            controllers.houseConsignment.index.documents.routes.AddAnotherDocumentController
+              .onPageLoad(arrivalId, houseConsignmentIndex, mode)
           )
 
       }
 
-      "must go from AdditionalInformation page to Add Another Document page when user answers No" ignore { //todo wait for add another page to be implemented
+      "must go from AdditionalInformation page to AddAnotherDocumentController " in {
 
         val userAnswers = emptyUserAnswers
-          .setValue(AddAdditionalInformationYesNoPage(hcIndex, documentIndex), true)
+          .setValue(AdditionalInformationPage(hcIndex, documentIndex), "document details")
 
         navigator
-          .nextPage(documents.AddAdditionalInformationYesNoPage(hcIndex, documentIndex), mode, userAnswers)
+          .nextPage(documents.AdditionalInformationPage(hcIndex, documentIndex), mode, userAnswers)
           .mustBe(
-            controllers.houseConsignment.index.documents.routes.AdditionalInformationController
-              .onPageLoad(arrivalId, NormalMode, houseConsignmentIndex, documentIndex)
+            controllers.houseConsignment.index.documents.routes.AddAnotherDocumentController
+              .onPageLoad(arrivalId, houseConsignmentIndex, mode)
           )
 
       }

@@ -30,14 +30,15 @@ class HouseConsignmentDocumentNavigator extends Navigator {
     case TypePage(houseConsignmentIndex, documentIndex) =>
       ua =>
         Some(controllers.houseConsignment.index.documents.routes.ReferenceNumberController.onPageLoad(ua.id, NormalMode, houseConsignmentIndex, documentIndex))
+
     case DocumentReferenceNumberPage(houseConsignmentIndex, documentIndex) =>
-      ua =>
-        Some(
-          controllers.houseConsignment.index.documents.routes.AddAdditionalInformationYesNoController
-            .onPageLoad(ua.id, houseConsignmentIndex, documentIndex)
-        )
+      ua => documentReferenceNumberNavigation(ua, houseConsignmentIndex, documentIndex, NormalMode)
+
     case AddAdditionalInformationYesNoPage(houseConsignmentIndex, documentIndex) =>
       ua => addAdditionalInformationYesNoRoute(ua, houseConsignmentIndex, documentIndex, NormalMode)
+
+    case AdditionalInformationPage(houseConsignmentIndex, _) =>
+      ua => Some(controllers.houseConsignment.index.documents.routes.AddAnotherDocumentController.onPageLoad(ua.id, houseConsignmentIndex, NormalMode))
 
   }
 
@@ -55,7 +56,24 @@ class HouseConsignmentDocumentNavigator extends Navigator {
     ua.get(AddAdditionalInformationYesNoPage(houseConsignmentIndex, documentIndex)).map {
       case true =>
         controllers.houseConsignment.index.documents.routes.AdditionalInformationController.onPageLoad(ua.id, mode, houseConsignmentIndex, documentIndex)
-      case false => ??? //todo will be add another document page once built
+      case false => controllers.houseConsignment.index.documents.routes.AddAnotherDocumentController.onPageLoad(ua.id, houseConsignmentIndex, mode)
 
+    }
+
+  private def documentReferenceNumberNavigation(
+    ua: UserAnswers,
+    houseConsignmentIndex: Index,
+    documentIndex: Index,
+    documentMode: Mode
+  ): Option[Call] =
+    ua.get(TypePage(houseConsignmentIndex, documentIndex)).map {
+      _.`type` match {
+        case DocType.Support =>
+          controllers.houseConsignment.index.documents.routes.AddAdditionalInformationYesNoController.onPageLoad(ua.id, houseConsignmentIndex, documentIndex)
+        case DocType.Transport =>
+          controllers.houseConsignment.index.documents.routes.AddAnotherDocumentController
+            .onPageLoad(ua.id, houseConsignmentIndex, documentMode)
+        case _ => Call("GET", "#") //TODO: Update document navigation
+      }
     }
 }

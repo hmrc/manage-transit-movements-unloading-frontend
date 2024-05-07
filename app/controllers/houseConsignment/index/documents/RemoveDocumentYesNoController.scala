@@ -80,8 +80,8 @@ class RemoveDocumentYesNoController @Inject() (
   def form(houseConsignmentIndex: Index): Form[Boolean] =
     formProvider("houseConsignment.index.documents.removeDocumentYesNo", houseConsignmentIndex.display)
 
-  private def addAnother(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index): Call = Call("GET", "#")
-  //TODO: update when add another controller done
+  private def addAnother(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index): Call =
+    controllers.houseConsignment.index.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, houseConsignmentIndex, mode)
 
   private def formatInsetText(userAnswers: UserAnswers, houseConsignmentIndex: Index, documentIndex: Index): Option[String] =
     Document(userAnswers, houseConsignmentIndex, documentIndex).map(_.forRemoveDisplay)
