@@ -51,7 +51,7 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
               action.content.value mustBe "Change"
               action.visuallyHiddenText.value mustBe "type of package 1 for item 1"
               action.href mustBe controllers.houseConsignment.index.items.packages.routes.PackageTypeController
-                .onPageLoad(arrivalId, hcIndex, packageIndex, itemIndex, CheckMode)
+                .onPageLoad(arrivalId, hcIndex, packageIndex, itemIndex, CheckMode, CheckMode, CheckMode)
                 .url
               action.id mustBe "change-package-type-1-1"
           }
@@ -83,7 +83,7 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
               action.content.value mustBe "Change"
               action.visuallyHiddenText.value mustBe "quantity of package 1 for item 1"
               action.href mustBe controllers.houseConsignment.index.items.packages.routes.NumberOfPackagesController
-                .onPageLoad(arrivalId, hcIndex, itemIndex, packageIndex, CheckMode)
+                .onPageLoad(arrivalId, hcIndex, itemIndex, packageIndex, CheckMode, CheckMode, CheckMode)
                 .url
               action.id mustBe "change-package-count-1-1"
           }
@@ -115,7 +115,7 @@ class PackagingAnswersHelperSpec extends AnswersHelperSpecBase {
               action.content.value mustBe "Change"
               action.visuallyHiddenText.value mustBe "shipping mark of package 1 for item 1"
               action.href mustBe controllers.houseConsignment.index.items.packages.routes.PackageShippingMarkController
-                .onPageLoad(arrivalId, hcIndex, itemIndex, packageIndex, CheckMode)
+                .onPageLoad(arrivalId, hcIndex, itemIndex, packageIndex, CheckMode, CheckMode, CheckMode)
                 .url
               action.id mustBe "change-package-mark-1-1"
           }

@@ -52,7 +52,9 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
               val actions = result.actions.get.items
               result.key.value mustBe "Description"
               val action = actions.head
-              action.href mustBe controllers.houseConsignment.index.items.routes.DescriptionController.onPageLoad(arrivalId, CheckMode, hcIndex, itemIndex).url
+              action.href mustBe controllers.houseConsignment.index.items.routes.DescriptionController
+                .onPageLoad(arrivalId, CheckMode, CheckMode, hcIndex, itemIndex)
+                .url
               action.visuallyHiddenText.get mustBe "description"
 
           }
@@ -167,7 +169,9 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
               result.value.value mustBe s"${value}kg"
               val action = result.actions.value.items.head
               action.content.value mustBe "Change"
-              action.href mustBe controllers.houseConsignment.index.items.routes.NetWeightController.onPageLoad(arrivalId, hcIndex, itemIndex, CheckMode).url
+              action.href mustBe controllers.houseConsignment.index.items.routes.NetWeightController
+                .onPageLoad(arrivalId, hcIndex, itemIndex, CheckMode, CheckMode)
+                .url
               action.visuallyHiddenText.value mustBe "net weight of item 1"
               action.id mustBe "change-net-weight-1"
 
@@ -304,7 +308,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
             addOrRemoveLink.text mustBe "Add or remove document"
             addOrRemoveLink.visuallyHidden.value mustBe "from item 1"
             addOrRemoveLink.href mustBe controllers.houseConsignment.index.items.document.routes.AddAnotherDocumentController
-              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode, CheckMode)
               .url
 
             result.children.head mustBe a[AccordionSection]
@@ -351,7 +355,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
             addOrRemoveLink.id mustBe "add-remove-item-1-additional-reference"
             addOrRemoveLink.text mustBe "Add or remove additional reference"
             addOrRemoveLink.visuallyHidden.value mustBe "from item 1"
-            addOrRemoveLink.href mustBe "/manage-transit-movements/unloading/AB123/house-consignment/1/items/1/additional-reference/add-another"
+            addOrRemoveLink.href mustBe "/manage-transit-movements/unloading/AB123/change-house-consignment/1/change-item/1/additional-references/add-another"
 
         }
       }
@@ -409,7 +413,7 @@ class ConsignmentItemAnswersHelperSpec extends AnswersHelperSpecBase {
             addOrRemove.text mustBe "Add or remove package"
             addOrRemove.visuallyHidden.value mustBe "from item 1"
             addOrRemove.href mustBe controllers.houseConsignment.index.items.packages.routes.AddAnotherPackageController
-              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, NormalMode)
+              .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, CheckMode, CheckMode)
               .url
 
             result.children.head mustBe a[AccordionSection]

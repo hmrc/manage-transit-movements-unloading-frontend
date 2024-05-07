@@ -21,7 +21,7 @@ import forms.Constants.{grossWeightDecimalPlaces, grossWeightIntegerLength}
 import forms.GrossWeightFormProvider
 import models.requests.MandatoryDataRequest
 import models.{ArrivalId, Index, Mode}
-import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator
+import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
 import pages.houseConsignment.index.items.GrossWeightPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -36,7 +36,7 @@ class GrossWeightController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   actions: Actions,
-  navigator: HouseConsignmentItemNavigator,
+  navigatorProvider: HouseConsignmentItemNavigatorProvider,
   formProvider: GrossWeightFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: GrossWeightView
@@ -47,7 +47,7 @@ class GrossWeightController @Inject() (
   private def form(houseConsignmentIndex: Index, itemIndex: Index) =
     formProvider("houseConsignment.item.grossWeight", grossWeightDecimalPlaces, grossWeightIntegerLength, itemIndex.display, houseConsignmentIndex.display)
 
-  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
+  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =
     actions.requireData(arrivalId) {
       implicit request =>
         val preparedForm = request.userAnswers.get(GrossWeightPage(houseConsignmentIndex, itemIndex)) match {
@@ -55,10 +55,10 @@ class GrossWeightController @Inject() (
           case Some(value) => form(houseConsignmentIndex, itemIndex).fill(value)
         }
 
-        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))
+        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode))
     }
 
-  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] =
+  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =
     actions
       .requireData(arrivalId)
       .async {
@@ -66,8 +66,11 @@ class GrossWeightController @Inject() (
           form(houseConsignmentIndex, itemIndex)
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, mode))),
-              value => redirect(value, houseConsignmentIndex, itemIndex, mode)
+              formWithErrors =>
+                Future.successful(
+                  BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode))
+                ),
+              value => redirect(value, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
             )
 
       }
@@ -76,10 +79,14 @@ class GrossWeightController @Inject() (
     value: BigDecimal,
     houseConsignmentIndex: Index,
     itemIndex: Index,
-    mode: Mode
+    houseConsignmentMode: Mode,
+    itemMode: Mode
   )(implicit request: MandatoryDataRequest[_]): Future[Result] =
     for {
       updatedAnswers <- Future.fromTry(request.userAnswers.set(GrossWeightPage(houseConsignmentIndex, itemIndex), value))
       _              <- sessionRepository.set(updatedAnswers)
-    } yield Redirect(navigator.nextPage(GrossWeightPage(houseConsignmentIndex, itemIndex), mode, request.userAnswers))
+    } yield {
+      val navigator = navigatorProvider.apply(houseConsignmentMode)
+      Redirect(navigator.nextPage(GrossWeightPage(houseConsignmentIndex, itemIndex), itemMode, request.userAnswers))
+    }
 }

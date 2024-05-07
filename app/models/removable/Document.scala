@@ -23,12 +23,7 @@ import play.api.libs.json.Reads
 
 case class Document(`type`: DocumentType, referenceNumber: Option[String]) {
 
-  def forRemoveDisplay: String = referenceNumber match {
-    case Some(rn) => s"${`type`.`type`.toString} - $rn"
-    case None     => `type`.`type`.toString
-  }
-
-  def forAddAnotherDisplay: String = referenceNumber match {
+  def forDisplay: String = referenceNumber match {
     case Some(rn) => s"${`type`.toString} - $rn"
     case None     => `type`.toString
   }
@@ -68,4 +63,5 @@ object Document {
     }
     userAnswers.data.asOpt[Document]
   }
+
 }

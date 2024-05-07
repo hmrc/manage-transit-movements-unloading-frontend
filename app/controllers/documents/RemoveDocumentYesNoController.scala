@@ -47,7 +47,7 @@ class RemoveDocumentYesNoController @Inject() (
   private def addAnother(arrivalId: ArrivalId, mode: Mode): Call = controllers.documents.routes.AddAnotherDocumentController.onPageLoad(arrivalId, mode)
 
   private def formatInsetText(userAnswers: UserAnswers, documentIndex: Index): Option[String] =
-    Document(userAnswers, documentIndex).map(_.forRemoveDisplay)
+    Document(userAnswers, documentIndex).map(_.forDisplay)
 
   def onPageLoad(arrivalId: ArrivalId, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
     .requireIndex(arrivalId, DocumentSection(documentIndex), addAnother(arrivalId, mode)) {

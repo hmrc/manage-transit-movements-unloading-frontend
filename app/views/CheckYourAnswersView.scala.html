@@ -47,4 +47,10 @@
     @formHelper(action = routes.CheckYourAnswersController.onSubmit(arrivalId), Symbol("autoComplete") -> "off") {
         @button(attributes = Map("id" -> "submit"), messageKey = messages("site.confirmAndSend"))
     }
+
+    @if(viewModel.showDiscrepanciesLink) {
+        <p class="govuk-body">
+            <a href=@routes.UnloadingFindingsController.onPageLoad(arrivalId) class="govuk-link" id="unloadingFindings">@messages("checkYourAnswers.link")</a>
+        </p>
+    }
 }

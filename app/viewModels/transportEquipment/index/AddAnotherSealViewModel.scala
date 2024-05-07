@@ -45,7 +45,7 @@ object AddAnotherSealViewModel {
 
   class AddAnotherSealViewModelProvider() {
 
-    def apply(userAnswers: UserAnswers, arrivalId: ArrivalId, equipmentMode: Mode, sealMode: Mode, equipmentIndex: Index): AddAnotherSealViewModel = {
+    def apply(userAnswers: UserAnswers, arrivalId: ArrivalId, equipmentMode: Mode, equipmentIndex: Index): AddAnotherSealViewModel = {
 
       val array = userAnswers.get(SealsSection(equipmentIndex))
 
@@ -57,14 +57,14 @@ object AddAnotherSealViewModel {
                 ListItem(
                   name = number,
                   changeUrl = None,
-                  removeUrl = Some(routes.RemoveSealYesNoController.onPageLoad(arrivalId, equipmentMode, sealMode, equipmentIndex, sealIndex).url)
+                  removeUrl = Some(routes.RemoveSealYesNoController.onPageLoad(arrivalId, equipmentMode, equipmentIndex, sealIndex).url)
                 )
             }
         }
 
       new AddAnotherSealViewModel(
         listItems,
-        onSubmitCall = controllers.transportEquipment.index.routes.AddAnotherSealController.onSubmit(arrivalId, equipmentMode, sealMode, equipmentIndex),
+        onSubmitCall = controllers.transportEquipment.index.routes.AddAnotherSealController.onSubmit(arrivalId, equipmentMode, equipmentIndex),
         equipmentIndex = equipmentIndex,
         nextIndex = array.nextIndex
       )

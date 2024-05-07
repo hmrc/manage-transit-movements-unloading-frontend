@@ -58,7 +58,8 @@ object AddAnotherAdditionalReferenceViewModel {
     def apply(
       userAnswers: UserAnswers,
       arrivalId: ArrivalId,
-      mode: Mode,
+      houseConsignmentMode: Mode,
+      itemMode: Mode,
       houseConsignmentIndex: Index,
       itemIndex: Index
     ): AddAnotherAdditionalReferenceViewModel = {
@@ -73,7 +74,9 @@ object AddAnotherAdditionalReferenceViewModel {
                 name = additionalReference.forAddAnotherDisplay,
                 changeUrl = None,
                 removeUrl = Some(
-                  routes.RemoveAdditionalReferenceYesNoController.onPageLoad(arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex).url
+                  routes.RemoveAdditionalReferenceYesNoController
+                    .onPageLoad(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex, additionalReferenceIndex)
+                    .url
                 )
               )
           }
@@ -81,7 +84,7 @@ object AddAnotherAdditionalReferenceViewModel {
 
       new AddAnotherAdditionalReferenceViewModel(
         listItems,
-        onSubmitCall = routes.AddAnotherAdditionalReferenceController.onSubmit(arrivalId, mode, houseConsignmentIndex, itemIndex),
+        onSubmitCall = routes.AddAnotherAdditionalReferenceController.onSubmit(arrivalId, houseConsignmentMode, itemMode, houseConsignmentIndex, itemIndex),
         nextIndex = array.nextIndex,
         houseConsignmentIndex,
         itemIndex

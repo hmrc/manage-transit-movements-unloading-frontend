@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items.packages
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.{ArrivalId, Index, Mode}
+import models.{ArrivalId, CheckMode, Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -46,30 +46,40 @@ class AddAnotherPackageController @Inject() (
   private def form(viewModel: AddAnotherPackageViewModel, houseConsignmentIndex: Index, itemIndex: Index): Form[Boolean] =
     formProvider(viewModel.prefix, viewModel.allowMore, viewModel.count, itemIndex.display, houseConsignmentIndex.display)
 
-  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
-    implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode)
+  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =
+    actions.requireData(arrivalId) {
+      implicit request =>
+        val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
 
-      Ok(view(form(viewModel, houseConsignmentIndex, itemIndex), request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, viewModel))
-  }
+        Ok(view(form(viewModel, houseConsignmentIndex, itemIndex), request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, viewModel))
+    }
 
-  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
-    implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode)
-      form(viewModel, houseConsignmentIndex, itemIndex)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, viewModel)),
-          {
-            case true =>
-              Redirect(
-                controllers.houseConsignment.index.items.packages.routes.PackageTypeController
-                  .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, viewModel.nextIndex, mode)
-              )
-            case false =>
-              Redirect(controllers.houseConsignment.index.items.routes.AddAnotherItemController.onPageLoad(arrivalId, houseConsignmentIndex, mode).url)
-          }
-        )
-  }
-
+  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode): Action[AnyContent] =
+    actions.requireData(arrivalId) {
+      implicit request =>
+        val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
+        form(viewModel, houseConsignmentIndex, itemIndex)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, viewModel)),
+            {
+              case true =>
+                Redirect(
+                  controllers.houseConsignment.index.items.packages.routes.PackageTypeController
+                    .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, viewModel.nextIndex, houseConsignmentMode, itemMode, NormalMode)
+                )
+              case false =>
+                itemMode match {
+                  case CheckMode =>
+                    Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+                  case NormalMode =>
+                    Redirect(
+                      controllers.houseConsignment.index.items.routes.AddAnotherItemController
+                        .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
+                        .url
+                    )
+                }
+            }
+          )
+    }
 }

@@ -14,35 +14,40 @@
  * limitations under the License.
  */
 
-package controllers.houseConsignment.index.items.document
+package controllers.houseConsignment.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
+import navigation.houseConsignment.index.HouseConsignmentNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.houseConsignment.index.items.document.AddDocumentYesNoPage
+import pages.houseConsignment.index.AddDocumentYesNoPage
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.houseConsignment.index.items.document.AddDocumentYesNoView
+import views.html.houseConsignment.index.AddDocumentsYesNoView
 
 import scala.concurrent.Future
 
 class AddDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider = new YesNoFormProvider()
-  private val form         = formProvider("houseConsignment.item.addDocumentYesNo")
+  private val form         = formProvider("houseConsignment.index.documents.addDocumentsYesNo", hcIndex)
   private val mode         = NormalMode
 
   private lazy val addDocumentYesNoRoute =
-    controllers.houseConsignment.index.items.document.routes.AddDocumentYesNoController
-      .onPageLoad(arrivalId, houseConsignmentIndex, itemIndex, mode)
+    routes.AddDocumentsYesNoController
+      .onPageLoad(arrivalId, mode, houseConsignmentIndex)
       .url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(
+        bind[HouseConsignmentNavigator].toInstance(FakeHouseConsignmentNavigators.fakeHouseConsignmentNavigator)
+      )
 
   "AddDocumentYesNoController" - {
 
@@ -54,17 +59,17 @@ class AddDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[AddDocumentYesNoView]
+      val view = injector.instanceOf[AddDocumentsYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, houseConsignmentIndex, itemIndex, mode)(request, messages).toString
+        view(form, mrn, arrivalId, houseConsignmentIndex, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddDocumentYesNoPage(houseConsignmentIndex, itemIndex), true)
+      val userAnswers = emptyUserAnswers.setValue(AddDocumentYesNoPage(houseConsignmentIndex), true)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, addDocumentYesNoRoute)
@@ -73,12 +78,12 @@ class AddDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[AddDocumentYesNoView]
+      val view = injector.instanceOf[AddDocumentsYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentIndex, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -110,10 +115,10 @@ class AddDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AddDocumentYesNoView]
+      val view = injector.instanceOf[AddDocumentsYesNoView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, houseConsignmentIndex, itemIndex, mode)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentIndex, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

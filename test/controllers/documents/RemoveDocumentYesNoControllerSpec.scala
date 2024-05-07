@@ -60,7 +60,7 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
             .setValue(TypePage(documentIndex), documentType)
             .setValue(DocumentReferenceNumberPage(documentIndex), documentReferenceNumber)
 
-          val insetText = s"${documentType.`type`.display} - $documentReferenceNumber"
+          val insetText = s"${documentType.toString} - $documentReferenceNumber"
 
           setExistingUserAnswers(userAnswers)
 
@@ -157,7 +157,7 @@ class RemoveDocumentYesNoControllerSpec extends SpecBase with AppWithDefaultMock
             .setValue(TypePage(documentIndex), documentType)
             .setValue(DocumentReferenceNumberPage(documentIndex), documentReferenceNumber)
 
-          val insetText = s"${documentType.`type`.display} - $documentReferenceNumber"
+          val insetText = s"${documentType.toString} - $documentReferenceNumber"
 
           setExistingUserAnswers(userAnswers)
 

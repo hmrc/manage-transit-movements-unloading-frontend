@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items.additionalReference
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.houseConsignment.index.items.AdditionalReferenceNavigator
+import navigation.houseConsignment.index.items.AdditionalReferenceNavigator.AdditionalReferenceNavigatorProvider
 import pages.houseConsignment.index.items.additionalReference.AddAdditionalReferenceNumberYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddAdditionalReferenceNumberYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: AdditionalReferenceNavigator,
+  navigatorProvider: AdditionalReferenceNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -44,7 +44,15 @@ class AddAdditionalReferenceNumberYesNoController @Inject() (
 
   private val form = formProvider("houseConsignment.index.items.additionalReference.addAdditionalReferenceNumberYesNo")
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] =
+  def onPageLoad(
+    arrivalId: ArrivalId,
+    houseConsignmentMode: Mode,
+    itemMode: Mode,
+    additionalReferenceMode: Mode,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
+    additionalReferenceIndex: Index
+  ): Action[AnyContent] =
     actions.getStatus(arrivalId) {
 
       implicit request =>
@@ -53,10 +61,30 @@ class AddAdditionalReferenceNumberYesNoController @Inject() (
           case Some(value) => form.fill(value)
         }
 
-        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex))
+        Ok(
+          view(
+            preparedForm,
+            request.userAnswers.mrn,
+            arrivalId,
+            houseConsignmentMode,
+            itemMode,
+            additionalReferenceMode,
+            houseConsignmentIndex,
+            itemIndex,
+            additionalReferenceIndex
+          )
+        )
     }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] =
+  def onSubmit(
+    arrivalId: ArrivalId,
+    houseConsignmentMode: Mode,
+    itemMode: Mode,
+    additionalReferenceMode: Mode,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
+    additionalReferenceIndex: Index
+  ): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
         form
@@ -64,16 +92,35 @@ class AddAdditionalReferenceNumberYesNoController @Inject() (
           .fold(
             formWithErrors =>
               Future.successful(
-                BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, mode, houseConsignmentIndex, itemIndex, additionalReferenceIndex))
+                BadRequest(
+                  view(
+                    formWithErrors,
+                    request.userAnswers.mrn,
+                    arrivalId,
+                    houseConsignmentMode,
+                    itemMode,
+                    additionalReferenceMode,
+                    houseConsignmentIndex,
+                    itemIndex,
+                    additionalReferenceIndex
+                  )
+                )
               ),
             value =>
               for {
                 updatedAnswers <- Future
                   .fromTry(request.userAnswers.set(AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), value))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(
-                navigator.nextPage(AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex), mode, updatedAnswers)
-              )
+              } yield {
+                val navigator = navigatorProvider.apply(houseConsignmentMode, itemMode)
+                Redirect(
+                  navigator.nextPage(
+                    AddAdditionalReferenceNumberYesNoPage(houseConsignmentIndex, itemIndex, additionalReferenceIndex),
+                    additionalReferenceMode,
+                    updatedAnswers
+                  )
+                )
+              }
           )
     }
 }

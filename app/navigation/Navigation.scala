@@ -46,16 +46,16 @@ class Navigation extends Navigator {
       ua =>
         ua.get(AddUnloadingCommentsYesNoPage) map {
           case true  => routes.UnloadingFindingsController.onPageLoad(ua.id)
-          case false => routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id)
+          case false => routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id, NormalMode)
         }
     case AddCommentsYesNoPage =>
       ua =>
         ua.get(AddCommentsYesNoPage) map {
           case true  => routes.UnloadingCommentsController.onPageLoad(ua.id, NormalMode)
-          case false => routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id)
+          case false => routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id, NormalMode)
         }
     case UnloadingCommentsPage =>
-      ua => Some(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id))
+      ua => Some(routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(ua.id, NormalMode))
     case DoYouHaveAnythingElseToReportYesNoPage =>
       ua =>
         ua.get(DoYouHaveAnythingElseToReportYesNoPage) map {
@@ -80,6 +80,8 @@ class Navigation extends Navigator {
           case Some(false) => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
           case _           => Some(routes.SessionExpiredController.onPageLoad())
         }
-    case _ => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
+    case GrossWeightPage => ua => Some(routes.UnloadingFindingsController.onPageLoad(ua.id))
+    case _               => ua => Some(routes.CheckYourAnswersController.onPageLoad(ua.id))
+
   }
 }

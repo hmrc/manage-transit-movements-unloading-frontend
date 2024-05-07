@@ -49,7 +49,7 @@ class SealIdentificationNumberControllerSpec extends SpecBase with AppWithDefaul
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[SealNavigatorProvider].toInstance(fakeSealNavigatorProvider),
+        bind[SealNavigatorProvider].toInstance(FakeConsignmentNavigators.fakeSealNavigatorProvider),
         bind[SealIdentificationNumberViewModelProvider].toInstance(mockViewModelProvider)
       )
 

@@ -66,12 +66,36 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
     call = Some(controllers.routes.AddUnloadingCommentsYesNoController.onPageLoad(arrivalId, CheckMode))
   )
 
+  def addCommentsYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddCommentsYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "checkYourAnswers.rowHeadings.addCommentsYesNo",
+    id = Some("change-add-comments"),
+    call = Some(controllers.routes.AddCommentsYesNoController.onPageLoad(arrivalId, CheckMode))
+  )
+
   def additionalComment: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = UnloadingCommentsPage,
     formatAnswer = formatAsText,
     prefix = "checkYourAnswers.rowHeadings.additionalComments",
     id = Some("change-comment"),
     call = Some(controllers.routes.UnloadingCommentsController.onPageLoad(arrivalId, CheckMode))
+  )
+
+  def addReportYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = DoYouHaveAnythingElseToReportYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "checkYourAnswers.rowHeadings.addReportYesNo",
+    id = Some("change-add-report"),
+    call = Some(controllers.routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId, CheckMode))
+  )
+
+  def report: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = OtherThingsToReportPage,
+    formatAnswer = formatAsText,
+    prefix = "checkYourAnswers.rowHeadings.report",
+    id = Some("change-report"),
+    call = Some(controllers.routes.OtherThingsToReportController.onPageLoad(arrivalId, CheckMode))
   )
 
 }

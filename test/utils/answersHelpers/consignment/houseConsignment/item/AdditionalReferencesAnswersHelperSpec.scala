@@ -50,7 +50,7 @@ class AdditionalReferencesAnswersHelperSpec extends AnswersHelperSpecBase {
             result.value.value mustBe value.toString
             val action = result.actions.value.items.head
             action.content.value mustBe "Change"
-            action.href mustBe routes.AdditionalReferenceTypeController.onPageLoad(arrivalId, CheckMode, hcIndex, itemIndex, index).url
+            action.href mustBe routes.AdditionalReferenceTypeController.onPageLoad(arrivalId, CheckMode, CheckMode, CheckMode, hcIndex, itemIndex, index).url
             action.visuallyHiddenText.value mustBe "type for additional reference 1 in item 1"
             action.id mustBe "change-additional-reference-type-1-1"
         }
@@ -79,7 +79,7 @@ class AdditionalReferencesAnswersHelperSpec extends AnswersHelperSpecBase {
             result.value.value mustBe value
             val action = result.actions.value.items.head
             action.content.value mustBe "Change"
-            action.href mustBe routes.AdditionalReferenceNumberController.onPageLoad(arrivalId, CheckMode, hcIndex, itemIndex, index).url
+            action.href mustBe routes.AdditionalReferenceNumberController.onPageLoad(arrivalId, CheckMode, CheckMode, CheckMode, hcIndex, itemIndex, index).url
             action.visuallyHiddenText.value mustBe "reference number for additional reference 1 in item 1"
             action.id mustBe "change-additional-reference-number-1-1"
         }

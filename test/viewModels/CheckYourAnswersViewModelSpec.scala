@@ -62,7 +62,7 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       result.sections.length mustBe 2
       result.sections(1).rows.size mustBe 1
 
-      result.sections(1).sectionTitle.value mustBe "Transit and declaration summary cross-check"
+      result.sections(1).sectionTitle.value mustBe "Transit and unloading permission discrepancies"
 
     }
 
@@ -80,9 +80,107 @@ class CheckYourAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixt
       result.sections.length mustBe 2
       result.sections(1).rows.size mustBe 2
 
-      result.sections(1).sectionTitle.value mustBe "Transit and declaration summary cross-check"
+      result.sections(1).sectionTitle.value mustBe "Transit and unloading permission discrepancies"
 
     }
 
   }
+
+  "showDiscrepanciesLink boolean must be" - {
+    "false when seals are present & not damaged and AddUnloadingCommentsYesNo page is false" in {
+      val userAnswers = emptyUserAnswers
+        .setValue(CanSealsBeReadPage, true)
+        .setValue(AreAnySealsBrokenPage, false)
+        .setValue(AddUnloadingCommentsYesNoPage, false)
+
+      setExistingUserAnswers(userAnswers)
+
+      val viewModelProvider = new CheckYourAnswersViewModelProvider()
+      val result            = viewModelProvider.apply(userAnswers)
+
+      result.showDiscrepanciesLink mustBe false
+    }
+
+    "true when seals are present & not damaged and AddUnloadingCommentsYesNo page is true" in {
+      val userAnswers = emptyUserAnswers
+        .setValue(CanSealsBeReadPage, true)
+        .setValue(AreAnySealsBrokenPage, false)
+        .setValue(AddUnloadingCommentsYesNoPage, true)
+
+      setExistingUserAnswers(userAnswers)
+
+      val viewModelProvider = new CheckYourAnswersViewModelProvider()
+      val result            = viewModelProvider.apply(userAnswers)
+
+      result.showDiscrepanciesLink mustBe true
+    }
+
+    "true when seals are present but can't be read" in {
+      val userAnswers = emptyUserAnswers
+        .setValue(CanSealsBeReadPage, false)
+        .setValue(AreAnySealsBrokenPage, false)
+
+      setExistingUserAnswers(userAnswers)
+
+      val viewModelProvider = new CheckYourAnswersViewModelProvider()
+      val result            = viewModelProvider.apply(userAnswers)
+
+      result.showDiscrepanciesLink mustBe true
+    }
+
+    "true when seals are present but are broken" in {
+      val userAnswers = emptyUserAnswers
+        .setValue(CanSealsBeReadPage, true)
+        .setValue(AreAnySealsBrokenPage, true)
+
+      setExistingUserAnswers(userAnswers)
+
+      val viewModelProvider = new CheckYourAnswersViewModelProvider()
+      val result            = viewModelProvider.apply(userAnswers)
+
+      result.showDiscrepanciesLink mustBe true
+    }
+
+    "true when seals are present but can't be read and are broken" in {
+      val userAnswers = emptyUserAnswers
+        .setValue(CanSealsBeReadPage, false)
+        .setValue(AreAnySealsBrokenPage, true)
+
+      setExistingUserAnswers(userAnswers)
+
+      val viewModelProvider = new CheckYourAnswersViewModelProvider()
+      val result            = viewModelProvider.apply(userAnswers)
+
+      result.showDiscrepanciesLink mustBe true
+    }
+
+    "false when seals are not present and AddUnloadingCommentsYesNo page is false" in {
+      val userAnswers = emptyUserAnswers
+        .setValue(CanSealsBeReadPage, None)
+        .setValue(AreAnySealsBrokenPage, None)
+        .setValue(AddUnloadingCommentsYesNoPage, false)
+
+      setExistingUserAnswers(userAnswers)
+
+      val viewModelProvider = new CheckYourAnswersViewModelProvider()
+      val result            = viewModelProvider.apply(userAnswers)
+
+      result.showDiscrepanciesLink mustBe false
+    }
+
+    "true when seals are not present and AddUnloadingCommentsYesNo page is true" in {
+      val userAnswers = emptyUserAnswers
+        .setValue(CanSealsBeReadPage, None)
+        .setValue(AreAnySealsBrokenPage, None)
+        .setValue(AddUnloadingCommentsYesNoPage, true)
+
+      setExistingUserAnswers(userAnswers)
+
+      val viewModelProvider = new CheckYourAnswersViewModelProvider()
+      val result            = viewModelProvider.apply(userAnswers)
+
+      result.showDiscrepanciesLink mustBe true
+    }
+  }
+
 }

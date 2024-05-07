@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items.document
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.houseConsignment.index.items.DocumentNavigator
+import navigation.houseConsignment.index.items.DocumentNavigator.DocumentNavigatorProvider
 import pages.houseConsignment.index.items.document.AddAdditionalInformationYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddAdditionalInformationYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigator: DocumentNavigator,
+  navigatorProvider: DocumentNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -44,7 +44,15 @@ class AddAdditionalInformationYesNoController @Inject() (
 
   private val form = formProvider("houseConsignment.index.items.document.addAdditionalInformationYesNo")
 
-  def onPageLoad(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index): Action[AnyContent] =
+  def onPageLoad(
+    arrivalId: ArrivalId,
+    houseConsignmentMode: Mode,
+    itemMode: Mode,
+    documentMode: Mode,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
+    documentIndex: Index
+  ): Action[AnyContent] =
     actions.getStatus(arrivalId) {
       implicit request =>
         val preparedForm = request.userAnswers.get(AddAdditionalInformationYesNoPage(houseConsignmentIndex, itemIndex, documentIndex)) match {
@@ -52,23 +60,51 @@ class AddAdditionalInformationYesNoController @Inject() (
           case Some(value) => form.fill(value)
         }
 
-        Ok(view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, documentIndex, mode))
+        Ok(
+          view(preparedForm, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, documentIndex, houseConsignmentMode, itemMode, documentMode)
+        )
     }
 
-  def onSubmit(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, itemIndex: Index, documentIndex: Index): Action[AnyContent] =
+  def onSubmit(
+    arrivalId: ArrivalId,
+    houseConsignmentMode: Mode,
+    itemMode: Mode,
+    documentMode: Mode,
+    houseConsignmentIndex: Index,
+    itemIndex: Index,
+    documentIndex: Index
+  ): Action[AnyContent] =
     actions.getStatus(arrivalId).async {
       implicit request =>
         form
           .bindFromRequest()
           .fold(
             formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, request.userAnswers.mrn, arrivalId, houseConsignmentIndex, itemIndex, documentIndex, mode))),
+              Future.successful(
+                BadRequest(
+                  view(formWithErrors,
+                       request.userAnswers.mrn,
+                       arrivalId,
+                       houseConsignmentIndex,
+                       itemIndex,
+                       documentIndex,
+                       houseConsignmentMode,
+                       itemMode,
+                       documentMode
+                  )
+                )
+              ),
             value =>
               for {
                 updatedAnswers <- Future
                   .fromTry(request.userAnswers.set(AddAdditionalInformationYesNoPage(houseConsignmentIndex, itemIndex, documentIndex), value))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(AddAdditionalInformationYesNoPage(houseConsignmentIndex, itemIndex, documentIndex), mode, updatedAnswers))
+              } yield {
+                val navigator = navigatorProvider.apply(houseConsignmentMode, itemMode)
+                Redirect(
+                  navigator.nextPage(AddAdditionalInformationYesNoPage(houseConsignmentIndex, itemIndex, documentIndex), documentMode, updatedAnswers)
+                )
+              }
           )
     }
 }

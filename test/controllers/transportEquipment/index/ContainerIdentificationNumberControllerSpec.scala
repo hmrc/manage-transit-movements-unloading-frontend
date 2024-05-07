@@ -21,6 +21,7 @@ import controllers.routes
 import forms.ContainerIdentificationNumberFormProvider
 import generators.Generators
 import models.NormalMode
+import navigation.TransportEquipmentNavigator
 import viewModels.transportEquipment.index.ContainerIdentificationNumberViewModel
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -47,7 +48,10 @@ class ContainerIdentificationNumberControllerSpec extends SpecBase with AppWithD
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[ContainerIdentificationNumberViewModelProvider].toInstance(mockViewModelProvider))
+      .overrides(
+        bind[TransportEquipmentNavigator].toInstance(FakeConsignmentNavigators.fakeTransportEquipmentNavigator),
+        bind[ContainerIdentificationNumberViewModelProvider].toInstance(mockViewModelProvider)
+      )
 
   when(mockViewModelProvider.apply(any())(any()))
     .thenReturn(viewModel)

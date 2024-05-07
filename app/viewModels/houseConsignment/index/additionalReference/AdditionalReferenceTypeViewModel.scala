@@ -22,13 +22,15 @@ import viewModels.ModeViewModelProvider
 
 import javax.inject.Inject
 
-case class AdditionalReferenceTypeViewModel(heading: String,
-                                            title: String,
-                                            requiredError: String,
-                                            arrivalId: ArrivalId,
-                                            mode: Mode,
-                                            houseConsignmentIndex: Index,
-                                            additionalReferenceIndex: Index
+case class AdditionalReferenceTypeViewModel(
+  heading: String,
+  title: String,
+  requiredError: String,
+  arrivalId: ArrivalId,
+  houseConsignmentMode: Mode,
+  additionalReferenceMode: Mode,
+  houseConsignmentIndex: Index,
+  additionalReferenceIndex: Index
 )
 
 object AdditionalReferenceTypeViewModel {
@@ -37,15 +39,20 @@ object AdditionalReferenceTypeViewModel {
 
     override val prefix = "houseConsignment.index.additionalReference.additionalReferenceType"
 
-    def apply(arrivalId: ArrivalId, mode: Mode, houseConsignmentIndex: Index, additionalReferenceIndex: Index)(implicit
-      message: Messages
-    ): AdditionalReferenceTypeViewModel =
+    def apply(
+      arrivalId: ArrivalId,
+      houseConsignmentMode: Mode,
+      additionalReferenceMode: Mode,
+      houseConsignmentIndex: Index,
+      additionalReferenceIndex: Index
+    )(implicit message: Messages): AdditionalReferenceTypeViewModel =
       new AdditionalReferenceTypeViewModel(
-        heading(mode, houseConsignmentIndex),
-        title(mode, houseConsignmentIndex),
-        requiredError(mode, houseConsignmentIndex),
+        heading(additionalReferenceMode, houseConsignmentIndex),
+        title(additionalReferenceMode, houseConsignmentIndex),
+        requiredError(additionalReferenceMode, houseConsignmentIndex),
         arrivalId,
-        mode,
+        houseConsignmentMode,
+        additionalReferenceMode,
         houseConsignmentIndex,
         additionalReferenceIndex
       )

@@ -28,16 +28,16 @@
     button: Button
 )
 
-@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex:Index, itemIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean],mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex:Index, itemIndex: Index, houseConsignmentMode: Mode, itemMode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("houseConsignment.item.addAdditionalReferenceYesNo.title"),
     showBackLink = true
 ) {
 
-        @errorSummary(form.errors)
+    @formHelper(action = routes.AddAdditionalReferenceYesNoController.onSubmit(arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode), Symbol("autoComplete") -> "off") {
 
-        @formHelper(action = routes.AddAdditionalReferenceYesNoController.onSubmit(arrivalId, houseConsignmentIndex, itemIndex, mode), Symbol("autoComplete") -> "off") {
+        @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),

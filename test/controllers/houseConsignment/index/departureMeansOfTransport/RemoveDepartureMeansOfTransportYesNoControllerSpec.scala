@@ -92,8 +92,10 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
-          .onPageLoad(arrivalId, mode)
+        redirectLocation(
+          result
+        ).value mustEqual controllers.houseConsignment.index.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
+          .onPageLoad(arrivalId, houseConsignmentIndex, mode)
           .url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
@@ -116,8 +118,10 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
-          .onPageLoad(arrivalId, mode)
+        redirectLocation(
+          result
+        ).value mustEqual controllers.houseConsignment.index.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
+          .onPageLoad(arrivalId, houseConsignmentIndex, mode)
           .url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
@@ -139,8 +143,8 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
-        .onPageLoad(arrivalId, mode)
+      redirectLocation(result).value mustEqual controllers.houseConsignment.index.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
+        .onPageLoad(arrivalId, houseConsignmentIndex, mode)
         .url
     }
 

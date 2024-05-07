@@ -21,9 +21,12 @@ import forms.Constants.otherThingsToReportLength
 import forms.OtherThingsToReportFormProvider
 import generators.Generators
 import models.NormalMode
+import navigation.Navigation
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.OtherThingsToReportPage
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.OtherThingsToReportView
@@ -37,6 +40,13 @@ class OtherThingsToReportControllerSpec extends SpecBase with AppWithDefaultMock
   private val mode         = NormalMode
 
   private lazy val otherThingsToReportRoute = controllers.routes.OtherThingsToReportController.onPageLoad(arrivalId, NormalMode).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(
+        bind[Navigation].toInstance(fakeNavigation)
+      )
 
   "OtherThingsToReportController" - {
 

@@ -19,9 +19,11 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
+import navigation.Navigation
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.DoYouHaveAnythingElseToReportYesNoPage
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -32,7 +34,7 @@ import scala.concurrent.Future
 class DoYouHaveAnythingElseToReportYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private lazy val doYouHaveAnythingElseToReportYesNoRoute =
-    controllers.routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId).url
+    controllers.routes.DoYouHaveAnythingElseToReportYesNoController.onPageLoad(arrivalId, mode).url
   private val formProvider = new YesNoFormProvider()
   private val form         = formProvider("doYouHaveAnythingElseToReportYesNo")
   private val mode         = NormalMode
@@ -40,6 +42,9 @@ class DoYouHaveAnythingElseToReportYesNoControllerSpec extends SpecBase with App
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(
+        bind[Navigation].toInstance(fakeNavigation)
+      )
 
   "DoYouHaveAnythingElseToReportYesNo Controller" - {
 

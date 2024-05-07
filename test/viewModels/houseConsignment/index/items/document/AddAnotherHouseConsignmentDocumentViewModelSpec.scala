@@ -20,7 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models.DocType.{Previous, Support, Transport}
 import models.reference.DocumentType
-import models.{Index, Mode, NormalMode}
+import models.{CheckMode, Index, Mode, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.houseConsignment.index.items.document.{DocumentReferenceNumberPage, TypePage}
@@ -29,12 +29,15 @@ import viewModels.ListItem
 import viewModels.houseConsignment.index.items.document.AddAnotherHouseConsignmentDocumentViewModel.AddAnotherHouseConsignmentDocumentViewModelProvider
 
 class AddAnotherHouseConsignmentDocumentViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
   "must create view model" - {
     "when Normal mode" in {
-      val viewModelProvider = new AddAnotherHouseConsignmentDocumentViewModelProvider()
-      val userAnswers       = emptyUserAnswers
+      val houseConsignmentMode = arbitrary[Mode].sample.value
+      val itemMode             = NormalMode
+      val viewModelProvider    = new AddAnotherHouseConsignmentDocumentViewModelProvider()
+      val userAnswers          = emptyUserAnswers
       val result: AddAnotherHouseConsignmentDocumentViewModel =
-        viewModelProvider.apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex: Index, NormalMode)
+        viewModelProvider.apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
 
       result.title(itemIndex, houseConsignmentIndex) mustBe "You have added 0 documents to item 1 in house consignment 1"
       result.heading(itemIndex, houseConsignmentIndex) mustBe "You have added 0 documents to item 1 in house consignment 1"
@@ -43,9 +46,11 @@ class AddAnotherHouseConsignmentDocumentViewModelSpec extends SpecBase with Scal
     }
 
     "when Check mode" in {
-      val viewModelProvider = new AddAnotherHouseConsignmentDocumentViewModelProvider()
-      val userAnswers       = emptyUserAnswers
-      val result            = viewModelProvider.apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex: Index, NormalMode)
+      val houseConsignmentMode = CheckMode
+      val itemMode             = CheckMode
+      val viewModelProvider    = new AddAnotherHouseConsignmentDocumentViewModelProvider()
+      val userAnswers          = emptyUserAnswers
+      val result               = viewModelProvider.apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, houseConsignmentMode, itemMode)
 
       result.title(itemIndex, houseConsignmentIndex) mustBe "You have added 0 documents to item 1 in house consignment 1"
       result.heading(itemIndex, houseConsignmentIndex) mustBe "You have added 0 documents to item 1 in house consignment 1"
@@ -59,14 +64,13 @@ class AddAnotherHouseConsignmentDocumentViewModelSpec extends SpecBase with Scal
             mode =>
               val userAnswers = emptyUserAnswers
 
-              val result = new AddAnotherHouseConsignmentDocumentViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode)
+              val result = new AddAnotherHouseConsignmentDocumentViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode, mode)
               result.listItems mustBe Nil
               result.title(itemIndex, houseConsignmentIndex) mustBe "You have added 0 documents to item 1 in house consignment 1"
               result.heading(itemIndex, houseConsignmentIndex) mustBe "You have added 0 documents to item 1 in house consignment 1"
               result.legend(itemIndex, houseConsignmentIndex) mustBe "Do you want to add a document to item 1 in house consignment 1?"
-              result.maxLimitLabel(itemIndex,
-                                   houseConsignmentIndex
-              ) mustBe "You cannot add any more documents to item 1 in house consignment 1. To add another, you need to remove one first."
+              result.maxLimitLabel(itemIndex, houseConsignmentIndex) mustBe
+                "You cannot add any more documents to item 1 in house consignment 1. To add another, you need to remove one first."
               result.maxLimitLabelForType(itemIndex, houseConsignmentIndex) mustBe None
               result.nextIndex mustBe Index(0)
           }
@@ -82,16 +86,15 @@ class AddAnotherHouseConsignmentDocumentViewModelSpec extends SpecBase with Scal
                 .setValue(TypePage(Index(0), Index(0), Index(0)), DocumentType(Support, "code1", "description1"))
                 .setValue(DocumentReferenceNumberPage(Index(0), Index(0), Index(0)), "ref1")
 
-              val result = new AddAnotherHouseConsignmentDocumentViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode)
+              val result = new AddAnotherHouseConsignmentDocumentViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode, mode)
 
               result.listItems.length mustBe 1
               result.listItems.head.name mustBe "Supporting - (code1) description1 - ref1"
               result.title(itemIndex, houseConsignmentIndex) mustBe "You have added 1 document to item 1 in house consignment 1"
               result.heading(itemIndex, houseConsignmentIndex) mustBe "You have added 1 document to item 1 in house consignment 1"
               result.legend(itemIndex, houseConsignmentIndex) mustBe "Do you want to add another document to item 1 in house consignment 1?"
-              result.maxLimitLabel(itemIndex,
-                                   houseConsignmentIndex
-              ) mustBe "You cannot add any more documents to item 1 in house consignment 1. To add another, you need to remove one first."
+              result.maxLimitLabel(itemIndex, houseConsignmentIndex) mustBe
+                "You cannot add any more documents to item 1 in house consignment 1. To add another, you need to remove one first."
               result.nextIndex mustBe Index(1)
           }
         }
@@ -107,11 +110,10 @@ class AddAnotherHouseConsignmentDocumentViewModelSpec extends SpecBase with Scal
               }
               val userAnswers = maxTransportDocs
 
-              val result = new AddAnotherHouseConsignmentDocumentViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode)
+              val result = new AddAnotherHouseConsignmentDocumentViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode, mode)
 
-              result
-                .maxLimitLabelForType(itemIndex, houseConsignmentIndex)
-                .get mustBe "You cannot add any more transport documents to item 1 in house consignment 1. To add another, you need to remove one first. You can, however, still add a supporting document to your item."
+              result.maxLimitLabelForType(itemIndex, houseConsignmentIndex).get mustBe
+                "You cannot add any more transport documents to item 1 in house consignment 1. To add another, you need to remove one first. You can, however, still add a supporting document to your item."
               result.allowMore mustBe true
           }
         }
@@ -127,11 +129,10 @@ class AddAnotherHouseConsignmentDocumentViewModelSpec extends SpecBase with Scal
               }
               val userAnswers = maxSupportDocs
 
-              val result = new AddAnotherHouseConsignmentDocumentViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode)
+              val result = new AddAnotherHouseConsignmentDocumentViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode, mode)
 
-              result
-                .maxLimitLabelForType(itemIndex, houseConsignmentIndex)
-                .get mustBe "You cannot add any more supporting documents to item 1 in house consignment 1. To add another, you need to remove one first. You can, however, still add a transport document to your item."
+              result.maxLimitLabelForType(itemIndex, houseConsignmentIndex).get mustBe
+                "You cannot add any more supporting documents to item 1 in house consignment 1. To add another, you need to remove one first. You can, however, still add a transport document to your item."
               result.allowMore mustBe true
           }
         }
@@ -154,7 +155,7 @@ class AddAnotherHouseConsignmentDocumentViewModelSpec extends SpecBase with Scal
               }
               val userAnswers = maxDocs
 
-              val result = new AddAnotherHouseConsignmentDocumentViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode)
+              val result = new AddAnotherHouseConsignmentDocumentViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode, mode)
 
               result.allowMore mustBe false
           }
@@ -169,16 +170,15 @@ class AddAnotherHouseConsignmentDocumentViewModelSpec extends SpecBase with Scal
                 .setValue(TypePage(Index(0), Index(0), Index(1)), DocumentType(Transport, "code2", "description2"))
                 .setValue(DocumentReferenceNumberPage(Index(0), Index(0), Index(1)), "ref2")
 
-              val result = new AddAnotherHouseConsignmentDocumentViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode)
+              val result = new AddAnotherHouseConsignmentDocumentViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode, mode)
               result.listItems.length mustBe 2
               result.listItems.head.name mustBe "Supporting - (code1) description1 - ref1"
               result.listItems.last.name mustBe "Transport - (code2) description2 - ref2"
               result.title(itemIndex, houseConsignmentIndex) mustBe "You have added 2 documents to item 1 in house consignment 1"
               result.heading(itemIndex, houseConsignmentIndex) mustBe "You have added 2 documents to item 1 in house consignment 1"
               result.legend(itemIndex, houseConsignmentIndex) mustBe "Do you want to add another document to item 1 in house consignment 1?"
-              result.maxLimitLabel(itemIndex,
-                                   houseConsignmentIndex
-              ) mustBe "You cannot add any more documents to item 1 in house consignment 1. To add another, you need to remove one first."
+              result.maxLimitLabel(itemIndex, houseConsignmentIndex) mustBe
+                "You cannot add any more documents to item 1 in house consignment 1. To add another, you need to remove one first."
 
               result.nextIndex mustBe Index(2)
           }
@@ -191,15 +191,14 @@ class AddAnotherHouseConsignmentDocumentViewModelSpec extends SpecBase with Scal
                 .setValue(TypePage(Index(0), Index(0), Index(0)), DocumentType(Previous, "code1", "description1"))
                 .setValue(DocumentReferenceNumberPage(Index(0), Index(0), Index(0)), "ref1")
 
-              val result = new AddAnotherHouseConsignmentDocumentViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode)
+              val result = new AddAnotherHouseConsignmentDocumentViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode, mode)
 
               result.listItems mustBe Nil
               result.title(itemIndex, houseConsignmentIndex) mustBe "You have added 0 documents to item 1 in house consignment 1"
               result.heading(itemIndex, houseConsignmentIndex) mustBe "You have added 0 documents to item 1 in house consignment 1"
               result.legend(itemIndex, houseConsignmentIndex) mustBe "Do you want to add a document to item 1 in house consignment 1?"
-              result.maxLimitLabel(itemIndex,
-                                   houseConsignmentIndex
-              ) mustBe "You cannot add any more documents to item 1 in house consignment 1. To add another, you need to remove one first."
+              result.maxLimitLabel(itemIndex, houseConsignmentIndex) mustBe
+                "You cannot add any more documents to item 1 in house consignment 1. To add another, you need to remove one first."
               result.nextIndex mustBe Index(1)
           }
         }
@@ -214,14 +213,13 @@ class AddAnotherHouseConsignmentDocumentViewModelSpec extends SpecBase with Scal
                 .setValue(TypePage(Index(0), Index(0), Index(2)), DocumentType(Transport, "code2", "description2"))
                 .setValue(DocumentReferenceNumberPage(Index(0), Index(0), Index(2)), "ref2")
 
-              val result = new AddAnotherHouseConsignmentDocumentViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode)
+              val result = new AddAnotherHouseConsignmentDocumentViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode, mode)
               result.listItems.length mustBe 2
               result.title(itemIndex, houseConsignmentIndex) mustBe "You have added 2 documents to item 1 in house consignment 1"
               result.heading(itemIndex, houseConsignmentIndex) mustBe "You have added 2 documents to item 1 in house consignment 1"
               result.legend(itemIndex, houseConsignmentIndex) mustBe "Do you want to add another document to item 1 in house consignment 1?"
-              result.maxLimitLabel(itemIndex,
-                                   houseConsignmentIndex
-              ) mustBe "You cannot add any more documents to item 1 in house consignment 1. To add another, you need to remove one first."
+              result.maxLimitLabel(itemIndex, houseConsignmentIndex) mustBe
+                "You cannot add any more documents to item 1 in house consignment 1. To add another, you need to remove one first."
               result.nextIndex mustBe Index(3) // take 'removed item' into account when calculating the next index
           }
         }
@@ -235,7 +233,7 @@ class AddAnotherHouseConsignmentDocumentViewModelSpec extends SpecBase with Scal
                 .setValue(TypePage(Index(0), Index(0), Index(1)), DocumentType(Transport, "code2", "description2"))
                 .setValue(DocumentReferenceNumberPage(Index(0), Index(0), Index(1)), "ref2")
 
-              val result = new AddAnotherHouseConsignmentDocumentViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode)
+              val result = new AddAnotherHouseConsignmentDocumentViewModelProvider().apply(userAnswers, arrivalId, houseConsignmentIndex, itemIndex, mode, mode)
 
               result.listItems mustBe Seq(
                 ListItem(
@@ -243,7 +241,7 @@ class AddAnotherHouseConsignmentDocumentViewModelSpec extends SpecBase with Scal
                   changeUrl = None,
                   removeUrl = Some(
                     controllers.houseConsignment.index.items.document.routes.RemoveDocumentYesNoController
-                      .onPageLoad(arrivalId, mode, Index(0), Index(0), Index(0))
+                      .onPageLoad(arrivalId, mode, mode, Index(0), Index(0), Index(0))
                       .url
                   )
                 ),
@@ -252,7 +250,7 @@ class AddAnotherHouseConsignmentDocumentViewModelSpec extends SpecBase with Scal
                   changeUrl = None,
                   removeUrl = Some(
                     controllers.houseConsignment.index.items.document.routes.RemoveDocumentYesNoController
-                      .onPageLoad(arrivalId, mode, Index(0), Index(0), Index(1))
+                      .onPageLoad(arrivalId, mode, mode, Index(0), Index(0), Index(1))
                       .url
                   )
                 )

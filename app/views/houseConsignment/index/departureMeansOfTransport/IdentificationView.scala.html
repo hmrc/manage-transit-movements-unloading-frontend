@@ -28,14 +28,14 @@
     button: Button
 )
 
-@(form: Form[TransportMeansIdentification], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index, transportMeansIndex: Index, identifiers: Seq[TransportMeansIdentification], mode: Mode, viewModel: IdentificationViewModel)(implicit request: Request[_], messages: Messages)
+@(form: Form[TransportMeansIdentification], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentIndex: Index, transportMeansIndex: Index, identifiers: Seq[TransportMeansIdentification], houseConsignmentMode: Mode, transportMeansMode: Mode, viewModel: IdentificationViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = viewModel.title,
     showBackLink = true
 ) {
 
-    @formHelper(action = controllers.houseConsignment.index.departureMeansOfTransport.routes.IdentificationController.onSubmit(arrivalId, houseConsignmentIndex, transportMeansIndex, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.houseConsignment.index.departureMeansOfTransport.routes.IdentificationController.onSubmit(arrivalId, houseConsignmentIndex, transportMeansIndex, houseConsignmentMode, transportMeansMode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
