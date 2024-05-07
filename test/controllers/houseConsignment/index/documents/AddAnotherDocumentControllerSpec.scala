@@ -130,7 +130,9 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
           status(result) mustEqual SEE_OTHER
 
-          onwardRoute.url
+          redirectLocation(result).value mustEqual controllers.houseConsignment.index.documents.routes.TypeController
+            .onPageLoad(arrivalId, mode, houseConsignmentIndex, viewModel.nextIndex)
+            .url
         }
       }
 
@@ -149,7 +151,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual
-            controllers.routes.SessionExpiredController.onPageLoad().url //TODO update
+            controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
         }
 
       }
@@ -170,7 +172,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          controllers.routes.SessionExpiredController.onPageLoad().url //TODO update
+          controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex).url
       }
     }
 
