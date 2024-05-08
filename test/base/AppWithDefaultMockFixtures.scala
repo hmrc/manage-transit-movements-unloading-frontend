@@ -22,6 +22,7 @@ import models.P5._
 import models.{Mode, UserAnswers}
 import navigation.SealNavigator.SealNavigatorProvider
 import navigation._
+import navigation.houseConsignment.index.HouseConsignmentDocumentNavigator.HouseConsignmentDocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
@@ -127,8 +128,12 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
           new FakeHouseConsignmentDepartureTransportMeansNavigator(onwardRoute, houseConsignmentMode)
       }
 
-    val fakeDocumentNavigator: HouseConsignmentDocumentNavigator =
-      new FakeHouseConsignmentDocumentNavigator(onwardRoute)
+    val fakeDocumentNavigatorProvider: HouseConsignmentDocumentNavigatorProvider =
+      new HouseConsignmentDocumentNavigatorProvider {
+
+        override def apply(houseConsignmentMode: Mode): HouseConsignmentDocumentNavigator =
+          new FakeHouseConsignmentDocumentNavigator(onwardRoute, houseConsignmentMode)
+      }
   }
 
   object FakeConsignmentItemNavigators {

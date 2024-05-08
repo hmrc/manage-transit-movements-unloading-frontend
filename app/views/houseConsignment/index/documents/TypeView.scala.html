@@ -32,14 +32,14 @@
     button: Button
 )
 
-@(form: Form[DocumentType], mrn: MovementReferenceNumber, arrivalId: ArrivalId, mode: Mode, documents: Seq[DocumentType], viewModel: TypeViewModel, houseConsignmentIndex: Index, documentIndex: Index)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
+@(form: Form[DocumentType], mrn: MovementReferenceNumber, arrivalId: ArrivalId, houseConsignmentMode: Mode, documentMode: Mode, documents: Seq[DocumentType], viewModel: TypeViewModel, houseConsignmentIndex: Index, documentIndex: Index)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
 
 @mainTemplate(
     title = viewModel.title,
     showBackLink = true
 ) {
 
-    @formHelper(action = routes.TypeController.onSubmit(arrivalId, mode, houseConsignmentIndex, documentIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.TypeController.onSubmit(arrivalId, houseConsignmentMode, documentMode, houseConsignmentIndex, documentIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

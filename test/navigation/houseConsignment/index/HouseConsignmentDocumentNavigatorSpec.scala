@@ -21,6 +21,7 @@ import generators.Generators
 import models.DocType.{Support, Transport}
 import models._
 import models.reference.DocumentType
+import navigation.houseConsignment.index.HouseConsignmentDocumentNavigator.HouseConsignmentDocumentNavigatorProvider
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.houseConsignment.index.documents
@@ -28,13 +29,15 @@ import pages.houseConsignment.index.documents._
 
 class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  val navigator = new HouseConsignmentDocumentNavigator
+  private val navigatorProvider = new HouseConsignmentDocumentNavigatorProvider
 
   "HouseConsignmentDocumentNavigator" - {
 
     "in Normal Mode" - {
 
-      val mode = NormalMode
+      val houseConsignmentMode = arbitrary[Mode].sample.value
+      val documentMode         = NormalMode
+      val navigator            = navigatorProvider.apply(houseConsignmentMode)
 
       "must go from TypePage to Reference number page" in {
         forAll(arbitrary[DocumentType](arbitrarySupportDocument)) {
@@ -43,10 +46,10 @@ class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckProp
               .setValue(TypePage(hcIndex, documentIndex), document)
 
             navigator
-              .nextPage(TypePage(hcIndex, documentIndex), mode, userAnswers)
+              .nextPage(TypePage(hcIndex, documentIndex), documentMode, userAnswers)
               .mustBe(
                 controllers.houseConsignment.index.documents.routes.ReferenceNumberController
-                  .onPageLoad(arrivalId, NormalMode, houseConsignmentIndex, documentIndex)
+                  .onPageLoad(arrivalId, houseConsignmentMode, documentMode, houseConsignmentIndex, documentIndex)
               )
 
         }
@@ -60,10 +63,10 @@ class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckProp
               .setValue(DocumentReferenceNumberPage(hcIndex, documentIndex), ref)
 
             navigator
-              .nextPage(DocumentReferenceNumberPage(hcIndex, documentIndex), mode, userAnswers)
+              .nextPage(DocumentReferenceNumberPage(hcIndex, documentIndex), documentMode, userAnswers)
               .mustBe(
                 controllers.houseConsignment.index.documents.routes.AddAdditionalInformationYesNoController
-                  .onPageLoad(arrivalId, houseConsignmentIndex, documentIndex)
+                  .onPageLoad(arrivalId, houseConsignmentMode, documentMode, houseConsignmentIndex, documentIndex)
               )
 
         }
@@ -77,10 +80,10 @@ class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckProp
               .setValue(DocumentReferenceNumberPage(hcIndex, documentIndex), ref)
 
             navigator
-              .nextPage(DocumentReferenceNumberPage(hcIndex, documentIndex), mode, userAnswers)
+              .nextPage(DocumentReferenceNumberPage(hcIndex, documentIndex), documentMode, userAnswers)
               .mustBe(
                 controllers.houseConsignment.index.documents.routes.AddAnotherDocumentController
-                  .onPageLoad(arrivalId, houseConsignmentIndex, mode)
+                  .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
               )
 
         }
@@ -92,10 +95,10 @@ class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckProp
           .setValue(AddAdditionalInformationYesNoPage(hcIndex, documentIndex), true)
 
         navigator
-          .nextPage(documents.AddAdditionalInformationYesNoPage(hcIndex, documentIndex), mode, userAnswers)
+          .nextPage(documents.AddAdditionalInformationYesNoPage(hcIndex, documentIndex), documentMode, userAnswers)
           .mustBe(
             controllers.houseConsignment.index.documents.routes.AdditionalInformationController
-              .onPageLoad(arrivalId, mode, houseConsignmentIndex, documentIndex)
+              .onPageLoad(arrivalId, houseConsignmentMode, documentMode, houseConsignmentIndex, documentIndex)
           )
 
       }
@@ -106,10 +109,10 @@ class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckProp
           .setValue(AddAdditionalInformationYesNoPage(hcIndex, documentIndex), false)
 
         navigator
-          .nextPage(documents.AddAdditionalInformationYesNoPage(hcIndex, documentIndex), mode, userAnswers)
+          .nextPage(documents.AddAdditionalInformationYesNoPage(hcIndex, documentIndex), documentMode, userAnswers)
           .mustBe(
             controllers.houseConsignment.index.documents.routes.AddAnotherDocumentController
-              .onPageLoad(arrivalId, houseConsignmentIndex, mode)
+              .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
           )
 
       }
@@ -120,10 +123,10 @@ class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckProp
           .setValue(AdditionalInformationPage(hcIndex, documentIndex), "document details")
 
         navigator
-          .nextPage(documents.AdditionalInformationPage(hcIndex, documentIndex), mode, userAnswers)
+          .nextPage(documents.AdditionalInformationPage(hcIndex, documentIndex), documentMode, userAnswers)
           .mustBe(
             controllers.houseConsignment.index.documents.routes.AddAnotherDocumentController
-              .onPageLoad(arrivalId, houseConsignmentIndex, mode)
+              .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
           )
 
       }
@@ -131,7 +134,9 @@ class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckProp
     }
     "in Check mode" - {
 
-      val mode = CheckMode
+      val houseConsignmentMode = CheckMode
+      val documentMode         = CheckMode
+      val navigator            = navigatorProvider.apply(houseConsignmentMode)
 
       "must go from TypePage to HouseConsignmentController" in {
         forAll(arbitrary[DocumentType](arbitrarySupportDocument)) {
@@ -140,7 +145,7 @@ class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckProp
               .setValue(TypePage(hcIndex, documentIndex), document)
 
             navigator
-              .nextPage(TypePage(hcIndex, documentIndex), mode, userAnswers)
+              .nextPage(TypePage(hcIndex, documentIndex), documentMode, userAnswers)
               .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
         }
       }
@@ -152,7 +157,7 @@ class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckProp
               .setValue(TypePage(hcIndex, documentIndex), document)
 
             navigator
-              .nextPage(DocumentReferenceNumberPage(hcIndex, documentIndex), mode, userAnswers)
+              .nextPage(DocumentReferenceNumberPage(hcIndex, documentIndex), documentMode, userAnswers)
               .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
         }
       }
@@ -164,7 +169,7 @@ class HouseConsignmentDocumentNavigatorSpec extends SpecBase with ScalaCheckProp
               .setValue(TypePage(hcIndex, documentIndex), document)
 
             navigator
-              .nextPage(AdditionalInformationPage(hcIndex, documentIndex), mode, userAnswers)
+              .nextPage(AdditionalInformationPage(hcIndex, documentIndex), documentMode, userAnswers)
               .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
         }
       }
