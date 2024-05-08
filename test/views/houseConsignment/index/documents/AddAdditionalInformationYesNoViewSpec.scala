@@ -27,7 +27,7 @@ class AddAdditionalInformationYesNoViewSpec extends YesNoViewBehaviours {
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[AddAdditionalInformationYesNoView]
-      .apply(form, mrn, arrivalId, houseConsignmentIndex, documentIndex, NormalMode)(fakeRequest, messages)
+      .apply(form, mrn, arrivalId, houseConsignmentIndex, documentIndex, NormalMode, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "houseConsignment.index.documents.addAdditionalInformationYesNo"
 

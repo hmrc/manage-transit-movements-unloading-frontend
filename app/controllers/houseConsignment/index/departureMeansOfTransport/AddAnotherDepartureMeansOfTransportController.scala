@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.departureMeansOfTransport
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.{ArrivalId, Index, Mode, NormalMode}
+import models.{ArrivalId, CheckMode, Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -46,16 +46,16 @@ class AddAnotherDepartureMeansOfTransportController @Inject() (
   private def form(viewModel: AddAnotherDepartureMeansOfTransportViewModel): Form[Boolean] =
     formProvider(viewModel.prefix, viewModel.allowMore)
 
-  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onPageLoad(arrivalId: ArrivalId, houseConsignmentIndex: Index, houseConsignmentMode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentIndex, mode)
+      val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentIndex, houseConsignmentMode)
 
       Ok(view(form(viewModel), request.userAnswers.mrn, arrivalId, viewModel))
   }
 
-  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
+  def onSubmit(arrivalId: ArrivalId, houseConsignmentIndex: Index, houseConsignmentMode: Mode): Action[AnyContent] = actions.requireData(arrivalId) {
     implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentIndex, mode)
+      val viewModel = viewModelProvider(request.userAnswers, arrivalId, houseConsignmentIndex, houseConsignmentMode)
       val form      = formProvider(viewModel.prefix, viewModel.allowMore, houseConsignmentIndex)
       form
         .bindFromRequest()
@@ -65,12 +65,17 @@ class AddAnotherDepartureMeansOfTransportController @Inject() (
             case true =>
               Redirect(
                 controllers.houseConsignment.index.departureMeansOfTransport.routes.IdentificationController
-                  .onPageLoad(arrivalId, houseConsignmentIndex, viewModel.nextIndex, mode, NormalMode)
+                  .onPageLoad(arrivalId, houseConsignmentIndex, viewModel.nextIndex, houseConsignmentMode, NormalMode)
               )
             case false =>
-              // TODO: pattern match on mode (houseConsignment mode), to decide to go back to cross check page, or next page
-              // in add HC journey.
-              Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+              houseConsignmentMode match {
+                case NormalMode =>
+                  Redirect(
+                    controllers.houseConsignment.index.routes.AddDocumentsYesNoController.onPageLoad(arrivalId, houseConsignmentMode, houseConsignmentIndex)
+                  )
+                case CheckMode =>
+                  Redirect(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+              }
           }
         )
   }

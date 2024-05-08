@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.ReferenceNumberFormProvider
 import generators.Generators
 import models.NormalMode
-import navigation.houseConsignment.index.HouseConsignmentDocumentNavigator
+import navigation.houseConsignment.index.HouseConsignmentDocumentNavigator.HouseConsignmentDocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -37,9 +37,12 @@ import scala.concurrent.Future
 
 class ReferenceNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val viewModel             = arbitrary[ReferenceNumberViewModel].sample.value
-  private val formProvider          = new ReferenceNumberFormProvider()
-  private val mode                  = NormalMode
+  private val viewModel    = arbitrary[ReferenceNumberViewModel].sample.value
+  private val formProvider = new ReferenceNumberFormProvider()
+
+  private val houseConsignmentMode = NormalMode
+  private val documentMode         = NormalMode
+
   private val form                  = formProvider(viewModel.requiredError, hcIndex, Seq.empty)
   private val mockViewModelProvider = mock[ReferenceNumberViewModelProvider]
 
@@ -47,7 +50,7 @@ class ReferenceNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind[HouseConsignmentDocumentNavigator].toInstance(FakeHouseConsignmentNavigators.fakeDocumentNavigator),
+        bind[HouseConsignmentDocumentNavigatorProvider].toInstance(FakeHouseConsignmentNavigators.fakeDocumentNavigatorProvider),
         bind[ReferenceNumberViewModelProvider].toInstance(mockViewModelProvider)
       )
 
@@ -60,7 +63,7 @@ class ReferenceNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
   }
 
   private lazy val referenceNumberRoute =
-    controllers.houseConsignment.index.documents.routes.ReferenceNumberController.onPageLoad(arrivalId, mode, hcIndex, documentIndex).url
+    routes.ReferenceNumberController.onPageLoad(arrivalId, houseConsignmentMode, documentMode, hcIndex, documentIndex).url
 
   "ReferenceNumberController" - {
 
@@ -77,7 +80,7 @@ class ReferenceNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, mrn, arrivalId, NormalMode, viewModel, houseConsignmentIndex, documentIndex)(request, messages).toString
+        view(form, mrn, arrivalId, houseConsignmentMode, documentMode, viewModel, houseConsignmentIndex, documentIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -96,7 +99,7 @@ class ReferenceNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, NormalMode, viewModel, hcIndex, documentIndex)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentMode, documentMode, viewModel, hcIndex, documentIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -131,7 +134,7 @@ class ReferenceNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
       val view = injector.instanceOf[ReferenceNumberView]
 
       contentAsString(result) mustEqual
-        view(filledForm, mrn, arrivalId, NormalMode, viewModel, hcIndex, documentIndex)(request, messages).toString
+        view(filledForm, mrn, arrivalId, houseConsignmentMode, documentMode, viewModel, hcIndex, documentIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

@@ -16,6 +16,7 @@
 
 package utils.answersHelpers.consignment.houseConsignment
 
+import controllers.houseConsignment.index.documents.routes
 import models.reference.DocumentType
 import models.{CheckMode, Index, UserAnswers}
 import pages.houseConsignment.index.documents._
@@ -44,8 +45,7 @@ class DocumentAnswersHelper(
         prefix = "unloadingFindings.document.type",
         args = Seq(documentIndex.display): _*,
         id = Some(s"change-document-type-${documentIndex.display}"),
-        call =
-          Some(controllers.houseConsignment.index.documents.routes.TypeController.onPageLoad(userAnswers.id, CheckMode, houseConsignmentIndex, documentIndex))
+        call = Some(routes.TypeController.onPageLoad(userAnswers.id, CheckMode, CheckMode, houseConsignmentIndex, documentIndex))
       )
     }
 
@@ -63,10 +63,7 @@ class DocumentAnswersHelper(
         prefix = "unloadingFindings.document.referenceNumber",
         args = Seq(documentIndex.display): _*,
         id = Some(s"change-document-reference-number-${documentIndex.display}"),
-        call = Some(
-          controllers.houseConsignment.index.documents.routes.ReferenceNumberController
-            .onPageLoad(userAnswers.id, CheckMode, houseConsignmentIndex, documentIndex)
-        )
+        call = Some(routes.ReferenceNumberController.onPageLoad(userAnswers.id, CheckMode, CheckMode, houseConsignmentIndex, documentIndex))
       )
     }
 
@@ -84,10 +81,7 @@ class DocumentAnswersHelper(
         prefix = "unloadingFindings.document.additionalInformation",
         args = Seq(documentIndex.display): _*,
         id = Some(s"change-document-additional-information-${documentIndex.display}"),
-        call = Some(
-          controllers.houseConsignment.index.documents.routes.AdditionalInformationController
-            .onPageLoad(userAnswers.id, CheckMode, houseConsignmentIndex, documentIndex)
-        )
+        call = Some(routes.AdditionalInformationController.onPageLoad(userAnswers.id, CheckMode, CheckMode, houseConsignmentIndex, documentIndex))
       )
     }
 }
