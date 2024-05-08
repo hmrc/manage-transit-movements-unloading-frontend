@@ -77,8 +77,10 @@ class UnreachablePageActionSpec extends SpecBase with BeforeAndAfterEach with Ge
 
   private val unreachablePages = {
     val addOrRemoveHouseConsignmentPages = Seq(
-      s"/manage-transit-movements/unloading/$id/transit-unloading-permission-discrepancies/house-consignments/add-another",
-      s"/manage-transit-movements/unloading/$id/transit-unloading-permission-discrepancies/change-house-consignments/add-another"
+      s"/manage-transit-movements/unloading/$id/house-consignments/add-another",
+      s"/manage-transit-movements/unloading/$id/change-house-consignments/add-another",
+      s"/manage-transit-movements/unloading/$id/house-consignment/1/remove",
+      s"/manage-transit-movements/unloading/$id/change-house-consignment/1/remove"
     )
 
     val multiHouseConsignmentPages = Seq(

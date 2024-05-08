@@ -32,8 +32,11 @@ class UnreachablePageActionImpl @Inject() (implicit val executionContext: Execut
   override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] =
     phaseConfig.phase match {
       case Phase.Transition =>
-        val addOrRemoveHouseConsignmentPattern =
+        val addHouseConsignmentPattern =
           """^.*/(change-)?house-consignments/.*$""".r
+
+        val removeHouseConsignmentPattern =
+          """^.*/(change-)?house-consignment/(\d+)/remove.*$""".r
 
         val multiHouseConsignmentPattern =
           """^.*/(change-)?house-consignment/(\d+).*$""".r
@@ -42,7 +45,9 @@ class UnreachablePageActionImpl @Inject() (implicit val executionContext: Execut
           """^.*/(change-)?house-consignment/1/((change-)?(additional-reference(s)?|document(s)?|departure-means-of-transport))/.*$""".r
 
         request.uri match {
-          case addOrRemoveHouseConsignmentPattern(_) =>
+          case addHouseConsignmentPattern(_) =>
+            Future.successful(Some(Redirect(controllers.routes.ErrorController.notFound())))
+          case removeHouseConsignmentPattern(_, _) =>
             Future.successful(Some(Redirect(controllers.routes.ErrorController.notFound())))
           case multiHouseConsignmentPattern(_, index) if index.toInt > 1 =>
             Future.successful(Some(Redirect(controllers.routes.ErrorController.notFound())))
