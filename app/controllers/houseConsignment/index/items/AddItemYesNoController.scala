@@ -31,6 +31,8 @@ import views.html.houseConsignment.index.items.AddItemYesNoView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
+// TODO - move this, page, view and specs to controllers.houseConsignment.index package
+
 class AddItemYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
