@@ -19,7 +19,7 @@ package controllers.houseConsignment.index.items
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.{ArrivalId, Index, Mode}
-import navigation.houseConsignment.index.items.HouseConsignmentItemNavigator.HouseConsignmentItemNavigatorProvider
+import navigation.houseConsignment.index.HouseConsignmentNavigator
 import pages.houseConsignment.index.items.AddItemYesNoPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddItemYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  navigatorProvider: HouseConsignmentItemNavigatorProvider,
+  navigator: HouseConsignmentNavigator,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -74,10 +74,7 @@ class AddItemYesNoController @Inject() (
                 updatedAnswers <- Future
                   .fromTry(request.userAnswers.set(AddItemYesNoPage(houseConsignmentIndex), value))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield {
-                val navigator = navigatorProvider.apply(houseConsignmentMode)
-                Redirect(navigator.nextPage(AddItemYesNoPage(houseConsignmentIndex), houseConsignmentMode, updatedAnswers))
-              }
+              } yield Redirect(navigator.nextPage(AddItemYesNoPage(houseConsignmentIndex), houseConsignmentMode, updatedAnswers))
           )
     }
 }

@@ -42,6 +42,122 @@ class HouseConsignmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
           .nextPage(page, mode, userAnswers)
           .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
       }
+
+      "must go from add departure means of transport yes/no page" - {
+        val page = AddDepartureTransportMeansYesNoPage(hcIndex)
+
+        "when yes selected" - {
+          "to departure means of transport type of identification page" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(page, true)
+
+            navigator
+              .nextPage(page, mode, userAnswers)
+              .mustBe(
+                controllers.houseConsignment.index.departureMeansOfTransport.routes.IdentificationController
+                  .onPageLoad(arrivalId, houseConsignmentIndex, Index(0), mode, NormalMode)
+              )
+          }
+        }
+
+        "when no selected" - {
+          "to house consignment cross-check page" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(page, false)
+
+            navigator
+              .nextPage(page, mode, userAnswers)
+              .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+          }
+        }
+      }
+
+      "must go from add documents yes/no page" - {
+        val page = AddDocumentYesNoPage(hcIndex)
+
+        "when yes selected" - {
+          "to document type page" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(page, true)
+
+            navigator
+              .nextPage(page, mode, userAnswers)
+              .mustBe(
+                controllers.houseConsignment.index.documents.routes.TypeController
+                  .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, Index(0))
+              )
+          }
+        }
+
+        "when no selected" - {
+          "to house consignment cross-check page" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(page, false)
+
+            navigator
+              .nextPage(page, mode, userAnswers)
+              .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+          }
+        }
+      }
+
+      "must go from add additional references yes/no page" - {
+        val page = AddAdditionalReferenceYesNoPage(hcIndex)
+
+        "when yes selected" - {
+          "to additional reference type page" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(page, true)
+
+            navigator
+              .nextPage(page, mode, userAnswers)
+              .mustBe(
+                controllers.houseConsignment.index.additionalReference.routes.AdditionalReferenceTypeController
+                  .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, Index(0))
+              )
+          }
+        }
+
+        "when no selected" - {
+          "to house consignment cross-check page" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(page, false)
+
+            navigator
+              .nextPage(page, mode, userAnswers)
+              .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+          }
+        }
+      }
+
+      "must go from add items yes/no page" - {
+        val page = AddItemYesNoPage(hcIndex)
+
+        "when yes selected" - {
+          "to item description page" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(page, true)
+
+            navigator
+              .nextPage(page, mode, userAnswers)
+              .mustBe(
+                controllers.houseConsignment.index.items.routes.DescriptionController
+                  .onPageLoad(arrivalId, mode, NormalMode, houseConsignmentIndex, Index(0))
+              )
+          }
+        }
+
+        "when no selected" - {
+          "to house consignment cross-check page" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(page, false)
+
+            navigator
+              .nextPage(page, mode, userAnswers)
+              .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
+          }
+        }
+      }
     }
 
     "in Normal mode" - {

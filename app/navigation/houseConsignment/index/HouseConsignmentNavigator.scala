@@ -45,6 +45,14 @@ class HouseConsignmentNavigator extends Navigator {
   override def checkRoutes: PartialFunction[Page, UserAnswers => Option[Call]] = {
     case GrossWeightPage(houseConsignmentIndex) =>
       ua => Some(controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex))
+    case AddDepartureTransportMeansYesNoPage(houseConsignmentIndex) =>
+      ua => addDepartureTransportMeansYesNoRoute(ua, houseConsignmentIndex, CheckMode)
+    case AddDocumentYesNoPage(houseConsignmentIndex) =>
+      ua => addDocumentsYesNoRoute(ua, houseConsignmentIndex, CheckMode)
+    case AddAdditionalReferenceYesNoPage(houseConsignmentIndex) =>
+      ua => addAdditionalReferencesYesNoRoute(ua, houseConsignmentIndex, CheckMode)
+    case AddItemYesNoPage(houseConsignmentIndex) =>
+      ua => addItemsYesNoRoute(ua, houseConsignmentIndex, CheckMode)
   }
 
   private def addDepartureTransportMeansYesNoRoute(
@@ -58,9 +66,9 @@ class HouseConsignmentNavigator extends Navigator {
       case false =>
         houseConsignmentMode match {
           case NormalMode =>
-            routes.AddDocumentsYesNoController.onPageLoad(ua.id, NormalMode, houseConsignmentIndex)
+            routes.AddDocumentsYesNoController.onPageLoad(ua.id, houseConsignmentMode, houseConsignmentIndex)
           case CheckMode =>
-            ???
+            controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex)
         }
     }
 
@@ -75,9 +83,9 @@ class HouseConsignmentNavigator extends Navigator {
       case false =>
         houseConsignmentMode match {
           case NormalMode =>
-            routes.AddAdditionalReferenceYesNoController.onPageLoad(ua.id, NormalMode, houseConsignmentIndex)
+            routes.AddAdditionalReferenceYesNoController.onPageLoad(ua.id, houseConsignmentMode, houseConsignmentIndex)
           case CheckMode =>
-            ???
+            controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex)
         }
     }
 
@@ -92,9 +100,9 @@ class HouseConsignmentNavigator extends Navigator {
       case false =>
         houseConsignmentMode match {
           case NormalMode =>
-            items.routes.AddItemYesNoController.onPageLoad(ua.id, houseConsignmentIndex, NormalMode)
+            items.routes.AddItemYesNoController.onPageLoad(ua.id, houseConsignmentIndex, houseConsignmentMode)
           case CheckMode =>
-            ???
+            controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex)
         }
     }
 
@@ -109,9 +117,9 @@ class HouseConsignmentNavigator extends Navigator {
       case false =>
         houseConsignmentMode match {
           case NormalMode =>
-            houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(ua.id, NormalMode)
+            houseConsignment.routes.AddAnotherHouseConsignmentController.onPageLoad(ua.id, houseConsignmentMode)
           case CheckMode =>
-            ???
+            controllers.routes.HouseConsignmentController.onPageLoad(ua.id, houseConsignmentIndex)
         }
     }
 }
