@@ -31,6 +31,52 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
 
   "DepartureTransportMeansNavigator" - {
 
+    "in NormalMode" - {
+
+      val houseConsignmentMode = NormalMode
+      val transportMeansMode   = NormalMode
+      val navigator            = navigatorProvider.apply(houseConsignmentMode)
+
+      "must go from TransportMeansIdentificationPage to VehicleIdentificationNumberPage" in {
+
+        val userAnswers =
+          emptyUserAnswers.setValue(TransportMeansIdentificationPage(houseConsignmentIndex, transportMeansIndex), TransportMeansIdentification("test", "test"))
+
+        navigator
+          .nextPage(TransportMeansIdentificationPage(houseConsignmentIndex, transportMeansIndex), houseConsignmentMode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.departureMeansOfTransport.routes.IdentificationNumberController
+              .onPageLoad(arrivalId, houseConsignmentIndex, transportMeansIndex, houseConsignmentMode, transportMeansMode)
+          )
+      }
+
+      "must go from VehicleIdentificationNumberPage to CountryPage" in {
+
+        val userAnswers =
+          emptyUserAnswers.setValue(VehicleIdentificationNumberPage(houseConsignmentIndex, transportMeansIndex), "test")
+
+        navigator
+          .nextPage(VehicleIdentificationNumberPage(houseConsignmentIndex, transportMeansIndex), houseConsignmentMode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.departureMeansOfTransport.routes.CountryController
+              .onPageLoad(arrivalId, houseConsignmentIndex, transportMeansIndex, houseConsignmentMode, NormalMode)
+          )
+      }
+
+      "must go from CountryPage to AddAnotherDepartureMeansOfTransport page" in {
+
+        val userAnswers =
+          emptyUserAnswers.setValue(CountryPage(houseConsignmentIndex, transportMeansIndex), Country("GB", "test"))
+
+        navigator
+          .nextPage(CountryPage(houseConsignmentIndex, transportMeansIndex), houseConsignmentMode, userAnswers)
+          .mustBe(
+            controllers.houseConsignment.index.departureMeansOfTransport.routes.AddAnotherDepartureMeansOfTransportController
+              .onPageLoad(arrivalId, houseConsignmentIndex, houseConsignmentMode)
+          )
+      }
+    }
+
     "in CheckMode" - {
 
       val houseConsignmentMode = CheckMode
@@ -69,13 +115,6 @@ class DepartureTransportMeansNavigatorSpec extends SpecBase with ScalaCheckPrope
           .mustBe(controllers.routes.HouseConsignmentController.onPageLoad(arrivalId, houseConsignmentIndex))
 
       }
-    }
-
-    "in NormalMode" - {
-
-      val houseConsignmentMode = arbitrary[Mode].sample.value
-      val transportMeansMode   = NormalMode
-      val navigator            = navigatorProvider.apply(houseConsignmentMode)
     }
   }
 }
