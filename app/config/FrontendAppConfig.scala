@@ -36,6 +36,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   lazy val maxDepartureMeansOfTransport: Int = configuration.get[Int]("limits.maxDepartureMeansOfTransport")
 
+  lazy val maxDepartureMeansOfTransportHouseConsignment: Int = configuration.get[Int]("limits.houseConsignment.maxDepartureMeansOfTransport")
+
   lazy val maxTransportEquipment: Int = configuration.get[Int]("limits.maxTransportEquipment")
 
   lazy val maxSupportingDocumentsConsignment: Int = configuration.get[Int]("limits.documents.consignment.maxSupporting")
