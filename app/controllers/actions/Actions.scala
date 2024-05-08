@@ -26,18 +26,24 @@ import javax.inject.Inject
 
 class Actions @Inject() (
   identifierAction: IdentifierAction,
+  checkArrivalStatusProvider: CheckArrivalStatusProvider,
   dataRetrievalAction: DataRetrievalActionProvider,
   dataRequiredAction: DataRequiredAction,
-  checkArrivalStatusProvider: CheckArrivalStatusProvider,
+  unreachablePageAction: UnreachablePageAction,
   indexRequiredAction: IndexRequiredActionProvider
 ) {
 
   def getData(arrivalId: ArrivalId): ActionBuilder[OptionalDataRequest, AnyContent] =
-    identifierAction andThen checkArrivalStatusProvider(arrivalId) andThen dataRetrievalAction(arrivalId)
+    identifierAction andThen
+      checkArrivalStatusProvider(arrivalId) andThen
+      dataRetrievalAction(arrivalId)
 
   def requireData(arrivalId: ArrivalId): ActionBuilder[DataRequest, AnyContent] =
-    getData(arrivalId) andThen dataRequiredAction
+    getData(arrivalId) andThen
+      dataRequiredAction andThen
+      unreachablePageAction
 
   def requireIndex(arrivalId: ArrivalId, section: Section[JsObject], addAnother: => Call): ActionBuilder[DataRequest, AnyContent] =
-    requireData(arrivalId) andThen indexRequiredAction(section, addAnother)
+    requireData(arrivalId) andThen
+      indexRequiredAction(section, addAnother)
 }
